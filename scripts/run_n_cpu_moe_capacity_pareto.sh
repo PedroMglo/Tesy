@@ -387,6 +387,11 @@ print(json.dumps({
 }, indent=2))
 PY
 
+  python3 -m tesy.runtime_provenance \
+    --pid "$server_pid" \
+    --build-provenance "$out/build-provenance.json" \
+    >"$run_dir/runtime-provenance.json"
+
   python3 -m tesy.server_client \
     --url "http://127.0.0.1:$port/completion" \
     --prompt-file "$prompt_file" \
