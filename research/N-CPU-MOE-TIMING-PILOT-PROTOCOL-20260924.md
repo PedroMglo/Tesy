@@ -37,6 +37,22 @@ VRAM/CPU-residency trade.
 If these three points do not establish a useful diagnostic separation,
 measuring `N=16` and `N=20` is not automatically justified.
 
+## Operator command
+
+After local model-free validation on the pilot branch, run:
+
+```bash
+campaign="results/n-cpu-moe-timing-pilot-$(date -u +%Y%m%dT%H%M%SZ)"
+
+bash scripts/run_n_cpu_moe_capacity_pareto.sh \
+  --timing-pilot \
+  /home/pmglo/.local/share/tesy/models/gpt-oss-20b/gpt-oss-20b-mxfp4.gguf \
+  "$campaign"
+```
+
+The output root is no-replace. Any failure is preserved with a new campaign
+identity required for debugging.
+
 ## Frozen workload
 
 Same locked model/backend/prompt as the capacity gate:
@@ -154,6 +170,20 @@ After measurement:
   smallest confirmatory set prospectively.
 
 No performance threshold or winner is preregistered.
+
+## Publication boundary
+
+If and only if the pilot finishes with
+`PASS_DIAGNOSTIC_STOCK_PLACEMENT_TIMING_PILOT`, publish through:
+
+```bash
+python -m tesy.publish_timing_pilot "$campaign" "$publish_dir"
+```
+
+The publication contains only derived summaries/provenance/identity artifacts.
+Raw request streams, server logs, resource samples and placement files remain
+outside Git; the publication manifest records their byte sizes and SHA-256
+identities.
 
 ## Claim boundary
 
