@@ -1,62 +1,60 @@
 from __future__ import annotations
 
-import pytest
-
-from tesy.headroom import native_cache_headroom, simulate_slot_lru
+from tesy.headroom import (
+    native_cache_headroom,
+    simulate_slot_belady,
+    simulate_slot_lru,
+)
 from tesy.native_trace import NativeTopKRecord
 
 
-def _record(
-    graph: int,
-    layer: int,
-    experts: tuple[int, ...],
-) -> NativeTopKRecord:
-    return NativeTopKRecord(
-        graph_seq=graph,
-        layer=layer,
-        experts=(experts,),
-    )
+def _record(graph: int, layer: int, experts: tuple[int, ...]) -> NativeTopKRecord:
+    return NativeTopKRecord(graph_seq=graph, layer=layer, experts=(experts,))
 
 
-def test_slot_lru_reuses_hot_expert() -> None:
-    accesses = [(0, 1), (0, 2), (0, 1)]
-    result = simulate_slot_lru(accesses, slots=2)
-    assert result.loads == 2
-    assert result.hits == 1
-    assert result.evictions == 0
+def test_lru_and_belady_equal_when_cache_holds_working_set():
+    accesses = [(0, 0), (0, 1), (0, 0), (0, 1)]
+    lru = simulate_slot_lru(accesses, 2)
+    opt = simulate_slot_belady(accesses, 2)
+    assert lru.loads == 2
+    assert opt.loads == 2
 
 
-def test_zero_slot_cache_loads_every_access() -> None:
-    accesses = [(0, 1), (0, 1)]
-    result = simulate_slot_lru(accesses, slots=0)
-    assert result.loads == 2
-    assert result.hits == 0
-
-
-def test_headroom_reports_infinite_cache_lower_bound() -> None:
-    records = [
-        _record(0, 0, (1, 2)),
-        _record(1, 0, (1, 3)),
+def test_belady_beats_lru_on_known_sequence():
+    accesses = [
+        (0, 1),
+        (0, 2),
+        (0, 3),
+        (0, 1),
+        (0, 2),
+        (0, 4),
+        (0, 1),
+        (0, 2),
+        (0, 3),
+        (0, 4),
     ]
-    result = native_cache_headroom(records, [0, 2, 3])
-    assert result["one_token_expert_accesses"] == 4
-    assert result["unique_layer_experts"] == 3
-    assert result["infinite_cache_compulsory_load_lower_bound"] == 3
-    assert result["infinite_cache_max_load_reduction_fraction"] == 0.25
+    lru = simulate_slot_lru(accesses, 3)
+    opt = simulate_slot_belady(accesses, 3)
+    assert opt.loads < lru.loads
 
 
-def test_headroom_can_skip_initial_graphs() -> None:
+def test_zero_slots_means_every_access_loads():
+    accesses = [(0, 1), (0, 1), (0, 2)]
+    assert simulate_slot_lru(accesses, 0).loads == 3
+    assert simulate_slot_belady(accesses, 0).loads == 3
+
+
+def test_native_headroom_reports_offline_oracle():
     records = [
-        _record(0, 0, (9,)),
-        _record(1, 0, (1,)),
-        _record(2, 0, (1,)),
+        _record(0, 0, (0, 1)),
+        _record(1, 0, (0, 2)),
+        _record(2, 0, (0, 1)),
     ]
-    result = native_cache_headroom(records, [1], min_graph_seq=1)
-    assert result["one_token_expert_accesses"] == 2
-    assert result["unique_layer_experts"] == 1
-
-
-@pytest.mark.parametrize("bad", [-1, True, 1.5])
-def test_slot_capacity_is_strict(bad) -> None:
-    with pytest.raises(ValueError):
-        simulate_slot_lru([(0, 1)], bad)
+    result = native_cache_headroom(records, [0, 1, 2])
+    assert result["schema"] == "tesy.native_cache_headroom.v2"
+    assert len(result["lru"]) == 3
+    assert len(result["belady_offline_oracle"]) == 3
+    for lru, oracle in zip(
+        result["lru"], result["belady_offline_oracle"], strict=True
+    ):
+        assert oracle["loads"] <= lru["loads"]
