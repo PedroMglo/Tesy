@@ -80,7 +80,7 @@ Do not commit model weights, build products, caches, raw traces containing priva
 
 External dependencies must be pinned before measurements. Do not silently modify a shared installation from another project.
 
-Tesy is repository-independent. Do not reference, import, build, publish, tag or depend on the owner's unrelated repositories (including `PedroMglo/ai-local-runtime-kit` and MOSAIC-LLM) unless the user explicitly requests that integration and an ADR records the exact reason, provenance, license and rollback plan.
+Tesy is repository-independent. Do not reference, import, build, publish, tag or depend on unrelated user-owned repositories unless the user explicitly requests that integration and an ADR records the exact reason, provenance, license and rollback plan.
 
 Do not add Dockerfiles, Compose definitions, devcontainers, GHCR/package publishing, container images or container-based runtime dependencies merely for convenience. Containerization requires an explicit Tesy ADR and must not reuse images owned by unrelated projects.
 
