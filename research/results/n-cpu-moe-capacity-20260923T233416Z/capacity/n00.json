@@ -1,0 +1,34 @@
+{
+  "admitted": false,
+  "campaign_start_gpu_free_bytes": 8248098816,
+  "campaign_start_mem_available_bytes": 24418865152,
+  "claim_boundary": "llama-fit-params --fit-print reports projected model/context/compute memory in integer MiB. This is an estimator-based admission gate, not measured VRAM/RAM traffic or proof that a subsequent run will fit.",
+  "classification": "SOURCE_BACKED_MEMORY_ESTIMATE",
+  "device": "CUDA0",
+  "gpu_pass": false,
+  "gpu_required_mib": 12511,
+  "gpu_target_mib": 1024,
+  "host_guard_mib": 2048,
+  "host_pass": true,
+  "host_required_mib": 2666,
+  "n_cpu_moe": 0,
+  "rejection_reasons": [
+    "PROJECTED_GPU_HEADROOM"
+  ],
+  "rounding_guard_mib": 16,
+  "rows": {
+    "CUDA0": {
+      "compute_mib": 408,
+      "context_mib": 114,
+      "model_mib": 10949,
+      "total_mib": 11471
+    },
+    "Host": {
+      "compute_mib": 16,
+      "context_mib": 0,
+      "model_mib": 586,
+      "total_mib": 602
+    }
+  },
+  "schema": "tesy.n_cpu_moe_capacity_estimate.v1"
+}
