@@ -446,6 +446,137 @@ order+=("auto")
 
 fi
 
+
+snapshot_pre_run_resources() {
+  local output="$1"
+  python3 - "$output" <<'PY'
+import json
+import subprocess
+import sys
+from pathlib import Path
+
+out = Path(sys.argv[1])
+gpu = subprocess.run(
+    [
+        "nvidia-smi",
+        "--query-gpu=name,memory.total,memory.free,temperature.gpu,pstate,pci.bus_id",
+        "--format=csv,noheader,nounits",
+    ],
+    capture_output=True,
+    text=True,
+    check=False,
+)
+if gpu.returncode != 0:
+    raise SystemExit(f"nvidia-smi GPU snapshot failed: {gpu.stderr.strip()}")
+rows = [line.strip() for line in gpu.stdout.splitlines() if line.strip()]
+if len(rows) != 1:
+    raise SystemExit(f"expected exactly one GPU row, got {len(rows)}")
+parts = [value.strip() for value in rows[0].split(",")]
+if len(parts) != 6:
+    raise SystemExit(f"unexpected GPU row: {rows[0]!r}")
+name, total_mib, free_mib, temperature_c, pstate, pci_bus_id = parts
+
+compute = subprocess.run(
+    [
+        "nvidia-smi",
+        "--query-compute-apps=pid,process_name,used_memory",
+        "--format=csv,noheader,nounits",
+    ],
+    capture_output=True,
+    text=True,
+    check=False,
+)
+if compute.returncode != 0:
+    raise SystemExit(
+        f"nvidia-smi compute-process snapshot failed: {compute.stderr.strip()}"
+    )
+if compute.stdout.strip():
+    raise SystemExit(f"competing GPU compute process detected: {compute.stdout.strip()}")
+
+meminfo = {}
+for line in Path("/proc/meminfo").read_text(encoding="utf-8").splitlines():
+    if ":" not in line:
+        continue
+    key, raw = line.split(":", 1)
+    fields = raw.strip().split()
+    if key in {"MemAvailable", "SwapFree", "SwapTotal"} and fields:
+        meminfo[key] = int(fields[0]) * 1024
+
+for key in ("MemAvailable", "SwapFree", "SwapTotal"):
+    if key not in meminfo:
+        raise SystemExit(f"missing /proc/meminfo field: {key}")
+
+payload = {
+    "schema": "tesy.timing_pilot_pre_run_resources.v1",
+    "classification": "MEASURED_PRE_RUN_RESOURCES",
+    "gpu": {
+        "name": name,
+        "memory_total_bytes": int(float(total_mib) * 1024 * 1024),
+        "memory_free_bytes": int(float(free_mib) * 1024 * 1024),
+        "temperature_c": float(temperature_c),
+        "pstate": pstate,
+        "pci_bus_id": pci_bus_id,
+    },
+    "memory": {
+        "available_bytes": meminfo["MemAvailable"],
+        "swap_free_bytes": meminfo["SwapFree"],
+        "swap_total_bytes": meminfo["SwapTotal"],
+    },
+    "claim_boundary": (
+        "Measured immediately before one pilot placement. It qualifies current "
+        "capacity admission and process isolation, not subsequent performance."
+    ),
+}
+with out.open("x", encoding="utf-8") as handle:
+    json.dump(payload, handle, indent=2, sort_keys=True)
+    handle.write("\n")
+PY
+}
+
+pre_run_capacity_check() {
+  local placement_id="$1"
+  local input="$2"
+  local snapshot="$3"
+  local output="$4"
+
+  read -r live_gpu_free live_mem_available < <(
+    python3 - "$snapshot" <<'PY'
+import json
+import sys
+from pathlib import Path
+
+payload = json.loads(Path(sys.argv[1]).read_text(encoding="utf-8"))
+print(
+    payload["gpu"]["memory_free_bytes"],
+    payload["memory"]["available_bytes"],
+)
+PY
+  )
+
+  python3 -m tesy.placement_capacity evaluate-placement-fit-print \
+    --input "$input" \
+    --gpu-free-bytes "$live_gpu_free" \
+    --mem-available-bytes "$live_mem_available" \
+    --placement-id "$placement_id" \
+    --gpu-target-mib "$gpu_target_mib" \
+    --host-guard-mib "$host_guard_mib" \
+    --rounding-guard-mib "$rounding_guard_mib" \
+    --output "$output"
+
+  python3 - "$output" <<'PY'
+import json
+import sys
+from pathlib import Path
+
+payload = json.loads(Path(sys.argv[1]).read_text(encoding="utf-8"))
+if not payload["admitted"]:
+    raise SystemExit(
+        f"pre-run capacity rejected {payload['placement_id']}: "
+        f"{payload['rejection_reasons']}"
+    )
+PY
+}
+
 cleanup() {
   if [[ -n "${server_pid:-}" ]] && kill -0 "$server_pid" 2>/dev/null; then
     kill "$server_pid" 2>/dev/null || true
@@ -475,6 +606,18 @@ for index in "${!order[@]}"; do
     n_cpu_moe_json="$n"
   fi
   mkdir -p "$run_dir"
+
+  snapshot_pre_run_resources "$run_dir/pre-run-resources.json"
+  if [[ "$point" == "auto" ]]; then
+    capacity_input="$out/capacity/auto-fit-frozen.stdout.txt"
+  else
+    capacity_input="$(printf '%s/capacity/n%02d.stdout.txt' "$out" "$n")"
+  fi
+  pre_run_capacity_check \
+    "$placement_id" \
+    "$capacity_input" \
+    "$run_dir/pre-run-resources.json" \
+    "$run_dir/pre-run-capacity.json"
 
   python3 - "$placement_id" "$n_cpu_moe_json" >"$run_dir/run-metadata.json" <<'PY'
 import json
