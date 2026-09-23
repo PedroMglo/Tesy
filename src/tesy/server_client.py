@@ -28,6 +28,20 @@ def _parse_sse_line(line: bytes) -> dict | None:
     return value
 
 
+def _event_token_ids(event: dict) -> list[int]:
+    raw = event.get("tokens")
+    if raw is None:
+        return []
+    if not isinstance(raw, list):
+        raise ServerClientError("SSE tokens field must be a list")
+    result: list[int] = []
+    for value in raw:
+        if isinstance(value, bool) or not isinstance(value, int):
+            raise ServerClientError("SSE token IDs must be integers")
+        result.append(value)
+    return result
+
+
 def run_completion(
     url: str,
     prompt: str,
@@ -51,6 +65,7 @@ def run_completion(
             "seed": 42,
             "timings_per_token": True,
             "return_progress": True,
+            "return_tokens": True,
         },
         separators=(",", ":"),
     )
@@ -66,10 +81,12 @@ def run_completion(
     first_content_ns: int | None = None
     final: dict | None = None
     chunks = 0
+    generated_token_ids: list[int] = []
     for raw in response:
         event = _parse_sse_line(raw)
         if event is None:
             continue
+        generated_token_ids.extend(_event_token_ids(event))
         content = event.get("content")
         if first_content_ns is None and isinstance(content, str) and content:
             first_content_ns = time.perf_counter_ns()
@@ -101,12 +118,27 @@ def run_completion(
         if not math.isfinite(float(value)) or float(value) < 0:
             raise ServerClientError(f"invalid timing {key}: {value}")
 
+    predicted_n = timings["predicted_n"]
+    if (
+        isinstance(predicted_n, bool)
+        or not isinstance(predicted_n, int)
+        or predicted_n < 0
+    ):
+        raise ServerClientError("predicted_n must be a non-negative integer")
+    if len(generated_token_ids) != predicted_n:
+        raise ServerClientError(
+            "streamed token count does not match server predicted_n: "
+            f"{len(generated_token_ids)} != {predicted_n}"
+        )
+
     return {
         "schema": "tesy.stock_server_request.v1",
         "classification": "MEASURED_REQUEST_TIMING_DIAGNOSTIC",
         "ttft_ms": (first_content_ns - t0) / 1e6,
         "request_wall_ms": (t1 - t0) / 1e6,
         "sse_json_chunks": chunks,
+        "generated_token_ids": generated_token_ids,
+        "generated_token_count": len(generated_token_ids),
         "timings": {key: timings[key] for key in required},
         "stop_type": final.get("stop_type"),
         "claim_boundary": (

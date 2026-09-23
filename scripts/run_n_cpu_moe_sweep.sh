@@ -166,6 +166,7 @@ done
 
 python3 - "$out" >"$out/sweep-summary.json" <<'PY'
 from __future__ import annotations
+import hashlib
 import json
 import re
 import statistics
@@ -184,6 +185,10 @@ for run_dir in sorted(p for p in root.iterdir() if p.is_dir()):
     res=json.loads((run_dir/"resource-summary.json").read_text())
     ready=json.loads((run_dir/"server-ready.json").read_text())
     t=req["timings"]
+    token_ids=req.get("generated_token_ids")
+    if not isinstance(token_ids, list) or len(token_ids) != t["predicted_n"]:
+        raise SystemExit(f"invalid token trajectory in {run_dir}")
+    token_blob=json.dumps(token_ids, separators=(",", ":")).encode()
     rows.append({
         "run": run_dir.name,
         "n_cpu_moe": int(match.group("n")),
@@ -196,6 +201,8 @@ for run_dir in sorted(p for p in root.iterdir() if p.is_dir()):
         "peak_process_swap_bytes": res["peak_process_swap_bytes"],
         "max_gpu_temperature_c": res["max_gpu_temperature_c"],
         "gpu_failed_samples": res["gpu_failed_samples"],
+        "token_count": len(token_ids),
+        "token_sha256": hashlib.sha256(token_blob).hexdigest(),
     })
 
 expected=[0,4,8,12,16,20,24]
@@ -235,12 +242,20 @@ for n,a in by_n.items():
     if not dominated:
         pareto.append(n)
 
+trajectory_hashes=sorted({r["token_sha256"] for r in rows})
+trajectory_status="PASS" if len(trajectory_hashes)==1 else "FAIL"
+
 payload={
   "schema":"tesy.n_cpu_moe_pareto_sweep.v1",
   "classification":"MEASURED_STOCK_PLACEMENT_DIAGNOSTIC",
   "order":[r["n_cpu_moe"] for r in rows],
   "points":{str(n):by_n[n] for n in expected},
   "decode_vram_pareto_n_cpu_moe":sorted(pareto),
+  "trajectory_comparability": {
+      "status": trajectory_status,
+      "unique_token_trajectory_hashes": trajectory_hashes,
+      "required_token_count": 64,
+  },
   "claim_boundary":(
     "Stock llama.cpp calibration only. Pareto is defined on mean decode throughput "
     "and mean observed peak GPU memory for this workload. No Tesy speedup, physical "
@@ -248,6 +263,8 @@ payload={
   ),
 }
 print(json.dumps(payload, indent=2, sort_keys=True))
+if trajectory_status != "PASS":
+    raise SystemExit("FAIL_TRAJECTORY_COMPARABILITY")
 PY
 
 echo "PASS_DIAGNOSTIC_N_CPU_MOE_PARETO_SWEEP"

@@ -68,6 +68,7 @@ Aggregate by N:
 - mean/peak VRAM;
 - mean RSS;
 - all process swap values;
+- generated-token trajectory SHA-256 per observation;
 - decode-throughput vs VRAM Pareto set.
 
 ## Endpoint sanity
@@ -76,6 +77,11 @@ N=0 should be compared descriptively with prior B0.
 N=24 should be compared descriptively with prior `--cpu-moe` B1.
 
 A difference is evidence to investigate, not permission to adjust the sweep.
+
+All 14 observations must produce the same 64 generated token IDs for the
+performance curve to qualify as an identical-trajectory comparison. A mismatch
+is retained as `FAIL_TRAJECTORY_COMPARABILITY`; timing observations remain
+diagnostic evidence but are not promoted as the same-work trajectory curve.
 
 ## Stop conditions
 
@@ -86,6 +92,7 @@ Preserve and stop the affected campaign on:
 - OOM;
 - process VmSwap > 0;
 - missing GPU telemetry for an observation;
+- generated-token trajectory mismatch across placements;
 - model/backend/worktree identity mismatch.
 
 ## Claim boundary
