@@ -70,6 +70,49 @@ def _run(command: list[str], timeout_s: float = 3.0) -> dict[str, Any]:
     }
 
 
+def _gpu_processes() -> dict[str, Any]:
+    return _run(
+        [
+            "nvidia-smi",
+            "--query-compute-apps=pid,process_name,used_memory",
+            "--format=csv,noheader,nounits",
+        ],
+        timeout_s=5.0,
+    )
+
+
+def _storage_topology(path: Path) -> dict[str, Any]:
+    return {
+        "lsblk": _run(
+            [
+                "lsblk",
+                "--json",
+                "--bytes",
+                "--output",
+                "NAME,TYPE,SIZE,ROTA,TRAN,MODEL,MOUNTPOINTS",
+            ],
+            timeout_s=5.0,
+        ),
+        "findmnt": _run(
+            ["findmnt", "--json", "--target", str(path)],
+            timeout_s=5.0,
+        ),
+    }
+
+
+def _swap_state() -> dict[str, Any]:
+    return _run(
+        [
+            "swapon",
+            "--show",
+            "--bytes",
+            "--output",
+            "NAME,TYPE,SIZE,USED,PRIO",
+        ],
+        timeout_s=5.0,
+    )
+
+
 def _nvidia() -> dict[str, Any]:
     query = (
         "name,memory.total,memory.free,driver_version,"
@@ -146,8 +189,11 @@ def collect_snapshot(path_for_disk: Path | None = None) -> dict[str, Any]:
             "swap_free_bytes": mem.get("SwapFree"),
         },
         "gpu": _nvidia(),
+        "gpu_compute_processes": _gpu_processes(),
         "cuda_toolkit": nvcc,
         "disk": disk,
+        "storage_topology": _storage_topology(disk_path),
+        "swap": _swap_state(),
     }
     return snapshot
 
