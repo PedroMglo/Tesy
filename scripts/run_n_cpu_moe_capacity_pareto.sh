@@ -760,6 +760,7 @@ print(json.dumps({
         "required_token_count": 64,
         "unique_token_trajectory_hashes": trajectory_hashes,
     },
+    "next_gate": "MANUAL_REVIEW_REQUIRED",
     "claim_boundary": (
         "One observation per placement diagnostic pilot. Timings and observed "
         "resources are measured on the locked host/workload, but no confirmatory "
