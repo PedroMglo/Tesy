@@ -26,6 +26,20 @@ def validate_reference_host(
     failures: list[str] = []
     unknown: list[str] = []
 
+    if profile.get("require_physical_host") is True:
+        virtualization = snapshot.get("virtualization")
+        if not isinstance(virtualization, dict):
+            unknown.append("virtualization state unavailable")
+        else:
+            virtualization_status = virtualization.get("status")
+            if virtualization_status == "VIRTUALIZED":
+                failures.append(
+                    "reference host must be physical; virtualization/container "
+                    f"detected ({virtualization.get('kind')!r})"
+                )
+            elif virtualization_status != "PHYSICAL":
+                unknown.append("virtualization state is not proven PHYSICAL")
+
     platform_system = snapshot.get("platform", {}).get("system")
     expected_system = profile.get("platform_system")
     if not isinstance(platform_system, str):
