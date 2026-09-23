@@ -1,0 +1,97 @@
+{
+  "schema": "tesy.models.lock.v1",
+  "cut_date": "2026-09-23",
+  "models": [
+    {
+      "id": "gpt-oss-20b-mxfp4-gguf",
+      "status": "LOCKED_FOR_BRINGUP_DOWNLOAD",
+      "purpose": "First real MoE bring-up, routing trace and stock baseline",
+      "upstream": {
+        "model": "openai/gpt-oss-20b",
+        "license": "Apache-2.0",
+        "total_parameters": 20910000000,
+        "active_parameters_per_token": 3610000000,
+        "layers": 24,
+        "experts": 32,
+        "active_experts_per_token": 4,
+        "context_max": 131072,
+        "required_response_format": "Harmony"
+      },
+      "artifact": {
+        "repository": "ggml-org/gpt-oss-20b-GGUF",
+        "revision": "a7443ebb00ba299cbbbf7e9b69487670447ae8c0",
+        "filename": "gpt-oss-20b-mxfp4.gguf",
+        "quantization": "MXFP4",
+        "bytes": 12109564352,
+        "source_reported_size": "12.1 GB",
+        "sha256": "52f57ab7d3df3ba9173827c1c6832e73375553a846f3e32b49f1ae2daad688d4",
+        "format": "GGUF",
+        "source_byte_count_verified_from_locked_artifact_page": true
+      },
+      "sources": [
+        "https://openai.com/index/introducing-gpt-oss/",
+        "https://huggingface.co/openai/gpt-oss-20b/blob/main/config.json",
+        "https://huggingface.co/ggml-org/gpt-oss-20b-GGUF/blob/a7443ebb00ba299cbbbf7e9b69487670447ae8c0/gpt-oss-20b-mxfp4.gguf"
+      ]
+    },
+    {
+      "id": "qwen3-30b-a3b-instruct-2507-q4km",
+      "status": "CANDIDATE_ARTIFACT_NOT_LOCKED",
+      "purpose": "Second routing-locality target with many experts after bring-up",
+      "upstream": {
+        "model": "Qwen/Qwen3-30B-A3B-Instruct-2507",
+        "license": "Apache-2.0",
+        "total_parameters": 30500000000,
+        "active_parameters_per_token": 3300000000,
+        "layers": 48,
+        "experts": 128,
+        "active_experts_per_token": 8,
+        "context_max": 262144
+      },
+      "artifact": {
+        "repository": "tensorblock/Qwen_Qwen3-30B-A3B-Instruct-2507-GGUF",
+        "revision": null,
+        "filename": "Qwen3-30B-A3B-Instruct-2507-Q4_K_M.gguf",
+        "quantization": "Q4_K_M",
+        "bytes": null,
+        "source_reported_size": "18.557 GB",
+        "sha256": null,
+        "format": "GGUF"
+      },
+      "sources": [
+        "https://huggingface.co/Qwen/Qwen3-30B-A3B-Instruct-2507",
+        "https://huggingface.co/tensorblock/Qwen_Qwen3-30B-A3B-Instruct-2507-GGUF"
+      ]
+    },
+    {
+      "id": "gpt-oss-120b-mxfp4",
+      "status": "METADATA_ONLY_NOT_ADMITTED",
+      "purpose": "Future scale target only after the runtime and capacity model justify it",
+      "upstream": {
+        "model": "openai/gpt-oss-120b",
+        "license": "Apache-2.0",
+        "total_parameters": 116830000000,
+        "active_parameters_per_token": 5130000000,
+        "layers": 36,
+        "experts": 128,
+        "active_experts_per_token": 4,
+        "context_max": 131072,
+        "source_reported_checkpoint_size": "60.8 GiB"
+      },
+      "artifact": {
+        "repository": null,
+        "revision": null,
+        "filename": null,
+        "quantization": "MXFP4",
+        "bytes": null,
+        "source_reported_size": null,
+        "sha256": null,
+        "format": null
+      },
+      "sources": [
+        "https://openai.com/index/introducing-gpt-oss/",
+        "https://deploymentsafety.openai.com/gpt-oss/a2"
+      ]
+    }
+  ]
+}

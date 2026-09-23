@@ -1,0 +1,95 @@
+name: ci
+
+on:
+  push:
+    branches:
+      - "research/**"
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.event.pull_request.head.sha || github.sha }}
+  cancel-in-progress: true
+
+jobs:
+  static:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install
+        run: |
+          python -m pip install -U pip
+          python -m pip install -e '.[dev]'
+      - name: Shell syntax
+        run: |
+          for script in scripts/*.sh; do
+            bash -n "$script"
+          done
+      - name: Parse locked JSON
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          for path in sorted(Path("configs").glob("*.json")):
+              json.loads(path.read_text(encoding="utf-8"))
+              print(path)
+          PY
+      - name: CLI model-free smoke
+        run: |
+          tesy --help
+          tesy models list
+          tesy trace summarize tests/fixtures/routing-small.jsonl --windows 1,2
+          tesy simulate             --trace tests/fixtures/routing-small.jsonl             --ram-cache-gib 0.000001             --vram-cache-gib 0.000001
+
+  python:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.11", "3.12", "3.13"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install
+        run: |
+          python -m pip install -U pip
+          python -m pip install -e '.[dev]'
+      - name: Ruff
+        run: ruff check .
+      - name: Compile
+        run: python -m compileall -q src tests
+      - name: Validate manifests and shell syntax
+        run: |
+          python -m json.tool configs/backends.lock.json >/dev/null
+          python -m json.tool configs/models.lock.json >/dev/null
+          python -m json.tool configs/reference-host.json >/dev/null
+          bash -n scripts/*.sh
+      - name: Tests
+        run: pytest -q
+
+  native-trace:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Fetch pinned llama.cpp
+        run: |
+          mkdir -p .deps
+          git clone --filter=blob:none https://github.com/ggml-org/llama.cpp.git .deps/llama.cpp
+          git -C .deps/llama.cpp checkout --detach 4e416ee7308dd6b581796f1a6241276cd5982691
+          test -z "$(git -C .deps/llama.cpp status --porcelain)"
+      - name: Configure tracer
+        run: |
+          cmake -S native -B build/native-ci \
+            -DLLAMA_CPP_SOURCE_DIR="$PWD/.deps/llama.cpp" \
+            -DGGML_CUDA=OFF \
+            -DCMAKE_BUILD_TYPE=Release
+      - name: Build tracer
+        run: cmake --build build/native-ci --parallel 2 --target tesy-moe-trace
+      - name: Smoke tracer CLI
+        run: build/native-ci/tesy-moe-trace --help

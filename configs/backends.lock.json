@@ -1,0 +1,61 @@
+{
+  "schema": "tesy.backends.lock.v1",
+  "cut_date": "2026-09-23",
+  "backends": [
+    {
+      "id": "llama-cpp-stock",
+      "role": "primary bring-up and stock baseline",
+      "repository": "https://github.com/ggml-org/llama.cpp.git",
+      "commit": "4e416ee7308dd6b581796f1a6241276cd5982691",
+      "status": "SOURCE_PINNED_NOT_BUILT_ON_REFERENCE_HOST",
+      "expected_features_to_probe": [
+        "--cpu-moe",
+        "--n-cpu-moe",
+        "--lazy-mode",
+        "--override-tensor",
+        "--n-gpu-layers",
+        "--fit",
+        "--fit-target",
+        "--temperature",
+        "--top-k",
+        "--seed",
+        "--no-warmup",
+        "--simple-io",
+        "--no-display-prompt",
+        "--single-turn",
+        "--prompt"
+      ]
+    },
+    {
+      "id": "ktransformers-reference",
+      "role": "heterogeneous expert-scheduling comparator/reference",
+      "repository": "https://github.com/kvcache-ai/ktransformers.git",
+      "commit": "c40722bf04c494f2492b7eb9e86ef01a4ede45b3",
+      "status": "SOURCE_PINNED_NOT_BUILT_ON_REFERENCE_HOST"
+    },
+    {
+      "id": "vllm-reference",
+      "role": "serving/offload/speculation comparator, not primary backend",
+      "repository": "https://github.com/vllm-project/vllm.git",
+      "commit": "157bcb7c489689dd34cf28d9c9970a465d326a03",
+      "status": "SOURCE_PINNED_NOT_INSTALLED_ON_REFERENCE_HOST",
+      "known_relevant_features": [
+        "UVA CPU weight offload",
+        "prefetch group offload",
+        "selective offload parameter names",
+        "MoE expert parallelism",
+        "gpt-oss speculative decoding support",
+        "Qwen3 MoE speculative decoding support"
+      ]
+    },
+    {
+      "id": "moe-expert-cache-reference",
+      "role": "external routing-trace and oversubscription research baseline",
+      "repository": "https://github.com/CAN230921/moe-expert-cache.git",
+      "commit": "7bbd3ea8e3bff8806fb4d24aa712d22662bd199f",
+      "license": "MIT",
+      "status": "REFERENCE_ONLY_NOT_INTEGRATED",
+      "upstream_llama_commit": "b2f221684fcd898e947a121baeda80f345da3e6b"
+    }
+  ]
+}
