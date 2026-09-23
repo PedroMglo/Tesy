@@ -25,8 +25,11 @@ reference-host/model validation. No source-only row is a performance claim.
 | stock llama.cpp real gpt-oss-20b load | PASS_DIAGNOSTIC_STOCK_SMOKE | 16-token stock generation; no chat or benchmark qualification |
 | stock B0/B1 measurements | INCONCLUSIVE_RERUN_REQUIRED | physical-host runs exist, but review invalidated same-work admission: placement telemetry empty, provenance incomplete and token trajectories unretained |
 | original n-cpu-moe + auto-fit sweep | STATIC_NO_GO_PIN_FIT_CONFLICT | pinned source reproduces incompatible tensor override / fit semantics; preserved N=4 campaign OOM is not a capacity bound |
-| capacity-gated stock placement frontier | MODEL_FREE_CI_PASS_HOST_NOT_RUN | PR #9 head `fc4aa5f` passed static, Python 3.11/3.12/3.13, Ruff, pytest, shell/manifests and native tracer build/smoke; physical capacity/timing remain NOT_RUN |
+| capacity-gated stock placement frontier | MODEL_FREE_CI_GATE_REQUIRED_HOST_NOT_RUN | implementation includes capacity-only admission, frozen auto-fit replay, exactness/resource gates, locked build provenance and live runtime provenance; current PR head must be green before physical execution |
 | pinned llama-fit-params utility | SOURCE_REQUIRED_BUILD_TARGET_ADDED | bootstrap target added; reference-host binary rebuild remains NOT_RUN |
+| llama.cpp build provenance lock | IMPLEMENTED_MODEL_FREE | strict CMake/compiler/CUDA/server/libggml-cuda identity gate; reference-host replay remains NOT_RUN |
+| live backend mapping provenance | IMPLEMENTED_MODEL_FREE | timed runs verify process executable and mapped pre-hashed libggml-cuda; timing campaign remains NOT_RUN |
+| capacity result publication | IMPLEMENTED_MODEL_FREE | capacity-only artifacts are validated, bounded, no-replace and hash-manifested before Git staging |
 | stock B2 gpt-oss lazy-expert baseline | STATIC_NO_GO | pinned gpt-oss expert tensors are not marked `TENSOR_READ_LAZY`; no model-bearing B2 run is justified for this purpose |
 | KTransformers baseline | PINNED_NOT_REPRODUCED | reproduce only if compatible with selected model/host |
 | vLLM baseline | PINNED_NOT_REPRODUCED | B4 only if 8 GiB/32 GiB envelope admits it |
