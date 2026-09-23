@@ -29,6 +29,7 @@ common=(
   --n-predict 16
   --ctx 4096
   --ngl 99
+  --cpu-moe
 )
 
 "$binary" "${common[@]}"   --tokens-out "$out/tokens-off.json"   >"$out/stdout-off.txt" 2>"$out/stderr-off.txt"
