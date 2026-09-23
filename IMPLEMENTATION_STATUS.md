@@ -23,7 +23,10 @@ reference-host/model validation. No source-only row is a performance claim.
 | byte-weighted native trace simulation | REAL_TRACE_DERIVED_SIMULATION | 16 GiB/4 GiB hypothetical two-tier LRU; not physical traffic |
 | reference bring-up pipeline | PASS_DIAGNOSTIC_REFERENCE_HOST | third campaign completed after two preserved failed/aborted attempts; details in `research/results/first-real-bringup-20260923/RESULT.md` |
 | stock llama.cpp real gpt-oss-20b load | PASS_DIAGNOSTIC_STOCK_SMOKE | 16-token stock generation; no chat or benchmark qualification |
-| stock B0/B1 measurements | NOT_RUN_HOST_REQUIRED | automatic placement and CPU-MoE remain to measure on the physical host |
+| stock B0/B1 measurements | INCONCLUSIVE_RERUN_REQUIRED | physical-host runs exist, but review invalidated same-work admission: placement telemetry empty, provenance incomplete and token trajectories unretained |
+| original n-cpu-moe + auto-fit sweep | STATIC_NO_GO_PIN_FIT_CONFLICT | pinned source reproduces incompatible tensor override / fit semantics; preserved N=4 campaign OOM is not a capacity bound |
+| capacity-gated stock placement frontier | IMPLEMENTED_NOT_CI_OR_HOST_VALIDATED | separates source-backed capacity admission from measured timing; rejected points are not deliberately OOM-probed |
+| pinned llama-fit-params utility | SOURCE_REQUIRED_BUILD_TARGET_ADDED | bootstrap target added; reference-host binary rebuild remains NOT_RUN |
 | stock B2 gpt-oss lazy-expert baseline | STATIC_NO_GO | pinned gpt-oss expert tensors are not marked `TENSOR_READ_LAZY`; no model-bearing B2 run is justified for this purpose |
 | KTransformers baseline | PINNED_NOT_REPRODUCED | reproduce only if compatible with selected model/host |
 | vLLM baseline | PINNED_NOT_REPRODUCED | B4 only if 8 GiB/32 GiB envelope admits it |
