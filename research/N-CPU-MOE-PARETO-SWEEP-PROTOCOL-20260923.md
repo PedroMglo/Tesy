@@ -145,3 +145,30 @@ llama.cpp revision therefore fails before the sweep.
 The 64-token requirement is enforced per observation, not inferred from
 `predicted_n` after the sweep, and cross-placement trajectory equality is
 checked inside the loop after every completed request.
+
+
+## Retirement amendment — 2026-09-23T220215Z
+
+Status: `STATIC_NO_GO_N_CPU_MOE_FIT_CONFLICT`.
+
+The retry campaign `results/n-cpu-moe-sweep-20260923T220215Z` completed
+`N=0` and then failed while loading `N=4`.
+
+Pinned-source reproduction established that this protocol's command composition
+is invalid for the intended sweep in llama.cpp
+`4e416ee7308dd6b581796f1a6241276cd5982691`:
+
+- `--n-cpu-moe N` installs user `tensor_buft_overrides`;
+- if `--fit` needs to alter placement, the fitter refuses to overwrite those
+  user overrides and returns failure;
+- the server can then proceed with the unfitted placement and OOM during the
+  real CUDA allocation.
+
+The original runner is therefore retired and now exits fail-closed. Do not
+retry it, and do not reinterpret the failed `N=4` point as a capacity bound.
+
+The replacement prospective protocol is
+`research/N-CPU-MOE-CAPACITY-PARETO-PROTOCOL-20260923.md`.
+
+Detailed diagnosis:
+`research/N-CPU-MOE-FIT-CONFLICT-20260923.md`.
