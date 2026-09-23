@@ -130,6 +130,7 @@ struct options {
     std::string model;
     std::string prompt = "Explain why sparse Mixture-of-Experts models can be memory bound.";
     std::string trace;
+    std::string tokens_out;
     int n_predict = 32;
     int n_gpu_layers = 99;
     uint32_t n_ctx = 4096;
@@ -173,6 +174,8 @@ options parse_options(int argc, char ** argv) {
             out.model = require_value("--model");
         } else if (arg == "--trace") {
             out.trace = require_value("--trace");
+        } else if (arg == "--tokens-out") {
+            out.tokens_out = require_value("--tokens-out");
         } else if (arg == "--prompt") {
             out.prompt = require_value("--prompt");
         } else if (arg == "--n-predict") {
@@ -192,7 +195,7 @@ options parse_options(int argc, char ** argv) {
         }
     }
 
-    if (out.model.empty() || out.trace.empty()) {
+    if (out.model.empty()) {
         usage(argv[0], 2);
     }
     return out;
@@ -253,7 +256,10 @@ std::vector<llama_token> tokenize(
 
 int main(int argc, char ** argv) {
     const options opt = parse_options(argc, argv);
-    trace_file trace(opt.trace.c_str());
+    std::unique_ptr<trace_file> trace;
+    if (!opt.trace.empty()) {
+        trace = std::make_unique<trace_file>(opt.trace.c_str());
+    }
 
     ggml_backend_load_all();
 
@@ -288,8 +294,10 @@ int main(int argc, char ** argv) {
     ctx_params.n_batch = static_cast<uint32_t>(prompt_tokens.size());
     ctx_params.n_ubatch = static_cast<uint32_t>(prompt_tokens.size());
     ctx_params.no_perf = false;
-    ctx_params.cb_eval = trace_callback;
-    ctx_params.cb_eval_user_data = &trace;
+    if (trace) {
+        ctx_params.cb_eval = trace_callback;
+        ctx_params.cb_eval_user_data = trace.get();
+    }
 
     llama_context * ctx = llama_init_from_model(model, ctx_params);
     if (!ctx) {
@@ -308,6 +316,8 @@ int main(int argc, char ** argv) {
 
     int generated = 0;
     int position = 0;
+    std::vector<llama_token> generated_tokens;
+    generated_tokens.reserve(static_cast<size_t>(opt.n_predict));
     while (generated < opt.n_predict) {
         if (llama_decode(ctx, batch) != 0) {
             std::fprintf(stderr, "llama_decode failed\n");
@@ -333,6 +343,7 @@ int main(int argc, char ** argv) {
         std::fwrite(piece, 1, static_cast<size_t>(piece_bytes), stdout);
         std::fflush(stdout);
 
+        generated_tokens.push_back(token);
         batch = llama_batch_get_one(&token, 1);
         ++generated;
     }
