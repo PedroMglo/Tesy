@@ -4,19 +4,19 @@ Date: 2026-09-24
 Branch: `research/n-cpu-moe-timing-pilot-20260924`  
 Capacity evidence commit: `5a8bbf08eb95069b1847f724e5d1be98c6392678`  
 Capacity evidence: `research/results/n-cpu-moe-capacity-20260923T233416Z/`  
-Status: IMPLEMENTED_MODEL_FREE / HOST_NOT_RUN
+Classification: prospective diagnostic pilot
 
 ## Purpose
 
-The published capacity-only gate admitted manual placements `N=12,16,20,24`
-and rejected `N=0,4,8` on projected GPU headroom. It also froze a stock
-auto-fit placement that is not equivalent to one simple `--n-cpu-moe N`
-value.
+The published capacity gate admitted manual placements `N=12,16,20,24`
+and rejected `N=0,4,8` on projected GPU headroom.
 
-The next experiment is deliberately smaller than the previously proposed full
-frontier sweep.
+The stock auto-fit placement is not equivalent to one simple
+`--n-cpu-moe N`: the published fitter output keeps `-ngl 25` and emits
+explicit tensor overrides.
 
-The pilot measures exactly three fresh-process placements:
+Before spending a balanced multi-point timing campaign, measure exactly three
+fresh-process placements:
 
 1. `auto-fit-frozen`;
 2. `n-cpu-moe-12`;
@@ -28,35 +28,25 @@ The pilot measures exactly three fresh-process placements:
 
 `auto-fit-frozen` versus `N=12` tests whether the stock fitter's
 tensor/suffix-aware placement behaves materially differently from a coarse
-N-based CPU-MoE boundary at the first capacity-admitted manual point.
+prefix-based CPU-MoE boundary at the first capacity-admitted manual point.
 
-`N=12` versus `N=24` tests the endpoint trade-off between the most
-GPU-resident admitted manual placement and the all-experts-CPU manual
-placement.
+`N=12` versus `N=24` brackets the admitted manual continuum and tests the
+broad trade between more GPU-resident expert compute and the all-experts-CPU
+endpoint.
 
-If those three points do not show a useful performance/resource trade-off,
-measuring `N=16/N=20` is not justified.
+If these three points do not expose a useful diagnostic trade, measuring
+`N=16/N=20` is not automatically justified.
 
-## Authority and exactness
+## Placement authority
 
-The target model and pinned llama.cpp runtime remain authoritative.
+The exact stock auto-fit placement is frozen by the published capacity evidence
+commit. The pilot does **not** ask the fitter to choose a new auto placement.
 
-The pilot does not change routing, top-k, quantization, context, sampling,
-token confirmation or expert semantics.
+The pilot loads:
 
-Each placement must generate exactly 64 token IDs with deterministic generation
-policy. All three token-ID trajectories must have the same SHA-256.
-
-This establishes greedy token trajectory equality only. It is not bitwise
-tensor equality or numerical parity.
-
-## Placement construction
-
-At campaign start, `llama-fit-params` runs once with fit enabled and a
-1024 MiB GPU target. Its emitted explicit `-c/-ngl/-ts/-ot` arguments are
-parsed and frozen.
-
-All timed `llama-server` runs use `--fit off`.
+- `research/results/n-cpu-moe-capacity-20260923T233416Z/auto-fit.json`;
+- verifies that commit `5a8bbf08...` is an ancestor of the pilot HEAD;
+- replays its exact `-c/-ngl/-ts/-ot` argv with `--fit off`.
 
 Manual placements use:
 
@@ -65,41 +55,90 @@ Manual placements use:
 - `--n-cpu-moe 12` or `24`;
 - `--fit off`.
 
-The frozen auto-fit placement replays only the explicit emitted arguments with
-`--fit off`.
+The target remains authoritative. No routing, top-k, quantization, context,
+sampling, token confirmation or expert semantics are changed.
 
-## Per-placement admission
+## Frozen workload
 
-Immediately before every placement, the runner measures:
+- locked gpt-oss-20b MXFP4 GGUF;
+- pinned llama.cpp commit;
+- committed B0/B1 diagnostic prompt;
+- context: 4096;
+- parallel: 1;
+- CPU threads / batch threads: 12 / 12;
+- exactly 64 generated tokens;
+- temperature: 0;
+- top-k: 1;
+- seed: 42;
+- prompt cache disabled;
+- server warmup disabled;
+- fresh `llama-server` process per placement.
 
-- free GPU memory;
-- MemAvailable;
-- swap state;
-- GPU temperature/pstate;
-- competing GPU compute processes.
+There is exactly one observation per placement. This is not confirmatory
+performance evidence.
 
-Any competing GPU compute process stops the campaign.
+## Provenance gates
 
-The exact placement is then re-estimated with
-`llama-fit-params --fit-print on` under those fresh resources.
+Before model timing:
+
+- locked model verification PASS;
+- reference-host identity PASS;
+- no competing GPU compute process;
+- clean Tesy and llama.cpp worktrees;
+- pinned source/feature probe through `llama-cli`;
+- locked CMake/compiler/CUDA/server/`libggml-cuda.so` provenance PASS;
+- published capacity evidence identity PASS;
+- prompt/backend/model hashes recorded.
+
+After each server health PASS and before its request:
+
+- verify `/proc/<pid>/exe`;
+- verify the pre-hashed `libggml-cuda.so` is the backend actually mapped by
+  that process.
+
+## Capacity admission
+
+Two admission layers are required.
+
+First, at campaign start, pinned `llama-fit-params --fit-print on` estimates
+all three exact placements under the measured campaign-start GPU/RAM state.
+
+Second, immediately before every individual load, the runner:
+
+- measures free GPU memory;
+- measures MemAvailable/SwapFree;
+- records GPU temperature/pstate;
+- rejects competing GPU compute processes;
+- re-evaluates the same placement estimate against those fresh resources.
 
 Admission requires:
 
 - estimated device total + 1024 MiB GPU target + 16 MiB rounding guard <=
-  measured free GPU memory;
+  current free GPU memory;
 - estimated host total + 2048 MiB host guard + 16 MiB rounding guard <=
-  measured MemAvailable.
+  current MemAvailable.
 
-This is SOURCE_BACKED capacity admission. It is not measured peak VRAM/RAM and
-is not proof that the subsequent run will fit.
+This is `SOURCE_BACKED_MEMORY_ESTIMATE`, not measured peak VRAM/RAM and not
+proof that the subsequent load will fit.
 
-## Runtime provenance and resource gates
+## Exactness gate
 
-After health PASS and before the measured request, the runner verifies the live
-`llama-server` executable and mapped pre-hashed `libggml-cuda.so` against
-the locked build provenance.
+The first successful run establishes the deterministic trajectory.
 
-During each run, sampled telemetry records:
+Every later placement must have:
+
+- exactly 64 generated token IDs;
+- `timings.predicted_n == 64`;
+- the exact same token-ID SHA-256.
+
+Mismatch stops and preserves the campaign.
+
+This is greedy token equality only, not bitwise tensor equality, numerical
+parity or sampling-distribution equivalence.
+
+## Runtime resource gates
+
+Sampled telemetry records:
 
 - whole-GPU used memory;
 - GPU temperature;
@@ -109,63 +148,93 @@ During each run, sampled telemetry records:
 - MemAvailable;
 - SwapFree.
 
-The campaign fails if:
+Every run must have:
 
-- any GPU telemetry sample is invalid;
-- the server process uses swap;
-- measured free GPU memory falls below 1024 MiB;
-- measured MemAvailable falls below 2048 MiB;
-- required placement telemetry is absent;
-- runtime provenance fails;
-- server health fails;
-- token count is not exactly 64;
-- token trajectories differ.
+- valid GPU telemetry sufficient to establish peak use;
+- process VmSwap == 0;
+- observed free GPU memory at peak >= 1024 MiB;
+- observed MemAvailable >= 2048 MiB;
+- non-empty placement/load evidence;
+- runtime backend provenance PASS.
+
+OOM, missing telemetry, resource violation, token mismatch or provenance
+failure stops the campaign and requires a new identity.
 
 ## Timing scope
 
-There is exactly one fresh-process observation per placement.
+Recorded fields include:
 
-Recorded timing fields include client-observed TTFT, request wall time,
-llama-server prompt tokens/s, decode tokens/s and server-ready time.
+- server-ready wall time;
+- client-observed TTFT;
+- request wall time;
+- prompt tokens/s;
+- decode tokens/s;
+- observed peak GPU memory;
+- RSS/swap;
+- thermal/power samples.
 
-One observation per point is intentionally insufficient for a stable ranking.
-The classification is:
+The aggregate classification is
+`MEASURED_STOCK_PLACEMENT_PILOT_DIAGNOSTIC`.
 
-`MEASURED_SINGLE_OBSERVATION_PILOT_DIAGNOSTIC`
+One sample per placement is intentionally insufficient for a stable ranking or
+Pareto claim. The pilot can only decide whether a larger experiment is worth
+buying.
 
-The pilot can reject grossly poor placements or justify a repeated/full
-campaign. It cannot establish a stable throughput/latency ranking.
+The summary must set:
 
-## Stop condition
-
-The output `next_gate` is always `MANUAL_REVIEW_REQUIRED`.
-
-`N=16/N=20` and repeated observations remain unauthorized until the pilot is
-reviewed.
+`next_gate = MANUAL_REVIEW_REQUIRED`.
 
 ## Operator entrypoint
 
-The only authorized model-bearing entrypoint for this pilot is:
+The only authorized model-bearing entrypoint is:
 
-`scripts/run_n_cpu_moe_timing_pilot.sh MODEL.gguf OUTPUT_ROOT`
+```bash
+campaign="results/n-cpu-moe-timing-pilot-$(date -u +%Y%m%dT%H%M%SZ)"
 
-The output root is no-replace. Any failure is preserved and requires a new
-campaign identity.
+bash scripts/run_n_cpu_moe_capacity_pareto.sh \
+  --timing-pilot \
+  /home/pmglo/.local/share/tesy/models/gpt-oss-20b/gpt-oss-20b-mxfp4.gguf \
+  "$campaign"
+```
 
-## Publication
+The output root is no-replace. Never reuse a failed campaign identity.
 
 A successful pilot ends with:
 
-`PASS_STOCK_PLACEMENT_TIMING_PILOT`
+`PASS_DIAGNOSTIC_STOCK_PLACEMENT_TIMING_PILOT`.
 
-Only then may it be prepared for Git publication with:
+## Publication boundary
 
-`scripts/publish_n_cpu_moe_timing_pilot_result.sh CAMPAIGN_ROOT PUBLISH_DIR`
+Only a successful pilot may be published.
 
-The publication helper independently validates raw run artifacts against the
-aggregate summary, requires exact trajectory PASS, runtime provenance PASS,
-zero process swap and capacity admission for all three placements, then emits
-a hash manifest and RESULT.md.
+Use:
+
+```bash
+python -m tesy.publish_timing_pilot "$campaign" "$publish_dir"
+```
+
+The publisher stages only derived summaries, provenance and identities.
+
+Raw request streams, server logs, resource samples, pre-run snapshots and
+placement files remain outside Git. Their byte sizes and SHA-256 identities are
+recorded in the publication manifest.
+
+## Decision after pilot
+
+Do not fill in `N=16` or `N=20` automatically.
+
+Review:
+
+- exact trajectory equality;
+- campaign-start and per-run capacity admission;
+- realized placement evidence;
+- TTFT/prompt/decode timing;
+- observed VRAM/RSS/swap;
+- pre-run headroom and thermal/resource state.
+
+Then choose whether to kill the manual continuum, repeat a suspicious point,
+freeze a small confirmatory set, or proceed to the
+CPU-vs-transfer-vs-GPU crossover gate.
 
 ## Claim boundary
 
