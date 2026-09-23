@@ -64,6 +64,12 @@ Before capacity estimation or timing:
 - reject competing GPU compute processes;
 - capture GPU free/total memory, RAM available and swap state;
 - verify Tesy and llama.cpp worktrees are clean;
+- use pinned `llama-cli` for the backend feature/source-surface probe defined
+  by `configs/backends.lock.json`;
+- validate the actual execution `llama-server` surface separately for its
+  server-required flags;
+- validate the actual estimator `llama-fit-params` surface separately for its
+  fit-required flags;
 - validate `configs/reference-llama-toolchain.json` against the active
   llama.cpp `CMakeCache.txt`;
 - require the measured Release/CUDA-89 GCC 15.3.1 / nvcc 13.3.73 toolchain;
