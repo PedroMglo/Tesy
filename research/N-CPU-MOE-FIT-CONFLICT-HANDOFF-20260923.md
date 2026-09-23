@@ -3,7 +3,7 @@
 Date: 2026-09-23  
 Branch: `research/n-cpu-moe-fit-conflict-20260923`  
 Base: `research/n-cpu-moe-pareto-sweep-20260923@5b005694ac408a9fc9697dd0c8350252aa665dc0`  
-Implementation HEAD before this handoff: `57f0505bfe7b67ecf6998cf5fb6c6be47b73de93`  
+Implementation HEAD: use the current remote head of `research/n-cpu-moe-fit-conflict-20260923`; do not substitute an older conversational SHA.  
 Draft PR: #9  
 Reference model: locked gpt-oss-20b MXFP4 GGUF  
 Pinned llama.cpp: `4e416ee7308dd6b581796f1a6241276cd5982691`
@@ -60,9 +60,11 @@ load will fit.
 ## Model-free implementation
 
 Added:
-- `src/tesy/placement_capacity.py`;
-- strict tests in `tests/test_placement_capacity.py`;
+- `src/tesy/placement_capacity.py` and strict parser/admission tests;
+- `src/tesy/build_provenance.py` plus the locked reference toolchain/backend identity;
+- `src/tesy/runtime_provenance.py` for live mapped-backend verification in timed runs;
 - `scripts/run_n_cpu_moe_capacity_pareto.sh`;
+- `scripts/publish_n_cpu_moe_capacity_result.sh` and model-free publication tests;
 - `llama-fit-params` to the pinned llama.cpp bootstrap target.
 
 Corrected:
@@ -125,6 +127,40 @@ cat "$campaign/capacity-summary.json"
 
 The output root is no-replace. Preserve any failure and do not retry with the
 same campaign identity.
+
+
+## Capacity-only publication to Git
+
+After the capacity-only runner PASSes, publish the small campaign artifacts on a
+new dedicated results branch. Do not commit the local `results/` root directly.
+
+```bash
+result_branch="research/n-cpu-moe-capacity-result-$(date -u +%Y%m%dT%H%M%SZ)"
+git switch -c "$result_branch"
+
+publish_dir="research/results/$(basename "$campaign")"
+
+bash scripts/publish_n_cpu_moe_capacity_result.sh \
+  "$campaign" \
+  "$publish_dir"
+
+cat "$publish_dir/RESULT.md"
+cat "$publish_dir/publication-manifest.json"
+
+git status --short
+git add "$publish_dir"
+git diff --cached --check
+git diff --cached --stat
+git commit -m "research: publish n-cpu-moe capacity gate"
+git push -u origin "$result_branch"
+```
+
+The publication helper accepts only `capacity-only` campaigns, requires
+`build-provenance.status == PASS`, rejects dirty campaign worktrees,
+symlinks and unexpectedly large artifacts, and writes a hash manifest.
+
+After push, send the terminal output plus the pushed branch name back for
+analysis. Do not open or merge a timing campaign automatically.
 
 ## Decision after capacity-only
 
