@@ -1,0 +1,19 @@
+0.00.000.276 I srv  llama_server: initializing ...
+0.00.064.490 I cmn  common_param: common_params_print_info: verbosity = 3 (adjust with the `-lv N` CLI arg)
+0.00.064.735 W srv  llama_server: security: no API key is set and CORS allows all origins (see https://github.com/ggml-org/llama.cpp/pull/25655)
+0.00.066.853 I srv    load_model: loading model '/home/pmglo/.local/share/tesy/models/gpt-oss-20b/gpt-oss-20b-mxfp4.gguf'
+0.00.593.987 W common_fit_params: failed to fit params to free device memory: model_params::tensor_buft_overrides already set by user, abort
+0.00.935.181 W load: setting token '<|message|>' (200008) attribute to USER_DEFINED (16), old attributes: 8
+0.00.935.184 W load: setting token '<|start|>' (200006) attribute to USER_DEFINED (16), old attributes: 8
+0.00.935.185 W load: setting token '<|constrain|>' (200003) attribute to USER_DEFINED (16), old attributes: 8
+0.00.937.673 W load: setting token '<|channel|>' (200005) attribute to USER_DEFINED (16), old attributes: 8
+0.00.951.000 W load: special_eog_ids contains both '<|return|>' and '<|call|>', or '<|calls|>' and '<|flush|>' tokens, removing '<|end|>' token from EOG list
+0.00.987.514 W llama_model_loader: tensor overrides to CPU are used with mmap enabled - consider using --load-mode none for better performance
+0.01.191.632 E ggml_backend_cuda_buffer_type_alloc_buffer: allocating 9331.49 MiB on device 0: cudaMalloc failed: out of memory
+0.01.191.636 E alloc_tensor_range: failed to allocate CUDA0 buffer of size 9784774144
+0.01.391.372 E llama_model_load: error loading model: unable to allocate CUDA0 buffer
+0.01.391.379 E llama_model_load_from_file_impl: failed to load model
+0.01.391.386 E cmn  common_init_: failed to load model '/home/pmglo/.local/share/tesy/models/gpt-oss-20b/gpt-oss-20b-mxfp4.gguf'
+0.01.391.391 E srv    load_model: failed to load model, '/home/pmglo/.local/share/tesy/models/gpt-oss-20b/gpt-oss-20b-mxfp4.gguf'
+0.01.391.393 I srv    operator(): operator(): cleaning up before exit...
+0.01.392.250 E srv  llama_server: exiting due to model loading error
