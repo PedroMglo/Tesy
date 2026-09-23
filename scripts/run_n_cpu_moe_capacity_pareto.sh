@@ -370,6 +370,11 @@ PY
     exit 1
   }
 
+  python3 -m tesy.runtime_provenance \
+    --pid "$server_pid" \
+    --build-provenance "$out/build-provenance.json" \
+    >"$run_dir/runtime-provenance.json"
+
   if grep -F 'failed to fit params to free device memory' "$run_dir/server.stderr.txt" >/dev/null; then
     echo "unexpected fit path executed for frozen placement $placement_id" >&2
     exit 1
