@@ -1,7 +1,5 @@
 from __future__ import annotations
 
-import math
-
 import pytest
 
 from tesy.planner import GIB, CapacityPolicy, plan_capacity, transport_floor_seconds
@@ -25,10 +23,16 @@ def test_transport_floor():
     assert transport_floor_seconds(10_000, 5_000.0) == 2.0
 
 
-@pytest.mark.parametrize("bad", [0.0, -1.0, float("nan")])
+@pytest.mark.parametrize("bad", [0.0, -1.0, float("nan"), float("inf")])
 def test_transport_floor_rejects_bad_bandwidth(bad):
     with pytest.raises(ValueError):
         transport_floor_seconds(1, bad)
+
+
+@pytest.mark.parametrize("bad", [True, 1.5, -1])
+def test_transport_floor_rejects_bad_byte_count(bad):
+    with pytest.raises(ValueError):
+        transport_floor_seconds(bad, 1.0)
 
 
 def test_capacity_plausible_in_ram():
@@ -46,9 +50,9 @@ def test_capacity_plausible_in_ram():
     assert result["backing_class"] == "RAM_CAPACITY_PLAUSIBLE"
 
 
-def test_capacity_marks_nvme_when_model_exceeds_conservative_ram():
+def test_capacity_over_ram_is_inconclusive_until_out_of_core_runtime_exists():
     result = plan_capacity({"id": "m"}, _snapshot(), artifact_bytes=30 * GIB)
-    assert result["status"] == "ADMISSIBLE_FOR_TEST"
+    assert result["status"] == "INCONCLUSIVE"
     assert result["backing_class"] == "NVME_BACKING_REQUIRED"
 
 
@@ -59,5 +63,6 @@ def test_capacity_inconclusive_without_gpu():
     assert result["status"] == "INCONCLUSIVE"
 
 
-def test_math_module_is_not_needed_for_nan_comparison():
-    assert math.isnan(float("nan"))
+def test_capacity_rejects_empty_artifact():
+    result = plan_capacity({"id": "m"}, _snapshot(), artifact_bytes=0)
+    assert result["status"] == "NOGO"

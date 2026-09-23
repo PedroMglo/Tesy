@@ -85,9 +85,10 @@ def read_jsonl(path: Path) -> list[RouteEvent]:
             except TraceError as exc:
                 raise TraceError(f"line {line_no}: {exc}") from exc
             position = (event.token, event.layer)
-            if previous is not None and position < previous:
+            if previous is not None and position <= previous:
+                relation = "duplicate" if position == previous else "out-of-order"
                 raise TraceError(
-                    f"line {line_no}: events must be ordered by token then layer"
+                    f"line {line_no}: {relation} token/layer event {position}"
                 )
             previous = position
             for use in event.experts:

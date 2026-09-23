@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import math
 from dataclasses import dataclass
 from typing import Any
 
@@ -14,9 +15,13 @@ class CapacityPolicy:
 
 
 def transport_floor_seconds(byte_count: int, bytes_per_second: float) -> float:
-    if isinstance(byte_count, bool) or byte_count < 0:
+    if (
+        isinstance(byte_count, bool)
+        or not isinstance(byte_count, int)
+        or byte_count < 0
+    ):
         raise ValueError("byte_count must be a non-negative integer")
-    if bytes_per_second <= 0 or bytes_per_second != bytes_per_second:
+    if not math.isfinite(bytes_per_second) or bytes_per_second <= 0:
         raise ValueError("bytes_per_second must be finite and positive")
     return byte_count / bytes_per_second
 
@@ -39,50 +44,67 @@ def plan_capacity(
     reasons: list[str] = []
     status = "ADMISSIBLE_FOR_TEST"
 
-    if not isinstance(ram_total, int) or not isinstance(ram_available, int):
+    if not isinstance(ram_total, int) or isinstance(ram_total, bool):
         status = "INCONCLUSIVE"
         reasons.append("live RAM inventory unavailable")
-    if not isinstance(vram_total, int) or not isinstance(vram_free, int):
+    if not isinstance(ram_available, int) or isinstance(ram_available, bool):
+        status = "INCONCLUSIVE"
+        reasons.append("live available-RAM inventory unavailable")
+    if not isinstance(vram_total, int) or isinstance(vram_total, bool):
         status = "INCONCLUSIVE"
         reasons.append("live NVIDIA VRAM inventory unavailable")
+    if not isinstance(vram_free, int) or isinstance(vram_free, bool):
+        status = "INCONCLUSIVE"
+        reasons.append("live free-VRAM inventory unavailable")
     if artifact_bytes is None:
         status = "INCONCLUSIVE"
         reasons.append("exact local model artifact size unavailable")
+    elif (
+        isinstance(artifact_bytes, bool)
+        or not isinstance(artifact_bytes, int)
+        or artifact_bytes <= 0
+    ):
+        status = "NOGO"
+        reasons.append("model artifact size must be a positive integer")
 
     usable_ram_total = (
         max(0, ram_total - p.reserve_ram_bytes - p.staging_ram_bytes)
-        if isinstance(ram_total, int)
+        if isinstance(ram_total, int) and not isinstance(ram_total, bool)
         else None
     )
     usable_ram_now = (
         max(0, ram_available - p.staging_ram_bytes)
-        if isinstance(ram_available, int)
+        if isinstance(ram_available, int) and not isinstance(ram_available, bool)
         else None
     )
     usable_vram_total = (
         max(0, vram_total - p.reserve_vram_bytes)
-        if isinstance(vram_total, int)
+        if isinstance(vram_total, int) and not isinstance(vram_total, bool)
         else None
     )
     usable_vram_now = (
         max(0, vram_free - p.reserve_vram_bytes)
-        if isinstance(vram_free, int)
+        if isinstance(vram_free, int) and not isinstance(vram_free, bool)
         else None
     )
 
     backing = "UNKNOWN"
-    if artifact_bytes is not None and usable_ram_total is not None:
+    if (
+        isinstance(artifact_bytes, int)
+        and not isinstance(artifact_bytes, bool)
+        and artifact_bytes > 0
+        and usable_ram_total is not None
+    ):
         if artifact_bytes <= usable_ram_total:
             backing = "RAM_CAPACITY_PLAUSIBLE"
         else:
             backing = "NVME_BACKING_REQUIRED"
+            if status != "NOGO":
+                status = "INCONCLUSIVE"
             reasons.append(
-                "model artifact exceeds conservative RAM capacity; true out-of-core path required"
+                "model exceeds conservative RAM capacity; Tesy's true out-of-core "
+                "loader is not implemented/validated yet"
             )
-
-    if artifact_bytes is not None and artifact_bytes <= 0:
-        status = "NOGO"
-        reasons.append("model artifact is empty")
 
     return {
         "schema": "tesy.capacity_plan.v1",

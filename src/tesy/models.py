@@ -54,6 +54,8 @@ def get_model(lock: dict[str, Any], model_id: str) -> dict[str, Any]:
 
 
 def sha256_file(path: Path, chunk_bytes: int = 8 * 1024 * 1024) -> str:
+    if chunk_bytes <= 0:
+        raise ValueError("chunk_bytes must be positive")
     digest = hashlib.sha256()
     with path.open("rb", buffering=0) as handle:
         while True:
@@ -65,10 +67,15 @@ def sha256_file(path: Path, chunk_bytes: int = 8 * 1024 * 1024) -> str:
 
 
 def inspect_model_file(path: Path, with_sha256: bool = False) -> dict[str, Any]:
-    resolved = path.resolve(strict=True)
-    info = resolved.lstat()
-    if stat.S_ISLNK(info.st_mode):
+    requested = path.expanduser()
+    try:
+        requested_info = requested.lstat()
+    except OSError as exc:
+        raise ModelLockError(f"cannot stat model path {requested}: {exc}") from exc
+    if stat.S_ISLNK(requested_info.st_mode):
         raise ModelLockError("model path must not be a symlink")
+    resolved = requested.resolve(strict=True)
+    info = resolved.stat()
     if not stat.S_ISREG(info.st_mode):
         raise ModelLockError("model path must be a regular file")
     result: dict[str, Any] = {
@@ -90,10 +97,11 @@ def verify_model_file(model: dict[str, Any], path: Path) -> dict[str, Any]:
     if expected_name and observed["filename"] != expected_name:
         failures.append(f"filename: expected {expected_name}, got {observed['filename']}")
     expected_bytes = expected.get("bytes")
-    if isinstance(expected_bytes, int) and observed["size_bytes"] != expected_bytes:
-        failures.append(
-            f"size_bytes: expected {expected_bytes}, got {observed['size_bytes']}"
-        )
+    if isinstance(expected_bytes, int) and not isinstance(expected_bytes, bool):
+        if observed["size_bytes"] != expected_bytes:
+            failures.append(
+                f"size_bytes: expected {expected_bytes}, got {observed['size_bytes']}"
+            )
     expected_sha = expected.get("sha256")
     if expected_sha and observed["sha256"] != expected_sha:
         failures.append(

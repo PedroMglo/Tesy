@@ -5,7 +5,7 @@ import json
 import pytest
 
 from tesy.simulator import simulate_demand_lru
-from tesy.trace import TraceError, parse_event, window_union_metrics
+from tesy.trace import TraceError, parse_event, read_jsonl, window_union_metrics
 
 
 def _event(token: int, layer: int, experts: list[tuple[int, int]]):
@@ -74,3 +74,18 @@ def test_trace_payload_rejects_extra_keys():
     }
     with pytest.raises(TraceError):
         parse_event(json.loads(json.dumps(payload)))
+
+
+def test_trace_file_rejects_duplicate_token_layer(tmp_path):
+    path = tmp_path / "trace.jsonl"
+    line = json.dumps(
+        {
+            "token": 0,
+            "layer": 0,
+            "phase": "decode",
+            "experts": [{"id": 1, "bytes": 100}],
+        }
+    )
+    path.write_text(f"{line}\n{line}\n", encoding="utf-8")
+    with pytest.raises(TraceError):
+        read_jsonl(path)

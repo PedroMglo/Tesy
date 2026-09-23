@@ -4,7 +4,13 @@ import json
 
 import pytest
 
-from tesy.models import ModelLockError, get_model, load_lock, verify_model_file
+from tesy.models import (
+    ModelLockError,
+    get_model,
+    inspect_model_file,
+    load_lock,
+    verify_model_file,
+)
 
 
 def test_lock_rejects_duplicate_ids(tmp_path):
@@ -30,11 +36,20 @@ def test_verify_uses_sha_when_locked(tmp_path):
         "artifact": {
             "filename": "model.gguf",
             "bytes": 4,
-            "sha256": "2d6c2bfc66c8caa1533530a7c4a5eea5e8d3d334616e3657d00f16a73d931466",
+            "sha256": "66e61a3d7dc6c38ef4cc4dd183733089b1e7116f894fc052558ab12b3decff8f",
         },
     }
     result = verify_model_file(model, model_file)
     assert result["status"] == "PASS"
+
+
+def test_inspect_rejects_symlink(tmp_path):
+    target = tmp_path / "model.gguf"
+    target.write_bytes(b"tesy")
+    link = tmp_path / "alias.gguf"
+    link.symlink_to(target)
+    with pytest.raises(ModelLockError):
+        inspect_model_file(link)
 
 
 def test_unknown_model_fails():
