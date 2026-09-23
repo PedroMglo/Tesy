@@ -30,6 +30,15 @@ python3 -m tesy doctor \
   --reference-profile "$root/configs/reference-host.json" \
   >"$out/doctor-reference.json"
 
+python3 -m tesy models verify \
+  gpt-oss-20b-mxfp4-gguf "$model_input" \
+  >"$out/model-preflight.json"
+
+python3 -m tesy plan \
+  --model gpt-oss-20b-mxfp4-gguf \
+  --path "$model_input" \
+  >"$out/capacity-preflight.json"
+
 bash "$root/scripts/bootstrap_llama_cpp.sh" \
   >"$out/bootstrap-llama.stdout.txt" \
   2>"$out/bootstrap-llama.stderr.txt"

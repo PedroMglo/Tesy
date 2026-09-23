@@ -109,6 +109,8 @@ fi
 
 python3 -m tesy trace summarize-native "$out/routing.jsonl" \
   >"$out/trace-summary.json"
+python3 -m tesy trace validate-native "$out/routing.jsonl" \
+  >"$out/trace-consistency.json"
 python3 -m tesy trace headroom-native "$out/routing.jsonl" \
   --slots 0,16,32,64,128,256 >"$out/headroom-count-space.json"
 

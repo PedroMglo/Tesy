@@ -150,3 +150,58 @@ def summarize_native(records: list[NativeTopKRecord]) -> dict[str, Any]:
             "No expert-byte, physical-I/O, acceptance or performance claim follows."
         ),
     }
+
+
+def validate_one_token_graph_consistency(
+    records: list[NativeTopKRecord],
+    min_graph_seq: int = 0,
+) -> dict[str, Any]:
+    if isinstance(min_graph_seq, bool) or not isinstance(min_graph_seq, int):
+        raise NativeTraceError("min_graph_seq must be an integer")
+    if min_graph_seq < 0:
+        raise NativeTraceError("min_graph_seq must be non-negative")
+
+    grouped: dict[int, list[NativeTopKRecord]] = {}
+    for record in records:
+        if record.graph_seq < min_graph_seq or record.n_tokens != 1:
+            continue
+        grouped.setdefault(record.graph_seq, []).append(record)
+
+    if not grouped:
+        raise NativeTraceError("no one-token graphs available for consistency check")
+
+    signatures: dict[int, tuple[tuple[int, int], ...]] = {}
+    for graph, graph_records in sorted(grouped.items()):
+        signature = tuple(
+            (record.layer, record.n_expert_used)
+            for record in graph_records
+        )
+        signatures[graph] = signature
+
+    reference_graph = min(signatures)
+    reference = signatures[reference_graph]
+    mismatches = [
+        {
+            "graph_seq": graph,
+            "signature": [list(item) for item in signature],
+        }
+        for graph, signature in signatures.items()
+        if signature != reference
+    ]
+
+    status = "PASS" if not mismatches else "FAIL"
+    return {
+        "schema": "tesy.native_trace_consistency.v1",
+        "classification": "MEASURED_ROUTER_STRUCTURE_DIAGNOSTIC",
+        "status": status,
+        "min_graph_seq": min_graph_seq,
+        "one_token_graphs_checked": len(signatures),
+        "reference_graph_seq": reference_graph,
+        "reference_signature": [list(item) for item in reference],
+        "mismatches": mismatches,
+        "claim_boundary": (
+            "Checks only that one-token evaluation groups expose the same ordered "
+            "MoE layer/top-k signature. PASS does not prove absolute token positions, "
+            "expert-byte traffic, output exactness, or performance."
+        ),
+    }

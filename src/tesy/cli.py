@@ -18,7 +18,12 @@ from tesy.models import (
     load_lock,
     verify_model_file,
 )
-from tesy.native_trace import NativeTraceError, read_native_jsonl, summarize_native
+from tesy.native_trace import (
+    NativeTraceError,
+    read_native_jsonl,
+    summarize_native,
+    validate_one_token_graph_consistency,
+)
 from tesy.planner import GIB, plan_capacity
 from tesy.simulator import simulate_demand_lru
 from tesy.trace import TraceError, read_jsonl, summarize, window_union_metrics
@@ -115,6 +120,12 @@ def build_parser() -> argparse.ArgumentParser:
         default=[0, 32, 64, 128],
     )
     native_headroom.add_argument("--min-graph-seq", type=int, default=0)
+    native_validate = trace_sub.add_parser(
+        "validate-native",
+        help="validate one-token native trace graph/layer consistency",
+    )
+    native_validate.add_argument("path", type=Path)
+    native_validate.add_argument("--min-graph-seq", type=int, default=0)
     native_sim = trace_sub.add_parser(
         "simulate-native",
         help="simulate byte-weighted caches from native trace + GGUF inventory",
@@ -235,6 +246,14 @@ def _run(args: argparse.Namespace) -> int:
             )
         )
         return 0
+
+    if args.command == "trace" and args.trace_command == "validate-native":
+        result = validate_one_token_graph_consistency(
+            read_native_jsonl(args.path),
+            min_graph_seq=args.min_graph_seq,
+        )
+        _print(result)
+        return 0 if result["status"] == "PASS" else 2
 
     if args.command == "trace" and args.trace_command == "simulate-native":
         if args.ram_cache_gib < 0 or args.vram_cache_gib < 0:
