@@ -115,10 +115,10 @@ def evaluate_placement_capacity(
     host_guard_mib: int = 2048,
     rounding_guard_mib: int = 16,
 ) -> dict:
+    if not isinstance(placement_id, str) or not placement_id.strip():
+        raise PlacementCapacityError("placement_id must be non-empty")
     if gpu_free_bytes <= 0 or mem_available_bytes <= 0:
         raise PlacementCapacityError("available memory inputs must be positive")
-    if not placement_id:
-        raise PlacementCapacityError("placement_id must be non-empty")
     for name, value in {
         "gpu_target_mib": gpu_target_mib,
         "host_guard_mib": host_guard_mib,
@@ -186,6 +186,7 @@ def evaluate_capacity(
 ) -> dict:
     if n_cpu_moe < 0:
         raise PlacementCapacityError("n_cpu_moe must be non-negative")
+
     payload = evaluate_placement_capacity(
         text,
         gpu_free_bytes=gpu_free_bytes,
