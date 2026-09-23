@@ -24,6 +24,12 @@ The output contains generated token IDs only. It is deterministic for an otherwi
 
 The initial paired routing diagnostic also adds `--raw-prompt` to both arms. This avoids using the low-level `llama_chat_apply_template` helper as a substitute for the stock llama.cpp Jinja/Harmony conversation path.
 
+The first paired trace is CPU-only by default (`TESY_TRACE_NGL=0`). The locked
+gpt-oss-20b artefact is larger than the reference GPU VRAM, so a hard-coded
+full-offload request would make an observational tracing gate unnecessarily
+vulnerable to OOM. A later hybrid trace may set `TESY_TRACE_NGL=N`, but only
+as a separate campaign after B0 has established an admissible placement.
+
 This choice deliberately narrows the first trace question to:
 
 > Does enabling the passive `ffn_moe_topk` callback change the generated greedy token trajectory under the same raw-tokenized input?
