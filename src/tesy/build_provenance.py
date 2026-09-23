@@ -35,6 +35,9 @@ _REFERENCE_KEYS = {
     "c_compiler_version",
     "cxx_compiler_version",
     "cuda_compiler_version_contains",
+    "cmake_version",
+    "llama_server_sha256",
+    "ggml_cuda_sha256",
 }
 
 
@@ -103,9 +106,16 @@ def load_reference(path: Path) -> dict[str, Any]:
         "c_compiler_version",
         "cxx_compiler_version",
         "cuda_compiler_version_contains",
+        "cmake_version",
+        "llama_server_sha256",
+        "ggml_cuda_sha256",
     ):
         if not isinstance(payload[key], str) or not payload[key]:
             raise BuildProvenanceError(f"{key} must be a non-empty string")
+    for key in ("llama_server_sha256", "ggml_cuda_sha256"):
+        value = payload[key]
+        if len(value) != 64 or any(ch not in "0123456789abcdef" for ch in value):
+            raise BuildProvenanceError(f"{key} must be a lowercase SHA-256")
     return payload
 
 
@@ -231,6 +241,11 @@ def collect_provenance(
     cmake_probe = _run(["cmake", "--version"])
 
     compiler_mismatches: list[str] = []
+    if reference["cmake_version"] not in cmake_probe.get("stdout", ""):
+        compiler_mismatches.append(
+            "CMake version output missing "
+            f"{reference['cmake_version']!r}"
+        )
     if c_probe.get("stdout") != reference["c_compiler_version"]:
         compiler_mismatches.append(
             f"C compiler version: {c_probe.get('stdout')!r} "
@@ -251,6 +266,22 @@ def collect_provenance(
         )
 
     cuda_backend = _find_cuda_backend(build)
+    server_sha256 = sha256_file(server_path)
+    fit_sha256 = sha256_file(fit_path)
+    cuda_backend_sha256 = sha256_file(cuda_backend)
+
+    binary_mismatches: list[str] = []
+    if server_sha256 != reference["llama_server_sha256"]:
+        binary_mismatches.append(
+            f"llama-server sha256: {server_sha256} "
+            f"!= {reference['llama_server_sha256']}"
+        )
+    if cuda_backend_sha256 != reference["ggml_cuda_sha256"]:
+        binary_mismatches.append(
+            f"libggml-cuda sha256: {cuda_backend_sha256} "
+            f"!= {reference['ggml_cuda_sha256']}"
+        )
+
     server_devices = _run([str(server_path), "--list-devices"])
     fit_devices = _run([str(fit_path), "--list-devices"])
     ldd_server = _run(["ldd", str(server_path)])
@@ -280,8 +311,7 @@ def collect_provenance(
         if "CUDA0:" not in text:
             device_mismatches.append(f"{name} --list-devices missing CUDA0")
 
-    mismatches = cache_mismatches + compiler_mismatches + device_mismatches
-    if command_failures:
+    mismatches = (\n        cache_mismatches\n        + compiler_mismatches\n        + binary_mismatches\n        + device_mismatches\n    )\n    if command_failures:
         mismatches.append(f"failed provenance commands: {command_failures}")
 
     return {
@@ -304,17 +334,17 @@ def collect_provenance(
             "llama_server": {
                 "path": str(server_path),
                 "bytes": server_path.stat().st_size,
-                "sha256": sha256_file(server_path),
+                "sha256": server_sha256,
             },
             "llama_fit_params": {
                 "path": str(fit_path),
                 "bytes": fit_path.stat().st_size,
-                "sha256": sha256_file(fit_path),
+                "sha256": fit_sha256,
             },
             "ggml_cuda": {
                 "path": str(cuda_backend),
                 "bytes": cuda_backend.stat().st_size,
-                "sha256": sha256_file(cuda_backend),
+                "sha256": cuda_backend_sha256,
             },
         },
         "devices": {
