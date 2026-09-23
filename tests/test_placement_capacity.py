@@ -1,6 +1,3 @@
-import json
-from pathlib import Path
-
 import pytest
 
 from tesy.placement_capacity import (
