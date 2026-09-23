@@ -1,0 +1,49 @@
+{
+  "classification": "MEASURED_HOST_STATE",
+  "cpu": {
+    "logical_cpus": 24,
+    "model": "AMD Ryzen AI 9 HX 370 w/ Radeon 890M"
+  },
+  "cuda_toolkit_status": "OK",
+  "cuda_toolkit_version": "13.3.73",
+  "disk": {
+    "free_bytes": 552639647744,
+    "path": "/home/pmglo/.local/share/tesy/models/gpt-oss-20b",
+    "total_bytes": 1021431513088,
+    "used_bytes": 447009992704
+  },
+  "gpu": [
+    {
+      "driver_version": "615.71.09",
+      "memory_free_bytes": 8248098816,
+      "memory_total_bytes": 8585740288,
+      "name": "NVIDIA GeForce RTX 4060 Laptop GPU",
+      "pci_bus_id": "00000000:C4:00.0",
+      "pstate": "P8",
+      "temperature_c": 50.0
+    }
+  ],
+  "gpu_compute_processes": "",
+  "gpu_memory_telemetry_note": "nvidia-smi before/after stock smoke reported 23 MiB used; no in-run peak VRAM sample was recorded.",
+  "memory": {
+    "available_bytes": 25249914880,
+    "swap_free_bytes": 16348745728,
+    "swap_total_bytes": 16348868608,
+    "total_bytes": 32698654720
+  },
+  "model_mount": {
+    "fstype": "btrfs",
+    "options": "rw,noatime,seclabel,compress=zstd:3,ssd,discard=async,space_cache=v2,subvolid=257,subvol=/home",
+    "source": "/dev/nvme0n1p3[/home]",
+    "target": "/home"
+  },
+  "reference_check": {
+    "claim_boundary": "Host identity only. PASS does not qualify current free RAM/VRAM, driver/CUDA, storage mounts, thermal state, process isolation or model/runtime performance.",
+    "classification": "MEASURED_HOST_IDENTITY_CHECK",
+    "failures": [],
+    "profile_id": "linux-hx370-rtx4060laptop-8g-32g",
+    "schema": "tesy.reference_host_check.v1",
+    "status": "PASS",
+    "unknown": []
+  }
+}

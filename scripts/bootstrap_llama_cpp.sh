@@ -36,12 +36,17 @@ git -C "$repo" fetch --tags origin
 git -C "$repo" checkout --detach "$pin"
 
 cuda_arch="${TESY_CUDA_ARCH:-89}"
+build_jobs="${TESY_BUILD_JOBS:-$(nproc)}"
+if ! [[ "$build_jobs" =~ ^[1-9][0-9]*$ ]]; then
+  echo "TESY_BUILD_JOBS must be a positive integer" >&2
+  exit 2
+fi
 echo "Building pinned llama.cpp $pin for CUDA architecture $cuda_arch"
 echo "Override TESY_CUDA_ARCH only after verifying the physical GPU."
 
 cmake -S "$repo" -B "$repo/build"   -DCMAKE_BUILD_TYPE=Release   -DGGML_CUDA=ON   -DCMAKE_CUDA_ARCHITECTURES="$cuda_arch"
 
-cmake --build "$repo/build" --parallel "$(nproc)"   --target llama-cli llama-server llama-bench
+cmake --build "$repo/build" --parallel "$build_jobs"   --target llama-cli llama-server llama-bench
 
 git -C "$repo" status --short
 "$repo/build/bin/llama-cli" --version

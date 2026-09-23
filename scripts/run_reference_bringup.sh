@@ -18,6 +18,15 @@ if [[ -e "$out" ]]; then
 fi
 mkdir -p "$out"
 
+# Both backend bootstrap steps write to shared build directories. Keep one
+# campaign at a time so an interrupted or detached runner cannot race a retry.
+mkdir -p "$root/.deps"
+exec 9>"$root/.deps/reference-bringup.lock"
+if ! flock -n 9; then
+  echo "FAIL_CONCURRENT_BRINGUP: another reference bring-up owns the build directories" | tee "$out/failure.txt" >&2
+  exit 1
+fi
+
 git -C "$root" rev-parse HEAD >"$out/tesy-head.txt"
 git -C "$root" status --porcelain=v1 >"$out/tesy-status.txt"
 if [[ -s "$out/tesy-status.txt" ]]; then
