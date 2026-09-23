@@ -34,6 +34,9 @@ def _reference() -> dict:
         "c_compiler_version": "15.3.1",
         "cxx_compiler_version": "15.3.1",
         "cuda_compiler_version_contains": "V13.3.73",
+        "cmake_version": "4.3.0",
+        "llama_server_sha256": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "ggml_cuda_sha256": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
     }
 
 
@@ -59,6 +62,14 @@ def test_parse_cmake_cache_rejects_missing_required_key():
         parse_cmake_cache(
             _cache_text().replace("GGML_CUDA:BOOL=ON\n", "")
         )
+
+
+def test_load_reference_accepts_exact_lock(tmp_path):
+    payload = _reference()
+    path = tmp_path / "toolchain.json"
+    path.write_text(json.dumps(payload), encoding="utf-8")
+
+    assert load_reference(path) == payload
 
 
 def test_load_reference_rejects_extra_fields(tmp_path):
