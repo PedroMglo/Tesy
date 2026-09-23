@@ -35,6 +35,7 @@ struct trace_file {
     int last_layer = -1;
     bool seen_layer = false;
     std::vector<unsigned char> scratch;
+    bool failed = false;
 };
 
 bool parse_layer(const char * name, int * layer) {
@@ -73,6 +74,7 @@ bool trace_callback(ggml_tensor * tensor, bool ask, void * user_data) {
 
     if (tensor->type != GGML_TYPE_I32 || tensor->ne[0] <= 0 || tensor->ne[1] <= 0) {
         std::fprintf(stderr, "unexpected ffn_moe_topk tensor type/shape at layer %d\n", layer);
+        state->failed = true;
         return false;
     }
 
@@ -112,6 +114,7 @@ bool trace_callback(ggml_tensor * tensor, bool ask, void * user_data) {
                 static_cast<size_t>(slot) * tensor->nb[0];
             if (offset + sizeof(int32_t) > state->scratch.size()) {
                 std::fprintf(stderr, "invalid ffn_moe_topk tensor stride at layer %d\n", layer);
+                state->failed = true;
                 return false;
             }
             int32_t expert = -1;
@@ -121,8 +124,11 @@ bool trace_callback(ggml_tensor * tensor, bool ask, void * user_data) {
         std::fputc(']', state->file);
     }
 
-    std::fputs("]}\n", state->file);
-    std::fflush(state->file);
+    if (std::fputs("]}\n", state->file) == EOF || std::fflush(state->file) != 0) {
+        std::fprintf(stderr, "failed writing routing trace: %s\n", std::strerror(errno));
+        state->failed = true;
+        return false;
+    }
     return true;
 }
 
@@ -135,13 +141,14 @@ struct options {
     int n_gpu_layers = 99;
     uint32_t n_ctx = 4096;
     bool chat = true;
+    bool cpu_moe = false;
 };
 
 [[noreturn]] void usage(const char * argv0, int code) {
     std::fprintf(
         code == 0 ? stdout : stderr,
-        "usage: %s --model MODEL.gguf --trace TRACE.jsonl "
-        "[--prompt TEXT] [--n-predict N] [--ngl N] [--ctx N] [--raw-prompt]\n",
+        "usage: %s --model MODEL.gguf [--trace TRACE.jsonl] [--tokens-out TOKENS.json] "
+        "[--prompt TEXT] [--n-predict N] [--ngl N] [--ctx N] [--cpu-moe] [--raw-prompt]\n",
         argv0);
     std::exit(code);
 }
@@ -185,6 +192,8 @@ options parse_options(int argc, char ** argv) {
         } else if (arg == "--ctx") {
             out.n_ctx = static_cast<uint32_t>(
                 parse_int(require_value("--ctx"), "--ctx", 16));
+        } else if (arg == "--cpu-moe") {
+            out.cpu_moe = true;
         } else if (arg == "--raw-prompt") {
             out.chat = false;
         } else if (arg == "--help" || arg == "-h") {
@@ -266,6 +275,16 @@ int main(int argc, char ** argv) {
     llama_model_params model_params = llama_model_default_params();
     model_params.n_gpu_layers = opt.n_gpu_layers;
 
+    static const char * const moe_pattern =
+        "\\.ffn_(up|down|gate|gate_up)_(ch|)exps";
+    llama_model_tensor_buft_override cpu_moe_overrides[] = {
+        {moe_pattern, ggml_backend_cpu_buffer_type()},
+        {nullptr, nullptr},
+    };
+    if (opt.cpu_moe) {
+        model_params.tensor_buft_overrides = cpu_moe_overrides;
+    }
+
     llama_model * model = llama_model_load_from_file(opt.model.c_str(), model_params);
     if (!model) {
         std::fprintf(stderr, "failed to load model\n");
@@ -326,6 +345,13 @@ int main(int argc, char ** argv) {
             llama_model_free(model);
             return 2;
         }
+        if (trace && trace->failed) {
+            std::fprintf(stderr, "routing trace callback failed\n");
+            llama_sampler_free(sampler);
+            llama_free(ctx);
+            llama_model_free(model);
+            return 2;
+        }
 
         position += batch.n_tokens;
         llama_token token = llama_sampler_sample(sampler, ctx, -1);
@@ -338,7 +364,10 @@ int main(int argc, char ** argv) {
             vocab, token, piece, sizeof(piece), 0, true);
         if (piece_bytes < 0) {
             std::fprintf(stderr, "llama_token_to_piece failed\n");
-            break;
+            llama_sampler_free(sampler);
+            llama_free(ctx);
+            llama_model_free(model);
+            return 2;
         }
         std::fwrite(piece, 1, static_cast<size_t>(piece_bytes), stdout);
         std::fflush(stdout);
@@ -373,8 +402,10 @@ int main(int argc, char ** argv) {
         }
         std::fputs("]}\n", token_file);
 
-        if (std::fclose(token_file) != 0) {
-            std::fprintf(stderr, "failed closing token output %s\n", opt.tokens_out.c_str());
+        const bool token_write_failed = std::ferror(token_file) != 0;
+        const int token_close_rc = std::fclose(token_file);
+        if (token_write_failed || token_close_rc != 0) {
+            std::fprintf(stderr, "failed writing token output %s\n", opt.tokens_out.c_str());
             llama_sampler_free(sampler);
             llama_free(ctx);
             llama_model_free(model);
