@@ -3,6 +3,7 @@
 Date: 2026-09-23  
 Pinned llama.cpp: `4e416ee7308dd6b581796f1a6241276cd5982691`  
 Failed campaign: `results/n-cpu-moe-sweep-20260923T220215Z`  
+Campaign Tesy HEAD: `bb9ce3340c0214bee4a6d38ea645a9c30f0d8275`  
 Classification: `REPRODUCED_SOURCE_DIAGNOSIS_WITH_MEASURED_FAILURE`
 
 ## Result
@@ -64,7 +65,9 @@ Do not retry `scripts/run_n_cpu_moe_sweep.sh` on this pin. The runner now exits
 with `STATIC_NO_GO_N_CPU_MOE_FIT_CONFLICT`.
 
 The replacement is
-`scripts/run_n_cpu_moe_capacity_pareto.sh`, which separates three concerns:
+`scripts/run_n_cpu_moe_capacity_pareto.sh`. The next operator gate is its
+`--capacity-only` mode; timing is not automatically authorized by this diagnosis.
+The replacement separates three concerns:
 
 1. use pinned `llama-fit-params` once to obtain the explicit stock auto-fit
    placement for the frozen context and headroom;
