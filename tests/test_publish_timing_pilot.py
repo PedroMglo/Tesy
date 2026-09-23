@@ -41,6 +41,7 @@ def test_publish_timing_pilot_keeps_only_derived_artifacts(tmp_path):
                 "status": "PASS",
                 "unique_token_trajectory_hashes": ["a" * 64],
             },
+            "next_gate": "MANUAL_REVIEW_REQUIRED",
         },
     )
     _write_json(
@@ -104,6 +105,7 @@ def test_publish_timing_pilot_keeps_only_derived_artifacts(tmp_path):
 
     assert manifest["observation_count"] == 3
     assert manifest["trajectory_status"] == "PASS"
+    assert manifest["next_gate"] == "MANUAL_REVIEW_REQUIRED"
     assert "01-auto-fit/resources.jsonl" in manifest["raw_artifacts"]
     assert not (destination / "01-auto-fit").exists()
     assert (destination / "pilot-summary.json").exists()
