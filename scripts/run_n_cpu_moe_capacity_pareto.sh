@@ -2,13 +2,20 @@
 set -euo pipefail
 
 capacity_only=0
-if [[ "${1:-}" == "--capacity-only" ]]; then
-  capacity_only=1
-  shift
-fi
+timing_pilot=0
+case "${1:-}" in
+  --capacity-only)
+    capacity_only=1
+    shift
+    ;;
+  --timing-pilot)
+    timing_pilot=1
+    shift
+    ;;
+esac
 
 if [[ $# -ne 2 ]]; then
-  echo "usage: $0 [--capacity-only] MODEL.gguf OUTPUT_ROOT" >&2
+  echo "usage: $0 [--capacity-only|--timing-pilot] MODEL.gguf OUTPUT_ROOT" >&2
   exit 2
 fi
 
@@ -22,12 +29,17 @@ server="${TESY_LLAMA_SERVER:-$build_dir/bin/llama-server}"
 fit_tool="${TESY_LLAMA_FIT_PARAMS:-$build_dir/bin/llama-fit-params}"
 toolchain_lock="$root/configs/reference-llama-toolchain.json"
 prompt_file="$root/benchmarks/prompts/b0-b1-diagnostic.txt"
+capacity_evidence_dir="$root/research/results/n-cpu-moe-capacity-20260923T233416Z"
+capacity_evidence_commit="5a8bbf08eb95069b1847f724e5d1be98c6392678"
 lock_file="${XDG_RUNTIME_DIR:-/tmp}/tesy-placement-capacity-pareto.lock"
 base_port="${TESY_SWEEP_PORT_BASE:-18120}"
 gpu_target_mib=1024
 host_guard_mib=2048
 rounding_guard_mib=16
 candidates=(0 4 8 12 16 20 24)
+if (( timing_pilot == 1 )); then
+  candidates=(12 24)
+fi
 
 if [[ -e "$out" ]]; then
   echo "refusing to replace output root: $out" >&2
