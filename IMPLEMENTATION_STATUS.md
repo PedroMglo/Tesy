@@ -23,7 +23,8 @@ reference-host/model validation. No source-only row is a performance claim.
 | byte-weighted native trace simulation | IMPLEMENTED_MODEL_FREE | hypothetical LRU movement from trace + encoded payload; never physical traffic |
 | reference bring-up pipeline | IMPLEMENTED_NOT_RUN_HOST_REQUIRED | doctor -> pinned build -> stock smoke -> paired trace -> inventory |
 | stock llama.cpp real gpt-oss-20b load | NOT_RUN_MODEL_REQUIRED | first model-bearing blocker |
-| stock B0/B1/B2 measurements | NOT_RUN_HOST_REQUIRED | automatic placement, CPU-MoE and admissible lazy/on-demand modes remain to measure |
+| stock B0/B1 measurements | NOT_RUN_HOST_REQUIRED | automatic placement and CPU-MoE remain to measure on the physical host |
+| stock B2 gpt-oss lazy-expert baseline | STATIC_NO_GO | pinned gpt-oss expert tensors are not marked `TENSOR_READ_LAZY`; no model-bearing B2 run is justified for this purpose |
 | KTransformers baseline | PINNED_NOT_REPRODUCED | reproduce only if compatible with selected model/host |
 | vLLM baseline | PINNED_NOT_REPRODUCED | B4 only if 8 GiB/32 GiB envelope admits it |
 | native Tesy expert residency/cache | NOT_IMPLEMENTED | forbidden until baseline + trace/headroom establish a concrete gap |
