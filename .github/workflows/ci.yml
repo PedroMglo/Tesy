@@ -30,3 +30,24 @@ jobs:
         run: python -m compileall -q src tests
       - name: Tests
         run: pytest -q
+
+  native-trace:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Fetch pinned llama.cpp
+        run: |
+          mkdir -p .deps
+          git clone --filter=blob:none https://github.com/ggml-org/llama.cpp.git .deps/llama.cpp
+          git -C .deps/llama.cpp checkout --detach 4e416ee7308dd6b581796f1a6241276cd5982691
+          test -z "$(git -C .deps/llama.cpp status --porcelain)"
+      - name: Configure tracer
+        run: |
+          cmake -S native -B build/native-ci \
+            -DLLAMA_CPP_SOURCE_DIR="$PWD/.deps/llama.cpp" \
+            -DGGML_CUDA=OFF \
+            -DCMAKE_BUILD_TYPE=Release
+      - name: Build tracer
+        run: cmake --build build/native-ci --parallel 2 --target tesy-moe-trace
+      - name: Smoke tracer CLI
+        run: build/native-ci/tesy-moe-trace --help

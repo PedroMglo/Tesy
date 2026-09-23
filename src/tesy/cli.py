@@ -15,6 +15,7 @@ from tesy.models import (
     load_lock,
     verify_model_file,
 )
+from tesy.native_trace import NativeTraceError, read_native_jsonl, summarize_native
 from tesy.planner import GIB, plan_capacity
 from tesy.simulator import simulate_demand_lru
 from tesy.trace import TraceError, read_jsonl, summarize, window_union_metrics
@@ -81,6 +82,10 @@ def build_parser() -> argparse.ArgumentParser:
     trace_summary.add_argument(
         "--windows", type=_parse_windows, default=[1, 2, 4, 8]
     )
+    native_summary = trace_sub.add_parser(
+        "summarize-native", help="summarize raw llama.cpp MoE top-k traces"
+    )
+    native_summary.add_argument("path", type=Path)
 
     simulate = sub.add_parser(
         "simulate", help="replay a routing trace through caches"
@@ -160,6 +165,10 @@ def _run(args: argparse.Namespace) -> int:
         _print(payload)
         return 0
 
+    if args.command == "trace" and args.trace_command == "summarize-native":
+        _print(summarize_native(read_native_jsonl(args.path)))
+        return 0
+
     if args.command == "simulate":
         if args.ram_cache_gib < 0 or args.vram_cache_gib < 0:
             raise ValueError("cache sizes must be non-negative")
@@ -189,6 +198,7 @@ def main(argv: list[str] | None = None) -> int:
     except (
         BackendError,
         ModelLockError,
+        NativeTraceError,
         TraceError,
         ValueError,
         OSError,
