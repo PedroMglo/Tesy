@@ -9,6 +9,7 @@ from typing import Any
 from tesy.backend import BackendError, probe_llama_cpp
 from tesy.doctor import collect_snapshot
 from tesy.expert_inventory import ExpertInventoryError, load_expert_inventory
+from tesy.expert_inventory import ExpertInventoryError, load_expert_inventory
 from tesy.headroom import native_cache_headroom
 from tesy.models import (
     ModelLockError,
@@ -17,6 +18,7 @@ from tesy.models import (
     load_lock,
     verify_model_file,
 )
+from tesy.native_bytes import normalize_native_decode, write_jsonl_no_replace
 from tesy.native_bytes import normalize_native_decode, write_jsonl_no_replace
 from tesy.native_trace import NativeTraceError, read_native_jsonl, summarize_native
 from tesy.planner import GIB, plan_capacity
@@ -205,6 +207,30 @@ def _run(args: argparse.Namespace) -> int:
                 args.slots,
                 min_graph_seq=args.min_graph_seq,
             )
+        )
+        return 0
+
+    if args.command == "trace" and args.trace_command == "normalize-native":
+        inventory = load_expert_inventory(args.inventory)
+        rows, stats = normalize_native_decode(
+            read_native_jsonl(args.path),
+            inventory,
+            min_graph_seq=args.min_graph_seq,
+        )
+        write_jsonl_no_replace(args.output, rows)
+        _print(
+            {
+                "schema": "tesy.native_trace_normalization_receipt.v1",
+                "classification": "DERIVED",
+                "status": "PASS",
+                "inventory_model_id": inventory.get("model_id"),
+                "output": str(args.output.resolve()),
+                **stats,
+                "claim_boundary": (
+                    "Expert bytes are encoded GGUF footprint, not measured "
+                    "storage, DRAM, PCIe or CUDA transfer traffic."
+                ),
+            }
         )
         return 0
 
