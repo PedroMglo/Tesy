@@ -34,8 +34,7 @@ No Tesy runtime modification is present in either arm.
 
 Same locked gpt-oss-20b MXFP4 GGUF and llama.cpp pin as the successful bring-up.
 
-The local CUDA/GCC toolchain must match the recorded bring-up identity unless a
-new prospective amendment is committed before execution.
+The NVIDIA driver, CUDA compiler, host C/C++ compilers and CMake version must match the machine-readable `configs/b0-b1-toolchain.lock.json`, derived from the recorded first bring-up provenance. Any mismatch fails before the model is opened unless a new prospective amendment is committed before execution.
 
 ## Workload
 
@@ -71,8 +70,10 @@ Per fresh process:
 - peak process VmRSS/VmSwap;
 - minimum system MemAvailable/SwapFree;
 - GPU temperature/pstate/power samples where available;
-- source/backend/model identities, with backend source HEAD enforced against the lock;
-- non-empty placement/load log excerpts.
+- source/backend/model identities, with both backend source HEAD and the commit reported by the executable enforced against the lock;
+- frozen NVIDIA driver/CUDA/GCC/G++/CMake identity checked before model load;
+- `llama_model_load` offloaded-layer and model-buffer placement records for every run;
+- cross-arm placement separation: both B1 CUDA model-buffer totals must be below both B0 totals, and both B1 CPU model-buffer totals must exceed both B0 totals.
 
 Do not call nvidia-smi sample bytes PCIe traffic.
 
@@ -81,12 +82,15 @@ Do not call nvidia-smi sample bytes PCIe traffic.
 Stop an arm/repetition on:
 - server non-zero exit before requested completion;
 - model/backend identity mismatch;
+- backend executable revision mismatch with the source lock;
+- frozen driver/toolchain mismatch;
 - missing final server timings;
 - no streamed content/TTFT;
 - OOM;
 - server process swap > 0;
 - non-finite timing;
 - corrupted/missing required telemetry;
+- absent/unparseable `llama_model_load` placement evidence or failure of B0/B1 model-buffer separation;
 - generated-token trajectory mismatch across B0/B1 or fewer than 64 generated IDs.
 
 A failed repetition is preserved. Debugging uses a new campaign identity.
@@ -124,3 +128,13 @@ The runner now:
 
 Older B0/B1 results produced without these gates are diagnostic only and must
 not be promoted as an identical-trajectory placement comparison.
+
+
+## Review amendment 2
+
+The second review found three remaining provenance/placement holes. The runner now fails closed unless:
+- `llama-server --version` reports a commit prefix matching the locked llama.cpp revision, in addition to the clean source checkout check;
+- NVIDIA driver, CUDA compiler, host C/C++ compiler and CMake identities equal the committed `configs/b0-b1-toolchain.lock.json`;
+- every run contains the pinned source's specific `llama_model_load` offloaded-layer and model-buffer records, and the four-run comparison demonstrates the expected B0/B1 CUDA-versus-CPU model-buffer separation.
+
+Generic CUDA startup/compute-buffer lines are no longer accepted as expert-placement evidence. Existing campaigns with empty placement records remain preserved but do not satisfy this amended protocol.
