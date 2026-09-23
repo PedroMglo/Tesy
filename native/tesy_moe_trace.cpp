@@ -328,7 +328,7 @@ int main(int argc, char ** argv) {
         }
 
         position += batch.n_tokens;
-        const llama_token token = llama_sampler_sample(sampler, ctx, -1);
+        llama_token token = llama_sampler_sample(sampler, ctx, -1);
         if (llama_vocab_is_eog(vocab, token)) {
             break;
         }
