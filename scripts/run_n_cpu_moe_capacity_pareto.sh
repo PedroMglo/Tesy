@@ -210,21 +210,23 @@ print(
 PY
 )
 
+campaign_mode="capacity-and-timing"
+if (( capacity_only == 1 )); then
+  campaign_mode="capacity-only"
+elif (( timing_pilot == 1 )); then
+  campaign_mode="timing-pilot"
+fi
+
 python3 - "$gpu_free_bytes" "$gpu_total_bytes" "$mem_available_bytes" \
-  "$gpu_target_mib" "$host_guard_mib" "$rounding_guard_mib" "$capacity_only" \
+  "$gpu_target_mib" "$host_guard_mib" "$rounding_guard_mib" "$campaign_mode" \
   >"$out/admission-context.json" <<'PY'
 import json
 import sys
 
-(
-    gpu_free,
-    gpu_total,
-    mem_available,
-    gpu_target,
-    host_guard,
-    rounding_guard,
-    capacity_only,
-) = map(int, sys.argv[1:])
+gpu_free, gpu_total, mem_available, gpu_target, host_guard, rounding_guard = map(
+    int, sys.argv[1:7]
+)
+campaign_mode = sys.argv[7]
 print(json.dumps({
     "schema": "tesy.placement_admission_context.v1",
     "classification": "MEASURED_CAMPAIGN_START_RESOURCES",
@@ -234,7 +236,7 @@ print(json.dumps({
     "gpu_target_mib": gpu_target,
     "host_guard_mib": host_guard,
     "rounding_guard_mib": rounding_guard,
-    "campaign_mode": "capacity-only" if capacity_only else "capacity-and-timing",
+    "campaign_mode": campaign_mode,
 }, indent=2, sort_keys=True))
 PY
 
