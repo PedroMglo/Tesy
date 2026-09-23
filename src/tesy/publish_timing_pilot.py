@@ -102,6 +102,10 @@ def _validate_campaign(root: Path) -> tuple[dict[str, Any], ...]:
             raise TimingPilotPublicationError("pilot observation is not 64 tokens")
         if row.get("peak_process_swap_bytes") != 0:
             raise TimingPilotPublicationError("pilot observation used process swap")
+        if row.get("gpu_failed_samples") != 0:
+            raise TimingPilotPublicationError(
+                "pilot observation has incomplete GPU telemetry"
+            )
         if not row.get("placement_log_lines"):
             raise TimingPilotPublicationError("pilot observation lacks placement evidence")
 
@@ -156,6 +160,11 @@ def _validate_raw_observations(root: Path, pilot: dict[str, Any]) -> None:
             "server-command.txt",
             "pre-run-resources.json",
             "pre-run-capacity.json",
+            "server-ready.json",
+            "resources.jsonl",
+            "server.stdout.txt",
+            "server.stderr.txt",
+            "health.json",
         ):
             if not (run_dir / name).is_file():
                 raise TimingPilotPublicationError(
@@ -168,6 +177,7 @@ def _validate_raw_observations(root: Path, pilot: dict[str, Any]) -> None:
         runtime = _load_json(run_dir / "runtime-provenance.json")
         pre_run = _load_json(run_dir / "pre-run-resources.json")
         pre_capacity = _load_json(run_dir / "pre-run-capacity.json")
+        ready = _load_json(run_dir / "server-ready.json")
         command = (run_dir / "server-command.txt").read_text(
             encoding="utf-8"
         ).strip()
@@ -182,13 +192,42 @@ def _validate_raw_observations(root: Path, pilot: dict[str, Any]) -> None:
             encoding="utf-8"
         ).strip()
 
+        if meta.get("schema") != "tesy.stock_placement_run.v1":
+            raise TimingPilotPublicationError(
+                f"unexpected run metadata schema for {placement_id}"
+            )
         if meta.get("placement_id") != placement_id:
             raise TimingPilotPublicationError(
                 f"raw placement identity mismatch for {placement_id}"
             )
+        if pre_run.get("schema") != "tesy.timing_pilot_pre_run_resources.v1":
+            raise TimingPilotPublicationError(
+                f"unexpected pre-run resource schema for {placement_id}"
+            )
+        if pre_capacity.get("schema") != "tesy.placement_capacity_estimate.v1":
+            raise TimingPilotPublicationError(
+                f"unexpected pre-run capacity schema for {placement_id}"
+            )
+        if pre_capacity.get("placement_id") != placement_id:
+            raise TimingPilotPublicationError(
+                f"raw pre-run capacity identity mismatch for {placement_id}"
+            )
+        if runtime.get("schema") != "tesy.runtime_backend_provenance.v1":
+            raise TimingPilotPublicationError(
+                f"unexpected runtime provenance schema for {placement_id}"
+            )
         if runtime.get("status") != "PASS":
             raise TimingPilotPublicationError(
                 f"raw runtime provenance failed for {placement_id}"
+            )
+        if request.get("schema") != "tesy.stock_server_request.v1":
+            raise TimingPilotPublicationError(
+                f"unexpected request schema for {placement_id}"
+            )
+        tokens = request.get("generated_token_ids")
+        if not isinstance(tokens, list) or len(tokens) != 64:
+            raise TimingPilotPublicationError(
+                f"raw generated token IDs are not exactly 64 for {placement_id}"
             )
         if request.get("generated_token_count") != 64:
             raise TimingPilotPublicationError(
@@ -197,6 +236,10 @@ def _validate_raw_observations(root: Path, pilot: dict[str, Any]) -> None:
         if request.get("timings", {}).get("predicted_n") != 64:
             raise TimingPilotPublicationError(
                 f"raw predicted_n is not 64 for {placement_id}"
+            )
+        if resources.get("gpu_failed_samples") != 0:
+            raise TimingPilotPublicationError(
+                f"raw GPU telemetry incomplete for {placement_id}"
             )
         if resources.get("peak_process_swap_bytes") != 0:
             raise TimingPilotPublicationError(
@@ -214,7 +257,14 @@ def _validate_raw_observations(root: Path, pilot: dict[str, Any]) -> None:
             raise TimingPilotPublicationError(
                 f"raw token hash missing for {placement_id}"
             )
-        raw_hashes.add(token_hash)
+        computed_hash = hashlib.sha256(
+            json.dumps(tokens, separators=(",", ":")).encode()
+        ).hexdigest()
+        if token_hash != computed_hash:
+            raise TimingPilotPublicationError(
+                f"raw token hash does not match token IDs for {placement_id}"
+            )
+        raw_hashes.add(computed_hash)
 
         row = by_placement.get(placement_id)
         if row is None:
@@ -225,6 +275,7 @@ def _validate_raw_observations(root: Path, pilot: dict[str, Any]) -> None:
         checks = {
             "n_cpu_moe": meta.get("n_cpu_moe"),
             "server_command": command,
+            "server_ready_ms": ready.get("server_ready_ms"),
             "pre_run_gpu_free_bytes": pre_run["gpu"]["memory_free_bytes"],
             "pre_run_gpu_temperature_c": pre_run["gpu"]["temperature_c"],
             "pre_run_mem_available_bytes": pre_run["memory"]["available_bytes"],
@@ -253,7 +304,7 @@ def _validate_raw_observations(root: Path, pilot: dict[str, Any]) -> None:
             "gpu_failed_samples": resources["gpu_failed_samples"],
             "runtime_provenance_status": runtime["status"],
             "placement_log_lines": placement_lines,
-            "token_sha256": token_hash,
+            "token_sha256": computed_hash,
         }
         for key, observed in checks.items():
             if row.get(key) != observed:
