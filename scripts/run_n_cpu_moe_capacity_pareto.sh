@@ -34,6 +34,39 @@ if [[ -e "$out" ]]; then
 fi
 mkdir -p "$out/capacity"
 
+failure_report() {
+  local rc="$1"
+  local failed_command="$2"
+  local failed_line="$3"
+  trap - ERR
+  python3 - "$out/failure.json" "$rc" "$failed_line" "$failed_command" <<'PY' || true
+import json
+import sys
+from pathlib import Path
+
+out = Path(sys.argv[1])
+payload = {
+    "schema": "tesy.capacity_campaign_failure.v1",
+    "classification": "FAIL_CAMPAIGN_COMMAND",
+    "exit_code": int(sys.argv[2]),
+    "line": int(sys.argv[3]),
+    "failed_command": sys.argv[4],
+    "claim_boundary": (
+        "Execution failure provenance only. No capacity or performance conclusion follows."
+    ),
+}
+try:
+    with out.open("x", encoding="utf-8") as handle:
+        json.dump(payload, handle, indent=2, sort_keys=True)
+        handle.write("\n")
+except FileExistsError:
+    pass
+PY
+  echo "FAIL_CAPACITY_CAMPAIGN line=$failed_line exit=$rc" >&2
+  exit "$rc"
+}
+trap 'rc=$?; cmd=$BASH_COMMAND; line=$LINENO; failure_report "$rc" "$cmd" "$line"' ERR
+
 exec 9>"$lock_file"
 if ! flock -n 9; then
   echo "another Tesy placement campaign holds $lock_file" >&2
