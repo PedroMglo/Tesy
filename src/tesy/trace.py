@@ -1,10 +1,10 @@
 from __future__ import annotations
 
 import json
+from collections.abc import Iterable
 from dataclasses import dataclass
 from pathlib import Path
 from statistics import mean
-from typing import Iterable
 
 
 class TraceError(ValueError):
@@ -58,7 +58,9 @@ def parse_event(payload: object) -> RouteEvent:
         if not isinstance(raw, dict) or set(raw) != {"id", "bytes"}:
             raise TraceError(f"experts[{index}] must contain exactly id and bytes")
         expert = _require_int(raw["id"], f"experts[{index}].id")
-        encoded_bytes = _require_int(raw["bytes"], f"experts[{index}].bytes", minimum=1)
+        encoded_bytes = _require_int(
+            raw["bytes"], f"experts[{index}].bytes", minimum=1
+        )
         if expert in seen:
             raise TraceError(f"duplicate expert {expert} in layer event")
         seen.add(expert)
@@ -167,7 +169,9 @@ def window_union_metrics(
         windows.append((len(chunk), sum(union.values())))
 
     union_bytes = [item[1] for item in windows]
-    bytes_per_token = [byte_count / token_count for token_count, byte_count in windows]
+    bytes_per_token = [
+        byte_count / token_count for token_count, byte_count in windows
+    ]
     return {
         "schema": "tesy.speculative_union.v1",
         "classification": "TRACE_DERIVED_UPPER_BOUND_NOT_ACCEPTANCE",

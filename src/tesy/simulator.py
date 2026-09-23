@@ -1,8 +1,8 @@
 from __future__ import annotations
 
 from collections import OrderedDict
+from collections.abc import Hashable
 from dataclasses import dataclass
-from typing import Hashable
 
 from tesy.trace import RouteEvent
 
