@@ -25,7 +25,7 @@ reference-host/model validation. No source-only row is a performance claim.
 | stock llama.cpp real gpt-oss-20b load | PASS_DIAGNOSTIC_STOCK_SMOKE | 16-token stock generation; no chat or benchmark qualification |
 | stock B0/B1 measurements | INCONCLUSIVE_RERUN_REQUIRED | physical-host runs exist, but review invalidated same-work admission: placement telemetry empty, provenance incomplete and token trajectories unretained |
 | original n-cpu-moe + auto-fit sweep | STATIC_NO_GO_PIN_FIT_CONFLICT | pinned source reproduces incompatible tensor override / fit semantics; preserved N=4 campaign OOM is not a capacity bound |
-| capacity-gated stock placement frontier | MODEL_FREE_CI_GATE_REQUIRED_HOST_NOT_RUN | implementation includes capacity-only admission, frozen auto-fit replay, exactness/resource gates, locked build provenance and live runtime provenance; current PR head must be green before physical execution |
+| capacity-gated stock placement frontier | HOST_ATTEMPT_FAILED_INSTRUMENTATION_RETRY_REQUIRED | first physical capacity-only attempt stopped before estimator because backend feature probe used llama-server for a llama-cli feature lock; source/model/host checks passed, runner corrected, retry pending current-head CI |
 | pinned llama-fit-params utility | SOURCE_REQUIRED_BUILD_TARGET_ADDED | bootstrap target added; reference-host binary rebuild remains NOT_RUN |
 | llama.cpp build provenance lock | IMPLEMENTED_MODEL_FREE | strict CMake/compiler/CUDA/server/libggml-cuda identity gate; reference-host replay remains NOT_RUN |
 | live backend mapping provenance | IMPLEMENTED_MODEL_FREE | timed runs verify process executable and mapped pre-hashed libggml-cuda; timing campaign remains NOT_RUN |
