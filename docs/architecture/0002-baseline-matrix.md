@@ -25,11 +25,18 @@ Purpose: measure the value of keeping expert weights in host RAM while hot/share
 
 ### B2 — stock lazy/on-demand capability
 
-Probe the exact pinned commit for `--lazy-mode` support and whether it applies to the selected model/expert tensors.
+**Static result for locked gpt-oss-20b + llama.cpp pin: NO-GO as an expert-oversubscription baseline.**
 
-Purpose: determine whether upstream already provides enough >RAM behavior for the next experiment.
+The CLI exposes `--lazy-mode`, but the implementation only applies it to
+tensors explicitly created with `TENSOR_READ_LAZY`. At
+`4e416ee7308dd6b581796f1a6241276cd5982691`, the gpt-oss
+`openai-moe.cpp` expert gate/up/down weights and biases are created with flags
+`0`, not `TENSOR_READ_LAZY`.
 
-Do not assume a CLI option means expert-granular physical NVMe reads.
+Therefore `--lazy-mode` must not be presented as expert-granular >RAM support
+for this locked gpt-oss target. Preserve it as a general upstream capability,
+but skip B2 model-bearing execution for this purpose unless the backend pin or
+model changes prospectively.
 
 ### B3 — external research baseline
 
