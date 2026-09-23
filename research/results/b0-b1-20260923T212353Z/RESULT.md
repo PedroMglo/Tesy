@@ -29,6 +29,15 @@ comparison and must not be used to claim a B0/B1 winner.
 
 A new campaign identity with the hardened runner is required.
 
+## Validation status
+
+Campaign-local validation beyond the four recorded executions: `NOT_RUN`.
+
+No model-free/unit/shell/manifest validation result was captured as part of this
+campaign identity, so none is retroactively claimed here. Repository CI on the
+publication branch is a separate code/publication check and does not repair or
+upgrade the evidentiary status of this preserved campaign.
+
 ## Claim boundary
 
 No performance winner was preregistered for this diagnostic.
