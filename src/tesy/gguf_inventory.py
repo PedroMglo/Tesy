@@ -3,9 +3,10 @@ from __future__ import annotations
 import importlib
 import re
 import sys
+from collections.abc import Iterable
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Any, Iterable
+from typing import Any
 
 from tesy.backend import BackendError, verify_source_state
 from tesy.models import ModelLockError, inspect_model_file
