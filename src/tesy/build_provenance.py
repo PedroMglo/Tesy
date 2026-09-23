@@ -311,7 +311,13 @@ def collect_provenance(
         if "CUDA0:" not in text:
             device_mismatches.append(f"{name} --list-devices missing CUDA0")
 
-    mismatches = (\n        cache_mismatches\n        + compiler_mismatches\n        + binary_mismatches\n        + device_mismatches\n    )\n    if command_failures:
+    mismatches = (
+        cache_mismatches
+        + compiler_mismatches
+        + binary_mismatches
+        + device_mismatches
+    )
+    if command_failures:
         mismatches.append(f"failed provenance commands: {command_failures}")
 
     return {
