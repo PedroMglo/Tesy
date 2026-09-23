@@ -1,10 +1,10 @@
 name: ci
 
 on:
-  push:
-    branches:
-      - "research/**"
+  workflow_dispatch:
   pull_request:
+    types:
+      - ready_for_review
 
 permissions:
   contents: read
@@ -69,6 +69,7 @@ jobs:
           python -m json.tool configs/backends.lock.json >/dev/null
           python -m json.tool configs/models.lock.json >/dev/null
           python -m json.tool configs/reference-host.json >/dev/null
+          python -m json.tool configs/reference-llama-toolchain.json >/dev/null
           bash -n scripts/*.sh
       - name: Tests
         run: pytest -q
