@@ -64,6 +64,12 @@ jobs:
         run: ruff check .
       - name: Compile
         run: python -m compileall -q src tests
+      - name: Validate manifests and shell syntax
+        run: |
+          python -m json.tool configs/backends.lock.json >/dev/null
+          python -m json.tool configs/models.lock.json >/dev/null
+          python -m json.tool configs/reference-host.json >/dev/null
+          bash -n scripts/*.sh
       - name: Tests
         run: pytest -q
 
