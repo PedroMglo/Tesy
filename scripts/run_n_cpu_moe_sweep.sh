@@ -31,6 +31,7 @@ python3 -m tesy models verify gpt-oss-20b-mxfp4-gguf "$model" >"$out/model.json"
 python3 -m tesy doctor   --disk-path "$(dirname "$model")"   --reference-profile "$root/configs/reference-host.json" >"$out/doctor.json"
 
 [[ -x "$server" ]] || { echo "missing llama-server: $server" >&2; exit 1; }
+python3 -m tesy backend probe   --binary "$server"   --source-dir "$source_dir" >"$out/backend.json"
 
 git -C "$root" rev-parse HEAD >"$out/tesy-head.txt"
 git -C "$root" status --porcelain=v1 >"$out/tesy-status.txt"
@@ -126,6 +127,32 @@ PY
 
   python3 -m tesy.server_client     --url "http://127.0.0.1:$port/completion"     --prompt-file "$prompt_file"     --n-predict 64     --output "$run_dir/request.json"
 
+  token_sha="$(
+    python3 - "$run_dir/request.json" <<'PY'
+import hashlib
+import json
+import sys
+from pathlib import Path
+
+payload = json.loads(Path(sys.argv[1]).read_text(encoding="utf-8"))
+tokens = payload.get("generated_token_ids")
+if not isinstance(tokens, list) or len(tokens) != 64:
+    raise SystemExit(
+        f"expected exactly 64 generated token IDs, got "
+        f"{len(tokens) if isinstance(tokens, list) else 'invalid'}"
+    )
+blob = json.dumps(tokens, separators=(",", ":")).encode()
+print(hashlib.sha256(blob).hexdigest())
+PY
+  )"
+  printf '%s\n' "$token_sha" >"$run_dir/token-sha256.txt"
+  if [[ -z "${reference_token_sha:-}" ]]; then
+    reference_token_sha="$token_sha"
+  elif [[ "$token_sha" != "$reference_token_sha" ]]; then
+    echo "FAIL_TRAJECTORY_COMPARABILITY at n-cpu-moe=$n" >&2
+    exit 1
+  fi
+
   kill "$server_pid"
   wait "$server_pid" || true
   server_pid=""
@@ -186,8 +213,12 @@ for run_dir in sorted(p for p in root.iterdir() if p.is_dir()):
     ready=json.loads((run_dir/"server-ready.json").read_text())
     t=req["timings"]
     token_ids=req.get("generated_token_ids")
-    if not isinstance(token_ids, list) or len(token_ids) != t["predicted_n"]:
-        raise SystemExit(f"invalid token trajectory in {run_dir}")
+    if (
+        not isinstance(token_ids, list)
+        or len(token_ids) != 64
+        or t["predicted_n"] != 64
+    ):
+        raise SystemExit(f"invalid 64-token trajectory in {run_dir}")
     token_blob=json.dumps(token_ids, separators=(",", ":")).encode()
     rows.append({
         "run": run_dir.name,
