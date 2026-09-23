@@ -87,7 +87,7 @@ N = 0, 4, 8, 12, 16, 20, 24
 For each candidate, run pinned `llama-fit-params --fit-print on` with:
 
 ```text
---ctx-size 4096 --gpu-layers auto --n-cpu-moe N --fit off
+--ctx-size 4096 --gpu-layers all --n-cpu-moe N --fit off
 ```
 
 The estimator reports integer-MiB model/context/compute requirements for the
