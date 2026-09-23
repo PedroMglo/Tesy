@@ -191,8 +191,3 @@ def test_timing_pilot_publication_validates_and_copies_independent_artifacts(tmp
     assert "capacity/*.stdout.txt -whitespace" in attributes
     assert "runs/*/server.stderr.txt -whitespace" in attributes
 
-
-def test_timing_pilot_publication_rejects_summary_artifact_mismatch(tmp_path):
-    root = Path(__file__).resolve().parents[1]
-    test_file = root / "tests" / "test_timing_pilot_publication.py"
-    assert test_file.is_file()
