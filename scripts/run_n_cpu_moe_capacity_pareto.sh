@@ -240,20 +240,26 @@ print(json.dumps({
 }, indent=2, sort_keys=True))
 PY
 
-# Freeze stock auto-fit once, before timed execution. llama-fit-params is intended
-# to emit reusable -c/-ngl/-ts/-ot arguments for the selected stock placement.
-"$fit_tool" \
-  --model "$model" \
-  --ctx-size 4096 \
-  --fit on \
-  --fit-target "$gpu_target_mib" \
-  >"$out/auto-fit.stdout.txt" \
-  2>"$out/auto-fit.stderr.txt"
+if (( timing_pilot == 1 )); then
+  # Pilot placement is frozen by the published capacity evidence.
+  cp "$capacity_evidence_dir/auto-fit.json" "$out/auto-fit.json"
+  cp "$capacity_evidence_dir/auto-fit.stdout.txt" "$out/auto-fit.stdout.txt"
+  cp "$capacity_evidence_dir/auto-fit.stderr.txt" "$out/auto-fit.stderr.txt"
+else
+  # Freeze stock auto-fit once, before timed execution.
+  "$fit_tool" \
+    --model "$model" \
+    --ctx-size 4096 \
+    --fit on \
+    --fit-target "$gpu_target_mib" \
+    >"$out/auto-fit.stdout.txt" \
+    2>"$out/auto-fit.stderr.txt"
 
-python3 -m tesy.placement_capacity parse-fitted-cli \
-  --input "$out/auto-fit.stdout.txt" \
-  --expected-ctx 4096 \
-  --output "$out/auto-fit.json"
+  python3 -m tesy.placement_capacity parse-fitted-cli \
+    --input "$out/auto-fit.stdout.txt" \
+    --expected-ctx 4096 \
+    --output "$out/auto-fit.json"
+fi
 
 mapfile -d '' -t auto_fit_args < <(
   python3 - "$out/auto-fit.json" <<'PY'
@@ -298,6 +304,26 @@ for n in "${candidates[@]}"; do
     --rounding-guard-mib "$rounding_guard_mib" \
     --output "$estimate_json"
 done
+
+if (( timing_pilot == 1 )); then
+  "$fit_tool" \
+    --model "$model" \
+    --fit off \
+    --fit-print on \
+    "${auto_fit_args[@]}" \
+    >"$out/capacity/auto-fit-frozen.stdout.txt" \
+    2>"$out/capacity/auto-fit-frozen.stderr.txt"
+
+  python3 -m tesy.placement_capacity evaluate-placement-fit-print \
+    --input "$out/capacity/auto-fit-frozen.stdout.txt" \
+    --gpu-free-bytes "$gpu_free_bytes" \
+    --mem-available-bytes "$mem_available_bytes" \
+    --placement-id "auto-fit-frozen" \
+    --gpu-target-mib "$gpu_target_mib" \
+    --host-guard-mib "$host_guard_mib" \
+    --rounding-guard-mib "$rounding_guard_mib" \
+    --output "$out/capacity/auto-fit-frozen.json"
+fi
 
 python3 - "$out/capacity" >"$out/capacity-summary.json" <<'PY'
 import json
