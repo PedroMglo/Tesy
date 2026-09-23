@@ -29,6 +29,53 @@ fi
 python3 -m tesy models verify gpt-oss-20b-mxfp4-gguf "$model" >"$out/model.json"
 python3 -m tesy doctor --disk-path "$(dirname "$model")"   --reference-profile "$root/configs/reference-host.json" >"$out/doctor.json"
 
+python3 - "$root/configs/b0-b1-toolchain.lock.json" "$out/doctor.json" >"$out/toolchain-check.json" <<'PY'
+import json
+import re
+import subprocess
+import sys
+from pathlib import Path
+
+lock = json.loads(Path(sys.argv[1]).read_text(encoding="utf-8"))
+doctor = json.loads(Path(sys.argv[2]).read_text(encoding="utf-8"))
+if lock.get("schema") != "tesy.b0_b1_toolchain_lock.v1":
+    raise SystemExit("unsupported B0/B1 toolchain lock schema")
+
+def run(command):
+    p = subprocess.run(command, check=False, capture_output=True, text=True, env={"LC_ALL": "C"})
+    if p.returncode != 0:
+        raise SystemExit(f"toolchain probe failed: {command!r}: {p.stderr.strip()}")
+    return (p.stdout + "\n" + p.stderr).strip()
+
+observed = {
+    "nvidia_driver_version": doctor["snapshot"]["gpu"]["gpus"][0]["driver_version"],
+    "host_c_compiler_version": run([lock["host_c_compiler"], "-dumpfullversion"]).splitlines()[0],
+    "host_cxx_compiler_version": run([lock["host_cxx_compiler"], "-dumpfullversion"]).splitlines()[0],
+}
+cmake_text = run(["cmake", "--version"])
+observed["cmake_version"] = cmake_text.splitlines()[0].removeprefix("cmake version ").strip()
+nvcc_text = run([lock["cuda_compiler"], "--version"])
+m = re.search(r"V([0-9]+(?:\.[0-9]+)+)", nvcc_text)
+if not m:
+    raise SystemExit("cannot parse nvcc version")
+observed["cuda_compiler_version"] = m.group(1)
+
+expected = {k: lock[k] for k in observed}
+mismatch = {k: {"expected": expected[k], "observed": observed[k]} for k in observed if observed[k] != expected[k]}
+payload = {
+    "schema": "tesy.b0_b1_toolchain_check.v1",
+    "classification": "MEASURED_LOCAL_PROVENANCE",
+    "source": lock["source"],
+    "expected": expected,
+    "observed": observed,
+    "status": "PASS" if not mismatch else "FAIL",
+    "mismatch": mismatch,
+}
+print(json.dumps(payload, indent=2, sort_keys=True))
+if mismatch:
+    raise SystemExit("frozen B0/B1 driver/toolchain identity mismatch")
+PY
+
 [[ -x "$server" ]] || { echo "missing llama-server: $server" >&2; exit 1; }
 python3 -m tesy backend probe   --binary "$server"   --source-dir "$source_dir" >"$out/backend.json"
 
@@ -149,11 +196,38 @@ PY
   wait "$monitor_pid" || true
   monitor_pid=""
 
-  cat "$run_dir/server.stderr.txt" "$run_dir/server.stdout.txt" |     grep -Ei 'offload|model buffer|compute buffer|CPU_Mapped|CUDA[0-9]'     >"$run_dir/placement.txt" || true
-  if [[ ! -s "$run_dir/placement.txt" ]]; then
-    echo "missing required placement telemetry for $arm" >&2
-    exit 1
-  fi
+  cat "$run_dir/server.stderr.txt" "$run_dir/server.stdout.txt" | \
+    grep -E 'llama_model_load: (offloaded [0-9]+/[0-9]+ layers to GPU|.* model buffer size =)' \
+    >"$run_dir/placement.txt" || true
+  python3 - "$arm" "$run_dir/placement.txt" >"$run_dir/placement-summary.json" <<'PY'
+import json
+import re
+import sys
+from pathlib import Path
+
+arm = sys.argv[1]
+text = Path(sys.argv[2]).read_text(encoding="utf-8", errors="replace")
+offload = re.findall(r"offloaded ([0-9]+)/([0-9]+) layers to GPU", text)
+buffers = re.findall(r"llama_model_load:\s+([^\n]+?)\s+model buffer size =\s+([0-9.]+) MiB", text)
+if len(offload) != 1:
+    raise SystemExit(f"{arm}: expected exactly one offloaded-layers record")
+if not buffers:
+    raise SystemExit(f"{arm}: no model-buffer placement records")
+cuda_mib = sum(float(size) for name, size in buffers if "CUDA" in name)
+cpu_mib = sum(float(size) for name, size in buffers if "CPU" in name)
+if cuda_mib <= 0 or cpu_mib <= 0:
+    raise SystemExit(f"{arm}: placement evidence must include both CUDA and CPU model buffers")
+payload = {
+    "schema": "tesy.stock_placement_summary.v1",
+    "arm": arm,
+    "offloaded_layers": int(offload[0][0]),
+    "offload_capacity_layers": int(offload[0][1]),
+    "cuda_model_buffer_mib": cuda_mib,
+    "cpu_model_buffer_mib": cpu_mib,
+    "buffer_records": [{"name": name.strip(), "mib": float(size)} for name, size in buffers],
+}
+print(json.dumps(payload, indent=2, sort_keys=True))
+PY
 
   python3 - "$run_dir/resources.jsonl" >"$run_dir/resource-summary.json" <<'PY'
 import json, sys
@@ -182,6 +256,40 @@ if summary["peak_process_swap_bytes"] != 0:
     raise SystemExit("server process used swap")
 PY
 done
+
+python3 - "$out" >"$out/placement-comparison.json" <<'PY'
+import json
+import sys
+from pathlib import Path
+
+root = Path(sys.argv[1])
+rows = []
+for p in sorted(root.glob("[1-4]-*/placement-summary.json")):
+    rows.append(json.loads(p.read_text(encoding="utf-8")))
+if len(rows) != 4:
+    raise SystemExit(f"expected four placement summaries, got {len(rows)}")
+b0 = [r for r in rows if r["arm"] == "b0"]
+b1 = [r for r in rows if r["arm"] == "b1"]
+if len(b0) != 2 or len(b1) != 2:
+    raise SystemExit("expected two B0 and two B1 placement summaries")
+b0_cuda = [r["cuda_model_buffer_mib"] for r in b0]
+b1_cuda = [r["cuda_model_buffer_mib"] for r in b1]
+b0_cpu = [r["cpu_model_buffer_mib"] for r in b0]
+b1_cpu = [r["cpu_model_buffer_mib"] for r in b1]
+separated = max(b1_cuda) < min(b0_cuda) and min(b1_cpu) > max(b0_cpu)
+payload = {
+    "schema": "tesy.stock_placement_comparison.v1",
+    "classification": "MEASURED_MODEL_BUFFER_PLACEMENT",
+    "b0_cuda_model_buffer_mib": b0_cuda,
+    "b1_cuda_model_buffer_mib": b1_cuda,
+    "b0_cpu_model_buffer_mib": b0_cpu,
+    "b1_cpu_model_buffer_mib": b1_cpu,
+    "arm_separation_pass": separated,
+}
+print(json.dumps(payload, indent=2, sort_keys=True))
+if not separated:
+    raise SystemExit("B0/B1 model-buffer placement did not separate as required")
+PY
 
 echo "PASS_DIAGNOSTIC_B0_B1_STOCK_PLACEMENT"
 echo "outputs: $out"
