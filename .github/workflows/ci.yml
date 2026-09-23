@@ -30,3 +30,35 @@ jobs:
         run: python -m compileall -q src tests
       - name: Tests
         run: pytest -q
+
+  native-tracer-build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Resolve llama.cpp pin
+        id: pin
+        shell: bash
+        run: |
+          pin="$(python3 - <<'PY'
+          import json
+          from pathlib import Path
+
+          payload = json.loads(Path("configs/backends.lock.json").read_text())
+          print(next(
+              item["commit"]
+              for item in payload["backends"]
+              if item["id"] == "llama-cpp-stock"
+          ))
+          PY
+          )"
+          echo "pin=$pin" >> "$GITHUB_OUTPUT"
+      - name: Fetch pinned llama.cpp
+        run: |
+          git clone --filter=blob:none https://github.com/ggml-org/llama.cpp.git .deps/llama.cpp
+          git -C .deps/llama.cpp checkout --detach "${{ steps.pin.outputs.pin }}"
+          test -z "$(git -C .deps/llama.cpp status --porcelain)"
+      - name: Configure CPU-only tracer
+        run: |
+          cmake -S native -B .deps/tesy-native-build             -DCMAKE_BUILD_TYPE=Release             -DLLAMA_CPP_DIR="$PWD/.deps/llama.cpp"             -DTESY_NATIVE_CUDA=OFF
+      - name: Build tracer
+        run: cmake --build .deps/tesy-native-build --parallel 2 --target tesy-llama-trace

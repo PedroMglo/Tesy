@@ -16,6 +16,7 @@ from tesy.models import (
     verify_model_file,
 )
 from tesy.planner import GIB, plan_capacity
+from tesy.rawtrace import RawTraceError, read_raw_jsonl, summarize_raw
 from tesy.simulator import simulate_demand_lru
 from tesy.trace import TraceError, read_jsonl, summarize, window_union_metrics
 
@@ -74,16 +75,27 @@ def build_parser() -> argparse.ArgumentParser:
     plan.add_argument("--model", required=True)
     plan.add_argument("--path", type=Path, default=None)
 
-    trace = sub.add_parser("trace", help="analyze normalized routing traces")
+    trace = sub.add_parser("trace", help="analyze routing traces")
     trace_sub = trace.add_subparsers(dest="trace_command", required=True)
-    trace_summary = trace_sub.add_parser("summarize")
+
+    trace_summary = trace_sub.add_parser(
+        "summarize", help="summarize normalized expert-byte traces"
+    )
     trace_summary.add_argument("path", type=Path)
     trace_summary.add_argument(
         "--windows", type=_parse_windows, default=[1, 2, 4, 8]
     )
 
+    raw_summary = trace_sub.add_parser(
+        "raw-summary", help="validate passive router-ID traces"
+    )
+    raw_summary.add_argument("path", type=Path)
+    raw_summary.add_argument("--expected-layers", type=int, default=None)
+    raw_summary.add_argument("--expected-top-k", type=int, default=None)
+    raw_summary.add_argument("--expected-experts", type=int, default=None)
+
     simulate = sub.add_parser(
-        "simulate", help="replay a routing trace through caches"
+        "simulate", help="replay a normalized routing trace through caches"
     )
     simulate.add_argument("--trace", required=True, type=Path)
     simulate.add_argument("--ram-cache-gib", required=True, type=float)
@@ -98,6 +110,12 @@ def build_parser() -> argparse.ArgumentParser:
     report.add_argument("path", type=Path)
 
     return parser
+
+
+def _optional_non_negative(value: int | None, field: str) -> int | None:
+    if value is not None and value < 0:
+        raise ValueError(f"{field} must be non-negative")
+    return value
 
 
 def _run(args: argparse.Namespace) -> int:
@@ -160,6 +178,25 @@ def _run(args: argparse.Namespace) -> int:
         _print(payload)
         return 0
 
+    if args.command == "trace" and args.trace_command == "raw-summary":
+        expected_layers = _optional_non_negative(
+            args.expected_layers, "expected_layers"
+        )
+        expected_top_k = _optional_non_negative(
+            args.expected_top_k, "expected_top_k"
+        )
+        expected_experts = _optional_non_negative(
+            args.expected_experts, "expected_experts"
+        )
+        result = summarize_raw(
+            read_raw_jsonl(args.path),
+            expected_layers=expected_layers,
+            expected_top_k=expected_top_k,
+            expected_experts=expected_experts,
+        )
+        _print(result)
+        return 0 if result["status"] == "PASS" else 2
+
     if args.command == "simulate":
         if args.ram_cache_gib < 0 or args.vram_cache_gib < 0:
             raise ValueError("cache sizes must be non-negative")
@@ -189,6 +226,7 @@ def main(argv: list[str] | None = None) -> int:
     except (
         BackendError,
         ModelLockError,
+        RawTraceError,
         TraceError,
         ValueError,
         OSError,
