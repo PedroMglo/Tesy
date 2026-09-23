@@ -49,6 +49,7 @@ cmd=(
   --no-warmup
   --simple-io
   --no-display-prompt
+  --single-turn
   --prompt "$prompt"
 )
 
