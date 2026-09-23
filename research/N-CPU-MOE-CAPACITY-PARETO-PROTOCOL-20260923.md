@@ -37,6 +37,23 @@ Timed runs freeze:
 No performance threshold or winner is preregistered. The output is a
 calibration frontier.
 
+## Recommended operator sequence
+
+Run the cheap estimator gate first under a dedicated output root:
+
+```bash
+bash scripts/run_n_cpu_moe_capacity_pareto.sh --capacity-only \
+  MODEL.gguf CAPACITY_OUTPUT_ROOT
+```
+
+This mode performs Stages A-C, writes the frozen auto-fit placement and all
+manual capacity estimates, then exits before starting `llama-server` timing
+observations.
+
+Review `capacity-summary.json` before authorizing Stage D. A later full
+capacity+timing campaign must use a new output root and repeats the admission
+gate so its measured campaign-start resources remain self-contained.
+
 ## Stage A — provenance and measured campaign-start resources
 
 Before capacity estimation or timing:
