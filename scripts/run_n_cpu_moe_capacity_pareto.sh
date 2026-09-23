@@ -51,16 +51,28 @@ failure_report() {
   local rc="$1"
   local failed_command="$2"
   local failed_line="$3"
+  local failure_mode="capacity-and-timing"
+  if (( capacity_only == 1 )); then
+    failure_mode="capacity-only"
+  elif (( timing_pilot == 1 )); then
+    failure_mode="timing-pilot"
+  fi
   trap - ERR
-  python3 - "$out/failure.json" "$rc" "$failed_line" "$failed_command" <<'PY' || true
+  python3 - "$out/failure.json" "$rc" "$failed_line" "$failed_command" "$failure_mode" <<'PY' || true
 import json
 import sys
 from pathlib import Path
 
 out = Path(sys.argv[1])
+mode = sys.argv[5]
 payload = {
-    "schema": "tesy.capacity_campaign_failure.v1",
+    "schema": (
+        "tesy.timing_pilot_failure.v1"
+        if mode == "timing-pilot"
+        else "tesy.capacity_campaign_failure.v1"
+    ),
     "classification": "FAIL_CAMPAIGN_COMMAND",
+    "campaign_mode": mode,
     "exit_code": int(sys.argv[2]),
     "line": int(sys.argv[3]),
     "failed_command": sys.argv[4],
