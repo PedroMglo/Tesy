@@ -102,6 +102,14 @@ PY
 mkdir -p "$(dirname "$publish_dir")"
 cp -a "$campaign" "$publish_dir"
 
+cat >"$publish_dir/.gitattributes" <<'EOF'
+# Raw llama-fit-params stdout is preserved byte-for-byte as evidence.
+# The upstream tool emits a trailing space before newline; this is not a
+# publication formatting defect and must not be normalized.
+auto-fit.stdout.txt -whitespace
+capacity/*.stdout.txt -whitespace
+EOF
+
 python3 - "$campaign" "$publish_dir" <<'PY'
 from __future__ import annotations
 
