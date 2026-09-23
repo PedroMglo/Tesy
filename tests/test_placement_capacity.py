@@ -78,3 +78,17 @@ def test_evaluate_capacity_rejects_gpu_shortfall():
     )
     assert payload["admitted"] is False
     assert payload["rejection_reasons"] == ["PROJECTED_GPU_HEADROOM"]
+
+
+def test_parse_fitted_cli_rejects_duplicate_field():
+    with pytest.raises(PlacementCapacityError, match="duplicate fitted CLI field"):
+        parse_fitted_cli("-c 4096 -ngl 25 -ngl 24\n", expected_ctx=4096)
+
+
+def test_parse_fit_print_rejects_multiple_accelerators():
+    with pytest.raises(PlacementCapacityError, match="expected exactly one accelerator"):
+        parse_fit_print(
+            "CUDA0 6000 200 300\n"
+            "CUDA1 6000 200 300\n"
+            "Host 5000 0 100\n"
+        )
