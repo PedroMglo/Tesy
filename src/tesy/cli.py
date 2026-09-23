@@ -10,7 +10,7 @@ from tesy.backend import BackendError, probe_llama_cpp
 from tesy.doctor import collect_snapshot
 from tesy.gguf_inventory import ExpertInventoryError, inspect_gguf_experts
 from tesy.headroom import native_cache_headroom
-from tesy.host_profile import HostProfileError, load_host_profile, validate_reference_host
+from tesy.host_profile import load_host_profile, validate_reference_host
 from tesy.models import (
     ModelLockError,
     get_model,
@@ -22,7 +22,7 @@ from tesy.native_trace import NativeTraceError, read_native_jsonl, summarize_nat
 from tesy.planner import GIB, plan_capacity
 from tesy.simulator import simulate_demand_lru
 from tesy.trace import TraceError, read_jsonl, summarize, window_union_metrics
-from tesy.weighted_trace import WeightedTraceError, native_decode_to_weighted_events
+from tesy.weighted_trace import native_decode_to_weighted_events
 
 
 def _print(payload: Any) -> None:
