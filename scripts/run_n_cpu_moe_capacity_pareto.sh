@@ -17,6 +17,7 @@ out="$2"
 root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 source_dir="${TESY_LLAMA_CPP_DIR:-$root/.deps/llama.cpp}"
 build_dir="${TESY_LLAMA_BUILD_DIR:-$source_dir/build}"
+cli="${TESY_LLAMA_CLI:-$build_dir/bin/llama-cli}"
 server="${TESY_LLAMA_SERVER:-$build_dir/bin/llama-server}"
 fit_tool="${TESY_LLAMA_FIT_PARAMS:-$build_dir/bin/llama-fit-params}"
 toolchain_lock="$root/configs/reference-llama-toolchain.json"
@@ -78,6 +79,7 @@ python3 -m tesy doctor \
   --disk-path "$(dirname "$model")" \
   --reference-profile "$root/configs/reference-host.json" >"$out/doctor.json"
 
+[[ -x "$cli" ]] || { echo "missing llama-cli: $cli" >&2; exit 1; }
 [[ -x "$server" ]] || { echo "missing llama-server: $server" >&2; exit 1; }
 [[ -x "$fit_tool" ]] || {
   echo "missing llama-fit-params: $fit_tool" >&2
@@ -85,7 +87,7 @@ python3 -m tesy doctor \
   exit 1
 }
 python3 -m tesy backend probe \
-  --binary "$server" \
+  --binary "$cli" \
   --source-dir "$source_dir" >"$out/backend.json"
 
 python3 -m tesy.build_provenance \
