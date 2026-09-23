@@ -835,6 +835,8 @@ for run_dir in sorted(
     res = json.loads((run_dir / "resource-summary.json").read_text(encoding="utf-8"))
     ready = json.loads((run_dir / "server-ready.json").read_text(encoding="utf-8"))
     runtime = json.loads((run_dir / "runtime-provenance.json").read_text(encoding="utf-8"))
+    pre_run = json.loads((run_dir / "pre-run-resources.json").read_text(encoding="utf-8"))
+    pre_capacity = json.loads((run_dir / "pre-run-capacity.json").read_text(encoding="utf-8"))
     command = (run_dir / "server-command.txt").read_text(encoding="utf-8").strip()
     placement_lines = [
         line.strip()
@@ -859,6 +861,11 @@ for run_dir in sorted(
         "placement_id": meta["placement_id"],
         "n_cpu_moe": meta["n_cpu_moe"],
         "server_command": command,
+        "pre_run_gpu_free_bytes": pre_run["gpu"]["memory_free_bytes"],
+        "pre_run_gpu_temperature_c": pre_run["gpu"]["temperature_c"],
+        "pre_run_mem_available_bytes": pre_run["memory"]["available_bytes"],
+        "pre_run_capacity_gpu_required_mib": pre_capacity["gpu_required_mib"],
+        "pre_run_capacity_host_required_mib": pre_capacity["host_required_mib"],
         "server_ready_ms": ready["server_ready_ms"],
         "ttft_ms": req["ttft_ms"],
         "request_wall_ms": req["request_wall_ms"],
