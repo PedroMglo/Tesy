@@ -27,3 +27,7 @@ The installed CUDA compiler was absent from PATH. A direct CMake diagnostic with
 ## Pre-campaign checks
 
 `bash -n` on changed scripts: PASS. CMake CUDA compiler-ID with GCC 16: diagnostic FAIL (unsupported GNU version). Fresh CMake configuration with GCC 15: PASS, CUDA 13.3.73, architecture 89. Real model gates: NOT_RUN until campaign starts.
+
+## Prospective retry 3 amendment, after campaign isolation failure
+
+Output root: `results/bringup-20260923T205424Z`. Model, backend pin, prompt, generation flags, byte capacities, stop gates and toolchain remain as above. The two prior output roots remain untouched. The native build tree from the overlapping attempts is renamed and retained; retry 3 configures a fresh native build tree. The stock build tree is independently completed and identified. `run_reference_bringup.sh` now holds an exclusive `flock` across all shared build and model stages. Cheap contention regression: PASS. This is a new diagnostic attempt, not a reclassification of either failed prior attempt.
