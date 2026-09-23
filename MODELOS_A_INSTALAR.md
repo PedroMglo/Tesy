@@ -13,7 +13,7 @@ Razões:
 - 20.91B parâmetros totais e ~3.61B ativos por token segundo a documentação da OpenAI;
 - 24 layers, 32 experts, 4 experts ativos por token;
 - checkpoint nativo usa MXFP4 nos módulos MoE;
-- o GGUF selecionado tem cerca de 12.1 GB e cabe confortavelmente nos 32 GiB do host, deixando margem para validar tracing e baseline antes de introduzir NVMe crítico;
+- o GGUF congelado tem exatamente 12,109,564,352 bytes e cabe nos 32 GiB do host, deixando margem para validar tracing e baseline antes de introduzir NVMe crítico;
 - licença Apache-2.0;
 - existe artefacto GGUF no ecossistema ggml/llama.cpp.
 
@@ -33,11 +33,15 @@ Ficheiro:
 
 `gpt-oss-20b-mxfp4.gguf`
 
+Bytes exatos:
+
+`12,109,564,352`
+
 SHA-256 esperado:
 
 `52f57ab7d3df3ba9173827c1c6832e73375553a846f3e32b49f1ae2daad688d4`
 
-A página do artefacto reporta ~12.1 GB. O lock não inventa um byte-count exato que a fonte consultada não forneceu.
+O byte-count e o SHA estão ligados ao artefacto/revision congelados no model lock; não uses uma variante com nome/case/revision diferente como substituto silencioso.
 
 ### Download
 
@@ -79,6 +83,13 @@ Fontes:
 - https://openai.com/index/introducing-gpt-oss/
 - https://huggingface.co/openai/gpt-oss-20b/blob/main/config.json
 - https://huggingface.co/ggml-org/gpt-oss-20b-GGUF/blob/a7443ebb00ba299cbbbf7e9b69487670447ae8c0/gpt-oss-20b-mxfp4.gguf
+- https://huggingface.co/ggml-org/gpt-oss-20b-GGUF/commit/8153e856b2e87ef0f579525b57ea21205734cf9c
+
+### vLLM nesta fase
+
+Não instales vLLM como requisito do primeiro bring-up.
+
+Tesy mantém vLLM como baseline/reference B4 porque ele tem MoE/offload relevantes, mas o alvo inicial é um RTX 4060 Laptop de 8 GiB e a rota GPT-OSS/vLLM atual é muito mais orientada a GPUs com maior orçamento. A instalação só passa a experiência executável depois de uma revisão de capacidade e compatibilidade no host.
 
 ---
 
