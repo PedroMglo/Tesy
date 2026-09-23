@@ -16,8 +16,10 @@ model="$1"
 out="$2"
 root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 source_dir="${TESY_LLAMA_CPP_DIR:-$root/.deps/llama.cpp}"
-server="${TESY_LLAMA_SERVER:-$source_dir/build/bin/llama-server}"
-fit_tool="${TESY_LLAMA_FIT_PARAMS:-$source_dir/build/bin/llama-fit-params}"
+build_dir="${TESY_LLAMA_BUILD_DIR:-$source_dir/build}"
+server="${TESY_LLAMA_SERVER:-$build_dir/bin/llama-server}"
+fit_tool="${TESY_LLAMA_FIT_PARAMS:-$build_dir/bin/llama-fit-params}"
+toolchain_lock="$root/configs/reference-llama-toolchain.json"
 prompt_file="$root/benchmarks/prompts/b0-b1-diagnostic.txt"
 lock_file="${XDG_RUNTIME_DIR:-/tmp}/tesy-placement-capacity-pareto.lock"
 base_port="${TESY_SWEEP_PORT_BASE:-18120}"
@@ -52,6 +54,12 @@ python3 -m tesy doctor \
 python3 -m tesy backend probe \
   --binary "$server" \
   --source-dir "$source_dir" >"$out/backend.json"
+
+python3 -m tesy.build_provenance \
+  --build-dir "$build_dir" \
+  --server "$server" \
+  --fit-tool "$fit_tool" \
+  --reference "$toolchain_lock" >"$out/build-provenance.json"
 
 server_help="$("$server" --help 2>&1)"
 for flag in --n-cpu-moe --fit --fit-target --n-gpu-layers --host --port --no-warmup; do
