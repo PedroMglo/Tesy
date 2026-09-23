@@ -86,6 +86,53 @@ if ! flock -n 9; then
   exit 1
 fi
 
+if (( timing_pilot == 1 )); then
+  test -d "$capacity_evidence_dir"
+  test -f "$capacity_evidence_dir/capacity-summary.json"
+  test -f "$capacity_evidence_dir/auto-fit.json"
+  test -f "$capacity_evidence_dir/publication-manifest.json"
+
+  if ! git -C "$root" merge-base --is-ancestor "$capacity_evidence_commit" HEAD; then
+    echo "capacity evidence commit is not an ancestor of current HEAD: $capacity_evidence_commit" >&2
+    exit 1
+  fi
+
+  python3 - "$capacity_evidence_dir" "$capacity_evidence_commit" >"$out/source-capacity.json" <<'PY'
+import json
+import sys
+from pathlib import Path
+
+root = Path(sys.argv[1])
+commit = sys.argv[2]
+summary = json.loads((root / "capacity-summary.json").read_text(encoding="utf-8"))
+auto = json.loads((root / "auto-fit.json").read_text(encoding="utf-8"))
+manifest = json.loads((root / "publication-manifest.json").read_text(encoding="utf-8"))
+
+if summary.get("schema") != "tesy.n_cpu_moe_capacity_gate.v1":
+    raise SystemExit("invalid source capacity schema")
+if summary.get("performance_gate") != "PASS":
+    raise SystemExit("source capacity gate did not PASS")
+if summary.get("admitted_n_cpu_moe") != [12, 16, 20, 24]:
+    raise SystemExit("unexpected source admitted set")
+if auto.get("schema") != "tesy.llama_fit_args.v1" or auto.get("ctx_size") != 4096:
+    raise SystemExit("invalid source auto-fit placement")
+if manifest.get("schema") != "tesy.n_cpu_moe_capacity_publication.v1":
+    raise SystemExit("invalid source publication manifest")
+
+print(json.dumps({
+    "schema": "tesy.timing_pilot_source_capacity.v1",
+    "classification": "SOURCE_BACKED_CAPACITY_EVIDENCE",
+    "capacity_evidence_commit": commit,
+    "admitted_n_cpu_moe": summary["admitted_n_cpu_moe"],
+    "auto_fit_argv": auto["argv"],
+    "claim_boundary": (
+        "Published capacity evidence selecting pilot placements. "
+        "Current-host admission is rechecked before timing."
+    ),
+}, indent=2, sort_keys=True))
+PY
+fi
+
 python3 -m tesy models verify gpt-oss-20b-mxfp4-gguf "$model" >"$out/model.json"
 python3 -m tesy doctor \
   --disk-path "$(dirname "$model")" \
