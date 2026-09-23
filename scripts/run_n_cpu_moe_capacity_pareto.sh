@@ -680,6 +680,12 @@ for run_dir in sorted(
     res = json.loads((run_dir / "resource-summary.json").read_text(encoding="utf-8"))
     ready = json.loads((run_dir / "server-ready.json").read_text(encoding="utf-8"))
     runtime = json.loads((run_dir / "runtime-provenance.json").read_text(encoding="utf-8"))
+    command = (run_dir / "server-command.txt").read_text(encoding="utf-8").strip()
+    placement_lines = [
+        line.strip()
+        for line in (run_dir / "placement.txt").read_text(encoding="utf-8").splitlines()
+        if line.strip()
+    ]
     tokens = req.get("generated_token_ids")
     timings = req["timings"]
 
@@ -697,18 +703,29 @@ for run_dir in sorted(
         "run": run_dir.name,
         "placement_id": meta["placement_id"],
         "n_cpu_moe": meta["n_cpu_moe"],
+        "server_command": command,
         "server_ready_ms": ready["server_ready_ms"],
         "ttft_ms": req["ttft_ms"],
         "request_wall_ms": req["request_wall_ms"],
+        "prompt_n": timings["prompt_n"],
+        "prompt_ms": timings["prompt_ms"],
         "prompt_tps": timings["prompt_per_second"],
+        "predicted_n": timings["predicted_n"],
+        "predicted_ms": timings["predicted_ms"],
         "decode_tps": timings["predicted_per_second"],
+        "resource_samples": res["samples"],
+        "gpu_valid_samples": res["gpu_valid_samples"],
         "peak_gpu_memory_bytes": res["peak_gpu_memory_used_bytes"],
         "min_observed_gpu_free_bytes": res["min_observed_gpu_free_bytes"],
         "peak_process_rss_bytes": res["peak_process_rss_bytes"],
         "peak_process_swap_bytes": res["peak_process_swap_bytes"],
+        "min_mem_available_bytes": res["min_mem_available_bytes"],
+        "min_swap_free_bytes": res["min_swap_free_bytes"],
         "max_gpu_temperature_c": res["max_gpu_temperature_c"],
         "max_gpu_power_w": res["max_gpu_power_w"],
         "gpu_failed_samples": res["gpu_failed_samples"],
+        "runtime_provenance_status": runtime["status"],
+        "placement_log_lines": placement_lines,
         "token_sha256": hashlib.sha256(token_blob).hexdigest(),
     })
 
