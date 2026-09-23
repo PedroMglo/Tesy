@@ -65,13 +65,14 @@ Per fresh process:
 - request TTFT measured client-side to first non-empty SSE content;
 - server `prompt_n/prompt_ms/prompt_per_second`;
 - server `predicted_n/predicted_ms/predicted_per_second`;
+- exact 64 generated token IDs and SHA-256 trajectory identity;
 - total request wall time;
 - peak observed GPU memory used;
 - peak process VmRSS/VmSwap;
 - minimum system MemAvailable/SwapFree;
 - GPU temperature/pstate/power samples where available;
-- source/backend/model identities;
-- placement/load log excerpts.
+- source/backend/model identities, with backend source HEAD enforced against the lock;
+- non-empty placement/load log excerpts.
 
 Do not call nvidia-smi sample bytes PCIe traffic.
 
@@ -85,7 +86,8 @@ Stop an arm/repetition on:
 - OOM;
 - server process swap > 0;
 - non-finite timing;
-- corrupted/missing required telemetry.
+- corrupted/missing required telemetry;
+- generated-token trajectory mismatch across B0/B1 or fewer than 64 generated IDs.
 
 A failed repetition is preserved. Debugging uses a new campaign identity.
 
@@ -107,3 +109,18 @@ It does not measure:
 After B0/B1, the next cheap gate is CPU-resident expert compute versus
 RAM->GPU transfer+compute versus already-resident GPU compute using real expert
 shapes. Only then decide whether a native cache/prefetch mechanism is justified.
+
+
+## Review amendment
+
+The original runner recorded timing without retaining generated token IDs and
+treated placement log extraction as optional. That is no longer admitted.
+
+The runner now:
+- executes the pinned backend provenance probe before model measurement;
+- requires non-empty placement telemetry for every fresh process;
+- records exactly 64 generated token IDs per observation;
+- stops on the first trajectory mismatch across the four B0/B1 runs.
+
+Older B0/B1 results produced without these gates are diagnostic only and must
+not be promoted as an identical-trajectory placement comparison.
