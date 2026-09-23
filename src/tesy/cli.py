@@ -10,6 +10,7 @@ from tesy.backend import BackendError, probe_llama_cpp
 from tesy.doctor import collect_snapshot
 from tesy.gguf_inventory import ExpertInventoryError, inspect_gguf_experts
 from tesy.headroom import native_cache_headroom
+from tesy.host_profile import HostProfileError, load_host_profile, validate_reference_host
 from tesy.models import (
     ModelLockError,
     get_model,
@@ -60,6 +61,7 @@ def build_parser() -> argparse.ArgumentParser:
         "doctor", help="inspect the live host without opening a model"
     )
     doctor.add_argument("--disk-path", type=Path, default=None)
+    doctor.add_argument("--reference-profile", type=Path, default=None)
 
     backend = sub.add_parser("backend", help="probe pinned backend provenance")
     backend_sub = backend.add_subparsers(dest="backend_command", required=True)
@@ -143,8 +145,17 @@ def build_parser() -> argparse.ArgumentParser:
 
 def _run(args: argparse.Namespace) -> int:
     if args.command == "doctor":
-        _print(collect_snapshot(args.disk_path))
-        return 0
+        snapshot = collect_snapshot(args.disk_path)
+        if args.reference_profile is None:
+            _print(snapshot)
+            return 0
+        profile = load_host_profile(args.reference_profile)
+        result = {
+            "snapshot": snapshot,
+            "reference_check": validate_reference_host(snapshot, profile),
+        }
+        _print(result)
+        return 0 if result["reference_check"]["status"] == "PASS" else 2
 
     if args.command == "backend" and args.backend_command == "probe":
         result = probe_llama_cpp(
