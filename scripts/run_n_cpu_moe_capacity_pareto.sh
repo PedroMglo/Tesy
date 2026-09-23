@@ -164,7 +164,7 @@ for n in "${candidates[@]}"; do
   "$fit_tool" \
     --model "$model" \
     --ctx-size 4096 \
-    --gpu-layers auto \
+    --gpu-layers all \
     --n-cpu-moe "$n" \
     --fit off \
     --fit-print on \
@@ -302,7 +302,7 @@ PY
   else
     cmd+=(
       --ctx-size 4096
-      --gpu-layers auto
+      --gpu-layers all
       --n-cpu-moe "$n"
     )
   fi
