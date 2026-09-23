@@ -21,6 +21,7 @@ from tesy.native_trace import NativeTraceError, read_native_jsonl, summarize_nat
 from tesy.planner import GIB, plan_capacity
 from tesy.simulator import simulate_demand_lru
 from tesy.trace import TraceError, read_jsonl, summarize, window_union_metrics
+from tesy.weighted_trace import WeightedTraceError, native_decode_to_weighted_events
 
 
 def _print(payload: Any) -> None:
@@ -112,6 +113,15 @@ def build_parser() -> argparse.ArgumentParser:
         default=[0, 32, 64, 128],
     )
     native_headroom.add_argument("--min-graph-seq", type=int, default=0)
+    native_sim = trace_sub.add_parser(
+        "simulate-native",
+        help="simulate byte-weighted caches from native trace + GGUF inventory",
+    )
+    native_sim.add_argument("path", type=Path)
+    native_sim.add_argument("--inventory", required=True, type=Path)
+    native_sim.add_argument("--ram-cache-gib", required=True, type=float)
+    native_sim.add_argument("--vram-cache-gib", required=True, type=float)
+    native_sim.add_argument("--min-graph-seq", type=int, default=0)
 
     simulate = sub.add_parser(
         "simulate", help="replay a routing trace through caches"
@@ -213,6 +223,33 @@ def _run(args: argparse.Namespace) -> int:
                 min_graph_seq=args.min_graph_seq,
             )
         )
+        return 0
+
+    if args.command == "trace" and args.trace_command == "simulate-native":
+        if args.ram_cache_gib < 0 or args.vram_cache_gib < 0:
+            raise ValueError("cache sizes must be non-negative")
+        inventory = json.loads(args.inventory.read_text(encoding="utf-8"))
+        events = native_decode_to_weighted_events(
+            read_native_jsonl(args.path),
+            inventory,
+            min_graph_seq=args.min_graph_seq,
+        )
+        result = simulate_demand_lru(
+            events,
+            ram_cache_bytes=int(args.ram_cache_gib * GIB),
+            vram_cache_bytes=int(args.vram_cache_gib * GIB),
+            phase="decode",
+        )
+        result["schema"] = "tesy.native_weighted_cache_simulation.v1"
+        result["classification"] = "TRACE_DERIVED_ENCODED_PAYLOAD_SIMULATION"
+        result["min_graph_seq"] = args.min_graph_seq
+        result["inventory_classification"] = inventory.get("classification")
+        result["claim_boundary"] = (
+            "Demand-only two-tier LRU simulation using exact routed expert IDs and "
+            "GGUF-derived encoded payload sizes. Values are hypothetical cache "
+            "movement under this policy, not measured NVMe, DRAM or PCIe traffic."
+        )
+        _print(result)
         return 0
 
     if args.command == "simulate":
