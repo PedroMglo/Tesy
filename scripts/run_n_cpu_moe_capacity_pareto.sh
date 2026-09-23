@@ -796,6 +796,10 @@ summary = {
     ),
 }
 print(json.dumps(summary, indent=2, sort_keys=True))
+if summary["gpu_failed_samples"] != 0:
+    raise SystemExit(
+        f"GPU telemetry incomplete: {summary['gpu_failed_samples']} failed samples"
+    )
 if summary["peak_process_swap_bytes"] != 0:
     raise SystemExit("server process used swap")
 if summary["min_observed_gpu_free_bytes"] < gpu_target_bytes:
