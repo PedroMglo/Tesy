@@ -41,3 +41,45 @@ def test_manual_capacity_estimation_is_explicit_all_gpu_plus_cpu_moe():
     assert "--gpu-layers all" in text
     assert '--n-cpu-moe "$n"' in text
     assert "--fit-print on" in text
+
+
+def test_timing_pilot_is_bound_to_published_capacity_evidence():
+    root = Path(__file__).resolve().parents[1]
+    text = (root / "scripts" / "run_n_cpu_moe_capacity_pareto.sh").read_text(
+        encoding="utf-8"
+    )
+
+    assert '--timing-pilot' in text
+    assert (
+        'capacity_evidence_commit="5a8bbf08eb95069b1847f724e5d1be98c6392678"'
+        in text
+    )
+    assert 'cp "$capacity_evidence_dir/auto-fit.json" "$out/auto-fit.json"' in text
+    assert 'git -C "$root" merge-base --is-ancestor "$capacity_evidence_commit" HEAD' in text
+
+
+def test_timing_pilot_rechecks_exactly_three_selected_placements():
+    root = Path(__file__).resolve().parents[1]
+    text = (root / "scripts" / "run_n_cpu_moe_capacity_pareto.sh").read_text(
+        encoding="utf-8"
+    )
+
+    assert 'candidates=(12 24)' in text
+    assert '--placement-id "auto-fit-frozen"' in text
+    assert 'order=("auto" "n12" "n24")' in text
+    assert '"schema": "tesy.timing_pilot_capacity_gate.v1"' in text
+
+
+def test_timing_pilot_has_separate_non_pareto_summary_and_exit():
+    root = Path(__file__).resolve().parents[1]
+    text = (root / "scripts" / "run_n_cpu_moe_capacity_pareto.sh").read_text(
+        encoding="utf-8"
+    )
+
+    pilot_summary = text.index('"$out/pilot-summary.json"')
+    pilot_pass = text.index("PASS_DIAGNOSTIC_STOCK_PLACEMENT_TIMING_PILOT")
+    sweep_summary = text.index('"$out/sweep-summary.json"')
+
+    assert pilot_summary < pilot_pass < sweep_summary
+    assert '"schema": "tesy.stock_placement_timing_pilot.v1"' in text
+    assert "no confirmatory performance winner or Pareto frontier follows" in text
