@@ -35,6 +35,7 @@ struct trace_file {
     int last_layer = -1;
     bool seen_layer = false;
     std::vector<unsigned char> scratch;
+    bool failed = false;
 };
 
 bool parse_layer(const char * name, int * layer) {
@@ -226,6 +227,42 @@ std::string apply_single_turn_chat(const llama_model * model, const std::string 
     return formatted;
 }
 
+bool write_tokens_no_replace(
+    const std::string & path, const std::vector<llama_token> & tokens) {
+    if (path.empty()) {
+        return true;
+    }
+
+    FILE * file = std::fopen(path.c_str(), "wx");
+    if (!file) {
+        std::fprintf(stderr, "cannot create token evidence %s: %s\\n",
+                     path.c_str(), std::strerror(errno));
+        return false;
+    }
+
+    bool ok = std::fputs(
+        "{\"schema\":\"tesy.generated_tokens.v1\",\"tokens\":[", file) != EOF;
+    for (size_t i = 0; ok && i < tokens.size(); ++i) {
+        if (i != 0 && std::fputc(',', file) == EOF) {
+            ok = false;
+            break;
+        }
+        if (std::fprintf(file, "%" PRId32, static_cast<int32_t>(tokens[i])) < 0) {
+            ok = false;
+        }
+    }
+    if (ok && std::fputs("]}\\n", file) == EOF) {
+        ok = false;
+    }
+    if (std::fclose(file) != 0) {
+        ok = false;
+    }
+    if (!ok) {
+        std::fprintf(stderr, "failed writing token evidence %s\\n", path.c_str());
+    }
+    return ok;
+}
+
 std::vector<llama_token> tokenize(
     const llama_vocab * vocab, const std::string & text) {
     const int32_t required =
@@ -321,6 +358,13 @@ int main(int argc, char ** argv) {
     while (generated < opt.n_predict) {
         if (llama_decode(ctx, batch) != 0) {
             std::fprintf(stderr, "llama_decode failed\n");
+            llama_sampler_free(sampler);
+            llama_free(ctx);
+            llama_model_free(model);
+            return 2;
+        }
+        if (trace && trace->failed) {
+            std::fprintf(stderr, "routing trace callback failed\\n");
             llama_sampler_free(sampler);
             llama_free(ctx);
             llama_model_free(model);
