@@ -657,6 +657,94 @@ PY
   }
 done
 
+if (( timing_pilot == 1 )); then
+  python3 - "$out" "$capacity_evidence_commit" >"$out/pilot-summary.json" <<'PY'
+from __future__ import annotations
+
+import hashlib
+import json
+import sys
+from pathlib import Path
+
+root = Path(sys.argv[1])
+capacity_commit = sys.argv[2]
+expected = ["auto-fit-frozen", "n-cpu-moe-12", "n-cpu-moe-24"]
+rows = []
+
+for run_dir in sorted(
+    path for path in root.iterdir()
+    if path.is_dir() and path.name[:2].isdigit()
+):
+    meta = json.loads((run_dir / "run-metadata.json").read_text(encoding="utf-8"))
+    req = json.loads((run_dir / "request.json").read_text(encoding="utf-8"))
+    res = json.loads((run_dir / "resource-summary.json").read_text(encoding="utf-8"))
+    ready = json.loads((run_dir / "server-ready.json").read_text(encoding="utf-8"))
+    runtime = json.loads((run_dir / "runtime-provenance.json").read_text(encoding="utf-8"))
+    tokens = req.get("generated_token_ids")
+    timings = req["timings"]
+
+    if runtime["status"] != "PASS":
+        raise SystemExit(f"runtime provenance did not PASS: {run_dir}")
+    if (
+        not isinstance(tokens, list)
+        or len(tokens) != 64
+        or timings["predicted_n"] != 64
+    ):
+        raise SystemExit(f"invalid exact 64-token trajectory: {run_dir}")
+
+    token_blob = json.dumps(tokens, separators=(",", ":")).encode()
+    rows.append({
+        "run": run_dir.name,
+        "placement_id": meta["placement_id"],
+        "n_cpu_moe": meta["n_cpu_moe"],
+        "server_ready_ms": ready["server_ready_ms"],
+        "ttft_ms": req["ttft_ms"],
+        "request_wall_ms": req["request_wall_ms"],
+        "prompt_tps": timings["prompt_per_second"],
+        "decode_tps": timings["predicted_per_second"],
+        "peak_gpu_memory_bytes": res["peak_gpu_memory_used_bytes"],
+        "min_observed_gpu_free_bytes": res["min_observed_gpu_free_bytes"],
+        "peak_process_rss_bytes": res["peak_process_rss_bytes"],
+        "peak_process_swap_bytes": res["peak_process_swap_bytes"],
+        "max_gpu_temperature_c": res["max_gpu_temperature_c"],
+        "max_gpu_power_w": res["max_gpu_power_w"],
+        "gpu_failed_samples": res["gpu_failed_samples"],
+        "token_sha256": hashlib.sha256(token_blob).hexdigest(),
+    })
+
+placements = [row["placement_id"] for row in rows]
+if placements != expected:
+    raise SystemExit(f"pilot placement/order mismatch: {placements!r}")
+
+trajectory_hashes = sorted({row["token_sha256"] for row in rows})
+if len(trajectory_hashes) != 1:
+    raise SystemExit("FAIL_TRAJECTORY_COMPARABILITY")
+
+print(json.dumps({
+    "schema": "tesy.stock_placement_timing_pilot.v1",
+    "classification": "MEASURED_STOCK_PLACEMENT_PILOT_DIAGNOSTIC",
+    "capacity_evidence_commit": capacity_commit,
+    "order": placements,
+    "observations": rows,
+    "trajectory_comparability": {
+        "status": "PASS",
+        "required_token_count": 64,
+        "unique_token_trajectory_hashes": trajectory_hashes,
+    },
+    "claim_boundary": (
+        "One observation per placement diagnostic pilot. Timings and observed "
+        "resources are measured on the locked host/workload, but no confirmatory "
+        "performance winner or Pareto frontier follows. No physical PCIe/NVMe, "
+        "Tesy speedup, >RAM or novelty claim follows."
+    ),
+}, indent=2, sort_keys=True))
+PY
+
+  echo "PASS_DIAGNOSTIC_STOCK_PLACEMENT_TIMING_PILOT"
+  echo "outputs: $out"
+  exit 0
+fi
+
 python3 - "$out" >"$out/sweep-summary.json" <<'PY'
 from __future__ import annotations
 
