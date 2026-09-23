@@ -136,13 +136,14 @@ struct options {
     int n_gpu_layers = 99;
     uint32_t n_ctx = 4096;
     bool chat = true;
+    bool cpu_moe = false;
 };
 
 [[noreturn]] void usage(const char * argv0, int code) {
     std::fprintf(
         code == 0 ? stdout : stderr,
-        "usage: %s --model MODEL.gguf --trace TRACE.jsonl "
-        "[--prompt TEXT] [--n-predict N] [--ngl N] [--ctx N] [--raw-prompt]\n",
+        "usage: %s --model MODEL.gguf [--trace TRACE.jsonl] [--tokens-out TOKENS.json] "
+        "[--prompt TEXT] [--n-predict N] [--ngl N] [--ctx N] [--cpu-moe] [--raw-prompt]\n",
         argv0);
     std::exit(code);
 }
@@ -186,6 +187,8 @@ options parse_options(int argc, char ** argv) {
         } else if (arg == "--ctx") {
             out.n_ctx = static_cast<uint32_t>(
                 parse_int(require_value("--ctx"), "--ctx", 16));
+        } else if (arg == "--cpu-moe") {
+            out.cpu_moe = true;
         } else if (arg == "--raw-prompt") {
             out.chat = false;
         } else if (arg == "--help" || arg == "-h") {
@@ -302,6 +305,16 @@ int main(int argc, char ** argv) {
 
     llama_model_params model_params = llama_model_default_params();
     model_params.n_gpu_layers = opt.n_gpu_layers;
+
+    static const char * const moe_pattern =
+        "\\.ffn_(up|down|gate|gate_up)_(ch|)exps";
+    llama_model_tensor_buft_override cpu_moe_overrides[] = {
+        {moe_pattern, ggml_backend_cpu_buffer_type()},
+        {nullptr, nullptr},
+    };
+    if (opt.cpu_moe) {
+        model_params.tensor_buft_overrides = cpu_moe_overrides;
+    }
 
     llama_model * model = llama_model_load_from_file(opt.model.c_str(), model_params);
     if (!model) {
