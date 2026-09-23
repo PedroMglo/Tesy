@@ -109,6 +109,18 @@ def _source_state(source_dir: Path, expected_commit: str) -> dict[str, Any]:
     }
 
 
+def verify_source_state(
+    source_dir: Path,
+    backend_id: str = "llama-cpp-stock",
+) -> dict[str, Any]:
+    lock = load_backend_lock()
+    backend = get_backend(lock, backend_id)
+    expected_commit = backend.get("commit")
+    if not isinstance(expected_commit, str) or len(expected_commit) != 40:
+        raise BackendError("locked backend commit must be a 40-character SHA")
+    return _source_state(source_dir, expected_commit)
+
+
 def probe_llama_cpp(
     binary: Path,
     source_dir: Path | None = None,

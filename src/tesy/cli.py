@@ -8,6 +8,7 @@ from typing import Any
 
 from tesy.backend import BackendError, probe_llama_cpp
 from tesy.doctor import collect_snapshot
+from tesy.gguf_inventory import ExpertInventoryError, inspect_gguf_experts
 from tesy.headroom import native_cache_headroom
 from tesy.models import (
     ModelLockError,
@@ -75,6 +76,13 @@ def build_parser() -> argparse.ArgumentParser:
     verify = model_sub.add_parser("verify", help="verify a locked model artifact")
     verify.add_argument("model_id")
     verify.add_argument("path", type=Path)
+    inventory = model_sub.add_parser(
+        "inventory-experts",
+        help="derive encoded expert payload bytes from a GGUF",
+    )
+    inventory.add_argument("model_id")
+    inventory.add_argument("path", type=Path)
+    inventory.add_argument("--llama-source", required=True, type=Path)
 
     plan = sub.add_parser(
         "plan", help="produce a conservative static capacity admission"
@@ -159,6 +167,16 @@ def _run(args: argparse.Namespace) -> int:
             result = verify_model_file(model, args.path)
             _print(result)
             return 0 if result["status"] == "PASS" else 2
+        if args.models_command == "inventory-experts":
+            model = get_model(lock, args.model_id)
+            verification = verify_model_file(model, args.path)
+            if verification["status"] != "PASS":
+                _print(verification)
+                return 2
+            result = inspect_gguf_experts(args.path, args.llama_source)
+            result["model_id"] = model["id"]
+            _print(result)
+            return 0 if result["status"] == "PASS_DERIVATION" else 2
 
     if args.command == "plan":
         lock = load_lock()
@@ -225,6 +243,7 @@ def main(argv: list[str] | None = None) -> int:
         return _run(args)
     except (
         BackendError,
+        ExpertInventoryError,
         ModelLockError,
         NativeTraceError,
         TraceError,
