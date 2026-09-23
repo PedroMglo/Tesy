@@ -8,6 +8,7 @@ from typing import Any
 
 from tesy.backend import BackendError, probe_llama_cpp
 from tesy.doctor import collect_snapshot
+from tesy.headroom import native_cache_headroom
 from tesy.models import (
     ModelLockError,
     get_model,
@@ -25,19 +26,25 @@ def _print(payload: Any) -> None:
     print(json.dumps(payload, indent=2, sort_keys=True))
 
 
-def _parse_windows(raw: str) -> list[int]:
-    windows: list[int] = []
+def _parse_int_list(raw: str, label: str, minimum: int) -> list[int]:
+    values: list[int] = []
     for item in raw.split(","):
         try:
             value = int(item)
         except ValueError as exc:
-            raise argparse.ArgumentTypeError(f"invalid window: {item}") from exc
-        if value <= 0:
-            raise argparse.ArgumentTypeError("windows must be positive")
-        windows.append(value)
-    if not windows:
-        raise argparse.ArgumentTypeError("at least one window is required")
-    return windows
+            raise argparse.ArgumentTypeError(f"invalid {label}: {item}") from exc
+        if value < minimum:
+            raise argparse.ArgumentTypeError(
+                f"{label} values must be >= {minimum}"
+            )
+        values.append(value)
+    if not values:
+        raise argparse.ArgumentTypeError(f"at least one {label} is required")
+    return values
+
+
+def _parse_windows(raw: str) -> list[int]:
+    return _parse_int_list(raw, "window", 1)
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -86,6 +93,17 @@ def build_parser() -> argparse.ArgumentParser:
         "summarize-native", help="summarize raw llama.cpp MoE top-k traces"
     )
     native_summary.add_argument("path", type=Path)
+    native_headroom = trace_sub.add_parser(
+        "headroom-native",
+        help="estimate count-space cache headroom from one-token graph traces",
+    )
+    native_headroom.add_argument("path", type=Path)
+    native_headroom.add_argument(
+        "--slots",
+        type=lambda raw: _parse_int_list(raw, "slot", 0),
+        default=[0, 32, 64, 128],
+    )
+    native_headroom.add_argument("--min-graph-seq", type=int, default=0)
 
     simulate = sub.add_parser(
         "simulate", help="replay a routing trace through caches"
@@ -167,6 +185,16 @@ def _run(args: argparse.Namespace) -> int:
 
     if args.command == "trace" and args.trace_command == "summarize-native":
         _print(summarize_native(read_native_jsonl(args.path)))
+        return 0
+
+    if args.command == "trace" and args.trace_command == "headroom-native":
+        _print(
+            native_cache_headroom(
+                read_native_jsonl(args.path),
+                args.slots,
+                min_graph_seq=args.min_graph_seq,
+            )
+        )
         return 0
 
     if args.command == "simulate":
