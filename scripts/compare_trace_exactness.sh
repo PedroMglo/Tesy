@@ -12,6 +12,12 @@ prompt="${3:-Explain why sparse Mixture-of-Experts models can be memory bound.}"
 root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 binary="${TESY_TRACE_BINARY:-$root/build/tesy-native/tesy-moe-trace}"
 source_dir="${TESY_LLAMA_CPP_DIR:-$root/.deps/llama.cpp}"
+trace_ngl="${TESY_TRACE_NGL:-0}"
+
+if ! [[ "$trace_ngl" =~ ^[0-9]+$ ]]; then
+  echo "TESY_TRACE_NGL must be a non-negative integer" >&2
+  exit 2
+fi
 
 if [[ ! -x "$binary" ]]; then
   echo "missing tracer binary: $binary" >&2
@@ -80,7 +86,7 @@ common=(
   --prompt "$prompt"
   --n-predict 16
   --ctx 4096
-  --ngl 99
+  --ngl "$trace_ngl"
   --raw-prompt
 )
 
