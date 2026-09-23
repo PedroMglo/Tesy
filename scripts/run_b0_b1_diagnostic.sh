@@ -30,6 +30,8 @@ python3 -m tesy models verify gpt-oss-20b-mxfp4-gguf "$model" >"$out/model.json"
 python3 -m tesy doctor --disk-path "$(dirname "$model")"   --reference-profile "$root/configs/reference-host.json" >"$out/doctor.json"
 
 [[ -x "$server" ]] || { echo "missing llama-server: $server" >&2; exit 1; }
+python3 -m tesy backend probe   --binary "$server"   --source-dir "$source_dir" >"$out/backend.json"
+
 help="$("$server" --help 2>&1)"
 for flag in --cpu-moe --fit --fit-target --n-gpu-layers --host --port --no-warmup; do
   grep -F -- "$flag" <<<"$help" >/dev/null || {
@@ -118,13 +120,40 @@ PY
 
   python3 -m tesy.server_client     --url "http://127.0.0.1:$port/completion"     --prompt-file "$prompt_file"     --n-predict 64     --output "$run_dir/request.json"
 
+  token_sha="$(
+    python3 - "$run_dir/request.json" <<'PY'
+import hashlib
+import json
+import sys
+from pathlib import Path
+
+payload = json.loads(Path(sys.argv[1]).read_text(encoding="utf-8"))
+tokens = payload.get("generated_token_ids")
+if not isinstance(tokens, list) or len(tokens) != 64:
+    raise SystemExit(f"expected exactly 64 generated token IDs, got {tokens!r}")
+blob = json.dumps(tokens, separators=(",", ":")).encode()
+print(hashlib.sha256(blob).hexdigest())
+PY
+  )"
+  printf '%s\n' "$token_sha" >"$run_dir/token-sha256.txt"
+  if [[ -z "${reference_token_sha:-}" ]]; then
+    reference_token_sha="$token_sha"
+  elif [[ "$token_sha" != "$reference_token_sha" ]]; then
+    echo "FAIL_TRAJECTORY_COMPARABILITY: $arm token IDs differ" >&2
+    exit 1
+  fi
+
   kill "$server_pid"
   wait "$server_pid" || true
   server_pid=""
   wait "$monitor_pid" || true
   monitor_pid=""
 
-  grep -Ei 'offload|model buffer|compute buffer|CPU_Mapped|CUDA[0-9]'     "$run_dir/server.stderr.txt" >"$run_dir/placement.txt" || true
+  cat "$run_dir/server.stderr.txt" "$run_dir/server.stdout.txt" |     grep -Ei 'offload|model buffer|compute buffer|CPU_Mapped|CUDA[0-9]'     >"$run_dir/placement.txt" || true
+  if [[ ! -s "$run_dir/placement.txt" ]]; then
+    echo "missing required placement telemetry for $arm" >&2
+    exit 1
+  fi
 
   python3 - "$run_dir/resources.jsonl" >"$run_dir/resource-summary.json" <<'PY'
 import json, sys
