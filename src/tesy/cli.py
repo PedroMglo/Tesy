@@ -8,6 +8,7 @@ from typing import Any
 
 from tesy.backend import BackendError, probe_llama_cpp
 from tesy.doctor import collect_snapshot
+from tesy.downloads import DownloadPlanError, build_download_plan, execute_download_plan
 from tesy.gguf_inventory import ExpertInventoryError, inspect_gguf_experts
 from tesy.headroom import native_cache_headroom
 from tesy.host_profile import load_host_profile, validate_reference_host
@@ -91,6 +92,14 @@ def build_parser() -> argparse.ArgumentParser:
     inventory.add_argument("model_id")
     inventory.add_argument("path", type=Path)
     inventory.add_argument("--llama-source", required=True, type=Path)
+    download = model_sub.add_parser(
+        "download",
+        help="plan or explicitly execute a fully locked model download",
+    )
+    download.add_argument("model_id")
+    download.add_argument("--destination", required=True, type=Path)
+    download.add_argument("--execute", action="store_true")
+    download.add_argument("--yes", action="store_true")
 
     plan = sub.add_parser(
         "plan", help="produce a conservative static capacity admission"
@@ -209,6 +218,15 @@ def _run(args: argparse.Namespace) -> int:
             result["model_id"] = model["id"]
             _print(result)
             return 0 if result["status"] == "PASS_DERIVATION" else 2
+        if args.models_command == "download":
+            model = get_model(lock, args.model_id)
+            plan = build_download_plan(model, args.destination)
+            _print(plan)
+            if not args.execute:
+                return 0
+            if not args.yes:
+                raise DownloadPlanError("--execute requires --yes")
+            return execute_download_plan(plan, yes=True)
 
     if args.command == "plan":
         lock = load_lock()
@@ -310,6 +328,7 @@ def main(argv: list[str] | None = None) -> int:
         return _run(args)
     except (
         BackendError,
+        DownloadPlanError,
         ExpertInventoryError,
         ModelLockError,
         NativeTraceError,
