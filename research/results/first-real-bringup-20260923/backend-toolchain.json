@@ -1,0 +1,85 @@
+{
+  "build_type": "Release",
+  "classification": "MEASURED_LOCAL_PROVENANCE",
+  "cmake_version": "4.3.0",
+  "cuda_architecture": "89",
+  "cuda_compiler": "/usr/local/cuda/bin/nvcc",
+  "cuda_compiler_version": "13.3.73",
+  "ggml_cuda": "ON",
+  "gguf_py_installed_transitive_versions": {
+    "certifi": "2026.7.22",
+    "charset-normalizer": "3.5.1",
+    "idna": "3.20",
+    "numpy": "2.5.3",
+    "pyyaml": "6.0.3",
+    "requests": "2.34.2",
+    "tqdm": "4.70.1",
+    "urllib3": "2.8.0"
+  },
+  "gguf_py_source_commit": "4e416ee7308dd6b581796f1a6241276cd5982691",
+  "gguf_py_version": "0.19.0",
+  "host_c_compiler": "/usr/bin/gcc-15",
+  "host_compiler_version": "15.3.1",
+  "host_cxx_compiler": "/usr/bin/g++-15",
+  "llama_cpp": {
+    "backend_id": "llama-cpp-stock",
+    "binary": {
+      "bytes": 12560,
+      "path": "/home/pmglo/Projects/Tesy/.deps/llama.cpp/build/bin/llama-cli",
+      "sha256": "e0bb036da22557d9a0001ac3cbc46840b65e0cd8e766ba8186267be09baca6f4"
+    },
+    "claim_boundary": "PASS proves only pinned clean source, runnable binary and expected CLI surface. It is not model compatibility, exactness or performance.",
+    "classification": "MEASURED_LOCAL_PROVENANCE",
+    "devices": {
+      "command": [
+        "/home/pmglo/Projects/Tesy/.deps/llama.cpp/build/bin/llama-cli",
+        "--list-devices"
+      ],
+      "returncode": 0,
+      "status": "OK",
+      "stderr": "",
+      "stdout": "Available devices:\n  CUDA0: NVIDIA GeForce RTX 4060 Laptop GPU (7888 MiB, 7764 MiB free)"
+    },
+    "required_flag_support": {
+      "--cpu-moe": true,
+      "--fit": true,
+      "--fit-target": true,
+      "--lazy-mode": true,
+      "--n-cpu-moe": true,
+      "--n-gpu-layers": true,
+      "--no-display-prompt": true,
+      "--no-warmup": true,
+      "--override-tensor": true,
+      "--prompt": true,
+      "--seed": true,
+      "--simple-io": true,
+      "--single-turn": true,
+      "--temperature": true,
+      "--top-k": true
+    },
+    "schema": "tesy.backend_probe.v1",
+    "source": {
+      "clean": true,
+      "expected_head": "4e416ee7308dd6b581796f1a6241276cd5982691",
+      "head": "4e416ee7308dd6b581796f1a6241276cd5982691",
+      "head_match": true,
+      "path": "/home/pmglo/Projects/Tesy/.deps/llama.cpp",
+      "probe_status": "PASS"
+    },
+    "status": "PASS",
+    "version": {
+      "command": [
+        "/home/pmglo/Projects/Tesy/.deps/llama.cpp/build/bin/llama-cli",
+        "--version"
+      ],
+      "returncode": 0,
+      "status": "OK",
+      "stderr": "version: 0.4.1-dev (build 11138, commit 4e416ee73)\nbuilt with GNU 15.3.1 for Linux x86_64",
+      "stdout": ""
+    }
+  },
+  "python_version": "3.14.7",
+  "stock_cuda_library_sha256": "7bfb9b2970e65b2e0db7835eba76a09be6a1c410c8ac846b10c78e76459296a0",
+  "tracer_binary_sha256": "72be371eea27d857e28a10940a48f7b4e4141fb6ed9e307a28c5e5cbe3f59263",
+  "tracer_cuda_library_sha256": "271896603a6353513eef8601836cdc1c39cd64c86a22da8e27f2f3f861b2c431"
+}

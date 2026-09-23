@@ -8,21 +8,21 @@ reference-host/model validation. No source-only row is a performance claim.
 | Capability | Status | Evidence boundary |
 |---|---|---|
 | N0 prior-art screen | IMPLEMENTED | second pass records `BROAD_NOVELTY_NO_GO / ENGINEERING_AND_MEASUREMENT_GO`; not a patent/legal opinion |
-| backend source locks | PINNED | llama.cpp, KTransformers, vLLM and external cache reference pinned; only llama.cpp native build is exercised by CI |
+| backend source locks | PINNED_LLAMA_BUILT_REFERENCE_HOST | llama.cpp pin built with CUDA 13.3/GCC 15 on physical host; other backends remain pinned comparators |
 | vLLM role | COMPARATOR_B4 | source/docs reviewed and pinned; NOT_INSTALLED_REFERENCE_HOST |
-| model lock + SHA verifier | IMPLEMENTED | first gpt-oss-20b artifact locked; user-managed real download NOT_RUN_MODEL_REQUIRED |
-| reference-host identity check | IMPLEMENTED_MODEL_FREE | physical laptop check NOT_RUN_HOST_REQUIRED |
-| host doctor | IMPLEMENTED_MODEL_FREE | live physical host NOT_RUN in this GitHub-only session |
+| model lock + SHA verifier | REAL_MODEL_VERIFIED | locked gpt-oss-20b GGUF byte size and SHA-256 PASS on reference host |
+| reference-host identity check | PASS_REFERENCE_HOST | physical HX370/RTX4060/32 GiB laptop identity PASS in first real bring-up |
+| host doctor | MEASURED_REFERENCE_HOST | RAM/swap, GPU/driver, CUDA toolkit, NVMe mount and competing processes captured at campaign start |
 | capacity planner | IMPLEMENTED_MODEL_FREE | static admission only; >RAM stays INCONCLUSIVE without validated loader |
 | normalized routing schema | IMPLEMENTED_MODEL_FREE | strict JSONL parser |
-| native llama.cpp MoE top-k tracer | BUILD_VALIDATED_CPU_CI | compiled against exact pinned llama.cpp; real-model routing NOT_RUN_MODEL_REQUIRED |
-| paired trace OFF/ON token gate | IMPLEMENTED_NOT_RUN_MODEL_REQUIRED | token artefact + no-replace/provenance runner implemented |
-| count-space LRU headroom | IMPLEMENTED_MODEL_FREE | TRACE_DERIVED only when real trace exists |
-| Belady offline oracle | IMPLEMENTED_MODEL_FREE | non-causal equal-slot lower bound; not a production policy |
-| GGUF expert payload inventory | IMPLEMENTED_MODEL_FREE | exact encoded-payload derivation when layout is admissible; real GGUF NOT_RUN_MODEL_REQUIRED |
-| byte-weighted native trace simulation | IMPLEMENTED_MODEL_FREE | hypothetical LRU movement from trace + encoded payload; never physical traffic |
-| reference bring-up pipeline | IMPLEMENTED_NOT_RUN_HOST_REQUIRED | doctor -> pinned build -> stock smoke -> paired trace -> inventory |
-| stock llama.cpp real gpt-oss-20b load | NOT_RUN_MODEL_REQUIRED | first model-bearing blocker |
+| native llama.cpp MoE top-k tracer | REAL_MODEL_DIAGNOSTIC_PASS | pinned CUDA build and 384 routing records from real GGUF; zero weight layers offloaded in paired gate |
+| paired trace OFF/ON token gate | REAL_MODEL_TOKEN_ID_EQUALITY_PASS | same 16 generated IDs for one deterministic raw prompt; no bitwise/numerical parity claim |
+| count-space LRU headroom | REAL_TRACE_DERIVED | 1,440 one-token expert accesses; equal-sized-slot LRU, not physical bytes |
+| Belady offline oracle | REAL_TRACE_DERIVED | non-causal equal-slot lower bound; not a production policy |
+| GGUF expert payload inventory | REAL_GGUF_PASS_DERIVATION | 24 × 32 experts, 13,253,760 encoded bytes each; not physical fetch granularity |
+| byte-weighted native trace simulation | REAL_TRACE_DERIVED_SIMULATION | 16 GiB/4 GiB hypothetical two-tier LRU; not physical traffic |
+| reference bring-up pipeline | PASS_DIAGNOSTIC_REFERENCE_HOST | third campaign completed after two preserved failed/aborted attempts; details in `research/results/first-real-bringup-20260923/RESULT.md` |
+| stock llama.cpp real gpt-oss-20b load | PASS_DIAGNOSTIC_STOCK_SMOKE | 16-token stock generation; no chat or benchmark qualification |
 | stock B0/B1 measurements | NOT_RUN_HOST_REQUIRED | automatic placement and CPU-MoE remain to measure on the physical host |
 | stock B2 gpt-oss lazy-expert baseline | STATIC_NO_GO | pinned gpt-oss expert tensors are not marked `TENSOR_READ_LAZY`; no model-bearing B2 run is justified for this purpose |
 | KTransformers baseline | PINNED_NOT_REPRODUCED | reproduce only if compatible with selected model/host |

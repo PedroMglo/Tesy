@@ -1,0 +1,31 @@
+{
+  "cebct_nvme_bytes_per_token": 379057536.0,
+  "cebct_pcie_bytes_per_token": 429421824.0,
+  "claim_boundary": "Demand-only two-tier LRU simulation using exact routed expert IDs and GGUF-derived encoded payload sizes. Values are hypothetical cache movement under this policy, not measured NVMe, DRAM or PCIe traffic.",
+  "classification": "TRACE_DERIVED_ENCODED_PAYLOAD_SIMULATION",
+  "committed_tokens_proxy": 15,
+  "expert_uses": 1440,
+  "inventory_classification": "GGUF_ENCODED_PAYLOAD_DERIVED",
+  "min_graph_seq": 1,
+  "nvme_to_ram_expert_bytes": 5685863040,
+  "phase": "decode",
+  "policy": "DEMAND_ONLY_LRU_GPU_EXECUTION",
+  "ram_cache": {
+    "evicted_bytes": 0,
+    "evictions": 0,
+    "final_used_bytes": 5685863040,
+    "hits": 57,
+    "misses": 429
+  },
+  "ram_capacity_bytes": 17179869184,
+  "ram_to_vram_expert_bytes": 6441327360,
+  "schema": "tesy.native_weighted_cache_simulation.v1",
+  "vram_cache": {
+    "evicted_bytes": 2147109120,
+    "evictions": 162,
+    "final_used_bytes": 4294218240,
+    "hits": 954,
+    "misses": 486
+  },
+  "vram_capacity_bytes": 4294967296
+}
