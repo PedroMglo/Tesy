@@ -24,6 +24,21 @@
       "status": "SOURCE_PINNED_NOT_BUILT_ON_REFERENCE_HOST"
     },
     {
+      "id": "vllm-reference",
+      "role": "serving/offload/speculation comparator, not primary backend",
+      "repository": "https://github.com/vllm-project/vllm.git",
+      "commit": "157bcb7c489689dd34cf28d9c9970a465d326a03",
+      "status": "SOURCE_PINNED_NOT_INSTALLED_ON_REFERENCE_HOST",
+      "known_relevant_features": [
+        "UVA CPU weight offload",
+        "prefetch group offload",
+        "selective offload parameter names",
+        "MoE expert parallelism",
+        "gpt-oss speculative decoding support",
+        "Qwen3 MoE speculative decoding support"
+      ]
+    },
+    {
       "id": "moe-expert-cache-reference",
       "role": "external routing-trace and oversubscription research baseline",
       "repository": "https://github.com/CAN230921/moe-expert-cache.git",
