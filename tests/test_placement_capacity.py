@@ -4,6 +4,7 @@ from tesy.placement_capacity import (
     MIB,
     PlacementCapacityError,
     evaluate_capacity,
+    evaluate_placement_capacity,
     parse_fit_print,
     parse_fitted_cli,
 )
@@ -92,3 +93,41 @@ def test_parse_fit_print_rejects_multiple_accelerators():
             "CUDA1 6000 200 300\n"
             "Host 5000 0 100\n"
         )
+
+
+def test_evaluate_generic_placement_capacity_accepts_auto_fit():
+    payload = evaluate_placement_capacity(
+        "CUDA0 6000 200 300\nHost 5000 0 100\n",
+        gpu_free_bytes=7600 * MIB,
+        mem_available_bytes=10000 * MIB,
+        placement_id="auto-fit-frozen",
+        gpu_target_mib=1024,
+        host_guard_mib=2048,
+        rounding_guard_mib=16,
+    )
+    assert payload["schema"] == "tesy.placement_capacity_estimate.v1"
+    assert payload["placement_id"] == "auto-fit-frozen"
+    assert payload["admitted"] is True
+    assert "n_cpu_moe" not in payload
+
+
+def test_evaluate_generic_placement_capacity_rejects_empty_id():
+    with pytest.raises(PlacementCapacityError, match="placement_id must be non-empty"):
+        evaluate_placement_capacity(
+            "CUDA0 6000 200 300\nHost 5000 0 100\n",
+            gpu_free_bytes=7600 * MIB,
+            mem_available_bytes=10000 * MIB,
+            placement_id="",
+        )
+
+
+def test_evaluate_capacity_preserves_n_cpu_schema_and_id():
+    payload = evaluate_capacity(
+        "CUDA0 6000 200 300\nHost 5000 0 100\n",
+        gpu_free_bytes=7600 * MIB,
+        mem_available_bytes=10000 * MIB,
+        n_cpu_moe=12,
+    )
+    assert payload["schema"] == "tesy.n_cpu_moe_capacity_estimate.v1"
+    assert payload["placement_id"] == "n-cpu-moe-12"
+    assert payload["n_cpu_moe"] == 12
