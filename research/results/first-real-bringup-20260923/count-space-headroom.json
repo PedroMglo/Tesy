@@ -1,0 +1,112 @@
+{
+  "belady_offline_oracle": [
+    {
+      "evictions": 0,
+      "hit_rate": 0.0,
+      "hits": 0,
+      "load_reduction_fraction_vs_no_cache": 0.0,
+      "loads": 1440,
+      "slots": 0
+    },
+    {
+      "evictions": 1224,
+      "hit_rate": 0.1388888888888889,
+      "hits": 200,
+      "load_reduction_fraction_vs_no_cache": 0.1388888888888889,
+      "loads": 1240,
+      "slots": 16
+    },
+    {
+      "evictions": 1027,
+      "hit_rate": 0.26458333333333334,
+      "hits": 381,
+      "load_reduction_fraction_vs_no_cache": 0.26458333333333334,
+      "loads": 1059,
+      "slots": 32
+    },
+    {
+      "evictions": 717,
+      "hit_rate": 0.4576388888888889,
+      "hits": 659,
+      "load_reduction_fraction_vs_no_cache": 0.4576388888888889,
+      "loads": 781,
+      "slots": 64
+    },
+    {
+      "evictions": 421,
+      "hit_rate": 0.61875,
+      "hits": 891,
+      "load_reduction_fraction_vs_no_cache": 0.61875,
+      "loads": 549,
+      "slots": 128
+    },
+    {
+      "evictions": 173,
+      "hit_rate": 0.7020833333333333,
+      "hits": 1011,
+      "load_reduction_fraction_vs_no_cache": 0.7020833333333333,
+      "loads": 429,
+      "slots": 256
+    }
+  ],
+  "claim_boundary": "Count-space routing headroom only. Expert objects are treated as equal-sized slots. Belady uses future accesses and is an offline non-causal lower bound, not an implementable policy. This is not a byte, latency, I/O or production-cache claim.",
+  "classification": "TRACE_DERIVED_COUNT_SPACE",
+  "infinite_cache_compulsory_load_lower_bound": 429,
+  "infinite_cache_max_load_reduction_fraction": 0.7020833333333333,
+  "lru": [
+    {
+      "evictions": 0,
+      "hit_rate": 0.0,
+      "hits": 0,
+      "load_reduction_fraction_vs_no_cache": 0.0,
+      "loads": 1440,
+      "slots": 0
+    },
+    {
+      "evictions": 1424,
+      "hit_rate": 0.0,
+      "hits": 0,
+      "load_reduction_fraction_vs_no_cache": 0.0,
+      "loads": 1440,
+      "slots": 16
+    },
+    {
+      "evictions": 1408,
+      "hit_rate": 0.0,
+      "hits": 0,
+      "load_reduction_fraction_vs_no_cache": 0.0,
+      "loads": 1440,
+      "slots": 32
+    },
+    {
+      "evictions": 1376,
+      "hit_rate": 0.0,
+      "hits": 0,
+      "load_reduction_fraction_vs_no_cache": 0.0,
+      "loads": 1440,
+      "slots": 64
+    },
+    {
+      "evictions": 710,
+      "hit_rate": 0.41805555555555557,
+      "hits": 602,
+      "load_reduction_fraction_vs_no_cache": 0.41805555555555557,
+      "loads": 838,
+      "slots": 128
+    },
+    {
+      "evictions": 270,
+      "hit_rate": 0.6347222222222222,
+      "hits": 914,
+      "load_reduction_fraction_vs_no_cache": 0.6347222222222222,
+      "loads": 526,
+      "slots": 256
+    }
+  ],
+  "mean_belady_loads": 916.3333333333334,
+  "mean_lru_loads": 1187.3333333333333,
+  "min_graph_seq": 0,
+  "one_token_expert_accesses": 1440,
+  "schema": "tesy.native_cache_headroom.v2",
+  "unique_layer_experts": 429
+}

@@ -31,3 +31,5 @@ The installed CUDA compiler was absent from PATH. A direct CMake diagnostic with
 ## Prospective retry 3 amendment, after campaign isolation failure
 
 Output root: `results/bringup-20260923T205424Z`. Model, backend pin, prompt, generation flags, byte capacities, stop gates and toolchain remain as above. The two prior output roots remain untouched. The native build tree from the overlapping attempts is renamed and retained; retry 3 configures a fresh native build tree. The stock build tree is independently completed and identified. `run_reference_bringup.sh` now holds an exclusive `flock` across all shared build and model stages. Cheap contention regression: PASS. This is a new diagnostic attempt, not a reclassification of either failed prior attempt.
+
+Post-run observation: `TESY_TRACE_NGL=0` offloaded zero weight layers but the CUDA backend reserved a 2.20 MiB compute buffer. Thus the pre-run shorthand “CPU-only” describes weight-layer placement only; strict CPU-only execution is not established. This is a claim correction, not a changed campaign setting.

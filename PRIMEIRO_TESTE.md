@@ -93,8 +93,10 @@ Ordem:
 12. deriva o inventário GGUF de payload por expert.
 
 O paired tracer começa com `TESY_TRACE_NGL=0` para testar a instrumentação sem
-arriscar full-GPU OOM. Isto não é o trace representativo final do target
-híbrido.
+arriscar full-GPU OOM. Isto significa zero camadas de pesos offloaded, mas o
+backend ainda pode reservar um pequeno buffer CUDA; não é uma afirmação de
+execução estritamente CPU-only. Também não é o trace representativo final do
+target híbrido.
 
 ## 6. Não alterar a campanha depois do resultado
 
