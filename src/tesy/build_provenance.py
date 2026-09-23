@@ -340,16 +340,22 @@ def collect_provenance(
             "llama_server": {
                 "path": str(server_path),
                 "bytes": server_path.stat().st_size,
+                "inode": server_path.stat().st_ino,
+                "mtime_ns": server_path.stat().st_mtime_ns,
                 "sha256": server_sha256,
             },
             "llama_fit_params": {
                 "path": str(fit_path),
                 "bytes": fit_path.stat().st_size,
+                "inode": fit_path.stat().st_ino,
+                "mtime_ns": fit_path.stat().st_mtime_ns,
                 "sha256": fit_sha256,
             },
             "ggml_cuda": {
                 "path": str(cuda_backend),
                 "bytes": cuda_backend.stat().st_size,
+                "inode": cuda_backend.stat().st_ino,
+                "mtime_ns": cuda_backend.stat().st_mtime_ns,
                 "sha256": cuda_backend_sha256,
             },
         },
