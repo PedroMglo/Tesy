@@ -8,8 +8,7 @@ def _write_json(path: Path, payload: dict) -> None:
     path.write_text(json.dumps(payload), encoding="utf-8")
 
 
-def test_timing_pilot_publication_validates_and_copies_independent_artifacts(tmp_path):
-    root = Path(__file__).resolve().parents[1]
+def _make_valid_campaign(tmp_path: Path) -> tuple[Path, list[tuple[str, str, int | None, float]]]:
     campaign = tmp_path / "n-cpu-moe-timing-pilot-test"
     runs = campaign / "runs"
     capacity = campaign / "capacity"
@@ -158,9 +157,11 @@ def test_timing_pilot_publication_validates_and_copies_independent_artifacts(tmp
             "next_gate": "MANUAL_REVIEW_REQUIRED",
         },
     )
+    return campaign, placements
 
-    publish = tmp_path / "published"
-    completed = subprocess.run(
+
+def _run_publisher(root: Path, campaign: Path, publish: Path) -> subprocess.CompletedProcess:
+    return subprocess.run(
         [
             "bash",
             str(root / "scripts" / "publish_n_cpu_moe_timing_pilot_result.sh"),
@@ -172,6 +173,14 @@ def test_timing_pilot_publication_validates_and_copies_independent_artifacts(tmp
         text=True,
         check=False,
     )
+
+
+def test_timing_pilot_publication_validates_and_copies_independent_artifacts(tmp_path):
+    root = Path(__file__).resolve().parents[1]
+    campaign, placements = _make_valid_campaign(tmp_path)
+    publish = tmp_path / "published"
+
+    completed = _run_publisher(root, campaign, publish)
 
     assert completed.returncode == 0, completed.stderr
     assert "PASS_TIMING_PILOT_PUBLICATION_PREPARED" in completed.stdout
@@ -191,3 +200,16 @@ def test_timing_pilot_publication_validates_and_copies_independent_artifacts(tmp
     assert "capacity/*.stdout.txt -whitespace" in attributes
     assert "runs/*/server.stderr.txt -whitespace" in attributes
 
+
+def test_timing_pilot_publication_rejects_summary_artifact_mismatch(tmp_path):
+    root = Path(__file__).resolve().parents[1]
+    campaign, _ = _make_valid_campaign(tmp_path)
+    summary_path = campaign / "pilot-summary.json"
+    summary = json.loads(summary_path.read_text(encoding="utf-8"))
+    summary["placements"][1]["decode_tps"] = 9999.0
+    _write_json(summary_path, summary)
+
+    completed = _run_publisher(root, campaign, tmp_path / "published")
+
+    assert completed.returncode != 0
+    assert "pilot summary mismatch for n-cpu-moe-12 decode_tps" in completed.stderr
