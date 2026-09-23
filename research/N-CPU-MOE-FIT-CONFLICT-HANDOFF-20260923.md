@@ -74,6 +74,12 @@ Corrected:
 Current PR checks are the authority for CI. Do not run the physical-host/model
 gate until the current PR head is green.
 
+The capacity-only gate also writes `build-provenance.json` and must PASS the
+locked CMake/toolchain/server/`libggml-cuda.so` identity before estimator
+work. A later timed campaign additionally writes `runtime-provenance.json`
+for every fresh server process and verifies that the pre-hashed CUDA backend is
+the library actually mapped by that process.
+
 ## Next operator gate
 
 Do not run the full timing campaign yet.
