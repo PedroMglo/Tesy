@@ -81,6 +81,7 @@ common=(
   --n-predict 16
   --ctx 4096
   --ngl 99
+  --cpu-moe
   --raw-prompt
 )
 
