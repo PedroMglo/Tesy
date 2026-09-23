@@ -111,6 +111,7 @@ bash scripts/run_n_cpu_moe_capacity_pareto.sh --capacity-only \
 
 cat "$campaign/tesy-head.txt"
 cat "$campaign/llama-head.txt"
+cat "$campaign/build-provenance.json"
 cat "$campaign/admission-context.json"
 cat "$campaign/auto-fit.json"
 cat "$campaign/capacity-summary.json"
@@ -122,6 +123,7 @@ same campaign identity.
 ## Decision after capacity-only
 
 Inspect:
+- `build-provenance.status == PASS` with the locked server/CUDA backend/toolchain;
 - which `N` values are admitted;
 - projected GPU and host headroom per point;
 - the explicit stock auto-fit placement;
