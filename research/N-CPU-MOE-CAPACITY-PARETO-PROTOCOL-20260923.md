@@ -194,7 +194,9 @@ Per timed observation:
 - process RSS/swap;
 - minimum system MemAvailable/SwapFree;
 - GPU temperature and available power samples;
-- non-empty placement/load log excerpt.
+- non-empty placement/load log excerpt;
+- `runtime-provenance.json` proving the live process executable and mapped
+  `libggml-cuda.so` match the pre-hashed build identity.
 
 Capacity estimator stdout/stderr and parsed JSON are also retained for every
 candidate, including rejected points.
@@ -232,7 +234,8 @@ Preserve and stop the campaign on:
 - process swap;
 - missing GPU telemetry;
 - runtime GPU or host headroom violation;
-- corrupted/missing required artifacts.
+- corrupted/missing required artifacts;
+- live runtime backend mapping mismatch or deleted mapped backend library.
 
 Debugging requires a new campaign identity.
 
