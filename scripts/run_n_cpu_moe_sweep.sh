@@ -18,7 +18,7 @@ The failed campaign results/n-cpu-moe-sweep-20260923T220215Z is preserved.
 Do not retry this runner or reuse that output root.
 
 Use:
-  scripts/run_n_cpu_moe_capacity_pareto.sh MODEL.gguf NEW_OUTPUT_ROOT
+  scripts/run_n_cpu_moe_capacity_pareto.sh --capacity-only MODEL.gguf NEW_OUTPUT_ROOT
 EOF
 
 exit 1
