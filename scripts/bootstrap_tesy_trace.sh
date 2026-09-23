@@ -38,9 +38,14 @@ if [[ -n "$(git -C "$source_dir" status --porcelain)" ]]; then
 fi
 
 cuda_arch="${TESY_CUDA_ARCH:-89}"
+build_jobs="${TESY_BUILD_JOBS:-$(nproc)}"
+if ! [[ "$build_jobs" =~ ^[1-9][0-9]*$ ]]; then
+  echo "TESY_BUILD_JOBS must be a positive integer" >&2
+  exit 2
+fi
 
 cmake -S "$root/native" -B "$build_dir"   -DLLAMA_CPP_SOURCE_DIR="$source_dir"   -DGGML_CUDA=ON   -DCMAKE_CUDA_ARCHITECTURES="$cuda_arch"   -DCMAKE_BUILD_TYPE=Release
 
-cmake --build "$build_dir" --parallel "$(nproc)" --target tesy-moe-trace
+cmake --build "$build_dir" --parallel "$build_jobs" --target tesy-moe-trace
 
 "$build_dir/tesy-moe-trace" --help
