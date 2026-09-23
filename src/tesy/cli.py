@@ -8,6 +8,7 @@ from typing import Any
 
 from tesy.backend import BackendError, probe_llama_cpp
 from tesy.doctor import collect_snapshot
+from tesy.inventory import InventoryError, load_inventory
 from tesy.models import (
     ModelLockError,
     get_model,
@@ -15,6 +16,7 @@ from tesy.models import (
     load_lock,
     verify_model_file,
 )
+from tesy.normalize import normalize_raw_events, write_jsonl_no_replace
 from tesy.planner import GIB, plan_capacity
 from tesy.rawtrace import RawTraceError, read_raw_jsonl, summarize_raw
 from tesy.simulator import simulate_demand_lru
@@ -75,7 +77,7 @@ def build_parser() -> argparse.ArgumentParser:
     plan.add_argument("--model", required=True)
     plan.add_argument("--path", type=Path, default=None)
 
-    trace = sub.add_parser("trace", help="analyze routing traces")
+    trace = sub.add_parser("trace", help="analyze and normalize routing traces")
     trace_sub = trace.add_subparsers(dest="trace_command", required=True)
 
     trace_summary = trace_sub.add_parser(
@@ -93,6 +95,14 @@ def build_parser() -> argparse.ArgumentParser:
     raw_summary.add_argument("--expected-layers", type=int, default=None)
     raw_summary.add_argument("--expected-top-k", type=int, default=None)
     raw_summary.add_argument("--expected-experts", type=int, default=None)
+
+    normalize = trace_sub.add_parser(
+        "normalize-raw",
+        help="attach encoded expert bytes from an inventory to router-ID traces",
+    )
+    normalize.add_argument("path", type=Path)
+    normalize.add_argument("--inventory", required=True, type=Path)
+    normalize.add_argument("--output", required=True, type=Path)
 
     simulate = sub.add_parser(
         "simulate", help="replay a normalized routing trace through caches"
@@ -179,30 +189,48 @@ def _run(args: argparse.Namespace) -> int:
         return 0
 
     if args.command == "trace" and args.trace_command == "raw-summary":
-        expected_layers = _optional_non_negative(
-            args.expected_layers, "expected_layers"
-        )
-        expected_top_k = _optional_non_negative(
-            args.expected_top_k, "expected_top_k"
-        )
-        expected_experts = _optional_non_negative(
-            args.expected_experts, "expected_experts"
-        )
         result = summarize_raw(
             read_raw_jsonl(args.path),
-            expected_layers=expected_layers,
-            expected_top_k=expected_top_k,
-            expected_experts=expected_experts,
+            expected_layers=_optional_non_negative(
+                args.expected_layers, "expected_layers"
+            ),
+            expected_top_k=_optional_non_negative(
+                args.expected_top_k, "expected_top_k"
+            ),
+            expected_experts=_optional_non_negative(
+                args.expected_experts, "expected_experts"
+            ),
         )
         _print(result)
         return 0 if result["status"] == "PASS" else 2
 
+    if args.command == "trace" and args.trace_command == "normalize-raw":
+        raw_events = read_raw_jsonl(args.path)
+        inventory = load_inventory(args.inventory)
+        normalized = normalize_raw_events(raw_events, inventory)
+        write_jsonl_no_replace(args.output, normalized)
+        _print(
+            {
+                "schema": "tesy.trace_normalization_receipt.v1",
+                "classification": "DERIVED",
+                "status": "PASS",
+                "raw_events": len(raw_events),
+                "normalized_events": len(normalized),
+                "inventory_model_id": inventory.get("model_id"),
+                "output": str(args.output.resolve()),
+                "claim_boundary": (
+                    "Normalized bytes come from the encoded GGUF inventory. "
+                    "They are not physical NVMe, DRAM or PCIe measurements."
+                ),
+            }
+        )
+        return 0
+
     if args.command == "simulate":
         if args.ram_cache_gib < 0 or args.vram_cache_gib < 0:
             raise ValueError("cache sizes must be non-negative")
-        events = read_jsonl(args.trace)
         result = simulate_demand_lru(
-            events,
+            read_jsonl(args.trace),
             ram_cache_bytes=int(args.ram_cache_gib * GIB),
             vram_cache_bytes=int(args.vram_cache_gib * GIB),
             phase=args.phase,
@@ -211,8 +239,7 @@ def _run(args: argparse.Namespace) -> int:
         return 0
 
     if args.command == "report":
-        payload = json.loads(args.path.read_text(encoding="utf-8"))
-        _print(payload)
+        _print(json.loads(args.path.read_text(encoding="utf-8")))
         return 0
 
     raise RuntimeError("unreachable command")
@@ -225,6 +252,7 @@ def main(argv: list[str] | None = None) -> int:
         return _run(args)
     except (
         BackendError,
+        InventoryError,
         ModelLockError,
         RawTraceError,
         TraceError,

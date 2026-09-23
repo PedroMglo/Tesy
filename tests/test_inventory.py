@@ -1,9 +1,11 @@
 from __future__ import annotations
 
+import json
+
 import pytest
 
 from tesy.inventory import InventoryError, TensorRecord, build_expert_inventory
-from tesy.normalize import normalize_raw_events
+from tesy.normalize import normalize_raw_events, write_jsonl_no_replace
 from tesy.rawtrace import RawRouteEvent
 
 
@@ -80,3 +82,19 @@ def test_normalize_rejects_out_of_range_expert():
             [RawRouteEvent(step=0, input_token_id=10, layer=0, experts=(4,))],
             inventory,
         )
+
+
+def test_normalized_writer_is_no_replace(tmp_path):
+    path = tmp_path / "normalized.jsonl"
+    rows = [
+        {
+            "token": 0,
+            "layer": 0,
+            "phase": "decode",
+            "experts": [{"id": 1, "bytes": 450}],
+        }
+    ]
+    write_jsonl_no_replace(path, rows)
+    assert json.loads(path.read_text(encoding="utf-8").strip()) == rows[0]
+    with pytest.raises(FileExistsError):
+        write_jsonl_no_replace(path, rows)
