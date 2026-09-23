@@ -130,6 +130,150 @@ def _validate_campaign(root: Path) -> tuple[dict[str, Any], ...]:
     return pilot, capacity, source, admission, build, model, backend, doctor
 
 
+
+def _validate_raw_observations(root: Path, pilot: dict[str, Any]) -> None:
+    expected = [
+        ("auto-fit-frozen", root / "01-auto-fit"),
+        ("n-cpu-moe-12", root / "02-n12"),
+        ("n-cpu-moe-24", root / "03-n24"),
+    ]
+    observations = pilot["observations"]
+    by_placement = {row["placement_id"]: row for row in observations}
+    raw_hashes: set[str] = set()
+
+    for placement_id, run_dir in expected:
+        if not run_dir.is_dir():
+            raise TimingPilotPublicationError(
+                f"missing raw run directory for {placement_id}: {run_dir}"
+            )
+        for name in (
+            "run-metadata.json",
+            "request.json",
+            "resource-summary.json",
+            "runtime-provenance.json",
+            "token-sha256.txt",
+            "placement.txt",
+            "server-command.txt",
+            "pre-run-resources.json",
+            "pre-run-capacity.json",
+        ):
+            if not (run_dir / name).is_file():
+                raise TimingPilotPublicationError(
+                    f"missing raw run artifact for {placement_id}: {name}"
+                )
+
+        meta = _load_json(run_dir / "run-metadata.json")
+        request = _load_json(run_dir / "request.json")
+        resources = _load_json(run_dir / "resource-summary.json")
+        runtime = _load_json(run_dir / "runtime-provenance.json")
+        pre_run = _load_json(run_dir / "pre-run-resources.json")
+        pre_capacity = _load_json(run_dir / "pre-run-capacity.json")
+        command = (run_dir / "server-command.txt").read_text(
+            encoding="utf-8"
+        ).strip()
+        placement_lines = [
+            line.strip()
+            for line in (run_dir / "placement.txt").read_text(
+                encoding="utf-8"
+            ).splitlines()
+            if line.strip()
+        ]
+        token_hash = (run_dir / "token-sha256.txt").read_text(
+            encoding="utf-8"
+        ).strip()
+
+        if meta.get("placement_id") != placement_id:
+            raise TimingPilotPublicationError(
+                f"raw placement identity mismatch for {placement_id}"
+            )
+        if runtime.get("status") != "PASS":
+            raise TimingPilotPublicationError(
+                f"raw runtime provenance failed for {placement_id}"
+            )
+        if request.get("generated_token_count") != 64:
+            raise TimingPilotPublicationError(
+                f"raw token count is not 64 for {placement_id}"
+            )
+        if request.get("timings", {}).get("predicted_n") != 64:
+            raise TimingPilotPublicationError(
+                f"raw predicted_n is not 64 for {placement_id}"
+            )
+        if resources.get("peak_process_swap_bytes") != 0:
+            raise TimingPilotPublicationError(
+                f"raw process swap observed for {placement_id}"
+            )
+        if not pre_capacity.get("admitted"):
+            raise TimingPilotPublicationError(
+                f"raw pre-run capacity rejected {placement_id}"
+            )
+        if not placement_lines:
+            raise TimingPilotPublicationError(
+                f"raw placement evidence empty for {placement_id}"
+            )
+        if not token_hash:
+            raise TimingPilotPublicationError(
+                f"raw token hash missing for {placement_id}"
+            )
+        raw_hashes.add(token_hash)
+
+        row = by_placement.get(placement_id)
+        if row is None:
+            raise TimingPilotPublicationError(
+                f"summary missing placement {placement_id}"
+            )
+        timings = request["timings"]
+        checks = {
+            "n_cpu_moe": meta.get("n_cpu_moe"),
+            "server_command": command,
+            "pre_run_gpu_free_bytes": pre_run["gpu"]["memory_free_bytes"],
+            "pre_run_gpu_temperature_c": pre_run["gpu"]["temperature_c"],
+            "pre_run_mem_available_bytes": pre_run["memory"]["available_bytes"],
+            "pre_run_capacity_gpu_required_mib": pre_capacity["gpu_required_mib"],
+            "pre_run_capacity_host_required_mib": pre_capacity["host_required_mib"],
+            "ttft_ms": request["ttft_ms"],
+            "request_wall_ms": request["request_wall_ms"],
+            "prompt_n": timings["prompt_n"],
+            "prompt_ms": timings["prompt_ms"],
+            "prompt_tps": timings["prompt_per_second"],
+            "predicted_n": timings["predicted_n"],
+            "predicted_ms": timings["predicted_ms"],
+            "decode_tps": timings["predicted_per_second"],
+            "resource_samples": resources["samples"],
+            "gpu_valid_samples": resources["gpu_valid_samples"],
+            "peak_gpu_memory_bytes": resources["peak_gpu_memory_used_bytes"],
+            "min_observed_gpu_free_bytes": resources[
+                "min_observed_gpu_free_bytes"
+            ],
+            "peak_process_rss_bytes": resources["peak_process_rss_bytes"],
+            "peak_process_swap_bytes": resources["peak_process_swap_bytes"],
+            "min_mem_available_bytes": resources["min_mem_available_bytes"],
+            "min_swap_free_bytes": resources["min_swap_free_bytes"],
+            "max_gpu_temperature_c": resources["max_gpu_temperature_c"],
+            "max_gpu_power_w": resources["max_gpu_power_w"],
+            "gpu_failed_samples": resources["gpu_failed_samples"],
+            "runtime_provenance_status": runtime["status"],
+            "placement_log_lines": placement_lines,
+            "token_sha256": token_hash,
+        }
+        for key, observed in checks.items():
+            if row.get(key) != observed:
+                raise TimingPilotPublicationError(
+                    f"summary/raw mismatch for {placement_id} {key}: "
+                    f"{row.get(key)!r} != {observed!r}"
+                )
+
+    if len(raw_hashes) != 1:
+        raise TimingPilotPublicationError(
+            "raw token trajectories differ across placements"
+        )
+    summary_hashes = pilot["trajectory_comparability"].get(
+        "unique_token_trajectory_hashes"
+    )
+    if summary_hashes != sorted(raw_hashes):
+        raise TimingPilotPublicationError(
+            "summary trajectory hash does not match raw runs"
+        )
+
 def _raw_manifest(root: Path) -> dict[str, dict[str, int | str]]:
     artifacts: dict[str, dict[str, int | str]] = {}
     for path in sorted(item for item in root.rglob("*") if item.is_file()):
@@ -230,6 +374,7 @@ def publish_timing_pilot(campaign: Path, destination: Path) -> dict[str, Any]:
         _backend,
         doctor,
     ) = _validate_campaign(root)
+    _validate_raw_observations(root, pilot)
     raw = _raw_manifest(root)
 
     destination.parent.mkdir(parents=True, exist_ok=True)
