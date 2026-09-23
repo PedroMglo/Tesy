@@ -7,7 +7,7 @@ def test_capacity_runner_uses_cli_for_backend_feature_probe():
         encoding="utf-8"
     )
 
-    assert 'cli="\${TESY_LLAMA_CLI:-$build_dir/bin/llama-cli}"' in text
+    assert 'cli="${TESY_LLAMA_CLI:-$build_dir/bin/llama-cli}"' in text
     assert (
         'python3 -m tesy backend probe \\\n'
         '  --binary "$cli" \\\n'
@@ -27,7 +27,7 @@ def test_capacity_only_exits_before_timed_server_order():
 
     capacity_exit = text.index("PASS_SOURCE_BACKED_N_CPU_MOE_CAPACITY_ESTIMATION")
     timed_order = text.index('order=("auto")')
-    timed_server = text.index('"\${cmd[@]}" >"$run_dir/server.stdout.txt"')
+    timed_server = text.index('"${cmd[@]}" >"$run_dir/server.stdout.txt"')
 
     assert capacity_exit < timed_order < timed_server
 
