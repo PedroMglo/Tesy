@@ -170,7 +170,8 @@ def _result_markdown(pilot: dict[str, Any], source: dict[str, Any]) -> str:
         "",
         "Classification: `MEASURED_STOCK_PLACEMENT_PILOT_DIAGNOSTIC`.",
         "",
-        "| Placement | TTFT ms | Prompt tok/s | Decode tok/s | Peak VRAM MiB | RSS GiB | Swap MiB | Temp °C |",
+        "| Placement | TTFT ms | Prompt tok/s | Decode tok/s | Peak VRAM MiB | "
+        "RSS GiB | Swap MiB | Temp °C |",
         "| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: |",
     ]
     for obs in pilot["observations"]:
@@ -193,7 +194,8 @@ def _result_markdown(pilot: dict[str, Any], source: dict[str, Any]) -> str:
         [
             "",
             "Trajectory comparability: `PASS`; all three observations produced "
-            f"the same 64-token trajectory SHA-256 `{trajectory['unique_token_trajectory_hashes'][0]}`.",
+            "the same 64-token trajectory SHA-256 "
+            f"`{trajectory['unique_token_trajectory_hashes'][0]}`.",
             "",
             "Pilot placements were selected from published capacity evidence; "
             f"admitted manual points there were {source['admitted_n_cpu_moe']}.",
@@ -216,9 +218,16 @@ def publish_timing_pilot(campaign: Path, destination: Path) -> dict[str, Any]:
             f"refusing to replace publication directory: {destination}"
         )
 
-    pilot, capacity, source, admission, build, model, backend, doctor = _validate_campaign(
-        root
-    )
+    (
+        pilot,
+        _capacity,
+        source,
+        _admission,
+        build,
+        _model,
+        _backend,
+        doctor,
+    ) = _validate_campaign(root)
     raw = _raw_manifest(root)
 
     destination.parent.mkdir(parents=True, exist_ok=True)
