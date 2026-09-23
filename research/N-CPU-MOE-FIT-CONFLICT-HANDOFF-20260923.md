@@ -82,6 +82,20 @@ work. A later timed campaign additionally writes `runtime-provenance.json`
 for every fresh server process and verifies that the pre-hashed CUDA backend is
 the library actually mapped by that process.
 
+## First capacity-only attempt
+
+`results/n-cpu-moe-capacity-20260923T232032Z` is preserved locally as
+`FAIL_INSTRUMENTATION_PROBE_ROLE`.
+
+It passed model verification and reference-host identity, then stopped before
+build provenance or any capacity estimate because the runner applied the
+`llama-cli` feature lock to `llama-server`. Source provenance itself was
+PASS. The missing flags were CLI-only flags.
+
+This is not a capacity result. The runner now uses `llama-cli` for the
+backend feature/source probe and keeps `llama-server` under its own CLI and
+exact build/hash provenance gates.
+
 ## Next operator gate
 
 Do not run the full timing campaign yet.
