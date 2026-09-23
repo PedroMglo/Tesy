@@ -64,8 +64,16 @@ Before capacity estimation or timing:
 - reject competing GPU compute processes;
 - capture GPU free/total memory, RAM available and swap state;
 - verify Tesy and llama.cpp worktrees are clean;
-- record Tesy HEAD, llama.cpp HEAD and hashes of `llama-server`,
-  `llama-fit-params` and the prompt.
+- validate `configs/reference-llama-toolchain.json` against the active
+  llama.cpp `CMakeCache.txt`;
+- require the measured Release/CUDA-89 GCC 15.3.1 / nvcc 13.3.73 toolchain;
+- require `llama-server` and `llama-fit-params` to come from that same build;
+- require the previously measured stock `llama-server` and
+  `libggml-cuda.so` SHA-256 identities;
+- require `CUDA0` visibility from both binaries and successful dynamic
+  dependency resolution;
+- record `build-provenance.json`, Tesy HEAD, llama.cpp HEAD and hashes of the
+  prompt and relevant binaries.
 
 The campaign output root is new/no-replace.
 
@@ -213,7 +221,7 @@ Do not rank placements by a single synthetic score.
 ## Stop conditions
 
 Preserve and stop the campaign on:
-- provenance or host-identity mismatch;
+- provenance, locked build/toolchain/backend identity or host-identity mismatch;
 - dirty Tesy or llama.cpp worktree;
 - invalid fitted CLI;
 - unexpected context change;
