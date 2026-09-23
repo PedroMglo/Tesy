@@ -78,10 +78,11 @@ N=24 should be compared descriptively with prior `--cpu-moe` B1.
 
 A difference is evidence to investigate, not permission to adjust the sweep.
 
-All 14 observations must produce the same 64 generated token IDs for the
-performance curve to qualify as an identical-trajectory comparison. A mismatch
-is retained as `FAIL_TRAJECTORY_COMPARABILITY`; timing observations remain
-diagnostic evidence but are not promoted as the same-work trajectory curve.
+Each observation must produce exactly 64 generated token IDs. The first valid
+trajectory becomes the reference and every subsequent observation is compared
+immediately. The runner stops on the first mismatch and retains that campaign
+as `FAIL_TRAJECTORY_COMPARABILITY`; it does not spend the remaining expensive
+measurements after the stop condition becomes true.
 
 ## Stop conditions
 
@@ -133,3 +134,14 @@ integer-token accounting and the final count must still equal
 The failed output root remains preserved and is not reused. Retry requires a
 new campaign identity. No model, backend, placement sweep, sampling, token-count
 or performance criterion changed.
+
+
+## Review hardening
+
+Before model measurement the runner now executes Tesy's pinned backend probe
+against the selected `llama-server` and source checkout. A clean but wrong
+llama.cpp revision therefore fails before the sweep.
+
+The 64-token requirement is enforced per observation, not inferred from
+`predicted_n` after the sweep, and cross-placement trajectory equality is
+checked inside the loop after every completed request.
