@@ -1,8 +1,14 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+capacity_only=0
+if [[ "${1:-}" == "--capacity-only" ]]; then
+  capacity_only=1
+  shift
+fi
+
 if [[ $# -ne 2 ]]; then
-  echo "usage: $0 MODEL.gguf OUTPUT_ROOT" >&2
+  echo "usage: $0 [--capacity-only] MODEL.gguf OUTPUT_ROOT" >&2
   exit 2
 fi
 
@@ -226,6 +232,12 @@ for value in payload["admitted_n_cpu_moe"]:
     print(value)
 PY
 )
+
+if (( capacity_only == 1 )); then
+  echo "PASS_SOURCE_BACKED_N_CPU_MOE_CAPACITY_ESTIMATION"
+  echo "outputs: $out"
+  exit 0
+fi
 
 if (( ${#admitted[@]} < 2 )); then
   echo "NO_GO_N_CPU_MOE_CAPACITY_FRONTIER: fewer than two manual points admitted"
