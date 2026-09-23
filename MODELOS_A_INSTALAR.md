@@ -75,6 +75,10 @@ Não inicies um benchmark longo até `tesy doctor`, a build stock do backend e o
 
 gpt-oss requer o formato Harmony. Não o substituas por ChatML ou por uma template improvisada. O backend selecionado deve aplicar a template/tokenizer corretos.
 
+### vLLM nesta fase
+
+Não instales vLLM como requisito do primeiro bring-up. Tesy mantém vLLM como baseline/reference B4 porque tem mecanismos MoE/offload relevantes, mas a rota inicial do portátil de 8 GiB usa o backend stock já pinado. vLLM só passa a baseline executável depois de uma revisão explícita de capacidade/compatibilidade no host.
+
 Fontes:
 - https://openai.com/index/introducing-gpt-oss/
 - https://huggingface.co/openai/gpt-oss-20b/blob/main/config.json

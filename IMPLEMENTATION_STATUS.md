@@ -1,26 +1,27 @@
 # Implementation status
 
-Branch baseline date: 2026-09-23
+Cut: 2026-09-23.
 
 | Capability | Status | Evidence boundary |
 |---|---|---|
-| N0 prior-art screen | IMPLEMENTED | research docs; not exhaustive legal/patent review |
-| model lock + SHA verifier | IMPLEMENTED | source code; real download not verified in this session |
-| host doctor | IMPLEMENTED | source code; physical host NOT_RUN here |
-| capacity planner | IMPLEMENTED | static admission only |
-| normalized routing schema | IMPLEMENTED | strict JSONL parser |
-| speculative expert-union analysis | IMPLEMENTED | trace-derived, not acceptance |
-| RAM/VRAM demand-LRU simulator with NVMe backing | IMPLEMENTED | simulated bytes only |
-| Python unit tests / lint / compile | CI_PASS | GitHub Actions run 35862360853 passed on Python 3.11/3.12/3.13 |
-| stock llama.cpp source pin | PINNED | `4e416ee7308dd6b581796f1a6241276cd5982691`; physical CUDA build still NOT_RUN_HOST_REQUIRED |
-| real gpt-oss-20b load | NOT_RUN_MODEL_REQUIRED | user-managed model download |
-| native routing trace capture | BUILD_VALIDATED_CPU_CI | tracer compiled against exact llama.cpp pin in CI; real-model trace NOT_RUN_MODEL_REQUIRED |
-| native expert residency/cache | NOT_IMPLEMENTED | requires backend integration |
-| CPU/GPU expert crossover benchmark | NOT_IMPLEMENTED | physical host required |
-| causal prefetch | NOT_IMPLEMENTED | only after trace headroom |
-| speculative K=2 | NOT_IMPLEMENTED | only after K=1 runtime/exactness |
-| joint K/residency scheduler | RESEARCH_HYPOTHESIS | novelty and benefit not established |
-| optimized Tesy chat | NOT_IMPLEMENTED | stock baseline first |
-| gpt-oss-120b execution | NOT_AUTHORIZED_BY_EVIDENCE | metadata-only |
+| Broad architecture novelty | NO-GO | prior art overlaps generic MoE offload/cache/prefetch/speculation |
+| Narrow future contribution | OPEN / UNKNOWN | must arise from measured gap |
+| model lock + SHA/byte verifier | IMPLEMENTED | locked gpt-oss-20b identity fixed; local bytes not yet observed here |
+| host doctor/capacity planner | IMPLEMENTED | physical laptop NOT_RUN in GitHub-only session |
+| stock llama.cpp pin | PINNED | foundation CI passed source/build boundary; physical CUDA build pending |
+| KTransformers reference | PINNED_REFERENCE | no reference-host execution yet |
+| vLLM reference | PINNED_REFERENCE_B4 | relevant MoE/offload prior art; not initial 8 GiB backend |
+| B0 stock smoke harness | IMPLEMENTED_SOURCE | real model NOT_RUN |
+| native ffn_moe_topk tracer | BUILD_VALIDATED_BASE / CURRENT_FIX_CI_PENDING | base tracer compiled in GitHub CI; fail-closed/CPU-MoE delta awaits this PR CI |
+| paired token-ID trace gate | CORRECTED_SOURCE | real-model OFF/ON comparison NOT_RUN |
+| count-space trace/headroom | IMPLEMENTED | trace-derived expert counts only |
+| encoded expert-byte inventory | IMPLEMENTED_SOURCE | real GGUF inventory NOT_RUN |
+| native trace -> byte trace normalization | IMPLEMENTED_SOURCE | one-token decode graphs; bytes are GGUF encoded footprint |
+| RAM/VRAM cache simulator | IMPLEMENTED | simulated encoded bytes, not physical traffic |
+| physical NVMe/PCIe expert traffic | NOT_IMPLEMENTED | no physical-byte claim allowed |
+| Tesy custom expert cache | NOT_IMPLEMENTED_BY_DESIGN | blocked on baselines/headroom |
+| causal prefetch | NOT_IMPLEMENTED | blocked on measured headroom |
+| speculative K>1 | NOT_IMPLEMENTED | blocked on K=1 evidence |
+| gpt-oss-120b execution | NOT_AUTHORIZED_BY_EVIDENCE | metadata-only; do not download yet |
 
-No line marked IMPLEMENTED implies real-model performance or correctness unless it explicitly says REAL_MODEL_VALIDATED.
+No row establishes a Tesy speedup or real-model PASS.
