@@ -302,6 +302,17 @@ def collect_provenance(
         if result.get("status") != "OK"
     ]
 
+    dependency_mismatches: list[str] = []
+    for name, result in {
+        "llama_server": ldd_server,
+        "llama_fit_params": ldd_fit,
+    }.items():
+        text = "\n".join([result.get("stdout", ""), result.get("stderr", "")])
+        if "=> not found" in text:
+            dependency_mismatches.append(
+                f"{name} has unresolved dynamic dependencies"
+            )
+
     device_mismatches: list[str] = []
     for name, result in {
         "server": server_devices,
@@ -315,6 +326,7 @@ def collect_provenance(
         cache_mismatches
         + compiler_mismatches
         + binary_mismatches
+        + dependency_mismatches
         + device_mismatches
     )
     if command_failures:
