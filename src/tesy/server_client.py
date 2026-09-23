@@ -29,6 +29,14 @@ def _parse_sse_line(line: bytes) -> dict | None:
 
 
 def _event_token_ids(event: dict) -> list[int]:
+    # llama-server's non-OAI streaming progress response serializes the
+    # default completion_token_output as a one-element tokens array even when
+    # the event is prompt progress rather than generated output. Those token
+    # placeholders are not generated tokens and must never enter trajectory
+    # equality accounting.
+    if "prompt_progress" in event:
+        return []
+
     raw = event.get("tokens")
     if raw is None:
         return []

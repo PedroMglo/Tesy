@@ -26,3 +26,18 @@ def test_event_token_ids_allows_missing_tokens():
 def test_event_token_ids_rejects_bool():
     with pytest.raises(ServerClientError):
         _event_token_ids({"tokens": [True]})
+
+
+def test_event_token_ids_ignores_prompt_progress_placeholder():
+    event = {
+        "content": "",
+        "tokens": [0],
+        "tokens_predicted": 0,
+        "prompt_progress": {
+            "total": 154,
+            "cache": 0,
+            "processed": 64,
+            "time_ms": 100,
+        },
+    }
+    assert _event_token_ids(event) == []

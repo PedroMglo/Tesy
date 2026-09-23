@@ -103,3 +103,33 @@ It does not measure physical PCIe/NVMe expert traffic, does not prove a Tesy
 cache benefit, does not test >RAM behavior and does not establish novelty.
 
 The next gate after this sweep is chosen from the observed Pareto frontier.
+
+
+## Failed campaign amendment — 2026-09-23T214340Z
+
+Campaign output root:
+`results/n-cpu-moe-sweep-20260923T214340Z`.
+
+Status:
+`FAIL_CLIENT_STREAM_CLASSIFICATION`.
+
+The first observation reached a valid server completion with
+`predicted_n = 64`, but Tesy's client counted 67 token IDs and stopped
+fail-closed.
+
+Pinned llama-server source inspection established the cause before retry:
+prompt-progress events are emitted through
+`send_partial_response(slot, {}, true)`. In the non-OAI serializer these
+events contain `prompt_progress` and also serialize the default
+`completion_token_output.tok` in the `tokens` array. These are progress
+placeholders, not generated-token trajectory entries.
+
+Correction:
+Tesy ignores `tokens` only when the same SSE event contains
+`prompt_progress`. Normal generated partial events remain subject to strict
+integer-token accounting and the final count must still equal
+`timings.predicted_n`.
+
+The failed output root remains preserved and is not reused. Retry requires a
+new campaign identity. No model, backend, placement sweep, sampling, token-count
+or performance criterion changed.
