@@ -349,6 +349,39 @@ int main(int argc, char ** argv) {
     }
 
     std::fputc('\n', stdout);
+
+    if (!opt.tokens_out.empty()) {
+        FILE * token_file = std::fopen(opt.tokens_out.c_str(), "wx");
+        if (!token_file) {
+            std::fprintf(
+                stderr,
+                "cannot create token output %s: %s\n",
+                opt.tokens_out.c_str(),
+                std::strerror(errno));
+            llama_sampler_free(sampler);
+            llama_free(ctx);
+            llama_model_free(model);
+            return 2;
+        }
+
+        std::fputs("{\"schema\":\"tesy.generated_tokens.v1\",\"tokens\":[", token_file);
+        for (size_t token_index = 0; token_index < generated_tokens.size(); ++token_index) {
+            if (token_index != 0) {
+                std::fputc(',', token_file);
+            }
+            std::fprintf(token_file, "%" PRId32, generated_tokens[token_index]);
+        }
+        std::fputs("]}\n", token_file);
+
+        if (std::fclose(token_file) != 0) {
+            std::fprintf(stderr, "failed closing token output %s\n", opt.tokens_out.c_str());
+            llama_sampler_free(sampler);
+            llama_free(ctx);
+            llama_model_free(model);
+            return 2;
+        }
+    }
+
     std::fprintf(stderr, "generated=%d final_position=%d trace=%s\n",
                  generated, position, opt.trace.c_str());
 

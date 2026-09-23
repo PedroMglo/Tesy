@@ -37,7 +37,7 @@ SHA-256 esperado:
 
 `52f57ab7d3df3ba9173827c1c6832e73375553a846f3e32b49f1ae2daad688d4`
 
-A página do artefacto reporta ~12.1 GB. O lock não inventa um byte-count exato que a fonte consultada não forneceu.
+A página do artefacto congelado reporta 12,109,564,352 bytes (~12.1 GB). Esse byte-count está agora fixado no lock juntamente com o SHA-256.
 
 ### Download
 
