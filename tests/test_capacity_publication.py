@@ -90,3 +90,7 @@ def test_capacity_publication_helper_copies_valid_capacity_only_campaign(tmp_pat
     assert manifest["admitted_n_cpu_moe"] == [12, 16, 20, 24]
     result = (publish / "RESULT.md").read_text(encoding="utf-8")
     assert "stops before timed llama-server observations" in result
+
+    attributes = (publish / ".gitattributes").read_text(encoding="utf-8")
+    assert "capacity/*.stdout.txt -whitespace" in attributes
+    assert "auto-fit.stdout.txt -whitespace" in attributes
