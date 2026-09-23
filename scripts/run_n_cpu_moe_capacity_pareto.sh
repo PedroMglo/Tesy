@@ -325,6 +325,47 @@ if (( timing_pilot == 1 )); then
     --output "$out/capacity/auto-fit-frozen.json"
 fi
 
+if (( timing_pilot == 1 )); then
+  python3 - "$out/capacity" >"$out/capacity-summary.json" <<'PY'
+import json
+import sys
+from pathlib import Path
+
+root = Path(sys.argv[1])
+placements = [
+    ("auto-fit-frozen", root / "auto-fit-frozen.json"),
+    ("n-cpu-moe-12", root / "n12.json"),
+    ("n-cpu-moe-24", root / "n24.json"),
+]
+rows = []
+for placement_id, path in placements:
+    payload = json.loads(path.read_text(encoding="utf-8"))
+    if payload.get("placement_id") != placement_id:
+        raise SystemExit(
+            f"capacity identity mismatch: {payload.get('placement_id')!r} != {placement_id!r}"
+        )
+    if not payload.get("admitted"):
+        raise SystemExit(
+            f"pilot placement not admitted: {placement_id}: "
+            f"{payload.get('rejection_reasons')}"
+        )
+    rows.append(payload)
+
+print(json.dumps({
+    "schema": "tesy.timing_pilot_capacity_gate.v1",
+    "classification": "SOURCE_BACKED_CAPACITY_GATE",
+    "placements": rows,
+    "status": "PASS",
+    "claim_boundary": (
+        "Current-host estimator admission immediately before the timing pilot. "
+        "This is not measured runtime memory traffic or proof of performance."
+    ),
+}, indent=2, sort_keys=True))
+PY
+
+  admitted=(12 24)
+  order=("auto" "n12" "n24")
+else
 python3 - "$out/capacity" >"$out/capacity-summary.json" <<'PY'
 import json
 import sys
@@ -390,6 +431,8 @@ for ((i=${#admitted[@]} - 1; i>=0; i--)); do
   order+=("n${admitted[$i]}")
 done
 order+=("auto")
+
+fi
 
 cleanup() {
   if [[ -n "${server_pid:-}" ]] && kill -0 "$server_pid" 2>/dev/null; then
