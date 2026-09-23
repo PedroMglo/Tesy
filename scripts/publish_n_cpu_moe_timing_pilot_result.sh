@@ -33,7 +33,7 @@ required=(
   pilot-summary.json
 )
 
-for rel in "\${required[@]}"; do
+for rel in "${required[@]}"; do
   [[ -f "$campaign/$rel" ]] || {
     echo "missing required timing-pilot artifact: $campaign/$rel" >&2
     exit 1
@@ -96,24 +96,61 @@ expected_runs = {
     "n-cpu-moe-12": root / "runs" / "02-n-cpu-moe-12",
     "n-cpu-moe-24": root / "runs" / "03-n-cpu-moe-24",
 }
+summary_by_placement = {row["placement_id"]: row for row in placements}
+token_hashes = set()
+
 for placement, run_dir in expected_runs.items():
     if not run_dir.is_dir():
         raise SystemExit(f"missing pilot run directory: {run_dir}")
+
+    required_run_files = (
+        "pre-run-resources.json",
+        "run-metadata.json",
+        "server-command.txt",
+        "server.stdout.txt",
+        "server.stderr.txt",
+        "resources.jsonl",
+        "health.json",
+        "runtime-provenance.json",
+        "server-ready.json",
+        "request.json",
+        "token-sha256.txt",
+        "resource-summary.json",
+        "placement.txt",
+    )
+    for name in required_run_files:
+        if not (run_dir / name).is_file():
+            raise SystemExit(f"missing run artifact for {placement}: {name}")
+
+    for suffix in ("json", "stdout.txt", "stderr.txt"):
+        capacity_path = root / "capacity" / f"{placement}.{suffix}"
+        if not capacity_path.is_file():
+            raise SystemExit(f"missing capacity artifact: {capacity_path}")
+
     runtime = json.loads(
         (run_dir / "runtime-provenance.json").read_text(encoding="utf-8")
     )
+    if runtime.get("schema") != "tesy.runtime_backend_provenance.v1":
+        raise SystemExit(f"unexpected runtime provenance schema for {placement}")
     if runtime.get("status") != "PASS":
         raise SystemExit(f"runtime provenance failed for {placement}")
+
     request = json.loads((run_dir / "request.json").read_text(encoding="utf-8"))
+    if request.get("schema") != "tesy.stock_server_request.v1":
+        raise SystemExit(f"unexpected request schema for {placement}")
     if request.get("generated_token_count") != 64:
         raise SystemExit(f"invalid token count for {placement}")
+
     resources = json.loads(
         (run_dir / "resource-summary.json").read_text(encoding="utf-8")
     )
+    if resources.get("schema") != "tesy.stock_placement_pilot_resources.v1":
+        raise SystemExit(f"unexpected resource schema for {placement}")
     if resources.get("peak_process_swap_bytes") != 0:
         raise SystemExit(f"process swap observed for {placement}")
     if resources.get("gpu_failed_samples") != 0:
         raise SystemExit(f"GPU telemetry failure for {placement}")
+
     capacity = json.loads(
         (root / "capacity" / f"{placement}.json").read_text(encoding="utf-8")
     )
@@ -121,6 +158,39 @@ for placement, run_dir in expected_runs.items():
         raise SystemExit(f"unexpected capacity schema for {placement}")
     if capacity.get("placement_id") != placement or not capacity.get("admitted"):
         raise SystemExit(f"capacity admission failed for {placement}")
+
+    token_hash = (run_dir / "token-sha256.txt").read_text(
+        encoding="utf-8"
+    ).strip()
+    if not token_hash:
+        raise SystemExit(f"missing token hash for {placement}")
+    token_hashes.add(token_hash)
+
+    row = summary_by_placement[placement]
+    timings = request["timings"]
+    checks = {
+        "ttft_ms": request["ttft_ms"],
+        "request_wall_ms": request["request_wall_ms"],
+        "prompt_tps": timings["prompt_per_second"],
+        "decode_tps": timings["predicted_per_second"],
+        "peak_gpu_memory_used_bytes": resources["peak_gpu_memory_used_bytes"],
+        "min_observed_gpu_free_bytes": resources["min_observed_gpu_free_bytes"],
+        "peak_process_rss_bytes": resources["peak_process_rss_bytes"],
+        "peak_process_swap_bytes": resources["peak_process_swap_bytes"],
+        "token_sha256": token_hash,
+    }
+    for key, observed in checks.items():
+        if row.get(key) != observed:
+            raise SystemExit(
+                f"pilot summary mismatch for {placement} {key}: "
+                f"{row.get(key)!r} != {observed!r}"
+            )
+
+if len(token_hashes) != 1:
+    raise SystemExit("run token hashes are not identical")
+summary_hashes = trajectory.get("unique_token_trajectory_hashes")
+if summary_hashes != sorted(token_hashes):
+    raise SystemExit("summary token hashes do not match run artifacts")
 
 for path in root.rglob("*"):
     if path.is_file() and path.stat().st_size > 8 * 1024 * 1024:
