@@ -88,6 +88,8 @@ def _validate_campaign(root: Path) -> tuple[dict[str, Any], ...]:
     trajectory = pilot.get("trajectory_comparability")
     if not isinstance(trajectory, dict) or trajectory.get("status") != "PASS":
         raise TimingPilotPublicationError("trajectory comparability did not PASS")
+    if pilot.get("next_gate") != "MANUAL_REVIEW_REQUIRED":
+        raise TimingPilotPublicationError("pilot must stop at manual review")
     observations = pilot.get("observations")
     if not isinstance(observations, list) or len(observations) != 3:
         raise TimingPilotPublicationError("pilot must contain exactly three observations")
@@ -252,6 +254,7 @@ def publish_timing_pilot(campaign: Path, destination: Path) -> dict[str, Any]:
         "observation_count": len(pilot["observations"]),
         "trajectory_status": pilot["trajectory_comparability"]["status"],
         "build_provenance_status": build["status"],
+        "next_gate": pilot["next_gate"],
         "raw_artifacts": raw,
         "published_artifacts": sorted(
             [*_SELECTED_FILES, "host-summary.json", "RESULT.md", "publication-manifest.json"]
