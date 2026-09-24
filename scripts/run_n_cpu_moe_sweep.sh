@@ -66,7 +66,7 @@ if not isinstance(expected, str) or len(expected) != 40:
     raise SystemExit("backend probe did not expose a 40-character expected HEAD")
 expected = expected.lower()
 
-pattern = re.compile(r"\\bcommit\\s+([0-9a-f]{7,40})\\b", re.IGNORECASE)
+pattern = re.compile(r"\bcommit\s+([0-9a-f]{7,40})\b", re.IGNORECASE)
 for label, raw_path in (
     ("llama-cli", sys.argv[2]),
     ("llama-server", sys.argv[3]),
