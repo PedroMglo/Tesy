@@ -105,3 +105,7 @@ target_include_directories(
   tesy-sum-graph-model-free SYSTEM PRIVATE "${LLAMA_CPP_SOURCE_DIR}/ggml/src"
 )
 target_link_libraries(tesy-sum-graph-model-free PRIVATE ggml ggml-cpu)
+
+add_executable(tesy-static-residency-model-free tesy_static_residency_model_free.cpp)
+target_compile_features(tesy-static-residency-model-free PRIVATE cxx_std_17)
+target_compile_options(tesy-static-residency-model-free PRIVATE -Wall -Wextra -Wpedantic -Werror)

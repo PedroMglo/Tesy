@@ -4,6 +4,7 @@
 #include "ggml-impl.h"
 #include "gguf.h"
 #include "llama.h"
+#include "tesy_static_residency.h"
 #include "tesy_sum_graph.h"
 
 #include <algorithm>
@@ -57,6 +58,9 @@ struct options {
     bool live_handoff_timing = false;
     bool live_reinjection_exactness = false;
     bool split_graph_skip_exactness = false;
+    bool vertical_live_exactness = false;
+    int vertical_layers = 24;
+    int vertical_tokens = 4;
     std::string split_arm;
     std::string prompt_file;
     std::string timing_start_gate;
@@ -335,7 +339,9 @@ int parse_positive(const char * value, const char * flag, int minimum = 1) {
         "--routed-gpu-hits N --warmup 6 --samples 81 --inner 1 "
         "--timing-start-gate FILE] "
         "[--live-reinjection-exactness --prompt-file FILE --ctx 4096] "
-        "[--split-graph-skip-exactness --split-arm ARM --prompt-file FILE --ctx 4096]\n",
+        "[--split-graph-skip-exactness --split-arm ARM --prompt-file FILE --ctx 4096] "
+        "[--vertical-live-exactness --vertical-layers 1..24 --vertical-tokens N "
+        "--prompt-file FILE --ctx 4096]\n",
         argv0);
     std::exit(code);
 }
@@ -376,6 +382,12 @@ options parse_options(int argc, char ** argv) {
             out.live_reinjection_exactness = true;
         } else if (arg == "--split-graph-skip-exactness") {
             out.split_graph_skip_exactness = true;
+        } else if (arg == "--vertical-live-exactness") {
+            out.vertical_live_exactness = true;
+        } else if (arg == "--vertical-layers") {
+            out.vertical_layers = parse_positive(value("--vertical-layers"), "--vertical-layers");
+        } else if (arg == "--vertical-tokens") {
+            out.vertical_tokens = parse_positive(value("--vertical-tokens"), "--vertical-tokens");
         } else if (arg == "--split-arm") {
             out.split_arm = value("--split-arm");
         } else if (arg == "--prompt-file") {
@@ -412,7 +424,8 @@ options parse_options(int argc, char ** argv) {
         + static_cast<int>(out.live_handoff_exactness)
         + static_cast<int>(out.live_handoff_timing)
         + static_cast<int>(out.live_reinjection_exactness)
-        + static_cast<int>(out.split_graph_skip_exactness);
+        + static_cast<int>(out.split_graph_skip_exactness)
+        + static_cast<int>(out.vertical_live_exactness);
     if (special_modes > 1) {
         fail("routed/live exactness/timing modes are mutually exclusive");
     }
@@ -489,6 +502,15 @@ options parse_options(int argc, char ** argv) {
         }
     } else if (!out.split_arm.empty()) {
         fail("--split-arm requires --split-graph-skip-exactness");
+    }
+    if (out.vertical_live_exactness) {
+        if (out.live_ctx != 4096 || out.prompt_file.empty() ||
+            out.vertical_layers > 24 || out.vertical_tokens > 128 ||
+            out.async_overlap || out.routed_gpu_hits != -1 ||
+            !out.timing_start_gate.empty()) {
+            fail("vertical live requires --ctx 4096, prompt, 1..24 layers, "
+                 "1..128 tokens and no async/timing");
+        }
     }
     return out;
 }
@@ -3457,6 +3479,510 @@ void run_split_graph_skip_exactness(
     std::puts("PASS_SPLIT_GRAPH_RAW");
 }
 
+struct vertical_layer_runtime {
+    tensor_set borrowed_cpu;
+    std::unique_ptr<tensor_set> gpu_resident;
+    std::array<std::unique_ptr<compute_graph>, 5> cpu_graphs;
+    std::array<std::unique_ptr<compute_graph>, 5> gpu_graphs;
+    std::unique_ptr<sum_graph> aggregate;
+    std::array<ggml_tensor *, 6> stock_tensors{};
+    bool initialized = false;
+};
+
+std::array<ggml_tensor *, 6> vertical_stock_tensors(
+        ggml_cgraph * graph, int layer) {
+    const std::array<const char *, 6> suffixes{
+        "ffn_moe_gate-", "ffn_moe_up-", "ffn_moe_down-",
+        "ffn_moe_gate_biased-", "ffn_moe_up_biased-",
+        "ffn_moe_down_biased-"};
+    std::array<ggml_tensor *, 6> result{};
+    for (size_t kind = 0; kind < suffixes.size(); ++kind) {
+        const std::string name = std::string(suffixes[kind]) + std::to_string(layer);
+        ggml_tensor * operation = nullptr;
+        for (int i = 0; i < graph->n_nodes; ++i) {
+            if (name == graph->nodes[i]->name) {
+                if (operation) fail("vertical graph has duplicate expert operation");
+                operation = graph->nodes[i];
+            }
+        }
+        if (!operation || operation->op !=
+            (kind < 3 ? GGML_OP_MUL_MAT_ID : GGML_OP_ADD_ID)) {
+            fail("vertical graph missing expected expert operation: " + name);
+        }
+        result[kind] = operation->src[kind < 3 ? 0 : 1];
+        if (!result[kind] || !result[kind]->buffer) {
+            fail("vertical stock expert tensor is not allocated");
+        }
+    }
+    for (size_t kind = 0; kind < result.size(); ++kind) {
+        auto * tensor = result[kind];
+        const bool weight = kind < 3;
+        if (tensor->type != (weight ? GGML_TYPE_MXFP4 : GGML_TYPE_F32) ||
+            tensor->ne[0] != k_embd ||
+            tensor->ne[1] != (weight ? k_embd : k_expert_count) ||
+            tensor->ne[2] != (weight ? k_expert_count : 1) ||
+            !ggml_is_contiguous(tensor)) {
+            fail("vertical stock expert tensor shape/type mismatch");
+        }
+    }
+    return result;
+}
+
+tensor_bytes vertical_resident_bytes(
+        const std::array<ggml_tensor *, 6> & tensors,
+        const std::vector<int32_t> & resident) {
+    tensor_bytes result;
+    const std::array<std::vector<uint8_t> *, 6> destinations{
+        &result.gate_w, &result.up_w, &result.down_w,
+        &result.gate_b, &result.up_b, &result.down_b};
+    for (size_t kind = 0; kind < tensors.size(); ++kind) {
+        auto * tensor = tensors[kind];
+        const size_t per_expert = ggml_nbytes(tensor) /
+            static_cast<size_t>(k_expert_count);
+        const size_t stride = tensor->nb[kind < 3 ? 2 : 1];
+        if (per_expert == 0 || stride != per_expert ||
+            ggml_nbytes(tensor) != per_expert * k_expert_count) {
+            fail("vertical stock expert tensor is not expert-contiguous");
+        }
+        auto & bytes = *destinations[kind];
+        bytes.resize(per_expert * resident.size());
+        for (size_t slot = 0; slot < resident.size(); ++slot) {
+            ggml_backend_tensor_get(tensor, bytes.data() + slot * per_expert,
+                static_cast<size_t>(resident[slot]) * per_expert, per_expert);
+        }
+    }
+    if (result.total() != resident.size() * k_encoded_bytes_per_expert) {
+        fail("vertical resident extraction encoded byte count mismatch");
+    }
+    return result;
+}
+
+void vertical_set_graph_inputs(compute_graph & graph,
+                               const std::vector<float> & activation,
+                               const std::vector<int32_t> & ids,
+                               const std::vector<float> & weights) {
+    if (activation.size() != static_cast<size_t>(k_embd) || ids.empty() ||
+        ids.size() != weights.size() ||
+        ggml_nelements(graph.ids) != static_cast<int64_t>(ids.size()) ||
+        ggml_nelements(graph.mix) != static_cast<int64_t>(weights.size())) {
+        fail("vertical graph input shape mismatch");
+    }
+    ggml_backend_tensor_set(graph.input, activation.data(), 0,
+                            activation.size() * sizeof(float));
+    ggml_backend_tensor_set(graph.ids, ids.data(), 0,
+                            ids.size() * sizeof(int32_t));
+    ggml_backend_tensor_set(graph.mix, weights.data(), 0,
+                            weights.size() * sizeof(float));
+}
+
+std::vector<float> vertical_compute_route(
+        vertical_layer_runtime & layer,
+        ggml_backend_t cpu_backend, ggml_backend_t gpu_backend,
+        const std::vector<float> & activation,
+        const tesy_route_partition & route) {
+    const size_t n_cpu = route.cpu_global_ids.size();
+    const size_t n_gpu = route.gpu_global_ids.size();
+    if (n_cpu + n_gpu != static_cast<size_t>(k_top_k)) {
+        fail("vertical route lost selected experts");
+    }
+    compute_graph * cpu = nullptr;
+    compute_graph * gpu = nullptr;
+    if (n_cpu) {
+        if (!layer.cpu_graphs[n_cpu]) {
+            layer.cpu_graphs[n_cpu] = make_compute_graph(
+                layer.borrowed_cpu, cpu_backend, static_cast<int>(n_cpu),
+                activation);
+        }
+        cpu = layer.cpu_graphs[n_cpu].get();
+        vertical_set_graph_inputs(*cpu, activation, route.cpu_global_ids,
+                                  route.cpu_weights);
+        compute(cpu_backend, *cpu);
+    }
+    if (n_gpu) {
+        if (!layer.gpu_graphs[n_gpu]) {
+            layer.gpu_graphs[n_gpu] = make_compute_graph(
+                *layer.gpu_resident, gpu_backend, static_cast<int>(n_gpu),
+                activation);
+        }
+        gpu = layer.gpu_graphs[n_gpu].get();
+        vertical_set_graph_inputs(*gpu, activation, route.gpu_local_ids,
+                                  route.gpu_weights);
+        compute(gpu_backend, *gpu);
+    }
+    if (cpu && gpu) {
+        if (!layer.aggregate) layer.aggregate = make_sum_graph(gpu_backend);
+        ggml_backend_tensor_copy(gpu->output, layer.aggregate->gpu_partial);
+        ggml_backend_tensor_copy(cpu->output, layer.aggregate->cpu_partial);
+        ggml_backend_synchronize(cpu_backend);
+        ggml_backend_synchronize(gpu_backend);
+        compute_sum(gpu_backend, *layer.aggregate);
+        return read_output(gpu_backend, layer.aggregate->output);
+    }
+    if (cpu) return read_output(cpu_backend, cpu->output);
+    if (gpu) return read_output(gpu_backend, gpu->output);
+    fail("vertical route has no executor");
+}
+
+size_t vertical_gpu_allocation_bytes(const vertical_layer_runtime & layer) {
+    size_t result = 0;
+    auto add = [&](ggml_backend_buffer_t buffer) {
+        if (buffer) result += ggml_backend_buffer_get_size(buffer);
+    };
+    if (layer.gpu_resident) {
+        add(layer.gpu_resident->weights.buffer);
+        add(layer.gpu_resident->biases.buffer);
+    }
+    for (const auto & graph : layer.gpu_graphs) {
+        if (graph) add(graph->storage.buffer);
+    }
+    if (layer.aggregate) add(layer.aggregate->storage.buffer);
+    return result;
+}
+
+struct vertical_event {
+    int token_ordinal = 0;
+    int layer = 0;
+    int gpu_hits = 0;
+    std::vector<int32_t> experts;
+    std::vector<float> weights;
+    int prefix_compute_count = 1;
+    int middle_compute_count = 0;
+    int suffix_compute_count = 1;
+    size_t gpu_allocated_bytes = 0;
+};
+
+struct vertical_hook_state {
+    ggml_backend_t cpu_backend = nullptr;
+    ggml_backend_t gpu_backend = nullptr;
+    ggml_backend_buffer_type_t gpu_buft = nullptr;
+    int layers_to_replace = 0;
+    int token_ordinal = 0;
+    bool active = false;
+    bool invoked = false;
+    std::array<vertical_layer_runtime, 24> layers;
+    std::vector<vertical_event> events;
+};
+
+int vertical_find_anchor(ggml_cgraph * graph, const std::string & name) {
+    int result = -1;
+    for (int i = 0; i < graph->n_nodes; ++i) {
+        if (name == graph->nodes[i]->name) {
+            if (result != -1) fail("vertical duplicate graph anchor: " + name);
+            result = i;
+        }
+    }
+    if (result < 0) fail("vertical missing graph anchor: " + name);
+    return result;
+}
+
+ggml_status vertical_live_compute_hook(ggml_cgraph * graph,
+                                       ggml_backend_sched_t sched,
+                                       ggml_backend_t backend_cpu,
+                                       void * user_data) {
+    auto * state = static_cast<vertical_hook_state *>(user_data);
+    if (!state || !state->active || state->invoked || !graph ||
+        !sched || !backend_cpu || !state->cpu_backend ||
+        !state->gpu_backend || !state->gpu_buft) {
+        fail("vertical hook state invalid or invoked twice");
+    }
+    state->invoked = true;
+    for (int i = 0; i < graph->n_nodes; ++i) {
+        ggml_tensor * node = graph->nodes[i];
+        if (ggml_backend_sched_get_tensor_backend(sched, node) != backend_cpu ||
+            !node->buffer || !node->data) {
+            fail("VERTICAL_BLOCKER_STOCK_GRAPH_NOT_SINGLE_CPU_BACKEND");
+        }
+    }
+    int cursor = 0;
+    const std::vector<int32_t> resident_ids{0, 1, 2, 3};
+    for (int layer_index = 0; layer_index < state->layers_to_replace; ++layer_index) {
+        auto name = [&](const char * prefix) {
+            return std::string(prefix) + std::to_string(layer_index);
+        };
+        const int activation_index = vertical_find_anchor(
+            graph, name("attn_post_norm-"));
+        const int topk_index = vertical_find_anchor(graph, name("ffn_moe_topk-"));
+        const int weights_index = vertical_find_anchor(
+            graph, name("ffn_moe_weights_softmax-"));
+        const int moe_out_index = vertical_find_anchor(graph, name("ffn_moe_out-"));
+        if (!(cursor <= activation_index && activation_index < topk_index &&
+              topk_index < weights_index && weights_index < moe_out_index &&
+              moe_out_index + 1 < graph->n_nodes)) {
+            fail("VERTICAL_BLOCKER_LAYER_BOUNDARIES_NOT_ORDERED");
+        }
+        std::unordered_set<ggml_tensor *> middle;
+        std::unordered_set<ggml_tensor *> ancestors;
+        collect_graph_ancestors(graph->nodes[moe_out_index], ancestors);
+        int expert_matmuls = 0;
+        for (int i = weights_index + 1; i <= moe_out_index; ++i) {
+            auto * node = graph->nodes[i];
+            if (!ancestors.count(node)) fail("VERTICAL_BLOCKER_MIDDLE_NOT_CONTIGUOUS");
+            middle.insert(node);
+            if (node->op == GGML_OP_MUL_MAT_ID) ++expert_matmuls;
+        }
+        if (expert_matmuls != 3) fail("vertical expert matmul count changed");
+        bool consumed = false;
+        for (int i = moe_out_index + 1; i < graph->n_nodes; ++i) {
+            for (auto * src : graph->nodes[i]->src) {
+                if (src == graph->nodes[moe_out_index]) consumed = true;
+                if (src != graph->nodes[moe_out_index] && middle.count(src)) {
+                    fail("VERTICAL_BLOCKER_SUFFIX_DEPENDS_ON_SKIPPED_MIDDLE");
+                }
+            }
+        }
+        if (!consumed) fail("VERTICAL_BLOCKER_SUFFIX_IGNORES_INJECTED_OUTPUT");
+        auto prefix = ggml_graph_view(graph, cursor, weights_index + 1);
+        if (ggml_backend_graph_compute(backend_cpu, &prefix) != GGML_STATUS_SUCCESS) {
+            fail("vertical CPU prefix graph compute failed");
+        }
+        const auto activation = read_live_tensor<float>(
+            graph->nodes[activation_index], GGML_TYPE_F32,
+            static_cast<size_t>(k_embd), "vertical activation");
+        const auto experts = read_live_tensor<int32_t>(
+            graph->nodes[topk_index], GGML_TYPE_I32,
+            static_cast<size_t>(k_top_k), "vertical expert IDs");
+        const auto weights = read_live_tensor<float>(
+            graph->nodes[weights_index], GGML_TYPE_F32,
+            static_cast<size_t>(k_top_k), "vertical routing weights");
+        const auto partition = tesy_partition_route(
+            experts, weights, resident_ids, static_cast<int32_t>(k_expert_count));
+        auto & layer = state->layers[static_cast<size_t>(layer_index)];
+        const auto stock_tensors = vertical_stock_tensors(graph, layer_index);
+        if (!layer.initialized) {
+            layer.stock_tensors = stock_tensors;
+            layer.borrowed_cpu.gate_w = stock_tensors[0];
+            layer.borrowed_cpu.up_w = stock_tensors[1];
+            layer.borrowed_cpu.down_w = stock_tensors[2];
+            layer.borrowed_cpu.gate_b = stock_tensors[3];
+            layer.borrowed_cpu.up_b = stock_tensors[4];
+            layer.borrowed_cpu.down_b = stock_tensors[5];
+            const tensor_bytes bytes = vertical_resident_bytes(
+                stock_tensors, resident_ids);
+            layer.gpu_resident = make_tensor_set(
+                bytes, static_cast<int>(resident_ids.size()),
+                state->gpu_buft, state->gpu_buft);
+            layer.initialized = true;
+        } else if (layer.stock_tensors != stock_tensors) {
+            fail("vertical stock weight tensor identity changed across decodes");
+        }
+        const auto output = vertical_compute_route(
+            layer, state->cpu_backend, state->gpu_backend,
+            activation, partition);
+        for (float value : output) {
+            if (!std::isfinite(value)) fail("vertical FFN output is non-finite");
+        }
+        ggml_tensor * moe_out = graph->nodes[moe_out_index];
+        if (moe_out->type != GGML_TYPE_F32 ||
+            !ggml_is_contiguous(moe_out) ||
+            ggml_nelements(moe_out) != k_embd) {
+            fail("vertical MoE output tensor metadata changed");
+        }
+        ggml_backend_tensor_set(moe_out, output.data(), 0,
+                                output.size() * sizeof(float));
+        const auto observed = read_live_tensor<float>(
+            moe_out, GGML_TYPE_F32, static_cast<size_t>(k_embd),
+            "vertical injected output");
+        if (!float_vectors_bitwise_equal(output, observed)) {
+            fail("vertical injection bytes did not persist");
+        }
+        size_t allocated = 0;
+        for (const auto & item : state->layers) {
+            allocated += vertical_gpu_allocation_bytes(item);
+        }
+        size_t free_vram = 0;
+        size_t total_vram = 0;
+        ggml_backend_dev_memory(ggml_backend_get_device(state->gpu_backend),
+                                &free_vram, &total_vram);
+        if (allocated > 5ull * 1024 * 1024 * 1024 ||
+            free_vram < 1024ull * 1024 * 1024 ||
+            total_vram < 7ull * 1024 * 1024 * 1024) {
+            fail("vertical GPU resident buffer or free VRAM guard failed");
+        }
+        state->events.push_back({
+            state->token_ordinal, layer_index,
+            static_cast<int>(partition.gpu_global_ids.size()),
+            experts, weights, 1, 0, 1, allocated});
+        cursor = moe_out_index + 1;
+    }
+    auto suffix = ggml_graph_view(graph, cursor, graph->n_nodes);
+    if (ggml_backend_graph_compute(backend_cpu, &suffix) != GGML_STATUS_SUCCESS) {
+        fail("vertical CPU suffix graph compute failed");
+    }
+    return GGML_STATUS_SUCCESS;
+}
+
+llama_context * vertical_make_context(llama_model * model,
+                                      size_t prompt_count,
+                                      const options & opt) {
+    llama_context_params params = llama_context_default_params();
+    params.n_ctx = opt.live_ctx;
+    params.n_batch = static_cast<uint32_t>(prompt_count);
+    params.n_ubatch = static_cast<uint32_t>(prompt_count);
+    params.n_threads = opt.threads;
+    params.n_threads_batch = opt.threads;
+    params.no_perf = true;
+    llama_context * ctx = llama_init_from_model(model, params);
+    if (!ctx) fail("vertical context creation failed");
+    return ctx;
+}
+
+llama_sampler * vertical_make_greedy_sampler() {
+    llama_sampler_chain_params params = llama_sampler_chain_default_params();
+    params.no_perf = true;
+    llama_sampler * sampler = llama_sampler_chain_init(params);
+    llama_sampler_chain_add(sampler, llama_sampler_init_greedy());
+    return sampler;
+}
+
+void run_vertical_live_exactness(
+        const options & opt, ggml_backend_t cpu_backend,
+        ggml_backend_t gpu_backend,
+        ggml_backend_buffer_type_t gpu_buft) {
+    if (!llama_tesy_set_graph_compute_hook) {
+        fail("vertical live requires patched llama compute hook");
+    }
+    const std::string prompt = read_prompt_file(opt.prompt_file);
+    llama_model_params model_params = llama_model_default_params();
+    model_params.n_gpu_layers = 0;
+    llama_model * model = llama_model_load_from_file(
+        opt.model.c_str(), model_params);
+    if (!model) fail("vertical model load failed");
+    const llama_vocab * vocab = llama_model_get_vocab(model);
+    const auto prompt_tokens = tokenize_prompt(vocab, prompt);
+    if (prompt_tokens.size() + static_cast<size_t>(opt.vertical_tokens) + 1 >
+        opt.live_ctx) {
+        fail("vertical prompt and generation exceed context");
+    }
+    const size_t n_vocab = static_cast<size_t>(llama_vocab_n_tokens(vocab));
+    if (n_vocab != 201088) fail("vertical vocabulary identity changed");
+
+    std::vector<llama_token> stock_tokens;
+    std::vector<std::vector<float>> stock_logits;
+    {
+        llama_context * ctx = vertical_make_context(model, prompt_tokens.size(), opt);
+        llama_sampler * sampler = vertical_make_greedy_sampler();
+        llama_batch prompt_batch = llama_batch_get_one(
+            const_cast<llama_token *>(prompt_tokens.data()),
+            static_cast<int32_t>(prompt_tokens.size()));
+        if (llama_decode(ctx, prompt_batch) != 0) fail("vertical stock prefill failed");
+        stock_tokens.push_back(llama_sampler_sample(sampler, ctx, -1));
+        for (int ordinal = 0; ordinal < opt.vertical_tokens; ++ordinal) {
+            if (llama_vocab_is_eog(vocab, stock_tokens.back())) break;
+            llama_token input = stock_tokens.back();
+            llama_batch batch = llama_batch_get_one(&input, 1);
+            if (llama_decode(ctx, batch) != 0) fail("vertical stock committed decode failed");
+            stock_logits.push_back(copy_reinjection_logits(ctx, n_vocab));
+            stock_tokens.push_back(llama_sampler_sample(sampler, ctx, -1));
+        }
+        llama_sampler_free(sampler);
+        llama_free(ctx);
+    }
+    if (stock_logits.empty()) fail("vertical stock produced no continuation");
+
+    vertical_hook_state state;
+    state.cpu_backend = cpu_backend;
+    state.gpu_backend = gpu_backend;
+    state.gpu_buft = gpu_buft;
+    state.layers_to_replace = opt.vertical_layers;
+    std::vector<llama_token> candidate_tokens;
+    std::vector<parity> logits_parity;
+    {
+        llama_context * ctx = vertical_make_context(model, prompt_tokens.size(), opt);
+        llama_sampler * sampler = vertical_make_greedy_sampler();
+        llama_batch prompt_batch = llama_batch_get_one(
+            const_cast<llama_token *>(prompt_tokens.data()),
+            static_cast<int32_t>(prompt_tokens.size()));
+        if (llama_decode(ctx, prompt_batch) != 0) fail("vertical candidate prefill failed");
+        candidate_tokens.push_back(llama_sampler_sample(sampler, ctx, -1));
+        if (candidate_tokens.back() != stock_tokens.front()) {
+            fail("vertical candidate prefill greedy token diverged");
+        }
+        for (size_t ordinal = 0; ordinal < stock_logits.size(); ++ordinal) {
+            state.token_ordinal = static_cast<int>(ordinal);
+            state.active = true;
+            state.invoked = false;
+            llama_tesy_set_graph_compute_hook(ctx, vertical_live_compute_hook, &state);
+            llama_token input = candidate_tokens.back();
+            llama_batch batch = llama_batch_get_one(&input, 1);
+            const int code = llama_decode(ctx, batch);
+            llama_tesy_set_graph_compute_hook(ctx, nullptr, nullptr);
+            state.active = false;
+            if (code != 0 || !state.invoked) {
+                fail("vertical candidate committed decode or hook failed");
+            }
+            const auto candidate_logits = copy_reinjection_logits(ctx, n_vocab);
+            const parity p = compare_outputs(stock_logits[ordinal], candidate_logits);
+            logits_parity.push_back(p);
+            if (!p.pass) fail("vertical candidate full logits parity failed");
+            candidate_tokens.push_back(llama_sampler_sample(sampler, ctx, -1));
+            if (candidate_tokens.back() != stock_tokens[ordinal + 1]) {
+                fail("vertical candidate committed greedy continuation diverged");
+            }
+            const auto root = std::filesystem::path(opt.output).parent_path();
+            const std::string stem = "token-" + std::to_string(ordinal);
+            write_reinjection_logits((root / (stem + "-stock-logits.f32")).string(),
+                                     stock_logits[ordinal]);
+            write_reinjection_logits((root / (stem + "-candidate-logits.f32")).string(),
+                                     candidate_logits);
+        }
+        llama_sampler_free(sampler);
+        llama_free(ctx);
+    }
+    llama_model_free(model);
+    if (state.events.size() != stock_logits.size() *
+        static_cast<size_t>(opt.vertical_layers)) {
+        fail("vertical event/layer coverage incomplete");
+    }
+    FILE * out = std::fopen(opt.output.c_str(), "wx");
+    if (!out) fail("cannot create vertical live raw output");
+    std::fprintf(out,
+        "{\"schema\":\"tesy.vertical_live_exactness_raw.v1\","
+        "\"classification\":\"MEASURED_VERTICAL_LIVE_CORRECTNESS\","
+        "\"layers_replaced\":%d,\"prompt_tokens\":%zu,"
+        "\"committed_decodes\":%zu,\"stock_tokens\":[",
+        opt.vertical_layers, prompt_tokens.size(), stock_logits.size());
+    for (size_t i = 0; i < stock_tokens.size(); ++i) {
+        if (i) std::fputc(',', out);
+        std::fprintf(out, "%" PRId32, stock_tokens[i]);
+    }
+    std::fputs("],\"candidate_tokens\":[", out);
+    for (size_t i = 0; i < candidate_tokens.size(); ++i) {
+        if (i) std::fputc(',', out);
+        std::fprintf(out, "%" PRId32, candidate_tokens[i]);
+    }
+    std::fputs("],\"logits_parity\":[", out);
+    for (size_t i = 0; i < logits_parity.size(); ++i) {
+        if (i) std::fputc(',', out);
+        print_reinjection_parity(out, logits_parity[i]);
+    }
+    std::fputs("],\"events\":[", out);
+    for (size_t i = 0; i < state.events.size(); ++i) {
+        if (i) std::fputc(',', out);
+        const auto & event = state.events[i];
+        std::fprintf(out,
+            "{\"token_ordinal\":%d,\"layer\":%d,\"gpu_hits\":%d,"
+            "\"prefix_compute_count\":%d,\"middle_compute_count\":%d,"
+            "\"suffix_compute_count\":%d,\"gpu_allocated_bytes\":%zu,"
+            "\"experts\":[",
+            event.token_ordinal, event.layer, event.gpu_hits,
+            event.prefix_compute_count, event.middle_compute_count,
+            event.suffix_compute_count, event.gpu_allocated_bytes);
+        for (size_t j = 0; j < event.experts.size(); ++j) {
+            if (j) std::fputc(',', out);
+            std::fprintf(out, "%" PRId32, event.experts[j]);
+        }
+        std::fputs("],\"weights\":[", out);
+        for (size_t j = 0; j < event.weights.size(); ++j) {
+            if (j) std::fputc(',', out);
+            std::fprintf(out, "%.9g", event.weights[j]);
+        }
+        std::fputs("]}", out);
+    }
+    std::fputs("],\"claim_boundary\":\"Instrumented correctness only; no timing or performance claim.\"}\n", out);
+    if (std::fclose(out) != 0) fail("cannot close vertical live raw output");
+    std::puts("VERTICAL_LIVE_CORRECTNESS_RAW_PASS");
+}
+
 void print_parity(FILE * out, const parity & value) {
     std::fprintf(
         out,
@@ -4191,6 +4717,10 @@ int main(int argc, char ** argv) {
         run_split_graph_skip_exactness(
             opt, cpu.backend, gpu.backend,
             cpu_weight_buft, cpu_bias_buft, gpu_buft);
+        return 0;
+    }
+    if (opt.vertical_live_exactness) {
+        run_vertical_live_exactness(opt, cpu.backend, gpu.backend, gpu_buft);
         return 0;
     }
 
