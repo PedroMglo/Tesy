@@ -67,6 +67,7 @@ def _raw(
         "sample_triplets": 81,
         "inner": 1,
         "resident_experts": True,
+        "provenance_gate": "FILE_EXISTENCE_BEFORE_WARMUP",
         "input_semantics": "HOST_CAPTURE_TO_CPU_AND_GPU_COMPACT_INPUTS",
         "decode_input_token": 2167,
         "activation_tensor": "attn_post_norm-0",
@@ -235,5 +236,16 @@ def test_live_timing_rejects_threshold_drift():
     with pytest.raises(
         LiveMoeHandoffTimingError,
         match="parity_thresholds mismatch",
+    ):
+        validate_live_moe_handoff_timing(h2, _raw(3))
+
+
+def test_live_timing_rejects_provenance_gate_drift():
+    h2 = _raw(2)
+    h2["provenance_gate"] = "NONE"
+
+    with pytest.raises(
+        LiveMoeHandoffTimingError,
+        match="provenance_gate mismatch",
     ):
         validate_live_moe_handoff_timing(h2, _raw(3))
