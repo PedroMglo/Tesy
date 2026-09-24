@@ -36,7 +36,7 @@ reference-host/model validation. No source-only row is a performance claim.
 | KTransformers baseline | PINNED_NOT_REPRODUCED | reproduce only if compatible with selected model/host |
 | vLLM baseline | PINNED_NOT_REPRODUCED | B4 only if 8 GiB/32 GiB envelope admits it |
 | native Tesy expert residency/cache | NOT_IMPLEMENTED | forbidden until baseline + trace/headroom establish a concrete gap |
-| CPU-vs-transfer-vs-GPU expert crossover | SHAPE_CONTEXT_AVAILABLE_PROVENANCE_REVALIDATION_REQUIRED | native metadata values are useful design context, but inventory campaign admission is incomplete until exact execution provenance/host verification are rerun |
+| CPU-vs-transfer-vs-GPU expert crossover | INCONCLUSIVE_EXECUTION_BASE_NOT_PRESERVED | historical k=1/k=4 measurements use a CPU-default fallback comparator, not the unique `--n-cpu-moe` loader path; exact Tesy execution commit/tree is not preserved, so campaign admission and blocking-transfer NO_GO require rerun |
 | causal prefetch | NOT_IMPLEMENTED | only after locality/headroom and wasted-prefetch analysis |
 | speculative K=2 | NOT_IMPLEMENTED | only after K=1 target/runtime correctness |
 | joint K/residency scheduler | OPEN_RESEARCH_QUESTION | broad novelty overlap exists; benefit and narrower novelty unknown |
