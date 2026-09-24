@@ -970,13 +970,18 @@ case_result run_case(
             result.activation_d2h.median_ms +
             result.cpu_compute.median_ms +
             result.cpu_partial_h2d.median_ms;
+        // h=0 has no CPU/GPU compute overlap to introduce. Preserve the
+        // measured direct path exactly; the decomposed sum is diagnostic only.
         result.overlap_bound_median_ms =
-            result.component_sum_median_ms;
+            result.direct_wall.median_ms;
     } else {
         result.component_sum_median_ms =
             result.gpu_compute.median_ms;
+        // h=4 is already GPU-only, so the prospective overlap design cannot
+        // improve it. Use the measured direct path rather than a separately
+        // sampled component median.
         result.overlap_bound_median_ms =
-            result.gpu_compute.median_ms;
+            result.direct_wall.median_ms;
     }
 
     return result;
