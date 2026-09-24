@@ -115,13 +115,17 @@ def test_timing_runner_proves_provenance_before_opening_gate():
         root / "scripts" / "run_live_moe_handoff_timing.sh"
     ).read_text(encoding="utf-8")
 
-    provenance = text.index("tesy.mixed_residency_provenance")
-    gate = text.index(': >"$gate"')
-    resume = text.index('kill -CONT "$active_pid"')
+    start = text.index("run_h() {")
+    end = text.index('stage="timing_h2"', start)
+    block = text[start:end]
+
+    provenance = block.index("tesy.mixed_residency_provenance")
+    gate = block.index(': >"$gate"')
+    resume = block.index('kill -CONT "$active_pid"')
 
     assert provenance < gate < resume
-    assert 'kill -STOP "$active_pid"' in text
-    assert "--timing-start-gate" in text
+    assert 'kill -STOP "$active_pid"' in block
+    assert "--timing-start-gate" in block
 
 
 def test_timing_runner_is_fail_closed_and_source_bound():
