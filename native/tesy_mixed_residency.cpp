@@ -3845,6 +3845,12 @@ ggml_status vertical_live_compute_hook(ggml_cgraph * graph,
                 static_cast<size_t>(state->token_ordinal))[
                 static_cast<size_t>(layer_index)];
             const parity p = compare_outputs(ref.output, output);
+            std::fprintf(stderr,
+                "vertical FFN parity token=%d layer=%d h=%zu "
+                "rel=%.9g cosine=%.12f bitwise=%d\n",
+                state->token_ordinal, layer_index,
+                partition.gpu_global_ids.size(), p.relative_max,
+                p.cosine, float_vectors_bitwise_equal(ref.output, output) ? 1 : 0);
             if (!p.pass) {
                 std::fprintf(stderr,
                     "vertical FFN failure token=%d layer=%d h=%zu "
@@ -3995,7 +4001,7 @@ void run_vertical_live_exactness(
             if (!compare_outputs(stock_logits[ordinal], logits).pass) {
                 fail("vertical instrumented stock differs from uninterrupted stock");
             }
-            for (int layer = 0; layer < opt.vertical_layers; ++layer) {
+            for (int layer = 0; layer < 24; ++layer) {
                 const auto & event = reference.events[ordinal][
                     static_cast<size_t>(layer)];
                 if (event.activation.size() != static_cast<size_t>(k_embd) ||
