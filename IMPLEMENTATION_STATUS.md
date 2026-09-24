@@ -37,6 +37,7 @@ reference-host/model validation. No source-only row is a performance claim.
 | vLLM baseline | PINNED_NOT_REPRODUCED | B4 only if 8 GiB/32 GiB envelope admits it |
 | native Tesy expert residency/cache | NOT_IMPLEMENTED | forbidden until baseline + trace/headroom establish a concrete gap |
 | CPU-vs-transfer-vs-GPU expert crossover | INCONCLUSIVE_EXECUTION_BASE_NOT_PRESERVED | historical k=1/k=4 measurements use a CPU-default fallback comparator, not the unique `--n-cpu-moe` loader path; exact Tesy execution commit/tree is not preserved, so campaign admission and blocking-transfer NO_GO require rerun |
+| mixed GPU-hit / CPU-miss expert execution | ASYNC_OVERLAP_MEASURED_GO_TAIL_GATE_REQUIRED | Physical isolated async campaign `mixed-residency-async-overlap-20260924T152625Z` passed the frozen weighted-median implementation gate with numerical parity and zero swap, but h=2/h=3 async p95 exceeded 2 ms. Routed-layer integration remains blocked pending the separately prospective 81-pair order-conditioned steady-tail gate; no full-model, cache, prefetch or physical-traffic claim. |
 | causal prefetch | NOT_IMPLEMENTED | only after locality/headroom and wasted-prefetch analysis |
 | speculative K=2 | NOT_IMPLEMENTED | only after K=1 target/runtime correctness |
 | joint K/residency scheduler | OPEN_RESEARCH_QUESTION | broad novelty overlap exists; benefit and narrower novelty unknown |
