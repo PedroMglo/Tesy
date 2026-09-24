@@ -77,6 +77,13 @@ if admission.get("schema") != "tesy.placement_admission_context.v1":
 if admission.get("campaign_mode") != "capacity-only":
     raise SystemExit("publication helper accepts capacity-only campaigns only")
 
+doctor = json.loads((root / "doctor.json").read_text(encoding="utf-8"))
+if doctor.get("reference_check", {}).get("status") != "PASS":
+    raise SystemExit("reference-host validation did not PASS")
+virtualization = doctor.get("snapshot", {}).get("virtualization")
+if not isinstance(virtualization, dict) or virtualization.get("status") != "PHYSICAL":
+    raise SystemExit("capacity publication requires virtualization status PHYSICAL")
+
 build = json.loads((root / "build-provenance.json").read_text(encoding="utf-8"))
 if build.get("schema") != "tesy.llama_build_provenance.v1":
     raise SystemExit("unexpected build-provenance schema")
