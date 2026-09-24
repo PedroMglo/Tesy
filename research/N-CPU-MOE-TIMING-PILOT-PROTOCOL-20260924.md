@@ -94,7 +94,13 @@ After each server health PASS and before its request:
 
 - verify `/proc/<pid>/exe`;
 - verify the pre-hashed `libggml-cuda.so` is the backend actually mapped by
-  that process.
+  that process;
+- compare `llama-server`-reported aggregate GPU/Host model buffers with the
+  same-placement `llama-fit-params --fit-print` projection;
+- require both aggregate model-buffer deltas to be within 2 MiB.
+
+The model-buffer comparison qualifies realized aggregate placement only. It is
+not per-tensor identity and is not physical VRAM/DRAM/PCIe traffic.
 
 ## Capacity admission
 
