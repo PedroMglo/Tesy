@@ -79,6 +79,11 @@ The token and route identities come from the admitted routed exactness
 campaign. Any mismatch terminates this campaign rather than silently timing a
 different event.
 
+The `--ngl 0` configuration is intentionally a permissive feasibility
+comparator for external interception rather than an optimized stock-performance
+claim. A hard no-go against this configuration is strong; a surviving bound is
+weak and still requires the full handoff experiment.
+
 ## Repeated-event construction
 
 Start one fresh llama.cpp context.
@@ -205,6 +210,10 @@ Statistics:
 The external interception mechanism is impossible to satisfy a no-regression
 central/tail latency requirement if cancellation overhead alone consumes at
 least the complete stock MoE segment.
+
+Tesy work could in principle overlap part of the abort unwind, but total
+external-interception completion still cannot be lower than the zero-work
+`T_cancel` boundary itself.
 
 Hard median no-go:
 
