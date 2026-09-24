@@ -37,8 +37,8 @@ Status: **PASS_DIAGNOSTIC_REFERENCE_BRINGUP_PIPELINE**; runner exit code 0. Camp
 | OFF vs ON generated token IDs | PASS | Exact equality of those ID lists only; not bitwise or numerical model parity |
 | Native graph consistency | PASS | 15 one-token graphs, 24 MoE layers × top-4 signature, zero mismatches |
 | Count-space LRU / Belady | PASS_DERIVATION | TRACE_DERIVED; Belady is non-causal offline oracle |
-| GGUF expert inventory | PASS_DERIVATION | GGUF encoded payload accounting, not physical fetches |
-| Byte-weighted two-tier LRU | PASS_SIMULATION | TRACE_DERIVED_ENCODED_PAYLOAD_SIMULATION, not physical I/O |
+| GGUF expert inventory | INCONCLUSIVE_DEPENDENCY_LOCK_REQUIRED | Diagnostic output retained, but transitive Python dependencies were not frozen prospectively |
+| Byte-weighted two-tier LRU | NOT_ADMITTED_DEPENDENCY_LOCK_REQUIRED | Derived from the non-confirmatory inventory; numbers retained only as exploratory diagnostics |
 | CUDA performance, physical expert bytes, chat, >RAM, speculation | NOT_RUN | Outside this diagnostic campaign |
 
 ### Identities and observed host
@@ -64,9 +64,9 @@ The paired tracer generated the same 16 IDs OFF and ON (token-file SHA-256 `88a5
 | 128 | 838 / 602 | 549 / 891 |
 | 256 | 526 / 914 | 429 / 1011 |
 
-The GGUF inventory derives 24 layers × 32 experts = 768 encoded expert objects, each 13,253,760 bytes, with 10,178,887,680 bytes in merged expert tensors. The derivation had no rejected tensors. Individual physical expert fetch granularity is unknown.
+The diagnostic GGUF inventory produced 24 layers × 32 experts = 768 encoded expert objects, each 13,253,760 bytes, with 10,178,887,680 bytes in merged expert tensors and no rejected tensors. Because `gguf-py` transitive dependencies were not frozen prospectively, this output is retained as exploratory evidence only and is **not an admitted PASS_DERIVATION**. Individual physical expert fetch granularity is also unknown.
 
-With the prospectively chosen 16 GiB RAM and 4 GiB VRAM byte-LRU capacities and `min_graph_seq=1`, the trace-derived simulation reports 5,685,863,040 encoded expert bytes NVMe→RAM and 6,441,327,360 RAM→VRAM, or 379,057,536 and 429,421,824 bytes respectively per **15 decode-step proxy**. RAM had 429 misses, 57 hits, zero evictions; VRAM had 486 misses, 954 hits, 162 evictions. These are modeled payload movements under hypothetical GPU expert execution. They are **not** measured storage reads, page-cache traffic, DRAM traffic, PCIe traffic, latency, or bytes per verified committed token.
+Exploratory only: with the prospectively chosen 16 GiB RAM and 4 GiB VRAM byte-LRU capacities and `min_graph_seq=1`, the trace-derived simulation reported 5,685,863,040 encoded expert bytes NVMe→RAM and 6,441,327,360 RAM→VRAM, or 379,057,536 and 429,421,824 bytes respectively per **15 decode-step proxy**. RAM had 429 misses, 57 hits, zero evictions; VRAM had 486 misses, 954 hits, 162 evictions. These values are **NOT_ADMITTED_DEPENDENCY_LOCK_REQUIRED** because their expert-byte inventory dependency was not prospectively locked. Even after a rerun they would remain modeled payload movements, not measured storage reads, page-cache traffic, DRAM traffic, PCIe traffic, latency, or bytes per verified committed token.
 
 ### Failures, limits and decision
 

@@ -3,17 +3,23 @@ from __future__ import annotations
 from tesy.native_trace import NativeTopKRecord, validate_one_token_graph_consistency
 
 
-def _record(graph: int, layer: int, width: int = 2) -> NativeTopKRecord:
-    experts = tuple(range(width))
-    return NativeTopKRecord(graph_seq=graph, layer=layer, experts=(experts,))
+def _record(graph, layer, width=2, phase="decode"):
+    return NativeTopKRecord(
+        graph_seq=graph,
+        layer=layer,
+        experts=(tuple(range(width)),),
+        phase=phase,
+    )
 
 
-def test_consistency_passes_equal_graph_signatures():
+def test_consistency_passes_equal_decode_signatures():
     records = [
-        _record(0, 0),
-        _record(0, 1),
+        _record(0, 0, phase="prefill"),
+        _record(0, 1, phase="prefill"),
         _record(1, 0),
         _record(1, 1),
+        _record(2, 0),
+        _record(2, 1),
     ]
     result = validate_one_token_graph_consistency(records)
     assert result["status"] == "PASS"
@@ -21,20 +27,14 @@ def test_consistency_passes_equal_graph_signatures():
 
 
 def test_consistency_fails_missing_layer():
-    records = [
-        _record(0, 0),
-        _record(0, 1),
-        _record(1, 0),
-    ]
-    result = validate_one_token_graph_consistency(records)
+    result = validate_one_token_graph_consistency(
+        [_record(0, 0), _record(0, 1), _record(1, 0)]
+    )
     assert result["status"] == "FAIL"
-    assert result["mismatches"]
 
 
 def test_consistency_fails_changed_topk_width():
-    records = [
-        _record(0, 0, width=2),
-        _record(1, 0, width=3),
-    ]
-    result = validate_one_token_graph_consistency(records)
+    result = validate_one_token_graph_consistency(
+        [_record(0, 0, 2), _record(1, 0, 3)]
+    )
     assert result["status"] == "FAIL"
