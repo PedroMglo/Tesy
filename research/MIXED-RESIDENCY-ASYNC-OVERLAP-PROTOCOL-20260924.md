@@ -2,11 +2,11 @@
 
 Date: 2026-09-24
 
-Branch: `research/mixed-residency-async-overlap-20260924`
+Branch: `research/mixed-residency-async-overlap-restacked-20260924`
 
-Parent Tesy commit: `fafa8b9883c818c367c4c32f69b82cf9a82fc049`
+Parent Tesy commit: `42b759e91c373f058934e924fe4ce3f7f0915d92`
 
-Parent Tesy tree: `c26e2256d78f6d6f13f981f21c4c1fb0e129a118`
+Parent Tesy tree: `5181fbdae2821adb658bfd9d92c5a65075aca938`
 
 Pinned llama.cpp commit:
 `4e416ee7308dd6b581796f1a6241276cd5982691`
