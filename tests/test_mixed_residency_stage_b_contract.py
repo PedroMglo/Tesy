@@ -27,7 +27,7 @@ def test_mixed_residency_source_freezes_balanced_case_order():
     )
 
     assert "measurement_order = {0, 4, 1, 3, 2}" in text
-    assert '\"measurement_order\":[0,4,1,3,2]' in text
+    assert r'\"measurement_order\":[0,4,1,3,2]' in text
 
 
 def test_mixed_residency_runner_binds_admitted_grouped_replay():
