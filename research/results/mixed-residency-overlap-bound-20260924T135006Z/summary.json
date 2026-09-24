@@ -1,0 +1,131 @@
+{
+  "cases": [
+    {
+      "component_median_ms": {
+        "activation_d2h": 0.006825,
+        "cpu_compute": 0.6811308,
+        "cpu_partial_h2d": 0.0073218,
+        "gpu_aggregation": null,
+        "gpu_compute": null
+      },
+      "component_sum_median_ms": 0.6952776,
+      "cpu_misses": 4,
+      "direct_median_ms": 0.7484958,
+      "direct_p95_ms": 1.2556144,
+      "dominating_compute_branch": "CPU_ONLY",
+      "gpu_hits": 0,
+      "overlap_bound_speedup_vs_direct": 1.0,
+      "parity": {
+        "cosine": 1.0,
+        "max_abs": 0,
+        "max_abs_ref": 4.19512558,
+        "relative_max": 0,
+        "status": "PASS"
+      },
+      "post_d2h_overlap_bound_median_ms": 0.7484958
+    },
+    {
+      "component_median_ms": {
+        "activation_d2h": 0.0071474,
+        "cpu_compute": 0.4311854,
+        "cpu_partial_h2d": 0.0061316,
+        "gpu_aggregation": 0.0605902,
+        "gpu_compute": 0.0589512
+      },
+      "component_sum_median_ms": 0.5640058,
+      "cpu_misses": 3,
+      "direct_median_ms": 0.6989704,
+      "direct_p95_ms": 0.9004546,
+      "dominating_compute_branch": "CPU",
+      "gpu_hits": 1,
+      "overlap_bound_speedup_vs_direct": 1.3839501709320141,
+      "parity": {
+        "cosine": 1.0,
+        "max_abs": 1.78813934e-07,
+        "max_abs_ref": 4.19512558,
+        "relative_max": 4.26242149e-08,
+        "status": "PASS"
+      },
+      "post_d2h_overlap_bound_median_ms": 0.5050546
+    },
+    {
+      "component_median_ms": {
+        "activation_d2h": 0.0070414,
+        "cpu_compute": 0.278345,
+        "cpu_partial_h2d": 0.0055266,
+        "gpu_aggregation": 0.1097892,
+        "gpu_compute": 0.1085208
+      },
+      "component_sum_median_ms": 0.509223,
+      "cpu_misses": 2,
+      "direct_median_ms": 0.576852,
+      "direct_p95_ms": 0.7547418,
+      "dominating_compute_branch": "CPU",
+      "gpu_hits": 2,
+      "overlap_bound_speedup_vs_direct": 1.4396027773244071,
+      "parity": {
+        "cosine": 1.0,
+        "max_abs": 2.38418579e-07,
+        "max_abs_ref": 4.19512558,
+        "relative_max": 5.68322866e-08,
+        "status": "PASS"
+      },
+      "post_d2h_overlap_bound_median_ms": 0.4007022
+    },
+    {
+      "component_median_ms": {
+        "activation_d2h": 0.0067028,
+        "cpu_compute": 0.1805106,
+        "cpu_partial_h2d": 0.006394,
+        "gpu_aggregation": 0.1898382,
+        "gpu_compute": 0.1875616
+      },
+      "component_sum_median_ms": 0.5710071999999999,
+      "cpu_misses": 1,
+      "direct_median_ms": 0.5830718,
+      "direct_p95_ms": 0.6235922,
+      "dominating_compute_branch": "GPU",
+      "gpu_hits": 3,
+      "overlap_bound_speedup_vs_direct": 1.4931546138942056,
+      "parity": {
+        "cosine": 1.0,
+        "max_abs": 3.57627869e-07,
+        "max_abs_ref": 4.19512558,
+        "relative_max": 8.52484298e-08,
+        "status": "PASS"
+      },
+      "post_d2h_overlap_bound_median_ms": 0.3904966
+    },
+    {
+      "component_median_ms": {
+        "activation_d2h": null,
+        "cpu_compute": null,
+        "cpu_partial_h2d": null,
+        "gpu_aggregation": null,
+        "gpu_compute": 0.2689714
+      },
+      "component_sum_median_ms": 0.2689714,
+      "cpu_misses": 0,
+      "direct_median_ms": 0.2692198,
+      "direct_p95_ms": 0.2716184,
+      "dominating_compute_branch": "GPU_ONLY",
+      "gpu_hits": 4,
+      "overlap_bound_speedup_vs_direct": 1.0,
+      "parity": {
+        "cosine": 1.0,
+        "max_abs": 3.57627869e-07,
+        "max_abs_ref": 4.19512558,
+        "relative_max": 8.52484298e-08,
+        "status": "PASS"
+      },
+      "post_d2h_overlap_bound_median_ms": 0.2692198
+    }
+  ],
+  "claim_boundary": "Component timings are measured separately from the direct serial path. The overlap bound assumes CPU and GPU subset compute can overlap only after the input D2H copy completes; D2H, CPU-partial H2D and GPU aggregation remain serialized. The h=0/h=4 anchors retain their measured direct-wall medians because no overlap transformation applies. It is not a measured async execution.",
+  "classification": "MEASURED_MIXED_RESIDENCY_COMPONENT_DIAGNOSTIC",
+  "cpu_bias_buffer_type": "CPU",
+  "cpu_weight_buffer_type": "CPU",
+  "samples": 21,
+  "schema": "tesy.mixed_residency_overlap_bound_summary.v1",
+  "status": "PASS"
+}
