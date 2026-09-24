@@ -288,6 +288,9 @@ reinjection budgets.
 - rollback occurs after endpoint;
 - no candidate output read occurs in the timed trial;
 - all six stock/serial/async orders are present;
+- the 81 measured triplets use 13 complete cycles plus tail indices
+  `[0, 3, 4]`, yielding exact 27/27/27 ordinal-position balance for every
+  mode;
 - reference validation is before timing timestamps;
 - native raw contains no decision;
 - independent validator defines GO/SERIAL_PIVOT/NO_GO;
