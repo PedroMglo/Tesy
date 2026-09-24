@@ -4,6 +4,7 @@
 
 #include <algorithm>
 #include <cerrno>
+#include <chrono>
 #include <cmath>
 #include <cinttypes>
 #include <cstdint>
@@ -13,6 +14,7 @@
 #include <filesystem>
 #include <fstream>
 #include <iterator>
+#include <numeric>
 #include <string>
 #include <vector>
 
@@ -32,8 +34,11 @@ struct options {
     std::string prompt_file;
     std::string tokens_out;
     std::string capture_dir;
+    std::string cancel_bound_output;
     int n_gpu_layers = 0;
     uint32_t n_ctx = 4096;
+    int warmup = 6;
+    int samples = 81;
 };
 
 int parse_int(const char * value, const char * flag, int minimum) {
@@ -51,8 +56,9 @@ int parse_int(const char * value, const char * flag, int minimum) {
     std::fprintf(
         code == 0 ? stdout : stderr,
         "usage: %s --model MODEL.gguf --prompt-file PROMPT "
-        "--tokens-out TOKENS.json [--capture-dir DIR] "
-        "[--ngl N] [--ctx N]\n",
+        "[--tokens-out TOKENS.json] [--capture-dir DIR] "
+        "[--cancel-bound-output RESULT.json] "
+        "[--ngl N] [--ctx N] [--warmup N] [--samples N]\n",
         argv0);
     std::exit(code);
 }
@@ -76,6 +82,12 @@ options parse_options(int argc, char ** argv) {
             out.tokens_out = value("--tokens-out");
         } else if (arg == "--capture-dir") {
             out.capture_dir = value("--capture-dir");
+        } else if (arg == "--cancel-bound-output") {
+            out.cancel_bound_output = value("--cancel-bound-output");
+        } else if (arg == "--warmup") {
+            out.warmup = parse_int(value("--warmup"), "--warmup", 0);
+        } else if (arg == "--samples") {
+            out.samples = parse_int(value("--samples"), "--samples", 1);
         } else if (arg == "--ngl") {
             out.n_gpu_layers = parse_int(value("--ngl"), "--ngl", 0);
         } else if (arg == "--ctx") {
@@ -88,8 +100,25 @@ options parse_options(int argc, char ** argv) {
         }
     }
 
-    if (out.model.empty() || out.prompt_file.empty() || out.tokens_out.empty()) {
+    if (out.model.empty() || out.prompt_file.empty()) {
         usage(argv[0], 2);
+    }
+    if (out.cancel_bound_output.empty() && out.tokens_out.empty()) {
+        usage(argv[0], 2);
+    }
+    if (!out.cancel_bound_output.empty()) {
+        if (!out.capture_dir.empty()) {
+            fail("--cancel-bound-output cannot be combined with --capture-dir");
+        }
+        if (out.n_gpu_layers != 0) {
+            fail("cancel bound is frozen to --ngl 0");
+        }
+        if (out.samples != 81) {
+            fail("cancel bound requires --samples 81");
+        }
+        if (out.warmup != 6) {
+            fail("cancel bound requires --warmup 6");
+        }
     }
     return out;
 }
