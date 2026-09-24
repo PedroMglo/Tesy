@@ -47,7 +47,6 @@ target_compile_options(tesy-expert-crossover PRIVATE -Wall -Wextra -Wpedantic -W
 target_include_directories(
   tesy-expert-crossover
   PRIVATE
-    "${LLAMA_CPP_SOURCE_DIR}/include"
     "${LLAMA_CPP_SOURCE_DIR}/ggml/include"
 )
-target_link_libraries(tesy-expert-crossover PRIVATE llama ggml)
+target_link_libraries(tesy-expert-crossover PRIVATE ggml)
