@@ -13,6 +13,7 @@ out="$3"
 ngl="${4:-0}"
 n_predict="${5:-128}"
 binary="$root/.deps/llama.cpp/build/bin/llama-cli"
+fit_tool="$root/.deps/llama.cpp/build/bin/llama-fit-params"
 python_bin="$root/.venv/bin/python"
 
 [[ "$ngl" =~ ^[0-9]+$ && "$n_predict" =~ ^[1-9][0-9]*$ ]] || {
@@ -41,7 +42,7 @@ cleanup() {
 }
 trap cleanup EXIT
 
-[[ -x "$binary" && -x "$python_bin" && -f "$model" && -f "$prompt_file" ]]
+[[ -x "$binary" && -x "$fit_tool" && -x "$python_bin" && -f "$model" && -f "$prompt_file" ]]
 [[ -z "$(git -C "$root" status --porcelain)" ]]
 [[ "$(git -C "$root/.deps/llama.cpp" rev-parse HEAD)" == \
   "4e416ee7308dd6b581796f1a6241276cd5982691" ]]
@@ -67,6 +68,30 @@ snapshot = doctor["snapshot"]
 assert snapshot["virtualization"]["status"] == "PHYSICAL"
 assert snapshot["gpu_compute_processes"]["status"] == "OK"
 assert not snapshot["gpu_compute_processes"]["stdout"].strip()
+PY
+
+stage="capacity"
+"$fit_tool" --model "$model" --ctx-size 4096 \
+  --n-gpu-layers "$ngl" --fit off --fit-print on \
+  >"$out/fit-print.stdout.txt" 2>"$out/fit-print.stderr.txt"
+"$python_bin" - "$out/doctor.json" "$out/fit-print.stdout.txt" \
+  "$out/placement-capacity.json" "$ngl" <<'PY'
+import json
+import sys
+from pathlib import Path
+
+from tesy.placement_capacity import evaluate_placement_capacity
+
+doctor = json.loads(Path(sys.argv[1]).read_text())
+snapshot = doctor["snapshot"]
+result = evaluate_placement_capacity(
+    Path(sys.argv[2]).read_text(),
+    gpu_free_bytes=snapshot["gpu"]["gpus"][0]["memory_free_bytes"],
+    mem_available_bytes=snapshot["memory"]["available_bytes"],
+    placement_id=f"stock-ngl-{sys.argv[4]}",
+)
+Path(sys.argv[3]).write_text(json.dumps(result, indent=2, sort_keys=True) + "\n")
+assert result["admitted"], result["rejection_reasons"]
 PY
 
 prompt="$(<"$prompt_file")"
