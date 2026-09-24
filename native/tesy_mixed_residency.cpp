@@ -565,7 +565,8 @@ std::unique_ptr<compute_graph> make_compute_graph(
         tensor_set & tensors,
         ggml_backend_t backend,
         int count,
-        const std::vector<float> & input_values) {
+        const std::vector<float> & input_values,
+        const std::vector<float> * mix_values = nullptr) {
     auto result = std::make_unique<compute_graph>();
     result->storage.ctx = make_context();
     ggml_context * ctx = result->storage.ctx;
@@ -628,7 +629,20 @@ std::unique_ptr<compute_graph> make_compute_graph(
         0,
         ids.size() * sizeof(int32_t));
 
-    std::vector<float> mix(static_cast<size_t>(count), k_mix_weight);
+    std::vector<float> mix;
+    if (mix_values) {
+        mix = *mix_values;
+        if (mix.size() != static_cast<size_t>(count)) {
+            fail("routing weight count does not match compact expert count");
+        }
+        for (float value : mix) {
+            if (!std::isfinite(value) || value < 0.0f) {
+                fail("routing weights must be finite and non-negative");
+            }
+        }
+    } else {
+        mix.assign(static_cast<size_t>(count), k_mix_weight);
+    }
     ggml_backend_tensor_set(
         result->mix,
         mix.data(),
