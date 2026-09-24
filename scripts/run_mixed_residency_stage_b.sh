@@ -91,6 +91,29 @@ git -C "$source_dir" status --porcelain=v1 >"$out/llama-status.txt"
   exit 1
 }
 
+stage="source_lock"
+python3 - "$root/configs/backends.lock.json" "$out/llama-head.txt" <<'PY'
+import json
+import sys
+from pathlib import Path
+lock = json.loads(Path(sys.argv[1]).read_text(encoding="utf-8"))
+matches = [
+    row for row in lock.get("backends", [])
+    if isinstance(row, dict) and row.get("id") == "llama-cpp-stock"
+]
+if len(matches) != 1:
+    raise SystemExit("expected exactly one llama-cpp-stock backend lock")
+expected = matches[0].get("commit")
+observed = Path(sys.argv[2]).read_text(encoding="utf-8").strip()
+if observed != expected:
+    raise SystemExit(
+        f"llama.cpp HEAD mismatch: observed {observed!r}, expected {expected!r}"
+    )
+PY
+
+stage="native_rebuild"
+bash "$root/scripts/bootstrap_mixed_residency.sh"
+
 stage="histogram_identity"
 [[ -f "$histogram" ]] || {
   echo "missing grouped histogram: $histogram" >&2
@@ -399,6 +422,13 @@ if len(gpu) != len(rows):
     )
 
 proc = [row.get("process", {}) for row in rows]
+if any(
+    not isinstance(item, dict)
+    or "VmRSS_bytes" not in item
+    or "VmSwap_bytes" not in item
+    for item in proc
+):
+    raise SystemExit("process telemetry incomplete")
 system = [row.get("system", {}) for row in rows]
 peak_gpu = max(row["memory_used_bytes"] for row in gpu)
 gpu_total = pre["gpu"]["memory_total_bytes"]
