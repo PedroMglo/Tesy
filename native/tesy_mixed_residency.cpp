@@ -1582,6 +1582,103 @@ int main(int argc, char ** argv) {
     const std::string cpu_bias_buft_name =
         ggml_backend_buft_name(cpu_bias_buft);
 
+    if (opt.routed_exactness) {
+        const std::vector<float> input =
+            read_exact_f32_file(
+                opt.routed_input_f32,
+                static_cast<size_t>(k_embd));
+        const std::vector<float> stock_reference =
+            read_exact_f32_file(
+                opt.routed_reference_f32,
+                static_cast<size_t>(k_embd));
+        const std::vector<int> selected_experts =
+            parse_int_csv(
+                opt.routed_experts_csv,
+                "routed experts");
+        const std::vector<float> routing_weights =
+            parse_float_csv(
+                opt.routed_weights_csv,
+                "routed weights");
+
+        const routed_exactness_result result =
+            run_routed_exactness(
+                opt,
+                cpu.backend,
+                gpu.backend,
+                cpu_weight_buft,
+                cpu_bias_buft,
+                gpu_buft,
+                input,
+                stock_reference,
+                selected_experts,
+                routing_weights);
+
+        FILE * out = std::fopen(opt.output.c_str(), "wx");
+        if (!out) {
+            fail(
+                "refusing or unable to create output: " +
+                opt.output);
+        }
+
+        std::fprintf(
+            out,
+            "{\"schema\":\"tesy.routed_layer_exactness_raw.v1\","
+            "\"classification\":"
+            "\"MEASURED_ROUTED_LAYER_REPLAY_EXACTNESS\","
+            "\"layer\":0,\"gpu_hits\":%d,\"cpu_misses\":%d,"
+            "\"controlled_partition\":"
+            "\"TOPK_SLOT_PREFIX_GPU_REMAINDER_CPU\","
+            "\"cpu_weight_buffer_type\":\"%s\","
+            "\"cpu_bias_buffer_type\":\"%s\","
+            "\"selected_experts\":[",
+            result.gpu_hits,
+            result.cpu_misses,
+            cpu_weight_buft_name.c_str(),
+            cpu_bias_buft_name.c_str());
+
+        for (size_t i = 0; i < selected_experts.size(); ++i) {
+            if (i != 0) {
+                std::fputc(',', out);
+            }
+            std::fprintf(out, "%d", selected_experts[i]);
+        }
+
+        std::fputs("],\"routing_weights\":[", out);
+        for (size_t i = 0; i < routing_weights.size(); ++i) {
+            if (i != 0) {
+                std::fputc(',', out);
+            }
+            std::fprintf(out, "%.9g", routing_weights[i]);
+        }
+
+        std::fputs("],\"serial_vs_stock\":", out);
+        print_parity(out, result.serial_vs_stock);
+        std::fputs(",\"async_vs_stock\":", out);
+        print_parity(out, result.async_vs_stock);
+        std::fputs(",\"async_vs_serial\":", out);
+        print_parity(out, result.async_vs_serial);
+        std::fputs(
+            ",\"parity_thresholds\":{"
+            "\"relative_max_max\":0.005,"
+            "\"cosine_min\":0.9999},"
+            "\"claim_boundary\":"
+            "\"Correctness-only replay of one stock llama.cpp layer-0 "
+            "decode MoE event using the captured exact activation, router "
+            "top-k and final routing weights. GPU/CPU residence is a "
+            "controlled slot-prefix partition, not a cache policy. "
+            "No timing, full-model speedup, prefetch, cache, or physical "
+            "traffic claim follows.\"}\n",
+            out);
+
+        if (std::fclose(out) != 0) {
+            fail("failed closing routed exactness output");
+        }
+
+        std::printf("PASS_ROUTED_LAYER_EXACTNESS_RAW\n");
+        std::printf("output: %s\n", opt.output.c_str());
+        return 0;
+    }
+
     const std::vector<float> input = deterministic_input();
     const std::vector<float> reference =
         make_all_cpu_reference(
