@@ -1297,6 +1297,14 @@ int main(int argc, char ** argv) {
               "\"classification\":\"MEASURED_MIXED_RESIDENCY_ASYNC_DIAGNOSTIC\","
             : "{\"schema\":\"tesy.mixed_residency_overlap_bound_raw.v1\","
               "\"classification\":\"MEASURED_MIXED_RESIDENCY_COMPONENT_DIAGNOSTIC\",");
+    if (opt.async_overlap) {
+        std::fputs(
+            "\"async_schedule\":"
+            "\"post_d2h_gpu_enqueue_cpu_sync_gpu_wait\","
+            "\"paired_sample_order\":"
+            "\"even_serial_async_odd_async_serial\",",
+            out);
+    }
     std::fprintf(
         out,
         "\"layer\":%d,\"threads\":%d,\"warmup\":%d,\"samples\":%d,"
