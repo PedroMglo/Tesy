@@ -187,10 +187,12 @@ Warmup:
 Measured:
 
 - 81 triplets;
-- deterministic cycling through the same six permutations.
+- 13 complete six-permutation cycles (78 triplets);
+- measured tail permutation indices `[0, 3, 4]`.
 
-Each mode therefore has exactly 81 measured activation-ready samples and 81
-route-ready samples.
+This yields exact ordinal balance: stock, serial and async each appear 27 times
+in first, second and third position. Each mode still has exactly 81 measured
+activation-ready samples and 81 route-ready samples.
 
 ## Pre/post correctness
 
