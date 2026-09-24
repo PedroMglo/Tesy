@@ -2,13 +2,13 @@
 
 Date: 2026-09-24
 
-Branch: `research/mixed-residency-async-overlap-20260924`
+Branch: `research/mixed-residency-async-overlap-restacked-20260924`
 
 Development base commit:
-`fafa8b9883c818c367c4c32f69b82cf9a82fc049`
+`42b759e91c373f058934e924fe4ce3f7f0915d92`
 
 Development base tree:
-`c26e2256d78f6d6f13f981f21c4c1fb0e129a118`
+`5181fbdae2821adb658bfd9d92c5a65075aca938`
 
 Pinned llama.cpp:
 `4e416ee7308dd6b581796f1a6241276cd5982691`
@@ -41,22 +41,34 @@ confirmed open-PR order:
 
 `#9 -> #11 -> #10 -> #12 -> #13 -> #14 -> #15 -> #16 -> #17 -> #19 -> #21`.
 
-PR #9 now targets `main` but remains `CONFLICTING`. The existing
-`research/GITHUB-STACK-22-HANDOFF-20260924.md` records the 50/70 commit
-divergence and real merge conflicts.
+The current `research/GITHUB-STACK-22-HANDOFF-20260924.md` records that
+the earlier #9 conflict was repaired without rebase or force-push by
+fast-forward merge commits propagated bottom-up through Stack #22. The current
+top #21 commit used as this branch base is
+`42b759e91c373f058934e924fe4ce3f7f0915d92`.
 
-This async-overlap work is deliberately separate:
+During development, #21 advanced by 63 commits after an initial async branch
+had been created from `fafa8b9`. Source comparison proved that those 63
+commits did not touch any of the async candidate's pre-existing modified
+files. Rather than rebase, merge divergent branches, or force-push, the first
+async branch was preserved unmodified as superseded and this definitive branch
+was created directly from the new #21 head. Only the async delta was reapplied.
+
+Superseded, NOT_RUN branch head:
+`647a9bc77da2b16d2ec2428ec5c0b8723a55ee9d`.
+
+This async-overlap work remains deliberately separate from lower-stack
+maintenance:
 
 - no `gh stack rebase`;
 - no `gh stack push`;
 - no force-push;
 - no automatic merge;
-- no manual base edits;
-- no conflict resolution for #9;
-- no PR was opened manually for this new branch.
+- no manual PR-base edits;
+- no lower-stack conflict work was repeated here;
+- no physical async campaign has been executed.
 
-The stack blocker does not alter the experiment protocol, threshold or
-baseline.
+The stack state does not alter the experiment protocol, threshold or baseline.
 
 ## Backend source audit
 
@@ -341,7 +353,7 @@ Before any physical execution on the laptop:
 3. run focused shell/Python/contract tests;
 4. compile the pinned CUDA target and validate the build/source sidecar;
 5. append this already-published branch to official Stack #22 with
-   `gh stack link 22 research/mixed-residency-async-overlap-20260924 --remote origin`;
+   `gh stack link 22 research/mixed-residency-async-overlap-restacked-20260924 --remote origin`;
 6. record the exact final candidate HEAD/tree and binary identity;
 7. only then launch a new no-replace campaign root.
 
