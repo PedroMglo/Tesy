@@ -1,21 +1,19 @@
 {
-  "work_package": "full-model-vertical-integration-20260924",
-  "stage": "C3",
-  "status": "STOCK_BASELINE_DELIVERED_TESY_NUMERICAL_PARITY_BLOCKER",
-  "branch": "engineering/full-model-vertical-integration-20260924",
-  "base_commit": "4e6501fc3afaab22bf152fc8e5a9ebb1cd336222",
-  "implementation_commit": "95a2a4a7118690f256ef2f08d73c14e7664ea099",
-  "measurement_commit": "95a2a4a7118690f256ef2f08d73c14e7664ea099",
-  "measurement_tree": "3330a72243bd8ffdf7012918c60bd06d57b54826",
-  "protocol_path": "research/FULL-MODEL-VERTICAL-INTEGRATION-PROTOCOL-20260924.md",
-  "result_path": "research/FULL-MODEL-VERTICAL-INTEGRATION-C3-RESULT-20260924.md",
-  "evidence_manifest_path": "research/coordination/C3-RAW-EVIDENCE-RELEASE.json",
+  "work_package": "vertical-numerical-blocker-20260925",
+  "stage": "N1",
+  "status": "HISTORICAL_FAILURE_PUBLISHED_DIAGNOSTIC_PROTOCOL_FROZEN",
+  "branch": "engineering/vertical-numerical-blocker-20260924",
+  "base_commit": "ca532aaa765ad551dcb8be4424f0abe6778eec96",
+  "implementation_commit": null,
+  "measurement_commit": "6f9beefc6b346b2a30d5e4a4af05c28f934d9289",
+  "measurement_tree": "ae518f02ea30ca61e5113aeb194bd512b58a9821",
+  "protocol_path": "research/VERTICAL-NUMERICAL-BLOCKER-DIAGNOSTIC-PROTOCOL-20260925.md",
+  "result_path": "research/VERTICAL-NUMERICAL-BLOCKER-N1-20260925.md",
+  "evidence_manifest_path": "research/vertical-numerical-blocker-20260925/evidence-manifest.json",
   "raw_evidence_release_url": "https://github.com/PedroMglo/Tesy/releases/tag/evidence/full-model-vertical-20260924-v1",
   "blockers": [
-    "Layer-2 GPU-resident FFN difference propagates to full-logit relative max 0.00855978666, exceeding the frozen 0.005 limit; Tesy end-to-end is NOT_RUN.",
-    "Original unredacted host doctor files and earlier non-decisive failed roots remain local; the public decisive bundle declares its mountpoint redaction.",
-    "The stock chat SSE endpoint did not expose a complete generated token-ID vector; output text/counts are recorded, token-ID sequence is not.",
-    "The code workload hit 128-token length limit before two examples; useful-response quality is not established."
+    "Layer-2 h=1 logits relative max 0.00855978666 exceeds the frozen 0.005 limit; the first causal operation and FFN-to-suffix attribution remain unproven.",
+    "Device readback, per-expert contributions, reduction association and FFN-to-suffix intervention are NOT_RUN; Tesy end-to-end remains blocked."
   ],
   "pending_external_audit": true
 }
