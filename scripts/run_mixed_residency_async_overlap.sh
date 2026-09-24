@@ -20,6 +20,11 @@ stage="initialization"
 tool_pid=""
 monitor_pid=""
 
+echo "NOT_AUTHORIZED_PENDING_OVERLAP_AND_HISTOGRAM_REVALIDATION" >&2
+echo "rerun phase-aware residency replay and corrected overlap-bound campaign first" >&2
+exit 1
+
+
 if [[ -e "$out" ]]; then
   echo "refusing to replace output root: $out" >&2
   exit 1
