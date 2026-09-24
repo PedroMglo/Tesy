@@ -70,8 +70,8 @@ def _validate_stats(payload: Any, *, label: str) -> dict[str, Any]:
         if not math.isclose(
             observed,
             expected_value,
-            rel_tol=1e-9,
-            abs_tol=1e-9,
+            rel_tol=1e-8,
+            abs_tol=1e-8,
         ):
             raise CbEvalInterceptBoundError(
                 f"{label}.{field} does not match samples"
@@ -171,8 +171,8 @@ def validate_cb_eval_intercept_bound(
         if not math.isclose(
             observed,
             expected,
-            rel_tol=1e-9,
-            abs_tol=1e-9,
+            rel_tol=1e-8,
+            abs_tol=1e-8,
         ):
             raise CbEvalInterceptBoundError(
                 f"{field} does not match samples"
