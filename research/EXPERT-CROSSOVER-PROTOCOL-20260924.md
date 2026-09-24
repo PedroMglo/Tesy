@@ -67,20 +67,18 @@ Each input and aggregated output activation is 2880 F32 values = 11,520 bytes.
 
 ## CPU buffer authority
 
-The CPU model loader may use an extra/repacked buffer type for quantized
-weights. Benchmarking MXFP4 only in the default CPU buffer could therefore
-measure an artificial path.
+This experiment is tied to the measured `--n-cpu-moe` continuum.
 
-The microbenchmark queries
-`ggml_backend_dev_get_extra_bufts` from the pinned CPU backend and chooses the
-first Host buffer type whose device reports support for MXFP4
-`GGML_OP_MUL_MAT_ID`, then falls back to the default CPU buffer.
+At the pinned source, `llm_add_n_cpu_ffn_overrides` and
+`llm_ffn_exps_cpu_override` explicitly force expert tensors to
+`ggml_backend_cpu_buffer_type()`. Therefore the admitted crossover requires
+the CPU weight buffer type to be exactly `CPU`.
 
-The selected buffer type and allocated byte count are recorded.
+The generic loader can expose optimized CPU extra/repack buffers and MXFP4 has
+an AVX2 repack path, but that is a separate comparator. It must not silently
+replace the `--n-cpu-moe` CPU baseline.
 
-Repack/population cost is setup and is excluded from steady-state compute.
-That matches the question "expert already resident in CPU memory", not initial
-model loading.
+The selected CPU buffer type and allocated bytes are recorded.
 
 ## Measured components
 
