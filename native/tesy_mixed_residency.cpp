@@ -141,6 +141,18 @@ struct case_result {
     int gpu_hits = 0;
     int cpu_misses = 0;
     stats direct_wall;
+    bool has_activation_d2h = false;
+    stats activation_d2h;
+    bool has_cpu_compute = false;
+    stats cpu_compute;
+    bool has_gpu_compute = false;
+    stats gpu_compute;
+    bool has_cpu_partial_h2d = false;
+    stats cpu_partial_h2d;
+    bool has_gpu_aggregation = false;
+    stats gpu_aggregation;
+    double component_sum_median_ms = 0.0;
+    double overlap_bound_median_ms = 0.0;
     parity output_parity;
 };
 
@@ -852,7 +864,122 @@ case_result run_case(
 
     const stats direct =
         measure(execute, opt.warmup, opt.samples, opt.inner);
-    return case_result{gpu_hits, cpu_misses, direct, check};
+
+    case_result result;
+    result.gpu_hits = gpu_hits;
+    result.cpu_misses = cpu_misses;
+    result.direct_wall = direct;
+    result.output_parity = check;
+
+    if (cpu_graph) {
+        auto copy_input_d2h = [&]() {
+            ggml_backend_tensor_copy(
+                gpu_input, cpu_graph->input);
+            ggml_backend_synchronize(gpu_backend);
+            ggml_backend_synchronize(cpu_backend);
+        };
+        result.activation_d2h =
+            measure(
+                copy_input_d2h,
+                opt.warmup,
+                opt.samples,
+                opt.inner);
+        result.has_activation_d2h = true;
+
+        copy_input_d2h();
+        result.cpu_compute =
+            measure(
+                [&]() { compute(cpu_backend, *cpu_graph); },
+                opt.warmup,
+                opt.samples,
+                opt.inner);
+        result.has_cpu_compute = true;
+    }
+
+    if (gpu_graph) {
+        result.gpu_compute =
+            measure(
+                [&]() { compute(gpu_backend, *gpu_graph); },
+                opt.warmup,
+                opt.samples,
+                opt.inner);
+        result.has_gpu_compute = true;
+    }
+
+    if (cpu_graph && !gpu_graph) {
+        compute(cpu_backend, *cpu_graph);
+        result.cpu_partial_h2d =
+            measure(
+                [&]() {
+                    ggml_backend_tensor_copy(
+                        cpu_graph->output, final_gpu->tensor);
+                    ggml_backend_synchronize(cpu_backend);
+                    ggml_backend_synchronize(gpu_backend);
+                },
+                opt.warmup,
+                opt.samples,
+                opt.inner);
+        result.has_cpu_partial_h2d = true;
+    } else if (cpu_graph && gpu_graph) {
+        compute(cpu_backend, *cpu_graph);
+        compute(gpu_backend, *gpu_graph);
+
+        result.cpu_partial_h2d =
+            measure(
+                [&]() {
+                    ggml_backend_tensor_copy(
+                        cpu_graph->output, aggregate->cpu_partial);
+                    ggml_backend_synchronize(cpu_backend);
+                    ggml_backend_synchronize(gpu_backend);
+                },
+                opt.warmup,
+                opt.samples,
+                opt.inner);
+        result.has_cpu_partial_h2d = true;
+
+        ggml_backend_tensor_copy(
+            cpu_graph->output, aggregate->cpu_partial);
+        ggml_backend_synchronize(cpu_backend);
+        ggml_backend_synchronize(gpu_backend);
+
+        result.gpu_aggregation =
+            measure(
+                [&]() { compute_sum(gpu_backend, *aggregate); },
+                opt.warmup,
+                opt.samples,
+                opt.inner);
+        result.has_gpu_aggregation = true;
+    }
+
+    if (cpu_graph && gpu_graph) {
+        result.component_sum_median_ms =
+            result.activation_d2h.median_ms +
+            result.cpu_compute.median_ms +
+            result.gpu_compute.median_ms +
+            result.cpu_partial_h2d.median_ms +
+            result.gpu_aggregation.median_ms;
+        result.overlap_bound_median_ms =
+            result.activation_d2h.median_ms +
+            std::max(
+                result.cpu_compute.median_ms,
+                result.gpu_compute.median_ms) +
+            result.cpu_partial_h2d.median_ms +
+            result.gpu_aggregation.median_ms;
+    } else if (cpu_graph) {
+        result.component_sum_median_ms =
+            result.activation_d2h.median_ms +
+            result.cpu_compute.median_ms +
+            result.cpu_partial_h2d.median_ms;
+        result.overlap_bound_median_ms =
+            result.component_sum_median_ms;
+    } else {
+        result.component_sum_median_ms =
+            result.gpu_compute.median_ms;
+        result.overlap_bound_median_ms =
+            result.gpu_compute.median_ms;
+    }
+
+    return result;
 }
 
 void print_stats(FILE * out, const stats & value) {
@@ -874,6 +1001,17 @@ void print_stats(FILE * out, const stats & value) {
     std::fputs("]}", out);
 }
 
+void print_optional_stats(
+        FILE * out,
+        bool present,
+        const stats & value) {
+    if (!present) {
+        std::fputs("null", out);
+        return;
+    }
+    print_stats(out, value);
+}
+
 void print_case(FILE * out, const case_result & row) {
     std::fprintf(
         out,
@@ -884,6 +1022,31 @@ void print_case(FILE * out, const case_result & row) {
         row.gpu_hits,
         row.cpu_misses);
     print_stats(out, row.direct_wall);
+
+    std::fputs(",\"components\":{\"activation_d2h\":", out);
+    print_optional_stats(
+        out, row.has_activation_d2h, row.activation_d2h);
+    std::fputs(",\"cpu_compute\":", out);
+    print_optional_stats(
+        out, row.has_cpu_compute, row.cpu_compute);
+    std::fputs(",\"gpu_compute\":", out);
+    print_optional_stats(
+        out, row.has_gpu_compute, row.gpu_compute);
+    std::fputs(",\"cpu_partial_h2d\":", out);
+    print_optional_stats(
+        out, row.has_cpu_partial_h2d, row.cpu_partial_h2d);
+    std::fputs(",\"gpu_aggregation\":", out);
+    print_optional_stats(
+        out, row.has_gpu_aggregation, row.gpu_aggregation);
+    std::fprintf(
+        out,
+        "},\"component_sum_median_ms\":%.9f,"
+        "\"post_d2h_overlap_bound_median_ms\":%.9f,"
+        "\"overlap_bound_speedup_vs_direct\":%.9f",
+        row.component_sum_median_ms,
+        row.overlap_bound_median_ms,
+        row.direct_wall.median_ms / row.overlap_bound_median_ms);
+
     std::fprintf(
         out,
         ",\"parity\":{\"max_abs\":%.9g,\"max_abs_ref\":%.9g,"
@@ -971,8 +1134,8 @@ int main(int argc, char ** argv) {
 
     std::fprintf(
         out,
-        "{\"schema\":\"tesy.mixed_residency_stage_b_raw.v1\","
-        "\"classification\":\"MEASURED_MIXED_RESIDENCY_FFN_DIAGNOSTIC\","
+        "{\"schema\":\"tesy.mixed_residency_overlap_bound_raw.v1\","
+        "\"classification\":\"MEASURED_MIXED_RESIDENCY_COMPONENT_DIAGNOSTIC\","
         "\"layer\":%d,\"threads\":%d,\"warmup\":%d,\"samples\":%d,"
         "\"inner\":%d,\"n_embd\":%" PRId64 ",\"top_k\":4,"
         "\"expert_count_model\":%" PRId64 ","
@@ -1002,7 +1165,10 @@ int main(int argc, char ** argv) {
     }
     std::fputs(
         "],\"claim_boundary\":"
-        "\"Direct serial isolated top-4 mixed CPU/GPU expert FFN timings. "
+        "\"Direct serial isolated top-4 mixed CPU/GPU expert FFN timings plus "
+        "separately measured component completion times. The overlap bound assumes "
+        "the GPU and CPU subset computes can overlap only after the input D2H copy "
+        "has completed; D2H, CPU-partial H2D and aggregation remain serialized. "
         "Weights are already resident in their assigned backend buffers; "
         "no expert-weight transfer, routing, prefetch, cache management or full-model timing "
         "is measured. CPU misses execute on the CPU backend using its first "
@@ -1016,7 +1182,7 @@ int main(int argc, char ** argv) {
         fail("failed closing output");
     }
 
-    std::printf("PASS_MIXED_RESIDENCY_STAGE_B_RAW\n");
+    std::printf("PASS_MIXED_RESIDENCY_OVERLAP_BOUND_RAW\n");
     std::printf("output: %s\n", opt.output.c_str());
     return 0;
 }
