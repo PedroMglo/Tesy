@@ -2,10 +2,10 @@
   "build_provenance_status": "PASS",
   "campaign_id": "n-cpu-moe-continuum-shape-20260924T083136Z",
   "capacity_evidence_commit": "5a8bbf08eb95069b1847f724e5d1be98c6392678",
-  "claim_boundary": "Selected aggregate diagnostic publication. Raw requests, logs and resource samples remain local. One observation per placement supports no stable winner, Pareto frontier, physical transfer traffic, Tesy speedup, >RAM or novelty claim.",
-  "classification": "MEASURED_STOCK_PLACEMENT_CONTINUUM_SHAPE_DIAGNOSTIC",
+  "claim_boundary": "Historical aggregate diagnostic artifacts are preserved, but the campaign is not admitted: its frozen capacity authority was later withdrawn and its recorded Tesy execution commit is not retained in current repository history. A new PHYSICAL-host-verified capacity publication and new continuum campaign identity are required before claim promotion.",
+  "classification": "INCONCLUSIVE_INVALID_CAPACITY_AUTHORITY_AND_INCOMPLETE_EXECUTION_PROVENANCE",
   "execution_base_commit": "89771fa4ba3a017978f5931c94779110a7f8d22f",
-  "next_gate": "MANUAL_REVIEW_REQUIRED",
+  "next_gate": "RERUN_NEW_IDENTITY_AFTER_PHYSICAL_CAPACITY_REVALIDATION",
   "observation_count": 4,
   "publication_branch": "research/n-cpu-moe-continuum-shape-20260924",
   "published_artifacts": [
@@ -26,10 +26,6 @@
     "publication-manifest.json"
   ],
   "published_sha256": {
-    "RESULT.md": {
-      "bytes": 5108,
-      "sha256": "a2cfbed2f45212089b353f722514061636c4fc6a7537df91aab5c111e81cf074"
-    },
     "admission-context.json": {
       "bytes": 332,
       "sha256": "248079169dad21c26e4ebc0fa30adfe6461a402c7157ce43fdcd4771728c4a8d"
@@ -454,5 +450,12 @@
     }
   },
   "schema": "tesy.n_cpu_moe_continuum_shape_publication.v1",
-  "trajectory_comparability_status": "PASS"
+  "trajectory_comparability_status": "PASS",
+  "capacity_authority_status": "WITHDRAWN_NOT_ADMITTED",
+  "execution_provenance_status": "INCOMPLETE_UNREACHABLE_EXECUTION_COMMIT",
+  "admission_status": "INCONCLUSIVE",
+  "corrected_publication_files_not_covered_by_historical_sha256": [
+    "RESULT.md",
+    "publication-manifest.json"
+  ]
 }
