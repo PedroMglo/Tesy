@@ -50,3 +50,14 @@ target_include_directories(
     "${LLAMA_CPP_SOURCE_DIR}/ggml/include"
 )
 target_link_libraries(tesy-expert-crossover PRIVATE ggml)
+
+
+add_executable(tesy-mixed-residency tesy_mixed_residency.cpp)
+target_compile_features(tesy-mixed-residency PRIVATE cxx_std_17)
+target_compile_options(tesy-mixed-residency PRIVATE -Wall -Wextra -Wpedantic -Werror)
+target_include_directories(
+  tesy-mixed-residency
+  PRIVATE
+    "${LLAMA_CPP_SOURCE_DIR}/ggml/include"
+)
+target_link_libraries(tesy-mixed-residency PRIVATE ggml)
