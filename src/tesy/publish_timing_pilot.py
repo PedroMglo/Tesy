@@ -3,6 +3,7 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import math
 import shutil
 import subprocess
 from pathlib import Path
@@ -29,6 +30,17 @@ _SELECTED_FILES = (
 )
 
 
+def _require_finite_json(value: Any, path: Path) -> None:
+    if isinstance(value, float) and not math.isfinite(value):
+        raise TimingPilotPublicationError(f"non-finite JSON value in {path}")
+    if isinstance(value, dict):
+        for item in value.values():
+            _require_finite_json(item, path)
+    elif isinstance(value, list):
+        for item in value:
+            _require_finite_json(item, path)
+
+
 def _load_json(path: Path) -> dict[str, Any]:
     try:
         payload = json.loads(path.read_text(encoding="utf-8"))
@@ -36,6 +48,7 @@ def _load_json(path: Path) -> dict[str, Any]:
         raise TimingPilotPublicationError(f"cannot read JSON {path}: {exc}") from exc
     if not isinstance(payload, dict):
         raise TimingPilotPublicationError(f"JSON artifact must be an object: {path}")
+    _require_finite_json(payload, path)
     return payload
 
 
@@ -48,6 +61,7 @@ def _load_json_list(path: Path) -> list[str]:
         raise TimingPilotPublicationError(
             f"JSON artifact must be a non-empty list: {path}"
         )
+    _require_finite_json(payload, path)
     if any(not isinstance(value, str) or not value for value in payload):
         raise TimingPilotPublicationError(
             f"JSON argv artifact contains invalid elements: {path}"
@@ -272,12 +286,42 @@ def _validate_raw_observations(root: Path, pilot: dict[str, Any]) -> None:
             raise TimingPilotPublicationError(
                 f"raw placement telemetry failed for {placement_id}"
             )
-        if (
-            placement_telemetry.get("host_comparability", {}).get("status")
-            != "NOT_COMPARABLE_MMAP_SPAN"
-        ):
+        host_comparability = placement_telemetry.get("host_comparability", {})
+        if host_comparability.get("status") != "NOT_COMPARABLE_MMAP_SPAN":
             raise TimingPilotPublicationError(
                 f"raw Host comparability classification failed for {placement_id}"
+            )
+        if host_comparability.get("equality_gate") is not False:
+            raise TimingPilotPublicationError(
+                f"raw Host equality gate must be disabled for {placement_id}"
+            )
+        if placement_telemetry.get("mismatches") != []:
+            raise TimingPilotPublicationError(
+                f"raw placement mismatches are not empty for {placement_id}"
+            )
+        logical = placement_telemetry.get("projected_logical_model_mib", {})
+        observed_buffers = placement_telemetry.get("observed_runtime_model_buffers", {})
+        gpu_projected = logical.get("CUDA0")
+        gpu_observed = observed_buffers.get("CUDA0_mib")
+        host_projected = logical.get("Host")
+        host_span = observed_buffers.get("Host_mmap_span_mib")
+        values = (gpu_projected, gpu_observed, host_projected, host_span)
+        if any(type(value) not in (int, float) for value in values):
+            raise TimingPilotPublicationError(
+                f"raw placement metrics are invalid for {placement_id}"
+            )
+        if placement_telemetry.get("gpu_tolerance_mib") != 2.0 or abs(
+            gpu_observed - gpu_projected
+        ) > 2.0:
+            raise TimingPilotPublicationError(
+                f"raw CUDA0 parity failed for {placement_id}"
+            )
+        if host_projected > 0 and (
+            host_span <= 0
+            or "CPU_Mapped" not in observed_buffers.get("Host_mmap_buffer_names", [])
+        ):
+            raise TimingPilotPublicationError(
+                f"raw Host mmap buffer missing for {placement_id}"
             )
         if request.get("schema") != "tesy.stock_server_request.v1":
             raise TimingPilotPublicationError(
@@ -485,7 +529,7 @@ def _result_markdown(pilot: dict[str, Any], source: dict[str, Any]) -> str:
             "This is one observation per placement. It is diagnostic only: no "
             "confirmatory performance winner or Pareto frontier is claimed.",
             "",
-            "No physical PCIe/NVMe traffic, Tesy speedup, >RAM execution or "
+            "No physical PCIe/NVMe/DRAM traffic, Tesy speedup, >RAM execution or "
             "scientific novelty claim follows.",
             "",
         ]
@@ -544,7 +588,7 @@ def publish_timing_pilot(campaign: Path, destination: Path) -> dict[str, Any]:
             "Derived pilot publication only. Raw request streams, server logs, "
             "resource samples and placement files remain local and are identified "
             "by SHA-256 in raw_artifacts. No confirmatory winner/Pareto, physical "
-            "PCIe/NVMe, Tesy speedup, >RAM or novelty claim follows."
+            "PCIe/NVMe/DRAM traffic, Tesy speedup, >RAM or novelty claim follows."
         ),
     }
     (destination / "publication-manifest.json").write_text(

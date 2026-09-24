@@ -126,6 +126,7 @@ def _fake_campaign(root: Path) -> Path:
                 "schema": "tesy.stock_placement_telemetry.v2",
                 "status": "PASS",
                 "placement_id": placement,
+                "gpu_tolerance_mib": 2.0,
                 "projected_logical_model_mib": {
                     "CUDA0": 6000.0,
                     "Host": 5000.0,
@@ -399,4 +400,44 @@ def test_publish_timing_pilot_rejects_host_comparability_reclassification(tmp_pa
         TimingPilotPublicationError,
         match="Host comparability classification",
     ):
+        publish_timing_pilot(campaign, tmp_path / "published")
+
+
+@pytest.mark.parametrize(
+    ("field", "value", "message"),
+    [
+        ("equality_gate", True, "Host equality gate must be disabled"),
+        ("mismatches", ["forged PASS"], "placement mismatches are not empty"),
+        ("gpu_delta", 20.0, "CUDA0 parity failed"),
+        ("host_span", 0.0, "Host mmap buffer missing"),
+    ],
+)
+def test_publish_timing_pilot_rejects_forged_placement_pass(
+    tmp_path, field, value, message
+):
+    campaign = _fake_campaign(tmp_path)
+    path = campaign / "01-auto-fit" / "placement-telemetry.json"
+    telemetry = json.loads(path.read_text(encoding="utf-8"))
+    if field == "equality_gate":
+        telemetry["host_comparability"]["equality_gate"] = value
+    elif field == "mismatches":
+        telemetry["mismatches"] = value
+    elif field == "gpu_delta":
+        telemetry["observed_runtime_model_buffers"]["CUDA0_mib"] += value
+    else:
+        telemetry["observed_runtime_model_buffers"]["Host_mmap_span_mib"] = value
+    _write_json(path, telemetry)
+
+    with pytest.raises(TimingPilotPublicationError, match=message):
+        publish_timing_pilot(campaign, tmp_path / "published")
+
+
+def test_publish_timing_pilot_rejects_nonfinite_raw_metric(tmp_path):
+    campaign = _fake_campaign(tmp_path)
+    request_path = campaign / "01-auto-fit" / "request.json"
+    request = json.loads(request_path.read_text(encoding="utf-8"))
+    request["ttft_ms"] = float("nan")
+    _write_json(request_path, request)
+
+    with pytest.raises(TimingPilotPublicationError, match="non-finite JSON value"):
         publish_timing_pilot(campaign, tmp_path / "published")
