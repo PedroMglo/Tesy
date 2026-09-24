@@ -1,0 +1,114 @@
+{
+  "reference_check": {
+    "claim_boundary": "Host identity only. PASS does not qualify current free RAM/VRAM, driver/CUDA, storage mounts, thermal state, process isolation or model/runtime performance.",
+    "classification": "MEASURED_HOST_IDENTITY_CHECK",
+    "failures": [],
+    "profile_id": "linux-hx370-rtx4060laptop-8g-32g",
+    "schema": "tesy.reference_host_check.v1",
+    "status": "PASS",
+    "unknown": []
+  },
+  "snapshot": {
+    "classification": "MEASURED_HOST_STATE",
+    "cpu": {
+      "logical_cpus": 24,
+      "model": "AMD Ryzen AI 9 HX 370 w/ Radeon 890M"
+    },
+    "cuda_toolkit": {
+      "command": [
+        "nvcc",
+        "--version"
+      ],
+      "status": "NOT_AVAILABLE"
+    },
+    "disk": {
+      "free_bytes": 552178429952,
+      "path": "/home/pmglo/.local/share/tesy/models/gpt-oss-20b",
+      "total_bytes": 1021431513088,
+      "used_bytes": 447487692800
+    },
+    "gpu": {
+      "command": [
+        "nvidia-smi",
+        "--query-gpu=name,memory.total,memory.free,driver_version,temperature.gpu,pstate,pci.bus_id",
+        "--format=csv,noheader,nounits"
+      ],
+      "gpus": [
+        {
+          "driver_version": "615.71.09",
+          "memory_free_bytes": 8271167488,
+          "memory_total_bytes": 8585740288,
+          "name": "NVIDIA GeForce RTX 4060 Laptop GPU",
+          "pci_bus_id": "00000000:C4:00.0",
+          "pstate": "P8",
+          "temperature_c": 52.0
+        }
+      ],
+      "status": "OK"
+    },
+    "gpu_compute_processes": {
+      "command": [
+        "nvidia-smi",
+        "--query-compute-apps=pid,process_name,used_memory",
+        "--format=csv,noheader,nounits"
+      ],
+      "returncode": 0,
+      "status": "OK",
+      "stderr": "",
+      "stdout": ""
+    },
+    "memory": {
+      "available_bytes": 24138346496,
+      "swap_free_bytes": 16348868608,
+      "swap_total_bytes": 16348868608,
+      "total_bytes": 32698769408
+    },
+    "platform": {
+      "machine": "x86_64",
+      "python": "3.14.7",
+      "release": "7.2.7-200.fc44.x86_64",
+      "system": "Linux"
+    },
+    "schema": "tesy.hardware_snapshot.v1",
+    "storage_topology": {
+      "findmnt": {
+        "command": [
+          "findmnt",
+          "--json",
+          "--target",
+          "/home/pmglo/.local/share/tesy/models/gpt-oss-20b"
+        ],
+        "returncode": 0,
+        "status": "OK",
+        "stderr": "",
+        "stdout": "{\n   \"filesystems\": [\n      {\n         \"target\": \"/home\",\n         \"source\": \"/dev/nvme0n1p3[/home]\",\n         \"fstype\": \"btrfs\",\n         \"options\": \"rw,noatime,seclabel,compress=zstd:3,ssd,discard=async,space_cache=v2,subvolid=257,subvol=/home\"\n      }\n   ]\n}"
+      },
+      "lsblk": {
+        "command": [
+          "lsblk",
+          "--json",
+          "--bytes",
+          "--output",
+          "NAME,TYPE,SIZE,ROTA,TRAN,MODEL,MOUNTPOINTS"
+        ],
+        "returncode": 0,
+        "status": "OK",
+        "stderr": "",
+        "stdout": "{\n   \"blockdevices\": [\n      {\n         \"name\": \"zram0\",\n         \"type\": \"disk\",\n         \"size\": 16348872704,\n         \"rota\": false,\n         \"tran\": null,\n         \"model\": null,\n         \"mountpoints\": [\n             \"[SWAP]\"\n         ]\n      },{\n         \"name\": \"nvme0n1\",\n         \"type\": \"disk\",\n         \"size\": 1024209543168,\n         \"rota\": false,\n         \"tran\": \"nvme\",\n         \"model\": \"MTFDKBK1T0QFM-1BD1AABGB\",\n         \"mountpoints\": [],\n         \"children\": [\n            {\n               \"name\": \"nvme0n1p1\",\n               \"type\": \"part\",\n               \"size\": 629145600,\n               \"rota\": false,\n               \"tran\": \"nvme\",\n               \"model\": null,\n               \"mountpoints\": [\n                   \"/boot/efi\"\n               ]\n            },{\n               \"name\": \"nvme0n1p2\",\n               \"type\": \"part\",\n               \"size\": 2147483648,\n               \"rota\": false,\n               \"tran\": \"nvme\",\n               \"model\": null,\n               \"mountpoints\": [\n                   \"/boot\"\n               ]\n            },{\n               \"name\": \"nvme0n1p3\",\n               \"type\": \"part\",\n               \"size\": 1021431513088,\n               \"rota\": false,\n               \"tran\": \"nvme\",\n               \"model\": null,\n               \"mountpoints\": [\n                   \"/home\", \"/\"\n               ]\n            }\n         ]\n      }\n   ]\n}"
+      }
+    },
+    "swap": {
+      "command": [
+        "swapon",
+        "--show",
+        "--bytes",
+        "--output",
+        "NAME,TYPE,SIZE,USED,PRIO"
+      ],
+      "returncode": 0,
+      "status": "OK",
+      "stderr": "",
+      "stdout": "NAME       TYPE             SIZE USED PRIO UUID LABEL\n/dev/zram0 partition 16348868608    0  100"
+    }
+  }
+}
