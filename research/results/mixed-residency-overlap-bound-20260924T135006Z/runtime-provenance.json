@@ -1,0 +1,63 @@
+{
+  "argv": {
+    "expected": [
+      "/home/pmglo/Projects/Tesy/build/tesy-mixed-residency/tesy-mixed-residency",
+      "--model",
+      "/home/pmglo/.local/share/tesy/models/gpt-oss-20b/gpt-oss-20b-mxfp4.gguf",
+      "--output",
+      "results/mixed-residency-overlap-bound-20260924T135006Z/raw.json",
+      "--layer",
+      "0",
+      "--threads",
+      "12",
+      "--samples",
+      "21",
+      "--warmup",
+      "3",
+      "--inner",
+      "5"
+    ],
+    "observed": [
+      "/home/pmglo/Projects/Tesy/build/tesy-mixed-residency/tesy-mixed-residency",
+      "--model",
+      "/home/pmglo/.local/share/tesy/models/gpt-oss-20b/gpt-oss-20b-mxfp4.gguf",
+      "--output",
+      "results/mixed-residency-overlap-bound-20260924T135006Z/raw.json",
+      "--layer",
+      "0",
+      "--threads",
+      "12",
+      "--samples",
+      "21",
+      "--warmup",
+      "3",
+      "--inner",
+      "5"
+    ],
+    "status": "PASS"
+  },
+  "claim_boundary": "PASS binds the live mixed-residency microbenchmark to the expected executable, exact argv and the single selected libggml-cuda artifact. It does not establish numerical parity, timing quality, cache behavior or physical memory traffic.",
+  "classification": "MEASURED_LOCAL_PROVENANCE",
+  "executable": {
+    "expected": "/home/pmglo/Projects/Tesy/build/tesy-mixed-residency/tesy-mixed-residency",
+    "observed": "/home/pmglo/Projects/Tesy/build/tesy-mixed-residency/tesy-mixed-residency",
+    "sha256": "99182ab2c5fabfac999f1a920b735965c5c1ff3bf5786e6c58cbc489268fe791"
+  },
+  "ggml_cuda": {
+    "inode": 14648097,
+    "mapped_matches": [
+      {
+        "deleted": false,
+        "device": "00:23",
+        "inode": 14648097,
+        "path": "/home/pmglo/Projects/Tesy/build/tesy-mixed-residency/bin/libggml-cuda.so.0.25.0"
+      }
+    ],
+    "path": "/home/pmglo/Projects/Tesy/build/tesy-mixed-residency/bin/libggml-cuda.so.0.25.0",
+    "sha256": "9534c103f6bf4c161d4fd14adc08e54d141ea57fc931e22ccba0ff0f1801d96c"
+  },
+  "mismatches": [],
+  "pid": 28793,
+  "schema": "tesy.mixed_residency_runtime_provenance.v1",
+  "status": "PASS"
+}

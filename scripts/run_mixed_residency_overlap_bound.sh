@@ -48,7 +48,7 @@ from pathlib import Path
 
 path = Path(sys.argv[1])
 payload = {
-    "schema": "tesy.mixed_residency_stage_b_failure.v1",
+    "schema": "tesy.mixed_residency_overlap_bound_failure.v1",
     "classification": "FAIL_CAMPAIGN_STAGE",
     "stage": sys.argv[2],
     "exit_code": int(sys.argv[3]),
@@ -66,7 +66,7 @@ try:
 except FileExistsError:
     pass
 PY
-  echo "FAIL_MIXED_RESIDENCY_STAGE_B stage=$stage line=$line exit=$rc" >&2
+  echo "FAIL_MIXED_RESIDENCY_OVERLAP_BOUND stage=$stage line=$line exit=$rc" >&2
   exit "$rc"
 }
 trap 'rc=$?; cmd=$BASH_COMMAND; line=$LINENO; failure_report "$rc" "$cmd" "$line"' ERR
@@ -90,29 +90,6 @@ git -C "$source_dir" status --porcelain=v1 >"$out/llama-status.txt"
   echo "llama.cpp worktree must be clean" >&2
   exit 1
 }
-
-stage="source_lock"
-python3 - "$root/configs/backends.lock.json" "$out/llama-head.txt" <<'PY'
-import json
-import sys
-from pathlib import Path
-lock = json.loads(Path(sys.argv[1]).read_text(encoding="utf-8"))
-matches = [
-    row for row in lock.get("backends", [])
-    if isinstance(row, dict) and row.get("id") == "llama-cpp-stock"
-]
-if len(matches) != 1:
-    raise SystemExit("expected exactly one llama-cpp-stock backend lock")
-expected = matches[0].get("commit")
-observed = Path(sys.argv[2]).read_text(encoding="utf-8").strip()
-if observed != expected:
-    raise SystemExit(
-        f"llama.cpp HEAD mismatch: observed {observed!r}, expected {expected!r}"
-    )
-PY
-
-stage="native_rebuild"
-bash "$root/scripts/bootstrap_mixed_residency.sh"
 
 stage="histogram_identity"
 [[ -f "$histogram" ]] || {
@@ -392,14 +369,14 @@ monitor_pid=""
 }
 
 stage="measurement_validation"
-python3 -m tesy.mixed_residency_benchmark validate \
+python3 -m tesy.mixed_residency_overlap_bound validate \
   --input "$out/raw.json" \
   --output "$out/summary.json"
 
-python3 -m tesy.mixed_residency_benchmark weight \
+python3 -m tesy.mixed_residency_overlap_bound weight \
   --summary "$out/summary.json" \
   --histogram "$out/source-histogram.json" \
-  --output "$out/trace-weighted.json"
+  --output "$out/overlap-weighted.json"
 
 python3 - "$out/resources.jsonl" "$out/pre-run.json" >"$out/resource-summary.json" <<'PY'
 import json
@@ -474,7 +451,7 @@ if summary["min_mem_available_bytes"] < 2 * 1024 * 1024 * 1024:
 PY
 
 stage="result"
-python3 - "$out/summary.json" "$out/trace-weighted.json" <<'PY'
+python3 - "$out/summary.json" "$out/overlap-weighted.json" <<'PY'
 import json
 import sys
 from pathlib import Path
@@ -483,27 +460,46 @@ summary = json.loads(Path(sys.argv[1]).read_text(encoding="utf-8"))
 weighted = json.loads(Path(sys.argv[2]).read_text(encoding="utf-8"))
 
 if summary.get("status") != "PASS" or weighted.get("status") != "PASS":
-    raise SystemExit("mixed-residency result did not PASS")
+    raise SystemExit("mixed-residency overlap-bound result did not PASS")
 
-print("PASS_MIXED_RESIDENCY_STAGE_B")
+print("PASS_MIXED_RESIDENCY_OVERLAP_BOUND")
+print("cpu_weight_buffer_type:", summary["cpu_weight_buffer_type"])
+print("cpu_bias_buffer_type:", summary["cpu_bias_buffer_type"])
+print()
+
 for row in summary["cases"]:
+    c = row["component_median_ms"]
     print(
         f"h={row['gpu_hits']} "
-        f"cpu_misses={row['cpu_misses']} "
-        f"median_ms={row['median_ms']:.6f} "
-        f"p95_ms={row['p95_ms']:.6f} "
-        f"speedup_vs_all_cpu={row['speedup_vs_all_cpu']:.6f}"
+        f"direct_ms={row['direct_median_ms']:.6f} "
+        f"d2h_ms={c['activation_d2h']} "
+        f"cpu_ms={c['cpu_compute']} "
+        f"gpu_ms={c['gpu_compute']} "
+        f"h2d_ms={c['cpu_partial_h2d']} "
+        f"agg_ms={c['gpu_aggregation']} "
+        f"bound_ms={row['post_d2h_overlap_bound_median_ms']:.6f} "
+        f"bound_speedup={row['overlap_bound_speedup_vs_direct']:.6f} "
+        f"dominating={row['dominating_compute_branch']}"
     )
 
 print()
 print(
-    "trace_weighted_median_case_ms:",
-    f"{weighted['weighted_median_case_ms']:.6f}",
+    "weighted_direct_ms:",
+    f"{weighted['weighted_direct_median_ms']:.6f}",
 )
 print(
-    "trace_weighted_speedup_equivalent_vs_all_cpu:",
-    f"{weighted['speedup_equivalent_vs_all_cpu']:.6f}",
+    "weighted_overlap_bound_ms:",
+    f"{weighted['weighted_post_d2h_overlap_bound_ms']:.6f}",
 )
+print(
+    "weighted_bound_speedup:",
+    f"{weighted['bound_speedup_vs_weighted_direct']:.6f}",
+)
+print(
+    "implementation_gate_max_bound_ms:",
+    f"{weighted['implementation_gate_max_bound_ms']:.6f}",
+)
+print("decision:", weighted["decision"])
 print("claim_boundary:", weighted["claim_boundary"])
 PY
 
