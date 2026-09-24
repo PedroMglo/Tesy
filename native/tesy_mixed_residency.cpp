@@ -209,6 +209,9 @@ struct live_timing_capture {
     std::vector<int32_t> experts;
     std::vector<float> weights;
     std::vector<float> stock_output;
+    const std::vector<float> * expected_activation = nullptr;
+    const std::vector<int> * expected_experts = nullptr;
+    const std::vector<float> * expected_weights = nullptr;
     std::chrono::steady_clock::time_point activation_ready;
     std::chrono::steady_clock::time_point route_ready;
     std::chrono::steady_clock::time_point stock_output_ready;
@@ -1130,13 +1133,27 @@ void validate_live_handoff_capture(
     }
 }
 
+bool float_vectors_bitwise_equal(
+        const std::vector<float> & a,
+        const std::vector<float> & b);
+
+parity compare_outputs(
+        const std::vector<float> & reference,
+        const std::vector<float> & observed);
+
 void reset_live_timing_capture(
         live_timing_capture & state,
         live_timing_mode mode,
-        bool capture_stock_output) {
+        bool capture_stock_output,
+        const std::vector<float> * expected_activation = nullptr,
+        const std::vector<int> * expected_experts = nullptr,
+        const std::vector<float> * expected_weights = nullptr) {
     state.enabled = true;
     state.mode = mode;
     state.capture_stock_output = capture_stock_output;
+    state.expected_activation = expected_activation;
+    state.expected_experts = expected_experts;
+    state.expected_weights = expected_weights;
     state.saw_activation = false;
     state.saw_experts = false;
     state.saw_weights = false;
@@ -1188,6 +1205,15 @@ bool live_timing_callback(
                 static_cast<size_t>(k_embd),
                 "live timing attn_post_norm-0");
         state->saw_activation = true;
+        if (state->expected_activation) {
+            const parity check =
+                compare_outputs(
+                    *state->expected_activation,
+                    state->activation);
+            if (!check.pass) {
+                fail("live timing callback activation drifted");
+            }
+        }
         state->activation_ready =
             std::chrono::steady_clock::now();
         return true;
@@ -1204,6 +1230,22 @@ bool live_timing_callback(
                 static_cast<size_t>(k_top_k),
                 "live timing ffn_moe_topk-0");
         state->saw_experts = true;
+        if (state->expected_experts) {
+            if (
+                state->experts.size()
+                != state->expected_experts->size()
+            ) {
+                fail("live timing callback expert count drifted");
+            }
+            for (size_t i = 0; i < state->experts.size(); ++i) {
+                if (
+                    state->experts[i]
+                    != (*state->expected_experts)[i]
+                ) {
+                    fail("live timing callback expert IDs drifted");
+                }
+            }
+        }
         return true;
     }
 
@@ -1223,6 +1265,14 @@ bool live_timing_callback(
             }
         }
         state->saw_weights = true;
+        if (
+            state->expected_weights
+            && !float_vectors_bitwise_equal(
+                state->weights,
+                *state->expected_weights)
+        ) {
+            fail("live timing callback routing weights drifted");
+        }
         state->route_ready =
             std::chrono::steady_clock::now();
         return state->mode == live_timing_mode::stock;
@@ -2077,7 +2127,10 @@ std::pair<double, double> run_live_timing_trial(
     reset_live_timing_capture(
         callback_state,
         mode,
-        false);
+        false,
+        &reference.activation,
+        &reference.selected_experts,
+        &reference.routing_weights);
 
     llama_batch batch =
         llama_batch_get_one(&decode_token, 1);
@@ -2088,37 +2141,6 @@ std::pair<double, double> run_live_timing_trial(
         fail(
             "live timing repeated decode must return 0, got " +
             std::to_string(rc));
-    }
-
-    validate_live_timing_capture(
-        callback_state,
-        mode,
-        false,
-        mode == live_timing_mode::stock
-            ? "timing-stock"
-            : (mode == live_timing_mode::serial
-                ? "timing-serial"
-                : "timing-async"));
-
-    std::vector<int> experts;
-    experts.reserve(static_cast<size_t>(k_top_k));
-    for (int32_t expert : callback_state.experts) {
-        experts.push_back(static_cast<int>(expert));
-    }
-    if (experts != reference.selected_experts) {
-        fail("live timing trial expert IDs drifted");
-    }
-    if (!float_vectors_bitwise_equal(
-            callback_state.weights,
-            reference.routing_weights)) {
-        fail("live timing trial routing weights drifted");
-    }
-    const parity activation_check =
-        compare_outputs(
-            reference.activation,
-            callback_state.activation);
-    if (!activation_check.pass) {
-        fail("live timing trial activation drifted");
     }
 
     std::chrono::steady_clock::time_point endpoint;
@@ -2156,6 +2178,16 @@ std::pair<double, double> run_live_timing_trial(
     ) {
         fail("live timing produced invalid latency");
     }
+
+    validate_live_timing_capture(
+        callback_state,
+        mode,
+        false,
+        mode == live_timing_mode::stock
+            ? "timing-stock"
+            : (mode == live_timing_mode::serial
+                ? "timing-serial"
+                : "timing-async"));
 
     if (!llama_memory_seq_rm(
             llama_get_memory(ctx),
