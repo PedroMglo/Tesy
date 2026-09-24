@@ -859,8 +859,9 @@ int main(int argc, char ** argv) {
         make_all_cpu_reference(
             opt, cpu.backend, cpu_buft, input);
 
+    const std::array<int, 5> measurement_order = {0, 4, 1, 3, 2};
     std::vector<case_result> rows;
-    for (int h = 0; h <= 4; ++h) {
+    for (int h : measurement_order) {
         rows.push_back(
             run_case(
                 opt,
@@ -872,6 +873,12 @@ int main(int argc, char ** argv) {
                 input,
                 reference));
     }
+    std::sort(
+        rows.begin(),
+        rows.end(),
+        [](const case_result & a, const case_result & b) {
+            return a.gpu_hits < b.gpu_hits;
+        });
 
     FILE * out = std::fopen(opt.output.c_str(), "wx");
     if (!out) {
@@ -890,6 +897,7 @@ int main(int argc, char ** argv) {
         "\"weight_shape\":[2880,2880,32],\"bias_shape\":[2880,32],"
         "\"cpu_buffer_type\":\"CPU\","
         "\"expert_ids\":[0,1,2,3],\"mix_weights\":[0.25,0.25,0.25,0.25],"
+        "\"measurement_order\":[0,4,1,3,2],"
         "\"cases\":[",
         opt.layer,
         opt.threads,
