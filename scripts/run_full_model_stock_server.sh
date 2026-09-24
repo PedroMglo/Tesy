@@ -109,6 +109,12 @@ active_pid=$!
 "$python_bin" -m tesy.resource_monitor --pid "$active_pid" \
   --output "$out/resources.jsonl" --interval-ms 100 &
 monitor_pid=$!
+stage="runtime-provenance"
+"$python_bin" -m tesy.stock_server_provenance \
+  --pid "$active_pid" --expected-executable "$server" \
+  --build-dir "$root/.deps/llama.cpp/build" \
+  --expected-argv "$out/argv.json" \
+  --output "$out/runtime-provenance.json"
 stage="request"
 client_args=(--prompt "$prompt_file" --output "$out/run.json" --port "$port" --max-tokens 128)
 if [[ "$mode" == "count-only" ]]; then
