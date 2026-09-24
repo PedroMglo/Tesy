@@ -231,6 +231,13 @@ struct live_timing_exactness_snapshot {
     parity async_vs_serial;
 };
 
+struct live_timing_reference {
+    std::vector<float> activation;
+    std::vector<int> selected_experts;
+    std::vector<float> routing_weights;
+    std::vector<float> stock_output;
+};
+
 struct live_routed_executor {
     int gpu_hits = 0;
     int cpu_misses = 0;
