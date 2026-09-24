@@ -226,6 +226,8 @@ struct live_timing_exactness_snapshot {
     bool handoff_rollback = false;
     bool activation_bitwise_equal = false;
     parity activation_parity;
+    parity activation_vs_reference;
+    parity stock_output_vs_reference;
     parity serial_vs_stock;
     parity async_vs_stock;
     parity async_vs_serial;
