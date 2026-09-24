@@ -44,6 +44,7 @@ struct options {
     bool async_overlap = false;
     bool routed_exactness = false;
     bool live_handoff_exactness = false;
+    bool live_handoff_timing = false;
     std::string prompt_file;
     std::string routed_input_f32;
     std::string routed_reference_f32;
@@ -235,7 +236,9 @@ int parse_positive(const char * value, const char * flag, int minimum = 1) {
         "[--async-overlap] [--routed-exactness "
         "--routed-input-f32 FILE --routed-reference-f32 FILE "
         "--routed-experts CSV --routed-weights CSV --routed-gpu-hits N] "
-        "[--live-handoff-exactness --prompt-file FILE --ctx N]\n",
+        "[--live-handoff-exactness --prompt-file FILE --ctx N] "
+        "[--live-handoff-timing --prompt-file FILE --ctx N "
+        "--routed-gpu-hits N --warmup 6 --samples 81 --inner 1]\n",
         argv0);
     std::exit(code);
 }
@@ -270,6 +273,8 @@ options parse_options(int argc, char ** argv) {
             out.routed_exactness = true;
         } else if (arg == "--live-handoff-exactness") {
             out.live_handoff_exactness = true;
+        } else if (arg == "--live-handoff-timing") {
+            out.live_handoff_timing = true;
         } else if (arg == "--prompt-file") {
             out.prompt_file = value("--prompt-file");
         } else if (arg == "--ctx") {
@@ -297,8 +302,12 @@ options parse_options(int argc, char ** argv) {
     if (out.model.empty() || out.output.empty()) {
         usage(argv[0], 2);
     }
-    if (out.routed_exactness && out.live_handoff_exactness) {
-        fail("routed and live handoff exactness modes are mutually exclusive");
+    const int special_modes =
+        static_cast<int>(out.routed_exactness)
+        + static_cast<int>(out.live_handoff_exactness)
+        + static_cast<int>(out.live_handoff_timing);
+    if (special_modes > 1) {
+        fail("routed/live exactness/timing modes are mutually exclusive");
     }
     if (out.routed_exactness) {
         if (!out.async_overlap) {
@@ -328,6 +337,25 @@ options parse_options(int argc, char ** argv) {
         }
         if (out.live_ctx != 4096) {
             fail("live handoff exactness is frozen to --ctx 4096");
+        }
+    }
+    if (out.live_handoff_timing) {
+        if (out.layer != 0) {
+            fail("live handoff timing is frozen to layer 0");
+        }
+        if (out.prompt_file.empty()) {
+            fail("live handoff timing requires --prompt-file");
+        }
+        if (out.live_ctx != 4096) {
+            fail("live handoff timing is frozen to --ctx 4096");
+        }
+        if (out.routed_gpu_hits != 2 && out.routed_gpu_hits != 3) {
+            fail("live handoff timing gpu hits must be 2 or 3");
+        }
+        if (out.warmup != 6 || out.samples != 81 || out.inner != 1) {
+            fail(
+                "live handoff timing requires --warmup 6 "
+                "--samples 81 --inner 1");
         }
     }
     return out;
