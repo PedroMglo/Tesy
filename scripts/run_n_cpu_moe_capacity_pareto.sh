@@ -653,6 +653,10 @@ PY
       --n-cpu-moe "$n"
     )
   fi
+  if (( timing_pilot == 1 )); then
+    # Pinned llama.cpp maps backend INFO placement rows to verbosity 4.
+    cmd+=(--verbosity 4)
+  fi
 
   {
     printf '%q' "${cmd[0]}"

@@ -131,3 +131,34 @@ run is authorized by this pilot alone.
   before a new campaign starts.
 - Next discriminating gate: execute the frozen three-placement pilot with a
   clean worktree and the updated exact Tesy HEAD pin.
+
+## First physical pilot attempt, 2026-09-24
+
+- Objective: run the frozen three-placement diagnostic timing pilot.
+- Base commit/tree: `3421a1876a212f952c555ce03c167fc59f91cfa6`;
+  clean Tesy and pinned llama.cpp worktrees at campaign start.
+- Campaign root (local, preserved):
+  `results/n-cpu-moe-timing-pilot-20260924T000834Z`.
+- Evidence class: measured physical-host startup and failure; source-backed
+  diagnosis of the missing logging level. The reference host and model gates,
+  build provenance, all three capacity projections, and the fresh pre-run
+  admission for `auto-fit-frozen` passed. The server loaded the model and
+  `/health` returned OK. Its stderr had no `model buffer size` or offloaded
+  layer rows, so the placement check failed before the first request.
+- Failure: `failure.json` records `FAIL_CAMPAIGN_COMMAND` at runner line 694,
+  `PlacementTelemetryError: server log contains no model buffer sizes`. No
+  timing summary or publication was produced. `N=12` and `N=24` remain
+  NOT_RUN; no performance conclusion follows.
+- Alternatives: infer placement from the fit projection alone, or make the
+  pinned server expose observed allocation rows before requesting tokens.
+- Decision for future campaigns: add `--verbosity 4` to timing-pilot server
+  commands. In pinned llama.cpp, backend INFO rows are mapped to verbosity 4;
+  the server default is 3. Keep the 2 MiB observed-placement check. This
+  change is prospective and does not reclassify the failed campaign.
+- Tests/limits: the failed run itself verifies that default logging lacks the
+  required rows. A contract test and model-free gate check the new command;
+  physical emission and placement parity remain NOT_RUN for the revised
+  command. The failed campaign root must never be reused.
+- Next discriminating gate: start a new campaign identity from a clean,
+  exactly pinned implementation and confirm observed model buffers before
+  the first token request.
