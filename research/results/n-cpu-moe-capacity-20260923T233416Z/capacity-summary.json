@@ -1,0 +1,258 @@
+{
+  "admitted_n_cpu_moe": [
+    12,
+    16,
+    20,
+    24
+  ],
+  "candidates": [
+    0,
+    4,
+    8,
+    12,
+    16,
+    20,
+    24
+  ],
+  "claim_boundary": "Admission uses llama-fit-params projected integer-MiB memory plus frozen headroom guards. No rejected point is deliberately loaded or OOM-probed.",
+  "classification": "SOURCE_BACKED_CAPACITY_GATE",
+  "estimates": [
+    {
+      "admitted": false,
+      "campaign_start_gpu_free_bytes": 8248098816,
+      "campaign_start_mem_available_bytes": 24418865152,
+      "claim_boundary": "llama-fit-params --fit-print reports projected model/context/compute memory in integer MiB. This is an estimator-based admission gate, not measured VRAM/RAM traffic or proof that a subsequent run will fit.",
+      "classification": "SOURCE_BACKED_MEMORY_ESTIMATE",
+      "device": "CUDA0",
+      "gpu_pass": false,
+      "gpu_required_mib": 12511,
+      "gpu_target_mib": 1024,
+      "host_guard_mib": 2048,
+      "host_pass": true,
+      "host_required_mib": 2666,
+      "n_cpu_moe": 0,
+      "rejection_reasons": [
+        "PROJECTED_GPU_HEADROOM"
+      ],
+      "rounding_guard_mib": 16,
+      "rows": {
+        "CUDA0": {
+          "compute_mib": 408,
+          "context_mib": 114,
+          "model_mib": 10949,
+          "total_mib": 11471
+        },
+        "Host": {
+          "compute_mib": 16,
+          "context_mib": 0,
+          "model_mib": 586,
+          "total_mib": 602
+        }
+      },
+      "schema": "tesy.n_cpu_moe_capacity_estimate.v1"
+    },
+    {
+      "admitted": false,
+      "campaign_start_gpu_free_bytes": 8248098816,
+      "campaign_start_mem_available_bytes": 24418865152,
+      "claim_boundary": "llama-fit-params --fit-print reports projected model/context/compute memory in integer MiB. This is an estimator-based admission gate, not measured VRAM/RAM traffic or proof that a subsequent run will fit.",
+      "classification": "SOURCE_BACKED_MEMORY_ESTIMATE",
+      "device": "CUDA0",
+      "gpu_pass": false,
+      "gpu_required_mib": 10934,
+      "gpu_target_mib": 1024,
+      "host_guard_mib": 2048,
+      "host_pass": true,
+      "host_required_mib": 4284,
+      "n_cpu_moe": 4,
+      "rejection_reasons": [
+        "PROJECTED_GPU_HEADROOM"
+      ],
+      "rounding_guard_mib": 16,
+      "rows": {
+        "CUDA0": {
+          "compute_mib": 449,
+          "context_mib": 114,
+          "model_mib": 9331,
+          "total_mib": 9894
+        },
+        "Host": {
+          "compute_mib": 16,
+          "context_mib": 0,
+          "model_mib": 2204,
+          "total_mib": 2220
+        }
+      },
+      "schema": "tesy.n_cpu_moe_capacity_estimate.v1"
+    },
+    {
+      "admitted": false,
+      "campaign_start_gpu_free_bytes": 8248098816,
+      "campaign_start_mem_available_bytes": 24418865152,
+      "claim_boundary": "llama-fit-params --fit-print reports projected model/context/compute memory in integer MiB. This is an estimator-based admission gate, not measured VRAM/RAM traffic or proof that a subsequent run will fit.",
+      "classification": "SOURCE_BACKED_MEMORY_ESTIMATE",
+      "device": "CUDA0",
+      "gpu_pass": false,
+      "gpu_required_mib": 9316,
+      "gpu_target_mib": 1024,
+      "host_guard_mib": 2048,
+      "host_pass": true,
+      "host_required_mib": 5902,
+      "n_cpu_moe": 8,
+      "rejection_reasons": [
+        "PROJECTED_GPU_HEADROOM"
+      ],
+      "rounding_guard_mib": 16,
+      "rows": {
+        "CUDA0": {
+          "compute_mib": 449,
+          "context_mib": 114,
+          "model_mib": 7713,
+          "total_mib": 8276
+        },
+        "Host": {
+          "compute_mib": 16,
+          "context_mib": 0,
+          "model_mib": 3822,
+          "total_mib": 3838
+        }
+      },
+      "schema": "tesy.n_cpu_moe_capacity_estimate.v1"
+    },
+    {
+      "admitted": true,
+      "campaign_start_gpu_free_bytes": 8248098816,
+      "campaign_start_mem_available_bytes": 24418865152,
+      "claim_boundary": "llama-fit-params --fit-print reports projected model/context/compute memory in integer MiB. This is an estimator-based admission gate, not measured VRAM/RAM traffic or proof that a subsequent run will fit.",
+      "classification": "SOURCE_BACKED_MEMORY_ESTIMATE",
+      "device": "CUDA0",
+      "gpu_pass": true,
+      "gpu_required_mib": 7698,
+      "gpu_target_mib": 1024,
+      "host_guard_mib": 2048,
+      "host_pass": true,
+      "host_required_mib": 7520,
+      "n_cpu_moe": 12,
+      "rejection_reasons": [],
+      "rounding_guard_mib": 16,
+      "rows": {
+        "CUDA0": {
+          "compute_mib": 449,
+          "context_mib": 114,
+          "model_mib": 6095,
+          "total_mib": 6658
+        },
+        "Host": {
+          "compute_mib": 16,
+          "context_mib": 0,
+          "model_mib": 5440,
+          "total_mib": 5456
+        }
+      },
+      "schema": "tesy.n_cpu_moe_capacity_estimate.v1"
+    },
+    {
+      "admitted": true,
+      "campaign_start_gpu_free_bytes": 8248098816,
+      "campaign_start_mem_available_bytes": 24418865152,
+      "claim_boundary": "llama-fit-params --fit-print reports projected model/context/compute memory in integer MiB. This is an estimator-based admission gate, not measured VRAM/RAM traffic or proof that a subsequent run will fit.",
+      "classification": "SOURCE_BACKED_MEMORY_ESTIMATE",
+      "device": "CUDA0",
+      "gpu_pass": true,
+      "gpu_required_mib": 6080,
+      "gpu_target_mib": 1024,
+      "host_guard_mib": 2048,
+      "host_pass": true,
+      "host_required_mib": 9138,
+      "n_cpu_moe": 16,
+      "rejection_reasons": [],
+      "rounding_guard_mib": 16,
+      "rows": {
+        "CUDA0": {
+          "compute_mib": 449,
+          "context_mib": 114,
+          "model_mib": 4477,
+          "total_mib": 5040
+        },
+        "Host": {
+          "compute_mib": 16,
+          "context_mib": 0,
+          "model_mib": 7058,
+          "total_mib": 7074
+        }
+      },
+      "schema": "tesy.n_cpu_moe_capacity_estimate.v1"
+    },
+    {
+      "admitted": true,
+      "campaign_start_gpu_free_bytes": 8248098816,
+      "campaign_start_mem_available_bytes": 24418865152,
+      "claim_boundary": "llama-fit-params --fit-print reports projected model/context/compute memory in integer MiB. This is an estimator-based admission gate, not measured VRAM/RAM traffic or proof that a subsequent run will fit.",
+      "classification": "SOURCE_BACKED_MEMORY_ESTIMATE",
+      "device": "CUDA0",
+      "gpu_pass": true,
+      "gpu_required_mib": 4462,
+      "gpu_target_mib": 1024,
+      "host_guard_mib": 2048,
+      "host_pass": true,
+      "host_required_mib": 10756,
+      "n_cpu_moe": 20,
+      "rejection_reasons": [],
+      "rounding_guard_mib": 16,
+      "rows": {
+        "CUDA0": {
+          "compute_mib": 449,
+          "context_mib": 114,
+          "model_mib": 2859,
+          "total_mib": 3422
+        },
+        "Host": {
+          "compute_mib": 16,
+          "context_mib": 0,
+          "model_mib": 8676,
+          "total_mib": 8692
+        }
+      },
+      "schema": "tesy.n_cpu_moe_capacity_estimate.v1"
+    },
+    {
+      "admitted": true,
+      "campaign_start_gpu_free_bytes": 8248098816,
+      "campaign_start_mem_available_bytes": 24418865152,
+      "claim_boundary": "llama-fit-params --fit-print reports projected model/context/compute memory in integer MiB. This is an estimator-based admission gate, not measured VRAM/RAM traffic or proof that a subsequent run will fit.",
+      "classification": "SOURCE_BACKED_MEMORY_ESTIMATE",
+      "device": "CUDA0",
+      "gpu_pass": true,
+      "gpu_required_mib": 2800,
+      "gpu_target_mib": 1024,
+      "host_guard_mib": 2048,
+      "host_pass": true,
+      "host_required_mib": 12374,
+      "n_cpu_moe": 24,
+      "rejection_reasons": [],
+      "rounding_guard_mib": 16,
+      "rows": {
+        "CUDA0": {
+          "compute_mib": 404,
+          "context_mib": 114,
+          "model_mib": 1242,
+          "total_mib": 1760
+        },
+        "Host": {
+          "compute_mib": 16,
+          "context_mib": 0,
+          "model_mib": 10294,
+          "total_mib": 10310
+        }
+      },
+      "schema": "tesy.n_cpu_moe_capacity_estimate.v1"
+    }
+  ],
+  "performance_gate": "PASS",
+  "rejected_n_cpu_moe": [
+    0,
+    4,
+    8
+  ],
+  "schema": "tesy.n_cpu_moe_capacity_gate.v1"
+}
