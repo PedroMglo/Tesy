@@ -1121,6 +1121,169 @@ void validate_live_handoff_capture(
     }
 }
 
+void reset_live_timing_capture(
+        live_timing_capture & state,
+        live_timing_mode mode,
+        bool capture_stock_output) {
+    state.enabled = true;
+    state.mode = mode;
+    state.capture_stock_output = capture_stock_output;
+    state.saw_activation = false;
+    state.saw_experts = false;
+    state.saw_weights = false;
+    state.saw_stock_output = false;
+    state.activation.clear();
+    state.experts.clear();
+    state.weights.clear();
+    state.stock_output.clear();
+}
+
+bool live_timing_callback(
+        ggml_tensor * tensor,
+        bool ask,
+        void * user_data) {
+    auto * state =
+        static_cast<live_timing_capture *>(user_data);
+    if (!state || !state->enabled) {
+        return false;
+    }
+
+    const bool activation =
+        std::strcmp(tensor->name, "attn_post_norm-0") == 0;
+    const bool experts =
+        std::strcmp(tensor->name, "ffn_moe_topk-0") == 0;
+    const bool weights =
+        std::strcmp(
+            tensor->name,
+            "ffn_moe_weights_softmax-0") == 0;
+    const bool stock_output =
+        std::strcmp(tensor->name, "ffn_moe_out-0") == 0;
+    const bool wanted =
+        activation || experts || weights || stock_output;
+
+    if (ask) {
+        return wanted;
+    }
+    if (!wanted) {
+        return true;
+    }
+
+    if (activation) {
+        if (state->saw_activation) {
+            fail("duplicate live timing activation");
+        }
+        state->activation =
+            read_live_tensor<float>(
+                tensor,
+                GGML_TYPE_F32,
+                static_cast<size_t>(k_embd),
+                "live timing attn_post_norm-0");
+        state->saw_activation = true;
+        state->activation_ready =
+            std::chrono::steady_clock::now();
+        return true;
+    }
+
+    if (experts) {
+        if (state->saw_experts) {
+            fail("duplicate live timing top-k");
+        }
+        state->experts =
+            read_live_tensor<int32_t>(
+                tensor,
+                GGML_TYPE_I32,
+                static_cast<size_t>(k_top_k),
+                "live timing ffn_moe_topk-0");
+        state->saw_experts = true;
+        return true;
+    }
+
+    if (weights) {
+        if (state->saw_weights) {
+            fail("duplicate live timing routing weights");
+        }
+        state->weights =
+            read_live_tensor<float>(
+                tensor,
+                GGML_TYPE_F32,
+                static_cast<size_t>(k_top_k),
+                "live timing ffn_moe_weights_softmax-0");
+        for (float value : state->weights) {
+            if (!std::isfinite(value) || value < 0.0f) {
+                fail("live timing routing weight is invalid");
+            }
+        }
+        state->saw_weights = true;
+        state->route_ready =
+            std::chrono::steady_clock::now();
+        return state->mode == live_timing_mode::stock;
+    }
+
+    if (stock_output) {
+        if (state->mode != live_timing_mode::stock) {
+            fail("candidate timing arm reached stock MoE output");
+        }
+        if (state->saw_stock_output) {
+            fail("duplicate live timing stock output");
+        }
+        state->stock_output_ready =
+            std::chrono::steady_clock::now();
+        state->saw_stock_output = true;
+        if (state->capture_stock_output) {
+            state->stock_output =
+                read_live_tensor<float>(
+                    tensor,
+                    GGML_TYPE_F32,
+                    static_cast<size_t>(k_embd),
+                    "live timing ffn_moe_out-0");
+        }
+        return false;
+    }
+
+    return true;
+}
+
+void validate_live_timing_capture(
+        const live_timing_capture & state,
+        live_timing_mode mode,
+        bool require_stock_bytes,
+        const char * label) {
+    if (
+        !state.saw_activation
+        || !state.saw_experts
+        || !state.saw_weights
+    ) {
+        fail(std::string(label) + " live timing capture is incomplete");
+    }
+
+    const std::vector<int32_t> expected = {
+        1, 13, 17, 21,
+    };
+    if (state.experts != expected) {
+        fail(std::string(label) + " live timing route drift");
+    }
+
+    if (mode == live_timing_mode::stock) {
+        if (!state.saw_stock_output) {
+            fail(std::string(label) + " stock output event missing");
+        }
+        if (
+            require_stock_bytes
+            && state.stock_output.size() != static_cast<size_t>(k_embd)
+        ) {
+            fail(std::string(label) + " stock output bytes missing");
+        }
+    } else if (state.saw_stock_output) {
+        fail(std::string(label) + " candidate reached stock output");
+    }
+
+    for (float value : state.activation) {
+        if (!std::isfinite(value)) {
+            fail(std::string(label) + " activation is non-finite");
+        }
+    }
+}
+
 bool float_vectors_bitwise_equal(
         const std::vector<float> & a,
         const std::vector<float> & b) {
