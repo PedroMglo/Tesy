@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import json
 import os
+import re
 import stat
 import subprocess
 from pathlib import Path
@@ -109,6 +110,14 @@ def _source_state(source_dir: Path, expected_commit: str) -> dict[str, Any]:
     }
 
 
+def _reported_commit(version: dict[str, Any]) -> str | None:
+    text = "\n".join(
+        str(version.get(key, "")) for key in ("stdout", "stderr")
+    )
+    match = re.search(r"\bcommit\s+([0-9a-fA-F]{7,40})\b", text)
+    return match.group(1).lower() if match else None
+
+
 def verify_source_state(
     source_dir: Path,
     backend_id: str = "llama-cpp-stock",
@@ -131,6 +140,7 @@ def probe_llama_cpp(
     expected_commit = backend.get("commit")
     if not isinstance(expected_commit, str) or len(expected_commit) != 40:
         raise BackendError("locked backend commit must be a 40-character SHA")
+    expected_commit = expected_commit.lower()
 
     resolved = _regular_nonsymlink(binary, "backend binary")
     if not os.access(resolved, os.X_OK):
@@ -159,8 +169,12 @@ def probe_llama_cpp(
         if source_dir is not None
         else None
     )
+    binary_commit = _reported_commit(version) if version["status"] == "OK" else None
+    binary_commit_match = (
+        binary_commit is not None and expected_commit.startswith(binary_commit)
+    )
 
-    if not commands_ok or not features_ok:
+    if not commands_ok or not features_ok or not binary_commit_match:
         status = "FAIL"
     elif source is None:
         status = "INCONCLUSIVE"
@@ -178,13 +192,17 @@ def probe_llama_cpp(
             "path": str(resolved),
             "bytes": resolved.stat().st_size,
             "sha256": sha256_file(resolved),
+            "reported_commit": binary_commit,
+            "expected_commit": expected_commit,
+            "commit_match": binary_commit_match,
         },
         "version": version,
         "devices": devices,
         "required_flag_support": flag_support,
         "source": source,
         "claim_boundary": (
-            "PASS proves only pinned clean source, runnable binary and expected CLI "
-            "surface. It is not model compatibility, exactness or performance."
+            "PASS proves only pinned clean source, a binary reporting the pinned "
+            "source revision, runnable CLI and expected CLI surface. It is not "
+            "model compatibility, exactness or performance."
         ),
     }

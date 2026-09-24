@@ -4,7 +4,11 @@ from collections import OrderedDict, defaultdict, deque
 from dataclasses import dataclass
 from statistics import mean
 
-from tesy.native_trace import NativeTopKRecord, NativeTraceError
+from tesy.native_trace import (
+    NativeTopKRecord,
+    NativeTraceError,
+    require_explicit_phase,
+)
 
 
 @dataclass(frozen=True)
@@ -23,9 +27,15 @@ def _decode_access_sequence(
     if isinstance(min_graph_seq, bool) or min_graph_seq < 0:
         raise ValueError("min_graph_seq must be a non-negative integer")
 
+    require_explicit_phase(records)
+
     sequence: list[tuple[int, int]] = []
     for record in records:
-        if record.graph_seq < min_graph_seq or record.n_tokens != 1:
+        if (
+            record.phase != "decode"
+            or record.graph_seq < min_graph_seq
+            or record.n_tokens != 1
+        ):
             continue
         for expert in record.experts[0]:
             sequence.append((record.layer, expert))
