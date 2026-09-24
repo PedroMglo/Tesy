@@ -58,6 +58,7 @@ def test_timing_pilot_is_bound_to_published_capacity_evidence():
     assert 'git -C "$root" merge-base --is-ancestor "$capacity_evidence_commit" HEAD' in text
 
 
+
 def test_timing_pilot_rejects_withdrawn_capacity_publication():
     root = Path(__file__).resolve().parents[1]
     text = (root / "scripts" / "run_n_cpu_moe_capacity_pareto.sh").read_text(
@@ -79,7 +80,7 @@ def test_default_timed_mode_generates_auto_fit_capacity_input():
         encoding="utf-8"
     )
 
-    generation = text.index("if (( capacity_only == 0 )); then")
+    generation = text.index("if (( capacity_only == 0 && continuum_shape == 0 )); then")
     auto_stdout = text.index('>"$out/capacity/auto-fit-frozen.stdout.txt"')
     pre_run_use = text.index(
         'capacity_input="$out/capacity/auto-fit-frozen.stdout.txt"'
@@ -97,7 +98,7 @@ def test_timing_pilot_rechecks_exactly_three_selected_placements():
     assert 'candidates=(12 24)' in text
     assert '--placement-id "auto-fit-frozen"' in text
     assert 'order=("auto" "n12" "n24")' in text
-    assert '"schema": "tesy.timing_pilot_capacity_gate.v1"' in text
+    assert '"tesy.timing_pilot_capacity_gate.v1"' in text
 
 
 def test_timing_pilot_has_separate_non_pareto_summary_and_exit():
@@ -111,7 +112,7 @@ def test_timing_pilot_has_separate_non_pareto_summary_and_exit():
     sweep_summary = text.index('"$out/sweep-summary.json"')
 
     assert pilot_summary < pilot_pass < sweep_summary
-    assert '"schema": "tesy.stock_placement_timing_pilot.v1"' in text
+    assert '"tesy.stock_placement_timing_pilot.v1"' in text
     assert "no confirmatory performance winner or Pareto frontier follows" in text
 
 
@@ -162,11 +163,30 @@ def test_timing_pilot_enables_backend_placement_logs_before_server_start():
     verbosity = text.index('cmd+=(--verbosity 4)')
     server = text.index('"${cmd[@]}" >"$run_dir/server.stdout.txt"')
     assert (
-        'if (( timing_pilot == 1 )); then\n'
+        'if (( diagnostic_mode == 1 )); then\n'
         '    # Pinned llama.cpp maps backend INFO placement rows to verbosity 4.\n'
         '    cmd+=(--verbosity 4)'
     ) in text
     assert verbosity < server
+
+
+def test_continuum_shape_is_four_fresh_manual_placements_with_pilot_gates():
+    root = Path(__file__).resolve().parents[1]
+    text = (root / "scripts" / "run_n_cpu_moe_capacity_pareto.sh").read_text(
+        encoding="utf-8"
+    )
+
+    assert '--continuum-shape' in text
+    assert 'candidates=(12 16 20 24)' in text
+    assert 'order=("n12" "n16" "n20" "n24")' in text
+    assert '"tesy.continuum_shape_capacity_gate.v1"' in text
+    assert '"tesy.stock_placement_continuum_shape.v1"' in text
+    assert '"$out/continuum-summary.json"' in text
+    assert 'if (( diagnostic_mode == 1 )); then\n    python3 -m tesy.placement_telemetry' in text
+    assert 'if (( diagnostic_mode == 1 )); then\n    # Pinned llama.cpp' in text
+    assert 'timings.get("predicted_n") != 64' in text
+    assert 'reference_token_sha="$token_sha"' in text
+    assert '"next_gate": "MANUAL_REVIEW_REQUIRED"' in text
 
 
 def test_timing_pilot_binds_live_process_to_frozen_server_argv():
