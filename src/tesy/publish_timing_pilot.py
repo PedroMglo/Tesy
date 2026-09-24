@@ -134,7 +134,6 @@ def _validate_campaign(root: Path) -> tuple[dict[str, Any], ...]:
     return pilot, capacity, source, admission, build, model, backend, doctor
 
 
-
 def _validate_raw_observations(root: Path, pilot: dict[str, Any]) -> None:
     expected = [
         ("auto-fit-frozen", root / "01-auto-fit"),
