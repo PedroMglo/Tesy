@@ -2,9 +2,22 @@
 
 Date: 2026-09-24  
 Campaign: `results/cache-crossover-replay-20260924T103638Z`  
-Classification: `TRACE_DERIVED_ENCODED_PAYLOAD_SIMULATION`
+Classification: `INCONCLUSIVE_REPLAY_PROVENANCE_NOT_PRESERVED`
 
-## Inputs
+## Evidentiary correction
+
+Review found that the referenced replay campaign root is not preserved in the
+reviewed tree. The publication therefore lacks the exact execution commit/tree,
+clean-worktree proof, command, raw derived output and hash manifest needed to
+audit the simulator invocation that produced the reported values.
+
+The numerical replay values below are retained as historical context only.
+They are **not admitted** as a current cache gate, and
+`NO_GO_BLOCKING_DEMAND_TRANSFER_4GIB_EVEN_OFFLINE_REPLACEMENT` is withdrawn
+as an evidence-backed decision until the replay is reproduced under a new
+identity with retained provenance.
+
+## Historical inputs
 
 The replay used:
 
@@ -53,14 +66,14 @@ Therefore:
 
 ## Decision
 
-`NO_GO_BLOCKING_DEMAND_TRANSFER_4GIB_EVEN_OFFLINE_REPLACEMENT`.
+`HISTORICAL_NO_GO_BLOCKING_DEMAND_TRANSFER_4GIB_EVEN_OFFLINE_REPLACEMENT_NOT_ADMITTED`.
 
 For this trace and 4 GiB capacity, even a non-causal equal-sized Belady cache
 cannot provide enough hits to rescue the serial policy:
 
 `miss -> copy weights synchronously -> execute GPU`.
 
-The prior architectural decision is therefore strengthened.
+The historical arithmetic suggested the prior architectural decision, but this publication no longer strengthens it as admitted evidence.
 
 The surviving policy remains:
 
@@ -87,7 +100,7 @@ aggregation, scheduling, concurrency/serialization and full-model effects.
 
 ## Next discriminating gate
 
-Before any prefetch implementation, measure a real mixed-residency top-4 expert
+First reproduce the locality replay with retained commit/tree, command, raw output and hashes. Only after that gate is admitted should a real mixed-residency top-4 expert
 FFN through pinned ggml with:
 
 - 0 resident GPU experts / 4 CPU experts;

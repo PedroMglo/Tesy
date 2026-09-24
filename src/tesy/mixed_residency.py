@@ -6,7 +6,12 @@ from collections import OrderedDict
 from pathlib import Path
 from typing import Any
 
-from tesy.native_trace import NativeTopKRecord, NativeTraceError, read_native_jsonl
+from tesy.native_trace import (
+    NativeTopKRecord,
+    NativeTraceError,
+    read_native_jsonl,
+    require_explicit_phase,
+)
 
 
 class MixedResidencyError(ValueError):
@@ -63,6 +68,7 @@ def mixed_residency_hit_histogram(
     ):
         raise MixedResidencyError("min_graph_seq must be a non-negative integer")
 
+    require_explicit_phase(records)
     sizes = _inventory_sizes(inventory)
     cache: OrderedDict[tuple[int, int], int] = OrderedDict()
     used_bytes = 0
@@ -75,7 +81,11 @@ def mixed_residency_hit_histogram(
     graph_ids: set[int] = set()
 
     for record in records:
-        if record.graph_seq < min_graph_seq or record.n_tokens != 1:
+        if (
+            record.phase != "decode"
+            or record.graph_seq < min_graph_seq
+            or record.n_tokens != 1
+        ):
             continue
         graph_ids.add(record.graph_seq)
         if record.layer not in sizes:

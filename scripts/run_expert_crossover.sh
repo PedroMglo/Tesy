@@ -82,6 +82,28 @@ git -C "$source_dir" status --porcelain=v1 >"$out/llama-status.txt"
 [[ ! -s "$out/tesy-status.txt" ]] || { echo "Tesy worktree must be clean" >&2; exit 1; }
 [[ ! -s "$out/llama-status.txt" ]] || { echo "llama.cpp worktree must be clean" >&2; exit 1; }
 
+python3 - "$root/configs/backends.lock.json" "$out/llama-head.txt" <<'PY'
+import json
+import sys
+from pathlib import Path
+
+lock = json.loads(Path(sys.argv[1]).read_text(encoding="utf-8"))
+if lock.get("schema") != "tesy.backends.lock.v1":
+    raise SystemExit("unsupported backend lock schema")
+matches = [
+    row for row in lock.get("backends", [])
+    if isinstance(row, dict) and row.get("id") == "llama-cpp-stock"
+]
+if len(matches) != 1:
+    raise SystemExit("expected exactly one llama-cpp-stock backend lock")
+expected = matches[0].get("commit")
+observed = Path(sys.argv[2]).read_text(encoding="utf-8").strip()
+if observed != expected:
+    raise SystemExit(
+        f"llama.cpp HEAD mismatch: observed {observed!r}, expected {expected!r}"
+    )
+PY
+
 stage="model_verify"
 python3 -m tesy models verify \
   gpt-oss-20b-mxfp4-gguf "$model" >"$out/model.json"
