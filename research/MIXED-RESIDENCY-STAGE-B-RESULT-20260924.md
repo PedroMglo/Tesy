@@ -57,11 +57,19 @@ Source files are `summary.json`, `trace-weighted.json`,
 
 ## Decision, alternatives, and limits
 
-The serial mixed cases retain measured headroom: h=2 is 1.204x and h=3 is
-1.162x faster than h=0. h=3 is slower than h=2, so more GPU hits did not give
-monotonic latency in this run. Advance to the protocol's CPU/GPU overlap gate
-as a discriminating experiment. The alternative is to stop at the serial
-boundary; this result does not yet require that decision. Prediction and
+The serial CPU-default mixed cases retain measured headroom: h=2 is 1.204x and
+h=3 is 1.162x faster than h=0. h=3 is slower than h=2, so more GPU hits did not
+give monotonic latency in this run.
+
+A post-run source audit established that the pinned CPU override path may select
+a compatible CPU extra/repack weight buffer before the literal CPU default.
+Therefore this campaign is retained as a measured CPU-default comparator, but
+its 1.378x trace-weighted diagnostic is not promoted directly to the overlap
+gate.
+
+The next discriminating experiment is a fresh Stage B campaign using the
+revised CPU-backend extra/repack-aware selector. CPU/GPU overlap is authorized
+only if material mixed-residency headroom survives that rerun. Prediction and
 prefetch remain untested.
 
 This one 21-sample-per-case microbenchmark does not establish run-to-run
@@ -78,7 +86,7 @@ pytest/CMake run had one transient scratch-file race; the isolated suite run
 passed, as recorded in `MIXED-RESIDENCY-STAGE-B-CONTRACT-FIX-20260924.md`.
 The campaign itself exited zero with all required gates PASS.
 
-Next gate: freeze a separate CPU/GPU overlap protocol and test whether overlap
-reduces direct mixed-case latency without changing the numerical contract.
-Keep the stock and demand-only baselines, and measure resource use and transfer
-bytes before inferring any end-to-end value.
+Next gate: rerun Stage B with the revised CPU-backend extra/repack-aware weight
+buffer selection and a new campaign identity. Preserve this CPU-default
+campaign unchanged. Only after the revised Stage B PASS may CPU/GPU overlap be
+considered.
