@@ -92,3 +92,31 @@ def test_routed_runner_is_no_replace_and_uses_project_venv():
     assert "ROUTED_LAYER_EXACTNESS_GO" in text
     assert "benchmarks/prompts/b0-b1-diagnostic.txt" in text
     assert "--ngl 0" in text
+
+
+def test_routed_build_binds_both_native_sources_and_tools():
+    root = Path(__file__).resolve().parents[1]
+    text = (
+        root / "scripts" / "bootstrap_routed_layer_exactness.sh"
+    ).read_text(encoding="utf-8")
+
+    assert "tesy.routed_layer_native_build.v1" in text
+    assert "mixed_source_sha256" in text
+    assert "capture_source_sha256" in text
+    assert "mixed_tool_sha256" in text
+    assert "capture_tool_sha256" in text
+    assert "tesy-routed-layer-capture" in text
+
+
+def test_routed_runner_freezes_live_provenance_before_replay():
+    root = Path(__file__).resolve().parents[1]
+    text = (
+        root / "scripts" / "run_routed_layer_exactness.sh"
+    ).read_text(encoding="utf-8")
+
+    assert "tesy.process_identity" in text
+    assert "kill -STOP" in text
+    assert "tesy.mixed_residency_provenance" in text
+    assert "kill -CONT" in text
+    assert "run_replay 2" in text
+    assert "run_replay 3" in text
