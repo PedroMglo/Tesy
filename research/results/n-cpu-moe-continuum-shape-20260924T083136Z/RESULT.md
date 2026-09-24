@@ -13,7 +13,7 @@
 Date: 2026-09-24. Campaign: `n-cpu-moe-continuum-shape-20260924T083136Z`.
 Branch: `research/n-cpu-moe-continuum-shape-20260924`.
 Execution base commit/tree: `89771fa4ba3a017978f5931c94779110a7f8d22f` / `cb7cc651c95a746ca8ce5aa54429ff14e6407f30`.
-Evidence class: `MEASURED_STOCK_PLACEMENT_CONTINUUM_SHAPE_DIAGNOSTIC` on the physical reference laptop.
+Historical execution class: `MEASURED_STOCK_PLACEMENT_CONTINUUM_SHAPE_DIAGNOSTIC`; execution-host physical/virtual status is **not proven by the committed publication evidence**.
 
 ## Objective and decision
 
@@ -62,7 +62,7 @@ No stable winner, Pareto frontier, or current capacity decision is established.
 | 20 | 866.64 | 178.73 | 34.551 | 2690.36 | 3312 | 11.78 | 0 |
 | 24 | 991.96 | 155.95 | 31.491 | 2992.87 | 1696 | 11.78 | 0 |
 
-The peak VRAM values are sampled `nvidia-smi` process use, rounded to MiB.
+The peak VRAM values are sampled device-wide `nvidia-smi --query-gpu=memory.used` usage, rounded to MiB; they are not process-attributed VRAM.
 The summary JSON retains unrounded measurements, pre-run resources, GPU
 temperature/power, projected and observed model-buffer values and checks.
 
