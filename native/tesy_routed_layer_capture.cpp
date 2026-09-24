@@ -651,11 +651,13 @@ void run_cancel_bound(
         "{\"schema\":\"tesy.cb_eval_intercept_bound.v1\","
         "\"classification\":"
         "\"MEASURED_CB_EVAL_ZERO_WORK_LOWER_BOUND\","
-        "\"layer\":0,\"ngl\":0,\"warmup_pairs\":%d,"
-        "\"sample_pairs\":%d,"
+        "\"layer\":0,\"ngl\":0,"
+        "\"decode_input_token\":%" PRId32 ","
+        "\"warmup_pairs\":%d,\"sample_pairs\":%d,"
         "\"paired_order\":\"even_stock_cancel_odd_cancel_stock\","
         "\"route_weight_tensor\":\"ffn_moe_weights_softmax-0\","
         "\"selected_experts\":[",
+        decode_token,
         opt.warmup,
         opt.samples);
 
@@ -871,13 +873,17 @@ int main(int argc, char ** argv) {
     }
 
     capture_state capture;
+    cancel_bound_state cancel_bound;
 
     llama_context_params ctx_params = llama_context_default_params();
     ctx_params.n_ctx = opt.n_ctx;
     ctx_params.n_batch = static_cast<uint32_t>(prompt_tokens.size());
     ctx_params.n_ubatch = static_cast<uint32_t>(prompt_tokens.size());
     ctx_params.no_perf = false;
-    if (!opt.capture_dir.empty()) {
+    if (!opt.cancel_bound_output.empty()) {
+        ctx_params.cb_eval = cancel_bound_callback;
+        ctx_params.cb_eval_user_data = &cancel_bound;
+    } else if (!opt.capture_dir.empty()) {
         ctx_params.cb_eval = routed_capture_callback;
         ctx_params.cb_eval_user_data = &capture;
     }
@@ -918,6 +924,15 @@ int main(int argc, char ** argv) {
         fail("first greedy token is EOG; cannot capture decode layer");
     }
     generated.push_back(first);
+
+    if (!opt.cancel_bound_output.empty()) {
+        run_cancel_bound(opt, ctx, first, cancel_bound);
+
+        llama_sampler_free(sampler);
+        llama_free(ctx);
+        llama_model_free(model);
+        return 0;
+    }
 
     batch = llama_batch_get_one(&first, 1);
     capture.enabled = !opt.capture_dir.empty();
