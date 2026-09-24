@@ -101,6 +101,7 @@ def _raw(
             "relative_max_max": 0.005,
             "cosine_min": 0.9999,
         },
+        "claim_boundary": "resident live handoff timing diagnostic",
     }
 
 
@@ -247,5 +248,16 @@ def test_live_timing_rejects_provenance_gate_drift():
     with pytest.raises(
         LiveMoeHandoffTimingError,
         match="provenance_gate mismatch",
+    ):
+        validate_live_moe_handoff_timing(h2, _raw(3))
+
+
+def test_live_timing_rejects_extra_top_level_field():
+    h2 = _raw(2)
+    h2["unexpected"] = 1
+
+    with pytest.raises(
+        LiveMoeHandoffTimingError,
+        match="keys mismatch",
     ):
         validate_live_moe_handoff_timing(h2, _raw(3))
