@@ -30,7 +30,7 @@ def _row(k: int, pinned: bool = True) -> dict:
         "requested_weight_bytes": 13_253_760 * k,
         "activation_input_bytes": 11_520,
         "activation_output_bytes": 11_520,
-        "cpu_weight_buffer_type": "CPU_REPACK",
+        "cpu_weight_buffer_type": "CPU",
         "cpu_weight_buffer_bytes": 13_220_000 * k,
         "cpu_bias_buffer_bytes": 40_000 * k,
         "cpu_compute": cpu,
@@ -124,8 +124,8 @@ def test_validate_expert_crossover_rejects_derived_path_tampering():
         validate_expert_crossover(payload)
 
 
-def test_validate_expert_crossover_rejects_cpu_default_fallback():
+def test_validate_expert_crossover_rejects_non_authoritative_cpu_buffer():
     payload = _payload()
-    payload["results"][0]["cpu_weight_buffer_type"] = "CPU"
-    with pytest.raises(ExpertCrossoverError, match="expected CPU_REPACK"):
+    payload["results"][0]["cpu_weight_buffer_type"] = "CPU_REPACK"
+    with pytest.raises(ExpertCrossoverError, match="expected CPU default buffer"):
         validate_expert_crossover(payload)
