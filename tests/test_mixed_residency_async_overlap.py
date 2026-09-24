@@ -11,11 +11,11 @@ from tesy.mixed_residency_overlap_bound import MixedResidencyOverlapBoundError
 
 def _stats(median: float) -> dict:
     samples = [
-        median - 0.02,
-        median - 0.01,
+        median - 0.002,
+        median - 0.001,
         median,
-        median + 0.01,
-        median + 0.02,
+        median + 0.001,
+        median + 0.002,
     ]
     return {
         "median_ms": median,
