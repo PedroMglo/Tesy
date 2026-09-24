@@ -19,7 +19,7 @@ reference-host/model validation. No source-only row is a performance claim.
 | paired trace OFF/ON token gate | REAL_MODEL_TOKEN_ID_EQUALITY_PASS | same 16 generated IDs for one deterministic raw prompt; no bitwise/numerical parity claim |
 | count-space LRU headroom | REAL_TRACE_DERIVED | 1,440 one-token expert accesses; equal-sized-slot LRU, not physical bytes |
 | Belady offline oracle | REAL_TRACE_DERIVED | non-causal equal-slot lower bound; not a production policy |
-| GGUF expert payload inventory | NATIVE_GGUF_PASS_DERIVATION_REFERENCE_HOST | metadata-only native helper PASS on reference laptop: 24 layers × 32 experts, 13,253,760 encoded bytes/expert, types f32+mxfp4, shapes [2880,32] and [2880,2880,32]; not physical fetch granularity |
+| GGUF expert payload inventory | INCONCLUSIVE_EXECUTION_PROVENANCE_NOT_PRESERVED | historical native metadata output reports 24 layers × 32 experts and 13,253,760 encoded bytes/expert, but committed evidence does not preserve exact Tesy base/tree or prove PHYSICAL host |
 | byte-weighted native trace simulation | INCONCLUSIVE_REPLAY_PROVENANCE_NOT_PRESERVED | historical 4 GiB LRU 66.25% / Belady 70.21% values remain descriptive only; exact replay execution provenance/output manifest is not preserved in the reviewed tree |
 | reference bring-up pipeline | PASS_DIAGNOSTIC_REFERENCE_HOST | third campaign completed after two preserved failed/aborted attempts; details in `research/results/first-real-bringup-20260923/RESULT.md` |
 | stock llama.cpp real gpt-oss-20b load | PASS_DIAGNOSTIC_STOCK_SMOKE | 16-token stock generation; no chat or benchmark qualification |
@@ -36,8 +36,7 @@ reference-host/model validation. No source-only row is a performance claim.
 | KTransformers baseline | PINNED_NOT_REPRODUCED | reproduce only if compatible with selected model/host |
 | vLLM baseline | PINNED_NOT_REPRODUCED | B4 only if 8 GiB/32 GiB envelope admits it |
 | native Tesy expert residency/cache | NOT_IMPLEMENTED | forbidden until baseline + trace/headroom establish a concrete gap |
-| CPU-vs-transfer-vs-GPU expert crossover | PASS_REFERENCE_HOST_DIAGNOSTIC | campaign `expert-crossover-20260924T101753Z`: real-shape k=1/k=4 parity/resource gates PASS; pinned cold-GPU miss is ~3.05x/~3.64x slower than authoritative n-cpu-moe CPU path while resident GPU is ~5.80x/~4.92x faster; blocking demand transfer NO_GO |
-| mixed GPU-hit / CPU-miss expert execution | BLOCKED_REPLAY_REPRODUCTION_REQUIRED | historical grouped/cache replay is not admitted until a phase-aware, provenance-preserved replay is reproduced; no cache-hit-weighted architecture decision is current |
+| CPU-vs-transfer-vs-GPU expert crossover | INCONCLUSIVE_EXECUTION_BASE_NOT_PRESERVED | historical k=1/k=4 measurements use a CPU-default fallback comparator, not the unique `--n-cpu-moe` loader path; exact Tesy execution commit/tree is not preserved, so campaign admission and blocking-transfer NO_GO require rerun |
 | causal prefetch | NOT_IMPLEMENTED | only after locality/headroom and wasted-prefetch analysis |
 | speculative K=2 | NOT_IMPLEMENTED | only after K=1 target/runtime correctness |
 | joint K/residency scheduler | OPEN_RESEARCH_QUESTION | broad novelty overlap exists; benefit and narrower novelty unknown |

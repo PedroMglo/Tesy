@@ -129,3 +129,10 @@ def test_validate_expert_crossover_rejects_non_authoritative_cpu_buffer():
     payload["results"][0]["cpu_weight_buffer_type"] = "CPU_REPACK"
     with pytest.raises(ExpertCrossoverError, match="expected CPU default buffer"):
         validate_expert_crossover(payload)
+
+
+def test_validate_expert_crossover_rejects_tampered_summary_statistics():
+    payload = copy.deepcopy(_payload())
+    payload["results"][0]["cpu_compute"]["median_ms"] += 0.005
+    with pytest.raises(ExpertCrossoverError, match="median_ms does not match raw samples"):
+        validate_expert_crossover(payload)
