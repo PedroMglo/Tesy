@@ -260,6 +260,66 @@ if mismatches:
     raise SystemExit(f"mixed-residency build cache mismatch: {mismatches}")
 PY
 
+build_provenance="$build_dir/tesy-mixed-residency-build-provenance.json"
+[[ -f "$build_provenance" ]] || {
+  echo "missing mixed-residency build provenance: $build_provenance" >&2
+  echo "run scripts/bootstrap_mixed_residency.sh on this exact clean HEAD" >&2
+  exit 1
+}
+
+"$python_bin" - \
+  "$build_provenance" \
+  "$out/tesy-head.txt" \
+  "$out/llama-head.txt" \
+  "$root/native/tesy_mixed_residency.cpp" \
+  "$root/native/CMakeLists.txt" \
+  "$tool" \
+  >"$out/native-build-provenance-validation.json" <<'PY'
+import hashlib
+import json
+import sys
+from pathlib import Path
+
+
+def sha256(path: Path) -> str:
+    digest = hashlib.sha256()
+    with path.open("rb") as handle:
+        for chunk in iter(lambda: handle.read(1024 * 1024), b""):
+            digest.update(chunk)
+    return digest.hexdigest()
+
+
+manifest = json.loads(Path(sys.argv[1]).read_text(encoding="utf-8"))
+if manifest.get("schema") != "tesy.mixed_residency_native_build.v1":
+    raise SystemExit("unexpected native build provenance schema")
+if manifest.get("status") != "PASS":
+    raise SystemExit("native build provenance did not PASS")
+
+expected = {
+    "tesy_head": Path(sys.argv[2]).read_text(encoding="utf-8").strip(),
+    "llama_head": Path(sys.argv[3]).read_text(encoding="utf-8").strip(),
+    "native_source_sha256": sha256(Path(sys.argv[4])),
+    "cmake_lists_sha256": sha256(Path(sys.argv[5])),
+    "tool_sha256": sha256(Path(sys.argv[6])),
+    "tool_path": str(Path(sys.argv[6]).resolve()),
+}
+mismatches = {
+    key: {"expected": value, "observed": manifest.get(key)}
+    for key, value in expected.items()
+    if manifest.get(key) != value
+}
+payload = {
+    "schema": "tesy.mixed_residency_native_build_validation.v1",
+    "classification": "MEASURED_LOCAL_BUILD_PROVENANCE",
+    "status": "PASS" if not mismatches else "FAIL",
+    "expected": expected,
+    "mismatches": mismatches,
+}
+print(json.dumps(payload, indent=2, sort_keys=True))
+if mismatches:
+    raise SystemExit(f"native build provenance mismatch: {mismatches}")
+PY
+
 sha256sum "$tool" >"$out/tool-sha256.txt"
 ldd "$tool" >"$out/tool-ldd.txt"
 
