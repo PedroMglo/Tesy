@@ -94,3 +94,14 @@ target_include_directories(
     "${LLAMA_CPP_SOURCE_DIR}/ggml/src"
 )
 target_link_libraries(tesy-split-graph-model-free PRIVATE ggml ggml-cpu)
+
+add_executable(tesy-sum-graph-model-free tesy_sum_graph_model_free.cpp)
+target_compile_features(tesy-sum-graph-model-free PRIVATE cxx_std_17)
+target_compile_options(tesy-sum-graph-model-free PRIVATE -Wall -Wextra -Wpedantic -Werror)
+target_include_directories(
+  tesy-sum-graph-model-free PRIVATE "${LLAMA_CPP_SOURCE_DIR}/ggml/include"
+)
+target_include_directories(
+  tesy-sum-graph-model-free SYSTEM PRIVATE "${LLAMA_CPP_SOURCE_DIR}/ggml/src"
+)
+target_link_libraries(tesy-sum-graph-model-free PRIVATE ggml ggml-cpu)
