@@ -37,7 +37,7 @@ fit_tool="${TESY_LLAMA_FIT_PARAMS:-$build_dir/bin/llama-fit-params}"
 toolchain_lock="$root/configs/reference-llama-toolchain.json"
 prompt_file="$root/benchmarks/prompts/b0-b1-diagnostic.txt"
 capacity_evidence_dir="$root/research/results/n-cpu-moe-capacity-20260923T233416Z"
-capacity_evidence_commit="5a8bbf08eb95069b1847f724e5d1be98c6392678"
+capacity_evidence_commit="5dd06218584bc5f0e72b05102eb6ff483a9dbfe7"
 lock_file="${XDG_RUNTIME_DIR:-/tmp}/tesy-placement-capacity-pareto.lock"
 base_port="${TESY_SWEEP_PORT_BASE:-18120}"
 gpu_target_mib=1024
@@ -145,6 +145,21 @@ if summary.get("admitted_n_cpu_moe") != [12, 16, 20, 24]:
     raise SystemExit("unexpected source admitted set")
 if manifest.get("schema") != "tesy.n_cpu_moe_capacity_publication.v1":
     raise SystemExit("invalid source publication manifest")
+if manifest.get("classification") != "SOURCE_BACKED_CAPACITY_GATE":
+    raise SystemExit(
+        "source capacity publication is not an admitted capacity gate: "
+        f"{manifest.get('classification')!r}"
+    )
+if manifest.get("performance_gate") != "PASS":
+    raise SystemExit("source capacity publication performance gate did not PASS")
+if manifest.get("physical_host_status") != "PHYSICAL":
+    raise SystemExit("source capacity publication does not prove PHYSICAL host")
+if manifest.get("admitted_n_cpu_moe") != summary.get("admitted_n_cpu_moe"):
+    raise SystemExit(
+        "source publication admitted set does not match raw capacity summary"
+    )
+if manifest.get("admitted_n_cpu_moe") != [12, 16, 20, 24]:
+    raise SystemExit("unexpected published admitted set")
 
 payload = {
     "schema": (
@@ -346,7 +361,7 @@ for n in "${candidates[@]}"; do
     --output "$estimate_json"
 done
 
-if (( timing_pilot == 1 )); then
+if (( capacity_only == 0 && continuum_shape == 0 )); then
   "$fit_tool" \
     --model "$model" \
     --fit off \
