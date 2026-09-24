@@ -91,6 +91,13 @@ def _raw(
             ["async", "stock", "serial"],
             ["async", "serial", "stock"],
         ],
+        "measured_order_full_cycles": 13,
+        "measured_order_tail_indices": [0, 3, 4],
+        "measured_ordinal_counts": {
+            "stock": [27, 27, 27],
+            "serial": [27, 27, 27],
+            "async": [27, 27, 27],
+        },
         "pre_exactness": _exactness(),
         "post_exactness": _exactness(),
         "modes": {
@@ -207,6 +214,17 @@ def test_live_timing_rejects_routing_weight_mismatch_between_h():
         match="routing weights differ",
     ):
         validate_live_moe_handoff_timing(_raw(2), h3)
+
+
+def test_live_timing_rejects_ordinal_balance_drift():
+    h2 = _raw(2)
+    h2["measured_order_tail_indices"] = [0, 1, 2]
+
+    with pytest.raises(
+        LiveMoeHandoffTimingError,
+        match="measured_order_tail_indices mismatch",
+    ):
+        validate_live_moe_handoff_timing(h2, _raw(3))
 
 
 def test_live_timing_rejects_completed_trial_drift():
