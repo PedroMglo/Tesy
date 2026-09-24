@@ -488,6 +488,11 @@ print(
     "weighted_bound_speedup:",
     f"{weighted['bound_speedup_vs_weighted_direct']:.6f}",
 )
+print(
+    "implementation_gate_max_bound_ms:",
+    f"{weighted['implementation_gate_max_bound_ms']:.6f}",
+)
+print("decision:", weighted["decision"])
 print("claim_boundary:", weighted["claim_boundary"])
 PY
 
