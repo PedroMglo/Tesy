@@ -93,7 +93,7 @@ cmd=(
   "$server" --model "$model" --ctx-size 4096
   --threads 12 --threads-batch 12
   --n-gpu-layers "$ngl" --fit off
-  --jinja --reasoning off
+  --jinja --reasoning off --reasoning-budget 0
   --host 127.0.0.1 --port "$port" --parallel 1
   --no-warmup --no-cache-prompt
 )
