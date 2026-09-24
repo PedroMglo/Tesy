@@ -19,8 +19,8 @@ reference-host/model validation. No source-only row is a performance claim.
 | paired trace OFF/ON token gate | REAL_MODEL_TOKEN_ID_EQUALITY_PASS | same 16 generated IDs for one deterministic raw prompt; no bitwise/numerical parity claim |
 | count-space LRU headroom | REAL_TRACE_DERIVED | 1,440 one-token expert accesses; equal-sized-slot LRU, not physical bytes |
 | Belady offline oracle | REAL_TRACE_DERIVED | non-causal equal-slot lower bound; not a production policy |
-| GGUF expert payload inventory | NATIVE_GGUF_PASS_DERIVATION_REFERENCE_HOST | metadata-only native helper PASS on reference laptop: 24 layers × 32 experts, 13,253,760 encoded bytes/expert, types f32+mxfp4, shapes [2880,32] and [2880,2880,32]; not physical fetch granularity |
-| byte-weighted native trace simulation | REAL_TRACE_DERIVED_SIMULATION | 16 GiB/4 GiB hypothetical two-tier LRU over the native-relocked equal-size inventory; not physical traffic |
+| GGUF expert payload inventory | INCONCLUSIVE_EXECUTION_PROVENANCE_NOT_PRESERVED | historical native metadata output reports 24 layers × 32 experts and 13,253,760 encoded bytes/expert, but committed evidence does not preserve exact Tesy base/tree or prove PHYSICAL host |
+| byte-weighted native trace simulation | NOT_ADMITTED_RERUN_REQUIRED | earlier simulation remains tied to the pre-relock campaign; no fresh replay under the relocked inventory has been published |
 | reference bring-up pipeline | PASS_DIAGNOSTIC_REFERENCE_HOST | third campaign completed after two preserved failed/aborted attempts; details in `research/results/first-real-bringup-20260923/RESULT.md` |
 | stock llama.cpp real gpt-oss-20b load | PASS_DIAGNOSTIC_STOCK_SMOKE | 16-token stock generation; no chat or benchmark qualification |
 | stock B0/B1 measurements | INCONCLUSIVE_RERUN_REQUIRED | physical-host runs exist, but review invalidated same-work admission: placement telemetry empty, provenance incomplete and token trajectories unretained |
