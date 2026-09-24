@@ -800,6 +800,232 @@ std::vector<float> read_output(
     return values;
 }
 
+std::string read_prompt_file(const std::string & path) {
+    std::ifstream input(path, std::ios::binary);
+    if (!input) {
+        fail("cannot open prompt file: " + path);
+    }
+    return std::string(
+        std::istreambuf_iterator<char>(input),
+        std::istreambuf_iterator<char>());
+}
+
+std::vector<llama_token> tokenize_prompt(
+        const llama_vocab * vocab,
+        const std::string & text) {
+    const int32_t required =
+        -llama_tokenize(
+            vocab,
+            text.c_str(),
+            static_cast<int32_t>(text.size()),
+            nullptr,
+            0,
+            true,
+            true);
+    if (required <= 0) {
+        fail("live handoff tokenization sizing failed");
+    }
+
+    std::vector<llama_token> tokens(static_cast<size_t>(required));
+    const int32_t written =
+        llama_tokenize(
+            vocab,
+            text.c_str(),
+            static_cast<int32_t>(text.size()),
+            tokens.data(),
+            static_cast<int32_t>(tokens.size()),
+            true,
+            true);
+    if (written <= 0 || written > required) {
+        fail("live handoff tokenization failed");
+    }
+    tokens.resize(static_cast<size_t>(written));
+    return tokens;
+}
+
+template <typename T>
+std::vector<T> read_live_tensor(
+        ggml_tensor * tensor,
+        ggml_type expected_type,
+        size_t expected_elements,
+        const char * label) {
+    if (tensor->type != expected_type) {
+        fail(std::string(label) + " has unexpected tensor type");
+    }
+    if (!ggml_is_contiguous(tensor)) {
+        fail(std::string(label) + " must be contiguous");
+    }
+    const size_t elements =
+        static_cast<size_t>(ggml_nelements(tensor));
+    if (elements != expected_elements) {
+        fail(
+            std::string(label) + " element count mismatch: " +
+            std::to_string(elements));
+    }
+    if (ggml_nbytes(tensor) != elements * sizeof(T)) {
+        fail(std::string(label) + " byte count mismatch");
+    }
+
+    std::vector<T> out(elements);
+    ggml_backend_tensor_get(
+        tensor,
+        out.data(),
+        0,
+        out.size() * sizeof(T));
+    return out;
+}
+
+void reset_live_handoff_capture(
+        live_handoff_capture & state,
+        live_handoff_arm arm) {
+    state.enabled = true;
+    state.arm = arm;
+    state.saw_activation = false;
+    state.saw_experts = false;
+    state.saw_weights = false;
+    state.saw_stock_output = false;
+    state.activation.clear();
+    state.experts.clear();
+    state.weights.clear();
+    state.stock_output.clear();
+}
+
+bool live_handoff_callback(
+        ggml_tensor * tensor,
+        bool ask,
+        void * user_data) {
+    auto * state =
+        static_cast<live_handoff_capture *>(user_data);
+    if (!state || !state->enabled) {
+        return false;
+    }
+
+    const bool activation =
+        std::strcmp(tensor->name, "attn_post_norm-0") == 0;
+    const bool experts =
+        std::strcmp(tensor->name, "ffn_moe_topk-0") == 0;
+    const bool weights =
+        std::strcmp(
+            tensor->name,
+            "ffn_moe_weights_softmax-0") == 0;
+    const bool stock_output =
+        std::strcmp(tensor->name, "ffn_moe_out-0") == 0;
+    const bool wanted =
+        activation || experts || weights || stock_output;
+
+    if (ask) {
+        return wanted;
+    }
+    if (!wanted) {
+        return true;
+    }
+
+    if (activation) {
+        if (state->saw_activation) {
+            fail("duplicate live handoff activation");
+        }
+        state->activation =
+            read_live_tensor<float>(
+                tensor,
+                GGML_TYPE_F32,
+                static_cast<size_t>(k_embd),
+                "live handoff attn_post_norm-0");
+        state->saw_activation = true;
+        return true;
+    }
+
+    if (experts) {
+        if (state->saw_experts) {
+            fail("duplicate live handoff top-k");
+        }
+        state->experts =
+            read_live_tensor<int32_t>(
+                tensor,
+                GGML_TYPE_I32,
+                static_cast<size_t>(k_top_k),
+                "live handoff ffn_moe_topk-0");
+        state->saw_experts = true;
+        return true;
+    }
+
+    if (weights) {
+        if (state->saw_weights) {
+            fail("duplicate live handoff routing weights");
+        }
+        state->weights =
+            read_live_tensor<float>(
+                tensor,
+                GGML_TYPE_F32,
+                static_cast<size_t>(k_top_k),
+                "live handoff ffn_moe_weights_softmax-0");
+        for (float value : state->weights) {
+            if (!std::isfinite(value) || value < 0.0f) {
+                fail("live handoff routing weight is invalid");
+            }
+        }
+        state->saw_weights = true;
+        return state->arm != live_handoff_arm::handoff;
+    }
+
+    if (stock_output) {
+        if (state->arm != live_handoff_arm::stock_reference) {
+            fail("live handoff arm reached stock MoE output");
+        }
+        if (state->saw_stock_output) {
+            fail("duplicate live handoff stock output");
+        }
+        state->stock_output =
+            read_live_tensor<float>(
+                tensor,
+                GGML_TYPE_F32,
+                static_cast<size_t>(k_embd),
+                "live handoff ffn_moe_out-0");
+        state->saw_stock_output = true;
+        return false;
+    }
+
+    return true;
+}
+
+void validate_live_handoff_capture(
+        const live_handoff_capture & state,
+        bool require_stock_output,
+        const char * label) {
+    if (
+        !state.saw_activation
+        || !state.saw_experts
+        || !state.saw_weights
+    ) {
+        fail(std::string(label) + " capture is incomplete");
+    }
+    if (state.experts.size() != static_cast<size_t>(k_top_k)) {
+        fail(std::string(label) + " expert count mismatch");
+    }
+
+    const std::vector<int32_t> expected = {
+        1, 13, 17, 21,
+    };
+    if (state.experts != expected) {
+        fail(std::string(label) + " route differs from admitted experts");
+    }
+
+    if (require_stock_output != state.saw_stock_output) {
+        fail(std::string(label) + " stock-output presence mismatch");
+    }
+    for (float value : state.activation) {
+        if (!std::isfinite(value)) {
+            fail(std::string(label) + " activation is non-finite");
+        }
+    }
+    if (require_stock_output) {
+        for (float value : state.stock_output) {
+            if (!std::isfinite(value)) {
+                fail(std::string(label) + " stock output is non-finite");
+            }
+        }
+    }
+}
+
 parity compare_outputs(
         const std::vector<float> & reference,
         const std::vector<float> & observed) {
