@@ -3,8 +3,6 @@
 #include "ggml-cpu.h"
 #include "ggml.h"
 #include "gguf.h"
-#include "llama.h"
-
 #include <algorithm>
 #include <array>
 #include <chrono>
