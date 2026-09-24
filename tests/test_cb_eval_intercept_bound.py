@@ -31,6 +31,7 @@ def _payload(
         "layer": 0,
         "ngl": 0,
         "decode_input_token": 2167,
+        "decode_return_code": 0,
         "warmup_pairs": 6,
         "sample_pairs": 81,
         "paired_order": "even_stock_cancel_odd_cancel_stock",
@@ -114,6 +115,17 @@ def test_cb_eval_bound_rejects_wrong_decode_token():
     with pytest.raises(
         CbEvalInterceptBoundError,
         match="decode_input_token mismatch",
+    ):
+        validate_cb_eval_intercept_bound(payload)
+
+
+def test_cb_eval_bound_rejects_nonzero_early_stop_return_code():
+    payload = _payload()
+    payload["decode_return_code"] = 2
+
+    with pytest.raises(
+        CbEvalInterceptBoundError,
+        match="decode_return_code mismatch",
     ):
         validate_cb_eval_intercept_bound(payload)
 

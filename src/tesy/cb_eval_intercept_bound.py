@@ -98,6 +98,7 @@ def validate_cb_eval_intercept_bound(
         "layer": 0,
         "ngl": 0,
         "decode_input_token": _EXPECTED_TOKEN,
+        "decode_return_code": 0,
         "warmup_pairs": _EXPECTED_WARMUP,
         "sample_pairs": _EXPECTED_SAMPLES,
         "paired_order": _EXPECTED_ORDER,

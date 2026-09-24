@@ -14,7 +14,7 @@ def test_cancel_bound_uses_only_authoritative_route_and_stock_output():
     assert "cancel-bound ffn_moe_weights_softmax-0" in text
 
 
-def test_cancel_bound_is_zero_tesy_work_and_aborts_both_arms():
+def test_cancel_bound_is_zero_tesy_work_and_early_stops_both_arms():
     root = Path(__file__).resolve().parents[1]
     text = (
         root / "native" / "tesy_routed_layer_capture.cpp"
@@ -25,7 +25,8 @@ def test_cancel_bound_is_zero_tesy_work_and_aborts_both_arms():
     block = text[start:end]
 
     assert "llama_decode(ctx, batch)" in block
-    assert "rc != 2" in block
+    assert "rc != 0" in block
+    assert "llama_memory_seq_rm" in block
     assert "make_compute_graph" not in block
     assert "compute_async_start" not in block
     assert "tesy-mixed-residency" not in block

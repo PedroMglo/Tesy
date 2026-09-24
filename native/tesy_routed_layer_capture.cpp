@@ -562,6 +562,7 @@ void run_cancel_bound(
         const options & opt,
         llama_context * ctx,
         llama_token decode_token,
+        llama_pos decode_position,
         cancel_bound_state & state) {
     std::vector<double> stock_samples;
     std::vector<double> cancel_samples;
@@ -578,9 +579,9 @@ void run_cancel_bound(
 
         state.enabled = false;
 
-        if (rc != 2) {
+        if (rc != 0) {
             fail(
-                "cancel-bound decode must return 2/GGML_STATUS_ABORTED, got " +
+                "cancel-bound scheduler early-stop decode must return 0, got " +
                 std::to_string(rc));
         }
         if (!state.saw_topk || !state.saw_weights || !state.started) {
@@ -605,6 +606,13 @@ void run_cancel_bound(
                 end - state.start).count();
         if (!std::isfinite(elapsed) || elapsed <= 0.0) {
             fail("invalid cancel-bound elapsed time");
+        }
+        if (!llama_memory_seq_rm(
+                llama_get_memory(ctx),
+                0,
+                decode_position,
+                -1)) {
+            fail("cancel-bound failed to roll back repeated decode token");
         }
         return elapsed;
     };
@@ -667,6 +675,7 @@ void run_cancel_bound(
         "\"MEASURED_CB_EVAL_ZERO_WORK_LOWER_BOUND\","
         "\"layer\":0,\"ngl\":0,"
         "\"decode_input_token\":%" PRId32 ","
+        "\"decode_return_code\":0,"
         "\"warmup_pairs\":%d,\"sample_pairs\":%d,"
         "\"paired_order\":\"even_stock_cancel_odd_cancel_stock\","
         "\"route_weight_tensor\":\"ffn_moe_weights_softmax-0\","
@@ -704,8 +713,8 @@ void run_cancel_bound(
         "\"claim_boundary\":"
         "\"Stock measures final-route-weight callback to stock "
         "ffn_moe_out-0 callback. Cancel measures the same route boundary "
-        "to llama_decode returning GGML_STATUS_ABORTED with zero Tesy FFN "
-        "work and no activation handoff. It is a strict lower bound on an "
+        "to a successful scheduler early stop with zero Tesy FFN work and "
+        "no activation handoff. It is a strict lower bound on an "
         "external cb_eval interception path, not routed-layer performance "
         "of Tesy or a full-model speed claim.\"}\n",
         cancel.median_ms / stock.median_ms,
@@ -952,7 +961,12 @@ int main(int argc, char ** argv) {
             &previous_log_user_data);
         llama_log_set(silent_log_callback, nullptr);
 
-        run_cancel_bound(opt, ctx, first, cancel_bound);
+        run_cancel_bound(
+            opt,
+            ctx,
+            first,
+            static_cast<llama_pos>(prompt_tokens.size()),
+            cancel_bound);
 
         llama_log_set(
             previous_log,
