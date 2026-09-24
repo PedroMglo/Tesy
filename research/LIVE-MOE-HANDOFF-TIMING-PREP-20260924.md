@@ -50,8 +50,11 @@ The campaign therefore publishes:
 
 for median and p95.
 
-The minimum positive h=2/h=3 budget becomes the hard upper bound for a future
-reinjection/continuation gate.
+The minimum positive h=2/h=3 budget becomes a pre-registered diagnostic
+ceiling for the next reinjection/continuation gate. Because the isolated stock
+endpoint is callback-instrumented, this budget is not a production latency
+bound; the next gate must also compare same-work continuation through a
+committed token against unmodified stock.
 
 ## Resident-expert boundary
 
@@ -313,8 +316,9 @@ Physical live handoff timing:
 
 If `LIVE_MOE_HANDOFF_TIMING_GO`:
 
-use the minimum async route median/p95 budgets as hard bounds for a prospective
-output-reinjection and continuation correctness/performance gate.
+use the minimum async route median/p95 budgets as diagnostic ceilings for a
+prospective output-reinjection and continuation gate, and independently require
+same-work committed-token non-regression against unmodified stock.
 
 If `LIVE_MOE_HANDOFF_TIMING_SERIAL_PIVOT`:
 
