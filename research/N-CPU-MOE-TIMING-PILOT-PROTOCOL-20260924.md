@@ -2,7 +2,7 @@
 
 Date: 2026-09-24  
 Branch: `research/n-cpu-moe-timing-pilot-20260924`  
-Capacity evidence commit: `5a8bbf08eb95069b1847f724e5d1be98c6392678`  
+Capacity evidence commit: `5dd06218584bc5f0e72b05102eb6ff483a9dbfe7`  
 Capacity evidence: `research/results/n-cpu-moe-capacity-20260923T233416Z/`  
 Classification: prospective diagnostic pilot
 
@@ -13,8 +13,12 @@ produced a timing observation.
 
 ## Purpose
 
-The published capacity gate admitted manual placements `N=12,16,20,24`
-and rejected `N=0,4,8` on projected GPU headroom.
+The historical capacity campaign originally projected manual placements
+`N=12,16,20,24` as admitted and `N=0,4,8` as rejected. Review later
+established that its snapshot did not prove the required physical host. The
+publication is now `INCONCLUSIVE_PHYSICAL_HOST_NOT_PROVEN`; those projected
+sets are preserved as descriptive source output and are **not** current
+capacity admissions.
 
 The stock auto-fit placement is not equivalent to one simple
 `--n-cpu-moe N`: the published fitter output keeps `-ngl 25` and emits
@@ -44,14 +48,24 @@ If these three points do not expose a useful diagnostic trade, measuring
 
 ## Placement authority
 
-The exact stock auto-fit placement is frozen by the published capacity evidence
-commit. The pilot does **not** ask the fitter to choose a new auto placement.
+The historical stock auto-fit placement remains frozen as evidence, but it is
+not sufficient to authorize a new timing pilot while the publication is
+inconclusive.
 
-The pilot loads:
+Before any future timing pilot, the runner requires the published capacity
+manifest to prove:
 
-- `research/results/n-cpu-moe-capacity-20260923T233416Z/auto-fit.json`;
-- verifies that commit `5a8bbf08...` is an ancestor of the pilot HEAD;
-- replays its exact `-c/-ngl/-ts/-ot` argv with `--fit off`.
+- classification `SOURCE_BACKED_CAPACITY_GATE`;
+- `performance_gate=PASS`;
+- `physical_host_status=PHYSICAL`;
+- the publication admitted set exactly matches the raw capacity summary.
+
+The current corrected historical publication fails this gate by design.
+
+The runner also verifies that capacity evidence commit
+`5dd06218584bc5f0e72b05102eb6ff483a9dbfe7` exists in the pilot ancestry.
+A future physical-host revalidation must use a new campaign identity and a
+prospectively updated evidence pin before timing can be authorized.
 
 The runner freezes the full server argv in `server-argv.json`, launches that
 argv directly, and requires byte-for-byte argument-list equality with the live
@@ -234,7 +248,16 @@ The summary must set:
 
 ## Operator entrypoint
 
-The only authorized model-bearing entrypoint is:
+**Current status: NOT_AUTHORIZED_PENDING_PHYSICAL_CAPACITY_REVALIDATION.**
+
+Do not execute the timing-pilot command with the current historical capacity
+publication. The runner is intentionally fail-closed and will reject it.
+
+After a new capacity-only campaign passes current physical-host verification,
+freeze a new publication/evidence commit prospectively before authorizing a
+fresh timing campaign identity.
+
+The historical command shape remains:
 
 ```bash
 campaign="results/n-cpu-moe-timing-pilot-$(date -u +%Y%m%dT%H%M%SZ)"
