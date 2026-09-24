@@ -83,3 +83,26 @@ def test_timing_pilot_has_separate_non_pareto_summary_and_exit():
     assert pilot_summary < pilot_pass < sweep_summary
     assert '"schema": "tesy.stock_placement_timing_pilot.v1"' in text
     assert "no confirmatory performance winner or Pareto frontier follows" in text
+
+
+def test_timing_pilot_rechecks_fresh_resources_before_each_server():
+    root = Path(__file__).resolve().parents[1]
+    text = (root / "scripts" / "run_n_cpu_moe_capacity_pareto.sh").read_text(
+        encoding="utf-8"
+    )
+
+    snapshot = text.index('snapshot_pre_run_resources "$run_dir/pre-run-resources.json"')
+    admission = text.index('pre_run_capacity_check \\')
+    server = text.index('"${cmd[@]}" >"$run_dir/server.stdout.txt"')
+
+    assert snapshot < admission < server
+
+
+def test_runtime_summary_rejects_any_gpu_telemetry_failure():
+    root = Path(__file__).resolve().parents[1]
+    text = (root / "scripts" / "run_n_cpu_moe_capacity_pareto.sh").read_text(
+        encoding="utf-8"
+    )
+
+    assert 'if summary["gpu_failed_samples"] != 0:' in text
+    assert "GPU telemetry incomplete" in text
