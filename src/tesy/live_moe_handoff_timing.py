@@ -65,6 +65,13 @@ _EXPECTED_SAMPLES = 81
 _EXPECTED_INNER = 1
 _EXPECTED_COMPLETED = _EXPECTED_WARMUP + _EXPECTED_SAMPLES
 _EXPECTED_ROLLBACKS = 3 * _EXPECTED_COMPLETED
+_EXPECTED_ORDER_FULL_CYCLES = 13
+_EXPECTED_ORDER_TAIL = [0, 3, 4]
+_EXPECTED_ORDINAL_COUNTS = {
+    "stock": [27, 27, 27],
+    "serial": [27, 27, 27],
+    "async": [27, 27, 27],
+}
 
 
 def _finite(value: Any, *, label: str) -> float:
@@ -260,6 +267,9 @@ def _validate_raw(
             "completed_trials",
             "successful_rollbacks",
             "triplet_order_cycle",
+            "measured_order_full_cycles",
+            "measured_order_tail_indices",
+            "measured_ordinal_counts",
             "pre_exactness",
             "post_exactness",
             "modes",
@@ -295,6 +305,9 @@ def _validate_raw(
         "stock_output_tensor": "ffn_moe_out-0",
         "selected_experts": _EXPECTED_EXPERTS,
         "triplet_order_cycle": _EXPECTED_ORDER,
+        "measured_order_full_cycles": _EXPECTED_ORDER_FULL_CYCLES,
+        "measured_order_tail_indices": _EXPECTED_ORDER_TAIL,
+        "measured_ordinal_counts": _EXPECTED_ORDINAL_COUNTS,
         "parity_thresholds": _EXPECTED_THRESHOLDS,
     }
     for field, expected_value in expected.items():
