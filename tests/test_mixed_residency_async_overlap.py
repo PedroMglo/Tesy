@@ -110,6 +110,8 @@ def _payload(async_median: float = 0.80) -> dict:
     return {
         "schema": "tesy.mixed_residency_async_raw.v1",
         "classification": "MEASURED_MIXED_RESIDENCY_ASYNC_DIAGNOSTIC",
+        "async_schedule": "post_d2h_gpu_enqueue_cpu_sync_gpu_wait",
+        "paired_sample_order": "even_serial_async_odd_async_serial",
         "layer": 0,
         "threads": 12,
         "warmup": 3,
@@ -185,6 +187,17 @@ def test_validate_async_rejects_failed_async_parity():
     with pytest.raises(
         MixedResidencyOverlapBoundError,
         match="did not PASS",
+    ):
+        validate_async_raw(payload)
+
+
+def test_validate_async_rejects_schedule_tampering():
+    payload = _payload()
+    payload["async_schedule"] = "different_schedule"
+
+    with pytest.raises(
+        MixedResidencyOverlapBoundError,
+        match="scheduling identity",
     ):
         validate_async_raw(payload)
 
