@@ -92,7 +92,7 @@ First inspect:
 
 - exact trajectory equality;
 - live capacity recheck;
-- realized placement evidence;
+- realized placement evidence, including projected vs observed aggregate GPU/Host model buffers;
 - TTFT/prompt/decode timing;
 - observed VRAM/RSS/swap;
 - thermal/resource state.
