@@ -1,0 +1,263 @@
+
+
+def inspect_resources(rows, gpu_total):
+    require(bool(rows), 'empty resource trace')
+    times = [finite(x['monotonic_ns'], 'resource time') for x in rows]
+    require(all(b > a for a, b in zip(times, times[1:])), 'resource timestamps not increasing')
+    valid, missing = [], []
+    for i, row in enumerate(rows):
+        require(row['gpu']['status'] == 'OK', f'GPU telemetry failure at {i}')
+        for key in ('memory_used_bytes', 'temperature_c', 'power_w'):
+            finite(row['gpu'][key], key)
+        for key in ('MemAvailable_bytes', 'SwapFree_bytes'):
+            finite(row['system'][key], key)
+        process = row.get('process')
+        require(type(process) is dict, 'missing/malformed process object')
+        # Never silently discard a positive swap record, even if other fields are missing.
+        if 'VmSwap_bytes' in process:
+            finite(process['VmSwap_bytes'], 'VmSwap_bytes')
+            require(process['VmSwap_bytes'] == 0, 'observed process swap')
+        if set(process) == {'VmRSS_bytes', 'VmSwap_bytes'}:
+            finite(process['VmRSS_bytes'], 'VmRSS_bytes')
+            valid.append(i)
+        else:
+            require(process == {}, f'partial process telemetry at {i}')
+            missing.append(i)
+    require(bool(valid), 'no complete process samples')
+    require(not missing or missing == list(range(max(valid)+1, len(rows))),
+            'nonterminal/interior process telemetry gap')
+    gpu_used = max(x['gpu']['memory_used_bytes'] for x in rows)
+    min_available = min(x['system']['MemAvailable_bytes'] for x in rows)
+    require(gpu_total-gpu_used >= 1024**3, 'sampled GPU headroom violation')
+    require(min_available >= 2*1024**3, 'sampled host headroom violation')
+    gaps = [(b-a)/1e6 for a, b in zip(times, times[1:])]
+    return {
+        'status': 'PASS_WITH_TRAILING_PROCESS_ABSENCE_NOT_LIVENESS_PROOF',
+        'samples': len(rows), 'gpu_valid_samples': len(rows), 'gpu_failed_samples': 0,
+        'valid_process_samples': len(valid), 'trailing_empty_process_samples': len(missing),
+        'trailing_empty_indices': missing, 'interior_process_gaps': 0,
+        'partial_process_records': 0, 'peak_process_swap_bytes': 0,
+        'peak_process_rss_bytes': max(rows[i]['process']['VmRSS_bytes'] for i in valid),
+        'peak_gpu_used_bytes': gpu_used, 'min_gpu_free_bytes': gpu_total-gpu_used,
+        'min_mem_available_bytes': min_available,
+        'peak_gpu_temperature_c': max(x['gpu']['temperature_c'] for x in rows),
+        'peak_gpu_power_w': max(x['gpu']['power_w'] for x in rows),
+        'sample_gap_ms_min_median_max': [min(gaps), statistics.median(gaps), max(gaps)],
+        'first_monotonic_ns': rows[0]['monotonic_ns'], 'last_monotonic_ns': rows[-1]['monotonic_ns'],
+    }
+
+
+def inspect_provenance(prov, argv):
+    require(prov['status'] == 'PASS' and prov['mismatches'] == [], 'runtime mismatch')
+    require(prov['argv']['status'] == 'PASS', 'argv status')
+    require(prov['argv']['expected'] == prov['argv']['observed'] == argv, 'argv mismatch')
+    exe, cuda = prov['executable'], prov['ggml_cuda']
+    require(exe['expected'] == exe['observed'] == argv[0], 'executable path mismatch')
+    matches = cuda['mapped_matches']
+    require(len(matches) == 1 and matches[0]['deleted'] is False, 'CUDA mapping')
+    require(matches[0]['path'] == cuda['path'], 'CUDA mapping path')
+    require(matches[0]['inode'] == cuda['inode'], 'CUDA mapping inode')
+    return {'status': 'RECORDED_IDENTITIES_CONSISTENT', 'pid': prov['pid'],
+            'executable_sha256': exe['sha256'], 'cuda_sha256': cuda['sha256'],
+            'limitation': 'Binaries and original /proc samples not supplied; identity records cross-checked, not re-measured.'}
+
+
+def inspect_stream(events, stream, run):
+    lines = [line for line in stream.decode('utf-8').splitlines() if line.strip()]
+    require(lines == [e['sse'] for e in events], 'SSE stream/event trace mismatch')
+    times = [finite(e['arrival_s_from_request'], 'SSE arrival') for e in events]
+    require(all(b >= a for a, b in zip(times, times[1:])), 'nonmonotone SSE arrival')
+    require(lines[-1] == 'data: [DONE]' and lines.count('data: [DONE]') == 1, 'DONE termination')
+    text_parts, reasoning, content_times, finishes, usages, timings = [], [], [], [], [], []
+    ids, fingerprints, models = set(), set(), set()
+    for line, arrival in zip(lines[:-1], times[:-1]):
+        require(line.startswith('data: '), 'SSE data prefix')
+        obj = load(line[6:])
+        require('error' not in obj, 'SSE error event')
+        ids.add(obj['id']); fingerprints.add(obj['system_fingerprint']);models.add(obj['model'])
+        require(obj['object'] == 'chat.completion.chunk', 'SSE object')
+        if 'usage' in obj: usages.append(obj['usage'])
+        if 'timings' in obj: timings.append(obj['timings'])
+        for choice in obj['choices']:
+            require(choice['index'] == 0, 'multiple response choices')
+            if choice['finish_reason'] is not None: finishes.append(choice['finish_reason'])
+            delta = choice.get('delta', {})
+            if delta.get('content'):
+                text_parts.append(delta['content']); content_times.append(arrival)
+            if delta.get('reasoning_content'): reasoning.append(delta['reasoning_content'])
+    require(len(ids) == len(fingerprints) == len(models) == 1, 'SSE identity changed')
+    require(next(iter(fingerprints)) == 'b11138-4e416ee73', 'SSE backend fingerprint')
+    require(bool(text_parts) and ''.join(text_parts) == run['output_text'], 'SSE reconstructed output mismatch')
+    require(finishes == [run['finish_reason']], 'SSE finish reason mismatch')
+    require(usages == [run['usage']], 'SSE usage mismatch')
+    require(timings == [run['timings']], 'SSE timings mismatch')
+    require(not reasoning, 'unexpected reasoning_content')
+    for key in ('ttft_s', 'generation_request_s', 'client_health_wait_s', 'server_launch_to_health_s'):
+        finite(run[key], key, 1e-12)
+    require(content_times[0] <= run['ttft_s'] <= times[-1] <= run['generation_request_s'],
+            'recorded endpoint ordering')
+    return {
+        'status': 'PASS', 'request_id': next(iter(ids)),
+        'stream_event_records': len(events), 'visible_content_chunks': len(text_parts),
+        'reasoning_chunks': len(reasoning), 'first_visible_arrival_s': content_times[0],
+        'last_visible_arrival_s': content_times[-1], 'done_arrival_s': times[-1],
+        'output_sha256': sha(''.join(text_parts).encode()),
+        'reported_ttft_minus_first_visible_arrival_us': 1e6*(run['ttft_s']-content_times[0]),
+        'reported_request_end_minus_done_arrival_us': 1e6*(run['generation_request_s']-times[-1]),
+        'endpoint_note': 'Two nearby recorder endpoints, not bit-identical timestamps. No new pass tolerance fitted.',
+        'sampled_token_ids_available': False,
+    }
+
+
+def audit_stock(data):
+    read = lambda name: load(data[name])
+    require(sha(data[f'{STOCK}/summary-final.json']) == STOCK_SUMMARY_SHA, 'historical summary hash')
+    published = read(f'{STOCK}/summary-final.json')
+    originals = {r['root']: r for r in published['runs']}
+    require(len(originals) == published['n_runs'] == 20, 'published run count')
+    results, reconstructed = [], []
+    for rep in range(1, 6):
+        for workload, expected in WORKLOADS.items():
+            for ngl in (0, 12):
+                root = f'{STOCK}/rep{rep}-{workload}-ngl{ngl}'
+                run = read(root+'/run.json'); argv = read(root+'/argv.json')
+                model = read(root+'/model.json'); doctor = read(root+'/doctor-public.json')
+                capacity = read(root+'/placement-capacity.json')
+                provenance = inspect_provenance(read(root+'/runtime-provenance.json'), argv)
+                require(model['status'] == 'PASS' and model['failures'] == [], 'model status')
+                require(model['observed']['sha256'] == MODEL_SHA and
+                        model['observed']['size_bytes'] == 12109564352, 'model identity record')
+                host = inspect_doctor(doctor)
+                expected_flags = {'--ctx-size': '4096','--threads':'12','--threads-batch':'12',
+                                  '--n-gpu-layers':str(ngl),'--fit':'off','--reasoning':'off',
+                                  '--reasoning-budget':'0','--host':'127.0.0.1','--parallel':'1',
+                                  '--model':model['observed']['path']}
+                for flag, value in expected_flags.items():
+                    require(argv.count(flag) == 1 and argv[argv.index(flag)+1] == value, f'argv {flag}')
+                for flag in ('--jinja','--no-warmup','--no-cache-prompt'):
+                    require(argv.count(flag) == 1, f'argv {flag}')
+                require('--chat-template' not in argv, 'generic template override')
+                input_hashes = dict(line.split(None, 1) for line in data[root+'/input-sha256.txt'].decode().splitlines())
+                require(provenance['executable_sha256'] in input_hashes, 'exe hash link')
+                require(expected['prompt_sha'] in input_hashes, 'recorded prompt hash')
+                require(input_hashes[expected['prompt_sha']] == f'benchmarks/prompts/vertical-eval-{workload}.txt', 'prompt path link')
+                require(run['prompt_file'] == f'benchmarks/prompts/vertical-eval-{workload}.txt', 'run prompt path')
+                require(run['schema'] == 'tesy.full_model_stock_chat_run.v1', 'run schema')
+                require(run['max_tokens'] == 128 and run['token_ids'] is None, 'run budget/IDs')
+                usage, backend = run['usage'], run['timings']
+                require(usage['prompt_tokens'] == expected['prompt_tokens'], 'prompt count')
+                require(usage['completion_tokens'] == expected['completion_tokens'], 'completion count')
+                require(usage['total_tokens'] == usage['prompt_tokens']+usage['completion_tokens'], 'usage arithmetic')
+                require(usage['prompt_tokens_details']['cached_tokens'] == 0 and backend['cache_n'] == 0, 'cache count')
+                require(run['finish_reason'] == expected['finish'], 'finish reason')
+                require(backend['prompt_n'] == usage['prompt_tokens'] and backend['predicted_n'] == usage['completion_tokens'], 'backend/usage counts')
+                for key in ('prompt_ms','predicted_ms','prompt_per_token_ms','predicted_per_token_ms','prompt_per_second','predicted_per_second'):
+                    finite(backend[key], 'backend '+key, 1e-12)
+                # Recompute the arithmetic evident in this backend's persisted counters.
+                close(backend['predicted_per_token_ms'], backend['predicted_ms']/(backend['predicted_n']-1), 'decode avg')
+                close(backend['prompt_per_token_ms'], backend['prompt_ms']/backend['prompt_n'], 'prefill avg')
+                close(backend['predicted_per_second'], 1000/backend['predicted_per_token_ms'], 'decode rate')
+                close(backend['prompt_per_second'], 1000/backend['prompt_per_token_ms'], 'prefill rate')
+                events = [load(line) for line in data[root+'/sse-events.jsonl'].splitlines() if line.strip()]
+                stream = inspect_stream(events, data[root+'/stream.sse'], run)
+                require(stream['output_sha256'] == expected['output_sha'], 'output hash vs published')
+                rows = [load(line) for line in data[root+'/resources.jsonl'].splitlines() if line.strip()]
+                resource = inspect_resources(rows, host['gpu']['memory_total_bytes'])
+                snap = doctor['snapshot']
+                require(capacity['admitted'] is True and capacity['rejection_reasons'] == [], 'capacity status')
+                require(capacity['placement_id'] == f'stock-chat-ngl-{ngl}', 'placement identity')
+                require(capacity['campaign_start_gpu_free_bytes'] == snap['gpu']['gpus'][0]['memory_free_bytes'], 'capacity GPU observation')
+                require(capacity['campaign_start_mem_available_bytes'] == snap['memory']['available_bytes'], 'capacity RAM observation')
+                for device_row in capacity['rows'].values():
+                    require(device_row['total_mib'] == sum(device_row[k] for k in ['model_mib','context_mib','compute_mib']), 'capacity row arithmetic')
+                require(capacity['gpu_required_mib'] == capacity['rows']['CUDA0']['total_mib']+capacity['gpu_target_mib']+capacity['rounding_guard_mib'], 'capacity GPU sum')
+                require(capacity['host_required_mib'] == capacity['rows']['Host']['total_mib']+capacity['host_guard_mib']+capacity['rounding_guard_mib'], 'capacity host sum')
+                require(capacity['gpu_required_mib']*1024**2 <= capacity['campaign_start_gpu_free_bytes'], 'capacity GPU inequality')
+                require(capacity['host_required_mib']*1024**2 <= capacity['campaign_start_mem_available_bytes'], 'capacity RAM inequality')
+                old_resources = {
+                    'valid_process_samples': resource['valid_process_samples'],
+                    'terminal_samples_without_process': resource['trailing_empty_process_samples'],
+                    'peak_process_rss_bytes': resource['peak_process_rss_bytes'],
+                    'peak_process_swap_bytes': 0,
+                    'peak_gpu_used_bytes': resource['peak_gpu_used_bytes'],
+                    'peak_gpu_temperature_c': resource['peak_gpu_temperature_c'],
+                    'peak_gpu_power_w': resource['peak_gpu_power_w'],
+                }
+                rec = {'root':root,'rep':rep,'workload':workload,'n_gpu_layers':ngl,
+                       'prompt_tokens':usage['prompt_tokens'],'output_tokens':usage['completion_tokens'],
+                       'finish_reason':run['finish_reason'],'output_sha256':stream['output_sha256'],
+                       'server_launch_to_health_s':run['server_launch_to_health_s'],'ttft_s':run['ttft_s'],
+                       'generation_request_s':run['generation_request_s'],
+                       'backend_predicted_per_token_ms':backend['predicted_per_token_ms'],
+                       'runtime_executable_sha256':provenance['executable_sha256'],
+                       'runtime_cuda_sha256':provenance['cuda_sha256'],'resources':old_resources}
+                require(rec == originals[root], f'published run mismatch: {root}')
+                reconstructed.append(rec)
+                results.append({'root':root,'rep':rep,'workload':workload,'n_gpu_layers':ngl,
+                                'sse':stream,'resources':resource,'provenance':provenance,'host':host,
+                                'capacity_arithmetic':'PASS','published_run_recomputed':'PASS',
+                                'timings':{k:run[k] for k in ['ttft_s','generation_request_s','server_launch_to_health_s']}})
+    require(len({r['provenance']['pid'] for r in results}) == 20, 'PID reuse/not distinct')
+    require(len({r['provenance']['executable_sha256'] for r in results}) == 1, 'executable hash drift')
+    require(len({r['provenance']['cuda_sha256'] for r in results}) == 1, 'CUDA hash drift')
+    require(len({r['sse']['request_id'] for r in results}) == 20, 'request IDs not distinct')
+    aggregates=[]
+    for workload in WORKLOADS:
+        for ngl in (0,12):
+            group=[r for r in reconstructed if r['workload']==workload and r['n_gpu_layers']==ngl]
+            ag={'workload':workload,'n_gpu_layers':ngl,
+                'output_tokens':sorted({r['output_tokens'] for r in group}),
+                'finish_reasons':sorted({r['finish_reason'] for r in group}),
+                'output_sha256s':sorted({r['output_sha256'] for r in group})}
+            for k in ['server_launch_to_health_s','ttft_s','generation_request_s','backend_predicted_per_token_ms']:
+                ag[k]=summary([r[k] for r in group])
+            aggregates.append(ag)
+    require(aggregates == published['aggregate'], 'published aggregates not reproduced')
+    chronological=sorted(results,key=lambda r:r['resources']['first_monotonic_ns'])
+    require(all(x['resources']['last_monotonic_ns'] < y['resources']['first_monotonic_ns']
+                for x,y in zip(chronological,chronological[1:])), 'overlapping monitor traces')
+    resources={
+        'total_samples':sum(r['resources']['samples'] for r in results),
+        'gpu_valid_samples':sum(r['resources']['gpu_valid_samples'] for r in results),
+        'complete_process_samples':sum(r['resources']['valid_process_samples'] for r in results),
+        'trailing_empty_process_samples':sum(r['resources']['trailing_empty_process_samples'] for r in results),
+        'interior_gaps':0,'partial_records':0,'observed_process_swap_bytes':0,
+    }
+    for key in ['peak_process_rss_bytes','peak_gpu_used_bytes','peak_gpu_temperature_c','peak_gpu_power_w']:
+        resources[key]=max(r['resources'][key] for r in results)
+    for key in ['min_mem_available_bytes','min_gpu_free_bytes']:
+        resources[key]=min(r['resources'][key] for r in results)
+    improvements={}
+    for w in WORKLOADS:
+        g={r['n_gpu_layers']:r for r in aggregates if r['workload']==w}
+        improvements[w]={
+            'request_median_reduction_fraction':1-g[12]['generation_request_s']['median']/g[0]['generation_request_s']['median'],
+            'request_median_stock_ngl0_over_ngl12':g[0]['generation_request_s']['median']/g[12]['generation_request_s']['median'],
+            'ttft_median_reduction_fraction':1-g[12]['ttft_s']['median']/g[0]['ttft_s']['median'],
+        }
+    return {
+        'status':'PASS_RECOMPUTED_PUBLISHED_STOCK_DATA_WITH_SCOPE_LIMITS',
+        'n_runs':len(results),'aggregate':aggregates,'runs':results,'resources':resources,
+        'stock_placement_comparison_only':improvements,
+        'observed_run_order':[r['root'].split('/')[-1] for r in chronological],
+        'ttft_delta_us_min_median_max':[min(r['sse']['reported_ttft_minus_first_visible_arrival_us'] for r in results),
+             statistics.median(r['sse']['reported_ttft_minus_first_visible_arrival_us'] for r in results),
+             max(r['sse']['reported_ttft_minus_first_visible_arrival_us'] for r in results)],
+        'request_end_delta_us_min_median_max':[min(r['sse']['reported_request_end_minus_done_arrival_us'] for r in results),
+             statistics.median(r['sse']['reported_request_end_minus_done_arrival_us'] for r in results),
+             max(r['sse']['reported_request_end_minus_done_arrival_us'] for r in results)],
+        'scope_limits':[
+            'Load-to-health exists only as recorded scalars; original launch/health timestamp pair is absent.',
+            'SSE arrivals have a recorded request-relative origin; clock/source implementation not independently executed.',
+            'Prompt bytes, full request body and rendered template are absent from this bundle; hashes/paths/counts cross-checked only.',
+            'Exact sampled token IDs are absent; SSE chunk arrivals are not per-token latency samples.',
+            'Backend predicted_per_token_ms is predicted_ms/(predicted_n-1), not a token latency distribution.',
+            'Nearest-rank p95 with five runs is the maximum; no robust tail/stability claim.',
+            'Hardware, executable and library hashes are original measurement records, not re-measured physical hardware/binaries.',
+            'nvcc toolkit probe reports NOT_AVAILABLE in all public doctors; no compiler version inferred from that probe.',
+            'Entire lsblk probe redacted; omitted original bytes cannot be independently checked.',
+            'No baseline selection calibration group is included; optimum or calibration process not re-audited here.',
+            'No liveness/exit-code event is attached to trailing empty process samples; absence is at the end only, not direct proof of death.',
+            'Peak resource values are sampled, not continuous guarantees; global host swap is not zero.',
+            'This is stock-only and not an inference-quality evaluation or a Tesy speedup.',
+        ]}
