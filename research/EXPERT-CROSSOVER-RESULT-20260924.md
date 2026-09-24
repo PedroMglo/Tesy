@@ -24,14 +24,16 @@ model-active top-k shape. k=1 is the marginal per-expert diagnostic.
 
 The measured CPU buffer type was `CPU`.
 
-This is the correct authority for comparison with Tesy's measured
-`--n-cpu-moe` continuum. At the pinned llama.cpp source,
-`llm_add_n_cpu_ffn_overrides` and `llm_ffn_exps_cpu_override` explicitly
-assign expert tensors to `ggml_backend_cpu_buffer_type()`.
+The campaign explicitly measured the CPU-default ggml buffer path.
 
-A CPU_REPACK path exists in ggml for MXFP4 on AVX2, but it is not the buffer
-forced by `--n-cpu-moe`; it is therefore a separate future comparator, not a
-replacement for this baseline.
+Pinned `--n-cpu-moe` creates a CPU buffer override, but the model loader may
+then select a compatible candidate from its CPU buffer list, which can include
+host or CPU extra/repack buffers before the literal CPU default. Therefore this
+measurement must not be relabelled as the unique realized `--n-cpu-moe`
+runtime buffer path.
+
+It remains an admitted explicit CPU-default fallback comparator. A later
+CPU-backend optimized/repack measurement is a separate comparator.
 
 ## Measurements
 
@@ -77,8 +79,8 @@ This is not physical PCIe traffic or a hardware-counter bandwidth claim.
 
 A synchronous cold-GPU demand miss is much worse than CPU execution:
 
-- k=1 pinned cold GPU / CPU path: about 3.05x slower;
-- k=4 pinned cold GPU / CPU path: about 3.64x slower.
+- k=1 pinned cold GPU / measured CPU-default path: about 3.05x slower;
+- k=4 pinned cold GPU / measured CPU-default path: about 3.64x slower.
 
 A resident GPU hit is much better than CPU execution:
 
