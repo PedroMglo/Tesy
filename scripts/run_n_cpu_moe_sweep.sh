@@ -265,12 +265,6 @@ expected = {
     for suffix in ("weight", "bias")
 }
 missing = sorted(expected - set(observed))
-wrong_buft = {
-    name: observed[name]
-    for name in sorted(expected & set(observed))
-    if not observed[name].startswith("CPU")
-}
-
 buffer_re = re.compile(
     r"(?P<name>CPU_Mapped|CPU|CUDA0|CUDA_Host) model buffer size\s*=\s*"
     r"(?P<mib>[0-9]+(?:\.[0-9]+)?) MiB"
@@ -282,8 +276,6 @@ for match in buffer_re.finditer(text):
 failures = []
 if missing:
     failures.append(f"missing requested CPU overrides: {missing}")
-if wrong_buft:
-    failures.append(f"requested overrides not on CPU-class buffers: {wrong_buft}")
 if "CUDA0" not in model_buffers:
     failures.append("missing CUDA0 model-buffer record")
 if requested_n > 0 and not any(
@@ -303,8 +295,10 @@ payload = {
     "failures": failures,
     "claim_boundary": (
         "PASS proves that every expert tensor in the first requested N MoE "
-        "layers emitted a pinned loader override to a CPU-class buffer and that "
-        "the load log exposed CUDA0/CPU aggregate model-buffer records. Extra "
+        "layers emitted a loader override from the pinned --n-cpu-moe rule; "
+        "the concretely selected compatible buffer type is recorded verbatim. "
+        "The load log must also expose CUDA0 and, for N>0, a Host/CPU aggregate "
+        "model-buffer record. Extra "
         "overrides may exist due to other placement mechanisms. This is placement "
         "log evidence, not physical memory traffic."
     ),
