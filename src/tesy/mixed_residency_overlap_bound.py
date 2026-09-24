@@ -14,6 +14,7 @@ class MixedResidencyOverlapBoundError(ValueError):
 _EXPECTED_H = [0, 1, 2, 3, 4]
 _EXPECTED_EXPERT_IDS = [0, 1, 2, 3]
 _EXPECTED_MIX = [0.25, 0.25, 0.25, 0.25]
+_OVERLAP_IMPLEMENTATION_GO_RATIO = 0.90
 
 
 def _finite(value: Any, *, label: str, positive: bool = False) -> float:
@@ -306,6 +307,14 @@ def weight_overlap_bound(
         parsed[h] * by_h[h]["post_d2h_overlap_bound_median_ms"]
         for h in _EXPECTED_H
     ) / groups
+    implementation_gate_max_bound_ms = (
+        _OVERLAP_IMPLEMENTATION_GO_RATIO * weighted_direct
+    )
+    decision = (
+        "OVERLAP_IMPLEMENTATION_GO"
+        if weighted_bound <= implementation_gate_max_bound_ms
+        else "OVERLAP_COMPLEXITY_NO_GO"
+    )
 
     return {
         "schema": "tesy.mixed_residency_overlap_bound_weighted.v1",
@@ -316,11 +325,15 @@ def weight_overlap_bound(
         "weighted_direct_median_ms": weighted_direct,
         "weighted_post_d2h_overlap_bound_ms": weighted_bound,
         "bound_speedup_vs_weighted_direct": weighted_direct / weighted_bound,
+        "implementation_gate_ratio": _OVERLAP_IMPLEMENTATION_GO_RATIO,
+        "implementation_gate_max_bound_ms": implementation_gate_max_bound_ms,
+        "decision": decision,
         "claim_boundary": (
             "Arithmetic weighting of separately measured case medians and a "
             "trace-derived residency-opportunity histogram. The overlap value is "
             "a post-D2H compute-overlap bound, not measured concurrent execution "
-            "or full-model latency."
+            "or full-model latency. The decision applies the prospectively frozen "
+            "10% engineering threshold to this diagnostic only."
         ),
     }
 
