@@ -2,6 +2,7 @@
 #include "ggml-cpu.h"
 #include "ggml.h"
 #include "gguf.h"
+#include "llama.h"
 
 #include <algorithm>
 #include <array>
@@ -12,6 +13,7 @@
 #include <cstdio>
 #include <cstdlib>
 #include <fstream>
+#include <iterator>
 #include <limits>
 #include <memory>
 #include <numeric>
@@ -39,11 +41,14 @@ struct options {
     int inner = 5;
     bool async_overlap = false;
     bool routed_exactness = false;
+    bool live_handoff_exactness = false;
+    std::string prompt_file;
     std::string routed_input_f32;
     std::string routed_reference_f32;
     std::string routed_experts_csv;
     std::string routed_weights_csv;
     int routed_gpu_hits = -1;
+    uint32_t live_ctx = 4096;
 };
 
 struct context_buffer {
@@ -196,7 +201,8 @@ int parse_positive(const char * value, const char * flag, int minimum = 1) {
         "[--layer N] [--threads N] [--samples N] [--warmup N] [--inner N] "
         "[--async-overlap] [--routed-exactness "
         "--routed-input-f32 FILE --routed-reference-f32 FILE "
-        "--routed-experts CSV --routed-weights CSV --routed-gpu-hits N]\n",
+        "--routed-experts CSV --routed-weights CSV --routed-gpu-hits N] "
+        "[--live-handoff-exactness --prompt-file FILE --ctx N]\n",
         argv0);
     std::exit(code);
 }
@@ -229,6 +235,13 @@ options parse_options(int argc, char ** argv) {
             out.async_overlap = true;
         } else if (arg == "--routed-exactness") {
             out.routed_exactness = true;
+        } else if (arg == "--live-handoff-exactness") {
+            out.live_handoff_exactness = true;
+        } else if (arg == "--prompt-file") {
+            out.prompt_file = value("--prompt-file");
+        } else if (arg == "--ctx") {
+            out.live_ctx = static_cast<uint32_t>(
+                parse_positive(value("--ctx"), "--ctx", 16));
         } else if (arg == "--routed-input-f32") {
             out.routed_input_f32 = value("--routed-input-f32");
         } else if (arg == "--routed-reference-f32") {
@@ -251,6 +264,9 @@ options parse_options(int argc, char ** argv) {
     if (out.model.empty() || out.output.empty()) {
         usage(argv[0], 2);
     }
+    if (out.routed_exactness && out.live_handoff_exactness) {
+        fail("routed and live handoff exactness modes are mutually exclusive");
+    }
     if (out.routed_exactness) {
         if (!out.async_overlap) {
             fail("--routed-exactness requires --async-overlap");
@@ -268,6 +284,17 @@ options parse_options(int argc, char ** argv) {
         }
         if (out.routed_gpu_hits != 2 && out.routed_gpu_hits != 3) {
             fail("routed exactness gpu hits must be 2 or 3");
+        }
+    }
+    if (out.live_handoff_exactness) {
+        if (out.layer != 0) {
+            fail("live handoff exactness is frozen to layer 0");
+        }
+        if (out.prompt_file.empty()) {
+            fail("live handoff exactness requires --prompt-file");
+        }
+        if (out.live_ctx != 4096) {
+            fail("live handoff exactness is frozen to --ctx 4096");
         }
     }
     return out;
