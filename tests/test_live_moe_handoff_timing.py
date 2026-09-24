@@ -82,7 +82,7 @@ def _raw(
             "serial": 87,
             "async": 87,
         },
-        "successful_rollbacks": 261,
+        "successful_timing_trial_rollbacks": 261,
         "triplet_order_cycle": [
             ["stock", "serial", "async"],
             ["stock", "async", "serial"],
