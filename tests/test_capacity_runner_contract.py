@@ -106,3 +106,18 @@ def test_runtime_summary_rejects_any_gpu_telemetry_failure():
 
     assert 'if summary["gpu_failed_samples"] != 0:' in text
     assert "GPU telemetry incomplete" in text
+
+
+def test_timing_pilot_gates_request_on_quantitative_placement_telemetry():
+    root = Path(__file__).resolve().parents[1]
+    text = (root / "scripts" / "run_n_cpu_moe_capacity_pareto.sh").read_text(
+        encoding="utf-8"
+    )
+
+    telemetry = text.index("python3 -m tesy.placement_telemetry")
+    request = text.index("python3 -m tesy.server_client")
+    assert telemetry < request
+    assert '--fit-print "$capacity_input"' in text
+    assert '--placement-id "$placement_id"' in text
+    assert '--tolerance-mib 2.0' in text
+    assert '--output "$run_dir/placement-telemetry.json"' in text
