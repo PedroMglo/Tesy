@@ -3651,6 +3651,63 @@ struct vertical_event {
     size_t gpu_allocated_bytes = 0;
 };
 
+struct vertical_reference_event {
+    std::vector<float> activation;
+    std::vector<int32_t> experts;
+    std::vector<float> weights;
+    std::vector<float> output;
+};
+
+struct vertical_reference_state {
+    bool enabled = false;
+    int token_ordinal = 0;
+    std::vector<std::array<vertical_reference_event, 24>> events;
+};
+
+bool vertical_reference_callback(ggml_tensor * tensor, bool ask,
+                                 void * user_data) {
+    auto * state = static_cast<vertical_reference_state *>(user_data);
+    if (!state) fail("vertical stock reference callback state missing");
+    if (!state->enabled) return ask ? false : true;
+    for (int layer = 0; layer < 24; ++layer) {
+        const std::string suffix = std::to_string(layer);
+        const std::array<std::string, 4> names{
+            "attn_post_norm-" + suffix,
+            "ffn_moe_topk-" + suffix,
+            "ffn_moe_weights_softmax-" + suffix,
+            "ffn_moe_out-" + suffix};
+        for (size_t kind = 0; kind < names.size(); ++kind) {
+            if (names[kind] != tensor->name) continue;
+            if (ask) return true;
+            auto & event = state->events.at(
+                static_cast<size_t>(state->token_ordinal))[static_cast<size_t>(layer)];
+            if (kind == 0) {
+                if (!event.activation.empty()) fail("duplicate stock activation capture");
+                event.activation = read_live_tensor<float>(
+                    tensor, GGML_TYPE_F32, static_cast<size_t>(k_embd),
+                    "vertical stock activation");
+            } else if (kind == 1) {
+                if (!event.experts.empty()) fail("duplicate stock route capture");
+                event.experts = read_live_tensor<int32_t>(
+                    tensor, GGML_TYPE_I32, static_cast<size_t>(k_top_k),
+                    "vertical stock expert IDs");
+            } else if (kind == 2) {
+                if (!event.weights.empty()) fail("duplicate stock weights capture");
+                event.weights = read_live_tensor<float>(
+                    tensor, GGML_TYPE_F32, static_cast<size_t>(k_top_k),
+                    "vertical stock routing weights");
+            } else {
+                if (!event.output.empty()) fail("duplicate stock FFN capture");
+                event.output = read_live_tensor<float>(
+                    tensor, GGML_TYPE_F32, static_cast<size_t>(k_embd),
+                    "vertical stock FFN output");
+            }
+            return true;
+        }
+    }
+    return ask ? false : true;
+}
+
 struct vertical_hook_state {
     ggml_backend_t cpu_backend = nullptr;
     ggml_backend_t gpu_backend = nullptr;
@@ -3659,6 +3716,7 @@ struct vertical_hook_state {
     int token_ordinal = 0;
     bool active = false;
     bool invoked = false;
+    const vertical_reference_state * reference = nullptr;
     std::array<vertical_layer_runtime, 24> layers;
     std::vector<vertical_event> events;
 };
@@ -3744,6 +3802,20 @@ ggml_status vertical_live_compute_hook(ggml_cgraph * graph,
         const auto weights = read_live_tensor<float>(
             graph->nodes[weights_index], GGML_TYPE_F32,
             static_cast<size_t>(k_top_k), "vertical routing weights");
+        if (state->reference) {
+            const auto & ref = state->reference->events.at(
+                static_cast<size_t>(state->token_ordinal))[
+                static_cast<size_t>(layer_index)];
+            if (experts != ref.experts ||
+                !float_vectors_bitwise_equal(weights, ref.weights)) {
+                fail("vertical live route drift vs separate stock reference at layer " +
+                     std::to_string(layer_index));
+            }
+            if (!compare_outputs(ref.activation, activation).pass) {
+                fail("vertical activation drift vs separate stock reference at layer " +
+                     std::to_string(layer_index));
+            }
+        }
         const auto partition = tesy_partition_route(
             experts, weights, resident_ids, static_cast<int32_t>(k_expert_count));
         auto & layer = state->layers[static_cast<size_t>(layer_index)];
@@ -3768,6 +3840,21 @@ ggml_status vertical_live_compute_hook(ggml_cgraph * graph,
         const auto output = vertical_compute_route(
             layer, state->cpu_backend, state->gpu_backend,
             activation, partition);
+        if (state->reference) {
+            const auto & ref = state->reference->events.at(
+                static_cast<size_t>(state->token_ordinal))[
+                static_cast<size_t>(layer_index)];
+            const parity p = compare_outputs(ref.output, output);
+            if (!p.pass) {
+                std::fprintf(stderr,
+                    "vertical FFN failure token=%d layer=%d h=%zu "
+                    "rel=%.9g cosine=%.12f max_abs=%.9g max_ref=%.9g\n",
+                    state->token_ordinal, layer_index,
+                    partition.gpu_global_ids.size(), p.relative_max,
+                    p.cosine, p.max_abs, p.max_abs_ref);
+                fail("vertical live FFN differs from separate stock reference");
+            }
+        }
         for (float value : output) {
             if (!std::isfinite(value)) fail("vertical FFN output is non-finite");
         }
@@ -3813,7 +3900,8 @@ ggml_status vertical_live_compute_hook(ggml_cgraph * graph,
 
 llama_context * vertical_make_context(llama_model * model,
                                       size_t prompt_count,
-                                      const options & opt) {
+                                      const options & opt,
+                                      vertical_reference_state * reference = nullptr) {
     llama_context_params params = llama_context_default_params();
     params.n_ctx = opt.live_ctx;
     params.n_batch = static_cast<uint32_t>(prompt_count);
@@ -3821,6 +3909,10 @@ llama_context * vertical_make_context(llama_model * model,
     params.n_threads = opt.threads;
     params.n_threads_batch = opt.threads;
     params.no_perf = true;
+    if (reference) {
+        params.cb_eval = vertical_reference_callback;
+        params.cb_eval_user_data = reference;
+    }
     llama_context * ctx = llama_init_from_model(model, params);
     if (!ctx) fail("vertical context creation failed");
     return ctx;
@@ -3879,11 +3971,50 @@ void run_vertical_live_exactness(
     }
     if (stock_logits.empty()) fail("vertical stock produced no continuation");
 
+    vertical_reference_state reference;
+    reference.events.resize(stock_logits.size());
+    {
+        llama_context * ctx = vertical_make_context(
+            model, prompt_tokens.size(), opt, &reference);
+        llama_batch prompt_batch = llama_batch_get_one(
+            const_cast<llama_token *>(prompt_tokens.data()),
+            static_cast<int32_t>(prompt_tokens.size()));
+        if (llama_decode(ctx, prompt_batch) != 0) {
+            fail("vertical instrumented stock prefill failed");
+        }
+        for (size_t ordinal = 0; ordinal < stock_logits.size(); ++ordinal) {
+            reference.token_ordinal = static_cast<int>(ordinal);
+            reference.enabled = true;
+            llama_token input = stock_tokens[ordinal];
+            llama_batch batch = llama_batch_get_one(&input, 1);
+            if (llama_decode(ctx, batch) != 0) {
+                fail("vertical instrumented stock decode failed");
+            }
+            reference.enabled = false;
+            const auto logits = copy_reinjection_logits(ctx, n_vocab);
+            if (!compare_outputs(stock_logits[ordinal], logits).pass) {
+                fail("vertical instrumented stock differs from uninterrupted stock");
+            }
+            for (int layer = 0; layer < opt.vertical_layers; ++layer) {
+                const auto & event = reference.events[ordinal][
+                    static_cast<size_t>(layer)];
+                if (event.activation.size() != static_cast<size_t>(k_embd) ||
+                    event.experts.size() != static_cast<size_t>(k_top_k) ||
+                    event.weights.size() != static_cast<size_t>(k_top_k) ||
+                    event.output.size() != static_cast<size_t>(k_embd)) {
+                    fail("vertical stock layer reference incomplete");
+                }
+            }
+        }
+        llama_free(ctx);
+    }
+
     vertical_hook_state state;
     state.cpu_backend = cpu_backend;
     state.gpu_backend = gpu_backend;
     state.gpu_buft = gpu_buft;
     state.layers_to_replace = opt.vertical_layers;
+    state.reference = &reference;
     std::vector<llama_token> candidate_tokens;
     std::vector<parity> logits_parity;
     {
