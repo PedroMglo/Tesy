@@ -3736,6 +3736,50 @@ std::vector<float> vertical_compute_route(
 }
 
 std::array<std::vector<float>, k_vertical_stage_names.size()>
+vertical_recompute_and_capture_stages(
+        compute_graph & graph, ggml_backend_t backend,
+        size_t selected_count, const char * label) {
+    const auto original_output = read_output(backend, graph.output);
+    std::array<std::vector<float>, k_vertical_stage_names.size()> result;
+    int cursor = 0;
+    for (size_t stage = 0; stage < result.size(); ++stage) {
+        int stage_index = -1;
+        for (int i = cursor; i < graph.graph->n_nodes; ++i) {
+            if (graph.graph->nodes[i] == graph.diagnostic_stages[stage]) {
+                if (stage_index != -1) fail("duplicate compact expert stage node");
+                stage_index = i;
+            }
+        }
+        if (stage_index < cursor) {
+            fail(std::string("compact expert stage order changed: ") + label);
+        }
+        auto view = ggml_graph_view(graph.graph, cursor, stage_index + 1);
+        if (ggml_backend_graph_compute(backend, &view) != GGML_STATUS_SUCCESS) {
+            fail(std::string("compact expert stage view failed: ") + label);
+        }
+        ggml_backend_synchronize(backend);
+        result[stage] = read_live_tensor<float>(
+            graph.diagnostic_stages[stage], GGML_TYPE_F32,
+            static_cast<size_t>(k_embd) * selected_count, label);
+        cursor = stage_index + 1;
+    }
+    if (cursor < graph.graph->n_nodes) {
+        auto tail = ggml_graph_view(graph.graph, cursor, graph.graph->n_nodes);
+        if (ggml_backend_graph_compute(backend, &tail) != GGML_STATUS_SUCCESS) {
+            fail(std::string("compact expert diagnostic tail failed: ") + label);
+        }
+    }
+    const auto recomputed_output = read_output(backend, graph.output);
+    if (!float_vectors_bitwise_equal(original_output, recomputed_output)) {
+        fail(std::string("segmented diagnostic changed compact FFN output: ") + label);
+    }
+    std::fprintf(stderr,
+        "vertical diagnostic %s segmented-stage replay bitwise FFN=1; "
+        "replay is diagnostic only\n", label);
+    return result;
+}
+
+std::array<std::vector<float>, k_vertical_stage_names.size()>
 vertical_capture_mixed_stages(
         vertical_layer_runtime & layer,
         ggml_backend_t cpu_backend, ggml_backend_t gpu_backend,
@@ -3749,22 +3793,17 @@ vertical_capture_mixed_stages(
         original_weights.size() != k_top_k || n_cpu + n_gpu != k_top_k) {
         fail("vertical diagnostic route shape mismatch");
     }
+    std::array<std::vector<float>, k_vertical_stage_names.size()> cpu_stages;
+    std::array<std::vector<float>, k_vertical_stage_names.size()> gpu_stages;
+    if (n_cpu) {
+        cpu_stages = vertical_recompute_and_capture_stages(
+            *layer.cpu_graphs[n_cpu], cpu_backend, n_cpu, "CPU");
+    }
+    if (n_gpu) {
+        gpu_stages = vertical_recompute_and_capture_stages(
+            *layer.gpu_graphs[n_gpu], gpu_backend, n_gpu, "GPU");
+    }
     for (size_t stage = 0; stage < result.size(); ++stage) {
-        std::vector<float> cpu_values;
-        std::vector<float> gpu_values;
-        if (n_cpu) {
-            cpu_values = read_live_tensor<float>(
-                layer.cpu_graphs[n_cpu]->diagnostic_stages[stage],
-                GGML_TYPE_F32, static_cast<size_t>(k_embd) * n_cpu,
-                "vertical CPU expert stage");
-        }
-        if (n_gpu) {
-            ggml_backend_synchronize(gpu_backend);
-            gpu_values = read_live_tensor<float>(
-                layer.gpu_graphs[n_gpu]->diagnostic_stages[stage],
-                GGML_TYPE_F32, static_cast<size_t>(k_embd) * n_gpu,
-                "vertical GPU expert stage");
-        }
         result[stage].resize(static_cast<size_t>(k_embd * k_top_k));
         for (size_t slot = 0; slot < original_ids.size(); ++slot) {
             const int32_t expert = original_ids[slot];
@@ -3779,7 +3818,7 @@ vertical_capture_mixed_stages(
             const size_t local = gpu
                 ? static_cast<size_t>(gpu_found - route.gpu_global_ids.begin())
                 : static_cast<size_t>(cpu_found - route.cpu_global_ids.begin());
-            const auto & values = gpu ? gpu_values : cpu_values;
+            const auto & values = gpu ? gpu_stages[stage] : cpu_stages[stage];
             std::memcpy(result[stage].data() + slot * k_embd,
                         values.data() + local * k_embd,
                         static_cast<size_t>(k_embd) * sizeof(float));
@@ -3794,7 +3833,6 @@ vertical_capture_mixed_stages(
             }
         }
     }
-    (void) cpu_backend;
     return result;
 }
 
