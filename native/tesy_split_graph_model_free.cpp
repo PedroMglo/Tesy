@@ -3,11 +3,13 @@
 #include "ggml-cpu.h"
 #include "ggml-impl.h"
 
+#include <algorithm>
 #include <array>
 #include <cstdio>
 #include <cstring>
 #include <memory>
 #include <stdexcept>
+#include <utility>
 
 namespace {
 
@@ -170,17 +172,26 @@ void check_immediate_stage_capture() {
     std::array<float, 4> full{};
     ggml_backend_tensor_get(output, full.data(), 0, sizeof(full));
 
-    auto prefix = ggml_graph_view(graph, 0, first_index + 1);
-    require(ggml_backend_graph_compute(cpu.get(), &prefix) == GGML_STATUS_SUCCESS,
-            "diagnostic prefix failed");
     std::array<float, 4> captured_first{};
-    ggml_backend_tensor_get(first, captured_first.data(), 0, sizeof(captured_first));
-    auto middle = ggml_graph_view(graph, first_index + 1, second_index + 1);
-    require(ggml_backend_graph_compute(cpu.get(), &middle) == GGML_STATUS_SUCCESS,
-            "diagnostic middle failed");
     std::array<float, 4> captured_second{};
-    ggml_backend_tensor_get(second, captured_second.data(), 0, sizeof(captured_second));
-    auto suffix = ggml_graph_view(graph, second_index + 1, graph->n_nodes);
+    // Deliberately register stages in reverse order. Execution order must come
+    // from the graph topology, not from the semantic stage list.
+    std::array<std::pair<int, ggml_tensor *>, 2> requested{{
+        {second_index, second}, {first_index, first}}};
+    std::sort(requested.begin(), requested.end());
+    int cursor = 0;
+    for (const auto & item : requested) {
+        auto view = ggml_graph_view(graph, cursor, item.first + 1);
+        require(ggml_backend_graph_compute(cpu.get(), &view) == GGML_STATUS_SUCCESS,
+                "diagnostic stage view failed");
+        if (item.second == first) {
+            ggml_backend_tensor_get(first, captured_first.data(), 0, sizeof(captured_first));
+        } else {
+            ggml_backend_tensor_get(second, captured_second.data(), 0, sizeof(captured_second));
+        }
+        cursor = item.first + 1;
+    }
+    auto suffix = ggml_graph_view(graph, cursor, graph->n_nodes);
     require(ggml_backend_graph_compute(cpu.get(), &suffix) == GGML_STATUS_SUCCESS,
             "diagnostic suffix failed");
     std::array<float, 4> replay{};

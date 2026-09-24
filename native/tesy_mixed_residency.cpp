@@ -3741,17 +3741,26 @@ vertical_recompute_and_capture_stages(
         size_t selected_count, const char * label) {
     const auto original_output = read_output(backend, graph.output);
     std::array<std::vector<float>, k_vertical_stage_names.size()> result;
-    int cursor = 0;
+    std::array<std::pair<int, size_t>, k_vertical_stage_names.size()> ordered{};
     for (size_t stage = 0; stage < result.size(); ++stage) {
-        int stage_index = -1;
-        for (int i = cursor; i < graph.graph->n_nodes; ++i) {
-            if (graph.graph->nodes[i] == graph.diagnostic_stages[stage]) {
-                if (stage_index != -1) fail("duplicate compact expert stage node");
-                stage_index = i;
-            }
+        int found = -1;
+        for (int i = 0; i < graph.graph->n_nodes; ++i) {
+            if (graph.graph->nodes[i] != graph.diagnostic_stages[stage]) continue;
+            if (found != -1) fail("duplicate compact expert stage node");
+            found = i;
         }
+        if (found < 0) {
+            fail(std::string("compact expert stage missing: ") + label);
+        }
+        ordered[stage] = {found, stage};
+    }
+    std::sort(ordered.begin(), ordered.end());
+    int cursor = 0;
+    for (const auto & item : ordered) {
+        const int stage_index = item.first;
+        const size_t stage = item.second;
         if (stage_index < cursor) {
-            fail(std::string("compact expert stage order changed: ") + label);
+            fail(std::string("compact expert stage alias changed: ") + label);
         }
         auto view = ggml_graph_view(graph.graph, cursor, stage_index + 1);
         if (ggml_backend_graph_compute(backend, &view) != GGML_STATUS_SUCCESS) {
