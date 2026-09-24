@@ -270,7 +270,7 @@ struct live_handoff_timing_result {
     int completed_stock_trials = 0;
     int completed_serial_trials = 0;
     int completed_async_trials = 0;
-    int successful_rollbacks = 0;
+    int successful_timing_trial_rollbacks = 0;
 };
 
 struct case_result {
@@ -2422,7 +2422,7 @@ live_handoff_timing_result run_live_handoff_timing(
             destination = &result.async;
             result.completed_async_trials++;
         }
-        result.successful_rollbacks++;
+        result.successful_timing_trial_rollbacks++;
 
         if (record) {
             destination->activation_ms.push_back(sample.first);
@@ -3295,7 +3295,7 @@ int main(int argc, char ** argv) {
             out,
             "],\"completed_trials\":{"
             "\"stock\":%d,\"serial\":%d,\"async\":%d},"
-            "\"successful_rollbacks\":%d,"
+            "\"successful_timing_trial_rollbacks\":%d,"
             "\"triplet_order_cycle\":["
             "[\"stock\",\"serial\",\"async\"],"
             "[\"stock\",\"async\",\"serial\"],"
@@ -3313,7 +3313,7 @@ int main(int argc, char ** argv) {
             result.completed_stock_trials,
             result.completed_serial_trials,
             result.completed_async_trials,
-            result.successful_rollbacks);
+            result.successful_timing_trial_rollbacks);
 
         print_live_timing_exactness(
             out,
