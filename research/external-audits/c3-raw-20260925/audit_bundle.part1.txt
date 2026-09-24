@@ -1,0 +1,171 @@
+#!/usr/bin/env python3
+"""Read-only independent audit of the supplied Tesy evidence bundle.
+
+No model, repository checkout, network, GPU or uploaded code is executed.
+Requires Python 3.10+ and NumPy. The output file is never replaced.
+"""
+from __future__ import annotations
+
+import argparse
+import hashlib
+import json
+import math
+import statistics
+import tarfile
+from collections import Counter
+from pathlib import Path, PurePosixPath
+
+import numpy as np
+
+EXPECTED_SHA = '83b88fe09da4b1e038aec810537c7a30d702a7811dc78d4ebc29189f184a7bf6'
+STOCK = 'results/full-stock-chat-eval-valid-20260924T222803Z'
+BLOCKER = 'results/vertical-live-diagnostic-20260924T215315Z'
+CAPACITY = 'results/vertical-capacity-20260924T220300Z/report.json'
+MODEL_SHA = '52f57ab7d3df3ba9173827c1c6832e73375553a846f3e32b49f1ae2daad688d4'
+STOCK_SUMMARY_SHA = '47d63e066c45bd52f03302b9e19fce1f14de5b2e39847bfc66a8555c3830fbff'
+LOGIT_SHAS = [
+    '52c37d27a8249466a8507211267e5c33fa144eaab060c16bae299bb6d7df7b46',
+    'a4882f71f52e5fe7339c1792855245ccd4aa8c09a6c72f0725e2aa54bbf2fe05',
+]
+WORKLOADS = {
+    'extraction-long': {
+        'prompt_tokens': 302, 'completion_tokens': 69, 'finish': 'stop',
+        'prompt_sha': 'c53cfd7a473c078b84d34c7fb9a4253b8885b1246c109e534d55cefa2d78eb00',
+        'output_sha': 'f78df2d119ac749198903d31037648ac958d7bf88341196cb41b65117125d19d',
+    },
+    'code-short': {
+        'prompt_tokens': 132, 'completion_tokens': 128, 'finish': 'length',
+        'prompt_sha': '6cab5251b0045b55cbf0dc7212a1c5f799e7777ca6712731933fce9cf7650327',
+        'output_sha': '069b085c2cce858a11b242f4039a3a497850954bd010301609c1b68273844236',
+    },
+}
+
+
+def require(ok: bool, message: str) -> None:
+    if not ok:
+        raise ValueError(message)
+
+
+def sha(data: bytes) -> str:
+    return hashlib.sha256(data).hexdigest()
+
+
+def pairs_no_duplicates(pairs):
+    result = {}
+    for key, value in pairs:
+        require(key not in result, f'duplicate JSON key: {key!r}')
+        result[key] = value
+    return result
+
+
+def reject_constant(value):
+    raise ValueError(f'non-finite JSON literal: {value}')
+
+
+def load(data: bytes | str):
+    return json.loads(data, object_pairs_hook=pairs_no_duplicates,
+                      parse_constant=reject_constant)
+
+
+def finite(value, label: str, minimum: float = 0.0) -> float:
+    require(type(value) in (int, float), f'{label}: not a number')
+    require(math.isfinite(value) and value >= minimum, f'{label}: invalid number')
+    return float(value)
+
+
+def close(a, b, label: str, abs_tol: float = 1e-10):
+    require(math.isclose(a, b, rel_tol=1e-12, abs_tol=abs_tol),
+            f'{label}: {a!r} != {b!r}')
+
+
+def summary(values):
+    ordered = sorted(values)
+    return {'median': ordered[len(ordered)//2],
+            'p95': ordered[math.ceil(.95*len(ordered))-1]}
+
+
+def load_archive(path: Path):
+    data = path.read_bytes()
+    require(len(data) == 1646346, 'archive byte size mismatch')
+    require(sha(data) == EXPECTED_SHA, 'archive digest mismatch')
+    with tarfile.open(path, 'r:gz') as tar:
+        members = tar.getmembers()
+        names = [m.name for m in members]
+        require(len(names) == len(set(names)), 'duplicate archive entry')
+        require(sum(m.size for m in members) < 20_000_000, 'unexpected expansion')
+        payload = {}
+        for member in members:
+            name = PurePosixPath(member.name)
+            require(member.isfile() and not member.issym() and not member.islnk(),
+                    f'unsupported archive member: {name}')
+            require(not name.is_absolute() and '..' not in name.parts and
+                    str(name) == member.name, f'unsafe path: {name}')
+            payload[member.name] = tar.extractfile(member).read()
+    manifest = load(payload['bundle-manifest.json'])
+    entries = manifest['entries']
+    require(len(entries) == manifest['entry_count'] == 211, 'entry count')
+    entry_names = [e['path'] for e in entries]
+    require(len(entry_names) == len(set(entry_names)), 'duplicate manifest path')
+    require(set(names) == set(entry_names) | {'bundle-manifest.json'}, 'extra/missing entry')
+    for entry in entries:
+        content = payload[entry['path']]
+        require(len(content) == entry['size_bytes'], f'size: {entry["path"]}')
+        require(sha(content) == entry['sha256'], f'digest: {entry["path"]}')
+    # Detect duplicate keys/non-standard numeric literals in all structured files.
+    json_files = jsonl_records = 0
+    for name, content in payload.items():
+        if name.endswith('.json'):
+            load(content); json_files += 1
+        elif name.endswith('.jsonl'):
+            for line in content.splitlines():
+                if line.strip():
+                    load(line); jsonl_records += 1
+    redactions = manifest['redactions']
+    require(len(redactions) == 21, 'redaction count')
+    require(len({r['published_path'] for r in redactions}) == 21, 'duplicate redaction')
+    for note in redactions:
+        doc = load(payload[note['published_path']])
+        require(doc['public_redaction'] == {
+            k: v for k, v in note.items() if k != 'published_path'
+        }, 'redaction record mismatch')
+        require(note['omitted_field'] == 'snapshot.storage_topology.lsblk', 'redaction scope')
+        require('lsblk' not in doc['snapshot']['storage_topology'], 'lsblk not removed')
+    return payload, {
+        'status': 'PASS', 'archive_sha256': sha(data), 'archive_size_bytes': len(data),
+        'manifest_sha256': sha(payload['bundle-manifest.json']),
+        'manifest_source_head': manifest['source_head'], 'archive_members': len(names),
+        'payload_entries_verified': len(entries), 'uncompressed_bytes': sum(map(len, payload.values())),
+        'redacted_doctor_copies': len(redactions), 'json_files_parsed_strictly': json_files,
+        'jsonl_records_parsed_strictly': jsonl_records,
+        'interpretation': 'Identity/integrity of published bytes, not independent proof of original measurement.'
+    }
+
+
+def inspect_doctor(doc):
+    require(doc['reference_check']['status'] == 'PASS', 'doctor status')
+    require(doc['reference_check'].get('failures') == [], 'doctor failures')
+    require(doc['reference_check'].get('unknown') == [], 'doctor unknowns')
+    snap = doc['snapshot']
+    require(snap['virtualization']['status'] == 'PHYSICAL', 'physical-host record')
+    require(snap['cpu']['model'].startswith('AMD Ryzen AI 9 HX 370'), 'CPU identity')
+    require(snap['cpu']['logical_cpus'] == 24, 'CPU threads')
+    require(snap['platform']['machine'] == 'x86_64', 'machine / float endianness basis')
+    require(snap['platform']['system'] == 'Linux', 'OS')
+    require(snap['gpu']['status'] == 'OK' and len(snap['gpu']['gpus']) == 1, 'GPU probe')
+    gpu = snap['gpu']['gpus'][0]
+    require(gpu['name'] == 'NVIDIA GeForce RTX 4060 Laptop GPU', 'GPU identity')
+    require(snap['gpu_compute_processes']['status'] == 'OK' and
+            snap['gpu_compute_processes']['stdout'].strip() == '', 'competing process record')
+    require(gpu['memory_free_bytes'] >= 1024**3, 'initial GPU headroom')
+    require(snap['memory']['available_bytes'] >= 2*1024**3, 'initial RAM headroom')
+    findmnt = snap['storage_topology']['findmnt']
+    require(findmnt['status'] == 'OK', 'findmnt status')
+    fs = load(findmnt['stdout'])['filesystems'][0]
+    return {
+        'cpu': snap['cpu'], 'gpu': gpu, 'ram_total_bytes': snap['memory']['total_bytes'],
+        'virtualization_record': snap['virtualization']['status'],
+        'toolkit_probe_status': snap['cuda_toolkit']['status'],
+        'system_swap_used_bytes_at_start': snap['memory']['swap_total_bytes'] - snap['memory']['swap_free_bytes'],
+        'model_mount_source': fs['source'], 'model_mount_type': fs['fstype'],
+        'original_unredacted_doctor_not_available': True,
+    }
