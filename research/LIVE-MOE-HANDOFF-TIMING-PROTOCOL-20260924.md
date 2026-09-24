@@ -366,12 +366,18 @@ Reuse the routed-layer build provenance and bind:
 For each h process:
 
 - freeze exact argv;
+- pass a no-replace `--timing-start-gate` path inside that process root;
 - wait for the pinned build's `libggml-cuda.so`;
-- SIGSTOP before timing begins;
+- SIGSTOP the process;
 - validate live executable, exact argv and unique mapped CUDA artifact;
+- create the timing-start gate only after provenance PASS;
 - SIGCONT.
 
-No SIGSTOP occurs after timing starts.
+The native process completes its pre-timing exactness/setup and then waits for
+the gate before entering the six warmup triplets.
+
+Therefore provenance instrumentation is guaranteed to precede warmup and
+measurement. No SIGSTOP occurs after timing starts.
 
 ## Resource and thermal gates
 
