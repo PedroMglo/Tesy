@@ -1,7 +1,7 @@
 from pathlib import Path
 
 
-def test_overlap_bound_native_source_measures_components_without_async():
+def test_overlap_bound_serial_path_remains_independent_of_async_candidate():
     root = Path(__file__).resolve().parents[1]
     text = (root / "native" / "tesy_mixed_residency.cpp").read_text(
         encoding="utf-8"
@@ -15,7 +15,10 @@ def test_overlap_bound_native_source_measures_components_without_async():
     assert "cpu_partial_h2d" in text
     assert "gpu_aggregation" in text
     assert "post_d2h_overlap_bound_median_ms" in text
-    assert "ggml_backend_graph_compute_async" not in text
+    serial = text.split("auto execute_serial = [&]() {", 1)[1].split(
+        "auto execute_async_overlap = [&]() {", 1
+    )[0]
+    assert "ggml_backend_graph_compute_async" not in serial
     assert "std::thread" not in text
 
 
