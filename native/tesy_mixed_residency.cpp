@@ -191,6 +191,73 @@ struct live_handoff_result {
     std::vector<routed_exactness_result> cases;
 };
 
+enum class live_timing_mode {
+    stock,
+    serial,
+    async,
+};
+
+struct live_timing_capture {
+    bool enabled = false;
+    live_timing_mode mode = live_timing_mode::stock;
+    bool capture_stock_output = false;
+    bool saw_activation = false;
+    bool saw_experts = false;
+    bool saw_weights = false;
+    bool saw_stock_output = false;
+    std::vector<float> activation;
+    std::vector<int32_t> experts;
+    std::vector<float> weights;
+    std::vector<float> stock_output;
+    std::chrono::steady_clock::time_point activation_ready;
+    std::chrono::steady_clock::time_point route_ready;
+    std::chrono::steady_clock::time_point stock_output_ready;
+};
+
+struct live_timing_samples {
+    std::vector<double> activation_ms;
+    std::vector<double> route_ms;
+};
+
+struct live_timing_exactness_snapshot {
+    int stock_decode_return_code = -1;
+    int handoff_decode_return_code = -1;
+    bool stock_rollback = false;
+    bool handoff_rollback = false;
+    bool activation_bitwise_equal = false;
+    parity activation_parity;
+    parity serial_vs_stock;
+    parity async_vs_stock;
+    parity async_vs_serial;
+};
+
+struct live_routed_executor {
+    int gpu_hits = 0;
+    int cpu_misses = 0;
+    std::unique_ptr<tensor_set> cpu_set;
+    std::unique_ptr<tensor_set> gpu_set;
+    std::unique_ptr<compute_graph> cpu_graph;
+    std::unique_ptr<compute_graph> gpu_graph;
+    std::unique_ptr<sum_graph> aggregate;
+};
+
+struct live_handoff_timing_result {
+    int gpu_hits = 0;
+    int cpu_misses = 0;
+    llama_token decode_input_token = -1;
+    std::vector<int> selected_experts;
+    std::vector<float> routing_weights;
+    live_timing_exactness_snapshot pre_exactness;
+    live_timing_exactness_snapshot post_exactness;
+    live_timing_samples stock;
+    live_timing_samples serial;
+    live_timing_samples async;
+    int completed_stock_trials = 0;
+    int completed_serial_trials = 0;
+    int completed_async_trials = 0;
+    int successful_rollbacks = 0;
+};
+
 struct case_result {
     int gpu_hits = 0;
     int cpu_misses = 0;
