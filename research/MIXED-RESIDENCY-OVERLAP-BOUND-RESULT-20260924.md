@@ -1,5 +1,10 @@
 # Mixed-residency overlap-bound result
 
+> **Publication correction — 2026-09-24**
+>
+> Current classification: `INCONCLUSIVE_AGGREGATION_INSTRUMENTATION_AND_TELEMETRY`.
+> The historical component campaign is preserved, but `gpu_aggregation` re-executed the GPU FFN through graph ancestry and the successful campaign contained an incomplete terminal process-telemetry sample. The derived overlap bound and `OVERLAP_IMPLEMENTATION_GO` decision are therefore withdrawn. A new campaign identity is required after the corrected leaf-only aggregation graph and complete process telemetry gates.
+
 Date: 2026-09-24
 
 Protocol: `research/MIXED-RESIDENCY-OVERLAP-BOUND-PROTOCOL-20260924.md`
@@ -19,8 +24,7 @@ Preserved failed attempt: `research/results/mixed-residency-overlap-bound-202609
 Measure the serial direct wall time and separate components of the real-weight
 layer-0 mixed-residency FFN for GPU-hit cases h=0..4. Apply the frozen Stage A
 grouped histogram to the specified post-D2H CPU/GPU compute-overlap formula.
-The direct and component timings are **measured**. The weighted overlap value
-is a **derived diagnostic**, not measured concurrent execution.
+The historical direct/component fields are preserved measurements, but the aggregation component is not isolated as intended. Consequently the weighted overlap value is **not admitted** as a valid bound or concurrency authorization.
 
 The campaign verified the locked 12,109,564,352-byte gpt-oss-20b MXFP4 GGUF
 with SHA-256
@@ -51,11 +55,9 @@ the frozen numerical parity thresholds; this is not token equality.
 The histogram-weighted direct diagnostic was **0.516752 ms**. The weighted
 post-D2H overlap bound was **0.403939 ms**, or 1.279283x relative to the
 weighted direct diagnostic. The prospectively frozen 10% gate required the
-bound to be at most **0.465077 ms**. The persisted decision is therefore
-`OVERLAP_IMPLEMENTATION_GO`.
+bound to be at most **0.465077 ms**. The historical runner persisted `OVERLAP_IMPLEMENTATION_GO`, but that decision is **withdrawn** because the aggregation timing double-counted GPU work.
 
-The runner recorded 12 valid GPU resource samples, zero failed GPU samples,
-zero peak process swap, 54 C maximum GPU temperature, 20.92 W maximum GPU
+The runner recorded 12 valid GPU device samples, but at least one terminal sample lacked required process fields; zero process swap is therefore not fully proven by the committed telemetry. Historical summary fields reported 54 C maximum GPU temperature, 20.92 W maximum GPU
 power, 161,480,704 bytes peak GPU memory used, and all frozen RAM/VRAM
 headroom gates PASS. The successful root has no `failure.json`.
 
@@ -76,8 +78,7 @@ The full repository test suite was **NOT_RUN** in this phase.
 
 The frozen alternatives were to implement the narrow post-D2H CPU/GPU compute
 overlap if the bound met the 10% gate, or stop at the simpler serial path if it
-did not. The observed diagnostic meets the gate, so implementation of that
-specific concurrent path is justified for an experiment. Prediction and
+did not. The historical diagnostic cannot justify implementation under the current evidence contract. Re-run the corrected component campaign first; only a fresh bound may authorize a concurrent experiment. Prediction and
 prefetch remain **NOT_RUN** and are not justified by this result alone.
 
 Component medians were measured separately and need not add to direct-wall

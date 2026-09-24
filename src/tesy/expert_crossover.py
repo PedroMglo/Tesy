@@ -49,6 +49,20 @@ def _validate_stats(payload: Any, *, label: str, expected_samples: int) -> None:
         raise ExpertCrossoverError(f"{label} p95 exceeds max")
     if min(values) != payload["min_ms"] or max(values) != payload["max_ms"]:
         raise ExpertCrossoverError(f"{label} min/max do not match raw samples")
+    ordered = sorted(values)
+    expected_median = ordered[len(ordered) // 2]
+    expected_p95 = ordered[min(len(ordered) - 1, math.ceil(0.95 * len(ordered)) - 1)]
+    expected_mean = sum(ordered) / len(ordered)
+    for field, expected in (
+        ("median_ms", expected_median),
+        ("p95_ms", expected_p95),
+        ("mean_ms", expected_mean),
+    ):
+        observed = float(payload[field])
+        if not math.isclose(observed, expected, rel_tol=1e-9, abs_tol=1e-9):
+            raise ExpertCrossoverError(
+                f"{label} {field} does not match raw samples"
+            )
 
 
 def _close(left: float, right: float) -> bool:

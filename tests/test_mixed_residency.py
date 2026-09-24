@@ -1,5 +1,7 @@
+import pytest
+
 from tesy.mixed_residency import mixed_residency_hit_histogram
-from tesy.native_trace import NativeTopKRecord
+from tesy.native_trace import NativeTopKRecord, NativeTraceError
 
 
 def _inventory() -> dict:
@@ -18,9 +20,9 @@ def _inventory() -> dict:
 
 def test_mixed_residency_histogram_tracks_top4_hits_with_demand_insertions():
     records = [
-        NativeTopKRecord(graph_seq=1, layer=0, experts=((0, 1, 2, 3),)),
-        NativeTopKRecord(graph_seq=2, layer=0, experts=((0, 1, 4, 5),)),
-        NativeTopKRecord(graph_seq=3, layer=0, experts=((0, 1, 2, 3),)),
+        NativeTopKRecord(graph_seq=1, layer=0, experts=((0, 1, 2, 3),), phase="decode"),
+        NativeTopKRecord(graph_seq=2, layer=0, experts=((0, 1, 4, 5),), phase="decode"),
+        NativeTopKRecord(graph_seq=3, layer=0, experts=((0, 1, 2, 3),), phase="decode"),
     ]
 
     payload = mixed_residency_hit_histogram(
@@ -45,8 +47,8 @@ def test_mixed_residency_histogram_tracks_top4_hits_with_demand_insertions():
 
 def test_mixed_residency_histogram_respects_byte_capacity_eviction():
     records = [
-        NativeTopKRecord(graph_seq=1, layer=0, experts=((0, 1, 2, 3),)),
-        NativeTopKRecord(graph_seq=2, layer=0, experts=((0, 1, 2, 3),)),
+        NativeTopKRecord(graph_seq=1, layer=0, experts=((0, 1, 2, 3),), phase="decode"),
+        NativeTopKRecord(graph_seq=2, layer=0, experts=((0, 1, 2, 3),), phase="decode"),
     ]
 
     payload = mixed_residency_hit_histogram(
@@ -63,8 +65,8 @@ def test_mixed_residency_histogram_respects_byte_capacity_eviction():
 
 def test_mixed_residency_histogram_filters_graph_prefix():
     records = [
-        NativeTopKRecord(graph_seq=0, layer=0, experts=((0, 1, 2, 3),)),
-        NativeTopKRecord(graph_seq=1, layer=0, experts=((0, 1, 2, 3),)),
+        NativeTopKRecord(graph_seq=0, layer=0, experts=((0, 1, 2, 3),), phase="prefill"),
+        NativeTopKRecord(graph_seq=1, layer=0, experts=((0, 1, 2, 3),), phase="decode"),
     ]
 
     payload = mixed_residency_hit_histogram(
@@ -74,6 +76,45 @@ def test_mixed_residency_histogram_filters_graph_prefix():
         min_graph_seq=1,
     )
 
+    assert payload["routing_groups"] == 1
+    assert payload["committed_tokens_proxy"] == 1
+    assert payload["hits"] == 0
+
+
+def test_mixed_residency_histogram_rejects_phase_less_trace():
+    records = [
+        NativeTopKRecord(graph_seq=1, layer=0, experts=((0, 1, 2, 3),)),
+    ]
+    with pytest.raises(NativeTraceError, match="lacks explicit prefill/decode phase"):
+        mixed_residency_hit_histogram(
+            records,
+            _inventory(),
+            vram_capacity_bytes=80,
+            min_graph_seq=1,
+        )
+
+
+def test_mixed_residency_histogram_excludes_one_token_prefill():
+    records = [
+        NativeTopKRecord(
+            graph_seq=1,
+            layer=0,
+            experts=((4, 5, 6, 7),),
+            phase="prefill",
+        ),
+        NativeTopKRecord(
+            graph_seq=2,
+            layer=0,
+            experts=((0, 1, 2, 3),),
+            phase="decode",
+        ),
+    ]
+    payload = mixed_residency_hit_histogram(
+        records,
+        _inventory(),
+        vram_capacity_bytes=80,
+        min_graph_seq=1,
+    )
     assert payload["routing_groups"] == 1
     assert payload["committed_tokens_proxy"] == 1
     assert payload["hits"] == 0

@@ -54,6 +54,20 @@ def _validate_stats(payload: Any, *, label: str, expected_samples: int) -> dict[
         raise MixedResidencyOverlapBoundError(
             f"{label} p95 exceeds max"
         )
+    ordered = sorted(values)
+    expected_median = ordered[len(ordered) // 2]
+    expected_p95 = ordered[min(len(ordered) - 1, math.ceil(0.95 * len(ordered)) - 1)]
+    expected_mean = sum(ordered) / len(ordered)
+    for field, expected in (
+        ("median_ms", expected_median),
+        ("p95_ms", expected_p95),
+        ("mean_ms", expected_mean),
+    ):
+        observed = float(payload[field])
+        if not math.isclose(observed, expected, rel_tol=1e-9, abs_tol=1e-9):
+            raise MixedResidencyOverlapBoundError(
+                f"{label} {field} does not match raw samples"
+            )
     return payload
 
 

@@ -60,3 +60,15 @@ def test_overlap_bound_protocol_freezes_ten_percent_go_gate():
     assert "weighted_bound <= 0.90 * weighted_direct" in text
     assert "OVERLAP_IMPLEMENTATION_GO" in text
     assert "OVERLAP_COMPLEXITY_NO_GO" in text
+
+def test_overlap_bound_aggregation_uses_leaf_partials():
+    root = Path(__file__).resolve().parents[1]
+    text = (root / "native" / "tesy_mixed_residency.cpp").read_text(
+        encoding="utf-8"
+    )
+
+    assert "result->gpu_partial =" in text
+    assert "result->cpu_partial =" in text
+    assert "ggml_add(ctx, result->gpu_partial, result->cpu_partial)" in text
+    assert "aggregate = make_sum_graph(gpu_backend);" in text
+    assert "gpu_graph->output, aggregate->gpu_partial" in text
