@@ -101,12 +101,18 @@ def validate_expert_crossover(payload: dict[str, Any]) -> dict[str, Any]:
         buffer_type = row.get("cpu_weight_buffer_type")
         if not isinstance(buffer_type, str) or not buffer_type:
             raise ExpertCrossoverError(f"missing CPU weight buffer type for k={k}")
-        if (
-            isinstance(row.get("cpu_weight_buffer_bytes"), bool)
-            or not isinstance(row.get("cpu_weight_buffer_bytes"), int)
-            or row["cpu_weight_buffer_bytes"] < row["requested_weight_bytes"]
-        ):
-            raise ExpertCrossoverError(f"invalid CPU weight buffer bytes for k={k}")
+        weight_buffer_bytes = row.get("cpu_weight_buffer_bytes")
+        bias_buffer_bytes = row.get("cpu_bias_buffer_bytes")
+        for field, value in {
+            "cpu_weight_buffer_bytes": weight_buffer_bytes,
+            "cpu_bias_buffer_bytes": bias_buffer_bytes,
+        }.items():
+            if isinstance(value, bool) or not isinstance(value, int) or value <= 0:
+                raise ExpertCrossoverError(f"invalid {field} for k={k}")
+        if weight_buffer_bytes + bias_buffer_bytes < row["requested_weight_bytes"]:
+            raise ExpertCrossoverError(
+                f"CPU expert buffers smaller than encoded payload for k={k}"
+            )
 
         for name in (
             "cpu_compute",
@@ -190,6 +196,7 @@ def validate_expert_crossover(payload: dict[str, Any]) -> dict[str, Any]:
                 "requested_weight_bytes": row["requested_weight_bytes"],
                 "cpu_weight_buffer_type": buffer_type,
                 "cpu_weight_buffer_bytes": row["cpu_weight_buffer_bytes"],
+                "cpu_bias_buffer_bytes": row["cpu_bias_buffer_bytes"],
                 "parity": parity,
                 "median_ms": {
                     "cpu_compute": row["cpu_compute"]["median_ms"],
