@@ -79,7 +79,6 @@ def validate_mixed_residency_raw(payload: dict[str, Any]) -> dict[str, Any]:
         "bias_type": "f32",
         "weight_shape": [2880, 2880, 32],
         "bias_shape": [2880, 32],
-        "cpu_buffer_type": "CPU",
         "expert_ids": _EXPECTED_EXPERT_IDS,
         "mix_weights": _EXPECTED_MIX,
         "measurement_order": [0, 4, 1, 3, 2],
@@ -89,6 +88,18 @@ def validate_mixed_residency_raw(payload: dict[str, Any]) -> dict[str, Any]:
             raise MixedResidencyBenchmarkError(
                 f"{field} mismatch: {payload.get(field)!r} != {value!r}"
             )
+
+    cpu_weight_buffer_type = payload.get("cpu_weight_buffer_type")
+    cpu_bias_buffer_type = payload.get("cpu_bias_buffer_type")
+    if (
+        not isinstance(cpu_weight_buffer_type, str)
+        or not cpu_weight_buffer_type
+        or not isinstance(cpu_bias_buffer_type, str)
+        or not cpu_bias_buffer_type
+    ):
+        raise MixedResidencyBenchmarkError(
+            "CPU weight/bias buffer types must be non-empty strings"
+        )
 
     samples = payload.get("samples")
     if isinstance(samples, bool) or not isinstance(samples, int) or samples < 5:
@@ -162,6 +173,8 @@ def validate_mixed_residency_raw(payload: dict[str, Any]) -> dict[str, Any]:
         "classification": "MEASURED_MIXED_RESIDENCY_FFN_DIAGNOSTIC",
         "status": "PASS",
         "samples": samples,
+        "cpu_weight_buffer_type": cpu_weight_buffer_type,
+        "cpu_bias_buffer_type": cpu_bias_buffer_type,
         "cases": result_rows,
         "all_cpu_median_ms": all_cpu,
         "all_gpu_median_ms": all_gpu,
