@@ -25,7 +25,8 @@ def test_async_candidate_requires_gpu_async_capability():
     )
 
     assert "ggml_backend_dev_get_props(gpu_dev, &gpu_props)" in text
-    assert "opt.async_overlap && !gpu_props.caps.async" in text
+    assert "opt.async_overlap || opt.live_handoff_timing" in text
+    assert "&& !gpu_props.caps.async" in text
     assert "GPU backend does not advertise async capability" in text
 
 
