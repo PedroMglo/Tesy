@@ -1026,6 +1026,21 @@ void validate_live_handoff_capture(
     }
 }
 
+bool float_vectors_bitwise_equal(
+        const std::vector<float> & a,
+        const std::vector<float> & b) {
+    if (a.size() != b.size()) {
+        return false;
+    }
+    if (a.empty()) {
+        return true;
+    }
+    return std::memcmp(
+        a.data(),
+        b.data(),
+        a.size() * sizeof(float)) == 0;
+}
+
 parity compare_outputs(
         const std::vector<float> & reference,
         const std::vector<float> & observed) {
@@ -1373,7 +1388,9 @@ live_handoff_result run_live_handoff_exactness(
         llama_model_free(model);
         fail("live handoff expert IDs differ from stock reference");
     }
-    if (stock_capture.weights != handoff_capture.weights) {
+    if (!float_vectors_bitwise_equal(
+            stock_capture.weights,
+            handoff_capture.weights)) {
         llama_sampler_free(sampler);
         llama_free(ctx);
         llama_model_free(model);
@@ -1404,7 +1421,9 @@ live_handoff_result run_live_handoff_exactness(
     result.stock_rollback = stock_rollback;
     result.handoff_rollback = handoff_rollback;
     result.activation_bitwise_equal =
-        stock_capture.activation == handoff_capture.activation;
+        float_vectors_bitwise_equal(
+            stock_capture.activation,
+            handoff_capture.activation);
     result.activation_parity = activation_parity;
     result.selected_experts = selected_experts;
     result.routing_weights = handoff_capture.weights;
