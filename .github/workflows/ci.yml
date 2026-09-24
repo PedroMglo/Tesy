@@ -90,7 +90,9 @@ jobs:
             -DLLAMA_CPP_SOURCE_DIR="$PWD/.deps/llama.cpp" \
             -DGGML_CUDA=OFF \
             -DCMAKE_BUILD_TYPE=Release
-      - name: Build tracer
-        run: cmake --build build/native-ci --parallel 2 --target tesy-moe-trace
+      - name: Build tracer and split-graph model-free killer test
+        run: cmake --build build/native-ci --parallel 2 --target tesy-moe-trace tesy-split-graph-model-free
       - name: Smoke tracer CLI
         run: build/native-ci/tesy-moe-trace --help
+      - name: Split-graph MF0/MF1/MF2
+        run: build/native-ci/tesy-split-graph-model-free

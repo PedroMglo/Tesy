@@ -74,3 +74,18 @@ target_include_directories(
     "${LLAMA_CPP_SOURCE_DIR}/ggml/include"
 )
 target_link_libraries(tesy-routed-layer-capture PRIVATE llama ggml)
+
+add_executable(tesy-split-graph-model-free tesy_split_graph_model_free.cpp)
+target_compile_features(tesy-split-graph-model-free PRIVATE cxx_std_17)
+target_compile_options(tesy-split-graph-model-free PRIVATE -Wall -Wextra -Wpedantic -Werror)
+target_include_directories(
+  tesy-split-graph-model-free
+  PRIVATE
+    "${LLAMA_CPP_SOURCE_DIR}/ggml/include"
+)
+target_include_directories(
+  tesy-split-graph-model-free
+  SYSTEM PRIVATE
+    "${LLAMA_CPP_SOURCE_DIR}/ggml/src"
+)
+target_link_libraries(tesy-split-graph-model-free PRIVATE ggml ggml-cpu)
