@@ -1,0 +1,19 @@
+# Protocolo congelado: split graph com stock MoE skip — 2026-09-24
+
+## Pergunta e evidência
+
+**HIPÓTESE:** no decode real de `2167`, em `n_gpu_layers=0`, executar o graph stock como prefix até `ffn_moe_weights_softmax-0`, omitir o middle que produz `ffn_moe_out-0`, escrever nesse tensor o output externo serial Tesy, e executar o suffix até logits preserva comportamento committed. O gate é correctness/architecture, sem qualquer métrica de performance. Base de desenvolvimento PR #31, commit `5fdd11016954348405edc9d4ea9fced6dc28c63d`, tree `bbe309161cdca2d50099dca80a0676b7b064596e`. O commit/tree de medição será fixado antes da campanha.
+
+Modelo `gpt-oss-20b-mxfp4.gguf`, 12,109,564,352 bytes, SHA-256 `52f57ab7d3df3ba9173827c1c6832e73375553a846f3e32b49f1ae2daad688d4`. Prompt `benchmarks/prompts/b0-b1-diagnostic.txt`, SHA-256 `431498aa6a73a4e817c5ef58ceabdac5b8336dd95e01a17903e75bc1d27d10c6`. Backend stock llama.cpp `4e416ee7308dd6b581796f1a6241276cd5982691`. Threads 12, contexto 4096, greedy, layer 0, tokens congelados `2167 -> 1309 -> 316`, rota `[1,13,17,21]` e routing weights bitwise iguais à referência do próprio braço.
+
+## Ordem dos braços e controlos
+
+Cada braço usa contexto fresco e um processo distinto. Ordem: (0) `stock` unmodified; (1) `null` patched sem hook; (2) `segmented` prefix/middle/suffix same-work; (3) `skip-stock` prefix, middle não executado, output stock frozen escrito externamente, suffix; (4) `h2` serial Tesy GPU slots 0–1/CPU 2–3; (5) `h3` GPU 0–2/CPU 3. Não há async. Um braço posterior não corre após falha de um controlo anterior.
+
+Nos braços 2–5, antes do decode committed há stock capture+rollback da activation, top-k, weights finais e `ffn_moe_out-0`; h2/h3 incluem handoff capture+rollback. No decode committed, o hook valida o graph inteiro CPU, anchors únicos e ordenados, middle contíguo/ancestral de `moe_out`, nenhuma side dependency no suffix, presença de `MUL_MAT_ID`, route/activation frozen, e execução de views sobre a full allocation existente. `sched_reset` é proibido entre views. O decode de `2167` não faz rollback; o decode seguinte de `1309` usa esse estado committed com hook desligado.
+
+Em todos os braços exigem-se 201,088 logits F32 finitos nos checkpoints A (após `2167`) e B (após `1309`), relative max `<=0.005`, cosine `>=0.9999`, greedy exacto `1309` e `316`. Bitwise é registado mas não gate para h2/h3. FFN stock-vs-candidate F32 finito exige os mesmos thresholds; `skip-stock` exige bytes bitwise stock. Os contadores do inventário exigem prefix/suffix uma vez, middle uma vez apenas em `segmented`, e zero em todos os skip arms; output externo escrito uma vez em cada skip arm. Nenhum timing ou throughput é aceite no raw/summary.
+
+Builds stock e patch Tesy são separados. O patch interno de `src/llama-context.{cpp,h}` fica em `patches/llama-cpp-4e416ee73-tesy-split-graph-hook.patch`; com hook nulo, `ggml_backend_sched_graph_compute_async()` é a chamada original. Provenance regista base/tree stock, patch SHA, source hashes patched, C/C++/CUDA, CMake, binários, libs CPU/CUDA, argv, executable e CUDA artifact mapeado. Antes do modelo: host físico, modelo/prompt exactos, worktree Tesy e stock limpos, ausência de competing GPU compute, RAM/VRAM/swap e telemetry válidos. Qualquer falha cria/preserva um root e invalida a campanha; rerun técnico usa novo root e novo commit quando há alteração de implementação.
+
+O validador Python, não o C++, produz `LIVE_MOE_SPLIT_GRAPH_SKIP_EXACTNESS_GO` apenas se os seis braços, inventários, contadores, proveniência, recursos, tokens, FFN e logits A/B passarem. Qualquer falha genuína de arquitectura/correctness termina o trabalho sem mudança de thresholds. Mesmo GO não demonstra speedup, non-regression de produção, outros layers/routes, cache, misses, prefetch, tráfego físico ou novidade.
