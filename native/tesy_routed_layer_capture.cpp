@@ -24,6 +24,7 @@ namespace {
 constexpr int64_t k_embd = 2880;
 constexpr int64_t k_top_k = 4;
 constexpr int k_generated_tokens = 2;
+constexpr llama_token k_cancel_bound_decode_token = 2167;
 
 [[noreturn]] void fail(const std::string & message) {
     std::fprintf(stderr, "%s\n", message.c_str());
@@ -402,6 +403,12 @@ void bind_or_verify_route(cancel_bound_state & state) {
         fail("cancel-bound route tensors incomplete");
     }
     if (!state.reference_route_set) {
+        const std::vector<int32_t> expected_experts = {
+            1, 13, 17, 21,
+        };
+        if (state.current_experts != expected_experts) {
+            fail("cancel-bound first route differs from admitted experts");
+        }
         state.reference_experts = state.current_experts;
         state.reference_weights = state.current_weights;
         state.reference_route_set = true;
@@ -933,6 +940,11 @@ int main(int argc, char ** argv) {
     generated.push_back(first);
 
     if (!opt.cancel_bound_output.empty()) {
+        if (first != k_cancel_bound_decode_token) {
+            fail(
+                "cancel-bound first token differs from admitted decode token");
+        }
+
         ggml_log_callback previous_log = nullptr;
         void * previous_log_user_data = nullptr;
         llama_log_get(
