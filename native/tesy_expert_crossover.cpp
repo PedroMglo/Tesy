@@ -459,7 +459,7 @@ ggml_backend_buffer_type_t select_cpu_weight_buft(
     candidates.push_back(ggml_backend_dev_buffer_type(cpu_dev));
 
     for (auto buft : candidates) {
-        if (!buft || !ggml_backend_buft_is_host(buft)) {
+        if (!buft) {
             continue;
         }
         if (supports_weight_buft(cpu_dev, buft, k)) {
@@ -850,6 +850,12 @@ k_result run_k(
         ggml_backend_dev_buffer_type(gpu_dev);
     const ggml_backend_buffer_type_t cpu_weight =
         select_cpu_weight_buft(cpu_dev, k);
+    const std::string cpu_weight_name = ggml_backend_buft_name(cpu_weight);
+    if (cpu_weight_name != "CPU_REPACK") {
+        fail(
+            "expected CPU_REPACK for admitted MXFP4 crossover, got " +
+            cpu_weight_name);
+    }
 
     auto cpu_set = make_tensor_set(
         data, k, cpu_weight, cpu_default);
