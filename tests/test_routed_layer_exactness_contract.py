@@ -78,7 +78,7 @@ def test_routed_protocol_requires_token_and_stock_output_exactness():
     assert "greedy token" in text.lower()
     assert "serial_vs_stock" in text
     assert "async_vs_stock" in text
-    assert "No timing" in text
+    assert "No routed-layer timing is authorized" in text
 
 
 def test_routed_runner_is_no_replace_and_uses_project_venv():
@@ -91,4 +91,4 @@ def test_routed_runner_is_no_replace_and_uses_project_venv():
     assert "refusing to replace output root" in text
     assert "ROUTED_LAYER_EXACTNESS_GO" in text
     assert "benchmarks/prompts/b0-b1-diagnostic.txt" in text
-    assert "--ngl" in text and '"0"' in text
+    assert "--ngl 0" in text
