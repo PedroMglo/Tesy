@@ -16,7 +16,7 @@ def _inventory() -> dict:
     }
 
 
-def test_mixed_residency_histogram_tracks_top4_hits_before_insertions():
+def test_mixed_residency_histogram_tracks_top4_hits_with_demand_insertions():
     records = [
         NativeTopKRecord(graph_seq=1, layer=0, experts=((0, 1, 2, 3),)),
         NativeTopKRecord(graph_seq=2, layer=0, experts=((0, 1, 4, 5),)),
@@ -37,9 +37,9 @@ def test_mixed_residency_histogram_tracks_top4_hits_before_insertions():
     assert payload["gpu_resident_experts_per_top4_histogram"] == {
         "0": 1,
         "1": 0,
-        "2": 2,
+        "2": 1,
         "3": 0,
-        "4": 0,
+        "4": 1,
     }
 
 
