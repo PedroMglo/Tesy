@@ -277,13 +277,21 @@ or validator rule was weakened.
 
 The fixture was corrected to use strictly positive perturbations.
 
-After correction:
+After correction, the then-current validator/test bytes produced:
 
 - focused async validator tests: **7 PASS**;
-- Python `compileall` on the exact new module/test bytes: **PASS**.
+- Python `compileall` on those module/test bytes: **PASS**.
 
-This is model-free validation of the Python contract only. It is not a
-repository-checkout test, native compile, CUDA test or physical measurement.
+After that sandbox pass, the protocol was hardened further to serialize and
+validate the exact async scheduling identity and paired sample order. Those
+later changes are source-audited but **NOT_RUN_LOCAL_CHECKOUT_REQUIRED** on the
+final branch bytes. Therefore the earlier 7 PASS result is retained as
+development provenance and is not promoted as validation of the final
+candidate HEAD.
+
+This is model-free validation of an earlier Python-contract revision only. It
+is not a repository-checkout test, native compile, CUDA test or physical
+measurement.
 
 ## Tests not run in this environment
 
@@ -365,25 +373,42 @@ No physical async-overlap campaign was executed while preparing this branch.
 
 ## Final stack state at preparation freeze
 
-After the async delta was restacked on #21, Stack #22 advanced again at its
-bottom layer:
+The repository advanced bottom-up while this branch was prepared.
 
-- PR #9 was merged into `main`;
-- current `main`: `e0cc6eeddcbd7cf6735c731d4920b98a1c0724b6`;
-- PR #11 is now the lowest unmerged layer and targets `main`;
-- PR #11 has been corrected to downgrade the historical unproven physical-host
-  capacity publication and has zero unresolved review threads;
-- PR #11 was promoted to ready for review to trigger fresh model-free CI;
-- PRs above #11 remain dependent layers and are not merge candidates yet.
+Current authoritative facts observed before handoff:
 
-The async-overlap branch remains deliberately above the current #21 content
-base and has not been linked into the official stack from this environment.
-Do not use `gh stack rebase`, `gh stack push`, force-push or manual base edits.
+- PR #9: merged;
+- PR #11: merged at commit `97a3277a59acf9d470cb3e92d1eb583a1b52d540`;
+- current `main` at that point:
+  `97a3277a59acf9d470cb3e92d1eb583a1b52d540`;
+- a one-line CI regression left by the #11 merge is isolated in PR #23
+  (`fix/capacity-publication-physical-host-test-20260924`);
+- PR #23 changes only the test assertion for the already-correct fail-closed
+  physical-host rejection;
+- upper research PRs remain dependent stack layers.
 
-The local governance operation, after focused tests and native compile pass, is
-expected to be:
+The async-overlap branch remains deliberately based on the current #21 content
+head used for this experiment and has not been linked into the official stack
+from this environment.
+
+Before linking it, rediscover the live stack because lower layers may have
+merged again:
+
+`gh stack view 22 --short`.
+
+Do not use `gh stack rebase`, `gh stack push`, force-push or manual base
+edits for this handoff.
+
+After focused tests and native compile pass, append this already-published
+branch to the current top of Stack #22 with:
 
 `gh stack link 22 research/mixed-residency-async-overlap-restacked-20260924 --remote origin`.
 
-If Stack #22 has changed identity or membership before that command is run,
-rediscover it with `gh stack view --short` first and do not guess.
+GitHub's current `gh stack link` contract appends supplied branches/PRs to an
+existing stack, pushes branch arguments normally, creates a draft PR if one
+does not exist, and corrects its base to the stack top. Because this branch is
+already remote, first require local HEAD == origin branch HEAD and a clean
+worktree so that this operation has no code delta to push.
+
+If Stack #22 has changed identity or the command reports composition/base
+conflict, stop and rediscover rather than using rebase or force-push.
