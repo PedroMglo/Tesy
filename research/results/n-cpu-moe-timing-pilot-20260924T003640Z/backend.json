@@ -1,0 +1,57 @@
+{
+  "backend_id": "llama-cpp-stock",
+  "binary": {
+    "bytes": 12560,
+    "path": "/home/pmglo/Projects/Tesy/.deps/llama.cpp/build/bin/llama-cli",
+    "sha256": "e0bb036da22557d9a0001ac3cbc46840b65e0cd8e766ba8186267be09baca6f4"
+  },
+  "claim_boundary": "PASS proves only pinned clean source, runnable binary and expected CLI surface. It is not model compatibility, exactness or performance.",
+  "classification": "MEASURED_LOCAL_PROVENANCE",
+  "devices": {
+    "command": [
+      "/home/pmglo/Projects/Tesy/.deps/llama.cpp/build/bin/llama-cli",
+      "--list-devices"
+    ],
+    "returncode": 0,
+    "status": "OK",
+    "stderr": "",
+    "stdout": "Available devices:\n  CUDA0: NVIDIA GeForce RTX 4060 Laptop GPU (7888 MiB, 7785 MiB free)"
+  },
+  "required_flag_support": {
+    "--cpu-moe": true,
+    "--fit": true,
+    "--fit-target": true,
+    "--lazy-mode": true,
+    "--n-cpu-moe": true,
+    "--n-gpu-layers": true,
+    "--no-display-prompt": true,
+    "--no-warmup": true,
+    "--override-tensor": true,
+    "--prompt": true,
+    "--seed": true,
+    "--simple-io": true,
+    "--single-turn": true,
+    "--temperature": true,
+    "--top-k": true
+  },
+  "schema": "tesy.backend_probe.v1",
+  "source": {
+    "clean": true,
+    "expected_head": "4e416ee7308dd6b581796f1a6241276cd5982691",
+    "head": "4e416ee7308dd6b581796f1a6241276cd5982691",
+    "head_match": true,
+    "path": "/home/pmglo/Projects/Tesy/.deps/llama.cpp",
+    "probe_status": "PASS"
+  },
+  "status": "PASS",
+  "version": {
+    "command": [
+      "/home/pmglo/Projects/Tesy/.deps/llama.cpp/build/bin/llama-cli",
+      "--version"
+    ],
+    "returncode": 0,
+    "status": "OK",
+    "stderr": "version: 0.4.1-dev (build 11138, commit 4e416ee73)\nbuilt with GNU 15.3.1 for Linux x86_64",
+    "stdout": ""
+  }
+}
