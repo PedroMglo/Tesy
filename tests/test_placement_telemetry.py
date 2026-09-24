@@ -77,6 +77,42 @@ def test_validate_placement_telemetry_requires_mmap_host_buffer_when_host_projec
     assert any("no mmap-backed Host model buffer" in item for item in payload["mismatches"])
 
 
+@pytest.mark.parametrize("host_row", [
+    "Other_Mapped model buffer size = 5440.00 MiB",
+    "CPU_Mapped model buffer size = 0.00 MiB",
+])
+def test_validate_placement_telemetry_requires_positive_cpu_mapped_buffer(host_row):
+    payload = validate_placement_telemetry(
+        fit_print_text="CUDA0 6095 114 449\nHost 5440 0 16\n",
+        server_stderr_text=(
+            "load_tensors: offloaded 25/25 layers to GPU\n"
+            "load_tensors: CUDA0 model buffer size = 6095.25 MiB\n"
+            f"load_tensors: {host_row}\n"
+        ),
+        placement_id="n-cpu-moe-12",
+    )
+    assert payload["status"] == "FAIL"
+    assert any("no mmap-backed Host model buffer" in item for item in payload["mismatches"])
+
+
+def test_parse_server_model_buffers_rejects_nonfinite_size():
+    with pytest.raises(PlacementTelemetryError, match="invalid model buffer size"):
+        parse_server_model_buffers(
+            "load_tensors: offloaded 25/25 layers to GPU\n"
+            f"load_tensors: CUDA0 model buffer size = {'9' * 400} MiB\n"
+        )
+
+
+def test_validate_placement_telemetry_rejects_nonfinite_tolerance():
+    with pytest.raises(PlacementTelemetryError, match="finite and non-negative"):
+        validate_placement_telemetry(
+            fit_print_text="CUDA0 6095 114 449\nHost 5440 0 16\n",
+            server_stderr_text="",
+            placement_id="auto-fit-frozen",
+            tolerance_mib=float("nan"),
+        )
+
+
 def test_parse_server_model_buffers_rejects_multiple_gpus():
     with pytest.raises(PlacementTelemetryError, match="expected only CUDA0"):
         parse_server_model_buffers(

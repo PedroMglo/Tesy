@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import math
 import re
 from pathlib import Path
 
@@ -26,8 +27,8 @@ def parse_server_model_buffers(text: str) -> dict:
         match = _MODEL_BUFFER_RE.search(raw)
         if match:
             value = float(match.group("mib"))
-            if value < 0:
-                raise PlacementTelemetryError("negative model buffer size")
+            if not math.isfinite(value) or value < 0:
+                raise PlacementTelemetryError("invalid model buffer size")
             buffers.append(
                 {
                     "name": match.group("name"),
@@ -71,7 +72,7 @@ def parse_server_model_buffers(text: str) -> dict:
         row for row in buffers if not str(row["name"]).startswith("CUDA0")
     ]
     mapped_host_buffers = [
-        row for row in host_buffers if "Mapped" in str(row["name"])
+        row for row in host_buffers if row["name"] == "CPU_Mapped"
     ]
 
     return {
@@ -102,8 +103,8 @@ def validate_placement_telemetry(
 ) -> dict:
     if not isinstance(placement_id, str) or not placement_id.strip():
         raise PlacementTelemetryError("placement_id must be non-empty")
-    if tolerance_mib < 0:
-        raise PlacementTelemetryError("tolerance_mib must be non-negative")
+    if not math.isfinite(tolerance_mib) or tolerance_mib < 0:
+        raise PlacementTelemetryError("tolerance_mib must be finite and non-negative")
 
     try:
         projected = parse_fit_print(fit_print_text)
@@ -117,8 +118,13 @@ def validate_placement_telemetry(
         )
 
     observed = parse_server_model_buffers(server_stderr_text)
-    projected_gpu_mib = float(projected["CUDA0"]["model_mib"])
-    projected_host_mib = float(projected["Host"]["model_mib"])
+    try:
+        projected_gpu_mib = float(projected["CUDA0"]["model_mib"])
+        projected_host_mib = float(projected["Host"]["model_mib"])
+    except OverflowError as exc:
+        raise PlacementTelemetryError("non-finite fit-print model size") from exc
+    if not math.isfinite(projected_gpu_mib) or not math.isfinite(projected_host_mib):
+        raise PlacementTelemetryError("non-finite fit-print model size")
     gpu_delta_mib = observed["gpu_model_mib"] - projected_gpu_mib
 
     mismatches: list[str] = []
@@ -128,7 +134,7 @@ def validate_placement_telemetry(
             f"{observed['gpu_model_mib']:.3f} vs {projected_gpu_mib:.3f} MiB"
         )
 
-    if projected_host_mib > 0 and not observed["mapped_host_buffer_names"]:
+    if projected_host_mib > 0 and observed["mapped_host_buffer_mib"] <= 0:
         mismatches.append(
             "projected Host model allocation is non-zero but server log has "
             "no mmap-backed Host model buffer"

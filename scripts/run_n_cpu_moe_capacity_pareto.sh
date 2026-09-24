@@ -775,12 +775,13 @@ PY
   kill "$server_pid"
   wait "$server_pid" || true
   server_pid=""
-  wait "$monitor_pid" || true
+  wait "$monitor_pid"
   monitor_pid=""
 
   python3 - "$run_dir/resources.jsonl" "$gpu_total_bytes" "$gpu_target_mib" "$host_guard_mib" \
     >"$run_dir/resource-summary.json" <<'PY'
 import json
+import math
 import sys
 from pathlib import Path
 
@@ -789,6 +790,18 @@ rows = [
     for line in Path(sys.argv[1]).read_text(encoding="utf-8").splitlines()
     if line.strip()
 ]
+
+def require_finite(value):
+    if isinstance(value, float) and not math.isfinite(value):
+        raise SystemExit("non-finite resource telemetry")
+    if isinstance(value, dict):
+        for item in value.values():
+            require_finite(item)
+    elif isinstance(value, list):
+        for item in value:
+            require_finite(item)
+
+require_finite(rows)
 gpu_total_bytes = int(sys.argv[2])
 gpu_target_bytes = int(sys.argv[3]) * 1024 * 1024
 host_guard_bytes = int(sys.argv[4]) * 1024 * 1024
@@ -965,7 +978,7 @@ print(json.dumps({
         "One observation per placement diagnostic pilot. Timings and observed "
         "resources are measured on the locked host/workload, but "
         "no confirmatory performance winner or Pareto frontier follows. "
-        "No physical PCIe/NVMe, "
+        "No physical PCIe/NVMe/DRAM traffic, "
         "Tesy speedup, >RAM or novelty claim follows."
     ),
 }, indent=2, sort_keys=True))

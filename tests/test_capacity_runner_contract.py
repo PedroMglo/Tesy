@@ -162,7 +162,20 @@ def test_timing_pilot_does_not_compare_host_mmap_span_to_fit_host_bytes():
         encoding="utf-8"
     )
 
-    assert '"host_comparability_status": placement_telemetry["host_comparability"]["status"]' in text
+    assert (
+        '"host_comparability_status": '
+        'placement_telemetry["host_comparability"]["status"]'
+    ) in text
     assert '"observed_host_mmap_span_mib"' in text
     assert '"projected_host_logical_model_mib"' in text
     assert '"observed_host_model_mib"' not in text
+
+
+def test_timing_pilot_stops_on_monitor_failure_or_nonfinite_resources():
+    root = Path(__file__).resolve().parents[1]
+    text = (root / "scripts" / "run_n_cpu_moe_capacity_pareto.sh").read_text(
+        encoding="utf-8"
+    )
+
+    assert '  wait "$monitor_pid"\n  monitor_pid=""' in text
+    assert 'raise SystemExit("non-finite resource telemetry")' in text
