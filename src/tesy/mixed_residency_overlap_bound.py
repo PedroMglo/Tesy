@@ -57,7 +57,10 @@ def _validate_stats(payload: Any, *, label: str, expected_samples: int) -> dict[
 
 
 def _close(left: float, right: float) -> bool:
-    return math.isclose(left, right, rel_tol=1e-9, abs_tol=1e-9)
+    # C++ emits derived/component timings with 9 decimal places. The validator
+    # recomputes from those serialized values, so allow sub-microsecond JSON
+    # rounding without weakening the timing contract materially.
+    return math.isclose(left, right, rel_tol=1e-7, abs_tol=1e-7)
 
 
 def validate_overlap_bound_raw(payload: dict[str, Any]) -> dict[str, Any]:
