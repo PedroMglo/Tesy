@@ -36,7 +36,7 @@ reference-host/model validation. No source-only row is a performance claim.
 | KTransformers baseline | PINNED_NOT_REPRODUCED | reproduce only if compatible with selected model/host |
 | vLLM baseline | PINNED_NOT_REPRODUCED | B4 only if 8 GiB/32 GiB envelope admits it |
 | native Tesy expert residency/cache | NOT_IMPLEMENTED | forbidden until baseline + trace/headroom establish a concrete gap |
-| CPU-vs-transfer-vs-GPU expert crossover | UNBLOCKED_DESIGN_REQUIRED | native inventory PASS provides admitted real shapes/types; next gate should measure CPU-resident expert path, requested Host->GPU weight transfer and resident-GPU compute separately, without physical-PCIe claims |
+| CPU-vs-transfer-vs-GPU expert crossover | PASS_REFERENCE_HOST_DIAGNOSTIC | campaign `expert-crossover-20260924T101753Z`: real-shape k=1/k=4 parity/resource gates PASS; pinned cold-GPU miss is ~3.05x/~3.64x slower than authoritative n-cpu-moe CPU path while resident GPU is ~5.80x/~4.92x faster; blocking demand transfer NO_GO, GPU-hit/CPU-miss residency remains viable pending admitted locality replay |
 | causal prefetch | NOT_IMPLEMENTED | only after locality/headroom and wasted-prefetch analysis |
 | speculative K=2 | NOT_IMPLEMENTED | only after K=1 target/runtime correctness |
 | joint K/residency scheduler | OPEN_RESEARCH_QUESTION | broad novelty overlap exists; benefit and narrower novelty unknown |
