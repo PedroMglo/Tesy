@@ -37,6 +37,7 @@ struct options {
     int warmup = 3;
     int samples = 21;
     int inner = 5;
+    bool async_overlap = false;
 };
 
 struct context_buffer {
@@ -141,6 +142,9 @@ struct case_result {
     int gpu_hits = 0;
     int cpu_misses = 0;
     stats direct_wall;
+    bool has_async_wall = false;
+    stats async_wall;
+    parity async_parity;
     bool has_activation_d2h = false;
     stats activation_d2h;
     bool has_cpu_compute = false;
@@ -175,7 +179,8 @@ int parse_positive(const char * value, const char * flag, int minimum = 1) {
     std::fprintf(
         code == 0 ? stdout : stderr,
         "usage: %s --model MODEL.gguf --output RESULT.json "
-        "[--layer N] [--threads N] [--samples N] [--warmup N] [--inner N]\n",
+        "[--layer N] [--threads N] [--samples N] [--warmup N] [--inner N] "
+        "[--async-overlap]\n",
         argv0);
     std::exit(code);
 }
@@ -204,6 +209,8 @@ options parse_options(int argc, char ** argv) {
             out.warmup = parse_positive(value("--warmup"), "--warmup", 0);
         } else if (arg == "--inner") {
             out.inner = parse_positive(value("--inner"), "--inner");
+        } else if (arg == "--async-overlap") {
+            out.async_overlap = true;
         } else if (arg == "-h" || arg == "--help") {
             usage(argv[0], 0);
         } else {
@@ -642,6 +649,14 @@ void compute(ggml_backend_t backend, compute_graph & graph) {
     ggml_backend_synchronize(backend);
 }
 
+void compute_async_start(ggml_backend_t backend, compute_graph & graph) {
+    const ggml_status status =
+        ggml_backend_graph_compute_async(backend, graph.graph);
+    if (status != GGML_STATUS_SUCCESS) {
+        fail("ggml_backend_graph_compute_async failed");
+    }
+}
+
 void compute_sum(ggml_backend_t backend, sum_graph & graph) {
     const ggml_status status =
         ggml_backend_graph_compute(backend, graph.graph);
@@ -723,7 +738,74 @@ stats measure(Fn && fn, int warmup, int samples, int inner) {
     out.mean_ms =
         std::accumulate(ordered.begin(), ordered.end(), 0.0) /
         static_cast<double>(ordered.size());
+
     return out;
+}
+
+stats summarize_samples(const std::vector<double> & samples_ms) {
+    if (samples_ms.empty()) {
+        fail("cannot summarize empty timing samples");
+    }
+    stats out;
+    out.samples_ms = samples_ms;
+    std::vector<double> ordered = samples_ms;
+    std::sort(ordered.begin(), ordered.end());
+    out.min_ms = ordered.front();
+    out.max_ms = ordered.back();
+    out.median_ms = ordered[ordered.size() / 2];
+    const size_t p95_index = std::min(
+        ordered.size() - 1,
+        static_cast<size_t>(
+            std::ceil(0.95 * static_cast<double>(ordered.size()))) - 1);
+    out.p95_ms = ordered[p95_index];
+    out.mean_ms =
+        std::accumulate(ordered.begin(), ordered.end(), 0.0) /
+        static_cast<double>(ordered.size());
+    return out;
+}
+
+template <class SerialFn, class AsyncFn>
+std::pair<stats, stats> measure_paired(
+        SerialFn && serial_fn,
+        AsyncFn && async_fn,
+        int warmup,
+        int samples,
+        int inner) {
+    for (int i = 0; i < warmup; ++i) {
+        serial_fn();
+        async_fn();
+    }
+
+    std::vector<double> serial_ms;
+    std::vector<double> async_ms;
+    serial_ms.reserve(static_cast<size_t>(samples));
+    async_ms.reserve(static_cast<size_t>(samples));
+
+    auto measure_one = [inner](auto & fn) {
+        const auto start = std::chrono::steady_clock::now();
+        for (int i = 0; i < inner; ++i) {
+            fn();
+        }
+        const auto stop = std::chrono::steady_clock::now();
+        const double elapsed =
+            std::chrono::duration<double, std::milli>(stop - start).count();
+        return elapsed / static_cast<double>(inner);
+    };
+
+    for (int sample = 0; sample < samples; ++sample) {
+        if ((sample % 2) == 0) {
+            serial_ms.push_back(measure_one(serial_fn));
+            async_ms.push_back(measure_one(async_fn));
+        } else {
+            async_ms.push_back(measure_one(async_fn));
+            serial_ms.push_back(measure_one(serial_fn));
+        }
+    }
+
+    return {
+        summarize_samples(serial_ms),
+        summarize_samples(async_ms),
+    };
 }
 
 std::vector<float> deterministic_input() {
@@ -815,7 +897,7 @@ case_result run_case(
             gpu_backend, gpu_graph->output);
     }
 
-    auto execute = [&]() {
+    auto execute_serial = [&]() {
         if (cpu_graph) {
             ggml_backend_tensor_copy(
                 gpu_input, cpu_graph->input);
@@ -842,7 +924,28 @@ case_result run_case(
         }
     };
 
-    execute();
+    auto execute_async_overlap = [&]() {
+        if (!cpu_graph || !gpu_graph || !aggregate) {
+            fail("async overlap requires a mixed CPU/GPU case");
+        }
+
+        ggml_backend_tensor_copy(
+            gpu_input, cpu_graph->input);
+        ggml_backend_synchronize(gpu_backend);
+        ggml_backend_synchronize(cpu_backend);
+
+        compute_async_start(gpu_backend, *gpu_graph);
+        compute(cpu_backend, *cpu_graph);
+        ggml_backend_synchronize(gpu_backend);
+
+        ggml_backend_tensor_copy(
+            cpu_graph->output, aggregate->cpu_partial);
+        ggml_backend_synchronize(cpu_backend);
+        ggml_backend_synchronize(gpu_backend);
+        compute_sum(gpu_backend, *aggregate);
+    };
+
+    execute_serial();
     ggml_tensor * final_tensor = nullptr;
     if (aggregate) {
         final_tensor = aggregate->output;
@@ -862,14 +965,40 @@ case_result run_case(
             std::to_string(gpu_hits));
     }
 
-    const stats direct =
-        measure(execute, opt.warmup, opt.samples, opt.inner);
-
     case_result result;
     result.gpu_hits = gpu_hits;
     result.cpu_misses = cpu_misses;
-    result.direct_wall = direct;
     result.output_parity = check;
+
+    if (opt.async_overlap && cpu_graph && gpu_graph) {
+        execute_async_overlap();
+        const std::vector<float> async_observed =
+            read_output(gpu_backend, aggregate->output);
+        result.async_parity =
+            compare_outputs(reference, async_observed);
+        if (!result.async_parity.pass) {
+            fail(
+                "mixed-residency async parity failed for h=" +
+                std::to_string(gpu_hits));
+        }
+
+        auto paired = measure_paired(
+            execute_serial,
+            execute_async_overlap,
+            opt.warmup,
+            opt.samples,
+            opt.inner);
+        result.direct_wall = std::move(paired.first);
+        result.async_wall = std::move(paired.second);
+        result.has_async_wall = true;
+    } else {
+        result.direct_wall =
+            measure(
+                execute_serial,
+                opt.warmup,
+                opt.samples,
+                opt.inner);
+    }
 
     if (cpu_graph) {
         auto copy_input_d2h = [&]() {
@@ -1027,6 +1156,22 @@ void print_case(FILE * out, const case_result & row) {
         row.gpu_hits,
         row.cpu_misses);
     print_stats(out, row.direct_wall);
+    std::fputs(",\"async_wall\":", out);
+    print_optional_stats(out, row.has_async_wall, row.async_wall);
+    if (row.has_async_wall) {
+        std::fprintf(
+            out,
+            ",\"async_parity\":{\"max_abs\":%.9g,"
+            "\"max_abs_ref\":%.9g,\"relative_max\":%.9g,"
+            "\"cosine\":%.12f,\"status\":\"%s\"}",
+            row.async_parity.max_abs,
+            row.async_parity.max_abs_ref,
+            row.async_parity.relative_max,
+            row.async_parity.cosine,
+            row.async_parity.pass ? "PASS" : "FAIL");
+    } else {
+        std::fputs(",\"async_parity\":null", out);
+    }
 
     std::fputs(",\"components\":{\"activation_d2h\":", out);
     print_optional_stats(
@@ -1086,6 +1231,14 @@ int main(int argc, char ** argv) {
     }
     ggml_backend_cpu_set_n_threads(cpu.backend, opt.threads);
 
+    ggml_backend_dev_props cpu_props = {};
+    ggml_backend_dev_props gpu_props = {};
+    ggml_backend_dev_get_props(cpu_dev, &cpu_props);
+    ggml_backend_dev_get_props(gpu_dev, &gpu_props);
+    if (opt.async_overlap && !gpu_props.caps.async) {
+        fail("GPU backend does not advertise async capability");
+    }
+
     const ggml_backend_buffer_type_t cpu_bias_buft =
         ggml_backend_dev_buffer_type(cpu_dev);
     const ggml_backend_buffer_type_t cpu_weight_buft =
@@ -1139,8 +1292,13 @@ int main(int argc, char ** argv) {
 
     std::fprintf(
         out,
-        "{\"schema\":\"tesy.mixed_residency_overlap_bound_raw.v1\","
-        "\"classification\":\"MEASURED_MIXED_RESIDENCY_COMPONENT_DIAGNOSTIC\","
+        opt.async_overlap
+            ? "{\"schema\":\"tesy.mixed_residency_async_raw.v1\","
+              "\"classification\":\"MEASURED_MIXED_RESIDENCY_ASYNC_DIAGNOSTIC\","
+            : "{\"schema\":\"tesy.mixed_residency_overlap_bound_raw.v1\","
+              "\"classification\":\"MEASURED_MIXED_RESIDENCY_COMPONENT_DIAGNOSTIC\",");
+    std::fprintf(
+        out,
         "\"layer\":%d,\"threads\":%d,\"warmup\":%d,\"samples\":%d,"
         "\"inner\":%d,\"n_embd\":%" PRId64 ",\"top_k\":4,"
         "\"expert_count_model\":%" PRId64 ","
@@ -1149,6 +1307,7 @@ int main(int argc, char ** argv) {
         "\"weight_shape\":[2880,2880,32],\"bias_shape\":[2880,32],"
         "\"cpu_weight_buffer_type\":\"%s\","
         "\"cpu_bias_buffer_type\":\"%s\","
+        "\"gpu_async_capable\":%s,\"cpu_async_capable\":%s,"
         "\"expert_ids\":[0,1,2,3],\"mix_weights\":[0.25,0.25,0.25,0.25],"
         "\"measurement_order\":[0,4,1,3,2],"
         "\"cases\":[",
@@ -1161,33 +1320,51 @@ int main(int argc, char ** argv) {
         k_expert_count,
         k_encoded_bytes_per_expert,
         cpu_weight_buft_name.c_str(),
-        cpu_bias_buft_name.c_str());
+        cpu_bias_buft_name.c_str(),
+        gpu_props.caps.async ? "true" : "false",
+        cpu_props.caps.async ? "true" : "false");
     for (size_t i = 0; i < rows.size(); ++i) {
         if (i != 0) {
             std::fputc(',', out);
         }
         print_case(out, rows[i]);
     }
-    std::fputs(
-        "],\"claim_boundary\":"
-        "\"Direct serial isolated top-4 mixed CPU/GPU expert FFN timings plus "
-        "separately measured component completion times. The overlap bound assumes "
-        "the GPU and CPU subset computes can overlap only after the input D2H copy "
-        "has completed; D2H, CPU-partial H2D and aggregation remain serialized. "
-        "Weights are already resident in their assigned backend buffers; "
-        "no expert-weight transfer, routing, prefetch, cache management or full-model timing "
-        "is measured. CPU misses execute on the CPU backend using its first "
-        "compatible extra/repack MXFP4 weight buffer for subset sizes 1..4, "
-        "with CPU-default fallback; F32 biases use the CPU default buffer. "
-        "Final output is materialized on GPU. Uniform 0.25 expert "
-        "mixture weights are synthetic and affect correctness scaling, not routing.\"}\n",
-        out);
+    if (opt.async_overlap) {
+        std::fputs(
+            "],\"claim_boundary\":"
+            "\"Same-campaign serial baseline plus measured post-D2H CPU/GPU "
+            "compute overlap for mixed h=1..3 cases. The candidate completes D2H, "
+            "enqueues the GPU graph asynchronously, executes the authoritative CPU "
+            "subset synchronously, synchronizes the GPU, copies the CPU partial to "
+            "GPU, and aggregates. h=0/h=4 remain serial anchors. Weights are already "
+            "resident; no expert-weight transfer, routing, prefetch, cache management, "
+            "full-model timing, or physical PCIe/DRAM/NVMe traffic is measured.\"}\n",
+            out);
+    } else {
+        std::fputs(
+            "],\"claim_boundary\":"
+            "\"Direct serial isolated top-4 mixed CPU/GPU expert FFN timings plus "
+            "separately measured component completion times. The overlap bound assumes "
+            "the GPU and CPU subset computes can overlap only after the input D2H copy "
+            "has completed; D2H, CPU-partial H2D and aggregation remain serialized. "
+            "Weights are already resident in their assigned backend buffers; "
+            "no expert-weight transfer, routing, prefetch, cache management or full-model timing "
+            "is measured. CPU misses execute on the CPU backend using its first "
+            "compatible extra/repack MXFP4 weight buffer for subset sizes 1..4, "
+            "with CPU-default fallback; F32 biases use the CPU default buffer. "
+            "Final output is materialized on GPU. Uniform 0.25 expert "
+            "mixture weights are synthetic and affect correctness scaling, not routing.\"}\n",
+            out);
+    }
 
     if (std::fclose(out) != 0) {
         fail("failed closing output");
     }
 
-    std::printf("PASS_MIXED_RESIDENCY_OVERLAP_BOUND_RAW\n");
+    std::printf(
+        opt.async_overlap
+            ? "PASS_MIXED_RESIDENCY_ASYNC_RAW\n"
+            : "PASS_MIXED_RESIDENCY_OVERLAP_BOUND_RAW\n");
     std::printf("output: %s\n", opt.output.c_str());
     return 0;
 }
