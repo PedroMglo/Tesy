@@ -362,3 +362,28 @@ not be substituted with `gh stack push`, `gh stack rebase`, force-push or
 manual PR-base editing.
 
 No physical async-overlap campaign was executed while preparing this branch.
+
+## Final stack state at preparation freeze
+
+After the async delta was restacked on #21, Stack #22 advanced again at its
+bottom layer:
+
+- PR #9 was merged into `main`;
+- current `main`: `e0cc6eeddcbd7cf6735c731d4920b98a1c0724b6`;
+- PR #11 is now the lowest unmerged layer and targets `main`;
+- PR #11 has been corrected to downgrade the historical unproven physical-host
+  capacity publication and has zero unresolved review threads;
+- PR #11 was promoted to ready for review to trigger fresh model-free CI;
+- PRs above #11 remain dependent layers and are not merge candidates yet.
+
+The async-overlap branch remains deliberately above the current #21 content
+base and has not been linked into the official stack from this environment.
+Do not use `gh stack rebase`, `gh stack push`, force-push or manual base edits.
+
+The local governance operation, after focused tests and native compile pass, is
+expected to be:
+
+`gh stack link 22 research/mixed-residency-async-overlap-restacked-20260924 --remote origin`.
+
+If Stack #22 has changed identity or membership before that command is run,
+rediscover it with `gh stack view --short` first and do not guess.
