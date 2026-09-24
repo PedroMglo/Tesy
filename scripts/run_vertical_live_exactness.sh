@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 set -Eeuo pipefail
 
-if [[ $# -ne 5 ]]; then
-  echo "usage: $0 MODEL.gguf PROMPT.txt OUTPUT_ROOT LAYERS TOKENS" >&2
+if [[ $# -ne 5 && $# -ne 6 ]]; then
+  echo "usage: $0 MODEL.gguf PROMPT.txt OUTPUT_ROOT LAYERS TOKENS [diagnostic]" >&2
   exit 2
 fi
 root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
@@ -11,6 +11,7 @@ prompt="$(realpath "$2")"
 out="$3"
 layers="$4"
 tokens="$5"
+diagnostic="${6:-}"
 python_bin="$root/.venv/bin/python"
 stock_source="$root/.deps/llama.cpp"
 patched_source="$root/build/tesy-llama-split-src"
@@ -23,6 +24,11 @@ monitor_pid=""
 stopped=0
 [[ "$layers" =~ ^([1-9]|1[0-9]|2[0-4])$ ]]
 [[ "$tokens" =~ ^[1-9][0-9]*$ && "$tokens" -le 128 ]]
+if [[ -n "$diagnostic" ]]; then
+  [[ "$diagnostic" == "diagnostic" && "$layers" == "3" && "$tokens" == "1" ]]
+  [[ "$(sha256sum "$prompt" | awk '{print $1}')" == \
+    "99b2641845df47370c29f1661ccb7493bb51ce11dd26a0f3afabb5c49cf18710" ]]
+fi
 [[ ! -e "$out" ]] || { echo "refusing to reuse output root" >&2; exit 1; }
 mkdir -p "$out"
 cleanup() {
@@ -121,6 +127,7 @@ PY
 cmd=("$tool" --model "$model" --output "$out/raw.json"
   --prompt-file "$prompt" --ctx 4096 --threads 12
   --vertical-live-exactness --vertical-layers "$layers" --vertical-tokens "$tokens")
+if [[ -n "$diagnostic" ]]; then cmd+=(--vertical-numerical-diagnostic); fi
 "$python_bin" - "$out/argv.json" "${cmd[@]}" <<'PY'
 import json
 import sys

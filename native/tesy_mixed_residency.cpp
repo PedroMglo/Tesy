@@ -43,6 +43,10 @@ constexpr float k_swiglu_alpha = 1.702f;
 constexpr float k_swiglu_limit = 7.0f;
 constexpr float k_mix_weight = 0.25f;
 constexpr llama_token k_live_handoff_decode_token = 2167;
+constexpr std::array<const char *, 8> k_vertical_stage_names{
+    "ffn_moe_up", "ffn_moe_up_biased", "ffn_moe_gate",
+    "ffn_moe_gate_biased", "ffn_moe_swiglu_oai", "ffn_moe_down",
+    "ffn_moe_down_biased", "ffn_moe_weighted"};
 
 struct options {
     std::string model;
@@ -59,6 +63,7 @@ struct options {
     bool live_reinjection_exactness = false;
     bool split_graph_skip_exactness = false;
     bool vertical_live_exactness = false;
+    bool vertical_numerical_diagnostic = false;
     int vertical_layers = 24;
     int vertical_tokens = 4;
     std::string split_arm;
@@ -139,6 +144,7 @@ struct compute_graph {
     ggml_tensor * ids = nullptr;
     ggml_tensor * mix = nullptr;
     ggml_tensor * output = nullptr;
+    std::array<ggml_tensor *, 8> diagnostic_stages{};
 };
 
 struct tensor_holder {
@@ -341,7 +347,7 @@ int parse_positive(const char * value, const char * flag, int minimum = 1) {
         "[--live-reinjection-exactness --prompt-file FILE --ctx 4096] "
         "[--split-graph-skip-exactness --split-arm ARM --prompt-file FILE --ctx 4096] "
         "[--vertical-live-exactness --vertical-layers 1..24 --vertical-tokens N "
-        "--prompt-file FILE --ctx 4096]\n",
+        "--prompt-file FILE --ctx 4096 [--vertical-numerical-diagnostic]]\n",
         argv0);
     std::exit(code);
 }
@@ -384,6 +390,8 @@ options parse_options(int argc, char ** argv) {
             out.split_graph_skip_exactness = true;
         } else if (arg == "--vertical-live-exactness") {
             out.vertical_live_exactness = true;
+        } else if (arg == "--vertical-numerical-diagnostic") {
+            out.vertical_numerical_diagnostic = true;
         } else if (arg == "--vertical-layers") {
             out.vertical_layers = parse_positive(value("--vertical-layers"), "--vertical-layers");
         } else if (arg == "--vertical-tokens") {
@@ -511,6 +519,11 @@ options parse_options(int argc, char ** argv) {
             fail("vertical live requires --ctx 4096, prompt, 1..24 layers, "
                  "1..128 tokens and no async/timing");
         }
+    }
+    if (out.vertical_numerical_diagnostic &&
+        (!out.vertical_live_exactness || out.vertical_layers != 3 ||
+         out.vertical_tokens != 1)) {
+        fail("vertical numerical diagnostic requires one token and three layers");
     }
     return out;
 }
@@ -830,19 +843,27 @@ std::unique_ptr<compute_graph> make_compute_graph(
 
     ggml_tensor * up =
         ggml_mul_mat_id(ctx, tensors.up_w, result->input, result->ids);
+    result->diagnostic_stages[0] = up;
     up = ggml_add_id(ctx, up, tensors.up_b, result->ids);
+    result->diagnostic_stages[1] = up;
 
     ggml_tensor * gate =
         ggml_mul_mat_id(ctx, tensors.gate_w, result->input, result->ids);
+    result->diagnostic_stages[2] = gate;
     gate = ggml_add_id(ctx, gate, tensors.gate_b, result->ids);
+    result->diagnostic_stages[3] = gate;
 
     ggml_tensor * act =
         ggml_swiglu_oai(ctx, gate, up, k_swiglu_alpha, k_swiglu_limit);
+    result->diagnostic_stages[4] = act;
 
     ggml_tensor * down =
         ggml_mul_mat_id(ctx, tensors.down_w, act, result->ids);
+    result->diagnostic_stages[5] = down;
     down = ggml_add_id(ctx, down, tensors.down_b, result->ids);
+    result->diagnostic_stages[6] = down;
     down = ggml_mul(ctx, down, result->mix);
+    result->diagnostic_stages[7] = down;
 
     ggml_tensor * sum = nullptr;
     for (int expert = 0; expert < count; ++expert) {
@@ -3557,6 +3578,90 @@ tensor_bytes vertical_resident_bytes(
     return result;
 }
 
+uint64_t vertical_fingerprint64(const std::vector<uint8_t> & bytes) {
+    uint64_t value = UINT64_C(14695981039346656037);
+    for (uint8_t byte : bytes) {
+        value ^= byte;
+        value *= UINT64_C(1099511628211);
+    }
+    return value;
+}
+
+void vertical_verify_resident_readback(
+        const tensor_set & resident, const tensor_bytes & expected,
+        const std::array<ggml_tensor *, 6> & stock,
+        ggml_backend_t gpu_backend) {
+    const std::array<ggml_tensor *, 6> actual{
+        resident.gate_w, resident.up_w, resident.down_w,
+        resident.gate_b, resident.up_b, resident.down_b};
+    const std::array<const std::vector<uint8_t> *, 6> bytes{
+        &expected.gate_w, &expected.up_w, &expected.down_w,
+        &expected.gate_b, &expected.up_b, &expected.down_b};
+    const std::array<const char *, 6> names{
+        "gate_w", "up_w", "down_w", "gate_b", "up_b", "down_b"};
+    ggml_backend_synchronize(gpu_backend);
+    for (size_t kind = 0; kind < actual.size(); ++kind) {
+        const ggml_tensor * tensor = actual[kind];
+        const ggml_tensor * source = stock[kind];
+        if (!tensor || !tensor->buffer ||
+            tensor->type != source->type ||
+            tensor->ne[0] != source->ne[0] ||
+            tensor->ne[1] != (kind < 3 ? source->ne[1] : 4) ||
+            tensor->ne[2] != (kind < 3 ? 4 : 1) ||
+            !ggml_is_contiguous(tensor) ||
+            tensor->nb[kind < 3 ? 2 : 1] !=
+                source->nb[kind < 3 ? 2 : 1] ||
+            ggml_nbytes(tensor) != bytes[kind]->size()) {
+            fail(std::string("vertical GPU resident metadata mismatch: ") +
+                 names[kind]);
+        }
+        std::vector<uint8_t> readback(bytes[kind]->size());
+        ggml_backend_tensor_get(tensor, readback.data(), 0, readback.size());
+        if (readback != *bytes[kind]) {
+            fail(std::string("vertical GPU resident readback mismatch: ") +
+                 names[kind]);
+        }
+        std::fprintf(stderr,
+            "vertical diagnostic device-readback %s type=%s "
+            "shape=%" PRId64 ",%" PRId64 ",%" PRId64 " "
+            "strides=%zu,%zu,%zu bytes=%zu fingerprint64=%016" PRIx64
+            " bytewise=1\n",
+            names[kind], ggml_type_name(tensor->type),
+            tensor->ne[0], tensor->ne[1], tensor->ne[2],
+            tensor->nb[0], tensor->nb[1], tensor->nb[2],
+            readback.size(), vertical_fingerprint64(readback));
+    }
+}
+
+void vertical_verify_graph_inputs(
+        compute_graph & graph, ggml_backend_t backend,
+        const std::vector<float> & activation,
+        const std::vector<int32_t> & ids,
+        const std::vector<float> & weights,
+        const char * label) {
+    ggml_backend_synchronize(backend);
+    const auto actual_activation = read_live_tensor<float>(
+        graph.input, GGML_TYPE_F32, activation.size(), label);
+    const auto actual_ids = read_live_tensor<int32_t>(
+        graph.ids, GGML_TYPE_I32, ids.size(), label);
+    const auto actual_weights = read_live_tensor<float>(
+        graph.mix, GGML_TYPE_F32, weights.size(), label);
+    if (!float_vectors_bitwise_equal(activation, actual_activation) ||
+        actual_ids != ids ||
+        !float_vectors_bitwise_equal(weights, actual_weights)) {
+        fail(std::string("vertical uploaded graph inputs differ: ") + label);
+    }
+    std::fprintf(stderr,
+        "vertical diagnostic %s activation/ids/weights upload bitwise=1 "
+        "activation_shape=%" PRId64 ",%" PRId64 ",%" PRId64 " "
+        "ids_shape=%" PRId64 ",%" PRId64 " "
+        "weights_shape=%" PRId64 ",%" PRId64 ",%" PRId64 "\n",
+        label,
+        graph.input->ne[0], graph.input->ne[1], graph.input->ne[2],
+        graph.ids->ne[0], graph.ids->ne[1],
+        graph.mix->ne[0], graph.mix->ne[1], graph.mix->ne[2]);
+}
+
 void vertical_set_graph_inputs(compute_graph & graph,
                                const std::vector<float> & activation,
                                const std::vector<int32_t> & ids,
@@ -3579,7 +3684,8 @@ std::vector<float> vertical_compute_route(
         vertical_layer_runtime & layer,
         ggml_backend_t cpu_backend, ggml_backend_t gpu_backend,
         const std::vector<float> & activation,
-        const tesy_route_partition & route) {
+        const tesy_route_partition & route,
+        bool diagnostic = false) {
     const size_t n_cpu = route.cpu_global_ids.size();
     const size_t n_gpu = route.gpu_global_ids.size();
     if (n_cpu + n_gpu != static_cast<size_t>(k_top_k)) {
@@ -3596,6 +3702,9 @@ std::vector<float> vertical_compute_route(
         cpu = layer.cpu_graphs[n_cpu].get();
         vertical_set_graph_inputs(*cpu, activation, route.cpu_global_ids,
                                   route.cpu_weights);
+        if (diagnostic) vertical_verify_graph_inputs(
+            *cpu, cpu_backend, activation, route.cpu_global_ids,
+            route.cpu_weights, "CPU compact inputs");
         compute(cpu_backend, *cpu);
     }
     if (n_gpu) {
@@ -3607,6 +3716,9 @@ std::vector<float> vertical_compute_route(
         gpu = layer.gpu_graphs[n_gpu].get();
         vertical_set_graph_inputs(*gpu, activation, route.gpu_local_ids,
                                   route.gpu_weights);
+        if (diagnostic) vertical_verify_graph_inputs(
+            *gpu, gpu_backend, activation, route.gpu_local_ids,
+            route.gpu_weights, "GPU compact inputs");
         compute(gpu_backend, *gpu);
     }
     if (cpu && gpu) {
@@ -3621,6 +3733,69 @@ std::vector<float> vertical_compute_route(
     if (cpu) return read_output(cpu_backend, cpu->output);
     if (gpu) return read_output(gpu_backend, gpu->output);
     fail("vertical route has no executor");
+}
+
+std::array<std::vector<float>, k_vertical_stage_names.size()>
+vertical_capture_mixed_stages(
+        vertical_layer_runtime & layer,
+        ggml_backend_t cpu_backend, ggml_backend_t gpu_backend,
+        const tesy_route_partition & route,
+        const std::vector<int32_t> & original_ids,
+        const std::vector<float> & original_weights) {
+    std::array<std::vector<float>, k_vertical_stage_names.size()> result;
+    const size_t n_cpu = route.cpu_global_ids.size();
+    const size_t n_gpu = route.gpu_global_ids.size();
+    if (original_ids.size() != k_top_k ||
+        original_weights.size() != k_top_k || n_cpu + n_gpu != k_top_k) {
+        fail("vertical diagnostic route shape mismatch");
+    }
+    for (size_t stage = 0; stage < result.size(); ++stage) {
+        std::vector<float> cpu_values;
+        std::vector<float> gpu_values;
+        if (n_cpu) {
+            cpu_values = read_live_tensor<float>(
+                layer.cpu_graphs[n_cpu]->diagnostic_stages[stage],
+                GGML_TYPE_F32, static_cast<size_t>(k_embd) * n_cpu,
+                "vertical CPU expert stage");
+        }
+        if (n_gpu) {
+            ggml_backend_synchronize(gpu_backend);
+            gpu_values = read_live_tensor<float>(
+                layer.gpu_graphs[n_gpu]->diagnostic_stages[stage],
+                GGML_TYPE_F32, static_cast<size_t>(k_embd) * n_gpu,
+                "vertical GPU expert stage");
+        }
+        result[stage].resize(static_cast<size_t>(k_embd * k_top_k));
+        for (size_t slot = 0; slot < original_ids.size(); ++slot) {
+            const int32_t expert = original_ids[slot];
+            const auto gpu_found = std::find(
+                route.gpu_global_ids.begin(), route.gpu_global_ids.end(), expert);
+            const bool gpu = gpu_found != route.gpu_global_ids.end();
+            const auto cpu_found = std::find(
+                route.cpu_global_ids.begin(), route.cpu_global_ids.end(), expert);
+            if (gpu == (cpu_found != route.cpu_global_ids.end())) {
+                fail("vertical diagnostic slot is missing or duplicated");
+            }
+            const size_t local = gpu
+                ? static_cast<size_t>(gpu_found - route.gpu_global_ids.begin())
+                : static_cast<size_t>(cpu_found - route.cpu_global_ids.begin());
+            const auto & values = gpu ? gpu_values : cpu_values;
+            std::memcpy(result[stage].data() + slot * k_embd,
+                        values.data() + local * k_embd,
+                        static_cast<size_t>(k_embd) * sizeof(float));
+            if (stage == 0) {
+                std::fprintf(stderr,
+                    "vertical diagnostic slot=%zu expert=%" PRId32
+                    " backend=%s local=%zu local_id=%" PRId32
+                    " routing_weight=%.9g\n",
+                    slot, expert, gpu ? "GPU" : "CPU", local,
+                    gpu ? route.gpu_local_ids[local] : route.cpu_global_ids[local],
+                    original_weights[slot]);
+            }
+        }
+    }
+    (void) cpu_backend;
+    return result;
 }
 
 size_t vertical_gpu_allocation_bytes(const vertical_layer_runtime & layer) {
@@ -3656,10 +3831,12 @@ struct vertical_reference_event {
     std::vector<int32_t> experts;
     std::vector<float> weights;
     std::vector<float> output;
+    std::array<std::vector<float>, k_vertical_stage_names.size()> stages;
 };
 
 struct vertical_reference_state {
     bool enabled = false;
+    bool numerical_diagnostic = false;
     int token_ordinal = 0;
     std::vector<std::array<vertical_reference_event, 24>> events;
 };
@@ -3669,6 +3846,22 @@ bool vertical_reference_callback(ggml_tensor * tensor, bool ask,
     auto * state = static_cast<vertical_reference_state *>(user_data);
     if (!state) fail("vertical stock reference callback state missing");
     if (!state->enabled) return ask ? false : true;
+    if (state->numerical_diagnostic) {
+        for (size_t stage = 0; stage < k_vertical_stage_names.size(); ++stage) {
+            const std::string name =
+                std::string(k_vertical_stage_names[stage]) + "-2";
+            if (name != tensor->name) continue;
+            if (ask) return true;
+            auto & captured = state->events.at(
+                static_cast<size_t>(state->token_ordinal))[2].stages[stage];
+            if (!captured.empty()) fail("duplicate stock expert stage capture");
+            captured = read_live_tensor<float>(
+                tensor, GGML_TYPE_F32,
+                static_cast<size_t>(k_embd * k_top_k),
+                "vertical stock expert stage");
+            return true;
+        }
+    }
     for (int layer = 0; layer < 24; ++layer) {
         const std::string suffix = std::to_string(layer);
         const std::array<std::string, 4> names{
@@ -3716,8 +3909,11 @@ struct vertical_hook_state {
     int token_ordinal = 0;
     bool active = false;
     bool invoked = false;
+    bool numerical_diagnostic = false;
     const vertical_reference_state * reference = nullptr;
     std::string model_path;
+    std::filesystem::path diagnostic_root;
+    std::vector<float> layer2_ffn_output;
     std::array<vertical_layer_runtime, 24> layers;
     std::vector<vertical_event> events;
 };
@@ -3854,13 +4050,41 @@ ggml_status vertical_live_compute_hook(ggml_cgraph * graph,
             layer.gpu_resident = make_tensor_set(
                 bytes, static_cast<int>(resident_ids.size()),
                 state->gpu_buft, state->gpu_buft);
+            if (state->numerical_diagnostic && layer_index == 2) {
+                vertical_verify_resident_readback(
+                    *layer.gpu_resident, bytes, stock_tensors,
+                    state->gpu_backend);
+            }
             layer.initialized = true;
         } else if (layer.stock_tensors != stock_tensors) {
             fail("vertical stock weight tensor identity changed across decodes");
         }
         const auto output = vertical_compute_route(
             layer, state->cpu_backend, state->gpu_backend,
-            activation, partition);
+            activation, partition,
+            state->numerical_diagnostic && layer_index == 2);
+        if (state->numerical_diagnostic && layer_index == 2) {
+            if (!float_vectors_bitwise_equal(
+                    activation,
+                    state->reference->events.at(
+                        static_cast<size_t>(state->token_ordinal))[2].activation)) {
+                fail("vertical diagnostic layer-2 activation is not bitwise stock");
+            }
+            const auto stages = vertical_capture_mixed_stages(
+                layer, state->cpu_backend, state->gpu_backend,
+                partition, experts, weights);
+            for (size_t stage = 0; stage < stages.size(); ++stage) {
+                write_reinjection_logits(
+                    (state->diagnostic_root /
+                     (std::string("layer2-mixed-") +
+                      k_vertical_stage_names[stage] + ".f32")).string(),
+                    stages[stage]);
+            }
+            state->layer2_ffn_output = output;
+            write_reinjection_logits(
+                (state->diagnostic_root / "layer2-mixed-ffn.f32").string(),
+                output);
+        }
         if (state->reference) {
             const auto & ref = state->reference->events.at(
                 static_cast<size_t>(state->token_ordinal))[
@@ -4017,6 +4241,7 @@ void run_vertical_live_exactness(
     if (stock_logits.empty()) fail("vertical stock produced no continuation");
 
     vertical_reference_state reference;
+    reference.numerical_diagnostic = opt.vertical_numerical_diagnostic;
     reference.events.resize(stock_logits.size());
     {
         llama_context * ctx = vertical_make_context(
@@ -4054,6 +4279,27 @@ void run_vertical_live_exactness(
         llama_free(ctx);
     }
 
+    const auto diagnostic_root =
+        std::filesystem::path(opt.output).parent_path();
+    if (opt.vertical_numerical_diagnostic) {
+        const auto & event = reference.events[0][2];
+        for (size_t stage = 0; stage < event.stages.size(); ++stage) {
+            if (event.stages[stage].size() !=
+                static_cast<size_t>(k_embd * k_top_k)) {
+                fail(std::string("vertical diagnostic stock stage missing: ") +
+                     k_vertical_stage_names[stage]);
+            }
+            write_reinjection_logits(
+                (diagnostic_root /
+                 (std::string("layer2-stock-") +
+                  k_vertical_stage_names[stage] + ".f32")).string(),
+                event.stages[stage]);
+        }
+        write_reinjection_logits(
+            (diagnostic_root / "layer2-stock-ffn.f32").string(),
+            event.output);
+    }
+
     vertical_hook_state state;
     state.cpu_backend = cpu_backend;
     state.gpu_backend = gpu_backend;
@@ -4061,6 +4307,8 @@ void run_vertical_live_exactness(
     state.layers_to_replace = opt.vertical_layers;
     state.reference = &reference;
     state.model_path = opt.model;
+    state.numerical_diagnostic = opt.vertical_numerical_diagnostic;
+    state.diagnostic_root = diagnostic_root;
     std::vector<llama_token> candidate_tokens;
     std::vector<parity> logits_parity;
     {
