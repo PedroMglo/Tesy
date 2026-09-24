@@ -142,6 +142,14 @@ This pairing reduces fixed order bias without changing the workload.
 
 Record median, p95, min, max, mean, and all 21 sample values for both paths.
 
+The raw result must also serialize and the validator must require:
+
+- `async_schedule=post_d2h_gpu_enqueue_cpu_sync_gpu_wait`;
+- `paired_sample_order=even_serial_async_odd_async_serial`.
+
+A binary that reports a different scheduling identity is not admitted under
+this protocol even if its timing fields are otherwise well formed.
+
 ## Trace weighting
 
 Use only the admitted grouped histogram:
