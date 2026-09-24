@@ -2100,6 +2100,113 @@ int main(int argc, char ** argv) {
     const std::string cpu_bias_buft_name =
         ggml_backend_buft_name(cpu_bias_buft);
 
+    if (opt.live_handoff_exactness) {
+        const live_handoff_result result =
+            run_live_handoff_exactness(
+                opt,
+                cpu.backend,
+                gpu.backend,
+                cpu_weight_buft,
+                cpu_bias_buft,
+                gpu_buft);
+
+        FILE * out = std::fopen(opt.output.c_str(), "wx");
+        if (!out) {
+            fail(
+                "refusing or unable to create output: " +
+                opt.output);
+        }
+
+        std::fprintf(
+            out,
+            "{\"schema\":\"tesy.live_moe_handoff_exactness.v1\","
+            "\"classification\":"
+            "\"MEASURED_LIVE_MOE_HANDOFF_EXACTNESS\","
+            "\"layer\":0,\"ngl\":0,"
+            "\"decode_input_token\":%" PRId32 ","
+            "\"stock_decode_return_code\":%d,"
+            "\"handoff_decode_return_code\":%d,"
+            "\"stock_rollback\":%s,"
+            "\"handoff_rollback\":%s,"
+            "\"activation_tensor\":\"attn_post_norm-0\","
+            "\"topk_tensor\":\"ffn_moe_topk-0\","
+            "\"routing_weight_tensor\":"
+            "\"ffn_moe_weights_softmax-0\","
+            "\"stock_output_tensor\":\"ffn_moe_out-0\","
+            "\"activation_bitwise_equal\":%s,"
+            "\"activation_parity\":",
+            result.decode_input_token,
+            result.stock_decode_return_code,
+            result.handoff_decode_return_code,
+            result.stock_rollback ? "true" : "false",
+            result.handoff_rollback ? "true" : "false",
+            result.activation_bitwise_equal ? "true" : "false");
+
+        print_parity(out, result.activation_parity);
+
+        std::fputs(",\"selected_experts\":[", out);
+        for (size_t i = 0; i < result.selected_experts.size(); ++i) {
+            if (i != 0) {
+                std::fputc(',', out);
+            }
+            std::fprintf(out, "%d", result.selected_experts[i]);
+        }
+
+        std::fputs("],\"routing_weights\":[", out);
+        for (size_t i = 0; i < result.routing_weights.size(); ++i) {
+            if (i != 0) {
+                std::fputc(',', out);
+            }
+            std::fprintf(out, "%.9g", result.routing_weights[i]);
+        }
+
+        std::fputs("],\"cases\":[", out);
+        for (size_t i = 0; i < result.cases.size(); ++i) {
+            if (i != 0) {
+                std::fputc(',', out);
+            }
+            const routed_exactness_result & row =
+                result.cases[i];
+            std::fprintf(
+                out,
+                "{\"gpu_hits\":%d,\"cpu_misses\":%d,"
+                "\"serial_vs_stock\":",
+                row.gpu_hits,
+                row.cpu_misses);
+            print_parity(out, row.serial_vs_stock);
+            std::fputs(",\"async_vs_stock\":", out);
+            print_parity(out, row.async_vs_stock);
+            std::fputs(",\"async_vs_serial\":", out);
+            print_parity(out, row.async_vs_serial);
+            std::fputc('}', out);
+        }
+
+        std::fputs(
+            "],\"parity_thresholds\":{"
+            "\"relative_max_max\":0.005,"
+            "\"cosine_min\":0.9999},"
+            "\"decision\":\"LIVE_MOE_HANDOFF_EXACTNESS_GO\","
+            "\"claim_boundary\":"
+            "\"Correctness-only in-process handoff for one repeated stock "
+            "layer-0 route. The stock-reference arm supplies authoritative "
+            "activation, top-k, final routing weights and ffn_moe_out. "
+            "After explicit KV rollback, the handoff arm early-stops at the "
+            "same final routing weights and Tesy executes controlled h=2/h=3 "
+            "serial and async compact FFNs using that live activation. "
+            "No timing, output reinjection, committed-token continuation, "
+            "cache policy, prefetch or physical traffic claim follows.\"}\n",
+            out);
+
+        if (std::fclose(out) != 0) {
+            fail("failed closing live handoff exactness output");
+        }
+
+        std::printf("PASS_LIVE_MOE_HANDOFF_EXACTNESS\n");
+        std::printf("decision: LIVE_MOE_HANDOFF_EXACTNESS_GO\n");
+        std::printf("output: %s\n", opt.output.c_str());
+        return 0;
+    }
+
     if (opt.routed_exactness) {
         const std::vector<float> input =
             read_exact_f32_file(
