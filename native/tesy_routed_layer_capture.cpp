@@ -516,7 +516,7 @@ int main(int argc, char ** argv) {
     std::vector<llama_token> generated;
     generated.reserve(k_generated_tokens);
 
-    const llama_token first =
+    llama_token first =
         llama_sampler_sample(sampler, ctx, -1);
     if (llama_vocab_is_eog(vocab, first)) {
         llama_sampler_free(sampler);

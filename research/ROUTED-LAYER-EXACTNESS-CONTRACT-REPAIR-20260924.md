@@ -43,3 +43,16 @@ evidence.
 
 Next discriminating gate: stack the repaired commit, verify inputs and host,
 then build and run the frozen correctness-only campaign once.
+
+## Native compile repair
+
+The first build after this record compiled `tesy-mixed-residency` but failed
+`tesy-routed-layer-capture` because the pinned llama.cpp declaration of
+`llama_batch_get_one` accepts a mutable `llama_token *`. The capture program
+passed the address of a `const llama_token` for the first generated token.
+
+The repair makes that local token mutable. It does not modify the token value,
+greedy sampling, capture callback, replay inputs, comparator, measurement
+policy or any criterion. Focused validation remained PASS (48 tests), and the
+full model-free suite remained PASS (219 tests). Rebuild both executables at
+the successor commit before any physical campaign.
