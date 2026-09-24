@@ -6,6 +6,11 @@ Capacity evidence commit: `5a8bbf08eb95069b1847f724e5d1be98c6392678`
 Capacity evidence: `research/results/n-cpu-moe-capacity-20260923T233416Z/`  
 Classification: prospective diagnostic pilot
 
+This revision applies only to a future campaign identity. The preserved
+pre-request failures at `results/n-cpu-moe-timing-pilot-20260924T000834Z` and
+`results/n-cpu-moe-timing-pilot-20260924T001215Z` remain FAIL; neither
+produced a timing observation.
+
 ## Purpose
 
 The published capacity gate admitted manual placements `N=12,16,20,24`
@@ -48,6 +53,12 @@ The pilot loads:
 - verifies that commit `5a8bbf08...` is an ancestor of the pilot HEAD;
 - replays its exact `-c/-ngl/-ts/-ot` argv with `--fit off`.
 
+The runner freezes the full server argv in `server-argv.json`, launches that
+argv directly, and requires byte-for-byte argument-list equality with the live
+`/proc/<pid>/cmdline` before any request. Pinned source, build and mapped
+backend identity must also PASS. This is aggregate placement authority under
+the frozen stock backend, not per-tensor equality.
+
 Manual placements use:
 
 - `--ctx-size 4096`;
@@ -70,7 +81,7 @@ sampling, token confirmation or expert semantics are changed.
 - temperature: 0;
 - top-k: 1;
 - seed: 42;
-- prompt cache disabled;
+- prompt reuse disabled on the request (`cache_prompt=false`);
 - server warmup disabled;
 - fresh `llama-server` process per placement.
 
@@ -93,14 +104,20 @@ Before model timing:
 After each server health PASS and before its request:
 
 - verify `/proc/<pid>/exe`;
+- require exact `/proc/<pid>/cmdline` equality with `server-argv.json`;
 - verify the pre-hashed `libggml-cuda.so` is the backend actually mapped by
   that process;
-- compare `llama-server`-reported aggregate GPU/Host model buffers with the
-  same-placement `llama-fit-params --fit-print` projection;
-- require both aggregate model-buffer deltas to be within 2 MiB.
+- compare the `llama-server`-reported CUDA0 model buffer with the
+  same-placement `llama-fit-params --fit-print` logical CUDA0 projection,
+  requiring a delta no greater than 2 MiB;
+- when fit-print projects Host model allocation above zero, require a positive
+  `CPU_Mapped` Host model buffer in the runtime load log;
+- record the Host mmap buffer span as `NOT_COMPARABLE_MMAP_SPAN`, with no
+  equality test against fit-print Host logical tensor allocation.
 
-The model-buffer comparison qualifies realized aggregate placement only. It is
-not per-tensor identity and is not physical VRAM/DRAM/PCIe traffic.
+Process RSS, swap and system MemAvailable are measured separately. The mmap
+span is neither resident DRAM nor physical traffic; CUDA0 aggregate parity
+does not prove per-tensor identity.
 
 ## Capacity admission
 
@@ -129,23 +146,24 @@ proof that the subsequent load will fit.
 
 ## Realized placement gate
 
-Before any timed request, the runner compares the same-placement
-`llama-fit-params --fit-print` model-memory projection with the aggregate
-model-buffer allocation reported by the live `llama-server` load logs.
+The quantitative equality gate is limited to CUDA0: the same-placement
+fit-print logical CUDA0 model MiB and runtime CUDA0 model-buffer MiB must
+differ by at most 2 MiB. The estimator prints integer MiB; the server logs
+fractional MiB. This tolerance is unchanged from the failed campaigns.
 
-The comparison is per tier:
+For projected Host model allocation above zero, the pinned mmap runtime must
+report a positive `CPU_Mapped` model buffer. Its reported span is retained but
+classified `NOT_COMPARABLE_MMAP_SPAN`. The fit path uses `no_alloc=true` and
+`load_mode=NONE`, so fit-print Host bytes describe logical tensor allocation.
+The mmap runtime buffer spans first-to-last mapped tensor offsets and may
+include gaps. The former Host equality gate was invalidated by Attempt 2 and
+is removed prospectively, without changing either failed campaign.
 
-- `CUDA0` projected model MiB vs observed CUDA0 model-buffer MiB;
-- `Host` projected model MiB vs the sum of non-CUDA0 model buffers.
-
-The frozen tolerance is 2 MiB per tier. The estimator prints integer MiB using
-integer division at the pinned source, while server logs report fractional MiB;
-the tolerance covers representation/alignment slack without admitting a
-materially different placement.
-
-This gate is `MEASURED_RUNTIME_PLACEMENT_LOG_DIAGNOSTIC`. It establishes
-aggregate GPU/Host materialization only; it is not per-tensor identity and is
-not physical VRAM/DRAM/PCIe traffic.
+`tesy.stock_placement_telemetry.v2` is a
+`MEASURED_RUNTIME_PLACEMENT_LOG_DIAGNOSTIC`. Combined with frozen/live argv
+equality and pinned executable/source/build/mapped backend, it qualifies
+aggregate CUDA0 placement and Host mmap buffer presence. It does not prove
+per-tensor equality or physical VRAM/DRAM/PCIe traffic.
 
 ## Exactness gate
 
@@ -180,11 +198,12 @@ Every run must have:
 - process VmSwap == 0;
 - observed free GPU memory at peak >= 1024 MiB;
 - observed MemAvailable >= 2048 MiB;
-- quantitative placement materialization PASS: llama-server-reported CUDA0/Host
-  model-buffer allocation must match the same-placement llama-fit-params
-  projection within 2 MiB per tier;
+- quantitative CUDA0 model-buffer parity PASS within 2 MiB and positive
+  `CPU_Mapped` Host buffer presence when Host logical allocation is projected;
+- Host mmap span classified `NOT_COMPARABLE_MMAP_SPAN`;
 - non-empty placement/load log extract retained as raw diagnostic evidence;
-- runtime backend provenance PASS.
+- exact live argv and runtime backend provenance PASS;
+- finite, complete telemetry and successful resource-monitor exit.
 
 OOM, missing telemetry, resource violation, token mismatch or provenance
 failure stops the campaign and requires a new identity.

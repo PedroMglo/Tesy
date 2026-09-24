@@ -16,7 +16,7 @@ FFN tensors and a suffix of later expert tensors to CPU.
 
 A full multi-point timing sweep is not authorized yet.
 
-## Next gate
+## Selected pilot
 
 Run only the three-point diagnostic pilot:
 
@@ -35,14 +35,29 @@ server, then performs one fresh-process observation per placement.
 
 ## Required local validation
 
-Before model-bearing execution:
+Before freezing a new implementation HEAD, validate the changed script,
+Python modules and focused tests. Run the full local suite once at the end if
+the focused gate passes. No model run is part of this protocol revision.
+
+For this revision:
 
 ```bash
-ruff check .
-pytest -q
-bash -n scripts/*.sh
-python -m compileall -q src tests
+bash -n scripts/run_n_cpu_moe_capacity_pareto.sh
+ruff check src/tesy/runtime_provenance.py src/tesy/placement_telemetry.py \
+  src/tesy/publish_timing_pilot.py tests/test_runtime_provenance.py \
+  tests/test_placement_telemetry.py tests/test_publish_timing_pilot.py \
+  tests/test_capacity_runner_contract.py
+python -m compileall -q src/tesy/runtime_provenance.py \
+  src/tesy/placement_telemetry.py src/tesy/publish_timing_pilot.py \
+  tests/test_runtime_provenance.py tests/test_placement_telemetry.py \
+  tests/test_publish_timing_pilot.py tests/test_capacity_runner_contract.py
+pytest -q tests/test_runtime_provenance.py tests/test_placement_telemetry.py \
+  tests/test_publish_timing_pilot.py tests/test_capacity_runner_contract.py \
+  tests/test_placement_capacity.py
 ```
+
+Run `pytest -q` once after the focused gate, if it remains cheap. Before a
+future physical run, repeat the local gate on the exact clean HEAD.
 
 No full GitHub Actions run is required for this development gate. The repository
 workflow is configured so the full matrix runs only at `Ready for review` or
@@ -56,8 +71,11 @@ Preserve and stop on:
 - current-host capacity rejection for any of the three placements;
 - model/server load failure or OOM;
 - runtime backend mapping mismatch;
-- realized CUDA0/Host model buffers differing from the same-placement
-  fit-print projection by more than 2 MiB;
+- exact live server argv mismatch;
+- CUDA0 model buffer differing from the same-placement fit-print projection
+  by more than 2 MiB;
+- missing positive `CPU_Mapped` buffer when Host logical allocation is
+  projected, or any Host mmap span treated as equal to Host logical bytes;
 - missing placement evidence;
 - process swap;
 - measured GPU/host headroom violation;
@@ -92,7 +110,8 @@ First inspect:
 
 - exact trajectory equality;
 - live capacity recheck;
-- realized placement evidence, including projected vs observed aggregate GPU/Host model buffers;
+- realized CUDA0 parity, Host mmap presence and the explicit
+  `NOT_COMPARABLE_MMAP_SPAN` classification;
 - TTFT/prompt/decode timing;
 - observed VRAM/RSS/swap;
 - thermal/resource state.
@@ -197,3 +216,38 @@ run is authorized by this pilot alone.
 - Next discriminating gate: prospectively specify a comparable Host placement
   measure and its physical-residency interpretation, then validate it in a
   new diagnostic campaign before any timing campaign.
+
+## Prospective argv-bound CUDA placement protocol
+
+- Objective: replace the invalid Host equality gate before another physical
+  attempt. Base commit `3039bbd34e8f1f7a504f61eba9281309a2f06369`, tree
+  `dd57d4532ffde99ae7261862e8d4973dc7db3e13`;
+  clean local worktree after advancing to the verified PR #10 remote HEAD.
+- Evidence class: source-backed semantics and model-free validation. Attempt 2
+  physically measured CUDA0 parity (6095.35 versus 6095 MiB), while its
+  10949.33 MiB `CPU_Mapped` span and 5440 MiB logical Host fit value are
+  different quantities. Neither failed campaign is reclassified.
+- Alternatives: change runtime load mode, increase Host tolerance, or retain
+  stock mmap behavior and bind the exact live argv while checking only
+  comparable CUDA0 bytes plus Host mmap buffer presence.
+- Decision: retain the frozen stock placement, model and workload. Require
+  `server-argv.json` to equal `/proc/<pid>/cmdline`, pinned executable/source/
+  build and mapped pre-hashed `libggml-cuda.so`, CUDA0 parity within 2 MiB,
+  and a positive `CPU_Mapped` buffer when Host logical allocation is nonzero.
+  Classify Host mmap span as `NOT_COMPARABLE_MMAP_SPAN`; measure RSS, swap and
+  MemAvailable separately. The publisher rejects contradictory telemetry
+  PASS fields and non-finite JSON. No per-tensor or physical byte claim follows.
+- Tests: `bash -n` on the changed runner, focused `ruff check` and
+  `compileall`, and focused `pytest` (52 passed) completed. After publisher
+  hardening, its targeted tests passed (12 passed). One final full local
+  `pytest -q` passed (124 passed). `git diff --check` passed. The initial
+  focused lint found one pre-existing overlong contract-test line; formatting
+  was corrected before the PASS gates.
+- NOT_RUN: the revised protocol has not been exercised on the physical host;
+  64-token greedy trajectory equality and timings remain NOT_RUN.
+- Failures and limits: both pre-request failures remain preserved at their
+  original roots. The revised gate cannot establish individual expert
+  placement, resident DRAM, physical traffic or a stable performance winner.
+- Next discriminating gate: audit the implementation and publication diff,
+  freeze a clean exact HEAD, then create a new campaign identity for only
+  `auto-fit-frozen`, `N=12` and `N=24`. Never reuse either failed root.
