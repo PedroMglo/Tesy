@@ -70,3 +70,22 @@ def test_async_runner_requires_project_venv_and_new_output_root():
         "ba9e989d9713f8fd5d51ebd5112c8f0e6f12e4af821e2e7eceb408ed5ba423ab"
         in text
     )
+
+
+def test_async_build_is_bound_to_current_source_head():
+    root = Path(__file__).resolve().parents[1]
+    bootstrap = (
+        root / "scripts" / "bootstrap_mixed_residency.sh"
+    ).read_text(encoding="utf-8")
+    runner = (
+        root / "scripts" / "run_mixed_residency_async_overlap.sh"
+    ).read_text(encoding="utf-8")
+
+    assert "tesy.mixed_residency_native_build.v1" in bootstrap
+    assert "native_source_sha256" in bootstrap
+    assert "cmake_lists_sha256" in bootstrap
+    assert "tool_sha256" in bootstrap
+    assert "tesy_head" in bootstrap
+    assert "llama_head" in bootstrap
+    assert "tesy-mixed-residency-build-provenance.json" in runner
+    assert "native build provenance mismatch" in runner
