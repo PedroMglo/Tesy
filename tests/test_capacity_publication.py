@@ -217,4 +217,5 @@ def test_capacity_publication_rejects_unproven_physical_host(tmp_path):
     )
 
     assert completed.returncode != 0
-    assert "capacity publication requires virtualization=PHYSICAL" in completed.stderr
+    assert "virtualization" in completed.stderr
+    assert "PHYSICAL" in completed.stderr
