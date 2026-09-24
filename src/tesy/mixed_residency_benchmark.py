@@ -115,9 +115,13 @@ def validate_mixed_residency_raw(payload: dict[str, Any]) -> dict[str, Any]:
             "CPU weight/bias buffer types must be non-empty strings"
         )
 
+    if payload.get("warmup") != 3:
+        raise MixedResidencyBenchmarkError("warmup must equal frozen value 3")
     samples = payload.get("samples")
-    if isinstance(samples, bool) or not isinstance(samples, int) or samples < 5:
-        raise MixedResidencyBenchmarkError("samples must be an integer >= 5")
+    if samples != 21:
+        raise MixedResidencyBenchmarkError("samples must equal frozen value 21")
+    if payload.get("inner") != 5:
+        raise MixedResidencyBenchmarkError("inner must equal frozen value 5")
 
     cases = payload.get("cases")
     if not isinstance(cases, list):
