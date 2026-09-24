@@ -99,9 +99,9 @@ def validate_expert_crossover(payload: dict[str, Any]) -> dict[str, Any]:
             raise ExpertCrossoverError(f"output activation bytes mismatch for k={k}")
 
         buffer_type = row.get("cpu_weight_buffer_type")
-        if buffer_type != "CPU_REPACK":
+        if buffer_type != "CPU":
             raise ExpertCrossoverError(
-                f"expected CPU_REPACK for k={k}, got {buffer_type!r}"
+                f"expected CPU default buffer for k={k}, got {buffer_type!r}"
             )
         weight_buffer_bytes = row.get("cpu_weight_buffer_bytes")
         bias_buffer_bytes = row.get("cpu_bias_buffer_bytes")
