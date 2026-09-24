@@ -18,6 +18,7 @@
 #include <cstring>
 #include <filesystem>
 #include <fstream>
+#include <functional>
 #include <iterator>
 #include <limits>
 #include <memory>
@@ -4217,7 +4218,10 @@ ggml_status vertical_live_compute_hook(ggml_cgraph * graph,
 llama_context * vertical_make_context(llama_model * model,
                                       size_t prompt_count,
                                       const options & opt,
-                                      vertical_reference_state * reference = nullptr) {
+                                      vertical_reference_state * reference = nullptr,
+                                      ggml_backend_sched_eval_callback callback = nullptr,
+                                      void * callback_data = nullptr) {
+    if (reference && callback) fail("vertical context has conflicting callbacks");
     llama_context_params params = llama_context_default_params();
     params.n_ctx = opt.live_ctx;
     params.n_batch = static_cast<uint32_t>(prompt_count);
@@ -4228,6 +4232,9 @@ llama_context * vertical_make_context(llama_model * model,
     if (reference) {
         params.cb_eval = vertical_reference_callback;
         params.cb_eval_user_data = reference;
+    } else if (callback) {
+        params.cb_eval = callback;
+        params.cb_eval_user_data = callback_data;
     }
     llama_context * ctx = llama_init_from_model(model, params);
     if (!ctx) fail("vertical context creation failed");
@@ -4240,6 +4247,308 @@ llama_sampler * vertical_make_greedy_sampler() {
     llama_sampler * sampler = llama_sampler_chain_init(params);
     llama_sampler_chain_add(sampler, llama_sampler_init_greedy());
     return sampler;
+}
+
+struct vertical_probe_sample {
+    std::string name;
+    std::vector<float> floats;
+    std::vector<int32_t> ids;
+};
+
+struct vertical_probe_state {
+    bool active = false;
+    const vertical_reference_event * expected = nullptr;
+    const std::vector<float> * injection = nullptr;
+    int ffn_observations = 0;
+    int injection_count = 0;
+    bool saw_activation = false;
+    bool saw_ids = false;
+    bool saw_weights = false;
+    bool pre_ffn_bitwise = false;
+    std::vector<vertical_probe_sample> downstream;
+};
+
+bool vertical_probe_callback(ggml_tensor * tensor, bool ask,
+                             void * user_data) {
+    auto * state = static_cast<vertical_probe_state *>(user_data);
+    if (!state || !state->expected) fail("vertical probe callback state missing");
+    if (!state->active) return ask ? false : true;
+    const std::string name = tensor->name;
+    auto capture_float = [&](size_t count, const char * label) {
+        if (ask) return std::vector<float>{};
+        return read_live_tensor<float>(tensor, GGML_TYPE_F32, count, label);
+    };
+    if (name == "attn_post_norm-2") {
+        if (ask) return true;
+        if (state->saw_activation || !float_vectors_bitwise_equal(
+                capture_float(static_cast<size_t>(k_embd), "probe activation"),
+                state->expected->activation)) {
+            fail("vertical suffix probe activation differs from frozen stock");
+        }
+        state->saw_activation = true;
+        return true;
+    }
+    if (name == "ffn_moe_topk-2") {
+        if (ask) return true;
+        if (state->saw_ids || read_live_tensor<int32_t>(
+                tensor, GGML_TYPE_I32, static_cast<size_t>(k_top_k),
+                "probe route") != state->expected->experts) {
+            fail("vertical suffix probe route differs from frozen stock");
+        }
+        state->saw_ids = true;
+        return true;
+    }
+    if (name == "ffn_moe_weights_softmax-2") {
+        if (ask) return true;
+        if (state->saw_weights || !float_vectors_bitwise_equal(
+                capture_float(static_cast<size_t>(k_top_k), "probe weights"),
+                state->expected->weights)) {
+            fail("vertical suffix probe weights differ from frozen stock");
+        }
+        state->saw_weights = true;
+        return true;
+    }
+    if (name == "ffn_moe_out-2") {
+        if (ask) return true;
+        if (++state->ffn_observations != 1 ||
+            !state->saw_activation || !state->saw_ids || !state->saw_weights) {
+            fail("vertical suffix probe FFN observation count/order invalid");
+        }
+        const auto before = capture_float(
+            static_cast<size_t>(k_embd), "probe stock FFN");
+        state->pre_ffn_bitwise = float_vectors_bitwise_equal(
+            before, state->expected->output);
+        if (!state->pre_ffn_bitwise) {
+            fail("vertical suffix probe pre-overwrite stock FFN differs");
+        }
+        if (state->injection) {
+            if (state->injection->size() != static_cast<size_t>(k_embd)) {
+                fail("vertical suffix probe injection length invalid");
+            }
+            for (float value : *state->injection) {
+                if (!std::isfinite(value)) fail("non-finite suffix probe injection");
+            }
+            ggml_backend_tensor_set(
+                tensor, state->injection->data(), 0,
+                state->injection->size() * sizeof(float));
+            const auto after = capture_float(
+                static_cast<size_t>(k_embd), "probe injected FFN");
+            if (!float_vectors_bitwise_equal(after, *state->injection)) {
+                fail("vertical suffix probe injection readback differs");
+            }
+            ++state->injection_count;
+        }
+        return true;
+    }
+    size_t count = 0;
+    bool ids = false;
+    if (name == "l_out-2") {
+        count = static_cast<size_t>(k_embd);
+    } else {
+        for (int layer = 3; layer < 24; ++layer) {
+            const std::string suffix = "-" + std::to_string(layer);
+            if (name == "ffn_inp" + suffix ||
+                name == "attn_post_norm" + suffix ||
+                name == "l_out" + suffix) {
+                count = static_cast<size_t>(k_embd);
+                break;
+            }
+            if (name == "ffn_moe_logits" + suffix) {
+                count = static_cast<size_t>(k_expert_count);
+                break;
+            }
+            if (name == "ffn_moe_weights_softmax" + suffix ||
+                name == "ffn_moe_topk" + suffix) {
+                count = static_cast<size_t>(k_top_k);
+                ids = name == "ffn_moe_topk" + suffix;
+                break;
+            }
+        }
+    }
+    if (count == 0) return ask ? false : true;
+    if (ask) return true;
+    for (const auto & sample : state->downstream) {
+        if (sample.name == name) fail("duplicate suffix probe node");
+    }
+    vertical_probe_sample sample;
+    sample.name = name;
+    if (ids) {
+        sample.ids = read_live_tensor<int32_t>(
+            tensor, GGML_TYPE_I32, count, "probe downstream topk");
+    } else {
+        sample.floats = capture_float(count, "probe downstream F32");
+    }
+    state->downstream.push_back(std::move(sample));
+    return true;
+}
+
+struct vertical_probe_arm {
+    llama_token first_token = -1;
+    llama_token second_token = -1;
+    std::vector<float> logits;
+    vertical_probe_state state;
+};
+
+vertical_probe_arm vertical_run_probe_arm(
+        llama_model * model, const std::vector<llama_token> & prompt_tokens,
+        const options & opt, llama_token expected_first_token,
+        const vertical_reference_event & event,
+        const std::vector<float> * injection,
+        const std::filesystem::path & root,
+        const std::string & arm_name) {
+    vertical_probe_arm arm;
+    arm.state.expected = &event;
+    arm.state.injection = injection;
+    llama_context * ctx = vertical_make_context(
+        model, prompt_tokens.size(), opt, nullptr,
+        vertical_probe_callback, &arm.state);
+    llama_sampler * sampler = vertical_make_greedy_sampler();
+    llama_batch prompt_batch = llama_batch_get_one(
+        const_cast<llama_token *>(prompt_tokens.data()),
+        static_cast<int32_t>(prompt_tokens.size()));
+    if (llama_decode(ctx, prompt_batch) != 0) fail("suffix probe prefill failed");
+    arm.first_token = llama_sampler_sample(sampler, ctx, -1);
+    if (arm.first_token != expected_first_token) {
+        fail("suffix probe first token differs from stock authority");
+    }
+    arm.state.active = true;
+    llama_batch batch = llama_batch_get_one(&arm.first_token, 1);
+    if (llama_decode(ctx, batch) != 0 || arm.state.ffn_observations != 1 ||
+        arm.state.injection_count != (injection ? 1 : 0)) {
+        fail("suffix probe committed decode/callback incomplete");
+    }
+    arm.state.active = false;
+    arm.logits = copy_reinjection_logits(
+        ctx, static_cast<size_t>(llama_vocab_n_tokens(llama_model_get_vocab(model))));
+    arm.second_token = llama_sampler_sample(sampler, ctx, -1);
+    write_reinjection_logits(
+        (root / (arm_name + "-logits.f32")).string(), arm.logits);
+    llama_sampler_free(sampler);
+    llama_free(ctx);
+    return arm;
+}
+
+void vertical_report_suffix_probe(
+        llama_model * model, const std::vector<llama_token> & prompt_tokens,
+        const options & opt, llama_token first_token,
+        const std::vector<float> & stock_logits,
+        const std::vector<float> & original_candidate_logits,
+        const vertical_reference_event & event,
+        const std::vector<float> & mixed_ffn,
+        const std::filesystem::path & root) {
+    const auto observed = vertical_run_probe_arm(
+        model, prompt_tokens, opt, first_token, event, nullptr,
+        root, "probe-stock-observed");
+    const auto control = vertical_run_probe_arm(
+        model, prompt_tokens, opt, first_token, event, &event.output,
+        root, "probe-stock-reinjected");
+    const auto intervention = vertical_run_probe_arm(
+        model, prompt_tokens, opt, first_token, event, &mixed_ffn,
+        root, "probe-mixed-reinjected");
+    const parity observed_vs_stock = compare_outputs(stock_logits, observed.logits);
+    const parity control_vs_observed = compare_outputs(
+        observed.logits, control.logits);
+    const parity control_vs_stock = compare_outputs(stock_logits, control.logits);
+    const parity intervention_vs_stock = compare_outputs(
+        stock_logits, intervention.logits);
+    const parity intervention_vs_original = compare_outputs(
+        original_candidate_logits, intervention.logits);
+    const auto & stock_nodes = observed.state.downstream;
+    const auto & control_nodes = control.state.downstream;
+    const auto & mixed_nodes = intervention.state.downstream;
+    if (!observed_vs_stock.pass || !control_vs_observed.pass ||
+        !control_vs_stock.pass || stock_nodes.size() != mixed_nodes.size() ||
+        stock_nodes.size() != control_nodes.size()) {
+        fail("suffix probe instrumentation control differs from stock");
+    }
+    std::string first_float;
+    std::string first_route_scores;
+    std::string first_topk;
+    std::string first_weights;
+    for (size_t i = 0; i < stock_nodes.size(); ++i) {
+        const auto & stock = stock_nodes[i];
+        const auto & same = control_nodes[i];
+        const auto & mixed = mixed_nodes[i];
+        if (stock.name != same.name || stock.name != mixed.name ||
+            stock.floats.size() != mixed.floats.size() ||
+            stock.ids.size() != mixed.ids.size() ||
+            !float_vectors_bitwise_equal(stock.floats, same.floats) ||
+            stock.ids != same.ids) {
+            fail("suffix probe graph node inventory differs");
+        }
+        if (!stock.ids.empty()) {
+            if (first_topk.empty() && stock.ids != mixed.ids) {
+                first_topk = stock.name;
+                std::fprintf(stderr, "vertical suffix first topk difference: %s\n",
+                             first_topk.c_str());
+            }
+        } else if (!float_vectors_bitwise_equal(stock.floats, mixed.floats)) {
+            const parity p = compare_outputs(stock.floats, mixed.floats);
+            if (first_float.empty()) {
+                first_float = stock.name;
+                std::fprintf(stderr,
+                    "vertical suffix first F32 difference: %s rel=%.9g max_abs=%.9g\n",
+                    first_float.c_str(), p.relative_max, p.max_abs);
+            }
+            if (first_route_scores.empty() &&
+                stock.name.rfind("ffn_moe_logits-", 0) == 0) {
+                first_route_scores = stock.name;
+                std::vector<float> scores = stock.floats;
+                std::sort(scores.begin(), scores.end(), std::greater<float>());
+                std::fprintf(stderr,
+                    "vertical suffix first router-score difference: %s "
+                    "rel=%.9g top4_top5_margin=%.9g\n",
+                    first_route_scores.c_str(), p.relative_max,
+                    static_cast<double>(scores[3]) - scores[4]);
+            }
+            if (first_weights.empty() &&
+                stock.name.rfind("ffn_moe_weights_softmax-", 0) == 0) {
+                first_weights = stock.name;
+                std::fprintf(stderr,
+                    "vertical suffix first routing-weight difference: %s rel=%.9g\n",
+                    first_weights.c_str(), p.relative_max);
+            }
+        }
+    }
+    FILE * out = std::fopen((root / "suffix-probe.json").c_str(), "wx");
+    if (!out) fail("cannot create suffix probe summary");
+    std::fputs("{\"schema\":\"tesy.vertical_numerical_suffix_probe.v1\","
+               "\"classification\":\"DIAGNOSTIC_NOT_ACCEPTANCE\","
+               "\"observed_vs_stock\":", out);
+    print_reinjection_parity(out, observed_vs_stock);
+    std::fputs(",\"control_vs_observed\":", out);
+    print_reinjection_parity(out, control_vs_observed);
+    std::fputs(",\"control_vs_stock\":", out);
+    print_reinjection_parity(out, control_vs_stock);
+    std::fputs(",\"intervention_vs_stock\":", out);
+    print_reinjection_parity(out, intervention_vs_stock);
+    std::fputs(",\"intervention_vs_original_candidate\":", out);
+    print_reinjection_parity(out, intervention_vs_original);
+    std::fprintf(out,
+        ",\"tokens\":{\"stock_observed\":[%" PRId32 ",%" PRId32 "],"
+        "\"stock_reinjected\":[%" PRId32 ",%" PRId32 "],"
+        "\"mixed_reinjected\":[%" PRId32 ",%" PRId32 "]},"
+        "\"injection_counts\":{\"stock_observed\":%d,"
+        "\"stock_reinjected\":%d,\"mixed_reinjected\":%d},"
+        "\"downstream_node_count\":%zu,"
+        "\"first_f32_difference\":\"%s\","
+        "\"first_router_score_difference\":\"%s\","
+        "\"first_topk_difference\":\"%s\","
+        "\"first_routing_weight_difference\":\"%s\"}\n",
+        observed.first_token, observed.second_token,
+        control.first_token, control.second_token,
+        intervention.first_token, intervention.second_token,
+        observed.state.injection_count, control.state.injection_count,
+        intervention.state.injection_count, stock_nodes.size(),
+        first_float.c_str(), first_route_scores.c_str(),
+        first_topk.c_str(), first_weights.c_str());
+    if (std::fclose(out) != 0) fail("cannot close suffix probe summary");
+    std::fprintf(stderr,
+        "vertical suffix probe rel stock-observed=%.9g "
+        "control-stock=%.9g mixed-stock=%.9g mixed-original=%.9g\n",
+        observed_vs_stock.relative_max, control_vs_stock.relative_max,
+        intervention_vs_stock.relative_max,
+        intervention_vs_original.relative_max);
 }
 
 void run_vertical_live_exactness(
@@ -4406,6 +4715,17 @@ void run_vertical_live_exactness(
                             event.experts[0], event.experts[1],
                             event.experts[2], event.experts[3]);
                     }
+                }
+                if (opt.vertical_numerical_diagnostic && ordinal == 0) {
+                    if (state.layer2_ffn_output.size() !=
+                        static_cast<size_t>(k_embd)) {
+                        fail("vertical diagnostic mixed FFN capture missing");
+                    }
+                    vertical_report_suffix_probe(
+                        model, prompt_tokens, opt, stock_tokens[0],
+                        stock_logits[0], candidate_logits,
+                        reference.events[0][2], state.layer2_ffn_output,
+                        root);
                 }
                 fail("vertical candidate full logits parity failed");
             }
