@@ -39,3 +39,15 @@ target_include_directories(
     "${LLAMA_CPP_SOURCE_DIR}/ggml/include"
 )
 target_link_libraries(tesy-gguf-inventory PRIVATE ggml)
+
+
+add_executable(tesy-expert-crossover tesy_expert_crossover.cpp)
+target_compile_features(tesy-expert-crossover PRIVATE cxx_std_17)
+target_compile_options(tesy-expert-crossover PRIVATE -Wall -Wextra -Wpedantic -Werror)
+target_include_directories(
+  tesy-expert-crossover
+  PRIVATE
+    "${LLAMA_CPP_SOURCE_DIR}/include"
+    "${LLAMA_CPP_SOURCE_DIR}/ggml/include"
+)
+target_link_libraries(tesy-expert-crossover PRIVATE llama ggml)
