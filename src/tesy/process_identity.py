@@ -80,6 +80,12 @@ def collect_process_identity(
             last_error = str(exc)
             time.sleep(sleep_seconds)
             continue
+        except ProcessIdentityError as exc:
+            if str(exc) != "empty process cmdline":
+                raise
+            last_error = str(exc)
+            time.sleep(sleep_seconds)
+            continue
 
         if observed_exe == expected_exe:
             mismatches: list[str] = []
