@@ -319,10 +319,18 @@ def _validate_raw_observations(root: Path, pilot: dict[str, Any]) -> None:
             "gpu_failed_samples": resources["gpu_failed_samples"],
             "runtime_provenance_status": runtime["status"],
             "placement_telemetry_status": placement_telemetry["status"],
-            "projected_gpu_model_mib": placement_telemetry["projected_model_mib"]["CUDA0"],
-            "projected_host_model_mib": placement_telemetry["projected_model_mib"]["Host"],
-            "observed_gpu_model_mib": placement_telemetry["observed_model_mib"]["CUDA0"],
-            "observed_host_model_mib": placement_telemetry["observed_model_mib"]["Host"],
+            "projected_gpu_model_mib": placement_telemetry["projected_model_mib"][
+                "CUDA0"
+            ],
+            "projected_host_model_mib": placement_telemetry["projected_model_mib"][
+                "Host"
+            ],
+            "observed_gpu_model_mib": placement_telemetry["observed_model_mib"][
+                "CUDA0"
+            ],
+            "observed_host_model_mib": placement_telemetry["observed_model_mib"][
+                "Host"
+            ],
             "placement_log_lines": placement_lines,
             "token_sha256": computed_hash,
         }
