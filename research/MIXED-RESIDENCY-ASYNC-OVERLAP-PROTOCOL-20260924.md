@@ -212,6 +212,9 @@ Before timing require:
   - CUDA architecture 89;
   - GCC/G++ 15;
   - pinned nvcc path;
+- native build-provenance sidecar binding the current clean Tesy HEAD,
+  `native/tesy_mixed_residency.cpp` SHA-256, `native/CMakeLists.txt`
+  SHA-256, pinned llama.cpp HEAD and executable SHA-256;
 - exact mixed-residency executable SHA-256;
 - exact argv;
 - exactly one mapped `libggml-cuda.so` with SHA-256;
