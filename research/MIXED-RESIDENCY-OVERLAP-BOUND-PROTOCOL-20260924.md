@@ -87,7 +87,11 @@ Therefore, for h=1..3:
 
 `BOUND = D2H + max(CPU_COMPUTE, GPU_COMPUTE) + H2D + AGGREGATION`.
 
-For h=0/h=4, the bound collapses to the sole CPU/GPU path.
+For h=0/h=4, no CPU/GPU compute overlap transformation exists. Their bound is
+therefore the **measured direct-wall median itself**. Their separately measured
+component medians remain decomposition diagnostics and are not substituted for
+the direct anchor, avoiding artificial headroom or regression from summing
+independently sampled medians.
 
 This is not a hardware lower bound on every possible scheduling design. It is
 the prospective bound for the specific concurrency mechanism we would
