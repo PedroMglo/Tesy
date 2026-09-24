@@ -120,6 +120,7 @@ from pathlib import Path
 expected = {
     "CMAKE_BUILD_TYPE": "Release",
     "GGML_CUDA": "ON",
+    "GGML_BACKEND_DL": "OFF",
     "CMAKE_CUDA_ARCHITECTURES": "89",
     "CMAKE_C_COMPILER": "/usr/bin/gcc-15",
     "CMAKE_CXX_COMPILER": "/usr/bin/g++-15",
@@ -290,7 +291,7 @@ monitor_pid=""
 
 [[ "$tool_rc" -eq 0 ]] || {
   echo "crossover tool failed with exit $tool_rc" >&2
-  exit "$tool_rc"
+  failure_report "$tool_rc" "tesy-expert-crossover" "$LINENO"
 }
 [[ -f "$out/raw.json" ]] || { echo "crossover raw result missing" >&2; exit 1; }
 
