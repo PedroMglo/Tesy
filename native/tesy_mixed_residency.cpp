@@ -1388,9 +1388,7 @@ live_handoff_result run_live_handoff_exactness(
         llama_model_free(model);
         fail("live handoff expert IDs differ from stock reference");
     }
-    if (!float_vectors_bitwise_equal(
-            stock_capture.weights,
-            handoff_capture.weights)) {
+    if (stock_capture.weights != handoff_capture.weights) {
         llama_sampler_free(sampler);
         llama_free(ctx);
         llama_model_free(model);

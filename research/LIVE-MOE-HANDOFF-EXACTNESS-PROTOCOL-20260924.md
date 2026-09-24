@@ -340,7 +340,7 @@ This gate does not establish:
 - serial/async speedup;
 - full-layer latency;
 - output reinjection correctness;
-- continuation to a committed token;
+- committed-token continuation;
 - TTFT, TPOT or tok/s;
 - cache/residency policy;
 - prefetch;
