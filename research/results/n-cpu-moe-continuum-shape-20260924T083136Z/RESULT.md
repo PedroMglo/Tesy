@@ -1,5 +1,15 @@
 # Manual stock placement continuum shape diagnostic
 
+> **Publication correction — 2026-09-24**
+>
+> Current classification:
+> `INCONCLUSIVE_INVALID_CAPACITY_AUTHORITY_AND_INCOMPLETE_EXECUTION_PROVENANCE`.
+> The raw/aggregate observations below remain preserved, but this campaign is
+> not an admitted reference-host continuum gate. Its frozen capacity authority
+> was later withdrawn, and the recorded Tesy execution commit is not retained
+> in current repository history. Revalidation requires a new campaign identity
+> after a fresh PHYSICAL-host-verified capacity publication.
+
 Date: 2026-09-24. Campaign: `n-cpu-moe-continuum-shape-20260924T083136Z`.
 Branch: `research/n-cpu-moe-continuum-shape-20260924`.
 Execution base commit/tree: `89771fa4ba3a017978f5931c94779110a7f8d22f` / `cb7cc651c95a746ca8ce5aa54429ff14e6407f30`.
@@ -15,9 +25,11 @@ auto-fit/N12 comparison, two middle points compared only against the old
 pilot, or a larger confirmatory sweep. The four-point within-campaign shape
 diagnostic was selected and committed before measurement.
 
-The campaign completed with `PASS_DIAGNOSTIC_STOCK_PLACEMENT_CONTINUUM_SHAPE`.
-The result remains a single-observation diagnostic. No stable winner or Pareto
-frontier is established.
+The historical runner printed
+`PASS_DIAGNOSTIC_STOCK_PLACEMENT_CONTINUUM_SHAPE`, but that execution-level
+output is **not publication-admitted** under the current evidence contract.
+The result remains preserved as a single-observation historical diagnostic.
+No stable winner, Pareto frontier, or current capacity decision is established.
 
 ## Frozen identity and gates
 
@@ -81,11 +93,10 @@ evidence and identities. `publication-manifest.json` records SHA-256 and size
 for every raw artifact and checksum for each selected published artifact.
 Raw prompt-bearing request streams are not committed.
 
-Next discriminating gate: prospectively freeze a small, balanced repeat set
-with thermal/power controls to test whether the monotonic shape survives
-cross-campaign drift. Then choose placements for the CPU-vs-transfer-vs-GPU
-expert crossover. Both gates are `NOT_RUN`; manual review is required before
-claim promotion.
+Required revalidation gate: publish a new capacity-only campaign with explicit
+`virtualization=PHYSICAL`, retained execution provenance and a new campaign
+identity; only then may a new continuum run be considered for admission.
+Historical values in this directory must not be promoted as current evidence.
 
 Model-free verification of the runner before this campaign: 125 pytest tests,
 `ruff`, `bash -n`, all 17 embedded Python blocks, and `git diff --check`
