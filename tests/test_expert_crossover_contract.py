@@ -42,3 +42,27 @@ def test_crossover_runner_requires_live_cuda_provenance_before_completion():
     completion = text.index('stage="benchmark_completion"')
     validation = text.index("python3 -m tesy.expert_crossover")
     assert provenance < completion < validation
+
+
+def test_crossover_runner_rebuilds_from_frozen_source():
+    root = Path(__file__).resolve().parents[1]
+    text = (root / "scripts" / "run_expert_crossover.sh").read_text(
+        encoding="utf-8"
+    )
+
+    source_lock = text.index('stage="native_rebuild"')
+    rebuild = text.index('bash "$root/scripts/bootstrap_expert_crossover.sh"')
+    build_identity = text.index('stage="build_identity"')
+    assert source_lock < rebuild < build_identity
+    assert 'cache.get("LLAMA_CPP_SOURCE_DIR")' in text
+    assert "configured_source != expected_source" in text
+
+
+def test_crossover_runner_rejects_incomplete_process_and_system_telemetry():
+    root = Path(__file__).resolve().parents[1]
+    text = (root / "scripts" / "run_expert_crossover.sh").read_text(
+        encoding="utf-8"
+    )
+
+    assert "process telemetry incomplete" in text
+    assert "system telemetry incomplete" in text
