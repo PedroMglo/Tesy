@@ -1,0 +1,28 @@
+{
+  "schema": "tesy.full_stock_chat_public_outputs.v1",
+  "classification": "MEASURED_STOCK_ONLY",
+  "campaign_root": "results/full-stock-chat-eval-valid-20260924T222803Z",
+  "measurement_commit": "95a2a4a7118690f256ef2f08d73c14e7664ea099",
+  "outputs": [
+    {
+      "workload": "extraction-long",
+      "prompt_path": "benchmarks/prompts/vertical-eval-extraction-long.txt",
+      "prompt_sha256": "c53cfd7a473c078b84d34c7fb9a4253b8885b1246c109e534d55cefa2d78eb00",
+      "output_tokens": 69,
+      "finish_reason": "stop",
+      "output_text": "{\"equipa\":\"Bairro do Vale\",\"data\":\"2026-10-17\",\"local\":\"pavilhão municipal da Rua das Oliveiras\",\"inicio\":\"09:30\",\"fim\":\"12:15\",\"materiais\":\"Chaves de fendas, bombas de ar e remendos\"}",
+      "output_sha256": "f78df2d119ac749198903d31037648ac958d7bf88341196cb41b65117125d19d"
+    },
+    {
+      "workload": "code-short",
+      "prompt_path": "benchmarks/prompts/vertical-eval-code-short.txt",
+      "prompt_sha256": "6cab5251b0045b55cbf0dc7212a1c5f799e7777ca6712731933fce9cf7650327",
+      "output_tokens": 128,
+      "finish_reason": "length",
+      "output_text": "```python\ndef deduplicate_preserving_order(nums):\n    \"\"\"\n    Recebe uma lista de inteiros e devolve uma nova lista contendo apenas\n    a primeira ocorrência de cada elemento, mantendo a ordem original.\n\n    Args:\n        nums (list[int]): Lista de inteiros a ser processada.\n\n    Returns:\n        list[int]: Lista sem duplicados, preservando a ordem.\n    \"\"\"\n    seen = set()\n    result = []\n\n    for n in nums:\n        if n not in seen:\n            seen.add(n)\n            result.append(n)\n\n    return result\n\n\n# Exemplos",
+      "output_sha256": "069b085c2cce858a11b242f4039a3a497850954bd010301609c1b68273844236"
+    }
+  ],
+  "token_id_sequence": null,
+  "token_id_limitation": "The pinned chat SSE response did not persist exact sampled token IDs; visible text cannot be asserted to reconstruct them uniquely."
+}
