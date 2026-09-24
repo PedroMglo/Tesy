@@ -31,7 +31,7 @@ Pinned `src/models/openai-moe.cpp` defines for each gpt-oss MoE layer:
 - gate/up/down expert weights shaped `[2880, 2880, 32]`;
 - gate/up/down expert biases shaped `[2880, 32]`.
 
-The admitted type/shape set is therefore consistent with three MXFP4 expert
+The historical observed type/shape set is consistent with three MXFP4 expert
 matrices plus three F32 bias vectors per expert.
 
 For MXFP4 at the pinned ggml layout, one 2880x2880 matrix slice is
@@ -49,9 +49,11 @@ The earlier 16 GiB/4 GiB byte-weighted simulation is also **not** promoted by th
 
 ## Next gate
 
-The native inventory blocker is closed. The next discriminating gate is the
-CPU-vs-transfer-vs-GPU expert crossover using the real admitted shape/type
-contract.
+The native inventory blocker remains **open** for campaign admission. Before
+the CPU-vs-transfer-vs-GPU expert crossover can be re-promoted, rerun the
+inventory under a new campaign identity with exact Tesy commit/tree and
+explicit `virtualization=PHYSICAL` evidence. The historical shape/type values
+may guide implementation only; they are not admission authority.
 
 The crossover must measure separately:
 
