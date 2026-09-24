@@ -34,6 +34,7 @@ struct trace_file {
     uint64_t graph_seq = 0;
     int last_layer = -1;
     bool seen_layer = false;
+    const char * phase = "prefill";
     std::vector<unsigned char> scratch;
 };
 
@@ -88,11 +89,12 @@ bool trace_callback(ggml_tensor * tensor, bool ask, void * user_data) {
 
     std::fprintf(
         state->file,
-        "{\"schema\":\"tesy.llama_moe_topk.v1\","
-        "\"graph_seq\":%" PRIu64 ",\"layer\":%d,"
+        "{\"schema\":\"tesy.llama_moe_topk.v2\","
+        "\"graph_seq\":%" PRIu64 ",\"phase\":\"%s\",\"layer\":%d,"
         "\"n_tokens\":%" PRId64 ",\"n_expert_used\":%" PRId64 ","
         "\"experts\":[",
         state->graph_seq,
+        state->phase,
         layer,
         tensor->ne[1],
         tensor->ne[0]);
@@ -329,23 +331,36 @@ int main(int argc, char ** argv) {
 
         position += batch.n_tokens;
         llama_token token = llama_sampler_sample(sampler, ctx, -1);
+        generated_tokens.push_back(token);
+        ++generated;
+
         if (llama_vocab_is_eog(vocab, token)) {
             break;
         }
 
-        char piece[512];
-        const int32_t piece_bytes = llama_token_to_piece(
-            vocab, token, piece, sizeof(piece), 0, true);
+        std::string piece(128, '\0');
+        int32_t piece_bytes = llama_token_to_piece(
+            vocab, token, piece.data(), piece.size(), 0, true);
         if (piece_bytes < 0) {
-            std::fprintf(stderr, "llama_token_to_piece failed\n");
-            break;
+            piece.resize(static_cast<size_t>(-piece_bytes));
+            const int32_t retry = llama_token_to_piece(
+                vocab, token, piece.data(), piece.size(), 0, true);
+            if (retry < 0 || retry != -piece_bytes) {
+                std::fprintf(stderr, "llama_token_to_piece failed after resize\n");
+                llama_sampler_free(sampler);
+                llama_free(ctx);
+                llama_model_free(model);
+                return 2;
+            }
+            piece_bytes = retry;
         }
-        std::fwrite(piece, 1, static_cast<size_t>(piece_bytes), stdout);
+        std::fwrite(piece.data(), 1, static_cast<size_t>(piece_bytes), stdout);
         std::fflush(stdout);
 
-        generated_tokens.push_back(token);
         batch = llama_batch_get_one(&token, 1);
-        ++generated;
+        if (trace) {
+            trace->phase = "decode";
+        }
     }
 
     std::fputc('\n', stdout);

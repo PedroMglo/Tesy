@@ -237,8 +237,9 @@ def _run(args: argparse.Namespace) -> int:
             artifact_bytes = inspect_model_file(
                 args.path, with_sha256=False
             )["size_bytes"]
-        _print(plan_capacity(model, snapshot, artifact_bytes))
-        return 0
+        result = plan_capacity(model, snapshot, artifact_bytes)
+        _print(result)
+        return 0 if result["status"] == "ADMISSIBLE_FOR_TEST" else 2
 
     if args.command == "trace" and args.trace_command == "summarize":
         events = read_jsonl(args.path)
