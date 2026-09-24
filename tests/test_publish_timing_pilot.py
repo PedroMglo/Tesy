@@ -1,3 +1,4 @@
+import hashlib
 import json
 from pathlib import Path
 
@@ -23,7 +24,10 @@ def _fake_campaign(root: Path) -> Path:
         ("n-cpu-moe-24", "03-n24", 24),
     ]
     observations = []
-    token_hash = "a" * 64
+    tokens = list(range(64))
+    token_hash = hashlib.sha256(
+        json.dumps(tokens, separators=(",", ":")).encode()
+    ).hexdigest()
 
     for index, (placement, dirname, n_cpu_moe) in enumerate(placements):
         run = campaign / dirname
@@ -49,12 +53,14 @@ def _fake_campaign(root: Path) -> Path:
         min_swap = 16_000_000_000
         max_temp = 60.0 + index
         max_power = 80.0 + index
+        ready_ms = 1000.0 + index
         command = f"llama-server --placement {placement}"
         placement_lines = [f"CUDA0 placement {placement}"]
 
         _write_json(
             run / "run-metadata.json",
             {
+                "schema": "tesy.stock_placement_run.v1",
                 "placement_id": placement,
                 "n_cpu_moe": n_cpu_moe,
             },
@@ -62,6 +68,8 @@ def _fake_campaign(root: Path) -> Path:
         _write_json(
             run / "request.json",
             {
+                "schema": "tesy.stock_server_request.v1",
+                "generated_token_ids": tokens,
                 "generated_token_count": 64,
                 "ttft_ms": ttft,
                 "request_wall_ms": wall,
@@ -93,11 +101,15 @@ def _fake_campaign(root: Path) -> Path:
         )
         _write_json(
             run / "runtime-provenance.json",
-            {"status": "PASS"},
+            {
+                "schema": "tesy.runtime_backend_provenance.v1",
+                "status": "PASS",
+            },
         )
         _write_json(
             run / "pre-run-resources.json",
             {
+                "schema": "tesy.timing_pilot_pre_run_resources.v1",
                 "gpu": {
                     "memory_free_bytes": pre_gpu_free,
                     "temperature_c": pre_temp,
@@ -108,12 +120,21 @@ def _fake_campaign(root: Path) -> Path:
         _write_json(
             run / "pre-run-capacity.json",
             {
+                "schema": "tesy.placement_capacity_estimate.v1",
                 "placement_id": placement,
                 "admitted": True,
                 "gpu_required_mib": gpu_required,
                 "host_required_mib": host_required,
             },
         )
+        _write_json(
+            run / "server-ready.json",
+            {
+                "placement_id": placement,
+                "server_ready_ms": ready_ms,
+            },
+        )
+        _write_json(run / "health.json", {"status": "ok"})
         (run / "server-command.txt").write_text(command + "\n", encoding="utf-8")
         (run / "placement.txt").write_text(
             placement_lines[0] + "\n",
@@ -121,6 +142,7 @@ def _fake_campaign(root: Path) -> Path:
         )
         (run / "token-sha256.txt").write_text(token_hash + "\n", encoding="utf-8")
         (run / "resources.jsonl").write_text('{"raw":true}\n', encoding="utf-8")
+        (run / "server.stdout.txt").write_text("", encoding="utf-8")
         (run / "server.stderr.txt").write_text("raw log\n", encoding="utf-8")
 
         observations.append(
@@ -134,7 +156,7 @@ def _fake_campaign(root: Path) -> Path:
                 "pre_run_mem_available_bytes": pre_mem,
                 "pre_run_capacity_gpu_required_mib": gpu_required,
                 "pre_run_capacity_host_required_mib": host_required,
-                "server_ready_ms": 1000.0 + index,
+                "server_ready_ms": ready_ms,
                 "ttft_ms": ttft,
                 "request_wall_ms": wall,
                 "prompt_n": prompt_n,
@@ -255,4 +277,32 @@ def test_publish_timing_pilot_rejects_summary_raw_mismatch(tmp_path):
     _write_json(summary_path, summary)
 
     with pytest.raises(TimingPilotPublicationError, match="summary/raw mismatch"):
+        publish_timing_pilot(campaign, tmp_path / "published")
+
+
+def test_publish_timing_pilot_rejects_token_hash_not_bound_to_ids(tmp_path):
+    campaign = _fake_campaign(tmp_path)
+    (campaign / "02-n12" / "token-sha256.txt").write_text(
+        "0" * 64 + "\n",
+        encoding="utf-8",
+    )
+
+    with pytest.raises(
+        TimingPilotPublicationError,
+        match="token hash does not match token IDs",
+    ):
+        publish_timing_pilot(campaign, tmp_path / "published")
+
+
+def test_publish_timing_pilot_rejects_incomplete_gpu_telemetry(tmp_path):
+    campaign = _fake_campaign(tmp_path)
+    summary_path = campaign / "pilot-summary.json"
+    summary = json.loads(summary_path.read_text(encoding="utf-8"))
+    summary["observations"][0]["gpu_failed_samples"] = 1
+    _write_json(summary_path, summary)
+
+    with pytest.raises(
+        TimingPilotPublicationError,
+        match="incomplete GPU telemetry",
+    ):
         publish_timing_pilot(campaign, tmp_path / "published")
