@@ -137,3 +137,32 @@ def test_timing_pilot_enables_backend_placement_logs_before_server_start():
         '    cmd+=(--verbosity 4)'
     ) in text
     assert verbosity < server
+
+
+def test_timing_pilot_binds_live_process_to_frozen_server_argv():
+    root = Path(__file__).resolve().parents[1]
+    text = (root / "scripts" / "run_n_cpu_moe_capacity_pareto.sh").read_text(
+        encoding="utf-8"
+    )
+
+    argv_text = text.index('>"$run_dir/server-command.txt"')
+    argv_json = text.index('"$run_dir/server-argv.json"')
+    server = text.index('"${cmd[@]}" >"$run_dir/server.stdout.txt"')
+    runtime = text.index("python3 -m tesy.runtime_provenance")
+    request = text.index("python3 -m tesy.server_client")
+
+    assert argv_text < argv_json < server < runtime < request
+    assert '--expected-argv "$run_dir/server-argv.json"' in text
+    assert 'runtime.get("argv", {}).get("status") != "PASS"' in text
+
+
+def test_timing_pilot_does_not_compare_host_mmap_span_to_fit_host_bytes():
+    root = Path(__file__).resolve().parents[1]
+    text = (root / "scripts" / "run_n_cpu_moe_capacity_pareto.sh").read_text(
+        encoding="utf-8"
+    )
+
+    assert '"host_comparability_status": placement_telemetry["host_comparability"]["status"]' in text
+    assert '"observed_host_mmap_span_mib"' in text
+    assert '"projected_host_logical_model_mib"' in text
+    assert '"observed_host_model_mib"' not in text
