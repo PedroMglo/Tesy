@@ -39,3 +39,11 @@ def test_bundle_text_scan_allows_tesy_path():
         allowed_prefixes=("/home/pmglo/Projects/Tesy/",),
         name="test",
     )
+
+
+def test_bundle_text_scan_allows_exact_model_directory():
+    _check_text(
+        b"/home/pmglo/.local/share/tesy/models/gpt-oss-20b",
+        allowed_prefixes=("/home/pmglo/.local/share/tesy/models/gpt-oss-20b/",),
+        name="test",
+    )

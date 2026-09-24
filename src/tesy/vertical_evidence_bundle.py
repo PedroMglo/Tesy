@@ -67,7 +67,10 @@ def _check_text(data: bytes, *, allowed_prefixes: tuple[str, ...], name: str) ->
     if _SECRET.search(text):
         raise ValueError(f"possible secret in {name}")
     for match in _HOME_PATH.finditer(text):
-        if not any(match.group().startswith(prefix) for prefix in allowed_prefixes):
+        if not any(
+            match.group() == prefix.rstrip("/") or match.group().startswith(prefix)
+            for prefix in allowed_prefixes
+        ):
             raise ValueError(f"unrelated home path in {name}")
 
 
