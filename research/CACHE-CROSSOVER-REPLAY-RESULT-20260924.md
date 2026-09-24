@@ -23,7 +23,7 @@ The replay used:
 
 - native routing trace SHA-256:
   `4462cfeba898ef1ffb8dd88c36b41ad03e723b6e6b3d2bc31365fec98b00cd35`;
-- admitted native expert inventory:
+- historical native expert inventory (not currently admitted):
   - 24 MoE layers;
   - 32 experts/layer;
   - 13,253,760 encoded bytes/expert;
@@ -47,7 +47,7 @@ on loads for equal-sized slots.
 
 ## Crossover comparison
 
-The admitted k=1 expert crossover measured:
+The historical k=1 expert crossover (not currently admitted) measured:
 
 - CPU path: 0.356471 ms;
 - resident-GPU path: 0.061410 ms;
@@ -75,7 +75,7 @@ cannot provide enough hits to rescue the serial policy:
 
 The historical arithmetic suggested the prior architectural decision, but this publication no longer strengthens it as admitted evidence.
 
-The surviving policy remains:
+The historical candidate policy was:
 
 - resident GPU hit -> GPU expert compute;
 - GPU miss -> CPU expert compute;
@@ -100,8 +100,17 @@ aggregation, scheduling, concurrency/serialization and full-model effects.
 
 ## Next discriminating gate
 
-First reproduce the locality replay with retained commit/tree, command, raw output and hashes. Only after that gate is admitted should a real mixed-residency top-4 expert
-FFN through pinned ggml with:
+Revalidation must proceed fail-closed in dependency order:
+
+1. rerun the native expert inventory with retained exact Tesy commit/tree and
+   explicit PHYSICAL-host evidence;
+2. rerun the expert crossover with the admitted inventory, pinned llama.cpp,
+   rebuilt/bound binary provenance and retained exact Tesy commit/tree;
+3. rerun the phase-aware decode-only locality replay with retained command,
+   raw output and hash manifest.
+
+Only after **all three** gates are admitted may a real mixed-residency top-4
+expert FFN through pinned ggml be promoted, with:
 
 - 0 resident GPU experts / 4 CPU experts;
 - 1 GPU / 3 CPU;
@@ -109,8 +118,7 @@ FFN through pinned ggml with:
 - 3 GPU / 1 CPU;
 - 4 GPU / 0 CPU.
 
-Use the same real expert shape and CPU buffer authority as the admitted
-crossover.
+Use only the newly revalidated expert shape and CPU comparator authority; the historical inventory/crossover values above are context, not admission authority.
 
 The first mixed gate should be serial/fail-closed and validate numerical parity
 against the all-CPU reference. Only if measured mixed residency retains useful
