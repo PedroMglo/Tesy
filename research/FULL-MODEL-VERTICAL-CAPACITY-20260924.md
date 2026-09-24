@@ -2,6 +2,8 @@
 
 Classificação: **MEDIDO** apenas para inventário/recursos do gpt-oss-20b instalado; **ESTIMADO** para reservas e floors de transporte; candidatos maiores **DESCONHECIDO** quanto à admissão exacta. Ferramenta reproduzível `src/tesy/vertical_capacity.py` (schema `tesy.vertical_capacity_report.v1`), root local `results/vertical-capacity-20260924T220300Z/report.json`, SHA-256 `4331fe996bdc9c6e0b4cf47fc209f14a5747efbf428820b2816d86c28b45c50c`.
 
+O `report.json` bruto está agora incluído no [bundle público de evidência](https://github.com/PedroMglo/Tesy/releases/download/evidence/full-model-vertical-20260924-v1/tesy-vertical-raw-evidence-20260924.tar.gz), com path interno `results/vertical-capacity-20260924T220300Z/report.json`.
+
 Host físico: RAM 32 698 769 408 bytes, VRAM 8 585 740 288 bytes. Reservas explícitas para classificação: 6 GiB host operacional + 1 GiB staging/I/O + 1 GiB VRAM. Estas reservas são política de admissão, não peak observado. O installed GGUF tem 12 109 564 352 encoded bytes, SHA-256 congelado `52f57ab7d3df3ba9173827c1c6832e73375553a846f3e32b49f1ae2daad688d4`. Na root stock C1 houve peak process RSS 12 764 119 040 bytes e GPU usada 333 447 168 bytes; a diferença RSS menos artifact (654 554 688) **não** isola repacking. O buffer nativo Tesy para quatro residentes de uma layer foi observado em 53 015 424 bytes; não multiplicar sem contabilizar graphs, temporários e aliasing. No grupo stock final o peak GPU usado chegou a 6 020 923 392 bytes em `n_gpu_layers=12`, mas isto é colocação stock, não residência Tesy.
 
 | Artefacto | Base de bytes | Classe | Em falta para admissão |
