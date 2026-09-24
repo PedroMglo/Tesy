@@ -144,6 +144,14 @@ struct parity {
     bool pass = false;
 };
 
+struct routed_exactness_result {
+    int gpu_hits = 0;
+    int cpu_misses = 0;
+    parity serial_vs_stock;
+    parity async_vs_stock;
+    parity async_vs_serial;
+};
+
 struct case_result {
     int gpu_hits = 0;
     int cpu_misses = 0;
