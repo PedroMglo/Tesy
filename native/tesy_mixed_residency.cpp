@@ -2437,9 +2437,33 @@ live_handoff_timing_result run_live_handoff_timing(
         }
     }
 
+    constexpr int measured_full_cycles = 13;
+    constexpr std::array<size_t, 3> measured_tail = {
+        0, 3, 4,
+    };
+    static_assert(
+        measured_full_cycles * 6
+            + static_cast<int>(measured_tail.size())
+            == 81);
+
     for (int round = 0; round < opt.samples; ++round) {
-        for (live_timing_mode mode :
-                orders[static_cast<size_t>(round) % orders.size()]) {
+        size_t order_index = 0;
+        const int cycle_samples =
+            measured_full_cycles
+            * static_cast<int>(orders.size());
+        if (round < cycle_samples) {
+            order_index =
+                static_cast<size_t>(round) % orders.size();
+        } else {
+            const size_t tail_index =
+                static_cast<size_t>(round - cycle_samples);
+            if (tail_index >= measured_tail.size()) {
+                fail("live timing measured order tail overflow");
+            }
+            order_index = measured_tail[tail_index];
+        }
+
+        for (live_timing_mode mode : orders[order_index]) {
             run_mode(mode, true);
         }
     }
@@ -3279,6 +3303,12 @@ int main(int argc, char ** argv) {
             "[\"serial\",\"async\",\"stock\"],"
             "[\"async\",\"stock\",\"serial\"],"
             "[\"async\",\"serial\",\"stock\"]],"
+            "\"measured_order_full_cycles\":13,"
+            "\"measured_order_tail_indices\":[0,3,4],"
+            "\"measured_ordinal_counts\":{"
+            "\"stock\":[27,27,27],"
+            "\"serial\":[27,27,27],"
+            "\"async\":[27,27,27]},"
             "\"pre_exactness\":",
             result.completed_stock_trials,
             result.completed_serial_trials,
