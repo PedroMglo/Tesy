@@ -207,6 +207,30 @@ adds:
 - trace-weighted serial-vs-async decision;
 - failure publication for both ERR-trapped and explicit nonzero exits.
 
+### Native build/source binding
+
+A final source audit identified one additional provenance requirement before
+physical execution: hashing a binary alone did not prove that an existing
+build directory was produced from the current Tesy source HEAD.
+
+`scripts/bootstrap_mixed_residency.sh` now requires a clean Tesy worktree and
+writes:
+
+`build/tesy-mixed-residency/tesy-mixed-residency-build-provenance.json`.
+
+The sidecar binds:
+
+- Tesy HEAD;
+- pinned llama.cpp HEAD;
+- `native/tesy_mixed_residency.cpp` SHA-256;
+- `native/CMakeLists.txt` SHA-256;
+- executable SHA-256;
+- resolved executable path.
+
+The physical runner recomputes all of those values and terminates before launch
+on any mismatch. Therefore a stale binary from an earlier clean build is not
+admitted merely because its CMake cache has the expected options.
+
 It refuses an existing output root. Failed campaign roots must remain
 preserved and are never reused.
 
@@ -225,7 +249,9 @@ preserved and are never reused.
 - runner passes `--async-overlap`;
 - runner invokes the async validator and weighting module;
 - runner contains the exact admitted histogram SHA-256;
-- runner preserves FAIL classification and resource/swap gates.
+- runner preserves FAIL classification and resource/swap gates;
+- native bootstrap records Tesy/llama/source/CMake/tool build provenance;
+- runner rejects a missing or stale native build-provenance sidecar.
 
 ## Synthetic validation performed
 
@@ -313,8 +339,14 @@ Before any physical execution on the laptop:
 1. check out the exact async-overlap branch;
 2. require a clean worktree and pinned llama.cpp checkout;
 3. run focused shell/Python/contract tests;
-4. compile the pinned CUDA target;
-5. record the exact final candidate HEAD/tree and binary identity;
-6. only then launch a new no-replace campaign root.
+4. compile the pinned CUDA target and validate the build/source sidecar;
+5. append this already-published branch to official Stack #22 with
+   `gh stack link 22 research/mixed-residency-async-overlap-20260924 --remote origin`;
+6. record the exact final candidate HEAD/tree and binary identity;
+7. only then launch a new no-replace campaign root.
+
+The `gh stack link` operation is governance, not a performance step. It must
+not be substituted with `gh stack push`, `gh stack rebase`, force-push or
+manual PR-base editing.
 
 No physical async-overlap campaign was executed while preparing this branch.
