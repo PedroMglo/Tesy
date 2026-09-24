@@ -89,3 +89,13 @@ def test_async_build_is_bound_to_current_source_head():
     assert "llama_head" in bootstrap
     assert "tesy-mixed-residency-build-provenance.json" in runner
     assert "native build provenance mismatch" in runner
+
+
+def test_async_raw_records_schedule_identity():
+    root = Path(__file__).resolve().parents[1]
+    text = (root / "native" / "tesy_mixed_residency.cpp").read_text(
+        encoding="utf-8"
+    )
+
+    assert "post_d2h_gpu_enqueue_cpu_sync_gpu_wait" in text
+    assert "even_serial_async_odd_async_serial" in text
