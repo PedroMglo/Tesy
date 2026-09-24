@@ -872,6 +872,112 @@ std::pair<stats, stats> measure_paired(
     };
 }
 
+std::vector<float> read_exact_f32_file(
+        const std::string & path,
+        size_t expected_count) {
+    std::ifstream file(path, std::ios::binary);
+    if (!file) {
+        fail("cannot open F32 file: " + path);
+    }
+    file.seekg(0, std::ios::end);
+    const std::streamoff bytes = file.tellg();
+    const std::streamoff expected =
+        static_cast<std::streamoff>(expected_count * sizeof(float));
+    if (bytes != expected) {
+        fail(
+            "unexpected F32 file size for " + path + ": " +
+            std::to_string(bytes));
+    }
+    file.seekg(0, std::ios::beg);
+    std::vector<float> values(expected_count);
+    file.read(
+        reinterpret_cast<char *>(values.data()),
+        static_cast<std::streamsize>(expected));
+    if (!file.good() && !file.eof()) {
+        fail("failed reading F32 file: " + path);
+    }
+    for (float value : values) {
+        if (!std::isfinite(value)) {
+            fail("non-finite value in F32 file: " + path);
+        }
+    }
+    return values;
+}
+
+std::vector<int> parse_int_csv(
+        const std::string & text,
+        const char * label) {
+    std::vector<int> values;
+    size_t start = 0;
+    while (start <= text.size()) {
+        const size_t end = text.find(',', start);
+        const std::string item =
+            text.substr(
+                start,
+                end == std::string::npos
+                    ? std::string::npos
+                    : end - start);
+        if (item.empty()) {
+            fail(std::string(label) + " contains empty item");
+        }
+        char * tail = nullptr;
+        errno = 0;
+        const long parsed = std::strtol(item.c_str(), &tail, 10);
+        if (
+            errno != 0
+            || !tail
+            || *tail != '\0'
+            || parsed < 0
+            || parsed > std::numeric_limits<int>::max()
+        ) {
+            fail(std::string("invalid ") + label + " item: " + item);
+        }
+        values.push_back(static_cast<int>(parsed));
+        if (end == std::string::npos) {
+            break;
+        }
+        start = end + 1;
+    }
+    return values;
+}
+
+std::vector<float> parse_float_csv(
+        const std::string & text,
+        const char * label) {
+    std::vector<float> values;
+    size_t start = 0;
+    while (start <= text.size()) {
+        const size_t end = text.find(',', start);
+        const std::string item =
+            text.substr(
+                start,
+                end == std::string::npos
+                    ? std::string::npos
+                    : end - start);
+        if (item.empty()) {
+            fail(std::string(label) + " contains empty item");
+        }
+        char * tail = nullptr;
+        errno = 0;
+        const float parsed = std::strtof(item.c_str(), &tail);
+        if (
+            errno != 0
+            || !tail
+            || *tail != '\0'
+            || !std::isfinite(parsed)
+            || parsed < 0.0f
+        ) {
+            fail(std::string("invalid ") + label + " item: " + item);
+        }
+        values.push_back(parsed);
+        if (end == std::string::npos) {
+            break;
+        }
+        start = end + 1;
+    }
+    return values;
+}
+
 std::vector<float> deterministic_input() {
     std::vector<float> input(static_cast<size_t>(k_embd));
     for (int64_t i = 0; i < k_embd; ++i) {
