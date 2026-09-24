@@ -399,6 +399,13 @@ if len(gpu) != len(rows):
     )
 
 proc = [row.get("process", {}) for row in rows]
+if any(
+    not isinstance(item, dict)
+    or "VmRSS_bytes" not in item
+    or "VmSwap_bytes" not in item
+    for item in proc
+):
+    raise SystemExit("process telemetry incomplete")
 system = [row.get("system", {}) for row in rows]
 peak_gpu = max(row["memory_used_bytes"] for row in gpu)
 gpu_total = pre["gpu"]["memory_total_bytes"]
