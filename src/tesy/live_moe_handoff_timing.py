@@ -11,6 +11,26 @@ class LiveMoeHandoffTimingError(ValueError):
     pass
 
 
+def _no_duplicate_object(
+    pairs: list[tuple[str, Any]],
+) -> dict[str, Any]:
+    result: dict[str, Any] = {}
+    for key, value in pairs:
+        if key in result:
+            raise LiveMoeHandoffTimingError(
+                f"duplicate JSON key: {key}"
+            )
+        result[key] = value
+    return result
+
+
+def _load_json(path: Path) -> Any:
+    return json.loads(
+        path.read_text(encoding="utf-8"),
+        object_pairs_hook=_no_duplicate_object,
+    )
+
+
 def _require_exact_keys(
     payload: dict[str, Any],
     *,
@@ -589,8 +609,8 @@ def main() -> int:
     if args.output.exists():
         raise SystemExit(f"refusing to replace {args.output}")
 
-    h2 = json.loads(args.h2.read_text(encoding="utf-8"))
-    h3 = json.loads(args.h3.read_text(encoding="utf-8"))
+    h2 = _load_json(args.h2)
+    h3 = _load_json(args.h3)
     if not isinstance(h2, dict) or not isinstance(h3, dict):
         raise SystemExit("timing inputs must be JSON objects")
 
