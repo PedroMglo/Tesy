@@ -13,12 +13,14 @@
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
+#include <filesystem>
 #include <fstream>
 #include <iterator>
 #include <limits>
 #include <memory>
 #include <numeric>
 #include <string>
+#include <thread>
 #include <utility>
 #include <vector>
 
@@ -46,6 +48,7 @@ struct options {
     bool live_handoff_exactness = false;
     bool live_handoff_timing = false;
     std::string prompt_file;
+    std::string timing_start_gate;
     std::string routed_input_f32;
     std::string routed_reference_f32;
     std::string routed_experts_csv;
@@ -317,7 +320,8 @@ int parse_positive(const char * value, const char * flag, int minimum = 1) {
         "--routed-experts CSV --routed-weights CSV --routed-gpu-hits N] "
         "[--live-handoff-exactness --prompt-file FILE --ctx N] "
         "[--live-handoff-timing --prompt-file FILE --ctx N "
-        "--routed-gpu-hits N --warmup 6 --samples 81 --inner 1]\n",
+        "--routed-gpu-hits N --warmup 6 --samples 81 --inner 1 "
+        "--timing-start-gate FILE]\n",
         argv0);
     std::exit(code);
 }
@@ -356,6 +360,8 @@ options parse_options(int argc, char ** argv) {
             out.live_handoff_timing = true;
         } else if (arg == "--prompt-file") {
             out.prompt_file = value("--prompt-file");
+        } else if (arg == "--timing-start-gate") {
+            out.timing_start_gate = value("--timing-start-gate");
         } else if (arg == "--ctx") {
             out.live_ctx = static_cast<uint32_t>(
                 parse_positive(value("--ctx"), "--ctx", 16));
@@ -435,6 +441,9 @@ options parse_options(int argc, char ** argv) {
             fail(
                 "live handoff timing requires --warmup 6 "
                 "--samples 81 --inner 1");
+        }
+        if (out.timing_start_gate.empty()) {
+            fail("live handoff timing requires --timing-start-gate");
         }
     }
     return out;
@@ -2323,6 +2332,19 @@ live_handoff_timing_result run_live_handoff_timing(
         gpu_backend,
         pre_reference);
 
+    bool gate_open = false;
+    for (int attempt = 0; attempt < 60000; ++attempt) {
+        if (std::filesystem::exists(opt.timing_start_gate)) {
+            gate_open = true;
+            break;
+        }
+        std::this_thread::sleep_for(
+            std::chrono::milliseconds(1));
+    }
+    if (!gate_open) {
+        fail("live handoff timing start gate timed out");
+    }
+
     live_handoff_timing_result result;
     result.gpu_hits = opt.routed_gpu_hits;
     result.cpu_misses = k_top_k - opt.routed_gpu_hits;
@@ -3211,6 +3233,8 @@ int main(int argc, char ** argv) {
             "\"sample_triplets\":%d,"
             "\"inner\":%d,"
             "\"resident_experts\":true,"
+            "\"provenance_gate\":"
+            "\"FILE_EXISTENCE_BEFORE_WARMUP\","
             "\"input_semantics\":"
             "\"HOST_CAPTURE_TO_CPU_AND_GPU_COMPACT_INPUTS\","
             "\"decode_input_token\":%" PRId32 ","
