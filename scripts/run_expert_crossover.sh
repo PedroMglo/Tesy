@@ -104,6 +104,9 @@ if observed != expected:
     )
 PY
 
+stage="native_rebuild"
+bash "$root/scripts/bootstrap_expert_crossover.sh"
+
 stage="model_verify"
 python3 -m tesy models verify \
   gpt-oss-20b-mxfp4-gguf "$model" >"$out/model.json"
@@ -135,7 +138,7 @@ stage="build_identity"
 }
 [[ -f "$build_dir/CMakeCache.txt" ]] || { echo "missing CMake cache" >&2; exit 1; }
 
-python3 - "$build_dir/CMakeCache.txt" >"$out/build-cache-summary.json" <<'PY'
+python3 - "$build_dir/CMakeCache.txt" "$source_dir" >"$out/build-cache-summary.json" <<'PY'
 import json
 import sys
 from pathlib import Path
@@ -163,6 +166,20 @@ mismatches = {
     for key, value in expected.items()
     if cache.get(key) != value
 }
+expected_source = Path(sys.argv[2]).resolve(strict=True)
+configured_raw = cache.get("LLAMA_CPP_SOURCE_DIR")
+if not configured_raw:
+    mismatches["LLAMA_CPP_SOURCE_DIR"] = {
+        "expected": str(expected_source),
+        "observed": configured_raw,
+    }
+else:
+    configured_source = Path(configured_raw).resolve(strict=True)
+    if configured_source != expected_source:
+        mismatches["LLAMA_CPP_SOURCE_DIR"] = {
+            "expected": str(expected_source),
+            "observed": str(configured_source),
+        }
 print(json.dumps({
     "schema": "tesy.expert_crossover_build_cache.v1",
     "status": "PASS" if not mismatches else "FAIL",
@@ -339,6 +356,20 @@ if len(gpu) != len(rows):
     raise SystemExit(f"GPU telemetry incomplete: {len(gpu)} valid of {len(rows)}")
 proc = [row.get("process", {}) for row in rows]
 system = [row.get("system", {}) for row in rows]
+if any(
+    not isinstance(item, dict)
+    or "VmRSS_bytes" not in item
+    or "VmSwap_bytes" not in item
+    for item in proc
+):
+    raise SystemExit("process telemetry incomplete")
+if any(
+    not isinstance(item, dict)
+    or "MemAvailable_bytes" not in item
+    or "SwapFree_bytes" not in item
+    for item in system
+):
+    raise SystemExit("system telemetry incomplete")
 peak_gpu = max(row["memory_used_bytes"] for row in gpu)
 gpu_total = pre["gpu"]["memory_total_bytes"]
 summary = {
@@ -351,14 +382,10 @@ summary = {
     "min_observed_gpu_free_bytes": gpu_total - peak_gpu,
     "max_gpu_temperature_c": max(row["temperature_c"] for row in gpu),
     "max_gpu_power_w": max(row["power_w"] for row in gpu),
-    "peak_process_rss_bytes": max((row.get("VmRSS_bytes", 0) for row in proc), default=0),
-    "peak_process_swap_bytes": max((row.get("VmSwap_bytes", 0) for row in proc), default=0),
-    "min_mem_available_bytes": min(
-        row.get("MemAvailable_bytes", 2**63 - 1) for row in system
-    ),
-    "min_swap_free_bytes": min(
-        row.get("SwapFree_bytes", 2**63 - 1) for row in system
-    ),
+    "peak_process_rss_bytes": max(row["VmRSS_bytes"] for row in proc),
+    "peak_process_swap_bytes": max(row["VmSwap_bytes"] for row in proc),
+    "min_mem_available_bytes": min(row["MemAvailable_bytes"] for row in system),
+    "min_swap_free_bytes": min(row["SwapFree_bytes"] for row in system),
     "claim_boundary": (
         "Sampled runtime resources for the crossover microbenchmark; not "
         "physical DRAM or PCIe traffic."

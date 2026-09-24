@@ -27,11 +27,19 @@ confirmatory campaign or Pareto claim.
 
 ## Frozen authority and workload
 
-The source capacity publication remains commit
-`5a8bbf08eb95069b1847f724e5d1be98c6392678`, which admitted all four
-manual points. The new campaign rechecks admission under its measured start
-state and immediately before every load. Manual server and fit-print argv use
-`--ctx-size 4096 --gpu-layers all --n-cpu-moe N --fit off`.
+**Retrospective correction — 2026-09-24:** the authority frozen by this
+historical protocol is no longer admitted. The referenced
+`5a8bbf08eb95069b1847f724e5d1be98c6392678` object is not retained in the
+current repository history, and the preserved capacity publication was later
+corrected to `INCONCLUSIVE_PHYSICAL_HOST_NOT_PROVEN`. Therefore this protocol
+did not have a valid capacity authority under the repository's current
+fail-closed contract.
+
+The recorded campaign and its four observations are preserved as historical
+diagnostic output only. They cannot qualify a current reference-host placement
+gate. A valid continuum campaign requires a new campaign identity after a fresh
+PHYSICAL-host-verified capacity publication. Manual server and fit-print argv
+remain recorded as `--ctx-size 4096 --gpu-layers all --n-cpu-moe N --fit off`.
 
 Use the same locked gpt-oss-20b MXFP4 GGUF, pinned llama.cpp source/build,
 B0/B1 diagnostic prompt, 4096 context, parallel 1, CPU threads/batch threads
