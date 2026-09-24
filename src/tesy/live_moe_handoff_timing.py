@@ -592,9 +592,12 @@ def validate_live_moe_handoff_timing(
             "layer-0 route. The chosen execution must preserve positive "
             "median and p95 headroom against the within-process stock "
             "comparator for h=2 and h=3. The measured minimum headroom is "
-            "only a budget for a future output-reinjection/continuation "
-            "gate. No committed-token, full-model, cache-miss, prefetch or "
-            "physical-traffic conclusion follows."
+            "a diagnostic ceiling for a future "
+            "output-reinjection/continuation gate under the same "
+            "callback-instrumented comparator. It is not a production "
+            "stock-latency bound; committed-token same-work validation "
+            "against unmodified stock remains required. No full-model, "
+            "cache-miss, prefetch or physical-traffic conclusion follows."
         ),
     }
 
