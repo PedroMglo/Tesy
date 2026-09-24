@@ -60,12 +60,12 @@ def test_cb_eval_bound_survives_only_as_feasibility_bound():
     assert result["p95_hard_no_go"] is False
 
 
-def test_cb_eval_bound_hard_no_go_on_median():
+def test_cb_eval_bound_hard_no_go_on_p95_only():
     payload = _payload(stock=0.50, cancel=0.20)
-    payload["cancel_zero_work"] = _stats(0.20)
-    payload["cancel_zero_work"]["samples_ms"][40] = 0.60
-    payload["cancel_zero_work"]["samples_ms"].sort()
     values = payload["cancel_zero_work"]["samples_ms"]
+    for index in range(77, 81):
+        values[index] = 0.60
+    values.sort()
     payload["cancel_zero_work"]["median_ms"] = values[40]
     payload["cancel_zero_work"]["p95_ms"] = values[77]
     payload["cancel_zero_work"]["max_ms"] = values[-1]
@@ -76,23 +76,15 @@ def test_cb_eval_bound_hard_no_go_on_median():
     payload["cancel_to_stock_p95_ratio"] = (
         payload["cancel_zero_work"]["p95_ms"] / 0.50
     )
-    payload["median_hard_no_go"] = (
-        payload["cancel_zero_work"]["median_ms"] >= 0.50
-    )
-    payload["p95_hard_no_go"] = (
-        payload["cancel_zero_work"]["p95_ms"] >= 0.50
-    )
-    payload["decision"] = (
-        "CB_EVAL_INTERCEPT_HARD_NO_GO"
-        if payload["median_hard_no_go"]
-        or payload["p95_hard_no_go"]
-        else "CB_EVAL_INTERCEPT_BOUND_SURVIVES"
-    )
+    payload["median_hard_no_go"] = False
+    payload["p95_hard_no_go"] = True
+    payload["decision"] = "CB_EVAL_INTERCEPT_HARD_NO_GO"
 
     result = validate_cb_eval_intercept_bound(payload)
 
-    assert result["decision"] == "CB_EVAL_INTERCEPT_BOUND_SURVIVES"
-
+    assert result["decision"] == "CB_EVAL_INTERCEPT_HARD_NO_GO"
+    assert result["median_hard_no_go"] is False
+    assert result["p95_hard_no_go"] is True
 
 def test_cb_eval_bound_hard_no_go_when_cancel_equals_stock():
     result = validate_cb_eval_intercept_bound(
