@@ -58,6 +58,24 @@ def test_live_timing_candidate_endpoint_precedes_rollback():
     assert "read_live_routed_output" not in block
 
 
+def test_live_timing_measured_order_is_exactly_position_balanced():
+    text = _native()
+    start = text.index("constexpr int measured_full_cycles = 13;")
+    end = text.index("if (", start)
+    block = text[start:end]
+
+    assert "0, 3, 4" in block
+    assert "== 81" in block
+    assert "measured_tail[tail_index]" in text
+
+    raw_start = text.index("measured_order_full_cycles")
+    raw_end = text.index("pre_exactness", raw_start)
+    raw = text[raw_start:raw_end]
+    assert "measured_order_tail_indices" in raw
+    assert "measured_ordinal_counts" in raw
+    assert raw.count("[27,27,27]") == 3
+
+
 def test_live_timing_has_all_six_triplet_permutations():
     text = _native()
     start = text.index(
