@@ -690,6 +690,15 @@ PY
     exit 1
   }
 
+  if (( timing_pilot == 1 )); then
+    python3 -m tesy.placement_telemetry \
+      --fit-print "$capacity_input" \
+      --server-stderr "$run_dir/server.stderr.txt" \
+      --placement-id "$placement_id" \
+      --tolerance-mib 2.0 \
+      --output "$run_dir/placement-telemetry.json"
+  fi
+
   python3 -m tesy.runtime_provenance \
     --pid "$server_pid" \
     --build-provenance "$out/build-provenance.json" \
@@ -839,6 +848,9 @@ for run_dir in sorted(
     res = json.loads((run_dir / "resource-summary.json").read_text(encoding="utf-8"))
     ready = json.loads((run_dir / "server-ready.json").read_text(encoding="utf-8"))
     runtime = json.loads((run_dir / "runtime-provenance.json").read_text(encoding="utf-8"))
+    placement_telemetry = json.loads(
+        (run_dir / "placement-telemetry.json").read_text(encoding="utf-8")
+    )
     pre_run = json.loads((run_dir / "pre-run-resources.json").read_text(encoding="utf-8"))
     pre_capacity = json.loads((run_dir / "pre-run-capacity.json").read_text(encoding="utf-8"))
     command = (run_dir / "server-command.txt").read_text(encoding="utf-8").strip()
@@ -852,6 +864,8 @@ for run_dir in sorted(
 
     if runtime["status"] != "PASS":
         raise SystemExit(f"runtime provenance did not PASS: {run_dir}")
+    if placement_telemetry.get("status") != "PASS":
+        raise SystemExit(f"placement telemetry did not PASS: {run_dir}")
     if (
         not isinstance(tokens, list)
         or len(tokens) != 64
@@ -891,6 +905,11 @@ for run_dir in sorted(
         "max_gpu_power_w": res["max_gpu_power_w"],
         "gpu_failed_samples": res["gpu_failed_samples"],
         "runtime_provenance_status": runtime["status"],
+        "placement_telemetry_status": placement_telemetry["status"],
+        "projected_gpu_model_mib": placement_telemetry["projected_model_mib"]["CUDA0"],
+        "projected_host_model_mib": placement_telemetry["projected_model_mib"]["Host"],
+        "observed_gpu_model_mib": placement_telemetry["observed_model_mib"]["CUDA0"],
+        "observed_host_model_mib": placement_telemetry["observed_model_mib"]["Host"],
         "placement_log_lines": placement_lines,
         "token_sha256": hashlib.sha256(token_blob).hexdigest(),
     })
