@@ -10,6 +10,7 @@ model="$1"
 out="$2"
 root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 source_dir="${TESY_LLAMA_CPP_DIR:-$root/.deps/llama.cpp}"
+cli="${TESY_LLAMA_CLI:-$source_dir/build/bin/llama-cli}"
 server="${TESY_LLAMA_SERVER:-$source_dir/build/bin/llama-server}"
 prompt_file="$root/benchmarks/prompts/b0-b1-diagnostic.txt"
 lock_file="${XDG_RUNTIME_DIR:-/tmp}/tesy-placement-sweep.lock"
@@ -30,8 +31,56 @@ fi
 python3 -m tesy models verify gpt-oss-20b-mxfp4-gguf "$model" >"$out/model.json"
 python3 -m tesy doctor   --disk-path "$(dirname "$model")"   --reference-profile "$root/configs/reference-host.json" >"$out/doctor.json"
 
+[[ -x "$cli" ]] || { echo "missing llama-cli: $cli" >&2; exit 1; }
 [[ -x "$server" ]] || { echo "missing llama-server: $server" >&2; exit 1; }
-python3 -m tesy backend probe   --binary "$server"   --source-dir "$source_dir" >"$out/backend.json"
+
+# The backend feature lock is a llama-cli surface. Probe source identity there,
+# then independently bind both selected binaries to that exact locked source
+# revision through their embedded version commit before any model measurement.
+python3 -m tesy backend probe \
+  --binary "$cli" \
+  --source-dir "$source_dir" >"$out/backend.json"
+
+"$cli" --version >"$out/cli-version.txt" 2>&1
+"$server" --version >"$out/server-version.txt" 2>&1
+
+python3 - \
+  "$out/backend.json" \
+  "$out/cli-version.txt" \
+  "$out/server-version.txt" <<'PY'
+import json
+import re
+import sys
+from pathlib import Path
+
+backend = json.loads(Path(sys.argv[1]).read_text(encoding="utf-8"))
+if backend.get("status") != "PASS":
+    raise SystemExit(f"backend probe did not PASS: {backend.get('status')!r}")
+
+source = backend.get("source")
+if not isinstance(source, dict) or source.get("probe_status") != "PASS":
+    raise SystemExit("backend source provenance did not PASS")
+
+expected = source.get("expected_head")
+if not isinstance(expected, str) or len(expected) != 40:
+    raise SystemExit("backend probe did not expose a 40-character expected HEAD")
+expected = expected.lower()
+
+pattern = re.compile(r"\\bcommit\\s+([0-9a-f]{7,40})\\b", re.IGNORECASE)
+for label, raw_path in (
+    ("llama-cli", sys.argv[2]),
+    ("llama-server", sys.argv[3]),
+):
+    text = Path(raw_path).read_text(encoding="utf-8", errors="replace")
+    match = pattern.search(text)
+    if match is None:
+        raise SystemExit(f"{label} --version did not expose a commit id")
+    observed = match.group(1).lower()
+    if not expected.startswith(observed):
+        raise SystemExit(
+            f"{label} build revision {observed} does not match locked {expected}"
+        )
+PY
 
 git -C "$root" rev-parse HEAD >"$out/tesy-head.txt"
 git -C "$root" status --porcelain=v1 >"$out/tesy-status.txt"
@@ -40,6 +89,7 @@ git -C "$source_dir" status --porcelain=v1 >"$out/llama-status.txt"
 [[ ! -s "$out/tesy-status.txt" ]] || { echo "dirty Tesy worktree" >&2; exit 1; }
 [[ ! -s "$out/llama-status.txt" ]] || { echo "dirty llama.cpp worktree" >&2; exit 1; }
 
+sha256sum "$cli" >"$out/cli-sha256.txt"
 sha256sum "$server" >"$out/server-sha256.txt"
 sha256sum "$prompt_file" >"$out/prompt-sha256.txt"
 
@@ -245,6 +295,8 @@ for n in expected:
     by_n[n]={
         "observations": selected,
         "mean_ttft_ms": statistics.mean(r["ttft_ms"] for r in selected),
+        "min_ttft_ms": min(r["ttft_ms"] for r in selected),
+        "max_ttft_ms": max(r["ttft_ms"] for r in selected),
         "mean_prompt_tps": statistics.mean(r["prompt_tps"] for r in selected),
         "mean_decode_tps": statistics.mean(r["decode_tps"] for r in selected),
         "mean_peak_gpu_memory_bytes": statistics.mean(r["peak_gpu_memory_bytes"] for r in selected),
