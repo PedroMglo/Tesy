@@ -122,3 +122,10 @@ def test_validate_expert_crossover_rejects_derived_path_tampering():
     payload["results"][0]["derived"]["cpu_path_median_ms"] += 1.0
     with pytest.raises(ExpertCrossoverError, match="derived path mismatch"):
         validate_expert_crossover(payload)
+
+
+def test_validate_expert_crossover_rejects_cpu_default_fallback():
+    payload = _payload()
+    payload["results"][0]["cpu_weight_buffer_type"] = "CPU"
+    with pytest.raises(ExpertCrossoverError, match="expected CPU_REPACK"):
+        validate_expert_crossover(payload)
