@@ -2,7 +2,11 @@ from __future__ import annotations
 
 from typing import Any
 
-from tesy.native_trace import NativeTopKRecord, NativeTraceError
+from tesy.native_trace import (
+    NativeTopKRecord,
+    NativeTraceError,
+    require_explicit_phase,
+)
 from tesy.trace import ExpertKey, ExpertUse, RouteEvent
 
 
@@ -49,10 +53,15 @@ def native_decode_to_weighted_events(
     if min_graph_seq < 0:
         raise WeightedTraceError("min_graph_seq must be non-negative")
 
+    require_explicit_phase(records)
     sizes = _layer_sizes(inventory)
     events: list[RouteEvent] = []
     for record in records:
-        if record.graph_seq < min_graph_seq or record.n_tokens != 1:
+        if (
+            record.phase != "decode"
+            or record.graph_seq < min_graph_seq
+            or record.n_tokens != 1
+        ):
             continue
         if record.layer not in sizes:
             raise WeightedTraceError(

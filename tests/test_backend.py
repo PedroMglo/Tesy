@@ -15,7 +15,7 @@ def _write_fake_backend(path: Path) -> None:
 import sys
 
 if "--version" in sys.argv:
-    print("fake llama.cpp")
+    print("version: 0.0.0 (build 1, commit aaaaaaaa)")
     raise SystemExit(0)
 if "--list-devices" in sys.argv:
     print("CUDA0: fake")
@@ -106,3 +106,35 @@ def test_fake_backend_is_executable(tmp_path):
     binary = tmp_path / "llama-cli"
     _write_fake_backend(binary)
     assert os.access(binary, os.X_OK)
+
+
+def test_probe_rejects_binary_commit_mismatch(tmp_path, monkeypatch):
+    binary = tmp_path / "llama-cli"
+    _write_fake_backend(binary)
+    lock = tmp_path / "backends.json"
+    lock.write_text(
+        json.dumps(
+            {
+                "schema": "tesy.backends.lock.v1",
+                "backends": [
+                    {
+                        "id": "llama-cpp-stock",
+                        "commit": "b" * 40,
+                        "expected_features_to_probe": [
+                            "--cpu-moe",
+                            "--n-cpu-moe",
+                            "--lazy-mode",
+                            "--override-tensor",
+                            "--n-gpu-layers",
+                        ],
+                    }
+                ],
+            }
+        ),
+        encoding="utf-8",
+    )
+    monkeypatch.setenv("TESY_BACKEND_LOCK", str(lock))
+    result = probe_llama_cpp(binary)
+    assert result["status"] == "FAIL"
+    assert result["binary"]["reported_commit"] == "aaaaaaaa"
+    assert result["binary"]["commit_match"] is False

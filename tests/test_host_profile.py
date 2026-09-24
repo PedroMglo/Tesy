@@ -7,6 +7,7 @@ def _profile() -> dict:
     return {
         "schema": "tesy.reference_host.v1",
         "id": "fixture",
+        "require_physical_host": True,
         "platform_system": "Linux",
         "cpu_model_contains": "HX 370",
         "logical_cpus": 24,
@@ -22,6 +23,7 @@ def _profile() -> dict:
 def _snapshot() -> dict:
     return {
         "platform": {"system": "Linux"},
+        "virtualization": {"status": "PHYSICAL", "kind": "none"},
         "cpu": {"model": "AMD Ryzen AI 9 HX 370", "logical_cpus": 24},
         "memory": {"total_bytes": 32},
         "gpu": {
@@ -38,6 +40,20 @@ def _snapshot() -> dict:
 def test_reference_host_pass():
     result = validate_reference_host(_snapshot(), _profile())
     assert result["status"] == "PASS"
+
+
+def test_reference_host_rejects_virtualized_host():
+    snapshot = _snapshot()
+    snapshot["virtualization"] = {"status": "VIRTUALIZED", "kind": "kvm"}
+    result = validate_reference_host(snapshot, _profile())
+    assert result["status"] == "FAIL"
+
+
+def test_reference_host_is_inconclusive_when_physical_state_unknown():
+    snapshot = _snapshot()
+    snapshot["virtualization"] = {"status": "UNKNOWN", "kind": None}
+    result = validate_reference_host(snapshot, _profile())
+    assert result["status"] == "INCONCLUSIVE"
 
 
 def test_reference_host_fails_wrong_gpu():
