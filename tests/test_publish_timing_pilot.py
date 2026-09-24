@@ -107,6 +107,17 @@ def _fake_campaign(root: Path) -> Path:
             },
         )
         _write_json(
+            run / "placement-telemetry.json",
+            {
+                "schema": "tesy.stock_placement_telemetry.v1",
+                "status": "PASS",
+                "placement_id": placement,
+                "projected_model_mib": {"CUDA0": 6000.0, "Host": 5000.0},
+                "observed_model_mib": {"CUDA0": 6000.5, "Host": 4999.5},
+                "delta_mib": {"CUDA0": 0.5, "Host": -0.5},
+            },
+        )
+        _write_json(
             run / "pre-run-resources.json",
             {
                 "schema": "tesy.timing_pilot_pre_run_resources.v1",
@@ -178,6 +189,11 @@ def _fake_campaign(root: Path) -> Path:
                 "max_gpu_power_w": max_power,
                 "gpu_failed_samples": 0,
                 "runtime_provenance_status": "PASS",
+                "placement_telemetry_status": "PASS",
+                "projected_gpu_model_mib": 6000.0,
+                "projected_host_model_mib": 5000.0,
+                "observed_gpu_model_mib": 6000.5,
+                "observed_host_model_mib": 4999.5,
                 "placement_log_lines": placement_lines,
                 "token_sha256": token_hash,
             }
@@ -261,6 +277,7 @@ def test_publish_timing_pilot_keeps_only_derived_artifacts(tmp_path):
     assert manifest["trajectory_status"] == "PASS"
     assert manifest["next_gate"] == "MANUAL_REVIEW_REQUIRED"
     assert "01-auto-fit/resources.jsonl" in manifest["raw_artifacts"]
+    assert "01-auto-fit/placement-telemetry.json" in manifest["raw_artifacts"]
     assert not (destination / "01-auto-fit").exists()
     assert not (destination / "02-n12").exists()
     assert not (destination / "03-n24").exists()
@@ -305,5 +322,19 @@ def test_publish_timing_pilot_rejects_incomplete_gpu_telemetry(tmp_path):
     with pytest.raises(
         TimingPilotPublicationError,
         match="incomplete GPU telemetry",
+    ):
+        publish_timing_pilot(campaign, tmp_path / "published")
+
+
+def test_publish_timing_pilot_rejects_failed_placement_telemetry(tmp_path):
+    campaign = _fake_campaign(tmp_path)
+    telemetry_path = campaign / "02-n12" / "placement-telemetry.json"
+    telemetry = json.loads(telemetry_path.read_text(encoding="utf-8"))
+    telemetry["status"] = "FAIL"
+    _write_json(telemetry_path, telemetry)
+
+    with pytest.raises(
+        TimingPilotPublicationError,
+        match="raw placement telemetry failed",
     ):
         publish_timing_pilot(campaign, tmp_path / "published")
