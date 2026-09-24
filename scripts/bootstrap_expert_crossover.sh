@@ -48,6 +48,7 @@ done
 cmake -S "$root/native" -B "$build_dir" \
   -DLLAMA_CPP_SOURCE_DIR="$source_dir" \
   -DGGML_CUDA=ON \
+  -DGGML_BACKEND_DL=OFF \
   -DCMAKE_CUDA_ARCHITECTURES=89 \
   -DCMAKE_BUILD_TYPE=Release \
   -DCMAKE_C_COMPILER="$cc" \
