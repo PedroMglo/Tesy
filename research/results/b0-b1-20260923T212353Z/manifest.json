@@ -1,7 +1,7 @@
 {
   "campaign_head": "4e389c943c293f4df86ce4f397caedb9b16f8883",
-  "claim_boundary": "Stock B0/B1 diagnostic only. No Tesy cache, speedup, physical NVMe/PCIe expert-byte or >RAM claim.",
-  "classification": "MEASURED_STOCK_B0_B1_DIAGNOSTIC",
+  "claim_boundary": "Descriptive stock B0/B1 timing/resource observations only. Campaign is INCONCLUSIVE and cannot establish a performance winner, identical-trajectory comparison, physical NVMe/PCIe expert bytes, Tesy speedup or >RAM support.",
+  "classification": "INCONCLUSIVE_STOCK_B0_B1_DIAGNOSTIC",
   "order": [
     "B0",
     "B1",
@@ -192,7 +192,7 @@
       "arm": "B0",
       "decode_tps": 50.71377627657844,
       "gpu_failed_samples": 0,
-      "max_gpu_temperature_c": 56.0,
+      "max_gpu_temperature_c": 56,
       "peak_gpu_memory_bytes": 7192182784,
       "peak_process_rss_bytes": 12650622976,
       "peak_process_swap_bytes": 0,
@@ -210,7 +210,7 @@
       "arm": "B1",
       "decode_tps": 34.62348879462996,
       "gpu_failed_samples": 0,
-      "max_gpu_temperature_c": 57.0,
+      "max_gpu_temperature_c": 57,
       "peak_gpu_memory_bytes": 1800404992,
       "peak_process_rss_bytes": 12649893888,
       "peak_process_swap_bytes": 0,
@@ -228,7 +228,7 @@
       "arm": "B1",
       "decode_tps": 34.851223997114545,
       "gpu_failed_samples": 0,
-      "max_gpu_temperature_c": 59.0,
+      "max_gpu_temperature_c": 59,
       "peak_gpu_memory_bytes": 1800404992,
       "peak_process_rss_bytes": 12264964096,
       "peak_process_swap_bytes": 0,
@@ -246,7 +246,7 @@
       "arm": "B0",
       "decode_tps": 51.51229467649053,
       "gpu_failed_samples": 0,
-      "max_gpu_temperature_c": 59.0,
+      "max_gpu_temperature_c": 59,
       "peak_gpu_memory_bytes": 7192182784,
       "peak_process_rss_bytes": 12650717184,
       "peak_process_swap_bytes": 0,
@@ -262,5 +262,15 @@
     }
   ],
   "schema": "tesy.b0_b1_stock_placement_result.v1",
-  "source_output_root": "/home/pmglo/Projects/Tesy/results/b0-b1-20260923T212353Z"
+  "source_output_root": "/home/pmglo/Projects/Tesy/results/b0-b1-20260923T212353Z",
+  "admission_status": "INCONCLUSIVE_RERUN_REQUIRED",
+  "invalidation_reasons": [
+    "required placement.txt telemetry is empty for all four observations",
+    "frozen CUDA/compiler/dynamically loaded backend identity was not fully recovered",
+    "generated token IDs were not retained, so trajectory equality is unproven"
+  ],
+  "validation": {
+    "campaign_local_validation": "NOT_RUN",
+    "note": "No model-free/unit/shell/manifest validation result was captured under this campaign identity. Publication-branch CI is separate and does not upgrade the campaign evidence."
+  }
 }
