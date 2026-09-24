@@ -458,15 +458,12 @@ ggml_backend_buffer_type_t select_cpu_weight_buft(
     }
     candidates.push_back(ggml_backend_dev_buffer_type(cpu_dev));
 
-    for (auto buft : candidates) {
-        if (!buft) {
-            continue;
-        }
-        if (supports_weight_buft(cpu_dev, buft, k)) {
-            return buft;
-        }
+    const ggml_backend_buffer_type_t cpu_default =
+        ggml_backend_dev_buffer_type(cpu_dev);
+    if (!cpu_default || !supports_weight_buft(cpu_dev, cpu_default, k)) {
+        fail("CPU default buffer does not support MXFP4 MUL_MAT_ID");
     }
-    fail("no CPU buffer type supports MXFP4 MUL_MAT_ID");
+    return cpu_default;
 }
 
 std::unique_ptr<tensor_set> make_tensor_set(
@@ -851,9 +848,9 @@ k_result run_k(
     const ggml_backend_buffer_type_t cpu_weight =
         select_cpu_weight_buft(cpu_dev, k);
     const std::string cpu_weight_name = ggml_backend_buft_name(cpu_weight);
-    if (cpu_weight_name != "CPU_REPACK") {
+    if (cpu_weight_name != "CPU") {
         fail(
-            "expected CPU_REPACK for admitted MXFP4 crossover, got " +
+            "expected CPU default buffer to match --n-cpu-moe authority, got " +
             cpu_weight_name);
     }
 
