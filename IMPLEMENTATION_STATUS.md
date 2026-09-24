@@ -37,8 +37,8 @@ reference-host/model validation. No source-only row is a performance claim.
 | KTransformers baseline | PINNED_NOT_REPRODUCED | reproduce only if compatible with selected model/host |
 | vLLM baseline | PINNED_NOT_REPRODUCED | B4 only if 8 GiB/32 GiB envelope admits it |
 | native Tesy expert residency/cache | NOT_IMPLEMENTED | forbidden until baseline + trace/headroom establish a concrete gap |
-| CPU-vs-transfer-vs-GPU expert crossover | PASS_REFERENCE_HOST_DIAGNOSTIC | campaign `expert-crossover-20260924T101753Z`: real-shape k=1/k=4 parity/resource gates PASS; pinned cold-GPU miss is ~3.05x/~3.64x slower than authoritative n-cpu-moe CPU path while resident GPU is ~5.80x/~4.92x faster; blocking demand transfer NO_GO |
-| mixed GPU-hit / CPU-miss expert execution | STAGE_B_IMPLEMENTED_HOST_NOT_RUN | grouped replay PASS: h=3 35.56%, h=4 29.17%, h=2 17.22%; direct real-weight h=0..4 serial mixed FFN benchmark, numerical parity, provenance and trace-weighted analysis are implemented; native compile/physical timing NOT_RUN |
+| CPU-vs-transfer-vs-GPU expert crossover | PASS_CPU_DEFAULT_REFERENCE_HOST_DIAGNOSTIC | campaign `expert-crossover-20260924T101753Z`: real-shape k=1/k=4 parity/resource gates PASS; pinned cold-GPU miss is ~3.05x/~3.64x slower than the measured CPU-default fallback while resident GPU is ~5.80x/~4.92x faster; post-run source audit shows loader CPU overrides may select extra/repack buffers, so CPU-default is a conservative comparator rather than unique loader-path authority |
+| mixed GPU-hit / CPU-miss expert execution | STAGE_B_CPU_DEFAULT_PASS_OPTIMIZED_RERUN_REQUIRED | first physical Stage B CPU-default campaign PASS: h=0..4 parity, weighted diagnostic 0.551891 ms / 1.378x vs h=0, zero swap and complete GPU telemetry; source audit requires a fresh extra/repack-aware CPU-backend rerun before promoting overlap |
 | causal prefetch | NOT_IMPLEMENTED | only after locality/headroom and wasted-prefetch analysis |
 | speculative K=2 | NOT_IMPLEMENTED | only after K=1 target/runtime correctness |
 | joint K/residency scheduler | OPEN_RESEARCH_QUESTION | broad novelty overlap exists; benefit and narrower novelty unknown |
