@@ -19,7 +19,7 @@ reference-host/model validation. No source-only row is a performance claim.
 | paired trace OFF/ON token gate | REAL_MODEL_TOKEN_ID_EQUALITY_PASS | same 16 generated IDs for one deterministic raw prompt; no bitwise/numerical parity claim |
 | count-space LRU headroom | REAL_TRACE_DERIVED | 1,440 one-token expert accesses; equal-sized-slot LRU, not physical bytes |
 | Belady offline oracle | REAL_TRACE_DERIVED | non-causal equal-slot lower bound; not a production policy |
-| GGUF expert payload inventory | REAL_GGUF_PASS_DERIVATION | 24 × 32 experts, 13,253,760 encoded bytes each; not physical fetch granularity |
+| GGUF expert payload inventory | NATIVE_RELOCK_IMPLEMENTED_HOST_NOT_RUN | prior 24 × 32 / 13,253,760-byte result remains exploratory context; new metadata-only helper uses pinned gguf/ggml APIs with no gguf-py dependency, physical relock NOT_RUN |
 | byte-weighted native trace simulation | REAL_TRACE_DERIVED_SIMULATION | 16 GiB/4 GiB hypothetical two-tier LRU; not physical traffic |
 | reference bring-up pipeline | PASS_DIAGNOSTIC_REFERENCE_HOST | third campaign completed after two preserved failed/aborted attempts; details in `research/results/first-real-bringup-20260923/RESULT.md` |
 | stock llama.cpp real gpt-oss-20b load | PASS_DIAGNOSTIC_STOCK_SMOKE | 16-token stock generation; no chat or benchmark qualification |
@@ -37,7 +37,7 @@ reference-host/model validation. No source-only row is a performance claim.
 | KTransformers baseline | PINNED_NOT_REPRODUCED | reproduce only if compatible with selected model/host |
 | vLLM baseline | PINNED_NOT_REPRODUCED | B4 only if 8 GiB/32 GiB envelope admits it |
 | native Tesy expert residency/cache | NOT_IMPLEMENTED | forbidden until baseline + trace/headroom establish a concrete gap |
-| CPU-vs-transfer-vs-GPU expert crossover | NEXT_GATE_INVENTORY_RELOCK_REQUIRED | continuum shape is measured; next gate must first re-establish prospectively locked real expert shapes/types, then separate CPU compute, requested Host->GPU transfer, and resident-GPU compute without relabelling requested bytes as physical PCIe traffic |
+| CPU-vs-transfer-vs-GPU expert crossover | BLOCKED_ON_NATIVE_INVENTORY_HOST_RUN | continuum shape is measured; native dependency-free shape/type inventory implementation exists but reference-host result is NOT_RUN; crossover remains blocked until that gate passes |
 | causal prefetch | NOT_IMPLEMENTED | only after locality/headroom and wasted-prefetch analysis |
 | speculative K=2 | NOT_IMPLEMENTED | only after K=1 target/runtime correctness |
 | joint K/residency scheduler | OPEN_RESEARCH_QUESTION | broad novelty overlap exists; benefit and narrower novelty unknown |
