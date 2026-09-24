@@ -1,19 +1,20 @@
 {
   "work_package": "full-model-vertical-integration-20260924",
-  "stage": "C2",
-  "status": "LIVE_CANDIDATE_NUMERICAL_PARITY_BLOCKER_STOCK_BASELINE_CONTINUES",
+  "stage": "C3",
+  "status": "STOCK_BASELINE_DELIVERED_TESY_NUMERICAL_PARITY_BLOCKER",
   "branch": "engineering/full-model-vertical-integration-20260924",
   "base_commit": "4e6501fc3afaab22bf152fc8e5a9ebb1cd336222",
-  "implementation_commit": "6f9beefc6b346b2a30d5e4a4af05c28f934d9289",
-  "measurement_commit": "6f9beefc6b346b2a30d5e4a4af05c28f934d9289",
-  "measurement_tree": "ae518f02ea30ca61e5113aeb194bd512b58a9821",
+  "implementation_commit": "95a2a4a7118690f256ef2f08d73c14e7664ea099",
+  "measurement_commit": "95a2a4a7118690f256ef2f08d73c14e7664ea099",
+  "measurement_tree": "3330a72243bd8ffdf7012918c60bd06d57b54826",
   "protocol_path": "research/FULL-MODEL-VERTICAL-INTEGRATION-PROTOCOL-20260924.md",
-  "result_path": "research/FULL-MODEL-VERTICAL-INTEGRATION-C2-20260924.md",
-  "evidence_manifest_path": null,
+  "result_path": "research/FULL-MODEL-VERTICAL-INTEGRATION-C3-RESULT-20260924.md",
+  "evidence_manifest_path": "research/coordination/C3-STOCK-EVIDENCE.json",
   "blockers": [
-    "Layer-2 GPU-resident FFN difference propagates to full-logit relative max 0.00855978666, exceeding the frozen 0.005 limit.",
-    "Full failed-root vectors and telemetry are local only; independent remote recomputation incomplete.",
-    "Stock-only baseline evaluation and capacity publication remain in progress."
+    "Layer-2 GPU-resident FFN difference propagates to full-logit relative max 0.00855978666, exceeding the frozen 0.005 limit; Tesy end-to-end is NOT_RUN.",
+    "Raw SSE, runtime/resource files and full failed-root logits are local only; independent remote audit remains incomplete.",
+    "The stock chat SSE endpoint did not expose a complete generated token-ID vector; output text/counts are recorded, token-ID sequence is not.",
+    "The code workload hit 128-token length limit before two examples; useful-response quality is not established."
   ],
   "pending_external_audit": true
 }
