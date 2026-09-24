@@ -64,21 +64,31 @@ def parse_server_model_buffers(text: str) -> dict:
             f"expected only CUDA0 model buffers, got {gpu_names!r}"
         )
 
-    gpu_mib = sum(
-        float(row["mib"])
-        for row in buffers
-        if str(row["name"]).startswith("CUDA0")
-    )
-    host_mib = sum(
-        float(row["mib"])
-        for row in buffers
-        if not str(row["name"]).startswith("CUDA0")
-    )
+    gpu_buffers = [
+        row for row in buffers if str(row["name"]).startswith("CUDA0")
+    ]
+    host_buffers = [
+        row for row in buffers if not str(row["name"]).startswith("CUDA0")
+    ]
+    mapped_host_buffers = [
+        row for row in host_buffers if "Mapped" in str(row["name"])
+    ]
 
     return {
         "buffers": buffers,
-        "gpu_model_mib": gpu_mib,
-        "host_model_mib": host_mib,
+        "gpu_model_mib": sum(float(row["mib"]) for row in gpu_buffers),
+        "host_runtime_buffer_mib": sum(
+            float(row["mib"]) for row in host_buffers
+        ),
+        "host_runtime_buffer_names": [
+            str(row["name"]) for row in host_buffers
+        ],
+        "mapped_host_buffer_mib": sum(
+            float(row["mib"]) for row in mapped_host_buffers
+        ),
+        "mapped_host_buffer_names": [
+            str(row["name"]) for row in mapped_host_buffers
+        ],
         "offloaded_layers": offload_rows[0],
     }
 
@@ -110,46 +120,63 @@ def validate_placement_telemetry(
     projected_gpu_mib = float(projected["CUDA0"]["model_mib"])
     projected_host_mib = float(projected["Host"]["model_mib"])
     gpu_delta_mib = observed["gpu_model_mib"] - projected_gpu_mib
-    host_delta_mib = observed["host_model_mib"] - projected_host_mib
 
     mismatches: list[str] = []
     if abs(gpu_delta_mib) > tolerance_mib:
         mismatches.append(
-            "GPU model buffers differ from fit-print projection: "
+            "CUDA0 model buffer differs from fit-print projection: "
             f"{observed['gpu_model_mib']:.3f} vs {projected_gpu_mib:.3f} MiB"
         )
-    if abs(host_delta_mib) > tolerance_mib:
+
+    if projected_host_mib > 0 and not observed["mapped_host_buffer_names"]:
         mismatches.append(
-            "Host model buffers differ from fit-print projection: "
-            f"{observed['host_model_mib']:.3f} vs {projected_host_mib:.3f} MiB"
+            "projected Host model allocation is non-zero but server log has "
+            "no mmap-backed Host model buffer"
         )
 
     return {
-        "schema": "tesy.stock_placement_telemetry.v1",
+        "schema": "tesy.stock_placement_telemetry.v2",
         "classification": "MEASURED_RUNTIME_PLACEMENT_LOG_DIAGNOSTIC",
         "status": "PASS" if not mismatches else "FAIL",
         "placement_id": placement_id,
-        "tolerance_mib": tolerance_mib,
-        "projected_model_mib": {
+        "gpu_tolerance_mib": tolerance_mib,
+        "projected_logical_model_mib": {
             "CUDA0": projected_gpu_mib,
             "Host": projected_host_mib,
         },
-        "observed_model_mib": {
-            "CUDA0": observed["gpu_model_mib"],
-            "Host": observed["host_model_mib"],
+        "observed_runtime_model_buffers": {
+            "CUDA0_mib": observed["gpu_model_mib"],
+            "Host_reported_buffer_mib": observed["host_runtime_buffer_mib"],
+            "Host_reported_buffer_names": observed[
+                "host_runtime_buffer_names"
+            ],
+            "Host_mmap_span_mib": observed["mapped_host_buffer_mib"],
+            "Host_mmap_buffer_names": observed["mapped_host_buffer_names"],
         },
-        "delta_mib": {
-            "CUDA0": gpu_delta_mib,
-            "Host": host_delta_mib,
+        "cuda0_delta_mib": gpu_delta_mib,
+        "host_comparability": {
+            "status": "NOT_COMPARABLE_MMAP_SPAN",
+            "projected_quantity": "LOGICAL_TENSOR_ALLOCATION_MIB",
+            "runtime_quantity": "MMAP_BUFFER_SPAN_MIB",
+            "equality_gate": False,
+            "reason": (
+                "Pinned fit-print uses no_alloc with load_mode NONE and reports "
+                "logical host tensor allocation. Stock mmap runtime reports a "
+                "CPU_Mapped buffer spanning first-to-last mapped tensor offsets, "
+                "which may include gaps and is not resident DRAM bytes."
+            ),
         },
         "model_buffers": observed["buffers"],
         "offloaded_layers": observed["offloaded_layers"],
         "mismatches": mismatches,
         "claim_boundary": (
-            "PASS compares llama-server-reported model-buffer allocation against "
-            "the same-placement llama-fit-params model-memory projection. It "
-            "qualifies aggregate GPU/Host placement materialization, not per-tensor "
-            "identity or physical VRAM/DRAM/PCIe traffic."
+            "PASS verifies aggregate CUDA0 model-buffer parity against the "
+            "same-placement fit-print projection and requires the expected "
+            "mmap-backed Host buffer to be present when Host allocation is "
+            "projected. The Host runtime buffer size is recorded but explicitly "
+            "not compared with fit-print Host model MiB. Exact placement authority "
+            "also requires the frozen live argv and pinned source/build provenance. "
+            "No physical VRAM/DRAM/PCIe traffic claim follows."
         ),
     }
 
