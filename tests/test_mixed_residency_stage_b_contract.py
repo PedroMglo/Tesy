@@ -16,8 +16,11 @@ def test_mixed_residency_native_source_freezes_real_top4_contract():
     assert "ggml_mul_mat_id" in text
     assert "ggml_add_id" in text
     assert "ggml_swiglu_oai" in text
-    assert 'cpu_weight_name != "CPU"' not in text
-    assert 'std::string(ggml_backend_buft_name(cpu_buft)) != "CPU"' in text
+    assert "select_cpu_compute_weight_buft" in text
+    assert "ggml_backend_dev_get_extra_bufts" in text
+    assert "ggml_backend_dev_supports_op(cpu_dev, op)" in text
+    assert "cpu_weight_buffer_type" in text
+    assert "cpu_bias_buffer_type" in text
 
 
 def test_mixed_residency_source_freezes_balanced_case_order():
