@@ -4,27 +4,33 @@ Date: 2026-09-24
 
 Branch: `research/mixed-residency-async-overlap-restacked-20260924`
 
-Parent Tesy commit: `42b759e91c373f058934e924fe4ce3f7f0915d92`
+Historical logical experimental base commit: `42b759e91c373f058934e924fe4ce3f7f0915d92`
 
-Parent Tesy tree: `5181fbdae2821adb658bfd9d92c5a65075aca938`
+Historical logical experimental base tree: `5181fbdae2821adb658bfd9d92c5a65075aca938`
+
+These values identify the source state against which the original async experiment was designed. They are **not** the current Git parent after stack reconciliation. The reviewed PR ancestry is authoritative for integration and must be read from Git.
 
 Pinned llama.cpp commit:
 `4e416ee7308dd6b581796f1a6241276cd5982691`
 
 Evidence class: prospective isolated measured-concurrency diagnostic.
 
-## Motivation and admitted prerequisite
+## Motivation and prerequisite correction
 
-The published overlap-bound campaign
-`mixed-residency-overlap-bound-20260924T135006Z` measured a
-trace-weighted serial diagnostic of 0.5167518333 ms and a derived post-D2H
-compute-overlap bound of 0.4039387111 ms. The prospectively frozen 10% gate was
-0.46507665 ms, so the persisted decision was
-`OVERLAP_IMPLEMENTATION_GO`.
+The historical overlap-bound campaign
+`mixed-residency-overlap-bound-20260924T135006Z` originally persisted
+`OVERLAP_IMPLEMENTATION_GO`. Review later invalidated that authorization:
+`gpu_aggregation` re-executed the GPU FFN through graph ancestry, process
+telemetry was incomplete, and the histogram used for weighting is no longer
+admitted because the historical replay was phase-ambiguous.
 
-That result justifies implementing one narrow concurrency mechanism. It does
-not establish measured async benefit, full-model speedup, cache behavior,
-prefetch benefit, or physical PCIe/DRAM/NVMe traffic.
+Therefore this protocol is now **implementation-preservation only**:
+`NOT_AUTHORIZED_PENDING_OVERLAP_AND_HISTOGRAM_REVALIDATION`.
+
+The async mechanism may remain implemented for audit, but no physical campaign
+or downstream integration is authorized from the withdrawn prerequisite.
+A fresh phase-aware histogram replay and corrected overlap-bound campaign must
+pass before this protocol can regain execution authority.
 
 The failed predecessor campaign
 `mixed-residency-overlap-bound-20260924T134933Z` remains preserved as
@@ -152,7 +158,7 @@ this protocol even if its timing fields are otherwise well formed.
 
 ## Trace weighting
 
-Use only the admitted grouped histogram:
+Historical weighting used the following now-withdrawn grouped histogram:
 
 - h=0: 39;
 - h=1: 26;
@@ -161,7 +167,7 @@ Use only the admitted grouped histogram:
 - h=4: 105;
 - total: 360 groups.
 
-Required histogram SHA-256:
+Historical histogram SHA-256 (not currently admitted):
 
 `ba9e989d9713f8fd5d51ebd5112c8f0e6f12e4af821e2e7eceb408ed5ba423ab`.
 
@@ -177,7 +183,7 @@ is the same measured serial anchor:
 This weighting is a trace-derived arithmetic diagnostic over measured isolated
 case medians. It is not a measured full-model latency.
 
-## Prospective decision threshold
+## Historical decision threshold — execution currently not authorized
 
 Reuse the already preregistered engineering threshold. Do not tune it after
 execution:
@@ -189,8 +195,7 @@ Classify:
 - threshold met: `ASYNC_OVERLAP_MEASURED_GO`;
 - threshold not met: `ASYNC_OVERLAP_COMPLEXITY_NO_GO`.
 
-The 10% threshold governs whether this concurrency complexity survives the
-isolated operator gate. It is not a universal statistical-significance rule
+The 10% threshold remains recorded for reproducibility, but it is not actionable until the histogram and overlap-bound prerequisites are revalidated. It is not a universal statistical-significance rule
 and does not authorize a full-model speedup claim.
 
 ## Python environment and no-replace publication
