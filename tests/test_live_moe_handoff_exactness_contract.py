@@ -22,7 +22,7 @@ def test_live_handoff_uses_stock_then_handoff_arms_with_rollbacks():
     )
 
     start = text.index("live_handoff_result run_live_handoff_exactness(")
-    end = text.index("void print_parity(", start)
+    end = text.index("live_timing_exactness_snapshot capture_live_timing_pair(", start)
     block = text[start:end]
 
     assert "live_handoff_arm::stock_reference" in block
@@ -57,7 +57,10 @@ def test_live_handoff_reuses_existing_exactness_executor_without_timing():
     )
 
     live_start = text.index("live_handoff_result run_live_handoff_exactness(")
-    live_end = text.index("void print_parity(", live_start)
+    live_end = text.index(
+        "live_timing_exactness_snapshot capture_live_timing_pair(",
+        live_start,
+    )
     live = text[live_start:live_end]
 
     routed_start = text.index("routed_exactness_result run_routed_exactness(")
