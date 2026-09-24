@@ -19,6 +19,11 @@ stage="initialization"
 tool_pid=""
 monitor_pid=""
 
+echo "NOT_AUTHORIZED_PHASE_AWARE_HISTOGRAM_REVALIDATION_REQUIRED" >&2
+echo "freeze a new provenance-preserved phase-aware decode histogram before Stage B" >&2
+exit 1
+
+
 if [[ -e "$out" ]]; then
   echo "refusing to replace output root: $out" >&2
   exit 1
