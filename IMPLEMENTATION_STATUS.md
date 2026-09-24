@@ -29,6 +29,7 @@ reference-host/model validation. No source-only row is a performance claim.
 | pinned llama-fit-params utility | PASS_REFERENCE_HOST | built from pinned llama.cpp on reference host; binary/toolchain identity retained in published capacity provenance |
 | llama.cpp build provenance lock | PASS_REFERENCE_HOST | capacity campaign verified frozen CMake/GCC/CUDA/server/libggml-cuda identity with zero mismatches |
 | live backend mapping provenance | IMPLEMENTED_MODEL_FREE | timed runs verify process executable and mapped pre-hashed libggml-cuda; timing campaign remains NOT_RUN |
+| realized stock placement telemetry | IMPLEMENTED_MODEL_FREE_HOST_NOT_RUN | pilot compares server-reported aggregate CUDA0/Host model buffers against same-placement fit-print projection with 2 MiB tolerance; not per-tensor or physical traffic |
 | capacity result publication | PASS_DERIVED_PUBLICATION | capacity result published at commit `5a8bbf08eb95069b1847f724e5d1be98c6392678`; raw fitter evidence retained byte-identical and hash-manifested |
 | stock placement timing pilot | IMPLEMENTED_MODEL_FREE_HOST_NOT_RUN | prospective 3-point pilot: frozen stock auto-fit, N=12, N=24; live capacity recheck, quantitative CUDA0/Host model-buffer materialization gate (2 MiB tolerance), exact 64-token equality, runtime backend provenance and resource gates |
 | stock B2 gpt-oss lazy-expert baseline | STATIC_NO_GO | pinned gpt-oss expert tensors are not marked `TENSOR_READ_LAZY`; no model-bearing B2 run is justified for this purpose |
