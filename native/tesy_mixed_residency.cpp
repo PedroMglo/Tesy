@@ -3641,6 +3641,20 @@ void vertical_verify_graph_inputs(
         const std::vector<float> & weights,
         const char * label) {
     ggml_backend_synchronize(backend);
+    if (graph.input->type != GGML_TYPE_F32 ||
+        graph.input->ne[0] != k_embd || graph.input->ne[1] != 1 ||
+        graph.input->ne[2] != 1 || graph.input->ne[3] != 1 ||
+        graph.ids->type != GGML_TYPE_I32 ||
+        graph.ids->ne[0] != static_cast<int64_t>(ids.size()) ||
+        graph.ids->ne[1] != 1 || graph.ids->ne[2] != 1 ||
+        graph.mix->type != GGML_TYPE_F32 || graph.mix->ne[0] != 1 ||
+        graph.mix->ne[1] != static_cast<int64_t>(weights.size()) ||
+        graph.mix->ne[2] != 1 ||
+        !ggml_is_contiguous(graph.input) ||
+        !ggml_is_contiguous(graph.ids) ||
+        !ggml_is_contiguous(graph.mix)) {
+        fail(std::string("vertical compact input metadata differs: ") + label);
+    }
     const auto actual_activation = read_live_tensor<float>(
         graph.input, GGML_TYPE_F32, activation.size(), label);
     const auto actual_ids = read_live_tensor<int32_t>(
@@ -3654,13 +3668,22 @@ void vertical_verify_graph_inputs(
     }
     std::fprintf(stderr,
         "vertical diagnostic %s activation/ids/weights upload bitwise=1 "
-        "activation_shape=%" PRId64 ",%" PRId64 ",%" PRId64 " "
-        "ids_shape=%" PRId64 ",%" PRId64 " "
-        "weights_shape=%" PRId64 ",%" PRId64 ",%" PRId64 "\n",
+        "activation_type=%s activation_shape=%" PRId64 ",%" PRId64 ",%" PRId64
+        " activation_strides=%zu,%zu,%zu "
+        "ids_type=%s ids_shape=%" PRId64 ",%" PRId64
+        " ids_strides=%zu,%zu "
+        "weights_type=%s weights_shape=%" PRId64 ",%" PRId64 ",%" PRId64
+        " weights_strides=%zu,%zu,%zu\n",
         label,
+        ggml_type_name(graph.input->type),
         graph.input->ne[0], graph.input->ne[1], graph.input->ne[2],
+        graph.input->nb[0], graph.input->nb[1], graph.input->nb[2],
+        ggml_type_name(graph.ids->type),
         graph.ids->ne[0], graph.ids->ne[1],
-        graph.mix->ne[0], graph.mix->ne[1], graph.mix->ne[2]);
+        graph.ids->nb[0], graph.ids->nb[1],
+        ggml_type_name(graph.mix->type),
+        graph.mix->ne[0], graph.mix->ne[1], graph.mix->ne[2],
+        graph.mix->nb[0], graph.mix->nb[1], graph.mix->nb[2]);
 }
 
 void vertical_set_graph_inputs(compute_graph & graph,
@@ -3763,6 +3786,9 @@ vertical_recompute_and_capture_stages(
         if (stage_index < cursor) {
             fail(std::string("compact expert stage alias changed: ") + label);
         }
+        std::fprintf(stderr,
+            "vertical diagnostic %s stage=%s node_index=%d\n",
+            label, k_vertical_stage_names[stage], stage_index);
         auto view = ggml_graph_view(graph.graph, cursor, stage_index + 1);
         if (ggml_backend_graph_compute(backend, &view) != GGML_STATUS_SUCCESS) {
             fail(std::string("compact expert stage view failed: ") + label);

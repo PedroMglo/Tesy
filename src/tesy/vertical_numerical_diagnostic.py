@@ -18,10 +18,10 @@ from pathlib import Path
 WIDTH = 2880
 SLOTS = 4
 STAGES = (
-    "ffn_moe_up",
-    "ffn_moe_up_biased",
     "ffn_moe_gate",
     "ffn_moe_gate_biased",
+    "ffn_moe_up",
+    "ffn_moe_up_biased",
     "ffn_moe_swiglu_oai",
     "ffn_moe_down",
     "ffn_moe_down_biased",

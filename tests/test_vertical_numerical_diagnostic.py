@@ -7,6 +7,7 @@ from tesy.vertical_numerical_diagnostic import (
     RESIDENT,
     ROUTE,
     SLOTS,
+    STAGES,
     WIDTH,
     f32_add,
     mixed_subset_sum,
@@ -28,6 +29,14 @@ def test_f32_sum_respects_stock_and_mixed_association():
     assert stock[0] == 1.0
     assert mixed[0] == 2.0
     assert f32_add(1e8, 1.0) == 1e8
+
+
+def test_stage_analysis_order_follows_pinned_graph_dependencies():
+    # SWIGLU_OAI(gate, up) is visited left-to-right by ggml_build_forward_expand.
+    assert STAGES[:4] == (
+        "ffn_moe_gate", "ffn_moe_gate_biased",
+        "ffn_moe_up", "ffn_moe_up_biased",
+    )
 
 
 def test_parity_reports_bitwise_and_finite_numerics():
