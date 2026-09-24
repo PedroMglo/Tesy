@@ -69,6 +69,8 @@ def test_cancel_bound_freezes_samples_order_and_route_identity():
     assert "cancel bound requires --samples 81" in text
     assert "cancel bound requires --warmup 6" in text
     assert "even_stock_cancel_odd_cancel_stock" in text
+    assert "k_cancel_bound_decode_token = 2167" in text
+    assert "first route differs from admitted experts" in text
     assert "routed expert IDs changed across trials" in text
     assert "routing weights changed across trials" in text
 
