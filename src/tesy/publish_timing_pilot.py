@@ -39,6 +39,22 @@ def _load_json(path: Path) -> dict[str, Any]:
     return payload
 
 
+def _load_json_list(path: Path) -> list[str]:
+    try:
+        payload = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError) as exc:
+        raise TimingPilotPublicationError(f"cannot read JSON {path}: {exc}") from exc
+    if not isinstance(payload, list) or not payload:
+        raise TimingPilotPublicationError(
+            f"JSON artifact must be a non-empty list: {path}"
+        )
+    if any(not isinstance(value, str) or not value for value in payload):
+        raise TimingPilotPublicationError(
+            f"JSON argv artifact contains invalid elements: {path}"
+        )
+    return payload
+
+
 def _sha256(path: Path) -> str:
     digest = hashlib.sha256()
     with path.open("rb") as handle:
@@ -98,8 +114,14 @@ def _validate_campaign(root: Path) -> tuple[dict[str, Any], ...]:
             raise TimingPilotPublicationError("pilot observation must be an object")
         if row.get("runtime_provenance_status") != "PASS":
             raise TimingPilotPublicationError("runtime provenance did not PASS")
+        if row.get("runtime_argv_status") != "PASS":
+            raise TimingPilotPublicationError("runtime argv identity did not PASS")
         if row.get("placement_telemetry_status") != "PASS":
             raise TimingPilotPublicationError("placement telemetry did not PASS")
+        if row.get("host_comparability_status") != "NOT_COMPARABLE_MMAP_SPAN":
+            raise TimingPilotPublicationError(
+                "unexpected Host placement comparability classification"
+            )
         if row.get("predicted_n") != 64:
             raise TimingPilotPublicationError("pilot observation is not 64 tokens")
         if row.get("peak_process_swap_bytes") != 0:
@@ -160,6 +182,7 @@ def _validate_raw_observations(root: Path, pilot: dict[str, Any]) -> None:
             "token-sha256.txt",
             "placement.txt",
             "server-command.txt",
+            "server-argv.json",
             "pre-run-resources.json",
             "pre-run-capacity.json",
             "server-ready.json",
@@ -181,6 +204,7 @@ def _validate_raw_observations(root: Path, pilot: dict[str, Any]) -> None:
         pre_run = _load_json(run_dir / "pre-run-resources.json")
         pre_capacity = _load_json(run_dir / "pre-run-capacity.json")
         ready = _load_json(run_dir / "server-ready.json")
+        server_argv = _load_json_list(run_dir / "server-argv.json")
         command = (run_dir / "server-command.txt").read_text(
             encoding="utf-8"
         ).strip()
@@ -223,7 +247,20 @@ def _validate_raw_observations(root: Path, pilot: dict[str, Any]) -> None:
             raise TimingPilotPublicationError(
                 f"raw runtime provenance failed for {placement_id}"
             )
-        if placement_telemetry.get("schema") != "tesy.stock_placement_telemetry.v1":
+        runtime_argv = runtime.get("argv")
+        if not isinstance(runtime_argv, dict) or runtime_argv.get("status") != "PASS":
+            raise TimingPilotPublicationError(
+                f"raw runtime argv identity failed for {placement_id}"
+            )
+        if runtime_argv.get("expected") != server_argv:
+            raise TimingPilotPublicationError(
+                f"raw expected argv mismatch for {placement_id}"
+            )
+        if runtime_argv.get("observed") != server_argv:
+            raise TimingPilotPublicationError(
+                f"raw observed argv mismatch for {placement_id}"
+            )
+        if placement_telemetry.get("schema") != "tesy.stock_placement_telemetry.v2":
             raise TimingPilotPublicationError(
                 f"unexpected placement telemetry schema for {placement_id}"
             )
@@ -234,6 +271,13 @@ def _validate_raw_observations(root: Path, pilot: dict[str, Any]) -> None:
         if placement_telemetry.get("status") != "PASS":
             raise TimingPilotPublicationError(
                 f"raw placement telemetry failed for {placement_id}"
+            )
+        if (
+            placement_telemetry.get("host_comparability", {}).get("status")
+            != "NOT_COMPARABLE_MMAP_SPAN"
+        ):
+            raise TimingPilotPublicationError(
+                f"raw Host comparability classification failed for {placement_id}"
             )
         if request.get("schema") != "tesy.stock_server_request.v1":
             raise TimingPilotPublicationError(
@@ -318,19 +362,23 @@ def _validate_raw_observations(root: Path, pilot: dict[str, Any]) -> None:
             "max_gpu_power_w": resources["max_gpu_power_w"],
             "gpu_failed_samples": resources["gpu_failed_samples"],
             "runtime_provenance_status": runtime["status"],
+            "runtime_argv_status": runtime_argv["status"],
             "placement_telemetry_status": placement_telemetry["status"],
-            "projected_gpu_model_mib": placement_telemetry["projected_model_mib"][
-                "CUDA0"
-            ],
-            "projected_host_model_mib": placement_telemetry["projected_model_mib"][
-                "Host"
-            ],
-            "observed_gpu_model_mib": placement_telemetry["observed_model_mib"][
-                "CUDA0"
-            ],
-            "observed_host_model_mib": placement_telemetry["observed_model_mib"][
-                "Host"
-            ],
+            "projected_gpu_model_mib": placement_telemetry[
+                "projected_logical_model_mib"
+            ]["CUDA0"],
+            "projected_host_logical_model_mib": placement_telemetry[
+                "projected_logical_model_mib"
+            ]["Host"],
+            "observed_gpu_model_mib": placement_telemetry[
+                "observed_runtime_model_buffers"
+            ]["CUDA0_mib"],
+            "observed_host_mmap_span_mib": placement_telemetry[
+                "observed_runtime_model_buffers"
+            ]["Host_mmap_span_mib"],
+            "host_comparability_status": placement_telemetry[
+                "host_comparability"
+            ]["status"],
             "placement_log_lines": placement_lines,
             "token_sha256": computed_hash,
         }
@@ -425,9 +473,14 @@ def _result_markdown(pilot: dict[str, Any], source: dict[str, Any]) -> str:
             "Pilot placements were selected from published capacity evidence; "
             f"admitted manual points there were {source['admitted_n_cpu_moe']}.",
             "",
-            "Aggregate realized placement telemetry: `PASS` for all three runs; "
-            "llama-server model-buffer allocations matched the same-placement "
-            "llama-fit-params projection within the frozen tolerance.",
+            "Realized placement telemetry: `PASS` for all three runs. "
+            "CUDA0 model buffers matched the same-placement llama-fit-params "
+            "projection within the frozen tolerance, and live process argv matched "
+            "the exact frozen server argv.",
+            "",
+            "Host `CPU_Mapped` buffer spans are retained as diagnostics and "
+            "classified `NOT_COMPARABLE_MMAP_SPAN`; they are not compared with "
+            "fit-print Host logical model MiB and are not resident-DRAM claims.",
             "",
             "This is one observation per placement. It is diagnostic only: no "
             "confirmatory performance winner or Pareto frontier is claimed.",
