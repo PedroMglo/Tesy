@@ -1003,8 +1003,8 @@ int main(int argc, char ** argv) {
     std::fputs(
         "],\"claim_boundary\":"
         "\"Direct serial isolated top-4 mixed CPU/GPU expert FFN timings. "
-        "Weights are already resident in their assigned backend buffers; no expert "
-        "weight transfer, routing, prefetch, cache management or full-model timing "
+        "Weights are already resident in their assigned backend buffers; "
+        "no expert-weight transfer, routing, prefetch, cache management or full-model timing "
         "is measured. CPU misses execute on the CPU backend using its first "
         "compatible extra/repack MXFP4 weight buffer for subset sizes 1..4, "
         "with CPU-default fallback; F32 biases use the CPU default buffer. "
