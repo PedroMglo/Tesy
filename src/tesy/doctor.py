@@ -70,6 +70,57 @@ def _run(command: list[str], timeout_s: float = 3.0) -> dict[str, Any]:
     }
 
 
+def _virtualization_state() -> dict[str, Any]:
+    markers = [
+        str(path)
+        for path in (Path("/.dockerenv"), Path("/run/.containerenv"))
+        if path.exists()
+    ]
+    cgroup = _read_text(Path("/proc/1/cgroup")) or ""
+    cgroup_hints = [
+        token
+        for token in ("docker", "containerd", "kubepods", "libpod", "lxc")
+        if token in cgroup.lower()
+    ]
+    detected = _run(["systemd-detect-virt"])
+
+    if markers or cgroup_hints:
+        return {
+            "status": "VIRTUALIZED",
+            "kind": detected.get("stdout") or "container",
+            "markers": markers,
+            "cgroup_hints": cgroup_hints,
+            "systemd_detect_virt": detected,
+        }
+
+    stdout = str(detected.get("stdout", "")).strip()
+    if detected.get("status") == "OK" and stdout and stdout != "none":
+        return {
+            "status": "VIRTUALIZED",
+            "kind": stdout,
+            "markers": [],
+            "cgroup_hints": [],
+            "systemd_detect_virt": detected,
+        }
+
+    if detected.get("returncode") == 1 and stdout == "none":
+        return {
+            "status": "PHYSICAL",
+            "kind": "none",
+            "markers": [],
+            "cgroup_hints": [],
+            "systemd_detect_virt": detected,
+        }
+
+    return {
+        "status": "UNKNOWN",
+        "kind": None,
+        "markers": [],
+        "cgroup_hints": [],
+        "systemd_detect_virt": detected,
+    }
+
+
 def _gpu_processes() -> dict[str, Any]:
     return _run(
         [
@@ -188,6 +239,7 @@ def collect_snapshot(path_for_disk: Path | None = None) -> dict[str, Any]:
             "swap_total_bytes": mem.get("SwapTotal"),
             "swap_free_bytes": mem.get("SwapFree"),
         },
+        "virtualization": _virtualization_state(),
         "gpu": _nvidia(),
         "gpu_compute_processes": _gpu_processes(),
         "cuda_toolkit": nvcc,
