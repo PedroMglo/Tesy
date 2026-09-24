@@ -185,6 +185,13 @@ Record:
 The scheduler unwind and KV rollback after `ffn_moe_out-0` are not included,
 because a stock production path would not early-stop there.
 
+This stock segment is nevertheless **callback-instrumented**: observing
+`ffn_moe_out-0` through `cb_eval` can force scheduler synchronization or
+graph splitting that an uninterrupted production decode would not require.
+Therefore the measured stock-minus-candidate headroom is diagnostic for this
+isolated boundary. It is not a physical hard bound on uninterrupted stock
+decode latency.
+
 ### Serial candidate arm
 
 After `activation_ready`:
@@ -288,8 +295,12 @@ Also compute the equivalent activation-ready budgets.
 
 No arbitrary percentage speedup threshold is used.
 
-A future output-reinjection path can preserve stock latency only if its added
-cost remains below the measured positive handoff budget.
+For the next isolated reinjection experiment, the positive handoff budget is a
+prospective diagnostic ceiling: exceeding it kills this external handoff under
+the same instrumented comparator. Staying below it is necessary evidence, not
+sufficient proof of production non-regression. The reinjection/continuation
+gate must independently compare same-work execution through a committed token
+against unmodified stock.
 
 ## Async decision
 
@@ -436,8 +447,10 @@ It is resident-expert live-handoff timing only.
 
 If `LIVE_MOE_HANDOFF_TIMING_GO`:
 
-use the smaller measured async h=2/h=3 route median/p95 budgets as hard upper
-bounds for a prospective output-reinjection/continuation experiment.
+use the smaller measured async h=2/h=3 route median/p95 budgets as
+pre-registered diagnostic ceilings for a prospective
+output-reinjection/continuation experiment, while also requiring an independent
+same-work committed-token comparison against unmodified stock.
 
 If `LIVE_MOE_HANDOFF_TIMING_SERIAL_PIVOT`:
 
