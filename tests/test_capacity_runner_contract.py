@@ -121,3 +121,19 @@ def test_timing_pilot_gates_request_on_quantitative_placement_telemetry():
     assert '--placement-id "$placement_id"' in text
     assert '--tolerance-mib 2.0' in text
     assert '--output "$run_dir/placement-telemetry.json"' in text
+
+
+def test_timing_pilot_enables_backend_placement_logs_before_server_start():
+    root = Path(__file__).resolve().parents[1]
+    text = (root / "scripts" / "run_n_cpu_moe_capacity_pareto.sh").read_text(
+        encoding="utf-8"
+    )
+
+    verbosity = text.index('cmd+=(--verbosity 4)')
+    server = text.index('"${cmd[@]}" >"$run_dir/server.stdout.txt"')
+    assert (
+        'if (( timing_pilot == 1 )); then\n'
+        '    # Pinned llama.cpp maps backend INFO placement rows to verbosity 4.\n'
+        '    cmd+=(--verbosity 4)'
+    ) in text
+    assert verbosity < server
