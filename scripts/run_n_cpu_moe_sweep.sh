@@ -31,6 +31,71 @@ fi
 python3 -m tesy models verify gpt-oss-20b-mxfp4-gguf "$model" >"$out/model.json"
 python3 -m tesy doctor   --disk-path "$(dirname "$model")"   --reference-profile "$root/configs/reference-host.json" >"$out/doctor.json"
 
+python3 - "$root/configs/b0-b1-toolchain.lock.json" "$out/doctor.json" >"$out/toolchain-check.json" <<'PY'
+import json
+import re
+import subprocess
+import sys
+from pathlib import Path
+
+lock = json.loads(Path(sys.argv[1]).read_text(encoding="utf-8"))
+doctor = json.loads(Path(sys.argv[2]).read_text(encoding="utf-8"))
+if lock.get("schema") != "tesy.b0_b1_toolchain_lock.v1":
+    raise SystemExit("unsupported B0/B1 toolchain lock schema")
+
+def run(command):
+    p = subprocess.run(
+        command,
+        check=False,
+        capture_output=True,
+        text=True,
+        env={"LC_ALL": "C"},
+    )
+    if p.returncode != 0:
+        raise SystemExit(
+            f"toolchain probe failed: {command!r}: {p.stderr.strip()}"
+        )
+    return (p.stdout + "\n" + p.stderr).strip()
+
+observed = {
+    "nvidia_driver_version": doctor["snapshot"]["gpu"]["gpus"][0]["driver_version"],
+    "host_c_compiler_version": run(
+        [lock["host_c_compiler"], "-dumpfullversion"]
+    ).splitlines()[0],
+    "host_cxx_compiler_version": run(
+        [lock["host_cxx_compiler"], "-dumpfullversion"]
+    ).splitlines()[0],
+}
+cmake_text = run(["cmake", "--version"])
+observed["cmake_version"] = (
+    cmake_text.splitlines()[0].removeprefix("cmake version ").strip()
+)
+nvcc_text = run([lock["cuda_compiler"], "--version"])
+match = re.search(r"V([0-9]+(?:\.[0-9]+)+)", nvcc_text)
+if not match:
+    raise SystemExit("cannot parse nvcc version")
+observed["cuda_compiler_version"] = match.group(1)
+
+expected = {key: lock[key] for key in observed}
+mismatch = {
+    key: {"expected": expected[key], "observed": observed[key]}
+    for key in observed
+    if observed[key] != expected[key]
+}
+payload = {
+    "schema": "tesy.b0_b1_toolchain_check.v1",
+    "classification": "MEASURED_LOCAL_PROVENANCE",
+    "source": lock["source"],
+    "expected": expected,
+    "observed": observed,
+    "status": "PASS" if not mismatch else "FAIL",
+    "mismatch": mismatch,
+}
+print(json.dumps(payload, indent=2, sort_keys=True))
+if mismatch:
+    raise SystemExit("frozen B0/B1 driver/toolchain identity mismatch")
+PY
+
 [[ -x "$cli" ]] || { echo "missing llama-cli: $cli" >&2; exit 1; }
 [[ -x "$server" ]] || { echo "missing llama-server: $server" >&2; exit 1; }
 
@@ -94,7 +159,7 @@ sha256sum "$server" >"$out/server-sha256.txt"
 sha256sum "$prompt_file" >"$out/prompt-sha256.txt"
 
 help="$("$server" --help 2>&1)"
-for flag in --n-cpu-moe --fit --fit-target --n-gpu-layers --host --port --no-warmup; do
+for flag in --n-cpu-moe --fit --fit-target --n-gpu-layers --host --port --no-warmup --verbosity; do
   grep -F -- "$flag" <<<"$help" >/dev/null || {
     echo "llama-server missing required flag: $flag" >&2
     exit 1
@@ -135,6 +200,7 @@ for index in "${!order[@]}"; do
     --fit-target 1024
     --n-cpu-moe "$n"
     --no-warmup
+    --verbosity 4
   )
 
   printf '%q ' "${cmd[@]}" >"$run_dir/server-command.txt"
@@ -164,6 +230,91 @@ for index in "${!order[@]}"; do
     echo "server health timeout for n-cpu-moe=$n" >&2
     exit 1
   }
+
+  python3 - "$run_dir/server.stderr.txt" "$n" "$run_dir/placement.json" <<'PY'
+import json
+import re
+import sys
+from pathlib import Path
+
+stderr_path = Path(sys.argv[1])
+requested_n = int(sys.argv[2])
+output_path = Path(sys.argv[3])
+text = stderr_path.read_text(encoding="utf-8", errors="replace")
+
+override_re = re.compile(
+    r"tensor (?P<name>blk\.(?P<layer>\d+)\.ffn_"
+    r"(?P<kind>gate|up|down)_exps\.(?P<suffix>weight|bias)) "
+    r"\([^\n]*?\) buffer type overridden to (?P<buft>\S+)"
+)
+observed = {}
+for match in override_re.finditer(text):
+    name = match.group("name")
+    buft = match.group("buft")
+    old = observed.get(name)
+    if old is not None and old != buft:
+        raise SystemExit(
+            f"conflicting override buffer types for {name}: {old} vs {buft}"
+        )
+    observed[name] = buft
+
+expected = {
+    f"blk.{layer}.ffn_{kind}_exps.{suffix}"
+    for layer in range(requested_n)
+    for kind in ("gate", "up", "down")
+    for suffix in ("weight", "bias")
+}
+missing = sorted(expected - set(observed))
+wrong_buft = {
+    name: observed[name]
+    for name in sorted(expected & set(observed))
+    if not observed[name].startswith("CPU")
+}
+
+buffer_re = re.compile(
+    r"(?P<name>CPU_Mapped|CPU|CUDA0|CUDA_Host) model buffer size\s*=\s*"
+    r"(?P<mib>[0-9]+(?:\.[0-9]+)?) MiB"
+)
+model_buffers = {}
+for match in buffer_re.finditer(text):
+    model_buffers[match.group("name")] = float(match.group("mib"))
+
+failures = []
+if missing:
+    failures.append(f"missing requested CPU overrides: {missing}")
+if wrong_buft:
+    failures.append(f"requested overrides not on CPU-class buffers: {wrong_buft}")
+if "CUDA0" not in model_buffers:
+    failures.append("missing CUDA0 model-buffer record")
+if requested_n > 0 and not any(
+    name.startswith("CPU") for name in model_buffers
+):
+    failures.append("missing CPU model-buffer record for requested CPU experts")
+
+payload = {
+    "schema": "tesy.n_cpu_moe_placement_log.v1",
+    "classification": "MEASURED_RUNTIME_PLACEMENT_LOG_DIAGNOSTIC",
+    "status": "PASS" if not failures else "FAIL",
+    "requested_n_cpu_moe": requested_n,
+    "expected_forced_cpu_tensor_count": len(expected),
+    "expected_forced_cpu_tensors": sorted(expected),
+    "observed_expert_override_buft": observed,
+    "model_buffers_mib": model_buffers,
+    "failures": failures,
+    "claim_boundary": (
+        "PASS proves that every expert tensor in the first requested N MoE "
+        "layers emitted a pinned loader override to a CPU-class buffer and that "
+        "the load log exposed CUDA0/CPU aggregate model-buffer records. Extra "
+        "overrides may exist due to other placement mechanisms. This is placement "
+        "log evidence, not physical memory traffic."
+    ),
+}
+with output_path.open("x", encoding="utf-8") as handle:
+    json.dump(payload, handle, indent=2, sort_keys=True)
+    handle.write("\n")
+if failures:
+    raise SystemExit("; ".join(failures))
+PY
 
   ready_end_ns="$(date +%s%N)"
   python3 - "$ready_start_ns" "$ready_end_ns" "$n" >"$run_dir/server-ready.json" <<'PY'
@@ -209,6 +360,10 @@ PY
   wait "$monitor_pid" || true
   monitor_pid=""
 
+  sha256sum "$run_dir/server.stdout.txt" >"$run_dir/server-stdout-sha256.txt"
+  sha256sum "$run_dir/server.stderr.txt" >"$run_dir/server-stderr-sha256.txt"
+  sha256sum "$run_dir/placement.json" >"$run_dir/placement-sha256.txt"
+
   python3 - "$run_dir/resources.jsonl" >"$run_dir/resource-summary.json" <<'PY'
 import json, sys
 from pathlib import Path
@@ -238,7 +393,8 @@ if summary["peak_process_swap_bytes"] != 0:
     raise SystemExit("server process used swap")
 PY
 
-  grep -Ei 'llm_load_tensors|load_tensors|offloaded|model buffer|compute buffer|CPU_Mapped|CUDA[0-9]'     "$run_dir/server.stderr.txt" >"$run_dir/placement.txt" || true
+  grep -Ei 'buffer type overridden|llm_load_tensors|load_tensors|offloaded|model buffer|compute buffer|CPU_Mapped|CUDA[0-9]' \
+    "$run_dir/server.stderr.txt" >"$run_dir/placement.txt" || true
 done
 
 python3 - "$out" >"$out/sweep-summary.json" <<'PY'
@@ -261,6 +417,7 @@ for run_dir in sorted(p for p in root.iterdir() if p.is_dir()):
     req=json.loads((run_dir/"request.json").read_text())
     res=json.loads((run_dir/"resource-summary.json").read_text())
     ready=json.loads((run_dir/"server-ready.json").read_text())
+    placement=json.loads((run_dir/"placement.json").read_text())
     t=req["timings"]
     token_ids=req.get("generated_token_ids")
     if (
@@ -269,6 +426,17 @@ for run_dir in sorted(p for p in root.iterdir() if p.is_dir()):
         or t["predicted_n"] != 64
     ):
         raise SystemExit(f"invalid 64-token trajectory in {run_dir}")
+    if (
+        placement.get("status") != "PASS"
+        or placement.get("requested_n_cpu_moe") != int(match.group("n"))
+    ):
+        raise SystemExit(f"placement evidence did not PASS in {run_dir}")
+    stderr_sha = hashlib.sha256(
+        (run_dir/"server.stderr.txt").read_bytes()
+    ).hexdigest()
+    stdout_sha = hashlib.sha256(
+        (run_dir/"server.stdout.txt").read_bytes()
+    ).hexdigest()
     token_blob=json.dumps(token_ids, separators=(",", ":")).encode()
     rows.append({
         "run": run_dir.name,
@@ -282,6 +450,12 @@ for run_dir in sorted(p for p in root.iterdir() if p.is_dir()):
         "peak_process_swap_bytes": res["peak_process_swap_bytes"],
         "max_gpu_temperature_c": res["max_gpu_temperature_c"],
         "gpu_failed_samples": res["gpu_failed_samples"],
+        "placement_status": placement["status"],
+        "expected_forced_cpu_tensor_count": placement[
+            "expected_forced_cpu_tensor_count"
+        ],
+        "server_stdout_sha256": stdout_sha,
+        "server_stderr_sha256": stderr_sha,
         "token_count": len(token_ids),
         "token_sha256": hashlib.sha256(token_blob).hexdigest(),
     })
