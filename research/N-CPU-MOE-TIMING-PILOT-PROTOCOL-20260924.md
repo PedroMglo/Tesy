@@ -121,6 +121,26 @@ Admission requires:
 This is `SOURCE_BACKED_MEMORY_ESTIMATE`, not measured peak VRAM/RAM and not
 proof that the subsequent load will fit.
 
+## Realized placement gate
+
+Before any timed request, the runner compares the same-placement
+`llama-fit-params --fit-print` model-memory projection with the aggregate
+model-buffer allocation reported by the live `llama-server` load logs.
+
+The comparison is per tier:
+
+- `CUDA0` projected model MiB vs observed CUDA0 model-buffer MiB;
+- `Host` projected model MiB vs the sum of non-CUDA0 model buffers.
+
+The frozen tolerance is 2 MiB per tier. The estimator prints integer MiB using
+integer division at the pinned source, while server logs report fractional MiB;
+the tolerance covers representation/alignment slack without admitting a
+materially different placement.
+
+This gate is `MEASURED_RUNTIME_PLACEMENT_LOG_DIAGNOSTIC`. It establishes
+aggregate GPU/Host materialization only; it is not per-tensor identity and is
+not physical VRAM/DRAM/PCIe traffic.
+
 ## Exactness gate
 
 The first successful run establishes the deterministic trajectory.
@@ -154,7 +174,10 @@ Every run must have:
 - process VmSwap == 0;
 - observed free GPU memory at peak >= 1024 MiB;
 - observed MemAvailable >= 2048 MiB;
-- non-empty placement/load evidence;
+- quantitative placement materialization PASS: llama-server-reported CUDA0/Host
+  model-buffer allocation must match the same-placement llama-fit-params
+  projection within 2 MiB per tier;
+- non-empty placement/load log extract retained as raw diagnostic evidence;
 - runtime backend provenance PASS.
 
 OOM, missing telemetry, resource violation, token mismatch or provenance
