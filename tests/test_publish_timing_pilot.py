@@ -10,7 +10,7 @@ from tesy.publish_timing_pilot import (
 )
 
 
-def _write_json(path: Path, payload: dict) -> None:
+def _write_json(path: Path, payload) -> None:
     path.write_text(json.dumps(payload), encoding="utf-8")
 
 
@@ -54,7 +54,16 @@ def _fake_campaign(root: Path) -> Path:
         max_temp = 60.0 + index
         max_power = 80.0 + index
         ready_ms = 1000.0 + index
-        command = f"llama-server --placement {placement}"
+        server_argv = [
+            "/tmp/llama-server",
+            "--model",
+            "/tmp/model.gguf",
+            "--placement",
+            placement,
+            "--fit",
+            "off",
+        ]
+        command = " ".join(server_argv)
         placement_lines = [f"CUDA0 placement {placement}"]
 
         _write_json(
@@ -104,17 +113,36 @@ def _fake_campaign(root: Path) -> Path:
             {
                 "schema": "tesy.runtime_backend_provenance.v1",
                 "status": "PASS",
+                "argv": {
+                    "status": "PASS",
+                    "expected": server_argv,
+                    "observed": server_argv,
+                },
             },
         )
         _write_json(
             run / "placement-telemetry.json",
             {
-                "schema": "tesy.stock_placement_telemetry.v1",
+                "schema": "tesy.stock_placement_telemetry.v2",
                 "status": "PASS",
                 "placement_id": placement,
-                "projected_model_mib": {"CUDA0": 6000.0, "Host": 5000.0},
-                "observed_model_mib": {"CUDA0": 6000.5, "Host": 4999.5},
-                "delta_mib": {"CUDA0": 0.5, "Host": -0.5},
+                "projected_logical_model_mib": {
+                    "CUDA0": 6000.0,
+                    "Host": 5000.0,
+                },
+                "observed_runtime_model_buffers": {
+                    "CUDA0_mib": 6000.5,
+                    "Host_reported_buffer_mib": 11000.0,
+                    "Host_reported_buffer_names": ["CPU_Mapped"],
+                    "Host_mmap_span_mib": 11000.0,
+                    "Host_mmap_buffer_names": ["CPU_Mapped"],
+                },
+                "cuda0_delta_mib": 0.5,
+                "host_comparability": {
+                    "status": "NOT_COMPARABLE_MMAP_SPAN",
+                    "equality_gate": False,
+                },
+                "mismatches": [],
             },
         )
         _write_json(
@@ -143,10 +171,11 @@ def _fake_campaign(root: Path) -> Path:
             {
                 "schema": "tesy.stock_server_ready.v1",
                 "placement_id": placement,
-                "server_ready_ms": 1000.0 + index,
+                "server_ready_ms": ready_ms,
             },
         )
         _write_json(run / "health.json", {"status": "ok"})
+        _write_json(run / "server-argv.json", server_argv)
         (run / "server.stdout.txt").write_text("", encoding="utf-8")
         (run / "server-command.txt").write_text(command + "\n", encoding="utf-8")
         (run / "placement.txt").write_text(
@@ -189,11 +218,13 @@ def _fake_campaign(root: Path) -> Path:
                 "max_gpu_power_w": max_power,
                 "gpu_failed_samples": 0,
                 "runtime_provenance_status": "PASS",
+                "runtime_argv_status": "PASS",
                 "placement_telemetry_status": "PASS",
                 "projected_gpu_model_mib": 6000.0,
-                "projected_host_model_mib": 5000.0,
+                "projected_host_logical_model_mib": 5000.0,
                 "observed_gpu_model_mib": 6000.5,
-                "observed_host_model_mib": 4999.5,
+                "observed_host_mmap_span_mib": 11000.0,
+                "host_comparability_status": "NOT_COMPARABLE_MMAP_SPAN",
                 "placement_log_lines": placement_lines,
                 "token_sha256": token_hash,
             }
@@ -277,6 +308,7 @@ def test_publish_timing_pilot_keeps_only_derived_artifacts(tmp_path):
     assert manifest["trajectory_status"] == "PASS"
     assert manifest["next_gate"] == "MANUAL_REVIEW_REQUIRED"
     assert "01-auto-fit/resources.jsonl" in manifest["raw_artifacts"]
+    assert "01-auto-fit/server-argv.json" in manifest["raw_artifacts"]
     assert "01-auto-fit/placement-telemetry.json" in manifest["raw_artifacts"]
     assert not (destination / "01-auto-fit").exists()
     assert not (destination / "02-n12").exists()
@@ -336,5 +368,35 @@ def test_publish_timing_pilot_rejects_failed_placement_telemetry(tmp_path):
     with pytest.raises(
         TimingPilotPublicationError,
         match="raw placement telemetry failed",
+    ):
+        publish_timing_pilot(campaign, tmp_path / "published")
+
+
+def test_publish_timing_pilot_rejects_live_argv_mismatch(tmp_path):
+    campaign = _fake_campaign(tmp_path)
+    runtime_path = campaign / "02-n12" / "runtime-provenance.json"
+    runtime = json.loads(runtime_path.read_text(encoding="utf-8"))
+    runtime["argv"]["observed"][-1] = "on"
+    runtime["argv"]["status"] = "FAIL"
+    runtime["status"] = "FAIL"
+    _write_json(runtime_path, runtime)
+
+    with pytest.raises(
+        TimingPilotPublicationError,
+        match="raw runtime provenance failed",
+    ):
+        publish_timing_pilot(campaign, tmp_path / "published")
+
+
+def test_publish_timing_pilot_rejects_host_comparability_reclassification(tmp_path):
+    campaign = _fake_campaign(tmp_path)
+    telemetry_path = campaign / "01-auto-fit" / "placement-telemetry.json"
+    telemetry = json.loads(telemetry_path.read_text(encoding="utf-8"))
+    telemetry["host_comparability"]["status"] = "PASS_EQUAL_BYTES"
+    _write_json(telemetry_path, telemetry)
+
+    with pytest.raises(
+        TimingPilotPublicationError,
+        match="Host comparability classification",
     ):
         publish_timing_pilot(campaign, tmp_path / "published")
