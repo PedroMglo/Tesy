@@ -936,8 +936,9 @@ print(json.dumps({
     "next_gate": "MANUAL_REVIEW_REQUIRED",
     "claim_boundary": (
         "One observation per placement diagnostic pilot. Timings and observed "
-        "resources are measured on the locked host/workload, but no confirmatory "
-        "performance winner or Pareto frontier follows. No physical PCIe/NVMe, "
+        "resources are measured on the locked host/workload, but "
+        "no confirmatory performance winner or Pareto frontier follows. "
+        "No physical PCIe/NVMe, "
         "Tesy speedup, >RAM or novelty claim follows."
     ),
 }, indent=2, sort_keys=True))
