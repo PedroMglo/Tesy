@@ -770,6 +770,164 @@ parity compare_outputs(
     return out;
 }
 
+routed_exactness_result run_routed_exactness(
+        const options & opt,
+        ggml_backend_t cpu_backend,
+        ggml_backend_t gpu_backend,
+        ggml_backend_buffer_type_t cpu_weight_buft,
+        ggml_backend_buffer_type_t cpu_bias_buft,
+        ggml_backend_buffer_type_t gpu_buft,
+        const std::vector<float> & input,
+        const std::vector<float> & stock_reference,
+        const std::vector<int> & selected_experts,
+        const std::vector<float> & routing_weights) {
+    if (selected_experts.size() != static_cast<size_t>(k_top_k)) {
+        fail("routed exactness requires exactly four selected experts");
+    }
+    if (routing_weights.size() != static_cast<size_t>(k_top_k)) {
+        fail("routed exactness requires exactly four routing weights");
+    }
+
+    std::vector<int> sorted = selected_experts;
+    std::sort(sorted.begin(), sorted.end());
+    if (std::adjacent_find(sorted.begin(), sorted.end()) != sorted.end()) {
+        fail("routed exactness selected experts must be unique");
+    }
+    for (int expert : selected_experts) {
+        if (expert < 0 || expert >= k_expert_count) {
+            fail("routed exactness expert id outside 0..31");
+        }
+    }
+
+    const int gpu_hits = opt.routed_gpu_hits;
+    const int cpu_misses = k_top_k - gpu_hits;
+
+    std::vector<int> gpu_ids(
+        selected_experts.begin(),
+        selected_experts.begin() + gpu_hits);
+    std::vector<int> cpu_ids(
+        selected_experts.begin() + gpu_hits,
+        selected_experts.end());
+    std::vector<float> gpu_mix(
+        routing_weights.begin(),
+        routing_weights.begin() + gpu_hits);
+    std::vector<float> cpu_mix(
+        routing_weights.begin() + gpu_hits,
+        routing_weights.end());
+
+    const tensor_bytes cpu_data =
+        load_subset(opt.model, opt.layer, cpu_ids);
+    const tensor_bytes gpu_data =
+        load_subset(opt.model, opt.layer, gpu_ids);
+
+    auto cpu_set = make_tensor_set(
+        cpu_data,
+        cpu_misses,
+        cpu_weight_buft,
+        cpu_bias_buft);
+    auto gpu_set = make_tensor_set(
+        gpu_data,
+        gpu_hits,
+        gpu_buft,
+        gpu_buft);
+
+    auto cpu_graph = make_compute_graph(
+        *cpu_set,
+        cpu_backend,
+        cpu_misses,
+        input,
+        &cpu_mix);
+    auto gpu_graph = make_compute_graph(
+        *gpu_set,
+        gpu_backend,
+        gpu_hits,
+        input,
+        &gpu_mix);
+    auto aggregate = make_sum_graph(
+        gpu_backend,
+        gpu_graph->output);
+
+    auto execute_serial = [&]() {
+        ggml_backend_tensor_copy(
+            gpu_graph->input,
+            cpu_graph->input);
+        ggml_backend_synchronize(gpu_backend);
+        ggml_backend_synchronize(cpu_backend);
+
+        compute(cpu_backend, *cpu_graph);
+        compute(gpu_backend, *gpu_graph);
+
+        ggml_backend_tensor_copy(
+            cpu_graph->output,
+            aggregate->cpu_partial);
+        ggml_backend_synchronize(cpu_backend);
+        ggml_backend_synchronize(gpu_backend);
+        compute_sum(gpu_backend, *aggregate);
+    };
+
+    auto execute_async = [&]() {
+        ggml_backend_tensor_copy(
+            gpu_graph->input,
+            cpu_graph->input);
+        ggml_backend_synchronize(gpu_backend);
+        ggml_backend_synchronize(cpu_backend);
+
+        compute_async_start(gpu_backend, *gpu_graph);
+        compute(cpu_backend, *cpu_graph);
+        ggml_backend_synchronize(gpu_backend);
+
+        ggml_backend_tensor_copy(
+            cpu_graph->output,
+            aggregate->cpu_partial);
+        ggml_backend_synchronize(cpu_backend);
+        ggml_backend_synchronize(gpu_backend);
+        compute_sum(gpu_backend, *aggregate);
+    };
+
+    execute_serial();
+    const std::vector<float> serial_output =
+        read_output(gpu_backend, aggregate->output);
+
+    execute_async();
+    const std::vector<float> async_output =
+        read_output(gpu_backend, aggregate->output);
+
+    routed_exactness_result result;
+    result.gpu_hits = gpu_hits;
+    result.cpu_misses = cpu_misses;
+    result.serial_vs_stock =
+        compare_outputs(stock_reference, serial_output);
+    result.async_vs_stock =
+        compare_outputs(stock_reference, async_output);
+    result.async_vs_serial =
+        compare_outputs(serial_output, async_output);
+
+    if (!result.serial_vs_stock.pass) {
+        fail("routed serial replay failed stock numerical parity");
+    }
+    if (!result.async_vs_stock.pass) {
+        fail("routed async replay failed stock numerical parity");
+    }
+    if (!result.async_vs_serial.pass) {
+        fail("routed async replay failed serial numerical parity");
+    }
+
+    return result;
+}
+
+void print_parity(FILE * out, const parity & value) {
+    std::fprintf(
+        out,
+        "{\"max_abs\":%.9g,\"max_abs_ref\":%.9g,"
+        "\"relative_max\":%.9g,\"cosine\":%.12f,"
+        "\"status\":\"%s\"}",
+        value.max_abs,
+        value.max_abs_ref,
+        value.relative_max,
+        value.cosine,
+        value.pass ? "PASS" : "FAIL");
+}
+
 template <class Fn>
 stats measure(Fn && fn, int warmup, int samples, int inner) {
     for (int i = 0; i < warmup; ++i) {
