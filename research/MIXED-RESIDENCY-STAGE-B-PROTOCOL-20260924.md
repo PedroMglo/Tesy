@@ -65,8 +65,20 @@ not observed router probabilities.
 
 ## CPU/GPU authority
 
-CPU misses use exactly `ggml_backend_cpu_buffer_type()`, matching the pinned
-`--n-cpu-moe` authority measured in the continuum/crossover work.
+"CPU miss" means the expert FFN executes on the pinned CPU backend.
+
+For MXFP4 expert weights, Stage B asks the CPU backend for its extra buffer
+types and chooses the first buffer that the CPU device itself reports as
+supporting `GGML_OP_MUL_MAT_ID` for compact expert counts 1..4. It then falls
+back to the CPU default buffer. Biases use the CPU default F32 buffer.
+
+This deliberately measures the mature CPU fallback available to a Tesy
+mixed-residency design. It does not assume that the textual
+`--n-cpu-moe` override name uniquely determines the loader's concrete storage
+buffer: the pinned loader may consider host/extra/repack buffers when applying
+a CPU override.
+
+The selected CPU weight/bias buffer type names are recorded in the raw result.
 
 GPU hits use the CUDA default buffer type.
 
