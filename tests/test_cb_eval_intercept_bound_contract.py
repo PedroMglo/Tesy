@@ -26,7 +26,8 @@ def test_cancel_bound_is_zero_tesy_work_and_aborts_both_arms():
 
     assert "llama_decode(ctx, batch)" in block
     assert "rc != 2" in block
-    assert "ffn_moe_out" not in block
+    assert "make_compute_graph" not in block
+    assert "compute_async_start" not in block
     assert "tesy-mixed-residency" not in block
     assert "ggml_backend_tensor_copy" not in block
 
