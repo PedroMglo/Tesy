@@ -3,6 +3,7 @@ set -euo pipefail
 
 capacity_only=0
 timing_pilot=0
+continuum_shape=0
 case "${1:-}" in
   --capacity-only)
     capacity_only=1
@@ -12,10 +13,16 @@ case "${1:-}" in
     timing_pilot=1
     shift
     ;;
+  --continuum-shape)
+    continuum_shape=1
+    shift
+    ;;
 esac
 
+diagnostic_mode=$((timing_pilot + continuum_shape))
+
 if [[ $# -ne 2 ]]; then
-  echo "usage: $0 [--capacity-only|--timing-pilot] MODEL.gguf OUTPUT_ROOT" >&2
+  echo "usage: $0 [--capacity-only|--timing-pilot|--continuum-shape] MODEL.gguf OUTPUT_ROOT" >&2
   exit 2
 fi
 
@@ -39,6 +46,8 @@ rounding_guard_mib=16
 candidates=(0 4 8 12 16 20 24)
 if (( timing_pilot == 1 )); then
   candidates=(12 24)
+elif (( continuum_shape == 1 )); then
+  candidates=(12 16 20 24)
 fi
 
 if [[ -e "$out" ]]; then
@@ -56,6 +65,8 @@ failure_report() {
     failure_mode="capacity-only"
   elif (( timing_pilot == 1 )); then
     failure_mode="timing-pilot"
+  elif (( continuum_shape == 1 )); then
+    failure_mode="continuum-shape"
   fi
   trap - ERR
   python3 - "$out/failure.json" "$rc" "$failed_line" "$failed_command" "$failure_mode" <<'PY' || true
@@ -67,9 +78,13 @@ out = Path(sys.argv[1])
 mode = sys.argv[5]
 payload = {
     "schema": (
-        "tesy.timing_pilot_failure.v1"
-        if mode == "timing-pilot"
-        else "tesy.capacity_campaign_failure.v1"
+        "tesy.continuum_shape_failure.v1"
+        if mode == "continuum-shape"
+        else (
+            "tesy.timing_pilot_failure.v1"
+            if mode == "timing-pilot"
+            else "tesy.capacity_campaign_failure.v1"
+        )
     ),
     "classification": "FAIL_CAMPAIGN_COMMAND",
     "campaign_mode": mode,
@@ -98,26 +113,28 @@ if ! flock -n 9; then
   exit 1
 fi
 
-if (( timing_pilot == 1 )); then
+if (( diagnostic_mode == 1 )); then
   test -d "$capacity_evidence_dir"
   test -f "$capacity_evidence_dir/capacity-summary.json"
-  test -f "$capacity_evidence_dir/auto-fit.json"
   test -f "$capacity_evidence_dir/publication-manifest.json"
+  if (( timing_pilot == 1 )); then
+    test -f "$capacity_evidence_dir/auto-fit.json"
+  fi
 
   if ! git -C "$root" merge-base --is-ancestor "$capacity_evidence_commit" HEAD; then
     echo "capacity evidence commit is not an ancestor of current HEAD: $capacity_evidence_commit" >&2
     exit 1
   fi
 
-  python3 - "$capacity_evidence_dir" "$capacity_evidence_commit" >"$out/source-capacity.json" <<'PY'
+  python3 - "$capacity_evidence_dir" "$capacity_evidence_commit" "$continuum_shape" >"$out/source-capacity.json" <<'PY'
 import json
 import sys
 from pathlib import Path
 
 root = Path(sys.argv[1])
 commit = sys.argv[2]
+continuum_shape = sys.argv[3] == "1"
 summary = json.loads((root / "capacity-summary.json").read_text(encoding="utf-8"))
-auto = json.loads((root / "auto-fit.json").read_text(encoding="utf-8"))
 manifest = json.loads((root / "publication-manifest.json").read_text(encoding="utf-8"))
 
 if summary.get("schema") != "tesy.n_cpu_moe_capacity_gate.v1":
@@ -126,22 +143,30 @@ if summary.get("performance_gate") != "PASS":
     raise SystemExit("source capacity gate did not PASS")
 if summary.get("admitted_n_cpu_moe") != [12, 16, 20, 24]:
     raise SystemExit("unexpected source admitted set")
-if auto.get("schema") != "tesy.llama_fit_args.v1" or auto.get("ctx_size") != 4096:
-    raise SystemExit("invalid source auto-fit placement")
 if manifest.get("schema") != "tesy.n_cpu_moe_capacity_publication.v1":
     raise SystemExit("invalid source publication manifest")
 
-print(json.dumps({
-    "schema": "tesy.timing_pilot_source_capacity.v1",
+payload = {
+    "schema": (
+        "tesy.continuum_shape_source_capacity.v1"
+        if continuum_shape else "tesy.timing_pilot_source_capacity.v1"
+    ),
     "classification": "SOURCE_BACKED_CAPACITY_EVIDENCE",
     "capacity_evidence_commit": commit,
     "admitted_n_cpu_moe": summary["admitted_n_cpu_moe"],
-    "auto_fit_argv": auto["argv"],
     "claim_boundary": (
-        "Published capacity evidence selecting pilot placements. "
-        "Current-host admission is rechecked before timing."
+        "Published capacity evidence selecting "
+        + ("continuum-shape" if continuum_shape else "pilot")
+        + " placements. "
+        + "Current-host admission is rechecked before timing."
     ),
-}, indent=2, sort_keys=True))
+}
+if not continuum_shape:
+    auto = json.loads((root / "auto-fit.json").read_text(encoding="utf-8"))
+    if auto.get("schema") != "tesy.llama_fit_args.v1" or auto.get("ctx_size") != 4096:
+        raise SystemExit("invalid source auto-fit placement")
+    payload["auto_fit_argv"] = auto["argv"]
+print(json.dumps(payload, indent=2, sort_keys=True))
 PY
 fi
 
@@ -227,6 +252,8 @@ if (( capacity_only == 1 )); then
   campaign_mode="capacity-only"
 elif (( timing_pilot == 1 )); then
   campaign_mode="timing-pilot"
+elif (( continuum_shape == 1 )); then
+  campaign_mode="continuum-shape"
 fi
 
 python3 - "$gpu_free_bytes" "$gpu_total_bytes" "$mem_available_bytes" \
@@ -257,7 +284,7 @@ if (( timing_pilot == 1 )); then
   cp "$capacity_evidence_dir/auto-fit.json" "$out/auto-fit.json"
   cp "$capacity_evidence_dir/auto-fit.stdout.txt" "$out/auto-fit.stdout.txt"
   cp "$capacity_evidence_dir/auto-fit.stderr.txt" "$out/auto-fit.stderr.txt"
-else
+elif (( continuum_shape == 0 )); then
   # Freeze stock auto-fit once, before timed execution.
   "$fit_tool" \
     --model "$model" \
@@ -273,6 +300,7 @@ else
     --output "$out/auto-fit.json"
 fi
 
+if (( continuum_shape == 0 )); then
 mapfile -d '' -t auto_fit_args < <(
   python3 - "$out/auto-fit.json" <<'PY'
 import json
@@ -290,6 +318,7 @@ for value in argv:
     sys.stdout.write("\0")
 PY
 )
+fi
 
 for n in "${candidates[@]}"; do
   estimate_stdout="$(printf '%s/capacity/n%02d.stdout.txt' "$out" "$n")"
@@ -337,18 +366,25 @@ if (( timing_pilot == 1 )); then
     --output "$out/capacity/auto-fit-frozen.json"
 fi
 
-if (( timing_pilot == 1 )); then
+if (( diagnostic_mode == 1 )); then
   python3 - "$out/capacity" >"$out/capacity-summary.json" <<'PY'
 import json
 import sys
 from pathlib import Path
 
 root = Path(sys.argv[1])
-placements = [
-    ("auto-fit-frozen", root / "auto-fit-frozen.json"),
-    ("n-cpu-moe-12", root / "n12.json"),
-    ("n-cpu-moe-24", root / "n24.json"),
-]
+context = json.loads(
+    (root.parent / "admission-context.json").read_text(encoding="utf-8")
+)
+continuum_shape = context["campaign_mode"] == "continuum-shape"
+if continuum_shape:
+    placements = [(f"n-cpu-moe-{n}", root / f"n{n:02d}.json") for n in (12, 16, 20, 24)]
+else:
+    placements = [
+        ("auto-fit-frozen", root / "auto-fit-frozen.json"),
+        ("n-cpu-moe-12", root / "n12.json"),
+        ("n-cpu-moe-24", root / "n24.json"),
+    ]
 rows = []
 for placement_id, path in placements:
     payload = json.loads(path.read_text(encoding="utf-8"))
@@ -358,25 +394,34 @@ for placement_id, path in placements:
         )
     if not payload.get("admitted"):
         raise SystemExit(
-            f"pilot placement not admitted: {placement_id}: "
+            f"diagnostic placement not admitted: {placement_id}: "
             f"{payload.get('rejection_reasons')}"
         )
     rows.append(payload)
 
 print(json.dumps({
-    "schema": "tesy.timing_pilot_capacity_gate.v1",
+    "schema": (
+        "tesy.continuum_shape_capacity_gate.v1"
+        if continuum_shape else "tesy.timing_pilot_capacity_gate.v1"
+    ),
     "classification": "SOURCE_BACKED_CAPACITY_GATE",
     "placements": rows,
     "status": "PASS",
     "claim_boundary": (
-        "Current-host estimator admission immediately before the timing pilot. "
-        "This is not measured runtime memory traffic or proof of performance."
+        "Current-host estimator admission immediately before the timing "
+        + ("continuum diagnostic. " if continuum_shape else "pilot. ")
+        + "This is not measured runtime memory traffic or proof of performance."
     ),
 }, indent=2, sort_keys=True))
 PY
 
-  admitted=(12 24)
-  order=("auto" "n12" "n24")
+  if (( timing_pilot == 1 )); then
+    admitted=(12 24)
+    order=("auto" "n12" "n24")
+  else
+    admitted=(12 16 20 24)
+    order=("n12" "n16" "n20" "n24")
+  fi
 else
 python3 - "$out/capacity" >"$out/capacity-summary.json" <<'PY'
 import json
@@ -449,7 +494,7 @@ fi
 
 snapshot_pre_run_resources() {
   local output="$1"
-  python3 - "$output" <<'PY'
+  python3 - "$output" "$continuum_shape" <<'PY'
 import json
 import subprocess
 import sys
@@ -507,7 +552,10 @@ for key in ("MemAvailable", "SwapFree", "SwapTotal"):
         raise SystemExit(f"missing /proc/meminfo field: {key}")
 
 payload = {
-    "schema": "tesy.timing_pilot_pre_run_resources.v1",
+    "schema": (
+        "tesy.continuum_shape_pre_run_resources.v1"
+        if sys.argv[2] == "1" else "tesy.timing_pilot_pre_run_resources.v1"
+    ),
     "classification": "MEASURED_PRE_RUN_RESOURCES",
     "gpu": {
         "name": name,
@@ -523,7 +571,7 @@ payload = {
         "swap_total_bytes": meminfo["SwapTotal"],
     },
     "claim_boundary": (
-        "Measured immediately before one pilot placement. It qualifies current "
+        "Measured immediately before one diagnostic placement. It qualifies current "
         "capacity admission and process isolation, not subsequent performance."
     ),
 }
@@ -653,7 +701,7 @@ PY
       --n-cpu-moe "$n"
     )
   fi
-  if (( timing_pilot == 1 )); then
+  if (( diagnostic_mode == 1 )); then
     # Pinned llama.cpp maps backend INFO placement rows to verbosity 4.
     cmd+=(--verbosity 4)
   fi
@@ -708,7 +756,7 @@ PY
     exit 1
   }
 
-  if (( timing_pilot == 1 )); then
+  if (( diagnostic_mode == 1 )); then
     python3 -m tesy.placement_telemetry \
       --fit-print "$capacity_input" \
       --server-stderr "$run_dir/server.stderr.txt" \
@@ -750,6 +798,7 @@ PY
     python3 - "$run_dir/request.json" <<'PY'
 import hashlib
 import json
+import math
 import sys
 from pathlib import Path
 
@@ -760,6 +809,17 @@ if not isinstance(tokens, list) or len(tokens) != 64:
         f"expected exactly 64 generated token IDs, got "
         f"{len(tokens) if isinstance(tokens, list) else 'invalid'}"
     )
+timings = payload.get("timings")
+if not isinstance(timings, dict) or timings.get("predicted_n") != 64:
+    raise SystemExit("timings.predicted_n must equal 64")
+for key in ("ttft_ms", "request_wall_ms"):
+    value = payload.get(key)
+    if not isinstance(value, (int, float)) or not math.isfinite(value):
+        raise SystemExit(f"missing or non-finite request metric: {key}")
+for key in ("prompt_per_second", "predicted_per_second", "prompt_ms", "predicted_ms"):
+    value = timings.get(key)
+    if not isinstance(value, (int, float)) or not math.isfinite(value):
+        raise SystemExit(f"missing or non-finite timing metric: {key}")
 blob = json.dumps(tokens, separators=(",", ":")).encode()
 print(hashlib.sha256(blob).hexdigest())
 PY
@@ -857,8 +917,12 @@ PY
   }
 done
 
-if (( timing_pilot == 1 )); then
-  python3 - "$out" "$capacity_evidence_commit" >"$out/pilot-summary.json" <<'PY'
+if (( diagnostic_mode == 1 )); then
+  summary_file="$out/pilot-summary.json"
+  if (( continuum_shape == 1 )); then
+    summary_file="$out/continuum-summary.json"
+  fi
+  python3 - "$out" "$capacity_evidence_commit" "$continuum_shape" >"$summary_file" <<'PY'
 from __future__ import annotations
 
 import hashlib
@@ -868,7 +932,11 @@ from pathlib import Path
 
 root = Path(sys.argv[1])
 capacity_commit = sys.argv[2]
-expected = ["auto-fit-frozen", "n-cpu-moe-12", "n-cpu-moe-24"]
+continuum_shape = sys.argv[3] == "1"
+expected = (
+    [f"n-cpu-moe-{n}" for n in (12, 16, 20, 24)]
+    if continuum_shape else ["auto-fit-frozen", "n-cpu-moe-12", "n-cpu-moe-24"]
+)
 rows = []
 
 for run_dir in sorted(
@@ -956,15 +1024,21 @@ for run_dir in sorted(
 
 placements = [row["placement_id"] for row in rows]
 if placements != expected:
-    raise SystemExit(f"pilot placement/order mismatch: {placements!r}")
+    raise SystemExit(f"diagnostic placement/order mismatch: {placements!r}")
 
 trajectory_hashes = sorted({row["token_sha256"] for row in rows})
 if len(trajectory_hashes) != 1:
     raise SystemExit("FAIL_TRAJECTORY_COMPARABILITY")
 
 print(json.dumps({
-    "schema": "tesy.stock_placement_timing_pilot.v1",
-    "classification": "MEASURED_STOCK_PLACEMENT_PILOT_DIAGNOSTIC",
+    "schema": (
+        "tesy.stock_placement_continuum_shape.v1"
+        if continuum_shape else "tesy.stock_placement_timing_pilot.v1"
+    ),
+    "classification": (
+        "MEASURED_STOCK_PLACEMENT_CONTINUUM_SHAPE_DIAGNOSTIC"
+        if continuum_shape else "MEASURED_STOCK_PLACEMENT_PILOT_DIAGNOSTIC"
+    ),
     "capacity_evidence_commit": capacity_commit,
     "order": placements,
     "observations": rows,
@@ -975,7 +1049,9 @@ print(json.dumps({
     },
     "next_gate": "MANUAL_REVIEW_REQUIRED",
     "claim_boundary": (
-        "One observation per placement diagnostic pilot. Timings and observed "
+        ("One observation per placement diagnostic. " if continuum_shape
+         else "One observation per placement diagnostic pilot. ")
+        + "Timings and observed "
         "resources are measured on the locked host/workload, but "
         "no confirmatory performance winner or Pareto frontier follows. "
         "No physical PCIe/NVMe/DRAM traffic, "
@@ -984,7 +1060,11 @@ print(json.dumps({
 }, indent=2, sort_keys=True))
 PY
 
-  echo "PASS_DIAGNOSTIC_STOCK_PLACEMENT_TIMING_PILOT"
+  if (( continuum_shape == 1 )); then
+    echo "PASS_DIAGNOSTIC_STOCK_PLACEMENT_CONTINUUM_SHAPE"
+  else
+    echo "PASS_DIAGNOSTIC_STOCK_PLACEMENT_TIMING_PILOT"
+  fi
   echo "outputs: $out"
   exit 0
 fi
