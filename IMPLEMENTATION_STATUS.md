@@ -19,8 +19,8 @@ reference-host/model validation. No source-only row is a performance claim.
 | paired trace OFF/ON token gate | REAL_MODEL_TOKEN_ID_EQUALITY_PASS | same 16 generated IDs for one deterministic raw prompt; no bitwise/numerical parity claim |
 | count-space LRU headroom | REAL_TRACE_DERIVED | 1,440 one-token expert accesses; equal-sized-slot LRU, not physical bytes |
 | Belady offline oracle | REAL_TRACE_DERIVED | non-causal equal-slot lower bound; not a production policy |
-| GGUF expert payload inventory | INCONCLUSIVE_DEPENDENCY_LOCK_REQUIRED | diagnostic inventory retained, but transitive Python dependencies were not frozen prospectively |
-| byte-weighted native trace simulation | NOT_ADMITTED_DEPENDENCY_LOCK_REQUIRED | exploratory output retained; depends on non-confirmatory inventory and is not physical traffic |
+| GGUF expert payload inventory | INCONCLUSIVE_EXECUTION_PROVENANCE_NOT_PRESERVED | historical native metadata output reports 24 layers × 32 experts and 13,253,760 encoded bytes/expert, but committed evidence does not preserve exact Tesy base/tree or prove PHYSICAL host |
+| byte-weighted native trace simulation | NOT_ADMITTED_RERUN_REQUIRED | earlier simulation remains tied to the pre-relock campaign; no fresh replay under the relocked inventory has been published |
 | reference bring-up pipeline | PASS_DIAGNOSTIC_REFERENCE_HOST | third campaign completed after two preserved failed/aborted attempts; details in `research/results/first-real-bringup-20260923/RESULT.md` |
 | stock llama.cpp real gpt-oss-20b load | PASS_DIAGNOSTIC_STOCK_SMOKE | 16-token stock generation; no chat or benchmark qualification |
 | stock B0/B1 measurements | INCONCLUSIVE_RERUN_REQUIRED | physical-host runs exist, but review invalidated same-work admission: placement telemetry empty, provenance incomplete and token trajectories unretained |
@@ -36,7 +36,7 @@ reference-host/model validation. No source-only row is a performance claim.
 | KTransformers baseline | PINNED_NOT_REPRODUCED | reproduce only if compatible with selected model/host |
 | vLLM baseline | PINNED_NOT_REPRODUCED | B4 only if 8 GiB/32 GiB envelope admits it |
 | native Tesy expert residency/cache | NOT_IMPLEMENTED | forbidden until baseline + trace/headroom establish a concrete gap |
-| CPU-vs-transfer-vs-GPU expert crossover | NOT_RUN_HOST_REQUIRED | requires physical host and real expert shapes |
+| CPU-vs-transfer-vs-GPU expert crossover | SHAPE_CONTEXT_AVAILABLE_PROVENANCE_REVALIDATION_REQUIRED | native metadata values are useful design context, but inventory campaign admission is incomplete until exact execution provenance/host verification are rerun |
 | causal prefetch | NOT_IMPLEMENTED | only after locality/headroom and wasted-prefetch analysis |
 | speculative K=2 | NOT_IMPLEMENTED | only after K=1 target/runtime correctness |
 | joint K/residency scheduler | OPEN_RESEARCH_QUESTION | broad novelty overlap exists; benefit and narrower novelty unknown |

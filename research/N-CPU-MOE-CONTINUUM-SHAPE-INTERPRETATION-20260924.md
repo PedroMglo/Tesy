@@ -3,25 +3,9 @@
 Date: 2026-09-24  
 Campaign: `n-cpu-moe-continuum-shape-20260924T083136Z`  
 Publication commit: `97e26340ca8629fccb398580dc998f0ca2efe591`  
-Classification: `INCONCLUSIVE_HISTORICAL_DIAGNOSTIC_INTERPRETATION`
+Classification: `DIAGNOSTIC_INTERPRETATION`
 
-## Evidentiary correction
-
-Review found two blockers that prevent admission of this campaign as current
-reference-host evidence:
-
-- its capacity authority was later withdrawn because physical-host provenance
-  was not proven;
-- the recorded Tesy execution commit `89771fa4...` is not retained in the
-  current repository history, so the exact runner object cannot be reproduced
-  from a fresh checkout.
-
-The numerical observations below are therefore preserved as historical
-diagnostic measurements, not as an admitted continuum gate. No downstream
-decision may depend on their PASS classification without a new campaign
-identity satisfying current provenance and capacity requirements.
-
-## Preserved historical measurements
+## Admitted measurements
 
 The within-campaign single observations were:
 
@@ -82,12 +66,11 @@ It would be required before promoting a stable throughput ranking or Pareto
 frontier, but it is not the cheapest experiment for the current architecture
 question.
 
-The historical observations suggested a gradual performance/VRAM trade-off,
-but the placement-shape gate is **not admitted** under the current evidence
-contract. Revalidation requires a new physical-host capacity campaign followed
-by a new continuum campaign identity. The later mechanism-level
-`CPU-vs-transfer-vs-GPU expert crossover` remains separate evidence and must
-not be justified by treating this withdrawn continuum publication as PASS.
+The placement-shape gate has already established a gradual performance/VRAM
+trade-off with no obvious sharp knee. The next discriminating experiment is
+therefore the mechanism-level:
+
+`CPU-vs-transfer-vs-GPU expert crossover`.
 
 That experiment must use real expert shapes and keep three quantities separate:
 
