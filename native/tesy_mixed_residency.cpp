@@ -1665,8 +1665,8 @@ int main(int argc, char ** argv) {
             "\"Correctness-only replay of one stock llama.cpp layer-0 "
             "decode MoE event using the captured exact activation, router "
             "top-k and final routing weights. GPU/CPU residence is a "
-            "controlled slot-prefix partition, not a cache policy. "
-            "No timing, full-model speedup, prefetch, cache, or physical "
+            "controlled slot-prefix partition with no dynamic placement "
+            "policy. No timing, full-model performance, or physical "
             "traffic claim follows.\"}\n",
             out);
 
