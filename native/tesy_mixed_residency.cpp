@@ -179,7 +179,8 @@ int parse_positive(const char * value, const char * flag, int minimum = 1) {
     std::fprintf(
         code == 0 ? stdout : stderr,
         "usage: %s --model MODEL.gguf --output RESULT.json "
-        "[--layer N] [--threads N] [--samples N] [--warmup N] [--inner N]\n",
+        "[--layer N] [--threads N] [--samples N] [--warmup N] [--inner N] "
+        "[--async-overlap]\n",
         argv0);
     std::exit(code);
 }
