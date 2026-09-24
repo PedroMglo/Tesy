@@ -184,6 +184,7 @@ def _validate_raw(
         "sample_triplets": _EXPECTED_SAMPLES,
         "inner": _EXPECTED_INNER,
         "resident_experts": True,
+        "provenance_gate": "FILE_EXISTENCE_BEFORE_WARMUP",
         "input_semantics": "HOST_CAPTURE_TO_CPU_AND_GPU_COMPACT_INPUTS",
         "decode_input_token": _EXPECTED_TOKEN,
         "activation_tensor": "attn_post_norm-0",
