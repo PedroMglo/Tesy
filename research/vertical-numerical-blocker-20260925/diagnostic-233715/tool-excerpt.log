@@ -1,0 +1,44 @@
+vertical FFN parity token=0 layer=0 h=0 rel=0 cosine=1.000000000000 bitwise=1
+vertical FFN parity token=0 layer=1 h=0 rel=0 cosine=1.000000000000 bitwise=1
+vertical diagnostic layer=2 resident stock tensor bytes match GGUF for IDs 0,1,2,3
+vertical diagnostic device-readback gate_w type=mxfp4 shape=2880,2880,4 strides=17,1530,4406400 bytes=17625600 fingerprint64=230b49a5366c22aa bytewise=1
+vertical diagnostic device-readback up_w type=mxfp4 shape=2880,2880,4 strides=17,1530,4406400 bytes=17625600 fingerprint64=f7fec2f41b286ef8 bytewise=1
+vertical diagnostic device-readback down_w type=mxfp4 shape=2880,2880,4 strides=17,1530,4406400 bytes=17625600 fingerprint64=05028743e03e4c01 bytewise=1
+vertical diagnostic device-readback gate_b type=f32 shape=2880,4,1 strides=4,11520,46080 bytes=46080 fingerprint64=4870ac3a728efeb0 bytewise=1
+vertical diagnostic device-readback up_b type=f32 shape=2880,4,1 strides=4,11520,46080 bytes=46080 fingerprint64=ece8833f3a9b1b25 bytewise=1
+vertical diagnostic device-readback down_b type=f32 shape=2880,4,1 strides=4,11520,46080 bytes=46080 fingerprint64=b4326d7480c9b444 bytewise=1
+vertical diagnostic CPU compact inputs activation/ids/weights upload bitwise=1 activation_type=f32 activation_shape=2880,1,1 activation_strides=4,11520,11520 ids_type=i32 ids_shape=3,1 ids_strides=4,12 weights_type=f32 weights_shape=1,3,1 weights_strides=4,4,12
+vertical diagnostic GPU compact inputs activation/ids/weights upload bitwise=1 activation_type=f32 activation_shape=2880,1,1 activation_strides=4,11520,11520 ids_type=i32 ids_shape=1,1 ids_strides=4,4 weights_type=f32 weights_shape=1,1,1 weights_strides=4,4,4
+vertical diagnostic CPU stage=ffn_moe_gate node_index=0
+vertical diagnostic CPU stage=ffn_moe_gate_biased node_index=1
+vertical diagnostic CPU stage=ffn_moe_up node_index=2
+vertical diagnostic CPU stage=ffn_moe_up_biased node_index=3
+vertical diagnostic CPU stage=ffn_moe_swiglu_oai node_index=4
+vertical diagnostic CPU stage=ffn_moe_down node_index=5
+vertical diagnostic CPU stage=ffn_moe_down_biased node_index=6
+vertical diagnostic CPU stage=ffn_moe_weighted node_index=7
+vertical diagnostic CPU segmented-stage replay bitwise FFN=1; replay is diagnostic only
+vertical diagnostic GPU stage=ffn_moe_gate node_index=0
+vertical diagnostic GPU stage=ffn_moe_gate_biased node_index=1
+vertical diagnostic GPU stage=ffn_moe_up node_index=2
+vertical diagnostic GPU stage=ffn_moe_up_biased node_index=3
+vertical diagnostic GPU stage=ffn_moe_swiglu_oai node_index=4
+vertical diagnostic GPU stage=ffn_moe_down node_index=5
+vertical diagnostic GPU stage=ffn_moe_down_biased node_index=6
+vertical diagnostic GPU stage=ffn_moe_weighted node_index=7
+vertical diagnostic GPU segmented-stage replay bitwise FFN=1; replay is diagnostic only
+vertical diagnostic slot=0 expert=4 backend=CPU local=0 local_id=4 routing_weight=0.269257545
+vertical diagnostic slot=1 expert=0 backend=GPU local=0 local_id=0 routing_weight=0.258087516
+vertical diagnostic slot=2 expert=31 backend=CPU local=1 local_id=31 routing_weight=0.244158253
+vertical diagnostic slot=3 expert=17 backend=CPU local=2 local_id=17 routing_weight=0.22849673
+vertical diagnostic layer=2 all-CPU shadow rel=0 cosine=1.000000000000 bitwise=1; not used for injection
+vertical FFN parity token=0 layer=2 h=1 rel=4.12584316e-05 cosine=0.999999995483 bitwise=0
+vertical logits failure token=0 rel=0.00855978666 cosine=0.999976613624 max_abs=0.155649185 max_ref=18.1837692 events=3
+vertical event layer=0 h=0 ids=24,6,15,13
+vertical event layer=1 h=0 ids=12,28,27,21
+vertical event layer=2 h=1 ids=4,0,31,17
+vertical suffix first F32 difference: l_out-2 rel=7.88828898e-06 max_abs=0.000637054443
+vertical suffix first router-score difference: ffn_moe_logits-3 rel=0.000981199054 top4_top5_margin=0.0334975719
+vertical suffix first routing-weight difference: ffn_moe_weights_softmax-3 rel=0.000125199556
+vertical suffix probe rel stock-observed=0 control-stock=0 mixed-stock=0.00855978666 mixed-original=0
+vertical candidate full logits parity failed

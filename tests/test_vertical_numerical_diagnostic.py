@@ -1,3 +1,5 @@
+import hashlib
+import json
 from array import array
 from pathlib import Path
 
@@ -9,6 +11,7 @@ from tesy.vertical_numerical_diagnostic import (
     SLOTS,
     STAGES,
     WIDTH,
+    analyse,
     f32_add,
     mixed_subset_sum,
     parity,
@@ -70,3 +73,23 @@ def test_slot_mapping_fails_closed_on_stale_or_wrong_local_id(tmp_path: Path):
     path.write_text("\n".join(line.replace("local_id=0 ", "local_id=1 ") for line in lines))
     with pytest.raises(ValueError, match="global/local"):
         read_slot_mapping(path)
+
+
+def test_published_n1_n2_evidence_recomputes_from_accessible_bytes():
+    root = Path(__file__).resolve().parents[1] / "research/vertical-numerical-blocker-20260925"
+    for manifest_name, folder in (
+        ("evidence-manifest.json", root),
+        ("evidence-manifest-n2.json", root / "diagnostic-233715"),
+    ):
+        manifest = json.loads((root / manifest_name).read_text())
+        for entry in manifest["files"]:
+            path = folder / entry["path"]
+            data = path.read_bytes()
+            assert len(data) == entry["size_bytes"]
+            assert hashlib.sha256(data).hexdigest() == entry["sha256"]
+    diagnostic = root / "diagnostic-233715"
+    assert analyse(diagnostic) == json.loads((diagnostic / "stage-analysis.json").read_text())
+    probe = json.loads((diagnostic / "suffix-probe.json").read_text())
+    assert probe["control_vs_stock"]["max_abs"] == 0
+    assert probe["intervention_vs_original_candidate"]["max_abs"] == 0
+    assert probe["intervention_vs_stock"]["relative_max"] > 0.005

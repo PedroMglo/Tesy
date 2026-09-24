@@ -1,19 +1,19 @@
 {
   "work_package": "vertical-numerical-blocker-20260925",
-  "stage": "N1",
-  "status": "HISTORICAL_FAILURE_PUBLISHED_DIAGNOSTIC_PROTOCOL_FROZEN",
+  "stage": "N2",
+  "status": "ARITHMETIC_DIFFERENCE_ISOLATED_NO_ADMISSIBLE_LOCAL_FIX",
   "branch": "engineering/vertical-numerical-blocker-20260924",
   "base_commit": "ca532aaa765ad551dcb8be4424f0abe6778eec96",
-  "implementation_commit": null,
-  "measurement_commit": "6f9beefc6b346b2a30d5e4a4af05c28f934d9289",
-  "measurement_tree": "ae518f02ea30ca61e5113aeb194bd512b58a9821",
+  "implementation_commit": "05dc3e7fb8910674bc65c0abcd206a9cc5147fe0",
+  "measurement_commit": "05dc3e7fb8910674bc65c0abcd206a9cc5147fe0",
+  "measurement_tree": "9514bb9152de8caedc64f6e1b11c036cc0fbb2e0",
   "protocol_path": "research/VERTICAL-NUMERICAL-BLOCKER-DIAGNOSTIC-PROTOCOL-20260925.md",
-  "result_path": "research/VERTICAL-NUMERICAL-BLOCKER-N1-20260925.md",
-  "evidence_manifest_path": "research/vertical-numerical-blocker-20260925/evidence-manifest.json",
-  "raw_evidence_release_url": "https://github.com/PedroMglo/Tesy/releases/tag/evidence/full-model-vertical-20260924-v1",
+  "result_path": "research/VERTICAL-NUMERICAL-BLOCKER-N2-20260925.md",
+  "evidence_manifest_path": "research/vertical-numerical-blocker-20260925/evidence-manifest-n2.json",
   "blockers": [
-    "Layer-2 h=1 logits relative max 0.00855978666 exceeds the frozen 0.005 limit; the first causal operation and FFN-to-suffix attribution remain unproven.",
-    "Device readback, per-expert contributions, reduction association and FFN-to-suffix intervention are NOT_RUN; Tesy end-to-end remains blocked."
+    "Layer-2 expert-0 CUDA MUL_MAT_ID first differs from stock CPU at gate projection; FFN-only reinjection reproduces the full-logit FAIL bitwise.",
+    "The frozen CPU-stock full-logit relative max 0.00855978666 exceeds 0.005. No admissible localized fix was demonstrated; vertical correctness and Tesy timing remain blocked.",
+    "The exact arithmetic micro-cause inside CPU Q8_0 versus CUDA Q8_1 paths and any alternative multi-backend contract require external decision; stock CPU/GPU placement comparison was NOT_RUN."
   ],
   "pending_external_audit": true
 }

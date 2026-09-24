@@ -116,7 +116,10 @@ def read_slot_mapping(log_path: Path) -> list[dict[str, int | float | str]]:
 
 
 def analyse(root: Path) -> dict:
-    mapping = read_slot_mapping(root / "tool.stderr.txt")
+    log = root / "tool.stderr.txt"
+    if not log.is_file():
+        log = root / "tool-excerpt.log"
+    mapping = read_slot_mapping(log)
     stages = {}
     first = [None] * SLOTS
     for stage in STAGES:

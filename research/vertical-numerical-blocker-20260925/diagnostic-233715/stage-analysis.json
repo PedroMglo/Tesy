@@ -1,0 +1,335 @@
+{
+  "classification": "DIAGNOSTIC_RECOMPUTATION_NOT_ACCEPTANCE",
+  "first_non_bitwise_stage_by_slot": [
+    null,
+    "ffn_moe_gate",
+    null,
+    null
+  ],
+  "mapping": [
+    {
+      "backend": "CPU",
+      "expert": 4,
+      "local": 0,
+      "local_id": 4,
+      "routing_weight": 0.269257545,
+      "slot": 0
+    },
+    {
+      "backend": "GPU",
+      "expert": 0,
+      "local": 0,
+      "local_id": 0,
+      "routing_weight": 0.258087516,
+      "slot": 1
+    },
+    {
+      "backend": "CPU",
+      "expert": 31,
+      "local": 1,
+      "local_id": 31,
+      "routing_weight": 0.244158253,
+      "slot": 2
+    },
+    {
+      "backend": "CPU",
+      "expert": 17,
+      "local": 2,
+      "local_id": 17,
+      "routing_weight": 0.22849673,
+      "slot": 3
+    }
+  ],
+  "mixed_association": "sum(GPU slots in route order)+sum(CPU slots in route order)",
+  "mixed_ffn_vs_stock_ffn": {
+    "bitwise": false,
+    "cosine": 0.9999999954833185,
+    "max_abs": 0.000637054443359375,
+    "max_abs_ref": 15.440587997436523,
+    "relative_max": 4.125843157431181e-05
+  },
+  "mixed_weighted_mixed_association_vs_mixed_ffn": {
+    "bitwise": true,
+    "cosine": 1.0,
+    "max_abs": 0.0,
+    "max_abs_ref": 15.440906524658203,
+    "relative_max": 0.0
+  },
+  "mixed_weighted_stock_association_vs_stock_ffn": {
+    "bitwise": false,
+    "cosine": 0.9999999954836812,
+    "max_abs": 0.000637054443359375,
+    "max_abs_ref": 15.440587997436523,
+    "relative_max": 4.125843157431181e-05
+  },
+  "mixed_weighted_stock_vs_subset_association": {
+    "bitwise": false,
+    "cosine": 0.9999999999999991,
+    "max_abs": 4.76837158203125e-07,
+    "max_abs_ref": 15.440906524658203,
+    "relative_max": 3.088142250208203e-08
+  },
+  "resident_gpu_ids": [
+    0,
+    1,
+    2,
+    3
+  ],
+  "route": [
+    4,
+    0,
+    31,
+    17
+  ],
+  "schema": "tesy.vertical_numerical_stage_analysis.v1",
+  "stage_parity_by_slot": {
+    "ffn_moe_down": [
+      {
+        "bitwise": true,
+        "cosine": 1.0,
+        "max_abs": 0.0,
+        "max_abs_ref": 14.643827438354492,
+        "relative_max": 0.0
+      },
+      {
+        "bitwise": false,
+        "cosine": 0.999999983490775,
+        "max_abs": 0.002468585968017578,
+        "max_abs_ref": 38.12403869628906,
+        "relative_max": 6.475142855884959e-05
+      },
+      {
+        "bitwise": true,
+        "cosine": 1.0,
+        "max_abs": 0.0,
+        "max_abs_ref": 13.017759323120117,
+        "relative_max": 0.0
+      },
+      {
+        "bitwise": true,
+        "cosine": 1.0,
+        "max_abs": 0.0,
+        "max_abs_ref": 25.080121994018555,
+        "relative_max": 0.0
+      }
+    ],
+    "ffn_moe_down_biased": [
+      {
+        "bitwise": true,
+        "cosine": 1.0,
+        "max_abs": 0.0,
+        "max_abs_ref": 13.815702438354492,
+        "relative_max": 0.0
+      },
+      {
+        "bitwise": false,
+        "cosine": 0.9999999813530654,
+        "max_abs": 0.002468585968017578,
+        "max_abs_ref": 33.49903869628906,
+        "relative_max": 7.369124799067866e-05
+      },
+      {
+        "bitwise": true,
+        "cosine": 1.0,
+        "max_abs": 0.0,
+        "max_abs_ref": 10.220884323120117,
+        "relative_max": 0.0
+      },
+      {
+        "bitwise": true,
+        "cosine": 1.0,
+        "max_abs": 0.0,
+        "max_abs_ref": 22.533246994018555,
+        "relative_max": 0.0
+      }
+    ],
+    "ffn_moe_gate": [
+      {
+        "bitwise": true,
+        "cosine": 1.0,
+        "max_abs": 0.0,
+        "max_abs_ref": 3.89009428024292,
+        "relative_max": 0.0
+      },
+      {
+        "bitwise": false,
+        "cosine": 0.9999999999999981,
+        "max_abs": 2.384185791015625e-07,
+        "max_abs_ref": 3.7010228633880615,
+        "relative_max": 6.441964502843e-08
+      },
+      {
+        "bitwise": true,
+        "cosine": 1.0,
+        "max_abs": 0.0,
+        "max_abs_ref": 2.9479541778564453,
+        "relative_max": 0.0
+      },
+      {
+        "bitwise": true,
+        "cosine": 1.0,
+        "max_abs": 0.0,
+        "max_abs_ref": 2.8559579849243164,
+        "relative_max": 0.0
+      }
+    ],
+    "ffn_moe_gate_biased": [
+      {
+        "bitwise": true,
+        "cosine": 1.0,
+        "max_abs": 0.0,
+        "max_abs_ref": 6.602383613586426,
+        "relative_max": 0.0
+      },
+      {
+        "bitwise": false,
+        "cosine": 0.9999999999999988,
+        "max_abs": 4.76837158203125e-07,
+        "max_abs_ref": 4.3604021072387695,
+        "relative_max": 1.0935623515352412e-07
+      },
+      {
+        "bitwise": true,
+        "cosine": 1.0,
+        "max_abs": 0.0,
+        "max_abs_ref": 4.023122787475586,
+        "relative_max": 0.0
+      },
+      {
+        "bitwise": true,
+        "cosine": 1.0,
+        "max_abs": 0.0,
+        "max_abs_ref": 2.9245688915252686,
+        "relative_max": 0.0
+      }
+    ],
+    "ffn_moe_swiglu_oai": [
+      {
+        "bitwise": true,
+        "cosine": 1.0,
+        "max_abs": 0.0,
+        "max_abs_ref": 6.469208717346191,
+        "relative_max": 0.0
+      },
+      {
+        "bitwise": false,
+        "cosine": 0.9999999999999918,
+        "max_abs": 4.76837158203125e-07,
+        "max_abs_ref": 1.9680694341659546,
+        "relative_max": 2.422867557034151e-07
+      },
+      {
+        "bitwise": true,
+        "cosine": 1.0,
+        "max_abs": 0.0,
+        "max_abs_ref": 2.0812647342681885,
+        "relative_max": 0.0
+      },
+      {
+        "bitwise": true,
+        "cosine": 1.0,
+        "max_abs": 0.0,
+        "max_abs_ref": 3.412879228591919,
+        "relative_max": 0.0
+      }
+    ],
+    "ffn_moe_up": [
+      {
+        "bitwise": true,
+        "cosine": 1.0,
+        "max_abs": 0.0,
+        "max_abs_ref": 6.1028289794921875,
+        "relative_max": 0.0
+      },
+      {
+        "bitwise": false,
+        "cosine": 0.999999999999998,
+        "max_abs": 4.76837158203125e-07,
+        "max_abs_ref": 6.307093143463135,
+        "relative_max": 7.560331635459256e-08
+      },
+      {
+        "bitwise": true,
+        "cosine": 1.0,
+        "max_abs": 0.0,
+        "max_abs_ref": 3.6712753772735596,
+        "relative_max": 0.0
+      },
+      {
+        "bitwise": true,
+        "cosine": 1.0,
+        "max_abs": 0.0,
+        "max_abs_ref": 4.32802677154541,
+        "relative_max": 0.0
+      }
+    ],
+    "ffn_moe_up_biased": [
+      {
+        "bitwise": true,
+        "cosine": 1.0,
+        "max_abs": 0.0,
+        "max_abs_ref": 6.302783966064453,
+        "relative_max": 0.0
+      },
+      {
+        "bitwise": false,
+        "cosine": 0.9999999999999984,
+        "max_abs": 4.76837158203125e-07,
+        "max_abs_ref": 7.189905643463135,
+        "relative_max": 6.632036383351599e-08
+      },
+      {
+        "bitwise": true,
+        "cosine": 1.0,
+        "max_abs": 0.0,
+        "max_abs_ref": 4.3773088455200195,
+        "relative_max": 0.0
+      },
+      {
+        "bitwise": true,
+        "cosine": 1.0,
+        "max_abs": 0.0,
+        "max_abs_ref": 3.7579877376556396,
+        "relative_max": 0.0
+      }
+    ],
+    "ffn_moe_weighted": [
+      {
+        "bitwise": true,
+        "cosine": 1.0,
+        "max_abs": 0.0,
+        "max_abs_ref": 3.719982147216797,
+        "relative_max": 0.0
+      },
+      {
+        "bitwise": false,
+        "cosine": 0.999999981353451,
+        "max_abs": 0.0006371140480041504,
+        "max_abs_ref": 8.645683288574219,
+        "relative_max": 7.369157841418205e-05
+      },
+      {
+        "bitwise": true,
+        "cosine": 1.0,
+        "max_abs": 0.0,
+        "max_abs_ref": 2.4955132007598877,
+        "relative_max": 0.0
+      },
+      {
+        "bitwise": true,
+        "cosine": 1.0,
+        "max_abs": 0.0,
+        "max_abs_ref": 5.148773193359375,
+        "relative_max": 0.0
+      }
+    ]
+  },
+  "stock_association": "(((slot0+slot1)+slot2)+slot3)",
+  "stock_weighted_stock_association_vs_stock_ffn": {
+    "bitwise": true,
+    "cosine": 1.0,
+    "max_abs": 0.0,
+    "max_abs_ref": 15.440587997436523,
+    "relative_max": 0.0
+  }
+}
