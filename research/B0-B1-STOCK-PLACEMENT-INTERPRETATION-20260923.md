@@ -1,47 +1,49 @@
 # B0/B1 stock placement interpretation
 
-Date: 2026-09-23
-Source campaign: `research/results/b0-b1-20260923T212353Z/`
-Classification: DERIVED_FROM_MEASURED_STOCK_DIAGNOSTIC
+Date: 2026-09-23  
+Source campaign: `research/results/b0-b1-20260923T212353Z/`  
+Classification: `SUPERSEDED_INCONCLUSIVE_INTERPRETATION`
 
-## Observed endpoints
+## Admission correction
 
-Two fresh-process repetitions were measured for each stock arm.
+The retained source campaign is `INCONCLUSIVE_RERUN_REQUIRED` for a
+same-work placement comparison.
 
-Mean B0 (automatic placement):
-- TTFT: 539.82 ms;
-- prompt: 286.66 tok/s;
-- decode: 51.11 tok/s;
-- peak observed GPU memory: 6.70 GiB;
-- process swap: 0.
+Review established three independent admission failures:
 
-Mean B1 (`--cpu-moe`):
-- TTFT: 884.48 ms;
-- prompt: 174.69 tok/s;
-- decode: 34.74 tok/s;
-- peak observed GPU memory: 1.68 GiB;
-- process swap: 0.
+1. the required placement artifacts were empty, so realized B0/B1 placement
+   was not demonstrated;
+2. the campaign did not retain the full frozen backend/toolchain provenance
+   required for a hardware-bearing comparison;
+3. generated token IDs were not retained, so equal trajectories across arms
+   were not established.
 
-Relative to B0, B1:
-- increased TTFT by ~63.85%;
-- reduced prompt throughput by ~39.06%;
-- reduced decode throughput by ~32.04%;
-- reduced peak observed GPU memory by ~74.97%, freeing ~5.02 GiB.
+Therefore the measurements below remain descriptive observations of the
+executed runs only. They must not be promoted to a placement winner, speedup,
+or admitted B0-vs-B1 trade-off.
 
-These are descriptive results from this diagnostic workload, not universal
-backend properties.
+## Retained descriptive observations
 
-## Decision
+The invalidated campaign recorded these descriptive means:
 
-Do not collapse the result to "B0 wins".
+- B0 automatic placement: TTFT 539.82 ms, prompt 286.66 tok/s, decode
+  51.11 tok/s, observed peak GPU memory 6.70 GiB, process swap 0;
+- B1 `--cpu-moe`: TTFT 884.48 ms, prompt 174.69 tok/s, decode
+  34.74 tok/s, observed peak GPU memory 1.68 GiB, process swap 0.
 
-B0 is materially faster on this admitted model/workload. B1 buys a large VRAM
-reduction at a material latency/throughput cost. For future models that cannot
-fit the B0 placement envelope, that capacity trade is potentially more
-important than raw B0 speed.
+Those numbers are measurements of the processes that ran. Because placement,
+toolchain provenance and token-trajectory comparability were not admitted,
+statements such as "B0 is materially faster than B1" are not admitted
+conclusions from this campaign.
 
-The next cheap experiment is therefore the stock continuum already exposed by
-llama.cpp: `--n-cpu-moe N`.
+## Historical next-step boundary
 
-No Tesy-native cache, prefetcher or custom kernel is justified before the
-VRAM/performance Pareto curve is known.
+These descriptive endpoints motivated a prospective `--n-cpu-moe N`
+continuum protocol. That protocol is a new experiment with its own admission
+gates; it does not repair or retroactively validate the B0/B1 source campaign.
+
+Later stacked work may supersede or retire the direct sweep if source/static
+feasibility invalidates its composition.
+
+No Tesy-native cache, prefetcher or custom expert kernel is authorized by this
+inconclusive B0/B1 result.
