@@ -2,12 +2,11 @@
 
 Date: 2026-09-24  
 Campaign: `results/native-expert-inventory-20260924T085418Z`  
-Classification: `GGUF_ENCODED_PAYLOAD_DERIVED`
+Classification: `INCONCLUSIVE_EXECUTION_PROVENANCE_NOT_PRESERVED`
 
 ## Result
 
-The metadata-only native GGUF inventory completed on the physical reference
-laptop with `PASS_DERIVATION`.
+The metadata-only native GGUF inventory historically produced `PASS_DERIVATION`, but the committed publication does **not** preserve a reference-host identity/virtualization gate or the exact Tesy execution commit/tree. The host is therefore not proven physical and this publication is not admitted as reference-host evidence.
 
 Measured/derived inventory:
 
@@ -41,6 +40,12 @@ biases yield exactly 13,253,760 encoded bytes per expert.
 
 This interpretation is source-backed and arithmetic-derived; it is not a
 physical fetch-granularity or transfer claim.
+
+## Evidentiary correction
+
+The encoded type/shape arithmetic remains useful descriptive metadata, but the campaign-level PASS is not reproducible from the committed evidence. A new inventory campaign must retain exact Tesy commit/tree and explicit reference-host verification before promotion.
+
+The earlier 16 GiB/4 GiB byte-weighted simulation is also **not** promoted by this inventory result; it requires a new replay identity against the relocked inventory.
 
 ## Next gate
 

@@ -2,11 +2,16 @@
 
 Date: 2026-09-24  
 Campaign: `results/expert-crossover-20260924T101753Z`  
-Classification: `MEASURED_EXPERT_CROSSOVER_DIAGNOSTIC`
+Classification: `INCONCLUSIVE_EXECUTION_BASE_NOT_PRESERVED`
 
 ## Admission
 
-The reference-laptop campaign completed with:
+The historical campaign recorded the following gates, but the committed
+publication does not preserve the exact Tesy execution commit/tree. The result
+is therefore retained as historical measurement context and is **not admitted**
+as a current reference-host crossover gate.
+
+Historically recorded:
 
 - focused validator PASS;
 - CPU/GPU numerical parity PASS;
@@ -32,7 +37,7 @@ host or CPU extra/repack buffers before the literal CPU default. Therefore this
 measurement must not be relabelled as the unique realized `--n-cpu-moe`
 runtime buffer path.
 
-It remains an admitted explicit CPU-default fallback comparator. A later
+It remains a historical explicit CPU-default fallback comparator; campaign-level admission requires a rerun with retained exact execution provenance. A later
 CPU-backend optimized/repack measurement is a separate comparator.
 
 ## Measurements
@@ -108,7 +113,7 @@ They assume serial paths and omit cache lookup/scheduling overhead.
 
 ## Architecture decision
 
-`NO_GO_BLOCKING_DEMAND_TRANSFER`.
+`HISTORICAL_NO_GO_BLOCKING_DEMAND_TRANSFER_NOT_ADMITTED`.
 
 Do not build a cache whose miss policy is:
 
@@ -127,7 +132,7 @@ and any Host->GPU weight transfer should be **prefetch**, completed before the
 expert is demanded. Exact routing remains authoritative; prefetch may only
 change residency.
 
-This architecture is justified only if measured routing locality provides
+This historical architecture indication is not an admitted decision until the crossover is rerun with retained exact execution provenance. If revalidated, it would additionally require measured routing locality that provides
 enough useful resident hits and wasted prefetch can be bounded.
 
 ## Next discriminating gate
