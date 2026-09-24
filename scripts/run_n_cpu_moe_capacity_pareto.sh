@@ -666,6 +666,20 @@ PY
     printf '\n'
   } >"$run_dir/server-command.txt"
 
+  python3 - "$run_dir/server-argv.json" "${cmd[@]}" <<'PY'
+import json
+import sys
+from pathlib import Path
+
+path = Path(sys.argv[1])
+argv = sys.argv[2:]
+if not argv or any(not value for value in argv):
+    raise SystemExit("invalid frozen server argv")
+with path.open("x", encoding="utf-8") as handle:
+    json.dump(argv, handle, indent=2)
+    handle.write("\n")
+PY
+
   ready_start_ns="$(date +%s%N)"
   "${cmd[@]}" >"$run_dir/server.stdout.txt" 2>"$run_dir/server.stderr.txt" &
   server_pid=$!
@@ -706,6 +720,7 @@ PY
   python3 -m tesy.runtime_provenance \
     --pid "$server_pid" \
     --build-provenance "$out/build-provenance.json" \
+    --expected-argv "$run_dir/server-argv.json" \
     >"$run_dir/runtime-provenance.json"
 
   if grep -F 'failed to fit params to free device memory' "$run_dir/server.stderr.txt" >/dev/null; then
@@ -868,8 +883,14 @@ for run_dir in sorted(
 
     if runtime["status"] != "PASS":
         raise SystemExit(f"runtime provenance did not PASS: {run_dir}")
+    if runtime.get("argv", {}).get("status") != "PASS":
+        raise SystemExit(f"live server argv did not PASS: {run_dir}")
+    if placement_telemetry.get("schema") != "tesy.stock_placement_telemetry.v2":
+        raise SystemExit(f"unexpected placement telemetry schema: {run_dir}")
     if placement_telemetry.get("status") != "PASS":
         raise SystemExit(f"placement telemetry did not PASS: {run_dir}")
+    if placement_telemetry.get("host_comparability", {}).get("status") != "NOT_COMPARABLE_MMAP_SPAN":
+        raise SystemExit(f"unexpected Host comparability classification: {run_dir}")
     if (
         not isinstance(tokens, list)
         or len(tokens) != 64
@@ -909,11 +930,13 @@ for run_dir in sorted(
         "max_gpu_power_w": res["max_gpu_power_w"],
         "gpu_failed_samples": res["gpu_failed_samples"],
         "runtime_provenance_status": runtime["status"],
+        "runtime_argv_status": runtime["argv"]["status"],
         "placement_telemetry_status": placement_telemetry["status"],
-        "projected_gpu_model_mib": placement_telemetry["projected_model_mib"]["CUDA0"],
-        "projected_host_model_mib": placement_telemetry["projected_model_mib"]["Host"],
-        "observed_gpu_model_mib": placement_telemetry["observed_model_mib"]["CUDA0"],
-        "observed_host_model_mib": placement_telemetry["observed_model_mib"]["Host"],
+        "projected_gpu_model_mib": placement_telemetry["projected_logical_model_mib"]["CUDA0"],
+        "projected_host_logical_model_mib": placement_telemetry["projected_logical_model_mib"]["Host"],
+        "observed_gpu_model_mib": placement_telemetry["observed_runtime_model_buffers"]["CUDA0_mib"],
+        "observed_host_mmap_span_mib": placement_telemetry["observed_runtime_model_buffers"]["Host_mmap_span_mib"],
+        "host_comparability_status": placement_telemetry["host_comparability"]["status"],
         "placement_log_lines": placement_lines,
         "token_sha256": hashlib.sha256(token_blob).hexdigest(),
     })
