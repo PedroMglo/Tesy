@@ -186,6 +186,30 @@ def test_weight_overlap_bound_uses_admitted_group_counts():
         expected_bound
     )
     assert weighted["bound_speedup_vs_weighted_direct"] > 1.0
+    assert weighted["implementation_gate_ratio"] == 0.90
+    assert weighted["implementation_gate_max_bound_ms"] == pytest.approx(
+        0.90 * expected_direct
+    )
+    assert weighted["decision"] == "OVERLAP_IMPLEMENTATION_GO"
+
+
+def test_weight_overlap_bound_records_complexity_no_go_below_threshold():
+    summary = validate_overlap_bound_raw(_payload())
+    histogram = _histogram()
+    histogram["gpu_resident_experts_per_top4_histogram"] = {
+        "0": 360,
+        "1": 0,
+        "2": 0,
+        "3": 0,
+        "4": 0,
+    }
+
+    weighted = weight_overlap_bound(summary, histogram)
+
+    assert weighted["weighted_post_d2h_overlap_bound_ms"] > (
+        weighted["implementation_gate_max_bound_ms"]
+    )
+    assert weighted["decision"] == "OVERLAP_COMPLEXITY_NO_GO"
 
 
 def test_weight_overlap_bound_rejects_histogram_count_mismatch():
