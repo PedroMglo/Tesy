@@ -82,6 +82,7 @@ def validate_mixed_residency_raw(payload: dict[str, Any]) -> dict[str, Any]:
         "cpu_buffer_type": "CPU",
         "expert_ids": _EXPECTED_EXPERT_IDS,
         "mix_weights": _EXPECTED_MIX,
+        "measurement_order": [0, 4, 1, 3, 2],
     }
     for field, value in expected.items():
         if payload.get(field) != value:
