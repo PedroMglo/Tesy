@@ -265,7 +265,7 @@ def _validate_raw(
             "selected_experts",
             "routing_weights",
             "completed_trials",
-            "successful_rollbacks",
+            "successful_timing_trial_rollbacks",
             "triplet_order_cycle",
             "measured_order_full_cycles",
             "measured_order_tail_indices",
@@ -334,9 +334,9 @@ def _validate_raw(
         raise LiveMoeHandoffTimingError(
             f"h={expected_h} completed_trials mismatch"
         )
-    if payload.get("successful_rollbacks") != _EXPECTED_ROLLBACKS:
+    if payload.get("successful_timing_trial_rollbacks") != _EXPECTED_ROLLBACKS:
         raise LiveMoeHandoffTimingError(
-            f"h={expected_h} successful_rollbacks mismatch"
+            f"h={expected_h} successful_timing_trial_rollbacks mismatch"
         )
 
     weights = payload.get("routing_weights")
