@@ -1,7 +1,7 @@
 # n-cpu-moe Pareto sweep protocol
 
 Date: 2026-09-23
-Base: `research/b0-b1-results-20260923@19044cc747c84b2eb5135b89f9ff10e1c1f83754`
+Base: `main@2de6209032ef2d9a2b5c806be8a6ef183e483eeb` (restacked replacement for historical PR #8)
 Branch: `research/n-cpu-moe-pareto-sweep-20260923`
 Classification: prospective diagnostic
 
@@ -145,3 +145,29 @@ llama.cpp revision therefore fails before the sweep.
 The 64-token requirement is enforced per observation, not inferred from
 `predicted_n` after the sweep, and cross-placement trajectory equality is
 checked inside the loop after every completed request.
+
+
+## Restack/review admission hardening
+
+Before any model measurement the restacked runner additionally requires:
+
+- the frozen B0/B1 NVIDIA driver, CUDA compiler, GCC/G++ and CMake identity
+  from `configs/b0-b1-toolchain.lock.json`;
+- the `llama-cli` feature/source probe against the exact pinned clean source;
+- embedded `llama-cli --version` and `llama-server --version` commit IDs
+  matching that source pin;
+- `--verbosity 4` loader telemetry;
+- for every requested `N>0`, all six merged gpt-oss expert tensors
+  (gate/up/down weight+bias) in each of layers `0..N-1` must emit an
+  explicit loader override to a CPU-class buffer;
+- CUDA0 model-buffer telemetry and, for `N>0`, a CPU model-buffer record;
+- per-run SHA-256 for raw server stdout, raw server stderr and the parsed
+  placement artifact;
+- the final summary rechecks `placement_status=PASS` and records the raw-log
+  hashes.
+
+The placement gate intentionally accepts the CPU-class buffer actually selected
+by the pinned loader (for example `CPU` or an eligible CPU extra/repack
+buffer). It does not infer placement from requested flags alone.
+
+These gates do not retroactively admit the earlier B0/B1 source campaign.
