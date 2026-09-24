@@ -133,3 +133,13 @@ def test_weighted_trace_diagnostic_rejects_histogram_count_mismatch():
             validate_mixed_residency_raw(_raw()),
             histogram,
         )
+
+
+def test_validate_mixed_residency_raw_rejects_tampered_statistics():
+    payload = copy.deepcopy(_raw())
+    payload["cases"][2]["direct_wall"]["median_ms"] += 0.005
+    with pytest.raises(
+        MixedResidencyBenchmarkError,
+        match="median_ms does not match raw samples",
+    ):
+        validate_mixed_residency_raw(payload)

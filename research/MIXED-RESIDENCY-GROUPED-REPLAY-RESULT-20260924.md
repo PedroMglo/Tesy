@@ -5,9 +5,23 @@ Branch: `research/mixed-residency-diagnostic-20260924`
 Base commit: `d6cc936b4b5f6029657090d742c40ec82bc90287`
 Base tree: `f714856ccd7597d36d8690f10cfcf5b3ac217175`
 Initial worktree: clean
-Evidence class: `TRACE_DERIVED_RESIDENCY_OPPORTUNITY`
+Evidence class: `INCONCLUSIVE_PHASE_PROVENANCE_NOT_PRESERVED`
 
-## Objective and inputs
+## Evidentiary correction
+
+Review found that the historical replay path accepted phase-less traces and
+could include one-token prefill records in cache warmup and grouped counts.
+The corrected implementation now requires explicit phase metadata and filters
+strictly to `phase == "decode"`.
+
+The published historical histogram does not preserve enough evidence to prove
+that the exact input used for this replay was phase-aware and decode-only.
+Therefore the 66.25% hit rate and h=0..4 histogram below remain historical
+context only and are **not admitted** for Stage B prioritization or weighted
+latency claims. A new replay identity with retained v2 trace provenance is
+required.
+
+## Historical objective and inputs
 
 Reproduce the admitted 4 GiB demand-triggered byte-LRU expert hit rate, then
 count the number of hits in each one-token top-4 routing group. The parameters
@@ -38,7 +52,7 @@ admitted replay contract merely to satisfy an incorrect assertion. Replaying
 the three synthetic groups under the existing byte-LRU semantics resolves the
 contradiction without such a change.
 
-## Tests and result
+## Historical tests and result
 
 - `git fetch --prune origin`: PASS; the local base matched the remote branch.
 - Ruff on the two focused files: PASS.
@@ -63,13 +77,13 @@ uses. The replay has 954 hits (66.25%) and 486 misses. Mean hits per group are
 
 ## Decision and limits
 
-Stage A passes. The result shows which top-4 compositions occur under the
+`STAGE_A_HISTORICAL_RESULT_NOT_ADMITTED`. The historical result suggested which top-4 compositions occur under the
 ideal timely-insertion LRU simulation. It does not measure actual GPU
 residency, physical transfer bytes, prefetch accuracy, mixed FFN latency or
 full-model speed. The 15 graph IDs are a trace-derived committed-token proxy,
 not a fresh exactness measurement. No physical mixed-execution test was run.
 
-Next discriminating gate: Stage B should validate numerical parity and measure
+Required next gate: first rerun the grouped replay from an explicit phase-aware v2 decode trace with retained provenance. Only then may Stage B weighting use the resulting histogram. Independent Stage B h=0..4 parity/timing measurements may be preserved separately, but their trace-weighted aggregate must not depend on this withdrawn histogram. A later Stage B should validate numerical parity and measure
 isolated mixed top-4 execution through the pinned ggml path, prioritizing the
 common 3-hit and 4-hit cases while retaining the frozen all-CPU reference and
 freezing numerical correctness thresholds before physical timing.
