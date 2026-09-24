@@ -348,6 +348,370 @@ void validate_capture(capture_state & state) {
     }
 }
 
+enum class cancel_bound_arm {
+    none,
+    stock,
+    cancel,
+};
+
+struct timing_summary {
+    std::vector<double> samples_ms;
+    double median_ms = 0.0;
+    double p95_ms = 0.0;
+    double min_ms = 0.0;
+    double max_ms = 0.0;
+    double mean_ms = 0.0;
+};
+
+struct cancel_bound_state {
+    bool enabled = false;
+    cancel_bound_arm arm = cancel_bound_arm::none;
+
+    bool saw_topk = false;
+    bool saw_weights = false;
+    bool saw_stock_output = false;
+    bool started = false;
+    bool stock_finished = false;
+
+    std::vector<int32_t> current_experts;
+    std::vector<float> current_weights;
+    std::vector<int32_t> reference_experts;
+    std::vector<float> reference_weights;
+    bool reference_route_set = false;
+
+    std::chrono::steady_clock::time_point start;
+    std::chrono::steady_clock::time_point stock_end;
+};
+
+void reset_cancel_trial(
+        cancel_bound_state & state,
+        cancel_bound_arm arm) {
+    state.arm = arm;
+    state.saw_topk = false;
+    state.saw_weights = false;
+    state.saw_stock_output = false;
+    state.started = false;
+    state.stock_finished = false;
+    state.current_experts.clear();
+    state.current_weights.clear();
+}
+
+void bind_or_verify_route(cancel_bound_state & state) {
+    if (!state.saw_topk || !state.saw_weights) {
+        fail("cancel-bound route tensors incomplete");
+    }
+    if (!state.reference_route_set) {
+        state.reference_experts = state.current_experts;
+        state.reference_weights = state.current_weights;
+        state.reference_route_set = true;
+        return;
+    }
+    if (state.current_experts != state.reference_experts) {
+        fail("cancel-bound routed expert IDs changed across trials");
+    }
+    if (state.current_weights != state.reference_weights) {
+        fail("cancel-bound routing weights changed across trials");
+    }
+}
+
+bool cancel_bound_callback(
+        ggml_tensor * tensor,
+        bool ask,
+        void * user_data) {
+    auto * state = static_cast<cancel_bound_state *>(user_data);
+    if (!state || !state->enabled) {
+        return false;
+    }
+
+    const bool topk = exact_name(tensor, "ffn_moe_topk-0");
+    const bool weights =
+        exact_name(tensor, "ffn_moe_weights_softmax-0");
+    const bool output = exact_name(tensor, "ffn_moe_out-0");
+    const bool wanted = topk || weights || output;
+
+    if (ask) {
+        return wanted;
+    }
+    if (!wanted) {
+        return true;
+    }
+
+    if (topk) {
+        if (state->saw_topk) {
+            fail("duplicate cancel-bound top-k callback");
+        }
+        state->current_experts =
+            read_contiguous_tensor<int32_t>(
+                tensor,
+                GGML_TYPE_I32,
+                static_cast<size_t>(k_top_k),
+                "cancel-bound ffn_moe_topk-0");
+        state->saw_topk = true;
+        return true;
+    }
+
+    if (weights) {
+        if (state->saw_weights) {
+            fail("duplicate cancel-bound routing-weight callback");
+        }
+        state->current_weights =
+            read_contiguous_tensor<float>(
+                tensor,
+                GGML_TYPE_F32,
+                static_cast<size_t>(k_top_k),
+                "cancel-bound ffn_moe_weights_softmax-0");
+        for (float value : state->current_weights) {
+            if (!std::isfinite(value) || value < 0.0f) {
+                fail("cancel-bound routing weight is invalid");
+            }
+        }
+        state->saw_weights = true;
+        bind_or_verify_route(*state);
+        state->start = std::chrono::steady_clock::now();
+        state->started = true;
+        return state->arm != cancel_bound_arm::cancel;
+    }
+
+    if (output) {
+        if (state->arm != cancel_bound_arm::stock) {
+            fail("cancel arm reached stock MoE output");
+        }
+        if (!state->started) {
+            fail("stock MoE output arrived before route timer start");
+        }
+        if (state->saw_stock_output) {
+            fail("duplicate cancel-bound stock-output callback");
+        }
+        state->stock_end = std::chrono::steady_clock::now();
+        state->saw_stock_output = true;
+        state->stock_finished = true;
+        return false;
+    }
+
+    return true;
+}
+
+timing_summary summarize_timings(std::vector<double> samples) {
+    if (samples.empty()) {
+        fail("cannot summarize empty timing samples");
+    }
+    for (double value : samples) {
+        if (!std::isfinite(value) || value <= 0.0) {
+            fail("cancel-bound timing must be positive and finite");
+        }
+    }
+
+    std::vector<double> sorted = samples;
+    std::sort(sorted.begin(), sorted.end());
+    const size_t n = sorted.size();
+    const size_t p95_index =
+        std::min(
+            n - 1,
+            static_cast<size_t>(
+                std::ceil(0.95 * static_cast<double>(n))) - 1);
+
+    timing_summary out;
+    out.samples_ms = std::move(samples);
+    out.median_ms = sorted[n / 2];
+    out.p95_ms = sorted[p95_index];
+    out.min_ms = sorted.front();
+    out.max_ms = sorted.back();
+    out.mean_ms =
+        std::accumulate(sorted.begin(), sorted.end(), 0.0) /
+        static_cast<double>(n);
+    return out;
+}
+
+void print_timing_summary(
+        FILE * file,
+        const timing_summary & value) {
+    std::fprintf(
+        file,
+        "{\"median_ms\":%.9f,\"p95_ms\":%.9f,"
+        "\"min_ms\":%.9f,\"max_ms\":%.9f,"
+        "\"mean_ms\":%.9f,\"samples_ms\":[",
+        value.median_ms,
+        value.p95_ms,
+        value.min_ms,
+        value.max_ms,
+        value.mean_ms);
+    for (size_t i = 0; i < value.samples_ms.size(); ++i) {
+        if (i != 0) {
+            std::fputc(',', file);
+        }
+        std::fprintf(file, "%.9f", value.samples_ms[i]);
+    }
+    std::fputs("]}", file);
+}
+
+void run_cancel_bound(
+        const options & opt,
+        llama_context * ctx,
+        llama_token decode_token,
+        cancel_bound_state & state) {
+    std::vector<double> stock_samples;
+    std::vector<double> cancel_samples;
+    stock_samples.reserve(static_cast<size_t>(opt.samples));
+    cancel_samples.reserve(static_cast<size_t>(opt.samples));
+
+    auto run_trial = [&](cancel_bound_arm arm) -> double {
+        reset_cancel_trial(state, arm);
+        state.enabled = true;
+
+        llama_batch batch = llama_batch_get_one(&decode_token, 1);
+        const int rc = llama_decode(ctx, batch);
+        const auto returned = std::chrono::steady_clock::now();
+
+        state.enabled = false;
+
+        if (rc != 2) {
+            fail(
+                "cancel-bound decode must return 2/GGML_STATUS_ABORTED, got " +
+                std::to_string(rc));
+        }
+        if (!state.saw_topk || !state.saw_weights || !state.started) {
+            fail("cancel-bound trial did not observe authoritative route");
+        }
+
+        std::chrono::steady_clock::time_point end;
+        if (arm == cancel_bound_arm::stock) {
+            if (!state.saw_stock_output || !state.stock_finished) {
+                fail("stock arm did not reach ffn_moe_out-0");
+            }
+            end = state.stock_end;
+        } else {
+            if (state.saw_stock_output || state.stock_finished) {
+                fail("cancel arm unexpectedly computed stock MoE output");
+            }
+            end = returned;
+        }
+
+        const double elapsed =
+            std::chrono::duration<double, std::milli>(
+                end - state.start).count();
+        if (!std::isfinite(elapsed) || elapsed <= 0.0) {
+            fail("invalid cancel-bound elapsed time");
+        }
+        return elapsed;
+    };
+
+    auto run_pair = [&](int pair_index, bool record) {
+        if ((pair_index % 2) == 0) {
+            const double stock = run_trial(cancel_bound_arm::stock);
+            const double cancel = run_trial(cancel_bound_arm::cancel);
+            if (record) {
+                stock_samples.push_back(stock);
+                cancel_samples.push_back(cancel);
+            }
+        } else {
+            const double cancel = run_trial(cancel_bound_arm::cancel);
+            const double stock = run_trial(cancel_bound_arm::stock);
+            if (record) {
+                cancel_samples.push_back(cancel);
+                stock_samples.push_back(stock);
+            }
+        }
+    };
+
+    for (int i = 0; i < opt.warmup; ++i) {
+        run_pair(i, false);
+    }
+    for (int i = 0; i < opt.samples; ++i) {
+        run_pair(i, true);
+    }
+
+    if (!state.reference_route_set) {
+        fail("cancel-bound route identity was never established");
+    }
+
+    const timing_summary stock =
+        summarize_timings(std::move(stock_samples));
+    const timing_summary cancel =
+        summarize_timings(std::move(cancel_samples));
+
+    const bool median_no_go =
+        cancel.median_ms >= stock.median_ms;
+    const bool p95_no_go =
+        cancel.p95_ms >= stock.p95_ms;
+    const char * decision =
+        (median_no_go || p95_no_go)
+            ? "CB_EVAL_INTERCEPT_HARD_NO_GO"
+            : "CB_EVAL_INTERCEPT_BOUND_SURVIVES";
+
+    FILE * file =
+        std::fopen(opt.cancel_bound_output.c_str(), "wx");
+    if (!file) {
+        fail(
+            "refusing or unable to create cancel-bound output: " +
+            opt.cancel_bound_output);
+    }
+
+    std::fprintf(
+        file,
+        "{\"schema\":\"tesy.cb_eval_intercept_bound.v1\","
+        "\"classification\":"
+        "\"MEASURED_CB_EVAL_ZERO_WORK_LOWER_BOUND\","
+        "\"layer\":0,\"ngl\":0,\"warmup_pairs\":%d,"
+        "\"sample_pairs\":%d,"
+        "\"paired_order\":\"even_stock_cancel_odd_cancel_stock\","
+        "\"route_weight_tensor\":\"ffn_moe_weights_softmax-0\","
+        "\"selected_experts\":[",
+        opt.warmup,
+        opt.samples);
+
+    for (size_t i = 0; i < state.reference_experts.size(); ++i) {
+        if (i != 0) {
+            std::fputc(',', file);
+        }
+        std::fprintf(file, "%" PRId32, state.reference_experts[i]);
+    }
+    std::fputs("],\"routing_weights\":[", file);
+    for (size_t i = 0; i < state.reference_weights.size(); ++i) {
+        if (i != 0) {
+            std::fputc(',', file);
+        }
+        std::fprintf(file, "%.9g", state.reference_weights[i]);
+    }
+
+    std::fputs("],\"stock_moe_segment\":", file);
+    print_timing_summary(file, stock);
+    std::fputs(",\"cancel_zero_work\":", file);
+    print_timing_summary(file, cancel);
+
+    std::fprintf(
+        file,
+        ",\"cancel_to_stock_median_ratio\":%.12f,"
+        "\"cancel_to_stock_p95_ratio\":%.12f,"
+        "\"median_hard_no_go\":%s,"
+        "\"p95_hard_no_go\":%s,"
+        "\"decision\":\"%s\","
+        "\"claim_boundary\":"
+        "\"Stock measures final-route-weight callback to stock "
+        "ffn_moe_out-0 callback. Cancel measures the same route boundary "
+        "to llama_decode returning GGML_STATUS_ABORTED with zero Tesy FFN "
+        "work and no activation handoff. It is a strict lower bound on an "
+        "external cb_eval interception path, not routed-layer performance "
+        "of Tesy or a full-model speed claim.\"}\n",
+        cancel.median_ms / stock.median_ms,
+        cancel.p95_ms / stock.p95_ms,
+        median_no_go ? "true" : "false",
+        p95_no_go ? "true" : "false",
+        decision);
+
+    if (std::fclose(file) != 0) {
+        fail("failed closing cancel-bound output");
+    }
+
+    std::printf("PASS_CB_EVAL_INTERCEPT_BOUND\n");
+    std::printf("decision: %s\n", decision);
+    std::printf(
+        "cancel/stock median ratio: %.6f\n",
+        cancel.median_ms / stock.median_ms);
+    std::printf(
+        "cancel/stock p95 ratio: %.6f\n",
+        cancel.p95_ms / stock.p95_ms);
+}
+
 void write_binary_f32(
         const std::filesystem::path & path,
         const std::vector<float> & values) {
