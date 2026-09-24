@@ -1,4 +1,5 @@
 import json
+import os
 import subprocess
 import sys
 from pathlib import Path
@@ -18,9 +19,8 @@ def _write_argv(path: Path, argv: list[str]) -> None:
 
 def test_process_identity_binds_live_executable_and_argv(tmp_path):
     command = [
-        sys.executable,
-        "-c",
-        "import time; time.sleep(2)",
+        "/bin/sleep",
+        "2",
     ]
     expected = tmp_path / "argv.json"
     _write_argv(expected, command)
@@ -29,7 +29,7 @@ def test_process_identity_binds_live_executable_and_argv(tmp_path):
     try:
         result = collect_process_identity(
             pid=process.pid,
-            expected_executable=Path(sys.executable),
+            expected_executable=Path(command[0]),
             expected_argv_path=expected,
         )
     finally:
@@ -46,9 +46,8 @@ def test_process_identity_retries_transient_empty_cmdline(
     monkeypatch,
 ):
     command = [
-        sys.executable,
-        "-c",
-        "import time; time.sleep(2)",
+        "/bin/sleep",
+        "2",
     ]
     expected = tmp_path / "argv.json"
     _write_argv(expected, command)
@@ -73,7 +72,7 @@ def test_process_identity_retries_transient_empty_cmdline(
     try:
         result = collect_process_identity(
             pid=process.pid,
-            expected_executable=Path(sys.executable),
+            expected_executable=Path(command[0]),
             expected_argv_path=expected,
         )
     finally:
@@ -87,9 +86,8 @@ def test_process_identity_retries_transient_empty_cmdline(
 
 def test_process_identity_reports_exact_argv_mismatch(tmp_path):
     command = [
-        sys.executable,
-        "-c",
-        "import time; time.sleep(2)",
+        "/bin/sleep",
+        "2",
     ]
     expected = tmp_path / "argv.json"
     _write_argv(expected, [*command, "unexpected"])
@@ -98,7 +96,7 @@ def test_process_identity_reports_exact_argv_mismatch(tmp_path):
     try:
         result = collect_process_identity(
             pid=process.pid,
-            expected_executable=Path(sys.executable),
+            expected_executable=Path(command[0]),
             expected_argv_path=expected,
         )
     finally:
@@ -126,3 +124,38 @@ def test_process_identity_rejects_invalid_expected_argv(tmp_path):
             expected_argv_path=expected,
             attempts=1,
         )
+
+
+def test_process_identity_does_not_retry_invalid_cmdline(
+    tmp_path,
+    monkeypatch,
+):
+    expected = tmp_path / "argv.json"
+    _write_argv(expected, [sys.executable, "-c", "pass"])
+
+    calls = 0
+
+    def invalid_cmdline(pid: int) -> list[str]:
+        nonlocal calls
+        calls += 1
+        raise ProcessIdentityError("invalid process cmdline")
+
+    monkeypatch.setattr(
+        process_identity_module,
+        "_proc_argv",
+        invalid_cmdline,
+    )
+
+    with pytest.raises(
+        ProcessIdentityError,
+        match="invalid process cmdline",
+    ):
+        collect_process_identity(
+            pid=os.getpid(),
+            expected_executable=Path(sys.executable),
+            expected_argv_path=expected,
+            attempts=5,
+            sleep_seconds=0.0,
+        )
+
+    assert calls == 1
