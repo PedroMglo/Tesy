@@ -56,6 +56,8 @@ Preserve and stop on:
 - current-host capacity rejection for any of the three placements;
 - model/server load failure or OOM;
 - runtime backend mapping mismatch;
+- realized CUDA0/Host model buffers differing from the same-placement
+  fit-print projection by more than 2 MiB;
 - missing placement evidence;
 - process swap;
 - measured GPU/host headroom violation;
