@@ -38,7 +38,7 @@ reference-host/model validation. No source-only row is a performance claim.
 | vLLM baseline | PINNED_NOT_REPRODUCED | B4 only if 8 GiB/32 GiB envelope admits it |
 | native Tesy expert residency/cache | NOT_IMPLEMENTED | forbidden until baseline + trace/headroom establish a concrete gap |
 | CPU-vs-transfer-vs-GPU expert crossover | PASS_REFERENCE_HOST_DIAGNOSTIC | campaign `expert-crossover-20260924T101753Z`: real-shape k=1/k=4 parity/resource gates PASS; pinned cold-GPU miss is ~3.05x/~3.64x slower than authoritative n-cpu-moe CPU path while resident GPU is ~5.80x/~4.92x faster; blocking demand transfer NO_GO |
-| mixed GPU-hit / CPU-miss expert execution | GROUPED_LOCALITY_REPLAY_PASS_STAGE_B_REQUIRED | grouped 4 GiB replay PASS: h=3 35.56%, h=4 29.17%, h=2 17.22%, h=0/1 18.06%; direct mixed CPU/GPU timing remains NOT_RUN |
+| mixed GPU-hit / CPU-miss expert execution | STAGE_B_IMPLEMENTED_HOST_NOT_RUN | grouped replay PASS: h=3 35.56%, h=4 29.17%, h=2 17.22%; direct real-weight h=0..4 serial mixed FFN benchmark, numerical parity, provenance and trace-weighted analysis are implemented; native compile/physical timing NOT_RUN |
 | causal prefetch | NOT_IMPLEMENTED | only after locality/headroom and wasted-prefetch analysis |
 | speculative K=2 | NOT_IMPLEMENTED | only after K=1 target/runtime correctness |
 | joint K/residency scheduler | OPEN_RESEARCH_QUESTION | broad novelty overlap exists; benefit and narrower novelty unknown |
