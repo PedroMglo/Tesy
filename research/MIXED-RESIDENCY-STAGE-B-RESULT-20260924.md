@@ -4,16 +4,20 @@ Date: 2026-09-24
 Campaign: `results/mixed-residency-stage-b-20260924T125101Z`  
 Base commit and clean tree: `086d234651596ed1e0bb492a2e7e5daf19d36596`  
 Protocol: `research/MIXED-RESIDENCY-STAGE-B-PROTOCOL-20260924.md`  
-Result: **PASS** for the isolated serial mixed-FFN diagnostic
+Result classification: **INCONCLUSIVE_BUILD_PROVENANCE_AND_HISTOGRAM_AUTHORITY**
 
 ## Objective and evidence
 
-Measure the frozen h=0..4 direct CPU/GPU execution cases for real layer-0
+The historical campaign measured the frozen h=0..4 direct CPU/GPU execution
+cases for real layer-0
 gpt-oss-20b MXFP4 experts 0..3, then arithmetically weight their measured
-medians by the admitted Stage A grouped residency histogram. The local GGUF
-model verification, reference-host identity, clean Tesy and pinned llama.cpp
-trees, CMake settings, live executable/argv/CUDA library provenance, numerical
-parity, and sampled resource gates all passed. The pinned llama.cpp commit was
+medians by the admitted Stage A grouped residency histogram. The historical campaign recorded model/host/runtime checks, but review found
+that the runner did not fail closed on the llama.cpp source pin and did not bind
+the prebuilt executable to the frozen Tesy source tree. In addition, the Stage A
+histogram authority has since been withdrawn because its replay was phase
+ambiguous. Therefore the h=0..4 measurements below are preserved as historical
+isolated measurements, while campaign-level admission and all trace-weighted
+claims are withdrawn. The pinned llama.cpp commit was
 `4e416ee7308dd6b581796f1a6241276cd5982691`.
 
 The live executable SHA-256 was
@@ -39,9 +43,9 @@ the result's numerical parity checks passed. This is numerical parity for the
 isolated synthetic 0.25-mixture operator, not token equality or full-model
 exactness.
 
-### Trace-derived arithmetic diagnostic
+### Historical trace-derived arithmetic diagnostic — NOT ADMITTED
 
-With the frozen counts h=0..4 of `[39, 26, 62, 128, 105]`, the weighted
+Using the now-withdrawn historical counts h=0..4 of `[39, 26, 62, 128, 105]`, the historical weighted
 median-case cost is **0.551891 ms**, equivalent to **1.378427x** versus the
 measured h=0 median. This is an arithmetic weighting of separately measured
 components; it is not a measured full-model speedup or physical transfer rate.
@@ -67,8 +71,7 @@ it queried CPU extra buffers, required CPU-device support for MXFP4
 `MUL_MAT_ID` at compact expert counts 1..4, and only then fell back to CPU
 default. The raw result selected `CPU` for both weight and bias buffers.
 
-Therefore no Stage B rerun is required for this buffer-selection question.
-Advance to CPU/GPU overlap as the next discriminating experiment. Prediction
+That post-run source audit remains descriptive, but the campaign is not admitted under the current provenance contract. A new Stage B campaign identity is required after a provenance-preserved phase-aware histogram replay. CPU/GPU overlap is not authorized by this historical weighted result. Prediction
 and prefetch remain untested.
 
 This one 21-sample-per-case microbenchmark does not establish run-to-run
@@ -86,5 +89,4 @@ passed, as recorded in `MIXED-RESIDENCY-STAGE-B-CONTRACT-FIX-20260924.md`.
 The campaign itself exited zero with all required gates PASS.
 
 Next gate: freeze and measure CPU/GPU overlap for the material mixed cases,
-without changing the numerical contract. Preserve this serial Stage B campaign
-as the admitted baseline.
+without changing the numerical contract. Preserve this serial Stage B campaign as historical evidence only; it is not an admitted baseline.
