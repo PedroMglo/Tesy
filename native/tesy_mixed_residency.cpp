@@ -38,6 +38,12 @@ struct options {
     int samples = 21;
     int inner = 5;
     bool async_overlap = false;
+    bool routed_exactness = false;
+    std::string routed_input_f32;
+    std::string routed_reference_f32;
+    std::string routed_experts_csv;
+    std::string routed_weights_csv;
+    int routed_gpu_hits = -1;
 };
 
 struct context_buffer {
@@ -180,7 +186,9 @@ int parse_positive(const char * value, const char * flag, int minimum = 1) {
         code == 0 ? stdout : stderr,
         "usage: %s --model MODEL.gguf --output RESULT.json "
         "[--layer N] [--threads N] [--samples N] [--warmup N] [--inner N] "
-        "[--async-overlap]\n",
+        "[--async-overlap] [--routed-exactness "
+        "--routed-input-f32 FILE --routed-reference-f32 FILE "
+        "--routed-experts CSV --routed-weights CSV --routed-gpu-hits N]\n",
         argv0);
     std::exit(code);
 }
@@ -211,6 +219,21 @@ options parse_options(int argc, char ** argv) {
             out.inner = parse_positive(value("--inner"), "--inner");
         } else if (arg == "--async-overlap") {
             out.async_overlap = true;
+        } else if (arg == "--routed-exactness") {
+            out.routed_exactness = true;
+        } else if (arg == "--routed-input-f32") {
+            out.routed_input_f32 = value("--routed-input-f32");
+        } else if (arg == "--routed-reference-f32") {
+            out.routed_reference_f32 = value("--routed-reference-f32");
+        } else if (arg == "--routed-experts") {
+            out.routed_experts_csv = value("--routed-experts");
+        } else if (arg == "--routed-weights") {
+            out.routed_weights_csv = value("--routed-weights");
+        } else if (arg == "--routed-gpu-hits") {
+            out.routed_gpu_hits =
+                parse_positive(
+                    value("--routed-gpu-hits"),
+                    "--routed-gpu-hits");
         } else if (arg == "-h" || arg == "--help") {
             usage(argv[0], 0);
         } else {
@@ -219,6 +242,25 @@ options parse_options(int argc, char ** argv) {
     }
     if (out.model.empty() || out.output.empty()) {
         usage(argv[0], 2);
+    }
+    if (out.routed_exactness) {
+        if (!out.async_overlap) {
+            fail("--routed-exactness requires --async-overlap");
+        }
+        if (out.layer != 0) {
+            fail("routed exactness is frozen to layer 0");
+        }
+        if (
+            out.routed_input_f32.empty()
+            || out.routed_reference_f32.empty()
+            || out.routed_experts_csv.empty()
+            || out.routed_weights_csv.empty()
+        ) {
+            fail("routed exactness requires input/reference/experts/weights");
+        }
+        if (out.routed_gpu_hits != 2 && out.routed_gpu_hits != 3) {
+            fail("routed exactness gpu hits must be 2 or 3");
+        }
     }
     return out;
 }
