@@ -11,6 +11,21 @@ class LiveMoeHandoffTimingError(ValueError):
     pass
 
 
+def _require_exact_keys(
+    payload: dict[str, Any],
+    *,
+    expected: set[str],
+    label: str,
+) -> None:
+    observed = set(payload)
+    if observed != expected:
+        raise LiveMoeHandoffTimingError(
+            f"{label} keys mismatch: "
+            f"missing={sorted(expected - observed)!r} "
+            f"extra={sorted(observed - expected)!r}"
+        )
+
+
 _EXPECTED_TOKEN = 2167
 _EXPECTED_EXPERTS = [1, 13, 17, 21]
 _EXPECTED_THRESHOLDS = {
@@ -67,6 +82,17 @@ def _stats(values: list[float]) -> dict[str, Any]:
 def _parity(payload: Any, *, label: str) -> dict[str, Any]:
     if not isinstance(payload, dict):
         raise LiveMoeHandoffTimingError(f"{label} must be an object")
+    _require_exact_keys(
+        payload,
+        expected={
+            "max_abs",
+            "max_abs_ref",
+            "relative_max",
+            "cosine",
+            "status",
+        },
+        label=label,
+    )
     if payload.get("status") != "PASS":
         raise LiveMoeHandoffTimingError(f"{label} did not PASS")
 
@@ -98,6 +124,23 @@ def _parity(payload: Any, *, label: str) -> dict[str, Any]:
 def _exactness(payload: Any, *, label: str) -> dict[str, Any]:
     if not isinstance(payload, dict):
         raise LiveMoeHandoffTimingError(f"{label} must be an object")
+    _require_exact_keys(
+        payload,
+        expected={
+            "stock_decode_return_code",
+            "handoff_decode_return_code",
+            "stock_rollback",
+            "handoff_rollback",
+            "activation_bitwise_equal",
+            "activation_parity",
+            "activation_vs_reference",
+            "stock_output_vs_reference",
+            "serial_vs_stock",
+            "async_vs_stock",
+            "async_vs_serial",
+        },
+        label=label,
+    )
 
     expected = {
         "stock_decode_return_code": 0,
@@ -142,6 +185,11 @@ def _exactness(payload: Any, *, label: str) -> dict[str, Any]:
 def _mode(payload: Any, *, label: str) -> dict[str, Any]:
     if not isinstance(payload, dict):
         raise LiveMoeHandoffTimingError(f"{label} must be an object")
+    _require_exact_keys(
+        payload,
+        expected={"activation_ready_ms", "route_ready_ms"},
+        label=label,
+    )
 
     result: dict[str, Any] = {}
     for field in ("activation_ready_ms", "route_ready_ms"):
@@ -166,6 +214,40 @@ def _validate_raw(
     *,
     expected_h: int,
 ) -> dict[str, Any]:
+    _require_exact_keys(
+        payload,
+        expected={
+            "schema",
+            "classification",
+            "layer",
+            "ngl",
+            "gpu_hits",
+            "cpu_misses",
+            "threads",
+            "warmup_triplets",
+            "sample_triplets",
+            "inner",
+            "resident_experts",
+            "provenance_gate",
+            "input_semantics",
+            "decode_input_token",
+            "activation_tensor",
+            "topk_tensor",
+            "routing_weight_tensor",
+            "stock_output_tensor",
+            "selected_experts",
+            "routing_weights",
+            "completed_trials",
+            "successful_rollbacks",
+            "triplet_order_cycle",
+            "pre_exactness",
+            "post_exactness",
+            "modes",
+            "parity_thresholds",
+            "claim_boundary",
+        },
+        label=f"h={expected_h}",
+    )
     if payload.get("schema") != "tesy.live_moe_handoff_timing_raw.v1":
         raise LiveMoeHandoffTimingError("schema mismatch")
     if (
@@ -202,6 +284,15 @@ def _validate_raw(
             )
 
     completed = payload.get("completed_trials")
+    if not isinstance(completed, dict):
+        raise LiveMoeHandoffTimingError(
+            f"h={expected_h} completed_trials must be an object"
+        )
+    _require_exact_keys(
+        completed,
+        expected={"stock", "serial", "async"},
+        label=f"h={expected_h}.completed_trials",
+    )
     if completed != {
         "stock": _EXPECTED_COMPLETED,
         "serial": _EXPECTED_COMPLETED,
@@ -236,6 +327,17 @@ def _validate_raw(
     if not isinstance(modes, dict):
         raise LiveMoeHandoffTimingError(
             f"h={expected_h} modes must be an object"
+        )
+    _require_exact_keys(
+        modes,
+        expected={"stock", "serial", "async"},
+        label=f"h={expected_h}.modes",
+    )
+
+    claim = payload.get("claim_boundary")
+    if not isinstance(claim, str) or not claim:
+        raise LiveMoeHandoffTimingError(
+            f"h={expected_h} claim_boundary must be non-empty"
         )
 
     return {
