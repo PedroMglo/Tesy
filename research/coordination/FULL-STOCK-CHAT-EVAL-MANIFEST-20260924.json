@@ -1,0 +1,85 @@
+{
+  "schema": "tesy.full_stock_chat_eval_manifest.v1",
+  "classification": "PROSPECTIVE_STOCK_ONLY_AFTER_TESY_CORRECTNESS_BLOCKER",
+  "backend": {
+    "llama_head": "4e416ee7308dd6b581796f1a6241276cd5982691",
+    "patched": false,
+    "chat_template": "GGUF_EMBEDDED_JINJA_NO_OVERRIDE",
+    "reasoning": "off",
+    "context": 4096,
+    "threads": 12,
+    "threads_batch": 12,
+    "fit": "off",
+    "temperature": 0,
+    "top_k": 1,
+    "seed": 42,
+    "cache_prompt": false,
+    "warmup": false,
+    "max_output_tokens": 128,
+    "eos": "preserve",
+    "server_process": "fresh_per_run",
+    "page_cache": "uncontrolled_warm_or_mixed"
+  },
+  "model": {
+    "path": "gpt-oss-20b-mxfp4.gguf",
+    "bytes": 12109564352,
+    "sha256": "52f57ab7d3df3ba9173827c1c6832e73375553a846f3e32b49f1ae2daad688d4"
+  },
+  "calibration": {
+    "prompt": "benchmarks/prompts/vertical-short-summary.txt",
+    "prompt_sha256": "99b2641845df47370c29f1661ccb7493bb51ce11dd26a0f3afabb5c49cf18710",
+    "placements_ngl": [0, 8, 12],
+    "selection": "highest_single_run_backend_predicted_per_second_among_admitted_placements",
+    "selected_ngl": null,
+    "old_forced_template_runs": "INVALID_FOR_SELECTION"
+  },
+  "evaluation": {
+    "prompts": [
+      {
+        "id": "extraction-long",
+        "path": "benchmarks/prompts/vertical-eval-extraction-long.txt",
+        "sha256": "c53cfd7a473c078b84d34c7fb9a4253b8885b1246c109e534d55cefa2d78eb00",
+        "raw_text_tokens": 221,
+        "templated_input_tokens": 302,
+        "count_root": "results/full-stock-chat-count-embedded-extraction-20260924T221207Z"
+      },
+      {
+        "id": "code-short",
+        "path": "benchmarks/prompts/vertical-eval-code-short.txt",
+        "sha256": "6cab5251b0045b55cbf0dc7212a1c5f799e7777ca6712731933fce9cf7650327",
+        "raw_text_tokens": 51,
+        "templated_input_tokens": 132,
+        "count_root": "results/full-stock-chat-count-embedded-code-20260924T221244Z"
+      }
+    ],
+    "comparators": ["B_causal_ngl0", "B_competitive_selected_stock"],
+    "repetitions_per_condition": 5,
+    "schedule": "for each repetition, alternate comparator order; alternate workload order between repetitions",
+    "timing_unit": "independent_fresh_server_process_run",
+    "metrics": [
+      "client_health_wait_s",
+      "ttft_s_first_visible_content",
+      "generation_request_s",
+      "backend_predicted_per_token_ms",
+      "prompt_tokens",
+      "completion_tokens",
+      "finish_reason",
+      "peak_rss_bytes",
+      "peak_gpu_used_bytes",
+      "peak_gpu_temperature_c",
+      "process_swap_bytes"
+    ],
+    "aggregation": "upper_median_and_nearest_rank_p95_across_five_independent_runs",
+    "candidate_tesy": "NOT_RUN_NUMERICAL_PARITY_BLOCKER",
+    "negative_control": "NOT_RUN_NUMERICAL_PARITY_BLOCKER"
+  },
+  "stop_conditions": [
+    "physical_host_or_pin_failure",
+    "capacity_rejection",
+    "missing_required_telemetry",
+    "nonzero_process_swap",
+    "incomplete_stream_or_missing_token_counts",
+    "OOM_or_nonfinite_metric"
+  ],
+  "claim_boundary": "Stock-only assessment; no Tesy end-to-end comparison or speedup claim."
+}
