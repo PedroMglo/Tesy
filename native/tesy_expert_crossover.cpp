@@ -287,6 +287,14 @@ tensor_spec get_spec(
     if (n_bytes == 0 || n_bytes % static_cast<size_t>(k_expert_count) != 0) {
         fail("tensor bytes do not divide by expert count for " + name);
     }
+    const size_t per_expert_bytes =
+        n_bytes / static_cast<size_t>(k_expert_count);
+    if (
+        tensor->nb[n_dims - 1] != per_expert_bytes
+        || tensor->ne[n_dims - 1] != k_expert_count
+    ) {
+        fail("expert slices are not contiguous on the final GGUF dimension for " + name);
+    }
     const size_t base = gguf_get_data_offset(gguf);
     const size_t relative = gguf_get_tensor_offset(gguf, id);
     if (relative > std::numeric_limits<size_t>::max() - base) {
@@ -298,7 +306,7 @@ tensor_spec get_spec(
         expected_shape,
         n_bytes,
         base + relative,
-        n_bytes / static_cast<size_t>(k_expert_count),
+        per_expert_bytes,
     };
 }
 
