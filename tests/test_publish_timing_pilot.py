@@ -1,5 +1,4 @@
 import hashlib
-import hashlib
 import json
 from pathlib import Path
 
@@ -131,14 +130,6 @@ def _fake_campaign(root: Path) -> Path:
         _write_json(
             run / "server-ready.json",
             {
-                "placement_id": placement,
-                "server_ready_ms": ready_ms,
-            },
-        )
-        _write_json(run / "health.json", {"status": "ok"})
-        _write_json(
-            run / "server-ready.json",
-            {
                 "schema": "tesy.stock_server_ready.v1",
                 "placement_id": placement,
                 "server_ready_ms": 1000.0 + index,
@@ -153,7 +144,6 @@ def _fake_campaign(root: Path) -> Path:
         )
         (run / "token-sha256.txt").write_text(token_hash + "\n", encoding="utf-8")
         (run / "resources.jsonl").write_text('{"raw":true}\n', encoding="utf-8")
-        (run / "server.stdout.txt").write_text("", encoding="utf-8")
         (run / "server.stderr.txt").write_text("raw log\n", encoding="utf-8")
 
         observations.append(
