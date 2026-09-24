@@ -260,10 +260,18 @@ The six warmup rounds use all six permutations once:
 Measured:
 
 - 81 triplet rounds;
-- deterministic cycling through the same six permutations.
+- 13 complete cycles through all six permutations = 78 triplets;
+- final three permutation indices `[0, 3, 4]`.
 
-Thus each mode has exactly 81 measured samples and rotates across ordinal
-positions.
+The chosen tail is not arbitrary. Across all 81 measured triplets it makes
+each mode appear exactly:
+
+- 27 times in ordinal position 1;
+- 27 times in ordinal position 2;
+- 27 times in ordinal position 3.
+
+Thus stock/serial/async are exactly position-balanced despite 81 not being
+divisible by six.
 
 No random ordering is used.
 
