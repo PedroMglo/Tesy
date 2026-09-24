@@ -137,6 +137,7 @@ struct k_result {
     size_t activation_output_bytes = 0;
     std::string cpu_weight_buffer_type;
     size_t cpu_weight_buffer_bytes = 0;
+    size_t cpu_bias_buffer_bytes = 0;
     stats cpu_compute;
     stats gpu_compute;
     stats activation_d2h;
@@ -783,8 +784,10 @@ void print_result(FILE * out, const k_result & row) {
     std::fprintf(
         out,
         ",\"cpu_weight_buffer_bytes\":%zu,"
+        "\"cpu_bias_buffer_bytes\":%zu,"
         "\"cpu_compute\":",
-        row.cpu_weight_buffer_bytes);
+        row.cpu_weight_buffer_bytes,
+        row.cpu_bias_buffer_bytes);
     print_stats(out, row.cpu_compute);
     std::fputs(",\"gpu_compute\":", out);
     print_stats(out, row.gpu_compute);
@@ -949,6 +952,7 @@ k_result run_k(
         static_cast<size_t>(k_embd) * sizeof(float),
         cpu_set->weight_buffer_type,
         cpu_set->weight_buffer_bytes,
+        cpu_set->bias_buffer_bytes,
         cpu_compute,
         gpu_compute,
         activation_d2h,
