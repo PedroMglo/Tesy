@@ -28,10 +28,10 @@ reference-host/model validation. No source-only row is a performance claim.
 | capacity-gated stock placement frontier | SOURCE_BACKED_CAPACITY_GATE_PASS_REFERENCE_HOST | published campaign `n-cpu-moe-capacity-20260923T233416Z`: N=12/16/20/24 admitted, N=0/4/8 rejected by projected GPU headroom; estimator-derived, not measured runtime memory |
 | pinned llama-fit-params utility | PASS_REFERENCE_HOST | built from pinned llama.cpp on reference host; binary/toolchain identity retained in published capacity provenance |
 | llama.cpp build provenance lock | PASS_REFERENCE_HOST | capacity campaign verified frozen CMake/GCC/CUDA/server/libggml-cuda identity with zero mismatches |
-| live backend mapping provenance | IMPLEMENTED_MODEL_FREE | timed runs verify process executable and mapped pre-hashed libggml-cuda; timing campaign remains NOT_RUN |
-| realized stock placement telemetry | IMPLEMENTED_MODEL_FREE_HOST_NOT_RUN | pilot compares server-reported aggregate CUDA0/Host model buffers against same-placement fit-print projection with 2 MiB tolerance; not per-tensor or physical traffic |
+| live backend mapping provenance | IMPLEMENTED_MODEL_FREE_HOST_RETRY_REQUIRED | revised pilot binds frozen argv to `/proc/<pid>/cmdline`, executable and mapped pre-hashed libggml-cuda; two physical attempts stopped before this check, so revised live provenance remains NOT_RUN |
+| realized stock placement telemetry | CUDA0_PARITY_OBSERVED_REVISED_GATE_RETRY_REQUIRED | Attempt 2 physically observed CUDA0 6095.35 MiB versus 6095 MiB projected; the Host equality gate was invalidated because `CPU_Mapped` is an mmap span, not fit-print logical Host bytes. Telemetry v2 requires positive Host mmap buffer presence and classifies its span `NOT_COMPARABLE_MMAP_SPAN`; revised live gate remains NOT_RUN |
 | capacity result publication | PASS_DERIVED_PUBLICATION | capacity result published at commit `5a8bbf08eb95069b1847f724e5d1be98c6392678`; raw fitter evidence retained byte-identical and hash-manifested |
-| stock placement timing pilot | IMPLEMENTED_MODEL_FREE_HOST_NOT_RUN | prospective 3-point pilot: frozen stock auto-fit, N=12, N=24; live capacity recheck, quantitative CUDA0/Host model-buffer materialization gate (2 MiB tolerance), exact 64-token equality, runtime backend provenance and resource gates |
+| stock placement timing pilot | TWO_PRE_REQUEST_FAILS_PROTOCOL_REVISED_RETRY_REQUIRED | two physical campaigns failed before any request and remain preserved; prospective three-point retry uses frozen auto-fit, N=12, N=24, exact live argv, CUDA0 parity within 2 MiB, Host mmap presence without byte equality, 64-token greedy trajectory equality and separate resource gates. Revised pilot timings remain NOT_RUN |
 | stock B2 gpt-oss lazy-expert baseline | STATIC_NO_GO | pinned gpt-oss expert tensors are not marked `TENSOR_READ_LAZY`; no model-bearing B2 run is justified for this purpose |
 | KTransformers baseline | PINNED_NOT_REPRODUCED | reproduce only if compatible with selected model/host |
 | vLLM baseline | PINNED_NOT_REPRODUCED | B4 only if 8 GiB/32 GiB envelope admits it |
@@ -49,7 +49,8 @@ A prior branch head `72c31eb26960a153520cbf10f4bc3e1bd4e2f621` passed
 Python 3.11/3.12/3.13 plus native tracer compilation.
 
 Later feature commits intentionally re-entered CI and exposed lint regressions;
-those failures are retained in GitHub Actions rather than relabelled. The PR
-checks are the authority for the current head.
+those failures are retained in GitHub Actions rather than relabelled. The
+current draft development head is validated locally; no full CI was triggered
+for this protocol revision.
 
 No row above implies REAL_MODEL_VALIDATED unless it explicitly says so.
