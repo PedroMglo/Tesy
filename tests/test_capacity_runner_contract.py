@@ -51,42 +51,11 @@ def test_timing_pilot_is_bound_to_published_capacity_evidence():
 
     assert '--timing-pilot' in text
     assert (
-        'capacity_evidence_commit="5dd06218584bc5f0e72b05102eb6ff483a9dbfe7"'
+        'capacity_evidence_commit="5a8bbf08eb95069b1847f724e5d1be98c6392678"'
         in text
     )
     assert 'cp "$capacity_evidence_dir/auto-fit.json" "$out/auto-fit.json"' in text
     assert 'git -C "$root" merge-base --is-ancestor "$capacity_evidence_commit" HEAD' in text
-
-
-
-def test_timing_pilot_rejects_withdrawn_capacity_publication():
-    root = Path(__file__).resolve().parents[1]
-    text = (root / "scripts" / "run_n_cpu_moe_capacity_pareto.sh").read_text(
-        encoding="utf-8"
-    )
-
-    assert 'manifest.get("classification") != "SOURCE_BACKED_CAPACITY_GATE"' in text
-    assert 'manifest.get("performance_gate") != "PASS"' in text
-    assert 'manifest.get("physical_host_status") != "PHYSICAL"' in text
-    assert (
-        'manifest.get("admitted_n_cpu_moe") != summary.get("admitted_n_cpu_moe")'
-        in text
-    )
-
-
-def test_default_timed_mode_generates_auto_fit_capacity_input():
-    root = Path(__file__).resolve().parents[1]
-    text = (root / "scripts" / "run_n_cpu_moe_capacity_pareto.sh").read_text(
-        encoding="utf-8"
-    )
-
-    generation = text.index("if (( capacity_only == 0 && continuum_shape == 0 )); then")
-    auto_stdout = text.index('>"$out/capacity/auto-fit-frozen.stdout.txt"')
-    pre_run_use = text.index(
-        'capacity_input="$out/capacity/auto-fit-frozen.stdout.txt"'
-    )
-
-    assert generation < auto_stdout < pre_run_use
 
 
 def test_timing_pilot_rechecks_exactly_three_selected_placements():

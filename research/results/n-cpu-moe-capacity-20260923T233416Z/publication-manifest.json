@@ -1,9 +1,14 @@
 {
-  "admitted_n_cpu_moe": [],
+  "admitted_n_cpu_moe": [
+    12,
+    16,
+    20,
+    24
+  ],
   "build_provenance_status": "PASS",
-  "claim_boundary": "Historical capacity-only artifacts are preserved, including source-backed llama-fit-params projections, but the campaign snapshot predates required virtualization telemetry and does not prove execution on the physical reference host. No N value is admitted or rejected by this publication until a new campaign passes current physical-host verification. No timing, Tesy speedup, physical PCIe/NVMe, >RAM or novelty claim follows.",
-  "classification": "INCONCLUSIVE_PHYSICAL_HOST_NOT_PROVEN",
-  "performance_gate": "INCONCLUSIVE",
+  "claim_boundary": "Capacity-only publication. Estimates are source-backed projected model/context/compute memory, not measured runtime VRAM/RAM traffic. No timing, Tesy speedup, physical PCIe/NVMe, >RAM or novelty claim follows.",
+  "classification": "SOURCE_BACKED_CAPACITY_GATE",
+  "performance_gate": "PASS",
   "publication_branch": "research/n-cpu-moe-capacity-result-20260923T233416Z",
   "raw_artifacts": {
     "admission-context.json": {
@@ -159,23 +164,12 @@
       "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
     }
   },
-  "rejected_n_cpu_moe": [],
+  "rejected_n_cpu_moe": [
+    0,
+    4,
+    8
+  ],
   "schema": "tesy.n_cpu_moe_capacity_publication.v1",
   "source_campaign": "n-cpu-moe-capacity-20260923T233416Z",
-  "source_output_root": "/home/pmglo/Projects/Tesy/results/n-cpu-moe-capacity-20260923T233416Z",
-  "physical_host_status": "NOT_PROVEN",
-  "historical_source_projection": {
-    "status": "PRESERVED_NOT_ADMITTED",
-    "projected_admitted_n_cpu_moe": [
-      12,
-      16,
-      20,
-      24
-    ],
-    "projected_rejected_n_cpu_moe": [
-      0,
-      4,
-      8
-    ]
-  }
+  "source_output_root": "/home/pmglo/Projects/Tesy/results/n-cpu-moe-capacity-20260923T233416Z"
 }

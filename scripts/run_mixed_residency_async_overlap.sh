@@ -16,6 +16,20 @@ build_dir="${TESY_MIXED_BUILD_DIR:-$root/build/tesy-mixed-residency}"
 tool="$build_dir/tesy-mixed-residency"
 lock_file="${XDG_RUNTIME_DIR:-/tmp}/tesy-mixed-residency.lock"
 expected_histogram_sha="ba9e989d9713f8fd5d51ebd5112c8f0e6f12e4af821e2e7eceb408ed5ba423ab"
+samples="${TESY_ASYNC_SAMPLES:-21}"
+tail_order="${TESY_ASYNC_TAIL_ORDER:-0}"
+[[ "$samples" =~ ^[1-9][0-9]*$ ]] || {
+  echo "TESY_ASYNC_SAMPLES must be a positive integer" >&2
+  exit 2
+}
+[[ "$tail_order" == "0" || "$tail_order" == "1" ]] || {
+  echo "TESY_ASYNC_TAIL_ORDER must be 0 or 1" >&2
+  exit 2
+}
+if [[ "$tail_order" == "1" && "$samples" != "81" ]]; then
+  echo "tail-order diagnostic requires TESY_ASYNC_SAMPLES=81" >&2
+  exit 2
+fi
 stage="initialization"
 tool_pid=""
 monitor_pid=""
@@ -409,7 +423,7 @@ cmd=(
   --output "$out/raw.json"
   --layer 0
   --threads 12
-  --samples 21
+  --samples "$samples"
   --warmup 3
   --inner 5
   --async-overlap
@@ -560,14 +574,28 @@ if summary["min_mem_available_bytes"] < 2 * 1024 * 1024 * 1024:
     raise SystemExit("mixed-residency run violated 2048 MiB host headroom")
 PY
 
+stage="tail_order_analysis"
+if [[ "$tail_order" == "1" ]]; then
+  "$python_bin" -m tesy.mixed_residency_async_tail_order \
+    --input "$out/raw.json" \
+    --output "$out/tail-order.json"
+fi
+
 stage="result"
-"$python_bin" - "$out/summary.json" "$out/async-weighted.json" <<'PY'
+"$python_bin" - "$out/summary.json" "$out/async-weighted.json" "$tail_order" "$out/tail-order.json" <<'PY'
 import json
 import sys
 from pathlib import Path
 
 summary = json.loads(Path(sys.argv[1]).read_text(encoding="utf-8"))
 weighted = json.loads(Path(sys.argv[2]).read_text(encoding="utf-8"))
+tail_order_enabled = sys.argv[3] == "1"
+tail_path = Path(sys.argv[4])
+tail = (
+    json.loads(tail_path.read_text(encoding="utf-8"))
+    if tail_order_enabled
+    else None
+)
 
 if summary.get("status") != "PASS" or weighted.get("status") != "PASS":
     raise SystemExit("mixed-residency async-overlap result did not PASS")
@@ -607,6 +635,11 @@ print(
 )
 print("decision:", weighted["decision"])
 print("claim_boundary:", weighted["claim_boundary"])
+if tail is not None:
+    if tail.get("status") != "PASS":
+        raise SystemExit("async tail-order analysis did not PASS")
+    print("tail_order_decision:", tail["decision"])
+    print("tail_order_claim_boundary:", tail["claim_boundary"])
 PY
 
 echo "outputs: $out"

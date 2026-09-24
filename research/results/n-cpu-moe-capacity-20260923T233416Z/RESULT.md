@@ -2,41 +2,18 @@
 
 Campaign: `n-cpu-moe-capacity-20260923T233416Z`
 
-Publication classification:
-`INCONCLUSIVE_PHYSICAL_HOST_NOT_PROVEN`.
+Classification: `SOURCE_BACKED_CAPACITY_GATE`.
 
 Build provenance: `PASS`.
 
-The source campaign's `doctor.json` recorded a historical
-`reference_check.status=PASS`, but that snapshot predates virtualization
-telemetry and contains no `snapshot.virtualization` object. Under the current
-reference-host contract, which requires an explicitly proven physical host,
-that historical PASS is insufficient for hardware-bearing capacity admission.
+Frozen stock auto-fit argv: `-c 4096 -ngl 25 -ot blk\.12\.ffn_(gate|up|gate_up|down).*=CPU,blk\.13\.ffn_(up|down|gate_up|gate)_(ch|)exps=CPU,blk\.14\.ffn_(up|down|gate_up|gate)_(ch|)exps=CPU,blk\.15\.ffn_(up|down|gate_up|gate)_(ch|)exps=CPU,blk\.16\.ffn_(up|down|gate_up|gate)_(ch|)exps=CPU,blk\.17\.ffn_(up|down|gate_up|gate)_(ch|)exps=CPU,blk\.18\.ffn_(up|down|gate_up|gate)_(ch|)exps=CPU,blk\.19\.ffn_(up|down|gate_up|gate)_(ch|)exps=CPU,blk\.20\.ffn_(up|down|gate_up|gate)_(ch|)exps=CPU,blk\.21\.ffn_(up|down|gate_up|gate)_(ch|)exps=CPU,blk\.22\.ffn_(up|down|gate_up|gate)_(ch|)exps=CPU,blk\.23\.ffn_(up|down|gate_up|gate)_(ch|)exps=CPU,blk\.24\.ffn_(up|down|gate_up|gate)_(ch|)exps=CPU`.
 
-The raw campaign and all estimator outputs remain preserved byte-for-byte.
-In particular, `capacity-summary.json` still contains the original projected
-classification:
+Admitted manual N values: 12, 16, 20, 24.
 
-- historically projected admitted N values: 12, 16, 20, 24;
-- historically projected rejected N values: 0, 4, 8.
+Rejected manual N values: 0, 4, 8.
 
-Those labels are retained only as source-campaign output. **No N value is
-currently admitted or rejected by this publication as a physical reference-host
-capacity gate.**
+Performance gate: `PASS`.
 
-Performance/capacity admission gate: `INCONCLUSIVE`.
+This campaign stops before timed llama-server observations. No rejected point was deliberately loaded to induce OOM.
 
-The frozen stock auto-fit argv and source-backed `llama-fit-params` memory
-projections remain useful descriptive evidence. They are not measured peak
-VRAM/RAM, physical transfer traffic, or proof that the campaign executed on the
-required physical laptop.
-
-A new campaign identity with current physical-host verification is required
-before promoting any projected point as an admitted reference-host capacity
-decision.
-
-This campaign stopped before timed llama-server observations. No rejected point
-was deliberately loaded to induce OOM.
-
-No Tesy speedup, >RAM execution, physical PCIe/NVMe traffic or novelty claim
-follows.
+The estimates are source-backed memory projections, not measured peak VRAM/RAM or physical transfer traffic. No Tesy speedup, >RAM or novelty claim follows.

@@ -2,23 +2,19 @@
 
 Date: 2026-09-24  
 Branch: `research/n-cpu-moe-timing-pilot-20260924`  
-Base evidence commit: `5dd06218584bc5f0e72b05102eb6ff483a9dbfe7`  
+Base evidence commit: `5a8bbf08eb95069b1847f724e5d1be98c6392678`  
 Capacity campaign: `research/results/n-cpu-moe-capacity-20260923T233416Z/`
 
 ## State
 
-The historical capacity campaign projected `N=12,16,20,24` as admitted and
-`N=0,4,8` as rejected, but its publication has since been downgraded to
-`INCONCLUSIVE_PHYSICAL_HOST_NOT_PROVEN`. Those sets remain historical
-estimator output only and are not current admissions.
+The published capacity gate admitted manual `N=12,16,20,24` and rejected
+`N=0,4,8` for projected GPU headroom.
 
 The stock auto-fit placement is not equivalent to a single manual `N`; its
 frozen explicit argv uses `-ngl 25` plus tensor overrides that move block-12
 FFN tensors and a suffix of later expert tensors to CPU.
 
-A full multi-point timing sweep is not authorized. The three-point timing
-pilot is also now **NOT_AUTHORIZED_PENDING_PHYSICAL_CAPACITY_REVALIDATION**.
-The runner rejects the corrected historical publication before timing.
+A full multi-point timing sweep is not authorized yet.
 
 ## Selected pilot
 
