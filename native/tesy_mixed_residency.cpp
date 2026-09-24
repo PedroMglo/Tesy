@@ -3083,6 +3083,56 @@ void print_case(FILE * out, const case_result & row) {
         row.output_parity.pass ? "PASS" : "FAIL");
 }
 
+void print_live_timing_samples(
+        FILE * out,
+        const live_timing_samples & samples) {
+    std::fputs("{\"activation_ready_ms\":[", out);
+    for (size_t i = 0; i < samples.activation_ms.size(); ++i) {
+        if (i != 0) {
+            std::fputc(',', out);
+        }
+        std::fprintf(out, "%.9f", samples.activation_ms[i]);
+    }
+    std::fputs("],\"route_ready_ms\":[", out);
+    for (size_t i = 0; i < samples.route_ms.size(); ++i) {
+        if (i != 0) {
+            std::fputc(',', out);
+        }
+        std::fprintf(out, "%.9f", samples.route_ms[i]);
+    }
+    std::fputs("]}", out);
+}
+
+void print_live_timing_exactness(
+        FILE * out,
+        const live_timing_exactness_snapshot & value) {
+    std::fprintf(
+        out,
+        "{\"stock_decode_return_code\":%d,"
+        "\"handoff_decode_return_code\":%d,"
+        "\"stock_rollback\":%s,"
+        "\"handoff_rollback\":%s,"
+        "\"activation_bitwise_equal\":%s,"
+        "\"activation_parity\":",
+        value.stock_decode_return_code,
+        value.handoff_decode_return_code,
+        value.stock_rollback ? "true" : "false",
+        value.handoff_rollback ? "true" : "false",
+        value.activation_bitwise_equal ? "true" : "false");
+    print_parity(out, value.activation_parity);
+    std::fputs(",\"activation_vs_reference\":", out);
+    print_parity(out, value.activation_vs_reference);
+    std::fputs(",\"stock_output_vs_reference\":", out);
+    print_parity(out, value.stock_output_vs_reference);
+    std::fputs(",\"serial_vs_stock\":", out);
+    print_parity(out, value.serial_vs_stock);
+    std::fputs(",\"async_vs_stock\":", out);
+    print_parity(out, value.async_vs_stock);
+    std::fputs(",\"async_vs_serial\":", out);
+    print_parity(out, value.async_vs_serial);
+    std::fputc('}', out);
+}
+
 }  // namespace
 
 int main(int argc, char ** argv) {
@@ -3110,7 +3160,10 @@ int main(int argc, char ** argv) {
     ggml_backend_dev_props gpu_props = {};
     ggml_backend_dev_get_props(cpu_dev, &cpu_props);
     ggml_backend_dev_get_props(gpu_dev, &gpu_props);
-    if (opt.async_overlap && !gpu_props.caps.async) {
+    if (
+        (opt.async_overlap || opt.live_handoff_timing)
+        && !gpu_props.caps.async
+    ) {
         fail("GPU backend does not advertise async capability");
     }
 
@@ -3128,6 +3181,126 @@ int main(int argc, char ** argv) {
         ggml_backend_buft_name(cpu_weight_buft);
     const std::string cpu_bias_buft_name =
         ggml_backend_buft_name(cpu_bias_buft);
+
+    if (opt.live_handoff_timing) {
+        const live_handoff_timing_result result =
+            run_live_handoff_timing(
+                opt,
+                cpu.backend,
+                gpu.backend,
+                cpu_weight_buft,
+                cpu_bias_buft,
+                gpu_buft);
+
+        FILE * out = std::fopen(opt.output.c_str(), "wx");
+        if (!out) {
+            fail(
+                "refusing or unable to create output: " +
+                opt.output);
+        }
+
+        std::fprintf(
+            out,
+            "{\"schema\":\"tesy.live_moe_handoff_timing_raw.v1\","
+            "\"classification\":"
+            "\"MEASURED_LIVE_MOE_HANDOFF_TIMING_RAW\","
+            "\"layer\":0,\"ngl\":0,"
+            "\"gpu_hits\":%d,\"cpu_misses\":%d,"
+            "\"threads\":%d,"
+            "\"warmup_triplets\":%d,"
+            "\"sample_triplets\":%d,"
+            "\"inner\":%d,"
+            "\"resident_experts\":true,"
+            "\"input_semantics\":"
+            "\"HOST_CAPTURE_TO_CPU_AND_GPU_COMPACT_INPUTS\","
+            "\"decode_input_token\":%" PRId32 ","
+            "\"activation_tensor\":\"attn_post_norm-0\","
+            "\"topk_tensor\":\"ffn_moe_topk-0\","
+            "\"routing_weight_tensor\":"
+            "\"ffn_moe_weights_softmax-0\","
+            "\"stock_output_tensor\":\"ffn_moe_out-0\","
+            "\"selected_experts\":[",
+            result.gpu_hits,
+            result.cpu_misses,
+            opt.threads,
+            opt.warmup,
+            opt.samples,
+            opt.inner,
+            result.decode_input_token);
+
+        for (size_t i = 0; i < result.selected_experts.size(); ++i) {
+            if (i != 0) {
+                std::fputc(',', out);
+            }
+            std::fprintf(out, "%d", result.selected_experts[i]);
+        }
+
+        std::fputs("],\"routing_weights\":[", out);
+        for (size_t i = 0; i < result.routing_weights.size(); ++i) {
+            if (i != 0) {
+                std::fputc(',', out);
+            }
+            std::fprintf(out, "%.9g", result.routing_weights[i]);
+        }
+
+        std::fprintf(
+            out,
+            "],\"completed_trials\":{"
+            "\"stock\":%d,\"serial\":%d,\"async\":%d},"
+            "\"successful_rollbacks\":%d,"
+            "\"triplet_order_cycle\":["
+            "[\"stock\",\"serial\",\"async\"],"
+            "[\"stock\",\"async\",\"serial\"],"
+            "[\"serial\",\"stock\",\"async\"],"
+            "[\"serial\",\"async\",\"stock\"],"
+            "[\"async\",\"stock\",\"serial\"],"
+            "[\"async\",\"serial\",\"stock\"]],"
+            "\"pre_exactness\":",
+            result.completed_stock_trials,
+            result.completed_serial_trials,
+            result.completed_async_trials,
+            result.successful_rollbacks);
+
+        print_live_timing_exactness(
+            out,
+            result.pre_exactness);
+        std::fputs(",\"post_exactness\":", out);
+        print_live_timing_exactness(
+            out,
+            result.post_exactness);
+
+        std::fputs(",\"modes\":{\"stock\":", out);
+        print_live_timing_samples(out, result.stock);
+        std::fputs(",\"serial\":", out);
+        print_live_timing_samples(out, result.serial);
+        std::fputs(",\"async\":", out);
+        print_live_timing_samples(out, result.async);
+
+        std::fputs(
+            "},\"parity_thresholds\":{"
+            "\"relative_max_max\":0.005,"
+            "\"cosine_min\":0.9999},"
+            "\"claim_boundary\":"
+            "\"Resident-expert steady-state timing for one repeated live "
+            "stock layer-0 route. Stock ends at native ffn_moe_out. Serial "
+            "and async candidates include stock scheduler early-stop return, "
+            "host activation updates into resident CPU/GPU compact inputs, "
+            "Tesy expert execution, CPU-partial transfer and final GPU "
+            "aggregation. Expert loading, cache misses, weight transfer, "
+            "output reinjection, committed-token continuation, prefetch and "
+            "physical traffic are excluded. Raw samples are authoritative; "
+            "statistics and decision are recomputed independently.\"}\n",
+            out);
+
+        if (std::fclose(out) != 0) {
+            fail("failed closing live handoff timing output");
+        }
+
+        std::printf("PASS_LIVE_MOE_HANDOFF_TIMING_RAW\n");
+        std::printf("gpu_hits: %d\n", result.gpu_hits);
+        std::printf("output: %s\n", opt.output.c_str());
+        return 0;
+    }
 
     if (opt.live_handoff_exactness) {
         const live_handoff_result result =
