@@ -27,12 +27,39 @@ fi
 mkdir -p "$out"
 
 cleanup() {
+  local rc=$?
   if [[ -n "$tool_pid" ]] && kill -0 "$tool_pid" 2>/dev/null; then
     kill "$tool_pid" 2>/dev/null || true
     wait "$tool_pid" 2>/dev/null || true
   fi
   if [[ -n "$monitor_pid" ]] && kill -0 "$monitor_pid" 2>/dev/null; then
     wait "$monitor_pid" 2>/dev/null || true
+  fi
+  if [[ "$rc" -ne 0 && ! -e "$out/failure.json" ]]; then
+    python3 - "$out/failure.json" "$stage" "$rc" <<'PY' || true
+import json
+import sys
+from pathlib import Path
+
+path = Path(sys.argv[1])
+payload = {
+    "schema": "tesy.mixed_residency_async_overlap_failure.v1",
+    "classification": "FAIL_CAMPAIGN_STAGE",
+    "stage": sys.argv[2],
+    "exit_code": int(sys.argv[3]),
+    "failed_command": "explicit_exit_or_untrapped_failure",
+    "claim_boundary": (
+        "Execution failure provenance only. No mixed-residency performance "
+        "conclusion follows beyond the failed gate."
+    ),
+}
+try:
+    with path.open("x", encoding="utf-8") as handle:
+        json.dump(payload, handle, indent=2, sort_keys=True)
+        handle.write("\n")
+except FileExistsError:
+    pass
+PY
   fi
 }
 trap cleanup EXIT
