@@ -41,6 +41,20 @@ def validate_async_raw(payload: dict[str, Any]) -> dict[str, Any]:
         raise MixedResidencyOverlapBoundError(
             "unexpected async overlap classification"
         )
+    if (
+        payload.get("async_schedule")
+        != "post_d2h_gpu_enqueue_cpu_sync_gpu_wait"
+    ):
+        raise MixedResidencyOverlapBoundError(
+            "unexpected async scheduling identity"
+        )
+    if (
+        payload.get("paired_sample_order")
+        != "even_serial_async_odd_async_serial"
+    ):
+        raise MixedResidencyOverlapBoundError(
+            "unexpected paired sample order"
+        )
     if payload.get("gpu_async_capable") is not True:
         raise MixedResidencyOverlapBoundError(
             "GPU backend must advertise async capability"
