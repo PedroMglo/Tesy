@@ -28,3 +28,14 @@ target_include_directories(
     "${LLAMA_CPP_SOURCE_DIR}/ggml/include"
 )
 target_link_libraries(tesy-moe-trace PRIVATE llama ggml)
+
+
+add_executable(tesy-gguf-inventory tesy_gguf_inventory.cpp)
+target_compile_features(tesy-gguf-inventory PRIVATE cxx_std_17)
+target_compile_options(tesy-gguf-inventory PRIVATE -Wall -Wextra -Wpedantic -Werror)
+target_include_directories(
+  tesy-gguf-inventory
+  PRIVATE
+    "${LLAMA_CPP_SOURCE_DIR}/ggml/include"
+)
+target_link_libraries(tesy-gguf-inventory PRIVATE ggml)
