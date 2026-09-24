@@ -4,6 +4,7 @@ import pytest
 
 from tesy.live_moe_handoff_timing import (
     LiveMoeHandoffTimingError,
+    _load_json,
     validate_live_moe_handoff_timing,
 )
 
@@ -261,3 +262,14 @@ def test_live_timing_rejects_extra_top_level_field():
         match="keys mismatch",
     ):
         validate_live_moe_handoff_timing(h2, _raw(3))
+
+
+def test_live_timing_rejects_duplicate_json_keys(tmp_path):
+    path = tmp_path / "duplicate.json"
+    path.write_text('{"schema":"a","schema":"b"}', encoding="utf-8")
+
+    with pytest.raises(
+        LiveMoeHandoffTimingError,
+        match="duplicate JSON key: schema",
+    ):
+        _load_json(path)
