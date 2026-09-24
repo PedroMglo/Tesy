@@ -46,7 +46,8 @@ echo "Override TESY_CUDA_ARCH only after verifying the physical GPU."
 
 cmake -S "$repo" -B "$repo/build"   -DCMAKE_BUILD_TYPE=Release   -DGGML_CUDA=ON   -DCMAKE_CUDA_ARCHITECTURES="$cuda_arch"
 
-cmake --build "$repo/build" --parallel "$build_jobs"   --target llama-cli llama-server llama-bench
+cmake --build "$repo/build" --parallel "$build_jobs" \\
+  --target llama-cli llama-server llama-bench llama-fit-params
 
 git -C "$repo" status --short
 "$repo/build/bin/llama-cli" --version

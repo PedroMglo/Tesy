@@ -6,44 +6,48 @@ Classification: `SUPERSEDED_INCONCLUSIVE_INTERPRETATION`
 
 ## Admission correction
 
-The retained source campaign is `INCONCLUSIVE_RERUN_REQUIRED` for a
-same-work placement comparison.
+The source campaign's retained `RESULT.md` classifies the B0/B1 comparison as
+`INCONCLUSIVE_STOCK_B0_B1_DIAGNOSTIC` and requires a rerun.
 
-Review established three independent admission failures:
+Three independent admission failures were established in review:
 
-1. the required placement artifacts were empty, so realized B0/B1 placement
-   was not demonstrated;
-2. the campaign did not retain the full frozen backend/toolchain provenance
-   required for a hardware-bearing comparison;
-3. generated token IDs were not retained, so equal trajectories across arms
+1. all four required `placement.txt` artifacts are empty, so realized
+   placement was not verified;
+2. the campaign did not retain the full backend/toolchain identity required by
+   the prospective protocol;
+3. generated token IDs were not retained, so equal trajectories across B0/B1
    were not established.
 
-Therefore the measurements below remain descriptive observations of the
-executed runs only. They must not be promoted to a placement winner, speedup,
-or admitted B0-vs-B1 trade-off.
+Therefore the earlier interpretation below must not be used to establish a
+performance winner or to authorize a mechanism based on a same-work comparison.
 
 ## Retained descriptive observations
 
-The invalidated campaign recorded these descriptive means:
+The invalidated campaign recorded the following descriptive means:
 
 - B0 automatic placement: TTFT 539.82 ms, prompt 286.66 tok/s, decode
   51.11 tok/s, observed peak GPU memory 6.70 GiB, process swap 0;
 - B1 `--cpu-moe`: TTFT 884.48 ms, prompt 174.69 tok/s, decode
   34.74 tok/s, observed peak GPU memory 1.68 GiB, process swap 0.
 
-Those numbers are measurements of the processes that ran. Because placement,
-toolchain provenance and token-trajectory comparability were not admitted,
-statements such as "B0 is materially faster than B1" are not admitted
-conclusions from this campaign.
+Those numbers remain measurements of the executed runs, but they are not an
+admitted identical-trajectory placement comparison.
 
-## Historical next-step boundary
+In particular, statements such as "B0 is materially faster than B1" are not
+admitted conclusions from this campaign.
 
-These descriptive endpoints motivated a prospective `--n-cpu-moe N`
-continuum protocol. That protocol is a new experiment with its own admission
-gates; it does not repair or retroactively validate the B0/B1 source campaign.
+## Replacement decision
 
-Later stacked work may supersede or retire the direct sweep if source/static
-feasibility invalidates its composition.
+The next experiment is not the retired direct
+`--fit on --n-cpu-moe N` sweep.
 
-No Tesy-native cache, prefetcher or custom expert kernel is authorized by this
-inconclusive B0/B1 result.
+Use the prospective capacity-gated stock placement frontier in
+`research/N-CPU-MOE-CAPACITY-PARETO-PROTOCOL-20260923.md`.
+
+That campaign re-establishes a frozen stock auto-fit baseline with explicit
+placement arguments, enforces exact 64-token trajectory equality, and admits
+manual `--n-cpu-moe N` points through the pinned source estimator before
+timing.
+
+No Tesy-native cache, prefetcher or custom expert kernel is authorized by the
+invalidated B0/B1 result.
