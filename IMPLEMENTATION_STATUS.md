@@ -37,7 +37,7 @@ reference-host/model validation. No source-only row is a performance claim.
 | KTransformers baseline | PINNED_NOT_REPRODUCED | reproduce only if compatible with selected model/host |
 | vLLM baseline | PINNED_NOT_REPRODUCED | B4 only if 8 GiB/32 GiB envelope admits it |
 | native Tesy expert residency/cache | NOT_IMPLEMENTED | forbidden until baseline + trace/headroom establish a concrete gap |
-| CPU-vs-transfer-vs-GPU expert crossover | NOT_RUN_HOST_REQUIRED | requires physical host and real expert shapes |
+| CPU-vs-transfer-vs-GPU expert crossover | NEXT_GATE_INVENTORY_RELOCK_REQUIRED | continuum shape is measured; next gate must first re-establish prospectively locked real expert shapes/types, then separate CPU compute, requested Host->GPU transfer, and resident-GPU compute without relabelling requested bytes as physical PCIe traffic |
 | causal prefetch | NOT_IMPLEMENTED | only after locality/headroom and wasted-prefetch analysis |
 | speculative K=2 | NOT_IMPLEMENTED | only after K=1 target/runtime correctness |
 | joint K/residency scheduler | OPEN_RESEARCH_QUESTION | broad novelty overlap exists; benefit and narrower novelty unknown |
