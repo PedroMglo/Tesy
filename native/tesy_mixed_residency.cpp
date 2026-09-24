@@ -1,6 +1,7 @@
 #include "ggml-backend.h"
 #include "ggml-cpu.h"
 #include "ggml.h"
+#include "ggml-impl.h"
 #include "gguf.h"
 #include "llama.h"
 
@@ -21,8 +22,14 @@
 #include <numeric>
 #include <string>
 #include <thread>
+#include <unordered_set>
 #include <utility>
 #include <vector>
+
+extern "C" void llama_tesy_set_graph_compute_hook(
+    llama_context *, ggml_status (*)(ggml_cgraph *, ggml_backend_sched_t,
+                                     ggml_backend_t, void *), void *)
+    __attribute__((weak));
 
 namespace {
 
@@ -48,6 +55,8 @@ struct options {
     bool live_handoff_exactness = false;
     bool live_handoff_timing = false;
     bool live_reinjection_exactness = false;
+    bool split_graph_skip_exactness = false;
+    std::string split_arm;
     std::string prompt_file;
     std::string timing_start_gate;
     std::string routed_input_f32;
@@ -323,7 +332,8 @@ int parse_positive(const char * value, const char * flag, int minimum = 1) {
         "[--live-handoff-timing --prompt-file FILE --ctx N "
         "--routed-gpu-hits N --warmup 6 --samples 81 --inner 1 "
         "--timing-start-gate FILE] "
-        "[--live-reinjection-exactness --prompt-file FILE --ctx 4096]\n",
+        "[--live-reinjection-exactness --prompt-file FILE --ctx 4096] "
+        "[--split-graph-skip-exactness --split-arm ARM --prompt-file FILE --ctx 4096]\n",
         argv0);
     std::exit(code);
 }
@@ -362,6 +372,10 @@ options parse_options(int argc, char ** argv) {
             out.live_handoff_timing = true;
         } else if (arg == "--live-reinjection-exactness") {
             out.live_reinjection_exactness = true;
+        } else if (arg == "--split-graph-skip-exactness") {
+            out.split_graph_skip_exactness = true;
+        } else if (arg == "--split-arm") {
+            out.split_arm = value("--split-arm");
         } else if (arg == "--prompt-file") {
             out.prompt_file = value("--prompt-file");
         } else if (arg == "--timing-start-gate") {
@@ -395,7 +409,8 @@ options parse_options(int argc, char ** argv) {
         static_cast<int>(out.routed_exactness)
         + static_cast<int>(out.live_handoff_exactness)
         + static_cast<int>(out.live_handoff_timing)
-        + static_cast<int>(out.live_reinjection_exactness);
+        + static_cast<int>(out.live_reinjection_exactness)
+        + static_cast<int>(out.split_graph_skip_exactness);
     if (special_modes > 1) {
         fail("routed/live exactness/timing modes are mutually exclusive");
     }
@@ -458,6 +473,20 @@ options parse_options(int argc, char ** argv) {
         if (out.async_overlap || out.routed_gpu_hits != -1 || !out.timing_start_gate.empty()) {
             fail("live reinjection forbids async, routed GPU hits and timing gate");
         }
+    }
+    if (out.split_graph_skip_exactness) {
+        if (out.layer != 0 || out.live_ctx != 4096 || out.prompt_file.empty() ||
+            out.async_overlap || out.routed_gpu_hits != -1 ||
+            !out.timing_start_gate.empty()) {
+            fail("split graph skip requires layer 0, --ctx 4096, prompt and no async/timing");
+        }
+        if (out.split_arm != "stock" && out.split_arm != "null" &&
+            out.split_arm != "segmented" && out.split_arm != "skip-stock" &&
+            out.split_arm != "h2" && out.split_arm != "h3") {
+            fail("invalid --split-arm");
+        }
+    } else if (!out.split_arm.empty()) {
+        fail("--split-arm requires --split-graph-skip-exactness");
     }
     return out;
 }
@@ -2676,8 +2705,9 @@ reinjection_arm_result run_reinjection_arm(
         ggml_backend_buffer_type_t cpu_weight_buft,
         ggml_backend_buffer_type_t cpu_bias_buft,
         ggml_backend_buffer_type_t gpu_buft,
-        const reinjection_arm_result * stock_authority) {
-    const bool baseline = name == "stock";
+        const reinjection_arm_result * stock_authority,
+        bool require_patch_null = false) {
+    const bool baseline = name == "stock" || name == "null";
     reinjection_callback_state state;
     llama_context_params params = llama_context_default_params();
     params.n_ctx = opt.live_ctx;
@@ -2693,6 +2723,12 @@ reinjection_arm_result run_reinjection_arm(
     llama_context * ctx = llama_init_from_model(model, params);
     if (!ctx) {
         fail("reinjection failed to create fresh stock context");
+    }
+    if (require_patch_null) {
+        if (!llama_tesy_set_graph_compute_hook) {
+            fail("patched-null control lacks Tesy hook symbol");
+        }
+        llama_tesy_set_graph_compute_hook(ctx, nullptr, nullptr);
     }
     llama_sampler_chain_params sampler_params = llama_sampler_chain_default_params();
     sampler_params.no_perf = true;
@@ -2954,6 +2990,464 @@ void run_live_reinjection_exactness(
         fail("failed closing reinjection raw output");
     }
     std::printf("PASS_LIVE_MOE_REINJECTION_RAW\n");
+}
+
+struct split_graph_hook_state {
+    const live_handoff_capture * reference = nullptr;
+    const std::vector<float> * injection = nullptr;
+    std::string inventory_path;
+    bool skip_middle = false;
+    bool invoked = false;
+    int prefix_compute_count = 0;
+    int middle_compute_count = 0;
+    int suffix_compute_count = 0;
+    int injected_output_count = 0;
+    int total_nodes = 0;
+    int activation_idx = -1;
+    int topk_idx = -1;
+    int weights_idx = -1;
+    int moe_out_idx = -1;
+    int mul_mat_id_count = 0;
+    bool all_nodes_cpu = false;
+    bool middle_contiguous = false;
+    bool downstream_depends_on_moe_out = false;
+    parity stock_output_parity;
+    bool stock_output_bitwise = false;
+    bool injected_bytes_verified = false;
+    std::vector<float> observed_moe_output;
+};
+
+void collect_graph_ancestors(ggml_tensor * node,
+                             std::unordered_set<ggml_tensor *> & seen) {
+    if (!node || !seen.insert(node).second) return;
+    for (ggml_tensor * src : node->src) {
+        collect_graph_ancestors(src, seen);
+    }
+    collect_graph_ancestors(node->view_src, seen);
+}
+
+void write_split_graph_inventory(const split_graph_hook_state & state,
+                                 const ggml_cgraph * graph,
+                                 ggml_backend_sched_t sched) {
+    FILE * out = std::fopen(state.inventory_path.c_str(), "wx");
+    if (!out) fail("cannot create split graph inventory");
+    std::fprintf(out,
+        "{\"schema\":\"tesy.live_moe_split_graph_inventory.v1\","
+        "\"total_nodes\":%d,\"activation_idx\":%d,\"topk_idx\":%d,"
+        "\"weights_idx\":%d,\"moe_out_idx\":%d,"
+        "\"prefix\":[0,%d],\"middle\":[%d,%d],\"suffix\":[%d,%d],"
+        "\"all_nodes_cpu\":%s,\"middle_contiguous\":%s,"
+        "\"downstream_depends_on_moe_out\":%s,\"mul_mat_id_count\":%d,"
+        "\"prefix_compute_count\":%d,\"middle_compute_count\":%d,"
+        "\"suffix_compute_count\":%d,\"injected_output_count\":%d,"
+        "\"skipped_nodes\":[",
+        state.total_nodes, state.activation_idx, state.topk_idx,
+        state.weights_idx, state.moe_out_idx,
+        state.weights_idx + 1, state.weights_idx + 1, state.moe_out_idx + 1,
+        state.moe_out_idx + 1, state.total_nodes,
+        state.all_nodes_cpu ? "true" : "false",
+        state.middle_contiguous ? "true" : "false",
+        state.downstream_depends_on_moe_out ? "true" : "false",
+        state.mul_mat_id_count, state.prefix_compute_count,
+        state.middle_compute_count, state.suffix_compute_count,
+        state.injected_output_count);
+    for (int i = state.weights_idx + 1; i <= state.moe_out_idx; ++i) {
+        const auto * node = graph->nodes[i];
+        if (i > state.weights_idx + 1) std::fputc(',', out);
+        std::fprintf(out,
+            "{\"index\":%d,\"name\":\"%s\",\"op\":\"%s\"}",
+            i, node->name, ggml_op_name(node->op));
+    }
+    const auto * downstream = graph->nodes[state.moe_out_idx + 1];
+    std::fprintf(out,
+        "],\"downstream_first\":{\"name\":\"%s\",\"op\":\"%s\"},"
+        "\"node_backends\":[",
+        downstream->name, ggml_op_name(downstream->op));
+    for (int i = 0; i < graph->n_nodes; ++i) {
+        if (i) std::fputc(',', out);
+        ggml_backend_t assigned = ggml_backend_sched_get_tensor_backend(
+            sched, graph->nodes[i]);
+        if (!assigned) fail("inventory node backend missing");
+        std::fprintf(out, "\"%s\"", ggml_backend_name(assigned));
+    }
+    std::fputs("]}\n", out);
+    if (std::fclose(out) != 0) fail("cannot close split graph inventory");
+}
+
+ggml_status split_graph_compute_hook(ggml_cgraph * graph,
+                                     ggml_backend_sched_t sched,
+                                     ggml_backend_t backend_cpu,
+                                     void * user_data) {
+    auto * state = static_cast<split_graph_hook_state *>(user_data);
+    if (!state || state->invoked || !state->reference || !backend_cpu ||
+        !graph || graph->n_nodes <= 0) {
+        fail("invalid split graph hook invocation");
+    }
+    state->invoked = true;
+    state->total_nodes = graph->n_nodes;
+    auto find_anchor = [&](const char * name) {
+        int index = -1;
+        for (int i = 0; i < graph->n_nodes; ++i) {
+            if (std::strcmp(graph->nodes[i]->name, name) == 0) {
+                if (index != -1) fail(std::string("duplicate graph anchor: ") + name);
+                index = i;
+            }
+        }
+        if (index < 0) fail(std::string("missing graph anchor: ") + name);
+        return index;
+    };
+    state->activation_idx = find_anchor("attn_post_norm-0");
+    state->topk_idx = find_anchor("ffn_moe_topk-0");
+    state->weights_idx = find_anchor("ffn_moe_weights_softmax-0");
+    state->moe_out_idx = find_anchor("ffn_moe_out-0");
+    if (!(state->activation_idx < state->topk_idx &&
+          state->topk_idx < state->weights_idx &&
+          state->weights_idx < state->moe_out_idx &&
+          state->moe_out_idx + 1 < graph->n_nodes)) {
+        fail("split graph anchors not unique and ordered");
+    }
+    state->all_nodes_cpu = true;
+    for (int i = 0; i < graph->n_nodes; ++i) {
+        ggml_tensor * node = graph->nodes[i];
+        if (ggml_backend_sched_get_tensor_backend(sched, node) != backend_cpu ||
+            !node->buffer || !node->data) {
+            state->all_nodes_cpu = false;
+            fail("STATIC_NO_GO_DIRECT_CPU_GRAPH_VIEWS_NOT_SINGLE_BACKEND");
+        }
+    }
+    std::unordered_set<ggml_tensor *> middle_nodes;
+    std::unordered_set<ggml_tensor *> moe_ancestors;
+    collect_graph_ancestors(graph->nodes[state->moe_out_idx], moe_ancestors);
+    for (int i = state->weights_idx + 1; i <= state->moe_out_idx; ++i) {
+        ggml_tensor * node = graph->nodes[i];
+        middle_nodes.insert(node);
+        if (!moe_ancestors.count(node)) {
+            fail("STATIC_NO_GO_SPLIT_MIDDLE_NOT_ANCESTOR_OF_MOE_OUTPUT");
+        }
+        if (node->op == GGML_OP_MUL_MAT_ID) ++state->mul_mat_id_count;
+    }
+    if (state->mul_mat_id_count == 0) {
+        fail("STATIC_NO_GO_SPLIT_MIDDLE_HAS_NO_EXPERT_COMPUTE");
+    }
+    state->middle_contiguous = true;
+    ggml_tensor * moe_out = graph->nodes[state->moe_out_idx];
+    for (int i = state->moe_out_idx + 1; i < graph->n_nodes; ++i) {
+        for (ggml_tensor * src : graph->nodes[i]->src) {
+            if (src == moe_out) state->downstream_depends_on_moe_out = true;
+            if (src != moe_out && middle_nodes.count(src)) {
+                fail("STATIC_NO_GO_SUFFIX_HAS_SIDE_DEPENDENCY_ON_MIDDLE");
+            }
+        }
+    }
+    if (!state->downstream_depends_on_moe_out) {
+        fail("STATIC_NO_GO_SUFFIX_DOES_NOT_CONSUME_MOE_OUTPUT");
+    }
+
+    auto prefix = ggml_graph_view(graph, 0, state->weights_idx + 1);
+    auto middle = ggml_graph_view(graph, state->weights_idx + 1,
+                                  state->moe_out_idx + 1);
+    auto suffix = ggml_graph_view(graph, state->moe_out_idx + 1,
+                                  graph->n_nodes);
+    const auto compute = [&](ggml_cgraph * view, const char * label) {
+        if (ggml_backend_graph_compute(backend_cpu, view) != GGML_STATUS_SUCCESS) {
+            fail(std::string("direct CPU graph view failed: ") + label);
+        }
+    };
+    compute(&prefix, "prefix");
+    ++state->prefix_compute_count;
+    const auto & ref = *state->reference;
+    const auto activation = read_live_tensor<float>(
+        graph->nodes[state->activation_idx], GGML_TYPE_F32,
+        static_cast<size_t>(k_embd), "split activation");
+    const auto experts = read_live_tensor<int32_t>(
+        graph->nodes[state->topk_idx], GGML_TYPE_I32,
+        static_cast<size_t>(k_top_k), "split experts");
+    const auto weights = read_live_tensor<float>(
+        graph->nodes[state->weights_idx], GGML_TYPE_F32,
+        static_cast<size_t>(k_top_k), "split weights");
+    if (!float_vectors_bitwise_equal(activation, ref.activation) ||
+        experts != ref.experts || experts != std::vector<int32_t>{1, 13, 17, 21} ||
+        !float_vectors_bitwise_equal(weights, ref.weights)) {
+        fail("split graph live activation/route differs from frozen reference");
+    }
+    if (state->skip_middle) {
+        if (!state->injection || state->injection->size() != static_cast<size_t>(k_embd)) {
+            fail("split graph injection missing or wrong size");
+        }
+        for (float value : *state->injection) {
+            if (!std::isfinite(value)) fail("split graph injection non-finite");
+        }
+        ggml_backend_tensor_set(moe_out, state->injection->data(), 0,
+                                state->injection->size() * sizeof(float));
+        const auto observed = read_live_tensor<float>(
+            moe_out, GGML_TYPE_F32, static_cast<size_t>(k_embd),
+            "split written moe output");
+        state->injected_bytes_verified = float_vectors_bitwise_equal(
+            observed, *state->injection);
+        if (!state->injected_bytes_verified) fail("split graph injection did not persist");
+        state->observed_moe_output = observed;
+        ++state->injected_output_count;
+    } else {
+        compute(&middle, "middle");
+        ++state->middle_compute_count;
+        const auto observed = read_live_tensor<float>(
+            moe_out, GGML_TYPE_F32, static_cast<size_t>(k_embd),
+            "split computed moe output");
+        state->stock_output_parity = compare_outputs(ref.stock_output, observed);
+        state->stock_output_bitwise = float_vectors_bitwise_equal(
+            ref.stock_output, observed);
+        state->observed_moe_output = observed;
+        if (!state->stock_output_parity.pass) {
+            fail("segmented stock MoE differs from frozen reference");
+        }
+    }
+    compute(&suffix, "suffix");
+    ++state->suffix_compute_count;
+    write_split_graph_inventory(*state, graph, sched);
+    return GGML_STATUS_SUCCESS;
+}
+
+struct split_graph_arm_result {
+    reinjection_arm_result base;
+    split_graph_hook_state hook;
+    std::vector<float> reference_ffn;
+    std::vector<float> candidate_ffn;
+};
+
+split_graph_arm_result run_split_graph_arm(
+        const options & opt, llama_model * model,
+        const std::vector<llama_token> & prompt_tokens,
+        ggml_backend_t cpu_backend, ggml_backend_t gpu_backend,
+        ggml_backend_buffer_type_t cpu_weight_buft,
+        ggml_backend_buffer_type_t cpu_bias_buft,
+        ggml_backend_buffer_type_t gpu_buft) {
+    if (!llama_tesy_set_graph_compute_hook) {
+        fail("split arm requires patched llama hook symbol");
+    }
+    const int gpu_hits = opt.split_arm == "h2" ? 2 :
+                         opt.split_arm == "h3" ? 3 : 0;
+    live_handoff_capture capture;
+    llama_context_params params = llama_context_default_params();
+    params.n_ctx = opt.live_ctx;
+    params.n_batch = static_cast<uint32_t>(prompt_tokens.size());
+    params.n_ubatch = static_cast<uint32_t>(prompt_tokens.size());
+    params.n_threads = opt.threads;
+    params.n_threads_batch = opt.threads;
+    params.no_perf = true;
+    params.cb_eval = live_handoff_callback;
+    params.cb_eval_user_data = &capture;
+    llama_context * ctx = llama_init_from_model(model, params);
+    if (!ctx) fail("split arm context creation failed");
+    llama_sampler_chain_params sampler_params = llama_sampler_chain_default_params();
+    sampler_params.no_perf = true;
+    llama_sampler * sampler = llama_sampler_chain_init(sampler_params);
+    llama_sampler_chain_add(sampler, llama_sampler_init_greedy());
+
+    split_graph_arm_result result;
+    result.base.name = opt.split_arm;
+    result.base.gpu_hits = gpu_hits;
+    llama_batch prompt_batch = llama_batch_get_one(
+        const_cast<llama_token *>(prompt_tokens.data()),
+        static_cast<int32_t>(prompt_tokens.size()));
+    if (llama_decode(ctx, prompt_batch) != 0) fail("split prompt decode failed");
+    result.base.first_token = llama_sampler_sample(sampler, ctx, -1);
+    if (result.base.first_token != 2167) fail("split first greedy token is not 2167");
+
+    const llama_pos position = static_cast<llama_pos>(prompt_tokens.size());
+    reset_live_handoff_capture(capture, live_handoff_arm::stock_reference);
+    llama_batch capture_batch = llama_batch_get_one(&result.base.first_token, 1);
+    if (llama_decode(ctx, capture_batch) != 0) fail("split stock capture failed");
+    validate_live_handoff_capture(capture, true, "split stock reference");
+    const live_handoff_capture reference = capture;
+    result.base.stock_capture_rollback = llama_memory_seq_rm(
+        llama_get_memory(ctx), 0, position, -1);
+    if (!result.base.stock_capture_rollback) fail("split stock capture rollback failed");
+
+    std::vector<float> injection;
+    std::unique_ptr<live_routed_executor> executor;
+    if (gpu_hits > 0) {
+        reset_live_handoff_capture(capture, live_handoff_arm::handoff);
+        llama_batch handoff_batch = llama_batch_get_one(&result.base.first_token, 1);
+        if (llama_decode(ctx, handoff_batch) != 0) fail("split handoff capture failed");
+        validate_live_handoff_capture(capture, false, "split handoff");
+        const live_handoff_capture handoff = capture;
+        result.base.handoff_capture_rollback = llama_memory_seq_rm(
+            llama_get_memory(ctx), 0, position, -1);
+        if (!result.base.handoff_capture_rollback) fail("split handoff rollback failed");
+        if (reference.experts != handoff.experts ||
+            !float_vectors_bitwise_equal(reference.weights, handoff.weights)) {
+            fail("split handoff route drift");
+        }
+        result.base.activation_pair_parity = compare_outputs(
+            reference.activation, handoff.activation);
+        result.base.activation_pair_bitwise = float_vectors_bitwise_equal(
+            reference.activation, handoff.activation);
+        if (!result.base.activation_pair_parity.pass ||
+            !result.base.activation_pair_bitwise) fail("split handoff activation drift");
+        options routed = opt;
+        routed.routed_gpu_hits = gpu_hits;
+        std::vector<int> selected(reference.experts.begin(), reference.experts.end());
+        executor = make_live_routed_executor(
+            routed, cpu_backend, gpu_backend, cpu_weight_buft, cpu_bias_buft,
+            gpu_buft, handoff.activation, selected, handoff.weights);
+        execute_live_routed_serial(*executor, cpu_backend, gpu_backend,
+                                   handoff.activation);
+        injection = read_live_routed_output(*executor, gpu_backend);
+    } else {
+        result.base.handoff_capture_rollback = true;
+        result.base.activation_pair_bitwise = true;
+        result.base.activation_pair_parity = compare_outputs(
+            reference.activation, reference.activation);
+        injection = reference.stock_output;
+    }
+    result.base.experts = reference.experts;
+    result.base.weights = reference.weights;
+    result.base.ffn_parity = compare_outputs(reference.stock_output, injection);
+    result.base.ffn_bitwise = float_vectors_bitwise_equal(
+        reference.stock_output, injection);
+    if (!result.base.ffn_parity.pass) fail("split Tesy FFN parity failed");
+    result.reference_ffn = reference.stock_output;
+    capture.enabled = false;
+
+    result.hook.reference = &reference;
+    result.hook.skip_middle = opt.split_arm != "segmented";
+    result.hook.injection = result.hook.skip_middle ? &injection : nullptr;
+    result.hook.inventory_path =
+        (std::filesystem::path(opt.output).parent_path() / "inventory.json").string();
+    llama_tesy_set_graph_compute_hook(ctx, split_graph_compute_hook, &result.hook);
+    llama_batch committed_batch = llama_batch_get_one(&result.base.first_token, 1);
+    result.base.committed_decode_return_code = llama_decode(ctx, committed_batch);
+    llama_tesy_set_graph_compute_hook(ctx, nullptr, nullptr);
+    if (result.base.committed_decode_return_code != 0 || !result.hook.invoked ||
+        result.hook.prefix_compute_count != 1 ||
+        result.hook.suffix_compute_count != 1 ||
+        result.hook.middle_compute_count != (result.hook.skip_middle ? 0 : 1) ||
+        result.hook.injected_output_count != (result.hook.skip_middle ? 1 : 0)) {
+        fail("split committed decode or view counts failed");
+    }
+    const size_t n_vocab = static_cast<size_t>(
+        llama_vocab_n_tokens(llama_model_get_vocab(model)));
+    result.base.logits_a = copy_reinjection_logits(ctx, n_vocab);
+    result.base.second_token = llama_sampler_sample(sampler, ctx, -1);
+    if (result.base.second_token != 1309) fail("split second token is not 1309");
+    llama_batch continuation_batch = llama_batch_get_one(&result.base.second_token, 1);
+    result.base.continuation_decode_return_code = llama_decode(ctx, continuation_batch);
+    if (result.base.continuation_decode_return_code != 0) {
+        fail("split committed continuation failed");
+    }
+    result.base.logits_b = copy_reinjection_logits(ctx, n_vocab);
+    result.base.third_token = llama_sampler_sample(sampler, ctx, -1);
+    if (result.base.third_token != 316) fail("split third token is not 316");
+    result.candidate_ffn = result.hook.observed_moe_output;
+    result.base.ffn_parity = compare_outputs(
+        reference.stock_output, result.candidate_ffn);
+    result.base.ffn_bitwise = float_vectors_bitwise_equal(
+        reference.stock_output, result.candidate_ffn);
+    if (!result.base.ffn_parity.pass) fail("split final FFN output parity failed");
+    result.hook.reference = nullptr;
+    result.hook.injection = nullptr;
+    llama_sampler_free(sampler);
+    llama_free(ctx);
+    return result;
+}
+
+void run_split_graph_skip_exactness(
+        const options & opt, ggml_backend_t cpu_backend,
+        ggml_backend_t gpu_backend,
+        ggml_backend_buffer_type_t cpu_weight_buft,
+        ggml_backend_buffer_type_t cpu_bias_buft,
+        ggml_backend_buffer_type_t gpu_buft) {
+    const std::string prompt = read_prompt_file(opt.prompt_file);
+    llama_model_params model_params = llama_model_default_params();
+    model_params.n_gpu_layers = 0;
+    llama_model * model = llama_model_load_from_file(opt.model.c_str(), model_params);
+    if (!model) fail("split model load failed");
+    const auto prompt_tokens = tokenize_prompt(llama_model_get_vocab(model), prompt);
+    if (prompt_tokens.size() + 8 > opt.live_ctx) fail("split context too small");
+
+    reinjection_arm_result base;
+    split_graph_hook_state hook;
+    if (opt.split_arm == "stock" || opt.split_arm == "null") {
+        base = run_reinjection_arm(
+            opt, model, prompt_tokens, opt.split_arm, 0,
+            cpu_backend, gpu_backend, cpu_weight_buft, cpu_bias_buft,
+            gpu_buft, nullptr, opt.split_arm == "null");
+    } else {
+        auto split = run_split_graph_arm(
+            opt, model, prompt_tokens, cpu_backend, gpu_backend,
+            cpu_weight_buft, cpu_bias_buft, gpu_buft);
+        const auto root = std::filesystem::path(opt.output).parent_path();
+        write_reinjection_logits((root / "ffn-reference.f32").string(),
+                                 split.reference_ffn);
+        write_reinjection_logits((root / "ffn-candidate.f32").string(),
+                                 split.candidate_ffn);
+        base = std::move(split.base);
+        hook = std::move(split.hook);
+    }
+    llama_model_free(model);
+    if (base.first_token != 2167 || base.second_token != 1309 ||
+        base.third_token != 316 || base.logits_a.size() != 201088 ||
+        base.logits_b.size() != 201088) {
+        fail("split arm frozen token/logits count failed");
+    }
+    const auto root = std::filesystem::path(opt.output).parent_path();
+    write_reinjection_logits((root / "logits-a.f32").string(), base.logits_a);
+    write_reinjection_logits((root / "logits-b.f32").string(), base.logits_b);
+    FILE * out = std::fopen(opt.output.c_str(), "wx");
+    if (!out) fail("cannot create split raw output");
+    std::fprintf(out,
+        "{\"schema\":\"tesy.live_moe_split_graph_skip_exactness_raw.v1\","
+        "\"classification\":\"MEASURED_LIVE_MOE_SPLIT_GRAPH_SKIP_EXACTNESS_RAW\","
+        "\"arm\":\"%s\",\"layer\":0,\"ngl\":0,\"threads\":%d,"
+        "\"first_token\":%" PRId32 ",\"second_token\":%" PRId32
+        ",\"third_token\":%" PRId32 ",\"gpu_hits\":%d,"
+        "\"committed_decode_return_code\":%d,"
+        "\"continuation_decode_return_code\":%d,"
+        "\"stock_capture_rollback\":%s,\"handoff_capture_rollback\":%s,"
+        "\"activation_pair_bitwise\":%s,\"ffn_bitwise\":%s,"
+        "\"prefix_compute_count\":%d,\"middle_compute_count\":%d,"
+        "\"suffix_compute_count\":%d,\"injected_output_count\":%d,"
+        "\"injected_bytes_verified\":%s,\"all_nodes_cpu\":%s,"
+        "\"middle_contiguous\":%s,\"downstream_depends_on_moe_out\":%s,"
+        "\"logits_a_file\":\"logits-a.f32\","
+        "\"logits_b_file\":\"logits-b.f32\","
+        "\"ffn_reference_file\":%s,\"ffn_candidate_file\":%s,"
+        "\"selected_experts\":[",
+        base.name.c_str(), opt.threads, base.first_token, base.second_token,
+        base.third_token, base.gpu_hits, base.committed_decode_return_code,
+        base.continuation_decode_return_code,
+        base.stock_capture_rollback ? "true" : "false",
+        base.handoff_capture_rollback ? "true" : "false",
+        base.activation_pair_bitwise ? "true" : "false",
+        base.ffn_bitwise ? "true" : "false",
+        hook.prefix_compute_count, hook.middle_compute_count,
+        hook.suffix_compute_count, hook.injected_output_count,
+        hook.injected_bytes_verified ? "true" : "false",
+        hook.all_nodes_cpu ? "true" : "false",
+        hook.middle_contiguous ? "true" : "false",
+        hook.downstream_depends_on_moe_out ? "true" : "false",
+        hook.invoked ? "\"ffn-reference.f32\"" : "null",
+        hook.invoked ? "\"ffn-candidate.f32\"" : "null");
+    for (size_t i = 0; i < base.experts.size(); ++i) {
+        if (i) std::fputc(',', out);
+        std::fprintf(out, "%" PRId32, base.experts[i]);
+    }
+    std::fputs("],\"routing_weights\":[", out);
+    for (size_t i = 0; i < base.weights.size(); ++i) {
+        if (i) std::fputc(',', out);
+        std::fprintf(out, "%.9g", base.weights[i]);
+    }
+    std::fputs("],\"ffn_parity\":", out);
+    print_reinjection_parity(out, base.ffn_parity);
+    std::fputs(",\"stock_output_parity\":", out);
+    print_reinjection_parity(out, hook.stock_output_parity);
+    std::fprintf(out,
+        ",\"stock_output_bitwise\":%s,\"inventory_file\":%s,"
+        "\"claim_boundary\":\"Layer-0 CPU graph split/skip correctness only; no timing, cache or prefetch.\"}\n",
+        hook.stock_output_bitwise ? "true" : "false",
+        hook.invoked ? "\"inventory.json\"" : "null");
+    if (std::fclose(out) != 0) fail("cannot close split raw output");
+    std::puts("PASS_SPLIT_GRAPH_RAW");
 }
 
 void print_parity(FILE * out, const parity & value) {
@@ -3673,6 +4167,12 @@ int main(int argc, char ** argv) {
 
     if (opt.live_reinjection_exactness) {
         run_live_reinjection_exactness(
+            opt, cpu.backend, gpu.backend,
+            cpu_weight_buft, cpu_bias_buft, gpu_buft);
+        return 0;
+    }
+    if (opt.split_graph_skip_exactness) {
+        run_split_graph_skip_exactness(
             opt, cpu.backend, gpu.backend,
             cpu_weight_buft, cpu_bias_buft, gpu_buft);
         return 0;

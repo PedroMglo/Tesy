@@ -61,6 +61,11 @@ target_include_directories(
     "${LLAMA_CPP_SOURCE_DIR}/include"
     "${LLAMA_CPP_SOURCE_DIR}/ggml/include"
 )
+target_include_directories(
+  tesy-mixed-residency
+  SYSTEM PRIVATE
+    "${LLAMA_CPP_SOURCE_DIR}/ggml/src"
+)
 target_link_libraries(tesy-mixed-residency PRIVATE llama ggml)
 
 
