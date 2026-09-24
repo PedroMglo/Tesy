@@ -1201,6 +1201,238 @@ routed_exactness_result run_routed_exactness(
     return result;
 }
 
+live_handoff_result run_live_handoff_exactness(
+        const options & opt,
+        ggml_backend_t cpu_backend,
+        ggml_backend_t gpu_backend,
+        ggml_backend_buffer_type_t cpu_weight_buft,
+        ggml_backend_buffer_type_t cpu_bias_buft,
+        ggml_backend_buffer_type_t gpu_buft) {
+    const std::string prompt =
+        read_prompt_file(opt.prompt_file);
+
+    llama_model_params model_params =
+        llama_model_default_params();
+    model_params.n_gpu_layers = 0;
+
+    llama_model * model =
+        llama_model_load_from_file(
+            opt.model.c_str(),
+            model_params);
+    if (!model) {
+        fail("live handoff failed to load stock model");
+    }
+
+    const llama_vocab * vocab =
+        llama_model_get_vocab(model);
+    std::vector<llama_token> prompt_tokens =
+        tokenize_prompt(vocab, prompt);
+
+    const uint64_t minimum_ctx =
+        static_cast<uint64_t>(prompt_tokens.size()) + 8;
+    if (minimum_ctx > opt.live_ctx) {
+        llama_model_free(model);
+        fail("live handoff configured context is too small");
+    }
+
+    live_handoff_capture callback_state;
+
+    llama_context_params ctx_params =
+        llama_context_default_params();
+    ctx_params.n_ctx = opt.live_ctx;
+    ctx_params.n_batch =
+        static_cast<uint32_t>(prompt_tokens.size());
+    ctx_params.n_ubatch =
+        static_cast<uint32_t>(prompt_tokens.size());
+    ctx_params.n_threads = opt.threads;
+    ctx_params.n_threads_batch = opt.threads;
+    ctx_params.no_perf = true;
+    ctx_params.cb_eval = live_handoff_callback;
+    ctx_params.cb_eval_user_data = &callback_state;
+
+    llama_context * ctx =
+        llama_init_from_model(model, ctx_params);
+    if (!ctx) {
+        llama_model_free(model);
+        fail("live handoff failed to create stock context");
+    }
+
+    llama_sampler_chain_params sampler_params =
+        llama_sampler_chain_default_params();
+    sampler_params.no_perf = true;
+    llama_sampler * sampler =
+        llama_sampler_chain_init(sampler_params);
+    llama_sampler_chain_add(
+        sampler,
+        llama_sampler_init_greedy());
+
+    llama_batch prompt_batch =
+        llama_batch_get_one(
+            prompt_tokens.data(),
+            static_cast<int32_t>(prompt_tokens.size()));
+    if (llama_decode(ctx, prompt_batch) != 0) {
+        llama_sampler_free(sampler);
+        llama_free(ctx);
+        llama_model_free(model);
+        fail("live handoff prompt decode failed");
+    }
+
+    llama_token decode_token =
+        llama_sampler_sample(sampler, ctx, -1);
+    if (decode_token != k_live_handoff_decode_token) {
+        llama_sampler_free(sampler);
+        llama_free(ctx);
+        llama_model_free(model);
+        fail("live handoff decode token differs from admitted token");
+    }
+    if (llama_vocab_is_eog(vocab, decode_token)) {
+        llama_sampler_free(sampler);
+        llama_free(ctx);
+        llama_model_free(model);
+        fail("live handoff admitted decode token is EOG");
+    }
+
+    const llama_pos decode_position =
+        static_cast<llama_pos>(prompt_tokens.size());
+
+    reset_live_handoff_capture(
+        callback_state,
+        live_handoff_arm::stock_reference);
+    llama_batch stock_batch =
+        llama_batch_get_one(&decode_token, 1);
+    const int stock_rc =
+        llama_decode(ctx, stock_batch);
+    callback_state.enabled = false;
+    if (stock_rc != 0) {
+        llama_sampler_free(sampler);
+        llama_free(ctx);
+        llama_model_free(model);
+        fail(
+            "live stock-reference early stop must return 0, got " +
+            std::to_string(stock_rc));
+    }
+    validate_live_handoff_capture(
+        callback_state,
+        true,
+        "stock-reference");
+    const live_handoff_capture stock_capture =
+        callback_state;
+
+    const bool stock_rollback =
+        llama_memory_seq_rm(
+            llama_get_memory(ctx),
+            0,
+            decode_position,
+            -1);
+    if (!stock_rollback) {
+        llama_sampler_free(sampler);
+        llama_free(ctx);
+        llama_model_free(model);
+        fail("live stock-reference rollback failed");
+    }
+
+    reset_live_handoff_capture(
+        callback_state,
+        live_handoff_arm::handoff);
+    llama_batch handoff_batch =
+        llama_batch_get_one(&decode_token, 1);
+    const int handoff_rc =
+        llama_decode(ctx, handoff_batch);
+    callback_state.enabled = false;
+    if (handoff_rc != 0) {
+        llama_sampler_free(sampler);
+        llama_free(ctx);
+        llama_model_free(model);
+        fail(
+            "live handoff early stop must return 0, got " +
+            std::to_string(handoff_rc));
+    }
+    validate_live_handoff_capture(
+        callback_state,
+        false,
+        "handoff");
+    const live_handoff_capture handoff_capture =
+        callback_state;
+
+    const bool handoff_rollback =
+        llama_memory_seq_rm(
+            llama_get_memory(ctx),
+            0,
+            decode_position,
+            -1);
+    if (!handoff_rollback) {
+        llama_sampler_free(sampler);
+        llama_free(ctx);
+        llama_model_free(model);
+        fail("live handoff rollback failed");
+    }
+
+    if (stock_capture.experts != handoff_capture.experts) {
+        llama_sampler_free(sampler);
+        llama_free(ctx);
+        llama_model_free(model);
+        fail("live handoff expert IDs differ from stock reference");
+    }
+    if (stock_capture.weights != handoff_capture.weights) {
+        llama_sampler_free(sampler);
+        llama_free(ctx);
+        llama_model_free(model);
+        fail("live handoff routing weights differ from stock reference");
+    }
+
+    const parity activation_parity =
+        compare_outputs(
+            stock_capture.activation,
+            handoff_capture.activation);
+    if (!activation_parity.pass) {
+        llama_sampler_free(sampler);
+        llama_free(ctx);
+        llama_model_free(model);
+        fail("live handoff activation parity failed");
+    }
+
+    std::vector<int> selected_experts;
+    selected_experts.reserve(static_cast<size_t>(k_top_k));
+    for (int32_t expert : handoff_capture.experts) {
+        selected_experts.push_back(static_cast<int>(expert));
+    }
+
+    live_handoff_result result;
+    result.decode_input_token = decode_token;
+    result.stock_decode_return_code = stock_rc;
+    result.handoff_decode_return_code = handoff_rc;
+    result.stock_rollback = stock_rollback;
+    result.handoff_rollback = handoff_rollback;
+    result.activation_bitwise_equal =
+        stock_capture.activation == handoff_capture.activation;
+    result.activation_parity = activation_parity;
+    result.selected_experts = selected_experts;
+    result.routing_weights = handoff_capture.weights;
+
+    for (int gpu_hits : {2, 3}) {
+        options routed_opt = opt;
+        routed_opt.routed_gpu_hits = gpu_hits;
+        routed_opt.async_overlap = true;
+        result.cases.push_back(
+            run_routed_exactness(
+                routed_opt,
+                cpu_backend,
+                gpu_backend,
+                cpu_weight_buft,
+                cpu_bias_buft,
+                gpu_buft,
+                handoff_capture.activation,
+                stock_capture.stock_output,
+                selected_experts,
+                handoff_capture.weights));
+    }
+
+    llama_sampler_free(sampler);
+    llama_free(ctx);
+    llama_model_free(model);
+    return result;
+}
+
 void print_parity(FILE * out, const parity & value) {
     std::fprintf(
         out,
