@@ -234,3 +234,13 @@ def test_weight_overlap_bound_rejects_histogram_count_mismatch():
             validate_overlap_bound_raw(_payload()),
             histogram,
         )
+
+
+def test_validate_overlap_bound_rejects_tampered_statistics():
+    payload = copy.deepcopy(_payload())
+    payload["cases"][2]["direct_wall"]["median_ms"] += 0.005
+    with pytest.raises(
+        MixedResidencyOverlapBoundError,
+        match="median_ms does not match raw samples",
+    ):
+        validate_overlap_bound_raw(payload)
