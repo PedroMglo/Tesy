@@ -12,6 +12,7 @@
 #include <cstdint>
 #include <cstdio>
 #include <cstdlib>
+#include <cstring>
 #include <fstream>
 #include <iterator>
 #include <limits>
@@ -30,6 +31,7 @@ constexpr size_t k_encoded_bytes_per_expert = 13253760;
 constexpr float k_swiglu_alpha = 1.702f;
 constexpr float k_swiglu_limit = 7.0f;
 constexpr float k_mix_weight = 0.25f;
+constexpr llama_token k_live_handoff_decode_token = 2167;
 
 struct options {
     std::string model;
@@ -155,6 +157,37 @@ struct routed_exactness_result {
     parity serial_vs_stock;
     parity async_vs_stock;
     parity async_vs_serial;
+};
+
+enum class live_handoff_arm {
+    stock_reference,
+    handoff,
+};
+
+struct live_handoff_capture {
+    bool enabled = false;
+    live_handoff_arm arm = live_handoff_arm::stock_reference;
+    bool saw_activation = false;
+    bool saw_experts = false;
+    bool saw_weights = false;
+    bool saw_stock_output = false;
+    std::vector<float> activation;
+    std::vector<int32_t> experts;
+    std::vector<float> weights;
+    std::vector<float> stock_output;
+};
+
+struct live_handoff_result {
+    llama_token decode_input_token = -1;
+    int stock_decode_return_code = -1;
+    int handoff_decode_return_code = -1;
+    bool stock_rollback = false;
+    bool handoff_rollback = false;
+    bool activation_bitwise_equal = false;
+    parity activation_parity;
+    std::vector<int> selected_experts;
+    std::vector<float> routing_weights;
+    std::vector<routed_exactness_result> cases;
 };
 
 struct case_result {
