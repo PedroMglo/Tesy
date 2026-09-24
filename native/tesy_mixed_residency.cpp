@@ -4,6 +4,7 @@
 #include "ggml-impl.h"
 #include "gguf.h"
 #include "llama.h"
+#include "tesy_sum_graph.h"
 
 #include <algorithm>
 #include <array>
@@ -144,6 +145,7 @@ struct tensor_holder {
 struct sum_graph {
     context_buffer storage;
     ggml_cgraph * graph = nullptr;
+    ggml_tensor * gpu_partial = nullptr;
     ggml_tensor * cpu_partial = nullptr;
     ggml_tensor * output = nullptr;
 };
@@ -903,15 +905,14 @@ std::unique_ptr<tensor_holder> make_gpu_tensor(
 }
 
 std::unique_ptr<sum_graph> make_sum_graph(
-        ggml_backend_t gpu_backend,
-        ggml_tensor * gpu_partial) {
+        ggml_backend_t gpu_backend) {
     auto result = std::make_unique<sum_graph>();
     result->storage.ctx = make_context(1024u * 1024u);
     ggml_context * ctx = result->storage.ctx;
-    result->cpu_partial =
-        ggml_new_tensor_2d(ctx, GGML_TYPE_F32, k_embd, 1);
-    result->output =
-        ggml_add(ctx, gpu_partial, result->cpu_partial);
+    const auto nodes = tesy_make_leaf_sum_nodes(ctx, k_embd);
+    result->gpu_partial = nodes.gpu_partial;
+    result->cpu_partial = nodes.cpu_partial;
+    result->output = nodes.output;
     result->graph = ggml_new_graph(ctx);
     ggml_build_forward_expand(result->graph, result->output);
     result->storage.buffer =
@@ -1504,9 +1505,7 @@ std::unique_ptr<live_routed_executor> make_live_routed_executor(
         gpu_hits,
         initial_input,
         &gpu_mix);
-    result->aggregate = make_sum_graph(
-        gpu_backend,
-        result->gpu_graph->output);
+    result->aggregate = make_sum_graph(gpu_backend);
     return result;
 }
 
@@ -1548,6 +1547,9 @@ void execute_live_routed_serial(
     compute(gpu_backend, *executor.gpu_graph);
 
     ggml_backend_tensor_copy(
+        executor.gpu_graph->output,
+        executor.aggregate->gpu_partial);
+    ggml_backend_tensor_copy(
         executor.cpu_graph->output,
         executor.aggregate->cpu_partial);
     ggml_backend_synchronize(cpu_backend);
@@ -1572,6 +1574,9 @@ void execute_live_routed_async(
     compute(cpu_backend, *executor.cpu_graph);
     ggml_backend_synchronize(gpu_backend);
 
+    ggml_backend_tensor_copy(
+        executor.gpu_graph->output,
+        executor.aggregate->gpu_partial);
     ggml_backend_tensor_copy(
         executor.cpu_graph->output,
         executor.aggregate->cpu_partial);
@@ -1661,9 +1666,7 @@ routed_exactness_result run_routed_exactness(
         gpu_hits,
         input,
         &gpu_mix);
-    auto aggregate = make_sum_graph(
-        gpu_backend,
-        gpu_graph->output);
+    auto aggregate = make_sum_graph(gpu_backend);
 
     auto execute_serial = [&]() {
         ggml_backend_tensor_copy(
@@ -1675,6 +1678,8 @@ routed_exactness_result run_routed_exactness(
         compute(cpu_backend, *cpu_graph);
         compute(gpu_backend, *gpu_graph);
 
+        ggml_backend_tensor_copy(
+            gpu_graph->output, aggregate->gpu_partial);
         ggml_backend_tensor_copy(
             cpu_graph->output,
             aggregate->cpu_partial);
@@ -1694,6 +1699,8 @@ routed_exactness_result run_routed_exactness(
         compute(cpu_backend, *cpu_graph);
         ggml_backend_synchronize(gpu_backend);
 
+        ggml_backend_tensor_copy(
+            gpu_graph->output, aggregate->gpu_partial);
         ggml_backend_tensor_copy(
             cpu_graph->output,
             aggregate->cpu_partial);
@@ -3756,8 +3763,7 @@ case_result run_case(
     if (gpu_hits == 0) {
         final_gpu = make_gpu_tensor(gpu_backend);
     } else if (cpu_misses > 0) {
-        aggregate = make_sum_graph(
-            gpu_backend, gpu_graph->output);
+        aggregate = make_sum_graph(gpu_backend);
     }
 
     auto execute_serial = [&]() {
@@ -3780,6 +3786,8 @@ case_result run_case(
             ggml_backend_synchronize(gpu_backend);
         } else if (cpu_graph && gpu_graph) {
             ggml_backend_tensor_copy(
+                gpu_graph->output, aggregate->gpu_partial);
+            ggml_backend_tensor_copy(
                 cpu_graph->output, aggregate->cpu_partial);
             ggml_backend_synchronize(cpu_backend);
             ggml_backend_synchronize(gpu_backend);
@@ -3801,6 +3809,8 @@ case_result run_case(
         compute(cpu_backend, *cpu_graph);
         ggml_backend_synchronize(gpu_backend);
 
+        ggml_backend_tensor_copy(
+            gpu_graph->output, aggregate->gpu_partial);
         ggml_backend_tensor_copy(
             cpu_graph->output, aggregate->cpu_partial);
         ggml_backend_synchronize(cpu_backend);
@@ -3916,6 +3926,8 @@ case_result run_case(
         compute(cpu_backend, *cpu_graph);
         compute(gpu_backend, *gpu_graph);
 
+        ggml_backend_tensor_copy(
+            gpu_graph->output, aggregate->gpu_partial);
         result.cpu_partial_h2d =
             measure(
                 [&]() {
@@ -3936,7 +3948,11 @@ case_result run_case(
 
         result.gpu_aggregation =
             measure(
-                [&]() { compute_sum(gpu_backend, *aggregate); },
+                [&]() {
+                    ggml_backend_tensor_copy(
+                        gpu_graph->output, aggregate->gpu_partial);
+                    compute_sum(gpu_backend, *aggregate);
+                },
                 opt.warmup,
                 opt.samples,
                 opt.inner);
