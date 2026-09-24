@@ -1329,6 +1329,155 @@ parity compare_outputs(
     return out;
 }
 
+std::unique_ptr<live_routed_executor> make_live_routed_executor(
+        const options & opt,
+        ggml_backend_t cpu_backend,
+        ggml_backend_t gpu_backend,
+        ggml_backend_buffer_type_t cpu_weight_buft,
+        ggml_backend_buffer_type_t cpu_bias_buft,
+        ggml_backend_buffer_type_t gpu_buft,
+        const std::vector<float> & initial_input,
+        const std::vector<int> & selected_experts,
+        const std::vector<float> & routing_weights) {
+    if (selected_experts.size() != static_cast<size_t>(k_top_k)) {
+        fail("live timing requires exactly four selected experts");
+    }
+    if (routing_weights.size() != static_cast<size_t>(k_top_k)) {
+        fail("live timing requires exactly four routing weights");
+    }
+    const int gpu_hits = opt.routed_gpu_hits;
+    if (gpu_hits != 2 && gpu_hits != 3) {
+        fail("live timing gpu hits must be 2 or 3");
+    }
+    const int cpu_misses = k_top_k - gpu_hits;
+
+    std::vector<int> gpu_ids(
+        selected_experts.begin(),
+        selected_experts.begin() + gpu_hits);
+    std::vector<int> cpu_ids(
+        selected_experts.begin() + gpu_hits,
+        selected_experts.end());
+    std::vector<float> gpu_mix(
+        routing_weights.begin(),
+        routing_weights.begin() + gpu_hits);
+    std::vector<float> cpu_mix(
+        routing_weights.begin() + gpu_hits,
+        routing_weights.end());
+
+    const tensor_bytes cpu_data =
+        load_subset(opt.model, opt.layer, cpu_ids);
+    const tensor_bytes gpu_data =
+        load_subset(opt.model, opt.layer, gpu_ids);
+
+    auto result = std::make_unique<live_routed_executor>();
+    result->gpu_hits = gpu_hits;
+    result->cpu_misses = cpu_misses;
+    result->cpu_set = make_tensor_set(
+        cpu_data,
+        cpu_misses,
+        cpu_weight_buft,
+        cpu_bias_buft);
+    result->gpu_set = make_tensor_set(
+        gpu_data,
+        gpu_hits,
+        gpu_buft,
+        gpu_buft);
+    result->cpu_graph = make_compute_graph(
+        *result->cpu_set,
+        cpu_backend,
+        cpu_misses,
+        initial_input,
+        &cpu_mix);
+    result->gpu_graph = make_compute_graph(
+        *result->gpu_set,
+        gpu_backend,
+        gpu_hits,
+        initial_input,
+        &gpu_mix);
+    result->aggregate = make_sum_graph(
+        gpu_backend,
+        result->gpu_graph->output);
+    return result;
+}
+
+void set_live_routed_input(
+        live_routed_executor & executor,
+        ggml_backend_t cpu_backend,
+        ggml_backend_t gpu_backend,
+        const std::vector<float> & activation) {
+    if (activation.size() != static_cast<size_t>(k_embd)) {
+        fail("live timing activation size mismatch");
+    }
+
+    ggml_backend_tensor_set(
+        executor.cpu_graph->input,
+        activation.data(),
+        0,
+        activation.size() * sizeof(float));
+    ggml_backend_tensor_set(
+        executor.gpu_graph->input,
+        activation.data(),
+        0,
+        activation.size() * sizeof(float));
+    ggml_backend_synchronize(cpu_backend);
+    ggml_backend_synchronize(gpu_backend);
+}
+
+void execute_live_routed_serial(
+        live_routed_executor & executor,
+        ggml_backend_t cpu_backend,
+        ggml_backend_t gpu_backend,
+        const std::vector<float> & activation) {
+    set_live_routed_input(
+        executor,
+        cpu_backend,
+        gpu_backend,
+        activation);
+
+    compute(cpu_backend, *executor.cpu_graph);
+    compute(gpu_backend, *executor.gpu_graph);
+
+    ggml_backend_tensor_copy(
+        executor.cpu_graph->output,
+        executor.aggregate->cpu_partial);
+    ggml_backend_synchronize(cpu_backend);
+    ggml_backend_synchronize(gpu_backend);
+    compute_sum(gpu_backend, *executor.aggregate);
+}
+
+void execute_live_routed_async(
+        live_routed_executor & executor,
+        ggml_backend_t cpu_backend,
+        ggml_backend_t gpu_backend,
+        const std::vector<float> & activation) {
+    set_live_routed_input(
+        executor,
+        cpu_backend,
+        gpu_backend,
+        activation);
+
+    compute_async_start(
+        gpu_backend,
+        *executor.gpu_graph);
+    compute(cpu_backend, *executor.cpu_graph);
+    ggml_backend_synchronize(gpu_backend);
+
+    ggml_backend_tensor_copy(
+        executor.cpu_graph->output,
+        executor.aggregate->cpu_partial);
+    ggml_backend_synchronize(cpu_backend);
+    ggml_backend_synchronize(gpu_backend);
+    compute_sum(gpu_backend, *executor.aggregate);
+}
+
+std::vector<float> read_live_routed_output(
+        live_routed_executor & executor,
+        ggml_backend_t gpu_backend) {
+    return read_output(
+        gpu_backend,
+        executor.aggregate->output);
+}
+
 routed_exactness_result run_routed_exactness(
         const options & opt,
         ggml_backend_t cpu_backend,
