@@ -14,7 +14,6 @@ from tesy.mixed_residency_overlap_bound import (
     validate_overlap_bound_raw,
 )
 
-
 _ASYNC_GO_RATIO = 0.90
 _EXPECTED_H = [0, 1, 2, 3, 4]
 
