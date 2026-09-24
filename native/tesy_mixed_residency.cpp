@@ -13,12 +13,14 @@
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
+#include <filesystem>
 #include <fstream>
 #include <iterator>
 #include <limits>
 #include <memory>
 #include <numeric>
 #include <string>
+#include <thread>
 #include <utility>
 #include <vector>
 
@@ -44,7 +46,9 @@ struct options {
     bool async_overlap = false;
     bool routed_exactness = false;
     bool live_handoff_exactness = false;
+    bool live_handoff_timing = false;
     std::string prompt_file;
+    std::string timing_start_gate;
     std::string routed_input_f32;
     std::string routed_reference_f32;
     std::string routed_experts_csv;
@@ -190,6 +194,85 @@ struct live_handoff_result {
     std::vector<routed_exactness_result> cases;
 };
 
+enum class live_timing_mode {
+    stock,
+    serial,
+    async,
+};
+
+struct live_timing_capture {
+    bool enabled = false;
+    live_timing_mode mode = live_timing_mode::stock;
+    bool capture_stock_output = false;
+    bool saw_activation = false;
+    bool saw_experts = false;
+    bool saw_weights = false;
+    bool saw_stock_output = false;
+    std::vector<float> activation;
+    std::vector<int32_t> experts;
+    std::vector<float> weights;
+    std::vector<float> stock_output;
+    const std::vector<float> * expected_activation = nullptr;
+    const std::vector<int> * expected_experts = nullptr;
+    const std::vector<float> * expected_weights = nullptr;
+    std::chrono::steady_clock::time_point activation_ready;
+    std::chrono::steady_clock::time_point route_ready;
+    std::chrono::steady_clock::time_point stock_output_ready;
+};
+
+struct live_timing_samples {
+    std::vector<double> activation_ms;
+    std::vector<double> route_ms;
+};
+
+struct live_timing_exactness_snapshot {
+    int stock_decode_return_code = -1;
+    int handoff_decode_return_code = -1;
+    bool stock_rollback = false;
+    bool handoff_rollback = false;
+    bool activation_bitwise_equal = false;
+    parity activation_parity;
+    parity activation_vs_reference;
+    parity stock_output_vs_reference;
+    parity serial_vs_stock;
+    parity async_vs_stock;
+    parity async_vs_serial;
+};
+
+struct live_timing_reference {
+    std::vector<float> activation;
+    std::vector<int> selected_experts;
+    std::vector<float> routing_weights;
+    std::vector<float> stock_output;
+};
+
+struct live_routed_executor {
+    int gpu_hits = 0;
+    int cpu_misses = 0;
+    std::unique_ptr<tensor_set> cpu_set;
+    std::unique_ptr<tensor_set> gpu_set;
+    std::unique_ptr<compute_graph> cpu_graph;
+    std::unique_ptr<compute_graph> gpu_graph;
+    std::unique_ptr<sum_graph> aggregate;
+};
+
+struct live_handoff_timing_result {
+    int gpu_hits = 0;
+    int cpu_misses = 0;
+    llama_token decode_input_token = -1;
+    std::vector<int> selected_experts;
+    std::vector<float> routing_weights;
+    live_timing_exactness_snapshot pre_exactness;
+    live_timing_exactness_snapshot post_exactness;
+    live_timing_samples stock;
+    live_timing_samples serial;
+    live_timing_samples async;
+    int completed_stock_trials = 0;
+    int completed_serial_trials = 0;
+    int completed_async_trials = 0;
+    int successful_timing_trial_rollbacks = 0;
+};
+
 struct case_result {
     int gpu_hits = 0;
     int cpu_misses = 0;
@@ -235,7 +318,10 @@ int parse_positive(const char * value, const char * flag, int minimum = 1) {
         "[--async-overlap] [--routed-exactness "
         "--routed-input-f32 FILE --routed-reference-f32 FILE "
         "--routed-experts CSV --routed-weights CSV --routed-gpu-hits N] "
-        "[--live-handoff-exactness --prompt-file FILE --ctx N]\n",
+        "[--live-handoff-exactness --prompt-file FILE --ctx N] "
+        "[--live-handoff-timing --prompt-file FILE --ctx N "
+        "--routed-gpu-hits N --warmup 6 --samples 81 --inner 1 "
+        "--timing-start-gate FILE]\n",
         argv0);
     std::exit(code);
 }
@@ -270,8 +356,12 @@ options parse_options(int argc, char ** argv) {
             out.routed_exactness = true;
         } else if (arg == "--live-handoff-exactness") {
             out.live_handoff_exactness = true;
+        } else if (arg == "--live-handoff-timing") {
+            out.live_handoff_timing = true;
         } else if (arg == "--prompt-file") {
             out.prompt_file = value("--prompt-file");
+        } else if (arg == "--timing-start-gate") {
+            out.timing_start_gate = value("--timing-start-gate");
         } else if (arg == "--ctx") {
             out.live_ctx = static_cast<uint32_t>(
                 parse_positive(value("--ctx"), "--ctx", 16));
@@ -297,8 +387,12 @@ options parse_options(int argc, char ** argv) {
     if (out.model.empty() || out.output.empty()) {
         usage(argv[0], 2);
     }
-    if (out.routed_exactness && out.live_handoff_exactness) {
-        fail("routed and live handoff exactness modes are mutually exclusive");
+    const int special_modes =
+        static_cast<int>(out.routed_exactness)
+        + static_cast<int>(out.live_handoff_exactness)
+        + static_cast<int>(out.live_handoff_timing);
+    if (special_modes > 1) {
+        fail("routed/live exactness/timing modes are mutually exclusive");
     }
     if (out.routed_exactness) {
         if (!out.async_overlap) {
@@ -328,6 +422,28 @@ options parse_options(int argc, char ** argv) {
         }
         if (out.live_ctx != 4096) {
             fail("live handoff exactness is frozen to --ctx 4096");
+        }
+    }
+    if (out.live_handoff_timing) {
+        if (out.layer != 0) {
+            fail("live handoff timing is frozen to layer 0");
+        }
+        if (out.prompt_file.empty()) {
+            fail("live handoff timing requires --prompt-file");
+        }
+        if (out.live_ctx != 4096) {
+            fail("live handoff timing is frozen to --ctx 4096");
+        }
+        if (out.routed_gpu_hits != 2 && out.routed_gpu_hits != 3) {
+            fail("live handoff timing gpu hits must be 2 or 3");
+        }
+        if (out.warmup != 6 || out.samples != 81 || out.inner != 1) {
+            fail(
+                "live handoff timing requires --warmup 6 "
+                "--samples 81 --inner 1");
+        }
+        if (out.timing_start_gate.empty()) {
+            fail("live handoff timing requires --timing-start-gate");
         }
     }
     return out;
@@ -1028,6 +1144,216 @@ void validate_live_handoff_capture(
 
 bool float_vectors_bitwise_equal(
         const std::vector<float> & a,
+        const std::vector<float> & b);
+
+parity compare_outputs(
+        const std::vector<float> & reference,
+        const std::vector<float> & observed);
+
+void reset_live_timing_capture(
+        live_timing_capture & state,
+        live_timing_mode mode,
+        bool capture_stock_output,
+        const std::vector<float> * expected_activation = nullptr,
+        const std::vector<int> * expected_experts = nullptr,
+        const std::vector<float> * expected_weights = nullptr) {
+    state.enabled = true;
+    state.mode = mode;
+    state.capture_stock_output = capture_stock_output;
+    state.expected_activation = expected_activation;
+    state.expected_experts = expected_experts;
+    state.expected_weights = expected_weights;
+    state.saw_activation = false;
+    state.saw_experts = false;
+    state.saw_weights = false;
+    state.saw_stock_output = false;
+    state.activation.clear();
+    state.experts.clear();
+    state.weights.clear();
+    state.stock_output.clear();
+}
+
+bool live_timing_callback(
+        ggml_tensor * tensor,
+        bool ask,
+        void * user_data) {
+    auto * state =
+        static_cast<live_timing_capture *>(user_data);
+    if (!state || !state->enabled) {
+        return false;
+    }
+
+    const bool activation =
+        std::strcmp(tensor->name, "attn_post_norm-0") == 0;
+    const bool experts =
+        std::strcmp(tensor->name, "ffn_moe_topk-0") == 0;
+    const bool weights =
+        std::strcmp(
+            tensor->name,
+            "ffn_moe_weights_softmax-0") == 0;
+    const bool stock_output =
+        std::strcmp(tensor->name, "ffn_moe_out-0") == 0;
+    const bool wanted =
+        activation || experts || weights || stock_output;
+
+    if (ask) {
+        return wanted;
+    }
+    if (!wanted) {
+        return true;
+    }
+
+    if (activation) {
+        if (state->saw_activation) {
+            fail("duplicate live timing activation");
+        }
+        state->activation =
+            read_live_tensor<float>(
+                tensor,
+                GGML_TYPE_F32,
+                static_cast<size_t>(k_embd),
+                "live timing attn_post_norm-0");
+        state->saw_activation = true;
+        if (state->expected_activation) {
+            const parity check =
+                compare_outputs(
+                    *state->expected_activation,
+                    state->activation);
+            if (!check.pass) {
+                fail("live timing callback activation drifted");
+            }
+        }
+        state->activation_ready =
+            std::chrono::steady_clock::now();
+        return true;
+    }
+
+    if (experts) {
+        if (state->saw_experts) {
+            fail("duplicate live timing top-k");
+        }
+        state->experts =
+            read_live_tensor<int32_t>(
+                tensor,
+                GGML_TYPE_I32,
+                static_cast<size_t>(k_top_k),
+                "live timing ffn_moe_topk-0");
+        state->saw_experts = true;
+        if (state->expected_experts) {
+            if (
+                state->experts.size()
+                != state->expected_experts->size()
+            ) {
+                fail("live timing callback expert count drifted");
+            }
+            for (size_t i = 0; i < state->experts.size(); ++i) {
+                if (
+                    state->experts[i]
+                    != (*state->expected_experts)[i]
+                ) {
+                    fail("live timing callback expert IDs drifted");
+                }
+            }
+        }
+        return true;
+    }
+
+    if (weights) {
+        if (state->saw_weights) {
+            fail("duplicate live timing routing weights");
+        }
+        state->weights =
+            read_live_tensor<float>(
+                tensor,
+                GGML_TYPE_F32,
+                static_cast<size_t>(k_top_k),
+                "live timing ffn_moe_weights_softmax-0");
+        for (float value : state->weights) {
+            if (!std::isfinite(value) || value < 0.0f) {
+                fail("live timing routing weight is invalid");
+            }
+        }
+        state->saw_weights = true;
+        if (
+            state->expected_weights
+            && !float_vectors_bitwise_equal(
+                state->weights,
+                *state->expected_weights)
+        ) {
+            fail("live timing callback routing weights drifted");
+        }
+        state->route_ready =
+            std::chrono::steady_clock::now();
+        return state->mode == live_timing_mode::stock;
+    }
+
+    if (stock_output) {
+        if (state->mode != live_timing_mode::stock) {
+            fail("candidate timing arm reached stock MoE output");
+        }
+        if (state->saw_stock_output) {
+            fail("duplicate live timing stock output");
+        }
+        state->stock_output_ready =
+            std::chrono::steady_clock::now();
+        state->saw_stock_output = true;
+        if (state->capture_stock_output) {
+            state->stock_output =
+                read_live_tensor<float>(
+                    tensor,
+                    GGML_TYPE_F32,
+                    static_cast<size_t>(k_embd),
+                    "live timing ffn_moe_out-0");
+        }
+        return false;
+    }
+
+    return true;
+}
+
+void validate_live_timing_capture(
+        const live_timing_capture & state,
+        live_timing_mode mode,
+        bool require_stock_bytes,
+        const char * label) {
+    if (
+        !state.saw_activation
+        || !state.saw_experts
+        || !state.saw_weights
+    ) {
+        fail(std::string(label) + " live timing capture is incomplete");
+    }
+
+    const std::vector<int32_t> expected = {
+        1, 13, 17, 21,
+    };
+    if (state.experts != expected) {
+        fail(std::string(label) + " live timing route drift");
+    }
+
+    if (mode == live_timing_mode::stock) {
+        if (!state.saw_stock_output) {
+            fail(std::string(label) + " stock output event missing");
+        }
+        if (
+            require_stock_bytes
+            && state.stock_output.size() != static_cast<size_t>(k_embd)
+        ) {
+            fail(std::string(label) + " stock output bytes missing");
+        }
+    } else if (state.saw_stock_output) {
+        fail(std::string(label) + " candidate reached stock output");
+    }
+
+    for (float value : state.activation) {
+        if (!std::isfinite(value)) {
+            fail(std::string(label) + " activation is non-finite");
+        }
+    }
+}
+
+bool float_vectors_bitwise_equal(
+        const std::vector<float> & a,
         const std::vector<float> & b) {
     if (a.size() != b.size()) {
         return false;
@@ -1069,6 +1395,155 @@ parity compare_outputs(
         dot / std::max(1e-30, std::sqrt(norm_ref * norm_obs));
     out.pass = out.relative_max <= 0.005 && out.cosine >= 0.9999;
     return out;
+}
+
+std::unique_ptr<live_routed_executor> make_live_routed_executor(
+        const options & opt,
+        ggml_backend_t cpu_backend,
+        ggml_backend_t gpu_backend,
+        ggml_backend_buffer_type_t cpu_weight_buft,
+        ggml_backend_buffer_type_t cpu_bias_buft,
+        ggml_backend_buffer_type_t gpu_buft,
+        const std::vector<float> & initial_input,
+        const std::vector<int> & selected_experts,
+        const std::vector<float> & routing_weights) {
+    if (selected_experts.size() != static_cast<size_t>(k_top_k)) {
+        fail("live timing requires exactly four selected experts");
+    }
+    if (routing_weights.size() != static_cast<size_t>(k_top_k)) {
+        fail("live timing requires exactly four routing weights");
+    }
+    const int gpu_hits = opt.routed_gpu_hits;
+    if (gpu_hits != 2 && gpu_hits != 3) {
+        fail("live timing gpu hits must be 2 or 3");
+    }
+    const int cpu_misses = k_top_k - gpu_hits;
+
+    std::vector<int> gpu_ids(
+        selected_experts.begin(),
+        selected_experts.begin() + gpu_hits);
+    std::vector<int> cpu_ids(
+        selected_experts.begin() + gpu_hits,
+        selected_experts.end());
+    std::vector<float> gpu_mix(
+        routing_weights.begin(),
+        routing_weights.begin() + gpu_hits);
+    std::vector<float> cpu_mix(
+        routing_weights.begin() + gpu_hits,
+        routing_weights.end());
+
+    const tensor_bytes cpu_data =
+        load_subset(opt.model, opt.layer, cpu_ids);
+    const tensor_bytes gpu_data =
+        load_subset(opt.model, opt.layer, gpu_ids);
+
+    auto result = std::make_unique<live_routed_executor>();
+    result->gpu_hits = gpu_hits;
+    result->cpu_misses = cpu_misses;
+    result->cpu_set = make_tensor_set(
+        cpu_data,
+        cpu_misses,
+        cpu_weight_buft,
+        cpu_bias_buft);
+    result->gpu_set = make_tensor_set(
+        gpu_data,
+        gpu_hits,
+        gpu_buft,
+        gpu_buft);
+    result->cpu_graph = make_compute_graph(
+        *result->cpu_set,
+        cpu_backend,
+        cpu_misses,
+        initial_input,
+        &cpu_mix);
+    result->gpu_graph = make_compute_graph(
+        *result->gpu_set,
+        gpu_backend,
+        gpu_hits,
+        initial_input,
+        &gpu_mix);
+    result->aggregate = make_sum_graph(
+        gpu_backend,
+        result->gpu_graph->output);
+    return result;
+}
+
+void set_live_routed_input(
+        live_routed_executor & executor,
+        ggml_backend_t cpu_backend,
+        ggml_backend_t gpu_backend,
+        const std::vector<float> & activation) {
+    if (activation.size() != static_cast<size_t>(k_embd)) {
+        fail("live timing activation size mismatch");
+    }
+
+    ggml_backend_tensor_set(
+        executor.cpu_graph->input,
+        activation.data(),
+        0,
+        activation.size() * sizeof(float));
+    ggml_backend_tensor_set(
+        executor.gpu_graph->input,
+        activation.data(),
+        0,
+        activation.size() * sizeof(float));
+    ggml_backend_synchronize(cpu_backend);
+    ggml_backend_synchronize(gpu_backend);
+}
+
+void execute_live_routed_serial(
+        live_routed_executor & executor,
+        ggml_backend_t cpu_backend,
+        ggml_backend_t gpu_backend,
+        const std::vector<float> & activation) {
+    set_live_routed_input(
+        executor,
+        cpu_backend,
+        gpu_backend,
+        activation);
+
+    compute(cpu_backend, *executor.cpu_graph);
+    compute(gpu_backend, *executor.gpu_graph);
+
+    ggml_backend_tensor_copy(
+        executor.cpu_graph->output,
+        executor.aggregate->cpu_partial);
+    ggml_backend_synchronize(cpu_backend);
+    ggml_backend_synchronize(gpu_backend);
+    compute_sum(gpu_backend, *executor.aggregate);
+}
+
+void execute_live_routed_async(
+        live_routed_executor & executor,
+        ggml_backend_t cpu_backend,
+        ggml_backend_t gpu_backend,
+        const std::vector<float> & activation) {
+    set_live_routed_input(
+        executor,
+        cpu_backend,
+        gpu_backend,
+        activation);
+
+    compute_async_start(
+        gpu_backend,
+        *executor.gpu_graph);
+    compute(cpu_backend, *executor.cpu_graph);
+    ggml_backend_synchronize(gpu_backend);
+
+    ggml_backend_tensor_copy(
+        executor.cpu_graph->output,
+        executor.aggregate->cpu_partial);
+    ggml_backend_synchronize(cpu_backend);
+    ggml_backend_synchronize(gpu_backend);
+    compute_sum(gpu_backend, *executor.aggregate);
+}
+
+std::vector<float> read_live_routed_output(
+        live_routed_executor & executor,
+        ggml_backend_t gpu_backend) {
+    return read_output(
+        gpu_backend,
+        executor.aggregate->output);
 }
 
 routed_exactness_result run_routed_exactness(
@@ -1443,6 +1918,589 @@ live_handoff_result run_live_handoff_exactness(
                 selected_experts,
                 handoff_capture.weights));
     }
+
+    llama_sampler_free(sampler);
+    llama_free(ctx);
+    llama_model_free(model);
+    return result;
+}
+
+live_timing_exactness_snapshot capture_live_timing_pair(
+        llama_context * ctx,
+        llama_token decode_token,
+        llama_pos decode_position,
+        live_timing_capture & callback_state,
+        live_timing_reference & current,
+        const live_timing_reference * frozen_reference) {
+    reset_live_timing_capture(
+        callback_state,
+        live_timing_mode::stock,
+        true);
+    llama_batch stock_batch =
+        llama_batch_get_one(&decode_token, 1);
+    const int stock_rc =
+        llama_decode(ctx, stock_batch);
+    callback_state.enabled = false;
+    if (stock_rc != 0) {
+        fail(
+            "live timing stock-reference early stop must return 0, got " +
+            std::to_string(stock_rc));
+    }
+    validate_live_timing_capture(
+        callback_state,
+        live_timing_mode::stock,
+        true,
+        "timing-stock-reference");
+    const live_timing_capture stock_capture =
+        callback_state;
+
+    const bool stock_rollback =
+        llama_memory_seq_rm(
+            llama_get_memory(ctx),
+            0,
+            decode_position,
+            -1);
+    if (!stock_rollback) {
+        fail("live timing stock-reference rollback failed");
+    }
+
+    reset_live_timing_capture(
+        callback_state,
+        live_timing_mode::serial,
+        false);
+    llama_batch handoff_batch =
+        llama_batch_get_one(&decode_token, 1);
+    const int handoff_rc =
+        llama_decode(ctx, handoff_batch);
+    callback_state.enabled = false;
+    if (handoff_rc != 0) {
+        fail(
+            "live timing handoff early stop must return 0, got " +
+            std::to_string(handoff_rc));
+    }
+    validate_live_timing_capture(
+        callback_state,
+        live_timing_mode::serial,
+        false,
+        "timing-handoff");
+    const live_timing_capture handoff_capture =
+        callback_state;
+
+    const bool handoff_rollback =
+        llama_memory_seq_rm(
+            llama_get_memory(ctx),
+            0,
+            decode_position,
+            -1);
+    if (!handoff_rollback) {
+        fail("live timing handoff rollback failed");
+    }
+
+    if (stock_capture.experts != handoff_capture.experts) {
+        fail("live timing expert IDs differ between exactness arms");
+    }
+    if (!float_vectors_bitwise_equal(
+            stock_capture.weights,
+            handoff_capture.weights)) {
+        fail("live timing routing weights differ between exactness arms");
+    }
+
+    live_timing_reference observed;
+    observed.activation = handoff_capture.activation;
+    observed.stock_output = stock_capture.stock_output;
+    observed.routing_weights = handoff_capture.weights;
+    observed.selected_experts.reserve(static_cast<size_t>(k_top_k));
+    for (int32_t expert : handoff_capture.experts) {
+        observed.selected_experts.push_back(static_cast<int>(expert));
+    }
+
+    if (frozen_reference) {
+        if (observed.selected_experts != frozen_reference->selected_experts) {
+            fail("live timing expert IDs drifted from pre-timing reference");
+        }
+        if (!float_vectors_bitwise_equal(
+                observed.routing_weights,
+                frozen_reference->routing_weights)) {
+            fail("live timing routing weights drifted from pre-timing reference");
+        }
+    }
+
+    live_timing_exactness_snapshot snapshot;
+    snapshot.stock_decode_return_code = stock_rc;
+    snapshot.handoff_decode_return_code = handoff_rc;
+    snapshot.stock_rollback = stock_rollback;
+    snapshot.handoff_rollback = handoff_rollback;
+    snapshot.activation_bitwise_equal =
+        float_vectors_bitwise_equal(
+            stock_capture.activation,
+            handoff_capture.activation);
+    snapshot.activation_parity =
+        compare_outputs(
+            stock_capture.activation,
+            handoff_capture.activation);
+    if (!snapshot.activation_parity.pass) {
+        fail("live timing exactness activation pair parity failed");
+    }
+
+    if (frozen_reference) {
+        snapshot.activation_vs_reference =
+            compare_outputs(
+                frozen_reference->activation,
+                observed.activation);
+        snapshot.stock_output_vs_reference =
+            compare_outputs(
+                frozen_reference->stock_output,
+                observed.stock_output);
+    } else {
+        snapshot.activation_vs_reference =
+            compare_outputs(
+                observed.activation,
+                observed.activation);
+        snapshot.stock_output_vs_reference =
+            compare_outputs(
+                observed.stock_output,
+                observed.stock_output);
+    }
+
+    if (!snapshot.activation_vs_reference.pass) {
+        fail("live timing activation drifted from pre-timing reference");
+    }
+    if (!snapshot.stock_output_vs_reference.pass) {
+        fail("live timing stock output drifted from pre-timing reference");
+    }
+
+    current = std::move(observed);
+    return snapshot;
+}
+
+void complete_live_timing_exactness(
+        live_timing_exactness_snapshot & snapshot,
+        live_routed_executor & executor,
+        ggml_backend_t cpu_backend,
+        ggml_backend_t gpu_backend,
+        const live_timing_reference & current) {
+    execute_live_routed_serial(
+        executor,
+        cpu_backend,
+        gpu_backend,
+        current.activation);
+    const std::vector<float> serial_output =
+        read_live_routed_output(
+            executor,
+            gpu_backend);
+
+    execute_live_routed_async(
+        executor,
+        cpu_backend,
+        gpu_backend,
+        current.activation);
+    const std::vector<float> async_output =
+        read_live_routed_output(
+            executor,
+            gpu_backend);
+
+    snapshot.serial_vs_stock =
+        compare_outputs(
+            current.stock_output,
+            serial_output);
+    snapshot.async_vs_stock =
+        compare_outputs(
+            current.stock_output,
+            async_output);
+    snapshot.async_vs_serial =
+        compare_outputs(
+            serial_output,
+            async_output);
+
+    if (!snapshot.serial_vs_stock.pass) {
+        fail("live timing serial pre/post exactness failed stock parity");
+    }
+    if (!snapshot.async_vs_stock.pass) {
+        fail("live timing async pre/post exactness failed stock parity");
+    }
+    if (!snapshot.async_vs_serial.pass) {
+        fail("live timing async pre/post exactness failed serial parity");
+    }
+}
+
+std::pair<double, double> run_live_timing_trial(
+        llama_context * ctx,
+        llama_token decode_token,
+        llama_pos decode_position,
+        live_timing_capture & callback_state,
+        live_timing_mode mode,
+        live_routed_executor & executor,
+        ggml_backend_t cpu_backend,
+        ggml_backend_t gpu_backend,
+        const live_timing_reference & reference) {
+    reset_live_timing_capture(
+        callback_state,
+        mode,
+        false,
+        &reference.activation,
+        &reference.selected_experts,
+        &reference.routing_weights);
+
+    llama_batch batch =
+        llama_batch_get_one(&decode_token, 1);
+    const int rc =
+        llama_decode(ctx, batch);
+    callback_state.enabled = false;
+    if (rc != 0) {
+        fail(
+            "live timing repeated decode must return 0, got " +
+            std::to_string(rc));
+    }
+
+    std::chrono::steady_clock::time_point endpoint;
+    if (mode == live_timing_mode::stock) {
+        endpoint = callback_state.stock_output_ready;
+    } else if (mode == live_timing_mode::serial) {
+        execute_live_routed_serial(
+            executor,
+            cpu_backend,
+            gpu_backend,
+            callback_state.activation);
+        endpoint =
+            std::chrono::steady_clock::now();
+    } else {
+        execute_live_routed_async(
+            executor,
+            cpu_backend,
+            gpu_backend,
+            callback_state.activation);
+        endpoint =
+            std::chrono::steady_clock::now();
+    }
+
+    const double activation_ms =
+        std::chrono::duration<double, std::milli>(
+            endpoint - callback_state.activation_ready).count();
+    const double route_ms =
+        std::chrono::duration<double, std::milli>(
+            endpoint - callback_state.route_ready).count();
+    if (
+        !std::isfinite(activation_ms)
+        || !std::isfinite(route_ms)
+        || activation_ms <= 0.0
+        || route_ms <= 0.0
+    ) {
+        fail("live timing produced invalid latency");
+    }
+
+    validate_live_timing_capture(
+        callback_state,
+        mode,
+        false,
+        mode == live_timing_mode::stock
+            ? "timing-stock"
+            : (mode == live_timing_mode::serial
+                ? "timing-serial"
+                : "timing-async"));
+
+    if (!llama_memory_seq_rm(
+            llama_get_memory(ctx),
+            0,
+            decode_position,
+            -1)) {
+        fail("live timing repeated-token rollback failed");
+    }
+
+    return {activation_ms, route_ms};
+}
+
+live_handoff_timing_result run_live_handoff_timing(
+        const options & opt,
+        ggml_backend_t cpu_backend,
+        ggml_backend_t gpu_backend,
+        ggml_backend_buffer_type_t cpu_weight_buft,
+        ggml_backend_buffer_type_t cpu_bias_buft,
+        ggml_backend_buffer_type_t gpu_buft) {
+    const std::string prompt =
+        read_prompt_file(opt.prompt_file);
+
+    llama_model_params model_params =
+        llama_model_default_params();
+    model_params.n_gpu_layers = 0;
+
+    llama_model * model =
+        llama_model_load_from_file(
+            opt.model.c_str(),
+            model_params);
+    if (!model) {
+        fail("live timing failed to load stock model");
+    }
+
+    const llama_vocab * vocab =
+        llama_model_get_vocab(model);
+    std::vector<llama_token> prompt_tokens =
+        tokenize_prompt(vocab, prompt);
+
+    const uint64_t minimum_ctx =
+        static_cast<uint64_t>(prompt_tokens.size()) + 8;
+    if (minimum_ctx > opt.live_ctx) {
+        llama_model_free(model);
+        fail("live timing configured context is too small");
+    }
+
+    live_timing_capture callback_state;
+
+    llama_context_params ctx_params =
+        llama_context_default_params();
+    ctx_params.n_ctx = opt.live_ctx;
+    ctx_params.n_batch =
+        static_cast<uint32_t>(prompt_tokens.size());
+    ctx_params.n_ubatch =
+        static_cast<uint32_t>(prompt_tokens.size());
+    ctx_params.n_threads = opt.threads;
+    ctx_params.n_threads_batch = opt.threads;
+    ctx_params.no_perf = true;
+    ctx_params.cb_eval = live_timing_callback;
+    ctx_params.cb_eval_user_data = &callback_state;
+
+    llama_context * ctx =
+        llama_init_from_model(model, ctx_params);
+    if (!ctx) {
+        llama_model_free(model);
+        fail("live timing failed to create stock context");
+    }
+
+    llama_sampler_chain_params sampler_params =
+        llama_sampler_chain_default_params();
+    sampler_params.no_perf = true;
+    llama_sampler * sampler =
+        llama_sampler_chain_init(sampler_params);
+    llama_sampler_chain_add(
+        sampler,
+        llama_sampler_init_greedy());
+
+    llama_batch prompt_batch =
+        llama_batch_get_one(
+            prompt_tokens.data(),
+            static_cast<int32_t>(prompt_tokens.size()));
+    if (llama_decode(ctx, prompt_batch) != 0) {
+        llama_sampler_free(sampler);
+        llama_free(ctx);
+        llama_model_free(model);
+        fail("live timing prompt decode failed");
+    }
+
+    const llama_token decode_token =
+        llama_sampler_sample(sampler, ctx, -1);
+    if (decode_token != k_live_handoff_decode_token) {
+        llama_sampler_free(sampler);
+        llama_free(ctx);
+        llama_model_free(model);
+        fail("live timing decode token differs from admitted token");
+    }
+    if (llama_vocab_is_eog(vocab, decode_token)) {
+        llama_sampler_free(sampler);
+        llama_free(ctx);
+        llama_model_free(model);
+        fail("live timing admitted decode token is EOG");
+    }
+
+    const llama_pos decode_position =
+        static_cast<llama_pos>(prompt_tokens.size());
+
+    live_timing_reference pre_reference;
+    live_timing_exactness_snapshot pre_snapshot =
+        capture_live_timing_pair(
+            ctx,
+            decode_token,
+            decode_position,
+            callback_state,
+            pre_reference,
+            nullptr);
+
+    auto executor =
+        make_live_routed_executor(
+            opt,
+            cpu_backend,
+            gpu_backend,
+            cpu_weight_buft,
+            cpu_bias_buft,
+            gpu_buft,
+            pre_reference.activation,
+            pre_reference.selected_experts,
+            pre_reference.routing_weights);
+
+    complete_live_timing_exactness(
+        pre_snapshot,
+        *executor,
+        cpu_backend,
+        gpu_backend,
+        pre_reference);
+
+    bool gate_open = false;
+    for (int attempt = 0; attempt < 60000; ++attempt) {
+        if (std::filesystem::exists(opt.timing_start_gate)) {
+            gate_open = true;
+            break;
+        }
+        std::this_thread::sleep_for(
+            std::chrono::milliseconds(1));
+    }
+    if (!gate_open) {
+        fail("live handoff timing start gate timed out");
+    }
+
+    live_handoff_timing_result result;
+    result.gpu_hits = opt.routed_gpu_hits;
+    result.cpu_misses = k_top_k - opt.routed_gpu_hits;
+    result.decode_input_token = decode_token;
+    result.selected_experts = pre_reference.selected_experts;
+    result.routing_weights = pre_reference.routing_weights;
+    result.pre_exactness = pre_snapshot;
+    result.stock.activation_ms.reserve(
+        static_cast<size_t>(opt.samples));
+    result.stock.route_ms.reserve(
+        static_cast<size_t>(opt.samples));
+    result.serial.activation_ms.reserve(
+        static_cast<size_t>(opt.samples));
+    result.serial.route_ms.reserve(
+        static_cast<size_t>(opt.samples));
+    result.async.activation_ms.reserve(
+        static_cast<size_t>(opt.samples));
+    result.async.route_ms.reserve(
+        static_cast<size_t>(opt.samples));
+
+    const std::array<std::array<live_timing_mode, 3>, 6> orders = {{
+        {
+            live_timing_mode::stock,
+            live_timing_mode::serial,
+            live_timing_mode::async,
+        },
+        {
+            live_timing_mode::stock,
+            live_timing_mode::async,
+            live_timing_mode::serial,
+        },
+        {
+            live_timing_mode::serial,
+            live_timing_mode::stock,
+            live_timing_mode::async,
+        },
+        {
+            live_timing_mode::serial,
+            live_timing_mode::async,
+            live_timing_mode::stock,
+        },
+        {
+            live_timing_mode::async,
+            live_timing_mode::stock,
+            live_timing_mode::serial,
+        },
+        {
+            live_timing_mode::async,
+            live_timing_mode::serial,
+            live_timing_mode::stock,
+        },
+    }};
+
+    auto run_mode = [&](live_timing_mode mode, bool record) {
+        const auto sample =
+            run_live_timing_trial(
+                ctx,
+                decode_token,
+                decode_position,
+                callback_state,
+                mode,
+                *executor,
+                cpu_backend,
+                gpu_backend,
+                pre_reference);
+
+        live_timing_samples * destination = nullptr;
+        if (mode == live_timing_mode::stock) {
+            destination = &result.stock;
+            result.completed_stock_trials++;
+        } else if (mode == live_timing_mode::serial) {
+            destination = &result.serial;
+            result.completed_serial_trials++;
+        } else {
+            destination = &result.async;
+            result.completed_async_trials++;
+        }
+        result.successful_timing_trial_rollbacks++;
+
+        if (record) {
+            destination->activation_ms.push_back(sample.first);
+            destination->route_ms.push_back(sample.second);
+        }
+    };
+
+    for (int round = 0; round < opt.warmup; ++round) {
+        for (live_timing_mode mode :
+                orders[static_cast<size_t>(round) % orders.size()]) {
+            run_mode(mode, false);
+        }
+    }
+
+    constexpr int measured_full_cycles = 13;
+    constexpr std::array<size_t, 3> measured_tail = {
+        0, 3, 4,
+    };
+    static_assert(
+        measured_full_cycles * 6
+            + static_cast<int>(measured_tail.size())
+            == 81);
+
+    for (int round = 0; round < opt.samples; ++round) {
+        size_t order_index = 0;
+        const int cycle_samples =
+            measured_full_cycles
+            * static_cast<int>(orders.size());
+        if (round < cycle_samples) {
+            order_index =
+                static_cast<size_t>(round) % orders.size();
+        } else {
+            const size_t tail_index =
+                static_cast<size_t>(round - cycle_samples);
+            if (tail_index >= measured_tail.size()) {
+                fail("live timing measured order tail overflow");
+            }
+            order_index = measured_tail[tail_index];
+        }
+
+        for (live_timing_mode mode : orders[order_index]) {
+            run_mode(mode, true);
+        }
+    }
+
+    if (
+        result.stock.activation_ms.size()
+            != static_cast<size_t>(opt.samples)
+        || result.stock.route_ms.size()
+            != static_cast<size_t>(opt.samples)
+        || result.serial.activation_ms.size()
+            != static_cast<size_t>(opt.samples)
+        || result.serial.route_ms.size()
+            != static_cast<size_t>(opt.samples)
+        || result.async.activation_ms.size()
+            != static_cast<size_t>(opt.samples)
+        || result.async.route_ms.size()
+            != static_cast<size_t>(opt.samples)
+    ) {
+        fail("live timing sample count mismatch");
+    }
+
+    live_timing_reference post_reference;
+    live_timing_exactness_snapshot post_snapshot =
+        capture_live_timing_pair(
+            ctx,
+            decode_token,
+            decode_position,
+            callback_state,
+            post_reference,
+            &pre_reference);
+    complete_live_timing_exactness(
+        post_snapshot,
+        *executor,
+        cpu_backend,
+        gpu_backend,
+        post_reference);
+    result.post_exactness = post_snapshot;
 
     llama_sampler_free(sampler);
     llama_free(ctx);
@@ -2071,6 +3129,56 @@ void print_case(FILE * out, const case_result & row) {
         row.output_parity.pass ? "PASS" : "FAIL");
 }
 
+void print_live_timing_samples(
+        FILE * out,
+        const live_timing_samples & samples) {
+    std::fputs("{\"activation_ready_ms\":[", out);
+    for (size_t i = 0; i < samples.activation_ms.size(); ++i) {
+        if (i != 0) {
+            std::fputc(',', out);
+        }
+        std::fprintf(out, "%.9f", samples.activation_ms[i]);
+    }
+    std::fputs("],\"route_ready_ms\":[", out);
+    for (size_t i = 0; i < samples.route_ms.size(); ++i) {
+        if (i != 0) {
+            std::fputc(',', out);
+        }
+        std::fprintf(out, "%.9f", samples.route_ms[i]);
+    }
+    std::fputs("]}", out);
+}
+
+void print_live_timing_exactness(
+        FILE * out,
+        const live_timing_exactness_snapshot & value) {
+    std::fprintf(
+        out,
+        "{\"stock_decode_return_code\":%d,"
+        "\"handoff_decode_return_code\":%d,"
+        "\"stock_rollback\":%s,"
+        "\"handoff_rollback\":%s,"
+        "\"activation_bitwise_equal\":%s,"
+        "\"activation_parity\":",
+        value.stock_decode_return_code,
+        value.handoff_decode_return_code,
+        value.stock_rollback ? "true" : "false",
+        value.handoff_rollback ? "true" : "false",
+        value.activation_bitwise_equal ? "true" : "false");
+    print_parity(out, value.activation_parity);
+    std::fputs(",\"activation_vs_reference\":", out);
+    print_parity(out, value.activation_vs_reference);
+    std::fputs(",\"stock_output_vs_reference\":", out);
+    print_parity(out, value.stock_output_vs_reference);
+    std::fputs(",\"serial_vs_stock\":", out);
+    print_parity(out, value.serial_vs_stock);
+    std::fputs(",\"async_vs_stock\":", out);
+    print_parity(out, value.async_vs_stock);
+    std::fputs(",\"async_vs_serial\":", out);
+    print_parity(out, value.async_vs_serial);
+    std::fputc('}', out);
+}
+
 }  // namespace
 
 int main(int argc, char ** argv) {
@@ -2098,7 +3206,10 @@ int main(int argc, char ** argv) {
     ggml_backend_dev_props gpu_props = {};
     ggml_backend_dev_get_props(cpu_dev, &cpu_props);
     ggml_backend_dev_get_props(gpu_dev, &gpu_props);
-    if (opt.async_overlap && !gpu_props.caps.async) {
+    if (
+        (opt.async_overlap || opt.live_handoff_timing)
+        && !gpu_props.caps.async
+    ) {
         fail("GPU backend does not advertise async capability");
     }
 
@@ -2116,6 +3227,136 @@ int main(int argc, char ** argv) {
         ggml_backend_buft_name(cpu_weight_buft);
     const std::string cpu_bias_buft_name =
         ggml_backend_buft_name(cpu_bias_buft);
+
+    if (opt.live_handoff_timing) {
+        const live_handoff_timing_result result =
+            run_live_handoff_timing(
+                opt,
+                cpu.backend,
+                gpu.backend,
+                cpu_weight_buft,
+                cpu_bias_buft,
+                gpu_buft);
+
+        FILE * out = std::fopen(opt.output.c_str(), "wx");
+        if (!out) {
+            fail(
+                "refusing or unable to create output: " +
+                opt.output);
+        }
+
+        std::fprintf(
+            out,
+            "{\"schema\":\"tesy.live_moe_handoff_timing_raw.v1\","
+            "\"classification\":"
+            "\"MEASURED_LIVE_MOE_HANDOFF_TIMING_RAW\","
+            "\"layer\":0,\"ngl\":0,"
+            "\"gpu_hits\":%d,\"cpu_misses\":%d,"
+            "\"threads\":%d,"
+            "\"warmup_triplets\":%d,"
+            "\"sample_triplets\":%d,"
+            "\"inner\":%d,"
+            "\"resident_experts\":true,"
+            "\"provenance_gate\":"
+            "\"FILE_EXISTENCE_BEFORE_WARMUP\","
+            "\"input_semantics\":"
+            "\"HOST_CAPTURE_TO_CPU_AND_GPU_COMPACT_INPUTS\","
+            "\"decode_input_token\":%" PRId32 ","
+            "\"activation_tensor\":\"attn_post_norm-0\","
+            "\"topk_tensor\":\"ffn_moe_topk-0\","
+            "\"routing_weight_tensor\":"
+            "\"ffn_moe_weights_softmax-0\","
+            "\"stock_output_tensor\":\"ffn_moe_out-0\","
+            "\"selected_experts\":[",
+            result.gpu_hits,
+            result.cpu_misses,
+            opt.threads,
+            opt.warmup,
+            opt.samples,
+            opt.inner,
+            result.decode_input_token);
+
+        for (size_t i = 0; i < result.selected_experts.size(); ++i) {
+            if (i != 0) {
+                std::fputc(',', out);
+            }
+            std::fprintf(out, "%d", result.selected_experts[i]);
+        }
+
+        std::fputs("],\"routing_weights\":[", out);
+        for (size_t i = 0; i < result.routing_weights.size(); ++i) {
+            if (i != 0) {
+                std::fputc(',', out);
+            }
+            std::fprintf(out, "%.9g", result.routing_weights[i]);
+        }
+
+        std::fprintf(
+            out,
+            "],\"completed_trials\":{"
+            "\"stock\":%d,\"serial\":%d,\"async\":%d},"
+            "\"successful_timing_trial_rollbacks\":%d,"
+            "\"triplet_order_cycle\":["
+            "[\"stock\",\"serial\",\"async\"],"
+            "[\"stock\",\"async\",\"serial\"],"
+            "[\"serial\",\"stock\",\"async\"],"
+            "[\"serial\",\"async\",\"stock\"],"
+            "[\"async\",\"stock\",\"serial\"],"
+            "[\"async\",\"serial\",\"stock\"]],"
+            "\"measured_order_full_cycles\":13,"
+            "\"measured_order_tail_indices\":[0,3,4],"
+            "\"measured_ordinal_counts\":{"
+            "\"stock\":[27,27,27],"
+            "\"serial\":[27,27,27],"
+            "\"async\":[27,27,27]},"
+            "\"pre_exactness\":",
+            result.completed_stock_trials,
+            result.completed_serial_trials,
+            result.completed_async_trials,
+            result.successful_timing_trial_rollbacks);
+
+        print_live_timing_exactness(
+            out,
+            result.pre_exactness);
+        std::fputs(",\"post_exactness\":", out);
+        print_live_timing_exactness(
+            out,
+            result.post_exactness);
+
+        std::fputs(",\"modes\":{\"stock\":", out);
+        print_live_timing_samples(out, result.stock);
+        std::fputs(",\"serial\":", out);
+        print_live_timing_samples(out, result.serial);
+        std::fputs(",\"async\":", out);
+        print_live_timing_samples(out, result.async);
+
+        std::fputs(
+            "},\"parity_thresholds\":{"
+            "\"relative_max_max\":0.005,"
+            "\"cosine_min\":0.9999},"
+            "\"claim_boundary\":"
+            "\"Resident-expert steady-state timing for one repeated live "
+            "stock layer-0 route. Stock ends at callback-observed "
+            "ffn_moe_out-0 and is therefore an instrumented comparator. "
+            "Serial and async candidates include stock scheduler early-stop "
+            "return, "
+            "host activation updates into resident CPU/GPU compact inputs, "
+            "Tesy expert execution, CPU-partial transfer and final GPU "
+            "aggregation. Expert loading, cache misses, weight transfer, "
+            "output reinjection, committed-token continuation, prefetch and "
+            "physical traffic are excluded. Raw samples are authoritative; "
+            "statistics and decision are recomputed independently.\"}\n",
+            out);
+
+        if (std::fclose(out) != 0) {
+            fail("failed closing live handoff timing output");
+        }
+
+        std::printf("PASS_LIVE_MOE_HANDOFF_TIMING_RAW\n");
+        std::printf("gpu_hits: %d\n", result.gpu_hits);
+        std::printf("output: %s\n", opt.output.c_str());
+        return 0;
+    }
 
     if (opt.live_handoff_exactness) {
         const live_handoff_result result =
