@@ -3913,17 +3913,34 @@ void run_vertical_live_exactness(
             const auto candidate_logits = copy_reinjection_logits(ctx, n_vocab);
             const parity p = compare_outputs(stock_logits[ordinal], candidate_logits);
             logits_parity.push_back(p);
-            if (!p.pass) fail("vertical candidate full logits parity failed");
-            candidate_tokens.push_back(llama_sampler_sample(sampler, ctx, -1));
-            if (candidate_tokens.back() != stock_tokens[ordinal + 1]) {
-                fail("vertical candidate committed greedy continuation diverged");
-            }
             const auto root = std::filesystem::path(opt.output).parent_path();
             const std::string stem = "token-" + std::to_string(ordinal);
             write_reinjection_logits((root / (stem + "-stock-logits.f32")).string(),
                                      stock_logits[ordinal]);
             write_reinjection_logits((root / (stem + "-candidate-logits.f32")).string(),
                                      candidate_logits);
+            if (!p.pass) {
+                std::fprintf(stderr,
+                    "vertical logits failure token=%zu rel=%.9g cosine=%.12f "
+                    "max_abs=%.9g max_ref=%.9g events=%zu\n",
+                    ordinal, p.relative_max, p.cosine, p.max_abs,
+                    p.max_abs_ref, state.events.size());
+                for (size_t i = 0; i < state.events.size(); ++i) {
+                    const auto & event = state.events[i];
+                    if (event.token_ordinal == static_cast<int>(ordinal)) {
+                        std::fprintf(stderr,
+                            "vertical event layer=%d h=%d ids=%d,%d,%d,%d\n",
+                            event.layer, event.gpu_hits,
+                            event.experts[0], event.experts[1],
+                            event.experts[2], event.experts[3]);
+                    }
+                }
+                fail("vertical candidate full logits parity failed");
+            }
+            candidate_tokens.push_back(llama_sampler_sample(sampler, ctx, -1));
+            if (candidate_tokens.back() != stock_tokens[ordinal + 1]) {
+                fail("vertical candidate committed greedy continuation diverged");
+            }
         }
         llama_sampler_free(sampler);
         llama_free(ctx);
