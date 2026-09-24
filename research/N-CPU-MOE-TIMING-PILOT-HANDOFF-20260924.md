@@ -162,3 +162,38 @@ run is authorized by this pilot alone.
 - Next discriminating gate: start a new campaign identity from a clean,
   exactly pinned implementation and confirm observed model buffers before
   the first token request.
+
+## Second physical pilot attempt, 2026-09-24
+
+- Objective: run the same frozen three-placement diagnostic with placement
+  logging enabled. Base commit/tree: `eab64f546ea8635efd2538f14bee2e265485cb40`;
+  clean Tesy and pinned llama.cpp worktrees at campaign start.
+- Campaign root (local, preserved):
+  `results/n-cpu-moe-timing-pilot-20260924T001215Z`.
+- Evidence class: measured physical-host placement log and source-backed
+  interpretation. The model loaded, `/health` passed, and the three fit
+  projections plus fresh auto-fit admission passed. Before any request, the
+  observed CUDA0 model buffer was 6095.35 MiB versus 6095 MiB projected;
+  the observed CPU_Mapped buffer was 10949.33 MiB versus 5440 MiB projected.
+- Failure: the pre-request 2 MiB Host placement gate returned status `FAIL`
+  with a +5509.33 MiB difference. `failure.json` records exit code 2 at
+  runner line 698. No tokens, timing summary, or publication were produced;
+  `N=12` and `N=24` remain NOT_RUN.
+- Interpretation, not a measured physical-RAM claim: pinned llama.cpp creates
+  mmap-backed host buffers from the first to last tensor offset in a context
+  (`get_mapping_range`), whereas the no-allocation fit path sums allocated
+  tensor sizes. The two reported Host quantities can therefore differ when
+  the mapped interval spans gaps. The log's buffer size does not by itself
+  establish resident DRAM bytes or expert traffic.
+- Alternatives: remove mmap with `--load-mode none` in a new protocol, or
+  design a placement proof that compares like-for-like tensor allocation
+  while recording mmap span and residency separately. Neither was applied
+  after this observation.
+- Decision: preserve this negative result and stop the current pilot. Do not
+  raise the 2 MiB tolerance, relabel this run PASS, or publish a timing result.
+- Tests/limits: the current model-free gate passed (105 tests, lint and shell
+  syntax). Physical placement parity and all timing observations remain
+  NOT_RUN under a revised protocol. This failed root must never be reused.
+- Next discriminating gate: prospectively specify a comparable Host placement
+  measure and its physical-residency interpretation, then validate it in a
+  new diagnostic campaign before any timing campaign.
