@@ -27,6 +27,10 @@ def _tokens(payload: Any, *, label: str) -> list[int]:
         raise RoutedLayerExactnessError(f"{label} must be an object")
     if payload.get("schema") != "tesy.routed_layer_capture_tokens.v1":
         raise RoutedLayerExactnessError(f"{label} schema mismatch")
+    if payload.get("classification") != "MEASURED_GREEDY_TOKEN_IDS":
+        raise RoutedLayerExactnessError(
+            f"{label} classification mismatch"
+        )
     values = payload.get("tokens")
     if (
         not isinstance(values, list)
@@ -194,6 +198,12 @@ def validate_replay(
         raise RoutedLayerExactnessError(
             f"h{expected_h} controlled partition mismatch"
         )
+    for field in ("cpu_weight_buffer_type", "cpu_bias_buffer_type"):
+        value = payload.get(field)
+        if not isinstance(value, str) or not value:
+            raise RoutedLayerExactnessError(
+                f"h{expected_h} {field} must be non-empty"
+            )
     if payload.get("selected_experts") != experts:
         raise RoutedLayerExactnessError(
             f"h{expected_h} selected experts differ from capture"
