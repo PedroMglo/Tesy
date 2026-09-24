@@ -59,11 +59,30 @@ from pathlib import Path
 
 root = Path(sys.argv[1])
 
+doctor = json.loads((root / "doctor.json").read_text(encoding="utf-8"))
+reference = doctor.get("reference_check")
+if not isinstance(reference, dict) or reference.get("status") != "PASS":
+    raise SystemExit("reference host identity did not PASS")
+snapshot = doctor.get("snapshot")
+virtualization = snapshot.get("virtualization") if isinstance(snapshot, dict) else None
+if (
+    not isinstance(virtualization, dict)
+    or virtualization.get("status") != "PHYSICAL"
+):
+    raise SystemExit("capacity publication requires virtualization=PHYSICAL")
+
 admission = json.loads((root / "admission-context.json").read_text(encoding="utf-8"))
 if admission.get("schema") != "tesy.placement_admission_context.v1":
     raise SystemExit("unexpected admission-context schema")
 if admission.get("campaign_mode") != "capacity-only":
     raise SystemExit("publication helper accepts capacity-only campaigns only")
+
+doctor = json.loads((root / "doctor.json").read_text(encoding="utf-8"))
+if doctor.get("reference_check", {}).get("status") != "PASS":
+    raise SystemExit("reference-host validation did not PASS")
+virtualization = doctor.get("snapshot", {}).get("virtualization")
+if not isinstance(virtualization, dict) or virtualization.get("status") != "PHYSICAL":
+    raise SystemExit("capacity publication requires virtualization status PHYSICAL")
 
 build = json.loads((root / "build-provenance.json").read_text(encoding="utf-8"))
 if build.get("schema") != "tesy.llama_build_provenance.v1":
@@ -124,6 +143,7 @@ dest = Path(sys.argv[2])
 
 capacity = json.loads((dest / "capacity-summary.json").read_text(encoding="utf-8"))
 build = json.loads((dest / "build-provenance.json").read_text(encoding="utf-8"))
+doctor = json.loads((dest / "doctor.json").read_text(encoding="utf-8"))
 auto_fit = json.loads((dest / "auto-fit.json").read_text(encoding="utf-8"))
 
 artifacts = {}
@@ -152,6 +172,7 @@ manifest = {
     "source_output_root": str(source),
     "publication_branch": branch,
     "build_provenance_status": build["status"],
+    "physical_host_status": doctor["snapshot"]["virtualization"]["status"],
     "admitted_n_cpu_moe": capacity["admitted_n_cpu_moe"],
     "rejected_n_cpu_moe": capacity["rejected_n_cpu_moe"],
     "performance_gate": capacity["performance_gate"],
@@ -176,6 +197,8 @@ rows = [
     "Classification: `SOURCE_BACKED_CAPACITY_GATE`.",
     "",
     f"Build provenance: `{build['status']}`.",
+    "",
+    "Physical host verification: `PASS` (`virtualization=PHYSICAL`).",
     "",
     f"Frozen stock auto-fit argv: `{auto_argv}`.",
     "",
