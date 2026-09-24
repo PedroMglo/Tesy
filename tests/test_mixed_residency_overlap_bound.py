@@ -49,12 +49,14 @@ def _case(h: int) -> dict:
             + cpu_compute["median_ms"]
             + h2d["median_ms"]
         )
-        bound = component_sum
+        bound = None
     else:
         component_sum = gpu_compute["median_ms"]
-        bound = component_sum
+        bound = None
 
     direct = _stats(component_sum + 0.05)
+    if h in {0, 4}:
+        bound = direct["median_ms"]
     return {
         "gpu_hits": h,
         "cpu_misses": cpu,
@@ -130,6 +132,14 @@ def test_validate_overlap_bound_accepts_full_component_contract():
     assert [row["gpu_hits"] for row in summary["cases"]] == [0, 1, 2, 3, 4]
     assert summary["cases"][0]["dominating_compute_branch"] == "CPU_ONLY"
     assert summary["cases"][4]["dominating_compute_branch"] == "GPU_ONLY"
+    assert summary["cases"][0]["post_d2h_overlap_bound_median_ms"] == pytest.approx(
+        summary["cases"][0]["direct_median_ms"]
+    )
+    assert summary["cases"][4]["post_d2h_overlap_bound_median_ms"] == pytest.approx(
+        summary["cases"][4]["direct_median_ms"]
+    )
+    assert summary["cases"][0]["overlap_bound_speedup_vs_direct"] == pytest.approx(1.0)
+    assert summary["cases"][4]["overlap_bound_speedup_vs_direct"] == pytest.approx(1.0)
     assert summary["cases"][2]["overlap_bound_speedup_vs_direct"] > 1.0
 
 
