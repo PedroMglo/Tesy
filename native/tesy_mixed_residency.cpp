@@ -3717,6 +3717,7 @@ struct vertical_hook_state {
     bool active = false;
     bool invoked = false;
     const vertical_reference_state * reference = nullptr;
+    std::string model_path;
     std::array<vertical_layer_runtime, 24> layers;
     std::vector<vertical_event> events;
 };
@@ -3830,6 +3831,26 @@ ggml_status vertical_live_compute_hook(ggml_cgraph * graph,
             layer.borrowed_cpu.down_b = stock_tensors[5];
             const tensor_bytes bytes = vertical_resident_bytes(
                 stock_tensors, resident_ids);
+            if (state->reference && layer_index == 2) {
+                const tensor_bytes file_bytes = load_subset(
+                    state->model_path, layer_index, {0, 1, 2, 3});
+                const std::array<std::pair<const std::vector<uint8_t> *,
+                                           const std::vector<uint8_t> *>, 6> rows{{
+                    {&bytes.gate_w, &file_bytes.gate_w},
+                    {&bytes.up_w, &file_bytes.up_w},
+                    {&bytes.down_w, &file_bytes.down_w},
+                    {&bytes.gate_b, &file_bytes.gate_b},
+                    {&bytes.up_b, &file_bytes.up_b},
+                    {&bytes.down_b, &file_bytes.down_b}}};
+                for (const auto & row : rows) {
+                    if (*row.first != *row.second) {
+                        fail("vertical diagnostic stock tensor bytes differ from GGUF");
+                    }
+                }
+                std::fprintf(stderr,
+                    "vertical diagnostic layer=2 resident stock tensor bytes "
+                    "match GGUF for IDs 0,1,2,3\n");
+            }
             layer.gpu_resident = make_tensor_set(
                 bytes, static_cast<int>(resident_ids.size()),
                 state->gpu_buft, state->gpu_buft);
@@ -3844,6 +3865,24 @@ ggml_status vertical_live_compute_hook(ggml_cgraph * graph,
             const auto & ref = state->reference->events.at(
                 static_cast<size_t>(state->token_ordinal))[
                 static_cast<size_t>(layer_index)];
+            if (layer_index == 2) {
+                if (!layer.cpu_graphs[4]) {
+                    layer.cpu_graphs[4] = make_compute_graph(
+                        layer.borrowed_cpu, state->cpu_backend, 4,
+                        activation);
+                }
+                auto & shadow = *layer.cpu_graphs[4];
+                vertical_set_graph_inputs(shadow, activation, experts, weights);
+                compute(state->cpu_backend, shadow);
+                const auto cpu_output = read_output(
+                    state->cpu_backend, shadow.output);
+                const parity cpu_parity = compare_outputs(ref.output, cpu_output);
+                std::fprintf(stderr,
+                    "vertical diagnostic layer=2 all-CPU shadow rel=%.9g "
+                    "cosine=%.12f bitwise=%d; not used for injection\n",
+                    cpu_parity.relative_max, cpu_parity.cosine,
+                    float_vectors_bitwise_equal(ref.output, cpu_output) ? 1 : 0);
+            }
             const parity p = compare_outputs(ref.output, output);
             std::fprintf(stderr,
                 "vertical FFN parity token=%d layer=%d h=%zu "
@@ -4021,6 +4060,7 @@ void run_vertical_live_exactness(
     state.gpu_buft = gpu_buft;
     state.layers_to_replace = opt.vertical_layers;
     state.reference = &reference;
+    state.model_path = opt.model;
     std::vector<llama_token> candidate_tokens;
     std::vector<parity> logits_parity;
     {

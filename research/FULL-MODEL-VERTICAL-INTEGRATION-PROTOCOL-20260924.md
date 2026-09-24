@@ -22,6 +22,8 @@ Diagnóstico subsequente, sempre em roots distintas e sem alterar política/thre
 
 Na root `results/vertical-live-diagnostic-20260924T214424Z/`, o FFN das layers 0–2 passou a tolerância numérica face à referência stock separada, mas os logits continuaram a falhar com relative max `0,00855978666`. O successor diagnóstico regista a precisão FFN por layer. A leitura de rotas de layers já concluídas **após** o suffix é apenas uma sonda, pois os buffers podem ter sido reutilizados/aliased; não será usada como prova de route drift sem verificação de lifetime ou captura no instante da execução.
 
+A root `results/vertical-live-diagnostic-20260924T215105Z/` localizou: layer 0/1 FFN bitwise equal; layer 2 h=1 FFN relative max `4,12584316e-05`, cosine `0,999999995483`, não bitwise; logits relative max `0,00855978666`. O successor diagnóstico compara, **apenas no harness instrumentado**, os bytes residentes extraídos do tensor stock com os bytes GGUF para IDs 0–3 da layer 2, e calcula um all-CPU FFN sombra sem o usar na injecção. Isto distingue corrupção/repacking de input de divergência numérica do compute GPU. Não existe timed path nem tentativa de afrouxar thresholds.
+
 ## C3 — avaliação (ainda não congelada)
 
 Antes de executar, publicar um manifesto único de workloads públicos versionados, configuração B_causal/B_competitive/Tesy, calibração separada, até quatro casos, até seis colocações testadas, ordem equilibrada, 128 tokens máximos e cinco repetições independentes por condição final. EOS preservado; load separado da inferência. Sem full-logit dumps, FFN sombra ou callbacks diagnósticos escondidos no timed path. A avaliação não será iniciada sem correctness e proveniência completa. `pending_external_audit` mantém-se verdadeiro mesmo após PASS local.
