@@ -544,6 +544,12 @@ void print_timing_summary(
     std::fputs("]}", file);
 }
 
+void silent_log_callback(
+        enum ggml_log_level,
+        const char *,
+        void *) {
+}
+
 void run_cancel_bound(
         const options & opt,
         llama_context * ctx,
@@ -926,7 +932,18 @@ int main(int argc, char ** argv) {
     generated.push_back(first);
 
     if (!opt.cancel_bound_output.empty()) {
+        ggml_log_callback previous_log = nullptr;
+        void * previous_log_user_data = nullptr;
+        llama_log_get(
+            &previous_log,
+            &previous_log_user_data);
+        llama_log_set(silent_log_callback, nullptr);
+
         run_cancel_bound(opt, ctx, first, cancel_bound);
+
+        llama_log_set(
+            previous_log,
+            previous_log_user_data);
 
         llama_sampler_free(sampler);
         llama_free(ctx);
