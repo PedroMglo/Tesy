@@ -61,3 +61,15 @@ target_include_directories(
     "${LLAMA_CPP_SOURCE_DIR}/ggml/include"
 )
 target_link_libraries(tesy-mixed-residency PRIVATE ggml)
+
+
+add_executable(tesy-routed-layer-capture tesy_routed_layer_capture.cpp)
+target_compile_features(tesy-routed-layer-capture PRIVATE cxx_std_17)
+target_compile_options(tesy-routed-layer-capture PRIVATE -Wall -Wextra -Wpedantic -Werror)
+target_include_directories(
+  tesy-routed-layer-capture
+  PRIVATE
+    "${LLAMA_CPP_SOURCE_DIR}/include"
+    "${LLAMA_CPP_SOURCE_DIR}/ggml/include"
+)
+target_link_libraries(tesy-routed-layer-capture PRIVATE llama ggml)
