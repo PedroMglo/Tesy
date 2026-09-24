@@ -5,12 +5,14 @@
 #include <algorithm>
 #include <cerrno>
 #include <cmath>
+#include <cinttypes>
 #include <cstdint>
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
 #include <filesystem>
 #include <fstream>
+#include <iterator>
 #include <string>
 #include <vector>
 
@@ -18,7 +20,6 @@ namespace {
 
 constexpr int64_t k_embd = 2880;
 constexpr int64_t k_top_k = 4;
-constexpr int k_capture_layer = 0;
 constexpr int k_generated_tokens = 2;
 
 [[noreturn]] void fail(const std::string & message) {
