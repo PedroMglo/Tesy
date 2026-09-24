@@ -92,9 +92,19 @@ def validate_expert_crossover(payload: dict[str, Any]) -> dict[str, Any]:
                 f"{field} mismatch: {payload.get(field)!r} != {expected!r}"
             )
 
-    samples = payload.get("samples")
-    if isinstance(samples, bool) or not isinstance(samples, int) or samples < 5:
-        raise ExpertCrossoverError("samples must be an integer >= 5")
+    frozen_workload = {
+        "warmup": 3,
+        "samples": 21,
+        "compute_inner": 5,
+        "transfer_inner": 4,
+        "activation_inner": 100,
+    }
+    for field, expected in frozen_workload.items():
+        if payload.get(field) != expected:
+            raise ExpertCrossoverError(
+                f"{field} must equal frozen value {expected}"
+            )
+    samples = frozen_workload["samples"]
 
     results = payload.get("results")
     if not isinstance(results, list) or [row.get("k") for row in results] != _EXPECTED_K:
