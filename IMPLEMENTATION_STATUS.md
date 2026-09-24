@@ -30,7 +30,7 @@ reference-host/model validation. No source-only row is a performance claim.
 | llama.cpp build provenance lock | PASS_REFERENCE_HOST | capacity campaign verified frozen CMake/GCC/CUDA/server/libggml-cuda identity with zero mismatches |
 | live backend mapping provenance | IMPLEMENTED_MODEL_FREE | timed runs verify process executable and mapped pre-hashed libggml-cuda; timing campaign remains NOT_RUN |
 | capacity result publication | PASS_DERIVED_PUBLICATION | capacity result published at commit `5a8bbf08eb95069b1847f724e5d1be98c6392678`; raw fitter evidence retained byte-identical and hash-manifested |
-| stock placement timing pilot | IMPLEMENTED_MODEL_FREE_HOST_NOT_RUN | prospective 3-point pilot: frozen stock auto-fit, N=12, N=24; live capacity recheck, exact 64-token equality, runtime backend provenance and resource gates |
+| stock placement timing pilot | IMPLEMENTED_MODEL_FREE_HOST_NOT_RUN | prospective 3-point pilot: frozen stock auto-fit, N=12, N=24; live capacity recheck, quantitative CUDA0/Host model-buffer materialization gate (2 MiB tolerance), exact 64-token equality, runtime backend provenance and resource gates |
 | stock B2 gpt-oss lazy-expert baseline | STATIC_NO_GO | pinned gpt-oss expert tensors are not marked `TENSOR_READ_LAZY`; no model-bearing B2 run is justified for this purpose |
 | KTransformers baseline | PINNED_NOT_REPRODUCED | reproduce only if compatible with selected model/host |
 | vLLM baseline | PINNED_NOT_REPRODUCED | B4 only if 8 GiB/32 GiB envelope admits it |
