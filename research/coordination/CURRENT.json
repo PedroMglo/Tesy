@@ -1,18 +1,19 @@
 {
   "work_package": "full-model-vertical-integration-20260924",
-  "stage": "C1",
-  "status": "STOCK_GENERATION_AND_AGGREGATION_MODEL_FREE_PASS_CANDIDATE_NOT_RUN",
+  "stage": "C2",
+  "status": "LIVE_CANDIDATE_NUMERICAL_PARITY_BLOCKER_STOCK_BASELINE_CONTINUES",
   "branch": "engineering/full-model-vertical-integration-20260924",
   "base_commit": "4e6501fc3afaab22bf152fc8e5a9ebb1cd336222",
-  "implementation_commit": "d9b57c31a3ad178e950469284c3f8d38033cc1a8",
-  "measurement_commit": "d9b57c31a3ad178e950469284c3f8d38033cc1a8",
-  "measurement_tree": "fd982484ce27bd659dec6024c8dfe13e4d32611c",
+  "implementation_commit": "6f9beefc6b346b2a30d5e4a4af05c28f934d9289",
+  "measurement_commit": "6f9beefc6b346b2a30d5e4a4af05c28f934d9289",
+  "measurement_tree": "ae518f02ea30ca61e5113aeb194bd512b58a9821",
   "protocol_path": "research/FULL-MODEL-VERTICAL-INTEGRATION-PROTOCOL-20260924.md",
-  "result_path": "research/FULL-MODEL-VERTICAL-INTEGRATION-C1-20260924.md",
-  "evidence_manifest_path": "research/coordination/C1-EVIDENCE.json",
+  "result_path": "research/FULL-MODEL-VERTICAL-INTEGRATION-C2-20260924.md",
+  "evidence_manifest_path": null,
   "blockers": [
-    "Stock chat output from first public prompt is unrelated; useful-format status unknown.",
-    "Raw C1 campaign files are local only; remote audit incomplete."
+    "Layer-2 GPU-resident FFN difference propagates to full-logit relative max 0.00855978666, exceeding the frozen 0.005 limit.",
+    "Full failed-root vectors and telemetry are local only; independent remote recomputation incomplete.",
+    "Stock-only baseline evaluation and capacity publication remain in progress."
   ],
   "pending_external_audit": true
 }
