@@ -100,7 +100,7 @@ cmd=(
   --threads 12 --threads-batch 12
   --n-gpu-layers "$ngl" --fit off
   --n-predict "$n_predict" --temperature 0 --top-k 1 --seed 42
-  --jinja --chat-template gpt-oss --reasoning off
+  --jinja --reasoning off
   --no-warmup --no-context-shift --simple-io --no-display-prompt
   --single-turn --color off --prompt "$prompt"
 )
