@@ -20,7 +20,7 @@ reference-host/model validation. No source-only row is a performance claim.
 | count-space LRU headroom | REAL_TRACE_DERIVED | 1,440 one-token expert accesses; equal-sized-slot LRU, not physical bytes |
 | Belady offline oracle | REAL_TRACE_DERIVED | non-causal equal-slot lower bound; not a production policy |
 | GGUF expert payload inventory | NATIVE_GGUF_PASS_DERIVATION_REFERENCE_HOST | metadata-only native helper PASS on reference laptop: 24 layers × 32 experts, 13,253,760 encoded bytes/expert, types f32+mxfp4, shapes [2880,32] and [2880,2880,32]; not physical fetch granularity |
-| byte-weighted native trace simulation | ADMITTED_NATIVE_INVENTORY_REPLAY_PASS | 16 GiB/4 GiB replay with admitted native inventory: 4 GiB LRU hit 66.25%, Belady(324) 70.21%; trace-derived encoded-payload simulation, not physical traffic |
+| byte-weighted native trace simulation | INCONCLUSIVE_REPLAY_PROVENANCE_NOT_PRESERVED | historical 4 GiB locality values are descriptive only; exact replay provenance and decode-phase authority are not preserved for admission |
 | reference bring-up pipeline | PASS_DIAGNOSTIC_REFERENCE_HOST | third campaign completed after two preserved failed/aborted attempts; details in `research/results/first-real-bringup-20260923/RESULT.md` |
 | stock llama.cpp real gpt-oss-20b load | PASS_DIAGNOSTIC_STOCK_SMOKE | 16-token stock generation; no chat or benchmark qualification |
 | stock B0/B1 measurements | INCONCLUSIVE_RERUN_REQUIRED | physical-host runs exist, but review invalidated same-work admission: placement telemetry empty, provenance incomplete and token trajectories unretained |
@@ -37,7 +37,7 @@ reference-host/model validation. No source-only row is a performance claim.
 | vLLM baseline | PINNED_NOT_REPRODUCED | B4 only if 8 GiB/32 GiB envelope admits it |
 | native Tesy expert residency/cache | NOT_IMPLEMENTED | forbidden until baseline + trace/headroom establish a concrete gap |
 | CPU-vs-transfer-vs-GPU expert crossover | PASS_REFERENCE_HOST_DIAGNOSTIC | campaign `expert-crossover-20260924T101753Z`: real-shape k=1/k=4 parity/resource gates PASS; pinned cold-GPU miss is ~3.05x/~3.64x slower than authoritative n-cpu-moe CPU path while resident GPU is ~5.80x/~4.92x faster; blocking demand transfer NO_GO |
-| mixed GPU-hit / CPU-miss expert execution | GROUPED_LOCALITY_REPLAY_PASS_STAGE_B_REQUIRED | grouped 4 GiB replay PASS: h=3 35.56%, h=4 29.17%, h=2 17.22%, h=0/1 18.06%; direct mixed CPU/GPU timing remains NOT_RUN |
+| mixed GPU-hit / CPU-miss expert execution | GROUPED_REPLAY_INCONCLUSIVE_PHASE_REPLAY_REQUIRED | historical h=0..4 histogram may include phase-ambiguous input under the old replay path; corrected code requires explicit decode phase, so a new provenance-preserved replay is required before histogram-weighted claims |
 | causal prefetch | NOT_IMPLEMENTED | only after locality/headroom and wasted-prefetch analysis |
 | speculative K=2 | NOT_IMPLEMENTED | only after K=1 target/runtime correctness |
 | joint K/residency scheduler | OPEN_RESEARCH_QUESTION | broad novelty overlap exists; benefit and narrower novelty unknown |
