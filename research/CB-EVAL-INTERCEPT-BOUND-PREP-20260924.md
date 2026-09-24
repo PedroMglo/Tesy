@@ -158,7 +158,9 @@ It performs:
 - no output reinjection.
 
 Thus it is an optimistic lower bound for an external callback interception
-design.
+design. The frozen `--ngl 0` stock configuration deliberately makes this a
+permissive survival test: a hard no-go is strong, while survival remains only
+permission for the full handoff experiment.
 
 ## Expected-abort logging
 
