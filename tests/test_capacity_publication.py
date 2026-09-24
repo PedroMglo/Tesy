@@ -13,8 +13,23 @@ def test_capacity_publication_helper_copies_valid_capacity_only_campaign(tmp_pat
     capacity_dir = campaign / "capacity"
     capacity_dir.mkdir(parents=True)
 
-    for name in ("model.json", "doctor.json", "backend.json"):
+    for name in ("model.json", "backend.json"):
         _write_json(campaign / name, {})
+    _write_json(
+        campaign / "doctor.json",
+        {
+            "reference_check": {
+                "schema": "tesy.reference_host_check.v1",
+                "status": "PASS",
+            },
+            "snapshot": {
+                "virtualization": {
+                    "status": "PHYSICAL",
+                    "kind": "none",
+                }
+            },
+        },
+    )
 
     _write_json(
         campaign / "build-provenance.json",
@@ -87,6 +102,7 @@ def test_capacity_publication_helper_copies_valid_capacity_only_campaign(tmp_pat
         (publish / "publication-manifest.json").read_text(encoding="utf-8")
     )
     assert manifest["classification"] == "SOURCE_BACKED_CAPACITY_GATE"
+    assert manifest["physical_host_status"] == "PHYSICAL"
     assert manifest["admitted_n_cpu_moe"] == [12, 16, 20, 24]
     result = (publish / "RESULT.md").read_text(encoding="utf-8")
     assert "stops before timed llama-server observations" in result
@@ -94,3 +110,28 @@ def test_capacity_publication_helper_copies_valid_capacity_only_campaign(tmp_pat
     attributes = (publish / ".gitattributes").read_text(encoding="utf-8")
     assert "capacity/*.stdout.txt -whitespace" in attributes
     assert "auto-fit.stdout.txt -whitespace" in attributes
+
+    _write_json(
+        campaign / "doctor.json",
+        {
+            "reference_check": {
+                "schema": "tesy.reference_host_check.v1",
+                "status": "PASS",
+            },
+            "snapshot": {},
+        },
+    )
+    rejected = subprocess.run(
+        [
+            "bash",
+            str(root / "scripts" / "publish_n_cpu_moe_capacity_result.sh"),
+            str(campaign),
+            str(tmp_path / "rejected"),
+        ],
+        cwd=root,
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    assert rejected.returncode != 0
+    assert "requires virtualization=PHYSICAL" in rejected.stderr
