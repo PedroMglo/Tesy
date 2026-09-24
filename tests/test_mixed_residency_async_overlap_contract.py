@@ -61,7 +61,7 @@ def test_async_runner_requires_project_venv_and_new_output_root():
         root / "scripts" / "run_mixed_residency_async_overlap.sh"
     ).read_text(encoding="utf-8")
 
-    assert '".venv/bin/python"' in text
+    assert ".venv/bin/python" in text
     assert "--async-overlap" in text
     assert "refusing to replace output root" in text
     assert "tesy.mixed_residency_async_overlap validate" in text
