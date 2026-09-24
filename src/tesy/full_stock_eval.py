@@ -125,6 +125,7 @@ def main() -> None:
                            event.get("choices", [])):
                         first_content_ns = time.monotonic_ns()
     end_ns = time.monotonic_ns()
+    args.output.with_name("stream.sse").write_bytes(b"".join(lines))
     content, usage, timings, finish_reason = parse_chat_stream(lines)
     if first_content_ns is None or not content:
         raise ValueError("no visible content/TTFT; preserve failed root")
