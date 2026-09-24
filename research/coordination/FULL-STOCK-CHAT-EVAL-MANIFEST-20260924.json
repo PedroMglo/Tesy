@@ -70,6 +70,7 @@
     "schedule": "for each repetition, alternate comparator order; alternate workload order between repetitions",
     "timing_unit": "independent_fresh_server_process_run",
     "metrics": [
+      "server_launch_to_health_s",
       "client_health_wait_s",
       "ttft_s_first_visible_content",
       "generation_request_s",
@@ -82,6 +83,7 @@
       "peak_gpu_temperature_c",
       "process_swap_bytes"
     ],
+    "raw_sse_arrival_events": "sse-events.jsonl; event arrivals are not asserted to be one token each",
     "aggregation": "upper_median_and_nearest_rank_p95_across_five_independent_runs",
     "candidate_tesy": "NOT_RUN_NUMERICAL_PARITY_BLOCKER",
     "negative_control": "NOT_RUN_NUMERICAL_PARITY_BLOCKER"

@@ -72,6 +72,7 @@ def main() -> None:
     parser.add_argument("--port", required=True, type=int)
     parser.add_argument("--max-tokens", type=int, default=128)
     parser.add_argument("--count-only", action="store_true")
+    parser.add_argument("--server-launch-ns", required=True, type=int)
     args = parser.parse_args()
 
     base = f"http://127.0.0.1:{args.port}"
@@ -88,6 +89,8 @@ def main() -> None:
     else:
         raise RuntimeError("server did not become healthy")
     ready_ns = time.monotonic_ns()
+    if args.server_launch_ns <= 0 or args.server_launch_ns > ready_ns:
+        raise ValueError("invalid server launch timestamp")
 
     payload = {
         "messages": [{"role": "user", "content": args.prompt.read_text()}],
@@ -109,14 +112,21 @@ def main() -> None:
             "prompt_file": str(args.prompt),
             "templated_input_tokens": count,
             "client_health_wait_s": (ready_ns - start_ns) / 1e9,
+            "server_launch_to_health_s": (ready_ns - args.server_launch_ns) / 1e9,
         }, indent=2, sort_keys=True) + "\n")
         return
     request_ns = time.monotonic_ns()
     lines: list[bytes] = []
+    events: list[dict] = []
     first_content_ns = None
     with _post_json(f"{base}/v1/chat/completions", payload) as response:
         for line in response:
             lines.append(line)
+            if line.startswith(b"data: "):
+                events.append({
+                    "arrival_s_from_request": (time.monotonic_ns() - request_ns) / 1e9,
+                    "sse": line.decode("utf-8").strip(),
+                })
             if first_content_ns is None and line.startswith(b"data: "):
                 event_bytes = line[6:].strip()
                 if event_bytes != b"[DONE]":
@@ -126,6 +136,9 @@ def main() -> None:
                         first_content_ns = time.monotonic_ns()
     end_ns = time.monotonic_ns()
     args.output.with_name("stream.sse").write_bytes(b"".join(lines))
+    args.output.with_name("sse-events.jsonl").write_text(
+        "".join(json.dumps(event, sort_keys=True) + "\n" for event in events)
+    )
     content, usage, timings, finish_reason = parse_chat_stream(lines)
     if first_content_ns is None or not content:
         raise ValueError("no visible content/TTFT; preserve failed root")
@@ -134,6 +147,7 @@ def main() -> None:
         "prompt_file": str(args.prompt),
         "max_tokens": args.max_tokens,
         "client_health_wait_s": (ready_ns - start_ns) / 1e9,
+        "server_launch_to_health_s": (ready_ns - args.server_launch_ns) / 1e9,
         "ttft_s": (first_content_ns - request_ns) / 1e9,
         "generation_request_s": (end_ns - request_ns) / 1e9,
         "usage": usage,

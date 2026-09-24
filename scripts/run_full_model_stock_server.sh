@@ -104,6 +104,7 @@ from pathlib import Path
 Path(sys.argv[1]).write_text(json.dumps(sys.argv[2:], indent=2) + "\n")
 PY
 stage="server"
+server_launch_ns="$("$python_bin" -c 'import time; print(time.monotonic_ns())')"
 "${cmd[@]}" >"$out/server.stdout.txt" 2>"$out/server.stderr.txt" &
 active_pid=$!
 "$python_bin" -m tesy.resource_monitor --pid "$active_pid" \
@@ -116,7 +117,8 @@ stage="runtime-provenance"
   --expected-argv "$out/argv.json" \
   --output "$out/runtime-provenance.json"
 stage="request"
-client_args=(--prompt "$prompt_file" --output "$out/run.json" --port "$port" --max-tokens 128)
+client_args=(--prompt "$prompt_file" --output "$out/run.json" --port "$port" \
+  --max-tokens 128 --server-launch-ns "$server_launch_ns")
 if [[ "$mode" == "count-only" ]]; then
   client_args+=(--count-only)
 fi
