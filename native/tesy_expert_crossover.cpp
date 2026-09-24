@@ -658,6 +658,7 @@ void require_compute(
     if (status != GGML_STATUS_SUCCESS) {
         fail("ggml_backend_graph_compute failed");
     }
+    ggml_backend_synchronize(backend);
 }
 
 std::vector<float> read_output(
