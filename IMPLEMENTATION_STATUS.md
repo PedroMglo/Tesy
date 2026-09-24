@@ -19,7 +19,7 @@ reference-host/model validation. No source-only row is a performance claim.
 | paired trace OFF/ON token gate | REAL_MODEL_TOKEN_ID_EQUALITY_PASS | same 16 generated IDs for one deterministic raw prompt; no bitwise/numerical parity claim |
 | count-space LRU headroom | REAL_TRACE_DERIVED | 1,440 one-token expert accesses; equal-sized-slot LRU, not physical bytes |
 | Belady offline oracle | REAL_TRACE_DERIVED | non-causal equal-slot lower bound; not a production policy |
-| GGUF expert payload inventory | NATIVE_RELOCK_IMPLEMENTED_HOST_NOT_RUN | prior 24 × 32 / 13,253,760-byte result remains exploratory context; new metadata-only helper uses pinned gguf/ggml APIs with no gguf-py dependency, physical relock NOT_RUN |
+| GGUF expert payload inventory | NATIVE_GGUF_PASS_DERIVATION_REFERENCE_HOST | metadata-only native helper PASS on reference laptop: 24 layers × 32 experts, 13,253,760 encoded bytes/expert, types f32+mxfp4, shapes [2880,32] and [2880,2880,32]; not physical fetch granularity |
 | byte-weighted native trace simulation | REAL_TRACE_DERIVED_SIMULATION | 16 GiB/4 GiB hypothetical two-tier LRU; not physical traffic |
 | reference bring-up pipeline | PASS_DIAGNOSTIC_REFERENCE_HOST | third campaign completed after two preserved failed/aborted attempts; details in `research/results/first-real-bringup-20260923/RESULT.md` |
 | stock llama.cpp real gpt-oss-20b load | PASS_DIAGNOSTIC_STOCK_SMOKE | 16-token stock generation; no chat or benchmark qualification |
@@ -37,7 +37,7 @@ reference-host/model validation. No source-only row is a performance claim.
 | KTransformers baseline | PINNED_NOT_REPRODUCED | reproduce only if compatible with selected model/host |
 | vLLM baseline | PINNED_NOT_REPRODUCED | B4 only if 8 GiB/32 GiB envelope admits it |
 | native Tesy expert residency/cache | NOT_IMPLEMENTED | forbidden until baseline + trace/headroom establish a concrete gap |
-| CPU-vs-transfer-vs-GPU expert crossover | BLOCKED_ON_NATIVE_INVENTORY_HOST_RUN | continuum shape is measured; native dependency-free shape/type inventory implementation exists but reference-host result is NOT_RUN; crossover remains blocked until that gate passes |
+| CPU-vs-transfer-vs-GPU expert crossover | UNBLOCKED_DESIGN_REQUIRED | native inventory PASS provides admitted real shapes/types; next gate should measure CPU-resident expert path, requested Host->GPU weight transfer and resident-GPU compute separately, without physical-PCIe claims |
 | causal prefetch | NOT_IMPLEMENTED | only after locality/headroom and wasted-prefetch analysis |
 | speculative K=2 | NOT_IMPLEMENTED | only after K=1 target/runtime correctness |
 | joint K/residency scheduler | OPEN_RESEARCH_QUESTION | broad novelty overlap exists; benefit and narrower novelty unknown |
