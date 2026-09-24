@@ -1,0 +1,153 @@
+{
+  "binaries": {
+    "ggml_cuda": {
+      "bytes": 64233000,
+      "inode": 14625718,
+      "mtime_ns": 1790196314849208567,
+      "path": "/home/pmglo/Projects/Tesy/.deps/llama.cpp/build/bin/libggml-cuda.so.0.25.0",
+      "sha256": "7bfb9b2970e65b2e0db7835eba76a09be6a1c410c8ac846b10c78e76459296a0"
+    },
+    "llama_fit_params": {
+      "bytes": 12568,
+      "inode": 14636000,
+      "mtime_ns": 1790205630911570159,
+      "path": "/home/pmglo/Projects/Tesy/.deps/llama.cpp/build/bin/llama-fit-params",
+      "sha256": "787df8c0db7e38d8127703f129d259ae135475c7e1271d0a4ca8954913c037a2"
+    },
+    "llama_server": {
+      "bytes": 12568,
+      "inode": 14625881,
+      "mtime_ns": 1790196316350947043,
+      "path": "/home/pmglo/Projects/Tesy/.deps/llama.cpp/build/bin/llama-server",
+      "sha256": "facdeefaff9d54818f7786f8812125231f28281ae496b62946fbb7e7127fe456"
+    }
+  },
+  "claim_boundary": "PASS establishes the locked CMake/toolchain fields, exact binary and ggml-cuda hashes, runnable dependency resolution, and CUDA0 visibility for this local build. It is not model correctness or performance.",
+  "classification": "MEASURED_LOCAL_PROVENANCE",
+  "cmake": {
+    "command": [
+      "cmake",
+      "--version"
+    ],
+    "returncode": 0,
+    "status": "OK",
+    "stderr": "",
+    "stdout": "cmake version 4.3.0\n\nCMake suite maintained and supported by Kitware (kitware.com/cmake)."
+  },
+  "cmake_cache": {
+    "path": "/home/pmglo/Projects/Tesy/.deps/llama.cpp/build/CMakeCache.txt",
+    "selected": {
+      "CMAKE_BUILD_TYPE": "Release",
+      "CMAKE_CUDA_ARCHITECTURES": "89",
+      "CMAKE_CUDA_COMPILER": "/usr/local/cuda/bin/nvcc",
+      "CMAKE_CXX_COMPILER": "/usr/bin/g++-15",
+      "CMAKE_C_COMPILER": "/usr/bin/gcc-15",
+      "GGML_CUDA": "ON"
+    },
+    "sha256": "66d0693280dc51f3e9698a6a8a53c319d8347b2b9f24610307011a951bc668cd"
+  },
+  "compilers": {
+    "c": {
+      "command": [
+        "/usr/bin/gcc-15",
+        "-dumpfullversion"
+      ],
+      "path": "/usr/bin/gcc-15",
+      "returncode": 0,
+      "sha256": "14243f9ecbf08dfb3490eaca0c832055b8934ca0883f507cf951a5107fe7b36f",
+      "status": "OK",
+      "stderr": "",
+      "stdout": "15.3.1"
+    },
+    "cuda": {
+      "command": [
+        "/usr/local/cuda-13.3/bin/nvcc",
+        "--version"
+      ],
+      "path": "/usr/local/cuda-13.3/bin/nvcc",
+      "returncode": 0,
+      "sha256": "0d3511aa5fe86ae6565618aeebbdd2a7e4fe8affa1980787071199e1cdae07dc",
+      "status": "OK",
+      "stderr": "",
+      "stdout": "nvcc: NVIDIA (R) Cuda compiler driver\nCopyright (c) 2005-2026 NVIDIA Corporation\nBuilt on Tue_Jun_09_02:43:40_PM_PDT_2026\nCuda compilation tools, release 13.3, V13.3.73\nBuild cuda_13.3.r13.3/compiler.38244171_0"
+    },
+    "cxx": {
+      "command": [
+        "/usr/bin/g++-15",
+        "-dumpfullversion"
+      ],
+      "path": "/usr/bin/g++-15",
+      "returncode": 0,
+      "sha256": "cef5002fbce633104c81b24e9fd935251ab653234c8dce8758d3c963d6123c8a",
+      "status": "OK",
+      "stderr": "",
+      "stdout": "15.3.1"
+    }
+  },
+  "devices": {
+    "llama_fit_params": {
+      "command": [
+        "/home/pmglo/Projects/Tesy/.deps/llama.cpp/build/bin/llama-fit-params",
+        "--list-devices"
+      ],
+      "returncode": 0,
+      "status": "OK",
+      "stderr": "",
+      "stdout": "Available devices:\n  CUDA0: NVIDIA GeForce RTX 4060 Laptop GPU (7888 MiB, 7785 MiB free)"
+    },
+    "llama_server": {
+      "command": [
+        "/home/pmglo/Projects/Tesy/.deps/llama.cpp/build/bin/llama-server",
+        "--list-devices"
+      ],
+      "returncode": 0,
+      "status": "OK",
+      "stderr": "0.00.000.690 I srv  llama_server: initializing ...",
+      "stdout": "Available devices:\n  CUDA0: NVIDIA GeForce RTX 4060 Laptop GPU (7888 MiB, 7785 MiB free)"
+    }
+  },
+  "dynamic_dependencies": {
+    "llama_fit_params": {
+      "command": [
+        "ldd",
+        "/home/pmglo/Projects/Tesy/.deps/llama.cpp/build/bin/llama-fit-params"
+      ],
+      "returncode": 0,
+      "status": "OK",
+      "stderr": "",
+      "stdout": "linux-vdso.so.1 (0x00007f8ae9af1000)\n\tlibllama-fit-params-impl.so => /home/pmglo/Projects/Tesy/.deps/llama.cpp/build/bin/libllama-fit-params-impl.so (0x00007f8ae9ae1000)\n\tlibllama-common.so.0 => /home/pmglo/Projects/Tesy/.deps/llama.cpp/build/bin/libllama-common.so.0 (0x00007f8ae9600000)\n\tlibllama.so.0 => /home/pmglo/Projects/Tesy/.deps/llama.cpp/build/bin/libllama.so.0 (0x00007f8ae9200000)\n\tlibggml.so.0 => /home/pmglo/Projects/Tesy/.deps/llama.cpp/build/bin/libggml.so.0 (0x00007f8ae9ad4000)\n\tlibggml-cpu.so.0 => /home/pmglo/Projects/Tesy/.deps/llama.cpp/build/bin/libggml-cpu.so.0 (0x00007f8ae9028000)\n\tlibggml-cuda.so.0 => /home/pmglo/Projects/Tesy/.deps/llama.cpp/build/bin/libggml-cuda.so.0 (0x00007f8ae5800000)\n\tlibggml-base.so.0 => /home/pmglo/Projects/Tesy/.deps/llama.cpp/build/bin/libggml-base.so.0 (0x00007f8ae8f57000)\n\tlibcuda.so.1 => /lib64/libcuda.so.1 (0x00007f8adec00000)\n\tlibstdc++.so.6 => /lib64/libstdc++.so.6 (0x00007f8ade800000)\n\tlibm.so.6 => /lib64/libm.so.6 (0x00007f8adeae9000)\n\tlibgcc_s.so.1 => /lib64/libgcc_s.so.1 (0x00007f8ae95d3000)\n\tlibc.so.6 => /lib64/libc.so.6 (0x00007f8ade607000)\n\tlibssl.so.3 => /lib64/libssl.so.3 (0x00007f8ade50e000)\n\tlibcrypto.so.3 => /lib64/libcrypto.so.3 (0x00007f8adde00000)\n\t/lib64/ld-linux-x86-64.so.2 (0x00007f8ae9af3000)\n\tlibgomp.so.1 => /lib64/libgomp.so.1 (0x00007f8ade4b0000)\n\tlibcudart.so.13 => /usr/local/cuda/targets/x86_64-linux/lib/libcudart.so.13 (0x00007f8adda00000)\n\tlibcublas.so.13 => /usr/local/cuda/targets/x86_64-linux/lib/libcublas.so.13 (0x00007f8ada200000)\n\tlibcublasLt.so.13 => /usr/local/cuda/targets/x86_64-linux/lib/libcublasLt.so.13 (0x00007f8ab4c00000)\n\tlibpthread.so.0 => /lib64/libpthread.so.0 (0x00007f8ae9aaa000)\n\tlibdl.so.2 => /lib64/libdl.so.2 (0x00007f8ae95cf000)\n\tlibrt.so.1 => /lib64/librt.so.1 (0x00007f8ae95cb000)\n\tlibz.so.1 => /lib64/libz.so.1 (0x00007f8ae57d6000)"
+    },
+    "llama_server": {
+      "command": [
+        "ldd",
+        "/home/pmglo/Projects/Tesy/.deps/llama.cpp/build/bin/llama-server"
+      ],
+      "returncode": 0,
+      "status": "OK",
+      "stderr": "",
+      "stdout": "linux-vdso.so.1 (0x00007f3603705000)\n\tlibllama-server-impl.so => /home/pmglo/Projects/Tesy/.deps/llama.cpp/build/bin/libllama-server-impl.so (0x00007f3603000000)\n\tlibllama-common.so.0 => /home/pmglo/Projects/Tesy/.deps/llama.cpp/build/bin/libllama-common.so.0 (0x00007f3602a00000)\n\tlibmtmd.so.0 => /home/pmglo/Projects/Tesy/.deps/llama.cpp/build/bin/libmtmd.so.0 (0x00007f3602850000)\n\tlibllama.so.0 => /home/pmglo/Projects/Tesy/.deps/llama.cpp/build/bin/libllama.so.0 (0x00007f3602400000)\n\tlibggml.so.0 => /home/pmglo/Projects/Tesy/.deps/llama.cpp/build/bin/libggml.so.0 (0x00007f36036f0000)\n\tlibggml-cpu.so.0 => /home/pmglo/Projects/Tesy/.deps/llama.cpp/build/bin/libggml-cpu.so.0 (0x00007f3602228000)\n\tlibggml-cuda.so.0 => /home/pmglo/Projects/Tesy/.deps/llama.cpp/build/bin/libggml-cuda.so.0 (0x00007f35fea00000)\n\tlibggml-base.so.0 => /home/pmglo/Projects/Tesy/.deps/llama.cpp/build/bin/libggml-base.so.0 (0x00007f360361d000)\n\tlibcuda.so.1 => /lib64/libcuda.so.1 (0x00007f35f7e00000)\n\tlibssl.so.3 => /lib64/libssl.so.3 (0x00007f3602f07000)\n\tlibcrypto.so.3 => /lib64/libcrypto.so.3 (0x00007f35f7800000)\n\tlibstdc++.so.6 => /lib64/libstdc++.so.6 (0x00007f35f7400000)\n\tlibm.so.6 => /lib64/libm.so.6 (0x00007f35f76e9000)\n\tlibgcc_s.so.1 => /lib64/libgcc_s.so.1 (0x00007f3602ed8000)\n\tlibc.so.6 => /lib64/libc.so.6 (0x00007f35f7207000)\n\t/lib64/ld-linux-x86-64.so.2 (0x00007f3603707000)\n\tlibgomp.so.1 => /lib64/libgomp.so.1 (0x00007f36027f2000)\n\tlibcudart.so.13 => /usr/local/cuda/targets/x86_64-linux/lib/libcudart.so.13 (0x00007f35f6e00000)\n\tlibcublas.so.13 => /usr/local/cuda/targets/x86_64-linux/lib/libcublas.so.13 (0x00007f35f3600000)\n\tlibcublasLt.so.13 => /usr/local/cuda/targets/x86_64-linux/lib/libcublasLt.so.13 (0x00007f35ce000000)\n\tlibpthread.so.0 => /lib64/libpthread.so.0 (0x00007f3602ed2000)\n\tlibdl.so.2 => /lib64/libdl.so.2 (0x00007f3602ece000)\n\tlibrt.so.1 => /lib64/librt.so.1 (0x00007f3602ec8000)\n\tlibz.so.1 => /lib64/libz.so.1 (0x00007f36027c8000)"
+    }
+  },
+  "mismatches": [],
+  "reference": {
+    "backend_id": "llama-cpp-stock",
+    "build_type": "Release",
+    "c_compiler": "/usr/bin/gcc-15",
+    "c_compiler_version": "15.3.1",
+    "cmake_version": "4.3.0",
+    "cuda_architectures": [
+      "89"
+    ],
+    "cuda_compiler": "/usr/local/cuda/bin/nvcc",
+    "cuda_compiler_version_contains": "V13.3.73",
+    "cxx_compiler": "/usr/bin/g++-15",
+    "cxx_compiler_version": "15.3.1",
+    "ggml_cuda": "ON",
+    "ggml_cuda_sha256": "7bfb9b2970e65b2e0db7835eba76a09be6a1c410c8ac846b10c78e76459296a0",
+    "llama_cpp_commit": "4e416ee7308dd6b581796f1a6241276cd5982691",
+    "llama_server_sha256": "facdeefaff9d54818f7786f8812125231f28281ae496b62946fbb7e7127fe456",
+    "schema": "tesy.reference_llama_toolchain.v1"
+  },
+  "schema": "tesy.llama_build_provenance.v1",
+  "status": "PASS"
+}

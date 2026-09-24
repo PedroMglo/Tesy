@@ -1,0 +1,37 @@
+{
+  "claim_boundary": "Campaign-start host state summary only. Per-observation runtime resources are recorded in pilot-summary.json.",
+  "classification": "MEASURED_HOST_STATE",
+  "cpu": {
+    "logical_cpus": 24,
+    "model": "AMD Ryzen AI 9 HX 370 w/ Radeon 890M"
+  },
+  "gpu": {
+    "driver_version": "615.71.09",
+    "memory_free_bytes": 8271167488,
+    "memory_total_bytes": 8585740288,
+    "name": "NVIDIA GeForce RTX 4060 Laptop GPU",
+    "pci_bus_id": "00000000:C4:00.0",
+    "pstate": "P3",
+    "temperature_c": 44.0
+  },
+  "gpu_compute_processes": {
+    "command": [
+      "nvidia-smi",
+      "--query-compute-apps=pid,process_name,used_memory",
+      "--format=csv,noheader,nounits"
+    ],
+    "returncode": 0,
+    "status": "OK",
+    "stderr": "",
+    "stdout": ""
+  },
+  "memory": {
+    "available_bytes": 25748172800,
+    "swap_free_bytes": 16348778496,
+    "swap_total_bytes": 16348868608,
+    "total_bytes": 32698654720
+  },
+  "profile_id": "linux-hx370-rtx4060laptop-8g-32g",
+  "reference_status": "PASS",
+  "schema": "tesy.timing_pilot_host_summary.v1"
+}
