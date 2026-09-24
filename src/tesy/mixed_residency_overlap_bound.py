@@ -201,11 +201,11 @@ def validate_overlap_bound_raw(payload: dict[str, Any]) -> dict[str, Any]:
                 + medians["cpu_compute"]
                 + medians["cpu_partial_h2d"]
             )
-            overlap_bound = component_sum
+            overlap_bound = float(direct["median_ms"])
             dominating_branch = "CPU_ONLY"
         else:
             component_sum = medians["gpu_compute"]
-            overlap_bound = component_sum
+            overlap_bound = float(direct["median_ms"])
             dominating_branch = "GPU_ONLY"
 
         observed_component_sum = _finite(
@@ -265,7 +265,9 @@ def validate_overlap_bound_raw(payload: dict[str, Any]) -> dict[str, Any]:
             "Component timings are measured separately from the direct serial path. "
             "The overlap bound assumes CPU and GPU subset compute can overlap only "
             "after the input D2H copy completes; D2H, CPU-partial H2D and GPU "
-            "aggregation remain serialized. It is not a measured async execution."
+            "aggregation remain serialized. The h=0/h=4 anchors retain their "
+            "measured direct-wall medians because no overlap transformation applies. "
+            "It is not a measured async execution."
         ),
     }
 
