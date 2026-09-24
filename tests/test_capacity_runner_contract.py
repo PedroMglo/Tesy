@@ -41,3 +41,171 @@ def test_manual_capacity_estimation_is_explicit_all_gpu_plus_cpu_moe():
     assert "--gpu-layers all" in text
     assert '--n-cpu-moe "$n"' in text
     assert "--fit-print on" in text
+
+
+def test_timing_pilot_is_bound_to_published_capacity_evidence():
+    root = Path(__file__).resolve().parents[1]
+    text = (root / "scripts" / "run_n_cpu_moe_capacity_pareto.sh").read_text(
+        encoding="utf-8"
+    )
+
+    assert '--timing-pilot' in text
+    assert (
+        'capacity_evidence_commit="5dd06218584bc5f0e72b05102eb6ff483a9dbfe7"'
+        in text
+    )
+    assert 'cp "$capacity_evidence_dir/auto-fit.json" "$out/auto-fit.json"' in text
+    assert 'git -C "$root" merge-base --is-ancestor "$capacity_evidence_commit" HEAD' in text
+
+
+def test_timing_pilot_rejects_withdrawn_capacity_publication():
+    root = Path(__file__).resolve().parents[1]
+    text = (root / "scripts" / "run_n_cpu_moe_capacity_pareto.sh").read_text(
+        encoding="utf-8"
+    )
+
+    assert 'manifest.get("classification") != "SOURCE_BACKED_CAPACITY_GATE"' in text
+    assert 'manifest.get("performance_gate") != "PASS"' in text
+    assert 'manifest.get("physical_host_status") != "PHYSICAL"' in text
+    assert (
+        'manifest.get("admitted_n_cpu_moe") != summary.get("admitted_n_cpu_moe")'
+        in text
+    )
+
+
+def test_default_timed_mode_generates_auto_fit_capacity_input():
+    root = Path(__file__).resolve().parents[1]
+    text = (root / "scripts" / "run_n_cpu_moe_capacity_pareto.sh").read_text(
+        encoding="utf-8"
+    )
+
+    generation = text.index("if (( capacity_only == 0 )); then")
+    auto_stdout = text.index('>"$out/capacity/auto-fit-frozen.stdout.txt"')
+    pre_run_use = text.index(
+        'capacity_input="$out/capacity/auto-fit-frozen.stdout.txt"'
+    )
+
+    assert generation < auto_stdout < pre_run_use
+
+
+def test_timing_pilot_rechecks_exactly_three_selected_placements():
+    root = Path(__file__).resolve().parents[1]
+    text = (root / "scripts" / "run_n_cpu_moe_capacity_pareto.sh").read_text(
+        encoding="utf-8"
+    )
+
+    assert 'candidates=(12 24)' in text
+    assert '--placement-id "auto-fit-frozen"' in text
+    assert 'order=("auto" "n12" "n24")' in text
+    assert '"schema": "tesy.timing_pilot_capacity_gate.v1"' in text
+
+
+def test_timing_pilot_has_separate_non_pareto_summary_and_exit():
+    root = Path(__file__).resolve().parents[1]
+    text = (root / "scripts" / "run_n_cpu_moe_capacity_pareto.sh").read_text(
+        encoding="utf-8"
+    )
+
+    pilot_summary = text.index('"$out/pilot-summary.json"')
+    pilot_pass = text.index("PASS_DIAGNOSTIC_STOCK_PLACEMENT_TIMING_PILOT")
+    sweep_summary = text.index('"$out/sweep-summary.json"')
+
+    assert pilot_summary < pilot_pass < sweep_summary
+    assert '"schema": "tesy.stock_placement_timing_pilot.v1"' in text
+    assert "no confirmatory performance winner or Pareto frontier follows" in text
+
+
+def test_timing_pilot_rechecks_fresh_resources_before_each_server():
+    root = Path(__file__).resolve().parents[1]
+    text = (root / "scripts" / "run_n_cpu_moe_capacity_pareto.sh").read_text(
+        encoding="utf-8"
+    )
+
+    snapshot = text.index('snapshot_pre_run_resources "$run_dir/pre-run-resources.json"')
+    admission = text.index('pre_run_capacity_check \\')
+    server = text.index('"${cmd[@]}" >"$run_dir/server.stdout.txt"')
+
+    assert snapshot < admission < server
+
+
+def test_runtime_summary_rejects_any_gpu_telemetry_failure():
+    root = Path(__file__).resolve().parents[1]
+    text = (root / "scripts" / "run_n_cpu_moe_capacity_pareto.sh").read_text(
+        encoding="utf-8"
+    )
+
+    assert 'if summary["gpu_failed_samples"] != 0:' in text
+    assert "GPU telemetry incomplete" in text
+
+
+def test_timing_pilot_gates_request_on_quantitative_placement_telemetry():
+    root = Path(__file__).resolve().parents[1]
+    text = (root / "scripts" / "run_n_cpu_moe_capacity_pareto.sh").read_text(
+        encoding="utf-8"
+    )
+
+    telemetry = text.index("python3 -m tesy.placement_telemetry")
+    request = text.index("python3 -m tesy.server_client")
+    assert telemetry < request
+    assert '--fit-print "$capacity_input"' in text
+    assert '--placement-id "$placement_id"' in text
+    assert '--tolerance-mib 2.0' in text
+    assert '--output "$run_dir/placement-telemetry.json"' in text
+
+
+def test_timing_pilot_enables_backend_placement_logs_before_server_start():
+    root = Path(__file__).resolve().parents[1]
+    text = (root / "scripts" / "run_n_cpu_moe_capacity_pareto.sh").read_text(
+        encoding="utf-8"
+    )
+
+    verbosity = text.index('cmd+=(--verbosity 4)')
+    server = text.index('"${cmd[@]}" >"$run_dir/server.stdout.txt"')
+    assert (
+        'if (( timing_pilot == 1 )); then\n'
+        '    # Pinned llama.cpp maps backend INFO placement rows to verbosity 4.\n'
+        '    cmd+=(--verbosity 4)'
+    ) in text
+    assert verbosity < server
+
+
+def test_timing_pilot_binds_live_process_to_frozen_server_argv():
+    root = Path(__file__).resolve().parents[1]
+    text = (root / "scripts" / "run_n_cpu_moe_capacity_pareto.sh").read_text(
+        encoding="utf-8"
+    )
+
+    argv_text = text.index('>"$run_dir/server-command.txt"')
+    argv_json = text.index('"$run_dir/server-argv.json"')
+    server = text.index('"${cmd[@]}" >"$run_dir/server.stdout.txt"')
+    runtime = text.index("python3 -m tesy.runtime_provenance")
+    request = text.index("python3 -m tesy.server_client")
+
+    assert argv_text < argv_json < server < runtime < request
+    assert '--expected-argv "$run_dir/server-argv.json"' in text
+    assert 'runtime.get("argv", {}).get("status") != "PASS"' in text
+
+
+def test_timing_pilot_does_not_compare_host_mmap_span_to_fit_host_bytes():
+    root = Path(__file__).resolve().parents[1]
+    text = (root / "scripts" / "run_n_cpu_moe_capacity_pareto.sh").read_text(
+        encoding="utf-8"
+    )
+
+    assert (
+        '"host_comparability_status": '
+        'placement_telemetry["host_comparability"]["status"]'
+    ) in text
+    assert '"observed_host_mmap_span_mib"' in text
+    assert '"projected_host_logical_model_mib"' in text
+    assert '"observed_host_model_mib"' not in text
+
+
+def test_timing_pilot_stops_on_monitor_failure_or_nonfinite_resources():
+    root = Path(__file__).resolve().parents[1]
+    text = (root / "scripts" / "run_n_cpu_moe_capacity_pareto.sh").read_text(
+        encoding="utf-8"
+    )
+
+    assert '  wait "$monitor_pid"\n  monitor_pid=""' in text
+    assert 'raise SystemExit("non-finite resource telemetry")' in text

@@ -105,20 +105,20 @@ def parse_fit_print(text: str) -> dict[str, dict[str, int]]:
     return rows
 
 
-def evaluate_capacity(
+def evaluate_placement_capacity(
     text: str,
     *,
     gpu_free_bytes: int,
     mem_available_bytes: int,
-    n_cpu_moe: int,
+    placement_id: str,
     gpu_target_mib: int = 1024,
     host_guard_mib: int = 2048,
     rounding_guard_mib: int = 16,
 ) -> dict:
+    if not isinstance(placement_id, str) or not placement_id.strip():
+        raise PlacementCapacityError("placement_id must be non-empty")
     if gpu_free_bytes <= 0 or mem_available_bytes <= 0:
         raise PlacementCapacityError("available memory inputs must be positive")
-    if n_cpu_moe < 0:
-        raise PlacementCapacityError("n_cpu_moe must be non-negative")
     for name, value in {
         "gpu_target_mib": gpu_target_mib,
         "host_guard_mib": host_guard_mib,
@@ -150,9 +150,9 @@ def evaluate_capacity(
         reasons.append("PROJECTED_HOST_HEADROOM")
 
     return {
-        "schema": "tesy.n_cpu_moe_capacity_estimate.v1",
+        "schema": "tesy.placement_capacity_estimate.v1",
         "classification": "SOURCE_BACKED_MEMORY_ESTIMATE",
-        "n_cpu_moe": n_cpu_moe,
+        "placement_id": placement_id,
         "device": device_name,
         "rows": rows,
         "campaign_start_gpu_free_bytes": gpu_free_bytes,
@@ -172,6 +172,33 @@ def evaluate_capacity(
             "measured VRAM/RAM traffic or proof that a subsequent run will fit."
         ),
     }
+
+
+def evaluate_capacity(
+    text: str,
+    *,
+    gpu_free_bytes: int,
+    mem_available_bytes: int,
+    n_cpu_moe: int,
+    gpu_target_mib: int = 1024,
+    host_guard_mib: int = 2048,
+    rounding_guard_mib: int = 16,
+) -> dict:
+    if n_cpu_moe < 0:
+        raise PlacementCapacityError("n_cpu_moe must be non-negative")
+
+    payload = evaluate_placement_capacity(
+        text,
+        gpu_free_bytes=gpu_free_bytes,
+        mem_available_bytes=mem_available_bytes,
+        placement_id=f"n-cpu-moe-{n_cpu_moe}",
+        gpu_target_mib=gpu_target_mib,
+        host_guard_mib=host_guard_mib,
+        rounding_guard_mib=rounding_guard_mib,
+    )
+    payload["schema"] = "tesy.n_cpu_moe_capacity_estimate.v1"
+    payload["n_cpu_moe"] = n_cpu_moe
+    return payload
 
 
 def _write_json_no_replace(path: Path, payload: dict) -> None:
@@ -199,17 +226,37 @@ def main() -> int:
     estimate.add_argument("--rounding-guard-mib", type=int, default=16)
     estimate.add_argument("--output", required=True, type=Path)
 
+    placement = sub.add_parser("evaluate-placement-fit-print")
+    placement.add_argument("--input", required=True, type=Path)
+    placement.add_argument("--gpu-free-bytes", required=True, type=int)
+    placement.add_argument("--mem-available-bytes", required=True, type=int)
+    placement.add_argument("--placement-id", required=True)
+    placement.add_argument("--gpu-target-mib", type=int, default=1024)
+    placement.add_argument("--host-guard-mib", type=int, default=2048)
+    placement.add_argument("--rounding-guard-mib", type=int, default=16)
+    placement.add_argument("--output", required=True, type=Path)
+
     args = parser.parse_args()
     text = args.input.read_text(encoding="utf-8")
 
     if args.command == "parse-fitted-cli":
         payload = parse_fitted_cli(text, expected_ctx=args.expected_ctx)
-    else:
+    elif args.command == "evaluate-fit-print":
         payload = evaluate_capacity(
             text,
             gpu_free_bytes=args.gpu_free_bytes,
             mem_available_bytes=args.mem_available_bytes,
             n_cpu_moe=args.n_cpu_moe,
+            gpu_target_mib=args.gpu_target_mib,
+            host_guard_mib=args.host_guard_mib,
+            rounding_guard_mib=args.rounding_guard_mib,
+        )
+    else:
+        payload = evaluate_placement_capacity(
+            text,
+            gpu_free_bytes=args.gpu_free_bytes,
+            mem_available_bytes=args.mem_available_bytes,
+            placement_id=args.placement_id,
             gpu_target_mib=args.gpu_target_mib,
             host_guard_mib=args.host_guard_mib,
             rounding_guard_mib=args.rounding_guard_mib,

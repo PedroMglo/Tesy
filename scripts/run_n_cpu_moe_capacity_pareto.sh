@@ -2,13 +2,20 @@
 set -euo pipefail
 
 capacity_only=0
-if [[ "${1:-}" == "--capacity-only" ]]; then
-  capacity_only=1
-  shift
-fi
+timing_pilot=0
+case "${1:-}" in
+  --capacity-only)
+    capacity_only=1
+    shift
+    ;;
+  --timing-pilot)
+    timing_pilot=1
+    shift
+    ;;
+esac
 
 if [[ $# -ne 2 ]]; then
-  echo "usage: $0 [--capacity-only] MODEL.gguf OUTPUT_ROOT" >&2
+  echo "usage: $0 [--capacity-only|--timing-pilot] MODEL.gguf OUTPUT_ROOT" >&2
   exit 2
 fi
 
@@ -22,12 +29,17 @@ server="${TESY_LLAMA_SERVER:-$build_dir/bin/llama-server}"
 fit_tool="${TESY_LLAMA_FIT_PARAMS:-$build_dir/bin/llama-fit-params}"
 toolchain_lock="$root/configs/reference-llama-toolchain.json"
 prompt_file="$root/benchmarks/prompts/b0-b1-diagnostic.txt"
+capacity_evidence_dir="$root/research/results/n-cpu-moe-capacity-20260923T233416Z"
+capacity_evidence_commit="5dd06218584bc5f0e72b05102eb6ff483a9dbfe7"
 lock_file="${XDG_RUNTIME_DIR:-/tmp}/tesy-placement-capacity-pareto.lock"
 base_port="${TESY_SWEEP_PORT_BASE:-18120}"
 gpu_target_mib=1024
 host_guard_mib=2048
 rounding_guard_mib=16
 candidates=(0 4 8 12 16 20 24)
+if (( timing_pilot == 1 )); then
+  candidates=(12 24)
+fi
 
 if [[ -e "$out" ]]; then
   echo "refusing to replace output root: $out" >&2
@@ -39,16 +51,28 @@ failure_report() {
   local rc="$1"
   local failed_command="$2"
   local failed_line="$3"
+  local failure_mode="capacity-and-timing"
+  if (( capacity_only == 1 )); then
+    failure_mode="capacity-only"
+  elif (( timing_pilot == 1 )); then
+    failure_mode="timing-pilot"
+  fi
   trap - ERR
-  python3 - "$out/failure.json" "$rc" "$failed_line" "$failed_command" <<'PY' || true
+  python3 - "$out/failure.json" "$rc" "$failed_line" "$failed_command" "$failure_mode" <<'PY' || true
 import json
 import sys
 from pathlib import Path
 
 out = Path(sys.argv[1])
+mode = sys.argv[5]
 payload = {
-    "schema": "tesy.capacity_campaign_failure.v1",
+    "schema": (
+        "tesy.timing_pilot_failure.v1"
+        if mode == "timing-pilot"
+        else "tesy.capacity_campaign_failure.v1"
+    ),
     "classification": "FAIL_CAMPAIGN_COMMAND",
+    "campaign_mode": mode,
     "exit_code": int(sys.argv[2]),
     "line": int(sys.argv[3]),
     "failed_command": sys.argv[4],
@@ -72,6 +96,72 @@ exec 9>"$lock_file"
 if ! flock -n 9; then
   echo "another Tesy placement campaign holds $lock_file" >&2
   exit 1
+fi
+
+if (( timing_pilot == 1 )); then
+  test -d "$capacity_evidence_dir"
+  test -f "$capacity_evidence_dir/capacity-summary.json"
+  test -f "$capacity_evidence_dir/auto-fit.json"
+  test -f "$capacity_evidence_dir/publication-manifest.json"
+
+  if ! git -C "$root" merge-base --is-ancestor "$capacity_evidence_commit" HEAD; then
+    echo "capacity evidence commit is not an ancestor of current HEAD: $capacity_evidence_commit" >&2
+    exit 1
+  fi
+
+  python3 - "$capacity_evidence_dir" "$capacity_evidence_commit" >"$out/source-capacity.json" <<'PY'
+import json
+import sys
+from pathlib import Path
+
+root = Path(sys.argv[1])
+commit = sys.argv[2]
+summary = json.loads((root / "capacity-summary.json").read_text(encoding="utf-8"))
+auto = json.loads((root / "auto-fit.json").read_text(encoding="utf-8"))
+manifest = json.loads((root / "publication-manifest.json").read_text(encoding="utf-8"))
+
+if summary.get("schema") != "tesy.n_cpu_moe_capacity_gate.v1":
+    raise SystemExit("invalid source capacity schema")
+if summary.get("performance_gate") != "PASS":
+    raise SystemExit("source capacity gate did not PASS")
+if summary.get("admitted_n_cpu_moe") != [12, 16, 20, 24]:
+    raise SystemExit("unexpected source admitted set")
+if auto.get("schema") != "tesy.llama_fit_args.v1" or auto.get("ctx_size") != 4096:
+    raise SystemExit("invalid source auto-fit placement")
+if manifest.get("schema") != "tesy.n_cpu_moe_capacity_publication.v1":
+    raise SystemExit("invalid source publication manifest")
+if manifest.get("classification") != "SOURCE_BACKED_CAPACITY_GATE":
+    raise SystemExit(
+        "source capacity publication is not an admitted capacity gate: "
+        f"{manifest.get('classification')!r}"
+    )
+if manifest.get("performance_gate") != "PASS":
+    raise SystemExit(
+        "source capacity publication performance gate did not PASS"
+    )
+if manifest.get("physical_host_status") != "PHYSICAL":
+    raise SystemExit(
+        "source capacity publication does not prove PHYSICAL host"
+    )
+if manifest.get("admitted_n_cpu_moe") != summary.get("admitted_n_cpu_moe"):
+    raise SystemExit(
+        "source publication admitted set does not match raw capacity summary"
+    )
+if manifest.get("admitted_n_cpu_moe") != [12, 16, 20, 24]:
+    raise SystemExit("unexpected published admitted set")
+
+print(json.dumps({
+    "schema": "tesy.timing_pilot_source_capacity.v1",
+    "classification": "SOURCE_BACKED_CAPACITY_EVIDENCE",
+    "capacity_evidence_commit": commit,
+    "admitted_n_cpu_moe": summary["admitted_n_cpu_moe"],
+    "auto_fit_argv": auto["argv"],
+    "claim_boundary": (
+        "Published capacity evidence selecting pilot placements. "
+        "Current-host admission is rechecked before timing."
+    ),
+}, indent=2, sort_keys=True))
+PY
 fi
 
 python3 -m tesy models verify gpt-oss-20b-mxfp4-gguf "$model" >"$out/model.json"
@@ -151,21 +241,23 @@ print(
 PY
 )
 
+campaign_mode="capacity-and-timing"
+if (( capacity_only == 1 )); then
+  campaign_mode="capacity-only"
+elif (( timing_pilot == 1 )); then
+  campaign_mode="timing-pilot"
+fi
+
 python3 - "$gpu_free_bytes" "$gpu_total_bytes" "$mem_available_bytes" \
-  "$gpu_target_mib" "$host_guard_mib" "$rounding_guard_mib" "$capacity_only" \
+  "$gpu_target_mib" "$host_guard_mib" "$rounding_guard_mib" "$campaign_mode" \
   >"$out/admission-context.json" <<'PY'
 import json
 import sys
 
-(
-    gpu_free,
-    gpu_total,
-    mem_available,
-    gpu_target,
-    host_guard,
-    rounding_guard,
-    capacity_only,
-) = map(int, sys.argv[1:])
+gpu_free, gpu_total, mem_available, gpu_target, host_guard, rounding_guard = map(
+    int, sys.argv[1:7]
+)
+campaign_mode = sys.argv[7]
 print(json.dumps({
     "schema": "tesy.placement_admission_context.v1",
     "classification": "MEASURED_CAMPAIGN_START_RESOURCES",
@@ -175,24 +267,30 @@ print(json.dumps({
     "gpu_target_mib": gpu_target,
     "host_guard_mib": host_guard,
     "rounding_guard_mib": rounding_guard,
-    "campaign_mode": "capacity-only" if capacity_only else "capacity-and-timing",
+    "campaign_mode": campaign_mode,
 }, indent=2, sort_keys=True))
 PY
 
-# Freeze stock auto-fit once, before timed execution. llama-fit-params is intended
-# to emit reusable -c/-ngl/-ts/-ot arguments for the selected stock placement.
-"$fit_tool" \
-  --model "$model" \
-  --ctx-size 4096 \
-  --fit on \
-  --fit-target "$gpu_target_mib" \
-  >"$out/auto-fit.stdout.txt" \
-  2>"$out/auto-fit.stderr.txt"
+if (( timing_pilot == 1 )); then
+  # Pilot placement is frozen by the published capacity evidence.
+  cp "$capacity_evidence_dir/auto-fit.json" "$out/auto-fit.json"
+  cp "$capacity_evidence_dir/auto-fit.stdout.txt" "$out/auto-fit.stdout.txt"
+  cp "$capacity_evidence_dir/auto-fit.stderr.txt" "$out/auto-fit.stderr.txt"
+else
+  # Freeze stock auto-fit once, before timed execution.
+  "$fit_tool" \
+    --model "$model" \
+    --ctx-size 4096 \
+    --fit on \
+    --fit-target "$gpu_target_mib" \
+    >"$out/auto-fit.stdout.txt" \
+    2>"$out/auto-fit.stderr.txt"
 
-python3 -m tesy.placement_capacity parse-fitted-cli \
-  --input "$out/auto-fit.stdout.txt" \
-  --expected-ctx 4096 \
-  --output "$out/auto-fit.json"
+  python3 -m tesy.placement_capacity parse-fitted-cli \
+    --input "$out/auto-fit.stdout.txt" \
+    --expected-ctx 4096 \
+    --output "$out/auto-fit.json"
+fi
 
 mapfile -d '' -t auto_fit_args < <(
   python3 - "$out/auto-fit.json" <<'PY'
@@ -238,6 +336,67 @@ for n in "${candidates[@]}"; do
     --output "$estimate_json"
 done
 
+if (( capacity_only == 0 )); then
+  "$fit_tool" \
+    --model "$model" \
+    --fit off \
+    --fit-print on \
+    "${auto_fit_args[@]}" \
+    >"$out/capacity/auto-fit-frozen.stdout.txt" \
+    2>"$out/capacity/auto-fit-frozen.stderr.txt"
+
+  python3 -m tesy.placement_capacity evaluate-placement-fit-print \
+    --input "$out/capacity/auto-fit-frozen.stdout.txt" \
+    --gpu-free-bytes "$gpu_free_bytes" \
+    --mem-available-bytes "$mem_available_bytes" \
+    --placement-id "auto-fit-frozen" \
+    --gpu-target-mib "$gpu_target_mib" \
+    --host-guard-mib "$host_guard_mib" \
+    --rounding-guard-mib "$rounding_guard_mib" \
+    --output "$out/capacity/auto-fit-frozen.json"
+fi
+
+if (( timing_pilot == 1 )); then
+  python3 - "$out/capacity" >"$out/capacity-summary.json" <<'PY'
+import json
+import sys
+from pathlib import Path
+
+root = Path(sys.argv[1])
+placements = [
+    ("auto-fit-frozen", root / "auto-fit-frozen.json"),
+    ("n-cpu-moe-12", root / "n12.json"),
+    ("n-cpu-moe-24", root / "n24.json"),
+]
+rows = []
+for placement_id, path in placements:
+    payload = json.loads(path.read_text(encoding="utf-8"))
+    if payload.get("placement_id") != placement_id:
+        raise SystemExit(
+            f"capacity identity mismatch: {payload.get('placement_id')!r} != {placement_id!r}"
+        )
+    if not payload.get("admitted"):
+        raise SystemExit(
+            f"pilot placement not admitted: {placement_id}: "
+            f"{payload.get('rejection_reasons')}"
+        )
+    rows.append(payload)
+
+print(json.dumps({
+    "schema": "tesy.timing_pilot_capacity_gate.v1",
+    "classification": "SOURCE_BACKED_CAPACITY_GATE",
+    "placements": rows,
+    "status": "PASS",
+    "claim_boundary": (
+        "Current-host estimator admission immediately before the timing pilot. "
+        "This is not measured runtime memory traffic or proof of performance."
+    ),
+}, indent=2, sort_keys=True))
+PY
+
+  admitted=(12 24)
+  order=("auto" "n12" "n24")
+else
 python3 - "$out/capacity" >"$out/capacity-summary.json" <<'PY'
 import json
 import sys
@@ -304,6 +463,139 @@ for ((i=${#admitted[@]} - 1; i>=0; i--)); do
 done
 order+=("auto")
 
+fi
+
+
+snapshot_pre_run_resources() {
+  local output="$1"
+  python3 - "$output" <<'PY'
+import json
+import subprocess
+import sys
+from pathlib import Path
+
+out = Path(sys.argv[1])
+gpu = subprocess.run(
+    [
+        "nvidia-smi",
+        "--query-gpu=name,memory.total,memory.free,temperature.gpu,pstate,pci.bus_id",
+        "--format=csv,noheader,nounits",
+    ],
+    capture_output=True,
+    text=True,
+    check=False,
+)
+if gpu.returncode != 0:
+    raise SystemExit(f"nvidia-smi GPU snapshot failed: {gpu.stderr.strip()}")
+rows = [line.strip() for line in gpu.stdout.splitlines() if line.strip()]
+if len(rows) != 1:
+    raise SystemExit(f"expected exactly one GPU row, got {len(rows)}")
+parts = [value.strip() for value in rows[0].split(",")]
+if len(parts) != 6:
+    raise SystemExit(f"unexpected GPU row: {rows[0]!r}")
+name, total_mib, free_mib, temperature_c, pstate, pci_bus_id = parts
+
+compute = subprocess.run(
+    [
+        "nvidia-smi",
+        "--query-compute-apps=pid,process_name,used_memory",
+        "--format=csv,noheader,nounits",
+    ],
+    capture_output=True,
+    text=True,
+    check=False,
+)
+if compute.returncode != 0:
+    raise SystemExit(
+        f"nvidia-smi compute-process snapshot failed: {compute.stderr.strip()}"
+    )
+if compute.stdout.strip():
+    raise SystemExit(f"competing GPU compute process detected: {compute.stdout.strip()}")
+
+meminfo = {}
+for line in Path("/proc/meminfo").read_text(encoding="utf-8").splitlines():
+    if ":" not in line:
+        continue
+    key, raw = line.split(":", 1)
+    fields = raw.strip().split()
+    if key in {"MemAvailable", "SwapFree", "SwapTotal"} and fields:
+        meminfo[key] = int(fields[0]) * 1024
+
+for key in ("MemAvailable", "SwapFree", "SwapTotal"):
+    if key not in meminfo:
+        raise SystemExit(f"missing /proc/meminfo field: {key}")
+
+payload = {
+    "schema": "tesy.timing_pilot_pre_run_resources.v1",
+    "classification": "MEASURED_PRE_RUN_RESOURCES",
+    "gpu": {
+        "name": name,
+        "memory_total_bytes": int(float(total_mib) * 1024 * 1024),
+        "memory_free_bytes": int(float(free_mib) * 1024 * 1024),
+        "temperature_c": float(temperature_c),
+        "pstate": pstate,
+        "pci_bus_id": pci_bus_id,
+    },
+    "memory": {
+        "available_bytes": meminfo["MemAvailable"],
+        "swap_free_bytes": meminfo["SwapFree"],
+        "swap_total_bytes": meminfo["SwapTotal"],
+    },
+    "claim_boundary": (
+        "Measured immediately before one pilot placement. It qualifies current "
+        "capacity admission and process isolation, not subsequent performance."
+    ),
+}
+with out.open("x", encoding="utf-8") as handle:
+    json.dump(payload, handle, indent=2, sort_keys=True)
+    handle.write("\n")
+PY
+}
+
+pre_run_capacity_check() {
+  local placement_id="$1"
+  local input="$2"
+  local snapshot="$3"
+  local output="$4"
+
+  read -r live_gpu_free live_mem_available < <(
+    python3 - "$snapshot" <<'PY'
+import json
+import sys
+from pathlib import Path
+
+payload = json.loads(Path(sys.argv[1]).read_text(encoding="utf-8"))
+print(
+    payload["gpu"]["memory_free_bytes"],
+    payload["memory"]["available_bytes"],
+)
+PY
+  )
+
+  python3 -m tesy.placement_capacity evaluate-placement-fit-print \
+    --input "$input" \
+    --gpu-free-bytes "$live_gpu_free" \
+    --mem-available-bytes "$live_mem_available" \
+    --placement-id "$placement_id" \
+    --gpu-target-mib "$gpu_target_mib" \
+    --host-guard-mib "$host_guard_mib" \
+    --rounding-guard-mib "$rounding_guard_mib" \
+    --output "$output"
+
+  python3 - "$output" <<'PY'
+import json
+import sys
+from pathlib import Path
+
+payload = json.loads(Path(sys.argv[1]).read_text(encoding="utf-8"))
+if not payload["admitted"]:
+    raise SystemExit(
+        f"pre-run capacity rejected {payload['placement_id']}: "
+        f"{payload['rejection_reasons']}"
+    )
+PY
+}
+
 cleanup() {
   if [[ -n "${server_pid:-}" ]] && kill -0 "$server_pid" 2>/dev/null; then
     kill "$server_pid" 2>/dev/null || true
@@ -333,6 +625,18 @@ for index in "${!order[@]}"; do
     n_cpu_moe_json="$n"
   fi
   mkdir -p "$run_dir"
+
+  snapshot_pre_run_resources "$run_dir/pre-run-resources.json"
+  if [[ "$point" == "auto" ]]; then
+    capacity_input="$out/capacity/auto-fit-frozen.stdout.txt"
+  else
+    capacity_input="$(printf '%s/capacity/n%02d.stdout.txt' "$out" "$n")"
+  fi
+  pre_run_capacity_check \
+    "$placement_id" \
+    "$capacity_input" \
+    "$run_dir/pre-run-resources.json" \
+    "$run_dir/pre-run-capacity.json"
 
   python3 - "$placement_id" "$n_cpu_moe_json" >"$run_dir/run-metadata.json" <<'PY'
 import json
@@ -368,6 +672,10 @@ PY
       --n-cpu-moe "$n"
     )
   fi
+  if (( timing_pilot == 1 )); then
+    # Pinned llama.cpp maps backend INFO placement rows to verbosity 4.
+    cmd+=(--verbosity 4)
+  fi
 
   {
     printf '%q' "${cmd[0]}"
@@ -376,6 +684,20 @@ PY
     done
     printf '\n'
   } >"$run_dir/server-command.txt"
+
+  python3 - "$run_dir/server-argv.json" "${cmd[@]}" <<'PY'
+import json
+import sys
+from pathlib import Path
+
+path = Path(sys.argv[1])
+argv = sys.argv[2:]
+if not argv or any(not value for value in argv):
+    raise SystemExit("invalid frozen server argv")
+with path.open("x", encoding="utf-8") as handle:
+    json.dump(argv, handle, indent=2)
+    handle.write("\n")
+PY
 
   ready_start_ns="$(date +%s%N)"
   "${cmd[@]}" >"$run_dir/server.stdout.txt" 2>"$run_dir/server.stderr.txt" &
@@ -405,9 +727,19 @@ PY
     exit 1
   }
 
+  if (( timing_pilot == 1 )); then
+    python3 -m tesy.placement_telemetry \
+      --fit-print "$capacity_input" \
+      --server-stderr "$run_dir/server.stderr.txt" \
+      --placement-id "$placement_id" \
+      --tolerance-mib 2.0 \
+      --output "$run_dir/placement-telemetry.json"
+  fi
+
   python3 -m tesy.runtime_provenance \
     --pid "$server_pid" \
     --build-provenance "$out/build-provenance.json" \
+    --expected-argv "$run_dir/server-argv.json" \
     >"$run_dir/runtime-provenance.json"
 
   if grep -F 'failed to fit params to free device memory' "$run_dir/server.stderr.txt" >/dev/null; then
@@ -462,12 +794,13 @@ PY
   kill "$server_pid"
   wait "$server_pid" || true
   server_pid=""
-  wait "$monitor_pid" || true
+  wait "$monitor_pid"
   monitor_pid=""
 
   python3 - "$run_dir/resources.jsonl" "$gpu_total_bytes" "$gpu_target_mib" "$host_guard_mib" \
     >"$run_dir/resource-summary.json" <<'PY'
 import json
+import math
 import sys
 from pathlib import Path
 
@@ -476,6 +809,18 @@ rows = [
     for line in Path(sys.argv[1]).read_text(encoding="utf-8").splitlines()
     if line.strip()
 ]
+
+def require_finite(value):
+    if isinstance(value, float) and not math.isfinite(value):
+        raise SystemExit("non-finite resource telemetry")
+    if isinstance(value, dict):
+        for item in value.values():
+            require_finite(item)
+    elif isinstance(value, list):
+        for item in value:
+            require_finite(item)
+
+require_finite(rows)
 gpu_total_bytes = int(sys.argv[2])
 gpu_target_bytes = int(sys.argv[3]) * 1024 * 1024
 host_guard_bytes = int(sys.argv[4]) * 1024 * 1024
@@ -511,6 +856,10 @@ summary = {
     ),
 }
 print(json.dumps(summary, indent=2, sort_keys=True))
+if summary["gpu_failed_samples"] != 0:
+    raise SystemExit(
+        f"GPU telemetry incomplete: {summary['gpu_failed_samples']} failed samples"
+    )
 if summary["peak_process_swap_bytes"] != 0:
     raise SystemExit("server process used swap")
 if summary["min_observed_gpu_free_bytes"] < gpu_target_bytes:
@@ -526,6 +875,138 @@ PY
     exit 1
   }
 done
+
+if (( timing_pilot == 1 )); then
+  python3 - "$out" "$capacity_evidence_commit" >"$out/pilot-summary.json" <<'PY'
+from __future__ import annotations
+
+import hashlib
+import json
+import sys
+from pathlib import Path
+
+root = Path(sys.argv[1])
+capacity_commit = sys.argv[2]
+expected = ["auto-fit-frozen", "n-cpu-moe-12", "n-cpu-moe-24"]
+rows = []
+
+for run_dir in sorted(
+    path for path in root.iterdir()
+    if path.is_dir() and path.name[:2].isdigit()
+):
+    meta = json.loads((run_dir / "run-metadata.json").read_text(encoding="utf-8"))
+    req = json.loads((run_dir / "request.json").read_text(encoding="utf-8"))
+    res = json.loads((run_dir / "resource-summary.json").read_text(encoding="utf-8"))
+    ready = json.loads((run_dir / "server-ready.json").read_text(encoding="utf-8"))
+    runtime = json.loads((run_dir / "runtime-provenance.json").read_text(encoding="utf-8"))
+    placement_telemetry = json.loads(
+        (run_dir / "placement-telemetry.json").read_text(encoding="utf-8")
+    )
+    pre_run = json.loads((run_dir / "pre-run-resources.json").read_text(encoding="utf-8"))
+    pre_capacity = json.loads((run_dir / "pre-run-capacity.json").read_text(encoding="utf-8"))
+    command = (run_dir / "server-command.txt").read_text(encoding="utf-8").strip()
+    placement_lines = [
+        line.strip()
+        for line in (run_dir / "placement.txt").read_text(encoding="utf-8").splitlines()
+        if line.strip()
+    ]
+    tokens = req.get("generated_token_ids")
+    timings = req["timings"]
+
+    if runtime["status"] != "PASS":
+        raise SystemExit(f"runtime provenance did not PASS: {run_dir}")
+    if runtime.get("argv", {}).get("status") != "PASS":
+        raise SystemExit(f"live server argv did not PASS: {run_dir}")
+    if placement_telemetry.get("schema") != "tesy.stock_placement_telemetry.v2":
+        raise SystemExit(f"unexpected placement telemetry schema: {run_dir}")
+    if placement_telemetry.get("status") != "PASS":
+        raise SystemExit(f"placement telemetry did not PASS: {run_dir}")
+    if placement_telemetry.get("host_comparability", {}).get("status") != "NOT_COMPARABLE_MMAP_SPAN":
+        raise SystemExit(f"unexpected Host comparability classification: {run_dir}")
+    if (
+        not isinstance(tokens, list)
+        or len(tokens) != 64
+        or timings["predicted_n"] != 64
+    ):
+        raise SystemExit(f"invalid exact 64-token trajectory: {run_dir}")
+
+    token_blob = json.dumps(tokens, separators=(",", ":")).encode()
+    rows.append({
+        "run": run_dir.name,
+        "placement_id": meta["placement_id"],
+        "n_cpu_moe": meta["n_cpu_moe"],
+        "server_command": command,
+        "pre_run_gpu_free_bytes": pre_run["gpu"]["memory_free_bytes"],
+        "pre_run_gpu_temperature_c": pre_run["gpu"]["temperature_c"],
+        "pre_run_mem_available_bytes": pre_run["memory"]["available_bytes"],
+        "pre_run_capacity_gpu_required_mib": pre_capacity["gpu_required_mib"],
+        "pre_run_capacity_host_required_mib": pre_capacity["host_required_mib"],
+        "server_ready_ms": ready["server_ready_ms"],
+        "ttft_ms": req["ttft_ms"],
+        "request_wall_ms": req["request_wall_ms"],
+        "prompt_n": timings["prompt_n"],
+        "prompt_ms": timings["prompt_ms"],
+        "prompt_tps": timings["prompt_per_second"],
+        "predicted_n": timings["predicted_n"],
+        "predicted_ms": timings["predicted_ms"],
+        "decode_tps": timings["predicted_per_second"],
+        "resource_samples": res["samples"],
+        "gpu_valid_samples": res["gpu_valid_samples"],
+        "peak_gpu_memory_bytes": res["peak_gpu_memory_used_bytes"],
+        "min_observed_gpu_free_bytes": res["min_observed_gpu_free_bytes"],
+        "peak_process_rss_bytes": res["peak_process_rss_bytes"],
+        "peak_process_swap_bytes": res["peak_process_swap_bytes"],
+        "min_mem_available_bytes": res["min_mem_available_bytes"],
+        "min_swap_free_bytes": res["min_swap_free_bytes"],
+        "max_gpu_temperature_c": res["max_gpu_temperature_c"],
+        "max_gpu_power_w": res["max_gpu_power_w"],
+        "gpu_failed_samples": res["gpu_failed_samples"],
+        "runtime_provenance_status": runtime["status"],
+        "runtime_argv_status": runtime["argv"]["status"],
+        "placement_telemetry_status": placement_telemetry["status"],
+        "projected_gpu_model_mib": placement_telemetry["projected_logical_model_mib"]["CUDA0"],
+        "projected_host_logical_model_mib": placement_telemetry["projected_logical_model_mib"]["Host"],
+        "observed_gpu_model_mib": placement_telemetry["observed_runtime_model_buffers"]["CUDA0_mib"],
+        "observed_host_mmap_span_mib": placement_telemetry["observed_runtime_model_buffers"]["Host_mmap_span_mib"],
+        "host_comparability_status": placement_telemetry["host_comparability"]["status"],
+        "placement_log_lines": placement_lines,
+        "token_sha256": hashlib.sha256(token_blob).hexdigest(),
+    })
+
+placements = [row["placement_id"] for row in rows]
+if placements != expected:
+    raise SystemExit(f"pilot placement/order mismatch: {placements!r}")
+
+trajectory_hashes = sorted({row["token_sha256"] for row in rows})
+if len(trajectory_hashes) != 1:
+    raise SystemExit("FAIL_TRAJECTORY_COMPARABILITY")
+
+print(json.dumps({
+    "schema": "tesy.stock_placement_timing_pilot.v1",
+    "classification": "MEASURED_STOCK_PLACEMENT_PILOT_DIAGNOSTIC",
+    "capacity_evidence_commit": capacity_commit,
+    "order": placements,
+    "observations": rows,
+    "trajectory_comparability": {
+        "status": "PASS",
+        "required_token_count": 64,
+        "unique_token_trajectory_hashes": trajectory_hashes,
+    },
+    "next_gate": "MANUAL_REVIEW_REQUIRED",
+    "claim_boundary": (
+        "One observation per placement diagnostic pilot. Timings and observed "
+        "resources are measured on the locked host/workload, but "
+        "no confirmatory performance winner or Pareto frontier follows. "
+        "No physical PCIe/NVMe/DRAM traffic, "
+        "Tesy speedup, >RAM or novelty claim follows."
+    ),
+}, indent=2, sort_keys=True))
+PY
+
+  echo "PASS_DIAGNOSTIC_STOCK_PLACEMENT_TIMING_PILOT"
+  echo "outputs: $out"
+  exit 0
+fi
 
 python3 - "$out" >"$out/sweep-summary.json" <<'PY'
 from __future__ import annotations

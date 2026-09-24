@@ -1,6 +1,6 @@
 # Implementation status
 
-Date: 2026-09-23
+Date: 2026-09-24
 
 This table distinguishes source implementation, model-free CI validation and
 reference-host/model validation. No source-only row is a performance claim.
@@ -25,11 +25,13 @@ reference-host/model validation. No source-only row is a performance claim.
 | stock llama.cpp real gpt-oss-20b load | PASS_DIAGNOSTIC_STOCK_SMOKE | 16-token stock generation; no chat or benchmark qualification |
 | stock B0/B1 measurements | INCONCLUSIVE_RERUN_REQUIRED | physical-host runs exist, but review invalidated same-work admission: placement telemetry empty, provenance incomplete and token trajectories unretained |
 | original n-cpu-moe + auto-fit sweep | STATIC_NO_GO_PIN_FIT_CONFLICT | pinned source reproduces incompatible tensor override / fit semantics; preserved N=4 campaign OOM is not a capacity bound |
-| capacity-gated stock placement frontier | HOST_ATTEMPT_FAILED_INSTRUMENTATION_RETRY_REQUIRED | first physical capacity-only attempt stopped before estimator because backend feature probe used llama-server for a llama-cli feature lock; source/model/host checks passed, runner corrected, retry pending current-head CI |
-| pinned llama-fit-params utility | SOURCE_REQUIRED_BUILD_TARGET_ADDED | bootstrap target added; reference-host binary rebuild remains NOT_RUN |
-| llama.cpp build provenance lock | IMPLEMENTED_MODEL_FREE | strict CMake/compiler/CUDA/server/libggml-cuda identity gate; reference-host replay remains NOT_RUN |
-| live backend mapping provenance | IMPLEMENTED_MODEL_FREE | timed runs verify process executable and mapped pre-hashed libggml-cuda; timing campaign remains NOT_RUN |
-| capacity result publication | IMPLEMENTED_MODEL_FREE | capacity-only artifacts are validated, bounded, no-replace and hash-manifested before Git staging |
+| capacity-gated stock placement frontier | INCONCLUSIVE_PHYSICAL_HOST_NOT_PROVEN | historical campaign retains projected N=12/16/20/24 vs N=0/4/8 sets, but publication admissions were withdrawn because virtualization/physical-host state was not proven; new campaign identity required |
+| pinned llama-fit-params utility | PASS_REFERENCE_HOST | built from pinned llama.cpp on reference host; binary/toolchain identity retained in published capacity provenance |
+| llama.cpp build provenance lock | PASS_REFERENCE_HOST | capacity campaign verified frozen CMake/GCC/CUDA/server/libggml-cuda identity with zero mismatches |
+| live backend mapping provenance | IMPLEMENTED_MODEL_FREE_HOST_RETRY_REQUIRED | revised pilot binds frozen argv to `/proc/<pid>/cmdline`, executable and mapped pre-hashed libggml-cuda; two physical attempts stopped before this check, so revised live provenance remains NOT_RUN |
+| realized stock placement telemetry | CUDA0_PARITY_OBSERVED_REVISED_GATE_RETRY_REQUIRED | Attempt 2 physically observed CUDA0 6095.35 MiB versus 6095 MiB projected; the Host equality gate was invalidated because `CPU_Mapped` is an mmap span, not fit-print logical Host bytes. Telemetry v2 requires positive Host mmap buffer presence and classifies its span `NOT_COMPARABLE_MMAP_SPAN`; revised live gate remains NOT_RUN |
+| capacity result publication | INCONCLUSIVE_PHYSICAL_HOST_NOT_PROVEN | raw fitter evidence remains preserved/hash-manifested; publication layer has empty admitted/rejected sets and requires a new PHYSICAL-host-verified capacity campaign |
+| stock placement timing pilot | BLOCKED_CAPACITY_REVALIDATION_REQUIRED | two historical pre-request failures remain preserved; revised runner is fail-closed on the withdrawn capacity publication. No new timing pilot is authorized until a fresh capacity-only campaign proves PHYSICAL host and publishes a new admitted set prospectively |
 | stock B2 gpt-oss lazy-expert baseline | STATIC_NO_GO | pinned gpt-oss expert tensors are not marked `TENSOR_READ_LAZY`; no model-bearing B2 run is justified for this purpose |
 | KTransformers baseline | PINNED_NOT_REPRODUCED | reproduce only if compatible with selected model/host |
 | vLLM baseline | PINNED_NOT_REPRODUCED | B4 only if 8 GiB/32 GiB envelope admits it |
@@ -47,7 +49,8 @@ A prior branch head `72c31eb26960a153520cbf10f4bc3e1bd4e2f621` passed
 Python 3.11/3.12/3.13 plus native tracer compilation.
 
 Later feature commits intentionally re-entered CI and exposed lint regressions;
-those failures are retained in GitHub Actions rather than relabelled. The PR
-checks are the authority for the current head.
+those failures are retained in GitHub Actions rather than relabelled. The
+current draft development head is validated locally; no full CI was triggered
+for this protocol revision.
 
 No row above implies REAL_MODEL_VALIDATED unless it explicitly says so.
