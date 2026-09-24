@@ -379,6 +379,75 @@ tensor_bytes load_subset(
     return result;
 }
 
+bool supports_cpu_weight_buft(
+        ggml_backend_dev_t cpu_dev,
+        ggml_backend_buffer_type_t buft,
+        int count) {
+    ggml_context * ctx = make_context(1024u * 1024u);
+    ggml_tensor * weight =
+        ggml_new_tensor_3d(ctx, GGML_TYPE_MXFP4, k_embd, k_embd, count);
+    ggml_tensor * input =
+        ggml_new_tensor_3d(ctx, GGML_TYPE_F32, k_embd, 1, 1);
+    ggml_tensor * ids =
+        ggml_new_tensor_2d(ctx, GGML_TYPE_I32, count, 1);
+
+    ggml_backend_buffer_t dummy =
+        ggml_backend_buft_alloc_buffer(buft, 0);
+    if (!dummy) {
+        ggml_free(ctx);
+        return false;
+    }
+    weight->buffer = dummy;
+    ggml_tensor * op =
+        ggml_mul_mat_id(ctx, weight, input, ids);
+    const bool supported =
+        ggml_backend_dev_supports_op(cpu_dev, op);
+    weight->buffer = nullptr;
+    ggml_backend_buffer_free(dummy);
+    ggml_free(ctx);
+    return supported;
+}
+
+ggml_backend_buffer_type_t select_cpu_compute_weight_buft(
+        ggml_backend_dev_t cpu_dev) {
+    std::vector<ggml_backend_buffer_type_t> candidates;
+
+    auto * reg = ggml_backend_dev_backend_reg(cpu_dev);
+    auto fn = reinterpret_cast<ggml_backend_dev_get_extra_bufts_t>(
+        ggml_backend_reg_get_proc_address(
+            reg, "ggml_backend_dev_get_extra_bufts"));
+    if (fn) {
+        ggml_backend_buffer_type_t * extra = fn(cpu_dev);
+        while (extra && *extra) {
+            candidates.push_back(*extra);
+            ++extra;
+        }
+    }
+    candidates.push_back(
+        ggml_backend_dev_buffer_type(cpu_dev));
+
+    for (ggml_backend_buffer_type_t buft : candidates) {
+        if (!buft) {
+            continue;
+        }
+        bool all_counts_supported = true;
+        for (int count = 1; count <= k_top_k; ++count) {
+            if (!supports_cpu_weight_buft(
+                    cpu_dev, buft, count)) {
+                all_counts_supported = false;
+                break;
+            }
+        }
+        if (all_counts_supported) {
+            return buft;
+        }
+    }
+
+    fail(
+        "no CPU backend buffer type supports MXFP4 MUL_MAT_ID "
+        "for compact expert counts 1..4");
+}
+
 std::unique_ptr<tensor_set> make_tensor_set(
         const tensor_bytes & data,
         int count,
@@ -657,11 +726,13 @@ std::vector<float> deterministic_input() {
 std::vector<float> make_all_cpu_reference(
         const options & opt,
         ggml_backend_t cpu_backend,
-        ggml_backend_buffer_type_t cpu_buft,
+        ggml_backend_buffer_type_t cpu_weight_buft,
+        ggml_backend_buffer_type_t cpu_bias_buft,
         const std::vector<float> & input) {
     const std::vector<int> ids = {0, 1, 2, 3};
     const tensor_bytes data = load_subset(opt.model, opt.layer, ids);
-    auto set = make_tensor_set(data, 4, cpu_buft, cpu_buft);
+    auto set = make_tensor_set(
+        data, 4, cpu_weight_buft, cpu_bias_buft);
     auto graph = make_compute_graph(*set, cpu_backend, 4, input);
     compute(cpu_backend, *graph);
     return read_output(cpu_backend, graph->output);
@@ -672,7 +743,8 @@ case_result run_case(
         int gpu_hits,
         ggml_backend_t cpu_backend,
         ggml_backend_t gpu_backend,
-        ggml_backend_buffer_type_t cpu_buft,
+        ggml_backend_buffer_type_t cpu_weight_buft,
+        ggml_backend_buffer_type_t cpu_bias_buft,
         ggml_backend_buffer_type_t gpu_buft,
         const std::vector<float> & input,
         const std::vector<float> & reference) {
@@ -696,7 +768,10 @@ case_result run_case(
         const tensor_bytes cpu_data =
             load_subset(opt.model, opt.layer, cpu_ids);
         cpu_set = make_tensor_set(
-            cpu_data, cpu_misses, cpu_buft, cpu_buft);
+            cpu_data,
+            cpu_misses,
+            cpu_weight_buft,
+            cpu_bias_buft);
         cpu_graph = make_compute_graph(
             *cpu_set, cpu_backend, cpu_misses, input);
     }
@@ -843,21 +918,29 @@ int main(int argc, char ** argv) {
     }
     ggml_backend_cpu_set_n_threads(cpu.backend, opt.threads);
 
-    const ggml_backend_buffer_type_t cpu_buft =
+    const ggml_backend_buffer_type_t cpu_bias_buft =
         ggml_backend_dev_buffer_type(cpu_dev);
+    const ggml_backend_buffer_type_t cpu_weight_buft =
+        select_cpu_compute_weight_buft(cpu_dev);
     const ggml_backend_buffer_type_t gpu_buft =
         ggml_backend_dev_buffer_type(gpu_dev);
-    if (!cpu_buft || !gpu_buft) {
-        fail("missing backend default buffer type");
+    if (!cpu_bias_buft || !cpu_weight_buft || !gpu_buft) {
+        fail("missing required backend buffer type");
     }
-    if (std::string(ggml_backend_buft_name(cpu_buft)) != "CPU") {
-        fail("authoritative CPU buffer is not CPU");
-    }
+
+    const std::string cpu_weight_buft_name =
+        ggml_backend_buft_name(cpu_weight_buft);
+    const std::string cpu_bias_buft_name =
+        ggml_backend_buft_name(cpu_bias_buft);
 
     const std::vector<float> input = deterministic_input();
     const std::vector<float> reference =
         make_all_cpu_reference(
-            opt, cpu.backend, cpu_buft, input);
+            opt,
+            cpu.backend,
+            cpu_weight_buft,
+            cpu_bias_buft,
+            input);
 
     const std::array<int, 5> measurement_order = {0, 4, 1, 3, 2};
     std::vector<case_result> rows;
@@ -868,7 +951,8 @@ int main(int argc, char ** argv) {
                 h,
                 cpu.backend,
                 gpu.backend,
-                cpu_buft,
+                cpu_weight_buft,
+                cpu_bias_buft,
                 gpu_buft,
                 input,
                 reference));
@@ -895,7 +979,8 @@ int main(int argc, char ** argv) {
         "\"encoded_bytes_per_expert\":%zu,"
         "\"weight_type\":\"mxfp4\",\"bias_type\":\"f32\","
         "\"weight_shape\":[2880,2880,32],\"bias_shape\":[2880,32],"
-        "\"cpu_buffer_type\":\"CPU\","
+        "\"cpu_weight_buffer_type\":\"%s\","
+        "\"cpu_bias_buffer_type\":\"%s\","
         "\"expert_ids\":[0,1,2,3],\"mix_weights\":[0.25,0.25,0.25,0.25],"
         "\"measurement_order\":[0,4,1,3,2],"
         "\"cases\":[",
@@ -906,7 +991,9 @@ int main(int argc, char ** argv) {
         opt.inner,
         k_embd,
         k_expert_count,
-        k_encoded_bytes_per_expert);
+        k_encoded_bytes_per_expert,
+        cpu_weight_buft_name.c_str(),
+        cpu_bias_buft_name.c_str());
     for (size_t i = 0; i < rows.size(); ++i) {
         if (i != 0) {
             std::fputc(',', out);
