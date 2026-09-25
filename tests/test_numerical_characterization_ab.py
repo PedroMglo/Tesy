@@ -130,6 +130,8 @@ def test_b_requires_same_prefix_and_recomputes_contract(
     assert result["historical_b0_d_bitwise_n2"] is True
     assert result["repeatable_within_placement_bitwise"] is True
     assert result["comparison_under_existing_contract"] == "PASS_OBSERVED_CASES"
+    assert result["effective_placement"]["ngl12"]["2"] == "CPU"
+    assert result["effective_placement"]["ngl12"]["13"] == "CUDA0"
     path = root / "code-r2-ngl12/raw.json"
     raw = json.loads(path.read_text())
     raw["common_token"] = 33

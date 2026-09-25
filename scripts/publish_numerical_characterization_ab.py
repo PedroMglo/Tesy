@@ -176,6 +176,7 @@ def main() -> int:
         "failed_roots_preserved_local_only": [
             "results/numerical-characterization-a-20260925T004600Z/",
             "results/numerical-characterization-publication-attempt-20260925T005100Z/",
+            "results/numerical-characterization-publication-attempt-v2-20260925T005500Z/",
         ],
         "not_published": [
             "model weights, binaries, build products, caches",

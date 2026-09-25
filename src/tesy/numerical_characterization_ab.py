@@ -82,7 +82,7 @@ def placement_from_log(path: Path) -> dict[str, str]:
     )
     if len(rows) != 25 or {int(index) for index, _ in rows} != set(range(25)):
         raise CharacterizationError(f"incomplete effective placement log: {path}")
-    return {index: device for index, device in rows}
+    return {index: device.rstrip(",") for index, device in rows}
 
 
 def validate_provenance(runtime: dict[str, Any], build: dict[str, Any]) -> None:
