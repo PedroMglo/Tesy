@@ -1,0 +1,55 @@
+{
+  "argv": {
+    "expected": [
+      "/home/pmglo/Projects/Tesy/build/tesy-mixed-residency/tesy-stock-prefix-logits",
+      "--model",
+      "/home/pmglo/.local/share/tesy/models/gpt-oss-20b/gpt-oss-20b-mxfp4.gguf",
+      "--prompt-file",
+      "/home/pmglo/Projects/Tesy/benchmarks/prompts/vertical-short-summary.txt",
+      "--output-dir",
+      "results/numerical-characterization-b-20260925T004610Z/historical-r1-ngl12",
+      "--ngl",
+      "12",
+      "--common-token",
+      "32"
+    ],
+    "observed": [
+      "/home/pmglo/Projects/Tesy/build/tesy-mixed-residency/tesy-stock-prefix-logits",
+      "--model",
+      "/home/pmglo/.local/share/tesy/models/gpt-oss-20b/gpt-oss-20b-mxfp4.gguf",
+      "--prompt-file",
+      "/home/pmglo/Projects/Tesy/benchmarks/prompts/vertical-short-summary.txt",
+      "--output-dir",
+      "results/numerical-characterization-b-20260925T004610Z/historical-r1-ngl12",
+      "--ngl",
+      "12",
+      "--common-token",
+      "32"
+    ],
+    "status": "PASS"
+  },
+  "claim_boundary": "PASS binds the live mixed-residency microbenchmark to the expected executable, exact argv and the single selected libggml-cuda artifact. It does not establish numerical parity, timing quality, cache behavior or physical memory traffic.",
+  "classification": "MEASURED_LOCAL_PROVENANCE",
+  "executable": {
+    "expected": "/home/pmglo/Projects/Tesy/build/tesy-mixed-residency/tesy-stock-prefix-logits",
+    "observed": "/home/pmglo/Projects/Tesy/build/tesy-mixed-residency/tesy-stock-prefix-logits",
+    "sha256": "0332c59de56eca543e09611aa75f6d8b7e8b9bbae1e9cbf43688412375a12df0"
+  },
+  "ggml_cuda": {
+    "inode": 14648097,
+    "mapped_matches": [
+      {
+        "deleted": false,
+        "device": "00:23",
+        "inode": 14648097,
+        "path": "/home/pmglo/Projects/Tesy/build/tesy-mixed-residency/bin/libggml-cuda.so.0.25.0"
+      }
+    ],
+    "path": "/home/pmglo/Projects/Tesy/build/tesy-mixed-residency/bin/libggml-cuda.so.0.25.0",
+    "sha256": "9534c103f6bf4c161d4fd14adc08e54d141ea57fc931e22ccba0ff0f1801d96c"
+  },
+  "mismatches": [],
+  "pid": 215705,
+  "schema": "tesy.mixed_residency_runtime_provenance.v1",
+  "status": "PASS"
+}
