@@ -1,0 +1,200 @@
+{
+  "schema": "tesy.external_raw_audit_scoped_summary.v1",
+  "classification": "INDEPENDENT_RECOMPUTATION_OF_PUBLISHED_BYTES_NOT_PHYSICAL_RERUN",
+  "scope_status": "PARTIAL_EXTERNAL_AUDIT_COMPLETED",
+  "integrity": {
+    "status": "PASS",
+    "archive_sha256": "83b88fe09da4b1e038aec810537c7a30d702a7811dc78d4ebc29189f184a7bf6",
+    "archive_size_bytes": 1646346,
+    "manifest_sha256": "57d9b9a1271eefc6ee8c705a7f767858646000f02219db485662485f94ec53a7",
+    "manifest_source_head": "48c7f5ec27f80c34fa13b955c1bf8d23faea6f48",
+    "archive_members": 212,
+    "payload_entries_verified": 211,
+    "uncompressed_bytes": 4030817,
+    "redacted_doctor_copies": 21,
+    "json_files_parsed_strictly": 128,
+    "jsonl_records_parsed_strictly": 3171,
+    "interpretation": "Identity/integrity of published bytes, not independent proof of original measurement."
+  },
+  "stock": {
+    "status": "PASS_RECOMPUTED_PUBLISHED_STOCK_DATA_WITH_SCOPE_LIMITS",
+    "n_runs": 20,
+    "aggregate": [
+      {
+        "workload": "extraction-long",
+        "n_gpu_layers": 0,
+        "output_tokens": [69],
+        "finish_reasons": ["stop"],
+        "output_sha256s": ["f78df2d119ac749198903d31037648ac958d7bf88341196cb41b65117125d19d"],
+        "server_launch_to_health_s": {"median": 1.396642345, "p95": 1.525916746},
+        "ttft_s": {"median": 2.514247065, "p95": 2.559059584},
+        "generation_request_s": {"median": 6.21165944, "p95": 6.284475243},
+        "backend_predicted_per_token_ms": {"median": 62.55505882352941, "p95": 63.56967647058824}
+      },
+      {
+        "workload": "extraction-long",
+        "n_gpu_layers": 12,
+        "output_tokens": [69],
+        "finish_reasons": ["stop"],
+        "output_sha256s": ["f78df2d119ac749198903d31037648ac958d7bf88341196cb41b65117125d19d"],
+        "server_launch_to_health_s": {"median": 1.893849529, "p95": 2.023164747},
+        "ttft_s": {"median": 1.615283099, "p95": 1.644373648},
+        "generation_request_s": {"median": 3.738127211, "p95": 3.754398635},
+        "backend_predicted_per_token_ms": {"median": 36.189308823529416, "p95": 36.27786764705883}
+      },
+      {
+        "workload": "code-short",
+        "n_gpu_layers": 0,
+        "output_tokens": [128],
+        "finish_reasons": ["length"],
+        "output_sha256s": ["069b085c2cce858a11b242f4039a3a497850954bd010301609c1b68273844236"],
+        "server_launch_to_health_s": {"median": 1.394321792, "p95": 1.500302615},
+        "ttft_s": {"median": 2.360813919, "p95": 2.418221671},
+        "generation_request_s": {"median": 9.402137532, "p95": 9.694502768},
+        "backend_predicted_per_token_ms": {"median": 59.72187401574803, "p95": 61.828472440944886}
+      },
+      {
+        "workload": "code-short",
+        "n_gpu_layers": 12,
+        "output_tokens": [128],
+        "finish_reasons": ["length"],
+        "output_sha256s": ["069b085c2cce858a11b242f4039a3a497850954bd010301609c1b68273844236"],
+        "server_launch_to_health_s": {"median": 1.890956831, "p95": 2.007729276},
+        "ttft_s": {"median": 1.474141143, "p95": 1.480380866},
+        "generation_request_s": {"median": 5.443816548, "p95": 5.627066843},
+        "backend_predicted_per_token_ms": {"median": 33.6665748031496, "p95": 35.214181102362204}
+      }
+    ],
+    "resources": {
+      "total_samples": 1273,
+      "gpu_valid_samples": 1273,
+      "complete_process_samples": 1251,
+      "trailing_empty_process_samples": 22,
+      "interior_gaps": 0,
+      "partial_records": 0,
+      "observed_process_swap_bytes": 0,
+      "peak_process_rss_bytes": 12925100032,
+      "peak_gpu_used_bytes": 6020923392,
+      "peak_gpu_temperature_c": 57.0,
+      "peak_gpu_power_w": 37.76,
+      "min_mem_available_bytes": 23389261824,
+      "min_gpu_free_bytes": 2564816896
+    },
+    "stock_placement_comparison_only": {
+      "extraction-long": {
+        "request_median_reduction_fraction": 0.3982079592244999,
+        "request_median_stock_ngl0_over_ngl12": 1.661703598989692,
+        "ttft_median_reduction_fraction": 0.35754798266016874
+      },
+      "code-short": {
+        "request_median_reduction_fraction": 0.42100224236541184,
+        "request_median_stock_ngl0_over_ngl12": 1.727122405595068,
+        "ttft_median_reduction_fraction": 0.37557927325995233
+      }
+    },
+    "ttft_delta_us_min_median_max": [78.09699999983266, 113.4579999999552, 347.0420000000196],
+    "request_end_delta_us_min_median_max": [86.93400000048257, 109.59050000014514, 166.6040000003477],
+    "scope_limits": [
+      "Load-to-health exists only as recorded scalars; original launch/health timestamp pair is absent.",
+      "SSE arrivals have a recorded request-relative origin; clock/source implementation not independently executed.",
+      "Prompt bytes, full request body and rendered template are absent from this bundle; hashes/paths/counts cross-checked only.",
+      "Exact sampled token IDs are absent; SSE chunk arrivals are not per-token latency samples.",
+      "Backend predicted_per_token_ms is predicted_ms/(predicted_n-1), not a token latency distribution.",
+      "Nearest-rank p95 with five runs is the maximum; no robust tail/stability claim.",
+      "Hardware, executable and library hashes are original measurement records, not re-measured physical hardware/binaries.",
+      "nvcc toolkit probe reports NOT_AVAILABLE in all public doctors; no compiler version inferred from that probe.",
+      "Entire lsblk probe redacted; omitted original bytes cannot be independently checked.",
+      "No baseline selection calibration group is included; optimum or calibration process not re-audited here.",
+      "No liveness/exit-code event is attached to trailing empty process samples; absence is at the end only, not direct proof of death.",
+      "Peak resource values are sampled, not continuous guarantees; global host swap is not zero.",
+      "This is stock-only and not an inference-quality evaluation or a Tesy speedup."
+    ]
+  },
+  "blocker": {
+    "audit_status": "PASS_RECOMPUTED_FROZEN_CRITERION_FAILURE",
+    "candidate_correctness_status": "FAIL_FROZEN_NUMERICAL_PARITY",
+    "root": "results/vertical-live-diagnostic-20260924T215315Z",
+    "measurement_commit": "6f9beefc6b346b2a30d5e4a4af05c28f934d9289",
+    "measurement_tree": "ae518f02ea30ca61e5113aeb194bd512b58a9821",
+    "stock_vector_sha256": "52c37d27a8249466a8507211267e5c33fa144eaab060c16bae299bb6d7df7b46",
+    "candidate_vector_sha256": "a4882f71f52e5fe7339c1792855245ccd4aa8c09a6c72f0725e2aa54bbf2fe05",
+    "count": 201088,
+    "bytes_per_vector": 804352,
+    "dtype": "IEEE-754 little-endian F32; metrics recomputed in float64",
+    "all_finite": true,
+    "bitwise_equal": false,
+    "max_absolute_error": 0.15564918518066406,
+    "max_absolute_reference": 18.18376922607422,
+    "relative_max": 0.008559786656194158,
+    "cosine": 0.9999766136241487,
+    "relative_max_limit": 0.005,
+    "cosine_min": 0.9999,
+    "relative_max_gate_pass": false,
+    "cosine_gate_pass": true,
+    "absolute_error_budget_for_frozen_relative_gate": 0.0909188461303711,
+    "relative_max_to_frozen_limit_ratio": 1.7119573312388314,
+    "max_error_index": 191634,
+    "max_error_stock_logit": -4.490162372589111,
+    "max_error_candidate_logit": -4.645811557769775,
+    "unequal_coordinates": 201087,
+    "coordinates_exceeding_global_absolute_budget": 478,
+    "argmax_stock": 94852,
+    "argmax_candidate": 94852,
+    "stock_top1_top2_margin": 2.760650634765625,
+    "candidate_top1_top2_margin": 2.7655029296875,
+    "twice_max_abs_error": 0.3112983703613281,
+    "argmax_preserved_by_margin_bound": true,
+    "diagnostic_only": {
+      "mean_delta": -0.004374925299767151,
+      "rmse": 0.02765782189467423,
+      "l2_relative_error": 0.006870788377948904,
+      "abs_error_q50_q95_q99": [0.01799333095550537, 0.054910635948181144, 0.07474264144897469]
+    },
+    "resources": {
+      "status": "PASS_WITH_TRAILING_PROCESS_ABSENCE_NOT_LIVENESS_PROOF",
+      "samples": 38,
+      "gpu_valid_samples": 38,
+      "gpu_failed_samples": 0,
+      "valid_process_samples": 36,
+      "trailing_empty_process_samples": 2,
+      "trailing_empty_indices": [36, 37],
+      "interior_process_gaps": 0,
+      "partial_process_records": 0,
+      "peak_process_swap_bytes": 0,
+      "peak_process_rss_bytes": 13125591040,
+      "peak_gpu_used_bytes": 975175680,
+      "min_gpu_free_bytes": 7610564608,
+      "min_mem_available_bytes": 23557824512,
+      "peak_gpu_temperature_c": 51.0,
+      "peak_gpu_power_w": 30.48,
+      "sample_gap_ms_min_median_max": [120.438013, 125.274581, 185.738769],
+      "first_monotonic_ns": 28302340060676,
+      "last_monotonic_ns": 28307050130611
+    },
+    "scope_limits": [
+      "No FFN/activation/per-expert/downstream-route raw vectors included; their values are log records only.",
+      "These two final-logit vectors prove criterion failure, not the cause of the perturbation.",
+      "GPU-resident weight readback is not established by the host-source/GGUF comparison in the log.",
+      "Argmax at this checkpoint is known; the complete candidate continuation was stopped and not measured."
+    ]
+  },
+  "capacity": {
+    "status": "PARAMETERIZED_ARITHMETIC_PASS_NOT_HARDWARE_MEASUREMENT",
+    "scenario_count": 3,
+    "loader_over_ram_validated": false,
+    "full_physical_weight_materialization": "UNKNOWN_MMAP_AND_BACKEND_DEPENDENT",
+    "missing_source_evidence": [
+      "C1 RSS measurement and one-layer GPU buffer measurement referenced by capacity report not separately supplied in this bundle.",
+      "Larger-model artifacts, revision locks, metadata/source documents and sustained NVMe measurements not supplied."
+    ]
+  },
+  "original_full_result_sha256": "5fb82eaa9810a0962a3e6ff34cd074837ff5be4d23243aea4bcfe7d89d01e05a",
+  "full_result_reproduction": "Concatenate audit_bundle.part1.txt + part2.txt + part3.txt into audit_bundle.py; execute against the fixed public bundle. The complete original JSON result is reproducible; this tracked JSON intentionally avoids duplicated per-run host snapshots.",
+  "fault_probes": {
+    "passed": 12,
+    "executed": 12,
+    "rerun_status": "PASS",
+    "model_executed": false,
+    "full_result_object_matches_original": true
+  }
+}
