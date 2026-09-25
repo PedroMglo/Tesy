@@ -2,7 +2,7 @@
 set -Eeuo pipefail
 
 if [[ $# -ne 5 && $# -ne 6 ]]; then
-  echo "usage: $0 MODEL.gguf PROMPT.txt OUTPUT_ROOT LAYERS TOKENS [diagnostic]" >&2
+  echo "usage: $0 MODEL.gguf PROMPT.txt OUTPUT_ROOT LAYERS TOKENS [diagnostic|down-matrix]" >&2
   exit 2
 fi
 root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
@@ -25,9 +25,30 @@ stopped=0
 [[ "$layers" =~ ^([1-9]|1[0-9]|2[0-4])$ ]]
 [[ "$tokens" =~ ^[1-9][0-9]*$ && "$tokens" -le 128 ]]
 if [[ -n "$diagnostic" ]]; then
-  [[ "$diagnostic" == "diagnostic" && "$layers" == "3" && "$tokens" == "1" ]]
+  [[ "$diagnostic" == "diagnostic" || "$diagnostic" == "down-matrix" ]]
+  [[ "$layers" == "3" && "$tokens" == "1" ]]
   [[ "$(sha256sum "$prompt" | awk '{print $1}')" == \
     "99b2641845df47370c29f1661ccb7493bb51ce11dd26a0f3afabb5c49cf18710" ]]
+fi
+sidecars="$root/research/vertical-numerical-blocker-20260925/diagnostic-233715"
+if [[ "$diagnostic" == "down-matrix" ]]; then
+  "$python_bin" - "$root" "$sidecars" <<'PY'
+import hashlib
+import json
+import sys
+from pathlib import Path
+
+root, sidecars = map(Path, sys.argv[1:])
+manifest = json.loads((root / "research/vertical-numerical-blocker-20260925/evidence-manifest-n2.json").read_text())
+files = {item["path"]: item for item in manifest["files"]}
+for arm in ("stock", "mixed"):
+    for stage in ("ffn_moe_swiglu_oai", "ffn_moe_down"):
+        name = f"layer2-{arm}-{stage}.f32"
+        info = files[name]
+        data = (sidecars / name).read_bytes()
+        assert len(data) == info["size_bytes"] == 46080
+        assert hashlib.sha256(data).hexdigest() == info["sha256"]
+PY
 fi
 [[ ! -e "$out" ]] || { echo "refusing to reuse output root" >&2; exit 1; }
 mkdir -p "$out"
@@ -128,6 +149,9 @@ cmd=("$tool" --model "$model" --output "$out/raw.json"
   --prompt-file "$prompt" --ctx 4096 --threads 12
   --vertical-live-exactness --vertical-layers "$layers" --vertical-tokens "$tokens")
 if [[ -n "$diagnostic" ]]; then cmd+=(--vertical-numerical-diagnostic); fi
+if [[ "$diagnostic" == "down-matrix" ]]; then
+  cmd+=(--vertical-down-matrix --matrix-sidecars-dir "$sidecars")
+fi
 "$python_bin" - "$out/argv.json" "${cmd[@]}" <<'PY'
 import json
 import sys

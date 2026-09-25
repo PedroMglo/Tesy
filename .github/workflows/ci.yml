@@ -91,7 +91,7 @@ jobs:
             -DGGML_CUDA=OFF \
             -DCMAKE_BUILD_TYPE=Release
       - name: Build tracer and graph model-free tests
-        run: cmake --build build/native-ci --parallel 2 --target tesy-moe-trace tesy-split-graph-model-free tesy-sum-graph-model-free tesy-static-residency-model-free
+        run: cmake --build build/native-ci --parallel 2 --target tesy-moe-trace tesy-split-graph-model-free tesy-sum-graph-model-free tesy-static-residency-model-free tesy-down-replay-model-free
       - name: Smoke tracer CLI
         run: build/native-ci/tesy-moe-trace --help
       - name: Split-graph MF0/MF1/MF2
@@ -100,3 +100,5 @@ jobs:
         run: build/native-ci/tesy-sum-graph-model-free
       - name: Static identity residency route partition
         run: build/native-ci/tesy-static-residency-model-free
+      - name: Leaf-only down projection replay and slot mapping
+        run: build/native-ci/tesy-down-replay-model-free

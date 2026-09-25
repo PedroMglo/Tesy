@@ -65,6 +65,8 @@ struct options {
     bool split_graph_skip_exactness = false;
     bool vertical_live_exactness = false;
     bool vertical_numerical_diagnostic = false;
+    bool vertical_down_matrix = false;
+    std::string matrix_sidecars_dir;
     int vertical_layers = 24;
     int vertical_tokens = 4;
     std::string split_arm;
@@ -348,7 +350,8 @@ int parse_positive(const char * value, const char * flag, int minimum = 1) {
         "[--live-reinjection-exactness --prompt-file FILE --ctx 4096] "
         "[--split-graph-skip-exactness --split-arm ARM --prompt-file FILE --ctx 4096] "
         "[--vertical-live-exactness --vertical-layers 1..24 --vertical-tokens N "
-        "--prompt-file FILE --ctx 4096 [--vertical-numerical-diagnostic]]\n",
+        "--prompt-file FILE --ctx 4096 [--vertical-numerical-diagnostic] "
+        "[--vertical-down-matrix --matrix-sidecars-dir DIR]]\n",
         argv0);
     std::exit(code);
 }
@@ -393,6 +396,10 @@ options parse_options(int argc, char ** argv) {
             out.vertical_live_exactness = true;
         } else if (arg == "--vertical-numerical-diagnostic") {
             out.vertical_numerical_diagnostic = true;
+        } else if (arg == "--vertical-down-matrix") {
+            out.vertical_down_matrix = true;
+        } else if (arg == "--matrix-sidecars-dir") {
+            out.matrix_sidecars_dir = value("--matrix-sidecars-dir");
         } else if (arg == "--vertical-layers") {
             out.vertical_layers = parse_positive(value("--vertical-layers"), "--vertical-layers");
         } else if (arg == "--vertical-tokens") {
@@ -525,6 +532,13 @@ options parse_options(int argc, char ** argv) {
         (!out.vertical_live_exactness || out.vertical_layers != 3 ||
          out.vertical_tokens != 1)) {
         fail("vertical numerical diagnostic requires one token and three layers");
+    }
+    if (out.vertical_down_matrix &&
+        (!out.vertical_numerical_diagnostic || out.matrix_sidecars_dir.empty())) {
+        fail("down matrix requires vertical diagnostic and published sidecars");
+    }
+    if (!out.vertical_down_matrix && !out.matrix_sidecars_dir.empty()) {
+        fail("matrix sidecars require down matrix mode");
     }
     return out;
 }
@@ -3511,6 +3525,147 @@ struct vertical_layer_runtime {
     bool initialized = false;
 };
 
+struct vertical_down_replay_graph {
+    context_buffer storage;
+    ggml_tensor * input = nullptr;
+    ggml_tensor * ids = nullptr;
+    ggml_tensor * output = nullptr;
+    ggml_cgraph * graph = nullptr;
+};
+
+std::unique_ptr<vertical_down_replay_graph> vertical_make_down_replay(
+        ggml_tensor * weights, ggml_backend_t backend, int slots) {
+    if (!weights || !weights->buffer || (slots != 1 && slots != 4)) {
+        fail("invalid down replay weight/slot mapping");
+    }
+    auto result = std::make_unique<vertical_down_replay_graph>();
+    result->storage.ctx = make_context();
+    auto * ctx = result->storage.ctx;
+    result->input = ggml_new_tensor_3d(ctx, GGML_TYPE_F32, k_embd, slots, 1);
+    result->ids = ggml_new_tensor_2d(ctx, GGML_TYPE_I32, slots, 1);
+    result->output = ggml_mul_mat_id(ctx, weights, result->input, result->ids);
+    result->graph = ggml_new_graph(ctx);
+    ggml_build_forward_expand(result->graph, result->output);
+    if (result->graph->n_nodes != 1 ||
+        result->graph->nodes[0] != result->output ||
+        result->output->op != GGML_OP_MUL_MAT_ID ||
+        result->output->src[1] != result->input ||
+        result->output->src[2] != result->ids) {
+        fail("down replay graph has unexpected ancestors or operator");
+    }
+    result->storage.buffer = ggml_backend_alloc_ctx_tensors(ctx, backend);
+    if (!result->storage.buffer) fail("cannot allocate down replay graph");
+    return result;
+}
+
+std::vector<float> vertical_compute_down_replay(
+        vertical_down_replay_graph & replay, ggml_backend_t backend,
+        const std::vector<float> & input, const std::vector<int32_t> & ids) {
+    if (ggml_nelements(replay.input) != static_cast<int64_t>(input.size()) ||
+        ggml_nelements(replay.ids) != static_cast<int64_t>(ids.size())) {
+        fail("down replay input/ID count changed");
+    }
+    ggml_backend_tensor_set(replay.input, input.data(), 0,
+                            input.size() * sizeof(float));
+    ggml_backend_tensor_set(replay.ids, ids.data(), 0,
+                            ids.size() * sizeof(int32_t));
+    if (ggml_backend_graph_compute(backend, replay.graph) != GGML_STATUS_SUCCESS) {
+        fail("down replay operator failed");
+    }
+    ggml_backend_synchronize(backend);
+    return read_live_tensor<float>(replay.output, GGML_TYPE_F32,
+                                   input.size(), "down replay output");
+}
+
+std::vector<float> vertical_read_matrix_sidecar(
+        const std::filesystem::path & path) {
+    std::ifstream file(path, std::ios::binary | std::ios::ate);
+    if (!file || file.tellg() !=
+        static_cast<std::streamoff>(k_embd * k_top_k * sizeof(float))) {
+        fail("down matrix sidecar missing or wrong size: " + path.string());
+    }
+    file.seekg(0);
+    std::vector<float> values(static_cast<size_t>(k_embd * k_top_k));
+    file.read(reinterpret_cast<char *>(values.data()),
+              static_cast<std::streamsize>(values.size() * sizeof(float)));
+    if (!file || !std::all_of(values.begin(), values.end(),
+                             [](float x) { return std::isfinite(x); })) {
+        fail("down matrix sidecar truncated or non-finite: " + path.string());
+    }
+    return values;
+}
+
+void vertical_run_down_matrix(
+        vertical_layer_runtime & layer, ggml_backend_t cpu_backend,
+        ggml_backend_t gpu_backend, const std::filesystem::path & sidecars,
+        const std::filesystem::path & output_root,
+        const std::vector<int32_t> & route) {
+    if (route != std::vector<int32_t>({4, 0, 31, 17}) ||
+        !layer.gpu_resident || !layer.borrowed_cpu.down_w ||
+        ggml_nelements(layer.gpu_resident->down_w) !=
+            k_embd * k_embd * k_top_k) {
+        fail("down matrix route/residency/weight mapping changed");
+    }
+    const auto stock_input = vertical_read_matrix_sidecar(
+        sidecars / "layer2-stock-ffn_moe_swiglu_oai.f32");
+    const auto mixed_input = vertical_read_matrix_sidecar(
+        sidecars / "layer2-mixed-ffn_moe_swiglu_oai.f32");
+    const auto stock_down = vertical_read_matrix_sidecar(
+        sidecars / "layer2-stock-ffn_moe_down.f32");
+    const auto mixed_down = vertical_read_matrix_sidecar(
+        sidecars / "layer2-mixed-ffn_moe_down.f32");
+    auto cpu = vertical_make_down_replay(layer.borrowed_cpu.down_w,
+                                         cpu_backend, 4);
+    auto gpu = vertical_make_down_replay(layer.gpu_resident->down_w,
+                                         gpu_backend, 1);
+    auto slot = [](const std::vector<float> & matrix) {
+        return std::vector<float>(matrix.begin() + k_embd,
+                                  matrix.begin() + 2 * k_embd);
+    };
+    auto cpu_mixed = stock_input;
+    std::copy(mixed_input.begin() + k_embd,
+              mixed_input.begin() + 2 * k_embd,
+              cpu_mixed.begin() + k_embd);
+    const std::array<std::pair<std::string, std::vector<float>>, 4> arms{{
+        {"C_xC", stock_input}, {"C_xG", cpu_mixed},
+        {"G_xC", slot(stock_input)}, {"G_xG", slot(mixed_input)},
+    }};
+    std::array<std::vector<float>, 4> first{};
+    std::array<bool, 4> stable{};
+    for (size_t arm = 0; arm < arms.size(); ++arm) {
+        const bool is_cpu = arm < 2;
+        for (int repeat = 1; repeat <= 2; ++repeat) {
+            const auto all = is_cpu
+                ? vertical_compute_down_replay(*cpu, cpu_backend,
+                    arms[arm].second, route)
+                : vertical_compute_down_replay(*gpu, gpu_backend,
+                    arms[arm].second, {0});
+            const auto output = is_cpu ? slot(all) : all;
+            if (repeat == 1) first[arm] = output;
+            else stable[arm] = float_vectors_bitwise_equal(first[arm], output);
+            write_reinjection_logits(
+                (output_root / (arms[arm].first + "-r" +
+                    std::to_string(repeat) + ".f32")).string(), output);
+        }
+    }
+    const bool cpu_diag = float_vectors_bitwise_equal(first[0], slot(stock_down));
+    const bool gpu_diag = float_vectors_bitwise_equal(first[3], slot(mixed_down));
+    FILE * raw = std::fopen((output_root / "down-matrix-raw.json").c_str(), "wx");
+    if (!raw) fail("cannot create down matrix raw");
+    std::fprintf(raw,
+        "{\"schema\":\"tesy.numerical_down_matrix_raw.v1\","
+        "\"route\":[4,0,31,17],\"slot\":1,\"expert\":0,"
+        "\"cpu_ids\":[4,0,31,17],\"gpu_local_ids\":[0],"
+        "\"cpu_slots\":4,\"gpu_slots\":1,\"replay_nodes\":1,"
+        "\"repetitions\":2,\"diagonal_bitwise\":{\"C_xC\":%s,"
+        "\"G_xG\":%s},\"repeat_bitwise\":{\"C_xC\":%s,"
+        "\"C_xG\":%s,\"G_xC\":%s,\"G_xG\":%s}}\n",
+        cpu_diag ? "true" : "false", gpu_diag ? "true" : "false",
+        stable[0] ? "true" : "false", stable[1] ? "true" : "false",
+        stable[2] ? "true" : "false", stable[3] ? "true" : "false");
+    if (std::fclose(raw) != 0) fail("cannot close down matrix raw");
+}
+
 std::array<ggml_tensor *, 6> vertical_stock_tensors(
         ggml_cgraph * graph, int layer) {
     const std::array<const char *, 6> suffixes{
@@ -3984,9 +4139,11 @@ struct vertical_hook_state {
     bool active = false;
     bool invoked = false;
     bool numerical_diagnostic = false;
+    bool down_matrix = false;
     const vertical_reference_state * reference = nullptr;
     std::string model_path;
     std::filesystem::path diagnostic_root;
+    std::filesystem::path matrix_sidecars_dir;
     std::vector<float> layer2_ffn_output;
     std::array<vertical_layer_runtime, 24> layers;
     std::vector<vertical_event> events;
@@ -4147,6 +4304,12 @@ ggml_status vertical_live_compute_hook(ggml_cgraph * graph,
             const auto stages = vertical_capture_mixed_stages(
                 layer, state->cpu_backend, state->gpu_backend,
                 partition, experts, weights);
+            if (state->down_matrix) {
+                vertical_run_down_matrix(
+                    layer, state->cpu_backend, state->gpu_backend,
+                    state->matrix_sidecars_dir, state->diagnostic_root,
+                    experts);
+            }
             for (size_t stage = 0; stage < stages.size(); ++stage) {
                 write_reinjection_logits(
                     (state->diagnostic_root /
@@ -4690,9 +4853,12 @@ void run_vertical_live_exactness(
     state.reference = &reference;
     state.model_path = opt.model;
     state.numerical_diagnostic = opt.vertical_numerical_diagnostic;
+    state.down_matrix = opt.vertical_down_matrix;
     state.diagnostic_root = diagnostic_root;
+    state.matrix_sidecars_dir = opt.matrix_sidecars_dir;
     std::vector<llama_token> candidate_tokens;
     std::vector<parity> logits_parity;
+    bool matrix_complete = false;
     {
         llama_context * ctx = vertical_make_context(model, prompt_tokens.size(), opt);
         llama_sampler * sampler = vertical_make_greedy_sampler();
@@ -4742,7 +4908,8 @@ void run_vertical_live_exactness(
                             event.experts[2], event.experts[3]);
                     }
                 }
-                if (opt.vertical_numerical_diagnostic && ordinal == 0) {
+                if (opt.vertical_numerical_diagnostic &&
+                    !opt.vertical_down_matrix && ordinal == 0) {
                     if (state.layer2_ffn_output.size() !=
                         static_cast<size_t>(k_embd)) {
                         fail("vertical diagnostic mixed FFN capture missing");
@@ -4752,6 +4919,13 @@ void run_vertical_live_exactness(
                         stock_logits[0], candidate_logits,
                         reference.events[0][2], state.layer2_ffn_output,
                         root);
+                }
+                if (opt.vertical_down_matrix && ordinal == 0) {
+                    if (!std::filesystem::exists(root / "down-matrix-raw.json")) {
+                        fail("down matrix did not complete before logit divergence");
+                    }
+                    matrix_complete = true;
+                    break;
                 }
                 fail("vertical candidate full logits parity failed");
             }
@@ -4764,6 +4938,21 @@ void run_vertical_live_exactness(
         llama_free(ctx);
     }
     llama_model_free(model);
+    if (matrix_complete) {
+        FILE * out = std::fopen(opt.output.c_str(), "wx");
+        if (!out) fail("cannot create down matrix diagnostic output");
+        std::fprintf(out,
+            "{\"schema\":\"tesy.numerical_characterization_a_raw.v1\","
+            "\"execution_status\":\"PASS\","
+            "\"diagnostic_result\":\"DOWN_MATRIX_CAPTURED\","
+            "\"comparison_under_existing_contract\":\"TESY_N2_STILL_FAIL\","
+            "\"historical_route\":[4,0,31,17],"
+            "\"full_logit_relative_max\":%.17g,"
+            "\"down_matrix_file\":\"down-matrix-raw.json\"}\n",
+            logits_parity.front().relative_max);
+        if (std::fclose(out) != 0) fail("cannot close down matrix diagnostic output");
+        return;
+    }
     if (state.events.size() != stock_logits.size() *
         static_cast<size_t>(opt.vertical_layers)) {
         fail("vertical event/layer coverage incomplete");

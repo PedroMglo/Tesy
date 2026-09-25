@@ -68,6 +68,26 @@ target_include_directories(
 )
 target_link_libraries(tesy-mixed-residency PRIVATE llama ggml)
 
+add_executable(tesy-stock-prefix-logits tesy_stock_prefix_logits.cpp)
+target_compile_features(tesy-stock-prefix-logits PRIVATE cxx_std_17)
+target_compile_options(tesy-stock-prefix-logits PRIVATE -Wall -Wextra -Wpedantic -Werror)
+target_include_directories(tesy-stock-prefix-logits PRIVATE
+  "${LLAMA_CPP_SOURCE_DIR}/include"
+  "${LLAMA_CPP_SOURCE_DIR}/ggml/include"
+)
+target_link_libraries(tesy-stock-prefix-logits PRIVATE llama ggml)
+
+add_executable(tesy-down-replay-model-free tesy_down_replay_model_free.cpp)
+target_compile_features(tesy-down-replay-model-free PRIVATE cxx_std_17)
+target_compile_options(tesy-down-replay-model-free PRIVATE -Wall -Wextra -Wpedantic -Werror)
+target_include_directories(tesy-down-replay-model-free PRIVATE
+  "${LLAMA_CPP_SOURCE_DIR}/ggml/include"
+)
+target_include_directories(tesy-down-replay-model-free SYSTEM PRIVATE
+  "${LLAMA_CPP_SOURCE_DIR}/ggml/src"
+)
+target_link_libraries(tesy-down-replay-model-free PRIVATE ggml ggml-cpu)
+
 
 add_executable(tesy-routed-layer-capture tesy_routed_layer_capture.cpp)
 target_compile_features(tesy-routed-layer-capture PRIVATE cxx_std_17)
