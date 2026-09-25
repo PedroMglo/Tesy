@@ -1,0 +1,30 @@
+{
+  "schema": "tesy.numerical_characterization_ab_protocol.v1",
+  "status": "FROZEN_NOT_RUN",
+  "base_commit": "f4d0a1a73e437493c77bcef21435631cf792f453",
+  "base_tree": "8556214beca0671dddd611beedeb8aa3203822ca",
+  "llama_head": "4e416ee7308dd6b581796f1a6241276cd5982691",
+  "model_sha256": "52f57ab7d3df3ba9173827c1c6832e73375553a846f3e32b49f1ae2daad688d4",
+  "model_size_bytes": 12109564352,
+  "context": 4096,
+  "threads": 12,
+  "n_batch": "prompt_token_count",
+  "n_ubatch": "prompt_token_count",
+  "tokenization": {"add_special": true, "parse_special": true, "chat_template": null},
+  "prompts": [
+    {"path": "benchmarks/prompts/vertical-short-summary.txt", "sha256": "99b2641845df47370c29f1661ccb7493bb51ce11dd26a0f3afabb5c49cf18710", "historical_first_token": 32},
+    {"path": "benchmarks/prompts/vertical-eval-code-short.txt", "sha256": "6cab5251b0045b55cbf0dc7212a1c5f799e7777ca6712731933fce9cf7650327", "historical_first_token": null}
+  ],
+  "part_a": {"layer": 2, "route": [4, 0, 31, 17], "slot": 1, "global_expert": 0, "gpu_local_expert": 0, "residency": [0, 1, 2, 3], "elements_per_slot": 2880, "repetitions_per_combination": 2, "diagonal_requires_bitwise": true,
+    "sidecars": {
+      "stock_input_sha256": "08d0b8a7284592a41747249dbcb85215395d76bc4086c95e534909be1dafa46b",
+      "mixed_input_sha256": "b45d0ab39089a6798dd712c9366cdb667352f284a5bfe054a01b42b9f25ccf25",
+      "stock_down_sha256": "133a16add34bd9fecb905f67985035e8693dd912216c50e10983794acfd13f31",
+      "mixed_down_sha256": "6146c568b360ede29da5ca0c513af1630a5f6fae630cd7e88f90085b35db004e"
+    }
+  },
+  "part_b": {"placements": [0, 12], "repetitions_per_prompt_placement": 2, "checkpoints": ["P", "D"], "order": [[0, 12], [12, 0]], "common_token_source": "first_cpu_reference"},
+  "existing_contract": {"relative_max_max": 0.005, "cosine_min": 0.9999, "finite_required": true, "relative_max_definition": "max_abs/max(1,max_abs_ref)"},
+  "performance_measurement": false,
+  "pending_external_audit": true
+}

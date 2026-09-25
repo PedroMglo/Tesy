@@ -1,19 +1,17 @@
 {
-  "work_package": "vertical-numerical-blocker-20260925",
-  "stage": "N2",
-  "status": "ARITHMETIC_DIFFERENCE_ISOLATED_NO_ADMISSIBLE_LOCAL_FIX",
-  "branch": "engineering/vertical-numerical-blocker-20260924",
-  "base_commit": "ca532aaa765ad551dcb8be4424f0abe6778eec96",
-  "implementation_commit": "05dc3e7fb8910674bc65c0abcd206a9cc5147fe0",
-  "measurement_commit": "05dc3e7fb8910674bc65c0abcd206a9cc5147fe0",
-  "measurement_tree": "9514bb9152de8caedc64f6e1b11c036cc0fbb2e0",
-  "protocol_path": "research/VERTICAL-NUMERICAL-BLOCKER-DIAGNOSTIC-PROTOCOL-20260925.md",
-  "result_path": "research/VERTICAL-NUMERICAL-BLOCKER-N2-20260925.md",
-  "evidence_manifest_path": "research/vertical-numerical-blocker-20260925/evidence-manifest-n2.json",
+  "work_package": "numerical-characterization-ab-20260925",
+  "stage": "PROTOCOL_FROZEN",
+  "status": "NOT_RUN",
+  "branch": "research/numerical-characterization-ab-20260925",
+  "base_commit": "f4d0a1a73e437493c77bcef21435631cf792f453",
+  "implementation_commit": null,
+  "measurement_commit": null,
+  "measurement_tree": null,
+  "protocol_path": "research/NUMERICAL-CHARACTERIZATION-AB-PROTOCOL-20260925.md",
+  "result_path": null,
+  "evidence_manifest_path": "research/numerical-characterization-ab-20260925/protocol-manifest.json",
   "blockers": [
-    "Layer-2 expert-0 CUDA MUL_MAT_ID first differs from stock CPU at gate projection; FFN-only reinjection reproduces the full-logit FAIL bitwise.",
-    "The frozen CPU-stock full-logit relative max 0.00855978666 exceeds 0.005. No admissible localized fix was demonstrated; vertical correctness and Tesy timing remain blocked.",
-    "The exact arithmetic micro-cause inside CPU Q8_0 versus CUDA Q8_1 paths and any alternative multi-backend contract require external decision; stock CPU/GPU placement comparison was NOT_RUN."
+    "O FAIL Tesy N2 permanece; esta unidade apenas caracteriza input/backend e stock ngl0/ngl12, sem requalificar o candidato."
   ],
   "pending_external_audit": true
 }
