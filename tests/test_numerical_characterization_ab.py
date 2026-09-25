@@ -47,6 +47,8 @@ def fake_b_root(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> Path:
             "llama_head": "4e416ee7308dd6b581796f1a6241276cd5982691",
             "model_sha256": "52f57ab7d3df3ba9173827c1c6832e73375553a846f3e32b49f1ae2daad688d4",
             "model_size_bytes": 12109564352,
+            "tool_sha256": "tool-hash",
+            "libggml_cuda_sha256": "cuda-hash",
         },
     )
     p = np.zeros(64, dtype="<f4")
@@ -81,6 +83,10 @@ def fake_b_root(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> Path:
                     {
                         "schema": "tesy.mixed_residency_runtime_provenance.v1",
                         "status": "PASS",
+                        "argv": {"status": "PASS", "expected": ["tool"], "observed": ["tool"]},
+                        "executable": {"sha256": "tool-hash"},
+                        "ggml_cuda": {"sha256": "cuda-hash"},
+                        "mismatches": [],
                     },
                 )
                 write_json(
@@ -145,6 +151,17 @@ def test_b_detects_stock_contrast_failure(tmp_path: Path, monkeypatch: pytest.Mo
     assert result["comparison_under_existing_contract"] == "NUMERICAL_CONTRACT_REVIEW_REQUIRED"
 
 
+def test_b_rejects_wrong_mapped_cuda_hash(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+    repo = Path(__file__).resolve().parents[1]
+    root = fake_b_root(tmp_path, monkeypatch)
+    path = root / "historical-r1-ngl12/runtime-provenance.json"
+    raw = json.loads(path.read_text())
+    raw["ggml_cuda"]["sha256"] = "other-cuda"
+    write_json(path, raw)
+    with pytest.raises(ab.CharacterizationError, match="CUDA provenance"):
+        ab.analyze_b(repo, root)
+
+
 def test_resource_trace_rejects_nonterminal_gap(tmp_path: Path) -> None:
     path = tmp_path / "resources.jsonl"
     valid = {
@@ -182,6 +199,30 @@ def test_a_rechecks_diagonals_and_decomposition(tmp_path: Path) -> None:
         tmp_path / "raw.json",
         {
             "schema": "tesy.numerical_characterization_a_raw.v1",
+        },
+    )
+    write_json(
+        tmp_path / "build-provenance.json",
+        {
+            "schema": "tesy.vertical_live_build_provenance.v1",
+            "status": "PASS",
+            "llama_base_head": "4e416ee7308dd6b581796f1a6241276cd5982691",
+            "model_sha256": "52f57ab7d3df3ba9173827c1c6832e73375553a846f3e32b49f1ae2daad688d4",
+            "model_size_bytes": 12109564352,
+            "prompt_sha256": "99b2641845df47370c29f1661ccb7493bb51ce11dd26a0f3afabb5c49cf18710",
+            "tool_sha256": "tool-hash",
+            "libggml_cuda_sha256": "cuda-hash",
+        },
+    )
+    write_json(
+        tmp_path / "runtime-provenance.json",
+        {
+            "schema": "tesy.mixed_residency_runtime_provenance.v1",
+            "status": "PASS",
+            "argv": {"status": "PASS", "expected": ["tool"], "observed": ["tool"]},
+            "executable": {"sha256": "tool-hash"},
+            "ggml_cuda": {"sha256": "cuda-hash"},
+            "mismatches": [],
         },
     )
     write_json(

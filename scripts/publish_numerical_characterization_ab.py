@@ -35,6 +35,10 @@ def main() -> int:
         raise SystemExit(f"refusing to replace evidence: {output}")
     if git(repo, "status", "--porcelain"):
         raise SystemExit("measurement/publication requires clean Tesy worktree")
+    a_build = json.loads((a_root / "build-provenance.json").read_text())
+    b_build = json.loads((b_root / "build-provenance.json").read_text())
+    if a_build["tesy_head"] != b_build["tesy_head"] or a_build["tesy_tree"] != b_build["tesy_tree"]:
+        raise SystemExit("A/B measurement commit or tree differs")
     analysis = {
         "schema": "tesy.numerical_characterization_ab_analysis.v1",
         "A": analyze_a(repo, a_root),
@@ -161,14 +165,17 @@ def main() -> int:
     manifest = {
         "schema": "tesy.numerical_characterization_ab_evidence_manifest.v1",
         "classification": "MEASURED_NUMERICAL_DIAGNOSTIC_NO_CONTRACT_CHANGE",
-        "measurement_commit": git(repo, "rev-parse", "HEAD"),
-        "measurement_tree": git(repo, "rev-parse", "HEAD^{tree}"),
+        "measurement_commit": a_build["tesy_head"],
+        "measurement_tree": a_build["tesy_tree"],
+        "analysis_commit": git(repo, "rev-parse", "HEAD"),
+        "analysis_tree": git(repo, "rev-parse", "HEAD^{tree}"),
         "protocol_path": "research/NUMERICAL-CHARACTERIZATION-AB-PROTOCOL-20260925.md",
         "a_root": str(a_root.relative_to(repo)),
         "b_root": str(b_root.relative_to(repo)),
         "published_files": published,
         "failed_roots_preserved_local_only": [
             "results/numerical-characterization-a-20260925T004600Z/",
+            "results/numerical-characterization-publication-attempt-20260925T005100Z/",
         ],
         "not_published": [
             "model weights, binaries, build products, caches",

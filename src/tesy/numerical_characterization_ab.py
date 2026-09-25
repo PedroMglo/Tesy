@@ -85,6 +85,18 @@ def placement_from_log(path: Path) -> dict[str, str]:
     return {index: device for index, device in rows}
 
 
+def validate_provenance(runtime: dict[str, Any], build: dict[str, Any]) -> None:
+    if (
+        runtime.get("status") != "PASS"
+        or runtime.get("argv", {}).get("status") != "PASS"
+        or runtime.get("argv", {}).get("expected") != runtime.get("argv", {}).get("observed")
+        or runtime.get("executable", {}).get("sha256") != build.get("tool_sha256")
+        or runtime.get("ggml_cuda", {}).get("sha256") != build.get("libggml_cuda_sha256")
+        or runtime.get("mismatches") != []
+    ):
+        raise CharacterizationError("runtime executable/argv/CUDA provenance mismatch")
+
+
 def metrics(reference: np.ndarray, candidate: np.ndarray) -> dict[str, Any]:
     if (
         reference.shape != candidate.shape
@@ -116,6 +128,21 @@ def contract(value: dict[str, Any]) -> str:
 def analyze_a(repo: Path, root: Path) -> dict[str, Any]:
     raw = read_json(root / "down-matrix-raw.json", "tesy.numerical_down_matrix_raw.v1")
     read_json(root / "raw.json", "tesy.numerical_characterization_a_raw.v1")
+    build = read_json(root / "build-provenance.json", "tesy.vertical_live_build_provenance.v1")
+    runtime = read_json(
+        root / "runtime-provenance.json", "tesy.mixed_residency_runtime_provenance.v1"
+    )
+    if (
+        build.get("status") != "PASS"
+        or build.get("llama_base_head") != "4e416ee7308dd6b581796f1a6241276cd5982691"
+        or build.get("model_sha256")
+        != "52f57ab7d3df3ba9173827c1c6832e73375553a846f3e32b49f1ae2daad688d4"
+        or build.get("model_size_bytes") != 12109564352
+        or build.get("prompt_sha256")
+        != "99b2641845df47370c29f1661ccb7493bb51ce11dd26a0f3afabb5c49cf18710"
+    ):
+        raise CharacterizationError("A model/source/workload provenance mismatch")
+    validate_provenance(runtime, build)
     a_health = validate_resource_trace(root / "resources.jsonl")
     a_resources = read_json(
         root / "resource-summary.json", "tesy.vertical_live_resource_summary.v1"
@@ -256,6 +283,7 @@ def analyze_b(repo: Path, root: Path) -> dict[str, Any]:
                 )
                 if prov.get("status") != "PASS" or resources.get("status") != "PASS":
                     raise CharacterizationError(f"B runtime/resource failure: {key}")
+                validate_provenance(prov, build)
                 if (
                     resources.get("peak_process_swap_bytes") != 0
                     or resources.get("gpu_failed_samples") != 0
