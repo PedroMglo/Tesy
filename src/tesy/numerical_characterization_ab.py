@@ -6,6 +6,7 @@ import argparse
 import hashlib
 import json
 import math
+import re
 from pathlib import Path
 from typing import Any
 
@@ -37,10 +38,51 @@ def read_f32(path: Path, count: int) -> np.ndarray:
 
 
 def read_json(path: Path, schema: str) -> dict[str, Any]:
-    raw = json.loads(path.read_text())
+    def unique_pairs(pairs: list[tuple[str, Any]]) -> dict[str, Any]:
+        result: dict[str, Any] = {}
+        for key, value in pairs:
+            if key in result:
+                raise CharacterizationError(f"duplicate JSON key {key}: {path}")
+            result[key] = value
+        return result
+
+    raw = json.loads(path.read_text(), object_pairs_hook=unique_pairs)
     if not isinstance(raw, dict) or raw.get("schema") != schema:
         raise CharacterizationError(f"invalid schema: {path}")
     return raw
+
+
+def validate_resource_trace(path: Path) -> dict[str, int]:
+    rows = [json.loads(line) for line in path.read_text().splitlines() if line]
+    valid_flags = [set(row.get("process", {})) == {"VmRSS_bytes", "VmSwap_bytes"} for row in rows]
+    if sum(valid_flags) < 2:
+        raise CharacterizationError(f"insufficient resource samples: {path}")
+    last_valid = max(i for i, flag in enumerate(valid_flags) if flag)
+    if not all(valid_flags[: last_valid + 1]):
+        raise CharacterizationError(f"nonterminal process telemetry gap: {path}")
+    if any(row.get("gpu", {}).get("status") != "OK" for row in rows):
+        raise CharacterizationError(f"GPU telemetry failed: {path}")
+    for row in rows[: last_valid + 1]:
+        gpu = row["gpu"]
+        if row["process"]["VmSwap_bytes"] != 0 or not all(
+            math.isfinite(gpu[name]) for name in ("temperature_c", "power_w")
+        ):
+            raise CharacterizationError(f"invalid resource sample: {path}")
+    return {
+        "valid_samples": sum(valid_flags),
+        "terminal_samples_excluded": len(rows) - sum(valid_flags),
+        "nonterminal_gaps": 0,
+    }
+
+
+def placement_from_log(path: Path) -> dict[str, str]:
+    rows = re.findall(
+        r"load_tensors: layer\s+(\d+) assigned to device\s+(\S+)",
+        path.read_text(),
+    )
+    if len(rows) != 25 or {int(index) for index, _ in rows} != set(range(25)):
+        raise CharacterizationError(f"incomplete effective placement log: {path}")
+    return {index: device for index, device in rows}
 
 
 def metrics(reference: np.ndarray, candidate: np.ndarray) -> dict[str, Any]:
@@ -74,6 +116,15 @@ def contract(value: dict[str, Any]) -> str:
 def analyze_a(repo: Path, root: Path) -> dict[str, Any]:
     raw = read_json(root / "down-matrix-raw.json", "tesy.numerical_down_matrix_raw.v1")
     read_json(root / "raw.json", "tesy.numerical_characterization_a_raw.v1")
+    a_health = validate_resource_trace(root / "resources.jsonl")
+    a_resources = read_json(
+        root / "resource-summary.json", "tesy.vertical_live_resource_summary.v1"
+    )
+    if (
+        a_resources.get("status") != "PASS"
+        or a_resources.get("valid_samples") != a_health["valid_samples"]
+    ):
+        raise CharacterizationError("A resource summary contradicts samples")
     manifest = read_json(
         repo / "research/vertical-numerical-blocker-20260925/evidence-manifest-n2.json",
         "tesy.vertical_numerical_diagnostic_evidence_manifest.v1",
@@ -148,6 +199,7 @@ def analyze_a(repo: Path, root: Path) -> dict[str, Any]:
         "diagonal_bitwise": diagonal,
         "comparisons": comparisons,
         "decomposition_float64": decomposition,
+        "resource_trace": a_health,
     }
 
 
@@ -167,6 +219,12 @@ def analyze_b(repo: Path, root: Path) -> dict[str, Any]:
         or build.get("llama_head") != "4e416ee7308dd6b581796f1a6241276cd5982691"
     ):
         raise CharacterizationError("B build is not pinned stock")
+    if (
+        build.get("model_sha256")
+        != "52f57ab7d3df3ba9173827c1c6832e73375553a846f3e32b49f1ae2daad688d4"
+        or build.get("model_size_bytes") != 12109564352
+    ):
+        raise CharacterizationError("B model identity changed")
     expected_prompts = {
         "historical": "99b2641845df47370c29f1661ccb7493bb51ce11dd26a0f3afabb5c49cf18710",
         "code": "6cab5251b0045b55cbf0dc7212a1c5f799e7777ca6712731933fce9cf7650327",
@@ -204,6 +262,13 @@ def analyze_b(repo: Path, root: Path) -> dict[str, Any]:
                     or resources.get("valid_samples", 0) < 2
                 ):
                     raise CharacterizationError(f"B missing health evidence: {key}")
+                health = validate_resource_trace(path / "resources.jsonl")
+                if (
+                    resources["valid_samples"] != health["valid_samples"]
+                    or resources["terminal_samples_excluded"] != health["terminal_samples_excluded"]
+                ):
+                    raise CharacterizationError(f"B resource summary contradicts samples: {key}")
+                placement = placement_from_log(path / "stderr.txt")
                 if (
                     raw.get("n_gpu_layers") != ngl
                     or raw.get("n_ctx") != 4096
@@ -230,6 +295,8 @@ def analyze_b(repo: Path, root: Path) -> dict[str, Any]:
                         for c in ("P", "D")
                     },
                     "resources": resources,
+                    "resource_trace": health,
+                    "effective_model_layer_placement": placement,
                 }
         first_key = f"{label}-r1-ngl0"
         first = runs[first_key]["raw"]
@@ -287,6 +354,15 @@ def analyze_b(repo: Path, root: Path) -> dict[str, Any]:
         for repeat in prompt.values()
         for value in repeat.values()
     )
+    for ngl in (0, 12):
+        expected_placement = runs[f"historical-r1-ngl{ngl}"]["effective_model_layer_placement"]
+        if any(
+            runs[f"{label}-r{repeat}-ngl{ngl}"]["effective_model_layer_placement"]
+            != expected_placement
+            for label in expected_prompts
+            for repeat in (1, 2)
+        ):
+            raise CharacterizationError("effective placement changed between stock runs")
     return {
         "execution_status": "PASS",
         "diagnostic_result": "COMPLETE"
@@ -297,6 +373,10 @@ def analyze_b(repo: Path, root: Path) -> dict[str, Any]:
         else "NUMERICAL_CONTRACT_REVIEW_REQUIRED",
         "historical_b0_d_bitwise_n2": historical,
         "repeatable_within_placement_bitwise": repeatable,
+        "effective_placement": {
+            f"ngl{ngl}": runs[f"historical-r1-ngl{ngl}"]["effective_model_layer_placement"]
+            for ngl in (0, 12)
+        },
         "runs": runs,
         "repeatability": repeatability,
         "contrasts": contrasts,
