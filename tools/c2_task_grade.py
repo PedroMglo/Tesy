@@ -179,6 +179,8 @@ def main():
     for row in rows:
         task_id = row["source_task_id"] if mode == "c2core8" else row["task_id"]
         outcome = grade_text(task_id, (row["message"] or {}).get("content"))
+        if mode == "c2core8" and outcome["status"] == "VALIDATOR_ENV_ERROR":
+            raise RuntimeError(f"isolated validator unavailable for {task_id}")
         status = "FAIL_TRUNCATED" if mode == "c2core8" and row["finish_reason"] != "stop" else outcome["status"]
         item = {"task_id":task_id,"status":status,
                 "finish_reason":row["finish_reason"], "detail":outcome}
