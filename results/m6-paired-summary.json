@@ -1,0 +1,95 @@
+{
+  "source_runs": [
+    "task20b-stock-eval02",
+    "task120b-stream24-eval01"
+  ],
+  "paired_rows": [
+    {
+      "task_id": "eval-code-01",
+      "stock20b": "FAIL",
+      "target120b": "FAIL",
+      "stock_request_s": 12.104,
+      "target_request_s": 194.8
+    },
+    {
+      "task_id": "eval-code-02",
+      "stock20b": "PASS",
+      "target120b": "PASS",
+      "stock_request_s": 4.236,
+      "target_request_s": 96.962
+    },
+    {
+      "task_id": "eval-sql-01",
+      "stock20b": "PASS",
+      "target120b": "PASS",
+      "stock_request_s": 5.873,
+      "target_request_s": 80.518
+    },
+    {
+      "task_id": "eval-sql-02",
+      "stock20b": "PASS",
+      "target120b": "PASS",
+      "stock_request_s": 5.063,
+      "target_request_s": 85.913
+    },
+    {
+      "task_id": "eval-extract-01",
+      "stock20b": "PASS",
+      "target120b": "PASS",
+      "stock_request_s": 4.709,
+      "target_request_s": 123.367
+    },
+    {
+      "task_id": "eval-extract-02",
+      "stock20b": "PASS",
+      "target120b": "PASS",
+      "stock_request_s": 3.0,
+      "target_request_s": 76.771
+    },
+    {
+      "task_id": "eval-quant-01",
+      "stock20b": "PASS",
+      "target120b": "PASS",
+      "stock_request_s": 4.648,
+      "target_request_s": 95.858
+    },
+    {
+      "task_id": "eval-quant-02",
+      "stock20b": "PASS",
+      "target120b": "PASS",
+      "stock_request_s": 5.447,
+      "target_request_s": 114.738
+    },
+    {
+      "task_id": "eval-plan-01",
+      "stock20b": "FAIL",
+      "target120b": "FAIL",
+      "stock_request_s": 13.097,
+      "target_request_s": 229.774
+    },
+    {
+      "task_id": "eval-plan-02",
+      "stock20b": "PASS",
+      "target120b": "PASS",
+      "stock_request_s": 7.467,
+      "target_request_s": 186.119
+    }
+  ],
+  "score": {
+    "stock20b": 8,
+    "target120b": 8,
+    "denominator": 10,
+    "target_advantage_tasks": 0,
+    "target_regression_tasks": 0
+  },
+  "sum_request_elapsed_s": {
+    "stock20b": 65.644,
+    "target120b": 1284.82,
+    "target_over_stock_ratio": 19.57254280665407
+  },
+  "backend_decode_tok_s": {
+    "stock20b": 45.74399461275186,
+    "target120b": 2.733190701446943
+  },
+  "scope": "ten frozen public held-out tasks, one attempt each; practical cross-model/backend comparison"
+}

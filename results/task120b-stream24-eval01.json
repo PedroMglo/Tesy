@@ -1,0 +1,518 @@
+{
+  "run_id": "task120b-stream24-eval01",
+  "started_utc": "2026-09-26T11:49:55.002670+00:00",
+  "model": "target120b",
+  "artifact": "/home/pmglo/models/gpt-oss-120b-gguf/gpt-oss-120b-MXFP4.gguf",
+  "artifact_revision": "238abdd290bb874b90a5da1b4549881b7d05c091",
+  "artifact_sha256_previously_verified": "582bd40f6886200101f4c4ed9f25f3fe80cc14c86e9e2b37746cd8904a0c622d",
+  "artifact_size_bytes": 63387346208,
+  "backend": "streaming",
+  "backend_sha": "1248fd8fa8cfebaece5ea992e4d951c1e18bb9d5",
+  "binary_sha256": "f19a4b490e60b4205193c25691e350ed577926dfcfe3ef7e2dcc2c24d3f84e86",
+  "backend_libraries_sha256": {
+    "build-gcc15/bin/libllama-server-impl.so": "ab3106f10dcf5bf94bd1cbe556ab1114cb29625d4d9511fd15a67f483c4775a5",
+    "build-gcc15/bin/libllama-common.so.0.0.1": "b0c96af5cd577f851954afb050601099608f29a2d4890322c2e69ab6d74733f9",
+    "build-gcc15/bin/libmtmd.so.0.0.1": "801002ce83276d33b5a09c98362e34e04fb867aed63a738650d8a2e29930bab9",
+    "build-gcc15/bin/libllama.so.0.0.1": "31b56002c36c159f71eba54c0d8e625ae140d34b2b1a503f3dc4db47237719cc",
+    "build-gcc15/bin/libggml.so.0.15.3": "97a33247336b56aaabe1a8bee4da6cd05e73e8b4327afd2cef67c5526df8ab71",
+    "build-gcc15/bin/libggml-cpu.so.0.15.3": "b57845ea9f9ce9455d78e6fe290c09b50b9414db9280409b9e5cc143d1b13b61",
+    "build-gcc15/bin/libggml-cuda.so.0.15.3": "5b363c951b87164e94d5b6af35a82c875634aadcb29c9278245cd7516f44cc7e",
+    "build-gcc15/bin/libggml-base.so.0.15.3": "4c322a199c86b801389ed4bda94074083624e0a6460e25681be4b626cc72873d"
+  },
+  "server_command": [
+    "/home/pmglo/Projects/Tesy/tesy-scale-lab/backends/streaming/build-gcc15/bin/llama-server",
+    "-m",
+    "/home/pmglo/models/gpt-oss-120b-gguf/gpt-oss-120b-MXFP4.gguf",
+    "--host",
+    "127.0.0.1",
+    "--port",
+    "18367",
+    "-ngl",
+    "8",
+    "-c",
+    "4096",
+    "-np",
+    "1",
+    "-b",
+    "256",
+    "-ub",
+    "32",
+    "-t",
+    "8",
+    "-tb",
+    "8",
+    "--no-warmup",
+    "--no-cache-prompt",
+    "-lv",
+    "3",
+    "--no-repack",
+    "--no-op-offload",
+    "--direct-io",
+    "--moe-stream-cache",
+    "24s",
+    "--moe-stream-io-threads",
+    "4",
+    "--moe-stream-direct",
+    "--chat-template-kwargs",
+    "{\"reasoning_effort\":\"medium\"}"
+  ],
+  "explicit_env": {
+    "LLAMA_MOE_STREAM_NO_PRELOAD": "1"
+  },
+  "workload": "workloads/task_eval.jsonl",
+  "workload_sha256": "87ad7c4f1ccc60e3cbd4f1507a01172007e6a802e68bc7057b0fba5ee039f471",
+  "split": "eval",
+  "task_ids": [
+    "eval-code-01",
+    "eval-code-02",
+    "eval-sql-01",
+    "eval-sql-02",
+    "eval-extract-01",
+    "eval-extract-02",
+    "eval-quant-01",
+    "eval-quant-02",
+    "eval-plan-01",
+    "eval-plan-02"
+  ],
+  "request_policy": {
+    "temperature": 0,
+    "seed": 42,
+    "max_tokens": 512,
+    "reasoning_effort": "medium",
+    "attempts": 1,
+    "prompt_cache": false,
+    "per_request_timeout_s": 360
+  },
+  "cgroup_start": {
+    "path": "/user.slice/user-1000.slice/user@1000.service/app.slice/run-p176588-i139085.scope",
+    "memory_max": 19327352832,
+    "swap_max": 0,
+    "memory_current": 14573568,
+    "swap_current": 0,
+    "memory_stat": {
+      "anon": 13848576,
+      "file": 0,
+      "kernel": 192512,
+      "shmem": 0,
+      "file_mapped": 0
+    },
+    "events": {
+      "low": 0,
+      "high": 0,
+      "max": 0,
+      "oom": 0,
+      "oom_kill": 0,
+      "oom_group_kill": 0,
+      "sock_throttled": 0
+    }
+  },
+  "limits": {
+    "memory_max_bytes": 19327352832,
+    "swap_max_bytes": 0,
+    "rss_gib": 17,
+    "gpu_used_mib": 7000,
+    "min_mem_available_gib": 6,
+    "total_timeout_s": 3600
+  },
+  "samples_path": "/home/pmglo/Projects/Tesy/tesy-scale-lab/results/task120b-stream24-eval01.samples.jsonl",
+  "publication": "local only; stdout/stderr/samples untracked",
+  "results": [
+    {
+      "task_id": "eval-code-01",
+      "category": "code",
+      "elapsed_s": 194.8,
+      "finish_reason": "stop",
+      "usage": {
+        "completion_tokens": 385,
+        "prompt_tokens": 107,
+        "total_tokens": 492,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        }
+      },
+      "timings": {
+        "cache_n": 0,
+        "prompt_n": 107,
+        "prompt_ms": 41520.877,
+        "prompt_per_token_ms": 388.0455794392523,
+        "prompt_per_second": 2.5770168582903485,
+        "predicted_n": 385,
+        "predicted_ms": 153274.225,
+        "predicted_per_token_ms": 398.11487012987016,
+        "predicted_per_second": 2.511837851406523
+      },
+      "message": {
+        "role": "assistant",
+        "content": "```python\ndef merge_intervals(xs):\n    \"\"\"\n    Merge a collection of closed integer intervals, treating touching intervals\n    (e.g., (1, 2) and (2, 3)) as overlapping.\n\n    Parameters\n    ----------\n    xs : iterable of tuple[int, int]\n        Intervals to merge. Each interval is a (start, end) pair where start <= end.\n\n    Returns\n    -------\n    list[tuple[int, int]]\n        Sorted list of merged intervals.\n    \"\"\"\n    # Convert to list and sort by start (and end to stabilize ordering)\n    intervals = sorted((min(a, b), max(a, b)) for a, b in xs)\n\n    merged = []\n    for start, end in intervals:\n        if not merged:\n            merged.append([start, end])\n        else:\n            prev_start, prev_end = merged[-1]\n            # Merge if overlapping or just touching\n            if start <= prev_end + 1:          # +1 handles closed integer adjacency\n                merged[-1][1] = max(prev_end, end)\n            else:\n                merged.append([start, end])\n\n    # Convert inner lists back to tuples\n    return [tuple(pair) for pair in merged]\n```",
+        "reasoning_content": "We need to write a Python 3 function merge_intervals(xs) that merges closed integer intervals, including touching intervals such as (1,2) and (2,3). Return sorted tuples. Return only code.\n\nSo function takes list of intervals (presumably iterable of tuples (start, end)). Should merge overlapping or adjacent intervals (touching). Return list of sorted tuples (by start). Implementation: sort intervals by start, then iterate merging.\n\nEdge cases: ensure start <= end? Might assume.\n\nReturn list of tuples.\n\nWrite code only.\n\nProbably include docstring.\n\nLet's produce concise code.\n\n"
+      }
+    },
+    {
+      "task_id": "eval-code-02",
+      "category": "code",
+      "elapsed_s": 96.962,
+      "finish_reason": "stop",
+      "usage": {
+        "completion_tokens": 148,
+        "prompt_tokens": 91,
+        "total_tokens": 239,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        }
+      },
+      "timings": {
+        "cache_n": 0,
+        "prompt_n": 91,
+        "prompt_ms": 40149.508,
+        "prompt_per_token_ms": 441.2033846153846,
+        "prompt_per_second": 2.2665283968112386,
+        "predicted_n": 148,
+        "predicted_ms": 56801.832,
+        "predicted_per_token_ms": 383.7961621621622,
+        "predicted_per_second": 2.60554976466252
+      },
+      "message": {
+        "role": "assistant",
+        "content": "```python\ndef stable_unique(xs):\n    \"\"\"Return a list of the first occurrence of each hashable item in *xs*,\n    preserving the original order.\"\"\"\n    seen = set()\n    result = []\n    for x in xs:\n        if x not in seen:\n            seen.add(x)\n            result.append(x)\n    return result\n```",
+        "reasoning_content": "We need to write a Python 3 function stable_unique(xs) that returns first occurrences in order for hashable items. Return only code. So just define function stable_unique(xs): returns list of unique items preserving order, using a set to track seen. Provide code only. Probably one-liner or multi-line. Provide only code block."
+      }
+    },
+    {
+      "task_id": "eval-sql-01",
+      "category": "sql",
+      "elapsed_s": 80.518,
+      "finish_reason": "stop",
+      "usage": {
+        "completion_tokens": 98,
+        "prompt_tokens": 106,
+        "total_tokens": 204,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        }
+      },
+      "timings": {
+        "cache_n": 0,
+        "prompt_n": 106,
+        "prompt_ms": 44321.822,
+        "prompt_per_token_ms": 418.1303962264151,
+        "prompt_per_second": 2.3915984320319685,
+        "predicted_n": 98,
+        "predicted_ms": 36187.737,
+        "predicted_per_token_ms": 369.2626224489796,
+        "predicted_per_second": 2.7080997079203932
+      },
+      "message": {
+        "role": "assistant",
+        "content": "```sql\nSELECT\n    customer_id,\n    SUM(amount) AS total\nFROM sales\nGROUP BY customer_id\nHAVING total >= 100\nORDER BY total DESC, customer_id ASC;\n```",
+        "reasoning_content": "We need to output only the SQL query. Provide SELECT with GROUP BY, HAVING, ORDER BY. Use SUM(amount) as total. Return customer_id, total. Sorted by total DESC, customer_id ASC. Provide SQLite syntax."
+      }
+    },
+    {
+      "task_id": "eval-sql-02",
+      "category": "sql",
+      "elapsed_s": 85.913,
+      "finish_reason": "stop",
+      "usage": {
+        "completion_tokens": 125,
+        "prompt_tokens": 110,
+        "total_tokens": 235,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        }
+      },
+      "timings": {
+        "cache_n": 0,
+        "prompt_n": 110,
+        "prompt_ms": 43328.91,
+        "prompt_per_token_ms": 393.89918181818183,
+        "prompt_per_second": 2.538720683257437,
+        "predicted_n": 125,
+        "predicted_ms": 42575.587,
+        "predicted_per_token_ms": 340.604696,
+        "predicted_per_second": 2.9359548231243413
+      },
+      "message": {
+        "role": "assistant",
+        "content": "```sql\nSELECT\n    u.id,\n    COUNT(CASE WHEN e.kind = 'purchase' THEN 1 END) AS purchase_count\nFROM users AS u\nLEFT JOIN events AS e\n    ON e.user_id = u.id\nGROUP BY u.id\nORDER BY u.id;\n```",
+        "reasoning_content": "We need to output SQL query only. Use LEFT JOIN events aggregated. Count only purchase events. Use COUNT(CASE WHEN kind='purchase' THEN 1 END) or SUM(kind='purchase'). Ensure zero for users with no events. Sorted by user id. Provide query."
+      }
+    },
+    {
+      "task_id": "eval-extract-01",
+      "category": "extraction",
+      "elapsed_s": 123.367,
+      "finish_reason": "stop",
+      "usage": {
+        "completion_tokens": 178,
+        "prompt_tokens": 127,
+        "total_tokens": 305,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        }
+      },
+      "timings": {
+        "cache_n": 0,
+        "prompt_n": 127,
+        "prompt_ms": 53308.382,
+        "prompt_per_token_ms": 419.75103937007873,
+        "prompt_per_second": 2.3823645594795955,
+        "predicted_n": 178,
+        "predicted_ms": 70049.963,
+        "predicted_per_token_ms": 393.5391179775281,
+        "predicted_per_second": 2.5410434549408683
+      },
+      "message": {
+        "role": "assistant",
+        "content": "{\n  \"invoice\": \"INV-204\",\n  \"date\": \"2026-09-26\",\n  \"total\": 12.50\n}",
+        "reasoning_content": "We need to parse the given text: 'Invoice INV-204 dated 26 Sep 2026. Items: \u20ac10.00 and \u20ac2.50. Total due \u20ac12.50.'\n\nExtract invoice number: INV-204\n\nDate: 26 Sep 2026 -> convert to YYYY-MM-DD: 2026-09-26\n\nTotal: 12.50 as decimal number.\n\nReturn JSON object with keys invoice, date, total.\n\nMake sure total is numeric, not string.\n\nThus output: {\"invoice\":\"INV-204\",\"date\":\"2026-09-26\",\"total\":12.50}\n\nCheck formatting: JSON with proper numeric.\n\nProceed."
+      }
+    },
+    {
+      "task_id": "eval-extract-02",
+      "category": "extraction",
+      "elapsed_s": 76.771,
+      "finish_reason": "stop",
+      "usage": {
+        "completion_tokens": 92,
+        "prompt_tokens": 99,
+        "total_tokens": 191,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        }
+      },
+      "timings": {
+        "cache_n": 0,
+        "prompt_n": 99,
+        "prompt_ms": 39959.17,
+        "prompt_per_token_ms": 403.6279797979798,
+        "prompt_per_second": 2.47752893766312,
+        "predicted_n": 92,
+        "predicted_ms": 36802.432,
+        "predicted_per_token_ms": 400.0264347826087,
+        "predicted_per_second": 2.4998347935266887
+      },
+      "message": {
+        "role": "assistant",
+        "content": "[\"Ada\",\"Cy\"]",
+        "reasoning_content": "We need to parse the input: \"Ada: open; Bo: closed; Cy: open; Dee: pending\". Return a JSON array of names whose status is open, preserving order. So open names: Ada, Cy. Preserve order as they appear: Ada then Cy. Output JSON array: [\"Ada\",\"Cy\"].\n\nMake sure format is JSON array. Probably just that."
+      }
+    },
+    {
+      "task_id": "eval-quant-01",
+      "category": "quantitative",
+      "elapsed_s": 95.858,
+      "finish_reason": "stop",
+      "usage": {
+        "completion_tokens": 148,
+        "prompt_tokens": 112,
+        "total_tokens": 260,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        }
+      },
+      "timings": {
+        "cache_n": 0,
+        "prompt_n": 112,
+        "prompt_ms": 44405.451,
+        "prompt_per_token_ms": 396.4772410714286,
+        "prompt_per_second": 2.5222128697668222,
+        "predicted_n": 148,
+        "predicted_ms": 51443.974,
+        "predicted_per_token_ms": 347.5944189189189,
+        "predicted_per_second": 2.8769161573715123
+      },
+      "message": {
+        "role": "assistant",
+        "content": "48",
+        "reasoning_content": "We need total distance = 90+30 = 120 km. Total time = travel time + stop time.\n\nTravel time1 = 90 km / 60 km/h = 1.5 h = 1 hour 30 minutes.\nTravel time2 = 30 km / 40 km/h = 0.75 h = 45 minutes.\nStop = 15 minutes = 0.25 h.\n\nTotal time = 1.5 + 0.75 + 0.25 = 2.5 h.\n\nAverage speed = total distance / total time = 120 km / 2.5 h = 48 km/h.\n\nAnswer: 48."
+      }
+    },
+    {
+      "task_id": "eval-quant-02",
+      "category": "quantitative",
+      "elapsed_s": 114.738,
+      "finish_reason": "stop",
+      "usage": {
+        "completion_tokens": 216,
+        "prompt_tokens": 103,
+        "total_tokens": 319,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        }
+      },
+      "timings": {
+        "cache_n": 0,
+        "prompt_n": 103,
+        "prompt_ms": 41261.056,
+        "prompt_per_token_ms": 400.5927766990291,
+        "prompt_per_second": 2.496300627885045,
+        "predicted_n": 216,
+        "predicted_ms": 73468.403,
+        "predicted_per_token_ms": 340.1314953703704,
+        "predicted_per_second": 2.9400394071448646
+      },
+      "message": {
+        "role": "assistant",
+        "content": "The discounted price is  \n\n\\(80 \\text{\u202f\u20ac} \\times (1 - 0.10) = 80 \\times 0.90 = 72 \\text{\u202f\u20ac}\\).\n\nAdding 23\u202f% VAT:  \n\n\\(72 \\text{\u202f\u20ac} \\times (1 + 0.23) = 72 \\times 1.23 = 88.56 \\text{\u202f\u20ac}\\).\n\n**Final price:** **88.56\u202f\u20ac**.",
+        "reasoning_content": "We need to compute: original price 80 euros before VAT. First apply 10% discount: discount reduces price by 10% of 80 = 8, so discounted price = 72 euros. Then apply 23% VAT: VAT adds 23% of the net price (assuming VAT is added on top). So final price = 72 * (1 + 0.23) = 72 * 1.23 = 88.56 euros. Two decimal places: 88.56."
+      }
+    },
+    {
+      "task_id": "eval-plan-01",
+      "category": "planning",
+      "elapsed_s": 229.774,
+      "finish_reason": "length",
+      "usage": {
+        "completion_tokens": 512,
+        "prompt_tokens": 121,
+        "total_tokens": 633,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        }
+      },
+      "timings": {
+        "cache_n": 0,
+        "prompt_n": 121,
+        "prompt_ms": 49431.851,
+        "prompt_per_token_ms": 408.5276942148761,
+        "prompt_per_second": 2.4478144668303035,
+        "predicted_n": 512,
+        "predicted_ms": 180332.478,
+        "predicted_per_token_ms": 352.21187109375,
+        "predicted_per_second": 2.839200157832911
+      },
+      "message": {
+        "role": "assistant",
+        "content": "**Tasks & Durations**\n\n| Task | Duration | Pre\u2011requisite(s) |\n|------|----------|------------------|\n| A    | 2\u202fh      | \u2013                |\n| B    | 1\u202fh      | must start **after** A finishes |\n| C    | 2\u202fh      | \u2013                |\n| D   \u202f|",
+        "reasoning_content": "We need to schedule tasks with precedence constraints: B after A (1h after A? Actually \"B (1h after A)\" means B duration 1h, after A? Probably B duration 1h, must start after A completes. C duration 2h, no dependencies. D duration 1h after both B and C (i.e., D depends on B and C). Single worker, no preemption, start at 09:00. Need schedule to minimize makespan.\n\nWe have tasks: A (2h), B (1h), C (2h), D (1h). Precedences: A -> B, B and C -> D. So we need to order tasks respecting dependencies.\n\nWe can schedule A then B then C then D? But maybe better to interleave C earlier to reduce idle time.\n\nSince single worker, we cannot parallelize. So we need a linear order that respects dependencies. Options:\n\n1. A (2h) 09-11, B (1h) 11-12, C (2h) 12-14, D (1h) 14-15. Finish 15:00.\n\n2. A (2h) 09-11, C (2h) 11-13, B (1h) 13-14, D (1h) 14-15. But B depends on A, satisfied. D depends on B and C, both done by 14, so D 14-15. Same finish 15:00.\n\n3. C first (no deps) 09-11, A 11-13, B 13-14, D 14-15. Finish 15:00.\n\nAll give 15:00. Since total work = 2+1+2+1 =6h, earliest finish = 09+6h = 15:00. So any order respecting constraints yields same makespan.\n\nProvide schedule maybe with earliest finish: choose order A, B, C, D.\n\nProvide start/end times.\n\nLet's craft answer."
+      }
+    },
+    {
+      "task_id": "eval-plan-02",
+      "category": "planning",
+      "elapsed_s": 186.119,
+      "finish_reason": "stop",
+      "usage": {
+        "completion_tokens": 392,
+        "prompt_tokens": 118,
+        "total_tokens": 510,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        }
+      },
+      "timings": {
+        "cache_n": 0,
+        "prompt_n": 118,
+        "prompt_ms": 47730.73,
+        "prompt_per_token_ms": 404.4977118644068,
+        "prompt_per_second": 2.4722018707863884,
+        "predicted_n": 392,
+        "predicted_ms": 138375.465,
+        "predicted_per_token_ms": 352.9986352040816,
+        "predicted_per_second": 2.8328721424712104
+      },
+      "message": {
+        "role": "assistant",
+        "content": "**Optimal selection**\n\n| Item | Weight (kg) | Score |\n|------|-------------|-------|\n| X    | 6           | 9     |\n| Y    | 4           | 7     |\n| **Total** | **10** | **16** |\n\n**Explanation**\n\n- Capacity = 10\u202fkg.  \n- All possible whole\u2011item combinations:\n\n| Combination | Total weight | Total score |\n|-------------|--------------|-------------|\n| X           | 6            | 9 |\n| Y           | 4            | 7 |\n| Z           | 5            | 8 |\n| X\u202f+\u202fY       | 10           | **16** |\n| X\u202f+\u202fZ       | 11 (exceeds) | \u2013 |\n| Y\u202f+\u202fZ       | 9            | 15 |\n| X\u202f+\u202fY\u202f+\u202fZ   | 15 (exceeds) | \u2013 |\n\nThe highest achievable score without exceeding the 10\u202fkg limit is **16**, obtained by taking items **X and Y**.",
+        "reasoning_content": "We need to choose whole items (0/1 knapsack) with capacity 10 kg. Items: X (6kg,9), Y (4kg,7), Z (5kg,8). Find combos:\n\n- X alone: weight 6, score 9.\n- Y alone: weight 4, score 7.\n- Z alone: weight 5, score 8.\n- X+Y: weight 10, score 16.\n- X+Z: weight 11 >10 not allowed.\n- Y+Z: weight 9, score 15.\n- X+Y+Z: weight 15 >10.\n\nMaximum score is 16 with X+Y (weight 10). So answer: items X and Y, total score 16."
+      }
+    }
+  ],
+  "ready_elapsed_s": 6.585,
+  "server_model_id": "/home/pmglo/models/gpt-oss-120b-gguf/gpt-oss-120b-MXFP4.gguf",
+  "first_text_smoke": {
+    "first_text_chunk_s": 35.113,
+    "first_reasoning_chunk_s": 35.113,
+    "first_final_chunk_s": 50.043,
+    "stream_elapsed_s": 50.267,
+    "text_chunk_count": 31,
+    "interpretation": "client first received text; chunks are not token intervals"
+  },
+  "ended_utc": "2026-09-26T12:12:17.190268+00:00",
+  "elapsed_s": 1342.188,
+  "stop_reasons": [],
+  "returncode": 0,
+  "maxima": {
+    "rss_bytes": 11946754048,
+    "cgroup_memory_bytes": 11711664128,
+    "swap_bytes": 0,
+    "gpu_used_mib": 3112.0,
+    "gpu_temperature_c": 58.0,
+    "cpu_tctl_c": 88.125,
+    "nvme_composite_c": 61.85
+  },
+  "last_sample": {
+    "elapsed_s": 1341.422,
+    "proc": {
+      "VmHWM": 11946754048,
+      "VmRSS": 11946754048,
+      "VmSwap": 0,
+      "rchar": 2045183028522,
+      "syscr": 470327,
+      "read_bytes": 2044343881728
+    },
+    "cgroup": {
+      "path": "/user.slice/user-1000.slice/user@1000.service/app.slice/run-p176588-i139085.scope",
+      "memory_max": 19327352832,
+      "swap_max": 0,
+      "memory_current": 11711664128,
+      "swap_current": 0,
+      "memory_stat": {
+        "anon": 10040246272,
+        "file": 1635028992,
+        "kernel": 32284672,
+        "shmem": 1626218496,
+        "file_mapped": 1628315648
+      },
+      "events": {
+        "low": 0,
+        "high": 0,
+        "max": 0,
+        "oom": 0,
+        "oom_kill": 0,
+        "oom_group_kill": 0,
+        "sock_throttled": 0
+      }
+    },
+    "gpu": {
+      "used_mib": 3112.0,
+      "temperature_c": 54.0,
+      "power_w": 10.99
+    },
+    "thermal": {
+      "cpu_tctl_c": 64.0,
+      "nvme_composite_c": 60.85
+    },
+    "mem_available_bytes": 16383275008,
+    "model_fds": {
+      "open": 1,
+      "direct": 1,
+      "buffered": 0
+    }
+  },
+  "cgroup_end": {
+    "path": "/user.slice/user-1000.slice/user@1000.service/app.slice/run-p176588-i139085.scope",
+    "memory_max": 19327352832,
+    "swap_max": 0,
+    "memory_current": 27455488,
+    "swap_current": 0,
+    "memory_stat": {
+      "anon": 14548992,
+      "file": 8810496,
+      "kernel": 425984,
+      "shmem": 0,
+      "file_mapped": 0
+    },
+    "events": {
+      "low": 0,
+      "high": 0,
+      "max": 0,
+      "oom": 0,
+      "oom_kill": 0,
+      "oom_group_kill": 0,
+      "sock_throttled": 0
+    }
+  },
+  "stdout_path": "/home/pmglo/Projects/Tesy/tesy-scale-lab/results/task120b-stream24-eval01.stdout",
+  "stderr_path": "/home/pmglo/Projects/Tesy/tesy-scale-lab/results/task120b-stream24-eval01.stderr"
+}

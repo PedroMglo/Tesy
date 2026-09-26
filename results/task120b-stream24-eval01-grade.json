@@ -1,0 +1,171 @@
+{
+  "source_run": "results/task120b-stream24-eval01.json",
+  "scores": [
+    {
+      "task_id": "eval-code-01",
+      "finish_reason": "stop",
+      "elapsed_s": 194.8,
+      "usage": {
+        "completion_tokens": 385,
+        "prompt_tokens": 107,
+        "total_tokens": 492,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        }
+      },
+      "status": "FAIL",
+      "exit_code": 1,
+      "stdout_tail": "",
+      "stderr_tail": "Traceback (most recent call last):\n  File \"/tmp/runner.py\", line 3, in <module>\n    exec('assert merge_intervals([(5,7),(1,2),(2,4)]) == [(1,4),(5,7)]\\nassert merge_intervals([]) == []\\n', namespace)\n    ~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"<string>\", line 1, in <module>\nAssertionError\n"
+    },
+    {
+      "task_id": "eval-code-02",
+      "finish_reason": "stop",
+      "elapsed_s": 96.962,
+      "usage": {
+        "completion_tokens": 148,
+        "prompt_tokens": 91,
+        "total_tokens": 239,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        }
+      },
+      "status": "PASS",
+      "exit_code": 0,
+      "stdout_tail": "TESY_TESTS_PASSED_94027\n",
+      "stderr_tail": ""
+    },
+    {
+      "task_id": "eval-sql-01",
+      "finish_reason": "stop",
+      "elapsed_s": 80.518,
+      "usage": {
+        "completion_tokens": 98,
+        "prompt_tokens": 106,
+        "total_tokens": 204,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        }
+      },
+      "status": "PASS",
+      "exit_code": 0,
+      "stdout_tail": "TESY_TESTS_PASSED_94027\n",
+      "stderr_tail": ""
+    },
+    {
+      "task_id": "eval-sql-02",
+      "finish_reason": "stop",
+      "elapsed_s": 85.913,
+      "usage": {
+        "completion_tokens": 125,
+        "prompt_tokens": 110,
+        "total_tokens": 235,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        }
+      },
+      "status": "PASS",
+      "exit_code": 0,
+      "stdout_tail": "TESY_TESTS_PASSED_94027\n",
+      "stderr_tail": ""
+    },
+    {
+      "task_id": "eval-extract-01",
+      "finish_reason": "stop",
+      "elapsed_s": 123.367,
+      "usage": {
+        "completion_tokens": 178,
+        "prompt_tokens": 127,
+        "total_tokens": 305,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        }
+      },
+      "status": "PASS",
+      "parsed": {
+        "invoice": "INV-204",
+        "date": "2026-09-26",
+        "total": 12.5
+      }
+    },
+    {
+      "task_id": "eval-extract-02",
+      "finish_reason": "stop",
+      "elapsed_s": 76.771,
+      "usage": {
+        "completion_tokens": 92,
+        "prompt_tokens": 99,
+        "total_tokens": 191,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        }
+      },
+      "status": "PASS",
+      "parsed": [
+        "Ada",
+        "Cy"
+      ]
+    },
+    {
+      "task_id": "eval-quant-01",
+      "finish_reason": "stop",
+      "elapsed_s": 95.858,
+      "usage": {
+        "completion_tokens": 148,
+        "prompt_tokens": 112,
+        "total_tokens": 260,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        }
+      },
+      "status": "REVIEW",
+      "reason": "quantitative/planning criterion requires answer review"
+    },
+    {
+      "task_id": "eval-quant-02",
+      "finish_reason": "stop",
+      "elapsed_s": 114.738,
+      "usage": {
+        "completion_tokens": 216,
+        "prompt_tokens": 103,
+        "total_tokens": 319,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        }
+      },
+      "status": "REVIEW",
+      "reason": "quantitative/planning criterion requires answer review"
+    },
+    {
+      "task_id": "eval-plan-01",
+      "finish_reason": "length",
+      "elapsed_s": 229.774,
+      "usage": {
+        "completion_tokens": 512,
+        "prompt_tokens": 121,
+        "total_tokens": 633,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        }
+      },
+      "status": "REVIEW",
+      "reason": "quantitative/planning criterion requires answer review"
+    },
+    {
+      "task_id": "eval-plan-02",
+      "finish_reason": "stop",
+      "elapsed_s": 186.119,
+      "usage": {
+        "completion_tokens": 392,
+        "prompt_tokens": 118,
+        "total_tokens": 510,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        }
+      },
+      "status": "REVIEW",
+      "reason": "quantitative/planning criterion requires answer review"
+    }
+  ],
+  "policy": "code/SQL in no-network read-only bubblewrap; JSON exact; quantitative/planning review"
+}
