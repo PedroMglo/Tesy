@@ -119,6 +119,21 @@ def gpu_state():
         return None
 
 
+def thermal_state():
+    try:
+        p = subprocess.run(["sensors", "-j"], capture_output=True, text=True, timeout=3, check=True)
+        devices = json.loads(p.stdout)
+        result = {}
+        for device, reading in devices.items():
+            if device.startswith("k10temp-"):
+                result["cpu_tctl_c"] = reading["Tctl"]["temp1_input"]
+            elif device.startswith("nvme-"):
+                result["nvme_composite_c"] = reading["Composite"]["temp1_input"]
+        return result or None
+    except (OSError, ValueError, KeyError, TypeError, subprocess.SubprocessError):
+        return None
+
+
 def stop_own_group(process):
     if process.poll() is None:
         os.killpg(process.pid, signal.SIGTERM)
@@ -207,6 +222,7 @@ def main():
         reason = None
         maxima = {"rss_bytes": 0, "swap_bytes": 0, "cgroup_memory_bytes": 0,
                   "cgroup_file_bytes": 0, "gpu_used_mib": 0, "gpu_temperature_c": 0,
+                  "cpu_tctl_c": 0, "nvme_composite_c": 0,
                   "direct_model_fds": 0, "buffered_model_fds": 0}
         last = {}
         try:
@@ -214,10 +230,11 @@ def main():
                 status = proc_status(process.pid)
                 avail = mem_available()
                 gpu = gpu_state()
+                thermal = thermal_state()
                 cg = cgroup_state()
                 fds = model_fd_state(process.pid, model_path)
                 sample = {"elapsed_s": round(time.monotonic() - t0, 3), "proc": status,
-                          "mem_available_bytes": avail, "gpu": gpu, "cgroup": cg,
+                          "mem_available_bytes": avail, "gpu": gpu, "thermal": thermal, "cgroup": cg,
                           "model_fds": fds}
                 samples.write(json.dumps(sample) + "\n")
                 samples.flush()
@@ -230,6 +247,9 @@ def main():
                 if gpu:
                     maxima["gpu_used_mib"] = max(maxima["gpu_used_mib"], gpu["used_mib"])
                     maxima["gpu_temperature_c"] = max(maxima["gpu_temperature_c"], gpu["temperature_c"])
+                if thermal:
+                    for name in ("cpu_tctl_c", "nvme_composite_c"):
+                        maxima[name] = max(maxima[name], thermal.get(name, 0))
                 if fds:
                     maxima["direct_model_fds"] = max(maxima["direct_model_fds"], fds["direct"])
                     maxima["buffered_model_fds"] = max(maxima["buffered_model_fds"], fds["buffered"])
