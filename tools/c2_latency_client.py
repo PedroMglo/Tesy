@@ -6,6 +6,7 @@ import datetime as dt
 import json
 import os
 from pathlib import Path
+import re
 import tempfile
 import time
 from urllib.request import Request, urlopen
@@ -113,6 +114,17 @@ def main():
         result={"id":task["id"],"category":task["category"],"templated_prompt_tokens":count}
         if not args.count_only:
             result["stream"]=stream(task["prompt"],model_id,512)
+            target=re.findall(r"ticket (T\d+) service \S+ severity CRITICAL state OPEN",task["prompt"])
+            if len(target)!=1:
+                raise GateError("latency task lacks one verifiable target ticket")
+            try:
+                answer=strict_json(result["stream"]["final_text"])
+                valid=type(answer) is dict and answer=={"ticket":target[0]}
+            except ValueError:
+                valid=False
+            result["expected_ticket"]=target[0]
+            result["final_answer_valid"]=valid
+            result["time_to_verifiable_completion_s"]=result["stream"]["elapsed_s"] if valid else None
         rows.append(result)
         print(json.dumps({"id":task["id"],"prompt_tokens":count,
                           "first_text_s":result.get("stream",{}).get("first_text_chunk_s")}),flush=True)

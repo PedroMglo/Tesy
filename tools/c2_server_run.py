@@ -152,6 +152,9 @@ def normalize(raw, protocol, config, samples, stderr, elapsed, returncode, reaso
             raise GateError("API token count missing or outside frozen request cap")
         if usage.get("total_tokens") != usage["prompt_tokens"]+usage["completion_tokens"]:
             raise GateError("API total token count inconsistent")
+        if config["suite"] == "c2core8" and \
+           usage["prompt_tokens"]+config["request_policy"]["max_tokens"] > 4096:
+            raise GateError("templated prompt did not leave the frozen output reserve")
         matches = [task_id for task_id, pair in parsed.items() if
                    pair["prompt eval"][0] == usage.get("prompt_tokens") and
                    pair["eval"][0] == usage.get("completion_tokens") and
