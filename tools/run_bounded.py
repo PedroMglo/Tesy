@@ -118,7 +118,7 @@ def main():
     p = argparse.ArgumentParser()
     p.add_argument("--run-id", required=True)
     p.add_argument("--model-id", required=True)
-    p.add_argument("--backend", choices=["stock", "streaming"], required=True)
+    p.add_argument("--backend", choices=["stock", "streaming", "streaming-reference"], required=True)
     p.add_argument("--variant", required=True)
     p.add_argument("--workload", required=True)
     p.add_argument("--cache-condition", required=True)

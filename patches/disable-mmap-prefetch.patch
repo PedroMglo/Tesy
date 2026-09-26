@@ -1,0 +1,21 @@
+diff --git a/src/llama-model.cpp b/src/llama-model.cpp
+index a436d90..8a09318 100644
+--- a/src/llama-model.cpp
++++ b/src/llama-model.cpp
+@@ -25,6 +25,7 @@
+ #include <algorithm>
+ #include <cassert>
+ #include <cfloat>
++#include <cstdlib>
+ #include <cstdint>
+ #include <cstring>
+ #include <cmath>
+@@ -1590,7 +1591,7 @@ bool llama_model_base::load_tensors(llama_model_loader & ml) {
+         }
+     }
+ 
+-    ml.init_mappings(true, use_mlock ? &pimpl->mlock_mmaps : nullptr);
++    ml.init_mappings(std::getenv("TESY_MMAP_NO_PREFETCH") == nullptr, use_mlock ? &pimpl->mlock_mmaps : nullptr);
+     pimpl->mappings.reserve(ml.mappings.size());
+ 
+     // create the backend buffers
