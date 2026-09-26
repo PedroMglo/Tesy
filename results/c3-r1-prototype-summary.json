@@ -1,0 +1,113 @@
+{
+  "schema": "c3-r1-prototype-summary-v1",
+  "classification": "BOUNDARY_DIFFERENTIAL_DIAGNOSTIC_NOT_R3_PASS",
+  "parent_capture_run_id": "c3-r1-capture01",
+  "capture_manifest_sha256": "175ef0889e8e195685d1d1eb0aa447a1dd8a0cc811c2f25e80ef839ef178c3bc",
+  "failed_reference_run": "c3-r1-reference-cpu0-01",
+  "rows": [
+    {
+      "run_id": "c3-r1-reference-cpu0-02",
+      "result": {
+        "schema": "c3-layer-reference-diagnostic-v1",
+        "classification": "DIAGNOSTIC_UNQUALIFIED",
+        "layer": 0,
+        "device": "cpu",
+        "canonical_layer_bytes": 1697956352,
+        "rows": [
+          {
+            "phase": "prefill0",
+            "tokens": 32,
+            "routing_ids_equal": true,
+            "routing_weights_bitwise": true,
+            "routing_weights_max_abs": 0,
+            "routing_weights_rmse": 0,
+            "routing_weights_nonfinite": 0,
+            "ffn_bitwise": true,
+            "ffn_max_abs": 0,
+            "ffn_rmse": 0,
+            "ffn_nonfinite": 0
+          },
+          {
+            "phase": "decode0",
+            "tokens": 1,
+            "routing_ids_equal": true,
+            "routing_weights_bitwise": true,
+            "routing_weights_max_abs": 0,
+            "routing_weights_rmse": 0,
+            "routing_weights_nonfinite": 0,
+            "ffn_bitwise": true,
+            "ffn_max_abs": 0,
+            "ffn_rmse": 0,
+            "ffn_nonfinite": 0
+          }
+        ]
+      },
+      "source_sha256": {
+        ".json": "e823e7e0da9fa066b8c987d4027c399cb9a5576044dd5931d0bfbc07d3581671",
+        ".stdout": "8aee85aabf7fd2b41292844cbeffddbdf94fe5f5671f7acd43ac732e91f4f3ab",
+        ".stderr": "17258380465b573161fba6f6fb2984b8b42271758e62f7edea1d21337e071471",
+        ".samples.jsonl": "e49222951d43ae695c620f387c4475121c5ed143b176ead5a2a99a052b22429e"
+      },
+      "cgroup_peak_bytes": 2407813120,
+      "gpu_peak_sampled_mib": 13.0,
+      "sample_count": 1,
+      "stop_reason": null,
+      "returncode": 0
+    },
+    {
+      "run_id": "c3-r1-reference-gpu35-01",
+      "result": {
+        "schema": "c3-layer-reference-diagnostic-v1",
+        "classification": "DIAGNOSTIC_UNQUALIFIED",
+        "layer": 35,
+        "device": "gpu",
+        "canonical_layer_bytes": 1697956352,
+        "rows": [
+          {
+            "phase": "prefill0",
+            "tokens": 1,
+            "routing_ids_equal": true,
+            "routing_weights_bitwise": true,
+            "routing_weights_max_abs": 0,
+            "routing_weights_rmse": 0,
+            "routing_weights_nonfinite": 0,
+            "ffn_bitwise": true,
+            "ffn_max_abs": 0,
+            "ffn_rmse": 0,
+            "ffn_nonfinite": 0
+          },
+          {
+            "phase": "decode0",
+            "tokens": 1,
+            "routing_ids_equal": true,
+            "routing_weights_bitwise": true,
+            "routing_weights_max_abs": 0,
+            "routing_weights_rmse": 0,
+            "routing_weights_nonfinite": 0,
+            "ffn_bitwise": true,
+            "ffn_max_abs": 0,
+            "ffn_rmse": 0,
+            "ffn_nonfinite": 0
+          }
+        ]
+      },
+      "source_sha256": {
+        ".json": "b88d7c4fc82fd82a53e145053fe5c66df67da4b8d3f02391fc8df2f7f9a04643",
+        ".stdout": "bf689c320072a8314494a1dcd9896703a49bf116faa3fa3b5eae655e97d55818",
+        ".stderr": "17258380465b573161fba6f6fb2984b8b42271758e62f7edea1d21337e071471",
+        ".samples.jsonl": "ff0a2b59e926f88963c52daf1a81d9f77cafe05850c42aa32ce0c2a2ddf39475"
+      },
+      "cgroup_peak_bytes": 2429280256,
+      "gpu_peak_sampled_mib": 1734.0,
+      "sample_count": 2,
+      "stop_reason": null,
+      "returncode": 0
+    }
+  ],
+  "limitations": [
+    "consumer slot bytes/generation not directly compared",
+    "two layers and one case only",
+    "capture OFF/ON parity not tested",
+    "short reference telemetry is sparse"
+  ]
+}
