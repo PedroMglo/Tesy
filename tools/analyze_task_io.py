@@ -104,7 +104,8 @@ def main():
         ],
     }
     out_path = Path(str(stem) + "-io-analysis.json")
-    out_path.write_text(json.dumps(out, indent=2) + "\n")
+    with out_path.open("x") as target:
+        target.write(json.dumps(out, indent=2) + "\n")
     print(json.dumps(out["total_est"]))
 
 

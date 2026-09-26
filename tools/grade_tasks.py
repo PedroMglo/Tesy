@@ -111,7 +111,8 @@ def main():
                        "elapsed_s": item["elapsed_s"], "usage": item["usage"], **outcome})
     report = {"source_run": a.run_manifest, "scores": scores,
               "policy": "code/SQL in no-network read-only bubblewrap; JSON exact; quantitative/planning review"}
-    Path(a.output).write_text(json.dumps(report, indent=2) + "\n")
+    with Path(a.output).open("x") as out:
+        out.write(json.dumps(report, indent=2) + "\n")
     print(json.dumps({"source_run": a.run_manifest,
                       "status_counts": {s: sum(x["status"] == s for x in scores)
                                         for s in ("PASS", "FAIL", "REVIEW")}}))

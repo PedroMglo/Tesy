@@ -8,6 +8,8 @@ from pathlib import Path
 import re
 import statistics
 
+from c2_gate import strict_json
+
 
 PROMPT = re.compile(r"\|\s+prompt eval time =\s+([0-9.]+) ms /\s+(\d+) tokens")
 DECODE = re.compile(r"\|\s+eval time =\s+([0-9.]+) ms /\s+(\d+) tokens")
@@ -16,9 +18,16 @@ RESPONSE = re.compile(r"\[Start thinking\].*?(?=\[ Prompt:)", re.S)
 
 def row(run_id):
     stem = Path("results") / run_id
-    manifest = json.loads(stem.with_suffix(".json").read_text())
+    manifest = strict_json(stem.with_suffix(".json").read_text())
     stderr = Path(str(stem) + ".stderr").read_text(errors="replace")
     stdout = Path(str(stem) + ".stdout").read_text(errors="replace")
+    samples = [strict_json(line) for line in Path(str(stem) + ".samples.jsonl").read_text().splitlines()]
+    telemetry_ok = (len(samples) >= 2 and samples[0]["elapsed_s"] <= 2.5 and
+                    0 <= manifest["elapsed_s"] - samples[-1]["elapsed_s"] <= 2.5 and
+                    all(0 < b["elapsed_s"] - a["elapsed_s"] <= 3
+                        for a, b in zip(samples, samples[1:])) and
+                    all(s.get("proc") and s.get("gpu") and s.get("thermal") and s.get("cgroup") and
+                        s.get("mem_available_bytes") is not None for s in samples))
     prompts = [(int(n), float(ms)/1000) for ms, n in PROMPT.findall(stderr)]
     decodes = [(int(n), float(ms)/1000) for ms, n in DECODE.findall(stderr)]
     responses = RESPONSE.findall(stdout)
@@ -40,6 +49,7 @@ def row(run_id):
         "cgroup_max_event_delta": events1["max"] - events0["max"],
         "oom_event_delta": events1["oom"] - events0["oom"],
         "returncode": manifest["returncode"], "stop_reason": manifest["stop_reason"],
+        "legacy_telemetry_coverage_ok": telemetry_ok,
         "response_hashes": [hashlib.sha256(s.encode()).hexdigest() for s in responses],
     }
 
@@ -64,11 +74,13 @@ def main():
         "run_order": args.run_ids, "rows": rows, "summary": summary,
         "all_same_response_hashes": len({tuple(r["response_hashes"]) for r in rows}) == 1,
         "all_resource_and_exit_ok": all(r["returncode"] == 0 and r["stop_reason"] is None and
+                                    r["legacy_telemetry_coverage_ok"] and
                                     r["swap_peak_bytes"] == r["cgroup_max_event_delta"] ==
                                     r["oom_event_delta"] == 0 for r in rows),
         "limits": "read_bytes is sampled process accounting, not exclusive physical NVMe bytes; response hashes remove CLI timing banners but do not establish full numeric parity",
     }
-    Path(args.output).write_text(json.dumps(report, indent=2) + "\n")
+    with Path(args.output).open("x") as out:
+        out.write(json.dumps(report, indent=2) + "\n")
     print(json.dumps({"summary": summary, "same_responses": report["all_same_response_hashes"],
                       "resource_ok": report["all_resource_and_exit_ok"]}))
 

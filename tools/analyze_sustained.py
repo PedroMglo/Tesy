@@ -21,6 +21,7 @@ def pairs(stderr, name):
 def main():
     p = argparse.ArgumentParser()
     p.add_argument("run_id")
+    p.add_argument("--output", required=True, help="new report path; do not replace old evidence")
     a = p.parse_args()
     stem = ROOT / "results" / a.run_id
     manifest = json.loads(Path(str(stem) + ".json").read_text())
@@ -79,7 +80,8 @@ def main():
               "thermal_windows": windows,
               "limitations": ["read_bytes is a process counter, not exclusive NVMe traffic",
                               "final visible token count and per-token p50/p95 are not measured by this CLI run"]}
-    Path(str(stem) + "-analysis.json").write_text(json.dumps(report, indent=2) + "\n")
+    with Path(a.output).open("x") as out:
+        out.write(json.dumps(report, indent=2) + "\n")
     print(json.dumps({k: report[k] for k in ("completed_requests", "aggregate_decode_tok_s",
                                                   "last_half_decode_tok_s", "elapsed_s",
                                                   "stop_reason", "m5_frozen_criterion_met")}))

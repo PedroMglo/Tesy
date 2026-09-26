@@ -26,6 +26,8 @@ def main():
     p.add_argument("reference")
     p.add_argument("candidate")
     p.add_argument("--output", required=True)
+    p.add_argument("--require-bitwise", action="store_true",
+                   help="exit nonzero when the complete rows differ")
     a = p.parse_args()
     raw_a, row_a = read_row(a.reference)
     raw_b, row_b = read_row(a.candidate)
@@ -49,9 +51,11 @@ def main():
         "top1_candidate": top_b[0],
         "top10_overlap": len(set(top_a) & set(top_b)),
     }
-    Path(a.output).write_text(json.dumps(report, indent=2) + "\n")
+    with Path(a.output).open("x") as out:
+        out.write(json.dumps(report, indent=2) + "\n")
     print(json.dumps(report))
+    return 0 if not a.require_bitwise or report["bitwise_equal"] else 1
 
 
 if __name__ == "__main__":
-    main()
+    raise SystemExit(main())
