@@ -33,11 +33,13 @@ int main(int argc, char ** argv) {
 #endif
     const int gpu_layers = std::atoi(argv[3]);
     const char * prefix = "<|start|>user<|message|>What is 7 plus 5?<|end|><|start|>assistant<|channel|>final<|message|>";
+    const char * prefix_limit_env = std::getenv("TESY_LOGITS_PREFIX_TOKENS");
+    const char * mmap_plain_env = std::getenv("TESY_LOGITS_PLAIN_MMAP");
     llama_backend_init();
     auto mp = llama_model_default_params();
     mp.n_gpu_layers = gpu_layers;
 #ifdef STREAMING_BACKEND
-    mp.use_mmap = false; // same loader setting in causal plain/stream comparison
+    mp.use_mmap = !streaming && mmap_plain_env != nullptr; // bounded target reference may use mmap
     mp.use_direct_io = direct_loader;
     mp.use_extra_bufts = !no_repack;
     mp.moe_stream = streaming;
@@ -51,6 +53,11 @@ int main(int argc, char ** argv) {
     std::vector<llama_token> tokens(128);
     int n = llama_tokenize(vocab, prefix, std::strlen(prefix), tokens.data(), tokens.size(), true, true);
     if (n <= 0 || n > static_cast<int>(tokens.size())) return 4;
+    if (prefix_limit_env) {
+        const int limit = std::atoi(prefix_limit_env);
+        if (limit < 1 || limit > n) return 4;
+        n = limit;
+    }
     tokens.resize(n);
     auto cp = llama_context_default_params();
     cp.n_ctx = 4096;
