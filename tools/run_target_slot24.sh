@@ -12,7 +12,7 @@ systemd-run --user --scope --property=MemoryMax=18G --property=MemorySwapMax=0 \
   --backend streaming \
   --variant gpu8-stream24-direct-no-repack-ub32-greedy256 \
   --workload workloads/m1_two_turns.txt \
-  --cache-condition new-process-direct-experts-after-M2-run \
+  --cache-condition new-process-direct-experts-existing-system-cache \
   --timeout-s 900 --max-rss-gib 17 --min-available-gib 6 --max-gpu-mib 7000 \
   --env LLAMA_MOE_STREAM_NO_PRELOAD=1 \
   --stdin-file workloads/m1_two_turns.txt \
