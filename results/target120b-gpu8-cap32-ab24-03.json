@@ -1,0 +1,183 @@
+{
+  "run_id": "target120b-gpu8-cap32-ab24-03",
+  "started_utc": "2026-09-26T12:58:21.666345+00:00",
+  "model_id": "gpt-oss-120b-mxfp4-gguf",
+  "model_path": "/home/pmglo/models/gpt-oss-120b-gguf/gpt-oss-120b-MXFP4.gguf",
+  "backend": "streaming",
+  "backend_sha": "1248fd8fa8cfebaece5ea992e4d951c1e18bb9d5",
+  "binary_sha256": "422ff917448c9bb4cb3b59e9af75d9f0d8fc145ffa6c49317d722dd86aa14b94",
+  "backend_libraries_sha256": {
+    "build-gcc15/bin/libllama-cli-impl.so": "a743d0b6b8be5a91add6118b9c5d929b4cd6aded94da09763ac423bc986ba42c",
+    "build-gcc15/bin/libmtmd.so.0.0.1": "801002ce83276d33b5a09c98362e34e04fb867aed63a738650d8a2e29930bab9",
+    "build-gcc15/bin/libllama-common.so.0.0.1": "b0c96af5cd577f851954afb050601099608f29a2d4890322c2e69ab6d74733f9",
+    "build-gcc15/bin/libllama.so.0.0.1": "31b56002c36c159f71eba54c0d8e625ae140d34b2b1a503f3dc4db47237719cc",
+    "build-gcc15/bin/libggml.so.0.15.3": "97a33247336b56aaabe1a8bee4da6cd05e73e8b4327afd2cef67c5526df8ab71",
+    "build-gcc15/bin/libggml-cpu.so.0.15.3": "b57845ea9f9ce9455d78e6fe290c09b50b9414db9280409b9e5cc143d1b13b61",
+    "build-gcc15/bin/libggml-cuda.so.0.15.3": "5b363c951b87164e94d5b6af35a82c875634aadcb29c9278245cd7516f44cc7e",
+    "build-gcc15/bin/libggml-base.so.0.15.3": "4c322a199c86b801389ed4bda94074083624e0a6460e25681be4b626cc72873d"
+  },
+  "variant": "gpu8-stream24-direct-no-repack-ub32-greedy256",
+  "workload": "workloads/m1_two_turns.txt",
+  "cache_condition": "new-process-direct-experts-existing-system-cache",
+  "command": [
+    "backends/streaming/build-gcc15/bin/llama-cli",
+    "-m",
+    "/home/pmglo/models/gpt-oss-120b-gguf/gpt-oss-120b-MXFP4.gguf",
+    "-ngl",
+    "8",
+    "-c",
+    "4096",
+    "-b",
+    "256",
+    "-ub",
+    "32",
+    "-t",
+    "8",
+    "-tb",
+    "8",
+    "-n",
+    "256",
+    "-s",
+    "42",
+    "--temp",
+    "0",
+    "--no-warmup",
+    "--simple-io",
+    "--no-display-prompt",
+    "--no-repack",
+    "-lv",
+    "3",
+    "--moe-stream-cache",
+    "24s",
+    "--moe-stream-io-threads",
+    "4",
+    "--moe-stream-direct"
+  ],
+  "explicit_env": {
+    "LLAMA_MOE_STREAM_NO_PRELOAD": "1"
+  },
+  "stdin_file": "workloads/m1_two_turns.txt",
+  "stdin_sha256": "54329122bb29db556fdd12a517a298797c813666768d4866de7687e7648d2c31",
+  "limits": {
+    "timeout_s": 900,
+    "max_rss_gib": 17.0,
+    "min_available_gib": 6.0,
+    "max_gpu_mib": 7000.0
+  },
+  "cgroup_start": {
+    "path": "/user.slice/user-1000.slice/user@1000.service/app.slice/run-p199525-i226071.scope",
+    "memory_max": 19327352832,
+    "swap_max": 0,
+    "memory_current": 13488128,
+    "swap_current": 0,
+    "memory_stat": {
+      "anon": 10878976,
+      "file": 0,
+      "kernel": 200704,
+      "shmem": 0,
+      "file_mapped": 0
+    },
+    "events": {
+      "low": 0,
+      "high": 0,
+      "max": 0,
+      "oom": 0,
+      "oom_kill": 0,
+      "oom_group_kill": 0,
+      "sock_throttled": 0
+    }
+  },
+  "publication": "local only; stdout/stderr are untracked",
+  "samples_path": "/home/pmglo/Projects/Tesy/tesy-scale-lab/results/target120b-gpu8-cap32-ab24-03.samples.jsonl",
+  "cgroup_limit_enforced": true,
+  "ended_utc": "2026-09-26T13:02:13.619353+00:00",
+  "elapsed_s": 231.953,
+  "returncode": 0,
+  "stop_reason": null,
+  "maxima": {
+    "rss_bytes": 11748397056,
+    "swap_bytes": 0,
+    "cgroup_memory_bytes": 11502747648,
+    "cgroup_file_bytes": 1626402816,
+    "gpu_used_mib": 3112.0,
+    "gpu_temperature_c": 58.0,
+    "cpu_tctl_c": 89.125,
+    "nvme_composite_c": 60.85,
+    "direct_model_fds": 1,
+    "buffered_model_fds": 1
+  },
+  "last_sample": {
+    "elapsed_s": 230.953,
+    "proc": {
+      "VmHWM": 11748397056,
+      "VmRSS": 11748397056,
+      "VmSwap": 0,
+      "rchar": 323488003047,
+      "syscr": 82423,
+      "read_bytes": 320977145856
+    },
+    "mem_available_bytes": 16884928512,
+    "gpu": {
+      "used_mib": 3112.0,
+      "temperature_c": 54.0,
+      "power_w": 11.24
+    },
+    "thermal": {
+      "cpu_tctl_c": 64.125,
+      "nvme_composite_c": 59.85
+    },
+    "cgroup": {
+      "path": "/user.slice/user-1000.slice/user@1000.service/app.slice/run-p199525-i226071.scope",
+      "memory_max": 19327352832,
+      "swap_max": 0,
+      "memory_current": 11502034944,
+      "swap_current": 0,
+      "memory_stat": {
+        "anon": 9841381376,
+        "file": 1626402816,
+        "kernel": 31154176,
+        "shmem": 1626218496,
+        "file_mapped": 1628315648
+      },
+      "events": {
+        "low": 0,
+        "high": 0,
+        "max": 0,
+        "oom": 0,
+        "oom_kill": 0,
+        "oom_group_kill": 0,
+        "sock_throttled": 0
+      }
+    },
+    "model_fds": {
+      "open": 1,
+      "direct": 1,
+      "buffered": 0
+    }
+  },
+  "stdout_path": "/home/pmglo/Projects/Tesy/tesy-scale-lab/results/target120b-gpu8-cap32-ab24-03.stdout",
+  "stderr_path": "/home/pmglo/Projects/Tesy/tesy-scale-lab/results/target120b-gpu8-cap32-ab24-03.stderr",
+  "cgroup_end": {
+    "path": "/user.slice/user-1000.slice/user@1000.service/app.slice/run-p199525-i226071.scope",
+    "memory_max": 19327352832,
+    "swap_max": 0,
+    "memory_current": 14626816,
+    "swap_current": 0,
+    "memory_stat": {
+      "anon": 10928128,
+      "file": 184320,
+      "kernel": 282624,
+      "shmem": 0,
+      "file_mapped": 0
+    },
+    "events": {
+      "low": 0,
+      "high": 0,
+      "max": 0,
+      "oom": 0,
+      "oom_kill": 0,
+      "oom_group_kill": 0,
+      "sock_throttled": 0
+    }
+  }
+}
