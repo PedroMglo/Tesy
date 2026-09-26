@@ -35,6 +35,9 @@ int main(int argc, char ** argv) {
     const char * prefix = "<|start|>user<|message|>What is 7 plus 5?<|end|><|start|>assistant<|channel|>final<|message|>";
     const char * prefix_limit_env = std::getenv("TESY_LOGITS_PREFIX_TOKENS");
     const char * mmap_plain_env = std::getenv("TESY_LOGITS_PLAIN_MMAP");
+    const char * stream_slots_env = std::getenv("TESY_LOGITS_STREAM_SLOTS");
+    const int stream_slots = stream_slots_env ? std::atoi(stream_slots_env) : 16;
+    if (stream_slots < 1 || stream_slots > 128) return 2;
     llama_backend_init();
     auto mp = llama_model_default_params();
     mp.n_gpu_layers = gpu_layers;
@@ -43,7 +46,7 @@ int main(int argc, char ** argv) {
     mp.use_direct_io = direct_loader;
     mp.use_extra_bufts = !no_repack;
     mp.moe_stream = streaming;
-    mp.moe_stream_slots = 16;
+    mp.moe_stream_slots = stream_slots;
     mp.moe_stream_io_threads = 4;
     mp.moe_stream_direct = streaming;
 #endif
