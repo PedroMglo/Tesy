@@ -124,7 +124,7 @@ def main():
     command = [str(binary), "-m", str(model), "--host", "127.0.0.1",
                "--port", str(PORT), "-ngl", str(spec["gpu_layers"]),
                "-c", "4096", "-np", "1", "-b", "256", "-ub", "32",
-               "-t", "8", "-tb", "8", "--no-warmup", "--no-cache-prompt"]
+               "-t", "8", "-tb", "8", "--no-warmup", "--no-cache-prompt", "-lv", "3"]
     if a.model == "stock20b":
         command += ["--load-mode", "dio", "--lazy-mode", "off"]
     else:
