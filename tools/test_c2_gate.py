@@ -37,13 +37,15 @@ def fixture():
         "samples": [
             {"t_s": t, "pid": 1234, "cgroup_memory_bytes": 100, "cgroup_peak_bytes": 150,
              "cgroup_swap_bytes": 0, "cgroup_max_events": 0, "cgroup_oom_events": 0,
+             "cgroup_oom_kill_events": 0, "cgroup_local_max_events": 0,
+             "cgroup_local_oom_events": 0, "cgroup_local_oom_kill_events": 0,
              "rss_bytes": 80, "proc_swap_bytes": 0, "gpu_used_mib": 25,
              "gpu_temperature_c": 45, "cpu_tctl_c": 50, "nvme_composite_c": 40,
              "mem_available_bytes": 900} for t in range(11)],
         "limits": {"memory_max_bytes": 1000, "rss_max_bytes": 500, "gpu_max_mib": 200,
                    "min_mem_available_bytes": 600, "cpu_max_c": 95, "gpu_max_c": 80,
                    "nvme_max_c": 70, "max_gap_s": 3, "boundary_s": 2,
-                   "min_elapsed_s": 10, "min_decode_s": 3,
+                   "min_elapsed_s": 10, "min_active_s": 7, "min_decode_s": 3,
                    "min_decode_tok_s": 2, "min_last_half_tok_s": 2},
         "outcome": {"elapsed_s": 10, "returncode": 0, "stop_reasons": [],
                     "backend_errors": []},
@@ -80,8 +82,14 @@ class GateTests(unittest.TestCase):
     def test_duplicate_backend_task(self):
         self.assert_rejects(lambda d: d["requests"][1].__setitem__("backend_task_id", 17))
 
+    def test_backend_task_order(self):
+        self.assert_rejects(lambda d: d["requests"][1].__setitem__("backend_task_id", 16))
+
     def test_missing_timing(self):
         self.assert_rejects(lambda d: d["requests"][0].pop("decode_s"))
+
+    def test_idle_time_does_not_count_as_active_service(self):
+        self.assert_rejects(lambda d: d["limits"].__setitem__("min_active_s", 8))
 
     def test_workload_or_model_swapped(self):
         self.assert_rejects(lambda d: d["identity"].__setitem__("model_sha256", "c"*64))
@@ -101,6 +109,9 @@ class GateTests(unittest.TestCase):
 
     def test_telemetry_missing_field(self):
         self.assert_rejects(lambda d: d["samples"][3].pop("cpu_tctl_c"))
+
+    def test_peak_cannot_decrease(self):
+        self.assert_rejects(lambda d: d["samples"][3].__setitem__("cgroup_peak_bytes", 99))
 
     def test_backend_error(self):
         self.assert_rejects(lambda d: d["outcome"]["backend_errors"].append("EIO"))
@@ -171,6 +182,32 @@ class GateTests(unittest.TestCase):
             Path(str(stems[1])+".rows.tsv").write_text("case\tphase\tposition\trow\n")
             with self.assertRaises(GateError):
                 compare(*args)
+
+    def test_selected_case_with_global_row_offsets(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            ids = root / "ids.tsv"
+            ids.write_text("first\t1,2\t3\nsecond\t4,5\t6\n")
+            stems = [root / "reference", root / "candidate"]
+            import struct
+            for stem in stems:
+                Path(str(stem)+".rows.tsv").write_text(
+                    "case\tphase\tposition\trow\n"
+                    "first\tprompt\t0\t0\nfirst\tprompt\t1\t1\n"
+                    "first\tcontinuation\t2\t2\n"
+                    "second\tprompt\t0\t3\nsecond\tprompt\t1\t4\n"
+                    "second\tcontinuation\t2\t5\n")
+                Path(str(stem)+".f32").write_bytes(struct.pack("<18f", *range(18)))
+                Path(str(stem)+".json").write_text(json.dumps({
+                    "returncode":0,"stop_reason":None,"cgroup_limit_enforced":True,
+                    "command":[str(stem),str(ids)],"model_id":"tiny","model_path":"tiny.gguf"}))
+            args = [stems[0],stems[1],ids,"second",1,3,
+                    Path(str(stems[0])+".json"),Path(str(stems[1])+".json")]
+            self.assertEqual(compare(*args)["n_rows"], 3)
+            changed = list(range(18)); changed[17] = 99
+            Path(str(stems[1])+".f32").write_bytes(struct.pack("<18f", *changed))
+            mismatch = compare(*args)["mismatch_rows"]
+            self.assertEqual([mismatch[0]["row"], mismatch[0]["global_row"]], [2, 5])
 
 
 if __name__ == "__main__":

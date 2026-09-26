@@ -57,12 +57,14 @@ REQUEST = ("id", "backend_task_id", "started_s", "ended_s", "api_prompt_tokens",
            "api_completion_tokens", "backend_prompt_tokens", "backend_completion_tokens",
            "prefill_s", "decode_s", "finish_reason")
 SAMPLE = ("t_s", "pid", "cgroup_memory_bytes", "cgroup_peak_bytes", "cgroup_swap_bytes",
-          "cgroup_max_events", "cgroup_oom_events", "rss_bytes", "proc_swap_bytes",
+          "cgroup_max_events", "cgroup_oom_events", "cgroup_oom_kill_events",
+          "cgroup_local_max_events", "cgroup_local_oom_events", "cgroup_local_oom_kill_events",
+          "rss_bytes", "proc_swap_bytes",
           "gpu_used_mib", "gpu_temperature_c", "cpu_tctl_c", "nvme_composite_c",
           "mem_available_bytes")
 LIMITS = ("memory_max_bytes", "rss_max_bytes", "gpu_max_mib", "min_mem_available_bytes",
           "cpu_max_c", "gpu_max_c", "nvme_max_c", "max_gap_s", "boundary_s",
-          "min_elapsed_s", "min_decode_s", "min_decode_tok_s", "min_last_half_tok_s")
+          "min_elapsed_s", "min_active_s", "min_decode_s", "min_decode_tok_s", "min_last_half_tok_s")
 OUTCOME = ("elapsed_s", "returncode", "stop_reasons", "backend_errors")
 TOP = ("schema_version", "campaign_id", "run_id", "protocol_id", "identity",
        "expected_request_ids", "requests", "samples", "limits", "outcome")
@@ -119,8 +121,10 @@ def validate(doc, frozen):
     if len(requests) != len(expected):
         raise GateError("missing or extra request")
     backend_ids = set()
+    previous_backend_id = -1
     decoded = 0
     decode_s = 0.0
+    active_s = 0.0
     previous_end = 0.0
     for i, (row, request_id) in enumerate(zip(requests, expected)):
         keys(row, REQUEST, f"request {i}")
@@ -129,12 +133,16 @@ def validate(doc, frozen):
         backend_id = number(row["backend_task_id"], "backend task ID", minimum=0, integer=True)
         if backend_id in backend_ids:
             raise GateError("duplicate backend task ID")
+        if backend_id <= previous_backend_id:
+            raise GateError("backend task IDs out of order")
         backend_ids.add(backend_id)
+        previous_backend_id = backend_id
         start = number(row["started_s"], "request start", minimum=0)
         end = number(row["ended_s"], "request end", positive=True)
         if not previous_end <= start < end <= elapsed:
             raise GateError("request timestamps invalid or out of order")
         previous_end = end
+        active_s += end-start
         for name in ("api_prompt_tokens", "api_completion_tokens", "backend_prompt_tokens",
                      "backend_completion_tokens"):
             number(row[name], name, minimum=0, integer=True)
@@ -159,6 +167,7 @@ def validate(doc, frozen):
     pid = None
     first_events = None
     peak_memory = 0
+    previous_peak = 0
     for i, sample in enumerate(samples):
         keys(sample, SAMPLE, f"sample {i}")
         t = number(sample["t_s"], "sample time", minimum=0)
@@ -178,13 +187,19 @@ def validate(doc, frozen):
            sample["gpu_used_mib"] > limits["gpu_max_mib"] or \
            sample["mem_available_bytes"] < limits["min_mem_available_bytes"]:
             raise GateError("memory/GPU guard violated")
+        if sample["cgroup_peak_bytes"] < max(sample["cgroup_memory_bytes"], previous_peak):
+            raise GateError("cgroup memory peak inconsistent or decreased")
+        previous_peak = sample["cgroup_peak_bytes"]
         if sample["cgroup_swap_bytes"] or sample["proc_swap_bytes"]:
             raise GateError("swap used")
         if sample["cpu_tctl_c"] > limits["cpu_max_c"] or \
            sample["gpu_temperature_c"] > limits["gpu_max_c"] or \
            sample["nvme_composite_c"] > limits["nvme_max_c"]:
             raise GateError("thermal guard violated")
-        events = (sample["cgroup_max_events"], sample["cgroup_oom_events"])
+        events = tuple(sample[name] for name in
+                       ("cgroup_max_events", "cgroup_oom_events", "cgroup_oom_kill_events",
+                        "cgroup_local_max_events", "cgroup_local_oom_events",
+                        "cgroup_local_oom_kill_events"))
         if first_events is None:
             first_events = events
         elif events != first_events:
@@ -194,7 +209,8 @@ def validate(doc, frozen):
         raise GateError("telemetry does not cover process boundaries")
     if samples[-1]["t_s"] > elapsed:
         raise GateError("telemetry extends beyond process")
-    if elapsed < limits["min_elapsed_s"] or decode_s < limits["min_decode_s"]:
+    if elapsed < limits["min_elapsed_s"] or active_s < limits["min_active_s"] or \
+       decode_s < limits["min_decode_s"]:
         raise GateError("sustained duration not met")
     rate = decoded/decode_s
     last = requests[len(requests)//2:]
@@ -202,7 +218,8 @@ def validate(doc, frozen):
     if rate < limits["min_decode_tok_s"] or last_rate < limits["min_last_half_tok_s"]:
         raise GateError("decode throughput threshold not met")
     return {"status": "PASS", "schema_version": "c2-gate-result-v1", "run_id": doc["run_id"],
-            "completed_requests": len(requests), "decode_tokens": decoded, "decode_s": decode_s,
+            "completed_requests": len(requests), "active_s": active_s,
+            "decode_tokens": decoded, "decode_s": decode_s,
             "decode_tok_s": rate, "last_half_decode_tok_s": last_rate,
             "sample_count": len(samples), "cgroup_peak_bytes": peak_memory}
 

@@ -24,16 +24,19 @@ def rows(path, case, prompt_len, continuation_len, ubatch):
     if not lines or lines[0] != "case\tphase\tposition\trow":
         raise GateError("invalid row index header")
     actual = []
+    total = 0
     for i, line in enumerate(lines[1:]):
         parts = line.split("\t")
-        if len(parts) != 4 or parts[0] != case or int(parts[3]) != i:
-            raise GateError("row index/case mismatch")
-        actual.append((parts[1], int(parts[2])))
+        if len(parts) != 4 or int(parts[3]) != i:
+            raise GateError("row index mismatch")
+        if parts[0] == case:
+            actual.append((i, parts[1], int(parts[2])))
+        total += 1
     expected = [("prompt", min(k+ubatch, prompt_len)-1) for k in range(0, prompt_len, ubatch)]
     expected += [("continuation", prompt_len+i) for i in range(continuation_len)]
-    if actual != expected:
+    if [(phase, position) for _, phase, position in actual] != expected:
         raise GateError("missing, extra or out-of-order logit position")
-    return actual
+    return actual, total
 
 
 def compare(reference, candidate, ids_file, case, ubatch, vocab, ref_manifest, cand_manifest):
@@ -47,10 +50,12 @@ def compare(reference, candidate, ids_file, case, ubatch, vocab, ref_manifest, c
         raise GateError("case ID missing or duplicated")
     prompt_len = len(selected[0][1].split(","))
     continuation_len = len(selected[0][2].split(","))
-    index_a = rows(str(reference) + ".rows.tsv", case, prompt_len, continuation_len, ubatch)
-    index_b = rows(str(candidate) + ".rows.tsv", case, prompt_len, continuation_len, ubatch)
+    index_a, total_a = rows(str(reference) + ".rows.tsv", case, prompt_len, continuation_len, ubatch)
+    index_b, total_b = rows(str(candidate) + ".rows.tsv", case, prompt_len, continuation_len, ubatch)
     if index_a != index_b:
         raise GateError("reference/candidate row map differs")
+    if total_a != total_b:
+        raise GateError("reference/candidate total row count differs")
     manifests = [strict_json(Path(p).read_text()) for p in (ref_manifest, cand_manifest)]
     for manifest, prefix in zip(manifests, (reference, candidate)):
         if manifest.get("returncode") != 0 or manifest.get("stop_reason") is not None or not manifest.get("cgroup_limit_enforced"):
@@ -61,14 +66,16 @@ def compare(reference, candidate, ids_file, case, ubatch, vocab, ref_manifest, c
     if manifests[0]["model_id"] != manifests[1]["model_id"] or \
        manifests[0]["model_path"] != manifests[1]["model_path"]:
         raise GateError("model identity differs")
-    size = len(index_a) * vocab * 4
+    size = total_a * vocab * 4
     if Path(str(reference) + ".f32").stat().st_size != size or \
        Path(str(candidate) + ".f32").stat().st_size != size:
         raise GateError("float32 row file size mismatch")
     mismatches = []
     with Path(str(reference) + ".f32").open("rb") as ref, \
          Path(str(candidate) + ".f32").open("rb") as cand:
-        for i, (phase, position) in enumerate(index_a):
+        for i, (global_row, phase, position) in enumerate(index_a):
+            ref.seek(global_row*vocab*4)
+            cand.seek(global_row*vocab*4)
             a = ref.read(vocab*4)
             b = cand.read(vocab*4)
             va = array("f"); va.frombytes(a)
@@ -77,7 +84,8 @@ def compare(reference, candidate, ids_file, case, ubatch, vocab, ref_manifest, c
                 raise GateError("nonfinite float32 logit")
             if a != b:
                 diffs = [abs(x-y) for x, y in zip(va, vb)]
-                mismatches.append({"row":i,"phase":phase,"position":position,
+                mismatches.append({"row":i,"global_row":global_row,
+                                   "phase":phase,"position":position,
                                    "max_abs":max(diffs),
                                    "rmse":math.sqrt(sum(x*x for x in diffs)/vocab),
                                    "top1_reference":max(range(vocab), key=va.__getitem__),
