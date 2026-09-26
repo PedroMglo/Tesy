@@ -1,0 +1,32 @@
+{
+  "schema_version": "c2-latency-client-v1",
+  "created_utc": "2026-09-26T15:39:29.815699+00:00",
+  "workload_sha256": "0190f1cef2228a0937005a4c8a2bf790b3e7e49bce9782c52d0f857a8baf20c0",
+  "model_id_reported": "/home/pmglo/models/gpt-oss-120b-gguf/gpt-oss-120b-MXFP4.gguf",
+  "count_only": true,
+  "policy": {
+    "context": 4096,
+    "max_tokens": 512,
+    "temperature": 0,
+    "seed": 42,
+    "cache_reuse": "determined by server flags"
+  },
+  "rows": [
+    {
+      "id": "latency-short",
+      "category": "spec_log",
+      "templated_prompt_tokens": 113
+    },
+    {
+      "id": "latency-medium",
+      "category": "spec_log",
+      "templated_prompt_tokens": 496
+    },
+    {
+      "id": "latency-long",
+      "category": "spec_log",
+      "templated_prompt_tokens": 1522
+    }
+  ],
+  "limitation": "SSE arrival is not per-token TPOT; separate monitored server manifest required for resources"
+}
