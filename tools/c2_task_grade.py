@@ -6,6 +6,7 @@ import json
 from pathlib import Path
 
 from c2_gate import strict_json
+from c2_server_run import CORE_IDS
 from grade_tasks import isolated_python, unwrap, SENTINEL
 
 
@@ -157,18 +158,44 @@ def main():
     tasks = validate_suite()["tasks"]
     by_id = {x["id"]:x for x in tasks}
     run = strict_json(Path(a.run_manifest).read_text())
-    expected = [x["id"] for x in tasks if x["split"] == run["split"]]
-    rows = run["results"]
-    if [x["task_id"] for x in rows] != expected:
-        raise ValueError("missing/duplicate/out-of-order task result")
+    if run.get("schema_version") == "c2-server-raw-v1":
+        if run["preflight"]["config"]["suite"] != "c2core8":
+            raise ValueError("C2 grader requires frozen core8 suite")
+        expected = list(CORE_IDS)
+        rows = run["results"]
+        if run["stop_reasons"] or run["returncode"] != 0:
+            raise ValueError("incomplete/failed C2 server run")
+        if [x["id"] for x in rows] != expected or \
+           [x["source_task_id"] for x in rows] != expected:
+            raise ValueError("missing/duplicate/out-of-order C2 task result")
+        mode = "c2core8"
+    else:
+        expected = [x["id"] for x in tasks if x["split"] == run["split"]]
+        rows = run["results"]
+        if [x["task_id"] for x in rows] != expected:
+            raise ValueError("missing/duplicate/out-of-order task result")
+        mode = "legacy"
     scores = []
     for row in rows:
-        outcome = grade_text(row["task_id"], (row["message"] or {}).get("content"))
-        scores.append({"task_id":row["task_id"],"status":outcome["status"],
-                       "finish_reason":row["finish_reason"], "detail":outcome})
-    report = {"source_run":a.run_manifest,"scores":scores,
+        task_id = row["source_task_id"] if mode == "c2core8" else row["task_id"]
+        outcome = grade_text(task_id, (row["message"] or {}).get("content"))
+        status = "FAIL_TRUNCATED" if mode == "c2core8" and row["finish_reason"] != "stop" else outcome["status"]
+        item = {"task_id":task_id,"status":status,
+                "finish_reason":row["finish_reason"], "detail":outcome}
+        if mode == "c2core8":
+            usage = row.get("usage") or {}
+            item.update({"prompt_tokens":usage.get("prompt_tokens"),
+                         "completion_tokens_total":usage.get("completion_tokens"),
+                         "request_wall_s":row["ended_s"]-row["started_s"],
+                         "reasoning_characters":len((row["message"] or {}).get("reasoning_content") or ""),
+                         "final_characters":len((row["message"] or {}).get("content") or ""),
+                         "first_token_s":None,"first_final_s":None})
+        scores.append(item)
+    report = {"source_run":a.run_manifest,"schema_version":"c2-task-grade-v2" if mode == "c2core8" else "legacy-task-grade-v1",
+              "scores":scores,
               "pass_count":sum(x["status"] == "PASS" for x in scores),
-              "validator_policy":"frozen synthetic code/SQL bwrap assertions and strict exact JSON"}
+              "validator_policy":"frozen synthetic code/SQL bwrap assertions and strict exact JSON",
+              "latency_limit":"nonstreamed C2 API; TTFT and first final content NOT_MEASURED" if mode == "c2core8" else None}
     with Path(a.output).open("x") as output:
         json.dump(report, output, indent=2, allow_nan=False)
         output.write("\n")

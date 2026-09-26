@@ -1,0 +1,121 @@
+{
+  "schema_version": "c2-sustained-analysis-v1",
+  "run_id": "c2c-target32-server-smoke03",
+  "gate_status": "PASS",
+  "gate_reason": null,
+  "source_sha256": {
+    ".json": "365d42295dcdf658e099b5f677839b0f226cbaa402f7bebcc24082c989fac44d",
+    ".normalized.json": "7fea0769e28f2593a4deebf210cc637f4a6302aede12b37aac53e27917f334c6",
+    ".gate.json": "7c8a33d6cf94e668b999ca6b2e17eda980c7b6bba8f826ff46f992514cf1999a",
+    ".samples.jsonl": "1ba7ffe1036d96f6c8b2b14a76963383a44e962816edf29e37f950ea80cb9395",
+    ".stderr": "6caa66e08bf4d0205716a1741253980855bd17e8b099f5e8d34ddff3c2df2f01"
+  },
+  "expected_request_ids": [
+    "c2-smoke-arithmetic"
+  ],
+  "completed_request_count": 1,
+  "process_elapsed_s": 48.76727068799664,
+  "load_to_ready_s": 5.050685756999883,
+  "active_request_s": 42.79494889800117,
+  "non_request_process_s": 5.972321789995476,
+  "whole": {
+    "requests": 1,
+    "completion_tokens": 41,
+    "decode_s": 14.06932,
+    "decode_tok_s": 2.9141422613175334,
+    "prefill_s": 28.72187,
+    "active_request_s": 42.79494889800117,
+    "min_request_decode_tok_s": 2.9141422613175334,
+    "truncated_requests": 0
+  },
+  "first_ten": {
+    "requests": 1,
+    "completion_tokens": 41,
+    "decode_s": 14.06932,
+    "decode_tok_s": 2.9141422613175334,
+    "prefill_s": 28.72187,
+    "active_request_s": 42.79494889800117,
+    "min_request_decode_tok_s": 2.9141422613175334,
+    "truncated_requests": 0
+  },
+  "last_ten": {
+    "requests": 0,
+    "completion_tokens": 0,
+    "decode_s": 0,
+    "decode_tok_s": null,
+    "prefill_s": 0,
+    "active_request_s": 0,
+    "min_request_decode_tok_s": null,
+    "truncated_requests": 0
+  },
+  "five_request_windows": [
+    {
+      "requests": 1,
+      "completion_tokens": 41,
+      "decode_s": 14.06932,
+      "decode_tok_s": 2.9141422613175334,
+      "prefill_s": 28.72187,
+      "active_request_s": 42.79494889800117,
+      "min_request_decode_tok_s": 2.9141422613175334,
+      "truncated_requests": 0
+    }
+  ],
+  "requests": [
+    {
+      "id": "c2-smoke-arithmetic",
+      "source_task_id": "c2-smoke-arithmetic",
+      "block": null,
+      "started_s": 5.307028627998079,
+      "ended_s": 48.101977525999246,
+      "wall_s": 42.79494889800117,
+      "prompt_tokens": 79,
+      "completion_tokens": 41,
+      "prefill_s": 28.72187,
+      "decode_s": 14.06932,
+      "decode_tok_s": 2.9141422613175334,
+      "finish_reason": "stop",
+      "final_characters": 2,
+      "reasoning_characters": 94
+    }
+  ],
+  "thermal_and_io_windows": [
+    {
+      "start_s": 0,
+      "end_s": 48.76727068799664,
+      "sample_count": 46,
+      "cpu_tctl_c_median_max": [
+        67.4375,
+        79.625
+      ],
+      "gpu_c_median_max": [
+        53.0,
+        55.0
+      ],
+      "nvme_c_median_max": [
+        50.85,
+        54.85
+      ],
+      "process_read_bytes_delta_sampled": 71352963072
+    }
+  ],
+  "resource": {
+    "cgroup_memory_peak_bytes": 14905942016,
+    "rss_hwm_bytes": 14806708224,
+    "gpu_used_mib_max": 3818.0,
+    "cgroup_swap_bytes_max": 0,
+    "events_delta": {
+      "hierarchical": {
+        "events": 0
+      },
+      "local": {
+        "events_local": 0
+      }
+    }
+  },
+  "limitations": [
+    "backend decode time excludes prefill and server idle, but includes waits in decode",
+    "process read_bytes is not exclusive physical NVMe traffic",
+    "one backend timer per request; per-token p50/p95 NOT_MEASURED",
+    "numeric production-placement parity remains blocked by C2-B references"
+  ]
+}
