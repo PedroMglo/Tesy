@@ -65,12 +65,14 @@ def analyze(run_id):
         if not group: continue
         values = lambda key: [x["thermal"][key] for x in group if x.get("thermal") and key in x["thermal"]]
         gpu = [x["gpu"]["temperature_c"] for x in group if x.get("gpu")]
+        power = [x["gpu"]["power_w"] for x in group if x.get("gpu") and "power_w" in x["gpu"]]
         reads = [x["proc"]["read_bytes"] for x in group if x.get("proc") and "read_bytes" in x["proc"]]
         cpu = values("cpu_tctl_c"); nvme = values("nvme_composite_c")
         windows.append({"start_s":start,"end_s":min(start+300,raw["elapsed_s"]),
                         "sample_count":len(group),
                         "cpu_tctl_c_median_max":[statistics.median(cpu),max(cpu)] if cpu else None,
                         "gpu_c_median_max":[statistics.median(gpu),max(gpu)] if gpu else None,
+                        "gpu_power_w_median_max":[statistics.median(power),max(power)] if power else None,
                         "nvme_c_median_max":[statistics.median(nvme),max(nvme)] if nvme else None,
                         "process_read_bytes_delta_sampled":reads[-1]-reads[0] if len(reads)>1 else None})
     cg_start = raw["preflight"]["cgroup_start"]

@@ -189,13 +189,14 @@ def main():
                          "request_wall_s":row["ended_s"]-row["started_s"],
                          "reasoning_characters":len((row["message"] or {}).get("reasoning_content") or ""),
                          "final_characters":len((row["message"] or {}).get("content") or ""),
+                         "reasoning_tokens":None,"final_tokens":None,
                          "first_token_s":None,"first_final_s":None})
         scores.append(item)
     report = {"source_run":a.run_manifest,"schema_version":"c2-task-grade-v2" if mode == "c2core8" else "legacy-task-grade-v1",
               "scores":scores,
               "pass_count":sum(x["status"] == "PASS" for x in scores),
               "validator_policy":"frozen synthetic code/SQL bwrap assertions and strict exact JSON",
-              "latency_limit":"nonstreamed C2 API; TTFT and first final content NOT_MEASURED" if mode == "c2core8" else None}
+              "latency_limit":"nonstreamed C2 API; TTFT and first final content NOT_MEASURED; reasoning/final token split not exposed" if mode == "c2core8" else None}
     with Path(a.output).open("x") as output:
         json.dump(report, output, indent=2, allow_nan=False)
         output.write("\n")

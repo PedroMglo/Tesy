@@ -86,11 +86,13 @@ def configuration(args):
     explicit_env = {"LLAMA_MOE_STREAM_NO_PRELOAD":"1"} if args.model == "target120b" else {}
     task_rows, workload = tasks_for(args.suite)
     max_tokens = 64 if args.suite == "smoke1" else 512 if args.suite == "historic20" else 2048
-    request_timeout = 180 if args.suite == "smoke1" else 360 if args.suite == "historic20" else 900
+    request_timeout = 180 if args.suite == "smoke1" else 360 if args.suite == "historic20" else 1200
     policy = {"temperature":0,"seed":42,"max_tokens":max_tokens,"reasoning_effort":"medium",
               "attempts":1,"prompt_cache":False,"per_request_timeout_s":request_timeout}
     config = {"server_command":command,"explicit_env":explicit_env,"request_policy":policy,
               "suite":args.suite,"task_ids":[x[0] for x in task_rows]}
+    if args.suite == "c2core8":
+        config["total_timeout_s"] = 7200
     libs = backend_library_hashes(str(binary), backend)
     if not libs:
         raise GateError("backend shared libraries unavailable")
@@ -234,6 +236,7 @@ def run(args, protocol, config, task_rows, model):
     if any(path.exists() for path in paths.values()):
         raise GateError("run ID/output already exists")
     config = dict(config, run_id=args.run_id)
+    total_timeout = config.get("total_timeout_s",3600)
     model_before = model.stat()
     preflight = {"schema_version":"c2-server-preflight-v1","run_id":args.run_id,
                  "protocol_sha256":sha256(args.protocol),"protocol":protocol,
@@ -243,7 +246,7 @@ def run(args, protocol, config, task_rows, model):
                                       "size":model_before.st_size,"mtime_ns":model_before.st_mtime_ns},
                  "runner_sha256":sha256(__file__),
                  "started_utc":dt.datetime.now(dt.timezone.utc).isoformat(),
-                 "cgroup_start":cg_start,"timeout_s":3600}
+                 "cgroup_start":cg_start,"timeout_s":total_timeout}
     with open(paths[".preflight.json"],"x") as out:
         json.dump(preflight,out,indent=2,allow_nan=False);out.write("\n")
     t0 = time.monotonic()
@@ -271,7 +274,7 @@ def run(args, protocol, config, task_rows, model):
                     samples.append(sample)
                     sample_file.write(json.dumps(sample,allow_nan=False)+"\n");sample_file.flush()
                     reason = None
-                    if now > 3600: reason = "TIMEOUT"
+                    if now > total_timeout: reason = "TIMEOUT"
                     elif not ps or not cg or not gpu or not th or available is None: reason = "TELEMETRY_MISSING"
                     elif ps["VmSwap"] or cg["swap_current"]: reason = "SWAP_USED"
                     elif cg["events"]["oom"] > cg_start["events"]["oom"]: reason = "CGROUP_OOM"
