@@ -56,6 +56,8 @@ def first_text_latency(model_id):
                   headers={"Content-Type": "application/json"}, method="POST")
     start = time.monotonic()
     first = None
+    first_reasoning = None
+    first_final = None
     text_chunks = 0
     with urlopen(req, timeout=360) as response:
         for raw in response:
@@ -69,7 +71,13 @@ def first_text_latency(model_id):
                     text_chunks += 1
                     if first is None:
                         first = time.monotonic() - start
+                    if delta.get("reasoning_content") and first_reasoning is None:
+                        first_reasoning = time.monotonic() - start
+                    if delta.get("content") and first_final is None:
+                        first_final = time.monotonic() - start
     return {"first_text_chunk_s": round(first, 3) if first is not None else None,
+            "first_reasoning_chunk_s": round(first_reasoning, 3) if first_reasoning is not None else None,
+            "first_final_chunk_s": round(first_final, 3) if first_final is not None else None,
             "stream_elapsed_s": round(time.monotonic() - start, 3),
             "text_chunk_count": text_chunks,
             "interpretation": "client first received text; chunks are not token intervals"}
