@@ -342,10 +342,19 @@ def run(args, protocol, config, task_rows, model):
     if (model_after.st_dev,model_after.st_ino,model_after.st_size,model_after.st_mtime_ns) != \
        (model_before.st_dev,model_before.st_ino,model_before.st_size,model_before.st_mtime_ns):
         reasons.append("MODEL_IDENTITY_CHANGED")
+    cg_end = cgroup_state()
+    if not cg_end:
+        reasons.append("CGROUP_END_MISSING")
+    else:
+        if cg_end["swap_current"] or cg_end["memory_peak"] > cg_end["memory_max"]:
+            reasons.append("CGROUP_END_RESOURCE_VIOLATION")
+        for name in ("events","events_local"):
+            if any(cg_end[name][key] > cg_start[name][key] for key in ("max","oom","oom_kill")):
+                reasons.append(f"CGROUP_END_{name.upper()}_EVENT")
     result = {"schema_version":"c2-server-raw-v1","preflight":preflight,
               "ended_utc":dt.datetime.now(dt.timezone.utc).isoformat(),"elapsed_s":ended,
               "returncode":server.returncode,"stop_reasons":reasons,"results":raw,
-              "cgroup_end":cgroup_state(),"sample_count":len(samples),
+              "cgroup_end":cg_end,"sample_count":len(samples),
               "source_sha256":{s:sha256(p) for s,p in paths.items() if s in
                                (".stdout",".stderr",".samples.jsonl") and p.exists()}}
     with open(paths[".json"],"x") as out:

@@ -79,9 +79,14 @@ def analyze(run_id):
     cg_end = raw["cgroup_end"]
     events = {kind:{k:cg_end[k][key]-cg_start[k][key] for key in ("max","oom","oom_kill")}
               for kind,k in (("hierarchical","events"),("local","events_local"))}
+    end_resource_ok = (cg_end["swap_current"] == 0 and
+                       cg_end["memory_peak"] <= cg_end["memory_max"] and
+                       all(value == 0 for group in events.values() for value in group.values()))
     whole = summary(requests)
     return {"schema_version":"c2-sustained-analysis-v1","run_id":run_id,
             "gate_status":gate["status"] if gate else "NOT_RUN",
+            "combined_status":"PASS" if gate and gate["status"]=="PASS" and end_resource_ok else "FAIL",
+            "end_resource_ok":end_resource_ok,
             "gate_reason":gate.get("reason") if gate else None,
             "source_sha256":source_hash,"expected_request_ids":raw["preflight"]["config"]["task_ids"],
             "completed_request_count":len(raw["results"]),

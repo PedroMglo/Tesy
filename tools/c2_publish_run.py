@@ -46,9 +46,18 @@ def publish(run_id, protocol):
             raise GateError("PASS gate source/protocol hash mismatch")
     hashes = {str(path.relative_to(ROOT)):sha256(path) for path in files.values() if path.exists()}
     hashes[str(protocol.relative_to(ROOT))] = sha256(protocol)
+    start_cg = preflight.get("cgroup_start")
+    end_cg = raw.get("cgroup_end")
+    end_resource_ok = bool(start_cg and end_cg and end_cg.get("swap_current") == 0 and
+                           end_cg.get("memory_peak") is not None and end_cg.get("memory_max") is not None and
+                           end_cg["memory_peak"] <= end_cg["memory_max"] and
+                           all(end_cg[group].get(key) == start_cg[group].get(key)
+                               for group in ("events","events_local")
+                               for key in ("max","oom","oom_kill")))
     report = {"schema_version":"c2-server-publication-v1","run_id":run_id,
               "published_utc":dt.datetime.now(dt.timezone.utc).isoformat(),
-              "status":gate["status"] if gate else "NO_GATE",
+              "status":"FAIL_END_RESOURCE" if not end_resource_ok else gate["status"] if gate else "NO_GATE",
+              "end_resource_ok":end_resource_ok,
               "gate_reason":gate.get("reason") if gate else None,
               "raw_stop_reasons":raw["stop_reasons"],
               "lab_commit":subprocess.check_output(["git","rev-parse","HEAD"],cwd=ROOT,text=True).strip(),

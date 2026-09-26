@@ -238,16 +238,33 @@ class GateTests(unittest.TestCase):
                 path.write_text(suffix)
                 hashes[suffix] = sha256(path)
             Path(str(stem)+".preflight.json").write_text(json.dumps({
-                "run_id":"c2-publish-test","protocol_sha256":sha256(protocol)}))
+                "run_id":"c2-publish-test","protocol_sha256":sha256(protocol),
+                "cgroup_start":{"events":{"max":0,"oom":0,"oom_kill":0},
+                                "events_local":{"max":0,"oom":0,"oom_kill":0}}}))
             Path(str(stem)+".json").write_text(json.dumps({
                 "preflight":{"run_id":"c2-publish-test"},"stop_reasons":[],
-                "source_sha256":hashes}))
+                "source_sha256":hashes,
+                "cgroup_end":{"swap_current":0,"memory_peak":100,"memory_max":1000,
+                              "events":{"max":0,"oom":0,"oom_kill":0},
+                              "events_local":{"max":0,"oom":0,"oom_kill":0}}}))
             with mock.patch.object(c2_publish_run,"ROOT",root), \
                  mock.patch.object(c2_publish_run.subprocess,"check_output",return_value="a"*40):
                 report = c2_publish_run.publish("c2-publish-test",protocol)
                 self.assertEqual(report["status"],"NO_GATE")
                 with self.assertRaises(FileExistsError):
                     c2_publish_run.publish("c2-publish-test",protocol)
+                event_stem = root/"results/c2-publish-event"
+                for suffix in (".stdout", ".stderr", ".samples.jsonl"):
+                    Path(str(event_stem)+suffix).write_bytes(Path(str(stem)+suffix).read_bytes())
+                event_preflight = json.loads(Path(str(stem)+".preflight.json").read_text())
+                event_preflight["run_id"] = "c2-publish-event"
+                Path(str(event_stem)+".preflight.json").write_text(json.dumps(event_preflight))
+                event_raw = json.loads(Path(str(stem)+".json").read_text())
+                event_raw["preflight"]["run_id"] = "c2-publish-event"
+                event_raw["cgroup_end"]["events_local"]["max"] = 1
+                Path(str(event_stem)+".json").write_text(json.dumps(event_raw))
+                self.assertEqual(c2_publish_run.publish("c2-publish-event",protocol)["status"],
+                                 "FAIL_END_RESOURCE")
                 Path(str(stem)+".stderr").write_text("tampered")
                 with self.assertRaises(GateError):
                     c2_publish_run.publish("c2-publish-test",protocol)
