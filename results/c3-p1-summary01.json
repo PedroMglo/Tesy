@@ -1,0 +1,175 @@
+{
+  "schema": "c3-p1-case-summary-v1",
+  "status": "PASS",
+  "classification": "INSTRUMENTED_DIAGNOSTIC_AND_UNTRACED_TIMING",
+  "cases": [
+    {
+      "case": "latency-short",
+      "prompt_tokens": 113,
+      "chunks": 1,
+      "untraced_prefill_s": 43.21722,
+      "traced_prefill_s": 42.993843,
+      "observed_trace_time_delta_pct": -0.5168703586209356,
+      "untraced_prefill_tok_s": 2.6146984928692776,
+      "backend_hits": 1287,
+      "backend_misses": 4324,
+      "backend_cold_misses": 2685,
+      "backend_wave_stall_s": 27.5394,
+      "backend_load_stall_s": 0.02531,
+      "read_requested_bytes": 57212432384,
+      "read_returned_bytes": 57212432384,
+      "upload_requested_bytes": 57159820800,
+      "read_returned_bytes_per_prompt_token": 506304711.36283183,
+      "cpu_layers_read_bytes": 47566790656,
+      "gpu_layers_read_bytes": 9645641728,
+      "top_read_layers": [
+        {
+          "layer": 0,
+          "read_bytes": 3135868928,
+          "upload_bytes": 3132950400,
+          "read_calls": 711
+        },
+        {
+          "layer": 3,
+          "read_bytes": 2183172096,
+          "upload_bytes": 2181168000,
+          "read_calls": 495
+        },
+        {
+          "layer": 1,
+          "read_bytes": 2183131136,
+          "upload_bytes": 2181168000,
+          "read_calls": 495
+        },
+        {
+          "layer": 31,
+          "read_bytes": 2064060416,
+          "upload_bytes": 2062195200,
+          "read_calls": 468
+        },
+        {
+          "layer": 26,
+          "read_bytes": 1971380224,
+          "upload_bytes": 1969660800,
+          "read_calls": 447
+        }
+      ]
+    },
+    {
+      "case": "latency-medium",
+      "prompt_tokens": 496,
+      "chunks": 2,
+      "untraced_prefill_s": 150.42858999999999,
+      "traced_prefill_s": 151.88288,
+      "observed_trace_time_delta_pct": 0.9667643630775435,
+      "untraced_prefill_tok_s": 3.297245556845278,
+      "backend_hits": 8424,
+      "backend_misses": 12390,
+      "backend_cold_misses": 489,
+      "backend_wave_stall_s": 78.51980999999999,
+      "backend_load_stall_s": 0.02827,
+      "read_requested_bytes": 163937800192,
+      "read_returned_bytes": 163937800192,
+      "upload_requested_bytes": 163785888000,
+      "read_returned_bytes_per_prompt_token": 330519758.4516129,
+      "cpu_layers_read_bytes": 143071973376,
+      "gpu_layers_read_bytes": 20865826816,
+      "top_read_layers": [
+        {
+          "layer": 0,
+          "read_bytes": 11034816512,
+          "upload_bytes": 11024812800,
+          "read_calls": 2502
+        },
+        {
+          "layer": 6,
+          "read_bytes": 8428720128,
+          "upload_bytes": 8420630400,
+          "read_calls": 1911
+        },
+        {
+          "layer": 2,
+          "read_bytes": 7528808448,
+          "upload_bytes": 7521724800,
+          "read_calls": 1707
+        },
+        {
+          "layer": 1,
+          "read_bytes": 7158026240,
+          "upload_bytes": 7151587200,
+          "read_calls": 1623
+        },
+        {
+          "layer": 5,
+          "read_bytes": 6800822272,
+          "upload_bytes": 6794668800,
+          "read_calls": 1542
+        }
+      ]
+    },
+    {
+      "case": "latency-long",
+      "prompt_tokens": 1522,
+      "chunks": 6,
+      "untraced_prefill_s": 436.355147,
+      "traced_prefill_s": 436.650845,
+      "observed_trace_time_delta_pct": 0.0677654433625774,
+      "untraced_prefill_tok_s": 3.487984524678931,
+      "backend_hits": 27402,
+      "backend_misses": 32722,
+      "backend_cold_misses": 188,
+      "backend_wave_stall_s": 211.79044999999996,
+      "backend_load_stall_s": 0.03213,
+      "read_requested_bytes": 432961933312,
+      "read_returned_bytes": 432961933312,
+      "upload_requested_bytes": 432558662400,
+      "read_returned_bytes_per_prompt_token": 284469075.7634691,
+      "cpu_layers_read_bytes": 388861743104,
+      "gpu_layers_read_bytes": 44100190208,
+      "top_read_layers": [
+        {
+          "layer": 0,
+          "read_bytes": 31529779200,
+          "upload_bytes": 31501353600,
+          "read_calls": 7149
+        },
+        {
+          "layer": 5,
+          "read_bytes": 24769318912,
+          "upload_bytes": 24746342400,
+          "read_calls": 5616
+        },
+        {
+          "layer": 6,
+          "read_bytes": 24201367552,
+          "upload_bytes": 24177916800,
+          "read_calls": 5487
+        },
+        {
+          "layer": 1,
+          "read_bytes": 20666945536,
+          "upload_bytes": 20648390400,
+          "read_calls": 4686
+        },
+        {
+          "layer": 4,
+          "read_bytes": 20270727168,
+          "upload_bytes": 20251814400,
+          "read_calls": 4596
+        }
+      ]
+    }
+  ],
+  "limitations": {
+    "read_bytes": "pread syscall bytes returned, not exclusive physical NVMe traffic",
+    "upload_bytes": "ggml_backend_tensor_set requested bytes, not physical PCIe traffic; CPU copies included",
+    "wave_wait": "backend blocked time in wave callbacks, not exclusive share of wall time",
+    "trace_delta": "one ordered pair, includes thermal/cache dispersion and logging cost",
+    "decode": "not measured by this prefill-only probe"
+  },
+  "source_sha256": {
+    "results/c3-p1-prefill-all-pair01.json": "68534012461e4d516f0be67e6098768e4783304c7bef0fa075b9b566a8f705ae",
+    "results/c3-p1-prefill-all-trace01-account-v2.json": "6fb1d6a578304a84df05ae8323df9e7624163f6855414e93bfbdaad97f67732c"
+  },
+  "analyzer_sha256": "33c73a96b564cc03c1827bf4c19334743cc6fef4d6fb1d69f7c51b9ac8835a14"
+}

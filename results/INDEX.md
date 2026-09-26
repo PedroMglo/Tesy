@@ -1,5 +1,7 @@
 # Evidence index
 
+Campaign 3 P1 prefill diagnostic: `../research/C3-P1-RESULT-20260926.md`, supported by `c3-p1-summary01.json`, `c3-p1-prefill-all-pair01.json` and `c3-p1-prefill-all-trace01-account-v2.json`. The earlier `c3-p1-prefill-all-trace01-account.json` is a preserved analyzer FAIL, not the corrected report. P1 is diagnostic and does not promote a new runtime profile.
+
 `campaign-summary.json` is the immutable **early campaign 1 snapshot** from before the 120B GGUF arrived. Its `target.executed=false` and `MODEL_ARTIFACT_REQUIRED` fields describe that earlier moment only. SHA-256: `ce8a4da41ccc7a2168f17f31393b71404397f69e92ebe233bd0a8e8aeef188a4`.
 
 The current C3 boundary authority is `../research/C3-R3-GATE-20260926.md` and its scoped matrix in `c3-r2-broad-log-reference-summary02.json` / `c3-r2-broad-spec-reference-summary02.json`. The placement-error replay `c3-r2-broad-log-reference-summary01.json` remains a FAIL. The broad capture OFF/ON parity results are `c3-r2-broad-parity-log-comparison01.json` and `c3-r2-broad-parity-spec-comparison01.json`; generation/prestate and fault evidence are indexed by `../research/C3-R2-LIFETIME-RESULT-20260926.md`. `c3-r2-*-raw-seal01.json` files hash raw captures **after** their runs and are not capture-time attestations. New performance or utility claims require their own later C3 result, not the R3 gate alone.
