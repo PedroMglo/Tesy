@@ -54,24 +54,44 @@ def check_bytes(root):
     return len(rows)
 
 
-def compare(case, candidate):
-    baseline = f"c3-r2-broad-{case}01"
+def compare(case, candidate, baseline, bridge_binary, bridge_report):
     old = Path("results") / baseline
     new = Path("results") / candidate
     manifests = [strict_json(Path(str(stem)+".json").read_text()) for stem in (old, new)]
     for stem, manifest in zip((old, new), manifests):
         resources(manifest, Path(str(stem)+".samples.jsonl"))
-    for key in ("model_id", "backend_sha", "workload_sha256", "binary_sha256"):
+    for key in ("model_id", "backend_sha", "workload_sha256", "backend_libraries_sha256"):
         if manifests[0][key] != manifests[1][key]:
             raise ValueError(f"candidate {key} changed")
-    if manifests[0]["explicit_env"].get("LLAMA_MOE_STREAM_NO_PRELOAD") != "1" or \
-       "LLAMA_MOE_STREAM_NO_PRELOAD" in manifests[1]["explicit_env"]:
-        raise ValueError("preload arms not identified by environment")
+    if manifests[0]["explicit_env"].get("LLAMA_MOE_STREAM_NO_PRELOAD") != "1":
+        raise ValueError("baseline does not disable preload")
+    if bridge_binary:
+        if baseline != f"c3-r2-broad-{case}01" or \
+           manifests[1]["explicit_env"].get("LLAMA_MOE_STREAM_NO_PRELOAD") != "1":
+            raise ValueError("binary bridge must keep preload disabled")
+    else:
+        if manifests[0]["binary_sha256"] != manifests[1]["binary_sha256"] or \
+           "LLAMA_MOE_STREAM_NO_PRELOAD" in manifests[1]["explicit_env"]:
+            raise ValueError("preload arms/binary not identified")
     summary = Path(f"results/c3-r2-broad-{case}-reference-summary02.json")
     reference = strict_json(summary.read_text())
     if reference["status"] != "PASS" or reference["comparisons"] != 252 or \
-       reference["capture_run_id"] != baseline:
+       reference["capture_run_id"] != f"c3-r2-broad-{case}01":
         raise ValueError("independent baseline layer reference not PASS")
+    original = Path("results") / reference["capture_run_id"]
+    if reference["capture_manifest_sha256"] != sha(Path(str(original)+".json")) or \
+       reference["capture_index_sha256"] != sha(Path(str(original)+".raw")/"index.tsv"):
+        raise ValueError("independent reference source changed")
+    if not bridge_binary and baseline != reference["capture_run_id"]:
+        if bridge_report is None:
+            raise ValueError("new baseline lacks qualified binary bridge")
+        bridge = strict_json(bridge_report.read_text())
+        if bridge.get("status") != "PASS" or bridge.get("candidate_run_id") != baseline or \
+           bridge.get("baseline_run_id") != reference["capture_run_id"] or \
+           bridge.get("independent_reference_summary_sha256") != sha(summary) or \
+           bridge.get("source_sha256",{}).get(str(Path(str(old)+".json"))) != \
+               sha(Path(str(old)+".json")):
+            raise ValueError("binary bridge identity/status invalid")
     old_root, new_root = (Path(str(stem)+".raw") for stem in (old, new))
     old_rows, new_rows = indexed(old_root), indexed(new_root)
     equal = 0
@@ -93,6 +113,8 @@ def compare(case, candidate):
     return {"schema":"c3-preload-capture-v1",
             "status":"PASS" if not failures else "FAIL_MISMATCH",
             "case":case,"baseline_run_id":baseline,"candidate_run_id":candidate,
+            "mode":"BINARY_BRIDGE" if bridge_binary else "PRELOAD_COMPARE",
+            "bridge_report_sha256":sha(bridge_report) if bridge_report else None,
             "independent_reference_summary_sha256":sha(summary),
             "logical_tensor_pairs":len(old_rows),"logical_tensor_bitwise_equal":equal,
             "full_logit_pairs":len(PHASES),"direct_candidate_slice_checks":checked,
@@ -108,10 +130,15 @@ def main():
     ap=argparse.ArgumentParser()
     ap.add_argument("case",choices=("log","spec"))
     ap.add_argument("candidate_run_id")
+    ap.add_argument("--baseline-run-id")
+    ap.add_argument("--bridge-binary",action="store_true")
+    ap.add_argument("--bridge-report",type=Path)
     ap.add_argument("--output",required=True,type=Path)
     args=ap.parse_args()
     try:
-        result=compare(args.case,args.candidate_run_id)
+        result=compare(args.case,args.candidate_run_id,
+                       args.baseline_run_id or f"c3-r2-broad-{args.case}01",
+                       args.bridge_binary,args.bridge_report)
     except (OSError,ValueError,TypeError,KeyError,json.JSONDecodeError) as exc:
         result={"schema":"c3-preload-capture-v1","status":"FAIL_EVIDENCE",
                 "case":args.case,"candidate_run_id":args.candidate_run_id,
