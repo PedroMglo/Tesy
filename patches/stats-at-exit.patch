@@ -1,0 +1,14 @@
+diff --git a/src/llama-moe-stream.cpp b/src/llama-moe-stream.cpp
+index ce17396..b33f5c9 100644
+--- a/src/llama-moe-stream.cpp
++++ b/src/llama-moe-stream.cpp
+@@ -159,6 +159,9 @@ llama_moe_stream::~llama_moe_stream() {
+     for (auto & w : workers) {
+         w.join();
+     }
++    if (std::getenv("TESY_MOE_STATS_AT_EXIT")) {
++        print_stats();
++    }
+ }
+ 
+ ggml_tensor * llama_moe_stream::create_cache_tensor(
