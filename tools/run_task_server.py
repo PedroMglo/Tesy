@@ -127,14 +127,15 @@ def main():
     command = [str(binary), "-m", str(model), "--host", "127.0.0.1",
                "--port", str(PORT), "-ngl", str(spec["gpu_layers"]),
                "-c", "4096", "-np", "1", "-b", "256", "-ub", "32",
-               "-t", "8", "-tb", "8", "--no-warmup", "--no-cache-prompt",
-               "--reasoning-effort", "medium", "-lv", "3"]
+               "-t", "8", "-tb", "8", "--no-warmup", "--no-cache-prompt", "-lv", "3"]
     if a.model == "stock20b":
-        command += ["--load-mode", "dio", "--lazy-mode", "off"]
+        command += ["--load-mode", "dio", "--lazy-mode", "off",
+                    "--reasoning-effort", "medium"]
     else:
         command += ["--no-repack", "--no-op-offload", "--direct-io",
                     "--moe-stream-cache", "24s", "--moe-stream-io-threads", "4",
-                    "--moe-stream-direct"]
+                    "--moe-stream-direct", "--chat-template-kwargs",
+                    '{"reasoning_effort":"medium"}']
     env = os.environ.copy()
     explicit_env = {}
     if a.model == "target120b":

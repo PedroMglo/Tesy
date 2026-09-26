@@ -1,0 +1,201 @@
+{
+  "run_id": "task120b-stream24-tune01",
+  "started_utc": "2026-09-26T11:43:42.664756+00:00",
+  "model": "target120b",
+  "artifact": "/home/pmglo/models/gpt-oss-120b-gguf/gpt-oss-120b-MXFP4.gguf",
+  "artifact_revision": "238abdd290bb874b90a5da1b4549881b7d05c091",
+  "artifact_sha256_previously_verified": "582bd40f6886200101f4c4ed9f25f3fe80cc14c86e9e2b37746cd8904a0c622d",
+  "artifact_size_bytes": 63387346208,
+  "backend": "streaming",
+  "backend_sha": "1248fd8fa8cfebaece5ea992e4d951c1e18bb9d5",
+  "binary_sha256": "f19a4b490e60b4205193c25691e350ed577926dfcfe3ef7e2dcc2c24d3f84e86",
+  "backend_libraries_sha256": {
+    "build-gcc15/bin/libllama-server-impl.so": "ab3106f10dcf5bf94bd1cbe556ab1114cb29625d4d9511fd15a67f483c4775a5",
+    "build-gcc15/bin/libllama-common.so.0.0.1": "b0c96af5cd577f851954afb050601099608f29a2d4890322c2e69ab6d74733f9",
+    "build-gcc15/bin/libmtmd.so.0.0.1": "801002ce83276d33b5a09c98362e34e04fb867aed63a738650d8a2e29930bab9",
+    "build-gcc15/bin/libllama.so.0.0.1": "31b56002c36c159f71eba54c0d8e625ae140d34b2b1a503f3dc4db47237719cc",
+    "build-gcc15/bin/libggml.so.0.15.3": "97a33247336b56aaabe1a8bee4da6cd05e73e8b4327afd2cef67c5526df8ab71",
+    "build-gcc15/bin/libggml-cpu.so.0.15.3": "b57845ea9f9ce9455d78e6fe290c09b50b9414db9280409b9e5cc143d1b13b61",
+    "build-gcc15/bin/libggml-cuda.so.0.15.3": "5b363c951b87164e94d5b6af35a82c875634aadcb29c9278245cd7516f44cc7e",
+    "build-gcc15/bin/libggml-base.so.0.15.3": "4c322a199c86b801389ed4bda94074083624e0a6460e25681be4b626cc72873d"
+  },
+  "server_command": [
+    "/home/pmglo/Projects/Tesy/tesy-scale-lab/backends/streaming/build-gcc15/bin/llama-server",
+    "-m",
+    "/home/pmglo/models/gpt-oss-120b-gguf/gpt-oss-120b-MXFP4.gguf",
+    "--host",
+    "127.0.0.1",
+    "--port",
+    "18367",
+    "-ngl",
+    "8",
+    "-c",
+    "4096",
+    "-np",
+    "1",
+    "-b",
+    "256",
+    "-ub",
+    "32",
+    "-t",
+    "8",
+    "-tb",
+    "8",
+    "--no-warmup",
+    "--no-cache-prompt",
+    "--reasoning-effort",
+    "medium",
+    "-lv",
+    "3",
+    "--no-repack",
+    "--no-op-offload",
+    "--direct-io",
+    "--moe-stream-cache",
+    "24s",
+    "--moe-stream-io-threads",
+    "4",
+    "--moe-stream-direct"
+  ],
+  "explicit_env": {
+    "LLAMA_MOE_STREAM_NO_PRELOAD": "1"
+  },
+  "workload": "workloads/task_eval.jsonl",
+  "workload_sha256": "87ad7c4f1ccc60e3cbd4f1507a01172007e6a802e68bc7057b0fba5ee039f471",
+  "split": "tune",
+  "task_ids": [
+    "tune-code-01",
+    "tune-quant-01"
+  ],
+  "request_policy": {
+    "temperature": 0,
+    "seed": 42,
+    "max_tokens": 512,
+    "reasoning_effort": "medium",
+    "attempts": 1,
+    "prompt_cache": false,
+    "per_request_timeout_s": 360
+  },
+  "cgroup_start": {
+    "path": "/user.slice/user-1000.slice/user@1000.service/app.slice/run-p174756-i171134.scope",
+    "memory_max": 19327352832,
+    "swap_max": 0,
+    "memory_current": 14045184,
+    "swap_current": 0,
+    "memory_stat": {
+      "anon": 13844480,
+      "file": 0,
+      "kernel": 184320,
+      "shmem": 0,
+      "file_mapped": 0
+    },
+    "events": {
+      "low": 0,
+      "high": 0,
+      "max": 0,
+      "oom": 0,
+      "oom_kill": 0,
+      "oom_group_kill": 0,
+      "sock_throttled": 0
+    }
+  },
+  "limits": {
+    "memory_max_bytes": 19327352832,
+    "swap_max_bytes": 0,
+    "rss_gib": 17,
+    "gpu_used_mib": 7000,
+    "min_mem_available_gib": 6,
+    "total_timeout_s": 3600
+  },
+  "samples_path": "/home/pmglo/Projects/Tesy/tesy-scale-lab/results/task120b-stream24-tune01.samples.jsonl",
+  "publication": "local only; stdout/stderr/samples untracked",
+  "results": [],
+  "ended_utc": "2026-09-26T11:43:45.263934+00:00",
+  "elapsed_s": 2.599,
+  "stop_reasons": [
+    "RUN_ERROR: RuntimeError: server exited during load: 1"
+  ],
+  "returncode": 1,
+  "maxima": {
+    "rss_bytes": 3428352,
+    "cgroup_memory_bytes": 16171008,
+    "swap_bytes": 0,
+    "gpu_used_mib": 13.0,
+    "gpu_temperature_c": 45.0,
+    "cpu_tctl_c": 50.25,
+    "nvme_composite_c": 41.85
+  },
+  "last_sample": {
+    "elapsed_s": 2.067,
+    "proc": {
+      "VmHWM": 3428352,
+      "VmRSS": 3428352,
+      "VmSwap": 0,
+      "rchar": 17348,
+      "syscr": 24,
+      "read_bytes": 0
+    },
+    "cgroup": {
+      "path": "/user.slice/user-1000.slice/user@1000.service/app.slice/run-p174756-i171134.scope",
+      "memory_max": 19327352832,
+      "swap_max": 0,
+      "memory_current": 16171008,
+      "swap_current": 0,
+      "memory_stat": {
+        "anon": 14151680,
+        "file": 4096,
+        "kernel": 503808,
+        "shmem": 0,
+        "file_mapped": 0
+      },
+      "events": {
+        "low": 0,
+        "high": 0,
+        "max": 0,
+        "oom": 0,
+        "oom_kill": 0,
+        "oom_group_kill": 0,
+        "sock_throttled": 0
+      }
+    },
+    "gpu": {
+      "used_mib": 13.0,
+      "temperature_c": 45.0,
+      "power_w": 590.01
+    },
+    "thermal": {
+      "cpu_tctl_c": 50.25,
+      "nvme_composite_c": 41.85
+    },
+    "mem_available_bytes": 28278829056,
+    "model_fds": {
+      "open": 0,
+      "direct": 0,
+      "buffered": 0
+    }
+  },
+  "cgroup_end": {
+    "path": "/user.slice/user-1000.slice/user@1000.service/app.slice/run-p174756-i171134.scope",
+    "memory_max": 19327352832,
+    "swap_max": 0,
+    "memory_current": 16330752,
+    "swap_current": 0,
+    "memory_stat": {
+      "anon": 14389248,
+      "file": 12288,
+      "kernel": 405504,
+      "shmem": 0,
+      "file_mapped": 0
+    },
+    "events": {
+      "low": 0,
+      "high": 0,
+      "max": 0,
+      "oom": 0,
+      "oom_kill": 0,
+      "oom_group_kill": 0,
+      "sock_throttled": 0
+    }
+  },
+  "stdout_path": "/home/pmglo/Projects/Tesy/tesy-scale-lab/results/task120b-stream24-tune01.stdout",
+  "stderr_path": "/home/pmglo/Projects/Tesy/tesy-scale-lab/results/task120b-stream24-tune01.stderr"
+}
