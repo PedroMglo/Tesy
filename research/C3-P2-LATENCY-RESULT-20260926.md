@@ -1,0 +1,15 @@
+# C3 P2 preload: user-visible latency and output check
+
+Evidence class: **MEDIDO_NO_TARGET** for the GPT-OSS 120B MXFP4, pinned streamed backend, GPU8/32 slots/context4096/b256/ub32, medium greedy seed42, max512. The fixed C2-D prompts were 113/496/1522 official-tokenizer tokens. Three requests ran in order on one localhost server with no prompt cache; `run_bounded.py` measured the whole process. The [protocol](C3-P2-LATENCY-PROTOCOL-20260926.md) was frozen before execution. `results/c3-p2-preload-latency-summary01.json` is the compact, fail-closed analysis; raw client text, server logs/samples and their hashes remain local. The launcher verified the full 63,387,346,208-byte GGUF SHA-256 with O_DIRECT before starting timing.
+
+| Prompt tokens | C2 no-preload first text / final / complete (s) | C3 preload first text / final / complete (s) | Backend prefill C2 → C3 (s) | Answer |
+|---:|---:|---:|---:|---|
+| 113 | 42.309 / 74.506 / 76.342 | **37.219 / 73.223 / 75.313** | 41.353 → 36.298 | Correct T001 |
+| 496 | 147.683 / 163.222 / 165.004 | **130.476 / 147.143 / 149.052** | 146.961 → 129.547 | Correct T009 |
+| 1522 | 447.879 / 461.473 / 463.271 | **381.863 / 396.660 / 398.442** | 447.076 → 380.953 | Correct T029 |
+
+All three completed naturally with valid final JSON, no cached prompt tokens, and a 512-token output reserve under context4096. This historical comparison shows earlier arrival, especially for longer prompts, but is **not a same-day causal A/B**. The frozen paired native prefill experiment is the causal evidence for a 17.5–18.2% median gain. Short first text 37.219 s and first final 73.223 s still miss the 10/20 s usability goals. Short verifiable completion improved only 1.029 s historically; prefill gain does not imply a large short-task win. SSE chunks do not support per-token p50/p95 claims.
+
+Resource/operation gate: server elapsed 740.233 s, 1293 monotone samples with maximum adjacent gap 0.905 s and boundary gaps <2 s; stop reason null, returncode0, released local port after owned SIGTERM. Cgroup peak 14,787,072,000 B, RSS peak 14,888,583,168 B, GPU 3869 MiB, swap0, zero local/hierarchical max/OOM/kill deltas; CPU/GPU/NVMe maxima 93.25/60/58.85 C under frozen 95/80/70 C guards. `read_bytes` and expert payload are not exclusive physical NVMe traffic. No full 4K prompt was tested.
+
+**Observed output discrepancy:** the 113- and 496-token reasoning/final texts matched C2 byte-for-byte. The 1522-token final JSON matched, but reasoning differed in one sentence and used 56 versus C2's 55 completion tokens. The strict summary therefore reports `MEASURED_WITH_OUTPUT_DIVERGENCE`. Do not silently treat a correct ticket as numerical parity or promote preload broadly on this run. In the separately frozen [D1 diagnostic](C3-P2-LATENCY-DIVERGENCE-DIAGNOSTIC-20260926.md), two new no-preload controls generated the same 56-token reasoning as the preload run, with all 1522 prompt tokens evaluated each time. Thus this **historical free-generation difference was not specific to preload in the new controls**; its numerical cause is still unknown. The historical mismatch and this narrow diagnostic both remain visible.

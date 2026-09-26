@@ -1,0 +1,43 @@
+{
+  "schema": "c3-long-generation-diagnostic-v1",
+  "status": "HISTORICAL_VARIATION_NOT_PRELOAD_SPECIFIC",
+  "scope": "free generation text; no fixed-token logit equivalence",
+  "same_control_reasoning": true,
+  "controls_match_preload_reasoning": true,
+  "control_differs_from_historical_reasoning": true,
+  "same_final_text": true,
+  "rows": {
+    "historical": {
+      "completion_tokens": 55,
+      "first_text_s": 447.8791993470004,
+      "reasoning_sha256": "9f742da9fb70ddd0b2c8e77cf93b8fcf35b44376d3bc18378b1fe424246a5589",
+      "final_sha256": "677c6f5ee68a8b388a4eff0fd55ca488c444e4251247bc35fe072630508195eb"
+    },
+    "preload": {
+      "completion_tokens": 56,
+      "first_text_s": 381.8633459620032,
+      "reasoning_sha256": "63f3cdde1069baad34ccd4dc07bb9fd3c02612d3d5922f382703295efc24b767",
+      "final_sha256": "677c6f5ee68a8b388a4eff0fd55ca488c444e4251247bc35fe072630508195eb"
+    },
+    "control1": {
+      "completion_tokens": 56,
+      "first_text_s": 468.8131101580075,
+      "reasoning_sha256": "63f3cdde1069baad34ccd4dc07bb9fd3c02612d3d5922f382703295efc24b767",
+      "final_sha256": "677c6f5ee68a8b388a4eff0fd55ca488c444e4251247bc35fe072630508195eb"
+    },
+    "control2": {
+      "completion_tokens": 56,
+      "first_text_s": 453.94710765698983,
+      "reasoning_sha256": "63f3cdde1069baad34ccd4dc07bb9fd3c02612d3d5922f382703295efc24b767",
+      "final_sha256": "677c6f5ee68a8b388a4eff0fd55ca488c444e4251247bc35fe072630508195eb"
+    }
+  },
+  "source_sha256": {
+    "results/c2d-target32-latency01.json": "d4d253b1db3914b46cc4fc5c7d1dbd44fbbb8f8590a3665f63cac3e3f69f24b3",
+    "results/c3-p2-preload-latency-client01.json": "dfdf01099f7871a92faebff127075b99df19bf298a623bb483205d7eb1daecf6",
+    "results/c3-d1-nopreload-long-client01.json": "fde23cb6f54daf9dea66e975d35dc62cbbb48536a46136ec804715f3dab13f6e",
+    "results/c3-d1-nopreload-long-client02.json": "0db58d9390f04c52237f1585a94ec99767ecdde981cdf343c3b50f6f45fd383b",
+    "results/c3-d1-nopreload-long-server01.json": "71853bbd7a8bea85c0ba81dd942e388856a23cff7ab2d76bfc67f40f48e70565"
+  },
+  "analyzer_sha256": "f37c4cbb7988b7320803cb3d2db21ed22b89961157b198da848b10c20b51decc"
+}
