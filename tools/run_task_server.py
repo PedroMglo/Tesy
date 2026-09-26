@@ -117,6 +117,7 @@ def main():
         if Path(str(stem) + suffix).exists():
             p.error(f"run ID exists: {a.run_id}")
     with socket.socket() as sock:
+        sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         try:
             sock.bind(("127.0.0.1", PORT))
         except OSError as exc:
