@@ -1,0 +1,105 @@
+{
+  "schema_version": "c2-legacy-reaudit-index-v1",
+  "parent_campaign": "tesy-scale-lab-20260926",
+  "analyzer_commit": "c15ab5c3987c9b89f44d8dfb4a361683c5988f60",
+  "analyzer_scripts_sha256": {
+    "analyze_task_run.py": "d55732126264483bef62bf3fa96dbc30f1ebace2d3f9d0d45b3bf41d4d4cc612",
+    "summarize_slot_ab.py": "14d40567afc8a05ce536709b8f6fe458d2aa06ee62303661c8b277817da7c11f",
+    "grade_tasks.py": "98734fafb6b6be6e1c12c5c15149ded95d32369026ba1d1e9ee315e5efe9000a",
+    "c2_reaudit_index.py": "af19d6e40c6eed3fbc3757f04be3e9f46d86df6a736da45cb3159b638a18ade0"
+  },
+  "source_sha256_at_reaudit": {
+    "campaign-summary.json": "ce8a4da41ccc7a2168f17f31393b71404397f69e92ebe233bd0a8e8aeef188a4",
+    "m3-capacity32-ab-summary.json": "b68f4865c249ab1d7bcc7ab281fc0a6435aa71ab79fbbd745c3cc2ba6c4cb2aa",
+    "m6-paired-summary.json": "a0ee6808654e5a18ecf39bbbac9e263b139fdacc7fae3756c89067c5d5472109",
+    "c2-legacy-m3-capacity32-reaudit.json": "e3b6d0740d6e8592b68dd4ba72834f97a8187a688ecf17846b8b59663987a282",
+    "task20b-stock-eval02.json": "20ee896c5fa15952b29f54ec557e2e103936923937f500e18bc6b625c96ae5fe",
+    "task20b-stock-eval02.stderr": "44754fed653579bc9a02bc58d8394f4cb18fd803a5fb870229aed0d443156426",
+    "task20b-stock-eval02.samples.jsonl": "024eee5848110b933c45df7189ce7d891ba69376cf205a550205296cfa60b509",
+    "c2-legacy-task20b-stock-eval02-analysis.json": "af96f060f29eb3fc06ba45d2b067170d60461c04be377401bdf6f1c6d325eb2c",
+    "c2-host-task20b-stock-eval02-grade.json": "f8d6edf8d6d77432d434c0864539bc32c934ea4d9b5349258fa641c190984859",
+    "task20b-stock-eval02-judgment.json": "64c68a20e3663c92a55518c14ac1a19baf61ec3a4d214350c697bfa823be6845",
+    "task120b-stream24-eval01.json": "d571656b1343a2eb5feafb8a5f6f56dad5d3f878480de3e5070785827c7c421b",
+    "task120b-stream24-eval01.stderr": "7db75bf7491749397f67bceef04fa189882c02814d6190c6a858b1ea702f2f85",
+    "task120b-stream24-eval01.samples.jsonl": "f4e5f6b9e45e8aa86009f316b419a5e3b7da427a6031b38cb680ffddf79ece18",
+    "c2-legacy-task120b-stream24-eval01-analysis.json": "aab30936ec9715fa7d2b2bf03aa7ba01cadc6ee507abe02d9cc860d4550d3323",
+    "c2-host-task120b-stream24-eval01-grade.json": "47397c731e1dd8e92411d9990b44ef38bba02a07cb8bdcad62705ecd91197653",
+    "task120b-stream24-eval01-judgment.json": "d47fe64a8c18d22dceb4747fafec6dd5250474d592122dc628c51eb7add6847f",
+    "target120b-gpu8-two-turns-slot32-01.json": "f0a5eb118e17478e35b3e3ce19f322ce521c721983dd6686ceb9a09bdeaf2397",
+    "target120b-gpu8-two-turns-slot32-01.stderr": "c4b84f4cd58ca849d72acd62af609d1865ed57f38a93e4006146b5f8feb6c9d7",
+    "target120b-gpu8-two-turns-slot32-01.stdout": "907e44fe17778f7ee32220b82afcb43be18b76e2ef516b5cf3a7ee77a2d75e48",
+    "target120b-gpu8-two-turns-slot32-01.samples.jsonl": "981fb72d32642cf617223a72181f45d8a8e46559c21079e93f08080f85ee841a",
+    "target120b-gpu8-cap32-ab24-01.json": "34a31a63e5a7466042ebecb325cb5dc8caccb72e1f3e559a638416ab788ee3d4",
+    "target120b-gpu8-cap32-ab24-01.stderr": "4b3d7369d9f799757f4cf593b5e3d47b88ce0ba9d3b1d1957f7f89ca8e6666fb",
+    "target120b-gpu8-cap32-ab24-01.stdout": "98716c68d8f26d5d97c78715e6c3164faf2064bb616460d3034309db7f538e58",
+    "target120b-gpu8-cap32-ab24-01.samples.jsonl": "89bc3cf1f74f6e9e9b787858099b1a71cab981b3616aa55bfb771c18a84c0908",
+    "target120b-gpu8-cap32-ab24-02.json": "8e3d69165d27cb6232f335a1df3ec56d32596b2e63ee18cb316a704adb357898",
+    "target120b-gpu8-cap32-ab24-02.stderr": "b8f66bc9235341f52064d09b9aaafa5f090923a5a17b973678b1a6c72b85f7d1",
+    "target120b-gpu8-cap32-ab24-02.stdout": "907aca983b76fbba3412d3e046f4a88f533c33b77c41fc35a2c2767925288fae",
+    "target120b-gpu8-cap32-ab24-02.samples.jsonl": "e5a271a94ac74f8013213ce00527ea42067e96164faea3144ce8f149e9ef5d74",
+    "target120b-gpu8-two-turns-slot32-02.json": "f71001fcc6efe44ccf2b685a45de7085790dbac48bdab962144cfc2a9494b4a4",
+    "target120b-gpu8-two-turns-slot32-02.stderr": "f136abf4de36b721a81e5405d23e0626d2b63de123e24018d9fb6d96ede99ba2",
+    "target120b-gpu8-two-turns-slot32-02.stdout": "e7cf5dec004149954e5e7c67be4f8eaa571f0d1622aca71677403e6cfa8c536b",
+    "target120b-gpu8-two-turns-slot32-02.samples.jsonl": "6e19ca32086aca0fbe7bd4cd0d7d97f119310640ddd1dfa33cfed54c3b5895ab",
+    "target120b-gpu8-two-turns-slot32-03.json": "7a0a7a7c4f36eb4bcc742a05323c1c2c25229a84c2f133b2cda0bc59f17bfbbc",
+    "target120b-gpu8-two-turns-slot32-03.stderr": "a0daacb99b14d9e5e2f421a2149fc3ad03382210ffecd221749b91ca377f4918",
+    "target120b-gpu8-two-turns-slot32-03.stdout": "4bca20e2fef7ee9d6610c35001b50be8706e2a4d58279bc87fde4c902e5f1cfa",
+    "target120b-gpu8-two-turns-slot32-03.samples.jsonl": "966dd58d94fb53f5fe150be2ffe71a95afd5b42de65dd270eb0a0776c9da7649",
+    "target120b-gpu8-cap32-ab24-03.json": "92e06c5e01855d6f945432a97053f8f5617fa67d2ba232e738608e4bcaf17edb",
+    "target120b-gpu8-cap32-ab24-03.stderr": "1f22506b73774c914709b60271f36d76908dafa18c3f4c1c65a1270d202094aa",
+    "target120b-gpu8-cap32-ab24-03.stdout": "6155b9576c31592652d144932ec280eb00cb0e476cca02c557da1bc10ae5bd00",
+    "target120b-gpu8-cap32-ab24-03.samples.jsonl": "0ce99400c1dbb9df8d339b39d25d66e3530ef11a982398de49c3bfb4616fe681"
+  },
+  "server": {
+    "task20b-stock-eval02": {
+      "legacy_frozen_m5_after_gate_repair": false,
+      "legacy_telemetry_complete": true,
+      "api_backend_counts_agree": true,
+      "decode_tok_s": 45.74399461275186,
+      "judgment_pass": 8,
+      "automatic_grade_matches_original_on_host": true,
+      "c2_new_schema_qualified": false,
+      "c2_new_schema_limit": "historical samples lack PID per sample and memory.peak; schema cannot be backfilled"
+    },
+    "task120b-stream24-eval01": {
+      "legacy_frozen_m5_after_gate_repair": true,
+      "legacy_telemetry_complete": true,
+      "api_backend_counts_agree": true,
+      "decode_tok_s": 2.733190701446943,
+      "judgment_pass": 8,
+      "automatic_grade_matches_original_on_host": true,
+      "c2_new_schema_qualified": false,
+      "c2_new_schema_limit": "historical samples lack PID per sample and memory.peak; schema cannot be backfilled"
+    }
+  },
+  "m3_capacity32": {
+    "status": "LEGACY_REAUDITED_LIMITED",
+    "summary": {
+      "24": {
+        "n_runs": 3,
+        "mean_decode_tok_s": 2.5676643787267,
+        "mean_elapsed_s": 229.84666666666666,
+        "mean_process_read_bytes_sampled": 321649954816
+      },
+      "32": {
+        "n_runs": 3,
+        "mean_decode_tok_s": 3.2692653982515054,
+        "mean_elapsed_s": 185.831,
+        "mean_process_read_bytes_sampled": 259516962133.33334
+      }
+    },
+    "sustained32": "NOT_RUN"
+  },
+  "m6": {
+    "status": "LEGACY_JUDGMENT_CONSISTENT",
+    "stock20b_pass": 8,
+    "target120b_pass": 8,
+    "limitations": "saved manual judgments checked for internal consistency, not independently readjudicated"
+  },
+  "limits": [
+    "source hashes show present files, not guaranteed historical file bytes",
+    "legacy samples have no PID per row or cgroup memory.peak; not C2-run-v1",
+    "no historical claim or threshold is rewritten",
+    "sandbox bubblewrap rerun failed; host isolated rerun matched old automatic statuses"
+  ]
+}
