@@ -6,8 +6,10 @@ import hashlib
 import json
 import math
 from pathlib import Path
+import re
 
 from c2_gate import GateError, strict_json
+from c2_compare_rows import rows as indexed_rows
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -80,16 +82,34 @@ def audit(run_id, ids_path):
                     all(x["mem_available_bytes"] >= limits["min_available_gib"]*2**30 for x in samples))
     rows_index_present = paths[".rows.tsv"].exists()
     rows_index_count = len(paths[".rows.tsv"].read_text().splitlines())-1 if rows_index_present else None
+    row_map_ok = False
+    row_map_error = None
+    if rows_index_present:
+        try:
+            for row in cases:
+                indexed, total = indexed_rows(paths[".rows.tsv"], row[0],
+                                              len(row[1].split(",")), len(row[2].split(",")), ubatch)
+                if len(indexed) != math.ceil(len(row[1].split(","))/ubatch) + len(row[2].split(",")) or total != expected_rows:
+                    raise GateError("row map total or per-case count mismatch")
+            row_map_ok = True
+        except (GateError, ValueError, OSError) as exc:
+            row_map_error = f"{type(exc).__name__}: {exc}"
     stderr = paths[".stderr"].read_text(errors="replace")
+    stdout = paths[".stdout"].read_text(errors="replace")
+    final_lines = re.findall(r"(?m)^vocab=(\d+) rows=(\d+) float32_endian=(\w+)$", stdout)
+    output_schema_ok = final_lines == [(str(VOCAB), str(expected_rows), "little")]
     backend_error = "C2_PROBE_ERROR:" in stderr or "CUDA error" in stderr
     complete = (manifest["returncode"] == 0 and manifest["stop_reason"] is None and
-                rows_index_count == expected_rows == written_rows and not backend_error)
+                rows_index_count == expected_rows == written_rows and row_map_ok and
+                output_schema_ok and not backend_error)
     hashes = {name:digest(path) for name,path in paths.items() if path.exists()}
     hashes["token_ids"] = digest(ids_path)
     report = {"schema_version":"c2-probe-audit-v1","run_id":run_id,
               "status":"PASS" if complete and resources_ok else "FAIL",
               "source_sha256":hashes,"expected_rows":expected_rows,"written_rows":written_rows,
-              "row_index_count":rows_index_count,"sample_count":len(samples),
+              "row_index_count":rows_index_count,"row_map_ok":row_map_ok,
+              "row_map_error":row_map_error,"output_schema_ok":output_schema_ok,
+              "sample_count":len(samples),
               "sample_ok":sample_ok,"sample_error":sample_error,"resources_ok":resources_ok,
               "stop_reason":manifest["stop_reason"],"returncode":manifest["returncode"],
               "cgroup_peak_bytes":peak,"cgroup_max_bytes":memory_max,

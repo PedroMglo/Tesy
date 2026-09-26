@@ -181,6 +181,10 @@ def validate(doc, frozen):
         previous_t = t
         for name in SAMPLE[2:]:
             number(sample[name], f"sample {i} {name}", minimum=0)
+        for name in ("cgroup_memory_bytes", "cgroup_peak_bytes", "rss_bytes",
+                     "gpu_used_mib", "gpu_temperature_c", "cpu_tctl_c",
+                     "nvme_composite_c", "mem_available_bytes"):
+            number(sample[name], f"sample {i} {name}", positive=True)
         if sample["cgroup_memory_bytes"] > limits["memory_max_bytes"] or \
            sample["cgroup_peak_bytes"] > limits["memory_max_bytes"] or \
            sample["rss_bytes"] > limits["rss_max_bytes"] or \

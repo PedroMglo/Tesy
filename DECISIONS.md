@@ -53,3 +53,9 @@ Optimization-intervention budget consumed: 2/6 diagnostic configuration interven
 | 14:03 | Increasing only existing target per-layer cache from 24 to 32 slots reduces repeat reads | Frozen GPU8 four-token gate: 201,088/201,088 logits bitwise equal. Six full-model runs in order 32,24,24,32,32,24: identical two-response hashes, zero swap/max/OOM. Mean aggregate decode 2.568 to 3.269 tok/s (+27.324%), mean elapsed 229.847 to 185.831 s (-19.150%), sampled process reads 321.650 to 259.517 GB (-19.317%). 32-slot peak cgroup 15.538 GB, GPU 3860 MiB. | Retain 32 slots for this bounded two-request workload; it is intervention 4/6 and a measured M3 improvement. Keep 24 slots as the only sustained M5-validated configuration. 32-slot sustained rate and 4/8 tok/s remain unproven. No source patch to revert. |
 
 The earlier 2/6 line above is the historical count at the first checkpoint. The cumulative count at the final 24/32 decision is **4/6**. No threshold, task, model, quantization or routing change was used to promote this result.
+
+## Campaign 2 decisions (separate budget)
+
+| UTC | Hypothesis/change | Evidence and result | Decision |
+|---|---|---|---|
+| 2026-09-26 14:47 | Independent 120B CPU0 plain reference can complete all 141 fixed-token rows under 18 GiB cgroup with a secondary 17.5 GiB RSS guard and permitted file reclaim | `c2-ref120b-cpu-all01` stopped at 1479.327 s after 135 rows; max RSS 17.72 GiB triggered RSS_GUARD. Cgroup peak 18 GiB, 4,381,096 max events, no OOM/swap. | Preserve FAIL. For the second and final diagnostic attempt, set only the secondary RSS guard to 18 GiB, equal to the unchanged hard cgroup cap; see prospective addendum in C2-B preflight. Do not use either reference for performance speedup. |

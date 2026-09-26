@@ -8,9 +8,13 @@ import sys
 import tempfile
 import unittest
 from pathlib import Path
+from unittest import mock
 
 from c2_gate import GateError, strict_json, validate
 from c2_compare_rows import compare
+from c2_server_run import backend_timings
+import c2_publish_run
+from run_bounded import sha256
 
 
 H = "a" * 64
@@ -109,6 +113,7 @@ class GateTests(unittest.TestCase):
 
     def test_telemetry_missing_field(self):
         self.assert_rejects(lambda d: d["samples"][3].pop("cpu_tctl_c"))
+        self.assert_rejects(lambda d: d["samples"][3].__setitem__("cpu_tctl_c", 0))
 
     def test_peak_cannot_decrease(self):
         self.assert_rejects(lambda d: d["samples"][3].__setitem__("cgroup_peak_bytes", 99))
@@ -208,6 +213,44 @@ class GateTests(unittest.TestCase):
             Path(str(stems[1])+".f32").write_bytes(struct.pack("<18f", *changed))
             mismatch = compare(*args)["mismatch_rows"]
             self.assertEqual([mismatch[0]["row"], mismatch[0]["global_row"]], [2, 5])
+
+    def test_backend_timer_identity_and_duplicate(self):
+        log = ("0.01 I slot print_timing: id  0 | task 17 | prompt eval time =  1000.00 ms /  10 tokens\n"
+               "0.02 I slot print_timing: id  0 | task 17 |        eval time =  2000.00 ms /  4 tokens\n"
+               "0.03 I slot print_timing: id  0 | task 19 | prompt eval time =  1200.00 ms /  12 tokens\n"
+               "0.04 I slot print_timing: id  0 | task 19 |        eval time =  3000.00 ms /  6 tokens\n")
+        parsed = backend_timings(log)
+        self.assertEqual(parsed[17]["eval"], (4, 2000.0))
+        with self.assertRaises(GateError):
+            backend_timings(log + log.splitlines()[0] + "\n")
+
+    def test_atomic_publication_no_replace_and_raw_integrity(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            (root/"results").mkdir()
+            (root/"workloads").mkdir()
+            protocol = root/"workloads/protocol.json"
+            protocol.write_text("{}\n")
+            stem = root/"results/c2-publish-test"
+            hashes = {}
+            for suffix in (".stdout", ".stderr", ".samples.jsonl"):
+                path = Path(str(stem)+suffix)
+                path.write_text(suffix)
+                hashes[suffix] = sha256(path)
+            Path(str(stem)+".preflight.json").write_text(json.dumps({
+                "run_id":"c2-publish-test","protocol_sha256":sha256(protocol)}))
+            Path(str(stem)+".json").write_text(json.dumps({
+                "preflight":{"run_id":"c2-publish-test"},"stop_reasons":[],
+                "source_sha256":hashes}))
+            with mock.patch.object(c2_publish_run,"ROOT",root), \
+                 mock.patch.object(c2_publish_run.subprocess,"check_output",return_value="a"*40):
+                report = c2_publish_run.publish("c2-publish-test",protocol)
+                self.assertEqual(report["status"],"NO_GATE")
+                with self.assertRaises(FileExistsError):
+                    c2_publish_run.publish("c2-publish-test",protocol)
+                Path(str(stem)+".stderr").write_text("tampered")
+                with self.assertRaises(GateError):
+                    c2_publish_run.publish("c2-publish-test",protocol)
 
 
 if __name__ == "__main__":

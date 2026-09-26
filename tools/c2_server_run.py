@@ -30,6 +30,7 @@ MODEL = {
 }
 HISTORIC = ROOT / "workloads/task_eval.jsonl"
 C2_TASKS = ROOT / "workloads/c2_tasks.json"
+SMOKE = ROOT / "workloads/c2_smoke.json"
 CORE_IDS = ("c2-eval-code-01", "c2-eval-code-02", "c2-eval-sql-01", "c2-eval-sql-02",
             "c2-eval-quant-01", "c2-eval-plan-01", "c2-eval-spec-01", "c2-eval-spec-02")
 TIMING = re.compile(r"slot print_timing: id\s+\d+ \| task (\d+) \|\s*"
@@ -45,6 +46,11 @@ def digest(value):
 
 
 def tasks_for(suite):
+    if suite == "smoke1":
+        tasks = strict_json(SMOKE.read_text())["tasks"]
+        if len(tasks) != 1 or tasks[0]["id"] != "c2-smoke-arithmetic":
+            raise GateError("smoke task changed")
+        return [(tasks[0]["id"],tasks[0])], SMOKE
     if suite == "historic20":
         tasks = [json.loads(line) for line in HISTORIC.read_text().splitlines()]
         tasks = [x for x in tasks if x["split"] == "eval"]
@@ -79,8 +85,8 @@ def configuration(args):
                     "--chat-template-kwargs", '{"reasoning_effort":"medium"}']
     explicit_env = {"LLAMA_MOE_STREAM_NO_PRELOAD":"1"} if args.model == "target120b" else {}
     task_rows, workload = tasks_for(args.suite)
-    max_tokens = 512 if args.suite == "historic20" else 2048
-    request_timeout = 360 if args.suite == "historic20" else 900
+    max_tokens = 64 if args.suite == "smoke1" else 512 if args.suite == "historic20" else 2048
+    request_timeout = 180 if args.suite == "smoke1" else 360 if args.suite == "historic20" else 900
     policy = {"temperature":0,"seed":42,"max_tokens":max_tokens,"reasoning_effort":"medium",
               "attempts":1,"prompt_cache":False,"per_request_timeout_s":request_timeout}
     config = {"server_command":command,"explicit_env":explicit_env,"request_policy":policy,
@@ -124,6 +130,8 @@ def backend_timings(stderr):
 
 def normalize(raw, protocol, config, samples, stderr, elapsed, returncode, reasons):
     parsed = backend_timings(stderr)
+    backend_errors = [line[:1000] for line in stderr.splitlines()
+                      if re.search(r"(?i)(CUDA error|\b(?:error|failed|abort|exception)\b|\sE\s)", line)]
     if len(parsed) != len(raw):
         raise GateError(f"backend timer count {len(parsed)} != request count {len(raw)}")
     used = set()
@@ -133,6 +141,15 @@ def normalize(raw, protocol, config, samples, stderr, elapsed, returncode, reaso
         timing = item.get("timings")
         if type(usage) is not dict or type(timing) is not dict:
             raise GateError("API usage or timings missing")
+        if timing.get("cache_n") != 0 or \
+           usage.get("prompt_tokens_details",{}).get("cached_tokens") != 0:
+            raise GateError("prefix cache reuse differs from frozen protocol")
+        if type(usage.get("prompt_tokens")) is not int or usage["prompt_tokens"] <= 0 or \
+           type(usage.get("completion_tokens")) is not int or \
+           not 0 < usage["completion_tokens"] <= config["request_policy"]["max_tokens"]:
+            raise GateError("API token count missing or outside frozen request cap")
+        if usage.get("total_tokens") != usage["prompt_tokens"]+usage["completion_tokens"]:
+            raise GateError("API total token count inconsistent")
         matches = [task_id for task_id, pair in parsed.items() if
                    pair["prompt eval"][0] == usage.get("prompt_tokens") and
                    pair["eval"][0] == usage.get("completion_tokens") and
@@ -180,7 +197,7 @@ def normalize(raw, protocol, config, samples, stderr, elapsed, returncode, reaso
             "expected_request_ids":protocol["expected_request_ids"],
             "requests":requests,"samples":normalized,"limits":protocol["limits"],
             "outcome":{"elapsed_s":elapsed,"returncode":returncode,
-                       "stop_reasons":reasons,"backend_errors":[]}}
+                       "stop_reasons":reasons,"backend_errors":backend_errors}}
 
 
 def reserve(path):
@@ -240,12 +257,14 @@ def run(args, protocol, config, task_rows, model):
         def monitor():
             while not stop.is_set() and server.poll() is None:
                 try:
+                    collection_start = time.monotonic()
                     ps = proc_status(server.pid); cg = cgroup_state()
                     gpu = gpu_state(); th = thermal_state(); available = mem_available()
                     now = time.monotonic()-t0
                     sample = {"elapsed_s":now,"pid":server.pid,"proc":ps,"cgroup":cg,
                               "gpu":gpu,"thermal":th,"mem_available_bytes":available,
-                              "model_fds":model_fd_state(server.pid,str(model))}
+                              "model_fds":model_fd_state(server.pid,str(model)),
+                              "collection_s":time.monotonic()-collection_start}
                     samples.append(sample)
                     sample_file.write(json.dumps(sample,allow_nan=False)+"\n");sample_file.flush()
                     reason = None
@@ -336,7 +355,7 @@ def run(args, protocol, config, task_rows, model):
 def main():
     p = argparse.ArgumentParser()
     p.add_argument("--model",required=True,choices=MODEL)
-    p.add_argument("--suite",required=True,choices=("historic20","c2core8"))
+    p.add_argument("--suite",required=True,choices=("smoke1","historic20","c2core8"))
     p.add_argument("--ngl",type=int,default=8)
     p.add_argument("--ubatch",type=int,default=32)
     p.add_argument("--slots",type=int,default=32)

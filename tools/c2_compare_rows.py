@@ -7,6 +7,7 @@ import hashlib
 import json
 import math
 from pathlib import Path
+import sys
 
 from c2_gate import GateError, strict_json
 
@@ -40,6 +41,8 @@ def rows(path, case, prompt_len, continuation_len, ubatch):
 
 
 def compare(reference, candidate, ids_file, case, ubatch, vocab, ref_manifest, cand_manifest):
+    if sys.byteorder != "little" or array("f").itemsize != 4:
+        raise GateError("float32 little-endian host required")
     if not isinstance(vocab, int) or vocab <= 0 or not isinstance(ubatch, int) or ubatch <= 0:
         raise GateError("bad vocab/batch")
     token_rows = [line.split("\t") for line in Path(ids_file).read_text().splitlines()]
