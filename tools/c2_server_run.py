@@ -33,6 +33,11 @@ C2_TASKS = ROOT / "workloads/c2_tasks.json"
 SMOKE = ROOT / "workloads/c2_smoke.json"
 CORE_IDS = ("c2-eval-code-01", "c2-eval-code-02", "c2-eval-sql-01", "c2-eval-sql-02",
             "c2-eval-quant-01", "c2-eval-plan-01", "c2-eval-spec-01", "c2-eval-spec-02")
+EVAL12_IDS = ("c2-eval-code-01", "c2-eval-code-02", "c2-eval-code-03",
+              "c2-eval-sql-01", "c2-eval-sql-02", "c2-eval-sql-03",
+              "c2-eval-quant-01", "c2-eval-quant-02",
+              "c2-eval-plan-01", "c2-eval-plan-02",
+              "c2-eval-spec-01", "c2-eval-spec-02")
 TIMING = re.compile(r"slot print_timing: id\s+\d+ \| task (\d+) \|\s*"
                     r"(prompt eval|eval) time =\s*([\d.]+) ms /\s*(\d+) tokens")
 
@@ -57,12 +62,13 @@ def tasks_for(suite):
         if len(tasks) != 10 or len({x["id"] for x in tasks}) != 10:
             raise GateError("historic eval suite is not ten unique tasks")
         return [(f"block{block}-{x['id']}", x) for block in (1, 2) for x in tasks], HISTORIC
-    if suite == "c2core8":
+    if suite in ("c2core8", "c2eval12"):
         tasks = strict_json(C2_TASKS.read_text())["tasks"]
         found = {x["id"]:x for x in tasks}
-        if any(x not in found or found[x]["split"] != "eval" for x in CORE_IDS):
-            raise GateError("frozen core8 tasks unavailable")
-        return [(x,found[x]) for x in CORE_IDS], C2_TASKS
+        selected = CORE_IDS if suite == "c2core8" else EVAL12_IDS
+        if len(found) != len(tasks) or any(x not in found or found[x]["split"] != "eval" for x in selected):
+            raise GateError("frozen C2 evaluation tasks unavailable")
+        return [(x,found[x]) for x in selected], C2_TASKS
     raise GateError("unknown suite")
 
 
@@ -91,8 +97,8 @@ def configuration(args):
               "attempts":1,"prompt_cache":False,"per_request_timeout_s":request_timeout}
     config = {"server_command":command,"explicit_env":explicit_env,"request_policy":policy,
               "suite":args.suite,"task_ids":[x[0] for x in task_rows]}
-    if args.suite == "c2core8":
-        config["total_timeout_s"] = 7200
+    if args.suite in ("c2core8", "c2eval12"):
+        config["total_timeout_s"] = 7200 if args.suite == "c2core8" else 10800
     libs = backend_library_hashes(str(binary), backend)
     if not libs:
         raise GateError("backend shared libraries unavailable")
@@ -152,7 +158,7 @@ def normalize(raw, protocol, config, samples, stderr, elapsed, returncode, reaso
             raise GateError("API token count missing or outside frozen request cap")
         if usage.get("total_tokens") != usage["prompt_tokens"]+usage["completion_tokens"]:
             raise GateError("API total token count inconsistent")
-        if config["suite"] == "c2core8" and \
+        if config["suite"] in ("c2core8", "c2eval12") and \
            usage["prompt_tokens"]+config["request_policy"]["max_tokens"] > 4096:
             raise GateError("templated prompt did not leave the frozen output reserve")
         matches = [task_id for task_id, pair in parsed.items() if
@@ -375,7 +381,7 @@ def run(args, protocol, config, task_rows, model):
 def main():
     p = argparse.ArgumentParser()
     p.add_argument("--model",required=True,choices=MODEL)
-    p.add_argument("--suite",required=True,choices=("smoke1","historic20","c2core8"))
+    p.add_argument("--suite",required=True,choices=("smoke1","historic20","c2core8","c2eval12"))
     p.add_argument("--ngl",type=int,default=8)
     p.add_argument("--ubatch",type=int,default=32)
     p.add_argument("--slots",type=int,default=32)

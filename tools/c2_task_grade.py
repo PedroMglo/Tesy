@@ -6,7 +6,7 @@ import json
 from pathlib import Path
 
 from c2_gate import strict_json
-from c2_server_run import CORE_IDS
+from c2_server_run import CORE_IDS, EVAL12_IDS
 from grade_tasks import isolated_python, unwrap, SENTINEL
 
 
@@ -159,16 +159,17 @@ def main():
     by_id = {x["id"]:x for x in tasks}
     run = strict_json(Path(a.run_manifest).read_text())
     if run.get("schema_version") == "c2-server-raw-v1":
-        if run["preflight"]["config"]["suite"] != "c2core8":
-            raise ValueError("C2 grader requires frozen core8 suite")
-        expected = list(CORE_IDS)
+        suite = run["preflight"]["config"]["suite"]
+        if suite not in ("c2core8", "c2eval12"):
+            raise ValueError("C2 grader requires frozen core8 or eval12 suite")
+        expected = list(CORE_IDS if suite == "c2core8" else EVAL12_IDS)
         rows = run["results"]
         if run["stop_reasons"] or run["returncode"] != 0:
             raise ValueError("incomplete/failed C2 server run")
         if [x["id"] for x in rows] != expected or \
            [x["source_task_id"] for x in rows] != expected:
             raise ValueError("missing/duplicate/out-of-order C2 task result")
-        mode = "c2core8"
+        mode = "c2new"
     else:
         expected = [x["id"] for x in tasks if x["split"] == run["split"]]
         rows = run["results"]
@@ -177,14 +178,14 @@ def main():
         mode = "legacy"
     scores = []
     for row in rows:
-        task_id = row["source_task_id"] if mode == "c2core8" else row["task_id"]
+        task_id = row["source_task_id"] if mode == "c2new" else row["task_id"]
         outcome = grade_text(task_id, (row["message"] or {}).get("content"))
-        if mode == "c2core8" and outcome["status"] == "VALIDATOR_ENV_ERROR":
+        if mode == "c2new" and outcome["status"] == "VALIDATOR_ENV_ERROR":
             raise RuntimeError(f"isolated validator unavailable for {task_id}")
-        status = "FAIL_TRUNCATED" if mode == "c2core8" and row["finish_reason"] != "stop" else outcome["status"]
+        status = "FAIL_TRUNCATED" if mode == "c2new" and row["finish_reason"] != "stop" else outcome["status"]
         item = {"task_id":task_id,"status":status,
                 "finish_reason":row["finish_reason"], "detail":outcome}
-        if mode == "c2core8":
+        if mode == "c2new":
             usage = row.get("usage") or {}
             item.update({"prompt_tokens":usage.get("prompt_tokens"),
                          "completion_tokens_total":usage.get("completion_tokens"),
@@ -194,11 +195,11 @@ def main():
                          "reasoning_tokens":None,"final_tokens":None,
                          "first_token_s":None,"first_final_s":None})
         scores.append(item)
-    report = {"source_run":a.run_manifest,"schema_version":"c2-task-grade-v2" if mode == "c2core8" else "legacy-task-grade-v1",
+    report = {"source_run":a.run_manifest,"schema_version":"c2-task-grade-v2" if mode == "c2new" else "legacy-task-grade-v1",
               "scores":scores,
               "pass_count":sum(x["status"] == "PASS" for x in scores),
               "validator_policy":"frozen synthetic code/SQL bwrap assertions and strict exact JSON",
-              "latency_limit":"nonstreamed C2 API; TTFT and first final content NOT_MEASURED; reasoning/final token split not exposed" if mode == "c2core8" else None}
+              "latency_limit":"nonstreamed C2 API; TTFT and first final content NOT_MEASURED; reasoning/final token split not exposed" if mode == "c2new" else None}
     with Path(a.output).open("x") as output:
         json.dump(report, output, indent=2, allow_nan=False)
         output.write("\n")
