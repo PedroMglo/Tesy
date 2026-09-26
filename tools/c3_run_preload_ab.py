@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Six sequential bounded arms for the frozen C3 P2 prefill A/B."""
+"""Six sequential bounded arms for the repaired C3 P2B prefill A/B."""
 
 import json
 from pathlib import Path
@@ -9,17 +9,18 @@ import sys
 MODEL = "/home/pmglo/models/gpt-oss-120b-gguf/gpt-oss-120b-MXFP4.gguf"
 IDS = "results/c3-p1-latency-ids01.tsv"
 SCHEDULE = ((1,"off"),(1,"on"),(2,"on"),(2,"off"),(3,"off"),(3,"on"))
+PREFIX = "c3-p2b-ab"
 
 
 def main():
     for pair,arm in SCHEDULE:
-        run_id=f"c3-p2-ab-p{pair}-{arm}01"
+        run_id=f"{PREFIX}-p{pair}-{arm}01"
         for suffix in (".json",".stdout",".stderr",".samples.jsonl",
                        ".f32",".rows.tsv",".chunks.tsv"):
             if Path("results",run_id+suffix).exists():
                 raise SystemExit(f"no-replace output already exists: {run_id+suffix}")
     for pair,arm in SCHEDULE:
-        run_id=f"c3-p2-ab-p{pair}-{arm}01"
+        run_id=f"{PREFIX}-p{pair}-{arm}01"
         command=["systemd-run","--user","--scope","--property=MemoryMax=18G",
                  "--property=MemorySwapMax=0","python3","tools/run_bounded.py",
                  "--run-id",run_id,"--model-id","gpt-oss-120b-mxfp4-gguf",

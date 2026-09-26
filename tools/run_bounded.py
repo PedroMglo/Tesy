@@ -267,6 +267,15 @@ def main():
         try:
             while process.poll() is None:
                 status = proc_status(process.pid)
+                # /proc/status can disappear between the loop's poll and this
+                # read. Never publish a partial process sample or interpret an
+                # absent VmSwap/VmRSS as zero. A normal exit is checked below.
+                if not all(key in status for key in ("VmRSS", "VmSwap", "VmHWM")):
+                    if process.poll() is not None:
+                        break
+                    reason = "REQUIRED_PROCESS_TELEMETRY_MISSING"
+                    stop_own_group(process)
+                    break
                 avail = mem_available()
                 gpu = gpu_state()
                 thermal = thermal_state()
@@ -323,7 +332,7 @@ def main():
                 if reason:
                     stop_own_group(process)
                     break
-                time.sleep(1)
+                time.sleep(0.5)
         except KeyboardInterrupt:
             reason = "INTERRUPTED"
             stop_own_group(process)

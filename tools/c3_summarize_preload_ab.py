@@ -18,12 +18,13 @@ def main():
     ap=argparse.ArgumentParser()
     ap.add_argument("--output",required=True,type=Path)
     args=ap.parse_args()
-    files=[Path(f"results/c3-p2-ab-p{n}-comparison01.json") for n in (1,2,3)]
+    prefix="c3-p2b-ab"
+    files=[Path(f"results/{prefix}-p{n}-comparison01.json") for n in (1,2,3)]
     pairs=[strict_json(path.read_text()) for path in files]
     for n,pair in enumerate(pairs,1):
         if pair.get("status")!="PASS_SCREEN_NUMERIC_RESOURCE" or \
-           pair.get("control_run_id")!=f"c3-p2-ab-p{n}-off01" or \
-           pair.get("candidate_run_id")!=f"c3-p2-ab-p{n}-on01" or \
+           pair.get("control_run_id")!=f"{prefix}-p{n}-off01" or \
+           pair.get("candidate_run_id")!=f"{prefix}-p{n}-on01" or \
            [x["case"] for x in pair["cases"]]!=[
                "latency-short","latency-medium","latency-long"]:
             raise ValueError(f"pair {n} failed or changed identity/schedule")
