@@ -1,0 +1,178 @@
+{
+  "run_id": "target120b-gpu8-two-turns-stats01",
+  "started_utc": "2026-09-26T10:31:58.459928+00:00",
+  "model_id": "gpt-oss-120b-mxfp4-gguf",
+  "model_path": "/home/pmglo/models/gpt-oss-120b-gguf/gpt-oss-120b-MXFP4.gguf",
+  "backend": "streaming-reference",
+  "backend_sha": "9c15e1f64ac0cc782cc55fb8b5cf39e3f58d1d83",
+  "binary_sha256": "535aa2644a6573226b72b2f8b0ccef685e7807e605d6dd135700e473d3152185",
+  "backend_libraries_sha256": {
+    "build-gcc15/bin/libllama-cli-impl.so": "427a12f2ad8251fb2d8de37585e88945613c1ce40163d08632767962152c9026",
+    "build-gcc15/bin/libmtmd.so.0.0.4": "f05356a1cee048ba39e87cf71bd6f48308daacd6796390d7838462c3a9e0ec98",
+    "build-gcc15/bin/libllama-common.so.0.0.4": "6c62f20a565ea69ed76efe5a4cc6049d77c6a52736742cf224a92c00fa5b817d",
+    "build-gcc15/bin/libllama.so.0.0.4": "a484221d5d71716c0a6e008f56ea5aab23cb02a47a5e3a6320ab30c376e08a5a",
+    "build-gcc15/bin/libggml.so.0.15.3": "74241864f22e2583c1907b42c3f7be17302074912f56f4bae5ae61aa36e01467",
+    "build-gcc15/bin/libggml-cpu.so.0.15.3": "7bfe0dec7aa6d66362d14bf4a1c7dfbb59f804c47482031f1ec44e9f86517946",
+    "build-gcc15/bin/libggml-cuda.so.0.15.3": "88399d17e63a274b34df0b9dd5f2c579e04c3d07164d71c884588297dfa92dac",
+    "build-gcc15/bin/libggml-base.so.0.15.3": "b69fa58b49980a76b08ffdc66b06cc0bb21353566aeab7c83ff2e8382c256273"
+  },
+  "variant": "gpu8-stream16-direct-no-repack-ub32-greedy256-stats-at-exit",
+  "workload": "workloads/m1_two_turns.txt",
+  "cache_condition": "new-process-direct-experts-after-M4-run",
+  "command": [
+    "backends/streaming-reference/build-gcc15/bin/llama-cli",
+    "-m",
+    "/home/pmglo/models/gpt-oss-120b-gguf/gpt-oss-120b-MXFP4.gguf",
+    "-ngl",
+    "8",
+    "-c",
+    "4096",
+    "-b",
+    "256",
+    "-ub",
+    "32",
+    "-t",
+    "8",
+    "-tb",
+    "8",
+    "-n",
+    "256",
+    "-s",
+    "42",
+    "--temp",
+    "0",
+    "--no-warmup",
+    "--simple-io",
+    "--no-display-prompt",
+    "--no-repack",
+    "-lv",
+    "4",
+    "--moe-stream-cache",
+    "16s",
+    "--moe-stream-io-threads",
+    "4",
+    "--moe-stream-direct"
+  ],
+  "explicit_env": {
+    "LLAMA_MOE_STREAM_NO_PRELOAD": "1",
+    "TESY_MOE_STATS_AT_EXIT": "1"
+  },
+  "stdin_file": "workloads/m1_two_turns.txt",
+  "stdin_sha256": "54329122bb29db556fdd12a517a298797c813666768d4866de7687e7648d2c31",
+  "limits": {
+    "timeout_s": 900,
+    "max_rss_gib": 17.0,
+    "min_available_gib": 6.0,
+    "max_gpu_mib": 7000.0
+  },
+  "cgroup_start": {
+    "path": "/user.slice/user-1000.slice/user@1000.service/app.slice/run-p144296-i165760.scope",
+    "memory_max": 19327352832,
+    "swap_max": 0,
+    "memory_current": 12931072,
+    "swap_current": 0,
+    "memory_stat": {
+      "anon": 10821632,
+      "file": 0,
+      "kernel": 229376,
+      "shmem": 0,
+      "file_mapped": 0
+    },
+    "events": {
+      "low": 0,
+      "high": 0,
+      "max": 0,
+      "oom": 0,
+      "oom_kill": 0,
+      "oom_group_kill": 0,
+      "sock_throttled": 0
+    }
+  },
+  "publication": "local only; stdout/stderr are untracked",
+  "samples_path": "/home/pmglo/Projects/Tesy/tesy-scale-lab/results/target120b-gpu8-two-turns-stats01.samples.jsonl",
+  "cgroup_limit_enforced": true,
+  "ended_utc": "2026-09-26T10:36:56.711234+00:00",
+  "elapsed_s": 298.251,
+  "returncode": 0,
+  "stop_reason": null,
+  "maxima": {
+    "rss_bytes": 8697098240,
+    "swap_bytes": 0,
+    "cgroup_memory_bytes": 8964075520,
+    "cgroup_file_bytes": 2161549312,
+    "gpu_used_mib": 2406.0,
+    "gpu_temperature_c": 57.0,
+    "direct_model_fds": 1,
+    "buffered_model_fds": 1
+  },
+  "last_sample": {
+    "elapsed_s": 297.251,
+    "proc": {
+      "VmHWM": 8697098240,
+      "VmRSS": 8697098240,
+      "VmSwap": 0,
+      "rchar": 399439832916,
+      "syscr": 99646,
+      "read_bytes": 397482385408
+    },
+    "mem_available_bytes": 19797417984,
+    "gpu": {
+      "used_mib": 2406.0,
+      "temperature_c": 52.0,
+      "power_w": 10.41
+    },
+    "cgroup": {
+      "path": "/user.slice/user-1000.slice/user@1000.service/app.slice/run-p144296-i165760.scope",
+      "memory_max": 19327352832,
+      "swap_max": 0,
+      "memory_current": 8956325888,
+      "swap_current": 0,
+      "memory_stat": {
+        "anon": 6788038656,
+        "file": 2139037696,
+        "kernel": 26189824,
+        "shmem": 1626218496,
+        "file_mapped": 1628315648
+      },
+      "events": {
+        "low": 0,
+        "high": 0,
+        "max": 0,
+        "oom": 0,
+        "oom_kill": 0,
+        "oom_group_kill": 0,
+        "sock_throttled": 0
+      }
+    },
+    "model_fds": {
+      "open": 1,
+      "direct": 1,
+      "buffered": 0
+    }
+  },
+  "stdout_path": "/home/pmglo/Projects/Tesy/tesy-scale-lab/results/target120b-gpu8-two-turns-stats01.stdout",
+  "stderr_path": "/home/pmglo/Projects/Tesy/tesy-scale-lab/results/target120b-gpu8-two-turns-stats01.stderr",
+  "cgroup_end": {
+    "path": "/user.slice/user-1000.slice/user@1000.service/app.slice/run-p144296-i165760.scope",
+    "memory_max": 19327352832,
+    "swap_max": 0,
+    "memory_current": 528158720,
+    "swap_current": 0,
+    "memory_stat": {
+      "anon": 10862592,
+      "file": 512823296,
+      "kernel": 1265664,
+      "shmem": 0,
+      "file_mapped": 0
+    },
+    "events": {
+      "low": 0,
+      "high": 0,
+      "max": 0,
+      "oom": 0,
+      "oom_kill": 0,
+      "oom_group_kill": 0,
+      "sock_throttled": 0
+    }
+  }
+}
