@@ -62,7 +62,9 @@ def first_text_latency(model_id):
     with urlopen(req, timeout=360) as response:
         for raw in response:
             line = raw.decode(errors="replace").strip()
-            if not line.startswith("data: ") or line == "data: [DONE]":
+            if line == "data: [DONE]":
+                break
+            if not line.startswith("data: "):
                 continue
             event = json.loads(line[6:])
             for choice in event.get("choices", []):
