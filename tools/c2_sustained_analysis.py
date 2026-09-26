@@ -77,8 +77,9 @@ def analyze(run_id):
                         "process_read_bytes_delta_sampled":reads[-1]-reads[0] if len(reads)>1 else None})
     cg_start = raw["preflight"]["cgroup_start"]
     cg_end = raw["cgroup_end"]
-    events = {kind:{k:cg_end[k][key]-cg_start[k][key] for key in ("max","oom","oom_kill")}
-              for kind,k in (("hierarchical","events"),("local","events_local"))}
+    events = {kind:{key:cg_end[source][key]-cg_start[source][key]
+                    for key in ("max","oom","oom_kill")}
+              for kind,source in (("hierarchical","events"),("local","events_local"))}
     end_resource_ok = (cg_end["swap_current"] == 0 and
                        cg_end["memory_peak"] <= cg_end["memory_max"] and
                        all(value == 0 for group in events.values() for value in group.values()))
