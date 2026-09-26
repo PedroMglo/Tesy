@@ -29,7 +29,7 @@ SQL_FIXTURES = {
 
 def unwrap(text):
     text = text.strip()
-    fenced = re.search(r"```(?:python|sql)?\s*\n(.*?)\n```", text, re.I | re.S)
+    fenced = re.search(r"```(?:python|sql|json)?\s*\n(.*?)\n```", text, re.I | re.S)
     return fenced.group(1).strip() if fenced else text
 
 

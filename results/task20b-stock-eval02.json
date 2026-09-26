@@ -1,0 +1,512 @@
+{
+  "run_id": "task20b-stock-eval02",
+  "started_utc": "2026-09-26T11:41:16.487748+00:00",
+  "model": "stock20b",
+  "artifact": "/home/pmglo/.local/share/tesy/models/gpt-oss-20b/gpt-oss-20b-mxfp4.gguf",
+  "artifact_revision": "a7443ebb00ba299cbbbf7e9b69487670447ae8c0",
+  "artifact_sha256_previously_verified": "52f57ab7d3df3ba9173827c1c6832e73375553a846f3e32b49f1ae2daad688d4",
+  "artifact_size_bytes": 12109564352,
+  "backend": "stock",
+  "backend_sha": "4b1a27fa0eb875bbca4f6cfe936e3d65adc685c0",
+  "binary_sha256": "74f0c9015aea0ba44159c616800d4d09b62ff61a9726b786579c05b0219d8efa",
+  "backend_libraries_sha256": {
+    "build-gcc15/bin/libllama-server-impl.so": "650912e7a4a8b5d5dd9fe9ac821b8cc51298219a21dd2b049d3e067ea120ca6c",
+    "build-gcc15/bin/libllama-common.so.0.5.0": "bf3ae6cdf9d2a639d4316c1c1835e94b86ebc89a5b7d645dafcdcbfbf76659df",
+    "build-gcc15/bin/libmtmd.so.0.5.0": "e91440344ca2d98a39e12603f7369a67cb8723f149ce247f22cbcb15779bfd2c",
+    "build-gcc15/bin/libllama.so.0.5.0": "f396b03cf69740dcde9d76b355ca39786406091b8fde1c669d2d2fdec2b0002b",
+    "build-gcc15/bin/libggml.so.0.25.3": "1594c6f8cff69f406587a3d815172560f0bcea5cdb5699d294ee84e1cbcc05b6",
+    "build-gcc15/bin/libggml-cpu.so.0.25.3": "0c3a606103a100bd42ce42e3679256cd366eeb72863cf8b61eb2b615d34196f7",
+    "build-gcc15/bin/libggml-cuda.so.0.25.3": "a9b0a6c60fba088b89bdbc3970a33ed4ebe263698699d571283486b0b5a72410",
+    "build-gcc15/bin/libggml-base.so.0.25.3": "16a2f9e854b7398e3d6ea792b2f4854a2050c0c87202a779475c8c1de004192b"
+  },
+  "server_command": [
+    "/home/pmglo/Projects/Tesy/tesy-scale-lab/backends/stock/build-gcc15/bin/llama-server",
+    "-m",
+    "/home/pmglo/.local/share/tesy/models/gpt-oss-20b/gpt-oss-20b-mxfp4.gguf",
+    "--host",
+    "127.0.0.1",
+    "--port",
+    "18367",
+    "-ngl",
+    "14",
+    "-c",
+    "4096",
+    "-np",
+    "1",
+    "-b",
+    "256",
+    "-ub",
+    "32",
+    "-t",
+    "8",
+    "-tb",
+    "8",
+    "--no-warmup",
+    "--no-cache-prompt",
+    "--reasoning-effort",
+    "medium",
+    "-lv",
+    "3",
+    "--load-mode",
+    "dio",
+    "--lazy-mode",
+    "off"
+  ],
+  "explicit_env": {},
+  "workload": "workloads/task_eval.jsonl",
+  "workload_sha256": "87ad7c4f1ccc60e3cbd4f1507a01172007e6a802e68bc7057b0fba5ee039f471",
+  "split": "eval",
+  "task_ids": [
+    "eval-code-01",
+    "eval-code-02",
+    "eval-sql-01",
+    "eval-sql-02",
+    "eval-extract-01",
+    "eval-extract-02",
+    "eval-quant-01",
+    "eval-quant-02",
+    "eval-plan-01",
+    "eval-plan-02"
+  ],
+  "request_policy": {
+    "temperature": 0,
+    "seed": 42,
+    "max_tokens": 512,
+    "reasoning_effort": "medium",
+    "attempts": 1,
+    "prompt_cache": false,
+    "per_request_timeout_s": 360
+  },
+  "cgroup_start": {
+    "path": "/user.slice/user-1000.slice/user@1000.service/app.slice/run-p174087-i217099.scope",
+    "memory_max": 19327352832,
+    "swap_max": 0,
+    "memory_current": 14835712,
+    "swap_current": 0,
+    "memory_stat": {
+      "anon": 13844480,
+      "file": 0,
+      "kernel": 184320,
+      "shmem": 0,
+      "file_mapped": 0
+    },
+    "events": {
+      "low": 0,
+      "high": 0,
+      "max": 0,
+      "oom": 0,
+      "oom_kill": 0,
+      "oom_group_kill": 0,
+      "sock_throttled": 0
+    }
+  },
+  "limits": {
+    "memory_max_bytes": 19327352832,
+    "swap_max_bytes": 0,
+    "rss_gib": 17,
+    "gpu_used_mib": 7000,
+    "min_mem_available_gib": 6,
+    "total_timeout_s": 3600
+  },
+  "samples_path": "/home/pmglo/Projects/Tesy/tesy-scale-lab/results/task20b-stock-eval02.samples.jsonl",
+  "publication": "local only; stdout/stderr/samples untracked",
+  "results": [
+    {
+      "task_id": "eval-code-01",
+      "category": "code",
+      "elapsed_s": 12.104,
+      "finish_reason": "length",
+      "usage": {
+        "completion_tokens": 512,
+        "prompt_tokens": 121,
+        "total_tokens": 633,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        }
+      },
+      "timings": {
+        "cache_n": 0,
+        "prompt_n": 121,
+        "prompt_ms": 1252.929,
+        "prompt_per_token_ms": 10.354785123966943,
+        "prompt_per_second": 96.57370848627495,
+        "predicted_n": 512,
+        "predicted_ms": 10846.675,
+        "predicted_per_token_ms": 21.226369863013698,
+        "predicted_per_second": 47.11121150029848
+      },
+      "message": {
+        "role": "assistant",
+        "content": "",
+        "reasoning_content": "We need to write a function merge_intervals(xs) that merges closed integer intervals, including touching intervals such as (1,2) and (2,3). Return sorted tuples. Return only code. So we need to produce code only. The function should accept xs: presumably a list of tuples (start, end). We need to merge overlapping or touching intervals. Return sorted tuples. Implementation: sort by start, then iterate merging. For each interval, if current start <= last_end + 1? Wait closed intervals: touching intervals like (1,2) and (2,3) should merge. For closed intervals, if one ends at 2 and next starts at 2, they overlap at point 2. So merging condition: if current_start <= last_end + 1? Actually if last_end >= current_start - 1? For closed intervals, if last_end >= current_start - 1? Let's think: intervals [1,2] and [3,4] are not touching because 2 and 3 are adjacent but not overlapping? Wait closed intervals: [1,2] includes 2, [3,4] includes 3. They are not overlapping because 2 < 3. But they are not touching? They are separated by 1 unit. But the problem says including touching intervals such as (1,2) and (2,3). So they consider touching if end equals start. So merging condition: if current_start <= last_end + 1? For [1,2] and [3,4], last_end=2, current_start=3, last_end+1=3, so condition true, would merge them incorrectly. But they are not touching? Wait [1,2] and [3,4] are separated by 1 unit? Actually [1,2] includes 2, [3,4] includes 3. They are not overlapping but they are adjacent? They are not touching because there's a gap between 2 and 3? But the gap is 1? Actually the gap is 1 unit: 2 to 3 difference is 1. But if intervals are closed, the point 2 is included, point 3 is included. There's no integer between them. But they are not overlapping. Are they considered touching? The problem says including touching intervals such as (1,2) and (2,3). That means if one ends at 2 and next starts at 2, they touch"
+      }
+    },
+    {
+      "task_id": "eval-code-02",
+      "category": "code",
+      "elapsed_s": 4.236,
+      "finish_reason": "stop",
+      "usage": {
+        "completion_tokens": 156,
+        "prompt_tokens": 105,
+        "total_tokens": 261,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        }
+      },
+      "timings": {
+        "cache_n": 0,
+        "prompt_n": 105,
+        "prompt_ms": 1060.602,
+        "prompt_per_token_ms": 10.10097142857143,
+        "prompt_per_second": 99.00037903002256,
+        "predicted_n": 156,
+        "predicted_ms": 3165.09,
+        "predicted_per_token_ms": 20.41993548387097,
+        "predicted_per_second": 48.97175119822816
+      },
+      "message": {
+        "role": "assistant",
+        "content": "```python\ndef stable_unique(xs):\n    seen = set()\n    result = []\n    for x in xs:\n        if x not in seen:\n            seen.add(x)\n            result.append(x)\n    return result\n```",
+        "reasoning_content": "We need to write a Python 3 function stable_unique(xs) that returns first occurrences in order for hashable items. Return only code. So just provide the function definition. Should handle hashable items. Use set to track seen. Return list of unique items preserving order. Should be stable. Implementation: def stable_unique(xs): seen=set(); result=[]; for x in xs: if x not in seen: seen.add(x); result.append(x); return result. That's it. Provide only code."
+      }
+    },
+    {
+      "task_id": "eval-sql-01",
+      "category": "sql",
+      "elapsed_s": 5.873,
+      "finish_reason": "stop",
+      "usage": {
+        "completion_tokens": 224,
+        "prompt_tokens": 120,
+        "total_tokens": 344,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        }
+      },
+      "timings": {
+        "cache_n": 0,
+        "prompt_n": 120,
+        "prompt_ms": 1239.082,
+        "prompt_per_token_ms": 10.325683333333334,
+        "prompt_per_second": 96.84589074815064,
+        "predicted_n": 224,
+        "predicted_ms": 4625.553,
+        "predicted_per_token_ms": 20.74239013452915,
+        "predicted_per_second": 48.21045180976199
+      },
+      "message": {
+        "role": "assistant",
+        "content": "SELECT customer_id, SUM(amount) AS total\nFROM sales\nGROUP BY customer_id\nHAVING SUM(amount) >= 100\nORDER BY total DESC, customer_id ASC;",
+        "reasoning_content": "We need to write SQLite SQL. Table sales(order_id, customer_id, amount). We need to return customer_id and total for customers with total >= 100, sorted by total descending then customer_id ascending. Return only SQL. So something like:\n\nSELECT customer_id, SUM(amount) AS total\nFROM sales\nGROUP BY customer_id\nHAVING total >= 100\nORDER BY total DESC, customer_id ASC;\n\nBut SQLite doesn't allow alias in HAVING? It does allow alias in HAVING? In SQLite, you can use alias in HAVING? I think yes, but to be safe, use SUM(amount) >= 100. So:\n\nSELECT customer_id, SUM(amount) AS total\nFROM sales\nGROUP BY customer_id\nHAVING SUM(amount) >= 100\nORDER BY total DESC, customer_id ASC;\n\nReturn only SQL. So final answer: that query."
+      }
+    },
+    {
+      "task_id": "eval-sql-02",
+      "category": "sql",
+      "elapsed_s": 5.063,
+      "finish_reason": "stop",
+      "usage": {
+        "completion_tokens": 179,
+        "prompt_tokens": 124,
+        "total_tokens": 303,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        }
+      },
+      "timings": {
+        "cache_n": 0,
+        "prompt_n": 124,
+        "prompt_ms": 1269.908,
+        "prompt_per_token_ms": 10.241193548387097,
+        "prompt_per_second": 97.64486876214656,
+        "predicted_n": 179,
+        "predicted_ms": 3783.702,
+        "predicted_per_token_ms": 21.256752808988765,
+        "predicted_per_second": 47.04387396259007
+      },
+      "message": {
+        "role": "assistant",
+        "content": "SELECT u.id,\n       COUNT(e.user_id) AS purchase_count\nFROM users u\nLEFT JOIN events e\n       ON u.id = e.user_id\n      AND e.kind = 'purchase'\nGROUP BY u.id\nORDER BY u.id;",
+        "reasoning_content": "We need to produce SQL that lists every user id and count of events with kind='purchase', including users with zero. So left join events filtered by kind='purchase', group by user id. Use COUNT(events.user_id) or COUNT(*)? For left join, if no matching rows, COUNT(events.user_id) will be 0. So:\n\nSELECT u.id, COUNT(e.user_id) AS purchase_count\nFROM users u\nLEFT JOIN events e ON u.id = e.user_id AND e.kind = 'purchase'\nGROUP BY u.id\nORDER BY u.id;\n\nReturn only SQL."
+      }
+    },
+    {
+      "task_id": "eval-extract-01",
+      "category": "extraction",
+      "elapsed_s": 4.709,
+      "finish_reason": "stop",
+      "usage": {
+        "completion_tokens": 146,
+        "prompt_tokens": 141,
+        "total_tokens": 287,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        }
+      },
+      "timings": {
+        "cache_n": 0,
+        "prompt_n": 141,
+        "prompt_ms": 1421.603,
+        "prompt_per_token_ms": 10.082290780141845,
+        "prompt_per_second": 99.18380870045998,
+        "predicted_n": 146,
+        "predicted_ms": 3275.974,
+        "predicted_per_token_ms": 22.592924137931035,
+        "predicted_per_second": 44.2616455441954
+      },
+      "message": {
+        "role": "assistant",
+        "content": "```json\n{\n  \"invoice\": \"INV-204\",\n  \"date\": \"2026-09-26\",\n  \"total\": 12.50\n}\n```\n",
+        "reasoning_content": "We need to parse the string: 'Invoice INV-204 dated 26 Sep 2026. Items: \u20ac10.00 and \u20ac2.50. Total due \u20ac12.50.' Extract invoice number: INV-204. Date: 26 Sep 2026 -> convert to YYYY-MM-DD: 2026-09-26. Total: \u20ac12.50 -> decimal number 12.50. Return JSON object with keys invoice, date, total. Ensure JSON format."
+      }
+    },
+    {
+      "task_id": "eval-extract-02",
+      "category": "extraction",
+      "elapsed_s": 3.0,
+      "finish_reason": "stop",
+      "usage": {
+        "completion_tokens": 82,
+        "prompt_tokens": 113,
+        "total_tokens": 195,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        }
+      },
+      "timings": {
+        "cache_n": 0,
+        "prompt_n": 113,
+        "prompt_ms": 1179.509,
+        "prompt_per_token_ms": 10.438132743362832,
+        "prompt_per_second": 95.8025754784406,
+        "predicted_n": 82,
+        "predicted_ms": 1810.003,
+        "predicted_per_token_ms": 22.345716049382716,
+        "predicted_per_second": 44.75130704203252
+      },
+      "message": {
+        "role": "assistant",
+        "content": "```json\n[\"Ada\", \"Cy\"]\n```",
+        "reasoning_content": "We need to parse the string: 'Ada: open; Bo: closed; Cy: open; Dee: pending'. We need to return a JSON array of names whose status is open, preserving order. So names: Ada, Cy. Output JSON array: [\"Ada\",\"Cy\"]. Ensure proper JSON formatting."
+      }
+    },
+    {
+      "task_id": "eval-quant-01",
+      "category": "quantitative",
+      "elapsed_s": 4.648,
+      "finish_reason": "stop",
+      "usage": {
+        "completion_tokens": 151,
+        "prompt_tokens": 126,
+        "total_tokens": 277,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        }
+      },
+      "timings": {
+        "cache_n": 0,
+        "prompt_n": 126,
+        "prompt_ms": 1283.79,
+        "prompt_per_token_ms": 10.188809523809523,
+        "prompt_per_second": 98.14689318346458,
+        "predicted_n": 151,
+        "predicted_ms": 3355.355,
+        "predicted_per_token_ms": 22.369033333333334,
+        "predicted_per_second": 44.70465867248026
+      },
+      "message": {
+        "role": "assistant",
+        "content": "48 km/h",
+        "reasoning_content": "We need average speed over entire trip including stop. Total distance = 90+30=120 km. Total time: first leg: 90 km at 60 km/h => time = 90/60 = 1.5 h. Stop: 15 minutes = 0.25 h. Second leg: 30 km at 40 km/h => time = 30/40 = 0.75 h. Total time = 1.5 + 0.25 + 0.75 = 2.5 h. Average speed = total distance / total time = 120 / 2.5 = 48 km/h. So answer: 48."
+      }
+    },
+    {
+      "task_id": "eval-quant-02",
+      "category": "quantitative",
+      "elapsed_s": 5.447,
+      "finish_reason": "stop",
+      "usage": {
+        "completion_tokens": 190,
+        "prompt_tokens": 117,
+        "total_tokens": 307,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        }
+      },
+      "timings": {
+        "cache_n": 0,
+        "prompt_n": 117,
+        "prompt_ms": 1208.631,
+        "prompt_per_token_ms": 10.330179487179487,
+        "prompt_per_second": 96.80373910647666,
+        "predicted_n": 190,
+        "predicted_ms": 4228.336,
+        "predicted_per_token_ms": 22.37214814814815,
+        "predicted_per_second": 44.6984345614918
+      },
+      "message": {
+        "role": "assistant",
+        "content": "The discounted price is \\(80 \\times (1 - 0.10) = 72\\)\u202f\u20ac.\n\nAdding 23\u202f% VAT: \\(72 \\times 0.23 = 16.56\\)\u202f\u20ac.\n\nFinal price: \\(72 + 16.56 = 88.56\\)\u202f\u20ac.\n\n**Final price: \u20ac88.56**",
+        "reasoning_content": "We need to compute: original price 80 euros. Apply 10% discount: discount amount = 10% of 80 = 8 euros. So discounted price = 80 - 8 = 72 euros. Then apply 23% VAT: VAT amount = 23% of 72 = 0.23 * 72 = 16.56 euros. Final price = 72 + 16.56 = 88.56 euros. Two decimal places: 88.56."
+      }
+    },
+    {
+      "task_id": "eval-plan-01",
+      "category": "planning",
+      "elapsed_s": 13.097,
+      "finish_reason": "length",
+      "usage": {
+        "completion_tokens": 512,
+        "prompt_tokens": 135,
+        "total_tokens": 647,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        }
+      },
+      "timings": {
+        "cache_n": 0,
+        "prompt_n": 135,
+        "prompt_ms": 1368.763,
+        "prompt_per_token_ms": 10.138985185185184,
+        "prompt_per_second": 98.62920023407997,
+        "predicted_n": 512,
+        "predicted_ms": 11719.01,
+        "predicted_per_token_ms": 22.93348336594912,
+        "predicted_per_second": 43.60436589780195
+      },
+      "message": {
+        "role": "assistant",
+        "content": "",
+        "reasoning_content": "We need to schedule tasks A, B, C, D on one worker from 09:00, no preemption. Constraints: B must start 1h after A? Actually \"B (1h after A)\" means B must start 1 hour after A starts? Or after A finishes? Usually \"1h after A\" could mean B starts 1 hour after A starts, but that would overlap. But no preemption, so tasks cannot overlap. So likely B must start 1 hour after A finishes? But that would be 1h after A ends. But phrase \"1h after A\" ambiguous. Similarly D must start 1h after both B and C. So D must start 1h after B finishes and 1h after C finishes. So D start time = max(end_B, end_C) + 1h. We need schedule tasks sequentially on one worker, no preemption. So we need to order tasks respecting dependencies: A must finish before B starts? Actually B must start 1h after A, so B start >= end_A + 1h? Wait if B must start 1h after A finishes, then B start >= end_A + 1h. But if B must start 1h after A starts, then B start >= start_A + 1h. But B cannot overlap with A because one worker. So B start >= end_A. So if B start >= end_A + 1h, then B start >= end_A + 1h > end_A, so B will start after A ends plus 1h gap. That seems plausible. Similarly D must start 1h after both B and C finish. So D start >= max(end_B, end_C) + 1h.\n\nWe need to schedule tasks A, B, C, D sequentially. We can choose order: A first, then maybe C, then B, then D? But B depends on A, so B cannot start until after A ends + 1h. C has no dependencies. D depends on B and C. So we need to schedule A, C, B, D maybe. But we need to satisfy B start >= end_A + 1h. So we need a 1h gap after A before B. We can schedule C in that gap? But C takes 2h, so cannot fit in 1h. So we need to schedule C after B? But D depends on both B and C,"
+      }
+    },
+    {
+      "task_id": "eval-plan-02",
+      "category": "planning",
+      "elapsed_s": 7.467,
+      "finish_reason": "stop",
+      "usage": {
+        "completion_tokens": 269,
+        "prompt_tokens": 132,
+        "total_tokens": 401,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        }
+      },
+      "timings": {
+        "cache_n": 0,
+        "prompt_n": 132,
+        "prompt_ms": 1339.078,
+        "prompt_per_token_ms": 10.144530303030303,
+        "prompt_per_second": 98.5752883700576,
+        "predicted_n": 269,
+        "predicted_ms": 6115.286,
+        "predicted_per_token_ms": 22.818231343283582,
+        "predicted_per_second": 43.824606077295485
+      },
+      "message": {
+        "role": "assistant",
+        "content": "**Optimal choice**\n\n- **Items selected:** X (6\u202fkg, score\u202f9) and Y (4\u202fkg, score\u202f7)  \n- **Total weight:** 10\u202fkg (exactly the capacity)  \n- **Total score:** **16**  \n\nThis combination gives the highest possible score while staying within the 10\u202fkg limit.",
+        "reasoning_content": "We have a knapsack problem with capacity 10 kg. Items: X (6kg, score 9), Y (4kg, score 7), Z (5kg, score 8). We can choose whole items only. We need to maximize total score. Let's enumerate possibilities:\n\n- None: 0 score, 0 kg.\n- X only: 6kg, 9 score.\n- Y only: 4kg, 7 score.\n- Z only: 5kg, 8 score.\n- X+Y: 10kg, 16 score.\n- X+Z: 11kg >10, not allowed.\n- Y+Z: 9kg, 15 score.\n- X+Y+Z: 15kg >10, not allowed.\n\nSo best is X+Y with 16 score. So answer: items X and Y, total score 16."
+      }
+    }
+  ],
+  "ready_elapsed_s": 7.486,
+  "server_model_id": "/home/pmglo/.local/share/tesy/models/gpt-oss-20b/gpt-oss-20b-mxfp4.gguf",
+  "first_text_smoke": {
+    "first_text_chunk_s": 0.974,
+    "first_reasoning_chunk_s": 0.974,
+    "first_final_chunk_s": 1.573,
+    "stream_elapsed_s": 1.594,
+    "text_chunk_count": 24,
+    "interpretation": "client first received text; chunks are not token intervals"
+  },
+  "ended_utc": "2026-09-26T11:42:31.728832+00:00",
+  "elapsed_s": 75.241,
+  "stop_reasons": [],
+  "returncode": 0,
+  "maxima": {
+    "rss_bytes": 6672506880,
+    "cgroup_memory_bytes": 6658342912,
+    "swap_bytes": 0,
+    "gpu_used_mib": 6578.0,
+    "gpu_temperature_c": 67.0,
+    "cpu_tctl_c": 86.875,
+    "nvme_composite_c": 47.85
+  },
+  "last_sample": {
+    "elapsed_s": 74.105,
+    "proc": {
+      "VmHWM": 6750003200,
+      "VmRSS": 6672506880,
+      "VmSwap": 0,
+      "rchar": 12124582549,
+      "syscr": 7123,
+      "read_bytes": 7063490560
+    },
+    "cgroup": {
+      "path": "/user.slice/user-1000.slice/user@1000.service/app.slice/run-p174087-i217099.scope",
+      "memory_max": 19327352832,
+      "swap_max": 0,
+      "memory_current": 6658342912,
+      "swap_current": 0,
+      "memory_stat": {
+        "anon": 778473472,
+        "file": 5846360064,
+        "kernel": 30969856,
+        "shmem": 5612437504,
+        "file_mapped": 5614534656
+      },
+      "events": {
+        "low": 0,
+        "high": 0,
+        "max": 0,
+        "oom": 0,
+        "oom_kill": 0,
+        "oom_group_kill": 0,
+        "sock_throttled": 0
+      }
+    },
+    "gpu": {
+      "used_mib": 6578.0,
+      "temperature_c": 60.0,
+      "power_w": 29.7
+    },
+    "thermal": {
+      "cpu_tctl_c": 68.0,
+      "nvme_composite_c": 43.85
+    },
+    "mem_available_bytes": 21836943360,
+    "model_fds": {
+      "open": 0,
+      "direct": 0,
+      "buffered": 0
+    }
+  },
+  "cgroup_end": {
+    "path": "/user.slice/user-1000.slice/user@1000.service/app.slice/run-p174087-i217099.scope",
+    "memory_max": 19327352832,
+    "swap_max": 0,
+    "memory_current": 251379712,
+    "swap_current": 0,
+    "memory_stat": {
+      "anon": 14520320,
+      "file": 233922560,
+      "kernel": 413696,
+      "shmem": 0,
+      "file_mapped": 0
+    },
+    "events": {
+      "low": 0,
+      "high": 0,
+      "max": 0,
+      "oom": 0,
+      "oom_kill": 0,
+      "oom_group_kill": 0,
+      "sock_throttled": 0
+    }
+  },
+  "stdout_path": "/home/pmglo/Projects/Tesy/tesy-scale-lab/results/task20b-stock-eval02.stdout",
+  "stderr_path": "/home/pmglo/Projects/Tesy/tesy-scale-lab/results/task20b-stock-eval02.stderr"
+}

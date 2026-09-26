@@ -1,0 +1,169 @@
+{
+  "source_run": "results/task20b-stock-eval02.json",
+  "scores": [
+    {
+      "task_id": "eval-code-01",
+      "finish_reason": "length",
+      "elapsed_s": 12.104,
+      "usage": {
+        "completion_tokens": 512,
+        "prompt_tokens": 121,
+        "total_tokens": 633,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        }
+      },
+      "status": "FAIL",
+      "reason": "no final content"
+    },
+    {
+      "task_id": "eval-code-02",
+      "finish_reason": "stop",
+      "elapsed_s": 4.236,
+      "usage": {
+        "completion_tokens": 156,
+        "prompt_tokens": 105,
+        "total_tokens": 261,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        }
+      },
+      "status": "PASS",
+      "exit_code": 0,
+      "stdout_tail": "TESY_TESTS_PASSED_94027\n",
+      "stderr_tail": ""
+    },
+    {
+      "task_id": "eval-sql-01",
+      "finish_reason": "stop",
+      "elapsed_s": 5.873,
+      "usage": {
+        "completion_tokens": 224,
+        "prompt_tokens": 120,
+        "total_tokens": 344,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        }
+      },
+      "status": "PASS",
+      "exit_code": 0,
+      "stdout_tail": "TESY_TESTS_PASSED_94027\n",
+      "stderr_tail": ""
+    },
+    {
+      "task_id": "eval-sql-02",
+      "finish_reason": "stop",
+      "elapsed_s": 5.063,
+      "usage": {
+        "completion_tokens": 179,
+        "prompt_tokens": 124,
+        "total_tokens": 303,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        }
+      },
+      "status": "PASS",
+      "exit_code": 0,
+      "stdout_tail": "TESY_TESTS_PASSED_94027\n",
+      "stderr_tail": ""
+    },
+    {
+      "task_id": "eval-extract-01",
+      "finish_reason": "stop",
+      "elapsed_s": 4.709,
+      "usage": {
+        "completion_tokens": 146,
+        "prompt_tokens": 141,
+        "total_tokens": 287,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        }
+      },
+      "status": "PASS",
+      "parsed": {
+        "invoice": "INV-204",
+        "date": "2026-09-26",
+        "total": 12.5
+      }
+    },
+    {
+      "task_id": "eval-extract-02",
+      "finish_reason": "stop",
+      "elapsed_s": 3.0,
+      "usage": {
+        "completion_tokens": 82,
+        "prompt_tokens": 113,
+        "total_tokens": 195,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        }
+      },
+      "status": "PASS",
+      "parsed": [
+        "Ada",
+        "Cy"
+      ]
+    },
+    {
+      "task_id": "eval-quant-01",
+      "finish_reason": "stop",
+      "elapsed_s": 4.648,
+      "usage": {
+        "completion_tokens": 151,
+        "prompt_tokens": 126,
+        "total_tokens": 277,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        }
+      },
+      "status": "REVIEW",
+      "reason": "quantitative/planning criterion requires answer review"
+    },
+    {
+      "task_id": "eval-quant-02",
+      "finish_reason": "stop",
+      "elapsed_s": 5.447,
+      "usage": {
+        "completion_tokens": 190,
+        "prompt_tokens": 117,
+        "total_tokens": 307,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        }
+      },
+      "status": "REVIEW",
+      "reason": "quantitative/planning criterion requires answer review"
+    },
+    {
+      "task_id": "eval-plan-01",
+      "finish_reason": "length",
+      "elapsed_s": 13.097,
+      "usage": {
+        "completion_tokens": 512,
+        "prompt_tokens": 135,
+        "total_tokens": 647,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        }
+      },
+      "status": "FAIL",
+      "reason": "no final content"
+    },
+    {
+      "task_id": "eval-plan-02",
+      "finish_reason": "stop",
+      "elapsed_s": 7.467,
+      "usage": {
+        "completion_tokens": 269,
+        "prompt_tokens": 132,
+        "total_tokens": 401,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        }
+      },
+      "status": "REVIEW",
+      "reason": "quantitative/planning criterion requires answer review"
+    }
+  ],
+  "policy": "code/SQL in no-network read-only bubblewrap; JSON exact; quantitative/planning review"
+}
