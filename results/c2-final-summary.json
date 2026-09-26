@@ -1,0 +1,110 @@
+{
+  "schema_version": "c2-final-summary-v1",
+  "campaign_id": "tesy-c2-20260926",
+  "created_utc": "2026-09-26T17:13:08.514502+00:00",
+  "branch": "campaign/c2-correctness-usability-20260926-1349utc",
+  "base_lab_commit": "c67529e290844bb3d9033615072d5878014a46bc",
+  "last_measured_code_commit": "39f958c81eb855ef7fc1df8988ca8d54339ba8d0",
+  "global_state": "CORRECTNESS_BLOCKED",
+  "remote_publication": "NONE_LOCAL_COMMITS_ONLY",
+  "budget": {
+    "started_utc": "2026-09-26T13:49:33+00:00",
+    "elapsed_seconds_at_summary": 12215.515,
+    "limit_seconds": 28800,
+    "optimization_interventions_used": 0,
+    "optimization_interventions_limit": 6
+  },
+  "identity": {
+    "target_model": "ggml-org/gpt-oss-120b-GGUF",
+    "target_revision": "238abdd290bb874b90a5da1b4549881b7d05c091",
+    "target_sha256": "582bd40f6886200101f4c4ed9f25f3fe80cc14c86e9e2b37746cd8904a0c622d",
+    "target_format": "MXFP4 GGUF",
+    "target_bytes": 63387346208,
+    "streaming_backend_sha": "1248fd8fa8cfebaece5ea992e4d951c1e18bb9d5",
+    "stock_backend_sha": "4b1a27fa0eb875bbca4f6cfe936e3d65adc685c0"
+  },
+  "correctness": {
+    "status": "NUMERIC_COVERAGE_BLOCKED_PARTIAL",
+    "target_historical_rows": "one final 201088-float32 logit vector after four fixed token IDs; bitwise equal to isolated reference",
+    "target_extended_reference_attempts": [
+      "135/141 rows then RSS_GUARD",
+      "2/141 rows then RSS_GUARD"
+    ],
+    "target_production_gpu8_32slot_long_prefix_parity": "NOT_VALIDATED",
+    "surrogate_20b": "30 rows bitwise plain/streamed and delayed read; EIO/short/EOF fail closed",
+    "inflight_gpu_faults": "NOT_RUN"
+  },
+  "performance": {
+    "sustained32_status": "PASS",
+    "sustained32_completed_requests": 20,
+    "sustained32_decode_tokens": 4588,
+    "sustained32_decode_s": 1379.10819,
+    "sustained32_decode_tok_s": 3.326787581473213,
+    "sustained32_last_half_tok_s": 3.289639775697045,
+    "goal_2_tok_s_met_for_timing_resource_protocol": true,
+    "goal_4_tok_s_met": false,
+    "short_first_text_s": 42.309152927999094,
+    "short_first_final_s": 74.50597923299938,
+    "short_goals_10_20_s_met": false,
+    "new_sustained24_control": "NOT_RUN"
+  },
+  "utility": {
+    "suite": "c2eval12",
+    "stock_pass": 10,
+    "target_pass": 12,
+    "counts": {
+      "both_pass": 10,
+      "both_fail": 0,
+      "target_only": 2,
+      "stock_only": 0
+    },
+    "stock_request_wall_s": 266.43963020500814,
+    "target_request_wall_s": 3058.1746355689975,
+    "target_to_stock_wall_ratio": 11.47792703816594,
+    "exclusive_target_ids": [
+      "c2-eval-code-02",
+      "c2-eval-plan-01"
+    ],
+    "scope": "synthetic twelve-task pilot; no statistical significance or general model superiority claim"
+  },
+  "operation": {
+    "launcher": "TESTED_DIAGNOSTIC_ONLY",
+    "actual_multiturn_prompt_tokens": [
+      86,
+      663,
+      2150
+    ],
+    "cancel_and_followup": "PASS",
+    "shutdown_port_gpu_release": "PASS",
+    "full_4096_prompt": "NOT_RUN"
+  },
+  "resources": {
+    "memory_max_bytes": 19327352832,
+    "memory_swap_max_bytes": 0,
+    "rss_guard_bytes": 18253611008,
+    "gpu_guard_mib": 7000,
+    "sustained32_cgroup_peak_bytes": 15344664576,
+    "utility_stock_cgroup_peak_bytes": 7957303296,
+    "utility_target_cgroup_peak_bytes": 15911616512,
+    "target_utility_gpu_max_mib": 3858,
+    "swap_oom_max_events": "ZERO_IN_STRICT_RUNS"
+  },
+  "io": {
+    "expert_mode": "O_DIRECT requested/observed model FDs; no preload/repack",
+    "exclusive_physical_nvme_bytes": "UNKNOWN",
+    "gpu_ram_storage_tier_hit_rates": "NOT_MEASURED",
+    "process_read_bytes_not_physical": true
+  },
+  "source_sha256": {
+    "results/c2c-target32-sustained01.gate.json": "0e27140bfee84ef9bb68dbf04c21ca44c652c99959762fcb701651ea1069f7c0",
+    "results/c2e-stock20-eval12-01.published.json": "08d6de9d55a30249d8934e665210f802afe56b0ab2e5c425a4ecbcf656fb0d49",
+    "results/c2e-target32-eval12-01.published.json": "9083855f03ee86a42d605ad86d6aceeabc85defcf4640f3c23d3b359fc0c85f7",
+    "results/c2e-eval12-comparison01.json": "3e1ae3eeb0136d3c235f82f14985953c674d7bcc7efaeab4cb5ac6a554e5fb6f",
+    "research/C2-B-RESULT-20260926.md": "6a87af54a3fec96dc22f962d26d8d30d4cded3d3fe8c83e03f070bcdbc539ce9",
+    "research/C2-D-RESULT-20260926.md": "1826e5bbc0c950dc63bd25e78b59e8cf3a382dd494d0d5f133aa9d7ca98e5082",
+    "research/C2-E-RESULT-20260926.md": "2d37099dab3ed136cc743131df8f0fa7da9e998dbbdeb2a5730ba7558d91dffc",
+    "research/C2-F-RESULT-20260926.md": "5520900dba578241d51653f5165fa56c19cebc8a1d8f951a6392e1a68d57a5b7"
+  },
+  "authoritative_narrative": "research/C2-FINAL-20260926.md",
+  "historical_snapshot_do_not_rewrite": "results/campaign-summary.json"
+}
