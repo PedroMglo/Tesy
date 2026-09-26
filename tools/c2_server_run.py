@@ -38,6 +38,7 @@ EVAL12_IDS = ("c2-eval-code-01", "c2-eval-code-02", "c2-eval-code-03",
               "c2-eval-quant-01", "c2-eval-quant-02",
               "c2-eval-plan-01", "c2-eval-plan-02",
               "c2-eval-spec-01", "c2-eval-spec-02")
+C3_FOLLOWUP_IDS = ("c2-eval-code-02", "c2-eval-plan-01")
 TIMING = re.compile(r"slot print_timing: id\s+\d+ \| task (\d+) \|\s*"
                     r"(prompt eval|eval) time =\s*([\d.]+) ms /\s*(\d+) tokens")
 
@@ -62,10 +63,11 @@ def tasks_for(suite):
         if len(tasks) != 10 or len({x["id"] for x in tasks}) != 10:
             raise GateError("historic eval suite is not ten unique tasks")
         return [(f"block{block}-{x['id']}", x) for block in (1, 2) for x in tasks], HISTORIC
-    if suite in ("c2core8", "c2eval12"):
+    if suite in ("c2core8", "c2eval12", "c3followup2"):
         tasks = strict_json(C2_TASKS.read_text())["tasks"]
         found = {x["id"]:x for x in tasks}
-        selected = CORE_IDS if suite == "c2core8" else EVAL12_IDS
+        selected = CORE_IDS if suite == "c2core8" else \
+                   C3_FOLLOWUP_IDS if suite == "c3followup2" else EVAL12_IDS
         if len(found) != len(tasks) or any(x not in found or found[x]["split"] != "eval" for x in selected):
             raise GateError("frozen C2 evaluation tasks unavailable")
         return [(x,found[x]) for x in selected], C2_TASKS
@@ -91,14 +93,18 @@ def configuration(args):
                     "--chat-template-kwargs", '{"reasoning_effort":"medium"}']
     explicit_env = {"LLAMA_MOE_STREAM_NO_PRELOAD":"1"} if args.model == "target120b" else {}
     task_rows, workload = tasks_for(args.suite)
-    max_tokens = 64 if args.suite == "smoke1" else 512 if args.suite == "historic20" else 2048
-    request_timeout = 180 if args.suite == "smoke1" else 360 if args.suite == "historic20" else 1200
+    max_tokens = 64 if args.suite == "smoke1" else 512 if args.suite == "historic20" else \
+                 3072 if args.suite == "c3followup2" else 2048
+    request_timeout = 180 if args.suite == "smoke1" else 360 if args.suite == "historic20" else \
+                      300 if args.suite == "c3followup2" else 1200
     policy = {"temperature":0,"seed":42,"max_tokens":max_tokens,"reasoning_effort":"medium",
               "attempts":1,"prompt_cache":False,"per_request_timeout_s":request_timeout}
     config = {"server_command":command,"explicit_env":explicit_env,"request_policy":policy,
               "suite":args.suite,"task_ids":[x[0] for x in task_rows]}
     if args.suite in ("c2core8", "c2eval12"):
         config["total_timeout_s"] = 7200 if args.suite == "c2core8" else 10800
+    if args.suite == "c3followup2":
+        config["total_timeout_s"] = 900
     libs = backend_library_hashes(str(binary), backend)
     if not libs:
         raise GateError("backend shared libraries unavailable")
@@ -116,7 +122,8 @@ def configuration(args):
               "min_decode_s":600 if args.suite == "historic20" else 0,
               "min_decode_tok_s":2 if args.suite == "historic20" else 0,
               "min_last_half_tok_s":2 if args.suite == "historic20" else 0}
-    protocol = {"schema_version":"c2-protocol-v1","campaign_id":"tesy-c2-20260926",
+    protocol = {"schema_version":"c2-protocol-v1",
+                "campaign_id":"tesy-c3-20260926" if args.suite == "c3followup2" else "tesy-c2-20260926",
                 "protocol_id":args.protocol_id,"identity":identity,
                 "expected_request_ids":config["task_ids"],"limits":limits}
     return protocol, config, task_rows, model
@@ -158,7 +165,7 @@ def normalize(raw, protocol, config, samples, stderr, elapsed, returncode, reaso
             raise GateError("API token count missing or outside frozen request cap")
         if usage.get("total_tokens") != usage["prompt_tokens"]+usage["completion_tokens"]:
             raise GateError("API total token count inconsistent")
-        if config["suite"] in ("c2core8", "c2eval12") and \
+        if config["suite"] in ("c2core8", "c2eval12", "c3followup2") and \
            usage["prompt_tokens"]+config["request_policy"]["max_tokens"] > 4096:
             raise GateError("templated prompt did not leave the frozen output reserve")
         matches = [task_id for task_id, pair in parsed.items() if
@@ -345,7 +352,7 @@ def run(args, protocol, config, task_rows, model):
             if any(loaded.get(path) != digest_value for path,digest_value in
                    protocol["identity"]["library_sha256"].items()):
                 raise GateError("loaded backend libraries differ from frozen identity")
-            if args.suite in ("c2core8", "c2eval12"):
+            if args.suite in ("c2core8", "c2eval12", "c3followup2"):
                 tokenization = {}
                 for row_id, task in task_rows:
                     template = fetch("/apply-template",{"model":model_id,
@@ -374,7 +381,7 @@ def run(args, protocol, config, task_rows, model):
                 choices = response.get("choices")
                 if type(choices) is not list or len(choices) != 1 or type(choices[0].get("message")) is not dict:
                     raise GateError(f"missing assistant message for {row_id}")
-                if args.suite in ("c2core8", "c2eval12") and \
+                if args.suite in ("c2core8", "c2eval12", "c3followup2") and \
                    response.get("usage",{}).get("prompt_tokens") != \
                    preflight["prompt_tokenization"][row_id]["count"]:
                     raise GateError(f"API prompt count differs from preflight tokenizer for {row_id}")
@@ -429,7 +436,7 @@ def run(args, protocol, config, task_rows, model):
 def main():
     p = argparse.ArgumentParser()
     p.add_argument("--model",required=True,choices=MODEL)
-    p.add_argument("--suite",required=True,choices=("smoke1","historic20","c2core8","c2eval12"))
+    p.add_argument("--suite",required=True,choices=("smoke1","historic20","c2core8","c2eval12","c3followup2"))
     p.add_argument("--ngl",type=int,default=8)
     p.add_argument("--ubatch",type=int,default=32)
     p.add_argument("--slots",type=int,default=32)
