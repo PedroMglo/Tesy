@@ -2,9 +2,9 @@
 set -euo pipefail
 cd "$(dirname "$0")/.."
 
-run_id="${1:?usage: run_target_gpu8_probe.sh RUN_ID 16|24}"
-slots="${2:?usage: run_target_gpu8_probe.sh RUN_ID 16|24}"
-case "$slots" in 16|24) ;; *) exit 2 ;; esac
+run_id="${1:?usage: run_target_gpu8_probe.sh RUN_ID 16|24|32}"
+slots="${2:?usage: run_target_gpu8_probe.sh RUN_ID 16|24|32}"
+case "$slots" in 16|24|32) ;; *) exit 2 ;; esac
 model=/home/pmglo/models/gpt-oss-120b-gguf/gpt-oss-120b-MXFP4.gguf
 
 systemd-run --user --scope --property=MemoryMax=18G --property=MemorySwapMax=0 \
