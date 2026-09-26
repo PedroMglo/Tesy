@@ -1,0 +1,53 @@
+{
+  "schema_version": "c2-probe-audit-v1",
+  "run_id": "c2-ref120b-cpu-all02",
+  "status": "FAIL",
+  "source_sha256": {
+    ".json": "76a9d039894e06cb0132234d495139170bf689c40661bf1416770fd1b160bea1",
+    ".stderr": "62e6231eea7b77bfccf4f0215650c74f3db7380924c87ffc90bd38270ddd9af8",
+    ".stdout": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    ".samples.jsonl": "abf063f1e6d71c7772fd8cc49e493a1ff203da8ed9ad46925a6e6b391d04fbfc",
+    ".f32": "de2a4163d1ac88452fb7a8f8febc6eaffd9744d26c7feb629e3ed1b99f552306",
+    "token_ids": "8fb3aff447febaeaa5a8bdd0c485fd20d51d39fb6ac3e6ba4849eb4a664dbc23"
+  },
+  "expected_rows": 141,
+  "written_rows": 2,
+  "row_index_count": null,
+  "row_map_ok": false,
+  "row_map_error": null,
+  "output_schema_ok": false,
+  "sample_count": 109,
+  "sample_ok": true,
+  "sample_error": null,
+  "resources_ok": false,
+  "stop_reason": "RSS_GUARD",
+  "returncode": -15,
+  "cgroup_peak_bytes": 19327352832,
+  "cgroup_max_bytes": 19327352832,
+  "event_deltas": {
+    "max": 226278,
+    "oom": 0,
+    "oom_kill": 0
+  },
+  "local_event_deltas": {
+    "max": 226278,
+    "oom": 0,
+    "oom_kill": 0
+  },
+  "psi_full_total_delta_us": 2707414,
+  "maxima": {
+    "rss_bytes": 19470573568,
+    "swap_bytes": 0,
+    "cgroup_memory_bytes": 19327352832,
+    "cgroup_peak_bytes": 19327352832,
+    "cgroup_file_bytes": 18679296000,
+    "gpu_used_mib": 114.0,
+    "gpu_temperature_c": 51.0,
+    "cpu_tctl_c": 64.0,
+    "nvme_composite_c": 53.85,
+    "direct_model_fds": 0,
+    "buffered_model_fds": 0
+  },
+  "backend_error": false,
+  "scope": "audit of one fixed-token probe; no free-generation quality or physical I/O attribution"
+}

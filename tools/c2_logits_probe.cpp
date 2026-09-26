@@ -7,6 +7,9 @@
 #include <cmath>
 #include <cstdint>
 #include <cstring>
+#ifdef TESY_C2_FAULT_PROBE
+#include <dlfcn.h>
+#endif
 #include <fcntl.h>
 #include <fstream>
 #include <iostream>
@@ -188,6 +191,14 @@ int main(int argc, char ** argv) {
         cp.n_threads = 8; cp.n_threads_batch = 8; cp.op_offload = false;
         llama_context * ctx = llama_init_from_model(model, cp);
         if (!ctx) throw std::runtime_error("context init failed");
+#ifdef TESY_C2_FAULT_PROBE
+        if (streaming && std::getenv("TESY_C2_PREAD_FAULT")) {
+            auto * arm = reinterpret_cast<void (*)()>(dlsym(RTLD_DEFAULT, "tesy_c2_arm_pread_fault"));
+            if (!arm) throw std::runtime_error("fault interposer not loaded");
+            arm();
+            std::cerr << "TESY_C2_FAULT_ARMED_AFTER_CONTEXT_LOAD\n";
+        }
+#endif
         const int vocab = llama_vocab_n_tokens(llama_model_get_vocab(model));
         std::string index = "case\tphase\tposition\trow\n";
         size_t rows = 0;

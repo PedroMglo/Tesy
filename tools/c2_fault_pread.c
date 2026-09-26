@@ -12,11 +12,17 @@
 // Test-only interposer. It never writes to the model or changes the backend.
 // Exactly one sufficiently large O_DIRECT expert read is affected per process.
 static int injected = 0;
+static int armed = 0;
+
+void tesy_c2_arm_pread_fault(void) {
+    __atomic_store_n(&armed, 1, __ATOMIC_SEQ_CST);
+}
 
 static ssize_t fault_or_read(int fd, void * buf, size_t len, off_t offs) {
     const int flags = fcntl(fd, F_GETFL);
     const char * mode = getenv("TESY_C2_PREAD_FAULT");
-    if (mode && flags >= 0 && (flags & O_DIRECT) && offs > 4096 && len > 8192 &&
+    if (mode && (!getenv("TESY_C2_FAULT_DEFER") || __atomic_load_n(&armed, __ATOMIC_SEQ_CST)) &&
+        flags >= 0 && (flags & O_DIRECT) && offs > 4096 && len > 8192 &&
         __atomic_exchange_n(&injected, 1, __ATOMIC_SEQ_CST) == 0) {
         const char * marker = "TESY_C2_FAULT_INJECTED\n";
         (void) write(STDERR_FILENO, marker, strlen(marker));

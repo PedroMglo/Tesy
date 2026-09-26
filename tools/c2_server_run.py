@@ -223,7 +223,10 @@ def run(args, protocol, config, task_rows, model):
         raise GateError("18 GiB cgroup and zero swap not enforced")
     if model.stat().st_size <= 0 or mem_available() < 6*2**30:
         raise GateError("model or host headroom unavailable")
+    if not gpu_state() or not thermal_state():
+        raise GateError("required GPU or thermal sensors unavailable before launch")
     with socket.socket() as sock:
+        sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         sock.bind(("127.0.0.1",18367))
     stem = ROOT / "results" / args.run_id
     paths = {suffix:Path(str(stem)+suffix) for suffix in
@@ -325,7 +328,9 @@ def run(args, protocol, config, task_rows, model):
         except Exception as exc:
             reasons.append(f"RUN_ERROR:{type(exc).__name__}:{exc}")
         finally:
-            stop.set();stop_own_server(server);watcher.join(timeout=5)
+            # Keep sampling through graceful shutdown; ending the sampler first
+            # left an unobserved >2 s process tail in the initial target smoke.
+            stop_own_server(server);stop.set();watcher.join(timeout=5)
     ended = time.monotonic()-t0
     model_after = model.stat()
     if (model_after.st_dev,model_after.st_ino,model_after.st_size,model_after.st_mtime_ns) != \
