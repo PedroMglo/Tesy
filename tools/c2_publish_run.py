@@ -14,7 +14,7 @@ from run_bounded import sha256
 
 
 ROOT = Path(__file__).resolve().parents[1]
-SUFFIXES = (".preflight.json", ".json", ".normalized.json", ".stdout",
+SUFFIXES = (".preflight.json", ".launch.json", ".json", ".normalized.json", ".stdout",
             ".stderr", ".samples.jsonl", ".gate.json")
 
 
@@ -34,7 +34,8 @@ def publish(run_id, protocol):
         raise GateError("run ID mismatch")
     if sha256(protocol) != preflight["protocol_sha256"]:
         raise GateError("protocol changed since preflight")
-    for suffix in (".stdout", ".stderr", ".samples.jsonl"):
+    for suffix in ((".launch.json",) if files[".launch.json"].exists() else ()) + \
+                  (".stdout", ".stderr", ".samples.jsonl"):
         if raw["source_sha256"].get(suffix) != sha256(files[suffix]):
             raise GateError(f"raw file changed: {suffix}")
     gate = strict_json(files[".gate.json"].read_text()) if files[".gate.json"].exists() else None
@@ -84,8 +85,10 @@ def main():
     p.add_argument("run_id")
     p.add_argument("--protocol",required=True,type=Path)
     args=p.parse_args()
-    print(json.dumps(publish(args.run_id,args.protocol),allow_nan=False))
+    report = publish(args.run_id,args.protocol)
+    print(json.dumps(report,allow_nan=False))
+    return 0 if report["status"] == "PASS" else 1
 
 
 if __name__ == "__main__":
-    main()
+    raise SystemExit(main())

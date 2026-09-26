@@ -228,6 +228,18 @@ def loaded_backend_libraries(pid, backend):
     return found
 
 
+def process_identity(pid):
+    stat = Path(f"/proc/{pid}/stat").read_text()
+    fields = stat[stat.rfind(")") + 2:].split()
+    start_ticks = int(fields[19])  # field 22, after pid and comm
+    cgroup = next(line.split("::", 1)[1].strip()
+                  for line in Path(f"/proc/{pid}/cgroup").read_text().splitlines()
+                  if line.startswith("0::"))
+    inode = (Path("/sys/fs/cgroup") / cgroup.lstrip("/")).stat().st_ino
+    return {"pid": pid, "start_ticks": start_ticks,
+            "cgroup_path": cgroup, "cgroup_inode": inode}
+
+
 def run(args, protocol, config, task_rows, model):
     cg_start = cgroup_state()
     if not cg_start or cg_start["memory_max"] != 18*2**30 or cg_start["swap_max"] != 0:
@@ -241,7 +253,7 @@ def run(args, protocol, config, task_rows, model):
         sock.bind(("127.0.0.1",18367))
     stem = ROOT / "results" / args.run_id
     paths = {suffix:Path(str(stem)+suffix) for suffix in
-             (".preflight.json",".json",".normalized.json",".stdout",".stderr",".samples.jsonl")}
+             (".preflight.json",".launch.json",".json",".normalized.json",".stdout",".stderr",".samples.jsonl")}
     if any(path.exists() for path in paths.values()):
         raise GateError("run ID/output already exists")
     config = dict(config, run_id=args.run_id)
@@ -269,6 +281,18 @@ def run(args, protocol, config, task_rows, model):
          open(paths[".samples.jsonl"],"x") as sample_file:
         server = subprocess.Popen(command, stdout=stdout, stderr=stderr,
                                   env=env, start_new_session=True)
+        try:
+            launch = {"schema_version":"c3-launch-v1", "run_id":args.run_id,
+                      "process_identity":process_identity(server.pid),
+                      "cgroup_start":cg_start, "preflight_sha256":sha256(paths[".preflight.json"])}
+            if launch["process_identity"]["cgroup_path"] != cg_start["path"]:
+                raise GateError("model process is outside the preflight cgroup")
+            with open(paths[".launch.json"],"x") as out:
+                json.dump(launch,out,indent=2,allow_nan=False);out.write("\n")
+            preflight["launch_identity"] = launch["process_identity"]
+        except Exception:
+            stop_own_server(server)
+            raise
         def monitor():
             while not stop.is_set() and server.poll() is None:
                 try:
@@ -276,7 +300,9 @@ def run(args, protocol, config, task_rows, model):
                     ps = proc_status(server.pid); cg = cgroup_state()
                     gpu = gpu_state(); th = thermal_state(); available = mem_available()
                     now = time.monotonic()-t0
-                    sample = {"elapsed_s":now,"pid":server.pid,"proc":ps,"cgroup":cg,
+                    sample = {"elapsed_s":now,"pid":server.pid,
+                              "process_identity":process_identity(server.pid),
+                              "proc":ps,"cgroup":cg,
                               "gpu":gpu,"thermal":th,"mem_available_bytes":available,
                               "model_fds":model_fd_state(server.pid,str(model)),
                               "collection_s":time.monotonic()-collection_start}
@@ -382,8 +408,9 @@ def run(args, protocol, config, task_rows, model):
               "ended_utc":dt.datetime.now(dt.timezone.utc).isoformat(),"elapsed_s":ended,
               "returncode":server.returncode,"stop_reasons":reasons,"results":raw,
               "cgroup_end":cg_end,"sample_count":len(samples),
+              "launch_identity":launch["process_identity"],
               "source_sha256":{s:sha256(p) for s,p in paths.items() if s in
-                               (".stdout",".stderr",".samples.jsonl") and p.exists()}}
+                               (".launch.json",".stdout",".stderr",".samples.jsonl") and p.exists()}}
     with open(paths[".json"],"x") as out:
         json.dump(result,out,indent=2,allow_nan=False);out.write("\n")
     if not reasons and len(raw) == len(task_rows) and server.returncode == 0:
