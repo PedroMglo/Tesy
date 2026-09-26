@@ -1,0 +1,57 @@
+{
+  "run_id": "server20b-gpu8-smoke01",
+  "server_command": [
+    "/home/pmglo/Projects/Tesy/tesy-scale-lab/backends/streaming/build-gcc15/bin/llama-server",
+    "-m",
+    "/home/pmglo/.local/share/tesy/models/gpt-oss-20b/gpt-oss-20b-mxfp4.gguf",
+    "--host",
+    "127.0.0.1",
+    "--port",
+    "18365",
+    "-ngl",
+    "8",
+    "-c",
+    "4096",
+    "-np",
+    "1",
+    "-b",
+    "256",
+    "-ub",
+    "32",
+    "-t",
+    "8",
+    "-tb",
+    "8",
+    "--no-warmup",
+    "--no-repack",
+    "--no-op-offload",
+    "--direct-io",
+    "--moe-stream-cache",
+    "16s",
+    "--moe-stream-io-threads",
+    "4",
+    "--moe-stream-direct"
+  ],
+  "server_env": {
+    "LLAMA_MOE_STREAM_NO_PRELOAD": "1"
+  },
+  "server_binary_sha256": "f19a4b490e60b4205193c25691e350ed577926dfcfe3ef7e2dcc2c24d3f84e86",
+  "host": "127.0.0.1",
+  "port": 18365,
+  "elapsed_s": 21.02,
+  "model_id": "/home/pmglo/.local/share/tesy/models/gpt-oss-20b/gpt-oss-20b-mxfp4.gguf",
+  "usage": {
+    "completion_tokens": 44,
+    "prompt_tokens": 93,
+    "total_tokens": 137,
+    "prompt_tokens_details": {
+      "cached_tokens": 0
+    }
+  },
+  "finish_reason": "stop",
+  "message": {
+    "role": "assistant",
+    "content": "12",
+    "reasoning_content": "The user asks: \"What is 7 plus 5? Give the number.\" It's a simple arithmetic: 7+5=12. Provide the number."
+  }
+}

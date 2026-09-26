@@ -1,0 +1,100 @@
+{
+  "run_id": "runner-sanity-20260926",
+  "started_utc": "2026-09-25T23:52:19.733626+00:00",
+  "model_id": "none",
+  "backend": "stock",
+  "backend_sha": "4b1a27fa0eb875bbca4f6cfe936e3d65adc685c0",
+  "binary_sha256": "b639fd49da0eeaffe498316c9788a081d41d2e009d343f8e75d7e5a219e82921",
+  "variant": "runner-sanity",
+  "workload": "none",
+  "cache_condition": "none",
+  "command": [
+    "/usr/bin/true"
+  ],
+  "limits": {
+    "timeout_s": 10,
+    "max_rss_gib": 24.0,
+    "min_available_gib": 6.0,
+    "max_gpu_mib": 7600.0
+  },
+  "cgroup_start": {
+    "path": "/user.slice/user-1000.slice/user@1000.service/app.slice/run-p60935-i55689.scope",
+    "memory_max": 21474836480,
+    "swap_max": 0,
+    "memory_current": 11235328,
+    "swap_current": 0,
+    "events": {
+      "low": 0,
+      "high": 0,
+      "max": 0,
+      "oom": 0,
+      "oom_kill": 0,
+      "oom_group_kill": 0,
+      "sock_throttled": 0
+    }
+  },
+  "publication": "local only; stdout/stderr are untracked",
+  "samples_path": "/home/pmglo/Projects/Tesy/tesy-scale-lab/results/runner-sanity-20260926.samples.jsonl",
+  "cgroup_limit_enforced": true,
+  "ended_utc": "2026-09-25T23:52:20.754894+00:00",
+  "elapsed_s": 1.021,
+  "returncode": 0,
+  "stop_reason": null,
+  "maxima": {
+    "rss_bytes": 290816,
+    "swap_bytes": 0,
+    "gpu_used_mib": 13.0,
+    "gpu_temperature_c": 55.0
+  },
+  "last_sample": {
+    "elapsed_s": 0.021,
+    "proc": {
+      "VmHWM": 290816,
+      "VmRSS": 290816,
+      "VmSwap": 0,
+      "rchar": 4036,
+      "syscr": 8,
+      "read_bytes": 0
+    },
+    "mem_available_bytes": 24220315648,
+    "gpu": {
+      "used_mib": 13.0,
+      "temperature_c": 55.0,
+      "power_w": 11.52
+    },
+    "cgroup": {
+      "path": "/user.slice/user-1000.slice/user@1000.service/app.slice/run-p60935-i55689.scope",
+      "memory_max": 21474836480,
+      "swap_max": 0,
+      "memory_current": 11366400,
+      "swap_current": 0,
+      "events": {
+        "low": 0,
+        "high": 0,
+        "max": 0,
+        "oom": 0,
+        "oom_kill": 0,
+        "oom_group_kill": 0,
+        "sock_throttled": 0
+      }
+    }
+  },
+  "stdout_path": "/home/pmglo/Projects/Tesy/tesy-scale-lab/results/runner-sanity-20260926.stdout",
+  "stderr_path": "/home/pmglo/Projects/Tesy/tesy-scale-lab/results/runner-sanity-20260926.stderr",
+  "cgroup_end": {
+    "path": "/user.slice/user-1000.slice/user@1000.service/app.slice/run-p60935-i55689.scope",
+    "memory_max": 21474836480,
+    "swap_max": 0,
+    "memory_current": 11005952,
+    "swap_current": 0,
+    "events": {
+      "low": 0,
+      "high": 0,
+      "max": 0,
+      "oom": 0,
+      "oom_kill": 0,
+      "oom_group_kill": 0,
+      "sock_throttled": 0
+    }
+  }
+}

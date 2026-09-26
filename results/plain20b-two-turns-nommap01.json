@@ -1,0 +1,153 @@
+{
+  "run_id": "plain20b-two-turns-nommap01",
+  "started_utc": "2026-09-26T00:07:16.199163+00:00",
+  "model_id": "gpt-oss-20b-mxfp4-gguf",
+  "backend": "streaming",
+  "backend_sha": "1248fd8fa8cfebaece5ea992e4d951c1e18bb9d5",
+  "binary_sha256": "cca4aba352ec5587fc904e75ebc4f0448edb2f5bbf66c21628e5cee3636a2049",
+  "variant": "cpu-plain-no-repack-no-mmap-ub32-greedy256",
+  "workload": "workloads/m1_two_turns.txt",
+  "cache_condition": "warm-after-streaming-two-turns",
+  "command": [
+    "backends/streaming/build-cpu/bin/llama-cli",
+    "-m",
+    "/home/pmglo/.local/share/tesy/models/gpt-oss-20b/gpt-oss-20b-mxfp4.gguf",
+    "-ngl",
+    "0",
+    "-c",
+    "4096",
+    "-b",
+    "256",
+    "-ub",
+    "32",
+    "-t",
+    "8",
+    "-tb",
+    "8",
+    "-n",
+    "256",
+    "-s",
+    "42",
+    "--temp",
+    "0",
+    "--no-warmup",
+    "--simple-io",
+    "--no-display-prompt",
+    "--no-repack",
+    "--no-mmap",
+    "-lv",
+    "3"
+  ],
+  "explicit_env": {},
+  "stdin_file": "workloads/m1_two_turns.txt",
+  "stdin_sha256": "54329122bb29db556fdd12a517a298797c813666768d4866de7687e7648d2c31",
+  "limits": {
+    "timeout_s": 600,
+    "max_rss_gib": 15.0,
+    "min_available_gib": 6.0,
+    "max_gpu_mib": 7000.0
+  },
+  "cgroup_start": {
+    "path": "/user.slice/user-1000.slice/user@1000.service/app.slice/run-p78952-i64423.scope",
+    "memory_max": 17179869184,
+    "swap_max": 0,
+    "memory_current": 11915264,
+    "swap_current": 0,
+    "memory_stat": {
+      "anon": 10547200,
+      "file": 0,
+      "kernel": 274432,
+      "shmem": 0,
+      "file_mapped": 0
+    },
+    "events": {
+      "low": 0,
+      "high": 0,
+      "max": 0,
+      "oom": 0,
+      "oom_kill": 0,
+      "oom_group_kill": 0,
+      "sock_throttled": 0
+    }
+  },
+  "publication": "local only; stdout/stderr are untracked",
+  "samples_path": "/home/pmglo/Projects/Tesy/tesy-scale-lab/results/plain20b-two-turns-nommap01.samples.jsonl",
+  "cgroup_limit_enforced": true,
+  "ended_utc": "2026-09-26T00:07:43.122873+00:00",
+  "elapsed_s": 26.924,
+  "returncode": 0,
+  "stop_reason": null,
+  "maxima": {
+    "rss_bytes": 12344332288,
+    "swap_bytes": 0,
+    "cgroup_memory_bytes": 12670738432,
+    "cgroup_file_bytes": 302419968,
+    "gpu_used_mib": 23.0,
+    "gpu_temperature_c": 52.0
+  },
+  "last_sample": {
+    "elapsed_s": 25.923,
+    "proc": {
+      "VmHWM": 12344332288,
+      "VmRSS": 12344332288,
+      "VmSwap": 0,
+      "rchar": 12124488917,
+      "syscr": 7593,
+      "read_bytes": 302456832
+    },
+    "mem_available_bytes": 13664927744,
+    "gpu": {
+      "used_mib": 23.0,
+      "temperature_c": 52.0,
+      "power_w": 5.39
+    },
+    "cgroup": {
+      "path": "/user.slice/user-1000.slice/user@1000.service/app.slice/run-p78952-i64423.scope",
+      "memory_max": 17179869184,
+      "swap_max": 0,
+      "memory_current": 12669968384,
+      "swap_current": 0,
+      "memory_stat": {
+        "anon": 12339957760,
+        "file": 302419968,
+        "kernel": 25800704,
+        "shmem": 0,
+        "file_mapped": 266240
+      },
+      "events": {
+        "low": 0,
+        "high": 0,
+        "max": 0,
+        "oom": 0,
+        "oom_kill": 0,
+        "oom_group_kill": 0,
+        "sock_throttled": 0
+      }
+    }
+  },
+  "stdout_path": "/home/pmglo/Projects/Tesy/tesy-scale-lab/results/plain20b-two-turns-nommap01.stdout",
+  "stderr_path": "/home/pmglo/Projects/Tesy/tesy-scale-lab/results/plain20b-two-turns-nommap01.stderr",
+  "cgroup_end": {
+    "path": "/user.slice/user-1000.slice/user@1000.service/app.slice/run-p78952-i64423.scope",
+    "memory_max": 17179869184,
+    "swap_max": 0,
+    "memory_current": 315228160,
+    "swap_current": 0,
+    "memory_stat": {
+      "anon": 10588160,
+      "file": 302419968,
+      "kernel": 782336,
+      "shmem": 0,
+      "file_mapped": 0
+    },
+    "events": {
+      "low": 0,
+      "high": 0,
+      "max": 0,
+      "oom": 0,
+      "oom_kill": 0,
+      "oom_group_kill": 0,
+      "sock_throttled": 0
+    }
+  }
+}

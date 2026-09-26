@@ -1,0 +1,163 @@
+{
+  "run_id": "stock20b-gpu14-two-turns01",
+  "started_utc": "2026-09-26T00:17:15.618289+00:00",
+  "model_id": "gpt-oss-20b-mxfp4-gguf",
+  "model_path": "/home/pmglo/.local/share/tesy/models/gpt-oss-20b/gpt-oss-20b-mxfp4.gguf",
+  "backend": "stock",
+  "backend_sha": "4b1a27fa0eb875bbca4f6cfe936e3d65adc685c0",
+  "binary_sha256": "ddf7aa52433632267d1b9a06eaae0c2a8eb6579fe0a73da6fba3ac5080ef4732",
+  "variant": "gpu14-dio-lazyoff-greedy256",
+  "workload": "workloads/m1_two_turns.txt",
+  "cache_condition": "warm-after-prior-runs-loader-direct",
+  "command": [
+    "backends/stock/build-gcc15/bin/llama-cli",
+    "-m",
+    "/home/pmglo/.local/share/tesy/models/gpt-oss-20b/gpt-oss-20b-mxfp4.gguf",
+    "-ngl",
+    "14",
+    "-c",
+    "4096",
+    "-b",
+    "256",
+    "-ub",
+    "32",
+    "-t",
+    "8",
+    "-tb",
+    "8",
+    "-n",
+    "256",
+    "-s",
+    "42",
+    "--temp",
+    "0",
+    "--no-warmup",
+    "--simple-io",
+    "--no-display-prompt",
+    "--load-mode",
+    "dio",
+    "--lazy-mode",
+    "off",
+    "-lv",
+    "3"
+  ],
+  "explicit_env": {},
+  "stdin_file": "workloads/m1_two_turns.txt",
+  "stdin_sha256": "54329122bb29db556fdd12a517a298797c813666768d4866de7687e7648d2c31",
+  "limits": {
+    "timeout_s": 600,
+    "max_rss_gib": 8.5,
+    "min_available_gib": 6.0,
+    "max_gpu_mib": 7000.0
+  },
+  "cgroup_start": {
+    "path": "/user.slice/user-1000.slice/user@1000.service/app.slice/run-p83728-i31647.scope",
+    "memory_max": 9663676416,
+    "swap_max": 0,
+    "memory_current": 12763136,
+    "swap_current": 0,
+    "memory_stat": {
+      "anon": 10637312,
+      "file": 0,
+      "kernel": 270336,
+      "shmem": 0,
+      "file_mapped": 0
+    },
+    "events": {
+      "low": 0,
+      "high": 0,
+      "max": 0,
+      "oom": 0,
+      "oom_kill": 0,
+      "oom_group_kill": 0,
+      "sock_throttled": 0
+    }
+  },
+  "publication": "local only; stdout/stderr are untracked",
+  "samples_path": "/home/pmglo/Projects/Tesy/tesy-scale-lab/results/stock20b-gpu14-two-turns01.samples.jsonl",
+  "cgroup_limit_enforced": true,
+  "ended_utc": "2026-09-26T00:17:31.991725+00:00",
+  "elapsed_s": 16.373,
+  "returncode": 0,
+  "stop_reason": null,
+  "maxima": {
+    "rss_bytes": 6472212480,
+    "swap_bytes": 0,
+    "cgroup_memory_bytes": 6221205504,
+    "cgroup_file_bytes": 5872394240,
+    "gpu_used_mib": 6589.0,
+    "gpu_temperature_c": 61.0,
+    "direct_model_fds": 1,
+    "buffered_model_fds": 0
+  },
+  "last_sample": {
+    "elapsed_s": 15.373,
+    "proc": {
+      "VmHWM": 6749892608,
+      "VmRSS": 824209408,
+      "VmSwap": 0,
+      "rchar": 12124588457,
+      "syscr": 7136,
+      "read_bytes": 6788935680
+    },
+    "mem_available_bytes": 21587132416,
+    "gpu": {
+      "used_mib": 165.0,
+      "temperature_c": 58.0,
+      "power_w": 31.98
+    },
+    "cgroup": {
+      "path": "/user.slice/user-1000.slice/user@1000.service/app.slice/run-p83728-i31647.scope",
+      "memory_max": 9663676416,
+      "swap_max": 0,
+      "memory_current": 4522778624,
+      "swap_current": 0,
+      "memory_stat": {
+        "anon": 529674240,
+        "file": 3978014720,
+        "kernel": 16912384,
+        "shmem": 3977998336,
+        "file_mapped": 12582912
+      },
+      "events": {
+        "low": 0,
+        "high": 0,
+        "max": 0,
+        "oom": 0,
+        "oom_kill": 0,
+        "oom_group_kill": 0,
+        "sock_throttled": 0
+      }
+    },
+    "model_fds": {
+      "open": 0,
+      "direct": 0,
+      "buffered": 0
+    }
+  },
+  "stdout_path": "/home/pmglo/Projects/Tesy/tesy-scale-lab/results/stock20b-gpu14-two-turns01.stdout",
+  "stderr_path": "/home/pmglo/Projects/Tesy/tesy-scale-lab/results/stock20b-gpu14-two-turns01.stderr",
+  "cgroup_end": {
+    "path": "/user.slice/user-1000.slice/user@1000.service/app.slice/run-p83728-i31647.scope",
+    "memory_max": 9663676416,
+    "swap_max": 0,
+    "memory_current": 13586432,
+    "swap_current": 0,
+    "memory_stat": {
+      "anon": 10682368,
+      "file": 20480,
+      "kernel": 241664,
+      "shmem": 0,
+      "file_mapped": 0
+    },
+    "events": {
+      "low": 0,
+      "high": 0,
+      "max": 0,
+      "oom": 0,
+      "oom_kill": 0,
+      "oom_group_kill": 0,
+      "sock_throttled": 0
+    }
+  }
+}
