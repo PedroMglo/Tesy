@@ -1,0 +1,143 @@
+{
+  "run_id": "probe120b-prefix4-plain01",
+  "started_utc": "2026-09-26T10:02:06.775877+00:00",
+  "model_id": "gpt-oss-120b-mxfp4-gguf",
+  "model_path": "/home/pmglo/models/gpt-oss-120b-gguf/gpt-oss-120b-MXFP4.gguf",
+  "backend": "streaming",
+  "backend_sha": "1248fd8fa8cfebaece5ea992e4d951c1e18bb9d5",
+  "binary_sha256": "7d7fcaec2d06dac7ed7f70434e7c36ee590d0f8782ee44a3417747383fed4fe8",
+  "variant": "cpu0-plain-mmap-prefix4-ub32",
+  "workload": "fixed-harmony-prefix4",
+  "cache_condition": "mmap-shared-page-cache-after-smoke",
+  "command": [
+    "tools/logits_probe_streaming_cuda_new",
+    "/home/pmglo/models/gpt-oss-120b-gguf/gpt-oss-120b-MXFP4.gguf",
+    "plain",
+    "0",
+    "results/probe120b-prefix4-plain01.f32",
+    "no-repack",
+    "32"
+  ],
+  "explicit_env": {
+    "TESY_LOGITS_PREFIX_TOKENS": "4",
+    "TESY_LOGITS_PLAIN_MMAP": "1"
+  },
+  "stdin_file": null,
+  "stdin_sha256": null,
+  "limits": {
+    "timeout_s": 600,
+    "max_rss_gib": 17.0,
+    "min_available_gib": 6.0,
+    "max_gpu_mib": 7000.0
+  },
+  "cgroup_start": {
+    "path": "/user.slice/user-1000.slice/user@1000.service/app.slice/run-p127317-i148760.scope",
+    "memory_max": 19327352832,
+    "swap_max": 0,
+    "memory_current": 12275712,
+    "swap_current": 0,
+    "memory_stat": {
+      "anon": 10633216,
+      "file": 434176,
+      "kernel": 278528,
+      "shmem": 0,
+      "file_mapped": 0
+    },
+    "events": {
+      "low": 0,
+      "high": 0,
+      "max": 0,
+      "oom": 0,
+      "oom_kill": 0,
+      "oom_group_kill": 0,
+      "sock_throttled": 0
+    }
+  },
+  "publication": "local only; stdout/stderr are untracked",
+  "samples_path": "/home/pmglo/Projects/Tesy/tesy-scale-lab/results/probe120b-prefix4-plain01.samples.jsonl",
+  "cgroup_limit_enforced": true,
+  "ended_utc": "2026-09-26T10:02:16.297733+00:00",
+  "elapsed_s": 9.522,
+  "returncode": -15,
+  "stop_reason": "RSS_GUARD",
+  "maxima": {
+    "rss_bytes": 19787563008,
+    "swap_bytes": 0,
+    "cgroup_memory_bytes": 17304858624,
+    "cgroup_file_bytes": 16987279360,
+    "gpu_used_mib": 114.0,
+    "gpu_temperature_c": 47.0,
+    "direct_model_fds": 0,
+    "buffered_model_fds": 1
+  },
+  "last_sample": {
+    "elapsed_s": 9.208,
+    "proc": {
+      "VmHWM": 19787563008,
+      "VmRSS": 19787563008,
+      "VmSwap": 0,
+      "rchar": 13134356,
+      "syscr": 3305,
+      "read_bytes": 16997126144
+    },
+    "mem_available_bytes": 26884804608,
+    "gpu": {
+      "used_mib": 114.0,
+      "temperature_c": 47.0,
+      "power_w": 10.35
+    },
+    "cgroup": {
+      "path": "/user.slice/user-1000.slice/user@1000.service/app.slice/run-p127317-i148760.scope",
+      "memory_max": 19327352832,
+      "swap_max": 0,
+      "memory_current": 17304858624,
+      "swap_current": 0,
+      "memory_stat": {
+        "anon": 261799936,
+        "file": 16987279360,
+        "kernel": 52822016,
+        "shmem": 8388608,
+        "file_mapped": 16805720064
+      },
+      "events": {
+        "low": 0,
+        "high": 0,
+        "max": 0,
+        "oom": 0,
+        "oom_kill": 0,
+        "oom_group_kill": 0,
+        "sock_throttled": 0
+      }
+    },
+    "model_fds": {
+      "open": 1,
+      "direct": 0,
+      "buffered": 1
+    }
+  },
+  "stdout_path": "/home/pmglo/Projects/Tesy/tesy-scale-lab/results/probe120b-prefix4-plain01.stdout",
+  "stderr_path": "/home/pmglo/Projects/Tesy/tesy-scale-lab/results/probe120b-prefix4-plain01.stderr",
+  "cgroup_end": {
+    "path": "/user.slice/user-1000.slice/user@1000.service/app.slice/run-p127317-i148760.scope",
+    "memory_max": 19327352832,
+    "swap_max": 0,
+    "memory_current": 17011408896,
+    "swap_current": 0,
+    "memory_stat": {
+      "anon": 10670080,
+      "file": 16987279360,
+      "kernel": 10440704,
+      "shmem": 0,
+      "file_mapped": 0
+    },
+    "events": {
+      "low": 0,
+      "high": 0,
+      "max": 0,
+      "oom": 0,
+      "oom_kill": 0,
+      "oom_group_kill": 0,
+      "sock_throttled": 0
+    }
+  }
+}

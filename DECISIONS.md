@@ -24,3 +24,12 @@ The rows above record decisions made before model execution. Executed A/B result
 | A9 | Local server with GPU8 candidate | Bound to `127.0.0.1`, `/v1/chat/completions` returned final `12` in 44 tokens, server stopped after request | Keep tested localhost command for surrogate reproduction. |
 
 Optimization-intervention budget consumed: 2/6 diagnostic configuration interventions (GPU placement trial; direct loader after resource failure). Neither is promoted as a reproducible M3 throughput optimization. No backend source patch was retained or reverted.
+
+## Resumed 120B campaign (2026-09-26, local time)
+
+| Time | Hypothesis/change | Evidence and result | Decision |
+|---|---|---|---|
+| 10:57 | Existing 16-slot stream can bring up verified 120B GGUF under 18 GiB host / zero swap | `target120b-gpu8-smoke01`: 8 tokens, 2.68 decode tok/s over 2.98 s, 11.34 GB peak cgroup, 2406 MiB peak total GPU, direct expert FD, no swap/OOM | Bring-up smoke passes; sustained performance and correctness remain open. |
+| 11:01 | Four-token same-SHA `mmap`/stream probe under 9 GiB is feasible on 20B | `probe20b-prefix4-plain01` stopped at 9.72 GB RSS (`RSS_GUARD`), zero swap/OOM | Keep resource failure; new 16 GiB diagnostic identity used because 20B is 12.11 GB total. |
+| 11:02 | New 16 GiB plain 20B probe versus stream probe | `probe20b-prefix4-compare01`: 201,088/201,088 logits bitwise equal, same four token IDs | Tool diagnostic validated for this small prefix; prior 9 GiB failure remains. |
+| 11:03 | 120B four-token plain `mmap` reference can load under 18 GiB | `probe120b-prefix4-plain01` stopped at 19.79 GB RSS during load (`RSS_GUARD`), before logits. Source `init_mappings(true)` calls `MAP_POPULATE` over full 63.39 GB file. Stream counterpart completed. | No target numerical parity claim yet. Prepare isolated diagnostic build changing only the `mmap` prefetch flag; keep original backend and failed reference intact. |
