@@ -1,0 +1,7 @@
+# C3 broad reference repair, new run identity
+
+The frozen broad protocol assumed that `-ngl 8` places MoE layers 28–35 on GPU. This was wrong for the pinned backend. Run `c3-r2-broad-log-reference-summary01.json` stopped at layer 28: the CPU layers 0–27 passed their seven boundary comparisons bitwise, while a GPU reference for layer 28 disagreed in routing/FFN. This is a **reference placement failure**, preserved as `FAIL_RUN`, not a target model PASS or an observed streaming defect.
+
+Evidence: the target load log says `offloading output layer to GPU` and `offloading 7 repeating layers to GPU`. The pinned loader computes `i_gpu_start = n_layer_all + 1 - n_gpu_layers` in `backends/streaming/src/llama-model.cpp`; with 36 repeating layers and `-ngl 8`, the output consumes one offload slot, giving CPU layers 0–28 and GPU layers 29–35. The source captures and input IDs remain unchanged. The failed reference is not overwritten or reclassified.
+
+Before rerun, `c3_layer_reference` and `c3_replay_all.py` have been corrected to CPU 0–28 / GPU 29–35. A complete replay uses fresh `-02` run IDs and summary `...reference-summary02.json`; this is a new diagnostic identity. It still requires every routed ID, weight and FFN output to be bitwise equal, with the same cgroup and resource envelope. Any mismatch fails without a tolerance change. Build checksum and raw hashes are recorded by the new manifests. No optimization timing claim is made.

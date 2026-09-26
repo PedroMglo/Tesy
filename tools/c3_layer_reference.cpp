@@ -315,9 +315,27 @@ int main(int argc, char ** argv) {
         const auto capture_root = std::filesystem::path(argv[2]);
         const int layer = std::stoi(argv[3]);
         const std::string device = argv[4];
-        require((layer == 0 && device == "cpu") || (layer == 35 && device == "gpu"),
-                "prototype admits CPU layer0 and GPU layer35 only");
+        require(layer >= 0 && layer < 36 &&
+                ((layer < 29 && device == "cpu") || (layer >= 29 && device == "gpu")),
+                "layer/device placement differs from frozen GPU8 map");
         const auto rows = index(capture_root,layer);
+        std::vector<std::string> phases;
+        if (std::filesystem::exists(capture_root / "phases.txt")) {
+            std::ifstream source(capture_root / "phases.txt");
+            std::string phase;
+            while (std::getline(source,phase)) {
+                require(!phase.empty() &&
+                        std::find(phases.begin(),phases.end(),phase) == phases.end(),
+                        "empty or duplicated capture phase");
+                phases.push_back(phase);
+            }
+        } else {
+            phases = {"prefill0","decode0"};
+        }
+        const std::vector<std::string> prototype{"prefill0","decode0"};
+        const std::vector<std::string> broad{"prefill0","prefill128","prefill_final",
+                                             "decode0","decode1","decode7","decode31"};
+        require(phases == prototype || phases == broad, "capture phase schedule changed");
         ggml_backend_load_all();
         auto * dev = ggml_backend_dev_by_type(device == "cpu" ?
                          GGML_BACKEND_DEVICE_TYPE_CPU : GGML_BACKEND_DEVICE_TYPE_GPU);
@@ -366,14 +384,24 @@ int main(int argc, char ** argv) {
         for (const auto & item : specs) load_exact(fd,item,model_size);
         close(fd);
         ggml_backend_synchronize(backend.value);
-        const auto prefill = replay("prefill0",rows,backend.value,tensors);
-        const auto decode = replay("decode0",rows,backend.value,tensors);
+        std::vector<row_result> results;
+        bool pass = true;
+        for (const auto & phase : phases) {
+            results.push_back(replay(phase,rows,backend.value,tensors));
+            const auto & row = results.back();
+            pass &= row.routing_ids_equal && row.routing_weights.bitwise &&
+                    row.ffn.bitwise && row.routing_weights.nonfinite == 0 &&
+                    row.ffn.nonfinite == 0;
+        }
         std::cout << "{\"schema\":\"c3-layer-reference-diagnostic-v1\","
                   << "\"classification\":\"DIAGNOSTIC_UNQUALIFIED\","
                   << "\"layer\":" << layer << ",\"device\":\"" << device << "\","
                   << "\"canonical_layer_bytes\":" << bytes_total << ","
-                  << "\"rows\":[" << render(prefill) << ',' << render(decode) << "]}\n";
-        return 0;
+                  << "\"all_bitwise\":" << (pass ? "true" : "false") << ",\"rows\":[";
+        for (size_t i = 0; i < results.size(); ++i)
+            std::cout << (i ? "," : "") << render(results[i]);
+        std::cout << "]}\n";
+        return pass ? 0 : 1;
     } catch (const std::exception & exc) {
         std::cerr << "C3_REFERENCE_FAIL: " << exc.what() << '\n';
         return 1;

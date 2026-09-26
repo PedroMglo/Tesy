@@ -55,6 +55,7 @@ struct capture_state {
     std::string checked = "phase\tlayer\twave\tlogical\tslot\ttensor\tbytes\tstatus\n";
     size_t checked_slices = 0;
     size_t checked_bytes = 0;
+    std::vector<std::string> phases;
 };
 
 void check(bool ok, const std::string & message) {
@@ -215,7 +216,9 @@ bool capture(ggml_tensor * tensor, bool ask, void * user_data) {
     if (dash == std::string::npos) return false;
     const std::string stage = name.substr(0, dash);
     const std::string layer = name.substr(dash + 1);
-    if (layer != "0" && layer != "35") return false;
+    if (layer.empty() || !std::all_of(layer.begin(),layer.end(),[](char c) { return c >= '0' && c <= '9'; })) return false;
+    const int layer_id = std::stoi(layer);
+    if (layer_id < 0 || layer_id >= 36 || (!state.all_layers && layer_id != 0 && layer_id != 35)) return false;
     if (ask && stage.rfind("ffn_moe_", 0) == 0) state.seen_stages.insert(stage);
     constexpr std::array<const char *, 16> wanted{
         "attn_post_norm", "ffn_moe_logits", "ffn_moe_logits_biased",
@@ -228,7 +231,20 @@ bool capture(ggml_tensor * tensor, bool ask, void * user_data) {
     bool matched = false;
     for (const char * item : wanted) matched |= stage == item;
     if (!matched) return false;
+    const bool byte_check = !state.all_layers ||
+        ((layer_id == 0 || layer_id == 35) &&
+         (state.phase == "prefill0" || state.phase == "decode0"));
+    const bool save = !state.all_layers ||
+        stage == "attn_post_norm" || stage == "ffn_moe_logits" ||
+        stage == "ffn_moe_logits_biased" || stage == "ffn_moe_probs" ||
+        stage == "ffn_moe_topk" || stage == "ffn_moe_weights_softmax" ||
+        stage == "ffn_moe_topk_stream" || stage == "ffn_moe_wave_ids" ||
+        stage == "ffn_moe_wave_mask" || stage == "ffn_moe_out";
+    if (!save && !(byte_check &&
+        (stage == "ffn_moe_gate_biased" || stage == "ffn_moe_up_biased" ||
+         stage == "ffn_moe_down_biased"))) return false;
     if (ask) return true;
+    if (save) {
     const size_t size = ggml_nbytes(tensor);
     check(size > 0 && size <= 64u*1024u*1024u, "capture tensor size outside bound");
     check(state.bytes + size <= 256u*1024u*1024u, "capture volume bound exceeded");
@@ -241,7 +257,9 @@ bool capture(ggml_tensor * tensor, bool ask, void * user_data) {
     state.index += state.phase + "\t" + layer + "\t" + stage + "\t" +
                    ggml_type_name(tensor->type) + "\t" + shape(tensor) + "\t" +
                    dims(tensor->nb) + "\t" + std::to_string(size) + "\t" + file + "\n";
-    auto & slot = state.slots[static_cast<size_t>(std::stoi(layer))];
+    }
+    if (!byte_check) return true;
+    auto & slot = state.slots[static_cast<size_t>(layer_id)];
     if (stage == "ffn_moe_topk") {
         slot = {};
         slot.logical = ids_from(tensor);
@@ -262,11 +280,11 @@ bool capture(ggml_tensor * tensor, bool ask, void * user_data) {
         slot.weights[kind] = matmul->src[0];
         slot.biases[kind] = tensor->src[1];
         if (kind == 2 && !slot.wave) {
-            verify_slots(state,std::stoi(layer),std::vector<float>(slot.logical.size(),1.0f));
+            verify_slots(state,layer_id,std::vector<float>(slot.logical.size(),1.0f));
         }
     } else if (stage == "ffn_moe_wave_mask") {
         check(slot.wave, "wave mask without wave IDs");
-        verify_slots(state,std::stoi(layer),mask_from(tensor));
+        verify_slots(state,layer_id,mask_from(tensor));
     }
     return true;
 }
@@ -318,17 +336,21 @@ void decode(llama_context * ctx, const std::vector<llama_token> & ids,
 } // namespace
 
 int main(int argc, char ** argv) {
-    if (argc != 5) {
-        std::cerr << "usage: c3_boundary_capture MODEL.gguf IDS.tsv CASE OUTPUT_DIR\n";
+    if (argc != 5 && argc != 6) {
+        std::cerr << "usage: c3_boundary_capture MODEL.gguf IDS.tsv CASE OUTPUT_DIR [--all-layers]\n";
         return 2;
     }
     try {
         const auto prompt = ids_for(argv[2], argv[3], false);
         const auto continuation = ids_for(argv[2], argv[3], true);
-        check(prompt.size() >= 32 && prompt.size() + continuation.size() <= 4096,
+        const bool all_layers = argc == 6 && std::strcmp(argv[5],"--all-layers") == 0;
+        check(argc == 5 || all_layers, "unknown capture mode");
+        check(prompt.size() >= 32 && prompt.size() + continuation.size() <= 4096 &&
+              (!all_layers || (prompt.size() >= 160 && continuation.size() >= 32)),
               "token count outside frozen context/batch");
         capture_state state;
         state.root = argv[4];
+        state.all_layers = all_layers;
         check(std::filesystem::create_directory(state.root), "output root already exists");
         prepare_canonical(state,argv[1]);
         llama_backend_init();
@@ -355,30 +377,44 @@ int main(int argc, char ** argv) {
         cp.cb_eval_user_data = &state;
         llama_context * ctx = llama_init_from_model(model, cp);
         check(ctx != nullptr, "context init failed");
-        state.phase = "prefill0";
-        state.enabled = true;
-        decode(ctx, prompt, 0, 0, 32);
-        state.enabled = false;
         const int vocab = llama_vocab_n_tokens(llama_model_get_vocab(model));
         check(vocab == 201088, "target vocabulary changed");
-        const float * first_logits = llama_get_logits(ctx);
-        check(first_logits != nullptr, "prefill logits unavailable");
-        write_new(state.root / "prefill0.logits.f32", first_logits,
-                  static_cast<size_t>(vocab)*sizeof(float));
-        for (int off = 32; off < static_cast<int>(prompt.size()); off += 32) {
-            decode(ctx, prompt, off, off, std::min(32, static_cast<int>(prompt.size()) - off));
+        const int final_prompt_start = ((static_cast<int>(prompt.size()) - 1)/32)*32;
+        for (int off = 0; off < static_cast<int>(prompt.size()); off += 32) {
+            state.enabled = off == 0 || (all_layers && (off == 128 || off == final_prompt_start));
+            state.phase = off == 0 ? "prefill0" : off == 128 ? "prefill128" : "prefill_final";
+            decode(ctx,prompt,off,off,std::min(32,static_cast<int>(prompt.size())-off));
+            if (state.enabled) {
+                const float * logits = llama_get_logits(ctx);
+                check(logits != nullptr, "prefill logits unavailable");
+                write_new(state.root / (state.phase + ".logits.f32"),logits,
+                          static_cast<size_t>(vocab)*sizeof(float));
+                state.phases.push_back(state.phase);
+                std::cout << "captured=" << state.phase << " tensors=" << state.count << "\n" << std::flush;
+            }
+            state.enabled = false;
         }
-        state.phase = "decode0";
-        state.enabled = true;
-        std::vector<llama_token> token{continuation[0]};
-        decode(ctx, token, 0, static_cast<int>(prompt.size()), 1);
-        state.enabled = false;
-        const float * decode_logits = llama_get_logits(ctx);
-        check(decode_logits != nullptr, "decode logits unavailable");
-        write_new(state.root / "decode0.logits.f32", decode_logits,
-                  static_cast<size_t>(vocab)*sizeof(float));
+        const int decode_count = all_layers ? 32 : 1;
+        for (int i = 0; i < decode_count; ++i) {
+            state.enabled = i == 0 || (all_layers && (i == 1 || i == 7 || i == 31));
+            state.phase = "decode" + std::to_string(i);
+            std::vector<llama_token> token{continuation[static_cast<size_t>(i)]};
+            decode(ctx, token, 0, static_cast<int>(prompt.size()) + i, 1);
+            if (state.enabled) {
+                const float * logits = llama_get_logits(ctx);
+                check(logits != nullptr, "decode logits unavailable");
+                write_new(state.root / (state.phase + ".logits.f32"),logits,
+                          static_cast<size_t>(vocab)*sizeof(float));
+                state.phases.push_back(state.phase);
+                std::cout << "captured=" << state.phase << " tensors=" << state.count << "\n" << std::flush;
+            }
+            state.enabled = false;
+        }
         write_new(state.root / "index.tsv", state.index.data(), state.index.size());
         write_new(state.root / "byte_checks.tsv", state.checked.data(), state.checked.size());
+        std::string phases;
+        for (const auto & phase : state.phases) phases += phase + "\n";
+        write_new(state.root / "phases.txt",phases.data(),phases.size());
         std::string stages;
         for (const auto & name : state.seen_stages) stages += name + "\n";
         write_new(state.root / "stages.txt", stages.data(), stages.size());
