@@ -252,6 +252,15 @@ def process_identity(pid):
             "cgroup_path": cgroup, "cgroup_inode": inode}
 
 
+def child_exited_after_sample_loss(server):
+    """Distinguish a normal terminal /proc race from missing live telemetry."""
+    try:
+        server.wait(timeout=0.2)
+        return True
+    except subprocess.TimeoutExpired:
+        return False
+
+
 def run(args, protocol, config, task_rows, model):
     cg_start = cgroup_state()
     if not cg_start or cg_start["memory_max"] != 18*2**30 or cg_start["swap_max"] != 0:
@@ -314,8 +323,22 @@ def run(args, protocol, config, task_rows, model):
                     ps = proc_status(server.pid); cg = cgroup_state()
                     gpu = gpu_state(); th = thermal_state(); available = mem_available()
                     now = time.monotonic()-t0
+                    try:
+                        identity = process_identity(server.pid)
+                    except (FileNotFoundError, ProcessLookupError):
+                        # /proc may disappear after the poll above. Skip the
+                        # terminal partial sample only after the child exits.
+                        if not child_exited_after_sample_loss(server):
+                            reasons.append("TELEMETRY_MISSING_LIVE_PROCESS")
+                            stop_own_server(server)
+                        break
+                    if not ps or any(field not in ps for field in ("VmRSS", "VmSwap", "VmHWM")):
+                        if not child_exited_after_sample_loss(server):
+                            reasons.append("TELEMETRY_MISSING_LIVE_PROCESS")
+                            stop_own_server(server)
+                        break
                     sample = {"elapsed_s":now,"pid":server.pid,
-                              "process_identity":process_identity(server.pid),
+                              "process_identity":identity,
                               "proc":ps,"cgroup":cg,
                               "gpu":gpu,"thermal":th,"mem_available_bytes":available,
                               "model_fds":model_fd_state(server.pid,str(model)),
