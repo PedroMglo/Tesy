@@ -319,6 +319,23 @@ def run(args, protocol, config, task_rows, model):
             if any(loaded.get(path) != digest_value for path,digest_value in
                    protocol["identity"]["library_sha256"].items()):
                 raise GateError("loaded backend libraries differ from frozen identity")
+            if args.suite in ("c2core8", "c2eval12"):
+                tokenization = {}
+                for row_id, task in task_rows:
+                    template = fetch("/apply-template",{"model":model_id,
+                                      "messages":[{"role":"user","content":task["prompt"]}],
+                                      "max_tokens":config["request_policy"]["max_tokens"],
+                                      "temperature":0,"seed":42})
+                    if type(template.get("prompt")) is not str:
+                        raise GateError(f"official template unavailable for {row_id}")
+                    tokenized = fetch("/tokenize",{"content":template["prompt"],
+                                       "add_special":False,"parse_special":True})
+                    ids = tokenized.get("tokens")
+                    if type(ids) is not list or any(type(x) is not int for x in ids) or \
+                       not 0 < len(ids) <= 4096-config["request_policy"]["max_tokens"]:
+                        raise GateError(f"official tokenization exceeds output reserve for {row_id}")
+                    tokenization[row_id] = {"count":len(ids),"token_ids_sha256":digest(ids)}
+                preflight["prompt_tokenization"] = tokenization
             for row_id, task in task_rows:
                 if reasons or server.poll() is not None: raise GateError("server/watchdog stopped")
                 payload = {"model":model_id,"messages":[{"role":"user","content":task["prompt"]}],
@@ -331,6 +348,10 @@ def run(args, protocol, config, task_rows, model):
                 choices = response.get("choices")
                 if type(choices) is not list or len(choices) != 1 or type(choices[0].get("message")) is not dict:
                     raise GateError(f"missing assistant message for {row_id}")
+                if args.suite in ("c2core8", "c2eval12") and \
+                   response.get("usage",{}).get("prompt_tokens") != \
+                   preflight["prompt_tokenization"][row_id]["count"]:
+                    raise GateError(f"API prompt count differs from preflight tokenizer for {row_id}")
                 item = {"id":row_id,"source_task_id":task["id"],"category":task["category"],
                         "started_s":start,"ended_s":end,"finish_reason":choices[0].get("finish_reason"),
                         "usage":response.get("usage"),"timings":response.get("timings"),
