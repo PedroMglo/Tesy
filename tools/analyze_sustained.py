@@ -12,8 +12,10 @@ ROOT = Path(__file__).resolve().parents[1]
 
 
 def pairs(stderr, name):
-    return [(int(tokens), float(ms) / 1000) for ms, tokens in
-            re.findall(r"(?m)^.*?" + name + r" time =\s*([\d.]+) ms /\s*(\d+) tokens", stderr)]
+    pattern = (r"(?m)\|\s*prompt eval time =\s*([\d.]+) ms /\s*(\d+) tokens"
+               if name == "prompt eval" else
+               r"(?m)\|[ \t]{2,}eval time =\s*([\d.]+) ms /\s*(\d+) tokens")
+    return [(int(tokens), float(ms) / 1000) for ms, tokens in re.findall(pattern, stderr)]
 
 
 def main():
@@ -27,9 +29,6 @@ def main():
     samples = [json.loads(line) for line in Path(str(stem) + ".samples.jsonl").read_text().splitlines()]
     prefill = pairs(stderr, "prompt eval")
     decode = pairs(stderr, "eval")
-    # The plain 'eval time' regex excludes 'prompt eval time' because the latter
-    # has no whitespace immediately before eval in the full pattern? Filter below.
-    decode = [(n, s) for n, s in decode if (n, s) not in prefill]
     answers = re.findall(r"\[Start thinking\](.*?)\[ Prompt:", stdout, re.S)
     requests = []
     for i, ((np, sp), (nd, sd)) in enumerate(zip(prefill, decode)):
