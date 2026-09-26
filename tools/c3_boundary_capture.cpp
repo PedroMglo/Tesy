@@ -59,6 +59,8 @@ struct capture_state {
     int model_fd = -1;
     std::array<std::array<canonical_slice, 6>, 36> canonical{};
     std::array<slot_state, 36> slots{};
+    std::array<llama_moe_stream_layer *, 36> stream_layers{};
+    std::string route_prestate = "phase\tlayer\texpert\tclass\tslot\tgeneration\n";
     std::string checked = "phase\tlayer\twave\tlogical\tslot\tgeneration\ttensor\tbytes\tstatus\n";
     size_t checked_slices = 0;
     size_t checked_bytes = 0;
@@ -149,8 +151,8 @@ struct pinned_custom_params {
     void * userdata;
 };
 
-void snapshot_residency(slot_state & slot, ggml_tensor * tensor,
-                        const std::string & stage, int layer) {
+llama_moe_stream_layer * stream_layer_for(ggml_tensor * tensor,
+                                          const std::string & stage, int layer) {
     check(tensor->op == (stage == "ffn_moe_wave_ids" ? GGML_OP_CUSTOM : GGML_OP_MAP_CUSTOM1),
           "remap operator kind changed");
     pinned_custom_params params{};
@@ -168,6 +170,10 @@ void snapshot_residency(slot_state & slot, ggml_tensor * tensor,
     }
     check(stream_layer && stream_layer->il == layer && stream_layer->mgr &&
           stream_layer->n_slots == slot_count, "wrong remap layer or slot count");
+    return stream_layer;
+}
+
+void snapshot_residency(slot_state & slot, llama_moe_stream_layer * stream_layer) {
     std::lock_guard<std::mutex> lock(stream_layer->mgr->mtx);
     slot.generation.clear();
     slot.resident_expert.clear();
@@ -177,6 +183,36 @@ void snapshot_residency(slot_state & slot, ggml_tensor * tensor,
         slot.generation.push_back(stream_layer->slot_gen[static_cast<size_t>(physical)]);
         slot.resident_expert.push_back(stream_layer->slot_expert[static_cast<size_t>(physical)]);
         slot.resident_state.push_back(stream_layer->slot_state[static_cast<size_t>(physical)]);
+    }
+}
+
+void record_route_prestate(capture_state & state, int layer,
+                           const std::vector<int32_t> & logical) {
+    auto * sl = state.stream_layers[static_cast<size_t>(layer)];
+    if (!sl) return;
+    std::lock_guard<std::mutex> lock(sl->mgr->mtx);
+    std::set<int32_t> unique(logical.begin(),logical.end());
+    for (int32_t expert : unique) {
+        check(expert >= 0 && expert < expert_count,"logical expert outside namespace");
+        const auto it = sl->expert_slot.find(expert);
+        int slot = -1;
+        uint64_t gen = 0;
+        std::string cls;
+        if (it == sl->expert_slot.end()) {
+            cls = sl->seen[static_cast<size_t>(expert)] ? "ABSENT_RELOAD" : "ABSENT_COLD";
+        } else {
+            slot = it->second;
+            check(slot >= 0 && slot < slot_count,"mapped slot outside cache");
+            gen = sl->slot_gen[static_cast<size_t>(slot)];
+            check(sl->slot_state[static_cast<size_t>(slot)] == LLAMA_MOE_STREAM_SLOT_RESIDENT ||
+                  sl->slot_state[static_cast<size_t>(slot)] == LLAMA_MOE_STREAM_SLOT_LOADING,
+                  "mapped expert is neither resident nor loading");
+            cls = sl->slot_state[static_cast<size_t>(slot)] == LLAMA_MOE_STREAM_SLOT_RESIDENT ?
+                  "READY" : "IN_FLIGHT";
+        }
+        state.route_prestate += state.phase + "\t" + std::to_string(layer) + "\t" +
+                                std::to_string(expert) + "\t" + cls + "\t" +
+                                std::to_string(slot) + "\t" + std::to_string(gen) + "\n";
     }
 }
 
@@ -334,10 +370,13 @@ bool capture(ggml_tensor * tensor, bool ask, void * user_data) {
     if (stage == "ffn_moe_topk") {
         slot = {};
         slot.logical = ids_from(tensor);
+        record_route_prestate(state,layer_id,slot.logical);
     } else if (stage == "ffn_moe_topk_stream" || stage == "ffn_moe_wave_ids") {
         slot.physical = ids_from(tensor);
         slot.wave = stage == "ffn_moe_wave_ids";
-        snapshot_residency(slot,tensor,stage,layer_id);
+        auto * stream_layer = stream_layer_for(tensor,stage,layer_id);
+        state.stream_layers[static_cast<size_t>(layer_id)] = stream_layer;
+        snapshot_residency(slot,stream_layer);
     } else if (stage == "ffn_moe_gate_biased" ||
                stage == "ffn_moe_up_biased" || stage == "ffn_moe_down_biased") {
         const int kind = stage == "ffn_moe_gate_biased" ? 0 :
@@ -494,6 +533,7 @@ int main(int argc, char ** argv) {
         }
         write_new(state.root / "index.tsv", state.index.data(), state.index.size());
         write_new(state.root / "byte_checks.tsv", state.checked.data(), state.checked.size());
+        write_new(state.root / "route_prestate.tsv", state.route_prestate.data(), state.route_prestate.size());
         std::string phases;
         for (const auto & phase : state.phases) phases += phase + "\n";
         write_new(state.root / "phases.txt",phases.data(),phases.size());
