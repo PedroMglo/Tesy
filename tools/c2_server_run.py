@@ -57,7 +57,7 @@ def tasks_for(suite):
         if len(tasks) != 1 or tasks[0]["id"] != "c2-smoke-arithmetic":
             raise GateError("smoke task changed")
         return [(tasks[0]["id"],tasks[0])], SMOKE
-    if suite == "historic20":
+    if suite in ("historic20", "c3sustained20"):
         tasks = [json.loads(line) for line in HISTORIC.read_text().splitlines()]
         tasks = [x for x in tasks if x["split"] == "eval"]
         if len(tasks) != 10 or len({x["id"] for x in tasks}) != 10:
@@ -75,6 +75,8 @@ def tasks_for(suite):
 
 
 def configuration(args):
+    if args.suite == "c3sustained20" and args.model != "target120b":
+        raise GateError("C3 preload sustained suite requires target120b")
     backend_name, model_name, model_hash, default_ngl = MODEL[args.model]
     backend = ROOT / "backends" / backend_name
     binary = backend / "build-gcc15/bin/llama-server"
@@ -91,11 +93,12 @@ def configuration(args):
         command += ["--no-repack", "--no-op-offload", "--direct-io", "--moe-stream-cache",
                     f"{args.slots}s", "--moe-stream-io-threads", "4", "--moe-stream-direct",
                     "--chat-template-kwargs", '{"reasoning_effort":"medium"}']
-    explicit_env = {"LLAMA_MOE_STREAM_NO_PRELOAD":"1"} if args.model == "target120b" else {}
+    explicit_env = {"LLAMA_MOE_STREAM_NO_PRELOAD":"1"} if \
+                   args.model == "target120b" and args.suite != "c3sustained20" else {}
     task_rows, workload = tasks_for(args.suite)
-    max_tokens = 64 if args.suite == "smoke1" else 512 if args.suite == "historic20" else \
+    max_tokens = 64 if args.suite == "smoke1" else 512 if args.suite in ("historic20", "c3sustained20") else \
                  3072 if args.suite == "c3followup2" else 2048
-    request_timeout = 180 if args.suite == "smoke1" else 360 if args.suite == "historic20" else \
+    request_timeout = 180 if args.suite == "smoke1" else 360 if args.suite in ("historic20", "c3sustained20") else \
                       300 if args.suite == "c3followup2" else 1200
     policy = {"temperature":0,"seed":42,"max_tokens":max_tokens,"reasoning_effort":"medium",
               "attempts":1,"prompt_cache":False,"per_request_timeout_s":request_timeout}
@@ -105,6 +108,8 @@ def configuration(args):
         config["total_timeout_s"] = 7200 if args.suite == "c2core8" else 10800
     if args.suite == "c3followup2":
         config["total_timeout_s"] = 900
+    if args.suite == "c3sustained20":
+        config["preload_enabled"] = True
     libs = backend_library_hashes(str(binary), backend)
     if not libs:
         raise GateError("backend shared libraries unavailable")
@@ -117,13 +122,13 @@ def configuration(args):
               "gpu_max_mib":7000,"min_mem_available_bytes":6*2**30,
               "cpu_max_c":95,"gpu_max_c":80,"nvme_max_c":70,
               "max_gap_s":3,"boundary_s":2,
-              "min_elapsed_s":900 if args.suite == "historic20" else 0,
-              "min_active_s":900 if args.suite == "historic20" else 0,
-              "min_decode_s":600 if args.suite == "historic20" else 0,
-              "min_decode_tok_s":2 if args.suite == "historic20" else 0,
-              "min_last_half_tok_s":2 if args.suite == "historic20" else 0}
+              "min_elapsed_s":900 if args.suite in ("historic20", "c3sustained20") else 0,
+              "min_active_s":900 if args.suite in ("historic20", "c3sustained20") else 0,
+              "min_decode_s":600 if args.suite in ("historic20", "c3sustained20") else 0,
+              "min_decode_tok_s":3 if args.suite == "c3sustained20" else 2 if args.suite == "historic20" else 0,
+              "min_last_half_tok_s":3 if args.suite == "c3sustained20" else 2 if args.suite == "historic20" else 0}
     protocol = {"schema_version":"c2-protocol-v1",
-                "campaign_id":"tesy-c3-20260926" if args.suite == "c3followup2" else "tesy-c2-20260926",
+                "campaign_id":"tesy-c3-20260926" if args.suite in ("c3followup2", "c3sustained20") else "tesy-c2-20260926",
                 "protocol_id":args.protocol_id,"identity":identity,
                 "expected_request_ids":config["task_ids"],"limits":limits}
     return protocol, config, task_rows, model
@@ -280,6 +285,8 @@ def run(args, protocol, config, task_rows, model):
     t0 = time.monotonic()
     command = config["server_command"]
     env = os.environ.copy();env.update(config["explicit_env"])
+    if args.suite == "c3sustained20":
+        env.pop("LLAMA_MOE_STREAM_NO_PRELOAD", None)
     reasons = []
     raw = []
     samples = []
@@ -436,7 +443,7 @@ def run(args, protocol, config, task_rows, model):
 def main():
     p = argparse.ArgumentParser()
     p.add_argument("--model",required=True,choices=MODEL)
-    p.add_argument("--suite",required=True,choices=("smoke1","historic20","c2core8","c2eval12","c3followup2"))
+    p.add_argument("--suite",required=True,choices=("smoke1","historic20","c2core8","c2eval12","c3followup2","c3sustained20"))
     p.add_argument("--ngl",type=int,default=8)
     p.add_argument("--ubatch",type=int,default=32)
     p.add_argument("--slots",type=int,default=32)
