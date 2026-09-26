@@ -2,21 +2,25 @@
 #include "ggml.h"
 #include "gguf.h"
 #include "llama.h"
+#include "llama-moe-stream.h"
 
 #include <algorithm>
 #include <array>
 #include <cerrno>
 #include <cstdint>
+#include <cstdlib>
 #include <cstring>
 #include <filesystem>
 #include <fstream>
 #include <iostream>
 #include <limits>
+#include <mutex>
 #include <set>
 #include <stdexcept>
 #include <string>
 #include <vector>
 
+#include <dlfcn.h>
 #include <fcntl.h>
 #include <unistd.h>
 
@@ -36,6 +40,9 @@ struct slot_state {
     std::vector<int32_t> physical;
     std::array<ggml_tensor *, 3> weights{};
     std::array<ggml_tensor *, 3> biases{};
+    std::vector<uint64_t> generation;
+    std::vector<int32_t> resident_expert;
+    std::vector<uint8_t> resident_state;
     bool wave = false;
     size_t wave_index = 0;
 };
@@ -52,10 +59,12 @@ struct capture_state {
     int model_fd = -1;
     std::array<std::array<canonical_slice, 6>, 36> canonical{};
     std::array<slot_state, 36> slots{};
-    std::string checked = "phase\tlayer\twave\tlogical\tslot\ttensor\tbytes\tstatus\n";
+    std::string checked = "phase\tlayer\twave\tlogical\tslot\tgeneration\ttensor\tbytes\tstatus\n";
     size_t checked_slices = 0;
     size_t checked_bytes = 0;
     std::vector<std::string> phases;
+    std::string mutant;
+    bool mutant_fired = false;
 };
 
 void check(bool ok, const std::string & message) {
@@ -134,26 +143,82 @@ void pread_exact(int fd, void * data, size_t size, size_t offset) {
     }
 }
 
+struct pinned_custom_params {
+    ggml_custom_op_t fun;
+    int n_tasks;
+    void * userdata;
+};
+
+void snapshot_residency(slot_state & slot, ggml_tensor * tensor,
+                        const std::string & stage, int layer) {
+    check(tensor->op == (stage == "ffn_moe_wave_ids" ? GGML_OP_CUSTOM : GGML_OP_MAP_CUSTOM1),
+          "remap operator kind changed");
+    pinned_custom_params params{};
+    static_assert(sizeof(params) <= GGML_MAX_OP_PARAMS);
+    std::memcpy(&params,tensor->op_params,sizeof(params));
+    check(params.fun && params.n_tasks == 1 && params.userdata,
+          "remap operator metadata changed");
+    llama_moe_stream_layer * stream_layer = nullptr;
+    if (stage == "ffn_moe_wave_ids") {
+        const auto * wave = static_cast<const llama_moe_stream_wave *>(params.userdata);
+        check(wave->wave >= 0 && wave->sl, "invalid wave userdata");
+        stream_layer = wave->sl;
+    } else {
+        stream_layer = static_cast<llama_moe_stream_layer *>(params.userdata);
+    }
+    check(stream_layer && stream_layer->il == layer && stream_layer->mgr &&
+          stream_layer->n_slots == slot_count, "wrong remap layer or slot count");
+    std::lock_guard<std::mutex> lock(stream_layer->mgr->mtx);
+    slot.generation.clear();
+    slot.resident_expert.clear();
+    slot.resident_state.clear();
+    for (int32_t physical : slot.physical) {
+        check(physical >= 0 && physical < slot_count, "physical slot ID outside cache");
+        slot.generation.push_back(stream_layer->slot_gen[static_cast<size_t>(physical)]);
+        slot.resident_expert.push_back(stream_layer->slot_expert[static_cast<size_t>(physical)]);
+        slot.resident_state.push_back(stream_layer->slot_state[static_cast<size_t>(physical)]);
+    }
+}
+
 void verify_slots(capture_state & state, int layer, const std::vector<float> & mask) {
     auto & slot = state.slots[static_cast<size_t>(layer)];
     check(!slot.logical.empty() && slot.logical.size() == slot.physical.size() &&
-          slot.logical.size() == mask.size(), "route/slot/mask cardinality mismatch");
+          slot.logical.size() == mask.size() &&
+          slot.generation.size() == mask.size() &&
+          slot.resident_expert.size() == mask.size() &&
+          slot.resident_state.size() == mask.size(),
+          "route/slot/generation/mask cardinality mismatch");
     for (int kind = 0; kind < 3; ++kind)
         check(slot.weights[kind] && slot.biases[kind], "expert tensor pointer missing");
     std::set<std::array<int32_t, 3>> seen;
     for (size_t i = 0; i < mask.size(); ++i) {
         if (mask[i] == 0.0f) continue;
-        const int32_t logical = slot.logical[i], physical = slot.physical[i];
+        int32_t logical = slot.logical[i];
+        const int32_t physical = slot.physical[i];
+        if (state.mutant == "wrong_id" && !state.mutant_fired) {
+            logical = (logical + 1) % expert_count;
+            state.mutant_fired = true;
+            std::cerr << "TESY_C3_MUTANT_INJECTED wrong_id\n";
+        }
         check(logical >= 0 && logical < expert_count &&
               physical >= 0 && physical < slot_count, "expert/slot ID out of range");
+        check(slot.generation[i] > 0 && slot.resident_expert[i] == logical &&
+              slot.resident_state[i] == LLAMA_MOE_STREAM_SLOT_RESIDENT,
+              "active slot generation/resident expert invalid");
         for (int kind = 0; kind < 3; ++kind) {
             if (!seen.insert({kind,logical,physical}).second) continue;
             for (int bias = 0; bias < 2; ++bias) {
                 const int spec_index = kind + (bias ? 3 : 0);
                 const canonical_slice & source = state.canonical[static_cast<size_t>(layer)][spec_index];
                 ggml_tensor * tensor = bias ? slot.biases[kind] : slot.weights[kind];
-                const size_t tensor_index = bias ? static_cast<size_t>(logical) :
-                                                  static_cast<size_t>(physical);
+                size_t tensor_index = bias ? static_cast<size_t>(logical) :
+                                             static_cast<size_t>(physical);
+                if (bias && state.mutant == "bias_index" && !state.mutant_fired &&
+                    physical != logical) {
+                    tensor_index = static_cast<size_t>(physical);
+                    state.mutant_fired = true;
+                    std::cerr << "TESY_C3_MUTANT_INJECTED bias_index\n";
+                }
                 check(source.per_expert > 0 &&
                       ggml_nbytes(tensor) >= (tensor_index+1)*source.per_expert,
                       "consumer tensor slice outside tensor");
@@ -161,12 +226,18 @@ void verify_slots(capture_state & state, int layer, const std::vector<float> & m
                 std::vector<uint8_t> expected(source.per_expert);
                 ggml_backend_tensor_get(tensor,observed.data(),
                                         tensor_index*source.per_expert,source.per_expert);
+                if (!bias && state.mutant == "stale_byte" && !state.mutant_fired) {
+                    observed[0] ^= 1;
+                    state.mutant_fired = true;
+                    std::cerr << "TESY_C3_MUTANT_INJECTED stale_byte\n";
+                }
                 pread_exact(state.model_fd,expected.data(),expected.size(),
                             source.offset + static_cast<size_t>(logical)*source.per_expert);
                 check(observed == expected, "consumer expert bytes differ from canonical GGUF");
                 state.checked += state.phase + "\t" + std::to_string(layer) + "\t" +
                                  std::to_string(slot.wave_index) + "\t" +
                                  std::to_string(logical) + "\t" + std::to_string(physical) +
+                                 "\t" + std::to_string(slot.generation[i]) +
                                  "\t" + std::to_string(spec_index) + "\t" +
                                  std::to_string(source.per_expert) + "\tEQUAL\n";
                 ++state.checked_slices;
@@ -266,6 +337,7 @@ bool capture(ggml_tensor * tensor, bool ask, void * user_data) {
     } else if (stage == "ffn_moe_topk_stream" || stage == "ffn_moe_wave_ids") {
         slot.physical = ids_from(tensor);
         slot.wave = stage == "ffn_moe_wave_ids";
+        snapshot_residency(slot,tensor,stage,layer_id);
     } else if (stage == "ffn_moe_gate_biased" ||
                stage == "ffn_moe_up_biased" || stage == "ffn_moe_down_biased") {
         const int kind = stage == "ffn_moe_gate_biased" ? 0 :
@@ -351,6 +423,10 @@ int main(int argc, char ** argv) {
         capture_state state;
         state.root = argv[4];
         state.all_layers = all_layers;
+        if (const char * mutant = std::getenv("TESY_C3_MUTANT")) state.mutant = mutant;
+        check(state.mutant.empty() || state.mutant == "wrong_id" ||
+              state.mutant == "stale_byte" || state.mutant == "bias_index",
+              "unknown test-only mutant");
         check(std::filesystem::create_directory(state.root), "output root already exists");
         prepare_canonical(state,argv[1]);
         llama_backend_init();
@@ -377,6 +453,12 @@ int main(int argc, char ** argv) {
         cp.cb_eval_user_data = &state;
         llama_context * ctx = llama_init_from_model(model, cp);
         check(ctx != nullptr, "context init failed");
+        if (std::getenv("TESY_C3_ARM_READ_FAULT")) {
+            auto * arm = reinterpret_cast<void (*)()>(dlsym(RTLD_DEFAULT,"tesy_c2_arm_pread_fault"));
+            check(arm != nullptr, "fault interposer arm function missing");
+            arm();
+            std::cerr << "TESY_C3_READ_FAULT_ARMED\n";
+        }
         const int vocab = llama_vocab_n_tokens(llama_model_get_vocab(model));
         check(vocab == 201088, "target vocabulary changed");
         const int final_prompt_start = ((static_cast<int>(prompt.size()) - 1)/32)*32;
@@ -418,6 +500,8 @@ int main(int argc, char ** argv) {
         std::string stages;
         for (const auto & name : state.seen_stages) stages += name + "\n";
         write_new(state.root / "stages.txt", stages.data(), stages.size());
+        check(state.mutant.empty() || state.mutant_fired,
+              "test-only mutant was not exercised");
         std::cout << "capture_tensors=" << state.count << " bytes=" << state.bytes
                   << " checked_slices=" << state.checked_slices
                   << " checked_bytes=" << state.checked_bytes

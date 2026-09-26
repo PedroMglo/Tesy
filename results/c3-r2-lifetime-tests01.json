@@ -1,0 +1,30 @@
+{
+  "schema": "c3-lifetime-tests-v1",
+  "status": "PASS",
+  "tests": [
+    {
+      "name": "c3_stream_lifetime_test",
+      "binary_sha256": "a158f9d55d707b0dd750bc9bd70fda18fb9adfd6a80affb0b14acdaf99b50b6b",
+      "result": {
+        "schema": "c3-actual-worker-lifetime-test-v1",
+        "stale_queued_work_skipped": true,
+        "loading_slot_victim_excluded": true,
+        "current_generation_published": true,
+        "transfer_or_upload_tested": false,
+        "old_generation": 1,
+        "new_generation": 2
+      }
+    },
+    {
+      "name": "c3_inflight_read_test",
+      "binary_sha256": "1dcd937cb5f10925af5f2a70dbc91e4018b4d3c165d9a8710f5638335293062b",
+      "result": {
+        "schema": "c3-inflight-read-test-v1",
+        "held_read_observed": true,
+        "claimed_loading_slot_excluded": true,
+        "correct_bytes_published": true,
+        "gpu_upload_tested": false
+      }
+    }
+  ]
+}

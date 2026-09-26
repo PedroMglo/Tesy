@@ -11,7 +11,7 @@ libdir="$PWD/$backend/build-gcc15/bin"
   echo "pinned backend build missing" >&2; exit 1;
 }
 g++-15 -std=c++17 -O2 -Wall -Wextra -Werror \
-  -I "$backend/include" -I "$backend/ggml/include" \
+  -I "$backend/include" -I "$backend/src" -I "$backend/ggml/include" \
   tools/c3_boundary_capture.cpp -L "$libdir" -Wl,-rpath,"$libdir" \
-  -lllama -lggml -lggml-base -o tools/c3_boundary_capture
+  -lllama -lggml -lggml-base -ldl -o tools/c3_boundary_capture
 sha256sum tools/c3_boundary_capture
