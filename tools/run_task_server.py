@@ -124,7 +124,8 @@ def main():
     command = [str(binary), "-m", str(model), "--host", "127.0.0.1",
                "--port", str(PORT), "-ngl", str(spec["gpu_layers"]),
                "-c", "4096", "-np", "1", "-b", "256", "-ub", "32",
-               "-t", "8", "-tb", "8", "--no-warmup", "--no-cache-prompt", "-lv", "3"]
+               "-t", "8", "-tb", "8", "--no-warmup", "--no-cache-prompt",
+               "--reasoning-effort", "medium", "-lv", "3"]
     if a.model == "stock20b":
         command += ["--load-mode", "dio", "--lazy-mode", "off"]
     else:
@@ -155,7 +156,7 @@ def main():
         "workload": str(workload.relative_to(ROOT)), "workload_sha256": sha256(workload),
         "split": a.split, "task_ids": [task["id"] for task in tasks],
         "request_policy": {"temperature": 0, "seed": 42, "max_tokens": 512,
-                           "reasoning_effort": "backend default", "attempts": 1,
+                           "reasoning_effort": "medium", "attempts": 1,
                            "prompt_cache": False, "per_request_timeout_s": 360},
         "cgroup_start": cg_start,
         "limits": {"memory_max_bytes": 18 * 2**30, "swap_max_bytes": 0,
