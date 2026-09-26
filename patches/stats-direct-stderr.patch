@@ -1,0 +1,46 @@
+diff --git a/src/llama-moe-stream.cpp b/src/llama-moe-stream.cpp
+index ce17396..8c193b6 100644
+--- a/src/llama-moe-stream.cpp
++++ b/src/llama-moe-stream.cpp
+@@ -6,6 +6,7 @@
+ 
+ #include <algorithm>
+ #include <cinttypes>
++#include <cstdio>
+ #include <cstdlib>
+ #include <cstring>
+ #include <stdexcept>
+@@ -419,15 +420,16 @@ void llama_moe_stream::print_stats() const {
+     std::lock_guard<std::mutex> lock(mtx);
+ 
+     const int64_t n_touched = stats.n_hit + stats.n_miss;
+-    LLAMA_LOG_INFO("%s: moe stream: remap calls = %" PRId64 ", expert hits = %" PRId64 ", misses = %" PRId64 " (%" PRId64 " cold), hit rate = %.2f%%\n",
++    std::fprintf(stderr, "%s: moe stream: remap calls = %" PRId64 ", expert hits = %" PRId64 ", misses = %" PRId64 " (%" PRId64 " cold), hit rate = %.2f%%\n",
+             __func__, stats.n_calls, stats.n_hit, stats.n_miss, stats.n_miss_cold,
+             n_touched > 0 ? 100.0*stats.n_hit/n_touched : 0.0);
+-    LLAMA_LOG_INFO("%s: moe stream: load stall = %.2f ms total (%.3f ms per remap call)\n",
++    std::fprintf(stderr, "%s: moe stream: load stall = %.2f ms total (%.3f ms per remap call)\n",
+             __func__, stats.t_stall_us/1000.0, stats.n_calls > 0 ? stats.t_stall_us/1000.0/stats.n_calls : 0.0);
+     if (stats.n_wave_calls > 0) {
+-        LLAMA_LOG_INFO("%s: moe stream: waves = %" PRId64 " (%" PRId64 " non-empty), preloads issued = %" PRId64 " (ready on arrival = %" PRId64 "), wave stall = %.2f ms\n",
++        std::fprintf(stderr, "%s: moe stream: waves = %" PRId64 " (%" PRId64 " non-empty), preloads issued = %" PRId64 " (ready on arrival = %" PRId64 "), wave stall = %.2f ms\n",
+                 __func__, stats.n_wave_calls, stats.n_waves_run, stats.n_preload_issued, stats.n_preload_ready, stats.t_stall_wave_us/1000.0);
+     }
++    std::fflush(stderr);
+ }
+ 
+ // custom-op callback (single-threaded on ith 0): given the router's expert ids, ensure every touched
+diff --git a/tools/cli/cli.cpp b/tools/cli/cli.cpp
+index 98d6947..291f513 100644
+--- a/tools/cli/cli.cpp
++++ b/tools/cli/cli.cpp
+@@ -678,7 +678,9 @@ int llama_cli(int argc, char ** argv) {
+     // bump the log level to display timings
+     common_log_set_verbosity_thold(LOG_LEVEL_INFO);
+     if (std::getenv("TESY_MOE_STATS_AT_EXIT")) {
++        std::fprintf(stderr, "TESY_MOE_STATS_BEGIN\n");
+         llama_moe_stream_print_stats(llama_get_model(ctx_cli.ctx_server.get_llama_context()));
++        std::fprintf(stderr, "TESY_MOE_STATS_END\n");
+     }
+     common_memory_breakdown_print(ctx_cli.ctx_server.get_llama_context());
+ 

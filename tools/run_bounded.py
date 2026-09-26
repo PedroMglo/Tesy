@@ -24,6 +24,21 @@ def sha256(path):
     return h.hexdigest()
 
 
+def backend_library_hashes(binary, backend_dir):
+    result = {}
+    output = subprocess.check_output(["ldd", binary], text=True, timeout=15)
+    root = backend_dir.resolve()
+    for line in output.splitlines():
+        if "=>" not in line:
+            continue
+        target = line.split("=>", 1)[1].strip().split()[0]
+        path = Path(target)
+        if path.is_file() and path.resolve().is_relative_to(root):
+            resolved = path.resolve()
+            result[str(resolved.relative_to(root))] = sha256(resolved)
+    return result
+
+
 def proc_status(pid):
     try:
         lines = Path(f"/proc/{pid}/status").read_text().splitlines()
@@ -168,6 +183,7 @@ def main():
         "backend": a.backend,
         "backend_sha": revision,
         "binary_sha256": sha256(cmd[0]),
+        "backend_libraries_sha256": backend_library_hashes(cmd[0], backend_dir),
         "variant": a.variant,
         "workload": a.workload,
         "cache_condition": a.cache_condition,
