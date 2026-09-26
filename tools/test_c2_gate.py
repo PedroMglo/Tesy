@@ -10,6 +10,7 @@ import unittest
 from pathlib import Path
 
 from c2_gate import GateError, strict_json, validate
+from c2_compare_rows import compare
 
 
 H = "a" * 64
@@ -144,6 +145,32 @@ class GateTests(unittest.TestCase):
                    str(first), str(second), "--output", str(output), "--require-bitwise"]
             self.assertEqual(subprocess.run(cmd, capture_output=True).returncode, 1)
             self.assertFalse(json.loads(output.read_text())["bitwise_equal"])
+
+    def test_multirow_numeric_gate_and_missing_row(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            ids = root / "ids.tsv"
+            ids.write_text("tiny\t1,2\t3\n")
+            stems = [root / "reference", root / "candidate"]
+            import struct
+            for stem in stems:
+                Path(str(stem)+".rows.tsv").write_text(
+                    "case\tphase\tposition\trow\n"
+                    "tiny\tprompt\t0\t0\n"
+                    "tiny\tprompt\t1\t1\n"
+                    "tiny\tcontinuation\t2\t2\n")
+                Path(str(stem)+".f32").write_bytes(struct.pack("<9f", *range(9)))
+                Path(str(stem)+".json").write_text(json.dumps({
+                    "returncode":0,"stop_reason":None,"cgroup_limit_enforced":True,
+                    "command":[str(stem),str(ids)],"model_id":"tiny","model_path":"tiny.gguf"}))
+            args = [stems[0],stems[1],ids,"tiny",1,3,
+                    Path(str(stems[0])+".json"),Path(str(stems[1])+".json")]
+            self.assertTrue(compare(*args)["bitwise_equal"])
+            Path(str(stems[1])+".f32").write_bytes(struct.pack("<9f",0,1,2,3,4,5,6,7,99))
+            self.assertFalse(compare(*args)["bitwise_equal"])
+            Path(str(stems[1])+".rows.tsv").write_text("case\tphase\tposition\trow\n")
+            with self.assertRaises(GateError):
+                compare(*args)
 
 
 if __name__ == "__main__":
