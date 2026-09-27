@@ -10,3 +10,6 @@
 - Canonical witness measurement commit `4adc15be89a76965451e104cdefce1c37c47e917`; layers 25–28, 0, 29, 35 all PASS, 47 numeric bitwise rows and 2 explicit masked. Short reference processes had start/end identity/resource samples, no sustained telemetry claim. Capture SHA seal passed before and after. Next: 29 remaining layers under a new clean measurement commit.
 
 - Remaining reference measurement commit `f70381b94a1e946988763cbfb9ade04c78176bc4`; all 29 loads PASS, adding 203 numeric bitwise states. Combined 36 loads/250 numeric bitwise/2 masked, capture SHA seal unchanged. Reference peak GPU 1754 MiB, RSS 2,345,295,872 B, cgroup 4,020,232,192 B, CPU 62.75 C, swap 0. Next: freeze uninstrumented paired timing runner/gate and test 113 then 496.
+
+- G3 timing measurement commit `6b5dabd4357145a1385bc16784a4ecbb78c9941d`; `c8-g3-pair1-off`, `pair1-on`, `pair2-on`, `pair2-off` passed full 33-row bitwise logits versus contemporary P8 control and all resource gates. Paired medians: prefill +12.44%, T_work +10.24%, TPOT +1.00%; work pairs +8.95%, +11.53%. This short screen does not decide the medium claim.
+- Resource peak GPU 3898 MiB, RSS 14,956,146,688 B, cgroup 15,380,504,576 B, CPU 88.625 C, swap 0. ON issued 2936 preloads per run; source ready-on-arrival is not a true preload-hit count. Next: two new alternating 496+32 pairs under the frozen protocol.
