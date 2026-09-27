@@ -1,0 +1,7 @@
+# C7b canonical routed-layer replay freeze
+
+Objective: test whether streamed P12 FFN states match the resident canonical layer on the layer's CPU/CUDA device, using the already validated capture. The alternative is a streaming slot, routing, byte-lifetime or arithmetic difference hidden by observer neutrality. `results/c7b-20260927T1206Z/reference-protocol.json` freezes the source/binary hashes, captured index SHA, layer order, 180 s per-layer timeout and bitwise rule before references. Runs are sequential and each receives its own E18 scope. The first set is layers 25–28, then 24/29; a failure stops before other layers.
+
+The reference computes router IDs and weights from captured activations and uses those results in its FFN graph. It compares the ordered IDs, weights and FFN output bitwise, with explicit `N/A_MASKED` entries for the two layer-35 prefill states. The resident tensor table contains all 128 experts, while the streaming table has 32 slots; that layout difference is disclosed in the protocol and a shape-sensitive mismatch would reject this chosen reference contract. The replay does not independently certify attention or KV.
+
+Base observer result: C7b same-profile OFF/ON/OFF2 PASS on commit `505c3ce1cbb5aad3f42d1b312f3d0bfdaa98b551`, evidence commit `9729c6bdfead9f70d6fe8ebdf1648889ac595ee9`. Model-free check: reference runner syntax and binary build; physical references, timing and utility: NOT_RUN at freeze. Next discriminating gate: first witness layer 25; stop at first FAIL or resource error.
