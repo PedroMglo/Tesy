@@ -2,10 +2,12 @@
 """Fail-closed C4 exact-ID prompt and teacher-forced logits comparison."""
 
 import argparse
+import csv
 import hashlib
 import json
 import math
 from pathlib import Path
+import re
 import struct
 
 from c2_gate import GateError, strict_json
@@ -60,11 +62,30 @@ def inspect(stem, arm):
         raise GateError("incomplete full logits vectors")
     row_summaries = [top_two(payload[i*ROW_BYTES:(i+1)*ROW_BYTES])
                      for i in range(len(EXPECTED_ROWS))]
+    case_path = Path(str(stem) + ".cases.tsv")
+    case_rows = list(csv.DictReader(case_path.open(), delimiter="\t"))
+    if len(case_rows) != 1 or case_rows[0]["case"] != "latency-long" or \
+       case_rows[0]["tokens"] != "1522":
+        raise GateError("timing case schedule invalid")
+    timing = {key: float(case_rows[0][key]) for key in
+              ("dispatch_s", "completion_s", "pending_tail_s", "clear_and_quiesce_s")}
+    if any(not math.isfinite(value) or value < 0 for value in timing.values()) or \
+       timing["dispatch_s"] <= 0 or timing["completion_s"] < timing["dispatch_s"]:
+        raise GateError("completed prefill timing invalid")
+    stderr_path = Path(str(stem) + ".stderr")
+    matches = re.findall(r"preloads issued = (\d+)", stderr_path.read_text())
+    if len(matches) != 1:
+        raise GateError("preload counter missing or duplicated")
+    preloads = int(matches[0])
+    if (arm == "off" and preloads != 0) or (arm == "on" and preloads <= 0):
+        raise GateError("observed preload mode disagrees with arm")
     return manifest, payload, row_summaries, {
         "manifest_sha256": digest(manifest_path),
         "logits_sha256": hashlib.sha256(payload).hexdigest(),
         "rows_sha256": digest(rows_path),
         "samples_sha256": digest(Path(str(stem) + ".samples.jsonl")),
+        "stderr_sha256": digest(stderr_path), "case_timing_sha256": digest(case_path),
+        "preloads_issued": preloads, "timing_s": timing,
     }
 
 
