@@ -1,0 +1,7 @@
+# C24 8K streaming bridge: input relation FAIL
+
+- Objective: observe completion-fenced streaming and first final content in a bounded P12 2048+128 exact-prefix bridge. Measurement commit `aed3b380462d7618e0a12bd1ca23bbdd0eaa3d99`; original backend `1248fd8fa8cfebaece5ea992e4d951c1e18bb9d5` stayed clean.
+- Evidence: `results/c24-session-bridge-20260927T2136Z/decision.json`; raw and thermal series are local. Model-free parser tests 39 PASS. Physical preflight and 300 s qualifying idle PASS. Server loaded and mapped the frozen libraries. The official tokenizer rejected the frozen exact `+128` ID/common-prefix relation before any completion request. The raw stop reason is `RUN_ERROR:GateError:frozen incremental token count/common prefix invalid`; no tokens or timing were measured.
+- Observed pre-request maxima: CPU 49.75 C, GPU 42 C, NVMe 38.85 C, GPU total 5694 MiB, cgroup peak 4723515392 B; zero swap/OOM. This is an input fixture failure, not a thermal or model correctness result.
+- Alternatives: changed BPE count near the insertion boundary or count/range mismatch; the current raw does not identify which. The next discriminating gate is a new bounded tokenization-only diagnostic that records both official ID counts and ordered common prefix before freezing a corrected workload. No C24 retry or retrospective threshold change.
+- Decision: `FAIL_RESOURCES_OR_EVIDENCE` for C24. C23 synthetic prefix confirmation remains valid in its scope. M3 partial; M4 NOT_RUN; C15 source-only/unbuilt; default unchanged.
