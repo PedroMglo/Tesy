@@ -1,0 +1,40 @@
+{
+  "schema": "c4-p0-nsys-summary-v1",
+  "status": "GPU_NODE_TIMELINE_AVAILABLE",
+  "classification": "Nsight diagnostic on physical target; profiled wall is not production timing",
+  "profiled_prefill_completion_s": 45.007773,
+  "resource_samples": 71,
+  "gpu_kernel": {
+    "events": 4048,
+    "summed_duration_s": 0.191251058
+  },
+  "gpu_memcpy": {
+    "events": 3017,
+    "summed_duration_s": 0.800266098
+  },
+  "gpu_memset": {
+    "events": 47,
+    "summed_duration_s": 0.000476929
+  },
+  "h2d_cuda_payload": {
+    "events": 2780,
+    "bytes": 10503262552,
+    "summed_duration_s": 0.799940688
+  },
+  "gpu_kernel_event_span_s": 31.529027371,
+  "limitations": [
+    "CUPTI event duration sums overlap and are not exclusive critical time",
+    "trace covers GPU events, not CPU GEMM, expert reads or host scheduler cost",
+    "CUDA memcpy payload is not a measured physical PCIe byte count",
+    "Nsight node-level overhead cannot be used as a speed comparison"
+  ],
+  "source_sha256": {
+    "results/c4-p0-nsys-short-off01.json": "7c5d4a9334bdc70950cc3c3f701b96d478bfac2196f64c11ca7886635f25ae11",
+    "results/c4-p0-nsys-short-off01.samples.jsonl": "6a076e40f52097ea090b3adfc021c8d1d8daa95eecf7804a49d0e2762a2968b2",
+    "results/c4-p0-nsys-short-off01.f32": "8ba19722439a08738cc0d4fc4ad8f669bc3fcde227aab503ca210936bb0bb285",
+    "results/c4-q0-short-off01.f32": "8ba19722439a08738cc0d4fc4ad8f669bc3fcde227aab503ca210936bb0bb285",
+    "results/c4-p0-nsys-short-off01.nsys-rep": "2b495011485f817fdcab07ea5a46639b6b6967b373154b7a168337994d40a8e9",
+    "results/c4-p0-nsys-short-off01.sqlite": "2c1078ffca43187c83efdd893b06e4e406f0fd486b4cdd69d097a91a5773e18b"
+  },
+  "analyzer_sha256": "910c1aeb29bc35056f31f80ec00930f3e03b1de5ad6cf552921818d8736bf38e"
+}
