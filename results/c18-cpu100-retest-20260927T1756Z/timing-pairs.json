@@ -1,0 +1,40 @@
+{
+  "formula": "100*(P8-P12)/P8 for each paired metric",
+  "median_gain_decode_pct": 3.1174558314743757,
+  "median_gain_prefill_pct": 10.423712714115213,
+  "median_gain_request_pct": 10.349275557407278,
+  "metric": "completion-fenced API request seconds, 513 prompt + 4 completion tokens",
+  "old_stopped_times_included": false,
+  "pairs": [
+    {
+      "P12_request_s": 80.24956845699853,
+      "P8_request_s": 90.02206695300265,
+      "candidate_run_id": "c18-p1-p12-cold513",
+      "control_run_id": "c18-p1-p8-cold513",
+      "execution_order": [
+        "P8",
+        "P12"
+      ],
+      "gain_decode_pct": 2.4590979438425897,
+      "gain_prefill_pct": 10.941486143564743,
+      "gain_request_pct": 10.855669978235442,
+      "pair": "P1"
+    },
+    {
+      "P12_request_s": 80.80059385799905,
+      "P8_request_s": 89.62197869300144,
+      "candidate_run_id": "c18-p2-p12-cold513",
+      "control_run_id": "c18-p2-p8-cold513",
+      "execution_order": [
+        "P12",
+        "P8"
+      ],
+      "gain_decode_pct": 3.7758137191061616,
+      "gain_prefill_pct": 9.905939284665683,
+      "gain_request_pct": 9.842881136579113,
+      "pair": "P2"
+    }
+  ],
+  "schema": "c18-timing-pairs-v1",
+  "status": "TWO_PAIRS_COMPLETE"
+}

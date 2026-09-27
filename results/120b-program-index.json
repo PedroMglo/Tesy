@@ -1,5 +1,6 @@
 {
   "default_changed": false,
+  "historical_protocol_note": "Six C9-C17 CPU95 stops are preserved as FAIL_PROTOCOL_THERMAL_GUARD in C18 audit; old receipts and decisions unchanged. CPU100 C18 result is prospective and independent.",
   "milestones": {
     "M1": "QUALIFIED_PROSPECTIVE_SCOPE_HISTORICAL_PARTIAL",
     "M2": "CONFIRMED_496_TEACHER_FORCED_SCOPE_NATIVE_PRELOAD",
@@ -7,12 +8,12 @@
     "M4": "NOT_RUN"
   },
   "mission": "local usable main GPT-OSS 120B, original weights and authoritative routing",
-  "next_action": "C17 P8/P12 8K cold513 both re-hit CPU95 guard after changed placement. Pivot model-free to lower CPU batch-thread concurrency in a new P12 numerical profile; freeze capacity, fidelity and thermal protocol before any new model run. M3/M4 and C15 full-model timing remain NOT_RUN.",
+  "next_action": "C19: new-identity P12 exact-prefix ON 512+128 synthetic server mechanism screen under CPU100/E18, using the frozen C13 input and 5-minute idle admission; then choose M3 session bridge or pivot based on actual cache_n/resources.",
   "open_hypotheses": [
     "Exact prefix reuse and wave critical fraction remain untested",
     "Wave/parking work may occupy removable exclusive critical-path time in prefill; summed stalls and CPU cycle shares do not bound this yet",
-    "Exact-prefix reuse remains unobserved because first cold request thermally failed; requires lower cold prefill CPU work or other admitted profile",
-    "Reducing CPU batch-thread concurrency in a distinct P12 numerical profile may lower peak heat; latency and same-profile fidelity remain unmeasured"
+    "Reducing CPU batch-thread concurrency in a distinct P12 numerical profile may lower peak heat; latency and same-profile fidelity remain unmeasured",
+    "Exact-prefix reuse remains unobserved; C18 cold513 now completes under CPU100, so the C13 512+128 mechanism can be retested prospectively under new identity"
   ],
   "rejected_claims": [
     "P12 general-medium timing gain >=5% at 496+32 under E18",
@@ -94,7 +95,17 @@
       "identity": "c17",
       "root": "results/c17-thermal-recovery-20260927T1656Z",
       "status": "THERMAL_LIMIT_REPRODUCED_P8_P12_COLD513"
+    },
+    {
+      "identity": "c18prep",
+      "root": "results/c18-cpu100-retest-20260927T1752Z",
+      "status": "PRE_FREEZE_SUPERSEDED_NO_MODEL"
+    },
+    {
+      "identity": "c18",
+      "root": "results/c18-cpu100-retest-20260927T1756Z",
+      "status": "THERMAL_RETTEST_PASS_FOUR_COLD513_ARMS_CPU100"
     }
   ],
-  "updated_utc": "2026-09-27T17:41:00+00:00"
+  "updated_utc": "2026-09-27T18:39:41.697998+00:00"
 }
