@@ -1,22 +1,28 @@
-name: Publish reviewed research-report release
+name: Automatically publish reviewed research reports
 
 on:
+  pull_request:
+    paths:
+      - 'docs/research-reports/**'
+      - '.github/workflows/publish-research-report.yml'
   push:
-    tags:
-      - 'reports-*-v*'
+    branches:
+      - 'campaign/c3-layer-reference-prefill-20260926-1800utc'
+    paths:
+      - 'docs/research-reports/**'
+      - '.github/workflows/publish-research-report.yml'
 
 permissions:
-  contents: write
+  contents: read
 
 jobs:
-  publish:
-    name: Verify and publish reviewed PDF
+  preflight:
+    name: Preflight automatic release
+    if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest
     defaults:
       run:
         working-directory: docs/research-reports
-    env:
-      RELEASE_TAG: ${{ github.ref_name }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -27,54 +33,105 @@ jobs:
           sudo apt-get update
           sudo apt-get install --yes --no-install-recommends latexmk texlive-luatex texlive-latex-extra texlive-lang-portuguese texlive-science texlive-bibtex-extra biber
       - run: python -m pip install -r tools/requirements.txt
-      - name: Resolve immutable release identity
+      - name: Build every eligible release without publishing
         run: |
-          python - "$RELEASE_TAG" <<'PY' >> "$GITHUB_ENV"
+          python ../../tools/release_candidates.py --root . > release-candidates.tsv
+          while IFS="$(printf '\t')" read -r report_id version release_tag; do
+            [ -n "$report_id" ] || continue
+            python tools/build_report.py "$report_id" --mode release --check-reproducible
+          done < release-candidates.tsv
+      - name: Upload TeX diagnostics on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: tesy-release-preflight-diagnostics-${{ github.run_id }}
+          path: docs/research-reports/_build/**
+          if-no-files-found: warn
+          retention-days: 14
+
+  publish:
+    name: Create immutable tags and releases
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    concurrency:
+      group: tesy-research-report-publication-c3
+      cancel-in-progress: false
+    defaults:
+      run:
+        working-directory: docs/research-reports
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install document toolchain
+        run: |
+          sudo apt-get update
+          sudo apt-get install --yes --no-install-recommends latexmk texlive-luatex texlive-latex-extra texlive-lang-portuguese texlive-science texlive-bibtex-extra biber
+      - run: python -m pip install -r tools/requirements.txt
+      - name: Build and verify all configured releases
+        run: |
+          python ../../tools/release_candidates.py --root . > release-candidates.tsv
+          mkdir release-assets existing-release-assets
+          while IFS="$(printf '\t')" read -r report_id version release_tag; do
+            [ -n "$report_id" ] || continue
+            destination=$(python tools/build_report.py "$report_id" --mode release --check-reproducible)
+            mkdir "release-assets/$release_tag"
+            cp "$destination/report.pdf" "release-assets/$release_tag/${report_id}-v${version}.pdf"
+            cp "$destination/release.json" "release-assets/$release_tag/release.json"
+            cp "$destination/evidence-lock.json" "release-assets/$release_tag/evidence-lock.json"
+            sha256sum "release-assets/$release_tag"/* > "release-assets/$release_tag/SHA256SUMS"
+          done < release-candidates.tsv
+      - name: Refuse an immutable version change
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          while IFS="$(printf '\t')" read -r report_id version release_tag; do
+            [ -n "$report_id" ] || continue
+            if ! gh release view "$release_tag" >/dev/null 2>&1; then
+              continue
+            fi
+            mkdir "existing-release-assets/$release_tag"
+            gh release download "$release_tag" --pattern release.json --dir "existing-release-assets/$release_tag"
+            python - "release-assets/$release_tag/release.json" "existing-release-assets/$release_tag/release.json" <<'PY'
           import json
           import pathlib
           import sys
 
-          tag = sys.argv[1]
-          registry = json.loads(pathlib.Path("registry.json").read_text())
-          reports = {item["id"]: item["path"] for item in registry["reports"]}
-          matches = []
-          for report_id, path in reports.items():
-              metadata = json.loads((pathlib.Path(path) / "campaign.json").read_text())
-              if tag == f"reports-{report_id}-v{metadata['version']}":
-                  matches.append((report_id, metadata["version"]))
-          if len(matches) != 1:
-              raise SystemExit(f"RELEASE_TAG_MISMATCH_OR_AMBIGUOUS: {tag}")
-          report_id, version = matches[0]
-          print(f"REPORT_ID={report_id}")
-          print(f"REPORT_VERSION={version}")
+          current = json.loads(pathlib.Path(sys.argv[1]).read_text())
+          published = json.loads(pathlib.Path(sys.argv[2]).read_text())
+          keys = ('report_id', 'version', 'inputs_sha256', 'pdf_sha256', 'audit_sha256')
+          if {key: current[key] for key in keys} != {key: published[key] for key in keys}:
+              raise SystemExit('RELEASE_VERSION_ALREADY_PUBLISHED: increment campaign.json version before publication')
           PY
-      - name: Refuse replacement of an existing release
+          done < release-candidates.tsv
+      - name: Create missing immutable tags and releases
         env:
           GH_TOKEN: ${{ github.token }}
+          TARGET_COMMIT: ${{ github.sha }}
         run: |
-          if gh release view "$RELEASE_TAG" >/dev/null 2>&1; then
-            echo "RELEASE_ALREADY_EXISTS: $RELEASE_TAG" >&2
-            exit 1
-          fi
-      - name: Build and verify the exact reviewed PDF
-        run: |
-          destination=$(python tools/build_report.py "$REPORT_ID" --mode release --check-reproducible)
-          mkdir release-assets
-          cp "$destination/report.pdf" "release-assets/${REPORT_ID}-v${REPORT_VERSION}.pdf"
-          cp "$destination/release.json" release-assets/release.json
-          cp "$destination/evidence-lock.json" release-assets/evidence-lock.json
-          sha256sum release-assets/* > release-assets/SHA256SUMS
-      - name: Create immutable GitHub Release
-        uses: softprops/action-gh-release@v2
+          while IFS="$(printf '\t')" read -r report_id version release_tag; do
+            [ -n "$report_id" ] || continue
+            if gh release view "$release_tag" >/dev/null 2>&1; then
+              echo "ALREADY_PUBLISHED: $release_tag"
+              continue
+            fi
+            if gh api "repos/$GITHUB_REPOSITORY/git/ref/tags/$release_tag" >/dev/null 2>&1; then
+              echo "TAG_EXISTS_WITHOUT_RELEASE: $release_tag" >&2
+              exit 1
+            fi
+            gh release create "$release_tag" "release-assets/$release_tag"/* \
+              --target "$TARGET_COMMIT" \
+              --title "Tesy research report $report_id v$version" \
+              --notes "Publicação documental imutável criada automaticamente após validação CI. Inclui PDF, manifesto, evidence lock e SHA-256. Não é uma nova medição nem uma certificação fora do âmbito definido no relatório."
+          done < release-candidates.tsv
+      - name: Upload TeX diagnostics on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
         with:
-          tag_name: ${{ github.ref_name }}
-          name: Tesy research report ${{ env.REPORT_ID }} v${{ env.REPORT_VERSION }}
-          prerelease: false
-          target_commitish: ${{ github.sha }}
-          generate_release_notes: false
-          body: |
-            Publicação documental imutável gerada pelo workflow fail-closed do Tesy.
-            Inclui PDF, manifesto de release, evidence lock e SHA-256 dos assets.
-            Não é uma nova medição nem uma certificação fora do âmbito definido no relatório.
-          files: docs/research-reports/release-assets/*
-          fail_on_unmatched_files: true
+          name: tesy-automatic-release-diagnostics-${{ github.run_id }}
+          path: docs/research-reports/_build/**
+          if-no-files-found: warn
+          retention-days: 14

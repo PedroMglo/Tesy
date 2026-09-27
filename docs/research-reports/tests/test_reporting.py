@@ -9,9 +9,11 @@ import unittest
 from unittest.mock import patch
 ROOT=Path(__file__).resolve().parents[1]
 sys.path.insert(0,str(ROOT/'tools'))
+sys.path.insert(0,str(ROOT.parents[1]/'tools'))
 import reportlib as r
 import build_report as b
 import new_campaign as n
+import release_candidates as rc
 C2='C02-correctness-usability'
 
 class Primitives(unittest.TestCase):
@@ -78,6 +80,14 @@ class Pipeline(unittest.TestCase):
         v=r.verify(self.root,'C01-scale-lab');self.assertEqual(v['meta']['scientific_state'],'SUCCESS')
         self.assertEqual(v['lock']['sources'][0]['commit'],'c67529e290844bb3d9033615072d5878014a46bc')
         self.assertEqual(v['values']['M-C1-UTILITY-PASS']['value'],8)
+    def test_automatic_release_candidate_is_reviewed_and_versioned(self):
+        self.assertEqual(rc.candidates(self.root),[('C03-boundary-prefill','1.0.0','reports-C03-boundary-prefill-v1.0.0')])
+    def test_automatic_release_candidate_requires_registered_report(self):
+        p=self.root/'release-automation.json';p.write_bytes(r.canonical({'schema_version':'tesy-release-automation-v1','reports':[{'id':'MISSING'}]}))
+        with self.assertRaisesRegex(r.EvidenceError,'UNREGISTERED_REPORT'):rc.candidates(self.root)
+    def test_automatic_release_candidate_requires_reviewed_audit(self):
+        p=self.root/'campaigns'/'C03-boundary-prefill'/'audit.json';a=r.read(p);a['status']='DRAFT';p.write_bytes(r.canonical(a))
+        with self.assertRaisesRegex(r.EvidenceError,'AUTO_RELEASE_REQUIRES_REVIEWED_AUDIT'):rc.candidates(self.root)
     def test_extra_field(self):
         self.edit('campaign.json',lambda m:m.update(unknown=True))
         with self.assertRaisesRegex(r.EvidenceError,'SCHEMA'):self.result()
