@@ -1,0 +1,19 @@
+{
+  "schema": "c29-conversation-bridge-protocol-v1",
+  "status": "FROZEN_BEFORE_MODEL_OUTPUT",
+  "objective": "repeat identical synthetic two-turn 8K conversation under source-derived cache counter bounds",
+  "parent_c28_status": "FAIL_RESOURCES_OR_EVIDENCE",
+  "changed_variable": "validation of cache_n permits generated tokens appended to slot.prompt.tokens",
+  "cache_lower_bound": "max(0, ordered_common_prompt_ids - 32)",
+  "cache_upper_bound": "min(second_prompt_ids, first_prompt_ids + first_completion_tokens)",
+  "cache_accounting_identity": "cache_n + prompt_n = second_prompt_ids",
+  "same_text_model_backend_effective_profile_and_guards_as_c28": true,
+  "first_assistant_message_must_match_frozen_SHA_before_second": true,
+  "profile": "original 120B backend P12 ngl12 ub32 slots32 preload ON n_ctx8192 full-SWA E18 zero swap",
+  "request_policy": "temperature0 seed42 medium effort cap256, two completion-fenced SSE requests",
+  "thermal_admission": "300 continuous seconds, start <=50/50/45 C; CPU100 and other guards unchanged",
+  "server_timeout_s": 1800,
+  "per_request_timeout_s": 900,
+  "claim_limit": "one synthetic two-turn conversation; no sustained20, 4096 prefix, quality or full M3/M4",
+  "default_changed": false
+}
