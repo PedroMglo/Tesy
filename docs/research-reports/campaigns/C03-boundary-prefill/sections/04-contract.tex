@@ -1,0 +1,2 @@
+\section{Contrato experimental}
+O contrato numérico usa estados de entrada FFN capturados do modelo em streaming e comparação sem tolerância nas 36 camadas, CPU 0--28 e GPU 29--35. O contrato de desempenho usa três pares alternados OFF/ON em 496 e 1522 IDs, depois um serviço fixo de 20 pedidos. A meta prévia era redução de prefill de 25\%; a meta de decode era 4 token/s. A medição de latência usa prompts oficiais de 113, 496 e 1522 IDs, com metas 10/20 s para a resposta curta. \evidence{E-C3-FINAL} \evidence{E-C3-BROAD} \evidence{E-C3-AB}

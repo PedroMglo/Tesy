@@ -1,0 +1,56 @@
+# TESY Scale Lab C3 — final evidence and decision
+
+Campaign started **2026-09-26 17:58 UTC** from C2 lab commit `81531d9dc33caddbbf07928106de47cfe2a6d42a` on dedicated branch `campaign/c3-layer-reference-prefill-20260926-1800utc`. Physical Ryzen AI 9 HX 370 / RTX 4060 Laptop host, internal NVMe GGUF and cgroup v2 were reconfirmed; no VM/container measurement was used. Target is `ggml-org/gpt-oss-120b-GGUF` MXFP4 revision `238abdd290bb874b90a5da1b4549881b7d05c091`, 63,387,346,208 B, SHA-256 `582bd40f6886200101f4c4ed9f25f3fe80cc14c86e9e2b37746cd8904a0c622d`; streamed backend freedomljc/llama.cpp `1248fd8fa8cfebaece5ea992e4d951c1e18bb9d5`. Stock20B follow-up uses GGUF SHA-256 `52f57ab7d3df3ba9173827c1c6832e73375553a846f3e32b49f1ae2daad688d4` and stock backend `4b1a27fa0eb875bbca4f6cfe936e3d65adc685c0`.
+
+## Four separate outcomes
+
+| Axis | C3 status | Evidence and boundary |
+|---|---|---|
+| Integrity/lifetime | `ENGINEERING_UNBLOCKED_IN_TESTED_SCOPE` | Canonical GGUF layer loads, 948/948 active consumed expert slices equal on CPU0/GPU35; real slot-generation/reload and in-flight worker witnesses; target short/EOF/EIO failures and wrong-ID/stale-byte/bias-index/omit-wave mutants rejected. GPU upload fault `NOT_RUN`. |
+| Numerical boundary | `BOUNDARY_DIFFERENTIAL_PASS` on captured states | 504/504 layer/case/state FFN and routing comparisons bitwise across all 36 layers, actual CPU0–28/GPU29–35; 14/14 callback OFF/ON full logits vectors bitwise. The upstream activations are captured from the streamed model: this is **not full plain-model, attention or KV parity**, nor an arbitrary-input certificate. |
+| Performance/usability | `PREFILL_GAIN_CONFIRMED` below proposed target | Three alternating paired trials with preload reduced native prefill median **17.515%** at 496 IDs and **18.240%** at 1522 IDs; both below the frozen **25%** goal. Sustained 20-request service completed at **3.291376 decode tok/s**, last half **3.258553**, below 4 tok/s. Short first text/final were **37.219/73.223 s**, missing 10/20 s goals. |
+| Task benefit | `UTILITY_POLICY_DEPENDENT` | C2 held-out pilot remained 120B 12/12 versus stock20B 10/12 at cap2048, at 11.478× summed request wall. The new **selected, post hoc** stock20B cap3072 diagnostic solved code-02 but still truncated plan-01; one apparent 120B-only code win is output-budget dependent. No new held-out suite or tested automatic fallback policy. |
+
+The historical C2 global `CORRECTNESS_BLOCKED` is retained in C2's own report. C3 permits engineering on **this routed expert boundary and tested profile**, not robust daily deployment. The combination is engineering and measurement, with no broad novelty claim. No model weights, router/top-k, tokenizer, attention, quantization or sampling were changed. The only runtime intervention (1/4) was enabling the backend's existing causal next-wave preload by removing `LLAMA_MOE_STREAM_NO_PRELOAD`; it is not a token predictor. No other optional configuration was promoted.
+
+## Performance and resources
+
+Frozen paired native prefill trials, same backend/model/placement/ubatch and identical final prompt logits, gave OFF→ON times of 156–159→128–129 s for 496 IDs and 449–456→368–373 s for 1522 IDs. The median gains exceeded within-arm timing ranges. Encoded expert load payload inferred from counts fell by 99.012 GB across the six-arm workload; this is **not physical NVMe traffic**. The sustained preload run processed 20/20 fixed requests, 4588 tokens, 716.442 s prefill and 1393.946 s decode over 2110.553 s active service, with two 512-cap truncations counted. Raw assistant text/usage matched C2's historical no-preload 20-request run for all 20. The historical no-preload 3.326788 tok/s and 771.409 s prefill suggest a tradeoff but are not a same-day causal sustained A/B.
+
+The sustained target cgroup peak was 14,923,575,296 B, sampled RSS HWM 15,068,581,888 B, GPU peak 3867 MiB, swap0 and no local/hierarchical max/OOM/kill events. CPU/GPU/NVMe maxima were 87.375/57/58.85 C in its windows. The separate latency server peaked at 14,787,072,000 B cgroup, 3869 MiB GPU, CPU 93.25 C under the 95 C guard. Both used 18 GiB memory.max, memory.swap.max0, RSS17 GiB, GPU7000 MiB, MemAvailable6 GiB guards. The 120B remains above host RAM and ran through the actual internal-NVMe model path. Process read_bytes is not exclusively attributable physical device traffic; H2D physical bytes and per-token p50/p95 remain unknown.
+
+| Official prompt IDs | C2 no-preload first text / final / complete (s) | C3 preload first text / final / complete (s) |
+|---:|---:|---:|
+| 113 | 42.309 / 74.506 / 76.342 | **37.219 / 73.223 / 75.313** |
+| 496 | 147.683 / 163.222 / 165.004 | **130.476 / 147.143 / 149.052** |
+| 1522 | 447.879 / 461.473 / 463.271 | **381.863 / 396.660 / 398.442** |
+
+These client latencies are a historical comparison, not causal timing evidence. All three final tickets were correct. The long prompt's free reasoning had 56 tokens versus 55 historically. A prospectively frozen diagnostic then ran **two no-preload controls** on that long prompt: both used 56 tokens and matched the new preload text byte-for-byte, while differing from the old C2 text. Both evaluated all 1522 prompt tokens (`cached_tokens=0`). Thus the historical text difference was **not preload-specific in these new controls**, but the numerical cause is unexplained. Fixed-token logits at the first divergent continuation position are the next correctness discriminator; free generations do not prove parity.
+
+## Retained failures, limits and decision
+
+The first preload capture had a changed capture binary and failed its bridge gate. The first A/B series failed terminal telemetry, was not used, and its runner repair passed a new model smoke. Q1 stock20B cap3072 similarly failed a `/proc` terminal race and was not graded; Q2 with a new frozen identity passed. The first broad GPU-layer replay wrongly placed layer28 on GPU and failed; the corrected placement replay passed without widening tolerance. All prior C1/C2 timeouts, partial references and task failures remain unchanged. The final model-free suite passed **33/33** tests; an adulterated latency final-answer fixture was rejected without publication.
+
+**Decision:** retain C2 GPU8/32-slot, ub32, no-preload as the conservative sustained default. C3 preload is a measured **opt-in diagnostic for longer prefill** within the tested boundary, with verified >3 tok/s continuous service; it missed the 25% prefill goal, the 4 tok/s goal, and short-answer usability goals. Do not claim full target numerical certification, general quality superiority or routine daily robustness. The selected Q result makes use of the 120B dependent on task and output budget. No second optimization was started: remaining campaign time was insufficient to requalify a changed ubatch/placement through the oracle, three-pair A/B and new sustained service gate, and the completed preload result already supplies a material answer. This is **not** a hardware impossibility claim.
+
+## Reproduction and evidence
+
+From the verified physical laptop and this lab directory, the tested monitored conservative server command is:
+
+```sh
+python3 tools/c2_launch_target.py --run-id NEW_UNIQUE_ID
+```
+
+The tested C3 preload opt-in command is:
+
+```sh
+python3 tools/c3_launch_preload.py --run-id NEW_UNIQUE_ID
+```
+
+Both verify the full GGUF hash before timing, bind `127.0.0.1:18367`, enforce the cgroup/resource guards and block until stopped. Client requests must set medium-compatible template, temperature0, seed42, a context-fitting explicit output cap and one request at a time. Stop **only the owned instance** with:
+
+```sh
+python3 tools/c2_stop_server.py NEW_UNIQUE_ID --model-path /home/pmglo/models/gpt-oss-120b-gguf/gpt-oss-120b-MXFP4.gguf
+```
+
+The preload launcher was tested through startup, three real requests, answer validation, monitored shutdown and process/port release. C2's conservative launcher had already been tested for cancellation/multi-turn operation in its own campaign; C3 D1 retested its long-prompt startup/two requests/shutdown. `results/INDEX.md` is the authority map. Key compact records are `results/c3-p2b-ab-summary01.json`, `c3-p2-preload-sustained20-01.gate.json`, `c3-p2-preload-sustained20-01-analysis01.json`, `c3-p2-preload-latency-summary01.json`, `c3-d1-long-comparison01.json`, and `c3-q-stock20-cap3072-02-grade.json`, plus local publication manifests with SHA-256 of raw evidence. Large raw captures, weights, builds and private/synthetic response dumps stay local and outside Git. The campaign ends with no experimental process left running.

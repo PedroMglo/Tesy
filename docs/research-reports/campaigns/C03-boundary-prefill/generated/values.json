@@ -1,0 +1,222 @@
+{
+  "inputs_sha256": "665267902f5314de180c4589e6c5d0a18a52c13f6dd3ca0ecc8834e7f23ee5e4",
+  "metrics": {
+    "M-C3-DECODE": {
+      "decimals": 3,
+      "display": "3.291",
+      "evidence_class": "MEDIDO",
+      "extract": {
+        "pointer": "/decode_tok_s",
+        "source": "E-C3-GATE",
+        "type": "json"
+      },
+      "family": "performance",
+      "id": "M-C3-DECODE",
+      "label": "Decode sustentado",
+      "limitation": "Abaixo de 4 token/s; não é taxa de serviço end-to-end.",
+      "raw": 3.291376036656115,
+      "raw_unit": "token/s",
+      "run_id": "c3-p2-preload-sustained20-01",
+      "scope": "Perfil físico e workload C3 publicados.",
+      "source_class": "Publicação compacta C3; sem reprodução independente",
+      "sources": [
+        "E-C3-GATE"
+      ],
+      "unit": "token/s",
+      "value": 3.291376036656115
+    },
+    "M-C3-LONG-REDUCTION": {
+      "decimals": 3,
+      "display": "0.182",
+      "evidence_class": "MEDIDO",
+      "extract": {
+        "pointer": "/cases/2/median_reduction_fraction",
+        "source": "E-C3-AB",
+        "type": "json"
+      },
+      "family": "performance",
+      "id": "M-C3-LONG-REDUCTION",
+      "label": "Redução mediana pareada, 1522 IDs",
+      "limitation": "Três pares no mesmo contrato; 0.182 equivale a 18.240%.",
+      "raw": 0.18240030615759595,
+      "raw_unit": "ratio",
+      "run_id": null,
+      "scope": "Perfil físico e workload C3 publicados.",
+      "source_class": "Publicação compacta C3; sem reprodução independente",
+      "sources": [
+        "E-C3-AB"
+      ],
+      "unit": "ratio",
+      "value": 0.18240030615759595
+    },
+    "M-C3-MEDIUM-REDUCTION": {
+      "decimals": 3,
+      "display": "0.175",
+      "evidence_class": "MEDIDO",
+      "extract": {
+        "pointer": "/cases/1/median_reduction_fraction",
+        "source": "E-C3-AB",
+        "type": "json"
+      },
+      "family": "performance",
+      "id": "M-C3-MEDIUM-REDUCTION",
+      "label": "Redução mediana pareada, 496 IDs",
+      "limitation": "Três pares no mesmo contrato; 0.175 equivale a 17.515%.",
+      "raw": 0.17514863794814484,
+      "raw_unit": "ratio",
+      "run_id": null,
+      "scope": "Perfil físico e workload C3 publicados.",
+      "source_class": "Publicação compacta C3; sem reprodução independente",
+      "sources": [
+        "E-C3-AB"
+      ],
+      "unit": "ratio",
+      "value": 0.17514863794814484
+    },
+    "M-C3-PEAK": {
+      "decimals": 3,
+      "display": "13.899",
+      "evidence_class": "MEDIDO",
+      "extract": {
+        "pointer": "/cgroup_peak_bytes",
+        "source": "E-C3-GATE",
+        "type": "json"
+      },
+      "family": "performance",
+      "id": "M-C3-PEAK",
+      "label": "Pico de cgroup",
+      "limitation": "Pico contabilizado no cgroup, não RAM total.",
+      "raw": 14923575296,
+      "raw_unit": "B",
+      "run_id": null,
+      "scope": "Perfil físico e workload C3 publicados.",
+      "source_class": "Publicação compacta C3; sem reprodução independente",
+      "sources": [
+        "E-C3-GATE"
+      ],
+      "unit": "GiB",
+      "value": 13.898662567138672
+    },
+    "M-C3-Q-PASS": {
+      "decimals": 0,
+      "display": "1",
+      "evidence_class": "MEDIDO",
+      "extract": {
+        "pointer": "/pass_count",
+        "source": "E-C3-Q",
+        "type": "json"
+      },
+      "family": "utility",
+      "id": "M-C3-Q-PASS",
+      "label": "Tarefas selecionadas resolvidas no stock20B cap3072",
+      "limitation": "Duas tarefas escolhidas após falhas C2; não é novo held-out.",
+      "raw": 1,
+      "raw_unit": "count",
+      "run_id": "c3-q-stock20-cap3072-02",
+      "scope": "Perfil físico e workload C3 publicados.",
+      "source_class": "Publicação compacta C3; sem reprodução independente",
+      "sources": [
+        "E-C3-Q"
+      ],
+      "unit": "count",
+      "value": 1
+    },
+    "M-C3-REQUESTS": {
+      "decimals": 0,
+      "display": "20",
+      "evidence_class": "MEDIDO",
+      "extract": {
+        "pointer": "/completed_requests",
+        "source": "E-C3-GATE",
+        "type": "json"
+      },
+      "family": "performance",
+      "id": "M-C3-REQUESTS",
+      "label": "Pedidos completos",
+      "limitation": "Carga fixa de 20 pedidos; sem concorrência.",
+      "raw": 20,
+      "raw_unit": "count",
+      "run_id": null,
+      "scope": "Perfil físico e workload C3 publicados.",
+      "source_class": "Publicação compacta C3; sem reprodução independente",
+      "sources": [
+        "E-C3-GATE"
+      ],
+      "unit": "count",
+      "value": 20
+    },
+    "M-C3-SHORT-FINAL": {
+      "decimals": 3,
+      "display": "73.223",
+      "evidence_class": "MEDIDO",
+      "extract": {
+        "pointer": "/rows/0/first_final_s",
+        "source": "E-C3-LATENCY",
+        "type": "json"
+      },
+      "family": "performance",
+      "id": "M-C3-SHORT-FINAL",
+      "label": "Primeiro conteúdo final, prompt 113",
+      "limitation": "Falha metas 10/20 s; SSE não é intervalo por token.",
+      "raw": 73.22344023700862,
+      "raw_unit": "s",
+      "run_id": null,
+      "scope": "Perfil físico e workload C3 publicados.",
+      "source_class": "Publicação compacta C3; sem reprodução independente",
+      "sources": [
+        "E-C3-LATENCY"
+      ],
+      "unit": "s",
+      "value": 73.22344023700862
+    },
+    "M-C3-SHORT-FIRST": {
+      "decimals": 3,
+      "display": "37.219",
+      "evidence_class": "MEDIDO",
+      "extract": {
+        "pointer": "/rows/0/first_text_s",
+        "source": "E-C3-LATENCY",
+        "type": "json"
+      },
+      "family": "performance",
+      "id": "M-C3-SHORT-FIRST",
+      "label": "Primeiro texto, prompt 113",
+      "limitation": "Sequência de latência; comparador C2 histórico, não A/B causal.",
+      "raw": 37.21913538200897,
+      "raw_unit": "s",
+      "run_id": null,
+      "scope": "Perfil físico e workload C3 publicados.",
+      "source_class": "Publicação compacta C3; sem reprodução independente",
+      "sources": [
+        "E-C3-LATENCY"
+      ],
+      "unit": "s",
+      "value": 37.21913538200897
+    },
+    "M-C3-TAIL": {
+      "decimals": 3,
+      "display": "3.259",
+      "evidence_class": "MEDIDO",
+      "extract": {
+        "pointer": "/last_half_decode_tok_s",
+        "source": "E-C3-GATE",
+        "type": "json"
+      },
+      "family": "performance",
+      "id": "M-C3-TAIL",
+      "label": "Decode na segunda metade",
+      "limitation": "Dez pedidos finais do mesmo workload.",
+      "raw": 3.2585525819093086,
+      "raw_unit": "token/s",
+      "run_id": null,
+      "scope": "Perfil físico e workload C3 publicados.",
+      "source_class": "Publicação compacta C3; sem reprodução independente",
+      "sources": [
+        "E-C3-GATE"
+      ],
+      "unit": "token/s",
+      "value": 3.2585525819093086
+    }
+  },
+  "schema_version": "tesy-values-v1"
+}

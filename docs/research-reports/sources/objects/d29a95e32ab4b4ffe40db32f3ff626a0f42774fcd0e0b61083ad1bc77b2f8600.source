@@ -1,0 +1,46 @@
+{
+  "schema": "c3-selected-cap-followup-v1",
+  "status": "PASS_EVIDENCE",
+  "run_id": "c3-q-stock20-cap3072-02",
+  "selection": "post-C2-failure diagnostic, not held-out",
+  "max_output_tokens": 3072,
+  "context_configured": 4096,
+  "rows": [
+    {
+      "task_id": "c2-eval-code-02",
+      "status": "PASS",
+      "finish_reason": "stop",
+      "prompt_tokens": 162,
+      "completion_tokens_total": 2887,
+      "wall_s": 70.37432546399941,
+      "reasoning_characters": 8662,
+      "final_characters": 1931,
+      "detail": {
+        "status": "PASS",
+        "exit_code": 0,
+        "stdout_tail": "TESY_TESTS_PASSED_94027\n",
+        "stderr_tail": ""
+      }
+    },
+    {
+      "task_id": "c2-eval-plan-01",
+      "status": "FAIL_TRUNCATED",
+      "finish_reason": "length",
+      "prompt_tokens": 189,
+      "completion_tokens_total": 3072,
+      "wall_s": 75.6954274430027,
+      "reasoning_characters": 10520,
+      "final_characters": 0,
+      "detail": {
+        "status": "FAIL",
+        "reason": "missing final content"
+      }
+    }
+  ],
+  "pass_count": 1,
+  "source_sha256": {
+    "results/c3-q-stock20-cap3072-02.json": "caca1fdc9905342fca58987e8aad82e39ba71d13ead3b25741699865f731ce7f",
+    "results/c3-q-stock20-cap3072-02.normalized.json": "147fb9962772b79ed050da515d85ed791159eb0e284981af54ad98adfcf5d2b9"
+  },
+  "grader_sha256": "23a031f3e3fdd633662f08807df4f2c08167321818ce98622fedcddfdf8b754e"
+}

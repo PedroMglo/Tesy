@@ -1,0 +1,87 @@
+{
+  "schema": "c3-preload-ab-summary-v1",
+  "status": "PASS_EVIDENCE",
+  "order": [
+    "p1:off-on",
+    "p2:on-off",
+    "p3:off-on"
+  ],
+  "cases": [
+    {
+      "case": "latency-short",
+      "control_s": [
+        43.920423,
+        45.978269,
+        44.019065
+      ],
+      "candidate_s": [
+        38.302885,
+        38.364134,
+        37.399686
+      ],
+      "paired_reduction_fraction": [
+        0.12790263882476716,
+        0.16560290688629442,
+        0.1503752748950936
+      ],
+      "median_reduction_fraction": 0.1503752748950936,
+      "within_arm_range_fraction": 0.04674897115602065,
+      "all_pairs_faster": true,
+      "reproducible_beyond_range": true
+    },
+    {
+      "case": "latency-medium",
+      "control_s": [
+        158.819612,
+        156.122984,
+        155.57836700000001
+      ],
+      "candidate_s": [
+        129.334428,
+        128.778256,
+        128.44686
+      ],
+      "paired_reduction_fraction": [
+        0.18565203395661234,
+        0.17514863794814484,
+        0.1743912571083872
+      ],
+      "median_reduction_fraction": 0.17514863794814484,
+      "within_arm_range_fraction": 0.02076084454035283,
+      "all_pairs_faster": true,
+      "reproducible_beyond_range": true
+    },
+    {
+      "case": "latency-long",
+      "control_s": [
+        456.005671,
+        448.761594,
+        452.566189
+      ],
+      "candidate_s": [
+        372.830097,
+        370.794956,
+        368.322111
+      ],
+      "paired_reduction_fraction": [
+        0.18240030615759595,
+        0.17373732298490763,
+        0.18614752946115465
+      ],
+      "median_reduction_fraction": 0.18240030615759595,
+      "within_arm_range_fraction": 0.016006668584780212,
+      "all_pairs_faster": true,
+      "reproducible_beyond_range": true
+    }
+  ],
+  "reproducible_smaller_gain": true,
+  "goal_25pct_prefill": false,
+  "decode_gate": "NOT_RUN",
+  "sustained_gate": "NOT_RUN",
+  "source_sha256": {
+    "results/c3-p2b-ab-p1-comparison01.json": "19d90585679531c4c557463d14748978e37ae63c2c1ef81c6b43cd3d0bea0f20",
+    "results/c3-p2b-ab-p2-comparison01.json": "68d6096071e074fb52b72bd5452ef8f4909092fcd18a0641bfb72cbddd593028",
+    "results/c3-p2b-ab-p3-comparison01.json": "a1a75e73dc781c8c6638b949670ce31d35752a5e2fdaf14327376b33996371fd"
+  },
+  "analyzer_sha256": "da85583477d39e262918920f149bf596d96a71f7b5d2071e12f60dea93ce1d48"
+}
