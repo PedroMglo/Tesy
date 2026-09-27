@@ -1,0 +1,26 @@
+{
+  "gain_formula": "100*(P8-P12)/P8",
+  "historical_c8_gain_pct": 16.593707538111605,
+  "historical_c8_scope": "separate 496+32 teacher-forced preload probe; excluded from server pairs",
+  "pair1": {
+    "candidate": "FAIL_THERMAL_GUARD",
+    "control": "FAIL_THERMAL_GUARD",
+    "gain_pct": null,
+    "order": [
+      "P8",
+      "P12"
+    ]
+  },
+  "pair2": {
+    "order": [
+      "P12",
+      "P8"
+    ],
+    "reason": "both first-pair arms reached CPU95 guard",
+    "status": "NOT_RUN"
+  },
+  "paired_gains_pct": [],
+  "primary_metric": "completion-fenced API request elapsed seconds",
+  "schema": "c17-thermal-timing-pairs-v1",
+  "status": "NO_COMPLETED_513_PAIR"
+}

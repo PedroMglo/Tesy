@@ -7,11 +7,12 @@
     "M4": "NOT_RUN"
   },
   "mission": "local usable main GPT-OSS 120B, original weights and authoritative routing",
-  "next_action": "PAUSED for user Git review and cooling change. On resumption: new physical-host/thermal preflight, new campaign identity and contemporary controls before repeating a thermally blocked 513-ID request under unchanged guards; C15 source diagnostic needs build/model-free proof before profiling.",
+  "next_action": "C17 P8/P12 8K cold513 both re-hit CPU95 guard after changed placement. Pivot model-free to lower CPU batch-thread concurrency in a new P12 numerical profile; freeze capacity, fidelity and thermal protocol before any new model run. M3/M4 and C15 full-model timing remain NOT_RUN.",
   "open_hypotheses": [
     "Exact prefix reuse and wave critical fraction remain untested",
     "Wave/parking work may occupy removable exclusive critical-path time in prefill; summed stalls and CPU cycle shares do not bound this yet",
-    "Exact-prefix reuse remains unobserved because first cold request thermally failed; requires lower cold prefill CPU work or other admitted profile"
+    "Exact-prefix reuse remains unobserved because first cold request thermally failed; requires lower cold prefill CPU work or other admitted profile",
+    "Reducing CPU batch-thread concurrency in a distinct P12 numerical profile may lower peak heat; latency and same-profile fidelity remain unmeasured"
   ],
   "rejected_claims": [
     "P12 general-medium timing gain >=5% at 496+32 under E18",
@@ -19,7 +20,8 @@
     "P8 native ub64 preload-on E18 8K server can complete the 513-ID cold request under CPU95 guard",
     "P16/slots24 provides 513-ID server CPU thermal margin under E18: one diagnostic reached CPU95 C",
     "P12 current 8K server repeatably admits 513-ID first request under CPU95: C13 first request failed after C11 one pass",
-    "P12 native ub64 admits a 513-ID cold server request with CPU<=92 C and prefill<=75 s: request failed CPU95 guard"
+    "P12 native ub64 admits a 513-ID cold server request with CPU<=92 C and prefill<=75 s: request failed CPU95 guard",
+    "Cooling-placement change alone admits P8/P12 ub32 preload-on 8K cold513 under CPU95: both C17 T2 arms failed before completion"
   ],
   "schema": "120b-program-index-v1",
   "units": [
@@ -82,7 +84,17 @@
       "identity": "c15",
       "root": "results/c15-20260927T1607Z",
       "status": "SOURCE_ONLY_UNBUILT_PAUSED_FOR_REVIEW"
+    },
+    {
+      "identity": "c16",
+      "root": "results/c16-thermal-recovery-20260927T1632Z",
+      "status": "THERMAL_PREFLIGHT_BLOCKED_IDLE_CADENCE_NO_MODEL"
+    },
+    {
+      "identity": "c17",
+      "root": "results/c17-thermal-recovery-20260927T1656Z",
+      "status": "THERMAL_LIMIT_REPRODUCED_P8_P12_COLD513"
     }
   ],
-  "updated_utc": "2026-09-27T16:07:00+00:00"
+  "updated_utc": "2026-09-27T17:41:00+00:00"
 }
