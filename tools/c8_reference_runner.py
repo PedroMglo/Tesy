@@ -13,6 +13,7 @@ import time
 from c2_gate import GateError, strict_json
 from c3_compare_capture_logits import resources
 from c7_boundary_gate import capture
+from c8_seal_capture import verify as verify_capture_seal
 
 MODEL = "/home/pmglo/models/gpt-oss-120b-gguf/gpt-oss-120b-MXFP4.gguf"
 BACKEND = "/home/pmglo/Projects/Tesy/tesy-scale-lab/backends/streaming"
@@ -162,8 +163,10 @@ def main():
     dirty = subprocess.check_output(["git", "status", "--porcelain"], text=True).strip()
     if actual_commit != args.measurement_commit or dirty or \
        protocol["binary_sha256"] != sha("tools/c8_layer_reference") or \
-       model_stat() != protocol["model_stat"]:
+       model_stat() != protocol["model_stat"] or \
+       sha(root/"capture-seal.json") != protocol["capture_seal_sha256"]:
         p.error("reference identity differs from freeze")
+    verify_capture_seal(root,root/"capture-seal.json")
     boundary = strict_json((root/"boundary-summary.json").read_text())
     if boundary["status"] != "SAME_PROFILE_PASS":
         p.error("observer boundary gate did not pass")
@@ -194,6 +197,11 @@ def main():
             break
         report["numeric_rows"] += row["numeric_rows"]
         report["masked_rows"] += row["masked_rows"]
+    try:
+        verify_capture_seal(root,root/"capture-seal.json")
+    except (OSError,ValueError,KeyError,TypeError,GateError) as exc:
+        report["status"]="FAIL_RESOURCES_OR_EVIDENCE"
+        report["capture_seal_end_error"]=f"{type(exc).__name__}: {exc}"
     with destination.open("x") as out:
         json.dump(report, out, indent=2, sort_keys=True, allow_nan=False)
         out.write("\n")
