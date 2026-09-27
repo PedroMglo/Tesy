@@ -1,0 +1,33 @@
+{
+  "admission_reservation": {
+    "cgroup_bytes_max": 17716740096,
+    "gpu_total_mib_max": 6500,
+    "min_mem_available_bytes": 6442450944,
+    "rss_bytes_max": 17179869184,
+    "swap_bytes": 0
+  },
+  "c7_tensor_accounting": "results/c7-20260927T1130Z/accounting.json",
+  "cpu_expert_pools_bytes": 12267417600,
+  "cpu_nonstream_layer_gguf_bytes": 990495232,
+  "cpu_pools": 29,
+  "evidence_class": "C7 GGUF tensor inventory plus C8 observed 4K P8; 8K server allocations unknown until bounded admission",
+  "gpu_expert_pools_bytes": 2961100800,
+  "gpu_nonstream_layer_gguf_bytes": 239085056,
+  "gpu_pools": 7,
+  "observed_c8_4k_p8_probe_peak": {
+    "cgroup_bytes": 14781255680,
+    "gpu_total_mib": 3900,
+    "rss_bytes": 14963195904
+  },
+  "output_gpu_gguf_bytes": 615340800,
+  "per_expert_streamed_bytes": 13219200,
+  "policy": "unknown forward workspace permits init-only and separately frozen minimum forward, not long workload admission",
+  "schema": "c9-8k-init-accounting-v1",
+  "slots_per_layer": 32,
+  "token_embedding_cpu_gguf_bytes": 615329280,
+  "unknown_delta": {
+    "8k_full_swa_kv": "source/model dependent; quantify via server allocation logs and bounded init",
+    "server_graph_workspace": "may appear only on first forward",
+    "staging_pinned_metadata_page_cache": "bounded by measured admission, not assumed zero"
+  }
+}
