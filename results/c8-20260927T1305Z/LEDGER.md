@@ -13,3 +13,6 @@
 
 - G3 timing measurement commit `6b5dabd4357145a1385bc16784a4ecbb78c9941d`; `c8-g3-pair1-off`, `pair1-on`, `pair2-on`, `pair2-off` passed full 33-row bitwise logits versus contemporary P8 control and all resource gates. Paired medians: prefill +12.44%, T_work +10.24%, TPOT +1.00%; work pairs +8.95%, +11.53%. This short screen does not decide the medium claim.
 - Resource peak GPU 3898 MiB, RSS 14,956,146,688 B, cgroup 15,380,504,576 B, CPU 88.625 C, swap 0. ON issued 2936 preloads per run; source ready-on-arrival is not a true preload-hit count. Next: two new alternating 496+32 pairs under the frozen protocol.
+
+- G4 screen measurement commit `77d7ba869797e31731daed995ee4373c2f63d5cb`; `c8-g4-pair1-off`, `pair1-on`, `pair2-on`, `pair2-off` passed full 33-row bitwise logits versus contemporary P8 control and all resource gates. Paired medians: prefill +17.71%, T_work +16.88%, TPOT +4.43%; work pairs +17.11%, +16.65%. `SCREEN496_GO` is a screening decision, not confirmation.
+- Screen resource peak GPU 3900 MiB, RSS 14,963,060,736 B, cgroup 14,757,126,144 B, CPU 93.125 C, swap 0. ON issued 7749 preloads per run. Next: three new 496+32 confirmation pairs under the frozen policy, with thermal and resource preflights.
