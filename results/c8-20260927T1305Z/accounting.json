@@ -24,9 +24,36 @@
     "evidence_class": "historical diagnostic, not current admission",
     "gpu_peak_mib": 3898
   },
+  "numeric_admission_observed": {
+    "off1": {
+      "cgroup_file_peak_bytes": 1973972992,
+      "cgroup_peak_bytes": 14860632064,
+      "gpu_total_peak_mib": 3900.0,
+      "rss_peak_bytes": 14956359680,
+      "swap_peak_bytes": 0
+    },
+    "off2": {
+      "cgroup_file_peak_bytes": 1886175232,
+      "cgroup_peak_bytes": 14763155456,
+      "gpu_total_peak_mib": 3900.0,
+      "rss_peak_bytes": 14956392448,
+      "swap_peak_bytes": 0
+    },
+    "on": {
+      "cgroup_file_peak_bytes": 3951673344,
+      "cgroup_peak_bytes": 17060282368,
+      "gpu_total_peak_mib": 3906.0,
+      "rss_peak_bytes": 14939480064,
+      "swap_peak_bytes": 0
+    }
+  },
   "pool_cpu_bytes": 12267417600,
   "pool_gpu_bytes": 2961100800,
   "pool_per_layer_bytes": 423014400,
+  "prediction_exceeded_for_on_capture": {
+    "cgroup_bytes": 1300551168,
+    "interpretation": "capture ON exceeded initial cgroup estimate while remaining below admission reservation; no forward timing claim from capture"
+  },
   "schema": "c8-p8-preload-accounting-v1",
   "source": "same pinned original backend, stage_wave_locked reserves next wave within the existing 32-slot pool and bounded per-layer queue; no new weight or quantization allocation",
   "unknown": "capture observer buffers and allocator fragmentation are monitored, not assumed zero; first ON numeric capture is the bounded forward admission"
