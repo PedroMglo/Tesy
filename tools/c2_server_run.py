@@ -13,12 +13,13 @@ import socket
 import subprocess
 import threading
 import time
+from urllib.request import Request, urlopen
 
 from c2_gate import GateError, strict_json
 from run_bounded import (backend_library_hashes, cgroup_state, gpu_state,
                          mem_available, model_fd_state, proc_status, sha256,
                          thermal_state, relevant_environment)
-from run_task_server import fetch, stop_own_server
+from run_task_server import PORT, fetch, stop_own_server
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -49,6 +50,88 @@ def json_bytes(value):
 
 def digest(value):
     return hashlib.sha256(json_bytes(value)).hexdigest()
+
+
+def parse_chat_stream(lines, elapsed):
+    """Collect one OpenAI chat SSE response and timestamp received text chunks."""
+    content = []
+    reasoning = []
+    first_text = first_reasoning = first_final = None
+    finish_reason = usage = timings = None
+    event_count = 0
+    done = False
+    for raw_line in lines:
+        line = raw_line.decode('utf-8').strip() if isinstance(raw_line, bytes) else raw_line.strip()
+        if not line.startswith('data: '):
+            continue
+        data = line[6:]
+        if data == '[DONE]':
+            done = True
+            break
+        event = strict_json(data)
+        if type(event) is not dict or type(event.get('choices')) is not list:
+            raise GateError('malformed chat stream event')
+        event_count += 1
+        choices = event['choices']
+        if len(choices) > 1:
+            raise GateError('unexpected multiple stream choices')
+        if choices:
+            choice = choices[0]
+            if type(choice) is not dict or type(choice.get('delta')) is not dict:
+                raise GateError('malformed stream delta')
+            delta = choice['delta']
+            if delta.get('tool_calls'):
+                raise GateError('tool call outside frozen stream workload')
+            for key, target in (('reasoning_content', reasoning), ('content', content)):
+                chunk = delta.get(key, '')
+                if type(chunk) is not str:
+                    raise GateError('non-string stream text')
+                if chunk:
+                    target.append(chunk)
+                    if chunk.strip():
+                        timestamp = elapsed()
+                        if first_text is None:
+                            first_text = timestamp
+                        if key == 'reasoning_content' and first_reasoning is None:
+                            first_reasoning = timestamp
+                        if key == 'content' and first_final is None:
+                            first_final = timestamp
+            if choice.get('finish_reason') is not None:
+                if finish_reason is not None or type(choice['finish_reason']) is not str:
+                    raise GateError('duplicate/invalid stream finish reason')
+                finish_reason = choice['finish_reason']
+        if 'usage' in event:
+            if usage is not None or type(event['usage']) is not dict:
+                raise GateError('duplicate/invalid stream usage')
+            usage = event['usage']
+        if 'timings' in event:
+            if timings is not None or type(event['timings']) is not dict:
+                raise GateError('duplicate/invalid stream timings')
+            timings = event['timings']
+    if not done or finish_reason not in ('stop', 'length') or usage is None or timings is None:
+        raise GateError('incomplete stream completion/usage/timings fence')
+    message = {'role': 'assistant', 'content': ''.join(content)}
+    if reasoning:
+        message['reasoning_content'] = ''.join(reasoning)
+    response = {'choices': [{'message': message, 'finish_reason': finish_reason}],
+                'usage': usage, 'timings': timings}
+    metrics = {'first_text_chunk_s': first_text,
+               'first_reasoning_chunk_s': first_reasoning,
+               'first_final_content_chunk_s': first_final,
+               'sse_event_count': event_count, 'done_observed': done,
+               'interpretation': 'client receipt times of non-whitespace SSE chunks; not token timestamps'}
+    return response, metrics
+
+
+def stream_chat(payload, timeout, started_monotonic):
+    req = Request(f'http://127.0.0.1:{PORT}/v1/chat/completions',
+                  data=json.dumps(payload, allow_nan=False).encode(),
+                  headers={'Content-Type': 'application/json'}, method='POST')
+    with urlopen(req, timeout=timeout) as response:
+        if response.status != 200:
+            raise GateError('chat stream HTTP status not 200')
+        return parse_chat_stream(response,
+                                 lambda: time.monotonic() - started_monotonic)
 
 
 def tasks_for(suite):
@@ -453,16 +536,26 @@ def run(args, protocol, config, task_rows, model):
             for row_id, task in task_rows:
                 if reasons or server.poll() is not None: raise GateError("server/watchdog stopped")
                 messages = task.get("messages") or [{"role":"user","content":task["prompt"]}]
+                stream_requests = config.get('stream_requests', False)
                 payload = {"model":model_id,"messages":messages,
                            "max_tokens":config["request_policy"]["max_tokens"],
-                           "temperature":0,"seed":42,"stream":False}
+                           "temperature":0,"seed":42,"stream":stream_requests}
+                if stream_requests:
+                    payload['stream_options'] = {'include_usage': True}
                 if "cache_prompt" in task:
                     payload["cache_prompt"] = task["cache_prompt"]
-                start = time.monotonic()-t0
+                request_started = time.monotonic()
+                start = request_started-t0
                 if protocol.get('c18'):
                     c18_request_active.set()
-                response = fetch("/v1/chat/completions",payload,
-                                 timeout=config["request_policy"]["per_request_timeout_s"])
+                stream_metrics = None
+                if stream_requests:
+                    response, stream_metrics = stream_chat(
+                        payload, config['request_policy']['per_request_timeout_s'],
+                        request_started)
+                else:
+                    response = fetch("/v1/chat/completions",payload,
+                                     timeout=config["request_policy"]["per_request_timeout_s"])
                 end = time.monotonic()-t0
                 if protocol.get('c18'):
                     c18_request_active.clear()
@@ -478,6 +571,8 @@ def run(args, protocol, config, task_rows, model):
                         "started_s":start,"ended_s":end,"finish_reason":choices[0].get("finish_reason"),
                         "usage":response.get("usage"),"timings":response.get("timings"),
                         "message":choices[0]["message"]}
+                if stream_metrics is not None:
+                    item['stream_metrics'] = stream_metrics
                 raw.append(item)
                 print(json.dumps({"id":row_id,"elapsed_s":end-start,"usage":item["usage"]}),flush=True)
         except Exception as exc:
