@@ -1,0 +1,15 @@
+\clearpage
+\section{Contrato: o que se está a comparar}
+\claim{CL-C2-IDENTITY}{A C2 identifica Ryzen AI 9 HX370, RTX 4060 Laptop de 8188 MiB, 30 GiB de RAM reportados e NVMe interno. O target é gpt-oss-120b MXFP4 GGUF, ficheiro de \metric{M-C2-MODEL-GB} GB. São dados do host histórico, não do ambiente que compilou o PDF.}
+
+\claim{CL-C2-RESOURCE}{O envelope publicado impõe \metric{M-C2-HOST-LIMIT} GiB no cgroup, swap zero e guard GPU de \metric{M-C2-GPU-LIMIT} MiB. Cgroup peak, RSS, RAM total e GPU amostrada não são a mesma métrica.}
+
+\begin{tabularx}{\linewidth}{@{}p{37mm}Y@{}}
+\toprule \textbf{Contrato} & \textbf{Afirmação permitida}\\ \midrule
+Bitwise & Igualdade dos valores nos checkpoints ensaiados, não de todos os estados.\\
+Igualdade de tokens & Mesmos IDs no teste, não certificação completa dos logits ou sampling.\\
+Timing / recursos & Taxa e guards no protocolo, não aprovação automática da correção.\\
+Tarefas & Critérios satisfeitos na suite e cap, não superioridade populacional.\\
+\bottomrule
+\end{tabularx}
+\evidence{E-C2-FINAL} \evidence{E-C1-AUDIT} \evidence{E-R00-STATUS}

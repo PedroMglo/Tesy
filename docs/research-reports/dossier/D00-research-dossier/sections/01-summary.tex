@@ -1,0 +1,17 @@
+\section{Síntese para orientação}
+O Tesy investiga inferência local sparse/MoE acima da memória disponível, procurando capacidade e qualidade úteis sob limites reais. Este dossier reúne um recorte de fundamentos e as Campanhas 1 e 2, sem apresentar a cronologia como uma sequência de vitórias. \evidence{E-R00-STATUS} \evidence{E-C1-AUDIT} \evidence{E-C2-FINAL}
+
+\begin{tabularx}{\linewidth}{@{}p{36mm}Y@{}}
+\toprule \textbf{Pergunta} & \textbf{Resposta sustentada nas fontes}\\ \midrule
+Executou acima da RAM? & C1/C2 publicam execução do GGUF target sob limite host.\\
+Que taxa foi observada? & C2-C: \metric{M-C2-DECODE} token/s agregados; timing/recursos PASS.\\
+Correção resolvida? & Não: C2 fecha CORRECTNESS\_BLOCKED na cobertura independente GPU8/32 longa.\\
+O modelo maior ajudou? & C1 empatou; C2 observou \metric{M-C2-TARGET-PASS}/\metric{M-C2-CASES} contra \metric{M-C2-STOCK-PASS}/\metric{M-C2-CASES}, com \metric{M-C2-WALL-RATIO} vezes o wall time.\\
+Novidade demonstrada? & O ledger preserva o no-go de novidade ampla.\\
+\bottomrule
+\end{tabularx}
+\evidence{E-C2-SUMMARY} \evidence{E-C1-AUDIT} \evidence{E-R00-STATUS}
+
+\begin{FindingBox}{A decisão que orienta o passo seguinte}
+Qualificar a referência numérica antes de aceitar novas otimizações. O ganho de capacidade observado não resolve correção, latência interativa ou benefício generalizável.
+\end{FindingBox}

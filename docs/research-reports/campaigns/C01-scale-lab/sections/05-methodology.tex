@@ -1,0 +1,6 @@
+\section{Metodologia de reprodução documental}
+Esta edição usa extração textual explícita da auditoria original. Cada número possui uma passagem única e um token numérico na spec. Não se trata a precisão arredondada de Markdown como se fossem dados brutos mais precisos.
+
+A razão \metric{M-C1-TOKENS}/\metric{M-C1-SECONDS} é reconciliada com \metric{M-C1-DECODE} token/s à precisão publicada. A tolerância documental de arredondamento não modifica nenhum threshold experimental. \evidence{E-C1-AUDIT}
+
+O pipeline verifica SHA-256 e Git blob SHA, gera derivados e compila o PDF. Nenhuma dessas operações reexecuta o target. \EvidenceNotRun{Reprodução experimental e reanálise dos raws.}

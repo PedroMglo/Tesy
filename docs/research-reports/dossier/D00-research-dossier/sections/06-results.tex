@@ -1,0 +1,40 @@
+\clearpage
+\section{Resultados que sustentam decisões}
+\subsection{Capacidade e decode observado}
+\begin{figure}[htbp]\centering
+\begin{tikzpicture}\begin{axis}[ybar,bar width=35pt,height=6cm,ymin=0,ymax=4.2,ylabel={Decode agregado (token/s)},symbolic x coords={C1,C2},xtick=data,enlarge x limits=.6]
+\addplot table[x=label,y=rate,col sep=comma]{generated/historical-throughput.csv};
+\end{axis}\end{tikzpicture}
+\caption{Sustained24 C1 e sustained32 C2: comparação histórica entre protocolos, não A/B controlado nem efeito causal dos slots. \evidence{E-C1-AUDIT} \evidence{E-C2-SUMMARY}}
+\end{figure}
+\historicalclaim{CL-C1-M5}{A C1 publicou \metric{M-C1-DECODE} token/s em dez pedidos de servidor. O CLI anterior conserva TIMEOUT.}
+\claim{CL-C2-PERFORMANCE}{A C2-C publicou \metric{M-C2-DECODE} token/s em \metric{M-C2-REQUESTS} pedidos, com \metric{M-C2-SECOND-HALF} token/s na segunda metade. A meta de 4 token/s não foi atingida.}
+
+\subsection{Qualidade útil e custo}
+\begin{tabularx}{\linewidth}{@{}Y r r r@{}}
+\toprule \textbf{Suite} & \textbf{Stock20B} & \textbf{Target120B} & \textbf{Wall ratio}\\ \midrule
+C1 & \metric{M-C1-UTILITY-PASS}/\metric{M-C1-UTILITY-N} & \metric{M-C1-UTILITY-PASS}/\metric{M-C1-UTILITY-N} & \metric{M-C1-COST}\\
+C2 & \metric{M-C2-STOCK-PASS}/\metric{M-C2-CASES} & \metric{M-C2-TARGET-PASS}/\metric{M-C2-CASES} & \metric{M-C2-WALL-RATIO}\\
+\bottomrule
+\end{tabularx}
+\evidence{E-C1-AUDIT} \evidence{E-C2-SUMMARY}
+
+Suites e caps diferentes não demonstram evolução de qualidade do mesmo workload. Na C2, os dois exclusivos target ocorreram quando o stock chegou ao cap sem conteúdo final. \evidence{E-C2-FINAL}
+
+\clearpage
+\subsection{Latência e correção continuam a limitar a utilização}
+\begin{figure}[htbp]\centering
+\begin{tikzpicture}\begin{axis}[height=6cm,xlabel={Tokens reais de prompt},ylabel={Tempo (s)},xmin=0,xmax=1650,ymin=0,ymax=515,legend style={at={(.5,1.03)},anchor=south,legend columns=2}]
+\addplot+[only marks,mark=*,mark size=2.5pt] table[x=prompt,y=prefill,col sep=comma]{generated/latency.csv};
+\addplot+[only marks,mark=triangle*,mark size=2.5pt] table[x=prompt,y=final,col sep=comma]{generated/latency.csv};
+\legend{Prefill,First final}
+\end{axis}\end{tikzpicture}
+\caption{Três prompts no mesmo processo carregado, short/medium/long. Observações, não regressão causal nem extrapolação de contexto. \evidence{E-C2-LATENCY}}
+\end{figure}
+\claim{CL-C2-LATENCY}{No prompt curto, first text foi \metric{M-C2-FIRST-TEXT} s e first final \metric{M-C2-FIRST-FINAL} s. As metas de 10/20 s falharam. O prefill é a maior componente observada antes do texto, sem identificação de um custo físico exclusivo por camada.}
+
+\claim{CL-C2-CORRECTNESS}{Surrogate 20B e comparações históricas restritas no 120B não certificam GPU8/32 em prefixes longos. As duas referências alargadas target pararam nos RSS guards. Faults GPU in-flight continuam NOT\_RUN.}
+
+\begin{FindingBox}{Ausência de cobertura não é prova de impossibilidade}
+O blocker é de certificação no contrato e orçamento observados. Não prova que uma referência adequada seja impossível; também não autoriza assumir a implementação correta.
+\end{FindingBox}

@@ -1,0 +1,22 @@
+\clearpage
+\section{Resultados}
+\subsection{Execução e correção restrita}
+\historicalclaim{CL-C1-M4}{O target executou abaixo do limite host, com dois pedidos num processo, memória estável e sem swap/OOM. O vetor de logits após quatro IDs foi bitwise contra referência plain CPU do mesmo SHA; pares GPU8 de 16/24 e 24/32 slots também foram comparados em prefixes fixos.}
+
+A referência com prefix completo Harmony parou no limite do cgroup antes dos logits. A aprovação restrita não foi expandida para esse caso. Uma tarefa original de extração falhou o critério exato de campos. \evidence{E-C1-AUDIT}
+
+\subsection{Servidor sustentado e A/B curto}
+\begin{tabularx}{\linewidth}{@{}Y r@{}}
+\toprule \textbf{Perfil servidor, 24 slots} & \textbf{Publicado}\\ \midrule
+Wall time & \metric{M-C1-WALL} s\\
+Tokens / tempo de decode & \metric{M-C1-TOKENS} / \metric{M-C1-SECONDS} s\\
+Decode agregado / últimos cinco & \metric{M-C1-DECODE} / \metric{M-C1-SECOND-HALF} token/s\\
+\bottomrule
+\end{tabularx}
+\historicalclaim{CL-C1-M5}{Dez pedidos terminaram com taxas por pedido acima de 2 token/s. O tempo de decode esteve distribuído no wall time, não foi decode ininterrupto durante todo o período.}
+
+\historicalclaim{CL-C1-M3}{Três pares do A/B curto de 24/32 slots observaram variação média de +\metric{M-C1-AB-GAIN}\% em decode e \metric{M-C1-AB-READ}\% em process read\_bytes, com outputs iguais e sem eventos de recursos. Isso não qualifica sustained32 nem tráfego físico exclusivo.}
+
+\subsection{Utilidade e I/O}
+\historicalclaim{CL-C1-M6}{Target e stock obtiveram \metric{M-C1-UTILITY-PASS}/\metric{M-C1-UTILITY-N}, com as mesmas falhas. O target consumiu \metric{M-C1-COST} vezes o wall time dos pedidos do stock. Não houve vantagem funcional observada nesta suite.}
+\historicalclaim{CL-C1-M2}{M2 permaneceu parcial: não foram medidos separadamente todos os hits por tier, H2D, evictions, wasted prefetch ou overlap. Process read\_bytes não prova NVMe físico exclusivo.}
