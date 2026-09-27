@@ -307,6 +307,7 @@ def run(args, protocol, config, task_rows, model):
     raw = []
     samples = []
     stop = threading.Event()
+    c18_request_active = threading.Event()
     with reserve(paths[".stdout"]) as stdout, reserve(paths[".stderr"]) as stderr, \
          open(paths[".samples.jsonl"],"x") as sample_file:
         server = subprocess.Popen(command, stdout=stdout, stderr=stderr,
@@ -324,12 +325,33 @@ def run(args, protocol, config, task_rows, model):
             stop_own_server(server)
             raise
         def monitor():
+            previous_cpu_diag = None
+            previous_cpu_diag_t = None
+            prewarning_clocks = []
+            warning_clocks = []
             while not stop.is_set() and server.poll() is None:
                 try:
                     collection_start = time.monotonic()
                     ps = proc_status(server.pid); cg = cgroup_state()
                     gpu = gpu_state(); th = thermal_state(); available = mem_available()
                     now = time.monotonic()-t0
+                    cpu_diag = None
+                    if protocol.get('c18'):
+                        from c18_cpu_telemetry import capture, package_power_w
+                        cpu_diag = capture()
+                        cpu_diag['package_power_w'] = package_power_w(
+                            previous_cpu_diag, cpu_diag,
+                            now - previous_cpu_diag_t if previous_cpu_diag_t is not None else 0)
+                        previous_cpu_diag, previous_cpu_diag_t = cpu_diag, now
+                        cpu_diag['thermal_warning'] = th['cpu_tctl_c'] >= 95
+                        cpu_diag['request_active'] = c18_request_active.is_set()
+                        if cpu_diag['request_active'] and th['cpu_tctl_c'] < 90 and \
+                                cpu_diag['package_power_w'] is not None and cpu_diag['package_power_w'] > 10:
+                            prewarning_clocks.append(cpu_diag['effective_clock_median_mhz'])
+                        if cpu_diag['request_active'] and th['cpu_tctl_c'] >= 95:
+                            warning_clocks.append(cpu_diag['effective_clock_median_mhz'])
+                        else:
+                            warning_clocks.clear()
                     try:
                         identity = process_identity(server.pid)
                     except (FileNotFoundError, ProcessLookupError):
@@ -350,6 +372,8 @@ def run(args, protocol, config, task_rows, model):
                               "gpu":gpu,"thermal":th,"mem_available_bytes":available,
                               "model_fds":model_fd_state(server.pid,str(model)),
                               "collection_s":time.monotonic()-collection_start}
+                    if cpu_diag is not None:
+                        sample['cpu_diagnostics'] = cpu_diag
                     samples.append(sample)
                     sample_file.write(json.dumps(sample,allow_nan=False)+"\n");sample_file.flush()
                     reason = None
@@ -362,6 +386,13 @@ def run(args, protocol, config, task_rows, model):
                     elif cg["memory_peak"] > protocol["limits"]["memory_max_bytes"]: reason = "CGROUP_RESERVE_GUARD"
                     elif available < protocol["limits"]["min_mem_available_bytes"]: reason = "HOST_HEADROOM_GUARD"
                     elif gpu["used_mib"] > protocol["limits"]["gpu_max_mib"]: reason = "GPU_GUARD"
+                    elif protocol.get('c18'):
+                        from c18_cpu_telemetry import thermal_stop_reason
+                        reason = thermal_stop_reason(th['cpu_tctl_c'], cpu_diag,
+                                                     prewarning_clocks, warning_clocks)
+                        if reason is None and (gpu["temperature_c"] > protocol["limits"]["gpu_max_c"] or
+                                               th["nvme_composite_c"] > protocol["limits"]["nvme_max_c"]):
+                            reason = "THERMAL_GUARD"
                     elif th["cpu_tctl_c"] > protocol["limits"]["cpu_max_c"] or \
                          gpu["temperature_c"] > protocol["limits"]["gpu_max_c"] or \
                          th["nvme_composite_c"] > protocol["limits"]["nvme_max_c"]:
@@ -428,9 +459,13 @@ def run(args, protocol, config, task_rows, model):
                 if "cache_prompt" in task:
                     payload["cache_prompt"] = task["cache_prompt"]
                 start = time.monotonic()-t0
+                if protocol.get('c18'):
+                    c18_request_active.set()
                 response = fetch("/v1/chat/completions",payload,
                                  timeout=config["request_policy"]["per_request_timeout_s"])
                 end = time.monotonic()-t0
+                if protocol.get('c18'):
+                    c18_request_active.clear()
                 choices = response.get("choices")
                 if type(choices) is not list or len(choices) != 1 or type(choices[0].get("message")) is not dict:
                     raise GateError(f"missing assistant message for {row_id}")

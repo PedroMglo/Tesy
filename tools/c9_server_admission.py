@@ -89,6 +89,11 @@ def configuration(root):
     return protocol, config
 
 
+def cpu_guard_violation(cpu_c, protocol):
+    return (cpu_c >= protocol['limits']['cpu_max_c'] if 'c18' in protocol
+            else cpu_c > 95)
+
+
 def validate_receipt(protocol, config, raw, samples, root, *, run_id=RUN_ID,
                      protocol_filename='protocol.json', expected_results=0):
     if raw['stop_reasons'] or raw['returncode'] != 0 or \
@@ -141,11 +146,12 @@ def validate_receipt(protocol, config, raw, samples, root, *, run_id=RUN_ID,
            any(cg[k][name] != start[k][name] for k in ('events', 'events_local')
                for name in ('max', 'oom', 'oom_kill')):
             raise GateError('sample cgroup identity/cap/swap/event invalid')
+        cpu_limit_exceeded = cpu_guard_violation(th['cpu_tctl_c'], protocol)
         if ps['VmRSS'] > protocol['limits']['rss_max_bytes'] or \
            cg['memory_peak'] > protocol['limits']['memory_max_bytes'] or \
            gpu['used_mib'] > protocol['limits']['gpu_max_mib'] or \
            sample['mem_available_bytes'] < protocol['limits']['min_mem_available_bytes'] or \
-           th['cpu_tctl_c'] > 95 or gpu['temperature_c'] > 80 or th['nvme_composite_c'] > 70:
+           cpu_limit_exceeded or gpu['temperature_c'] > 80 or th['nvme_composite_c'] > 70:
             raise GateError('sample resource reservation/guard exceeded')
         maxima['rss_bytes'] = max(maxima['rss_bytes'], ps['VmRSS'])
         maxima['cgroup_peak_bytes'] = max(maxima['cgroup_peak_bytes'], cg['memory_peak'])
