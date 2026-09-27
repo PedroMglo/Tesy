@@ -124,7 +124,19 @@ def select_contiguous_window(rows, minimum_s=300, maximum_gap_s=1.0):
     return None
 
 
-def thermal_idle(root, run_id):
+def thermal_start_matches(row, baseline, match_tolerance_c, max_start_c):
+    values = (row["cpu_c"], row["gpu"]["temperature_c"], row["nvme_c"])
+    if any(value > maximum for value, maximum in zip(values, max_start_c)):
+        return False
+    if baseline is None:
+        return True
+    reference = (baseline["cpu_c"], baseline["gpu_c"], baseline["nvme_c"])
+    return all(abs(value - target) <= tolerance for value, target, tolerance in
+               zip(values, reference, match_tolerance_c))
+
+
+def thermal_idle(root, run_id, match_tolerance_c=(2, 3, 3),
+                 max_start_c=(55, 55, 55)):
     start = time.monotonic()
     series = root / "thermal-series.jsonl"
     rows = []
@@ -158,15 +170,13 @@ def thermal_idle(root, run_id):
                 qualifying_gap = (max(b["elapsed_s"]-a["elapsed_s"] for a,b in
                                       zip(qualifying,qualifying[1:])) if qualifying else None)
                 admissible = (qualifying is not None and qualifying_gap <= 1.0 and
-                              all(s["cpu_c"] <= 55 and s["nvme_c"] <= 55 and
-                                  s["gpu"]["temperature_c"] <= 55 for s in qualifying) and
+                              all(thermal_start_matches(s, None, match_tolerance_c,
+                                                        max_start_c) for s in qualifying) and
                               all(x <= 2 for x in trend.values()) and
                               row["mem_available_bytes"] >= 6*2**30 and
                               row["gpu"]["used_mib"] < 100 and
-                              (baseline is None or
-                               abs(row["cpu_c"] - baseline["cpu_c"]) <= 2 and
-                               abs(row["gpu"]["temperature_c"] - baseline["gpu_c"]) <= 3 and
-                               abs(row["nvme_c"] - baseline["nvme_c"]) <= 3))
+                              thermal_start_matches(row, baseline, match_tolerance_c,
+                                                    max_start_c))
                 if admissible or row["elapsed_s"] >= 900:
                     return {"status": "PASS" if admissible else "THERMAL_PREFLIGHT_BLOCKED",
                             "sample_count": len(rows), "duration_s": row["elapsed_s"],
@@ -176,7 +186,10 @@ def thermal_idle(root, run_id):
                             "qualifying_duration_s": row["elapsed_s"]-qualifying[0]["elapsed_s"] if qualifying else None,
                             "cadence_breaks": cadence_breaks,
                             "start": rows[0], "end": row, "last60_trend_c": trend,
-                            "baseline": baseline, "series_sha256": sha256(series)}
+                            "baseline": baseline,
+                            "match_tolerance_c": list(match_tolerance_c),
+                            "max_start_c": list(max_start_c),
+                            "series_sha256": sha256(series)}
             next_at = start + len(rows) * 0.5
             time.sleep(max(0, next_at - time.monotonic()))
 
