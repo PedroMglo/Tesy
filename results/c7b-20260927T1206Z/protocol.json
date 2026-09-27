@@ -1,0 +1,215 @@
+{
+  "alternative": "the alias correction resolves only the schema gate, while observer changes numerical output or capture lacks another core state",
+  "analyzer_sha256": "dda9cb2ab03049a8ea4e1b8803270ab8195eea65a6ed573e6cced65228d47954",
+  "binary_sha256": {
+    "c7_boundary_capture": "f4384d35f376c6ea08aca7a315ffa6a2cd331243f142684103a9efe68c5e2ede",
+    "c7_layer_reference": "028c1de130f03d922cbbaeaf0b62dd428c2dec1df97682e885c6239663d1c142",
+    "c7_profile_probe": "4c0dc056cec3edcf5b05cd6b34208a9fe9a18bb92cf74d5e33f2f2553ccc5a43"
+  },
+  "call_and_graph_plan": {
+    "byte_witness_layers": [
+      0,
+      25,
+      29,
+      35
+    ],
+    "chunk_anchor": "attn_post_norm !ask once per layer per internal microbatch; MoE waves do not advance the counter",
+    "external_call_plan": {
+      "all_decode_calls_finish_logits": true,
+      "decode_positions": [
+        189,
+        220
+      ],
+      "one_id_per_call": true,
+      "prefill_calls": [
+        {
+          "logit_mask": "only position 188",
+          "n_batch": 256,
+          "n_ubatch": 32,
+          "positions": [
+            0,
+            188
+          ],
+          "prompt_ids": 189
+        }
+      ],
+      "teacher_forced_decode_calls": 32
+    },
+    "last_layer_masked": [
+      {
+        "layer": 35,
+        "phase": "prefill0",
+        "state": "N/A_MASKED"
+      },
+      {
+        "layer": 35,
+        "phase": "prefill128",
+        "state": "N/A_MASKED"
+      }
+    ],
+    "logit_width_f32": 201088,
+    "masked_states": 2,
+    "microbatch_lengths": [
+      32,
+      32,
+      32,
+      32,
+      32,
+      29
+    ],
+    "microbatch_starts": [
+      0,
+      32,
+      64,
+      96,
+      128,
+      160
+    ],
+    "numeric_states": 250,
+    "observable_core_stages": [
+      "attn_post_norm",
+      "ffn_moe_logits",
+      "ffn_moe_probs",
+      "ffn_moe_topk",
+      "ffn_moe_weights_softmax",
+      "ffn_moe_out"
+    ],
+    "output_logit_phases": [
+      "prefill_final",
+      "decode0",
+      "decode1",
+      "decode7",
+      "decode31"
+    ],
+    "reference_loads": 36,
+    "schema_positions": 252,
+    "selected_phases": [
+      "prefill0",
+      "prefill128",
+      "prefill_final",
+      "decode0",
+      "decode1",
+      "decode7",
+      "decode31"
+    ],
+    "source": [
+      "src/models/openai-moe.cpp",
+      "src/llama-context.cpp",
+      "ggml/src/ggml-backend.cpp"
+    ],
+    "unobservable_alias": "ffn_moe_logits_biased is the same tensor later named ffn_moe_probs by the graph callback"
+  },
+  "created_utc": "2026-09-27T12:06:51.392858+00:00",
+  "decision": {
+    "required_capture_numeric_states": 250,
+    "required_masked_states": 2,
+    "required_selected_logit_vectors": 5,
+    "same_profile_compare": "bitwise",
+    "selected_logit_width_f32": 201088,
+    "stop_on": "first mismatch, payload/evidence error, nonfinite, OOM, retry or guard",
+    "timing_promotion": "only after all three runs and full canonical layer references pass"
+  },
+  "effective_options": {
+    "LLAMA_MOE_STREAM_NO_PRELOAD": "1",
+    "flash_attn_type": "enabled",
+    "kv_clear_between_measured_cases": true,
+    "kv_unified": false,
+    "moe_stream": true,
+    "moe_stream_direct": true,
+    "moe_stream_io_threads": 4,
+    "moe_stream_slots": 32,
+    "n_batch": 256,
+    "n_ctx": 4096,
+    "n_seq_max": 1,
+    "n_threads": 8,
+    "n_threads_batch": 8,
+    "n_ubatch": 32,
+    "offload_kqv": true,
+    "op_offload": false,
+    "prefix_reuse": false,
+    "swa_full": true,
+    "type_k": "f16",
+    "type_v": "f16",
+    "use_direct_io": true,
+    "use_extra_bufts": false,
+    "use_mmap": false
+  },
+  "hypothesis": "P12 observer OFF/ON and fresh-process repeat preserve five selected complete logits bitwise; six observable core stages per numeric layer state are complete",
+  "identity": {
+    "backend_clean": true,
+    "backend_commit": "1248fd8fa8cfebaece5ea992e4d951c1e18bb9d5",
+    "backend_repository": "freedomljc/llama.cpp",
+    "backend_tree": "8219dfba2414cdcbb388e43b1c67a49f1f70e4aa",
+    "ldd_diagnostic_backend_libraries_sha256": {
+      "build-gcc15/bin/libggml-base.so.0.15.3": "4c322a199c86b801389ed4bda94074083624e0a6460e25681be4b626cc72873d",
+      "build-gcc15/bin/libggml-cpu.so.0.15.3": "b57845ea9f9ce9455d78e6fe290c09b50b9414db9280409b9e5cc143d1b13b61",
+      "build-gcc15/bin/libggml-cuda.so.0.15.3": "5b363c951b87164e94d5b6af35a82c875634aadcb29c9278245cd7516f44cc7e",
+      "build-gcc15/bin/libggml.so.0.15.3": "97a33247336b56aaabe1a8bee4da6cd05e73e8b4327afd2cef67c5526df8ab71",
+      "build-gcc15/bin/libllama.so.0.0.1": "31b56002c36c159f71eba54c0d8e625ae140d34b2b1a503f3dc4db47237719cc"
+    },
+    "model_path": "/home/pmglo/models/gpt-oss-120b-gguf/gpt-oss-120b-MXFP4.gguf",
+    "model_repository": "ggml-org/gpt-oss-120b-GGUF",
+    "model_revision": "238abdd290bb874b90a5da1b4549881b7d05c091",
+    "model_sha256_verified": "582bd40f6886200101f4c4ed9f25f3fe80cc14c86e9e2b37746cd8904a0c622d",
+    "model_size_bytes": 63387346208,
+    "model_stat_at_freeze": {
+      "ctime_ns": 1790389637807910988,
+      "dev": 53,
+      "inode": 14833675,
+      "mtime_ns": 1790389637795911032,
+      "size_bytes": 63387346208
+    },
+    "probe_binary_sha256": "4c0dc056cec3edcf5b05cd6b34208a9fe9a18bb92cf74d5e33f2f2553ccc5a43",
+    "probe_source_sha256": "cdb95c9df8dcc2b6749d787c80d419e37bfcc6eeacfbbf246cfc26e9627f070c"
+  },
+  "inputs": {
+    "numeric_case": "log_medium",
+    "numeric_continuation_ids": 43,
+    "numeric_path": "results/c2-target-numeric-v1.ids",
+    "numeric_prompt_ids": 189,
+    "numeric_sha256": "8fb3aff447febaeaa5a8bdd0c485fd20d51d39fb6ac3e6ba4849eb4a664dbc23",
+    "teacher_forced_32_ids_sha256": "5256b4d64365d2135d9bb75893b3facdb56ad706b4341617c04e0ebbaaf46ac7",
+    "teacher_forced_sha_encoding": "comma-separated decimal IDs, no trailing newline",
+    "teacher_forced_steps": 32,
+    "timing_cases": {
+      "latency-long": 1522,
+      "latency-medium": 496,
+      "latency-short": 113
+    },
+    "timing_path": "results/c3-p1-latency-ids01.tsv",
+    "timing_sha256": "368c48ac1e93d68ec1746bb3d5f7e63118f35d7903c58f88dbe5c983b69190fb"
+  },
+  "prephysical_model_free_evidence": {
+    "corrected_validator_on_prior_raw": "PASS as diagnostic only; no retroactive PASS for prior unit",
+    "prior_raw_diagnostic_index_sha256": "c5bb2d647b1e11bceca92ab0868d4e19bbc56b39dda9add326bd1bb2fbb86a64"
+  },
+  "prior_failed_unit": {
+    "compact_path": "results/c7-20260927T1130Z/g2-attempt01.json",
+    "compact_sha256": "9a050b1800e7e2c154f32f11bed4aba3d43348a7e809f5df08bb75b16f8042f9",
+    "failure": "earlier router-biased alias was required as a distinct observable stage",
+    "status": "GATE_REPAIR_BLOCKED"
+  },
+  "program": "120b-mainline-investigation",
+  "publication": "local only; no usual-server change",
+  "resource": {
+    "max_cpu_c": 95,
+    "max_gpu_c": 80,
+    "max_nvme_c": 70,
+    "min_mem_available_gib": 6,
+    "sample_gap_s_max": 3,
+    "sample_interval_s_max": 1,
+    "scope_memory_max_bytes": 19327352832,
+    "scope_swap_max_bytes": 0,
+    "timeout_per_process_s": 600,
+    "watchdog_max_cgroup_gib": 16.5,
+    "watchdog_max_gpu_mib": 6500,
+    "watchdog_max_rss_gib": 16
+  },
+  "run_order": [
+    "c7b-g2-p12-off01",
+    "c7b-g2-p12-on01",
+    "c7b-g2-p12-off02"
+  ],
+  "schema": "c7b-p12-observer-protocol-v1",
+  "variable": "observer only within P12"
+}
