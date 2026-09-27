@@ -1,0 +1,96 @@
+{
+  "c18": {
+    "monitor_sha256": "c7d39d00b35cf2212c6c1b56eb185f25b5d7124778105b74fb6a8f61ef3c17bf",
+    "thermal_monitor": "CPU95 warning, CPU100/explicit cooling/clock collapse stop"
+  },
+  "c24": {
+    "admission_runner_sha256": "27ced4eaadccfc96077d9247fa77959d12336e3a71a38b63b0bdee467a531c9e",
+    "arm": "on",
+    "backend_dirty": "",
+    "backend_tree": "8219dfba2414cdcbb388e43b1c67a49f1f70e4aa",
+    "claim": "one bounded generated-assistant two-turn bridge; no 20-request or quality claim",
+    "idle_match_tolerance_c": [
+      5,
+      5,
+      3
+    ],
+    "idle_max_start_c": [
+      50,
+      50,
+      45
+    ],
+    "mode": "synthetic-two-turn-chat-bridge",
+    "model_stat": {
+      "ctime_ns": 1790389637807910988,
+      "dev": 53,
+      "inode": 14833675,
+      "mtime_ns": 1790389637795911032,
+      "size_bytes": 63387346208
+    },
+    "monitor_scope": "systemd user scope E18, zero swap",
+    "n_gpu_layers": 12,
+    "order": 1,
+    "parent_C20_decision_sha256": "3ee5bd0ae0c94b0471903e28ebeea084e911c101fa2ec4858746505fdfdc2f75",
+    "parent_C21_decision_sha256": "cebe46c8bddc78ba7f931f279d2a15870a77f52b6e6bd5bcc6181b92d5c98599",
+    "parent_C22_decision_sha256": "e0f90af9717b57868be7ec310b200c1d583eaeb1beb6ea53c9e7ef4d813e71f6",
+    "parent_C23_decision_sha256": "bcb65d0947853aeb8be2b28b1e67f07c9cf0a971a2e7e3a19f8c7e9d216ca358",
+    "phase": "G1",
+    "prefix_runner_sha256": "69f67e746c14d0afad075851964b96cf7da7a9185dce1b0d5a2d90238116c59f",
+    "server_runner_sha256": "c7d39d00b35cf2212c6c1b56eb185f25b5d7124778105b74fb6a8f61ef3c17bf"
+  },
+  "c28": {
+    "assistant_message_digest": "5547eefff07c55ea015d3bae88c1dbd1d08cfe58223484d48891a63b067c2f58",
+    "assistant_message_sha256": "71208b83a64d992ae0ad402057dd15ead3ceb20798988c9bdf6902dd04a102e5",
+    "first_final_content_nullable": true,
+    "first_turn_must_match_before_second": true,
+    "minimum_ordered_common_prefix_ids": 1900,
+    "parent_c27_decision_sha256": "a02f3c65cb46d7d9a95fdfb81c6be9083701766a61bc4ead5ad64a822d0caca6",
+    "second_user_words": 127
+  },
+  "campaign_id": "tesy-c28-session-bridge-20260927",
+  "expected_request_ids": [
+    "c28-first-turn2048",
+    "c28-second-turn128"
+  ],
+  "identity": {
+    "backend_sha": "1248fd8fa8cfebaece5ea992e4d951c1e18bb9d5",
+    "binary_sha256": "f19a4b490e60b4205193c25691e350ed577926dfcfe3ef7e2dcc2c24d3f84e86",
+    "config_sha256": "24232addfda24ab7e5edd3b8ef081e8077e3c5701c2de02737c8ca09b9a59917",
+    "input_sha256": {
+      "assistant-message.json": "71208b83a64d992ae0ad402057dd15ead3ceb20798988c9bdf6902dd04a102e5",
+      "bridge-input.json": "517c16e112d64040d9862b00d0a6c12ef55a1af827fce5051ef6647e92939a2f",
+      "usage-contract.json": "460605f7fc0feef0bf8e01df0d89dc5a712cf965d7e86983a8b92ce8aef7994c"
+    },
+    "library_sha256": {
+      "build-gcc15/bin/libggml-base.so.0.15.3": "4c322a199c86b801389ed4bda94074083624e0a6460e25681be4b626cc72873d",
+      "build-gcc15/bin/libggml-cpu.so.0.15.3": "b57845ea9f9ce9455d78e6fe290c09b50b9414db9280409b9e5cc143d1b13b61",
+      "build-gcc15/bin/libggml-cuda.so.0.15.3": "5b363c951b87164e94d5b6af35a82c875634aadcb29c9278245cd7516f44cc7e",
+      "build-gcc15/bin/libggml.so.0.15.3": "97a33247336b56aaabe1a8bee4da6cd05e73e8b4327afd2cef67c5526df8ab71",
+      "build-gcc15/bin/libllama-common.so.0.0.1": "b0c96af5cd577f851954afb050601099608f29a2d4890322c2e69ab6d74733f9",
+      "build-gcc15/bin/libllama-server-impl.so": "ab3106f10dcf5bf94bd1cbe556ab1114cb29625d4d9511fd15a67f483c4775a5",
+      "build-gcc15/bin/libllama.so.0.0.1": "31b56002c36c159f71eba54c0d8e625ae140d34b2b1a503f3dc4db47237719cc",
+      "build-gcc15/bin/libmtmd.so.0.0.1": "801002ce83276d33b5a09c98362e34e04fb867aed63a738650d8a2e29930bab9"
+    },
+    "model_id": "target120b",
+    "model_sha256": "582bd40f6886200101f4c4ed9f25f3fe80cc14c86e9e2b37746cd8904a0c622d",
+    "workload_sha256": "517c16e112d64040d9862b00d0a6c12ef55a1af827fce5051ef6647e92939a2f"
+  },
+  "limits": {
+    "boundary_s": 2,
+    "cpu_max_c": 100,
+    "gpu_max_c": 80,
+    "gpu_max_mib": 6500,
+    "max_gap_s": 3,
+    "memory_max_bytes": 17716740096,
+    "min_active_s": 0,
+    "min_decode_s": 0,
+    "min_decode_tok_s": 0,
+    "min_elapsed_s": 0,
+    "min_last_half_tok_s": 0,
+    "min_mem_available_bytes": 6442450944,
+    "nvme_max_c": 70,
+    "rss_max_bytes": 17179869184
+  },
+  "protocol_id": "c28-g1-prefix2048-v1",
+  "schema_version": "c2-protocol-v1"
+}

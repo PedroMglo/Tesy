@@ -1,0 +1,5 @@
+# C28 two-turn 8K bridge
+
+- C27 confirmed complete SSE and exact 2026-ID cache reuse for a growing synthetic user prompt, but not a conversation. C28 freezes the first C27 assistant reply (reasoning and final content), requires bitwise matching of the new first reply by SHA, then sends a real second user turn with that assistant reply in history.
+- Original backend/model/effective P12 profile, 8K context, E18 zero swap and guards. Official tokenizer checks the full three-message second prompt and cache_n against its observed ordered common prefix before qualifying the run. One two-turn synthetic bridge only.
+- New preflight `READY_FOR_IDLE_ADMISSION` on AC/performance: CPU47.75, GPU44, NVMe37.85 C. Model-free tests 14 PASS; frozen task plan check PASS. C15 source-only and default unchanged.

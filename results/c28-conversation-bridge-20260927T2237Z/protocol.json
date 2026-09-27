@@ -1,0 +1,19 @@
+{
+  "schema": "c28-conversation-bridge-protocol-v1",
+  "status": "FROZEN_BEFORE_MODEL_OUTPUT",
+  "objective": "qualify exact-prefix reuse across one genuine assistant reply and the following user turn at 8K",
+  "parent_c27_status": "PASS_BRIDGE_SYNTHETIC_SCOPE",
+  "profile": "original 120B backend, P12 ngl12 ub32 slots32 preload ON, n_ctx8192 full-SWA E18 zero swap",
+  "first_user_text": "same synthetic 2035-ID input as C27",
+  "first_assistant_message": "C27 synthetic response frozen including reasoning_content and final content; first C28 result must match SHA before second request",
+  "second_user_text": "127 beta words plus the same OK instruction",
+  "second_messages": "first user, actual first assistant, second user",
+  "token_gate": "official template/tokenization per request; >=1900 ordered common IDs; second cache_n in [common-32, common]",
+  "request_policy": "temperature0 seed42 medium effort cap256, two completion-fenced SSE requests",
+  "first_final_content_timestamp_nullable": true,
+  "thermal_admission": "300 continuous seconds, start <=50/50/45 C; CPU100 and other guards unchanged",
+  "server_timeout_s": 1800,
+  "per_request_timeout_s": 900,
+  "claim_limit": "one synthetic two-turn conversation; no 4096-prefix, sustained20, quality or full M3/M4",
+  "default_changed": false
+}
