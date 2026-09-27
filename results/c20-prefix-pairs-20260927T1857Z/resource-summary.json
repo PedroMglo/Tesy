@@ -1,0 +1,29 @@
+{
+  "gpu_nvme_ram_guards_changed": false,
+  "idle_series_sha256": "14b7a2a8f8941ec5dee1a03c002486dd6d3482cbe820944f72aae3350ec16320",
+  "on_preflight_reason": "C20 frozen start band CPU \u00b12 C/GPU \u00b13 C versus first OFF arm; ON was cooler",
+  "runs": [
+    {
+      "arm": "OFF",
+      "cpu_max_c": 95.125,
+      "first_request_s": 80.26254042499932,
+      "measurement_commit": "dae7261be9b7f66fbfd0485e9ea6e130d6745f05",
+      "raw_sha256": "4b64df9e721dfd7e20866656d3ac19163797a87bf9ed79072b596ba2f4db384a",
+      "run_id": "c20-p1-off",
+      "second_request_s": 93.93066102000012,
+      "start_cpu_c": 45.75,
+      "status": "PASS_ARM"
+    },
+    {
+      "arm": "ON",
+      "baseline_cpu_c": 45.75,
+      "idle_duration_s": 900.067359239998,
+      "measurement_commit": "a9f3f2ea9886ab583a6a23126529c79f1fa2107d",
+      "model_runs": 0,
+      "run_id": "c20-p1-on",
+      "start_cpu_c": 41.625,
+      "status": "THERMAL_PREFLIGHT_BLOCKED"
+    }
+  ],
+  "schema": "c20-resource-summary-v1"
+}
