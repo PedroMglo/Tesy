@@ -1,5 +1,16 @@
 # Tesy scale lab state
 
+## Campaign 5, native first-divergence diagnosis (local, not published)
+
+C5 branched from published C4 `85424b63a238d50e340b4aad6525e33d7e9d7da3` as `campaign/c5-first-divergence-20260927-0147utc`. The physical Ryzen/RTX target, exact 120B GGUF and 113 token IDs were reverified; backend/model, previous C4 run roots and conservative no-preload ub32 profile remain untouched. No performance intervention, remote push or default change.
+
+- **D1 stable:** two fresh-process ub32 controls match bitwise; two ub64 controls match bitwise; the forms differ in 201087/201088 final pre-sampler logits on one external 113-ID b256 decode.
+- **D2 neutral and localized:** repaired callback capture preserves each form's final logits bitwise. Layer0 `attn_norm`, Q/K/V projections/biases/reshapes/RoPE match at all 113 positions; the first different tensor is `ggml_flash_attn_ext` output at token0/feature0, before MoE. The initial observer failed its shape guard on a valid zero-row final layer and is preserved.
+- **D3 `NATIVE_SHAPE_EFFECT_CAUSALLY_LOCALIZED`:** actual first-chunk Q, visible KV, causal mask and sinks agree for the first32 queries. Pinned GGML native Flash Attention reproduces each captured shape bitwise without streaming. On common B input, grouping32 or forcing the native vector reference path at grouping64 reproduces A32; normal grouping64 differs in 130907/131072 first32 F32 outputs. Source Q tile threshold64 switches vector/F16-Q and F16-V accumulation versus tiled F32 GEMM/V accumulation. No streaming defect or correction patch demonstrated; the origin is native shape-dependent arithmetic.
+- **Scope:** ub64 remains blocked for promotion; C4 boundary evidence and historical C2/C3 uncertainty are unchanged. No sampling, default, performance or novelty claim. W wave timing and longer workload are NOT_RUN. `BROAD_NOVELTY_NO_GO / ENGINEERING_AND_MEASUREMENT_GO`.
+
+Authority: `research/C5-PROTOCOL-20260927.md`, `research/C5-LEDGER-20260927.md`, `research/C5-FINAL-20260927.md`, `results/c5-d3-native-replay-summary01.json` and `results/INDEX.md`. Raw and binaries stay local/untracked.
+
 ## Campaign 4, local checkpoint for review
 
 C4 started 2026-09-27 00:19:32 UTC from C3 lab commit `a0b673965b6e7c5aac69ae464d8275c176f4b14a` on dedicated branch `campaign/c4-prefill-cost-20260927-0022utc`. Physical Ryzen AI 9 HX 370 / RTX 4060 Laptop target and full 120B GGUF hash were reverified. The streaming backend, stock backend and outer Tesy worktree remain unchanged. One of three allowed optimization interventions was used; no default promotion or model download. The owner subsequently authorized publication of the review branch; this does not authorize a merge or PR.

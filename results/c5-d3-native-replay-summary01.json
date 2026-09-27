@@ -1,0 +1,92 @@
+{
+  "schema": "c5-d3-native-replay-v1",
+  "status": "NATIVE_SHAPE_EFFECT_CAUSALLY_LOCALIZED",
+  "scope": "layer0 first internal chunk; 32 shared logical queries; pinned native CPU GGML Flash Attention",
+  "operator": "ggml_flash_attn_ext",
+  "source_dispatch": {
+    "Q_tile": 64,
+    "normal_32": "vec-only",
+    "normal_64": "tiled",
+    "ref_64": "vec-only forced"
+  },
+  "same_form_native_bridge_bitwise": true,
+  "semantic_input_checks": {
+    "q_first32_equal": true,
+    "k_first32_equal": true,
+    "v_first32_equal": true,
+    "mask_first32_equal": true,
+    "sinks_equal": true
+  },
+  "comparisons": {
+    "A32_normal_vs_B32_normal": {
+      "bitwise_equal": true,
+      "sha256": "c4383d78d9df915368d23f92c6efad750c50b6f961964adb5d52beb43c13037d"
+    },
+    "A32_normal_vs_A32_ref": {
+      "bitwise_equal": true,
+      "sha256": "c4383d78d9df915368d23f92c6efad750c50b6f961964adb5d52beb43c13037d"
+    },
+    "A32_normal_vs_B64_normal": {
+      "bitwise_equal": false,
+      "first_abs_token": 0,
+      "first_feature": 0,
+      "different_float_count": 130907,
+      "max_abs": 0.011818170547485352,
+      "rmse": 0.00042841860722711756,
+      "left_sha256": "c4383d78d9df915368d23f92c6efad750c50b6f961964adb5d52beb43c13037d",
+      "right_sha256": "5218db8c5af9907fa76c9b1598d3b8936887c7598a58e7aad9de17b95fd1f117"
+    },
+    "A32_normal_vs_B64_ref": {
+      "bitwise_equal": true,
+      "sha256": "c4383d78d9df915368d23f92c6efad750c50b6f961964adb5d52beb43c13037d"
+    },
+    "B64_normal_vs_B64_ref": {
+      "bitwise_equal": false,
+      "first_abs_token": 0,
+      "first_feature": 0,
+      "different_float_count": 130907,
+      "max_abs": 0.011818170547485352,
+      "rmse": 0.00042841860722711756,
+      "left_sha256": "5218db8c5af9907fa76c9b1598d3b8936887c7598a58e7aad9de17b95fd1f117",
+      "right_sha256": "c4383d78d9df915368d23f92c6efad750c50b6f961964adb5d52beb43c13037d"
+    }
+  },
+  "arms": {
+    "A": {
+      "manifest_sha256": "db9a1f4e7932a9fb11731bdcf6a14370fbddf9e051c42e0d35a1a54a1d07fa47",
+      "source_index_sha256": "4788f87ef99e99ea5369e496f8799984d861930d353c9ecd3c1f193892858ad4",
+      "native_input_sha256": {
+        "q": "ff323e29d434a1587136f0bf1e09d3a6066006d38ce684d3478f8d803f6c6a4d",
+        "k": "8da1461beef236ae5707d9d637839f9dc227762f2b0cba00569caa78858b21be",
+        "v": "c242f6cb648b51249a372cee3ede2038506c20805cf740787413ba828e41ac1b",
+        "mask": "b21911ef811e3acb208eb1c88f3563039100e315659e74fdeaf4f114b9948507",
+        "sinks": "8e3ff262ef2a10c71c90f8319ed7fc628de47583e9fa405d493019f15a004064"
+      },
+      "final_logits_sha256": "8ba19722439a08738cc0d4fc4ad8f669bc3fcde227aab503ca210936bb0bb285",
+      "flash_output_sha256": "c4383d78d9df915368d23f92c6efad750c50b6f961964adb5d52beb43c13037d"
+    },
+    "B": {
+      "manifest_sha256": "4715aa5d6dacbe9526af419abcda8f9e51674aceb78d30e3373aee829230ab64",
+      "source_index_sha256": "b973f027f34badd5aff100c05d30e0e6f5985270b00cf5b6633c38c0da228e09",
+      "native_input_sha256": {
+        "q": "c27700771aca54723df47ff25e03958af27b81b1391dc2e8330faec3403d006a",
+        "k": "b0f80a47e283e2b3c5c2985196a6bc6e66db9069aa7ee73692f980b23b8ce15d",
+        "v": "f56914fccb737893abae2e088ec7880472dcc73d96526acd3d8381b89e1fb259",
+        "mask": "4df00ba6eadc52585f1423d3badd90b04b44488c20c8c34116623a570d2794d9",
+        "sinks": "8e3ff262ef2a10c71c90f8319ed7fc628de47583e9fa405d493019f15a004064"
+      },
+      "final_logits_sha256": "db4f1104977b47be3156d4d87806009fc7aa9b99703f7b44b0552aa31b95bc36",
+      "flash_output_sha256": "dbbf34cf88ffe4e6647fa8a0a92615803ef0931671336881f7b08944698dcea0"
+    }
+  },
+  "replay_outputs_sha256": {
+    "A32_normal": "c4383d78d9df915368d23f92c6efad750c50b6f961964adb5d52beb43c13037d",
+    "B64_normal": "dbbf34cf88ffe4e6647fa8a0a92615803ef0931671336881f7b08944698dcea0",
+    "B32_normal": "c4383d78d9df915368d23f92c6efad750c50b6f961964adb5d52beb43c13037d",
+    "B64_ref": "047a6954036ba3377ef12937b7584ea1ca9e4ae9e3fc81cc62a7da5c7285f6ec",
+    "A32_ref": "c4383d78d9df915368d23f92c6efad750c50b6f961964adb5d52beb43c13037d"
+  },
+  "replay_binary_sha256": "64c47f3b7ff9b7917d79f63a2a65b37ee84b6238cc70be0def9b9c28a51893e8",
+  "analyzer_sha256": "5e7388fefc55c493574f60c15a38436ec588c140ad6fd7498f0e793c727eebe1",
+  "limits": "No ub64 promotion; FFN same-input differential not rerun because first divergence is before MoE"
+}

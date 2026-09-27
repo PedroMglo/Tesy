@@ -1,0 +1,53 @@
+{
+  "schema": "c5-d2-layer-v1",
+  "status": "FIRST_LAYER_OBSERVED",
+  "scope": "113 logical token positions, seq0, source callback layer output; capture timing diagnostic",
+  "first_different_l_out_layer": 0,
+  "comparisons": {
+    "attn_norm_0": {
+      "bitwise_equal": true,
+      "sha256": "610dfdc156c7cdcb6e4b7aaaa2d3efdeb9f2ea1d51724be8edc2a184ce322900"
+    },
+    "l_out_0": {
+      "bitwise_equal": false,
+      "left_sha256": "ab14603b3e804cc58e78edb08036c13a0f65c38c4ac55e8b9249b9d9d99e638a",
+      "right_sha256": "a11ee3db08427f4f44ee3dcb72f0e3a75b73f9d7c044a26b4c67eafeba41bd61",
+      "first_abs_token": 0,
+      "first_feature": 0,
+      "different_float_count": 184315,
+      "max_abs": 0.17806625366210938,
+      "rmse": 0.002821405813329511
+    }
+  },
+  "arms": {
+    "A": {
+      "manifest_sha256": "65e7cfa12778d5e8af3e05571fba8f059ebcfdc98f8f2e08a7a24ab8387ecf98",
+      "stderr_sha256": "da3a35fe4d2b9d560f9bdfdcda67ddad846d6c141948069bb03699bb574b029e",
+      "captured_logits_sha256": "8ba19722439a08738cc0d4fc4ad8f669bc3fcde227aab503ca210936bb0bb285",
+      "control_logits_sha256": "8ba19722439a08738cc0d4fc4ad8f669bc3fcde227aab503ca210936bb0bb285",
+      "neutral_bitwise": true,
+      "index_sha256": "387eb0aee7bed296999a2044d648f063b3760712b0641ed47ceda9477eb5e33e",
+      "index_rows": 148,
+      "chunks": [
+        32,
+        32,
+        32,
+        17
+      ]
+    },
+    "B": {
+      "manifest_sha256": "1c5477a9ae3869e849deabf40ceff6837a17f027154a396c9f3f13a79d432d75",
+      "stderr_sha256": "3c3660cf6a0822246684877cd749b866fae28e08bdbc23220696a45bc284d947",
+      "captured_logits_sha256": "db4f1104977b47be3156d4d87806009fc7aa9b99703f7b44b0552aa31b95bc36",
+      "control_logits_sha256": "db4f1104977b47be3156d4d87806009fc7aa9b99703f7b44b0552aa31b95bc36",
+      "neutral_bitwise": true,
+      "index_sha256": "4df084cb9a6e13fe9478f124f5a82d8c6749b02a8dfe2dcea47193c5abfb60a2",
+      "index_rows": 74,
+      "chunks": [
+        64,
+        49
+      ]
+    }
+  },
+  "analyzer_sha256": "45c72aaec373fef4855b48ed1fa726615b47a05d48ba7b35bec153afce27253e"
+}
