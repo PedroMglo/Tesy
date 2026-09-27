@@ -7,11 +7,11 @@
     "M4": "NOT_RUN"
   },
   "mission": "local usable main GPT-OSS 120B, original weights and authoritative routing",
-  "next_action": "C11 P12+preload ON original backend ub32 server: static accounting and new E18 init/forward admission, then 513-ID cold diagnostic if valid; numeric promotion remains separate",
+  "next_action": "model-free P16/slots24 tensor/capacity and cache-miss bound; if plausible, new numerical profile and bounded E18 admission before any timing",
   "open_hypotheses": [
     "Existing native preload has confirmed medium prefill gain; test whether serving and exact-prefix reuse improve user-visible latency",
     "Exact prefix reuse and wave critical fraction remain untested",
-    "P12 ub32 with native preload may shift CPU work to GPU and admit the 8K server cold prefill within guards"
+    "P16 with slots24 may offload four more CPU layers within GPU reservation, at possible cache-miss cost"
   ],
   "rejected_claims": [
     "P12 general-medium timing gain >=5% at 496+32 under E18",
@@ -54,7 +54,12 @@
       "identity": "c10b",
       "root": "results/c10b-20260927T1520Z",
       "status": "NATIVE64_INIT_AND_FORWARD_PASS_513_CPU_THERMAL_FAIL"
+    },
+    {
+      "identity": "c11",
+      "root": "results/c11-20260927T1533Z",
+      "status": "P12_8K_SERVER_513_RESOURCE_PASS_CPU95_ZERO_MARGIN_NUMERIC_NOT_PROMOTED"
     }
   ],
-  "updated_utc": "2026-09-27T15:28:40.972522+00:00"
+  "updated_utc": "2026-09-27T15:35:47.551129+00:00"
 }
