@@ -1,0 +1,919 @@
+{
+  "c8_preload_confirmation": {
+    "classification": "PASS_QUALIFIED",
+    "pair_count": 3,
+    "paired_gain_work_median_pct": 16.593707538111605,
+    "raw_checks": {
+      "c8-g5-pair1-off": true,
+      "c8-g5-pair1-on": true,
+      "c8-g5-pair2-off": true,
+      "c8-g5-pair2-on": true,
+      "c8-g5-pair3-off": true,
+      "c8-g5-pair3-on": true
+    },
+    "scope": "496+32 teacher-forced probe; no 8K serving/session/quality claim"
+  },
+  "checkpoint_commit": "d3beba892d85256c492ee2bf239cea37712646cf",
+  "classification_rule": "PASS_QUALIFIED applies only to the prior resource/process/request scope; numeric/quality/session coverage stays separate",
+  "historical_runs": [
+    {
+      "cgroup": {
+        "event_delta": {
+          "events": {
+            "max": 0,
+            "oom": 0,
+            "oom_group_kill": 0,
+            "oom_kill": 0
+          },
+          "events_local": {
+            "max": 0,
+            "oom": 0,
+            "oom_group_kill": 0,
+            "oom_kill": 0
+          }
+        },
+        "memory_max": 19327352832,
+        "memory_peak": 5340352512,
+        "swap_end": 0,
+        "swap_max": 0
+      },
+      "classification": "PASS_QUALIFIED",
+      "completed_requests": 0,
+      "elapsed_s": 4.367822156998955,
+      "expected_requests": 0,
+      "first_guard_exceed_elapsed_s": null,
+      "first_guard_exceed_utc": null,
+      "historical_order": "single",
+      "initial_temperatures_c": {
+        "cpu": 42.5,
+        "gpu": 39.0,
+        "nvme": 34.85
+      },
+      "input_token_ids_sha256": null,
+      "maxima": {
+        "cgroup_peak_bytes": 4974436352,
+        "cpu_c": 49.5,
+        "gpu_c": 40.0,
+        "gpu_total_mib": 3876.0,
+        "nvme_c": 39.85,
+        "rss_bytes": 5175140352
+      },
+      "output_complete": true,
+      "profile": "P8 ub32 preload ON",
+      "protocol": "results/c9-20260927T1441Z/protocol.json",
+      "qualification_scope": "resource/process/request only; server numeric and quality not certified",
+      "raw": "results/c9-20260927T1441Z/raw/c9-g1-init.json",
+      "raw_sha256": "778d5f3d875678a1ef28827decf4960b0350a94399a2961361091812fa5667fc",
+      "reasons": [],
+      "returncode": 0,
+      "run_id": "c9-g1-init",
+      "sample_count": 4,
+      "stop_reasons": [],
+      "workload": "init"
+    },
+    {
+      "cgroup": {
+        "event_delta": {
+          "events": {
+            "max": 0,
+            "oom": 0,
+            "oom_group_kill": 0,
+            "oom_kill": 0
+          },
+          "events_local": {
+            "max": 0,
+            "oom": 0,
+            "oom_group_kill": 0,
+            "oom_kill": 0
+          }
+        },
+        "memory_max": 19327352832,
+        "memory_peak": 14912307200,
+        "swap_end": 0,
+        "swap_max": 0
+      },
+      "classification": "PASS_QUALIFIED",
+      "completed_requests": 1,
+      "elapsed_s": 31.05917568699988,
+      "expected_requests": 1,
+      "first_guard_exceed_elapsed_s": null,
+      "first_guard_exceed_utc": null,
+      "historical_order": "single",
+      "initial_temperatures_c": {
+        "cpu": 48.25,
+        "gpu": 44.0,
+        "nvme": 35.85
+      },
+      "input_token_ids_sha256": null,
+      "maxima": {
+        "cgroup_peak_bytes": 14912307200,
+        "cpu_c": 84.625,
+        "gpu_c": 55.0,
+        "gpu_total_mib": 3896.0,
+        "nvme_c": 46.85,
+        "rss_bytes": 15126409216
+      },
+      "output_complete": true,
+      "profile": "P8 ub32 preload ON",
+      "protocol": "results/c9-20260927T1441Z/forward-protocol03.json",
+      "qualification_scope": "resource/process/request only; server numeric and quality not certified",
+      "raw": "results/c9-20260927T1441Z/raw/c9-g2-forward.json",
+      "raw_sha256": "c7f6b8cad3c45d311bcc59392b86593fb8ee8562b02ee513eef67ddd6fd39204",
+      "reasons": [],
+      "returncode": 0,
+      "run_id": "c9-g2-forward",
+      "sample_count": 29,
+      "stop_reasons": [],
+      "workload": "78+4"
+    },
+    {
+      "cgroup": {
+        "event_delta": {
+          "events": {
+            "max": 0,
+            "oom": 0,
+            "oom_group_kill": 0,
+            "oom_kill": 0
+          },
+          "events_local": {
+            "max": 0,
+            "oom": 0,
+            "oom_group_kill": 0,
+            "oom_kill": 0
+          }
+        },
+        "memory_max": 19327352832,
+        "memory_peak": 14985920512,
+        "swap_end": 0,
+        "swap_max": 0
+      },
+      "classification": "FAIL_THERMAL_GUARD",
+      "completed_requests": 0,
+      "elapsed_s": 80.62419435399897,
+      "expected_requests": 2,
+      "first_guard_exceed_elapsed_s": 75.15821409599994,
+      "first_guard_exceed_utc": "2026-09-27T15:07:29.570887+00:00",
+      "historical_order": "C9 prefix ON first",
+      "initial_temperatures_c": {
+        "cpu": 49.5,
+        "gpu": 45.0,
+        "nvme": 35.85
+      },
+      "input_token_ids_sha256": "e19cb14e4c38e8f1b153a58c1d3450ded2b402d82f5798961a1246285099d316",
+      "maxima": {
+        "cgroup_peak_bytes": 14985920512,
+        "cpu_c": 95.125,
+        "gpu_c": 61.0,
+        "gpu_total_mib": 3936.0,
+        "nvme_c": 44.85,
+        "rss_bytes": 15164157952
+      },
+      "output_complete": false,
+      "profile": "P8 ub32 preload ON",
+      "protocol": "results/c9-20260927T1441Z/prefix-protocol-on02.json",
+      "raw": "results/c9-20260927T1441Z/raw/c9-g3-prefix-on.json",
+      "raw_sha256": "47fb6454466c88f697b433542377f158ad5ce2b730ccf04d5e309003d1af5585",
+      "reasons": [],
+      "returncode": -9,
+      "run_id": "c9-g3-prefix-on",
+      "sample_count": 71,
+      "stop_reasons": [
+        "THERMAL_GUARD",
+        "RUN_ERROR:RemoteDisconnected:Remote end closed connection without response"
+      ],
+      "workload": "513+4 then 641+4"
+    },
+    {
+      "cgroup": {
+        "event_delta": {
+          "events": {
+            "max": 0,
+            "oom": 0,
+            "oom_group_kill": 0,
+            "oom_kill": 0
+          },
+          "events_local": {
+            "max": 0,
+            "oom": 0,
+            "oom_group_kill": 0,
+            "oom_kill": 0
+          }
+        },
+        "memory_max": 19327352832,
+        "memory_peak": 5320687616,
+        "swap_end": 0,
+        "swap_max": 0
+      },
+      "classification": "PASS_QUALIFIED",
+      "completed_requests": 0,
+      "elapsed_s": 4.60198777199912,
+      "expected_requests": 0,
+      "first_guard_exceed_elapsed_s": null,
+      "first_guard_exceed_utc": null,
+      "historical_order": "single",
+      "initial_temperatures_c": {
+        "cpu": 49.25,
+        "gpu": 45.0,
+        "nvme": 36.85
+      },
+      "input_token_ids_sha256": null,
+      "maxima": {
+        "cgroup_peak_bytes": 5320687616,
+        "cpu_c": 53.375,
+        "gpu_c": 46.0,
+        "gpu_total_mib": 3884.0,
+        "nvme_c": 40.85,
+        "rss_bytes": 4815843328
+      },
+      "output_complete": true,
+      "profile": "P8 ub64 preload ON",
+      "protocol": "results/c10b-20260927T1520Z/init-protocol.json",
+      "qualification_scope": "resource/process/request only; server numeric and quality not certified",
+      "raw": "results/c10b-20260927T1520Z/raw/c10b-g1-init.json",
+      "raw_sha256": "2a4d47215a000c79221857124b7050f5224e037658427975aae74eab462da585",
+      "reasons": [],
+      "returncode": 0,
+      "run_id": "c10b-g1-init",
+      "sample_count": 5,
+      "stop_reasons": [],
+      "workload": "init"
+    },
+    {
+      "cgroup": {
+        "event_delta": {
+          "events": {
+            "max": 0,
+            "oom": 0,
+            "oom_group_kill": 0,
+            "oom_kill": 0
+          },
+          "events_local": {
+            "max": 0,
+            "oom": 0,
+            "oom_group_kill": 0,
+            "oom_kill": 0
+          }
+        },
+        "memory_max": 19327352832,
+        "memory_peak": 14934695936,
+        "swap_end": 0,
+        "swap_max": 0
+      },
+      "classification": "PASS_QUALIFIED",
+      "completed_requests": 1,
+      "elapsed_s": 30.019758554000873,
+      "expected_requests": 1,
+      "first_guard_exceed_elapsed_s": null,
+      "first_guard_exceed_utc": null,
+      "historical_order": "single",
+      "initial_temperatures_c": {
+        "cpu": 47.375,
+        "gpu": 43.0,
+        "nvme": 36.85
+      },
+      "input_token_ids_sha256": "62a2b46ce58d071394cec42017803545b41f5b4c46e97ec754edbd31e97999ac",
+      "maxima": {
+        "cgroup_peak_bytes": 14934695936,
+        "cpu_c": 85.25,
+        "gpu_c": 56.0,
+        "gpu_total_mib": 3904.0,
+        "nvme_c": 47.85,
+        "rss_bytes": 15136079872
+      },
+      "output_complete": true,
+      "profile": "P8 ub64 preload ON",
+      "protocol": "results/c10b-20260927T1520Z/forward-protocol.json",
+      "qualification_scope": "resource/process/request only; server numeric and quality not certified",
+      "raw": "results/c10b-20260927T1520Z/raw/c10b-g2-forward.json",
+      "raw_sha256": "e5b8494e7e68cbf9d7dbdc817fcca5902b2606076ea24d31d3a3e9049d62adc0",
+      "reasons": [],
+      "returncode": 0,
+      "run_id": "c10b-g2-forward",
+      "sample_count": 28,
+      "stop_reasons": [],
+      "workload": "78+4"
+    },
+    {
+      "cgroup": {
+        "event_delta": {
+          "events": {
+            "max": 0,
+            "oom": 0,
+            "oom_group_kill": 0,
+            "oom_kill": 0
+          },
+          "events_local": {
+            "max": 0,
+            "oom": 0,
+            "oom_group_kill": 0,
+            "oom_kill": 0
+          }
+        },
+        "memory_max": 19327352832,
+        "memory_peak": 15007453184,
+        "swap_end": 0,
+        "swap_max": 0
+      },
+      "classification": "FAIL_THERMAL_GUARD",
+      "completed_requests": 0,
+      "elapsed_s": 81.31359780799903,
+      "expected_requests": 1,
+      "first_guard_exceed_elapsed_s": 75.84780924000006,
+      "first_guard_exceed_utc": "2026-09-27T15:27:13.931149+00:00",
+      "historical_order": "single",
+      "initial_temperatures_c": {
+        "cpu": 49.375,
+        "gpu": 45.0,
+        "nvme": 39.85
+      },
+      "input_token_ids_sha256": "e19cb14e4c38e8f1b153a58c1d3450ded2b402d82f5798961a1246285099d316",
+      "maxima": {
+        "cgroup_peak_bytes": 15007453184,
+        "cpu_c": 95.125,
+        "gpu_c": 61.0,
+        "gpu_total_mib": 3944.0,
+        "nvme_c": 48.85,
+        "rss_bytes": 15173025792
+      },
+      "output_complete": false,
+      "profile": "P8 ub64 preload ON",
+      "protocol": "results/c10b-20260927T1520Z/short513-protocol.json",
+      "raw": "results/c10b-20260927T1520Z/raw/c10b-g3-short513.json",
+      "raw_sha256": "ee36658994f43085307c5e28802d02152bbae0a166c9b11313abe77925d24beb",
+      "reasons": [],
+      "returncode": -9,
+      "run_id": "c10b-g3-short513",
+      "sample_count": 72,
+      "stop_reasons": [
+        "THERMAL_GUARD",
+        "RUN_ERROR:RemoteDisconnected:Remote end closed connection without response"
+      ],
+      "workload": "513+4"
+    },
+    {
+      "cgroup": {
+        "event_delta": {
+          "events": {
+            "max": 0,
+            "oom": 0,
+            "oom_group_kill": 0,
+            "oom_kill": 0
+          },
+          "events_local": {
+            "max": 0,
+            "oom": 0,
+            "oom_group_kill": 0,
+            "oom_kill": 0
+          }
+        },
+        "memory_max": 19327352832,
+        "memory_peak": 4727033856,
+        "swap_end": 0,
+        "swap_max": 0
+      },
+      "classification": "PASS_QUALIFIED",
+      "completed_requests": 0,
+      "elapsed_s": 4.629679640998802,
+      "expected_requests": 0,
+      "first_guard_exceed_elapsed_s": null,
+      "first_guard_exceed_utc": null,
+      "historical_order": "single",
+      "initial_temperatures_c": {
+        "cpu": 47.25,
+        "gpu": 42.0,
+        "nvme": 36.85
+      },
+      "input_token_ids_sha256": null,
+      "maxima": {
+        "cgroup_peak_bytes": 4706709504,
+        "cpu_c": 51.5,
+        "gpu_c": 44.0,
+        "gpu_total_mib": 5694.0,
+        "nvme_c": 41.85,
+        "rss_bytes": 4948475904
+      },
+      "output_complete": true,
+      "profile": "P12 ub32 preload ON",
+      "protocol": "results/c11-20260927T1533Z/init-protocol.json",
+      "qualification_scope": "resource/process/request only; server numeric and quality not certified",
+      "raw": "results/c11-20260927T1533Z/raw/c11-g1-init.json",
+      "raw_sha256": "83c28f8f86ee190faa0aedbb2003bf435806abcd6ef647c7bbe69aeb21d6bba8",
+      "reasons": [],
+      "returncode": 0,
+      "run_id": "c11-g1-init",
+      "sample_count": 5,
+      "stop_reasons": [],
+      "workload": "init"
+    },
+    {
+      "cgroup": {
+        "event_delta": {
+          "events": {
+            "max": 0,
+            "oom": 0,
+            "oom_group_kill": 0,
+            "oom_kill": 0
+          },
+          "events_local": {
+            "max": 0,
+            "oom": 0,
+            "oom_group_kill": 0,
+            "oom_kill": 0
+          }
+        },
+        "memory_max": 19327352832,
+        "memory_peak": 13013114880,
+        "swap_end": 0,
+        "swap_max": 0
+      },
+      "classification": "PASS_QUALIFIED",
+      "completed_requests": 1,
+      "elapsed_s": 30.269160794003255,
+      "expected_requests": 1,
+      "first_guard_exceed_elapsed_s": null,
+      "first_guard_exceed_utc": null,
+      "historical_order": "single",
+      "initial_temperatures_c": {
+        "cpu": 47.125,
+        "gpu": 42.0,
+        "nvme": 37.85
+      },
+      "input_token_ids_sha256": "62a2b46ce58d071394cec42017803545b41f5b4c46e97ec754edbd31e97999ac",
+      "maxima": {
+        "cgroup_peak_bytes": 13013114880,
+        "cpu_c": 82.375,
+        "gpu_c": 54.0,
+        "gpu_total_mib": 5704.0,
+        "nvme_c": 47.85,
+        "rss_bytes": 13231595520
+      },
+      "output_complete": true,
+      "profile": "P12 ub32 preload ON",
+      "protocol": "results/c11-20260927T1533Z/forward-protocol.json",
+      "qualification_scope": "resource/process/request only; server numeric and quality not certified",
+      "raw": "results/c11-20260927T1533Z/raw/c11-g2-forward.json",
+      "raw_sha256": "65745bc38d463ddd67b858897f3b1e864d395989b2272eeb95e09305e4cdc03d",
+      "reasons": [],
+      "returncode": 0,
+      "run_id": "c11-g2-forward",
+      "sample_count": 28,
+      "stop_reasons": [],
+      "workload": "78+4"
+    },
+    {
+      "cgroup": {
+        "event_delta": {
+          "events": {
+            "max": 0,
+            "oom": 0,
+            "oom_group_kill": 0,
+            "oom_kill": 0
+          },
+          "events_local": {
+            "max": 0,
+            "oom": 0,
+            "oom_group_kill": 0,
+            "oom_kill": 0
+          }
+        },
+        "memory_max": 19327352832,
+        "memory_peak": 13061337088,
+        "swap_end": 0,
+        "swap_max": 0
+      },
+      "classification": "PASS_QUALIFIED",
+      "completed_requests": 1,
+      "elapsed_s": 85.19121951699708,
+      "expected_requests": 1,
+      "first_guard_exceed_elapsed_s": null,
+      "first_guard_exceed_utc": null,
+      "historical_order": "single",
+      "initial_temperatures_c": {
+        "cpu": 50.125,
+        "gpu": 45.0,
+        "nvme": 39.85
+      },
+      "input_token_ids_sha256": "e19cb14e4c38e8f1b153a58c1d3450ded2b402d82f5798961a1246285099d316",
+      "maxima": {
+        "cgroup_peak_bytes": 13061337088,
+        "cpu_c": 95.0,
+        "gpu_c": 61.0,
+        "gpu_total_mib": 5746.0,
+        "nvme_c": 48.85,
+        "rss_bytes": 13284438016
+      },
+      "output_complete": true,
+      "profile": "P12 ub32 preload ON",
+      "protocol": "results/c11-20260927T1533Z/short513-protocol.json",
+      "qualification_scope": "resource/process/request only; server numeric and quality not certified",
+      "raw": "results/c11-20260927T1533Z/raw/c11-g3-short513.json",
+      "raw_sha256": "0304ecbc67feca9c00fb300477def6fb47bb951c456d13a86de07f622fb9f4dd",
+      "reasons": [],
+      "returncode": 0,
+      "run_id": "c11-g3-short513",
+      "sample_count": 81,
+      "stop_reasons": [],
+      "workload": "513+4"
+    },
+    {
+      "cgroup": {
+        "event_delta": {
+          "events": {
+            "max": 0,
+            "oom": 0,
+            "oom_group_kill": 0,
+            "oom_kill": 0
+          },
+          "events_local": {
+            "max": 0,
+            "oom": 0,
+            "oom_group_kill": 0,
+            "oom_kill": 0
+          }
+        },
+        "memory_max": 19327352832,
+        "memory_peak": 4164730880,
+        "swap_end": 0,
+        "swap_max": 0
+      },
+      "classification": "PASS_QUALIFIED",
+      "completed_requests": 0,
+      "elapsed_s": 4.631747840001481,
+      "expected_requests": 0,
+      "first_guard_exceed_elapsed_s": null,
+      "first_guard_exceed_utc": null,
+      "historical_order": "single",
+      "initial_temperatures_c": {
+        "cpu": 44.25,
+        "gpu": 41.0,
+        "nvme": 35.85
+      },
+      "input_token_ids_sha256": null,
+      "maxima": {
+        "cgroup_peak_bytes": 4164730880,
+        "cpu_c": 49.875,
+        "gpu_c": 43.0,
+        "gpu_total_mib": 5990.0,
+        "nvme_c": 39.85,
+        "rss_bytes": 4387876864
+      },
+      "output_complete": true,
+      "profile": "P16 ub32 slots24 preload ON",
+      "protocol": "results/c12-20260927T1540Z/init-protocol.json",
+      "qualification_scope": "resource/process/request only; server numeric and quality not certified",
+      "raw": "results/c12-20260927T1540Z/raw/c12-g1-init.json",
+      "raw_sha256": "04d3feca73fe0ee06e81c9b55cf9c1b9f456318679a2d0b94b1dfa42fd15246e",
+      "reasons": [],
+      "returncode": 0,
+      "run_id": "c12-g1-init",
+      "sample_count": 5,
+      "stop_reasons": [],
+      "workload": "init"
+    },
+    {
+      "cgroup": {
+        "event_delta": {
+          "events": {
+            "max": 0,
+            "oom": 0,
+            "oom_group_kill": 0,
+            "oom_kill": 0
+          },
+          "events_local": {
+            "max": 0,
+            "oom": 0,
+            "oom_group_kill": 0,
+            "oom_kill": 0
+          }
+        },
+        "memory_max": 19327352832,
+        "memory_peak": 8899158016,
+        "swap_end": 0,
+        "swap_max": 0
+      },
+      "classification": "PASS_QUALIFIED",
+      "completed_requests": 1,
+      "elapsed_s": 33.669141763999505,
+      "expected_requests": 1,
+      "first_guard_exceed_elapsed_s": null,
+      "first_guard_exceed_utc": null,
+      "historical_order": "single",
+      "initial_temperatures_c": {
+        "cpu": 46.625,
+        "gpu": 42.0,
+        "nvme": 35.85
+      },
+      "input_token_ids_sha256": "62a2b46ce58d071394cec42017803545b41f5b4c46e97ec754edbd31e97999ac",
+      "maxima": {
+        "cgroup_peak_bytes": 8891559936,
+        "cpu_c": 84.375,
+        "gpu_c": 54.0,
+        "gpu_total_mib": 6004.0,
+        "nvme_c": 47.85,
+        "rss_bytes": 9124900864
+      },
+      "output_complete": true,
+      "profile": "P16 ub32 slots24 preload ON",
+      "protocol": "results/c12-20260927T1540Z/forward-protocol.json",
+      "qualification_scope": "resource/process/request only; server numeric and quality not certified",
+      "raw": "results/c12-20260927T1540Z/raw/c12-g2-forward.json",
+      "raw_sha256": "8d39febaa3e21233d3af06f3662e9f6da9f41c4cd636c451eee2c23672c3d112",
+      "reasons": [],
+      "returncode": 0,
+      "run_id": "c12-g2-forward",
+      "sample_count": 31,
+      "stop_reasons": [],
+      "workload": "78+4"
+    },
+    {
+      "cgroup": {
+        "event_delta": {
+          "events": {
+            "max": 0,
+            "oom": 0,
+            "oom_group_kill": 0,
+            "oom_kill": 0
+          },
+          "events_local": {
+            "max": 0,
+            "oom": 0,
+            "oom_group_kill": 0,
+            "oom_kill": 0
+          }
+        },
+        "memory_max": 19327352832,
+        "memory_peak": 8943603712,
+        "swap_end": 0,
+        "swap_max": 0
+      },
+      "classification": "PASS_QUALIFIED",
+      "completed_requests": 1,
+      "elapsed_s": 93.70772396800021,
+      "expected_requests": 1,
+      "first_guard_exceed_elapsed_s": null,
+      "first_guard_exceed_utc": null,
+      "historical_order": "single",
+      "initial_temperatures_c": {
+        "cpu": 48.375,
+        "gpu": 44.0,
+        "nvme": 39.85
+      },
+      "input_token_ids_sha256": "e19cb14e4c38e8f1b153a58c1d3450ded2b402d82f5798961a1246285099d316",
+      "maxima": {
+        "cgroup_peak_bytes": 8943603712,
+        "cpu_c": 95.0,
+        "gpu_c": 62.0,
+        "gpu_total_mib": 6056.0,
+        "nvme_c": 48.85,
+        "rss_bytes": 9171992576
+      },
+      "output_complete": true,
+      "profile": "P16 ub32 slots24 preload ON",
+      "protocol": "results/c12-20260927T1540Z/short513-protocol.json",
+      "qualification_scope": "resource/process/request only; server numeric and quality not certified",
+      "raw": "results/c12-20260927T1540Z/raw/c12-g3-short513.json",
+      "raw_sha256": "7117c89982d23d9e8fd849fad28232b99ad8a8e5717934d3c350d6e5f5f43e4b",
+      "reasons": [],
+      "returncode": 0,
+      "run_id": "c12-g3-short513",
+      "sample_count": 88,
+      "stop_reasons": [],
+      "workload": "513+4"
+    },
+    {
+      "cgroup": {
+        "event_delta": {
+          "events": {
+            "max": 0,
+            "oom": 0,
+            "oom_group_kill": 0,
+            "oom_kill": 0
+          },
+          "events_local": {
+            "max": 0,
+            "oom": 0,
+            "oom_group_kill": 0,
+            "oom_kill": 0
+          }
+        },
+        "memory_max": 19327352832,
+        "memory_peak": 13050454016,
+        "swap_end": 0,
+        "swap_max": 0
+      },
+      "classification": "FAIL_THERMAL_GUARD",
+      "completed_requests": 0,
+      "elapsed_s": 80.1970455970004,
+      "expected_requests": 2,
+      "first_guard_exceed_elapsed_s": 74.73086113300087,
+      "first_guard_exceed_utc": "2026-09-27T15:50:28.284518+00:00",
+      "historical_order": "C13 prefix ON first",
+      "initial_temperatures_c": {
+        "cpu": 45.0,
+        "gpu": 41.0,
+        "nvme": 35.85
+      },
+      "input_token_ids_sha256": "e19cb14e4c38e8f1b153a58c1d3450ded2b402d82f5798961a1246285099d316",
+      "maxima": {
+        "cgroup_peak_bytes": 13050454016,
+        "cpu_c": 95.125,
+        "gpu_c": 60.0,
+        "gpu_total_mib": 5746.0,
+        "nvme_c": 44.85,
+        "rss_bytes": 13271224320
+      },
+      "output_complete": false,
+      "profile": "P12 ub32 preload ON",
+      "protocol": "results/c13-20260927T1550Z/prefix-protocol-on.json",
+      "raw": "results/c13-20260927T1550Z/raw/c13-g1-prefix-on.json",
+      "raw_sha256": "03fc4f8e1adc668b23e6b9c93a7b74c7e43815b63ab7f9c42376c6ddcfc7ebcc",
+      "reasons": [],
+      "returncode": -9,
+      "run_id": "c13-g1-prefix-on",
+      "sample_count": 71,
+      "stop_reasons": [
+        "THERMAL_GUARD",
+        "RUN_ERROR:RemoteDisconnected:Remote end closed connection without response"
+      ],
+      "workload": "513+4 then 641+4"
+    },
+    {
+      "cgroup": {
+        "event_delta": {
+          "events": {
+            "max": 0,
+            "oom": 0,
+            "oom_group_kill": 0,
+            "oom_kill": 0
+          },
+          "events_local": {
+            "max": 0,
+            "oom": 0,
+            "oom_group_kill": 0,
+            "oom_kill": 0
+          }
+        },
+        "memory_max": 19327352832,
+        "memory_peak": 4731805696,
+        "swap_end": 0,
+        "swap_max": 0
+      },
+      "classification": "PASS_QUALIFIED",
+      "completed_requests": 0,
+      "elapsed_s": 4.629757336002513,
+      "expected_requests": 0,
+      "first_guard_exceed_elapsed_s": null,
+      "first_guard_exceed_utc": null,
+      "historical_order": "single",
+      "initial_temperatures_c": {
+        "cpu": 43.125,
+        "gpu": 40.0,
+        "nvme": 34.85
+      },
+      "input_token_ids_sha256": null,
+      "maxima": {
+        "cgroup_peak_bytes": 4731805696,
+        "cpu_c": 48.5,
+        "gpu_c": 42.0,
+        "gpu_total_mib": 5702.0,
+        "nvme_c": 39.85,
+        "rss_bytes": 4955029504
+      },
+      "output_complete": true,
+      "profile": "P12 ub64 preload ON",
+      "protocol": "results/c14-20260927T1555Z/init-protocol.json",
+      "qualification_scope": "resource/process/request only; server numeric and quality not certified",
+      "raw": "results/c14-20260927T1555Z/raw/c14-g1-init.json",
+      "raw_sha256": "ddc5dc2ef8bdbd7767bc4089962a902fe6ac39aec3ec8b9ea58d5677b78b49b4",
+      "reasons": [],
+      "returncode": 0,
+      "run_id": "c14-g1-init",
+      "sample_count": 5,
+      "stop_reasons": [],
+      "workload": "init"
+    },
+    {
+      "cgroup": {
+        "event_delta": {
+          "events": {
+            "max": 0,
+            "oom": 0,
+            "oom_group_kill": 0,
+            "oom_kill": 0
+          },
+          "events_local": {
+            "max": 0,
+            "oom": 0,
+            "oom_group_kill": 0,
+            "oom_kill": 0
+          }
+        },
+        "memory_max": 19327352832,
+        "memory_peak": 13029986304,
+        "swap_end": 0,
+        "swap_max": 0
+      },
+      "classification": "PASS_QUALIFIED",
+      "completed_requests": 1,
+      "elapsed_s": 27.82289367699923,
+      "expected_requests": 1,
+      "first_guard_exceed_elapsed_s": null,
+      "first_guard_exceed_utc": null,
+      "historical_order": "single",
+      "initial_temperatures_c": {
+        "cpu": 44.375,
+        "gpu": 41.0,
+        "nvme": 35.85
+      },
+      "input_token_ids_sha256": "62a2b46ce58d071394cec42017803545b41f5b4c46e97ec754edbd31e97999ac",
+      "maxima": {
+        "cgroup_peak_bytes": 13021069312,
+        "cpu_c": 84.25,
+        "gpu_c": 53.0,
+        "gpu_total_mib": 5716.0,
+        "nvme_c": 46.85,
+        "rss_bytes": 13248024576
+      },
+      "output_complete": true,
+      "profile": "P12 ub64 preload ON",
+      "protocol": "results/c14-20260927T1555Z/forward-protocol.json",
+      "qualification_scope": "resource/process/request only; server numeric and quality not certified",
+      "raw": "results/c14-20260927T1555Z/raw/c14-g2-forward.json",
+      "raw_sha256": "596876e1ad59b3cd33a46670aa71d6c23cd0d48f5d18d98eb690ce668a7b214c",
+      "reasons": [],
+      "returncode": 0,
+      "run_id": "c14-g2-forward",
+      "sample_count": 26,
+      "stop_reasons": [],
+      "workload": "78+4"
+    },
+    {
+      "cgroup": {
+        "event_delta": {
+          "events": {
+            "max": 0,
+            "oom": 0,
+            "oom_group_kill": 0,
+            "oom_kill": 0
+          },
+          "events_local": {
+            "max": 0,
+            "oom": 0,
+            "oom_group_kill": 0,
+            "oom_kill": 0
+          }
+        },
+        "memory_max": 19327352832,
+        "memory_peak": 13059469312,
+        "swap_end": 0,
+        "swap_max": 0
+      },
+      "classification": "FAIL_THERMAL_GUARD",
+      "completed_requests": 0,
+      "elapsed_s": 76.28808393800136,
+      "expected_requests": 1,
+      "first_guard_exceed_elapsed_s": 70.8725462370021,
+      "first_guard_exceed_utc": "2026-09-27T15:57:53.210561+00:00",
+      "historical_order": "single",
+      "initial_temperatures_c": {
+        "cpu": 48.375,
+        "gpu": 44.0,
+        "nvme": 38.85
+      },
+      "input_token_ids_sha256": "e19cb14e4c38e8f1b153a58c1d3450ded2b402d82f5798961a1246285099d316",
+      "maxima": {
+        "cgroup_peak_bytes": 13059469312,
+        "cpu_c": 95.125,
+        "gpu_c": 60.0,
+        "gpu_total_mib": 5754.0,
+        "nvme_c": 47.85,
+        "rss_bytes": 13280378880
+      },
+      "output_complete": false,
+      "profile": "P12 ub64 preload ON",
+      "protocol": "results/c14-20260927T1555Z/short513-protocol.json",
+      "raw": "results/c14-20260927T1555Z/raw/c14-g3-short513.json",
+      "raw_sha256": "01a7819199f80a8e0d17b96507434d84741bd06edb10ad05a028dda2aa445e68",
+      "reasons": [],
+      "returncode": -9,
+      "run_id": "c14-g3-short513",
+      "sample_count": 67,
+      "stop_reasons": [
+        "THERMAL_GUARD",
+        "RUN_ERROR:RemoteDisconnected:Remote end closed connection without response"
+      ],
+      "workload": "513+4"
+    }
+  ],
+  "not_run": [
+    "C9 prefix OFF arm",
+    "C13 second prefix request",
+    "C15 compile/profile/model",
+    "M3 session qualification",
+    "M4 functional/main-profile qualification"
+  ],
+  "reuse_note": "Read-only C16 historical audit reused; no historical run reclassified",
+  "reused_audit_sha256": "51ebcd90e8c34af3c9e5585ebe1d509659038de0402a0c1938dabbae47ba73fb",
+  "same_513_token_ids_sha256": "e19cb14e4c38e8f1b153a58c1d3450ded2b402d82f5798961a1246285099d316",
+  "schema": "c16-thermal-recovery-audit-v1"
+}
