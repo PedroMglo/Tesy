@@ -2,15 +2,10 @@ name: Research reports documentation
 
 on:
   pull_request:
-    paths:
-      - '.github/workflows/research-reports.yml'
-      - 'docs/research-reports/**'
   push:
     branches:
+      - 'campaign/**'
       - 'docs/research-reports-*'
-    paths:
-      - '.github/workflows/research-reports.yml'
-      - 'docs/research-reports/**'
 
 jobs:
   evidence:
@@ -27,6 +22,8 @@ jobs:
       - run: python -m unittest discover -s tests -q
       - name: Verify frozen reports
         run: |
-          for report in C01-scale-lab C02-correctness-usability R00-foundations D00-research-dossier; do
+          for report in $(python -c 'import json; print(" ".join(r["id"] for r in json.load(open("registry.json"))["reports"]))'); do
             python tools/verify_evidence.py "$report" >/dev/null
           done
+      - name: Require documentation for final campaigns
+        run: python ci/check_campaign_coverage.py --repo ../..

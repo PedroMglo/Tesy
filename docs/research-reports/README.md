@@ -13,6 +13,8 @@ Sistema documental model-free: uma classe LuaLaTeX, fontes congeladas, seletores
 
 O dossier é a entrada para o conjunto R00/C1/C2; os relatórios de campanha contêm contrato, resultados, falhas e limites. A data dos PDFs é o corte documental de 26 setembro 2026, não uma afirmação sobre o hardware atual. **C3 é posterior a esse corte**: consultar [CURRENT-LAB.md](CURRENT-LAB.md) e a publicação autoritativa em `research/C3-FINAL-20260927.md` antes de usar o dossier como panorama atual. Autoria pessoal/universidade/orientação não foram inventadas: `author` é null.
 
+O contrato de cobertura e a divisão de responsabilidades estão em [REPORTING-PROCESS.md](REPORTING-PROCESS.md). A CI deteta campanhas fechadas sem relatório revisto; neste momento C3 é uma lacuna documental assumida e o novo gate deve falhar até existir o relatório C3.
+
 ## Executar
 
 Requer Python 3.11+, o package fixado em `tools/requirements.txt` e, apenas para PDF, LuaLaTeX, latexmk, biber, Latin Modern e os packages da classe. Não há instalação ou download automático. Dependências documentais não pertencem ao package de inferência. `validation/environment.json` regista o ambiente usado.
