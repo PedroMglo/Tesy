@@ -1,0 +1,521 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "schema_version": {
+      "const": "tesy-evidence-spec-v1"
+    },
+    "authorities": {
+      "type": "object",
+      "propertyNames": {
+        "type": "string",
+        "pattern": "^[A-Za-z][A-Za-z0-9-]{0,79}$"
+      },
+      "additionalProperties": {
+        "type": "array",
+        "items": {
+          "type": "string",
+          "pattern": "^[A-Za-z][A-Za-z0-9-]{0,79}$"
+        },
+        "uniqueItems": true,
+        "minItems": 1
+      }
+    },
+    "source_contracts": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "source": {
+            "type": "string",
+            "pattern": "^[A-Za-z][A-Za-z0-9-]{0,79}$"
+          },
+          "path": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9_.-]+(?:/[A-Za-z0-9_.-]+)*$"
+          },
+          "json_values": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "pointer": {
+                  "type": "string"
+                },
+                "expected": {}
+              },
+              "required": [
+                "pointer",
+                "expected"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "text": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        },
+        "required": [
+          "source",
+          "path",
+          "json_values",
+          "text"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "metrics": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[A-Za-z][A-Za-z0-9-]{0,79}$"
+          },
+          "label": {
+            "type": "string",
+            "minLength": 1
+          },
+          "family": {
+            "type": "string",
+            "pattern": "^[A-Za-z][A-Za-z0-9-]{0,79}$"
+          },
+          "extract": {
+            "oneOf": [
+              {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "const": "json"
+                  },
+                  "source": {
+                    "type": "string",
+                    "pattern": "^[A-Za-z][A-Za-z0-9-]{0,79}$"
+                  },
+                  "pointer": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "type",
+                  "source",
+                  "pointer"
+                ],
+                "additionalProperties": false
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "const": "text-number"
+                  },
+                  "source": {
+                    "type": "string",
+                    "pattern": "^[A-Za-z][A-Za-z0-9-]{0,79}$"
+                  },
+                  "quote": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "token": {
+                    "type": "string",
+                    "pattern": "^-?(0|[1-9][0-9]*)(\\.[0-9]+)?$"
+                  }
+                },
+                "required": [
+                  "type",
+                  "source",
+                  "quote",
+                  "token"
+                ],
+                "additionalProperties": false
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "enum": [
+                      "sum",
+                      "ratio"
+                    ]
+                  },
+                  "inputs": {
+                    "type": "array",
+                    "minItems": 2,
+                    "items": {
+                      "type": "string",
+                      "pattern": "^[A-Za-z][A-Za-z0-9-]{0,79}$"
+                    }
+                  }
+                },
+                "required": [
+                  "type",
+                  "inputs"
+                ],
+                "additionalProperties": false
+              }
+            ]
+          },
+          "raw_unit": {
+            "enum": [
+              "B",
+              "GB",
+              "GiB",
+              "MiB",
+              "s",
+              "min",
+              "token",
+              "token/s",
+              "count",
+              "ratio",
+              "percent",
+              "degC"
+            ]
+          },
+          "unit": {
+            "enum": [
+              "B",
+              "GB",
+              "GiB",
+              "MiB",
+              "s",
+              "min",
+              "token",
+              "token/s",
+              "count",
+              "ratio",
+              "percent",
+              "degC"
+            ]
+          },
+          "decimals": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 9
+          },
+          "evidence_class": {
+            "enum": [
+              "MEDIDO",
+              "REPRODUZIDO",
+              "ESTIMADO",
+              "INFERIDO",
+              "HIPOTESE",
+              "DIAGNOSTICO",
+              "FORMAL",
+              "DESCONHECIDO",
+              "NOT_RUN",
+              "TRACE_DERIVED",
+              "SIMULATED"
+            ]
+          },
+          "source_class": {
+            "type": "string",
+            "minLength": 1
+          },
+          "run_id": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "scope": {
+            "type": "string",
+            "minLength": 1
+          },
+          "limitation": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "required": [
+          "id",
+          "label",
+          "family",
+          "extract",
+          "raw_unit",
+          "unit",
+          "decimals",
+          "evidence_class",
+          "source_class",
+          "run_id",
+          "scope",
+          "limitation"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "claims": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[A-Za-z][A-Za-z0-9-]{0,79}$"
+          },
+          "family": {
+            "type": "string",
+            "pattern": "^[A-Za-z][A-Za-z0-9-]{0,79}$"
+          },
+          "evidence_class": {
+            "enum": [
+              "MEDIDO",
+              "REPRODUZIDO",
+              "ESTIMADO",
+              "INFERIDO",
+              "HIPOTESE",
+              "DIAGNOSTICO",
+              "FORMAL",
+              "DESCONHECIDO",
+              "NOT_RUN",
+              "TRACE_DERIVED",
+              "SIMULATED"
+            ]
+          },
+          "source_class": {
+            "type": "string",
+            "minLength": 1
+          },
+          "status": {
+            "enum": [
+              "CURRENT",
+              "HISTORICAL",
+              "WITHDRAWN"
+            ]
+          },
+          "evidence": {
+            "type": "array",
+            "items": {
+              "oneOf": [
+                {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "const": "json"
+                    },
+                    "source": {
+                      "type": "string",
+                      "pattern": "^[A-Za-z][A-Za-z0-9-]{0,79}$"
+                    },
+                    "pointer": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "type",
+                    "source",
+                    "pointer"
+                  ],
+                  "additionalProperties": false
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "const": "text"
+                    },
+                    "source": {
+                      "type": "string",
+                      "pattern": "^[A-Za-z][A-Za-z0-9-]{0,79}$"
+                    },
+                    "quote": {
+                      "type": "string",
+                      "minLength": 1
+                    }
+                  },
+                  "required": [
+                    "type",
+                    "source",
+                    "quote"
+                  ],
+                  "additionalProperties": false
+                }
+              ]
+            },
+            "minItems": 1
+          },
+          "statement": {
+            "type": "string",
+            "minLength": 1
+          },
+          "limitation": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "required": [
+          "id",
+          "family",
+          "evidence_class",
+          "source_class",
+          "status",
+          "evidence",
+          "statement",
+          "limitation"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "checks": {
+      "type": "array",
+      "items": {
+        "oneOf": [
+          {
+            "type": "object",
+            "properties": {
+              "type": {
+                "const": "equal"
+              },
+              "left": {
+                "type": "string",
+                "pattern": "^[A-Za-z][A-Za-z0-9-]{0,79}$"
+              },
+              "right": {
+                "type": "string",
+                "pattern": "^[A-Za-z][A-Za-z0-9-]{0,79}$"
+              },
+              "atol": {
+                "type": "number",
+                "minimum": 0
+              }
+            },
+            "required": [
+              "type",
+              "left",
+              "right",
+              "atol"
+            ],
+            "additionalProperties": false
+          },
+          {
+            "type": "object",
+            "properties": {
+              "type": {
+                "const": "hash-link"
+              },
+              "source": {
+                "type": "string",
+                "pattern": "^[A-Za-z][A-Za-z0-9-]{0,79}$"
+              },
+              "pointer": {
+                "type": "string"
+              },
+              "target": {
+                "type": "string",
+                "pattern": "^[A-Za-z][A-Za-z0-9-]{0,79}$"
+              }
+            },
+            "required": [
+              "type",
+              "source",
+              "pointer",
+              "target"
+            ],
+            "additionalProperties": false
+          }
+        ]
+      }
+    },
+    "datasets": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[A-Za-z][A-Za-z0-9-]{0,79}$"
+          },
+          "columns": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "object",
+              "properties": {
+                "key": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z][A-Za-z0-9-]{0,79}$"
+                },
+                "label": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "unit": {
+                  "enum": [
+                    "B",
+                    "GB",
+                    "GiB",
+                    "MiB",
+                    "s",
+                    "min",
+                    "token",
+                    "token/s",
+                    "count",
+                    "ratio",
+                    "percent",
+                    "degC"
+                  ]
+                }
+              },
+              "required": [
+                "key",
+                "label",
+                "unit"
+              ],
+              "additionalProperties": false
+            }
+          },
+          "rows": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "object",
+              "properties": {
+                "label": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "cells": {
+                  "type": "object",
+                  "propertyNames": {
+                    "type": "string",
+                    "pattern": "^[A-Za-z][A-Za-z0-9-]{0,79}$"
+                  },
+                  "additionalProperties": {
+                    "type": "string",
+                    "pattern": "^[A-Za-z][A-Za-z0-9-]{0,79}$"
+                  }
+                }
+              },
+              "required": [
+                "label",
+                "cells"
+              ],
+              "additionalProperties": false
+            }
+          }
+        },
+        "required": [
+          "id",
+          "columns",
+          "rows"
+        ],
+        "additionalProperties": false
+      }
+    }
+  },
+  "required": [
+    "schema_version",
+    "authorities",
+    "source_contracts",
+    "metrics",
+    "claims",
+    "checks",
+    "datasets"
+  ],
+  "additionalProperties": false
+}

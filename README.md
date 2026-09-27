@@ -9,6 +9,7 @@ Campaign 2's evidence remains on its earlier branch. Its [frozen protocol](resea
 **Campaign 2 measured outcome:** the verified GPT-OSS 120B MXFP4 GGUF ran above available RAM with exact-demand expert streaming under an 18 GiB host cgroup and zero swap. Its 32-slot run completed 20 fixed requests in 35m56s, with 4588 tokens / 1379.108 s of backend decode = **3.327 tokens/s**, and 3.290 tokens/s in its second half. This passes its frozen >=2 sustained timing/resource gate but remains below the additional 4 tok/s objective. The historical C2 global state remains **CORRECTNESS_BLOCKED** for robust use because its full-model plain references did not complete. Short-prompt first text/final content took 42.309/74.506 s on a frozen 113-token input, missing the 10/20 s usability goals. In a frozen twelve-task synthetic pilot, target 120B passed 12/12 versus stock 20B 10/12, but required 11.478× summed request time. This supports a selective fallback hypothesis under the fixed cap, not broad default use. Physical NVMe traffic remains unattributed exclusively.
 
 - [Current state and budget](LAB_STATE.md)
+- [Documentary reporting system](docs/research-reports/README.md) — frozen R00/C1/C2 reports and evidence verifier; the [C3 reporting boundary](docs/research-reports/CURRENT-LAB.md) identifies what the newer lab campaign has and has not entered into the PDFs.
 - [C2 sustained 32-slot diagnostic](research/C2-C-RESULT-20260926.md)
 - [C2 target latency](research/C2-D-RESULT-20260926.md)
 - [C2 launcher and context lifecycle](research/C2-F-RESULT-20260926.md)

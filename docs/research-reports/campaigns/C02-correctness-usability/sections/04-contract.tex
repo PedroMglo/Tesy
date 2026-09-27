@@ -1,0 +1,25 @@
+\clearpage
+\section{Contrato experimental publicado}
+\claim{CL-C2-IDENTITY}{A plataforma abaixo é a descrita na campanha histórica. Não constitui uma inspeção do host físico durante a elaboração do PDF.}
+
+\begin{tabularx}{\linewidth}{@{}p{37mm}Y@{}}
+\toprule \textbf{Dimensão} & \textbf{Configuração e limite}\\ \midrule
+Host & Ryzen AI 9 HX370; RTX 4060 Laptop, 8188 MiB; 30 GiB de RAM reportados; NVMe interno.\\
+Target & \Code{ggml-org/gpt-oss-120b-GGUF}, MXFP4 GGUF; \metric{M-C2-MODEL-GB} GB de ficheiro. Não são pesos noutra precisão.\\
+Backend target & \Code{freedomljc/llama.cpp}, commit \Code{1248fd8fa8cf}.\\
+Backend stock & \Code{ggml-org/llama.cpp}, commit \Code{4b1a27fa0eb8}.\\
+Placement e cache & GPU8: oito camadas em GPU. 32 slots de experts por camada; uma sequência/contexto.\\
+Contexto e batching & Contexto de 4096 tokens, batch 256, microbatch 32; oito threads CPU e quatro I/O.\\
+Geração e I/O & Greedy, seed 42, reasoning medium; sem prompt cache, preload ou repack; leitura de experts com O\_DIRECT.\\
+Memória host & \Code{memory.max} = \metric{M-C2-HOST-LIMIT} GiB; swap máximo zero; watchdog de RSS de 17 GiB.\\
+Guard GPU & GPU total até \metric{M-C2-GPU-LIMIT} MiB, não exatamente 7 GiB.\\
+Outros guards & MemAvailable pelo menos 6 GiB; limites CPU/GPU/NVMe de 95/80/70 graus Celsius.\\
+\bottomrule
+\end{tabularx}
+{\small Transcrição da configuração publicada, sem alteração de thresholds. \evidence{E-C2-FINAL} \evidence{E-C2-SUMMARY}}
+
+\subsection{Workloads e identidades não adquiridas}
+\claim{CL-C2-PERFORMANCE}{O ensaio sustentado C2-C usa vinte pedidos fixos num processo e cap de 512 tokens. Dois pedidos atingiram esse cap. Vinte pedidos não são automaticamente vinte réplicas independentes.}
+\claim{CL-C2-UTILITY}{A suite C2-E foi fixada antes das respostas: quatro casos de desenvolvimento, doze de avaliação e validadores isolados. Cada caso de avaliação correu uma vez por modelo, com cap de 2048 tokens.}
+
+\claim{CL-C2-IDENTITY}{Os manifests originais de binários, bibliotecas, tokenizer/template e execução não foram todos readquiridos neste recorte. A fonte remete para eles; este PDF não os reconstrói a partir de fragmentos. Uma reprodução experimental exige essa expansão da aquisição.}

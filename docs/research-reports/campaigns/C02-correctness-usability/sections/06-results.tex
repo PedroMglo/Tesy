@@ -1,0 +1,67 @@
+\clearpage
+\section{Resultados}
+\subsection{Cobertura de correção e desempenho}
+\begin{tabularx}{\linewidth}{@{}p{34mm}p{28mm}Y@{}}
+\toprule \textbf{Modelo / configuração} & \textbf{Resultado} & \textbf{Contrato observado}\\ \midrule
+20B surrogate & Bitwise restrito & Trinta linhas plain/streamed/delayed read; EIO/short/EOF abortam.\\
+120B, referência CPU histórica & Bitwise restrito & Uma linha completa de logits após quatro token IDs.\\
+120B, referência alargada & BLOCKED & Duas tentativas paradas por RSS guard; sem aprovação completa.\\
+120B, produção GPU8/32 & NOT\_VALIDATED & Paridade independente em prefixes longos por qualificar; faults GPU in-flight NOT\_RUN.\\
+\bottomrule
+\end{tabularx}
+\claim{CL-C2-CORRECTNESS}{A matriz distingue modelo, placement e contrato. GPU8/32 não é um terceiro modelo, e uma resposta funcional correta não prova paridade numérica.}
+
+\begin{tabularx}{\linewidth}{@{}Y r@{}}
+\toprule \textbf{C2-C: timing e recursos} & \textbf{Resultado}\\ \midrule
+Pedidos completos num processo & \metric{M-C2-REQUESTS}\\
+Tokens / tempo de decode & \metric{M-C2-TOKENS} / \metric{M-C2-SECONDS} s\\
+Decode agregado & \metric{M-C2-DECODE} token/s\\
+Segunda metade & \metric{M-C2-SECOND-HALF} token/s\\
+Gate timing/recursos & PASS\\
+Meta de 2 / meta de 4 token/s & atingida / não atingida\\
+\bottomrule
+\end{tabularx}
+\claim{CL-C2-PERFORMANCE}{A aprovação tem âmbito de timing e recursos, não de correção geral. Os dois truncamentos no cap permanecem no registo.}
+\claim{CL-C2-BOUNDARY}{Nenhuma alteração de placement, microbatch, predictor, prefetch, speculation ou cache de três tiers foi promovida. O resumo regista \metric{M-C2-INTERVENTIONS} intervenções de otimização usadas.}
+
+\clearpage
+\subsection{Picos de recursos e limites comparáveis}
+\begin{figure}[htbp]\centering
+\begin{tikzpicture}\begin{axis}[ybar,bar width=15pt,height=5.2cm,ymin=0,ymax=21,ylabel={Memória do cgroup (GiB)},symbolic x coords={C2-C,C2-E},xtick=data,enlarge x limits=.55,legend style={at={(.5,1.02)},anchor=south,legend columns=2}]
+\addplot table[x=label,y=peak,col sep=comma]{generated/host-memory.csv};
+\addplot table[x=label,y=limit,col sep=comma]{generated/host-memory.csv};
+\legend{memory.peak,memory.max}
+\end{axis}\end{tikzpicture}
+\caption{Cgroup host: pico publicado por run e limite imposto. Não é RSS nem RAM total da máquina. \evidence{E-C2-GATE} \evidence{E-C2-SUMMARY}}
+\end{figure}
+\begin{figure}[htbp]\centering
+\begin{tikzpicture}\begin{axis}[ybar,bar width=15pt,height=5.2cm,ymin=0,ymax=8200,ylabel={GPU total (MiB)},symbolic x coords={C2-C,C2-E},xtick=data,enlarge x limits=.55,legend style={at={(.5,1.02)},anchor=south,legend columns=2}]
+\addplot table[x=label,y=peak,col sep=comma]{generated/gpu-memory.csv};
+\addplot table[x=label,y=limit,col sep=comma]{generated/gpu-memory.csv};
+\legend{Máximo amostrado,Guard}
+\end{axis}\end{tikzpicture}
+\caption{GPU: \metric{M-C2-GPU-PEAK} MiB em C2-C e \metric{M-C2-GPU-E-PEAK} MiB em C2-E, com guard \metric{M-C2-GPU-LIMIT} MiB. Runs distintos; amostras podem omitir transientes. \evidence{E-C2-FINAL} \evidence{E-C2-SUMMARY}}
+\end{figure}
+\claim{CL-C2-RESOURCE}{As fontes publicam zero eventos swap/max/OOM/kill nos runs estritos e temperaturas abaixo dos guards. Atribuição exclusiva de NVMe físico, hits por tier, H2D e comportamento completo de throttling permanecem desconhecidos.}
+
+\clearpage
+\subsection{Latência e utilidade}
+\begin{figure}[htbp]\centering
+\begin{tikzpicture}\begin{axis}[height=6cm,xlabel={Tokens reais de prompt},ylabel={Tempo (s)},xmin=0,xmax=1650,ymin=0,ymax=515,legend style={at={(.5,1.03)},anchor=south,legend columns=3}]
+\addplot+[only marks,mark=*,mark size=2.5pt] table[x=prompt,y=prefill,col sep=comma]{generated/latency.csv};
+\addplot+[only marks,mark=square*,mark size=2.5pt] table[x=prompt,y=text,col sep=comma]{generated/latency.csv};
+\addplot+[only marks,mark=triangle*,mark size=2.5pt] table[x=prompt,y=final,col sep=comma]{generated/latency.csv};
+\legend{Prefill,First text,First final}
+\end{axis}\end{tikzpicture}
+\caption{Três prompts C2-D, sem regressão, extrapolação ou barras de erro. A proximidade de prefill e first text não identifica um bottleneck causal exclusivo. \evidence{E-C2-LATENCY}}
+\end{figure}
+\begin{tabularx}{\linewidth}{@{}Y r r@{}}
+\toprule \textbf{C2-E: suite c2eval12} & \textbf{Stock20B} & \textbf{Target120B}\\ \midrule
+Tarefas corretas & \metric{M-C2-STOCK-PASS}/\metric{M-C2-CASES} & \metric{M-C2-TARGET-PASS}/\metric{M-C2-CASES}\\
+Soma do wall time dos pedidos & \metric{M-C2-STOCK-WALL} s & \metric{M-C2-TARGET-WALL} s\\
+Casos exclusivos corretos & \metric{M-C2-STOCK-ONLY} & \metric{M-C2-TARGET-ONLY}\\
+\bottomrule
+\end{tabularx}
+\claim{CL-C2-UTILITY}{Os dois casos exclusivos do target ocorreram quando o stock esgotou o cap de 2048 tokens em reasoning sem resposta final. O custo temporal foi \metric{M-C2-WALL-RATIO} vezes o do stock. Alterar o cap para comparar qualidade/custo exige outra experiência prospetivamente congelada.}
+
+\claim{CL-C2-OPERATION}{No teste operacional, os prompts reais cresceram de \metric{M-C2-TURN-1} para \metric{M-C2-TURN-2} e \metric{M-C2-TURN-3} tokens. Cancel/follow-up e shutdown passaram no âmbito publicado. Configurar contexto de 4096 tokens não demonstra ter exercitado um prompt de 4096 tokens.}

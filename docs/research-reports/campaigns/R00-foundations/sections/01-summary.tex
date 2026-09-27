@@ -1,0 +1,19 @@
+\section{Síntese executiva}
+Este é um recorte do ledger técnico datado de 24 de setembro, consultado em \Code{7a7d3dcbd1ff}. Não é uma auditoria exaustiva das branches nem uma nova revisão da literatura. \evidence{E-R00-STATUS}
+
+\historicalclaim{CL-R00-NOVELTY}{O estado preservado é BROAD\_NOVELTY\_NO\_GO / ENGINEERING\_AND\_MEASUREMENT\_GO: continuar engenharia e medição é compatível com não reclamar novidade ampla.}
+
+\begin{tabularx}{\linewidth}{@{}p{38mm}Y@{}}
+\toprule \textbf{Eixo} & \textbf{Conclusão do ledger}\\ \midrule
+Routing trace & \metric{M-R00-RECORDS} registos diagnósticos e \metric{M-R00-TOKENS} IDs iguais num teste OFF/ON.\\
+Headroom & LRU e Belady em count-space; Belady é não causal.\\
+Inventário / replay & Admissão inconclusiva por provenance não preservada.\\
+Capacidade / timing & Admissões retiradas ou bloqueadas; novo gate físico requerido.\\
+Lazy experts no pin & STATIC\_NO\_GO; experts sem TENSOR\_READ\_LAZY.\\
+\bottomrule
+\end{tabularx}
+\evidence{E-R00-STATUS}
+
+\begin{FindingBox}{O progresso inclui retirar afirmações}
+Existirem outputs ou gráficos não basta para admitir uma campanha. Corrigir provenance e significado de métricas faz parte do resultado, não é detalhe a ocultar.
+\end{FindingBox}
