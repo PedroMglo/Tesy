@@ -17,8 +17,10 @@ VOCAB = 201088
 ROW_BYTES = VOCAB * 4
 PHASES = ("prefill0", "prefill128", "prefill_final", "decode0", "decode1", "decode7", "decode31")
 LOGIT_PHASES = ("prefill_final", "decode0", "decode1", "decode7", "decode31")
-CORE = {"attn_post_norm", "ffn_moe_logits", "ffn_moe_logits_biased",
-        "ffn_moe_probs", "ffn_moe_topk", "ffn_moe_weights_softmax", "ffn_moe_out"}
+# The graph's biased router logits and probs are the same tensor. Its later
+# callback name is ffn_moe_probs, so the earlier alias is not observable here.
+CORE = {"attn_post_norm", "ffn_moe_logits", "ffn_moe_probs",
+        "ffn_moe_topk", "ffn_moe_weights_softmax", "ffn_moe_out"}
 OPTIONAL = {"ffn_moe_topk_stream", "ffn_moe_wave_ids", "ffn_moe_wave_mask",
             "ffn_moe_gate_biased", "ffn_moe_up_biased", "ffn_moe_down_biased",
             "ffn_moe_argsort"}
@@ -134,7 +136,7 @@ def capture(root):
             observed_core[key] = True
             if stage in ("attn_post_norm", "ffn_moe_out"):
                 target = (2880, tokens, 1, 1)
-            elif stage in ("ffn_moe_logits", "ffn_moe_logits_biased", "ffn_moe_probs"):
+            elif stage in ("ffn_moe_logits", "ffn_moe_probs"):
                 target = (128, tokens, 1, 1)
             elif stage == "ffn_moe_topk":
                 target = (4, tokens, 1, 1)
