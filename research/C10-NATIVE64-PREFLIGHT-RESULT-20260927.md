@@ -1,0 +1,6 @@
+# C10 native ub64 preflight blocked
+
+- Objective/base: admit the frozen native ub64 P8 8K server after C9's 513-ID thermal failure. Measurement commit `86321d9f7228c528f8ba8cb8e41e2ead2d0400fe`; model/backend and E18 limits frozen. Model-free checks passed: 70 tests and exactly one server argv change, `-ub 32→64`.
+- Evidence: two administrative scope starts reached the additional CPU start ≤47 C check and were rejected before `server.run` or model launch. After-scope sensor reads were 47.375 and 47.5 C; the exact readings that triggered each rejection were not logged. Both receipts are preserved and conservatively charged 1 s each to the physical-time ledger. No init, forward, logits, timing or capacity observation occurred.
+- Decision: C10 ends as `PRECONDITION_NOT_MET_NO_MODEL`, represented by `CONTINUE_NEXT_HYPOTHESIS` in the program decision. The additional 47 C threshold was too close to transient idle readings during runner startup. This does not refute ub64 or rescue C9's thermal FAIL. The absolute CPU guard remains 95 C.
+- Next: new identity and preflight with a start-temperature policy that tolerates the observed idle fluctuation while still leaving a large margin below 95 C. Freeze and run init-only, then minimum forward and only then 513 IDs if prior gates pass. No automatic replay of C10. Default and usual server unchanged.

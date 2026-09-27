@@ -7,7 +7,7 @@
     "M4": "NOT_RUN"
   },
   "mission": "local usable main GPT-OSS 120B, original weights and authoritative routing",
-  "next_action": "Preserve C9 thermal FAIL; model-free C8 wave/placement critical-path bound, then freeze a distinct thermal mitigation profile and new preflight only if justified",
+  "next_action": "C10b new start-temperature policy and preflight, same absolute 95 C guard; init-only then minimum forward then 513-ID diagnostic if each gate passes",
   "open_hypotheses": [
     "Existing native preload has confirmed medium prefill gain; test whether serving and exact-prefix reuse improve user-visible latency",
     "P8 native ub64 can reduce graph callbacks but changes native Flash arithmetic; separate profile pending",
@@ -43,7 +43,12 @@
       "identity": "c9",
       "root": "results/c9-20260927T1441Z",
       "status": "8K_INIT_AND_SHORT_FORWARD_PASS_PREFIX513_THERMAL_GUARD_FAIL"
+    },
+    {
+      "identity": "c10",
+      "root": "results/c10-20260927T1513Z",
+      "status": "NATIVE64_MODEL_FREE_PASS_PRECONDITION_BLOCKED_NO_MODEL"
     }
   ],
-  "updated_utc": "2026-09-27T15:09:39.629804+00:00"
+  "updated_utc": "2026-09-27T15:19:49.715864+00:00"
 }
