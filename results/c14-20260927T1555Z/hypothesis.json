@@ -1,0 +1,16 @@
+{
+  "causal_profile_delta_from_C11": "only n_ubatch 32->64; original backend, ngl12, slots32, preload ON, full SWA 8K E18 unchanged",
+  "hypothesis": "P12 plus ub64 may cut enough graph/wave overhead to complete 513-ID request before thermal saturation while staying under memory guards",
+  "investment_screen": "if 513 finishes with CPU peak <=92 C and backend prefill <=75 s, consider separate same-profile numeric gate; if not, record negative diagnostic and switch mechanism. These are prospective engineering thresholds, not statistical significance.",
+  "numeric_contract": "new native ub64 numerical profile: full logits observer OFF/ON, fresh process and 36 canonical same-device layers required before timing or serving promotion",
+  "objective": "test whether native ub64 on P12 shortens cold 513-ID server prefill enough to create thermal margin below CPU95",
+  "order": [
+    "init-only",
+    "78-ID minimum forward",
+    "513-ID cold request"
+  ],
+  "schema": "c14-p12ub64-hypothesis-v1",
+  "source_evidence": "C4 native ub64 short no-preload probe prefill44.625->40.775 s and wave callbacks1225->700; different workload/profile diagnostic. C10b P8 ub64 513 server still CPU95.125 FAIL; C11 P12 ub32 completed one 513 request at CPU95 with 80.020s prefill and C13 repeat first request failed CPU95.125.",
+  "stop": "any guard/evidence failure ends C14; no retry",
+  "strong_alternative": "C10b showed P8 ub64 still hit guard; CPU expert dot/I/O and remaining waves may dominate, and ub64 changes arithmetic shape"
+}
