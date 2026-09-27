@@ -1,0 +1,63 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "schema_version": {
+      "const": "tesy-audit-v1"
+    },
+    "inputs_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "reviewed_pdf_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "status": {
+      "enum": [
+        "DRAFT",
+        "REVIEWED"
+      ]
+    },
+    "reviewer": {
+      "type": "string",
+      "minLength": 1
+    },
+    "scientific_endorsement": {
+      "const": false
+    },
+    "claims_reviewed": {
+      "type": "boolean"
+    },
+    "all_pages_visually_reviewed": {
+      "type": "boolean"
+    },
+    "open_blockers": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "notes": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    }
+  },
+  "required": [
+    "schema_version",
+    "inputs_sha256",
+    "reviewed_pdf_sha256",
+    "status",
+    "reviewer",
+    "scientific_endorsement",
+    "claims_reviewed",
+    "all_pages_visually_reviewed",
+    "open_blockers",
+    "notes"
+  ],
+  "additionalProperties": false
+}

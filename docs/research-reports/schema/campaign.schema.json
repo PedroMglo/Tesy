@@ -1,0 +1,187 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "schema_version": {
+      "const": "tesy-campaign-v1"
+    },
+    "id": {
+      "type": "string",
+      "pattern": "^[A-Za-z][A-Za-z0-9-]{0,79}$"
+    },
+    "version": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+\\.\\d+$"
+    },
+    "kind": {
+      "enum": [
+        "campaign",
+        "foundation",
+        "dossier",
+        "example"
+      ]
+    },
+    "title": {
+      "type": "string",
+      "minLength": 1
+    },
+    "subtitle": {
+      "type": "string",
+      "minLength": 1
+    },
+    "date": {
+      "type": "string",
+      "minLength": 1
+    },
+    "language": {
+      "enum": [
+        "pt",
+        "en"
+      ]
+    },
+    "author": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "scientific_state": {
+      "type": "string",
+      "minLength": 1
+    },
+    "editorial_state": {
+      "enum": [
+        "DRAFT",
+        "REVIEWED"
+      ]
+    },
+    "state_evidence": {
+      "oneOf": [
+        {
+          "oneOf": [
+            {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "const": "json"
+                },
+                "source": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z][A-Za-z0-9-]{0,79}$"
+                },
+                "pointer": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "type",
+                "source",
+                "pointer"
+              ],
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "const": "text"
+                },
+                "source": {
+                  "type": "string",
+                  "pattern": "^[A-Za-z][A-Za-z0-9-]{0,79}$"
+                },
+                "quote": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              },
+              "required": [
+                "type",
+                "source",
+                "quote"
+              ],
+              "additionalProperties": false
+            }
+          ]
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "document_base_commit": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{40}$"
+    },
+    "evidence_snapshot_commits": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^[0-9a-f]{40}$"
+      },
+      "uniqueItems": true
+    },
+    "build_epoch": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "experimental_reproduction": {
+      "const": "NOT_RUN"
+    },
+    "raw_data_availability": {
+      "const": "NOT_ACCESSED"
+    },
+    "scope_note": {
+      "type": "string",
+      "minLength": 1
+    },
+    "included_reports": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[A-Za-z][A-Za-z0-9-]{0,79}$"
+          },
+          "version": {
+            "type": "string",
+            "minLength": 1
+          },
+          "inputs_sha256": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$"
+          }
+        },
+        "required": [
+          "id",
+          "version",
+          "inputs_sha256"
+        ],
+        "additionalProperties": false
+      }
+    }
+  },
+  "required": [
+    "schema_version",
+    "id",
+    "version",
+    "kind",
+    "title",
+    "subtitle",
+    "date",
+    "language",
+    "author",
+    "scientific_state",
+    "editorial_state",
+    "state_evidence",
+    "document_base_commit",
+    "evidence_snapshot_commits",
+    "build_epoch",
+    "experimental_reproduction",
+    "raw_data_availability",
+    "scope_note",
+    "included_reports"
+  ],
+  "additionalProperties": false
+}
