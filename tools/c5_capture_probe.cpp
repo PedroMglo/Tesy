@@ -162,6 +162,17 @@ static bool capture(ggml_tensor * t,bool ask,void * user) {
            [](char c){return c>='0'&&c<='9';}),"bad l_out layer name");
     const int layer=std::stoi(tail);
     require(layer>=0 && layer<36,"l_out layer outside target");
+    if (layer==35 && t->ne[1]==0) {
+        require(t->type==GGML_TYPE_F32 && t->ne[0]==2880 &&
+                t->ne[2]==1 && t->ne[3]==1,
+                "invalid zero-output last-layer shape");
+        const std::string key=std::to_string(state.chunk)+":l_out:35";
+        require(state.seen.insert(key).second,"duplicate zero-output state ID");
+        state.index+=std::to_string(state.chunk)+"\tl_out\t35\t-1\t0\t"+
+                     ggml_type_name(t->type)+'\t'+dims(t->ne)+'\t'+strides(t->nb)+
+                     "\t0\t-\n";
+        return true;
+    }
     save_logical(state,t,"l_out",layer);
     return true;
 }
