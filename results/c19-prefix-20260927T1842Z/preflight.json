@@ -1,0 +1,132 @@
+{
+  "ambient_temperature": "UNKNOWN",
+  "backend": {
+    "binary_sha256": "f19a4b490e60b4205193c25691e350ed577926dfcfe3ef7e2dcc2c24d3f84e86",
+    "dirty": "",
+    "head": "1248fd8fa8cfebaece5ea992e4d951c1e18bb9d5",
+    "library_sha256": {
+      "build-gcc15/bin/libggml-base.so.0.15.3": "4c322a199c86b801389ed4bda94074083624e0a6460e25681be4b626cc72873d",
+      "build-gcc15/bin/libggml-cpu.so.0.15.3": "b57845ea9f9ce9455d78e6fe290c09b50b9414db9280409b9e5cc143d1b13b61",
+      "build-gcc15/bin/libggml-cuda.so.0.15.3": "5b363c951b87164e94d5b6af35a82c875634aadcb29c9278245cd7516f44cc7e",
+      "build-gcc15/bin/libggml.so.0.15.3": "97a33247336b56aaabe1a8bee4da6cd05e73e8b4327afd2cef67c5526df8ab71",
+      "build-gcc15/bin/libllama-common.so.0.0.1": "b0c96af5cd577f851954afb050601099608f29a2d4890322c2e69ab6d74733f9",
+      "build-gcc15/bin/libllama-server-impl.so": "ab3106f10dcf5bf94bd1cbe556ab1114cb29625d4d9511fd15a67f483c4775a5",
+      "build-gcc15/bin/libllama.so.0.0.1": "31b56002c36c159f71eba54c0d8e625ae140d34b2b1a503f3dc4db47237719cc",
+      "build-gcc15/bin/libmtmd.so.0.0.1": "801002ce83276d33b5a09c98362e34e04fb867aed63a738650d8a2e29930bab9"
+    },
+    "tree": "8219dfba2414cdcbb388e43b1c67a49f1f70e4aa"
+  },
+  "cooling_condition": "changed_physical_placement (owner report)",
+  "cpu_diagnostics": {
+    "effective_clock_median_mhz": 1932.8795,
+    "effective_clock_mhz_by_policy": {
+      "policy0": 4882.682,
+      "policy1": 1712.587,
+      "policy10": 605.264,
+      "policy11": 1995.894,
+      "policy12": 605.264,
+      "policy13": 3654.766,
+      "policy14": 5142.724,
+      "policy15": 605.264,
+      "policy16": 605.264,
+      "policy17": 605.264,
+      "policy18": 605.264,
+      "policy19": 605.264,
+      "policy2": 1713.131,
+      "policy20": 605.264,
+      "policy21": 2105.342,
+      "policy22": 1997.311,
+      "policy23": 1997.594,
+      "policy3": 5142.483,
+      "policy4": 1985.692,
+      "policy5": 605.264,
+      "policy6": 1960.146,
+      "policy7": 1905.613,
+      "policy8": 1989.861,
+      "policy9": 1997.891
+    },
+    "package_energy_range_uj": 65532610987,
+    "package_energy_uj": 40374130876,
+    "processor_cooling_max_state": 0,
+    "processor_cooling_states": {
+      "cooling_device10": 0,
+      "cooling_device11": 0,
+      "cooling_device12": 0,
+      "cooling_device13": 0,
+      "cooling_device14": 0,
+      "cooling_device15": 0,
+      "cooling_device16": 0,
+      "cooling_device17": 0,
+      "cooling_device18": 0,
+      "cooling_device19": 0,
+      "cooling_device20": 0,
+      "cooling_device21": 0,
+      "cooling_device22": 0,
+      "cooling_device23": 0,
+      "cooling_device24": 0,
+      "cooling_device25": 0,
+      "cooling_device26": 0,
+      "cooling_device27": 0,
+      "cooling_device28": 0,
+      "cooling_device29": 0,
+      "cooling_device30": 0,
+      "cooling_device31": 0,
+      "cooling_device8": 0,
+      "cooling_device9": 0
+    }
+  },
+  "cpu_model": "AMD Ryzen AI 9 HX 370 w/ Radeon 890M",
+  "cpu_policy": {
+    "C18_dependency": "four CPU100 cold513 arms PASS; full 8K logits NOT_RUN",
+    "tjmax_c": 100,
+    "tjmax_official_source": "https://www.amd.com/en/products/processors/laptop/ryzen/ai-300-series/amd-ryzen-ai-9-hx-370.html",
+    "warning_c": 95
+  },
+  "cpu_tctl_c": 38.625,
+  "fan_profile_if_observable": "fan RPM observed; policy not directly readable",
+  "fan_rpm": {
+    "Adapter": "ISA adapter",
+    "cpu_fan": {
+      "fan1_input": 0.0
+    },
+    "gpu_fan": {
+      "fan2_input": 0.0
+    }
+  },
+  "filesystem": "/home /dev/nvme0n1p3[/home] btrfs",
+  "free_bytes": 415773454336,
+  "gpu_compute_apps": "",
+  "gpu_csv": "NVIDIA GeForce RTX 4060 Laptop GPU, 8188, 12, 37, 615.71.09",
+  "guard_status": "READY_FOR_IDLE_ADMISSION",
+  "host_kernel": "7.2.7-200.fc44.x86_64",
+  "memory": {
+    "MemAvailable": 27276988416,
+    "MemTotal": 32698777600,
+    "SwapFree": 16064303104,
+    "SwapTotal": 16348868608
+  },
+  "model": {
+    "path": "/home/pmglo/models/gpt-oss-120b-gguf/gpt-oss-120b-MXFP4.gguf",
+    "sha256": "582bd40f6886200101f4c4ed9f25f3fe80cc14c86e9e2b37746cd8904a0c622d",
+    "stat": {
+      "ctime_ns": 1790389637807910988,
+      "dev": 53,
+      "inode": 14833675,
+      "mtime_ns": 1790389637795911032,
+      "size_bytes": 63387346208
+    }
+  },
+  "nvme_composite_c": 29.85,
+  "port_18367_free": true,
+  "power_profile": "performance",
+  "power_source": "AC",
+  "schema": "c19-preflight-v1",
+  "scope_model_free_test": {
+    "memory_max": 19327352832,
+    "path": "/user.slice/user-1000.slice/user@1000.service/app.slice/run-p213012-i242944.scope",
+    "status": "PASS",
+    "swap_current": 0,
+    "swap_max": 0
+  },
+  "utc": "2026-09-27T18:44:56.130002+00:00"
+}

@@ -1,0 +1,22 @@
+{
+  "admission": "fresh user scope; >=300 s contiguous idle at <=1 s gaps, CPU/GPU/NVMe <=55 C; no model concurrency",
+  "cache_on_expected_reuse_min_ids": 450,
+  "claim_limit": "mechanism only; no full M3, quality, full-logit or sustained claim",
+  "default_changed": false,
+  "first_prompt_token_ids_sha256": "e19cb14e4c38e8f1b153a58c1d3450ded2b402d82f5798961a1246285099d316",
+  "input_sha256": "c143814cbfa3f16943aeb6adc0633989a99ac2284332449f678eb314411d2170",
+  "old_c13_fail": "FAIL_PROTOCOL_THERMAL_GUARD; original raw/receipt unchanged",
+  "parent_decision": "results/c18-cpu100-retest-20260927T1756Z/decision.json",
+  "parent_decision_sha256": "78ada4c78d1639e555e5a9c0bc5fb185e450905f77c84675f19406110edac259",
+  "per_run_protocol_sha256": "041dabeb3faf8cc03067319ec29b58cd6209da746fd9ff3c9ef25098a101a235",
+  "profile_pinned": "P12 ngl12 ub32 slots32 preload ON 8K full-SWA E18 zero swap original backend",
+  "purpose": "Retest interrupted C13 P12 exact-prefix ON mechanism under prospective CPU100 warning policy",
+  "runtime_delta_from_c13": [
+    "CPU guard: >=95 warning, >=100/explicit mitigation/clock collapse stop",
+    "conditional telemetry of effective CPU clocks/RAPL power/ACPI Processor cooling"
+  ],
+  "schema": "c19-prefix-program-protocol-v1",
+  "second_prompt_token_ids_sha256_from_c13_preflight": "ec5e7502f9be6737328f72d656a93ff1b52aea177b454b82cc1f4265877ff456",
+  "stop_policy": "any resource/numeric/telemetry failure stops this unit; no retry",
+  "usage_contract_sha256": "470207decbe8a455f34748087cc0cddcea35b05f7fdd322401199009d67a4fbb"
+}
