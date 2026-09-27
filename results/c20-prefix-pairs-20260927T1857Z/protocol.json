@@ -1,0 +1,53 @@
+{
+  "claims": "Synthetic exact-prefix speed evidence only; no full M3 or quality claim",
+  "confirmation_if_screen_passes": {
+    "all_resources_and_outputs_valid": true,
+    "all_second_gains_positive": true,
+    "median_first_cold_gain_pct_min": -5,
+    "median_second_gain_pct_min": 20,
+    "new_pairs": 3,
+    "order": [
+      "OFF,ON",
+      "ON,OFF",
+      "OFF,ON"
+    ]
+  },
+  "cpu_policy": "warning >=95 C; stop >=100 C/ACPI Processor cooling/clock collapse; GPU80/NVMe70/E18 unchanged",
+  "default_changed": false,
+  "idle_policy": "300 s continuous <=1 s gaps, max 900 s, CPU/GPU/NVMe <=55 C, matched baseline within 2/3/3 C",
+  "metric": "completion-fenced elapsed seconds for second 641-ID prompt plus <=4 completion tokens",
+  "old_C13_fail": "FAIL_PROTOCOL_THERMAL_GUARD preserved",
+  "only_variable": "cache_prompt on/off for second request; first request cache_prompt true in both arms",
+  "order": [
+    "OFF",
+    "ON",
+    "ON",
+    "OFF"
+  ],
+  "paired_gain_formula": "100*(OFF-ON)/OFF for each pair",
+  "parent_C19_decision_sha256": "d05032e4b50ce873638323c82db28bff8f59356231a66798d4121ea470e37580",
+  "per_run_protocol_sha256": {
+    "c20-p1-off": "7b0facf689a702afe52c7b84caa79d9560a9836425d93fc7d216796e87d771c7",
+    "c20-p1-on": "1d062f4a8b384d7bef3ada3bdcc20a51b0295eed077964894f73bf738e21b49b",
+    "c20-p2-off": "df24e11a53bde430107a5199d792e9e0d99ac1e70ca80632a72889c5d4cabcbe",
+    "c20-p2-on": "3db825da11c0627f7459d8c53885ec8244330f0bb568ab4fa372361fe815b4ed"
+  },
+  "profile": "P12 ngl12 ub32 slots32 preload ON 8K full-SWA original backend E18 zero swap",
+  "runs": [
+    "c20-p1-off",
+    "c20-p1-on",
+    "c20-p2-on",
+    "c20-p2-off"
+  ],
+  "schema": "c20-prefix-pairs-protocol-v1",
+  "screen_policy": {
+    "cache_off_exact_ids": 0,
+    "cache_on_min_ids": 450,
+    "each_second_gain_pct_min_exclusive": 0,
+    "median_first_cold_gain_pct_min": -5,
+    "median_second_gain_pct_min": 20,
+    "resources_required": true,
+    "same_returned_messages_required": true
+  },
+  "workload_sha256": "c143814cbfa3f16943aeb6adc0633989a99ac2284332449f678eb314411d2170"
+}
