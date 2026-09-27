@@ -11,7 +11,7 @@ Sistema documental model-free: uma classe LuaLaTeX, fontes congeladas, seletores
 | `R00-foundations` | Recorte do ledger datado de 24 setembro, em main `7a7d3dcbd1ff8e594ac57459c3db06306083c3ca`. Não é retrospectiva exaustiva de todas as branches. |
 | `D00-research-dossier` | Síntese R00/C1/C2, com versões e digests dos relatórios filhos congelados. |
 
-O dossier é a entrada para orientação; os relatórios de campanha contêm contrato, resultados, falhas e limites. A data dos PDFs é o corte documental de 26 setembro 2026, não uma afirmação sobre o hardware atual. Autoria pessoal/universidade/orientação não foram inventadas: `author` é null.
+O dossier é a entrada para o conjunto R00/C1/C2; os relatórios de campanha contêm contrato, resultados, falhas e limites. A data dos PDFs é o corte documental de 26 setembro 2026, não uma afirmação sobre o hardware atual. **C3 é posterior a esse corte**: consultar [CURRENT-LAB.md](CURRENT-LAB.md) e a publicação autoritativa em `research/C3-FINAL-20260927.md` antes de usar o dossier como panorama atual. Autoria pessoal/universidade/orientação não foram inventadas: `author` é null.
 
 ## Executar
 
@@ -81,6 +81,6 @@ Quatro garantias são separadas: integridade documental; regeração dos derivad
 
 Specs e LaTeX são código de autoria confiável a rever. `-no-shell-escape`, paths verificados e cópias isoladas **não são uma sandbox contra LuaTeX hostil**. A validação não prova toda a semântica da prosa nem infere a unidade verdadeira de um número. Revisão humana continua necessária.
 
-A CI remota não foi ativada. O comando de testes acima é rápido/model-free; o build TeX deve ficar num job documental separado, nunca nas dependências do runtime. Integração em clone completo e testes globais do Tesy: NOT_RUN. Ver `IMPLEMENTATION.md`, `HANDOFF.md`, `validation/` e os manifests de release.
+O workflow documental em `.github/workflows/research-reports.yml` executa os testes model-free e a verificação dos quatro documentos quando este ramo é publicado. O build TeX fica separado das dependências do runtime. Os registos em `validation/` e `IMPLEMENTATION.md` descrevem a entrega original, antes da integração; o estado atual é descrito em `CURRENT-LAB.md` e no PR. Testes globais do Tesy e execução experimental: NOT_RUN nesta integração.
 
 Nos estados apoiados por texto, o teste automatizado é lexical: verifica o rótulo na âncora, não interpreta negações ou toda a semântica. Escolher âncoras positivas estreitas e verificar o contexto na revisão; preferir campos JSON explícitos quando disponíveis.

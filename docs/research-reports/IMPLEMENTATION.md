@@ -1,5 +1,7 @@
 # Implementação documental 1.0.0
 
+> Este é o registo histórico de âmbito e validação da entrega local v1.0.0. A integração posterior no Scale Lab C3 está descrita em [CURRENT-LAB.md](CURRENT-LAB.md) e no PR documental. As afirmações sobre DNS, clone, push e CI abaixo referem-se à entrega original.
+
 **GO documental; sem requalificação experimental.** A especificação aprovada permanece em `IMPLEMENTATION-SPEC.md` como registo da proposta. Este ficheiro descreve o resultado implementado e as suas diferenças de âmbito.
 
 ## Entrega

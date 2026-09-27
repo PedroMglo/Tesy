@@ -1,0 +1,7 @@
+# Fronteira documental no Scale Lab C3
+
+Este sistema foi integrado sobre `campaign/c3-layer-reference-prefill-20260926-1800utc` no commit observado `a0b673965b6e7c5aac69ae464d8275c176f4b14a`. Os PDFs v1.0.0 e os seus locks continuam a cobrir apenas R00, C1 e C2 nos snapshots declarados. Não foram reescritos para fingir que resumem C3. Esta página é um mapa de integração, não um relatório C3 sujeito ao verificador de evidência.
+
+A autoridade para o estado C3 permanece [C3-FINAL-20260927.md](../../research/C3-FINAL-20260927.md) e [results/INDEX.md](../../results/INDEX.md) no ramo de laboratório. Nesse âmbito, C3 registou 504/504 comparações bitwise da boundary MoE por layer e 14/14 vetores completos de logits callback OFF/ON bitwise; isso não certifica attention, KV ou inputs arbitrários. O preload reduziu o prefill mediano 17,515% e 18,240% nos dois prompts pareados, abaixo da meta 25%. O serviço sustentado completou 20 pedidos a 3,291376 tok/s, abaixo de 4 tok/s. O resultado de utilidade é dependente da política e do cap. O bloqueio global histórico de C2 não foi retroativamente removido.
+
+Uma edição PDF que inclua C3 requer uma identidade documental nova: catalogar fontes C3 por revisão e digest, congelar seletores e limites, produzir locks/derivados, rever cada afirmação e página, e publicar outra versão no-replace. Os ficheiros e PDFs v1.0.0 permanecem históricos. Nenhum modelo, raw experimental ou medição física foi executado nesta integração.

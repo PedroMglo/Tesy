@@ -1,5 +1,7 @@
 # Handoff — reporting v1.0.0
 
+> Registo da entrega local original, antes da integração. A implementação foi depois colocada numa branch documental baseada no Scale Lab C3. Ver [CURRENT-LAB.md](CURRENT-LAB.md) e o PR dessa branch para o estado remoto, checks e review threads atuais. Os estados `NOT_RUN` abaixo pertencem à entrega original; não descrevem o trabalho posterior.
+
 Resultado: sistema documental e quatro relatórios. Os resultados executados, contagens, hashes dos PDFs e ambiente ficam em `validation/` e nos release manifests. Reprodução experimental NOT_RUN; raws NOT_ACCESSED.
 
 Base observada: `7a7d3dcbd1ff8e594ac57459c3db06306083c3ca`. Branch local: `docs/research-reports-20260927`. C1 original: `c67529e290844bb3d9033615072d5878014a46bc`; C2: `81531d9dc33caddbbf07928106de47cfe2a6d42a`.
