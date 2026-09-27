@@ -7,14 +7,14 @@ Sistema documental model-free: uma classe LuaLaTeX, fontes congeladas, seletores
 | ID | Conteúdo |
 |---|---|
 | `C02-correctness-usability` | Campanha 2 no snapshot `81531d9dc33caddbbf07928106de47cfe2a6d42a`. Mantém `CORRECTNESS_BLOCKED`. |
-| `C03-boundary-prefill` | Draft documental de C3 em `a0b673965b6e7c5aac69ae464d8275c176f4b14a`. Fontes, seletores, derivados e lock verificados; revisão de PDF pendente. |
+| `C03-boundary-prefill` | Edição revista v1.0.0 de C3 em `a0b673965b6e7c5aac69ae464d8275c176f4b14a`; seis fontes congeladas, auditoria e PDF de seis páginas. |
 | `C01-scale-lab` | Auditoria original em `c67529e290844bb3d9033615072d5878014a46bc`. `SUCCESS` apenas no âmbito histórico. |
 | `R00-foundations` | Recorte do ledger datado de 24 setembro, em main `7a7d3dcbd1ff8e594ac57459c3db06306083c3ca`. Não é retrospectiva exaustiva de todas as branches. |
 | `D00-research-dossier` | Síntese R00/C1/C2, com versões e digests dos relatórios filhos congelados. |
 
-O dossier é a entrada para o conjunto R00/C1/C2; os relatórios de campanha contêm contrato, resultados, falhas e limites. A data dos PDFs publicados é o corte documental de 26 setembro 2026, não uma afirmação sobre o hardware atual. **C3 é posterior a esse corte**: o novo draft C03 não é um PDF revisto nem atualiza o dossier. Consultar [CURRENT-LAB.md](CURRENT-LAB.md) e a publicação autoritativa em `research/C3-FINAL-20260927.md`. Autoria pessoal/universidade/orientação não foram inventadas: `author` é null.
+O dossier D00 é a entrada histórica para R00/C1/C2; os relatórios de campanha contêm contrato, resultados, falhas e limites. O corte de D00 é 26 setembro 2026. **C3 tem edição própria**: consultar C03, [CURRENT-LAB.md](CURRENT-LAB.md) e a publicação autoritativa em `research/C3-FINAL-20260927.md`. D00 não foi retroativamente reescrito. Autoria pessoal/universidade/orientação não foram inventadas: `author` é null.
 
-O contrato de cobertura e a divisão de responsabilidades estão em [REPORTING-PROCESS.md](REPORTING-PROCESS.md). A CI deteta campanhas fechadas sem relatório revisto; neste momento C3 é uma lacuna documental assumida e o novo gate deve falhar até existir o relatório C3.
+O contrato de cobertura e a divisão de responsabilidades estão em [REPORTING-PROCESS.md](REPORTING-PROCESS.md). A CI deteta campanhas fechadas sem relatório revisto; C2 e C3 passam esse gate na revisão atual. PDFs gerados ficam fora de Git e são distribuídos como artefactos versionados separados.
 
 ## Executar
 
