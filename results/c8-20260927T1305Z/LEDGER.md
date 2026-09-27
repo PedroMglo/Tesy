@@ -19,3 +19,6 @@
 
 - G5 confirmation measurement commit `d6fd478ad53e4152e8ce2d16a36eabe073a4dda7`; six new 496+32 arms `c8-g5-pair1-off/on`, `pair2-on/off`, `pair3-off/on` passed full 33-row bitwise logits versus contemporary P8 OFF and all resource gates. Paired median prefill +17.70%, T_work +16.59%, TPOT +0.80%; all work pairs positive (+16.13%, +16.59%, +17.11%). `CONFIRM496_GO` applies only to this probe scope.
 - Confirmation resource peak GPU 3900 MiB, RSS 14,963,195,904 B, cgroup 14,781,255,680 B, CPU 93.25 C, swap 0. Source wave stall remains diagnostic. Next: separately freeze a 1522+32 check, then serving/session/quality gates; no default change.
+
+- G6 long check measurement commit `a4c8b1c8f07967fa844bd29ba1baa93b8f79f658`; new arms `c8-g6-pair1-off/on`, `pair2-on/off` all passed 33 full-logit bitwise and resource gates. Paired median prefill +18.07%, T_work +17.55%, TPOT −3.63%; T_work pairs +17.77%, +17.32%. `LONG1522_CHECK_PASS` is two-pair length coverage, not independent specialized confirmation.
+- Peak GPU total 3900 MiB, RSS 14,956,863,488 B, cgroup 14,767,091,712 B, CPU 93.875 C, swap zero. `/proc/PID/io` and global NVMe counters remain accounting/diagnostic. Next: separate 8K server admission and exact-prefix bridge; default unchanged.
