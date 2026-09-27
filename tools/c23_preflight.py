@@ -13,7 +13,7 @@ from c2_gate import strict_json
 from c8_observer_runner import model_stat
 from c9_server_admission import MODEL, configuration
 from c18_cpu_telemetry import capture as cpu_capture
-from c23_prefix_pairs import require_output_root
+from c23_prefix_confirm import require_output_root
 
 
 def call(*argv):
