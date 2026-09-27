@@ -1,0 +1,138 @@
+From c4104706a123ea92fb47bfab9a1f95a4e6cf106d Mon Sep 17 00:00:00 2001
+From: PedroMglo <pedro.lourenco2001@hotmail.com>
+Date: Sun, 27 Sep 2026 04:09:33 +0100
+Subject: [PATCH] Select CPU Flash vector path for compatible prefill shapes
+
+Assisted-by: Codex
+---
+ ggml/src/ggml-cpu/ggml-cpu.cpp |  2 ++
+ ggml/src/ggml-cpu/ops.cpp      | 62 ++++++++++++++++++++++++++++++++++
+ ggml/src/ggml-cpu/ops.h        |  1 +
+ 3 files changed, 65 insertions(+)
+
+diff --git a/ggml/src/ggml-cpu/ggml-cpu.cpp b/ggml/src/ggml-cpu/ggml-cpu.cpp
+index 128883b..1a2bd6b 100644
+--- a/ggml/src/ggml-cpu/ggml-cpu.cpp
++++ b/ggml/src/ggml-cpu/ggml-cpu.cpp
+@@ -1,6 +1,7 @@
+ #include "ggml-backend.h"
+ #include "ggml-backend-impl.h"
+ #include "ggml-cpu.h"
++#include "ops.h"
+ #include "repack.h"
+ #include "traits.h"
+ #include "ggml-impl.h"
+@@ -217,6 +218,7 @@ static ggml_guid_t ggml_backend_cpu_guid(void) {
+ ggml_backend_t ggml_backend_cpu_init(void) {
+     // initialize CPU backend now to avoid slowing the first graph computation
+     ggml_cpu_init();
++    ggml_cpu_fa_compat_init();
+ 
+     struct ggml_backend_cpu_context * ctx = new ggml_backend_cpu_context;
+     if (ctx == NULL) {
+diff --git a/ggml/src/ggml-cpu/ops.cpp b/ggml/src/ggml-cpu/ops.cpp
+index c555831..75d2fdf 100644
+--- a/ggml/src/ggml-cpu/ops.cpp
++++ b/ggml/src/ggml-cpu/ops.cpp
+@@ -11,6 +11,50 @@
+ #include <algorithm>
+ #include <cfloat>
+ #include <cmath>
++#include <cstdlib>
++#include <cstring>
++#include <mutex>
++
++static bool ggml_cpu_fa_env_enabled(const char * name) {
++    const char * value = std::getenv(name);
++    if (!value) {
++        return false;
++    }
++    if (std::strcmp(value, "1") != 0) {
++        GGML_ABORT("%s must be absent or exactly 1", name);
++    }
++    return true;
++}
++
++static bool ggml_cpu_fa_prefill_vec_compat(void) {
++    static const bool enabled = ggml_cpu_fa_env_enabled("TESY_CPU_FA_PREFILL_VEC_COMPAT");
++    return enabled;
++}
++
++static bool ggml_cpu_fa_dispatch_trace(void) {
++    static const bool enabled = ggml_cpu_fa_env_enabled("TESY_CPU_FA_DISPATCH_TRACE");
++    return enabled;
++}
++
++void ggml_cpu_fa_compat_init(void) {
++    (void) ggml_cpu_fa_prefill_vec_compat();
++    (void) ggml_cpu_fa_dispatch_trace();
++}
++
++static void ggml_cpu_fa_trace(const ggml_compute_params * params, const ggml_tensor * dst,
++                              const char * branch, bool compat_selected) {
++    if (params->ith != 0 || !ggml_cpu_fa_dispatch_trace()) {
++        return;
++    }
++    static std::mutex mutex;
++    std::lock_guard<std::mutex> lock(mutex);
++    fprintf(stderr,
++            "TESY_CPU_FA_DISPATCH op=FLASH_ATTN_EXT device=CPU nq=%lld nkv=%lld q=%s k=%s v=%s mode=%s selected=%d branch=%s\n",
++            (long long) dst->src[0]->ne[1], (long long) dst->src[1]->ne[1],
++            ggml_type_name(dst->src[0]->type), ggml_type_name(dst->src[1]->type),
++            ggml_type_name(dst->src[2]->type),
++            ggml_cpu_fa_prefill_vec_compat() ? "ON" : "OFF", (int) compat_selected, branch);
++}
+ 
+ // ggml_compute_forward_dup
+ 
+@@ -8961,6 +9005,7 @@ static void ggml_compute_forward_flash_attn_ext_f16(
+     const ggml_tensor * q     = dst->src[0];
+     const ggml_tensor * k     = dst->src[1];
+     const ggml_tensor * v     = dst->src[2];
++    const ggml_tensor * mask  = dst->src[3];
+ 
+     GGML_TENSOR_LOCALS(int64_t, neq, q,   ne)
+     GGML_TENSOR_LOCALS(size_t,  nbq, q,   nb)
+@@ -9006,6 +9051,7 @@ static void ggml_compute_forward_flash_attn_ext_f16(
+     const bool use_split_kv_path = !use_ref && (neq1 == 1 && neq3 == 1) && kv_is_f32_or_f16 && (k->type == v->type) && q->type == GGML_TYPE_F32 && nek1 >= 512;
+ 
+     if (use_split_kv_path) {
++        ggml_cpu_fa_trace(params, dst, "split_kv", false);
+         const int64_t chunk_size = (nek1 + nth - 1) / nth;
+ 
+         // Partials buffer layout: [q_head][kv_chunk][M, S, VKQ]
+@@ -9073,6 +9119,22 @@ static void ggml_compute_forward_flash_attn_ext_f16(
+ #endif
+         use_tiled &= (DV % f32_epr == 0);
+ #endif
++        const bool compat_selected = use_tiled && ggml_cpu_fa_prefill_vec_compat() &&
++                                     q->type == GGML_TYPE_F32 &&
++                                     k->type == GGML_TYPE_F16 && v->type == GGML_TYPE_F16 &&
++                                     mask && mask->type == GGML_TYPE_F16 &&
++                                     neq1 >= Q_TILE_SZ && neq3 == 1 &&
++                                     nek3 == 1 && nev3 == 1 &&
++                                     neq0 > 0 && nek1 > 0 &&
++                                     nbq0 == sizeof(float) &&
++                                     nbk0 == sizeof(ggml_fp16_t) &&
++                                     nbv0 == sizeof(ggml_fp16_t) &&
++                                     nbq1 >= (size_t) neq0*sizeof(float) &&
++                                     nbk1 >= (size_t) nek0*sizeof(ggml_fp16_t) &&
++                                     nbv1 >= (size_t) nev0*sizeof(ggml_fp16_t) &&
++                                     mask->ne[0] >= nek1 && mask->ne[1] >= neq1;
++        use_tiled &= !compat_selected;
++        ggml_cpu_fa_trace(params, dst, use_tiled ? "tiled" : "vector", compat_selected);
+         int current_chunk = ith;
+ 
+         while (current_chunk < nchunk) {
+diff --git a/ggml/src/ggml-cpu/ops.h b/ggml/src/ggml-cpu/ops.h
+index a8e18c7..0150234 100644
+--- a/ggml/src/ggml-cpu/ops.h
++++ b/ggml/src/ggml-cpu/ops.h
+@@ -88,6 +88,7 @@ void ggml_compute_forward_leaky_relu(const struct ggml_compute_params * params,
+ void ggml_compute_forward_tri(const struct ggml_compute_params * params, struct ggml_tensor * dst);
+ void ggml_compute_forward_fill(const struct ggml_compute_params * params, struct ggml_tensor * dst);
+ void ggml_compute_forward_flash_attn_ext(const struct ggml_compute_params * params, struct ggml_tensor * dst);
++void ggml_cpu_fa_compat_init(void);
+ void ggml_compute_forward_flash_attn_back(
+         const struct ggml_compute_params * params,
+         const bool masked,
