@@ -1,0 +1,56 @@
+{
+  "budget": {
+    "physical_limit_s": 57600,
+    "program_physical_after_s": 5608.999255452996
+  },
+  "claim_limits": [
+    "no prefix mechanism observation",
+    "no same-profile full-logit equivalence",
+    "C11 single first request passing at CPU95 did not demonstrate repeatable thermal margin",
+    "no paired API timing or quality"
+  ],
+  "default_changed": false,
+  "failures_preserved": [
+    "C13 first-request CPU95.125 guard FAIL",
+    "C9 P8 513-ID CPU95.125 guard FAIL",
+    "C10b P8 ub64 513-ID CPU95.125 guard FAIL"
+  ],
+  "gates": {
+    "cache_n": "NOT_OBSERVED",
+    "first_request": "FAIL_CPU_THERMAL_GUARD_ZERO_COMPLETED",
+    "functional_quality": "NOT_RUN",
+    "model_free": "PASS_70_TESTS_AND_P12_ONE_FLAG_DELTA",
+    "paired_timing": "NOT_RUN",
+    "same_profile_cache_numeric": "NOT_RUN",
+    "second_request": "NOT_RUN",
+    "sustained": "NOT_RUN",
+    "tokenization": "PASS_PREOUTPUT_513_641_COMMON510"
+  },
+  "measurement_commit": "bafd99001e739c5baab06b85327dc6c5b6ca69bc",
+  "next_action": "B scoped critical-path instrumented backend diagnostic or another independent cold-prefill thermal mechanism; require model-free source/build and bounded protocol before model execution",
+  "observed": {
+    "completed_requests": 0,
+    "elapsed_s": 80.1970455970004,
+    "maxima": {
+      "cgroup_peak_bytes": 13050454016,
+      "cpu_c": 95.125,
+      "gpu_c": 60.0,
+      "gpu_total_mib": 5746.0,
+      "nvme_c": 44.85,
+      "rss_bytes": 13271224320,
+      "swap_bytes": 0
+    },
+    "ordered_common_prefix_ids": 510,
+    "prompt_token_counts": [
+      513,
+      641
+    ],
+    "sample_count": 71,
+    "thermal_trigger_elapsed_s": 74.73086113300087,
+    "tokenization_raw_sha256": "8f609186444c81348f37ffa4f169bdc44364a67f2c68024ce764f26c547caf5e"
+  },
+  "profile": "P12 ngl12/ub32/slots32/native preload ON original backend 8K full-SWA server E18",
+  "reason": "CPU Tctl 95.125 C exceeded frozen 95 C during first 513-ID request; watchdog stopped server, secondary HTTP disconnect; zero requests completed and no cache_n observation",
+  "schema": "c13-p12-prefix-decision-v1",
+  "status": "FAIL_RESOURCES_OR_EVIDENCE"
+}

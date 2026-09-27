@@ -7,17 +7,18 @@
     "M4": "NOT_RUN"
   },
   "mission": "local usable main GPT-OSS 120B, original weights and authoritative routing",
-  "next_action": "scoped model-free/source critical-path bound for wave/parking work, then one diagnostic if bound warrants; preserve original backend as control",
+  "next_action": "B scoped critical-path instrumented backend diagnostic or another independent cold-prefill thermal mechanism; require model-free source/build and bounded protocol before model execution",
   "open_hypotheses": [
-    "Existing native preload has confirmed medium prefill gain; test whether serving and exact-prefix reuse improve user-visible latency",
     "Exact prefix reuse and wave critical fraction remain untested",
-    "Wave/parking work may occupy removable exclusive critical-path time in prefill; summed stalls and CPU cycle shares do not bound this yet"
+    "Wave/parking work may occupy removable exclusive critical-path time in prefill; summed stalls and CPU cycle shares do not bound this yet",
+    "Exact-prefix reuse remains unobserved because first cold request thermally failed; requires lower cold prefill CPU work or other admitted profile"
   ],
   "rejected_claims": [
     "P12 general-medium timing gain >=5% at 496+32 under E18",
     "Unmitigated 8K P8 preload-on E18 server qualified for 513-token cold prefill: thermal guard failed before completion",
     "P8 native ub64 preload-on E18 8K server can complete the 513-ID cold request under CPU95 guard",
-    "P16/slots24 provides 513-ID server CPU thermal margin under E18: one diagnostic reached CPU95 C"
+    "P16/slots24 provides 513-ID server CPU thermal margin under E18: one diagnostic reached CPU95 C",
+    "P12 current 8K server repeatably admits 513-ID first request under CPU95: C13 first request failed after C11 one pass"
   ],
   "schema": "120b-program-index-v1",
   "units": [
@@ -65,7 +66,12 @@
       "identity": "c12",
       "root": "results/c12-20260927T1540Z",
       "status": "P16S24_513_RESOURCE_PASS_CPU95_ZERO_MARGIN_NUMERIC_NOT_PROMOTED"
+    },
+    {
+      "identity": "c13",
+      "root": "results/c13-20260927T1550Z",
+      "status": "P12_PREFIX_FIRST513_CPU_THERMAL_FAIL_NO_CACHE_OBSERVATION"
     }
   ],
-  "updated_utc": "2026-09-27T15:44:39.981265+00:00"
+  "updated_utc": "2026-09-27T15:52:04.910816+00:00"
 }
