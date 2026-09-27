@@ -1,0 +1,75 @@
+{
+  "actual_common_prefix_ids": 2026,
+  "claim_limit": "synthetic growing prompt, one process, two requests; no full M3/M4",
+  "measurement_commit": "299052f4d4f2a494a3281b35f65ed2f03e89afb6",
+  "receipt_sha256": "2ce772bdb71d727835e315d7b9863cb67499c65da7dcb6f3686dd63820ad744e",
+  "results": [
+    {
+      "id": "c27-prefix2048",
+      "message_sha256": "5547eefff07c55ea015d3bae88c1dbd1d08cfe58223484d48891a63b067c2f58",
+      "request_elapsed_s": 289.67555639000057,
+      "stream_metrics": {
+        "done_observed": true,
+        "first_final_content_chunk_s": 289.44943685600447,
+        "first_reasoning_chunk_s": 275.1945848030009,
+        "first_text_chunk_s": 275.1945848030009,
+        "interpretation": "client receipt times of non-whitespace SSE chunks; not token timestamps",
+        "sse_event_count": 45
+      },
+      "timings": {
+        "cache_n": 0,
+        "predicted_ms": 15288.83,
+        "predicted_n": 52,
+        "predicted_per_second": 3.401175891157139,
+        "predicted_per_token_ms": 294.0159615384615,
+        "prompt_ms": 274378.778,
+        "prompt_n": 2035,
+        "prompt_per_second": 7.41675436720547,
+        "prompt_per_token_ms": 134.82986633906634
+      },
+      "usage": {
+        "completion_tokens": 52,
+        "prompt_tokens": 2035,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "total_tokens": 2087
+      }
+    },
+    {
+      "id": "c27-increment128",
+      "message_sha256": "0514ed609d92aba77802b08925c1ef0fa9b2a138c368413f3278ad61b2b118f7",
+      "request_elapsed_s": 37.857850442997005,
+      "stream_metrics": {
+        "done_observed": true,
+        "first_final_content_chunk_s": 37.6434017329957,
+        "first_reasoning_chunk_s": 23.402263331998256,
+        "first_text_chunk_s": 23.402263331998256,
+        "interpretation": "client receipt times of non-whitespace SSE chunks; not token timestamps",
+        "sse_event_count": 54
+      },
+      "timings": {
+        "cache_n": 2026,
+        "predicted_ms": 15047.537,
+        "predicted_n": 61,
+        "predicted_per_second": 4.053819571933932,
+        "predicted_per_token_ms": 246.6809344262295,
+        "prompt_ms": 22800.853,
+        "prompt_n": 137,
+        "prompt_per_second": 6.008547136372486,
+        "prompt_per_token_ms": 166.42958394160584
+      },
+      "usage": {
+        "completion_tokens": 61,
+        "prompt_tokens": 2163,
+        "prompt_tokens_details": {
+          "cached_tokens": 2026
+        },
+        "total_tokens": 2224
+      }
+    }
+  ],
+  "run_id": "c27-g1-prefix2048",
+  "schema": "c27-streaming-bridge-summary-v1",
+  "status": "PASS_BRIDGE"
+}
