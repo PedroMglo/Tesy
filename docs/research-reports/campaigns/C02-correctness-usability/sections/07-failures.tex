@@ -1,0 +1,19 @@
+\clearpage
+\section{Experiências falhadas e resultados não promovidos}
+\begin{tabularx}{\linewidth}{@{}p{34mm}p{25mm}Y@{}}
+\toprule \textbf{Evento} & \textbf{Estado} & \textbf{Consequência}\\ \midrule
+Target smoke02 & FAIL & Lacuna de telemetria publicada de 2,162 s; falha preservada.\\
+Referências 120B CPU alargadas & RSS guard & Interrupções em 135/141 e 2/141 linhas; sem comparação completa.\\
+Análise descritiva inicial & Corrigida & Erro de chave de eventos; original mantido e analysis-v2 autoritativa para detalhes corrigidos.\\
+Meta de 4 token/s & Não atingida & PASS do gate de timing não implica atingir todas as metas.\\
+Metas curtas 10/20 s & FAIL & A latência observada não satisfaz o objetivo de usabilidade.\\
+Dois pedidos C2-C & Cap atingido & Truncamentos de saída no cap de 512 tokens não eliminados do relatório.\\
+\bottomrule
+\end{tabularx}
+{\small Inventário de falhas materiais nas publicações selecionadas, não de todos os raws. \evidence{E-C2-FINAL} \evidence{E-C2-INDEX} \evidence{E-C2-LATENCY}}
+
+\claim{CL-C2-FAILURES}{Não foi executada uma referência full-model GPU8 com os mesmos pesos residentes no orçamento de VRAM. Source audit e faults em 20B não substituem testes target de eviction in-flight, publicação obsoleta ou upload error.}
+
+\claim{CL-C2-OPERATION}{Prompt completo de 4096 tokens, contexto de 8192 tokens, reutilização de prefixos e fiabilidade multi-cliente não foram demonstrados nesta campanha.}
+
+\claim{CL-C2-AUTHORITY}{O lock deste documento não finge ter reanalisado analysis-v2 ou todos os raws mencionados. Verifica apenas as publicações compactas adquiridas. Uma correção posterior não apaga a versão anterior.}
