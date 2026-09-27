@@ -24,13 +24,19 @@ ARMS = (("off1", "P8-preload-off", "tools/c7_profile_probe", True),
 def program_physical_consumed():
     total=0.0
     for path in Path("results").glob("c*/raw/*.json"):
-        try:
-            row=strict_json(path.read_text())
-            if isinstance(row,dict) and isinstance(row.get("run_id"),str) and \
-               isinstance(row.get("elapsed_s"),(int,float)):
-                total+=row["elapsed_s"]
-        except (OSError,ValueError):
-            pass
+        if "." in path.stem or len(path.stem) < 2 or path.stem[0] != "c" or \
+           not path.stem[1].isdigit():
+            continue
+        row=strict_json(path.read_text())
+        if not isinstance(row, dict):
+            raise GateError(f"physical-time receipt invalid: {path}")
+        preflight = row.get("preflight")
+        run_id = row.get("run_id") or (preflight.get("run_id") if isinstance(preflight,dict) else None)
+        elapsed = row.get("elapsed_s")
+        if run_id != path.stem or type(elapsed) not in (int,float) or \
+           not 0 < elapsed <= 7200:
+            raise GateError(f"physical-time receipt missing/invalid: {path}")
+        total += elapsed
     return total
 
 
