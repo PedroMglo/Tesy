@@ -543,12 +543,12 @@ def run(args, protocol, config, task_rows, model):
                         raise GateError(f"official tokenization outside frozen range for {row_id}")
                     tokenization[row_id] = {"count":len(ids),"token_ids_sha256":digest(ids)}
                     token_ids[row_id] = ids
-                validate_token_relationships(token_ids,
-                                             config.get('token_id_relationships', []))
-                preflight["prompt_tokenization"] = tokenization
                 if config.get("freeze_token_ids",False):
                     with open(paths[".tokenization.json"],"x") as out:
                         json.dump(token_ids,out,indent=2,allow_nan=False);out.write("\n")
+                validate_token_relationships(token_ids,
+                                             config.get('token_id_relationships', []))
+                preflight["prompt_tokenization"] = tokenization
             for row_id, task in task_rows:
                 if reasons or server.poll() is not None: raise GateError("server/watchdog stopped")
                 messages = task.get("messages") or [{"role":"user","content":task["prompt"]}]
