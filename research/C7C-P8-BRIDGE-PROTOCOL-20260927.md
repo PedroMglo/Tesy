@@ -1,0 +1,5 @@
+# C7c contemporaneous P8 probe bridge
+
+Objective: verify that the new parametrized P8 probe produces the same full prefill logits as the unmodified C4 probe on the same 113 frozen IDs, original backend and host. The alternative is an effective-option or build difference despite matching source-level call pattern. `results/c7c-20260927T1224Z/bridge-protocol.json` freezes both binary identities, one-call/no-teacher workload, output mask, bitwise rule, order and E18 guards before outputs. This bridge is numerical only; its elapsed values are not performance pairs.
+
+Base result: C7b P12 observer and 36 routed-layer references PASS, evidence commit `9f94775f3551e9af7fbba48b620fcd5b39f77ff1`. C4 original source hash matches the historical lab copy; the preexisting C4 binary is used read-only. Model-free checks: bridge analyzer syntax and binary/ldd inspection. Physical bridge and P8/P12 timing: NOT_RUN at freeze. If the bridge differs, record the mismatch and explain the configuration/build gap before timing; do not relabel old historical results.
