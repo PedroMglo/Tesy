@@ -1,0 +1,83 @@
+{
+  "M4_incremental_first_final_target_s": 10,
+  "M4_target_interpretation": "prospective policy from Revision 2, descriptive here; C24 alone cannot qualify M4",
+  "base_commit": "cca7d79470e63f5e32b654762a5bc7c6d985a8f9",
+  "claims_excluded": [
+    "full conversation continuity",
+    "60-minute session",
+    "20-request regime",
+    "task quality",
+    "sample distribution",
+    "p95/p99",
+    "M3 complete",
+    "M4 complete"
+  ],
+  "default_changed": false,
+  "effective_contract_sha256": "460605f7fc0feef0bf8e01df0d89dc5a712cf965d7e86983a8b92ce8aef7994c",
+  "first_final_content_policy": "record nullable; if absent within 256 tokens report NOT_REACHED_WITHIN_CAP, no invented TTFT",
+  "gates": [
+    "full SSE DONE/usage/timings/completion fence",
+    "official token relation and output reserve",
+    "first text observed",
+    "second cache_n within [common-32,common]",
+    "zero swap/OOM/guard and mapped library/model identity"
+  ],
+  "guards": {
+    "cpu_stop_c": 100,
+    "gpu_reservation_mib": 6500,
+    "gpu_stop_c": 80,
+    "gpu_total_mib": 7000,
+    "mem_available_min_bytes": 6442450944,
+    "memory_max_bytes": 19327352832,
+    "nvme_stop_c": 70,
+    "swap_max_bytes": 0
+  },
+  "idle_policy": {
+    "admission_timeout_s": 900,
+    "continuous_s": 300,
+    "cpu95_warning_cpu100_stop": true,
+    "max_start_c": [
+      50,
+      50,
+      45
+    ],
+    "sample_gap_max_s": 1
+  },
+  "metrics": [
+    "first_nonwhitespace_text_chunk_s",
+    "first_nonwhitespace_final_content_chunk_s",
+    "completion_fenced_request_s",
+    "cache_n",
+    "prompt_eval_s",
+    "decode_s",
+    "all_resource_guards"
+  ],
+  "model_input_sha256": "bacc3ec7ae3658315426bd4a93368330d29b6b6f578437d3b14566811f83913e",
+  "n_ctx": 8192,
+  "no_context_shift": true,
+  "output_cap": 256,
+  "parent_C23_decision_sha256": "bcb65d0947853aeb8be2b28b1e67f07c9cf0a971a2e7e3a19f8c7e9d216ca358",
+  "per_request_timeout_s": 900,
+  "per_run_protocol_sha256": {
+    "c24-g1-prefix2048": "857c055123f5b2748b018a66147cb2e565304f84f9fb281f949417d9bab0dfdc"
+  },
+  "profile": "P12 original backend ngl12 ub32 slots32 preload ON, 8K full-SWA, E18 zero swap; same as C23 except workload/output cap/streaming",
+  "reasoning_effort": "medium",
+  "schema": "c24-session-bridge-protocol-v1",
+  "server_timeout_s": 1800,
+  "status": "FROZEN_BEFORE_MODEL_OUTPUT",
+  "token_relation": {
+    "checked_after_official_tokenization_before_outputs": true,
+    "expected_prompt_delta_ids": 128,
+    "first_prompt_range": [
+      1980,
+      2100
+    ],
+    "min_ordered_common_prefix_ids": 1900,
+    "second_prompt_range": [
+      2108,
+      2228
+    ]
+  },
+  "workload": "synthetic growing user prompt ~2048 then exactly +128 official IDs, one fresh server process, two streaming responses"
+}
