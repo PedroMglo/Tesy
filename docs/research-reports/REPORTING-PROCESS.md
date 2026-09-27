@@ -8,4 +8,4 @@ O workflow corre em todos os PRs e nos pushes para branches de campanha. Ao fech
 
 Para o bloqueio ser efetivo no merge, o proprietário do repositório deve configurar o job `evidence` como **required status check** nas branches de campanha protegidas. Sem essa regra, a CI deteta o atraso mas o GitHub pode permitir merge apesar do FAIL. Pushes diretos para branches sem proteção também não ficam bloqueados. A revisão humana continua necessária para aprovar interpretação e layout.
 
-Estado em 27 setembro 2026: C2 está coberta; C3 tem o fecho publicado, mas ainda não tem relatório PDF revisto e registado. O gate falha deliberadamente para C3 até esse trabalho estar concluído. Uma verificação recorrente acompanha futuras atualizações e cria/atualiza trabalho documental, sem executar modelos nem fazer merge.
+Estado em 27 setembro 2026: C2 está coberta; C3 tem um draft rastreável e registado, mas ainda não tem relatório PDF revisto. O gate falha deliberadamente para C3 até esse trabalho estar concluído. Uma verificação recorrente acompanha futuras atualizações e cria/atualiza trabalho documental, sem executar modelos nem fazer merge.
