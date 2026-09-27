@@ -1,0 +1,204 @@
+{
+  "schema": "c4-p0-source-recount-v1",
+  "classification": "C3 backend counters measured; graph pair positions source/static only",
+  "constants": {
+    "experts": 128,
+    "top_k": 4,
+    "slots": 32,
+    "wave_capacity": 14
+  },
+  "cases": {
+    "latency-short": {
+      "prompt_ids": 113,
+      "c3_wave_callbacks": 1225,
+      "c3_nonempty_wave_callbacks": 465,
+      "c3_empty_wave_callbacks": 760,
+      "c3_empty_callback_fraction": 0.6204081632653061,
+      "c3_misses": 4324,
+      "c3_wave_wait_s": 27.5394,
+      "c3_pread_returned_bytes": 57212432384,
+      "ub32_static": {
+        "microbatch_tokens": [
+          32,
+          32,
+          32,
+          17
+        ],
+        "graph_waves_per_layer": 35,
+        "logical_pairs_per_layer": 452,
+        "graph_pair_positions_per_layer": 4180,
+        "parking_pair_positions_per_layer": 3728
+      },
+      "ub64_static": {
+        "microbatch_tokens": [
+          64,
+          49
+        ],
+        "graph_waves_per_layer": 20,
+        "logical_pairs_per_layer": 452,
+        "graph_pair_positions_per_layer": 4520,
+        "parking_pair_positions_per_layer": 4068
+      }
+    },
+    "latency-medium": {
+      "prompt_ids": 496,
+      "c3_wave_callbacks": 5425,
+      "c3_nonempty_wave_callbacks": 1742,
+      "c3_empty_wave_callbacks": 3683,
+      "c3_empty_callback_fraction": 0.6788940092165898,
+      "c3_misses": 12390,
+      "c3_wave_wait_s": 78.51980999999999,
+      "c3_pread_returned_bytes": 163937800192,
+      "ub32_static": {
+        "microbatch_tokens": [
+          32,
+          32,
+          32,
+          32,
+          32,
+          32,
+          32,
+          32,
+          32,
+          32,
+          32,
+          32,
+          32,
+          32,
+          32,
+          16
+        ],
+        "graph_waves_per_layer": 155,
+        "logical_pairs_per_layer": 1984,
+        "graph_pair_positions_per_layer": 19520,
+        "parking_pair_positions_per_layer": 17536
+      },
+      "ub64_static": {
+        "microbatch_tokens": [
+          64,
+          64,
+          64,
+          64,
+          64,
+          64,
+          64,
+          48
+        ],
+        "graph_waves_per_layer": 80,
+        "logical_pairs_per_layer": 1984,
+        "graph_pair_positions_per_layer": 19840,
+        "parking_pair_positions_per_layer": 17856
+      }
+    },
+    "latency-long": {
+      "prompt_ids": 1522,
+      "c3_wave_callbacks": 16660,
+      "c3_nonempty_wave_callbacks": 5092,
+      "c3_empty_wave_callbacks": 11568,
+      "c3_empty_callback_fraction": 0.6943577430972389,
+      "c3_misses": 32722,
+      "c3_wave_wait_s": 211.79044999999996,
+      "c3_pread_returned_bytes": 432961933312,
+      "ub32_static": {
+        "microbatch_tokens": [
+          32,
+          32,
+          32,
+          32,
+          32,
+          32,
+          32,
+          32,
+          32,
+          32,
+          32,
+          32,
+          32,
+          32,
+          32,
+          32,
+          32,
+          32,
+          32,
+          32,
+          32,
+          32,
+          32,
+          32,
+          32,
+          32,
+          32,
+          32,
+          32,
+          32,
+          32,
+          32,
+          32,
+          32,
+          32,
+          32,
+          32,
+          32,
+          32,
+          32,
+          32,
+          32,
+          32,
+          32,
+          32,
+          32,
+          32,
+          18
+        ],
+        "graph_waves_per_layer": 476,
+        "logical_pairs_per_layer": 6088,
+        "graph_pair_positions_per_layer": 60592,
+        "parking_pair_positions_per_layer": 54504
+      },
+      "ub64_static": {
+        "microbatch_tokens": [
+          64,
+          64,
+          64,
+          64,
+          64,
+          64,
+          64,
+          64,
+          64,
+          64,
+          64,
+          64,
+          64,
+          64,
+          64,
+          64,
+          64,
+          64,
+          64,
+          64,
+          64,
+          64,
+          64,
+          50
+        ],
+        "graph_waves_per_layer": 240,
+        "logical_pairs_per_layer": 6088,
+        "graph_pair_positions_per_layer": 60880,
+        "parking_pair_positions_per_layer": 54792
+      }
+    }
+  },
+  "limitations": [
+    "graph pair positions are not measured FLOPs, executed kernels or critical time",
+    "wave stall is overlapping accumulated backend wait",
+    "pread returned bytes are application payload, not device-exclusive NVMe traffic"
+  ],
+  "source_sha256": {
+    "results/c3-p1-prefill-all-off01.stderr": "0703082da67ff71a9cb19c2a08068dbffc351e3f2609f4d7cb5d695c91019b55",
+    "results/c3-p1-summary01.json": "b5a43c00d987a28d9e41632706a88e2819fa3733cb8dd17f1461170e70f7be3e",
+    "backends/streaming/src/llama-graph.cpp": "eab00ef87d7212708f3ac4ec4f643dfc1c640f9949633827ff5017e7c56c705c",
+    "backends/streaming/src/llama-moe-stream.cpp": "9e8e7f882d37cbb8d71af9ccd7d5ca9442a91a5be224160abd3d7534bb1e1e40"
+  },
+  "analyzer_sha256": "3d9e277a9bfd7492e49e486e1bdac946b0580456bc1ee69ca73671befbbce2ca"
+}
