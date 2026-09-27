@@ -14,3 +14,13 @@ class PreloadDecisionTests(unittest.TestCase):
                          "NO_GO_PRELOAD_SCREEN496")
         negative=[pairs[0],{"gains_pct":{"prefill_s":-1}}]
         self.assertEqual(classify("screen496",negative,med),"NO_GO_PRELOAD_SCREEN496")
+
+    def test_confirmation_excludes_a_negative_pair_and_decode_regression(self):
+        pairs=[{"gains_pct":{"work_s":14}}, {"gains_pct":{"work_s":12}},
+               {"gains_pct":{"work_s":11}}]
+        med={"prefill_s":13,"work_s":12,"tpot_aggregate_s":-4}
+        self.assertEqual(classify("confirm496",pairs,med),"CONFIRM496_GO")
+        negative=pairs[:2]+[{"gains_pct":{"work_s":-1}}]
+        self.assertEqual(classify("confirm496",negative,med),"NO_GO_PRELOAD_CONFIRM496")
+        self.assertEqual(classify("confirm496",pairs,{**med,"tpot_aggregate_s":-5.1}),
+                         "NO_GO_PRELOAD_CONFIRM496")

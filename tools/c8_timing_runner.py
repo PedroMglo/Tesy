@@ -13,7 +13,7 @@ import time
 from c2_gate import GateError, strict_json
 from c7_timing_runner import cool_start, nvme_stat
 from c8_observer_runner import model_stat, program_physical_consumed
-from c8_timing_gate import CASES, ORDER, ids_for, inspect
+from c8_timing_gate import CASES, ORDERS, ids_for, inspect
 from run_bounded import relevant_environment
 
 MODEL="/home/pmglo/models/gpt-oss-120b-gguf/gpt-oss-120b-MXFP4.gguf"
@@ -86,13 +86,14 @@ def main():
     p.add_argument("measurement_commit")
     args=p.parse_args()
     root=args.root
-    suffix="113" if args.mode=="screen113" else "496"
+    suffix={"screen113":"113","screen496":"496","confirm496":"496-confirm"}[args.mode]
     destination=root/("timing-runner-"+suffix+".json")
     if destination.exists() or (root/("timing-pairs-"+suffix+".json")).exists():
         p.error("no-replace C8 timing result exists")
     actual=subprocess.check_output(["git","rev-parse","HEAD"],text=True).strip()
     dirty=subprocess.check_output(["git","status","--porcelain"],text=True).strip()
-    protocol=strict_json((root/"timing-protocol.json").read_text())
+    protocol_path=root/("confirmation-protocol.json" if args.mode=="confirm496" else "timing-protocol.json")
+    protocol=strict_json(protocol_path.read_text())
     if actual!=args.measurement_commit or dirty or model_stat()!=protocol["model_stat"] or \
        sha("tools/c7_profile_probe")!=protocol["binary_sha256"] or \
        sha("tools/c8_timing_gate.py")!=protocol["analyzer_sha256"] or \
@@ -104,7 +105,7 @@ def main():
     report={"schema":"c8-p8-preload-timing-runner-v1","mode":args.mode,
             "measurement_commit":actual,"status":"PASS","arms":[],
             "physical_time_before_s":program_physical_consumed()}
-    for pair,order in enumerate(ORDER,1):
+    for pair,order in enumerate(ORDERS[args.mode],1):
         for arm in order:
             try:row=launch(root,args.mode,actual,arm,pair,protocol)
             except (OSError,ValueError,KeyError,TypeError,GateError,

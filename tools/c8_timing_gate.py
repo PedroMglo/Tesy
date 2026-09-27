@@ -16,9 +16,12 @@ from c7_timing_gate import (ROW_BYTES,VOCAB,gain,ids_for,positive,sha,stream_sta
 
 MODEL = "/home/pmglo/models/gpt-oss-120b-gguf/gpt-oss-120b-MXFP4.gguf"
 BINARY = "tools/c7_profile_probe"
-ORDER = (("off","on"),("on","off"))
+ORDERS = {"screen113":(("off","on"),("on","off")),
+          "screen496":(("off","on"),("on","off")),
+          "confirm496":(("off","on"),("on","off"),("off","on"))}
 CASES = {"screen113":("latency-short",113,"g3"),
-         "screen496":("latency-medium",496,"g4")}
+         "screen496":("latency-medium",496,"g4"),
+         "confirm496":("latency-medium",496,"g5")}
 
 
 def classify(mode,pairs,med):
@@ -29,6 +32,11 @@ def classify(mode,pairs,med):
         go=med["prefill_s"]>=10 and all(x["gains_pct"]["prefill_s"]>0 for x in pairs) and \
            med["work_s"]>=8 and med["tpot_aggregate_s"]>=-5
         return "SCREEN496_GO" if go else "NO_GO_PRELOAD_SCREEN496"
+    if mode=="confirm496":
+        go=med["prefill_s"]>=12 and med["work_s"]>=10 and \
+           all(x["gains_pct"]["work_s"]>0 for x in pairs) and \
+           med["tpot_aggregate_s"]>=-5
+        return "CONFIRM496_GO" if go else "NO_GO_PRELOAD_CONFIRM496"
     raise GateError("unknown C8 timing classification")
 
 
@@ -113,7 +121,8 @@ def main():
     p.add_argument("--output",type=Path,required=True)
     args=p.parse_args()
     try:
-        protocol=strict_json((args.root/"timing-protocol.json").read_text())
+        protocol_path=args.root/("confirmation-protocol.json" if args.mode=="confirm496" else "timing-protocol.json")
+        protocol=strict_json(protocol_path.read_text())
         case,count,gate=CASES[args.mode]
         prompt,continuation=ids_for(case)
         if sha("results/c3-p1-latency-ids01.tsv")!=protocol["timing_ids_sha256"] or \
@@ -122,13 +131,14 @@ def main():
            sha(args.root/"reference-complete.json")!=protocol["reference_complete_sha256"]:
             raise GateError("C8 timing inputs/binary/reference changed")
         arms=[]
-        for pair,order in enumerate(ORDER,1):
+        for pair,order in enumerate(ORDERS[args.mode],1):
             for arm in order:
                 run_id=f"c8-{gate}-pair{pair}-{arm}"
                 arms.append(inspect(args.root,run_id,arm,case,count,args.measurement_commit,
                                     prompt,continuation,protocol))
-        reference=Path(protocol["p8_control_raw"][args.mode])
-        if sha(reference)!=protocol["p8_control_sha256"][args.mode]:
+        control_key="screen496" if args.mode=="confirm496" else args.mode
+        reference=Path(protocol["p8_control_raw"][control_key])
+        if sha(reference)!=protocol["p8_control_sha256"][control_key]:
             raise GateError("contemporary P8 OFF control raw changed")
         baseline=reference.read_bytes()
         for seal,data in arms:
@@ -137,7 +147,7 @@ def main():
                            data[4*i:4*i+4]!=baseline[4*i:4*i+4])
                 raise GateError(f"FAIL_SAME_PROFILE_FIDELITY arm={seal['run_id']} row={first//VOCAB} logit={first%VOCAB}")
         pairs=[]
-        for pair,order in enumerate(ORDER,1):
+        for pair,order in enumerate(ORDERS[args.mode],1):
             off=next(seal for seal,_ in arms if seal["pair"]==pair and seal["arm"]=="off")
             on=next(seal for seal,_ in arms if seal["pair"]==pair and seal["arm"]=="on")
             pairs.append({"pair":pair,"order":list(order),
@@ -156,7 +166,7 @@ def main():
                 "gain_formula":"100*(OFF-ON)/OFF","median_of_paired_gains_pct":med,
                 "all_33_rows_same_profile_bitwise_to_contemporary_control":True,
                 "pairs":pairs,"arms":[seal for seal,_ in arms],
-                "claim_limit":"teacher-forced probe, n=2 screen pairs, no API TTFT/quality/sampling claim"}
+                "claim_limit":"teacher-forced probe, n=2 screen or n=3 confirmation pairs; no API TTFT/quality/sampling or tail-latency claim"}
     except (OSError,ValueError,KeyError,TypeError,IndexError,GateError) as exc:
         reason=f"{type(exc).__name__}: {exc}"
         result={"schema":"c8-p8-preload-paired-timing-v1","mode":args.mode,

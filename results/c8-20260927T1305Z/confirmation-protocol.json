@@ -1,0 +1,145 @@
+{
+  "alternative": "two screening pairs were affected by ordering, thermal variation or workload cache state; fresh pairs remove selection overlap",
+  "analyzer_sha256": "791ca51ed191c57af98f967651b0b373dfb037275a111aa0d1e6283cbcbedd4e",
+  "backend_commit": "1248fd8fa8cfebaece5ea992e4d951c1e18bb9d5",
+  "binary_sha256": "4c0dc056cec3edcf5b05cd6b34208a9fe9a18bb92cf74d5e33f2f2553ccc5a43",
+  "binary_source_sha256": "cdb95c9df8dcc2b6749d787c80d419e37bfcc6eeacfbbf246cfc26e9627f070c",
+  "boundary_summary_sha256": "cdecc7316aec272166baaec54101e8b0fdec50cc6e7569c4c8f1891818d26e8d",
+  "capture_seal_sha256": "b9485120347d186d7423a0f10ddf93242d9c95d10b951ab36966298fa6756cdd",
+  "claim_limit": "n=3 confirms this 496+32 teacher-forced scope only, no p95/quality/API TTFT claim",
+  "condition": "AC online; fresh expert pools; page cache uncontrolled; O_DIRECT observed; no concurrent own full model; prestart CPU<=75/GPU<=60/NVMe<=60 C; fixed 10s settle",
+  "created_utc": "2026-09-27T13:45:46.080629+00:00",
+  "effective_options": {
+    "flash_attention": "enabled",
+    "io_threads": 4,
+    "kv_clear_before_case": true,
+    "kv_k": "f16",
+    "kv_unified": false,
+    "kv_v": "f16",
+    "moe_stream": true,
+    "moe_stream_direct": true,
+    "n_batch": 256,
+    "n_ctx": 4096,
+    "n_seq_max": 1,
+    "n_threads": 8,
+    "n_threads_batch": 8,
+    "n_ubatch": 32,
+    "ngl": 8,
+    "no_prefix_reuse": true,
+    "offload_kqv": true,
+    "op_offload": false,
+    "placement_expected": "CPU0-28,CUDA29-35,CUDA output",
+    "preload_off_env": {
+      "LLAMA_MOE_STREAM_NO_PRELOAD": "1"
+    },
+    "preload_on_env": {},
+    "slots": 32,
+    "swa_full": true,
+    "use_direct_io": true,
+    "use_extra_bufts": false,
+    "use_mmap": false
+  },
+  "go": {
+    "all_33_full_logits_bitwise_to_contemporary_p8_off": true,
+    "all_work_pairs_positive": true,
+    "median_prefill_gain_pct_min": 12,
+    "median_tpot_gain_pct_min": -5,
+    "median_work_gain_pct_min": 10,
+    "resource_telemetry_valid": true
+  },
+  "hypothesis": "native next-wave preload produces a reproducible medium prefill/work improvement under E18 with exact same-profile logits",
+  "input": {
+    "cache_condition": "fresh expert pools, page cache uncontrolled, O_DIRECT observed",
+    "case": "latency-medium",
+    "external_prefill_chunks": "256,240 with ubatch32 internal",
+    "output_mask": "final prompt token and every forced step, full 201088 F32 logits",
+    "prompt_ids": 496,
+    "teacher_forced_steps": 32
+  },
+  "mapped_backend_libraries_sha256": {
+    "build-gcc15/bin/libggml-base.so.0.15.3": "4c322a199c86b801389ed4bda94074083624e0a6460e25681be4b626cc72873d",
+    "build-gcc15/bin/libggml-cpu.so.0.15.3": "b57845ea9f9ce9455d78e6fe290c09b50b9414db9280409b9e5cc143d1b13b61",
+    "build-gcc15/bin/libggml-cuda.so.0.15.3": "5b363c951b87164e94d5b6af35a82c875634aadcb29c9278245cd7516f44cc7e",
+    "build-gcc15/bin/libggml.so.0.15.3": "97a33247336b56aaabe1a8bee4da6cd05e73e8b4327afd2cef67c5526df8ab71",
+    "build-gcc15/bin/libllama.so.0.0.1": "31b56002c36c159f71eba54c0d8e625ae140d34b2b1a503f3dc4db47237719cc"
+  },
+  "metric": {
+    "aggregate": "median of three paired gains, never ratio of medians",
+    "gain_formula": "100*(OFF-ON)/OFF for each pair and metric; positive denominator",
+    "primary": "completed prefill and T_work=prefill+32 teacher-forced step completions",
+    "secondary": "TPOT aggregate/per-step, cold end-to-end load+init+work"
+  },
+  "model_sha256": "582bd40f6886200101f4c4ed9f25f3fe80cc14c86e9e2b37746cd8904a0c622d",
+  "model_stat": {
+    "ctime_ns": 1790389637807910988,
+    "dev": 53,
+    "inode": 14833675,
+    "mtime_ns": 1790389637795911032,
+    "size_bytes": 63387346208
+  },
+  "new_pairs": 3,
+  "no_opportunistic_repetition": true,
+  "numeric_ids_sha256": "8fb3aff447febaeaa5a8bdd0c485fd20d51d39fb6ac3e6ba4849eb4a664dbc23",
+  "order": [
+    [
+      "off",
+      "on"
+    ],
+    [
+      "on",
+      "off"
+    ],
+    [
+      "off",
+      "on"
+    ]
+  ],
+  "p8_control_raw": {
+    "screen113": "results/c7c-20260927T1224Z/raw/c7c-g3-pair1-p8.f32",
+    "screen496": "results/c7c-20260927T1224Z/raw/c7c-g4-pair1-p8.f32"
+  },
+  "p8_control_sha256": {
+    "screen113": "2a86d0568fcc220f0dd0c24872a4a4dbc272857bbc0685e3df906537372210e7",
+    "screen496": "b37439550a40dbe65f07f843eec1c00cdd8a9e8c5470aa91ca46d72e7e13e06d"
+  },
+  "parent_timing_protocol_sha256": "acee43d6fbae35419ad0ba9648c78033325dd659f6373c5d4c064fc3564b18cc",
+  "post_confirmation": "Only on GO: separately freeze 1522 check and serving/session/quality bridge; no automatic default switch",
+  "publication": "local only; default_changed=false",
+  "reference_complete_sha256": "6407e2f8cf20384b8ac88b7be33601d12d0ba38479c402359a07f7106801e8d9",
+  "resource": {
+    "cool_start_c": {
+      "cpu": 75,
+      "gpu": 60,
+      "nvme": 60
+    },
+    "long_timeout_s": 1200,
+    "max_cgroup_gib": 16.5,
+    "max_gpu_total_mib": 6500,
+    "max_rss_gib": 16,
+    "medium_timeout_s": 600,
+    "min_mem_available_gib": 6,
+    "numeric_timeout_s": 300,
+    "reference_layer_timeout_s": 180,
+    "scope_memory_max_bytes": 19327352832,
+    "scope_swap_max_bytes": 0,
+    "short_timeout_s": 300,
+    "temperature_c": {
+      "cpu": 95,
+      "gpu": 80,
+      "nvme": 70
+    }
+  },
+  "runner_sha256": "e115f98ef11ca32ee0326a99b81477ec3caaaebef51f8d559d0e2d552c4ea780",
+  "schema": "c8-p8-preload-confirm496-protocol-v1",
+  "screen496_result_sha256": "ba81b0176f90e02641897bbbb0c5a07b8364843746108bdbfb41e28f6a2f780f",
+  "screen496_status": "SCREEN496_GO",
+  "screen_pairs_excluded": true,
+  "stop": "first same-profile mismatch, missing raw/hash/mapping/telemetry, nonfinite, OOM, retry, swap or guard; preserve raw, no automatic model retry",
+  "stop_after_three_pairs": true,
+  "timing_ids_sha256": "368c48ac1e93d68ec1746bb3d5f7e63118f35d7903c58f88dbe5c983b69190fb",
+  "variable": {
+    "OFF": "LLAMA_MOE_STREAM_NO_PRELOAD=1",
+    "ON": "LLAMA_MOE_STREAM_NO_PRELOAD absent",
+    "other_changes": "none"
+  }
+}
