@@ -1,0 +1,155 @@
+{
+  "actual_common_prefix_ids": 510,
+  "arm": "off",
+  "completed_utc": "2026-09-27T19:08:31.933335+00:00",
+  "cpu_diagnostics": {
+    "clock_source": "cpuinfo_avg_freq per cpufreq policy",
+    "cpu_effective_clock_max_mhz": 3307.058,
+    "cpu_effective_clock_median_mhz": 2998.965,
+    "cpu_effective_clock_min_mhz": 605.264,
+    "cpu_max_c": 95.125,
+    "cpu_package_power_max_w": 69.21893829460276,
+    "cpu_package_power_median_w": 62.470131363159936,
+    "cpu_policy_count": 24,
+    "cpu_warning_observed": true,
+    "cpu_warning_sample_count": 24,
+    "explicit_thermal_flag_source": "ACPI Processor cooling cur_state; AMD hardware flag unavailable",
+    "gpu_power_max_w": 18.5,
+    "power_source": "package-0 RAPL energy counter; interval power estimate",
+    "processor_cooling_max_state": 0,
+    "sample_count": 168
+  },
+  "elapsed_s": 179.40116601499903,
+  "idle": {
+    "baseline": null,
+    "cadence_breaks": [],
+    "duration_s": 300.0331503810012,
+    "end": {
+      "cpu_c": 45.75,
+      "cpu_fan_rpm": 0.0,
+      "elapsed_s": 300.0331503810012,
+      "gpu": {
+        "driver": "615.71.09",
+        "temperature_c": 43.0,
+        "used_mib": 12.0
+      },
+      "gpu_fan_rpm": 0.0,
+      "mem_available_bytes": 27121528832,
+      "nvme_c": 33.85,
+      "run_id": "c20-p1-off",
+      "utc": "2026-09-27T19:05:32.360847+00:00"
+    },
+    "last60_trend_c": {
+      "cpu_c": 0.4375,
+      "gpu_c": 1.0,
+      "nvme_c": 0.10000000000000142
+    },
+    "max_gap_overall_s": 0.7887171170004876,
+    "max_gap_qualifying_s": 0.7887171170004876,
+    "qualifying_duration_s": 300.0038446690014,
+    "qualifying_start_s": 0.02930571199976839,
+    "sample_count": 601,
+    "series_sha256": "1c2da57b97774719e2581b189155a09b5f0bf130b1d1aa580bacdb7c2814f037",
+    "start": {
+      "cpu_c": 43.0,
+      "cpu_fan_rpm": 0.0,
+      "elapsed_s": 0.02930571199976839,
+      "gpu": {
+        "driver": "615.71.09",
+        "temperature_c": 39.0,
+        "used_mib": 12.0
+      },
+      "gpu_fan_rpm": 0.0,
+      "mem_available_bytes": 27265073152,
+      "nvme_c": 32.85,
+      "run_id": "c20-p1-off",
+      "utc": "2026-09-27T19:00:32.357004+00:00"
+    },
+    "status": "PASS"
+  },
+  "maxima": {
+    "cgroup_peak_bytes": 13071290368,
+    "cpu_c": 95.125,
+    "gpu_c": 60.0,
+    "gpu_total_mib": 5752.0,
+    "nvme_c": 46.85,
+    "rss_bytes": 13291450368,
+    "swap_bytes": 0
+  },
+  "measurement_commit": "dae7261be9b7f66fbfd0485e9ea6e130d6745f05",
+  "order": 1,
+  "phase": "P1",
+  "protocol_sha256": "7b0facf689a702afe52c7b84caa79d9560a9836425d93fc7d216796e87d771c7",
+  "raw_sha256": "4b64df9e721dfd7e20866656d3ac19163797a87bf9ed79072b596ba2f4db384a",
+  "reason": null,
+  "results": [
+    {
+      "id": "c13-prefix512",
+      "message_sha256": "1b4631ffc9fd59b6b233f7e3102af60328dd5bafb0e6b0c4904b147cba7f740a",
+      "timings": {
+        "cache_n": 0,
+        "predicted_ms": 851.036,
+        "predicted_n": 4,
+        "predicted_per_second": 4.700153695025827,
+        "predicted_per_token_ms": 212.759,
+        "prompt_ms": 79407.6,
+        "prompt_n": 513,
+        "prompt_per_second": 6.4603388088797535,
+        "prompt_per_token_ms": 154.7906432748538
+      },
+      "usage": {
+        "completion_tokens": 4,
+        "prompt_tokens": 513,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "total_tokens": 517
+      }
+    },
+    {
+      "id": "c13-increment128",
+      "message_sha256": "1b4631ffc9fd59b6b233f7e3102af60328dd5bafb0e6b0c4904b147cba7f740a",
+      "timings": {
+        "cache_n": 0,
+        "predicted_ms": 458.933,
+        "predicted_n": 4,
+        "predicted_per_second": 8.715869200950902,
+        "predicted_per_token_ms": 114.73325,
+        "prompt_ms": 93466.614,
+        "prompt_n": 641,
+        "prompt_per_second": 6.858063778794854,
+        "prompt_per_token_ms": 145.8137503900156
+      },
+      "usage": {
+        "completion_tokens": 4,
+        "prompt_tokens": 641,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "total_tokens": 645
+      }
+    }
+  ],
+  "run_id": "c20-p1-off",
+  "schema": "c20-p12-prefix-paired-screen-v1",
+  "server_gate": {
+    "active_s": 174.19320144499943,
+    "cgroup_peak_bytes": 13071290368,
+    "completed_requests": 2,
+    "decode_s": 1.30997,
+    "decode_tok_s": 6.107010084200401,
+    "decode_tokens": 8,
+    "last_half_decode_tok_s": 8.715926176105288,
+    "run_id": "c20-p1-off",
+    "sample_count": 168,
+    "schema_version": "c2-gate-result-v1",
+    "status": "PASS"
+  },
+  "server_returncode": 0,
+  "status": "PASS_ARM",
+  "stop_reasons": [],
+  "token_id_sha256": {
+    "c13-increment128": "ec5e7502f9be6737328f72d656a93ff1b52aea177b454b82cc1f4265877ff456",
+    "c13-prefix512": "e19cb14e4c38e8f1b153a58c1d3450ded2b402d82f5798961a1246285099d316"
+  }
+}
