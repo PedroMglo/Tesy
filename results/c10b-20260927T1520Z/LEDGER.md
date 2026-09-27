@@ -3,3 +3,4 @@
 - New identity after C10 two no-model start-precondition blocks. Same ub64 server profile and E18; CPU start threshold is 55 C to tolerate observed idle transients, absolute CPU guard 95 C unchanged. C9 513-ID thermal FAIL remains preserved.
 - Freeze init-only→minimum forward→513-ID diagnostic, each with clean measurement commit and no automatic retry. Numeric/reference and quality claims NOT_RUN.
 - `c10b-g1-init`, measurement `8093999a871bf8c210298b79f1bb32fc0ff979c0`: PASS init-only, ready/elapsed 4.602 s; peak RSS 4.816 GB, cgroup 5.321 GB, GPU total 3884 MiB, CPU 53.375 C, zero swap. Forward workspace remains unmeasured.
+- `c10b-g2-forward`, measurement `5746a78212223cc01519b5650bb2a70a8b3619dd`: 78 official prompt IDs + 4 output tokens completed, cache_n=0, no guard failure. Backend prefill 24.188 s, decode 1.063 s; peak RSS 15.136 GB, cgroup 14.935 GB, GPU 3904 MiB, CPU 85.25 C, zero swap. This is a resource gate, not numeric or timing promotion.
