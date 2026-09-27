@@ -24,6 +24,12 @@ def sha256(path):
     return h.hexdigest()
 
 
+def file_identity(path):
+    st = Path(path).stat()
+    return {"dev": st.st_dev, "inode": st.st_ino, "size_bytes": st.st_size,
+            "mtime_ns": st.st_mtime_ns, "ctime_ns": st.st_ctime_ns}
+
+
 def backend_library_hashes(binary, backend_dir):
     result = {}
     output = subprocess.check_output(["ldd", binary], text=True, timeout=15)
@@ -51,7 +57,7 @@ def process_identity(pid):
             "cgroup_path": cgroup, "cgroup_inode": inode}
 
 
-def mapped_backend_libraries(pid, backend_dir):
+def mapped_backend_libraries(pid, backend_dir, hash_cache=None):
     """Read actual mappings; include unexpected llama/ggml libraries outside the backend."""
     root = backend_dir.resolve()
     found = {}
@@ -60,11 +66,16 @@ def mapped_backend_libraries(pid, backend_dir):
         if not path.startswith("/") or " (deleted)" in line:
             continue
         candidate = Path(path).resolve()
-        if not candidate.is_file() or not any(
-                tag in candidate.name for tag in ("libllama.so", "libggml.so", "libggml-")):
+        if not candidate.is_file() or ".so" not in candidate.name or not (
+                candidate.is_relative_to(root) or candidate.name.startswith(("libllama", "libggml"))):
             continue
         key = str(candidate.relative_to(root)) if candidate.is_relative_to(root) else str(candidate)
-        found[key] = sha256(candidate)
+        identity = file_identity(candidate)
+        cached = hash_cache.get(key) if hash_cache is not None else None
+        value = cached[1] if cached and cached[0] == identity else sha256(candidate)
+        if hash_cache is not None:
+            hash_cache[key] = (identity, value)
+        found[key] = value
     return found
 
 
@@ -198,6 +209,8 @@ def main():
     p.add_argument("--run-id", required=True)
     p.add_argument("--model-id", required=True)
     p.add_argument("--backend", choices=["stock", "streaming", "streaming-reference", "streaming-reference-c2", "streaming-c6-attn-compat"], required=True)
+    p.add_argument("--backend-root", type=Path, help="explicit pinned backend checkout for isolated worktree runs")
+    p.add_argument("--output-root", type=Path, help="no-replace run artefact directory")
     p.add_argument("--variant", required=True)
     p.add_argument("--workload", required=True)
     p.add_argument("--cache-condition", required=True)
@@ -213,6 +226,7 @@ def main():
                    help="diagnostic reference only; OOM and memory.peak remain stop conditions")
     p.add_argument("--env", action="append", default=[], help="explicit KEY=VALUE for the child")
     p.add_argument("--stdin-file", help="input file for a bounded multi-turn CLI run")
+    p.add_argument("--ready-marker", help="stdout marker emitted after model/context load")
     p.add_argument("command", nargs=argparse.REMAINDER)
     a = p.parse_args()
     cmd = a.command[1:] if a.command and a.command[0] == "--" else a.command
@@ -228,7 +242,7 @@ def main():
             p.error("model ID/path missing from lock")
         artifact_identity = {"revision": matches[0].get("revision"),
                              "sha256_previously_verified": matches[0].get("sha256_verified"),
-                             "size_bytes_at_launch": Path(model_path).stat().st_size}
+                             "stat_at_launch": file_identity(model_path)}
     if a.stdin_file and not Path(a.stdin_file).is_file():
         p.error("stdin-file must exist")
     if not a.run_id.replace("-", "").replace("_", "").isalnum():
@@ -244,14 +258,14 @@ def main():
         explicit_env[key] = value
         child_env[key] = value
 
-    out = ROOT / "results"
-    out.mkdir(exist_ok=True)
+    out = a.output_root if a.output_root else ROOT / "results"
+    out.mkdir(parents=True, exist_ok=True)
     stem = out / a.run_id
     for suffix in (".json", ".json.tmp", ".stdout", ".stderr", ".samples.jsonl"):
         if Path(str(stem) + suffix).exists():
             p.error(f"run-id already exists: {a.run_id}")
 
-    backend_dir = ROOT / "backends" / a.backend
+    backend_dir = (a.backend_root if a.backend_root else ROOT / "backends" / a.backend).resolve()
     revision = subprocess.check_output(["git", "-C", str(backend_dir), "rev-parse", "HEAD"], text=True).strip()
     manifest = {
         "run_id": a.run_id,
@@ -260,6 +274,7 @@ def main():
         "model_path": model_path,
         "artifact_identity": artifact_identity,
         "backend": a.backend,
+        "backend_root": str(backend_dir),
         "backend_sha": revision,
         "binary_sha256": sha256(cmd[0]),
         "backend_libraries_sha256": backend_library_hashes(cmd[0], backend_dir),
@@ -273,6 +288,7 @@ def main():
         "relevant_environment": relevant_environment(child_env),
         "stdin_file": a.stdin_file,
         "stdin_sha256": sha256(a.stdin_file) if a.stdin_file else None,
+        "ready_marker": a.ready_marker,
         "limits": {"timeout_s": a.timeout_s, "max_rss_gib": a.max_rss_gib,
                    "min_available_gib": a.min_available_gib, "max_gpu_mib": a.max_gpu_mib,
                    "max_cpu_c": a.max_cpu_c, "max_gpu_c": a.max_gpu_c,
@@ -311,8 +327,11 @@ def main():
                   "direct_model_fds": 0, "buffered_model_fds": 0}
         last = {}
         mapped = None
+        mapped_hash_cache = {}
+        ready_elapsed_s = None
         try:
             while process.poll() is None:
+                collection_start = time.monotonic()
                 status = proc_status(process.pid)
                 # /proc/status can disappear between the loop's poll and this
                 # read. Never publish a partial process sample or interpret an
@@ -339,9 +358,14 @@ def main():
                         reason = "PROCESS_IDENTITY_CHANGED"
                         stop_own_group(process)
                         break
-                    candidate_mapped = mapped_backend_libraries(process.pid, backend_dir)
-                    if candidate_mapped:
-                        mapped = candidate_mapped
+                    if ready_elapsed_s is None and a.ready_marker and \
+                       a.ready_marker in Path(str(stem)+".stdout").read_text(errors="replace"):
+                        ready_elapsed_s = round(time.monotonic()-t0,3)
+                    if ready_elapsed_s is not None or not a.ready_marker:
+                        candidate_mapped = mapped_backend_libraries(process.pid, backend_dir,
+                                                                     mapped_hash_cache)
+                        if candidate_mapped:
+                            mapped = candidate_mapped
                 except (OSError, ValueError, StopIteration):
                     if process.poll() is None:
                         reason = "PROCESS_IDENTITY_OR_MAPS_MISSING"
@@ -350,7 +374,7 @@ def main():
                 sample = {"elapsed_s": round(time.monotonic() - t0, 3), "pid": process.pid, "proc": status,
                           "process_identity": identity,
                           "mem_available_bytes": avail, "gpu": gpu, "thermal": thermal, "cgroup": cg,
-                          "model_fds": fds}
+                          "model_fds": fds,"collection_s":time.monotonic()-collection_start}
                 samples.write(json.dumps(sample) + "\n")
                 samples.flush()
                 last = sample
@@ -380,8 +404,15 @@ def main():
                     reason = "CGROUP_SWAP_USED"
                 elif cg and manifest["cgroup_start"] and cg["events"].get("oom", 0) > manifest["cgroup_start"]["events"].get("oom", 0):
                     reason = "CGROUP_OOM"
+                elif cg and manifest["cgroup_start"] and any(
+                        cg[group].get(event, 0) > manifest["cgroup_start"][group].get(event, 0)
+                        for group in ("events", "events_local") for event in ("oom", "oom_kill")):
+                    reason = "CGROUP_OOM_OR_KILL"
                 elif cg and manifest["cgroup_start"] and not a.allow_cgroup_max_reclaim and cg["events"].get("max", 0) > manifest["cgroup_start"]["events"].get("max", 0):
                     reason = "CGROUP_LIMIT_HIT"
+                elif cg and manifest["cgroup_start"] and not a.allow_cgroup_max_reclaim and \
+                     cg["events_local"].get("max", 0) > manifest["cgroup_start"]["events_local"].get("max", 0):
+                    reason = "CGROUP_LOCAL_LIMIT_HIT"
                 elif cg and cg["memory_peak"] is not None and cg["memory_max"] is not None and cg["memory_peak"] > cg["memory_max"]:
                     reason = "CGROUP_PEAK_EXCEEDED"
                 elif status["VmRSS"] > a.max_rss_gib * 2**30:
@@ -414,11 +445,21 @@ def main():
                      "stdout_path": str(stem) + ".stdout", "stderr_path": str(stem) + ".stderr",
                      "cgroup_end": cgroup_state()})
     manifest["mapped_backend_libraries_sha256"] = mapped
+    manifest["ready_elapsed_s"] = ready_elapsed_s
     expected_libs = manifest["backend_libraries_sha256"]
     manifest["mapped_libraries_match_ldd"] = mapped_libraries_match(expected_libs, mapped)
     if a.require_telemetry and not manifest["mapped_libraries_match_ldd"] and reason is None:
         reason = "MAPPED_LIBRARY_IDENTITY_MISMATCH"
         manifest["stop_reason"] = reason
+    if a.ready_marker and ready_elapsed_s is None and reason is None:
+        reason = "READY_MARKER_MISSING"
+        manifest["stop_reason"] = reason
+    if model_path:
+        manifest["artifact_identity"]["stat_at_end"] = file_identity(model_path)
+        if manifest["artifact_identity"]["stat_at_launch"] != \
+                manifest["artifact_identity"]["stat_at_end"] and reason is None:
+            reason = "MODEL_FILE_IDENTITY_CHANGED"
+            manifest["stop_reason"] = reason
     manifest["output_sha256"] = {suffix: sha256(str(stem) + suffix)
                                  for suffix in (".stdout", ".stderr", ".samples.jsonl")}
     temporary = Path(str(stem) + ".json.tmp")
