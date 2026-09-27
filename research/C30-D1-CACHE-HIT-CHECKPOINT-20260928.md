@@ -1,0 +1,6 @@
+# C30 d1 cache-path checkpoint
+
+- Objective: observe actual server cache path under source logging after C29's two-turn miss. Measurement commit `09b3a8ef7c4f8ce0d493d574f18ec68f44bac1f5`; original backend/binary/model and P12/E18 profile retained, with only allowlisted `LLAMA_SERVER_SLOTS_DEBUG=1` and verbosity 4 added. C28/C29 FAILs preserved.
+- Diagnostic: d1's first assistant reply matched frozen text; server old/new token boundary was printed at 2036, with expected analysis/final divergence. The second request reported cache_n2036 and prompt_n143 for 2179 IDs. No trace marker of SWA/checkpoint fallback appeared. Raw stderr SHA is in `results/c30-cache-diagnostic-20260927T2314Z/c30-d1-cache-path.json`; diagnostic times are excluded from speed claims.
+- Resources: idle PASS 300.038 s; CPU/GPU/NVMe maxima95.125/64/54.85 C, GPU total5752 MiB, swap/OOM zero. One complete server run with no guard violation.
+- Alternatives: d1 illustrates the hit path, not C29's miss. The frozen protocol allows one more fresh process only when d1 passes. d2 is the next test to observe either an early actual token LCP mismatch or SWA/checkpoint invalidation; if it also hits, conclude INCOMPLETE_DIAGNOSTIC and do not continue repeating. M3 partial, M4 NOT_RUN, C15 source-only, default unchanged.
