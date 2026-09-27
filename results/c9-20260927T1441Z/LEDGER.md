@@ -11,3 +11,5 @@
 - Administrative `c9-g2-preflight-rejected01`: wrong commit SHA argument rejected before server start; raw receipt preserved and 1 s conservatively charged. No model run.
 - G2 measurement commit `62c7bce79a6c8bf9e443cd4453aa1af1f99cbfd7`, run `c9-g2-forward`: 78 prompt IDs and four output tokens, zero cache reuse; backend prefill 25.634 s, decode 1.039 s, API wall 26.677 s. Normalized C2 gate, mapped libraries, raw hashes, 29 samples, exits and resource guards PASS. Sampled RSS 15,126,409,216 B, cgroup 14,912,307,200 B, GPU total 3896 MiB, swap zero.
 - Decision: MINIMUM_FORWARD_ADMITTED only. Cold512, exact-prefix, 7936+256 boundary, 12-task utility and >=60 min/20 requests NOT_RUN. Next: frozen cold512/prefix screen; usual service/default unchanged.
+
+- G3 prefix mechanism freeze: protocol01/input01 abandoned before any model run after a model-free tokenizer estimate indicated the 490-repeat prompt likely exceeded the precommitted 480–540 token range. Input/protocol02 use 445 repeats; the embedded tokenizer and actual IDs remain the gate. One fresh-process ON/OFF diagnostic pair is authorized by the frozen protocol; no functional/long-prefix claim.
