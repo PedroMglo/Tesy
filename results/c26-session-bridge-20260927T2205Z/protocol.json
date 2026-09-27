@@ -1,0 +1,21 @@
+{
+  "schema": "c26-session-bridge-protocol-v1",
+  "status": "FROZEN_BEFORE_MODEL_OUTPUT",
+  "objective": "bounded 8K P12 streaming bridge with prospective 127-word insertion that must be exactly +128 official IDs",
+  "parent_c25c_observation": "128 inserted words gave +129 official IDs and 2026 ordered common IDs",
+  "fixture_change": "127 inserted words; a new profile/workload identity, not a C24 retry",
+  "profile": "original backend, P12 ngl12 ub32 slots32 preload ON, 8K full-SWA E18 zero swap",
+  "reasoning_effort": "medium",
+  "output_cap": 256,
+  "first_prompt_expected_ids": 2035,
+  "second_prompt_expected_delta_ids": 128,
+  "minimum_ordered_common_prefix_ids": 1900,
+  "official_tokenization_before_requests": true,
+  "requests": 2,
+  "first_final_content_timestamp_nullable": true,
+  "claim_limit": "synthetic growing user prompt; not true conversation, sustained regime, task quality or full M3/M4",
+  "thermal_admission": "300 continuous seconds, start <=50/50/45 C; CPU100 and other guards unchanged",
+  "server_timeout_s": 1800,
+  "per_request_timeout_s": 900,
+  "default_changed": false
+}
