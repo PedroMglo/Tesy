@@ -1,0 +1,181 @@
+{
+  "schema": "c4-p1-ubatch-capture-v1",
+  "status": "NON_BITWISE_REQUIRES_SEPARATE_QUALIFICATION",
+  "scope": "same captured token positions only; prefill0/128 external-batch endpoints differ",
+  "direct_slice_checks": [
+    480,
+    570
+  ],
+  "routed_id_mismatches": [
+    {
+      "phase": "prefill0",
+      "layer": 1,
+      "first_pair": 33
+    },
+    {
+      "phase": "prefill0",
+      "layer": 2,
+      "first_pair": 18
+    },
+    {
+      "phase": "prefill0",
+      "layer": 3,
+      "first_pair": 7
+    },
+    {
+      "phase": "prefill0",
+      "layer": 4,
+      "first_pair": 36
+    },
+    {
+      "phase": "prefill0",
+      "layer": 5,
+      "first_pair": 6
+    },
+    {
+      "phase": "prefill0",
+      "layer": 6,
+      "first_pair": 14
+    },
+    {
+      "phase": "prefill0",
+      "layer": 7,
+      "first_pair": 11
+    },
+    {
+      "phase": "prefill0",
+      "layer": 8,
+      "first_pair": 12
+    },
+    {
+      "phase": "prefill0",
+      "layer": 9,
+      "first_pair": 10
+    },
+    {
+      "phase": "prefill0",
+      "layer": 10,
+      "first_pair": 14
+    },
+    {
+      "phase": "prefill0",
+      "layer": 11,
+      "first_pair": 10
+    },
+    {
+      "phase": "prefill0",
+      "layer": 12,
+      "first_pair": 19
+    }
+  ],
+  "route_weight_mismatches": [
+    {
+      "phase": "prefill0",
+      "layer": 0,
+      "first_pair": 0
+    },
+    {
+      "phase": "prefill0",
+      "layer": 1,
+      "first_pair": 0
+    },
+    {
+      "phase": "prefill0",
+      "layer": 2,
+      "first_pair": 0
+    },
+    {
+      "phase": "prefill0",
+      "layer": 3,
+      "first_pair": 0
+    },
+    {
+      "phase": "prefill0",
+      "layer": 4,
+      "first_pair": 0
+    },
+    {
+      "phase": "prefill0",
+      "layer": 5,
+      "first_pair": 0
+    },
+    {
+      "phase": "prefill0",
+      "layer": 6,
+      "first_pair": 0
+    },
+    {
+      "phase": "prefill0",
+      "layer": 7,
+      "first_pair": 0
+    },
+    {
+      "phase": "prefill0",
+      "layer": 8,
+      "first_pair": 0
+    },
+    {
+      "phase": "prefill0",
+      "layer": 9,
+      "first_pair": 0
+    },
+    {
+      "phase": "prefill0",
+      "layer": 10,
+      "first_pair": 0
+    },
+    {
+      "phase": "prefill0",
+      "layer": 11,
+      "first_pair": 0
+    }
+  ],
+  "routed_id_mismatch_count": 135,
+  "route_weight_mismatch_count": 247,
+  "common_logits": [
+    {
+      "phase": "prefill_final",
+      "bitwise_equal": false,
+      "ub32_sha256": "8fb5854c54cf989ea06520f85f1678f759577e38f09c510bbef0905e0a9c4e44",
+      "ub64_sha256": "ca9a13e6df529b11661b0982e97bf042813d4b74e2fd290797bad0fd3f6d55c7"
+    },
+    {
+      "phase": "decode0",
+      "bitwise_equal": false,
+      "ub32_sha256": "7f98e6b1156de938da8f97650fd8a152ddd36a34744f05f9cb839c4987dc011b",
+      "ub64_sha256": "61850b726b0c37a4041d522c32b1f583cf34b8547ad6f7d56011e35424ed5442"
+    },
+    {
+      "phase": "decode1",
+      "bitwise_equal": false,
+      "ub32_sha256": "f7eb43ad862a722051b105276f75aa5eb7389722c7972a910ff7769807b4384e",
+      "ub64_sha256": "188319d49fe18197eefcd89c36d24acb209573db5fb6c8eee57e8420eb0447eb"
+    },
+    {
+      "phase": "decode7",
+      "bitwise_equal": false,
+      "ub32_sha256": "99b5628c35dd442c4327938a8ecb78a1874ef71b80adbf36ef4d55eb0b557b8c",
+      "ub64_sha256": "ed5a8ab90912c7aed0ca599d57247f2dcb409e603589ca0cf58f59f3ab00d5ca"
+    },
+    {
+      "phase": "decode31",
+      "bitwise_equal": false,
+      "ub32_sha256": "149f372f04c0d7009d52668ea25685060d007d4e111ab1f53bb852b2c907a644",
+      "ub64_sha256": "eedadc8839b97e1f08b428661edf8a20a462d54602029baf19eee074b46c9195"
+    }
+  ],
+  "first_different_captured_stage": {
+    "phase": "prefill_final",
+    "layer": 1,
+    "stage": "attn_post_norm"
+  },
+  "source_sha256": {
+    "results/c4-p1-bridge-ub32-spec01.json": "2f649d91cf99869d25635367262942a95e778827c53cc3179aefa8c50b335924",
+    "results/c4-p1-capture-ub64-spec01.json": "af9f0668e5ed208035757c2e59191d04889e28ce528d6ab5115ce35c81ca35d8",
+    "results/c4-p1-bridge-ub32-spec01.raw/index.tsv": "4054d80fd7a46635c90e4bc6d22f1290e57f95bf37e9381931021ed2b1789704",
+    "results/c4-p1-capture-ub64-spec01.raw/index.tsv": "dbfcb88b6b47034cb5c0e1081e3e36a5f5cfbbfc9954e6d22dfed45489552263",
+    "results/c4-p1-bridge-ub32-spec01.raw/byte_checks.tsv": "d365ad7d8df253fcd033c43a11315850f68d5550b581330a2d9db537c8e54d48",
+    "results/c4-p1-capture-ub64-spec01.raw/byte_checks.tsv": "9deefeee89b58f0c5143947f666b311c5272c3462e22871c09f3780fd60db1c9"
+  },
+  "analyzer_sha256": "fab1a20be446292568a2dfe299991aaccb6a7d3308ff4175a4342404fdc22654"
+}
