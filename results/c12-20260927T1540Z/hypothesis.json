@@ -1,0 +1,10 @@
+{
+  "alternative": "slots24 increases worst-case waves per full ub32 layer from 10 to13 and may increase misses, stalls, CPU heat or change numeric reduction order",
+  "causal_interaction": "P16 with slots32 is predicted above 6500 MiB, so ngl16 and slots24 are a coupled capacity profile; no pure placement attribution against C11 P12/slots32",
+  "expected_benefit": "HYPOTHESIS: offloading CPU layers21-24 can reduce CPU heat and decode/prefill critical work enough to outweigh additional waves",
+  "numeric_contract": "new profile, requires observer OFF/ON/full logits and same-device canonical layer references before timing/quality promotion",
+  "objective": "find an 8K server profile with thermal margin by placing 4 more layers on GPU while keeping E18 GPU below reservation",
+  "schema": "c12-p16s24-hypothesis-v1",
+  "screen": "resource admission only: init, 78-ID minimum forward, then 513-ID cold request; collect CPU thermal margin and backend phase times as diagnostics; no relative speedup claim",
+  "stop": "guard/evidence failure ends C12 unit; no same-identity retry"
+}

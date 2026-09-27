@@ -1,0 +1,63 @@
+{
+  "admission": "bounded init-only, minimum forward, 513 cold only after earlier gates; no timing/numeric promotion",
+  "evidence_class": "GGUF tensor inventory, original backend source graph plan and C11 513-ID diagnostic",
+  "expert_bytes": 13219200,
+  "four_extra_dense_layer_gpu_bytes": 136620032,
+  "gpu_reservation_mib": 6500,
+  "n_expert": 128,
+  "n_expert_used": 4,
+  "p16s24_minus_p12s32_gpu_pool_bytes": 105753600,
+  "p16s32_predicted_gpu_mib_from_c11_peak_before_new_workspace": 7489.962890625,
+  "predicted_gpu_mib_from_c11_peak_before_new_workspace": 5977.1455078125,
+  "schema": "c12-p16s24-static-feasibility-v1",
+  "source_paths": [
+    "src/llama-model.cpp:1270-1304",
+    "src/llama-graph.cpp:1968-1991",
+    "src/llama-moe-stream.cpp:575-637"
+  ],
+  "tensor_inventory": "results/c7-20260927T1130Z/accounting.json",
+  "unknown": [
+    "actual 8K server CUDA/graph workspace and allocator reserve",
+    "new cache misses/preloads from reducing slots32 to24",
+    "CPU/GPU timing and thermal critical path",
+    "whether numeric FFN accumulation differs with wave plan"
+  ],
+  "variants": {
+    "P12S24": {
+      "cpu_expert_pool_bytes": 7931520000,
+      "cpu_layers": 25,
+      "gpu_expert_pool_bytes": 3489868800,
+      "gpu_layers": 11,
+      "slots_per_layer": 24,
+      "wave_capacity_experts": 10,
+      "worst_case_full_ub32_waves_per_layer": 13
+    },
+    "P12S32": {
+      "cpu_expert_pool_bytes": 10575360000,
+      "cpu_layers": 25,
+      "gpu_expert_pool_bytes": 4653158400,
+      "gpu_layers": 11,
+      "slots_per_layer": 32,
+      "wave_capacity_experts": 14,
+      "worst_case_full_ub32_waves_per_layer": 10
+    },
+    "P16S24": {
+      "cpu_expert_pool_bytes": 6662476800,
+      "cpu_layers": 21,
+      "gpu_expert_pool_bytes": 4758912000,
+      "gpu_layers": 15,
+      "slots_per_layer": 24,
+      "wave_capacity_experts": 10,
+      "worst_case_full_ub32_waves_per_layer": 13
+    },
+    "P16S32": {
+      "cpu_expert_pool_bytes": 8883302400,
+      "cpu_layers": 21,
+      "gpu_expert_pool_bytes": 6345216000,
+      "gpu_layers": 15,
+      "slots_per_layer": 32,
+      "wave_capacity_experts": 14,
+      "worst_case_full_ub32_waves_per_layer": 10
+    }
+  }
+}
