@@ -1,0 +1,5 @@
+# C30 slot-cache path diagnostic
+
+- C28 and C29 had identical official prompt ID arrays and the same exact first assistant text. Second-turn cache_n differed: 2036 versus 35. C29 FAIL preserved; M3 session reuse is unqualified.
+- Source shows two candidate causes: `server_tokens::get_common_prefix` compares actual slot/input IDs, and a later SWA/checkpoint branch can reduce n_past. `LLAMA_SERVER_SLOTS_DEBUG=1` prints old/new tokens at the effective boundary; trace logging records checkpoint fallback. C30 changes only allowlisted diagnostic logging, not backend/model/workload/guards. Timings are diagnostic.
+- Frozen d1 and conditional d2, at most two fresh processes. d2 runs only if d1 cache gate passes without observing the miss. Fresh preflight `READY_FOR_IDLE_ADMISSION` on AC/performance CPU48.25/GPU44/NVMe37.85 C; focused tests 41 PASS; frozen protocol/env checks PASS. C15 source-only, default unchanged.
