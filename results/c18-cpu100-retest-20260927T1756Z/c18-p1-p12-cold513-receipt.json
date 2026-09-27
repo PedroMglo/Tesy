@@ -1,0 +1,115 @@
+{
+  "arm": "P12",
+  "completed_requests": 1,
+  "cpu_telemetry": {
+    "clock_source": "cpuinfo_avg_freq per cpufreq policy",
+    "cpu_effective_clock_max_mhz": 3327.9655000000002,
+    "cpu_effective_clock_median_mhz": 3093.43275,
+    "cpu_effective_clock_min_mhz": 605.264,
+    "cpu_max_c": 95.125,
+    "cpu_package_power_max_w": 69.87014594355735,
+    "cpu_package_power_median_w": 63.48964456195321,
+    "cpu_policy_count": 24,
+    "cpu_warning_observed": true,
+    "cpu_warning_sample_count": 12,
+    "explicit_thermal_flag_source": "ACPI Processor cooling cur_state; AMD hardware flag unavailable",
+    "gpu_power_max_w": 16.67,
+    "power_source": "package-0 RAPL energy counter; interval power estimate",
+    "processor_cooling_max_state": 0,
+    "sample_count": 80
+  },
+  "decode_s": 0.882355,
+  "default_changed": false,
+  "idle": {
+    "baseline": {
+      "cpu_c": 41.375,
+      "gpu_c": 39.0,
+      "nvme_c": 32.85
+    },
+    "cadence_breaks": [],
+    "duration_s": 300.5358308729992,
+    "end": {
+      "cpu_c": 41.75,
+      "cpu_fan_rpm": 2600.0,
+      "elapsed_s": 300.5358308729992,
+      "gpu": {
+        "driver": "615.71.09",
+        "temperature_c": 39.0,
+        "used_mib": 23.0
+      },
+      "gpu_fan_rpm": 2500.0,
+      "mem_available_bytes": 25279840256,
+      "nvme_c": 33.85,
+      "run_id": "c18-p1-p12-cold513",
+      "utc": "2026-09-27T18:11:56.489872+00:00"
+    },
+    "last60_trend_c": {
+      "cpu_c": 1.7625000000000028,
+      "gpu_c": 0.0,
+      "nvme_c": 1.0
+    },
+    "max_gap_overall_s": 0.8184193540000706,
+    "max_gap_qualifying_s": 0.8184193540000706,
+    "qualifying_duration_s": 300.0065190460009,
+    "qualifying_start_s": 0.5293118269983097,
+    "sample_count": 602,
+    "series_sha256": "90f0dfd650789d3183b895fad27e5aa1d006617eca8aa18c8f2e542560cc8e28",
+    "start": {
+      "cpu_c": 48.125,
+      "cpu_fan_rpm": 2700.0,
+      "elapsed_s": 0.019838297997921472,
+      "gpu": {
+        "driver": "615.71.09",
+        "temperature_c": 43.0,
+        "used_mib": 23.0
+      },
+      "gpu_fan_rpm": 2400.0,
+      "mem_available_bytes": 25876701184,
+      "nvme_c": 37.85,
+      "run_id": "c18-p1-p12-cold513",
+      "utc": "2026-09-27T18:06:55.973883+00:00"
+    },
+    "status": "PASS"
+  },
+  "input_token_ids_sha256": "e19cb14e4c38e8f1b153a58c1d3450ded2b402d82f5798961a1246285099d316",
+  "launch_error": null,
+  "maxima": {
+    "cgroup_peak_bytes": 13051334656,
+    "cpu_c": 95.125,
+    "gpu_c": 59.0,
+    "gpu_total_mib": 5763.0,
+    "nvme_c": 41.85,
+    "rss_bytes": 13290098688,
+    "swap_bytes": 0
+  },
+  "measurement_commit": "a12c0fe3cc8f895bc4a5066b46c00e33c91c71af",
+  "mode": "cold513",
+  "order": 2,
+  "output_message_sha256": "1b4631ffc9fd59b6b233f7e3102af60328dd5bafb0e6b0c4904b147cba7f740a",
+  "phase": "P1",
+  "prefill_s": 79.362359,
+  "raw_sha256": "6f002206dda376524ae5941a9678552f1861ff3e41861db5ce419443187b7cf3",
+  "request_elapsed_s": 80.24956845699853,
+  "returncode": 0,
+  "run_id": "c18-p1-p12-cold513",
+  "runner_returncode": 0,
+  "sample_count": 80,
+  "schema": "c18-thermal-unit-v1",
+  "scope": "/user.slice/user-1000.slice/user@1000.service/app.slice/run-p190956-i207128.scope",
+  "server_elapsed_s": 84.96896294699764,
+  "server_gate": {
+    "active_s": 80.24956845699853,
+    "cgroup_peak_bytes": 13051334656,
+    "completed_requests": 1,
+    "decode_s": 0.88236,
+    "decode_tok_s": 4.533297066956798,
+    "decode_tokens": 4,
+    "last_half_decode_tok_s": 4.533297066956798,
+    "run_id": "c18-p1-p12-cold513",
+    "sample_count": 80,
+    "schema_version": "c2-gate-result-v1",
+    "status": "PASS"
+  },
+  "status": "PASS_QUALIFIED",
+  "stop_reasons": []
+}

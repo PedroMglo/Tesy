@@ -5,3 +5,4 @@
 - New physical units: only 513+4 cold P8/P12 paired P8→P12; P12→P8 after first pair qualifies. Each starts after >=300 s idle admission.
 - Evidence pending. C15 remains source-only/uncompiled/unmeasured; M3/M4 not run.
 - `c18-p1-p8-cold513` PASS at measurement `01e64cc5ac1498574258790abd4afec029124e95`: request 90.022 s, prefill 89.113 s, decode 0.905 s; CPU max 95.125 C with 17 warning samples, ACPI cooling 0, zero swap/OOM. Raw SHA `9c58a6ba47711e8225542ae4ebad1f67d587b6b59c575465ddf59b522b0bd8cb`. GPU/port free after exit.
+- `c18-p1-p12-cold513` PASS at measurement `a12c0fe3cc8f895bc4a5066b46c00e33c91c71af`: request 80.250 s, prefill 79.362 s, decode 0.882 s; CPU max 95.125 C with 12 warning samples, ACPI cooling 0, zero swap/OOM. Raw SHA `6f002206dda376524ae5941a9678552f1861ff3e41861db5ce419443187b7cf3`. Pair 1 descriptive request gain +10.85567%; pair 2 remains frozen P12→P8.
