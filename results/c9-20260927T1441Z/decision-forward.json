@@ -1,0 +1,50 @@
+{
+  "budget": {
+    "physical_limit_s": 57600,
+    "preflight_rejection_charged_s": 1.0,
+    "program_physical_before_s": 5046.084822156998,
+    "this_unit_elapsed_s": 31.05917568699988
+  },
+  "claim_limits": [
+    "single short forward does not admit 512/2048/4096 or full 8K input",
+    "no first final content, 12-task utility, sustained or quality result"
+  ],
+  "default_changed": false,
+  "failure_preserved": [
+    "administrative wrong-SHA preflight rejected before model load",
+    "C7 initial schema FAIL",
+    "C7c P12 NO_GO_SCREEN496",
+    "historical C6 resource/library receipts incomplete"
+  ],
+  "gates": {
+    "G1_init": "CAPACITY_ADMITTED_INIT_ONLY",
+    "G2_minimum_forward": "MINIMUM_FORWARD_ADMITTED",
+    "G3_cold512_prefix": "NOT_RUN",
+    "G4_context_boundary": "NOT_RUN",
+    "functional_12": "NOT_RUN",
+    "sustained_60min_20req": "NOT_RUN"
+  },
+  "measured": {
+    "api_wall_s": 26.677459585998804,
+    "cache_reused_tokens": 0,
+    "completion_tokens": 4,
+    "decode_s": 1.039,
+    "maxima_sampled": {
+      "cgroup_peak_bytes": 14912307200,
+      "cpu_c": 84.625,
+      "gpu_c": 55.0,
+      "gpu_total_mib": 3896.0,
+      "nvme_c": 46.85,
+      "rss_bytes": 15126409216,
+      "swap_bytes": 0
+    },
+    "prefill_s": 25.633756,
+    "prompt_tokens": 78
+  },
+  "measurement_commit": "62c7bce79a6c8bf9e443cd4453aa1af1f99cbfd7",
+  "next_action": "freeze cold512 API prefill and exact-prefix 128-token continuation with contemporaneous no-cache control under E18; stop on resource or evidence failure",
+  "profile": "P8 native preload ON, 8K full-SWA single-slot server",
+  "reference_coverage": "C8 preload P8 full-logit 4K API probe/36 layers; C9 full server logits/reference NOT_RUN",
+  "schema": "c9-forward-decision-v1",
+  "status": "CONTINUE_NEXT_HYPOTHESIS"
+}
