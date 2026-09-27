@@ -1,0 +1,50 @@
+{
+  "schema": "c4-p1-ub64-short-v1",
+  "status": "NON_BITWISE_REQUIRES_SEPARATE_QUALIFICATION",
+  "scope": "same 113 IDs, external batch 256, final-token output mask, fresh process, no preload",
+  "different_float32_count": 201087,
+  "first_different_logit": 0,
+  "max_abs_logit_difference": 1.5265812873840332,
+  "logit_rmse": 0.2294880797342131,
+  "top_two": {
+    "ub32": {
+      "top1_id": 200005,
+      "top1_logit": 37.37058639526367,
+      "top2_id": 200003,
+      "top2_logit": 16.861257553100586,
+      "margin": 20.509328842163086
+    },
+    "ub64": {
+      "top1_id": 200005,
+      "top1_logit": 37.260379791259766,
+      "top2_id": 200003,
+      "top2_logit": 16.878238677978516,
+      "margin": 20.38214111328125
+    }
+  },
+  "prefill_clocks_diagnostic_only": {
+    "ub32": {
+      "dispatch_s": 44.621714,
+      "completion_s": 44.624687,
+      "pending_tail_s": 0.002973
+    },
+    "ub64": {
+      "dispatch_s": 40.771761,
+      "completion_s": 40.774453,
+      "pending_tail_s": 0.002692
+    }
+  },
+  "source_sha256": {
+    "tools/c4_prefill_probe.cpp": "4e1e5d849e6c5697fd0f2f7cd590cab4ed04f8418fff721b17c9e24c80c3f26f",
+    "tools/c4_ub64_probe.cpp": "abe6903d9e61166e8925e84974289e66136147b2d908384cc7eaf8421444efa5",
+    "results/c4-q0-short-off01.json": "ab31871a303f7c298b677eb2585d921ff91f084d7fc785453959e1e643506a6e",
+    "results/c4-q0-short-off01.rows.tsv": "594977b1c63f72c4dff449ceffad2183b9eb9d80eb83981ea91d0e00c229c0c5",
+    "results/c4-q0-short-off01.f32": "8ba19722439a08738cc0d4fc4ad8f669bc3fcde227aab503ca210936bb0bb285",
+    "results/c4-q0-short-off01.cases.tsv": "84244c55298af4cda58afadfca2ebf78ccaba0c94298f98b6d5f9c175e0bb00b",
+    "results/c4-p1-ub64-short01.json": "a11076177070360b3b0efbf331347837985558251edb051a9c934620df439f6e",
+    "results/c4-p1-ub64-short01.rows.tsv": "594977b1c63f72c4dff449ceffad2183b9eb9d80eb83981ea91d0e00c229c0c5",
+    "results/c4-p1-ub64-short01.f32": "db4f1104977b47be3156d4d87806009fc7aa9b99703f7b44b0552aa31b95bc36",
+    "results/c4-p1-ub64-short01.cases.tsv": "e5eae9f30aa42b75b27748fcd10adfa0deb1a4f454cdf0fc582b2da55e031a5b"
+  },
+  "analyzer_sha256": "d8137f2406e7d681dea1e619a469a1dd82f482ee6de5796a59454e7dfa27319a"
+}
