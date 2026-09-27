@@ -17,7 +17,7 @@ import time
 from c2_gate import GateError, strict_json
 from run_bounded import (backend_library_hashes, cgroup_state, gpu_state,
                          mem_available, model_fd_state, proc_status, sha256,
-                         thermal_state)
+                         thermal_state, relevant_environment)
 from run_task_server import fetch, stop_own_server
 
 
@@ -272,7 +272,10 @@ def run(args, protocol, config, task_rows, model):
     with socket.socket() as sock:
         sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         sock.bind(("127.0.0.1",18367))
-    stem = ROOT / "results" / args.run_id
+    output_root = Path(config.get("output_root", ROOT / "results"))
+    if not output_root.is_dir():
+        raise GateError("server output root missing")
+    stem = output_root / args.run_id
     paths = {suffix:Path(str(stem)+suffix) for suffix in
              (".preflight.json",".launch.json",".json",".normalized.json",".stdout",".stderr",".samples.jsonl")}
     if any(path.exists() for path in paths.values()):
@@ -280,6 +283,9 @@ def run(args, protocol, config, task_rows, model):
     config = dict(config, run_id=args.run_id)
     total_timeout = config.get("total_timeout_s",3600)
     model_before = model.stat()
+    env = os.environ.copy();env.update(config["explicit_env"])
+    if args.suite == "c3sustained20":
+        env.pop("LLAMA_MOE_STREAM_NO_PRELOAD", None)
     preflight = {"schema_version":"c2-server-preflight-v1","run_id":args.run_id,
                  "protocol_sha256":sha256(args.protocol),"protocol":protocol,
                  "config":config,"model_path":str(model),"model_size_bytes":model.stat().st_size,
@@ -288,14 +294,12 @@ def run(args, protocol, config, task_rows, model):
                                       "size":model_before.st_size,"mtime_ns":model_before.st_mtime_ns},
                  "runner_sha256":sha256(__file__),
                  "started_utc":dt.datetime.now(dt.timezone.utc).isoformat(),
-                 "cgroup_start":cg_start,"timeout_s":total_timeout}
+                 "cgroup_start":cg_start,"timeout_s":total_timeout,
+                 "relevant_environment":relevant_environment(env)}
     with open(paths[".preflight.json"],"x") as out:
         json.dump(preflight,out,indent=2,allow_nan=False);out.write("\n")
     t0 = time.monotonic()
     command = config["server_command"]
-    env = os.environ.copy();env.update(config["explicit_env"])
-    if args.suite == "c3sustained20":
-        env.pop("LLAMA_MOE_STREAM_NO_PRELOAD", None)
     reasons = []
     raw = []
     samples = []
@@ -351,10 +355,13 @@ def run(args, protocol, config, task_rows, model):
                     elif ps["VmSwap"] or cg["swap_current"]: reason = "SWAP_USED"
                     elif cg["events"]["oom"] > cg_start["events"]["oom"]: reason = "CGROUP_OOM"
                     elif cg["events"]["max"] > cg_start["events"]["max"]: reason = "CGROUP_LIMIT_HIT"
-                    elif ps["VmRSS"] > 17*2**30: reason = "RSS_GUARD"
-                    elif available < 6*2**30: reason = "HOST_HEADROOM_GUARD"
-                    elif gpu["used_mib"] > 7000: reason = "GPU_GUARD"
-                    elif th["cpu_tctl_c"] > 95 or gpu["temperature_c"] > 80 or th["nvme_composite_c"] > 70:
+                    elif ps["VmRSS"] > protocol["limits"]["rss_max_bytes"]: reason = "RSS_GUARD"
+                    elif cg["memory_peak"] > protocol["limits"]["memory_max_bytes"]: reason = "CGROUP_RESERVE_GUARD"
+                    elif available < protocol["limits"]["min_mem_available_bytes"]: reason = "HOST_HEADROOM_GUARD"
+                    elif gpu["used_mib"] > protocol["limits"]["gpu_max_mib"]: reason = "GPU_GUARD"
+                    elif th["cpu_tctl_c"] > protocol["limits"]["cpu_max_c"] or \
+                         gpu["temperature_c"] > protocol["limits"]["gpu_max_c"] or \
+                         th["nvme_composite_c"] > protocol["limits"]["nvme_max_c"]:
                         reason = "THERMAL_GUARD"
                     if reason:
                         reasons.append(reason);stop_own_server(server);break
@@ -377,7 +384,8 @@ def run(args, protocol, config, task_rows, model):
             preflight["ready_elapsed_s"] = time.monotonic()-t0
             model_id = fetch("/v1/models")["data"][0]["id"]
             preflight["server_model_id"] = model_id
-            loaded = loaded_backend_libraries(server.pid, ROOT/"backends"/MODEL[args.model][0])
+            loaded = loaded_backend_libraries(server.pid,
+                                              Path(config.get("backend_root", ROOT/"backends"/MODEL[args.model][0])))
             preflight["actually_loaded_backend_libraries_sha256"] = loaded
             if any(loaded.get(path) != digest_value for path,digest_value in
                    protocol["identity"]["library_sha256"].items()):
