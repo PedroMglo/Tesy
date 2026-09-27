@@ -1,0 +1,49 @@
+{
+  "budget": {
+    "physical_limit_s": 57600,
+    "program_physical_after_s": 5717.739990403999
+  },
+  "claim_limits": [
+    "short 78-ID gain does not transfer to cold513 admission",
+    "native64 same-profile reference NOT_RUN",
+    "no paired 513 timing, prefix reuse, quality or sustained evidence"
+  ],
+  "default_changed": false,
+  "failures_preserved": [
+    "C14 P12 ub64 513-ID CPU thermal FAIL",
+    "C13 P12 ub32 first513 CPU thermal FAIL",
+    "C9/C10b P8 513-ID CPU thermal FAILs"
+  ],
+  "gates": {
+    "functional_quality": "NOT_RUN",
+    "init": "CAPACITY_ADMITTED_INIT_ONLY",
+    "minimum_forward": "MINIMUM_FORWARD_ADMITTED_NEW_PROFILE",
+    "model_free": "PASS_70_TESTS_AND_UB32_TO64_DELTA",
+    "paired_timing": "NOT_RUN",
+    "prefix_reuse": "NOT_RUN",
+    "prospective_investment": "NO_GO_UNCOMPLETED_REQUEST",
+    "same_profile_native64_reference": "NOT_RUN",
+    "short513": "FAIL_CPU_THERMAL_GUARD"
+  },
+  "measurement_commit": "38d614632f282adebfe70d01cab02e58c3385d0d",
+  "next_action": "C15 scoped critical-path CPU wave/parking and I/O-overlap diagnostic in isolated original-backend worktree, after source/build/model-free proof and bounded E18 protocol",
+  "observed": {
+    "completed_requests": 0,
+    "elapsed_s": 76.28808393800136,
+    "maxima": {
+      "cgroup_peak_bytes": 13059469312,
+      "cpu_c": 95.125,
+      "gpu_c": 60.0,
+      "gpu_total_mib": 5754.0,
+      "nvme_c": 47.85,
+      "rss_bytes": 13280378880,
+      "swap_bytes": 0
+    },
+    "sample_count": 67,
+    "thermal_trigger_elapsed_s": 70.8725462370021
+  },
+  "profile": "P12 ngl12/ub64/slots32/native preload ON original backend 8K full-SWA server E18",
+  "reason": "CPU Tctl95.125 C exceeded frozen95 C during 513-ID cold prefill; watchdog ended server before a completed request; no 513-ID timing/logits claim",
+  "schema": "c14-p12ub64-server-decision-v1",
+  "status": "FAIL_RESOURCES_OR_EVIDENCE"
+}
