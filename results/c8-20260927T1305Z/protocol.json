@@ -1,0 +1,195 @@
+{
+  "alternative": "extra queued reads/evictions or contention offset the overlap, especially decode",
+  "backend_commit": "1248fd8fa8cfebaece5ea992e4d951c1e18bb9d5",
+  "backend_tree": "8219dfba2414cdcbb388e43b1c67a49f1f70e4aa",
+  "binary_sha256": {
+    "off1": "4c0dc056cec3edcf5b05cd6b34208a9fe9a18bb92cf74d5e33f2f2553ccc5a43",
+    "off2": "4c0dc056cec3edcf5b05cd6b34208a9fe9a18bb92cf74d5e33f2f2553ccc5a43",
+    "on": "84f75584e3116d2465966661c4b4ed8d3acdc500f670bfac6bbe3de1dec1aa22",
+    "reference": "75697b8a72c09e3a2397b4b47d061daa9d97624d79278972650a280da473ee55"
+  },
+  "created_utc": "2026-09-27T13:05:30.349988+00:00",
+  "effective_options": {
+    "flash_attention": "enabled",
+    "io_threads": 4,
+    "kv_clear_before_case": true,
+    "kv_k": "f16",
+    "kv_unified": false,
+    "kv_v": "f16",
+    "moe_stream": true,
+    "moe_stream_direct": true,
+    "n_batch": 256,
+    "n_ctx": 4096,
+    "n_seq_max": 1,
+    "n_threads": 8,
+    "n_threads_batch": 8,
+    "n_ubatch": 32,
+    "ngl": 8,
+    "no_prefix_reuse": true,
+    "offload_kqv": true,
+    "op_offload": false,
+    "placement_expected": "CPU0-28,CUDA29-35,CUDA output",
+    "preload_off_env": {
+      "LLAMA_MOE_STREAM_NO_PRELOAD": "1"
+    },
+    "preload_on_env": {},
+    "slots": 32,
+    "swa_full": true,
+    "use_direct_io": true,
+    "use_extra_bufts": false,
+    "use_mmap": false
+  },
+  "hypothesis": "existing next-wave preload reduces completed medium/long prefill by hiding demand wait without changing authoritative routed computation",
+  "mapped_backend_libraries_sha256": {
+    "build-gcc15/bin/libggml-base.so.0.15.3": "4c322a199c86b801389ed4bda94074083624e0a6460e25681be4b626cc72873d",
+    "build-gcc15/bin/libggml-cpu.so.0.15.3": "b57845ea9f9ce9455d78e6fe290c09b50b9414db9280409b9e5cc143d1b13b61",
+    "build-gcc15/bin/libggml-cuda.so.0.15.3": "5b363c951b87164e94d5b6af35a82c875634aadcb29c9278245cd7516f44cc7e",
+    "build-gcc15/bin/libggml.so.0.15.3": "97a33247336b56aaabe1a8bee4da6cd05e73e8b4327afd2cef67c5526df8ab71",
+    "build-gcc15/bin/libllama.so.0.0.1": "31b56002c36c159f71eba54c0d8e625ae140d34b2b1a503f3dc4db47237719cc"
+  },
+  "model_sha256": "582bd40f6886200101f4c4ed9f25f3fe80cc14c86e9e2b37746cd8904a0c622d",
+  "model_stat": {
+    "ctime_ns": 1790389637807910988,
+    "dev": 53,
+    "inode": 14833675,
+    "mtime_ns": 1790389637795911032,
+    "size_bytes": 63387346208
+  },
+  "numeric_gate": {
+    "arms": [
+      "OFF1",
+      "ON_CAPTURE",
+      "OFF2"
+    ],
+    "input": "log_medium 189 prompt IDs in one external call then 32 teacher-forced one-ID calls",
+    "output_mask": "only final prefill token and each teacher-forced step",
+    "routed_layer_reference": "one canonical resident layer at a time, same CPU/CUDA device and ub32; 36 loads/250 numeric states+2 masked; routing IDs, weights and FFN bitwise; bytes/generation/lifetime witness",
+    "same_profile_contract": "five complete 201088-F32 logits vectors bitwise OFF1/ON/OFF2; OFF1/OFF2 all33 rows bitwise",
+    "selected_logit_rows": [
+      "prefill_final",
+      "decode0",
+      "decode1",
+      "decode7",
+      "decode31"
+    ],
+    "stop": "any mismatch, corruption, missing state, OOM, retry or guard ends unit",
+    "witness_first_layers": [
+      25,
+      26,
+      27,
+      28,
+      0,
+      29,
+      35
+    ]
+  },
+  "numeric_ids_sha256": "8fb3aff447febaeaa5a8bdd0c485fd20d51d39fb6ac3e6ba4849eb4a664dbc23",
+  "prior_evidence": {
+    "c4_q1_numeric": "five long prompt/teacher logits bitwise OFF1/OFF2/ON but historically incomplete resource/library receipts",
+    "c4_q1_timing": "one ON long prefill 367.557353s versus OFF 442.112886/446.287775s, diagnostic only",
+    "c7c_p12_g4": "NO_GO_SCREEN496 is preserved independently",
+    "c7c_p8_peak": "GPU 3900 MiB, cgroup 14759731200 B, RSS 14963085312 B at 496+32 OFF"
+  },
+  "publication": "local commits only; no service/default change",
+  "resource": {
+    "cool_start_c": {
+      "cpu": 75,
+      "gpu": 60,
+      "nvme": 60
+    },
+    "long_timeout_s": 1200,
+    "max_cgroup_gib": 16.5,
+    "max_gpu_total_mib": 6500,
+    "max_rss_gib": 16,
+    "medium_timeout_s": 600,
+    "min_mem_available_gib": 6,
+    "numeric_timeout_s": 300,
+    "reference_layer_timeout_s": 180,
+    "scope_memory_max_bytes": 19327352832,
+    "scope_swap_max_bytes": 0,
+    "short_timeout_s": 300,
+    "temperature_c": {
+      "cpu": 95,
+      "gpu": 80,
+      "nvme": 70
+    }
+  },
+  "schema": "c8-p8-native-next-wave-preload-protocol-v1",
+  "source_sha256": {
+    "tools/c3_compare_capture_logits.py": "0ad6b0174648423a568f3a1a1388104832a289f5ead3b9efaca92529e982eaf7",
+    "tools/c7_boundary_gate.py": "dda9cb2ab03049a8ea4e1b8803270ab8195eea65a6ed573e6cced65228d47954",
+    "tools/c7_profile_probe.cpp": "cdb95c9df8dcc2b6749d787c80d419e37bfcc6eeacfbbf246cfc26e9627f070c",
+    "tools/c8_boundary_capture.cpp": "226c3f5aa1ef6c3fdbab9d88a1d53e6759bfc0ca80c0625f717957ca58f91800",
+    "tools/c8_boundary_gate.py": "c006e84e189c96c3605525c9e18367d590511023e1cd0f26639d6b723cf43a6c",
+    "tools/c8_layer_reference.cpp": "534685128cb0c109fc64fa977571ad6dc60ae7148243f8a40cff62db08d9867f",
+    "tools/c8_observer_runner.py": "27410ffe7e5b52a59945f8572419d383203efc4b2eba55df8e30cfc97406cec6",
+    "tools/c8_reference_runner.py": "9d3119a7ac33408ffce427d247b365185b3ba91c98656b425e5f74ac183ce4f0"
+  },
+  "status_policy": "separate C8 campaign; first fidelity/bytes then timing; stop first numeric/resource/evidence failure and preserve raw",
+  "telemetry_semantics": {
+    "proc_io": "accounting; physical NVMe expert bytes unknown without controlled instrumentation",
+    "ready_on_arrival_source_counter": "increments whenever a demanded expert is already resident; source does not prove it was loaded by prior preload",
+    "wave_stall": "accumulated callback wait diagnostic, not exclusive critical path"
+  },
+  "timing_gate": {
+    "claims": "no quality, serving TTFT or sampling preservation inferred from probe",
+    "confirm496": {
+      "go": {
+        "all_work_gains_positive": true,
+        "median_prefill_gain_pct_min": 12,
+        "median_tpot_gain_pct_min": -5,
+        "median_work_gain_pct_min": 10
+      },
+      "new_pairs": [
+        [
+          "OFF",
+          "ON"
+        ],
+        [
+          "ON",
+          "OFF"
+        ],
+        [
+          "OFF",
+          "ON"
+        ]
+      ]
+    },
+    "long1522": "only after medium confirmation; two new pairs; median prefill>=10%, median work>=8%, both work gains nonnegative, TPOT median>=-5; separate preflight",
+    "metric": "paired gain 100*(OFF-ON)/OFF, median of paired gains; T_work=prefill completion+32 teacher-forced completions",
+    "screen113": {
+      "classification": "integrity/resource behavior, not veto to medium if valid",
+      "order": [
+        [
+          "OFF",
+          "ON"
+        ],
+        [
+          "ON",
+          "OFF"
+        ]
+      ]
+    },
+    "screen496": {
+      "go": {
+        "each_prefill_gain_pct_min": 0,
+        "median_prefill_gain_pct_min": 10,
+        "median_tpot_gain_pct_min": -5,
+        "median_work_gain_pct_min": 8
+      },
+      "order": [
+        [
+          "OFF",
+          "ON"
+        ],
+        [
+          "ON",
+          "OFF"
+        ]
+      ]
+    },
+    "workload": "same frozen latency TSV and first32 log_medium continuation IDs"
+  },
+  "timing_ids_sha256": "368c48ac1e93d68ec1746bb3d5f7e63118f35d7903c58f88dbe5c983b69190fb",
+  "unit": "P8 ngl8 ub32 slots32 original backend, E18; preload OFF versus native ON only"
+}

@@ -1,0 +1,33 @@
+{
+  "added_weight_pool_bytes_preload_on": 0,
+  "baseline_p8_observed_496": {
+    "cgroup_peak_bytes": 14759731200,
+    "gpu_peak_mib": 3900,
+    "rss_peak_bytes": 14963085312
+  },
+  "conservative_initial_prediction": {
+    "basis": "P8 contemporary observed maxima plus >0.5GB host allocation allowance; capture observer may add more and remains bounded by watchdog",
+    "cgroup_bytes_max": 15759731200,
+    "gpu_total_mib_max": 4400,
+    "rss_bytes_max": 15963085312
+  },
+  "cpu_pools": 29,
+  "energy": "UNKNOWN_NO_RELIABLE_ACCUMULATION",
+  "gpu_pools": 7,
+  "guard_reservations": {
+    "cgroup_bytes": 17716740096,
+    "gpu_total_mib": 6500,
+    "rss_bytes": 17179869184
+  },
+  "historical_p8_preload_on_long": {
+    "cgroup_peak_bytes": 14740713472,
+    "evidence_class": "historical diagnostic, not current admission",
+    "gpu_peak_mib": 3898
+  },
+  "pool_cpu_bytes": 12267417600,
+  "pool_gpu_bytes": 2961100800,
+  "pool_per_layer_bytes": 423014400,
+  "schema": "c8-p8-preload-accounting-v1",
+  "source": "same pinned original backend, stage_wave_locked reserves next wave within the existing 32-slot pool and bounded per-layer queue; no new weight or quantization allocation",
+  "unknown": "capture observer buffers and allocator fragmentation are monitored, not assumed zero; first ON numeric capture is the bounded forward admission"
+}
