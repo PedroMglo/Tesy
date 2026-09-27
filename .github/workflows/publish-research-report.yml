@@ -25,7 +25,7 @@ jobs:
       - name: Install document toolchain
         run: |
           sudo apt-get update
-          sudo apt-get install --yes --no-install-recommends latexmk texlive-luatex texlive-latex-extra biber
+          sudo apt-get install --yes --no-install-recommends latexmk texlive-luatex texlive-latex-extra texlive-lang-portuguese biber
       - run: python -m pip install -r tools/requirements.txt
       - name: Resolve immutable release identity
         run: |
