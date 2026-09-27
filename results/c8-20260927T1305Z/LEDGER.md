@@ -16,3 +16,6 @@
 
 - G4 screen measurement commit `77d7ba869797e31731daed995ee4373c2f63d5cb`; `c8-g4-pair1-off`, `pair1-on`, `pair2-on`, `pair2-off` passed full 33-row bitwise logits versus contemporary P8 control and all resource gates. Paired medians: prefill +17.71%, T_work +16.88%, TPOT +4.43%; work pairs +17.11%, +16.65%. `SCREEN496_GO` is a screening decision, not confirmation.
 - Screen resource peak GPU 3900 MiB, RSS 14,963,060,736 B, cgroup 14,757,126,144 B, CPU 93.125 C, swap 0. ON issued 7749 preloads per run. Next: three new 496+32 confirmation pairs under the frozen policy, with thermal and resource preflights.
+
+- G5 confirmation measurement commit `d6fd478ad53e4152e8ce2d16a36eabe073a4dda7`; six new 496+32 arms `c8-g5-pair1-off/on`, `pair2-on/off`, `pair3-off/on` passed full 33-row bitwise logits versus contemporary P8 OFF and all resource gates. Paired median prefill +17.70%, T_work +16.59%, TPOT +0.80%; all work pairs positive (+16.13%, +16.59%, +17.11%). `CONFIRM496_GO` applies only to this probe scope.
+- Confirmation resource peak GPU 3900 MiB, RSS 14,963,195,904 B, cgroup 14,781,255,680 B, CPU 93.25 C, swap 0. Source wave stall remains diagnostic. Next: separately freeze a 1522+32 check, then serving/session/quality gates; no default change.
