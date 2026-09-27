@@ -1,5 +1,16 @@
 # Tesy scale lab state
 
+## Campaign 4, local checkpoint for review
+
+C4 started 2026-09-27 00:19:32 UTC from C3 lab commit `a0b673965b6e7c5aac69ae464d8275c176f4b14a` on dedicated branch `campaign/c4-prefill-cost-20260927-0022utc`. Physical Ryzen AI 9 HX 370 / RTX 4060 Laptop target and full 120B GGUF hash were reverified. The streaming backend, stock backend and outer Tesy worktree remain unchanged. One of three allowed optimization interventions was used; no remote publication, default promotion or model download.
+
+- **Q0 `TIMING_SCOPE_QUALIFIED`:** C4 probe measures whole-prompt completion through the logits getter after context quiescence. Fake delayed-work test and 33/33 existing model-free tests passed. Physical 113-ID OFF smoke: 44.621714 s dispatch, **44.624687 s completed**, 0.002973 s final tail, C3 short logits bitwise. C3 historical dispatch-scope percentages are unchanged.
+- **Q1 `HISTORICAL_ORIGIN_UNRESOLVED + CURRENT_PROFILE_PARITY_PASS`:** two fresh no-preload long-first controls and one preload ON agreed bitwise on five full 201,088-float vectors for 1522 fixed prompt IDs and four teacher-forced continuation IDs. Original historical server IDs/logits/sampler state cannot locate its first differing position. The contemporary claim is pre-sampler and long-first only; no broad default change.
+- **P0 limited attribution:** C3 long trace had 432.962 GB application `pread` payload and 69.44% empty wave callbacks. C4 short GPU event trace and CPU sampling show significant MXFP4 vector-dot activity, but do not measure the critical masked-pair fraction. No wave scheduler or pair-compaction backend patch was justified.
+- **P1 ub64 `BOUNDARY_DIFFERENTIAL_PASS`, full-model numeric gate blocked:** C4 ub32 capture bridged C3 (1512 tensors/seven logits); one-layer-at-a-time ub64 canonical replay passed 252/252 captured states. With external b256 held fixed on 113 exact IDs, ub32→64 changed 201,087/201,088 full logits (max absolute 1.52658). The one-shot fenced clock 44.624687→40.774453 s and miss count 4324→3627 are **diagnostic only**. `NON_BITWISE_REQUIRES_SEPARATE_QUALIFICATION` stopped 496/1522 screening, confirmation, decode and sustained runs. Keep no-preload C2 sustained profile as conservative default.
+
+Authority: `research/C4-PROTOCOL-20260927.md`, `research/C4-LEDGER-20260927.md`, `research/C4-FINAL-20260927.md`, `results/INDEX.md`. Compact C4 reports and scripts are prepared locally; raw captures/profiles/builds stay untracked. `BROAD_NOVELTY_NO_GO / ENGINEERING_AND_MEASUREMENT_GO`.
+
 ## Campaign 3, final local evidence for review
 
 Campaign `c3-20260926-1800utc` began 2026-09-26 17:58 UTC from published C2 lab SHA `81531d9dc33caddbbf07928106de47cfe2a6d42a` on dedicated branch `campaign/c3-layer-reference-prefill-20260926-1800utc`. Physical Ryzen/RTX laptop, internal NVMe GGUF, backend/model pins, 18 GiB/zero-swap cgroup, RSS17 GiB and GPU7000 MiB guards were reconfirmed. The latest user request authorizes publication of this review branch; no merge, PR or force-push is part of C3. At 23:34 UTC, 5 h 36 min of the maximum eight active hours had elapsed; **one of four** optimization interventions was used. Work ends on completed units rather than consuming the ceiling. No model/backend source or weights were modified.

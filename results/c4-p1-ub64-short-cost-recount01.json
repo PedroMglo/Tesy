@@ -1,0 +1,69 @@
+{
+  "schema": "c4-short-cost-recount-v1",
+  "status": "DESCRIPTIVE_ONLY_NUMERIC_GATE_FAILED",
+  "scope": "single 113-ID fresh-process runs with unchanged external batch 256",
+  "units": {
+    "wave_wait_ms_accumulated": "overlapping backend wait, not exclusive wall",
+    "process_read_bytes_last_sample": "/proc process accounting, not physical NVMe traffic"
+  },
+  "runs": {
+    "c4-q0-short-off01": {
+      "remap_calls": 141,
+      "expert_hits": 1287,
+      "expert_misses": 4324,
+      "cold_misses": 2685,
+      "graph_wave_callbacks": 1225,
+      "nonempty_wave_callbacks": 465,
+      "preloads_issued": 0,
+      "wave_wait_ms_accumulated": 28250.99,
+      "process_read_bytes_last_sample": 59598716928,
+      "cgroup_peak_bytes": 15144669184,
+      "gpu_used_mib_max": 3869.0,
+      "source_sha256": {
+        "c4-q0-short-off01.stderr": "348c4743fc415b671182ffc46cfa9430dce11d4a3158fba1e8fed9da6961f54c",
+        "c4-q0-short-off01.json": "ab31871a303f7c298b677eb2585d921ff91f084d7fc785453959e1e643506a6e"
+      }
+    },
+    "c4-p1-ub64-short01": {
+      "remap_calls": 71,
+      "expert_hits": 259,
+      "expert_misses": 3627,
+      "cold_misses": 2677,
+      "graph_wave_callbacks": 700,
+      "nonempty_wave_callbacks": 309,
+      "preloads_issued": 0,
+      "wave_wait_ms_accumulated": 23574.74,
+      "process_read_bytes_last_sample": 50004307968,
+      "cgroup_peak_bytes": 14664572928,
+      "gpu_used_mib_max": 3893.0,
+      "source_sha256": {
+        "c4-p1-ub64-short01.stderr": "a10dca123a3ed9f727aae9e8daa0d706357621bb004dde4a5ae9a027b5a32f4b",
+        "c4-p1-ub64-short01.json": "a11076177070360b3b0efbf331347837985558251edb051a9c934620df439f6e"
+      }
+    }
+  },
+  "candidate_minus_control": {
+    "expert_misses": {
+      "absolute": -697,
+      "relative_pct": -16.119333950046254
+    },
+    "graph_wave_callbacks": {
+      "absolute": -525,
+      "relative_pct": -42.85714285714286
+    },
+    "wave_wait_ms_accumulated": {
+      "absolute": -4676.25,
+      "relative_pct": -16.552517274615862
+    },
+    "process_read_bytes_last_sample": {
+      "absolute": -9594408960,
+      "relative_pct": -16.098348176842148
+    }
+  },
+  "limitations": [
+    "ub64 routed inputs and expert sets differ numerically",
+    "one run per arm; no matched timing confirmation",
+    "source stderr and manifest hashes are post-run seals"
+  ],
+  "analyzer_sha256": "96ae8d5b02bc1244b1ed8c4ca6c1bda9d775da3e2b9fb6436f6d5d9d27cded0d"
+}
