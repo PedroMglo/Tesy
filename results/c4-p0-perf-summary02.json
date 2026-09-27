@@ -1,0 +1,70 @@
+{
+  "schema": "c4-p0-perf-summary-v2",
+  "status": "CPU_SAMPLES_AVAILABLE_OP_ATTRIBUTION_INCOMPLETE",
+  "classification": "user cycles sampled on physical target; not critical-path wall fractions",
+  "resource_samples": 79,
+  "perf_event": "cycles:u",
+  "sample_frequency_hz": 99,
+  "lost_samples": 0,
+  "top_flat_symbols": [
+    {
+      "sampled_cycle_share_pct": 81.81,
+      "shared_object": "libggml-cpu.so.0.15.3",
+      "symbol": "[.] ggml_vec_dot_mxfp4_q8_0"
+    },
+    {
+      "sampled_cycle_share_pct": 10.62,
+      "shared_object": "libgomp.so.1.0.0",
+      "symbol": "[.] gomp_team_barrier_wait_end"
+    },
+    {
+      "sampled_cycle_share_pct": 1.34,
+      "shared_object": "libc.so.6",
+      "symbol": "[.] __memmove_avx512_unaligned_erms"
+    },
+    {
+      "sampled_cycle_share_pct": 1.32,
+      "shared_object": "libggml-cpu.so.0.15.3",
+      "symbol": "[.] ggml_graph_compute_thread.isra.0"
+    },
+    {
+      "sampled_cycle_share_pct": 1.03,
+      "shared_object": "libggml-cpu.so.0.15.3",
+      "symbol": "[.] void (anonymous namespace)::tinyBLAS_Q0_AVX<block_q8_0, block_q8_0, float>::gemm4xN<4>(long, long, long, long)"
+    },
+    {
+      "sampled_cycle_share_pct": 0.46,
+      "shared_object": "libggml-cpu.so.0.15.3",
+      "symbol": "[.] ggml_compute_forward_glu"
+    },
+    {
+      "sampled_cycle_share_pct": 0.4,
+      "shared_object": "libggml-cpu.so.0.15.3",
+      "symbol": "[.] ggml_compute_forward_mul"
+    },
+    {
+      "sampled_cycle_share_pct": 0.38,
+      "shared_object": "libggml-cpu.so.0.15.3",
+      "symbol": "[.] ggml_compute_forward_add_id"
+    },
+    {
+      "sampled_cycle_share_pct": 0.34,
+      "shared_object": "libm.so.6",
+      "symbol": "[.] __expf_fma"
+    }
+  ],
+  "limitations": [
+    "frame-pointer stack stops at ggml_graph_compute_thread for most vector-dot samples",
+    "MXFP4 vector dot may serve routed and non-routed matmuls; masked share is unknown",
+    "cycle sample percentages are not time saved by skipping parking pairs",
+    "perf overhead run is diagnostic, not a production timing arm"
+  ],
+  "source_sha256": {
+    "results/c4-p0-perf-short-off01.json": "5021fc3cdba6ed35904e7fbbafb46e8dfe1b12a2275317617492a97f685c0157",
+    "results/c4-p0-perf-short-off01.samples.jsonl": "cd9a6f90a91d59a883f6532b5d7d072220db99d7f3ebaa735bfc2c5945decd3b",
+    "results/c4-p0-perf-short-off01.f32": "8ba19722439a08738cc0d4fc4ad8f669bc3fcde227aab503ca210936bb0bb285",
+    "results/c4-q0-short-off01.f32": "8ba19722439a08738cc0d4fc4ad8f669bc3fcde227aab503ca210936bb0bb285",
+    "results/c4-p0-perf-short-off01.data": "d9706fd89a82c33ea1d582bf733edfecec055c70ea87b294bfb8caf8ae27adea"
+  },
+  "analyzer_sha256": "62209b757d31838bec7de49ce77573fcf4e274ef37c2b05ec5d7dde14c038924"
+}
