@@ -161,8 +161,10 @@ def normalize(raw, protocol, config, samples, stderr, elapsed, returncode, reaso
         timing = item.get("timings")
         if type(usage) is not dict or type(timing) is not dict:
             raise GateError("API usage or timings missing")
-        if timing.get("cache_n") != 0 or \
-           usage.get("prompt_tokens_details",{}).get("cached_tokens") != 0:
+        cache_n = timing.get("cache_n")
+        if type(cache_n) is not int or cache_n < 0 or \
+           usage.get("prompt_tokens_details",{}).get("cached_tokens") != cache_n or \
+           (not config.get("allow_cache_prompt", False) and cache_n != 0):
             raise GateError("prefix cache reuse differs from frozen protocol")
         if type(usage.get("prompt_tokens")) is not int or usage["prompt_tokens"] <= 0 or \
            type(usage.get("completion_tokens")) is not int or \
@@ -170,11 +172,12 @@ def normalize(raw, protocol, config, samples, stderr, elapsed, returncode, reaso
             raise GateError("API token count missing or outside frozen request cap")
         if usage.get("total_tokens") != usage["prompt_tokens"]+usage["completion_tokens"]:
             raise GateError("API total token count inconsistent")
-        if config["suite"] in ("c2core8", "c2eval12", "c3followup2") and \
-           usage["prompt_tokens"]+config["request_policy"]["max_tokens"] > 4096:
+        if (config["suite"] in ("c2core8", "c2eval12", "c3followup2") or
+            config.get("enforce_output_reserve", False)) and \
+           usage["prompt_tokens"]+config["request_policy"]["max_tokens"] > config.get("n_ctx",4096):
             raise GateError("templated prompt did not leave the frozen output reserve")
         matches = [task_id for task_id, pair in parsed.items() if
-                   pair["prompt eval"][0] == usage.get("prompt_tokens") and
+                   pair["prompt eval"][0] + cache_n == usage.get("prompt_tokens") and
                    pair["eval"][0] == usage.get("completion_tokens") and
                    abs(pair["prompt eval"][1]-timing.get("prompt_ms",float("inf"))) <= 0.01 and
                    abs(pair["eval"][1]-timing.get("predicted_ms",float("inf"))) <= 0.01]
@@ -186,7 +189,7 @@ def normalize(raw, protocol, config, samples, stderr, elapsed, returncode, reaso
                          "started_s":item["started_s"],"ended_s":item["ended_s"],
                          "api_prompt_tokens":usage["prompt_tokens"],
                          "api_completion_tokens":usage["completion_tokens"],
-                         "backend_prompt_tokens":parsed[task_id]["prompt eval"][0],
+                         "backend_prompt_tokens":parsed[task_id]["prompt eval"][0] + cache_n,
                          "backend_completion_tokens":parsed[task_id]["eval"][0],
                          "prefill_s":parsed[task_id]["prompt eval"][1]/1000,
                          "decode_s":parsed[task_id]["eval"][1]/1000,
@@ -277,7 +280,7 @@ def run(args, protocol, config, task_rows, model):
         raise GateError("server output root missing")
     stem = output_root / args.run_id
     paths = {suffix:Path(str(stem)+suffix) for suffix in
-             (".preflight.json",".launch.json",".json",".normalized.json",".stdout",".stderr",".samples.jsonl")}
+             (".preflight.json",".launch.json",".tokenization.json",".json",".normalized.json",".stdout",".stderr",".samples.jsonl")}
     if any(path.exists() for path in paths.values()):
         raise GateError("run ID/output already exists")
     config = dict(config, run_id=args.run_id)
@@ -390,11 +393,13 @@ def run(args, protocol, config, task_rows, model):
             if any(loaded.get(path) != digest_value for path,digest_value in
                    protocol["identity"]["library_sha256"].items()):
                 raise GateError("loaded backend libraries differ from frozen identity")
-            if args.suite in ("c2core8", "c2eval12", "c3followup2"):
+            if args.suite in ("c2core8", "c2eval12", "c3followup2") or config.get("pretokenize",False):
                 tokenization = {}
+                token_ids = {}
                 for row_id, task in task_rows:
+                    messages = task.get("messages") or [{"role":"user","content":task["prompt"]}]
                     template = fetch("/apply-template",{"model":model_id,
-                                      "messages":[{"role":"user","content":task["prompt"]}],
+                                      "messages":messages,
                                       "max_tokens":config["request_policy"]["max_tokens"],
                                       "temperature":0,"seed":42})
                     if type(template.get("prompt")) is not str:
@@ -403,15 +408,25 @@ def run(args, protocol, config, task_rows, model):
                                        "add_special":False,"parse_special":True})
                     ids = tokenized.get("tokens")
                     if type(ids) is not list or any(type(x) is not int for x in ids) or \
-                       not 0 < len(ids) <= 4096-config["request_policy"]["max_tokens"]:
+                       not 0 < len(ids) <= config.get("n_ctx",4096)-config["request_policy"]["max_tokens"]:
                         raise GateError(f"official tokenization exceeds output reserve for {row_id}")
+                    bounds = config.get("prompt_token_ranges",{}).get(row_id)
+                    if bounds and not bounds[0] <= len(ids) <= bounds[1]:
+                        raise GateError(f"official tokenization outside frozen range for {row_id}")
                     tokenization[row_id] = {"count":len(ids),"token_ids_sha256":digest(ids)}
+                    token_ids[row_id] = ids
                 preflight["prompt_tokenization"] = tokenization
+                if config.get("freeze_token_ids",False):
+                    with open(paths[".tokenization.json"],"x") as out:
+                        json.dump(token_ids,out,indent=2,allow_nan=False);out.write("\n")
             for row_id, task in task_rows:
                 if reasons or server.poll() is not None: raise GateError("server/watchdog stopped")
-                payload = {"model":model_id,"messages":[{"role":"user","content":task["prompt"]}],
+                messages = task.get("messages") or [{"role":"user","content":task["prompt"]}]
+                payload = {"model":model_id,"messages":messages,
                            "max_tokens":config["request_policy"]["max_tokens"],
                            "temperature":0,"seed":42,"stream":False}
+                if "cache_prompt" in task:
+                    payload["cache_prompt"] = task["cache_prompt"]
                 start = time.monotonic()-t0
                 response = fetch("/v1/chat/completions",payload,
                                  timeout=config["request_policy"]["per_request_timeout_s"])
@@ -419,7 +434,8 @@ def run(args, protocol, config, task_rows, model):
                 choices = response.get("choices")
                 if type(choices) is not list or len(choices) != 1 or type(choices[0].get("message")) is not dict:
                     raise GateError(f"missing assistant message for {row_id}")
-                if args.suite in ("c2core8", "c2eval12", "c3followup2") and \
+                if (args.suite in ("c2core8", "c2eval12", "c3followup2") or
+                    config.get("pretokenize",False)) and \
                    response.get("usage",{}).get("prompt_tokens") != \
                    preflight["prompt_tokenization"][row_id]["count"]:
                     raise GateError(f"API prompt count differs from preflight tokenizer for {row_id}")
@@ -455,7 +471,7 @@ def run(args, protocol, config, task_rows, model):
               "cgroup_end":cg_end,"sample_count":len(samples),
               "launch_identity":launch["process_identity"],
               "source_sha256":{s:sha256(p) for s,p in paths.items() if s in
-                               (".launch.json",".stdout",".stderr",".samples.jsonl") and p.exists()}}
+                               (".launch.json",".tokenization.json",".stdout",".stderr",".samples.jsonl") and p.exists()}}
     with open(paths[".json"],"x") as out:
         json.dump(result,out,indent=2,allow_nan=False);out.write("\n")
     if not reasons and len(raw) == len(task_rows) and server.returncode == 0:
