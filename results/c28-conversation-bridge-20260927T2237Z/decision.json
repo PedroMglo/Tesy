@@ -1,0 +1,29 @@
+{
+  "c15": "SOURCE_ONLY_NOT_COMPILED_NOT_MEASURED",
+  "completed_requests_diagnostic": 2,
+  "default_changed": false,
+  "failure_class": "INVALID_PROMPT_ONLY_CACHE_COUNTER_BOUND",
+  "first_assistant_exact": true,
+  "m3": "PARTIAL_C28_GATE_FAIL",
+  "m4": "NOT_RUN",
+  "measurement_commit": "08bfb0cc8a1ea3d271abc967899b73419e8beeee",
+  "next_action": "C29 new identity with source-derived bound cache_n <= first prompt IDs + first completion tokens and >= common-32; same two-turn workload",
+  "official_first_ids": 2035,
+  "official_second_ids": 2179,
+  "oom_max": 0,
+  "ordered_common_prompt_ids": 2035,
+  "reason": "frozen gate capped cache_n at common prompt IDs 2035 but source-defined cache includes generated token; observed cache_n 2036",
+  "resource_maxima": {
+    "cgroup_peak_bytes": 13082415104,
+    "cpu_c": 95.125,
+    "gpu_c": 63.0,
+    "gpu_total_mib": 5752.0,
+    "nvme_c": 53.85,
+    "rss_bytes": 13300666368
+  },
+  "run_id": "c28-g1-prefix2048",
+  "schema": "c28-conversation-decision-v1",
+  "second_cache_n": 2036,
+  "status": "FAIL_RESOURCES_OR_EVIDENCE",
+  "swap_max_bytes": 0
+}
