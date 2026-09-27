@@ -1,0 +1,53 @@
+{
+  "ambient_temperature": "UNKNOWN",
+  "base_control": "C9 P8 ub32 preload ON; C11 P12 ub32 preload ON",
+  "c17_result_commit": "b93a27e15dff3f4bd40fe0f6002d51defd2cef9f",
+  "checkpoint_commit": "d3beba892d85256c492ee2bf239cea37712646cf",
+  "cooling_condition": "changed_physical_placement (owner report)",
+  "cpu_policy": {
+    "stop_at_or_above_c": 100,
+    "stop_on_processor_cooling": true,
+    "stop_on_sustained_clock_collapse": "five consecutive samples below half prewarning median",
+    "tjmax_source": "https://www.amd.com/en/products/processors/laptop/ryzen/ai-300-series/amd-ryzen-ai-9-hx-370.html",
+    "warning_at_or_above_c": 95
+  },
+  "gain_formula": "100*(P8-P12)/P8 with positive P8 denominator, independently for each new pair",
+  "idle_cadence_rule": "one consecutive >=300 s window, every gap <=1 s; any earlier gap remains recorded",
+  "idle_cpu_limit_c": 55,
+  "idle_max_s": 900,
+  "idle_min_s": 300,
+  "idle_sample_interval_target_s": 0.5,
+  "numeric_limit": "8K server full-logit reference NOT_RUN",
+  "old_fail_classification": "FAIL_PROTOCOL_THERMAL_GUARD, preserved in original C9-C17 receipts",
+  "pair_order": [
+    "P8",
+    "P12",
+    "P12",
+    "P8"
+  ],
+  "per_run_protocol_sha256": {
+    "c18-p1-p12-cold513": "1042bf34375185735d251f99f1fd4ab9196384a1f87030c3cb9c7999033fd7f3",
+    "c18-p1-p8-cold513": "10b7275acf59d1d4d5671d7ce459abe0c1c59a1f3dd43bdafbdbac8a80d8a72c",
+    "c18-p2-p12-cold513": "cc6b7de4333b9b918178ba5b4ae7f9b2dfbaaa8899cc3fc014b79502e1c54cb0",
+    "c18-p2-p8-cold513": "ce779db09137425f3e9cc0bdb9802c5905d766e89accbacf49e0c669c3a224e0"
+  },
+  "performance_policy": "descriptive thermal recovery; no server speed threshold existed in C9/C11 and no timing promotion is inferred",
+  "phase_order": [
+    "P1",
+    "P2"
+  ],
+  "primary_pair_metric": "completion-fenced API request elapsed seconds for the single 513+4 request",
+  "prior_c16_idle_consumed_s": 394.4515725659985,
+  "prior_c17_idle_consumed_s": 1804.7343934960008,
+  "profile_changes": [
+    "-ngl 8 vs 12 only"
+  ],
+  "schema": "c18-cpu100-thermal-retest-protocol-v1",
+  "secondary_pair_metrics": [
+    "backend prefill seconds",
+    "backend four-token decode seconds"
+  ],
+  "server_backend": "1248fd8fa8cfebaece5ea992e4d951c1e18bb9d5",
+  "stop_policy": "no hidden retry; preserve all guard/evidence failures",
+  "token_ids_sha256": "e19cb14e4c38e8f1b153a58c1d3450ded2b402d82f5798961a1246285099d316"
+}
