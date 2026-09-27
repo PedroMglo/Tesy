@@ -27,3 +27,46 @@ jobs:
           done
       - name: Require documentation for final campaigns
         run: python ci/check_campaign_coverage.py --repo ../..
+
+  pdf-preview:
+    name: Build PDF previews
+    needs: evidence
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    defaults:
+      run:
+        working-directory: docs/research-reports
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install document toolchain
+        run: |
+          sudo apt-get update
+          sudo apt-get install --yes --no-install-recommends latexmk texlive-luatex texlive-latex-extra texlive-lang-portuguese texlive-science texlive-bibtex-extra biber
+      - run: python -m pip install -r tools/requirements.txt
+      - name: Build reproducible preview PDFs
+        run: |
+          for report in $(python -c 'import json; print(" ".join(r["id"] for r in json.load(open("registry.json"))["reports"]))'); do
+            if ! python tools/build_report.py "$report" --mode draft --check-reproducible; then
+              find _build -type f \( -name report.log -o -name build.log \) -print -exec tail -n 160 {} \;
+              exit 1
+            fi
+          done
+      - name: Upload PDF previews
+        uses: actions/upload-artifact@v4
+        with:
+          name: tesy-reports-preview-${{ github.event.pull_request.number || github.sha }}
+          path: docs/research-reports/published/**/draft-*/
+          if-no-files-found: error
+          retention-days: 14
+      - name: Upload TeX diagnostics on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: tesy-reports-tex-diagnostics-${{ github.run_id }}
+          path: docs/research-reports/_build/**
+          if-no-files-found: warn
+          retention-days: 14
