@@ -7,15 +7,16 @@
     "M4": "NOT_RUN"
   },
   "mission": "local usable main GPT-OSS 120B, original weights and authoritative routing",
-  "next_action": "C10b new start-temperature policy and preflight, same absolute 95 C guard; init-only then minimum forward then 513-ID diagnostic if each gate passes",
+  "next_action": "C11 P12+preload ON original backend ub32 server: static accounting and new E18 init/forward admission, then 513-ID cold diagnostic if valid; numeric promotion remains separate",
   "open_hypotheses": [
     "Existing native preload has confirmed medium prefill gain; test whether serving and exact-prefix reuse improve user-visible latency",
-    "P8 native ub64 can reduce graph callbacks but changes native Flash arithmetic; separate profile pending",
-    "Exact prefix reuse and wave critical fraction remain untested"
+    "Exact prefix reuse and wave critical fraction remain untested",
+    "P12 ub32 with native preload may shift CPU work to GPU and admit the 8K server cold prefill within guards"
   ],
   "rejected_claims": [
     "P12 general-medium timing gain >=5% at 496+32 under E18",
-    "Unmitigated 8K P8 preload-on E18 server qualified for 513-token cold prefill: thermal guard failed before completion"
+    "Unmitigated 8K P8 preload-on E18 server qualified for 513-token cold prefill: thermal guard failed before completion",
+    "P8 native ub64 preload-on E18 8K server can complete the 513-ID cold request under CPU95 guard"
   ],
   "schema": "120b-program-index-v1",
   "units": [
@@ -48,7 +49,12 @@
       "identity": "c10",
       "root": "results/c10-20260927T1513Z",
       "status": "NATIVE64_MODEL_FREE_PASS_PRECONDITION_BLOCKED_NO_MODEL"
+    },
+    {
+      "identity": "c10b",
+      "root": "results/c10b-20260927T1520Z",
+      "status": "NATIVE64_INIT_AND_FORWARD_PASS_513_CPU_THERMAL_FAIL"
     }
   ],
-  "updated_utc": "2026-09-27T15:19:49.715864+00:00"
+  "updated_utc": "2026-09-27T15:28:40.972522+00:00"
 }
