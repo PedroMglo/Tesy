@@ -26,7 +26,7 @@ def sha(path):
 
 def launch(root,mode,commit,arm,pair,protocol):
     case,count,gate=CASES[mode]
-    timeout=300 if mode=="screen113" else 600
+    timeout={"screen113":300,"screen496":600,"confirm496":600,"long1522":1200}[mode]
     run_id=f"c8-{gate}-pair{pair}-{arm}"
     stem=root/"raw"/run_id
     if any(Path(str(stem)+suffix).exists() for suffix in
@@ -86,13 +86,16 @@ def main():
     p.add_argument("measurement_commit")
     args=p.parse_args()
     root=args.root
-    suffix={"screen113":"113","screen496":"496","confirm496":"496-confirm"}[args.mode]
+    suffix={"screen113":"113","screen496":"496","confirm496":"496-confirm",
+            "long1522":"1522"}[args.mode]
     destination=root/("timing-runner-"+suffix+".json")
     if destination.exists() or (root/("timing-pairs-"+suffix+".json")).exists():
         p.error("no-replace C8 timing result exists")
     actual=subprocess.check_output(["git","rev-parse","HEAD"],text=True).strip()
     dirty=subprocess.check_output(["git","status","--porcelain"],text=True).strip()
-    protocol_path=root/("confirmation-protocol.json" if args.mode=="confirm496" else "timing-protocol.json")
+    protocol_file=("confirmation-protocol.json" if args.mode=="confirm496" else
+                   "long-protocol.json" if args.mode=="long1522" else "timing-protocol.json")
+    protocol_path=root/protocol_file
     protocol=strict_json(protocol_path.read_text())
     if actual!=args.measurement_commit or dirty or model_stat()!=protocol["model_stat"] or \
        sha("tools/c7_profile_probe")!=protocol["binary_sha256"] or \

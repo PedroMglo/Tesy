@@ -24,3 +24,12 @@ class PreloadDecisionTests(unittest.TestCase):
         self.assertEqual(classify("confirm496",negative,med),"NO_GO_PRELOAD_CONFIRM496")
         self.assertEqual(classify("confirm496",pairs,{**med,"tpot_aggregate_s":-5.1}),
                          "NO_GO_PRELOAD_CONFIRM496")
+
+    def test_long_check_preserves_medium_claim_when_it_fails(self):
+        pairs=[{"gains_pct":{"work_s":9}}, {"gains_pct":{"work_s":8}}]
+        med={"prefill_s":11,"work_s":8.5,"tpot_aggregate_s":-4}
+        self.assertEqual(classify("long1522",pairs,med),"LONG1522_CHECK_PASS")
+        self.assertEqual(classify("long1522",pairs,{**med,"prefill_s":9.9}),
+                         "NO_GO_LONG1522")
+        negative=[pairs[0],{"gains_pct":{"work_s":-0.1}}]
+        self.assertEqual(classify("long1522",negative,med),"NO_GO_LONG1522")

@@ -18,10 +18,12 @@ MODEL = "/home/pmglo/models/gpt-oss-120b-gguf/gpt-oss-120b-MXFP4.gguf"
 BINARY = "tools/c7_profile_probe"
 ORDERS = {"screen113":(("off","on"),("on","off")),
           "screen496":(("off","on"),("on","off")),
-          "confirm496":(("off","on"),("on","off"),("off","on"))}
+          "confirm496":(("off","on"),("on","off"),("off","on")),
+          "long1522":(("off","on"),("on","off"))}
 CASES = {"screen113":("latency-short",113,"g3"),
          "screen496":("latency-medium",496,"g4"),
-         "confirm496":("latency-medium",496,"g5")}
+         "confirm496":("latency-medium",496,"g5"),
+         "long1522":("latency-long",1522,"g6")}
 
 
 def classify(mode,pairs,med):
@@ -37,6 +39,11 @@ def classify(mode,pairs,med):
            all(x["gains_pct"]["work_s"]>0 for x in pairs) and \
            med["tpot_aggregate_s"]>=-5
         return "CONFIRM496_GO" if go else "NO_GO_PRELOAD_CONFIRM496"
+    if mode=="long1522":
+        go=med["prefill_s"]>=10 and med["work_s"]>=8 and \
+           all(x["gains_pct"]["work_s"]>=0 for x in pairs) and \
+           med["tpot_aggregate_s"]>=-5
+        return "LONG1522_CHECK_PASS" if go else "NO_GO_LONG1522"
     raise GateError("unknown C8 timing classification")
 
 
@@ -121,7 +128,9 @@ def main():
     p.add_argument("--output",type=Path,required=True)
     args=p.parse_args()
     try:
-        protocol_path=args.root/("confirmation-protocol.json" if args.mode=="confirm496" else "timing-protocol.json")
+        protocol_file=("confirmation-protocol.json" if args.mode=="confirm496" else
+                       "long-protocol.json" if args.mode=="long1522" else "timing-protocol.json")
+        protocol_path=args.root/protocol_file
         protocol=strict_json(protocol_path.read_text())
         case,count,gate=CASES[args.mode]
         prompt,continuation=ids_for(case)
@@ -136,11 +145,14 @@ def main():
                 run_id=f"c8-{gate}-pair{pair}-{arm}"
                 arms.append(inspect(args.root,run_id,arm,case,count,args.measurement_commit,
                                     prompt,continuation,protocol))
-        control_key="screen496" if args.mode=="confirm496" else args.mode
-        reference=Path(protocol["p8_control_raw"][control_key])
-        if sha(reference)!=protocol["p8_control_sha256"][control_key]:
-            raise GateError("contemporary P8 OFF control raw changed")
-        baseline=reference.read_bytes()
+        if args.mode=="long1522":
+            baseline=next(data for seal,data in arms if seal["run_id"]=="c8-g6-pair1-off")
+        else:
+            control_key="screen496" if args.mode=="confirm496" else args.mode
+            reference=Path(protocol["p8_control_raw"][control_key])
+            if sha(reference)!=protocol["p8_control_sha256"][control_key]:
+                raise GateError("contemporary P8 OFF control raw changed")
+            baseline=reference.read_bytes()
         for seal,data in arms:
             if data!=baseline:
                 first=next(i for i in range(33*VOCAB) if
