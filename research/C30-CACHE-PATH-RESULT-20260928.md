@@ -1,0 +1,6 @@
+# C30 cache-path diagnostic result
+
+- Base/source: original backend unchanged; C30 diagnostic logging used `LLAMA_SERVER_SLOTS_DEBUG=1`, verbosity4. Measurement commits d1 `09b3a8ef7c4f8ce0d493d574f18ec68f44bac1f5`, d2 `1a80386ba0483cfa118defecc298410b8dfe36c1`. C28/C29 FAILs remain.
+- Both fresh processes completed two synthetic turns and hit the cache: second `cache_n=2036`, `prompt_n=143` for 2179 official IDs. Slot debug printed an effective old/new boundary at2036, where prior generated analysis differs from the next prompt's frozen final answer. Neither log contains the source's SWA/checkpoint fallback marker. Instrumented times are diagnostic only.
+- D1 and D2 were the maximum two runs frozen. The C29 miss of only35 cached tokens did not recur, so the cause remains UNKNOWN. These two hits do not reclassify C29, establish a miss rate, or qualify a reliable 20-request session.
+- Decision: `INCOMPLETE_DIAGNOSTIC_TWO_CACHE_HITS`. M3 partial; M4 NOT_RUN; C15 source-only; default unchanged. Next option is a new finite fresh-process diagnostic identity, declared before runs, to capture the miss path. If that also fails to reproduce, pivot to a different serving/cache configuration or source-level instrumentation instead of repeating indefinitely.
