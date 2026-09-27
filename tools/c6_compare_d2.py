@@ -99,32 +99,81 @@ def capture_rows(stem):
         if reader.fieldnames != header:
             raise EvidenceError(f"{stem}: capture index schema changed")
         lines = list(reader)
+    if "-attn-" in stem:
+        stages = {s: 0 for s in ("attn_norm", "Q_proj", "Q_bias", "Q_reshape", "Q_rope",
+                                  "K_proj", "K_bias", "K_reshape", "K_rope", "V_proj",
+                                  "V_bias", "V_reshape", "flash_attn", "kqv_out", "attn_out")}
+    elif "-layer-" in stem:
+        stages = {"attn_norm": 0, **{"l_out": tuple(range(36))}}
+    elif "-gpu29-" in stem:
+        stages = {"anchor": 0, **{s: 29 for s in
+                  ("attn_norm", "attn_out", "ffn_inp", "attn_post_norm", "ffn_moe_out", "l_out")}}
+    elif "-gpu29attn-" in stem or "-gpu29src-" in stem:
+        stages = {"anchor": 0, **{s: 29 for s in
+                  ("Q_proj", "Q_bias", "Q_reshape", "Q_rope", "K_proj", "K_bias",
+                   "K_reshape", "K_rope", "V_proj", "V_bias", "V_reshape",
+                   "flash_attn", "kqv_out", "attn_out")}}
+    else:
+        raise EvidenceError(f"{stem}: unknown capture schema")
+    ubatch = 64 if "-c64-" in stem else 32
+    chunks = [(i, i*ubatch, min(ubatch, 113-i*ubatch))
+              for i in range((113+ubatch-1)//ubatch)]
+    expected = {(chunk, stage, layer) for chunk, _, _ in chunks
+                for stage, layers in stages.items()
+                for layer in (layers if isinstance(layers, tuple) else (layers,))}
+    widths = {"Q_proj":4096, "Q_bias":4096, "kqv_out":4096,
+              "K_proj":512, "K_bias":512, "V_proj":512, "V_bias":512,
+              "Q_reshape":4096, "Q_rope":4096, "flash_attn":4096,
+              "K_reshape":512, "K_rope":512, "V_reshape":512}
     rows = {}
     digests = []
+    seen = set()
     for r in lines:
         if set(r) != set(header) or r["type"] != "f32":
             raise EvidenceError(f"{stem}: capture dtype/metadata changed")
-        n, count, start, layer = (int(r[k]) for k in ("n_tokens", "bytes", "first_abs", "layer"))
+        chunk, n, count, start, layer = (int(r[k]) for k in
+                                          ("chunk", "n_tokens", "bytes", "first_abs", "layer"))
         ne = tuple(int(v) for v in r["ne"].split(","))
         nb = tuple(int(v) for v in r["nb"].split(","))
+        state = (chunk, r["stage"], layer)
+        if state not in expected or state in seen:
+            raise EvidenceError(f"{stem}: extra/duplicate capture state: {state}")
+        seen.add(state)
+        _, chunk_start, chunk_n = chunks[chunk]
+        masked = r["stage"] == "l_out" and layer == 35 and chunk_start+chunk_n < 113
+        width = widths.get(r["stage"], 2880)
+        if r["stage"] in ("Q_reshape", "Q_rope", "flash_attn"):
+            shape = (64,64,n,1)
+        elif r["stage"] in ("K_reshape", "K_rope", "V_reshape"):
+            shape = (64,8,n,1)
+        else:
+            shape = (width,n,1,1)
+        strides = (4,4*shape[0],4*shape[0]*shape[1],4*shape[0]*shape[1]*shape[2])
+        if ne != shape or nb != strides or count != width*n*4:
+            raise EvidenceError(f"{stem}: capture shape/stride/byte count invalid: {state}")
         if n == 0:
-            if count or r["file"] != "-":
+            if not masked or count or r["file"] != "-" or start != -1:
                 raise EvidenceError(f"{stem}: invalid empty output")
             continue
-        if r["file"] != Path(r["file"]).name or n < 1 or start < 0 or start+n > 113 or \
-           count % (n*4) or nb[0] != 4 or len(ne) != 4 or len(nb) != 4:
-            raise EvidenceError(f"{stem}: capture shape/stride invalid")
+        expected_n = 1 if r["stage"] == "l_out" and layer == 35 else chunk_n
+        expected_start = 112 if expected_n == 1 else chunk_start
+        if masked or n != expected_n or start != expected_start or \
+           r["file"] != f"chunk{chunk}_{r['stage']}_{layer}.f32":
+            raise EvidenceError(f"{stem}: capture chunk/position/file invalid: {state}")
         payload = (root / r["file"]).read_bytes()
         if len(payload) != count:
             raise EvidenceError(f"{stem}: capture file truncated")
         read_f32(root / r["file"], count//4)
-        width = count//(n*4)
         digests.append((r["file"], sha(payload)))
         for i in range(n):
             key = (r["stage"], layer, start+i)
             if key in rows:
                 raise EvidenceError(f"{stem}: duplicate logical capture state")
             rows[key] = payload[i*width*4:(i+1)*width*4]
+    if seen != expected:
+        raise EvidenceError(f"{stem}: missing capture states: {sorted(expected-seen)[:4]}")
+    if {p.name for p in root.glob("*.f32")} != {name for name, _ in digests}:
+        raise EvidenceError(f"{stem}: extra/missing capture files")
     root_digest = sha("".join(f"{name}:{digest}\n" for name,digest in sorted(digests)).encode())
     return rows, {"index_sha256": file_sha(index), "raw_file_count": len(digests),
                   "raw_root_digest": root_digest}
@@ -135,9 +184,12 @@ def comparison(a, b, stage, layer, tokens):
     first = None
     count = 0
     max_abs = 0.0
+    width = 4096 if stage in ("Q_proj", "Q_bias", "Q_reshape", "Q_rope", "flash_attn", "kqv_out") \
+        else 512 if stage in ("K_proj", "K_bias", "K_reshape", "K_rope", "V_proj", "V_bias", "V_reshape") \
+        else 2880
     for t in tokens:
         key = (stage, layer, t)
-        if key not in a or key not in b or len(a[key]) != len(b[key]):
+        if key not in a or key not in b or len(a[key]) != width*4 or len(b[key]) != width*4:
             raise EvidenceError(f"capture state missing/shape changed: {key}")
         left, right = a[key], b[key]
         if left == right:
@@ -153,6 +205,39 @@ def comparison(a, b, stage, layer, tokens):
                 max_abs = max(max_abs, abs(x-y))
     return {"equal_rows": matched, "compared_rows": len(tuple(tokens)),
             "first_difference": first, "different_f32": count, "max_abs": max_abs}
+
+
+def classify_diagnostic(logits_equal, layers, gpuop, gpuattn, sources, replay):
+    """Classify from observed predecessors, never from the historical fixture label."""
+    if logits_equal:
+        return "COMPAT_RECOVERED", None
+    ordered = [("layer_outputs", str(i), layers[str(i)]) for i in range(29)]
+    ordered += [("gpu_layer29_ops", s, gpuop[s]) for s in
+                ("attn_norm", "attn_out", "ffn_inp", "attn_post_norm", "ffn_moe_out", "l_out")]
+    ordered += [("gpu_layer29_attention", s, gpuattn[s]) for s in
+                ("Q_proj", "Q_bias", "Q_reshape", "Q_rope", "K_proj", "K_bias",
+                 "K_reshape", "K_rope", "V_proj", "V_bias", "V_reshape", "flash_attn")]
+    # Logical causal order within layer 29 is anchor, Q/K/V, Flash, then outputs.
+    predecessors = [("layer_outputs", str(i), layers[str(i)]) for i in range(29)]
+    predecessors += [("gpu_layer29_ops", "attn_norm", gpuop["attn_norm"])]
+    predecessors += [("gpu_layer29_attention", s, gpuattn[s]) for s in
+                     ("Q_proj", "Q_bias", "Q_reshape", "Q_rope", "K_proj", "K_bias",
+                      "K_reshape", "K_rope", "V_proj", "V_bias", "V_reshape")]
+    for family, stage, result in predecessors:
+        if result["different_f32"]:
+            return "EARLIER_DIVERGENCE", {"family": family, "stage": stage,
+                                           **result["first_difference"]}
+    flash = gpuattn["flash_attn"]
+    if flash["different_f32"] and all(v["common_input_equal"] for v in sources.values()) and \
+       replay["same_common_input_shape32_equals_A32"] and \
+       replay["same_common_input_shape64_second32_differs"]:
+        return "COMPAT_NOT_RECOVERED_NEXT_DIVERGENCE", {
+            "family":"gpu_layer29_attention", "stage":"flash_attn", **flash["first_difference"]}
+    for family, stage, result in ordered:
+        if result["different_f32"]:
+            return "DIVERGENCE_UNLOCALIZED", {"family":family,"stage":stage,
+                                               **result["first_difference"]}
+    return "DIVERGENCE_UNLOCALIZED", None
 
 
 def main():
@@ -263,7 +348,11 @@ def main():
         different = [i for i in range(VOCAB) if a[4*i:4*i+4] != c[4*i:4*i+4]]
         av = struct.unpack(f"<{VOCAB}f", a); cv = struct.unpack(f"<{VOCAB}f", c)
         delta = [y-x for x,y in zip(av,cv)]
-        report = {"schema": "c6-d2-short-diagnostic-v1", "status": "COMPAT_NOT_RECOVERED_NEXT_DIVERGENCE",
+        replay_claim = {"same_common_input_shape32_equals_A32": True,
+                        "same_common_input_shape64_second32_differs": True}
+        status, location = classify_diagnostic(a == c, layers, gpuop, gpuattn, sources, replay_claim)
+        report = {"schema": "c6-d2-short-diagnostic-v1", "status": status,
+                  "observed_first_difference": location,
                   "runs": runs, "capture_seals_post_run": seals,
                   "bridges": {"A0_eq_A_eq_Aplus": True, "B_eq_C5_B0": True, "C1_eq_C2": True},
                   "final_logits": {"n_vocab": VOCAB, "different_f32_bitwise": len(different),
@@ -278,9 +367,8 @@ def main():
                                         "C64_sha256": sha(replay["C64"]),
                                         "C32second_sha256": sha(replay["C32second"]),
                                         "same_form_bridges_bitwise": True,
-                                        "same_common_input_shape32_equals_A32": True,
-                                        "same_common_input_shape64_second32_differs": True},
-                  "scope": "113 fixed IDs, one external b256 decode, layer29 GPU Flash first next difference at token48/feature64; no performance promotion"}
+                                        **replay_claim},
+                  "scope": "113 fixed IDs, one external b256 decode; observed location and no performance promotion"}
     except Exception as exc:
         report = {"schema": "c6-d2-short-diagnostic-v1", "status": "FAIL_EVIDENCE",
                   "reason": f"{type(exc).__name__}: {exc}"}

@@ -39,6 +39,45 @@ def backend_library_hashes(binary, backend_dir):
     return result
 
 
+def process_identity(pid):
+    stat = Path(f"/proc/{pid}/stat").read_text()
+    fields = stat[stat.rfind(")") + 2:].split()
+    start_ticks = int(fields[19])
+    cgroup = next(line.split("::", 1)[1].strip()
+                  for line in Path(f"/proc/{pid}/cgroup").read_text().splitlines()
+                  if line.startswith("0::"))
+    inode = (Path("/sys/fs/cgroup") / cgroup.lstrip("/")).stat().st_ino
+    return {"pid": pid, "start_ticks": start_ticks,
+            "cgroup_path": cgroup, "cgroup_inode": inode}
+
+
+def mapped_backend_libraries(pid, backend_dir):
+    """Read actual mappings; include unexpected llama/ggml libraries outside the backend."""
+    root = backend_dir.resolve()
+    found = {}
+    for line in Path(f"/proc/{pid}/maps").read_text().splitlines():
+        path = line.rsplit(" ", 1)[-1]
+        if not path.startswith("/") or " (deleted)" in line:
+            continue
+        candidate = Path(path).resolve()
+        if not candidate.is_file() or not any(
+                tag in candidate.name for tag in ("libllama.so", "libggml.so", "libggml-")):
+            continue
+        key = str(candidate.relative_to(root)) if candidate.is_relative_to(root) else str(candidate)
+        found[key] = sha256(candidate)
+    return found
+
+
+def relevant_environment(env):
+    exact = {"LD_LIBRARY_PATH", "LD_PRELOAD", "CUDA_VISIBLE_DEVICES", "CUDA_DEVICE_ORDER"}
+    return {key: value for key, value in env.items()
+            if key in exact or key.startswith(("LLAMA_", "TESY_", "GGML_", "CUDA_"))}
+
+
+def mapped_libraries_match(expected, mapped):
+    return type(expected) is dict and bool(expected) and type(mapped) is dict and mapped == expected
+
+
 def proc_status(pid):
     try:
         lines = Path(f"/proc/{pid}/status").read_text().splitlines()
@@ -231,6 +270,7 @@ def main():
         "cache_condition": a.cache_condition,
         "command": cmd,
         "explicit_env": explicit_env,
+        "relevant_environment": relevant_environment(child_env),
         "stdin_file": a.stdin_file,
         "stdin_sha256": sha256(a.stdin_file) if a.stdin_file else None,
         "limits": {"timeout_s": a.timeout_s, "max_rss_gib": a.max_rss_gib,
@@ -257,6 +297,12 @@ def main():
         manifest["started_utc"] = dt.datetime.now(dt.timezone.utc).isoformat()
         process = subprocess.Popen(cmd, stdin=stdin, stdout=stdout, stderr=stderr,
                                    start_new_session=True, env=child_env)
+        try:
+            launch_identity = process_identity(process.pid)
+        except (OSError, ValueError, StopIteration) as exc:
+            stop_own_group(process)
+            raise RuntimeError(f"cannot establish child identity: {exc}") from exc
+        manifest["process_identity"] = launch_identity
         reason = None
         maxima = {"rss_bytes": 0, "swap_bytes": 0, "cgroup_memory_bytes": 0,
                   "cgroup_peak_bytes": 0,
@@ -264,6 +310,7 @@ def main():
                   "cpu_tctl_c": 0, "nvme_composite_c": 0,
                   "direct_model_fds": 0, "buffered_model_fds": 0}
         last = {}
+        mapped = None
         try:
             while process.poll() is None:
                 status = proc_status(process.pid)
@@ -286,14 +333,29 @@ def main():
                 thermal = thermal_state()
                 cg = cgroup_state()
                 fds = model_fd_state(process.pid, model_path)
+                try:
+                    identity = process_identity(process.pid)
+                    if identity != launch_identity:
+                        reason = "PROCESS_IDENTITY_CHANGED"
+                        stop_own_group(process)
+                        break
+                    candidate_mapped = mapped_backend_libraries(process.pid, backend_dir)
+                    if candidate_mapped:
+                        mapped = candidate_mapped
+                except (OSError, ValueError, StopIteration):
+                    if process.poll() is None:
+                        reason = "PROCESS_IDENTITY_OR_MAPS_MISSING"
+                        stop_own_group(process)
+                    break
                 sample = {"elapsed_s": round(time.monotonic() - t0, 3), "pid": process.pid, "proc": status,
+                          "process_identity": identity,
                           "mem_available_bytes": avail, "gpu": gpu, "thermal": thermal, "cgroup": cg,
                           "model_fds": fds}
                 samples.write(json.dumps(sample) + "\n")
                 samples.flush()
                 last = sample
-                maxima["rss_bytes"] = max(maxima["rss_bytes"], status.get("VmRSS", 0))
-                maxima["swap_bytes"] = max(maxima["swap_bytes"], status.get("VmSwap", 0))
+                maxima["rss_bytes"] = max(maxima["rss_bytes"], status["VmRSS"])
+                maxima["swap_bytes"] = max(maxima["swap_bytes"], status["VmSwap"])
                 if cg:
                     maxima["cgroup_memory_bytes"] = max(maxima["cgroup_memory_bytes"], cg["memory_current"] or 0)
                     maxima["cgroup_peak_bytes"] = max(maxima["cgroup_peak_bytes"], cg["memory_peak"] or 0)
@@ -312,7 +374,7 @@ def main():
                 elif a.require_telemetry and (not status or not cg or not gpu or not thermal or avail is None or
                                               "cpu_tctl_c" not in thermal or "nvme_composite_c" not in thermal):
                     reason = "REQUIRED_TELEMETRY_MISSING"
-                elif status.get("VmSwap", 0) > 0:
+                elif status["VmSwap"] > 0:
                     reason = "SWAP_USED"
                 elif cg and cg["swap_current"] and cg["swap_current"] > 0:
                     reason = "CGROUP_SWAP_USED"
@@ -322,7 +384,7 @@ def main():
                     reason = "CGROUP_LIMIT_HIT"
                 elif cg and cg["memory_peak"] is not None and cg["memory_max"] is not None and cg["memory_peak"] > cg["memory_max"]:
                     reason = "CGROUP_PEAK_EXCEEDED"
-                elif status.get("VmRSS", 0) > a.max_rss_gib * 2**30:
+                elif status["VmRSS"] > a.max_rss_gib * 2**30:
                     reason = "RSS_GUARD"
                 elif avail is not None and avail < a.min_available_gib * 2**30:
                     reason = "HOST_HEADROOM_GUARD"
@@ -351,6 +413,12 @@ def main():
                      "stop_reason": reason, "maxima": maxima, "last_sample": last,
                      "stdout_path": str(stem) + ".stdout", "stderr_path": str(stem) + ".stderr",
                      "cgroup_end": cgroup_state()})
+    manifest["mapped_backend_libraries_sha256"] = mapped
+    expected_libs = manifest["backend_libraries_sha256"]
+    manifest["mapped_libraries_match_ldd"] = mapped_libraries_match(expected_libs, mapped)
+    if a.require_telemetry and not manifest["mapped_libraries_match_ldd"] and reason is None:
+        reason = "MAPPED_LIBRARY_IDENTITY_MISMATCH"
+        manifest["stop_reason"] = reason
     manifest["output_sha256"] = {suffix: sha256(str(stem) + suffix)
                                  for suffix in (".stdout", ".stderr", ".samples.jsonl")}
     temporary = Path(str(stem) + ".json.tmp")

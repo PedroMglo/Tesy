@@ -23,7 +23,13 @@ def no_duplicates(pairs):
 
 
 def strict_json(data):
+    def finite_float(value):
+        parsed = float(value)
+        if not math.isfinite(parsed):
+            raise GateError(f"nonfinite JSON number: {value}")
+        return parsed
     return json.loads(data, object_pairs_hook=no_duplicates,
+                      parse_float=finite_float,
                       parse_constant=lambda value: (_ for _ in ()).throw(GateError(f"nonfinite JSON: {value}")))
 
 
