@@ -1,0 +1,6 @@
+# C16 thermal recovery preflight
+
+- Objective/base: test whether changed physical placement permits the previously thermally blocked 513-ID cold server request, then assess P8 control versus P12 candidate in new alternating pairs. Base checkpoint `d3beba892d85256c492ee2bf239cea37712646cf`; original backend pin, binary, model and raw failures are preserved.
+- Evidence class so far: historical raw reaudit and current model-free/host preflight. Four historical thermal FAILs remain FAIL; C11/C12 one-request resource passes reached CPU95.0 C and carry no margin. C8 preload +16.5937% is confined to its confirmed 496+32 teacher-forced probe. M3/M4 and C15 execution remain NOT_RUN.
+- Alternative: the cold prefill can still reach CPU95 even in the reported cooler placement, or P12 and P8 can differ in heat without an admissible paired completion. C16 freezes P8→P12 then P12→P8; one source flag, `-ngl`, changes. The protocol checks process/resource evidence and deterministic response repetition, with 8K full-logit reference still outside its scope.
+- Decision: allow only T0 init after the 5-minute admission in `results/c16-thermal-recovery-20260927T1632Z/protocol.json`. Any failed idle, model identity, cgroup, library, output or telemetry gate stops the unit. See the root preflight and audit for values, run IDs and exact gates.

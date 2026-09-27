@@ -1,0 +1,50 @@
+{
+  "ambient_temperature": "UNKNOWN",
+  "base_control": "C9 P8 ub32 preload ON; C11 P12 ub32 preload ON",
+  "checkpoint_commit": "d3beba892d85256c492ee2bf239cea37712646cf",
+  "cooling_condition": "changed_physical_placement (owner report)",
+  "gain_formula": "100*(P8-P12)/P8 with positive P8 denominator, independently for each new pair",
+  "idle_cpu_limit_c": 55,
+  "idle_max_s": 900,
+  "idle_min_s": 300,
+  "idle_sample_interval_target_s": 0.8,
+  "numeric_limit": "8K server full-logit reference NOT_RUN",
+  "pair_order": [
+    "P8",
+    "P12",
+    "P12",
+    "P8"
+  ],
+  "per_run_protocol_sha256": {
+    "c16-t0-p12-init": "94d7d3878b28a8e9d8545d7f55ef6eac2f5aeff7021a718ea8c3a11097a72edd",
+    "c16-t0-p8-init": "807b4b58f609b065a28aeb8f2e86169a7481a50cf2823a98e9f79dc9097570c5",
+    "c16-t1-p12-smoke78": "161bb16969b35a13817c537fb5da7d62d952e6dc0b3ce9e27e1b8af1d8b3108e",
+    "c16-t1-p8-smoke78": "1507a6080d4235f9c00cbfb68e50b0ab8784b74da13ffcf99542ca0305e0bb1d",
+    "c16-t2-p12-cold513": "4a3721cf9d0ae307baa1073a69c1d43bd0da72374753bba23a8c4f1da1559a7d",
+    "c16-t2-p8-cold513": "49fa909d68abc83e16736e7882aae0a32d52f783b4f273be528dc47cee228f91",
+    "c16-t3-p12-cold513": "6424311aaa766d009157a9d4b8a425b6e457152c86b37994a666996082b664aa",
+    "c16-t3-p8-cold513": "c262d138b5c80d9ef8f47d197304b0fbe9e1b173ec018162540ac5af60f9aa0c"
+  },
+  "performance_policy": "descriptive thermal recovery; no server speed threshold existed in C9/C11 and no timing promotion is inferred",
+  "phase_order": [
+    "T0",
+    "T1",
+    "T2",
+    "T3"
+  ],
+  "primary_pair_metric": "completion-fenced API request elapsed seconds for the single 513+4 request",
+  "profile_changes": [
+    "-ngl 8 vs 12 only"
+  ],
+  "schema": "c16-thermal-recovery-protocol-v1",
+  "secondary_pair_metrics": [
+    "backend prefill seconds",
+    "backend four-token decode seconds"
+  ],
+  "server_backend": "1248fd8fa8cfebaece5ea992e4d951c1e18bb9d5",
+  "stop_policy": "no hidden retry; preserve all guard/evidence failures",
+  "token_ids_sha256": {
+    "cold513": "e19cb14e4c38e8f1b153a58c1d3450ded2b402d82f5798961a1246285099d316",
+    "smoke78": "62a2b46ce58d071394cec42017803545b41f5b4c46e97ec754edbd31e97999ac"
+  }
+}

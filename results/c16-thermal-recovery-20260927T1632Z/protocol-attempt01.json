@@ -1,0 +1,42 @@
+{
+  "ambient_temperature": "UNKNOWN",
+  "base_control": "C9 P8 ub32 preload ON; C11 P12 ub32 preload ON",
+  "checkpoint_commit": "d3beba892d85256c492ee2bf239cea37712646cf",
+  "cooling_condition": "changed_physical_placement (owner report)",
+  "idle_max_s": 900,
+  "idle_min_s": 300,
+  "idle_sample_interval_target_s": 0.8,
+  "numeric_limit": "8K server full-logit reference NOT_RUN",
+  "pair_order": [
+    "P8",
+    "P12",
+    "P12",
+    "P8"
+  ],
+  "per_run_protocol_sha256": {
+    "c16-t0-p12-init": "37ebc04632f346e7b9372ccd9eb8dae088a25f18c61ac2359ca03ae3a3c138e9",
+    "c16-t0-p8-init": "72b7aa77cc7eded3e8365e7faa432fe4e1e06b125eb1440385de215e07361759",
+    "c16-t1-p12-smoke78": "8f54debd7c55433abb81892f427c4dbb310b6d221deab857565e2fc788298fa1",
+    "c16-t1-p8-smoke78": "4ff4f3287635e5941d5f4ef56d515d3d0fd33de5804db0c543c70fe0c8f03d4f",
+    "c16-t2-p12-cold513": "59da23d354341567efa124734b06392c101103d4ae0bbcf64738cdad6c28d71f",
+    "c16-t2-p8-cold513": "55c1db706bd4bc28a984ab68f63590bf6019a588bf4d654eb595033fe1495c41",
+    "c16-t3-p12-cold513": "ce723454780345b80d029bc9a88b2669faba954996bc90a1eab4fd8ce1d4e078",
+    "c16-t3-p8-cold513": "f138bdb0e387670308a41ce42a215a550abffc44598402741c8c6447abf55fc4"
+  },
+  "phase_order": [
+    "T0",
+    "T1",
+    "T2",
+    "T3"
+  ],
+  "profile_changes": [
+    "-ngl 8 vs 12 only"
+  ],
+  "schema": "c16-thermal-recovery-protocol-v1",
+  "server_backend": "1248fd8fa8cfebaece5ea992e4d951c1e18bb9d5",
+  "stop_policy": "no hidden retry; preserve all guard/evidence failures",
+  "token_ids_sha256": {
+    "cold513": "e19cb14e4c38e8f1b153a58c1d3450ded2b402d82f5798961a1246285099d316",
+    "smoke78": "62a2b46ce58d071394cec42017803545b41f5b4c46e97ec754edbd31e97999ac"
+  }
+}
