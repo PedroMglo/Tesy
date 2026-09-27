@@ -50,7 +50,10 @@ jobs:
       - name: Build reproducible preview PDFs
         run: |
           for report in $(python -c 'import json; print(" ".join(r["id"] for r in json.load(open("registry.json"))["reports"]))'); do
-            python tools/build_report.py "$report" --mode draft --check-reproducible
+            if ! python tools/build_report.py "$report" --mode draft --check-reproducible; then
+              find _build -type f \( -name report.log -o -name build.log \) -print -exec tail -n 160 {} \;
+              exit 1
+            fi
           done
       - name: Upload PDF previews
         uses: actions/upload-artifact@v4
