@@ -1,0 +1,7 @@
+# C25c official tokenizer diagnosis
+
+- Objective: distinguish C24's frozen input count and prefix failure before generation. Base `65a3a5a`; measurement commit `f8b2811f00b24b801b76fd950ad1f41bf4163696`. C25 and C25b prelaunch SHA failures remain separate and did not load the model.
+- Measured: official template/tokenizer gave 2035 and 2164 IDs for the frozen C24 texts, a delta of 129 and ordered common prefix of 2026. Full ID arrays and SHA receipts are local raw in `results/c25c-token-diagnostic-20260927T2156Z/raw/`; compact decision and hashes are committed. No completion request or model output occurred. The C2 raw relation failure remains a FAIL; `TOKENIZATION_DIAGNOSTIC_PASS` applies only to obtaining valid diagnostic IDs.
+- Resources before request: 300 s qualifying idle; CPU/GPU/NVMe maxima 50.125/42/39.85 C, GPU total 5694 MiB, swap/OOM zero. Five samples cover only the brief loaded server, not sustained inference.
+- Alternative: 128 appended words correspond to 129 official IDs because token boundaries change near insertion; the raw confirms the count but does not by itself prove a general tokenizer rule. Next prospective gate: 127 appended words, requiring exact +128 IDs and the frozen common-prefix minimum before streaming. If that fails, preserve it and derive a fixture from official IDs in a new identity.
+- Decision: C24 bridge remains NOT_RUN after pre-request failure. M3 partial only from C23 synthetic exact-prefix evidence, M4 NOT_RUN. C15 remains source-only; default unchanged.
