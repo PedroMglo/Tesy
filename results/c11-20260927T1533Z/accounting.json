@@ -1,0 +1,37 @@
+{
+  "absolute_guard": "CPU95/GPU80/NVMe70 C, MemAvailable>=6GiB, swap=0",
+  "c10b_p8_513_cgroup_peak_bytes": 15007453184,
+  "c9_p8_513_cgroup_peak_bytes": 14985920512,
+  "c9_p8_ub32_513_gpu_max_mib": 3936,
+  "cgroup_reservation_bytes": 17716740096,
+  "estimate_p12_server_gpu_mib_before_workspace_delta": 5679.962890625,
+  "evidence_class": "GGUF tensor inventory plus prior physical diagnostics; bound is preliminary, admission remains required",
+  "gpu_reservation_mib": 6500,
+  "gpu_uncertainty": "server 8K workspace and preload interaction unknown; init and minimum forward precede 513",
+  "p12_cpu_gpu_pools": [
+    25,
+    11
+  ],
+  "p12_minus_p8_expert_gpu_bytes": 1692057600,
+  "p12_minus_p8_gpu_gguf_delta_bytes": 1828677632,
+  "p12_minus_p8_nonstream_gpu_layer_bytes": 136620032,
+  "p8_cpu_gpu_pools": [
+    29,
+    7
+  ],
+  "per_expert_streamed_bytes": 13219200,
+  "prior_p12_4k_probe_cgroup_peak_bytes": 14170198016,
+  "prior_p12_4k_probe_gpu_peak_mib": 5692,
+  "rss_reservation_bytes": 17179869184,
+  "schema": "c11-p12-server-accounting-v1",
+  "slot_pool_per_layer_bytes": 423014400,
+  "slots_per_layer": 32,
+  "tensor_inventory": "results/c7-20260927T1130Z/accounting.json",
+  "unknown": [
+    "KV/recurrent KV at 8K",
+    "CUDA/graph workspace",
+    "pinned staging",
+    "page cache and allocator reserves",
+    "actual output placement must be read from loader"
+  ]
+}
