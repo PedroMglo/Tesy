@@ -1,0 +1,68 @@
+diff --git a/ggml/src/ggml-cpu/ggml-cpu.c b/ggml/src/ggml-cpu/ggml-cpu.c
+index 8a0e5c2..273bf87 100644
+--- a/ggml/src/ggml-cpu/ggml-cpu.c
++++ b/ggml/src/ggml-cpu/ggml-cpu.c
+@@ -17,0 +18,4 @@
++#ifdef TESY_C15_NVTX
++#include <nvtx3/nvToolsExt.h>
++#endif
++
+@@ -3060,0 +3065,10 @@ static thread_ret_t ggml_graph_compute_thread(void * data) {
++#ifdef TESY_C15_NVTX
++        // ith 0 spans the whole CPU node, including the barrier with worker threads.
++        // Streamed expert MMID weights have exactly the frozen slot count in ne[2].
++        const bool c15_mmid = state->ith == 0 && node->op == GGML_OP_MUL_MAT_ID &&
++                              node->src[0] != NULL && node->src[0]->ne[2] == 32;
++        if (c15_mmid) {
++            nvtxRangePushA("C15_CPU_STREAM_MATMUL_ID");
++        }
++#endif
++
+@@ -3078,0 +3093,5 @@ static thread_ret_t ggml_graph_compute_thread(void * data) {
++#ifdef TESY_C15_NVTX
++        if (c15_mmid) {
++            nvtxRangePop();
++        }
++#endif
+diff --git a/src/llama-moe-stream.cpp b/src/llama-moe-stream.cpp
+index ce17396..5faad79 100644
+--- a/src/llama-moe-stream.cpp
++++ b/src/llama-moe-stream.cpp
+@@ -12,0 +13,7 @@
++#ifdef TESY_C15_NVTX
++#include <atomic>
++#include <nvtx3/nvToolsExt.h>
++static std::atomic<uint64_t> c15_active_pairs {0};
++static std::atomic<uint64_t> c15_all_pairs {0};
++#endif
++
+@@ -342,0 +350,3 @@ void llama_moe_stream::worker_loop() {
++#ifdef TESY_C15_NVTX
++            nvtxRangePushA("C15_EXPERT_PREAD");
++#endif
+@@ -343,0 +354,3 @@ void llama_moe_stream::worker_loop() {
++#ifdef TESY_C15_NVTX
++            nvtxRangePop();
++#endif
+@@ -347,0 +361,3 @@ void llama_moe_stream::worker_loop() {
++#ifdef TESY_C15_NVTX
++            nvtxRangePushA("C15_EXPERT_UPLOAD");
++#endif
+@@ -348,0 +365,3 @@ void llama_moe_stream::worker_loop() {
++#ifdef TESY_C15_NVTX
++            nvtxRangePop();
++#endif
+@@ -430,0 +450,4 @@ void llama_moe_stream::print_stats() const {
++#ifdef TESY_C15_NVTX
++    LLAMA_LOG_INFO("%s: C15 wave pairs active = %" PRIu64 ", all = %" PRIu64 "\n",
++            __func__, c15_active_pairs.load(std::memory_order_relaxed), c15_all_pairs.load(std::memory_order_relaxed));
++#endif
+@@ -811,0 +835,8 @@ void llama_moe_stream_wave_ids(ggml_tensor * dst, int ith, int nth, void * userd
++#ifdef TESY_C15_NVTX
++    uint64_t active = 0;
++    for (int64_t i = 0; i < n; i++) {
++        active += sl->expert_wave[ids[i]] == (uint8_t) w;
++    }
++    c15_active_pairs.fetch_add(active, std::memory_order_relaxed);
++    c15_all_pairs.fetch_add((uint64_t) n, std::memory_order_relaxed);
++#endif
