@@ -1,0 +1,6 @@
+# C12 P16/slots24 init-only result
+
+- Objective/base: E18 model/context admission for the new P16/slots24 original-backend 8K full-SWA server profile, measurement commit `208d18cb431dd6b4b5fbbf2263579346e58b0377`. Evidence class: physical init-only resource measurement; raw remains local under `results/c12-20260927T1540Z/raw/`.
+- Run: `systemd-run --user --scope -p MemoryMax=19327352832 -p MemorySwapMax=0 -- python3 tools/c12_p16s24_server.py results/c12-20260927T1540Z --run init --measurement-commit 208d18cb431dd6b4b5fbbf2263579346e58b0377`. Return 0, five telemetry samples and required source/identity/mapped-library checks passed; zero swap/guard/event failure.
+- Observed: scope 4.632 s; sampled peak GPU total 5990 MiB, RSS 4.388 GB, cgroup 4.165 GB, CPU 49.875 C, GPU 43 C, NVMe 39.85 C. GPU has 510 MiB to the prospective 6500 MiB reservation before forward. Source predicts CPU0–20/GPU21–35 plus output; this server's `-lv 3` log does not enumerate per-layer/tensor placement, so the runtime map remains unverified.
+- Decision: `CAPACITY_ADMITTED_INIT_ONLY`. Forward workspace, 513-ID thermal margin, numerical fidelity and speedup are NOT_RUN. Next: the frozen 78-ID/four-token minimum forward. Default unchanged.
