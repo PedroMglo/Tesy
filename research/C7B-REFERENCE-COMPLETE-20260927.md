@@ -1,0 +1,7 @@
+# C7b P12 routed-layer reference complete
+
+Objective: finish the remaining 30 canonical layers after the six witnesses passed. Measurement commit `d54a015c17fcd73cfec34555615dde136256cd5d`, tree `72c5cf6dd358b5abbeb464328d815ac64a24bc47`, with the same `reference-protocol.json` source and captured index. The results are in `reference-full-summary.json` and `reference-complete.json`, each referencing raw manifests by SHA.
+
+All 30 remaining layers passed ordered router IDs, routing weights and FFN bitwise. Combined with the witness result: 36 canonical loads, 250 numerical comparisons and two explicit `N/A_MASKED` states. The largest reference GPU reading was 1760 MiB, cgroup peak 3,789,242,368 B, CPU 72.875 °C; no swap, OOM, mapped-library mismatch or guard. Each layer was short and observed at start/end with two or three samples; this does not establish sustained telemetry. The alternative of a placement-specific routed-FFN mismatch was rejected for this captured ub32 scope. The C4-style resident reference has 128 expert tensors versus the 32-slot streaming table; that layout limit and lack of independent attention/KV reference remain.
+
+Decision: P12 routed-layer gate PASS for the frozen capture. P8 bridge, paired timing, session, context and quality: NOT_RUN. Next discriminating gate: contemporaneous P8 probe bridge on the 113-ID prefill, then two alternating fresh-process 113+32 teacher-forced pairs. No default change.
