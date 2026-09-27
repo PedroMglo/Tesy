@@ -12,7 +12,7 @@ def event(value):
 class ChatStreamTest(unittest.TestCase):
     def test_reasoning_then_final_with_usage_and_completion_fence(self):
         lines = [
-            event({'choices': [{'delta': {'role': 'assistant'}, 'finish_reason': None}]}),
+            event({'choices': [{'delta': {'role': 'assistant', 'content': None}, 'finish_reason': None}]}),
             event({'choices': [{'delta': {'reasoning_content': 'thinking'}, 'finish_reason': None}]}),
             event({'choices': [{'delta': {'content': ' answer'}, 'finish_reason': None}]}),
             event({'choices': [{'delta': {}, 'finish_reason': 'stop'}]}),
@@ -45,6 +45,12 @@ class ChatStreamTest(unittest.TestCase):
                                                         'finish_reason': None}]})], lambda: 1.0)
         with self.assertRaises(ValueError):
             parse_chat_stream([b'data: {"choices":[],"usage":{"x":1e309}}\n'], lambda: 1.0)
+
+    def test_null_is_absent_but_other_non_string_content_fails(self):
+        for invalid in (0, [], {}):
+            with self.subTest(invalid=invalid), self.assertRaisesRegex(GateError, 'non-string'):
+                parse_chat_stream([event({'choices': [{'delta': {'content': invalid},
+                                                       'finish_reason': None}]})], lambda: 1.0)
 
     def test_frozen_incremental_ids_checked_before_model_outputs(self):
         relation = [{'first': 'a', 'second': 'b', 'expected_delta': 2,

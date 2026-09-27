@@ -84,6 +84,8 @@ def parse_chat_stream(lines, elapsed):
                 raise GateError('tool call outside frozen stream workload')
             for key, target in (('reasoning_content', reasoning), ('content', content)):
                 chunk = delta.get(key, '')
+                if chunk is None:
+                    continue  # server-task.cpp sends content:null in the initial role event
                 if type(chunk) is not str:
                     raise GateError('non-string stream text')
                 if chunk:
