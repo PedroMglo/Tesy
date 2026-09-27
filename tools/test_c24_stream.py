@@ -2,7 +2,7 @@ import json
 import unittest
 
 from c2_gate import GateError
-from c2_server_run import parse_chat_stream
+from c2_server_run import parse_chat_stream, validate_token_relationships
 
 
 def event(value):
@@ -45,3 +45,13 @@ class ChatStreamTest(unittest.TestCase):
                                                         'finish_reason': None}]})], lambda: 1.0)
         with self.assertRaises(ValueError):
             parse_chat_stream([b'data: {"choices":[],"usage":{"x":1e309}}\n'], lambda: 1.0)
+
+    def test_frozen_incremental_ids_checked_before_model_outputs(self):
+        relation = [{'first': 'a', 'second': 'b', 'expected_delta': 2,
+                     'min_common': 3}]
+        validate_token_relationships({'a': [1, 2, 3],
+                                      'b': [1, 2, 3, 4, 5]}, relation)
+        for invalid in ([1, 2, 9, 4, 5], [1, 2, 3, 4]):
+            with self.subTest(invalid=invalid), self.assertRaisesRegex(
+                    GateError, 'incremental token count/common prefix'):
+                validate_token_relationships({'a': [1, 2, 3], 'b': invalid}, relation)

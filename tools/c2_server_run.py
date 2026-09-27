@@ -134,6 +134,20 @@ def stream_chat(payload, timeout, started_monotonic):
                                  lambda: time.monotonic() - started_monotonic)
 
 
+def validate_token_relationships(token_ids, relationships):
+    for relation in relationships:
+        first = token_ids[relation['first']]
+        second = token_ids[relation['second']]
+        common = 0
+        for a, b in zip(first, second):
+            if a != b:
+                break
+            common += 1
+        if len(second) - len(first) != relation['expected_delta'] or \
+                common < relation['min_common']:
+            raise GateError('frozen incremental token count/common prefix invalid')
+
+
 def tasks_for(suite):
     if suite == "smoke1":
         tasks = strict_json(SMOKE.read_text())["tasks"]
@@ -529,6 +543,8 @@ def run(args, protocol, config, task_rows, model):
                         raise GateError(f"official tokenization outside frozen range for {row_id}")
                     tokenization[row_id] = {"count":len(ids),"token_ids_sha256":digest(ids)}
                     token_ids[row_id] = ids
+                validate_token_relationships(token_ids,
+                                             config.get('token_id_relationships', []))
                 preflight["prompt_tokenization"] = tokenization
                 if config.get("freeze_token_ids",False):
                     with open(paths[".tokenization.json"],"x") as out:
