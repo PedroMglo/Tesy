@@ -1,0 +1,5 @@
+# C16 idle cadence block
+
+- Objective/base: first T0 P8 init-only in thermal recovery, measurement commit `3349c13c0ce18b7132f2c45bcd98be4332d49057`; no model forward was planned. Evidence class: live physical idle telemetry, not 120B inference.
+- Observed: 494 samples over 394.452 s, CPU≤53/GPU≤42/NVMe≤35.85 C. A sampler gap of 1.091968 s at elapsed80.029→81.121 s violated the frozen ≤1 s cadence. The current harness tested the maximum gap from the start, so after that gap no later sample could make the same unit admissible. Own sampler PID154603 was stopped; the server was never launched, no model raw was written, GPU compute list and port18367 are clear.
+- Alternative/decision: the reported cooling condition was not tested with 513 IDs. The block is telemetry cadence, not CPU95 thermal recurrence. Preserve C16 as `THERMAL_PREFLIGHT_BLOCKED` and all C9/C10b/C13/C14 FAILs. A new identity can use a prospectively repaired sampler that admits only after an actual contiguous five-minute window with every gap≤1 s; no old sample is relabeled. C15 and M3/M4 remain NOT_RUN.

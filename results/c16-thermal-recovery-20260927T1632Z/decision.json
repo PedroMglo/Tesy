@@ -1,0 +1,23 @@
+{
+  "schema": "c16-thermal-recovery-decision-v1",
+  "status": "THERMAL_PREFLIGHT_BLOCKED",
+  "cause_class": "IDLE_TELEMETRY_CADENCE_NOT_THERMAL_GUARD",
+  "reason": "The frozen sampler saw an idle gap of 1.091967856 s (>1 s). Its global-max rule could not recover within this unit; the own sampler was stopped before any model launch.",
+  "measurement_commit": "3349c13c0ce18b7132f2c45bcd98be4332d49057",
+  "affected_run_id": "c16-t0-p8-init",
+  "idle_samples": 494,
+  "idle_elapsed_s": 394.4515725659985,
+  "first_overlimit_gap_s": 1.0919678560021566,
+  "first_overlimit_gap_elapsed_s": [80.0293470109973, 81.12131486699946],
+  "idle_maxima_c": {"cpu": 53.0, "gpu": 42.0, "nvme": 35.85},
+  "thermal_series_sha256": "814950d4809ed5ced55137a977b19d0ddb30de549c623ae63052f4389f323e88",
+  "server_started": false,
+  "model_loaded": false,
+  "completed_513_pairs": 0,
+  "old_fails_preserved": ["c9-g3-prefix-on", "c10b-g3-short513", "c13-g1-prefix-on", "c14-g3-short513"],
+  "M3": "NOT_RUN",
+  "M4": "NOT_RUN",
+  "C15": "SOURCE_ONLY_NOT_COMPILED_NOT_MEASURED",
+  "next_action": "Create a new campaign identity with a repaired idle sampler that requires one complete consecutive 300 s window with every gap <=1 s; rerun model-free preflight, then T0 only if admitted. Do not reuse C16 run IDs.",
+  "default_changed": false
+}
