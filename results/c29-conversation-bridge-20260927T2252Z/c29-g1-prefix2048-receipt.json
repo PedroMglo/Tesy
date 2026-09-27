@@ -1,0 +1,144 @@
+{
+  "actual_common_prefix_ids": null,
+  "arm": "on",
+  "completed_utc": "2026-09-27T23:08:51.743370+00:00",
+  "cpu_diagnostics": null,
+  "elapsed_s": 588.0227143869997,
+  "idle": {
+    "baseline": null,
+    "cadence_breaks": [],
+    "duration_s": 300.56482719199994,
+    "end": {
+      "cpu_c": 45.375,
+      "cpu_fan_rpm": 2600.0,
+      "elapsed_s": 300.56482719199994,
+      "gpu": {
+        "driver": "615.71.09",
+        "temperature_c": 42.0,
+        "used_mib": 12.0
+      },
+      "gpu_fan_rpm": 2400.0,
+      "mem_available_bytes": 27056537600,
+      "nvme_c": 36.85,
+      "run_id": "c29-g1-prefix2048",
+      "utc": "2026-09-27T22:59:03.488777+00:00"
+    },
+    "last60_trend_c": {
+      "cpu_c": 0.13749999999999574,
+      "gpu_c": 0.0,
+      "nvme_c": -0.10000000000000142
+    },
+    "match_tolerance_c": [
+      5,
+      5,
+      3
+    ],
+    "max_gap_overall_s": 0.7725070009983028,
+    "max_gap_qualifying_s": 0.7725070009983028,
+    "max_start_c": [
+      50,
+      50,
+      45
+    ],
+    "qualifying_duration_s": 300.00355915500404,
+    "qualifying_start_s": 0.561268036995898,
+    "sample_count": 602,
+    "series_sha256": "7dd32be83d90e26ea806ee6801e37c77957384681e961af2c0c4eda967140fcc",
+    "start": {
+      "cpu_c": 49.25,
+      "cpu_fan_rpm": 2600.0,
+      "elapsed_s": 0.06813116400007857,
+      "gpu": {
+        "driver": "615.71.09",
+        "temperature_c": 44.0,
+        "used_mib": 12.0
+      },
+      "gpu_fan_rpm": 2400.0,
+      "mem_available_bytes": 27176951808,
+      "nvme_c": 37.85,
+      "run_id": "c29-g1-prefix2048",
+      "utc": "2026-09-27T22:54:02.992083+00:00"
+    },
+    "status": "PASS"
+  },
+  "maxima": null,
+  "measurement_commit": "92e8ef23837f1952cec0783cf226cd6c712081d9",
+  "order": 1,
+  "phase": "G1",
+  "protocol_sha256": "f2d6cbecf73dfc1c565c274f8730e3a702fc9aa4488edd138f70da1b26b8c896",
+  "raw_sha256": "93fc095a327a93be2d52b3f90b339d389a955535d67d716f428a6493b538535b",
+  "reason": "GateError: C29 conversation cache accounting outside source-derived bounds",
+  "results": [
+    {
+      "id": "c29-first-turn2048",
+      "message_sha256": "5547eefff07c55ea015d3bae88c1dbd1d08cfe58223484d48891a63b067c2f58",
+      "request_elapsed_s": 289.7568051950002,
+      "stream_metrics": {
+        "done_observed": true,
+        "first_final_content_chunk_s": 289.52470921400527,
+        "first_reasoning_chunk_s": 275.21916407700337,
+        "first_text_chunk_s": 275.21916407700337,
+        "interpretation": "client receipt times of non-whitespace SSE chunks; not token timestamps",
+        "sse_event_count": 45
+      },
+      "timings": {
+        "cache_n": 0,
+        "predicted_ms": 15359.919,
+        "predicted_n": 52,
+        "predicted_per_second": 3.385434519544016,
+        "predicted_per_token_ms": 295.3830576923077,
+        "prompt_ms": 274387.715,
+        "prompt_n": 2035,
+        "prompt_per_second": 7.416512798322621,
+        "prompt_per_token_ms": 134.834257985258
+      },
+      "usage": {
+        "completion_tokens": 52,
+        "prompt_tokens": 2035,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "total_tokens": 2087
+      }
+    },
+    {
+      "id": "c29-second-turn128",
+      "message_sha256": "164566a5b7da749f33fbfeff1e70af454de5e73756d572150cb23e7836b83f37",
+      "request_elapsed_s": 293.4639615339984,
+      "stream_metrics": {
+        "done_observed": true,
+        "first_final_content_chunk_s": 293.30401208200055,
+        "first_reasoning_chunk_s": 287.86169437100034,
+        "first_text_chunk_s": 287.86169437100034,
+        "interpretation": "client receipt times of non-whitespace SSE chunks; not token timestamps",
+        "sse_event_count": 19
+      },
+      "timings": {
+        "cache_n": 35,
+        "predicted_ms": 6241.92,
+        "predicted_n": 26,
+        "predicted_per_second": 4.165385009740593,
+        "predicted_per_token_ms": 240.07384615384615,
+        "prompt_ms": 287212.713,
+        "prompt_n": 2144,
+        "prompt_per_second": 7.464850624491682,
+        "prompt_per_token_ms": 133.96115345149252
+      },
+      "usage": {
+        "completion_tokens": 26,
+        "prompt_tokens": 2179,
+        "prompt_tokens_details": {
+          "cached_tokens": 35
+        },
+        "total_tokens": 2205
+      }
+    }
+  ],
+  "run_id": "c29-g1-prefix2048",
+  "schema": "c24-p12-streaming-session-bridge-v1",
+  "server_gate": null,
+  "server_returncode": 0,
+  "status": "FAIL_RESOURCES_OR_EVIDENCE",
+  "stop_reasons": [],
+  "token_id_sha256": null
+}
