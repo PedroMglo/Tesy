@@ -1,0 +1,6 @@
+# C11 P12 server init-only result
+
+- Objective/base: bounded E18 load/context admission of P12 ngl12/ub32/preload-on original-backend 8K full-SWA server, measurement commit `fd67dad8e1c7052c098e510a215db08b5be97097`. Evidence class: physical init-only resource measurement; raw remains local under `results/c11-20260927T1533Z/raw/`.
+- Run: `systemd-run --user --scope -p MemoryMax=19327352832 -p MemorySwapMax=0 -- python3 tools/c11_p12_server.py results/c11-20260927T1533Z --run init --measurement-commit fd67dad8e1c7052c098e510a215db08b5be97097`. Return 0; five endpoint-valid samples, source/identity/mapped-library hashes valid, no swap/guard/event failure.
+- Observed: elapsed 4.630 s; sampled peak RSS 4.948 GB, cgroup 4.707 GB, GPU total 5694 MiB, CPU 51.5 C, GPU 44 C, NVMe 41.85 C. Source expects CPU0–24/GPU25–35 plus output. This server run's `-lv 3` log does not enumerate per-layer/tensor placement; GPU allocation alone is not a placement proof. The C7 P12 probe observed its own loader map, not this 8K server's.
+- Decision: `CAPACITY_ADMITTED_INIT_ONLY`; forward workspace, 513-ID thermals, same-profile numeric reference and placement proof remain NOT_RUN. Next: frozen minimum forward under the same scope/guards. Default unchanged.
