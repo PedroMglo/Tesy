@@ -1,0 +1,35 @@
+{
+  "budget": {
+    "physical_limit_s": 57600,
+    "program_physical_before_s": 5041.717,
+    "this_unit_elapsed_s": 4.367822156998955
+  },
+  "claim_limits": [
+    "init-only does not show first-forward workspace",
+    "server TTFT, exact-prefix reuse, 8K boundary, quality, sustained throughput NOT_RUN"
+  ],
+  "default_changed": false,
+  "failures_preserved": [
+    "C7 initial schema attempt FAIL",
+    "C7c P12 NO_GO_SCREEN496",
+    "historical C6 resources/libraries incomplete"
+  ],
+  "gates": {
+    "G0_contract_accounting": "PASS_MODEL_FREE_WITH_UNKNOWN_8K_WORKSPACE",
+    "G1_init": "CAPACITY_ADMITTED_INIT_ONLY",
+    "G2_minimal_forward": "NOT_RUN",
+    "G3_prefix_session": "NOT_RUN",
+    "functional_12": "NOT_RUN",
+    "sustained_60min_20req": "NOT_RUN"
+  },
+  "measurement_commit": "04c35c7b8275556d91ec5afb4c2baaac9f7e3cf1",
+  "next_action": "freeze and run one minimum server forward at 8K under E18/guards; then admit cold512/prefix tests only if forward margin passes",
+  "profile": "P8 native preload ON, 8K full-SWA single-slot server",
+  "reasons": [
+    "ready in 3.703s with sampled margins; no forward performed",
+    "expert pools are lazy and init-only RSS cannot admit long workload"
+  ],
+  "reference_coverage": "C8 4K API probe full-logit and 36 routed-layer preload fidelity; C9 server/8K numeric reference NOT_RUN",
+  "schema": "c9-decision-v1",
+  "status": "CONTINUE_NEXT_HYPOTHESIS"
+}
