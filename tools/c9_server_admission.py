@@ -102,7 +102,7 @@ def validate_receipt(protocol, config, raw, samples, root, *, run_id=RUN_ID,
     pre = raw['preflight']
     if pre['protocol_sha256'] != sha256(root / protocol_filename) or \
        pre['config'] != dict(config, run_id=run_id) or \
-       pre['relevant_environment'] != {}:
+       pre['relevant_environment'] != relevant_environment(config['explicit_env']):
         raise GateError('server preflight differs from freeze')
     if pre.get('actually_loaded_backend_libraries_sha256') != protocol['identity']['library_sha256']:
         raise GateError('unexpected/missing mapped backend library')
