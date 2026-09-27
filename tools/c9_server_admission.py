@@ -89,24 +89,26 @@ def configuration(root):
     return protocol, config
 
 
-def validate_receipt(protocol, config, raw, samples, root):
-    if raw['stop_reasons'] or raw['returncode'] != 0 or raw['results']:
+def validate_receipt(protocol, config, raw, samples, root, *, run_id=RUN_ID,
+                     protocol_filename='protocol.json', expected_results=0):
+    if raw['stop_reasons'] or raw['returncode'] != 0 or \
+       len(raw['results']) != expected_results:
         raise GateError('server load exit/result invalid')
     pre = raw['preflight']
-    if pre['protocol_sha256'] != sha256(root / 'protocol.json') or \
-       pre['config'] != dict(config, run_id=RUN_ID) or \
+    if pre['protocol_sha256'] != sha256(root / protocol_filename) or \
+       pre['config'] != dict(config, run_id=run_id) or \
        pre['relevant_environment'] != {}:
         raise GateError('server preflight differs from freeze')
     if pre.get('actually_loaded_backend_libraries_sha256') != protocol['identity']['library_sha256']:
         raise GateError('unexpected/missing mapped backend library')
     if pre.get('ready_elapsed_s', 121) > 120:
         raise GateError('server readiness timeout')
-    launch = strict_json((root / 'raw' / f'{RUN_ID}.launch.json').read_text())
-    if launch['preflight_sha256'] != sha256(root / 'raw' / f'{RUN_ID}.preflight.json') or \
+    launch = strict_json((root / 'raw' / f'{run_id}.launch.json').read_text())
+    if launch['preflight_sha256'] != sha256(root / 'raw' / f'{run_id}.preflight.json') or \
        launch['process_identity'] != raw['launch_identity']:
         raise GateError('missing/inconsistent launch receipt')
     for suffix, expected in raw['source_sha256'].items():
-        if sha256(root / 'raw' / f'{RUN_ID}{suffix}') != expected:
+        if sha256(root / 'raw' / f'{run_id}{suffix}') != expected:
             raise GateError('raw SHA mismatch: ' + suffix)
     if len(samples) < 2 or raw['sample_count'] != len(samples):
         raise GateError('endpoint telemetry absent')
