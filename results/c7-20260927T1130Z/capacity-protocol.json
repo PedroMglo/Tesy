@@ -1,0 +1,30 @@
+{
+  "schema": "c7-forward-capacity-diagnostic-v1",
+  "run_id": "c7-cap-p12-forward01",
+  "reason": "G1 init-only did not bound lazily committed CPU expert pools or forward workspace",
+  "hypothesis": "P12 stays within the E18 forward reservation on one 113-ID prefill",
+  "alternative": "forward commits enough pools/workspace to exceed the reservation despite a passing init-only peak",
+  "profile": "P12",
+  "source_protocol": "results/c7-20260927T1130Z/protocol.json",
+  "probe": "tools/c7_profile_probe --ngl 12 --case latency-short --no-teacher",
+  "external_decode_calls": 1,
+  "prompt_ids": 113,
+  "output_mask": "last prompt token only",
+  "status_of_elapsed": "capacity diagnostic only; excluded from screening/confirmation",
+  "envelope": "E18, memory.max=18 GiB, memory.swap.max=0",
+  "admission_after_forward": {
+    "gpu_total_mib_max": 6500,
+    "cgroup_peak_gib_max": 16.5,
+    "rss_gib_max": 16,
+    "absolute_gpu_guard_mib": 7000,
+    "absolute_rss_guard_gib": 17,
+    "mem_available_gib_min": 6,
+    "no_swap_or_oom_events": true,
+    "telemetry_samples_max_interval_s": 1,
+    "telemetry_gap_s_max": 3,
+    "timeout_s": 300
+  },
+  "stop_on": ["guard", "oom", "nonfinite", "missing_telemetry", "unexpected_retry"],
+  "next_if_admitted": "freeze G2 observer/reference source and graph plan before any G2 outputs",
+  "next_if_not_admitted": "preserve failed unit and investigate an independent profile or lower-memory line"
+}
