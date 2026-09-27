@@ -9,3 +9,5 @@
 - `c23-p1-on` PASS at measurement commit `8f36a0a0722e2b415b5d1f25cc204b3ae27db4a7`: 608.065 s admission after one cadence break, start CPU 43.75 C; 513+4 82.180 s, 641+4 18.549 s, cache_n 0/510 of 510 common IDs; CPU max 95.125 C, GPU total 5752 MiB, swap 0. Raw SHA `640736cea9a0ef15737e8d58bf22269f6908c057d6d8b1e0ece9b4a35261e185`.
 - Confirmation pair P1 gain second request 80.539%; returned messages match OFF. Two new pairs remain; no confirmation median yet.
 - `c23-p2-on` PASS at measurement commit `bfcf6889c2a6bfbbee7f4e24fd1e4b1eb67ec24c`: final 300 s idle after a transient CPU spike, start CPU 42.5 C; 513+4 80.482 s, 641+4 18.394 s; cache_n 0/510, CPU max 95.125 C, GPU total 5752 MiB, swap 0. Raw SHA `45ddc671c8be80553b7058df5fc0fbb592bdbbdbcae1f671f8aa62d5cb2863ff`. P2 OFF pending.
+- `c23-p2-off` PASS at measurement commit `d6803c28fba264aa706790c8107cd5b9a75c3d01`: 513+4 80.904 s, 641+4 94.685 s, cache_n 0/0, CPU max 95.125 C, GPU total 5752 MiB, swap 0. Raw SHA `511958e9aba198e017b815efd2dd139fdba1ad90d3de8e95487596fed54a71e4`.
+- Confirmation pair P2 second-request gain 80.573%. P3 OFF→ON remains; no final confirmation median yet.
