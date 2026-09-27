@@ -1,0 +1,78 @@
+{
+  "schema": "c7-historical-reaudit-v1",
+  "source_root": "/home/pmglo/Projects/Tesy/tesy-scale-lab",
+  "original_summary_sha256": "d4d596ab9f0af3a90f52ccb74591503927660870c7ea86a365caa7c30ee4447f",
+  "source_commit": "0047a050803c29ea928022e7d3e8ba035fedb866",
+  "claims": {
+    "bytes_logits": {
+      "status": "REPRODUCED_RAW",
+      "same_as_original_fields": true,
+      "differing_fields": [],
+      "logits_different_f32_bitwise": 201087
+    },
+    "capture_completeness": {
+      "status": "REPRODUCED_RAW",
+      "capture_count": 10,
+      "complete_index_payload_and_state_schema": true
+    },
+    "location": {
+      "status": "REPRODUCED_RAW",
+      "computed_status": "COMPAT_NOT_RECOVERED_NEXT_DIVERGENCE",
+      "observed_first_difference": {
+        "family": "gpu_layer29_attention",
+        "stage": "flash_attn",
+        "absolute_token": 48,
+        "feature": 64
+      }
+    },
+    "resources": {
+      "status": "INCOMPLETE_EVIDENCE",
+      "failed_or_incomplete_runs": {
+        "c6-d2-a0-original32-short01": "GateError: process launch identity missing/invalid",
+        "c6-d2-a-patched32-off-short01": "GateError: process launch identity missing/invalid",
+        "c6-d2-aplus-patched32-on-short01": "GateError: process launch identity missing/invalid",
+        "c6-d2-b-patched64-off-short01": "GateError: process launch identity missing/invalid",
+        "c6-d2-c1-patched64-on-short01": "GateError: process launch identity missing/invalid",
+        "c6-d2-c2-patched64-on-short01": "GateError: process launch identity missing/invalid",
+        "c6-d2diag-attn-aplus32-on01": "GateError: process launch identity missing/invalid",
+        "c6-d2diag-attn-c64-on01": "GateError: process launch identity missing/invalid",
+        "c6-d2diag-layer-aplus32-on01": "GateError: process launch identity missing/invalid",
+        "c6-d2diag-layer-c64-on01": "GateError: process launch identity missing/invalid",
+        "c6-d2diag-gpu29-aplus32-on01": "GateError: process launch identity missing/invalid",
+        "c6-d2diag-gpu29-c64-on01": "GateError: process launch identity missing/invalid",
+        "c6-d2diag-gpu29attn-aplus32-on01": "GateError: process launch identity missing/invalid",
+        "c6-d2diag-gpu29attn-c64-on01": "GateError: process launch identity missing/invalid",
+        "c6-d2diag-gpu29src-aplus32-on01": "GateError: process launch identity missing/invalid",
+        "c6-d2diag-gpu29src-c64-on01": "GateError: process launch identity missing/invalid"
+      },
+      "raw_hash_failures": {},
+      "historical_limit": "old manifests lack PID start ticks/cgroup inode; no retroactive receipt"
+    },
+    "libraries": {
+      "status": "INCOMPLETE_EVIDENCE",
+      "ldd_diagnostic": "C6 recomputation checked historical ldd-listed library hashes",
+      "missing": "/proc/PID/maps after model load was not recorded"
+    },
+    "negatives": {
+      "status": "INCOMPLETE_EVIDENCE",
+      "c6_d1_summary_sha256": "c969e18c5d4505e364a5a142de3a3922155e4208cc8a1732d2fc4913b497d832",
+      "reported_cases": [
+        "mode=0 abort before output",
+        "source missing",
+        "source truncated",
+        "source nonfinite",
+        "output no-replace",
+        "workspace absent abort before output"
+      ],
+      "missing": "individual failure receipts for each negative case"
+    },
+    "c3_reused_inputs": {
+      "status": "PASS",
+      "audit_index_sha256": "bce64b080e65db58ec66483c01e8d1d51f7f0780421c33c2199027d4a7004689",
+      "latency_tsv_sha256": "368c48ac1e93d68ec1746bb3d5f7e63118f35d7903c58f88dbe5c983b69190fb",
+      "scope": "TSV follows indexed derivation and source; C3 performance/reference claims not reused"
+    }
+  },
+  "failures": [],
+  "status": "HISTORICAL_REAUDIT_PARTIAL"
+}
