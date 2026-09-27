@@ -43,6 +43,11 @@ def resources(manifest, samples_path):
         number(end.get(name), f"end {name}", minimum=0, integer=True)
     if end["swap_current"] != 0 or end["memory_peak"] > end["memory_max"]:
         raise GateError("end memory/swap guard violated")
+    reservation = manifest.get("limits", {}).get("max_cgroup_gib")
+    if reservation is not None:
+        number(reservation, "cgroup reservation GiB", positive=True)
+        if end["memory_peak"] > reservation * 2**30:
+            raise GateError("end cgroup reservation guard violated")
     for group in ("events", "events_local"):
         if type(start.get(group)) is not dict or type(end.get(group)) is not dict:
             raise GateError("cgroup event group missing")
@@ -84,6 +89,8 @@ def resources(manifest, samples_path):
         number(s.get("mem_available_bytes"), f"sample {i} MemAvailable", minimum=0, integer=True)
         if cg["memory_peak"] < max(previous_peak, cg["memory_current"]):
             raise GateError("cgroup peak inconsistent")
+        if reservation is not None and cg["memory_peak"] > reservation * 2**30:
+            raise GateError("sample cgroup reservation guard violated")
         previous_peak = cg["memory_peak"]
         for group in ("events", "events_local"):
             if type(cg.get(group)) is not dict:

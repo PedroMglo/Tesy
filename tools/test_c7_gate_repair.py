@@ -164,6 +164,13 @@ class ResourceRepair(unittest.TestCase):
     def test_valid(self):
         self.assertEqual(self.check(),2)
 
+    def test_prospective_cgroup_reservation(self):
+        self.manifest["limits"] = {"max_cgroup_gib": 0.5}
+        self.assertEqual(self.check(), 2)
+        self.manifest["limits"]["max_cgroup_gib"] = 1e-8
+        with self.assertRaisesRegex(GateError, "reservation"):
+            self.check()
+
     def test_invalid_samples(self):
         mutations = (("rss missing",lambda s:s[0]["proc"].pop("VmRSS")),
                      ("pid changed",lambda s:s[1].update(pid=321)),

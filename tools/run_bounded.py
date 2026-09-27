@@ -5,6 +5,7 @@ import argparse
 import datetime as dt
 import hashlib
 import json
+import math
 import os
 from pathlib import Path
 import signal
@@ -216,6 +217,8 @@ def main():
     p.add_argument("--cache-condition", required=True)
     p.add_argument("--timeout-s", type=int, default=300)
     p.add_argument("--max-rss-gib", type=float, default=24.0)
+    p.add_argument("--max-cgroup-gib", type=float, default=None,
+                   help="optional prospective reservation below the enforced cgroup memory.max")
     p.add_argument("--min-available-gib", type=float, default=6.0)
     p.add_argument("--max-gpu-mib", type=float, default=7600.0)
     p.add_argument("--max-cpu-c", type=float, default=None)
@@ -229,6 +232,8 @@ def main():
     p.add_argument("--ready-marker", help="stdout marker emitted after model/context load")
     p.add_argument("command", nargs=argparse.REMAINDER)
     a = p.parse_args()
+    if a.max_cgroup_gib is not None and (not math.isfinite(a.max_cgroup_gib) or a.max_cgroup_gib <= 0):
+        p.error("--max-cgroup-gib must be positive and finite")
     cmd = a.command[1:] if a.command and a.command[0] == "--" else a.command
     if not cmd or not Path(cmd[0]).is_file():
         p.error("command must start with an existing local binary path")
@@ -290,6 +295,7 @@ def main():
         "stdin_sha256": sha256(a.stdin_file) if a.stdin_file else None,
         "ready_marker": a.ready_marker,
         "limits": {"timeout_s": a.timeout_s, "max_rss_gib": a.max_rss_gib,
+                   "max_cgroup_gib": a.max_cgroup_gib,
                    "min_available_gib": a.min_available_gib, "max_gpu_mib": a.max_gpu_mib,
                    "max_cpu_c": a.max_cpu_c, "max_gpu_c": a.max_gpu_c,
                    "max_nvme_c": a.max_nvme_c,
@@ -415,6 +421,9 @@ def main():
                     reason = "CGROUP_LOCAL_LIMIT_HIT"
                 elif cg and cg["memory_peak"] is not None and cg["memory_max"] is not None and cg["memory_peak"] > cg["memory_max"]:
                     reason = "CGROUP_PEAK_EXCEEDED"
+                elif a.max_cgroup_gib is not None and cg and cg["memory_peak"] is not None and \
+                     cg["memory_peak"] > a.max_cgroup_gib * 2**30:
+                    reason = "CGROUP_RESERVATION_GUARD"
                 elif status["VmRSS"] > a.max_rss_gib * 2**30:
                     reason = "RSS_GUARD"
                 elif avail is not None and avail < a.min_available_gib * 2**30:
