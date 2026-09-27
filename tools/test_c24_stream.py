@@ -2,7 +2,7 @@ import json
 import unittest
 
 from c2_gate import GateError
-from c2_server_run import parse_chat_stream, validate_token_relationships
+from c2_server_run import digest, parse_chat_stream, validate_expected_message, validate_token_relationships
 
 
 def event(value):
@@ -61,3 +61,12 @@ class ChatStreamTest(unittest.TestCase):
             with self.subTest(invalid=invalid), self.assertRaisesRegex(
                     GateError, 'incremental token count/common prefix'):
                 validate_token_relationships({'a': [1, 2, 3], 'b': invalid}, relation)
+
+    def test_frozen_assistant_turn_must_match_before_next_request(self):
+        message = {'role': 'assistant', 'content': 'OK', 'reasoning_content': 'brief'}
+        task = {'expected_message_sha256': digest(message)}
+        validate_expected_message(message, task)
+        with self.assertRaisesRegex(GateError, 'frozen conversation turn'):
+            validate_expected_message({**message, 'reasoning_content': 'different'}, task)
+        with self.assertRaisesRegex(GateError, 'frozen conversation turn'):
+            validate_expected_message(message, {'expected_message_sha256': 'bad'})

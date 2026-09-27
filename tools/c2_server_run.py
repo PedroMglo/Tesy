@@ -150,6 +150,15 @@ def validate_token_relationships(token_ids, relationships):
             raise GateError('frozen incremental token count/common prefix invalid')
 
 
+def validate_expected_message(message, task):
+    expected = task.get('expected_message_sha256')
+    if expected is None:
+        return
+    if type(expected) is not str or not re.fullmatch(r'[0-9a-f]{64}', expected) or \
+            digest(message) != expected:
+        raise GateError('assistant message differs from frozen conversation turn')
+
+
 def tasks_for(suite):
     if suite == "smoke1":
         tasks = strict_json(SMOKE.read_text())["tasks"]
@@ -580,6 +589,7 @@ def run(args, protocol, config, task_rows, model):
                 choices = response.get("choices")
                 if type(choices) is not list or len(choices) != 1 or type(choices[0].get("message")) is not dict:
                     raise GateError(f"missing assistant message for {row_id}")
+                validate_expected_message(choices[0]['message'], task)
                 if (args.suite in ("c2core8", "c2eval12", "c3followup2") or
                     config.get("pretokenize",False)) and \
                    response.get("usage",{}).get("prompt_tokens") != \
