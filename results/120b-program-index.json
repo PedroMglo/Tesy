@@ -7,16 +7,17 @@
     "M4": "NOT_RUN"
   },
   "mission": "local usable main GPT-OSS 120B, original weights and authoritative routing",
-  "next_action": "model-free P16/slots24 tensor/capacity and cache-miss bound; if plausible, new numerical profile and bounded E18 admission before any timing",
+  "next_action": "scoped model-free/source critical-path bound for wave/parking work, then one diagnostic if bound warrants; preserve original backend as control",
   "open_hypotheses": [
     "Existing native preload has confirmed medium prefill gain; test whether serving and exact-prefix reuse improve user-visible latency",
     "Exact prefix reuse and wave critical fraction remain untested",
-    "P16 with slots24 may offload four more CPU layers within GPU reservation, at possible cache-miss cost"
+    "Wave/parking work may occupy removable exclusive critical-path time in prefill; summed stalls and CPU cycle shares do not bound this yet"
   ],
   "rejected_claims": [
     "P12 general-medium timing gain >=5% at 496+32 under E18",
     "Unmitigated 8K P8 preload-on E18 server qualified for 513-token cold prefill: thermal guard failed before completion",
-    "P8 native ub64 preload-on E18 8K server can complete the 513-ID cold request under CPU95 guard"
+    "P8 native ub64 preload-on E18 8K server can complete the 513-ID cold request under CPU95 guard",
+    "P16/slots24 provides 513-ID server CPU thermal margin under E18: one diagnostic reached CPU95 C"
   ],
   "schema": "120b-program-index-v1",
   "units": [
@@ -59,7 +60,12 @@
       "identity": "c11",
       "root": "results/c11-20260927T1533Z",
       "status": "P12_8K_SERVER_513_RESOURCE_PASS_CPU95_ZERO_MARGIN_NUMERIC_NOT_PROMOTED"
+    },
+    {
+      "identity": "c12",
+      "root": "results/c12-20260927T1540Z",
+      "status": "P16S24_513_RESOURCE_PASS_CPU95_ZERO_MARGIN_NUMERIC_NOT_PROMOTED"
     }
   ],
-  "updated_utc": "2026-09-27T15:35:47.551129+00:00"
+  "updated_utc": "2026-09-27T15:44:39.981265+00:00"
 }
