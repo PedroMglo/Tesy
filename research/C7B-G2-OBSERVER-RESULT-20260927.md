@@ -1,0 +1,7 @@
+# C7b P12 observer result
+
+Objective: validate observer neutrality and fresh-process repetition within P12, under `results/c7b-20260927T1206Z/protocol.json`. Measurement commit `505c3ce1cbb5aad3f42d1b312f3d0bfdaa98b551`, clean tree `291a0f81e435bd809448a0b07f44c1262e43e251`. Raw manifests and capture index are hashed in `boundary-summary.json` and `observer-result.json`.
+
+The three fresh-process arms completed with return code zero, no swap, OOM, guard or mapped-library mismatch. Five complete selected 201088-F32 logits vectors matched bitwise OFF/ON/OFF2. The two OFF runs also have the same hash for all 33 output rows. The capture validator found 250 numeric states, two `N/A_MASKED` states, 3675 indexed tensors and 996 equal source/consumer expert slices. GPU maxima were 5682/5692/5682 MiB; cgroup peaks were 12.887/14.170/12.891 GB. This is measured same-profile observer coverage, not independent full-model correctness.
+
+One read-only GPU query failed after ON, outside a bounded run. Three subsequent queries passed, no matching kernel messages were found, and a fresh OFF2 preflight passed; the raw incident receipt is preserved. The alternative that the schema fix only hid a numerical observer change was rejected within these five selected states. Decision: observer gate PASS for C7b; canonical resident-layer replay remains NOT_RUN. The prior C7 schema FAIL is unchanged. Next discriminating gate: changed GPU layers 25–28 and CPU/GPU boundaries 24/29, then the other 30 layers if all bitwise. Timing, server, context, functionality and M2–M4: NOT_RUN.
