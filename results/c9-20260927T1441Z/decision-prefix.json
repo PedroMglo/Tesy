@@ -1,0 +1,49 @@
+{
+  "budget": {
+    "physical_limit_s": 57600,
+    "program_physical_after_s": 5158.7681921979965,
+    "program_physical_before_s": 5078.143997843998,
+    "unit_elapsed_s": 80.62419435399897
+  },
+  "claim_limits": [
+    "no cache_n observation or prefix timing comparison",
+    "no completed cold512 request or first final content",
+    "guard failure blocks promotion of this server profile under E18"
+  ],
+  "claims": [
+    "embedded tokenizer produced 513 and 641 IDs with 510-ID common prefix before outputs",
+    "short 78-token API forward had passed separately"
+  ],
+  "default_changed": false,
+  "failures_preserved": [
+    "C9 G3 thermal guard and secondary disconnect",
+    "C7 initial schema FAIL",
+    "C7c P12 NO_GO_SCREEN496",
+    "historical C6 resource/library receipts incomplete"
+  ],
+  "gates": {
+    "G1_init": "CAPACITY_ADMITTED_INIT_ONLY",
+    "G2_minimum_forward": "MINIMUM_FORWARD_ADMITTED",
+    "G3_prefix_off": "NOT_RUN",
+    "G3_prefix_on": "FAIL_THERMAL_GUARD",
+    "cold512_product": "NOT_RUN",
+    "functional_12": "NOT_RUN",
+    "prefix_reuse": "NOT_OBSERVED_NO_SECOND_REQUEST",
+    "sustained_60min_20req": "NOT_RUN"
+  },
+  "measured_maxima": {
+    "cgroup_peak_bytes": 14985920512,
+    "cpu_c": 95.125,
+    "gpu_c": 61.0,
+    "gpu_total_mib": 3936.0,
+    "nvme_c": 44.85,
+    "rss_bytes": 15164157952,
+    "swap_bytes": 0
+  },
+  "measurement_commit": "a65e721a3fca2bd344bc4b0ee44aca5ed851a3b8",
+  "next_action": "do not retry this allocation; analyze thermal/source and create new profile/campaign with a justified mitigation and new preflight, or pursue independent model-free cache/wave bounds",
+  "profile": "P8 native preload ON 8K full-SWA server, synthetic prefix diagnostic",
+  "reason": "CPU Tctl 95.125 C exceeded frozen 95 C guard during first 513-ID prefill; watchdog stopped process at 80.624 s; zero completed requests",
+  "schema": "c9-prefix-decision-v1",
+  "status": "FAIL_RESOURCES_OR_EVIDENCE"
+}

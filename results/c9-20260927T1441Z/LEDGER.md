@@ -13,3 +13,6 @@
 - Decision: MINIMUM_FORWARD_ADMITTED only. Cold512, exact-prefix, 7936+256 boundary, 12-task utility and >=60 min/20 requests NOT_RUN. Next: frozen cold512/prefix screen; usual service/default unchanged.
 
 - G3 prefix mechanism freeze: protocol01/input01 abandoned before any model run after a model-free tokenizer estimate indicated the 490-repeat prompt likely exceeded the precommitted 480–540 token range. Input/protocol02 use 445 repeats; the embedded tokenizer and actual IDs remain the gate. One fresh-process ON/OFF diagnostic pair is authorized by the frozen protocol; no functional/long-prefix claim.
+
+- G3 prefix measurement commit `a65e721a3fca2bd344bc4b0ee44aca5ed851a3b8`, arm `c9-g3-prefix-on`: embedded tokenizer produced 513/641 IDs and 510 common IDs before responses. During first prefill CPU Tctl reached 95.125 C at 75.16 s, above the 95 C guard. Watchdog stopped the own server; returncode −9, scope elapsed 80.624 s, zero completed requests. HTTP RemoteDisconnected followed the stop. RSS peak 15,164,157,952 B, cgroup 14,985,920,512 B, GPU total 3936 MiB, swap/OOM/cap events zero. OFF arm NOT_RUN. Preserve FAIL; no cache or paired timing claim.
+- Next: analyze thermal cause and choose a changed, preadmitted profile/campaign or independent model-free wave/cache bound. No retry of this allocation; usual service/default unchanged.

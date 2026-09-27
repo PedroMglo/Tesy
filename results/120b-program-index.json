@@ -7,14 +7,15 @@
     "M4": "NOT_RUN"
   },
   "mission": "local usable main GPT-OSS 120B, original weights and authoritative routing",
-  "next_action": "Freeze cold512 and exact-prefix 128-token continuation API screen with no-cache control under E18; then test 2048/4096 and 8K boundary if resources valid",
+  "next_action": "Preserve C9 thermal FAIL; model-free C8 wave/placement critical-path bound, then freeze a distinct thermal mitigation profile and new preflight only if justified",
   "open_hypotheses": [
     "Existing native preload has confirmed medium prefill gain; test whether serving and exact-prefix reuse improve user-visible latency",
     "P8 native ub64 can reduce graph callbacks but changes native Flash arithmetic; separate profile pending",
     "Exact prefix reuse and wave critical fraction remain untested"
   ],
   "rejected_claims": [
-    "P12 general-medium timing gain >=5% at 496+32 under E18"
+    "P12 general-medium timing gain >=5% at 496+32 under E18",
+    "Unmitigated 8K P8 preload-on E18 server qualified for 513-token cold prefill: thermal guard failed before completion"
   ],
   "schema": "120b-program-index-v1",
   "units": [
@@ -41,8 +42,8 @@
     {
       "identity": "c9",
       "root": "results/c9-20260927T1441Z",
-      "status": "8K_SERVER_INIT_AND_MINIMUM_FORWARD_ADMITTED_PREFIX_NOT_RUN"
+      "status": "8K_INIT_AND_SHORT_FORWARD_PASS_PREFIX513_THERMAL_GUARD_FAIL"
     }
   ],
-  "updated_utc": "2026-09-27T14:56:01.454482+00:00"
+  "updated_utc": "2026-09-27T15:09:39.629804+00:00"
 }
