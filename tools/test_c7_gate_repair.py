@@ -14,6 +14,7 @@ import c6_compare_d2 as c6
 from c2_gate import GateError, strict_json
 from c3_compare_capture_logits import resources
 from run_bounded import mapped_libraries_match
+from c7_reaudit import negative_receipt_claim
 
 
 class CaptureRepair(unittest.TestCase):
@@ -192,6 +193,19 @@ class ResourceRepair(unittest.TestCase):
         self.assertTrue(mapped_libraries_match(expected,dict(expected)))
         self.assertFalse(mapped_libraries_match(expected,{}))
         self.assertFalse(mapped_libraries_match(expected,{**expected,"/other/libggml.so":"b"*64}))
+
+    def test_negative_receipt_missing_and_valid_control(self):
+        local = {"negative_cases":["short read"]}
+        self.assertEqual(negative_receipt_claim(local,self.path.parent)["status"],
+                         "INCOMPLETE_EVIDENCE")
+        receipt = self.path.parent/"negative.json"
+        receipt.write_text('{"returncode":1,"completed_output":false}\n')
+        local["negative_receipts"] = [{"case":"short read","path":"negative.json",
+                                        "sha256":hashlib.sha256(receipt.read_bytes()).hexdigest()}]
+        self.assertEqual(negative_receipt_claim(local,self.path.parent)["status"],"PASS")
+        receipt.unlink()
+        self.assertEqual(negative_receipt_claim(local,self.path.parent)["status"],
+                         "INCOMPLETE_EVIDENCE")
 
 
 if __name__ == "__main__": unittest.main()

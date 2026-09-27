@@ -22,6 +22,30 @@ def digest(path):
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
+def negative_receipt_claim(local, root):
+    required = local.get("negative_cases") if type(local) is dict else None
+    receipts = local.get("negative_receipts") if type(local) is dict else None
+    if type(required) is not list or not required or len(set(required)) != len(required) or \
+       type(receipts) is not list:
+        return {"status":"INCOMPLETE_EVIDENCE","reason":"individual negative receipts absent"}
+    by_case = {r.get("case"):r for r in receipts if type(r) is dict}
+    if len(by_case) != len(receipts) or set(by_case) != set(required):
+        return {"status":"INCOMPLETE_EVIDENCE","reason":"negative receipt set incomplete/duplicated"}
+    for case, receipt in by_case.items():
+        path = receipt.get("path")
+        if type(path) is not str or Path(path).is_absolute() or ".." in Path(path).parts or \
+           not (root/path).is_file() or digest(root/path) != receipt.get("sha256"):
+            return {"status":"INCOMPLETE_EVIDENCE","reason":f"negative receipt missing/changed: {case}"}
+        try:
+            outcome = strict_json((root/path).read_text())
+        except (OSError, ValueError):
+            return {"status":"FAIL_EVIDENCE","reason":f"negative receipt malformed: {case}"}
+        if type(outcome.get("returncode")) is not int or outcome["returncode"] == 0 or \
+           outcome.get("completed_output") is not False:
+            return {"status":"FAIL_EVIDENCE","reason":f"negative behavior not observed: {case}"}
+    return {"status":"PASS","receipt_count":len(receipts)}
+
+
 def reaudit(source_root):
     summary_path = source_root/"results/c6-d2-short-diagnostic-summary03.json"
     summary = strict_json(summary_path.read_text())
@@ -83,10 +107,9 @@ def reaudit(source_root):
         "missing":"/proc/PID/maps after model load was not recorded"}
     local_summary = source_root/"results/c6-d1-local-summary02.json"
     local = strict_json(local_summary.read_text()) if local_summary.is_file() else None
-    report["claims"]["negatives"] = {"status":"INCOMPLETE_EVIDENCE",
+    report["claims"]["negatives"] = {**negative_receipt_claim(local, source_root),
         "c6_d1_summary_sha256":digest(local_summary) if local else None,
-        "reported_cases":local.get("negative_cases") if local else None,
-        "missing":"individual failure receipts for each negative case"}
+        "reported_cases":local.get("negative_cases") if local else None}
     c3_index = source_root/"results/c3-audit-index.json"
     ids = source_root/"results/c3-p1-latency-ids01.tsv"
     c3 = strict_json(c3_index.read_text())
