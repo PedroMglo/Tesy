@@ -14,20 +14,17 @@ from reportlib import EvidenceError, ID, check_derived, read, require, unique, v
 
 
 def candidates(root: Path) -> list[tuple[str, str, str]]:
-    """Return (report id, version, immutable tag) rows in configured order.
+    """Return every registered, reviewed report version and immutable tag.
 
-    Opt-in is intentionally separate from report evidence. It can enable future
-    versions of an already reviewed report without mutating the report inputs or
-    visual-audit hash. The release build remains the authoritative gate.
+    The registry is the sole publication inventory: when a report is reviewed,
+    its present and future versions are eligible without a separate manual
+    enrolment. The release build remains the authoritative audit/PDF gate.
     """
-    automation = read(root / 'release-automation.json')
-    require(automation.get('schema_version') == 'tesy-release-automation-v1', 'RELEASE_AUTOMATION_SCHEMA_VERSION')
-    require(set(automation) == {'schema_version', 'reports'}, 'RELEASE_AUTOMATION_EXTRA_FIELD')
-    require(isinstance(automation['reports'], list), 'RELEASE_AUTOMATION_REPORTS_NOT_LIST')
-    configured = unique(automation['reports'])
+    registry = read(root / 'registry.json')
+    validate(root, 'registry', registry)
+    registered = unique(registry['reports'])
     rows: list[tuple[str, str, str]] = []
-    for report_id, configuration in configured.items():
-        require(set(configuration) == {'id'}, 'RELEASE_AUTOMATION_REPORT_FIELDS')
+    for report_id in registered:
         require(ID.fullmatch(report_id) is not None, 'INVALID_AUTOMATED_REPORT_ID')
         verified = verify(root, report_id)
         check_derived(verified)

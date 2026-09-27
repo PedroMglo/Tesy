@@ -81,10 +81,13 @@ class Pipeline(unittest.TestCase):
         self.assertEqual(v['lock']['sources'][0]['commit'],'c67529e290844bb3d9033615072d5878014a46bc')
         self.assertEqual(v['values']['M-C1-UTILITY-PASS']['value'],8)
     def test_automatic_release_candidate_is_reviewed_and_versioned(self):
-        self.assertEqual(rc.candidates(self.root),[('C03-boundary-prefill','1.0.0','reports-C03-boundary-prefill-v1.0.0')])
-    def test_automatic_release_candidate_requires_registered_report(self):
-        p=self.root/'release-automation.json';p.write_bytes(r.canonical({'schema_version':'tesy-release-automation-v1','reports':[{'id':'MISSING'}]}))
-        with self.assertRaisesRegex(r.EvidenceError,'UNREGISTERED_REPORT'):rc.candidates(self.root)
+        self.assertEqual(rc.candidates(self.root),[
+            ('C03-boundary-prefill','1.0.0','reports-C03-boundary-prefill-v1.0.0'),
+            ('C02-correctness-usability','1.0.0','reports-C02-correctness-usability-v1.0.0'),
+            ('C01-scale-lab','1.0.0','reports-C01-scale-lab-v1.0.0'),
+            ('R00-foundations','1.0.0','reports-R00-foundations-v1.0.0'),
+            ('D00-research-dossier','1.0.0','reports-D00-research-dossier-v1.0.0'),
+        ])
     def test_automatic_release_candidate_requires_reviewed_audit(self):
         p=self.root/'campaigns'/'C03-boundary-prefill'/'audit.json';a=r.read(p);a['status']='DRAFT';p.write_bytes(r.canonical(a))
         with self.assertRaisesRegex(r.EvidenceError,'AUTO_RELEASE_REQUIRES_REVIEWED_AUDIT'):rc.candidates(self.root)
