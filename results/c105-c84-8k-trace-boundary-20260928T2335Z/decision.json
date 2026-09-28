@@ -1,0 +1,52 @@
+{
+  "M3": "PARTIAL",
+  "M4": "NOT_MET",
+  "default_changed": false,
+  "elapsed_s_instrumented_diagnostic_only": 46.376,
+  "failures_preserved": [
+    "C48",
+    "C78",
+    "C100 NO_GO_CONFIRM",
+    "C102 prelaunch",
+    "C103 matched start"
+  ],
+  "limits": [
+    "189+32 numeric boundary only; no full-model independent attention/KV reference",
+    "instrumented timing not production timing",
+    "logical load bytes not exclusive physical NVMe traffic",
+    "L2 benefit and quality NOT_RUN"
+  ],
+  "measurement_commit": "e71af4b5e8e337b77cc176d7e6d544134956aace",
+  "next_action": "Parse C84 demand/load/eviction sequence by phase; simulate bounded 1/2/3 GiB RAM L2 and optimistic savings. Only if >=20% demand NVMe-byte saving plus exposed wait supports >=8% work gain, consider a minimal L2 prototype.",
+  "numeric": {
+    "C93_on_manifest_sha256": "dc2518e6dd7f07759c730ee85dcdcc654e9ffd4a37993d75ec0ccfad46dbee4b",
+    "byte_witness_rows": 996,
+    "logits_selected": 5,
+    "masked_states": 2,
+    "numeric_states": 250,
+    "status": "SAME_PROFILE_BITWISE_PASS_TESTED_SCOPE"
+  },
+  "resources": {
+    "buffered_model_fds": 1,
+    "cgroup_file_bytes": 3890020352,
+    "cgroup_memory_bytes": 15465209856,
+    "cgroup_peak_bytes": 15486615552,
+    "cpu_tctl_c": 70.125,
+    "direct_model_fds": 2,
+    "gpu_temperature_c": 52.0,
+    "gpu_used_mib": 5786.0,
+    "nvme_composite_c": 49.85,
+    "rss_bytes": 13303705600,
+    "swap_bytes": 0
+  },
+  "schema": "c105-decision-v1",
+  "source_commit": "5a1f4c5d9ed06021d58813ffb41792e83f337513",
+  "status": "PASS_DIAGNOSTIC_TRACE_NUMERIC_BOUNDARY",
+  "trace": {
+    "demand_events": 12755,
+    "events": 41842,
+    "layer_count": 36,
+    "load_pairs": 6005,
+    "wait_pairs": 1357
+  }
+}
