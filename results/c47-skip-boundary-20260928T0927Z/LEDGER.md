@@ -6,3 +6,6 @@
 - Model-free: two build failures corrected before model; final build/help passed. F32/F16 operator test passed parked `+0`, active bitwise control and resident mutant. The validator passed C7b's valid 250-state capture and rejected an ON-without-sentinel mutant.
 - Frozen physical boundary: OFF, ON, fresh ON on the 189+32 `log_medium` IDs, five complete logits and 250 numeric states bitwise, 2 masked N/A, E18/CPU100, 300 s idle admission each. Canonical 36-layer reference and timing are separate later gates.
 - Physical runs and candidate decision: NOT_RUN at freeze. No default change.
+
+- OFF run passed capture in 71.895 s. First ON aborted after 15.817 s before prefill at `GGML_ASSERT(device)`; CPU buffer type has NULL device. Cgroup swap/OOM zero; no thermal guard failure.
+- ON fresh repeat, bitwise comparison, canonical reference and timing NOT_RUN. C47 FAIL preserved; new C48 identity required for the buffer-type correction.
