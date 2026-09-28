@@ -1,2 +1,4 @@
 \section{Contrato de exactness e claim boundary}
 Predictors Tesy podem prefetch/ordenar/colocar, mas não substituir routing/top-k/tokens. SpecPrefetch já usa prediction só para transferência e native router para execução \cite{kong2026specprefetch}; overlap direto.
+
+Sistemas adjacentes podem escolher outro contrato. AdapMoE ajusta dinamicamente o número de experts ativados para reduzir loading \cite{zhong2024adapmoe}; esse mecanismo é relevante como comparação de eficiência, mas não é contract-equivalent ao Tesy porque o target autoritativo não pode reduzir top-k/experts executados.

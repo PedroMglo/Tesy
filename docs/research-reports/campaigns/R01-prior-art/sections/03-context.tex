@@ -2,3 +2,5 @@
 Sparsely-gated MoE estabeleceu conditional computation \cite{shazeer2017moe}; gpt-oss é MoE \cite{openai2025gptoss}. A survey recente mostra campo amplo \cite{liu2026survey}.
 
 A literatura de serving MoE inclui ainda DeepSpeed-MoE para treino/inferência em escala \cite{rajbhandari2022deepspeedmoe}, MoE-Lightning para pipelining CPU--GPU--I/O com paged weights em GPUs memory-constrained \cite{cao2025moelightning}, e DAOP para alocação dinâmica CPU/GPU com predictive pre-calculation \cite{zhang2025daop}. Estes trabalhos estreitam adicionalmente a fronteira de novidade do Tesy.
+
+A localidade do routing não deve ser assumida como propriedade universal: Liang et al. medem diferenças substanciais de local routing consistency entre 20 modelos MoE e relacionam-nas com a eficácia potencial de caches de experts \cite{liang2026routing}. Isto reforça a opção Tesy de medir traces, reuse e headroom no target/modelo concreto. Klotski explora ainda um expert-aware multi-batch pipeline para sobrepor I/O e computação \cite{fang2025klotski}, pelo que overlap por pipelining também tem prior art direto.

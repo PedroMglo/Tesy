@@ -10,3 +10,5 @@ Local MoE & OSDI'26 \cite{wang2026localslo}: comparador contemporâneo de servin
 Cache bounds & Belady/Mattson \cite{belady1966replacement,mattson1970storage}: oracle/stack methodology anterior.\\
 Performance bounds & Amdahl/Roofline \cite{amdahl1967validity,williams2009roofline}: metodologia estabelecida.\\
 \bottomrule\end{tabularx}
+
+Routing locality/cacheability é também objeto explícito de caracterização: Liang et al. mostram que a consistência local varia entre modelos \cite{liang2026routing}. Klotski coloca I/O-compute overlap num pipeline multi-batch expert-aware \cite{fang2025klotski}. AdapMoE combina cache/prefetch com redução dinâmica de experts ativados \cite{zhong2024adapmoe}; é related work importante, mas não baseline exacto por alterar o conjunto de experts executados.
