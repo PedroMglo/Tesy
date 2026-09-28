@@ -6,6 +6,7 @@ from host_resource_policy import (
     CPU_TJMAX_C,
     derive_policy,
     freeze_protocol_resource_limits,
+    operational_session_ready,
     parse_nvidia_temperature_query,
     ResourcePolicyError,
 )
@@ -101,6 +102,23 @@ class ResourcePolicyTests(unittest.TestCase):
         self.assertEqual(out["limits"]["gpu_max_mib"], 7676)
         self.assertEqual(out["limits"]["min_mem_available_bytes"], 2 * 2**30)
         self.assertEqual(out["limits"]["memory_max_bytes"], 20 * 2**30 - 512 * 2**20)
+
+
+    def test_operational_session_start_uses_warnings_not_cold_band(self):
+        policy = derive_policy(
+            memory={"MemTotal": 32698777600, "MemAvailable": 23675543552},
+            gpu_csv="GPU, 8188, 12, 70, 1",
+            sensors=SENSORS,
+            nvidia_temperature_query=GPU_Q,
+        )
+        policy["cpu"]["current_c"] = 90
+        policy["nvme"]["current_c"] = 60
+        ok, reasons = operational_session_ready(policy)
+        self.assertTrue(ok, reasons)
+        policy["cpu"]["current_c"] = 95
+        ok, reasons = operational_session_ready(policy)
+        self.assertFalse(ok)
+        self.assertIn("cpu-warning-at-start", reasons)
 
     def test_implausible_secondary_nvme_threshold_is_ignored(self):
         policy = derive_policy(
