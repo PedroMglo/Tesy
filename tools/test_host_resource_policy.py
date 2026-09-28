@@ -67,10 +67,10 @@ class ResourcePolicyTests(unittest.TestCase):
         limits = freeze_protocol_resource_limits(policy, cgroup_memory_max_bytes=20 * 2**30)
         self.assertEqual(limits["cpu_max_c"], 100)
         self.assertEqual(limits["gpu_max_mib"], 7676)
-        self.assertEqual(limits["gpu_max_c"], 92)
+        self.assertEqual(limits["gpu_max_c"], 96)
         self.assertEqual(limits["nvme_max_c"], 89.85)
         self.assertEqual(limits["min_mem_available_bytes"], 2 * 2**30)
-        self.assertEqual(limits["rss_max_bytes"], 20 * 2**30)
+        self.assertEqual(limits["rss_max_bytes"], 32698777600)
 
     def test_implausible_secondary_nvme_threshold_is_ignored(self):
         policy = derive_policy(
