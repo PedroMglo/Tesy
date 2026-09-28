@@ -1,0 +1,228 @@
+{
+  "ambient_temperature": "UNKNOWN",
+  "backend": {
+    "binary_sha256": "2c91e0572ad71e4977e3e9134c9f8339256e6481a3f316f6fef9493a370d4822",
+    "dirty": "",
+    "head": "c3759bad92c0e6f71bb936afea9b0a162fb83f76",
+    "library_sha256": {
+      "build-c35-gcc15/bin/libggml-base.so.0.15.3": "6666b1fa65172a992429c516864dd1fb44a2ae4370ec2d044ed684d0b33d6f9e",
+      "build-c35-gcc15/bin/libggml-cpu.so.0.15.3": "b2ed71c16ad669536840c63a999305a3c6ae0e2ab278e9a891c1d0fab96b8a2b",
+      "build-c35-gcc15/bin/libggml-cuda.so.0.15.3": "4d4ef9068b1057abf9e4a73a872f48703723d30591ebafb962bfb0612df70dcc",
+      "build-c35-gcc15/bin/libggml.so.0.15.3": "45bd5d9edee4c8a3eeec23166478ef7ec495dc55785e3942aa72afddc0125417",
+      "build-c35-gcc15/bin/libllama-common.so.0.0.2": "e64791fe0c072c3710c2f9ed92f1e3d9487f2c34f626086b196f60077bd1d374",
+      "build-c35-gcc15/bin/libllama-server-impl.so": "3cbba6ad27138ef34adf0a2c8e8f5b204ea7c73111e2bef4acc8288cef5f6e05",
+      "build-c35-gcc15/bin/libllama.so.0.0.2": "4ba0477592acb4a8808c259d836aea42f20aeef88ad7c3b4ea41572dae8418c6",
+      "build-c35-gcc15/bin/libmtmd.so.0.0.2": "48efbf1711ec3b170d8651ab1149f9fe7549972d2e420fa40f2ecae39670a253"
+    },
+    "root": "/tmp/tesy-c35-backend-20260928",
+    "tree": "b1e1647729c6e81ae8b2a4fa8119c626e674f6a1"
+  },
+  "cooling_condition": "changed_physical_placement (owner report)",
+  "cpu_diagnostics": {
+    "effective_clock_median_mhz": 605.264,
+    "effective_clock_mhz_by_policy": {
+      "policy0": 605.264,
+      "policy1": 4178.76,
+      "policy10": 605.264,
+      "policy11": 2110.178,
+      "policy12": 2354.452,
+      "policy13": 3323.376,
+      "policy14": 605.264,
+      "policy15": 605.264,
+      "policy16": 605.264,
+      "policy17": 605.264,
+      "policy18": 2101.885,
+      "policy19": 2106.288,
+      "policy2": 2801.162,
+      "policy20": 2083.395,
+      "policy21": 605.264,
+      "policy22": 605.264,
+      "policy23": 605.264,
+      "policy3": 5142.7,
+      "policy4": 605.264,
+      "policy5": 605.264,
+      "policy6": 605.264,
+      "policy7": 605.264,
+      "policy8": 605.264,
+      "policy9": 605.264
+    },
+    "effective_clock_transient_high_reads": [],
+    "effective_clock_transient_zero_reads": [],
+    "package_energy_range_uj": 65532610987,
+    "package_energy_uj": 44981674992,
+    "processor_cooling_max_state": 0,
+    "processor_cooling_states": {
+      "cooling_device10": 0,
+      "cooling_device11": 0,
+      "cooling_device12": 0,
+      "cooling_device13": 0,
+      "cooling_device14": 0,
+      "cooling_device15": 0,
+      "cooling_device16": 0,
+      "cooling_device17": 0,
+      "cooling_device18": 0,
+      "cooling_device19": 0,
+      "cooling_device20": 0,
+      "cooling_device21": 0,
+      "cooling_device22": 0,
+      "cooling_device23": 0,
+      "cooling_device24": 0,
+      "cooling_device25": 0,
+      "cooling_device26": 0,
+      "cooling_device27": 0,
+      "cooling_device28": 0,
+      "cooling_device29": 0,
+      "cooling_device30": 0,
+      "cooling_device31": 0,
+      "cooling_device8": 0,
+      "cooling_device9": 0
+    }
+  },
+  "cpu_policy": {
+    "stop_c": 100,
+    "warning_c": 95
+  },
+  "fan_profile_if_observable": "RPM observed; policy not directly readable",
+  "filesystem": "/home /dev/nvme0n1p3[/home] btrfs",
+  "free_bytes": 413560901632,
+  "gpu_compute_apps": "",
+  "gpu_csv": "NVIDIA GeForce RTX 4060 Laptop GPU, 8188, 12, 43, 615.71.09",
+  "guard_status": "READY_FOR_IDLE_ADMISSION",
+  "host_kernel": "7.2.7-200.fc44.x86_64",
+  "memory": {
+    "MemAvailable": 23297081344,
+    "MemTotal": 32698777600,
+    "SwapFree": 13155328000,
+    "SwapTotal": 16348868608
+  },
+  "model": {
+    "full_sha_provenance": "C20 full model SHA, current stat exact match",
+    "path": "/home/pmglo/models/gpt-oss-120b-gguf/gpt-oss-120b-MXFP4.gguf",
+    "sha256": "582bd40f6886200101f4c4ed9f25f3fe80cc14c86e9e2b37746cd8904a0c622d",
+    "stat": {
+      "ctime_ns": 1790389637807910988,
+      "dev": 53,
+      "inode": 14833675,
+      "mtime_ns": 1790389637795911032,
+      "size_bytes": 63387346208
+    }
+  },
+  "port_18367_free": true,
+  "power_profile": "performance",
+  "power_source": "AC",
+  "resource_guards": "E18 zero swap, RSS16GiB, cgroup16.5GiB, GPU6500MiB reserve, MemAvailable6GiB, CPU95 warning/100 stop, GPU80/NVMe70",
+  "schema": "c35-preflight-v1",
+  "scope_model_free_test": {
+    "memory_max": 19327352832,
+    "path": "/user.slice/user-1000.slice/user@1000.service/app.slice/run-p594738-i651310.scope",
+    "status": "PASS",
+    "swap_current": 0,
+    "swap_max": 0
+  },
+  "sensors": {
+    "BAT0-acpi-0": {
+      "Adapter": "ACPI interface",
+      "in0": {
+        "in0_input": 16.291
+      },
+      "power1": {
+        "power1_input": 0.0
+      }
+    },
+    "acpi_fan-isa-0000": {
+      "Adapter": "ISA adapter",
+      "fan1": {
+        "fan1_input": 0.0
+      }
+    },
+    "acpitz-acpi-0": {
+      "Adapter": "ACPI interface",
+      "temp1": {
+        "temp1_input": 42.0
+      },
+      "temp2": {
+        "temp2_input": 46.0
+      },
+      "temp3": {
+        "temp3_input": 20.0
+      }
+    },
+    "amdgpu-pci-c500": {
+      "Adapter": "PCI adapter",
+      "PPT": {
+        "power1_average": 8.493,
+        "power1_input": 8.493
+      },
+      "edge": {
+        "temp1_input": 42.0
+      },
+      "vddgfx": {
+        "in0_input": 0.0
+      },
+      "vddnb": {
+        "in1_input": 0.0
+      }
+    },
+    "asus-isa-0000": {
+      "Adapter": "ISA adapter",
+      "cpu_fan": {
+        "fan1_input": 0.0
+      },
+      "gpu_fan": {
+        "fan2_input": 0.0
+      }
+    },
+    "k10temp-pci-00c3": {
+      "Adapter": "PCI adapter",
+      "Tctl": {
+        "temp1_input": 46.875
+      }
+    },
+    "mt7925_phy0-pci-c300": {
+      "Adapter": "PCI adapter",
+      "temp1": {
+        "temp1_input": 40.0
+      }
+    },
+    "nvme-pci-c100": {
+      "Adapter": "PCI adapter",
+      "Composite": {
+        "temp1_alarm": 0.0,
+        "temp1_crit": 89.85,
+        "temp1_input": 33.85,
+        "temp1_max": 86.85,
+        "temp1_min": -0.15
+      },
+      "Sensor 1": {
+        "temp2_input": 33.85,
+        "temp2_max": 65261.85,
+        "temp2_min": -273.15
+      }
+    },
+    "ucsi_source_psy_USBC000:001-isa-0000": {
+      "Adapter": "ISA adapter",
+      "curr1": {
+        "curr1_input": 0.0,
+        "curr1_max": 0.0
+      },
+      "in0": {
+        "in0_input": 0.0,
+        "in0_max": 0.0,
+        "in0_min": 0.0
+      }
+    },
+    "ucsi_source_psy_USBC000:002-isa-0000": {
+      "Adapter": "ISA adapter",
+      "curr1": {
+        "curr1_input": 0.0,
+        "curr1_max": 0.0
+      },
+      "in0": {
+        "in0_input": 0.0,
+        "in0_max": 0.0,
+        "in0_min": 0.0
+      }
+    }
+  },
+  "utc": "2026-09-28T11:30:09.970201+00:00"
+}
