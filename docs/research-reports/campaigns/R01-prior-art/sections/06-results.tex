@@ -1,0 +1,12 @@
+\section{Mapa de prior art}
+\begin{tabularx}{\linewidth}{@{}p{32mm}Y@{}}\toprule
+\textbf{Eixo} & \textbf{Prior art / consequência}\\\midrule
+Sparse routing & Shazeer et al. \cite{shazeer2017moe}: arquitetura-base não é contribuição.\\
+Multi-tier offload & FlexGen \cite{sheng2023flexgen}: GPU/CPU/disk é prior art.\\
+MoE cache/prefetch & MoE-Infinity \cite{xue2024moeinfinity}: overlap direto.\\
+CPU/GPU execution & Fiddler/KTransformers \cite{kamahori2025fiddler,chen2025ktransformers}: prior art.\\
+Exact prefetch & SpecPrefetch \cite{kong2026specprefetch}: prediction-for-transfer sem routing authority é publicado.\\
+Local MoE & OSDI'26 \cite{wang2026localslo}: comparador contemporâneo.\\
+Cache bounds & Belady/Mattson \cite{belady1966replacement,mattson1970storage}: oracle/stack methodology anterior.\\
+Performance bounds & Amdahl/Roofline \cite{amdahl1967validity,williams2009roofline}: metodologia estabelecida.\\
+\bottomrule\end{tabularx}

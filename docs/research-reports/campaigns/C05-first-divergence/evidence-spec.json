@@ -1,0 +1,94 @@
+{
+  "authorities": {
+    "correctness": [
+      "E-C5-FINAL"
+    ],
+    "decision": [
+      "E-C5-FINAL"
+    ],
+    "diagnosis": [
+      "E-C5-FINAL"
+    ]
+  },
+  "checks": [],
+  "claims": [
+    {
+      "evidence": [
+        {
+          "quote": "The first observed different output is `__fattn__-0` in the first chunk, at token0/feature0, **before MoE**.",
+          "source": "E-C5-FINAL",
+          "type": "text"
+        }
+      ],
+      "evidence_class": "DIAGNOSTICO",
+      "family": "correctness",
+      "id": "CL-C5-FIRST",
+      "limitation": "Primeira operação observada.",
+      "source_class": "Fecho de campanha Tesy congelado",
+      "statement": "Primeira divergência em Flash Attention layer0 antes do MoE.",
+      "status": "CURRENT"
+    },
+    {
+      "evidence": [
+        {
+          "quote": "`NATIVE_SHAPE_EFFECT_CAUSALLY_LOCALIZED`; no C5 streaming/backend bug demonstrated, no correction patch",
+          "source": "E-C5-FINAL",
+          "type": "text"
+        }
+      ],
+      "evidence_class": "DIAGNOSTICO",
+      "family": "diagnosis",
+      "id": "CL-C5-CAUSE",
+      "limitation": "Não prova bug streaming.",
+      "source_class": "Fecho de campanha Tesy congelado",
+      "statement": "Efeito de forma nativo causalmente localizado.",
+      "status": "CURRENT"
+    },
+    {
+      "evidence": [
+        {
+          "quote": "It does not establish which form has better generation quality.",
+          "source": "E-C5-FINAL",
+          "type": "text"
+        }
+      ],
+      "evidence_class": "DIAGNOSTICO",
+      "family": "decision",
+      "id": "CL-C5-NOQUALITY",
+      "limitation": "Sem sampling contract.",
+      "source_class": "Fecho de campanha Tesy congelado",
+      "statement": "Nenhuma forma é superior em qualidade.",
+      "status": "CURRENT"
+    },
+    {
+      "evidence": [
+        {
+          "quote": "No performance screening or default switch is justified by C5.",
+          "source": "E-C5-FINAL",
+          "type": "text"
+        }
+      ],
+      "evidence_class": "DIAGNOSTICO",
+      "family": "decision",
+      "id": "CL-C5-NOPROMOTE",
+      "limitation": "ub64 continua bloqueado.",
+      "source_class": "Fecho de campanha Tesy congelado",
+      "statement": "Sem performance/default switch.",
+      "status": "CURRENT"
+    }
+  ],
+  "datasets": [],
+  "metrics": [],
+  "schema_version": "tesy-evidence-spec-v1",
+  "source_contracts": [
+    {
+      "json_values": [],
+      "path": "research/C5-FINAL-20260927.md",
+      "source": "E-C5-FINAL",
+      "text": [
+        "NATIVE_SHAPE_EFFECT_CAUSALLY_LOCALIZED",
+        "before MoE"
+      ]
+    }
+  ]
+}
