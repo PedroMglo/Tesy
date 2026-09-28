@@ -1,0 +1,8 @@
+# C98 candidate bridge using C97 control
+
+- Objective: run C75 candidate under a new identity after C97 candidate was blocked before model launch by an extra port check. Use the hash-verified C97 control as the contemporary comparator; its completed run is not repeated.
+- Base: C97 result commit `cd47393ac0f7745c465ce88fcdd7e0fbd7fbf725`, C97 control receipt/manifest/raw SHAs frozen in the new protocol. Backend C75 `27d2e42d8c994507ee6d71acc7c58d3eddd3f7a5`; C35 control is the original C97 run. Prior C96/C97 prelaunch failures remain FAIL and neither candidate run ID is reused.
+- Model-free counterexample: an ephemeral listener leaves a local socket in `TIME_WAIT`; `bind` without `SO_REUSEADDR` returns `EADDRINUSE`, while the existing `c2_server_run` bind with `SO_REUSEADDR` succeeds. C98 removes the redundant outer bind and retains the runner's original check.
+- Frozen workload: exact same synthetic input/template/profile/output cap and 2-turn actual assistant history as C97, new candidate process only, E18 zero swap. The environment and host inventory are refreshed before launch. Official token IDs, complete finite output, exact-prefix cache accounting, markers, mapped libraries, resources and stop conditions remain gates.
+- Decision: if C98 passes, compare official prompt ID arrays and assistant outputs to C97. Report per-request prefill, first reasoning, first final content, total, decode and resources. This is one paired bridge only, not a confirmed performance gain or diverse quality evaluation. If inputs diverge, latency comparison is descriptive and cannot support a causal gain claim.
+- NOT_RUN at freeze: C98 model, alternating screening, M3 diverse/active sustained session, M4 functional/latency qualification.
