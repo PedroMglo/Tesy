@@ -47,7 +47,8 @@ def frozen(root):
        git('-C', BACKEND, 'status', '--porcelain'):
         raise GateError('C75 backend identity changed')
     stat = file_identity(MODEL)
-    if stat != snapshot['model_stat'] or \
+    if any(stat[k] != snapshot['model_stat'][k] for k in
+           ('dev','inode','size_bytes','mtime_ns')) or \
        old['backend_source_commit'] != BACKEND_SHA or \
        old['binary_sha256'] != sha256(BINARY) or \
        old['capture_source_sha256'] != sha256(REPO/'tools/c80_session_boundary_capture.cpp'):
