@@ -158,9 +158,10 @@ def derive_policy(
 
     gpu_thresholds = parse_nvidia_temperature_query(nvidia_temperature_query)
     gpu_warning = gpu_thresholds["max_operating_c"] or gpu_thresholds["target_c"]
-    gpu_stop = gpu_thresholds["slowdown_c"]
-    if gpu_stop is None and gpu_thresholds["shutdown_c"] is not None:
-        gpu_stop = gpu_thresholds["shutdown_c"] - 1.0
+    # Slowdown is performance telemetry, not a safety failure. Keep one degree
+    # below the device-reported shutdown threshold as the prospective stop.
+    gpu_stop = (gpu_thresholds["shutdown_c"] - 1.0
+                if gpu_thresholds["shutdown_c"] is not None else None)
     if gpu_stop is not None and gpu_warning is not None and gpu_stop < gpu_warning:
         raise ResourcePolicyError("GPU threshold ordering invalid")
 
@@ -240,7 +241,7 @@ def freeze_protocol_resource_limits(policy: dict[str, Any], *, cgroup_memory_max
     return {
         "cgroup_memory_max_bytes": cgroup_memory_max_bytes,
         "memory_max_bytes": cgroup_memory_max_bytes - 512 * MIB,
-        "rss_max_bytes": cgroup_memory_max_bytes,
+        "rss_max_bytes": policy["memory"]["total_bytes"],
         "gpu_max_mib": policy["gpu"]["memory_admission_max_mib"],
         "min_mem_available_bytes": policy["memory"]["host_reserve_bytes"],
         "cpu_max_c": policy["cpu"]["device_limit_c"],
