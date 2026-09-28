@@ -51,7 +51,8 @@ Do not hardcode `80 °C`.
 At preflight collect the actual NVIDIA temperature thresholds. Prefer:
 
 - warning: GPU Max Operating Temp, when reported;
-- stop/admission boundary: GPU Slowdown Temp when reported;
+- GPU Slowdown Temp is recorded as performance/throttling telemetry, not an automatic failure;
+- prospective stop: 1 °C below the device-reported Shutdown Temp when available. This 1 °C margin is EXPERIMENT_ADMISSION, not a manufacturer limit;
 - shutdown remains a protection threshold, not a normal target.
 
 If device thresholds cannot be obtained, classify them `UNKNOWN`; do not invent a vendor limit. A campaign that needs to approach the unknown region must first resolve it.
@@ -82,7 +83,7 @@ For new capacity exploration:
 - freeze one cgroup cap for all arms in a causal comparison;
 - `memory.swap.max=0` remains the default for explicit-streaming campaigns so swap cannot become a hidden storage tier.
 
-RSS is telemetry, not the sole capacity authority. `memory.current`, `memory.peak`, cgroup events, swap and host pressure are more important.
+RSS is telemetry, not a capacity authority for new profiles. Prospective protocols set its schema field to the live host MemTotal so the cgroup and host-pressure gates, not a synthetic RSS margin, determine capacity. `memory.current`, `memory.peak`, cgroup events, swap and host pressure are authoritative.
 
 ### NVMe
 
