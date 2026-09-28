@@ -1,0 +1,140 @@
+{
+  "binary_sha256": "f28ca1357faac2fce851ccce6d96869669bd1bac0925f5cef48a93412545089c",
+  "completed_requests": 1,
+  "cpu_telemetry": {
+    "clock_source": "cpuinfo_avg_freq per cpufreq policy",
+    "cpu_effective_clock_max_mhz": 3299.91,
+    "cpu_effective_clock_median_mhz": 2953.9065,
+    "cpu_effective_clock_min_mhz": 605.264,
+    "cpu_effective_clock_transient_high_read_count": 0,
+    "cpu_effective_clock_transient_zero_read_count": 0,
+    "cpu_max_c": 95.0,
+    "cpu_package_power_max_w": 68.27482800348425,
+    "cpu_package_power_median_w": 61.525608086912655,
+    "cpu_policy_count": 24,
+    "cpu_warning_observed": true,
+    "cpu_warning_sample_count": 14,
+    "explicit_thermal_flag_source": "ACPI Processor cooling cur_state; AMD hardware flag unavailable",
+    "gpu_power_max_w": 15.82,
+    "power_source": "package-0 RAPL energy counter; interval power estimate",
+    "processor_cooling_max_state": 0,
+    "sample_count": 80
+  },
+  "default_changed": false,
+  "finish_reason": "length",
+  "idle": {
+    "baseline": {
+      "cpu_c": 41.0,
+      "gpu_c": 39.0,
+      "nvme_c": 34.85
+    },
+    "cadence_breaks": [],
+    "duration_s": 301.1003749759984,
+    "end": {
+      "cpu_c": 41.75,
+      "cpu_fan_rpm": 2500.0,
+      "elapsed_s": 301.1003749759984,
+      "gpu": {
+        "driver": "615.71.09",
+        "temperature_c": 39.0,
+        "used_mib": 12.0
+      },
+      "gpu_fan_rpm": 2400.0,
+      "mem_available_bytes": 26095398912,
+      "nvme_c": 35.85,
+      "run_id": "c43-c15-plain-cold513",
+      "utc": "2026-09-28T08:24:29.004712+00:00"
+    },
+    "last60_trend_c": {
+      "cpu_c": -0.11249999999999716,
+      "gpu_c": 0.0,
+      "nvme_c": 1.0
+    },
+    "match_tolerance_c": [
+      5,
+      5,
+      3
+    ],
+    "max_gap_overall_s": 0.7941843430016888,
+    "max_gap_qualifying_s": 0.7941843430016888,
+    "max_start_c": [
+      50,
+      50,
+      45
+    ],
+    "qualifying_duration_s": 300.03944222700375,
+    "qualifying_start_s": 1.0609327489946736,
+    "sample_count": 603,
+    "series_sha256": "240f734885fff5678160d0bb31e1c63def199f487f4a808beec5b923fe83fbf1",
+    "start": {
+      "cpu_c": 51.0,
+      "cpu_fan_rpm": 2500.0,
+      "elapsed_s": 0.031025877004140057,
+      "gpu": {
+        "driver": "615.71.09",
+        "temperature_c": 46.0,
+        "used_mib": 12.0
+      },
+      "gpu_fan_rpm": 2500.0,
+      "mem_available_bytes": 26229239808,
+      "nvme_c": 38.85,
+      "run_id": "c43-c15-plain-cold513",
+      "utc": "2026-09-28T08:19:27.935366+00:00"
+    },
+    "status": "PASS"
+  },
+  "launch_error": null,
+  "maxima": {
+    "cgroup_peak_bytes": 13189615616,
+    "cpu_c": 95.0,
+    "gpu_c": 59.0,
+    "gpu_total_mib": 5752.0,
+    "nvme_c": 44.85,
+    "rss_bytes": 13288665088,
+    "swap_bytes": 0
+  },
+  "measurement_commit": "dcbd840d39b709b880084f0c6d7a0dde8db3a497",
+  "message": {
+    "content": "",
+    "reasoning_content": "The",
+    "role": "assistant"
+  },
+  "message_sha256": "1b4631ffc9fd59b6b233f7e3102af60328dd5bafb0e6b0c4904b147cba7f740a",
+  "order": 2,
+  "phase": "C15_PLAIN",
+  "protocol_sha256": "200795b3a97fabe1eef5924839a8e5e8fd6671d661e81a2c45e0d075424573f8",
+  "raw_sha256": "e5020f5e2f39f0880b8f1449010fa4ab85e740fcf3bbab1ad879a2fb7f1de004",
+  "returncode": 0,
+  "run_id": "c43-c15-plain-cold513",
+  "runner_returncode": 0,
+  "sample_count": 80,
+  "schema": "c34b-wave-bridge-receipt-v1",
+  "server_elapsed_s": 85.43161698900803,
+  "server_gate": {
+    "active_s": 80.57917093999276,
+    "cgroup_peak_bytes": 13189615616,
+    "completed_requests": 1,
+    "decode_s": 0.8659,
+    "decode_tok_s": 4.619471070562421,
+    "decode_tokens": 4,
+    "last_half_decode_tok_s": 4.619471070562421,
+    "run_id": "c43-c15-plain-cold513",
+    "sample_count": 80,
+    "schema_version": "c2-gate-result-v1",
+    "status": "PASS"
+  },
+  "status": "PASS_DIAGNOSTIC_BRIDGE",
+  "stop_reasons": [],
+  "timings": {
+    "cache_n": 0,
+    "predicted_ms": 865.898,
+    "predicted_n": 4,
+    "predicted_per_second": 4.61948174034355,
+    "predicted_per_token_ms": 216.4745,
+    "prompt_ms": 79708.878,
+    "prompt_n": 513,
+    "prompt_per_second": 6.435920475508388,
+    "prompt_per_token_ms": 155.3779298245614
+  },
+  "token_ids_sha256": "bc41ccff712f8f8e1984f374051135e315e346641c060beba985ae983e162ee0"
+}
