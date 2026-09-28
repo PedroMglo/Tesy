@@ -1,0 +1,31 @@
+{
+  "20b_comparator": "reuse qualified C38 stock20 ngl13 result with original monitor provenance",
+  "categories": [
+    "code",
+    "sql_data",
+    "planning"
+  ],
+  "context_tokens": 8192,
+  "default_changed": false,
+  "failure_policy": "first guard/evidence failure stops arm, preserve C38 FAIL, no hidden retry",
+  "output_cap_tokens": 3072,
+  "per_task_timeout_s": 600,
+  "profiles": "C38 P8/P12 unchanged; only CPU clock monitor one-zero reread with raw diagnostic is changed",
+  "quality_rule": "P12 resolves all tasks P8 resolves; all 12 critical for M4 candidate",
+  "reasoning_effort": "medium",
+  "resource_guards": "E18 zero swap, GPU6500 reservation/7000 absolute, RSS16GiB, cgroup16.5GiB, MemAvailable6GiB, CPU95 warning/100 stop, GPU80/NVMe70 stop",
+  "run_order": [
+    "p8",
+    "p12"
+  ],
+  "schema": "c39-quality-recovery-usage-v1",
+  "seed": 42,
+  "task_count": 12,
+  "task_source": "workloads/c38_quality12.json",
+  "temperature": 0,
+  "time_to_solution_deadlines_s": [
+    30,
+    120,
+    600
+  ]
+}

@@ -1,0 +1,89 @@
+{
+  "c18": {
+    "cpu_telemetry_sha256": "57e08e168554432329e55f2b9126d190ae249153b29f5b7e6458ec236e4e2c45",
+    "monitor_sha256": "a5d6f36a864b3fca80d2f6946c2bf884337819bdaca559f2cd31799e255ff92f",
+    "thermal_monitor": "CPU95 warning, CPU100/explicit cooling/clock collapse stop"
+  },
+  "c39": {
+    "admission_runner_sha256": "eebb2642ce2c270367854c5575c1ebc5b3fc013af24923d1f9da4ddca3d0b8dc",
+    "arm": "p8",
+    "backend_dirty": "",
+    "backend_tree": "b1e1647729c6e81ae8b2a4fa8119c626e674f6a1",
+    "claim": "fresh 12-task P8/P12 only; C38 stock20B reused with old monitor provenance",
+    "grader_sha256": "4e2b44f18851171aa924f594a9dbfe6de11bf446e6137744311643bf34b8d624",
+    "mode": "init-only",
+    "model_free_validator_status": "PASS_12_GOLD_AND_12_MUTANT",
+    "model_stat": {
+      "ctime_ns": 1790389637807910988,
+      "dev": 53,
+      "inode": 14833675,
+      "mtime_ns": 1790389637795911032,
+      "size_bytes": 63387346208
+    },
+    "monitor_scope": "systemd user scope E18, zero swap",
+    "n_gpu_layers": 8,
+    "parent_c38_decision_sha256": "a1b3731bd2d530c7d50e33c5efd49529cd3928d4caad43cf6daea71b2380edcd",
+    "reused_stock20_receipt_sha256": "3270e6bdc3e6a01e85f1aaf870904bc4f7794ed595522c354404365caf18bbdc",
+    "runner_sha256": "c61a12131223ccd3dc57bc25031e24d8d3a324946e55fad134e5f407abe2c27c",
+    "server_runner_sha256": "a5d6f36a864b3fca80d2f6946c2bf884337819bdaca559f2cd31799e255ff92f",
+    "workload_sha256": "682fee2bd9aca770e43196f70daea785f38c75e9f638f851e241f1c979b9b7bc"
+  },
+  "campaign_id": "tesy-c39-quality-recovery-20260928",
+  "expected_request_ids": [
+    "c38-code-01",
+    "c38-code-02",
+    "c38-code-03",
+    "c38-code-04",
+    "c38-sql-01",
+    "c38-sql-02",
+    "c38-sql-03",
+    "c38-sql-04",
+    "c38-plan-01",
+    "c38-plan-02",
+    "c38-plan-03",
+    "c38-plan-04"
+  ],
+  "identity": {
+    "backend_sha": "c3759bad92c0e6f71bb936afea9b0a162fb83f76",
+    "binary_sha256": "2c91e0572ad71e4977e3e9134c9f8339256e6481a3f316f6fef9493a370d4822",
+    "config_sha256": "69bf9579bcd801a5d4c80e6e727de3df33319854253fb252e0c88d6d3398a339",
+    "input_sha256": {
+      "c38_decision.json": "a1b3731bd2d530c7d50e33c5efd49529cd3928d4caad43cf6daea71b2380edcd",
+      "c38_stock20_receipt.json": "3270e6bdc3e6a01e85f1aaf870904bc4f7794ed595522c354404365caf18bbdc",
+      "protocol.json": "4f9448a6b244e7e54901513e1299de91ee63fed475386b17e348176c66cccfa5",
+      "usage-contract.json": "4da1c5681888a5c4113fc907b5dbcb6755098175129112c352a31242c2ade070",
+      "workloads/c38_quality12.json": "682fee2bd9aca770e43196f70daea785f38c75e9f638f851e241f1c979b9b7bc"
+    },
+    "library_sha256": {
+      "build-c35-gcc15/bin/libggml-base.so.0.15.3": "6666b1fa65172a992429c516864dd1fb44a2ae4370ec2d044ed684d0b33d6f9e",
+      "build-c35-gcc15/bin/libggml-cpu.so.0.15.3": "b2ed71c16ad669536840c63a999305a3c6ae0e2ab278e9a891c1d0fab96b8a2b",
+      "build-c35-gcc15/bin/libggml-cuda.so.0.15.3": "4d4ef9068b1057abf9e4a73a872f48703723d30591ebafb962bfb0612df70dcc",
+      "build-c35-gcc15/bin/libggml.so.0.15.3": "45bd5d9edee4c8a3eeec23166478ef7ec495dc55785e3942aa72afddc0125417",
+      "build-c35-gcc15/bin/libllama-common.so.0.0.2": "e64791fe0c072c3710c2f9ed92f1e3d9487f2c34f626086b196f60077bd1d374",
+      "build-c35-gcc15/bin/libllama-server-impl.so": "3cbba6ad27138ef34adf0a2c8e8f5b204ea7c73111e2bef4acc8288cef5f6e05",
+      "build-c35-gcc15/bin/libllama.so.0.0.2": "4ba0477592acb4a8808c259d836aea42f20aeef88ad7c3b4ea41572dae8418c6",
+      "build-c35-gcc15/bin/libmtmd.so.0.0.2": "48efbf1711ec3b170d8651ab1149f9fe7549972d2e420fa40f2ecae39670a253"
+    },
+    "model_id": "target120b",
+    "model_sha256": "582bd40f6886200101f4c4ed9f25f3fe80cc14c86e9e2b37746cd8904a0c622d",
+    "workload_sha256": "682fee2bd9aca770e43196f70daea785f38c75e9f638f851e241f1c979b9b7bc"
+  },
+  "limits": {
+    "boundary_s": 2,
+    "cpu_max_c": 100,
+    "gpu_max_c": 80,
+    "gpu_max_mib": 6500,
+    "max_gap_s": 3,
+    "memory_max_bytes": 17716740096,
+    "min_active_s": 0,
+    "min_decode_s": 0,
+    "min_decode_tok_s": 0,
+    "min_elapsed_s": 0,
+    "min_last_half_tok_s": 0,
+    "min_mem_available_bytes": 6442450944,
+    "nvme_max_c": 70,
+    "rss_max_bytes": 17179869184
+  },
+  "protocol_id": "c39-p8-v1",
+  "schema_version": "c2-protocol-v1"
+}
