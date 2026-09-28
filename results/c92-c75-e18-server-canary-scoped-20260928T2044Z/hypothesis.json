@@ -1,0 +1,16 @@
+{
+  "schema": "c92-hypothesis-v1",
+  "identity": "C92",
+  "prior_failure": "C91 FAIL_RESOURCES_OR_EVIDENCE, model never loaded because runner was launched outside its required cgroup scope",
+  "model_free_discriminant": "A tiny systemd-run --user --scope child applied memory.max=19327352832 and memory.swap.max=0 exactly; recorded in C91 diagnosis.",
+  "hypothesis": "With the verified outer scope invocation, the C75 P12 8K server loads and completes one synthetic one-token request under E18.",
+  "alternative": "Even under the correct scope, model load or first forward exceeds memory/GPU/thermal guards or fails numerically/runtime.",
+  "intervention": "Launcher scope only versus C91; same C75 backend, 8K flags, synthetic prompt, cap and resource policy. New run ID and port 18367 to match server runner's bound-port check.",
+  "outer_launcher": "systemd-run --user --scope -p MemoryMax=19327352832 -p MemorySwapMax=0 -- python3 tools/c92_c75_server_canary.py run <root> --measurement-commit <sha>",
+  "primary_gate": "Completed one-token response and validated bounded receipt with mapped libraries, zero workload swap/OOM/guards and finite output.",
+  "claim_limit": "Load/short-forward admission only, no numeric fidelity or performance promotion.",
+  "timeout_s": 300,
+  "request_count": 1,
+  "no_retry": true,
+  "publication": "local_only"
+}
