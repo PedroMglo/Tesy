@@ -1,0 +1,18 @@
+{
+  "schema": "c81-latency-gap-hypothesis-v1",
+  "evidence_class": "RETROSPECTIVE_INFERRED_FROM_MEDIDO_NO_TARGET",
+  "objective": "Quantify whether removing prefill alone can meet the existing 10 s first-final and 6 tok/s M4 session targets.",
+  "alternative": "The post-prefill interval might already be below 10 s on the relevant 19 incremental requests, leaving prefill as the only binding limit.",
+  "inputs": [
+    "C52b complete 20-request raw plus manifest",
+    "C74 three-pair probe confirmation plus manifest"
+  ],
+  "formulae": {
+    "post_prefill_s_per_request": "first_final_content_chunk_s - prefill_s",
+    "zero_prefill_held_fixed_residual_s": "post_prefill_s_per_request",
+    "decode_tpot_reduction_needed_percent": "100*(1 - observed_median_decode_tok_s/6)",
+    "post_prefill_reduction_needed_with_zero_prefill_percent": "100*(1 - 10/median_post_prefill_s)"
+  },
+  "decision": "If the zero-prefill residual exceeds 10 s on a majority of C52b incrementals, prefill-only waves cannot satisfy M4 under a held-fixed post-prefill path. This is arithmetic under an explicit counterfactual, not a prediction for C75 server.",
+  "claim_limit": "No new model execution, causal attribution, sampling or server performance claim. C74 probe ratios are separate observations and are not transplanted as measured C52b speedups."
+}
