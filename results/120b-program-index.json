@@ -19,7 +19,7 @@
     "M4": "NOT_MET_BY_OBSERVED_LATENCY_AND_DECODE"
   },
   "mission": "local usable main GPT-OSS 120B, original weights and authoritative routing",
-  "next_action": "Freeze a new C104 hot-start OFF/ON diagnostic identity if physical capacity permits; C103 gain is NOT_COMPUTABLE and its ON did not load the model.",
+  "next_action": "Do not rerun C100 for promotion. Use source/static and C100/C104 phase evidence to choose a distinct decode bottleneck test; preserve C75 scoped prefill gain and qualify M3 diverse only for a profile that passes protected gates.",
   "open_hypotheses": [
     "Warm153 exclusive critical-path cost remains uncertain: C56 instrumented closed intervals are diagnostic, not removable fraction",
     "Bounded RAM L2 may reduce demand NVMe reads only if reuse traces, equal-memory accounting and exposed wait support investment",
@@ -28,7 +28,7 @@
     "C66 observer failure was diagnosed as callback delivery returning false and repaired prospectively in C68; historical C66 FAIL remains",
     "C83 four sparse router checkpoints cannot decide L2 value; continuous demand/eviction and exposed wait needed",
     "C84 continuous demand/eviction trace may reveal L2 headroom, but only synthetic CPU callback is validated; 120B CUDA/server measurement remains NOT_RUN",
-    "C100 C75 wave-skip cold prefill gain is large in three server pairs, but cold/warm decode medians regressed beyond the frozen -5% protection; source/build/phase attribution of decode cost remains open"
+    "C104 same-binary OFF/ON does not reproduce C100 decode penalty; build-level or run-state attribution remains, while baseline decode is ~3 tok/s and M4 target 6 tok/s"
   ],
   "rejected_claims": [
     "P12 general-medium timing gain >=5% at 496+32 under E18",
@@ -708,7 +708,13 @@
       "measurement_commit": "d62a2e434e83e2faeef3b59a704e0934b0241d1c",
       "root": "results/c103-server-wave-toggle-20260928T2254Z",
       "status": "MATCHED_START_NOT_ADMITTED_OFF_ONLY_PASS"
+    },
+    {
+      "identity": "c104",
+      "measurement_commit": "91d7fd00f300ebd0df61b63d74ce473420cc311d",
+      "root": "results/c104-server-wave-hot-toggle-20260928T2309Z",
+      "status": "NO_ACTIVE_SKIP_DECODE_PENALTY_OBSERVED_TWO_PAIRS"
     }
   ],
-  "updated_utc": "2026-09-28T23:07:30.533532+00:00"
+  "updated_utc": "2026-09-28T23:32:11.005655+00:00"
 }

@@ -1,0 +1,147 @@
+{
+  "C100_NO_GO_unchanged": true,
+  "M3": "PARTIAL",
+  "M4": "NOT_MET",
+  "budget_consumed": {
+    "inventory_s_minimum": 60,
+    "matched_start_wait_s": 137.9780628180015,
+    "model_process_elapsed_s": 923.6981935609947
+  },
+  "default_changed": false,
+  "gate_status": {
+    "diagnostic": "COMPLETE",
+    "identity_outputs": "PASS",
+    "matched_start": "PASS",
+    "resources": "PASS"
+  },
+  "historical_failures_unchanged": [
+    "C48",
+    "C78",
+    "C102 prelaunch",
+    "C103 matched start"
+  ],
+  "interpretation": "Active C75 wave skip did not cause a decode-duration penalty relative to C75 OFF in these two operational-start pairs; C100 cross-binary confirmation remains NO_GO due its protected regressions.",
+  "limitations": [
+    "two diagnostic pairs, no p95/significance",
+    "operational starts vary across pairs; page cache uncontrolled",
+    "server output equality, not independent full attention/KV proof"
+  ],
+  "measurement_commit": "91d7fd00f300ebd0df61b63d74ce473420cc311d",
+  "median_paired_gain_percent": {
+    "cold_decode_s": 0.9602743529444239,
+    "cold_first_final_content_s": 69.43188215683618,
+    "cold_prefill_s": 75.35032782674969,
+    "warm_decode_s": 7.3377553296707,
+    "warm_first_final_content_s": 14.056025511218461,
+    "warm_prefill_s": 27.717628167341395
+  },
+  "next_action": "Do not relabel C100 as PASS. Inspect remaining decode/load bottleneck and select a different mechanism or C75 build-level explanation model-free before any new promotion test.",
+  "pairs": [
+    {
+      "matched_start_wait_s": 137.8283775190066,
+      "metrics": {
+        "cold_decode_s": {
+          "off": 24.340387999999997,
+          "on": 24.324304,
+          "paired_gain_percent": 0.06607947252112731
+        },
+        "cold_first_final_content_s": {
+          "off": 300.0900008039898,
+          "on": 91.83943742001429,
+          "paired_gain_percent": 69.39603546470674
+        },
+        "cold_prefill_s": {
+          "off": 276.397134,
+          "on": 68.145801,
+          "paired_gain_percent": 75.34496830202298
+        },
+        "cold_wall_s": {
+          "off": 300.75552618000074,
+          "on": 92.48889214202063,
+          "paired_gain_percent": 69.24781621912194
+        },
+        "warm_decode_s": {
+          "off": 20.802545,
+          "on": 18.704233,
+          "paired_gain_percent": 10.086804282841355
+        },
+        "warm_first_final_content_s": {
+          "off": 30.44414979600697,
+          "on": 25.126993597019464,
+          "paired_gain_percent": 17.465280635575176
+        },
+        "warm_prefill_s": {
+          "off": 10.110638999999999,
+          "on": 6.839875,
+          "paired_gain_percent": 32.34972586796936
+        },
+        "warm_wall_s": {
+          "off": 30.929403385001933,
+          "on": 25.559346269001253,
+          "paired_gain_percent": 17.362304242197865
+        }
+      },
+      "off_run_id": "c104-p1-off",
+      "on_run_id": "c104-p1-on",
+      "order": [
+        "c104-p1-on",
+        "c104-p1-off"
+      ],
+      "pair": 1
+    },
+    {
+      "matched_start_wait_s": 0.14968529899488203,
+      "metrics": {
+        "cold_decode_s": {
+          "off": 24.83681,
+          "on": 24.376219000000003,
+          "paired_gain_percent": 1.8544692333677204
+        },
+        "cold_first_final_content_s": {
+          "off": 301.85114090301795,
+          "on": 92.16200881300028,
+          "paired_gain_percent": 69.46772884896562
+        },
+        "cold_prefill_s": {
+          "off": 277.662952,
+          "on": 68.428126,
+          "paired_gain_percent": 75.35568735147639
+        },
+        "cold_wall_s": {
+          "off": 302.5147316130169,
+          "on": 92.82201077998616,
+          "paired_gain_percent": 69.31653202967782
+        },
+        "warm_decode_s": {
+          "off": 20.913040000000002,
+          "on": 19.953401999999997,
+          "paired_gain_percent": 4.5887063765000455
+        },
+        "warm_first_final_content_s": {
+          "off": 30.183664352982305,
+          "on": 26.97007891497924,
+          "paired_gain_percent": 10.646770386861746
+        },
+        "warm_prefill_s": {
+          "off": 9.753694,
+          "on": 7.502002,
+          "paired_gain_percent": 23.085530466713426
+        },
+        "warm_wall_s": {
+          "off": 30.682911902986234,
+          "on": 27.47059666799032,
+          "paired_gain_percent": 10.469394968615322
+        }
+      },
+      "off_run_id": "c104-p2-off",
+      "on_run_id": "c104-p2-on",
+      "order": [
+        "c104-p2-off",
+        "c104-p2-on"
+      ],
+      "pair": 2
+    }
+  ],
+  "schema": "c104-decision-v1",
+  "status": "NO_ACTIVE_SKIP_DECODE_PENALTY_OBSERVED_TWO_PAIRS"
+}
