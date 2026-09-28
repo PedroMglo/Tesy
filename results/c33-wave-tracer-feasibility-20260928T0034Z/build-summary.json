@@ -1,0 +1,41 @@
+{
+  "backend_commit": "1691fb65a00c963ec3aa64a5b66a1b951de52d15",
+  "binary_sha256": {
+    "libggml-cpu.so": "8b0fbbe5a980c7418f1c603acb2efbe87a635235bc2555121e9b8dfba2d11274",
+    "libllama.so": "9b13168dbac4874c13f7f57d31b38c067f54f7b0b284e1a542060b6063859652",
+    "llama-server": "f28ca1357faac2fce851ccce6d96869669bd1bac0925f5cef48a93412545089c"
+  },
+  "build_flags": {
+    "CMAKE_BUILD_TYPE": "Release",
+    "CMAKE_CUDA_ARCHITECTURES": "89",
+    "CMAKE_CUDA_COMPILER": "/usr/local/cuda/bin/nvcc",
+    "CMAKE_CUDA_HOST_COMPILER": "/usr/bin/g++-15",
+    "CMAKE_CXX_COMPILER": "/usr/bin/g++-15",
+    "CMAKE_CXX_FLAGS": "-DTESY_C15_NVTX -I/usr/local/cuda/targets/x86_64-linux/include",
+    "CMAKE_C_COMPILER": "/usr/bin/gcc-15",
+    "CMAKE_C_FLAGS": "-DTESY_C15_NVTX -I/usr/local/cuda/targets/x86_64-linux/include",
+    "GGML_CUDA": "ON",
+    "GGML_NATIVE": "ON",
+    "LLAMA_BUILD_SERVER": "ON"
+  },
+  "build_jobs": 4,
+  "compiled_labels": [
+    "C15_CPU_STREAM_MATMUL_ID",
+    "C15_EXPERT_PREAD",
+    "C15_EXPERT_UPLOAD",
+    "C15 wave pairs active"
+  ],
+  "diagnostic_backend_clean": true,
+  "model_runs": 0,
+  "original_backend_clean": true,
+  "raw_sha256": {
+    "build.log": "dcc5e123884181c053919517fc2e66b8de1980c08f1347e7ca8520165ad94518",
+    "c33-smoke.nsys-rep": "2f214ce9b424d6b9274c07c50001ede0e87f4517ba9dd82d7ae5a367acfb9920",
+    "c33-smoke.sqlite": "e3d6a5fa866728a1780bf8bf27ecac45b321694a7db2fe2dd5f85addf50e9d8b",
+    "configure.log": "a19c6452987db81d5f8d794fe23f6ef2c11af3ae0f21caa97c4f928629e4c9b5",
+    "server-help.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "server-help.stdout": "88189b56af54e39ed5886f620c73dca760a3de109daa05d68afb78646cb7b16c"
+  },
+  "schema": "c33-build-summary-v1",
+  "status": "PASS"
+}
