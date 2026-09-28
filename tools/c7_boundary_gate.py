@@ -52,7 +52,7 @@ def f32(data, count):
     return data
 
 
-def logical_values(data, ne, nb, dtype):
+def logical_values(data, ne, nb, dtype, *, allow_parked=False):
     for i3 in range(ne[3]):
         for i2 in range(ne[2]):
             for i1 in range(ne[1]):
@@ -61,8 +61,10 @@ def logical_values(data, ne, nb, dtype):
                     if dtype == "f32":
                         if not math.isfinite(struct.unpack_from("<f", data, offset)[0]):
                             raise GateError("nonfinite logical capture value")
-                    elif struct.unpack_from("<i", data, offset)[0] < 0:
-                        raise GateError("negative routed ID")
+                    else:
+                        value = struct.unpack_from("<i", data, offset)[0]
+                        if value < 0 and not (allow_parked and value == -1):
+                            raise GateError("negative routed ID")
 
 
 def source(stem, variant, binary, input_sha):
@@ -102,7 +104,7 @@ def state_metadata(phase, layer):
     return -1, 189 + step, 1
 
 
-def capture(root):
+def capture(root, *, allow_parked=False):
     if (root / "phases.txt").read_text().splitlines() != list(PHASES):
         raise GateError("capture phase schedule differs from freeze")
     masked = rows(root / "masked.tsv", list(MASKED[0]))
@@ -152,7 +154,8 @@ def capture(root):
         payload = (root / file).read_bytes()
         if len(payload) != size:
             raise GateError("capture payload differs from declared bytes")
-        logical_values(payload, ne, nb, row["type"])
+        logical_values(payload, ne, nb, row["type"],
+                       allow_parked=allow_parked and stage == "ffn_moe_wave_ids")
         total_bytes += size
     expected_core = {(phase, layer, stage) for phase, layer in expected_states for stage in CORE}
     if set(observed_core) != expected_core or total_bytes > 256*2**20:
