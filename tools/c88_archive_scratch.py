@@ -10,6 +10,7 @@ import subprocess
 
 ROOT = Path('results/c88-scratch-relocation-20260928T2029Z')
 ARCHIVE = Path('backends/c88-archived-builds').absolute()
+RECEIPT_SCHEMA = 'c88-scratch-relocation-receipt-v1'
 SOURCES = [
     Path('/tmp/tesy-c15-backend-20260927/build-c33-nvtx'),
     Path('/tmp/tesy-c46-backend-20260928/build-c46-nvtx'),
@@ -59,13 +60,13 @@ def verify(source, destination):
 
 def main():
     if not ROOT.is_dir() or (ROOT/'receipt.json').exists() or ARCHIVE.exists():
-        raise RuntimeError('C88 root/destination not in no-replace state')
+        raise RuntimeError('relocation root/destination not in no-replace state')
     if any(not p.is_dir() or p.is_symlink() for p in SOURCES):
         raise RuntimeError('source must be a real directory')
     total = sum(size_bytes(p) for p in SOURCES)
     if disk_free(Path.cwd()) < total + 20 * 2**30:
         raise RuntimeError('NVMe reserve insufficient')
-    receipt = {'schema': 'c88-scratch-relocation-receipt-v1',
+    receipt = {'schema': RECEIPT_SCHEMA,
                'before': meminfo(), 'source_bytes': total,
                'disk_free_before_bytes': disk_free(Path.cwd()),
                'moved': [], 'status': 'STARTED'}

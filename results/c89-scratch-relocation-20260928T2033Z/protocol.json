@@ -1,0 +1,16 @@
+{
+  "schema": "c89-scratch-relocation-protocol-v1",
+  "identity": "C89",
+  "objective": "Preserve two more obsolete owned tmpfs build trees to obtain a less fragile E18 host-memory start margin.",
+  "source_builds": [
+    "/tmp/tesy-c48-backend-20260928/build-c48-host",
+    "/tmp/tesy-c54-backend-20260928/build-c54-nvtx"
+  ],
+  "destination": "backends/c89-archived-builds/",
+  "preservation": "Use frozen C88 rsync copy/checksum/symlink method; source paths remain usable and content is verified.",
+  "preconditions": ["No running C48/C54 build process", "Source is a real directory", "Destination absent", "NVMe reserve above source bytes plus 20 GiB"],
+  "measurement": "Immediate before/after MemAvailable and Shmem only; 60-second admission remains independent.",
+  "model_runs": 0,
+  "no_historical_reclassification": true,
+  "publication": "local_only"
+}
