@@ -19,7 +19,7 @@
     "M4": "NOT_MET_BY_OBSERVED_LATENCY_AND_DECODE"
   },
   "mission": "local usable main GPT-OSS 120B, original weights and authoritative routing",
-  "next_action": "Inspect C75 OFF/ON source and C100 per-phase telemetry model-free under a new identity; freeze a minimal decode attribution gate if evidence supports it. Preserve C100 NO_GO and qualify diverse M3 only for a profile that passes correctness/resources.",
+  "next_action": "Freeze and run two alternating C75 OFF/ON same-binary 8K server pairs on the C100 two-request input, with E18 admission and matched starts; diagnostic decode attribution only, no promotion without protected gates.",
   "open_hypotheses": [
     "Warm153 exclusive critical-path cost remains uncertain: C56 instrumented closed intervals are diagnostic, not removable fraction",
     "Bounded RAM L2 may reduce demand NVMe reads only if reuse traces, equal-memory accounting and exposed wait support investment",
@@ -691,7 +691,12 @@
       "measurement_commit": "6850b366dda058fc123ef5a70b6226a3ce1ff708",
       "root": "results/c100-server-wave-confirm-20260928T2211Z",
       "status": "NO_GO_CONFIRM_PROTECTED_DECODE_REGRESSION"
+    },
+    {
+      "identity": "c101",
+      "root": "results/c101-wave-decode-audit-20260928T2247Z",
+      "status": "SOURCE_AND_EXISTING_RAW_AUDITED_NO_NEW_MODEL"
     }
   ],
-  "updated_utc": "2026-09-28T22:44:47.128834+00:00"
+  "updated_utc": "2026-09-28T22:48:22.764999+00:00"
 }
