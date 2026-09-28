@@ -1,0 +1,1 @@
+C58: unchanged C52b P12 backend and model, fresh 60 s inventory, frozen E18 resources. One synthetic 71-prompt/1-output-token API canary passed in 27.311 s, zero swap/OOM/guards; peak CPU 84.625 C, GPU 55 C, NVMe 44.85 C, GPU total 5704 MiB, cgroup 13.675 GiB. Source measurement commit 4a6888d. C48 FAIL preserved; C57 physical fidelity and M4 NOT_RUN. No speedup or quality claim.
