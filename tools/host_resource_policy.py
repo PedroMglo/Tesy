@@ -220,6 +220,35 @@ def derive_policy(
     }
 
 
+def freeze_protocol_resource_limits(policy: dict[str, Any], *, cgroup_memory_max_bytes: int) -> dict[str, Any]:
+    """Freeze resource limits for a new campaign from a preflight policy.
+
+    The cgroup hard cap is a profile choice. It must fit the live suggested cap.
+    A 512 MiB in-cgroup margin avoids using the OOM boundary as a benchmark target.
+    RSS is recorded against the cgroup cap rather than given a separate artificial
+    one-GiB reservation.
+    """
+    if type(cgroup_memory_max_bytes) is not int or cgroup_memory_max_bytes <= 512 * MIB:
+        raise ResourcePolicyError("cgroup cap too small")
+    suggested = policy["memory"]["suggested_cgroup_max_bytes"]
+    if cgroup_memory_max_bytes > suggested:
+        raise ResourcePolicyError("cgroup cap exceeds live prospective admission")
+    gpu_stop = policy["gpu"]["stop_c"]
+    nvme_stop = policy["nvme"]["critical_c"]
+    if gpu_stop is None or nvme_stop is None:
+        raise ResourcePolicyError("device thermal stop threshold unavailable")
+    return {
+        "cgroup_memory_max_bytes": cgroup_memory_max_bytes,
+        "memory_max_bytes": cgroup_memory_max_bytes - 512 * MIB,
+        "rss_max_bytes": cgroup_memory_max_bytes,
+        "gpu_max_mib": policy["gpu"]["memory_admission_max_mib"],
+        "min_mem_available_bytes": policy["memory"]["host_reserve_bytes"],
+        "cpu_max_c": policy["cpu"]["device_limit_c"],
+        "gpu_max_c": gpu_stop,
+        "nvme_max_c": nvme_stop,
+    }
+
+
 def ready_for_launch(policy: dict[str, Any]) -> tuple[bool, list[str]]:
     reasons = []
     gpu = policy["gpu"]
