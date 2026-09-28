@@ -203,6 +203,22 @@ def validate_expected_message(message, task):
         raise GateError('assistant message differs from frozen conversation turn')
 
 
+def assistant_history_messages(first_messages, assistant_message, followup_messages):
+    """Build a second turn from the actual first API answer, preserving its content."""
+    if (type(first_messages) is not list or len(first_messages) != 1 or
+        type(first_messages[0]) is not dict or first_messages[0].get('role') != 'user' or
+        type(first_messages[0].get('content')) is not str or
+        type(followup_messages) is not list or len(followup_messages) != 1 or
+        type(followup_messages[0]) is not dict or followup_messages[0].get('role') != 'user' or
+        type(followup_messages[0].get('content')) is not str or
+        type(assistant_message) is not dict or assistant_message.get('role') != 'assistant' or
+        type(assistant_message.get('content')) is not str or not assistant_message['content']):
+        raise GateError('actual assistant-history turn unavailable')
+    return [dict(first_messages[0]),
+            {'role': 'assistant', 'content': assistant_message['content']},
+            dict(followup_messages[0])]
+
+
 def tasks_for(suite):
     if suite == "smoke1":
         tasks = strict_json(SMOKE.read_text())["tasks"]
@@ -418,6 +434,12 @@ def child_exited_after_sample_loss(server):
 
 def run(args, protocol, config, task_rows, model):
     between = session_idle_seconds(config)
+    dynamic_history = config.get('append_previous_assistant_to_next', False)
+    if dynamic_history is not False and dynamic_history is not True:
+        raise GateError('invalid assistant-history flag')
+    if dynamic_history and (len(task_rows) != 2 or not config.get('pretokenize') or
+                            not config.get('freeze_token_ids')):
+        raise GateError('assistant-history requires two officially tokenized turns')
     minimum = config.get('adjacent_cache_min_common')
     if minimum is not None and (type(minimum) is not int or minimum <= 0 or
                                 not config.get('pretokenize')):
@@ -589,7 +611,9 @@ def run(args, protocol, config, task_rows, model):
             if args.suite in ("c2core8", "c2eval12", "c3followup2") or config.get("pretokenize",False):
                 tokenization = {}
                 token_ids = {}
-                for row_id, task in task_rows:
+                for row_index, (row_id, task) in enumerate(task_rows):
+                    if dynamic_history and row_index:
+                        continue  # the second turn depends on the actual first API answer
                     messages = task.get("messages") or [{"role":"user","content":task["prompt"]}]
                     kwargs = task_template_kwargs(task)
                     template = fetch("/apply-template",{"model":model_id,
@@ -609,12 +633,13 @@ def run(args, protocol, config, task_rows, model):
                         raise GateError(f"official tokenization outside frozen range for {row_id}")
                     tokenization[row_id] = {"count":len(ids),"token_ids_sha256":digest(ids)}
                     token_ids[row_id] = ids
-                if config.get("freeze_token_ids",False):
+                if config.get("freeze_token_ids",False) and not dynamic_history:
                     with open(paths[".tokenization.json"],"x") as out:
                         json.dump(token_ids,out,indent=2,allow_nan=False);out.write("\n")
                 validate_token_relationships(token_ids,
                                              config.get('token_id_relationships', []))
                 preflight["prompt_tokenization"] = tokenization
+            previous_assistant = None
             for row_index, (row_id, task) in enumerate(task_rows):
                 if row_index and between:
                     until = time.monotonic() + between
@@ -624,6 +649,26 @@ def run(args, protocol, config, task_rows, model):
                         stop.wait(max(0, min(1, until - time.monotonic())))
                 if reasons or server.poll() is not None: raise GateError("server/watchdog stopped")
                 messages = task.get("messages") or [{"role":"user","content":task["prompt"]}]
+                if dynamic_history and row_index:
+                    messages = assistant_history_messages(
+                        task_rows[0][1]['messages'], previous_assistant, messages)
+                    template = fetch('/apply-template', {'model':model_id,
+                                     'messages':messages,
+                                     'max_tokens':config['request_policy']['max_tokens'],
+                                     'temperature':0,'seed':42,
+                                     **task_template_kwargs(task)})
+                    if type(template.get('prompt')) is not str:
+                        raise GateError('dynamic official template unavailable')
+                    ids = fetch('/tokenize', {'content':template['prompt'],
+                                'add_special':False,'parse_special':True}).get('tokens')
+                    if type(ids) is not list or any(type(x) is not int for x in ids) or \
+                       not 0 < len(ids) <= config.get('n_ctx',4096)-config['request_policy']['max_tokens']:
+                        raise GateError('dynamic official tokenization exceeds reserve')
+                    bounds = config.get('prompt_token_ranges',{}).get(row_id)
+                    if bounds and not bounds[0] <= len(ids) <= bounds[1]:
+                        raise GateError('dynamic official tokenization outside frozen range')
+                    tokenization[row_id] = {'count':len(ids),'token_ids_sha256':digest(ids)}
+                    token_ids[row_id] = ids
                 stream_requests = config.get('stream_requests', False)
                 payload = {"model":model_id,"messages":messages,
                            "max_tokens":config["request_policy"]["max_tokens"],
@@ -655,7 +700,7 @@ def run(args, protocol, config, task_rows, model):
                 if (args.suite in ("c2core8", "c2eval12", "c3followup2") or
                     config.get("pretokenize",False)) and \
                    response.get("usage",{}).get("prompt_tokens") != \
-                   preflight["prompt_tokenization"][row_id]["count"]:
+                   tokenization[row_id]["count"]:
                     raise GateError(f"API prompt count differs from preflight tokenizer for {row_id}")
                 item = {"id":row_id,"source_task_id":task["id"],"category":task["category"],
                         "started_s":start,"ended_s":end,"finish_reason":choices[0].get("finish_reason"),
@@ -664,6 +709,8 @@ def run(args, protocol, config, task_rows, model):
                 if stream_metrics is not None:
                     item['stream_metrics'] = stream_metrics
                 raw.append(item)
+                if dynamic_history and row_index == 0:
+                    previous_assistant = choices[0]['message']
                 print(json.dumps({"id":row_id,"elapsed_s":end-start,"usage":item["usage"]}),flush=True)
                 if minimum is not None:
                     cache_n = item.get('timings',{}).get('cache_n')
@@ -680,6 +727,9 @@ def run(args, protocol, config, task_rows, model):
             # Keep sampling through graceful shutdown; ending the sampler first
             # left an unobserved >2 s process tail in the initial target smoke.
             stop_own_server(server);stop.set();watcher.join(timeout=5)
+            if dynamic_history and token_ids:
+                with open(paths['.tokenization.json'],'x') as out:
+                    json.dump(token_ids,out,indent=2,allow_nan=False);out.write('\n')
     ended = time.monotonic()-t0
     model_after = model.stat()
     if (model_after.st_dev,model_after.st_ino,model_after.st_size,model_after.st_mtime_ns) != \
