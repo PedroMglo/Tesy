@@ -9,3 +9,9 @@
 - Stop: first identity, output, cache, fidelity, resource, telemetry, timeout or allocation failure closes the affected run; no automatic retry. C48/C78 and other historical FAILs remain unchanged.
 - NOT_RUN at freeze: C96 model, performance screening, M3 varied conversation/active sustained load, M4 quality and latency qualification.
 - Next discriminating gate if bridge passes: freeze two alternating server pairs on identical exact-prefix inputs and session metrics, or address any observed bridge failure under a new identity.
+
+## Result
+
+- Measurement commit: `3ba286f69d27342a1f5acf4f38d74a36c8ce3108`. C96 control completed two requests, PASS in its own receipt: 2043 cold prompt tokens, 77 completion tokens; 2081 warm prompt tokens with 2044 cached, 60 completion tokens. Cold prefill 276.724 s, warm prefill 10.018 s, warm first final content 28.998 s. E18 peak cgroup 13,461,721,088 B, GPU total 5752 MiB, CPU 95.125 °C, zero swap/OOM/guard stop. Evidence class: MEDIDO_NO_TARGET; synthetic input, one control arm.
+- The C96 candidate attempt failed **before model launch**: the clean-worktree check saw the newly created untracked control receipt. Status `FAIL_HARNESS_PRELAUNCH`; candidate output `NOT_RUN_MODEL`. This is a harness bug, not a C75 performance or thermal result. Preserve both the PASS control and failed prelaunch attempt.
+- No paired speedup or cross-arm output claim is possible from C96. Next: reproduce the receipt/worktree interaction in a model-free test, fix it, then freeze a new campaign identity for a fresh pair. Do not reuse C96 candidate run ID.
