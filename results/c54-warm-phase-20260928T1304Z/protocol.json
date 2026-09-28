@@ -1,0 +1,63 @@
+{
+  "alternative": "markers lack request/phase specificity or cannot distinguish competing wait mechanisms",
+  "backend_candidate_commit": "2e558cb79f9184e1c87f7bc842c03fe66f7f580e",
+  "backend_tree": "b5c2ff3e68001955ad60652539fe355b7d8553ae",
+  "default_changed": false,
+  "effective_profile": "C35+C15+C46 diagnostic backend P12 ngl12 ub32 slots32 preload ON, full-SWA, F16 KV, n_ctx8192, exact-prefix cache, medium effort, AC performance",
+  "endpoint_metrics": [
+    "first_text_chunk_s",
+    "first_final_content_chunk_s",
+    "request_wall_s",
+    "decode_tok_s"
+  ],
+  "failure_policy": "first output/cache/identity/resource failure stops; preserve raw; no retry",
+  "hypothesis": "phase-specific diagnostic intervals can distinguish I/O overlap from CPU MMID occupancy in the 153-ID incremental prefill",
+  "idle_admission": "300 contiguous seconds, start CPU/GPU/NVMe <=55/55/50 C; C49 <=50 CPU blocked without model",
+  "input_sha256": "2466b041cbdd7dfecee2806e332b2d473ab42828e415e73438bfebeee94e72b9",
+  "limits": [
+    "diagnostic instrumentation only",
+    "no production timing or full-logit equivalence claim",
+    "C48 same-profile FAIL remains"
+  ],
+  "max_tokens": 256,
+  "model_free_tests_sha256": "ed96acd22211d80fd8b7654247257fa200a60ffb142c814d6e764fb422928da4",
+  "model_sha256": "582bd40f6886200101f4c4ed9f25f3fe80cc14c86e9e2b37746cd8904a0c622d",
+  "model_stat": {
+    "ctime_ns": 1790389637807910988,
+    "dev": 53,
+    "inode": 14833675,
+    "mtime_ns": 1790389637795911032,
+    "size_bytes": 63387346208
+  },
+  "objective": "collect tagged pread/upload and CPU MMID intervals on the same warm153 exact-prefix two-turn workload as C52b",
+  "parent_c48_sha256": "774a7ccf9afafa37bc6b7432e692919a4950ffe6621f265bcc70494b995fdadb",
+  "parent_c52b_sha256": "90049fa07f59b81b3c78a020c6d15d072a3e06f44db32547fe82328d756192a5",
+  "parent_c53b_sha256": "f0d81a8a28627b507633589272f5a052e11454c80047f5b37711c7cce7b2b3a7",
+  "phase_marker_contract": "two server prefill groups separated by >120 s; warm group has MMID, pread, upload and wave markers",
+  "primary_gate": "two complete finite API responses, same messages/token counts as C52b turns0/1, generated-token prefix bound, complete E18 telemetry; trace markers separately validated; no timing promotion",
+  "profiler_command": "systemd-run --user --scope -p MemoryMax=19327352832 -p MemorySwapMax=0 -- env -u LD_PRELOAD PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=tools nsys profile --trace=nvtx --sample=none --force-overwrite=false --output results/c54-warm-phase-20260928T1304Z/raw/c54-phase-profile -- python3 tools/c54_warm_phase.py results/c54-warm-phase-20260928T1304Z --run --measurement-commit <full-commit>",
+  "resource_guards": "E18 zero swap, RSS16GiB, cgroup16.5GiB, GPU6500MiB reserve, MemAvailable6GiB, CPU95 warning/100 stop, GPU80/NVMe70",
+  "run_order": [
+    "c54-turn00",
+    "c54-turn01"
+  ],
+  "runner_sha256": "665fbb77d7f3839be941bedc91ca6befe3804fda57b8f26b725911790c787659",
+  "schema": "c54-assistant-history-protocol-v1",
+  "server_binary_sha256": "dee1f13a234521dccf181e9b80a0a3ce6f5dd3019bb9b3f6cd03c7121f6f2fe9",
+  "server_cache_source_sha256": "3ec8fca21273fb7839052e645004290fbef28eed4008aa93a66bdd7b628c11eb",
+  "server_library_sha256": {
+    "build-c54-nvtx/bin/libggml-base.so.0.15.3": "b95678606baa39e4aff04b35ba929721d03e95f8e4eef00f8cca0fa17ab50921",
+    "build-c54-nvtx/bin/libggml-cpu.so.0.15.3": "fcb94b36a1c14ffcf6151530530cd7a6dffaba2394007f44e6a4c263930ca11b",
+    "build-c54-nvtx/bin/libggml-cuda.so.0.15.3": "14f5e7d9aa7ccdd69890a05812f44dec4cf90509bef62b2dbcf696b264b46c00",
+    "build-c54-nvtx/bin/libggml.so.0.15.3": "b1ca39fc4959cee8ee282499a48575b33ab8b1af0fd6f7e58bf5667f1784a626",
+    "build-c54-nvtx/bin/libllama-common.so.0.0.0": "7b31a2585c64a844f7716b70fb63a31834c09d52a99e7ad94f581d054f512537",
+    "build-c54-nvtx/bin/libllama-server-impl.so": "2613ea6ad657a678c13e4f670b84c5532de8b58681156ecec87bfa701348c485",
+    "build-c54-nvtx/bin/libllama.so.0.0.0": "32b86b688c6322a6de5ef75e8dcb1753051073d584a1f472345435b48bbb5c29",
+    "build-c54-nvtx/bin/libmtmd.so.0.0.0": "1540d0daf5e300a04faced501fbf089a6bf8a5eff7f3bdb6c887dfecfdadcd3f"
+  },
+  "server_runner_sha256": "693f636583c4c72f3e1207ea6f7ae1ffd1c484720c98a35127dc3a6c635ff35d",
+  "status": "FROZEN_BEFORE_MODEL",
+  "timeout_s": 1200,
+  "usage_contract_sha256": "0694b563de34f38c71dc927e1021078eb8b601b7411dfed54be8f08ba1e09888",
+  "workload": "first ~2K official-token prompt, 165 s idle, second 153 new IDs with actual first assistant content; no hidden truncation"
+}
