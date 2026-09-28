@@ -1,0 +1,8 @@
+# C66 invalid routed-ID result
+
+- Objective/base: explain C61's unlocated invalid expert ID. Tesy measurement `9f8a7bf23939641b7b5c1d9995e3caf1517dc7ac`, diagnostic backend `1c6f503bbb2ee0ee315540a17cbfb6b2bab68f22`, model and P12 C61 profile frozen.
+- Evidence class: `MEDIDO_NO_TARGET` for a plain complete arm and an observer OFF abort; `REPRODUZIDO_MODEL_FREE` for the ID validator; `SOURCE_AUDITED` for the read-only diagnostic. Raw hashes in `results/c66-wave-id-diagnostic-20260928T1620Z/manifest.json`.
+- Plain graph completed. Capture aborted in prefill0 at layer 25, wave 0, first ID −1043122089; n_expert=128, shape 4×32. This is the first CUDA layer of P12. The exact invalid ID/layer was unknown in C61 and remains unknown there; C66 is a new observation. All 26 existing partial layer0 payloads match C61 OFF bytes.
+- Alternative/cause: observer capture work is associated with the failure in this pair, but could expose a preexisting async-copy or scheduling race. Identical graph split counts do not rule that out. No inference that the observer itself wrote the ID buffer. The numeric unit failed; C48 and C61 remain unchanged.
+- Resource limit: plain arm passed E18. Capture SIGABRT after 16.571 s, with last sampled CPU 78 °C max, GPU 52 °C max, GPU total 5624 MiB max and zero observed swap. The bounded receipt records missing terminal process telemetry after abort, so a full-run resource claim is unavailable.
+- NOT_RUN: same-profile captured logits, ON arm, canonical reference, performance, quality and M4. Next discriminant is a model-free comparison of observer registration versus tensor read/capture work before another full-model unit; otherwise pivot to an independent mechanism.
