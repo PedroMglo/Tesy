@@ -96,8 +96,8 @@ class ResourcePolicyTests(unittest.TestCase):
         }
         out = apply_prospective_resource_policy(
             protocol, {"resource_policy": policy},
-            cgroup_memory_max_bytes=20 * 2**30)
-        self.assertEqual(out["c9"]["cgroup_memory_max_bytes"], 20 * 2**30)
+            cgroup_memory_max_bytes=20 * 2**30, profile_key="c53")
+        self.assertEqual(out["c53"]["cgroup_memory_max_bytes"], 20 * 2**30)
         self.assertEqual(out["limits"]["cpu_max_c"], 100)
         self.assertEqual(out["limits"]["gpu_max_mib"], 7676)
         self.assertEqual(out["limits"]["min_mem_available_bytes"], 2 * 2**30)
