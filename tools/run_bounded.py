@@ -13,6 +13,10 @@ import subprocess
 import sys
 import time
 
+from c2_gate import strict_json
+from host_resource_policy import (RuntimeGuard,ResourcePolicyError,
+    validate_resource_protocol,validate_start_observation,host_pressure,live_power)
+
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -229,6 +233,21 @@ def stop_own_group(process):
             process.wait()
 
 
+def prospective_endpoint_reason(first_sample_s,last_sample_s,elapsed_s,end,start,resources):
+    """Classify start/end coverage and final cgroup without using last as first."""
+    if first_sample_s is None or last_sample_s is None or \
+       first_sample_s > 2 or elapsed_s-last_sample_s > 2:
+        return 'PROSPECTIVE_ENDPOINT_TELEMETRY_MISSING'
+    if not end or end.get('memory_max')!=resources['cgroup']['memory_max_bytes'] or \
+       end.get('swap_max')!=0 or end.get('swap_current')!=0:
+        return 'PROSPECTIVE_CGROUP_END_INVALID'
+    if any(end[group][event]>start[group][event]
+           for group in ('events','events_local')
+           for event in ('max','oom','oom_kill')):
+        return 'PROSPECTIVE_CGROUP_END_EVENT'
+    return None
+
+
 def main():
     p = argparse.ArgumentParser()
     p.add_argument("--run-id", required=True)
@@ -249,6 +268,8 @@ def main():
     p.add_argument("--max-gpu-c", type=float, default=None)
     p.add_argument("--max-nvme-c", type=float, default=None)
     p.add_argument("--require-telemetry", action="store_true")
+    p.add_argument("--resource-protocol", type=Path,
+                   help="versioned prospective resource authority; legacy caps disallowed")
     p.add_argument("--allow-cgroup-max-reclaim", action="store_true",
                    help="diagnostic reference only; OOM and memory.peak remain stop conditions")
     p.add_argument("--env", action="append", default=[], help="explicit KEY=VALUE for the child")
@@ -256,6 +277,17 @@ def main():
     p.add_argument("--ready-marker", help="stdout marker emitted after model/context load")
     p.add_argument("command", nargs=argparse.REMAINDER)
     a = p.parse_args()
+    prospective = a.resource_protocol is not None
+    resource_contract = None
+    resource_protocol = None
+    if prospective:
+        legacy_resource_flags=("--max-rss-gib","--max-cgroup-gib","--min-available-gib",
+                               "--max-gpu-mib","--max-cpu-c","--max-gpu-c","--max-nvme-c",
+                               "--allow-cgroup-max-reclaim")
+        if any(flag in sys.argv[1:] for flag in legacy_resource_flags) or not a.require_telemetry:
+            p.error('prospective resource protocol requires telemetry and forbids legacy caps')
+        resource_protocol = strict_json(a.resource_protocol.read_text())
+        resource_contract = validate_resource_protocol(resource_protocol)
     if a.max_cgroup_gib is not None and (not math.isfinite(a.max_cgroup_gib) or a.max_cgroup_gib <= 0):
         p.error("--max-cgroup-gib must be positive and finite")
     cmd = a.command[1:] if a.command and a.command[0] == "--" else a.command
@@ -332,10 +364,32 @@ def main():
     manifest["cgroup_limit_enforced"] = bool(manifest["cgroup_start"] and
                                                 manifest["cgroup_start"]["memory_max"] is not None and
                                                 manifest["cgroup_start"]["swap_max"] == 0)
+    if prospective:
+        manifest['limits']={'resource_protocol_sha256':sha256(a.resource_protocol),
+                            'timeout_s':a.timeout_s,'require_telemetry':True}
+        manifest['resource_authority']=resource_contract
+        start_cg=manifest['cgroup_start']
+        if not start_cg or start_cg['memory_max']!=resource_contract['cgroup']['memory_max_bytes'] or \
+           start_cg['swap_max']!=0:
+            p.error('prospective cgroup cap/swap differs from single authority')
+        gpu_start=gpu_state(prospective=True)
+        thermal_start=thermal_state(prospective=True)
+        available_start=mem_available()
+        if not gpu_start or not thermal_start or available_start is None:
+            p.error('prospective start sensors absent')
+        power_start=live_power();psi_start=host_pressure()
+        start_reasons=validate_start_observation(
+            resource_protocol,available_bytes=available_start,gpu=gpu_start,
+            thermal=thermal_start,power=power_start,psi_full_avg10=psi_start)
+        manifest['resource_start_observation']={
+            'gpu':gpu_start,'thermal':thermal_start,'mem_available_bytes':available_start,
+            'power':power_start,'host_psi_full_avg10':psi_start,
+            'admission_reasons':start_reasons}
+        if start_reasons:p.error('prospective start admission: '+','.join(start_reasons))
     if a.require_telemetry and (not manifest["cgroup_limit_enforced"] or
                                 manifest["cgroup_start"].get("memory_peak") is None):
         p.error("enforced cgroup and memory.peak required")
-    if a.require_telemetry and (not gpu_state() or not thermal_state()):
+    if a.require_telemetry and not prospective and (not gpu_state() or not thermal_state()):
         p.error("GPU and thermal sensors required before launch")
     with open(str(stem) + ".stdout", "xb") as stdout, open(str(stem) + ".stderr", "xb") as stderr, open(str(stem) + ".samples.jsonl", "x") as samples:
         stdin = open(a.stdin_file, "rb") if a.stdin_file else subprocess.DEVNULL
@@ -359,6 +413,10 @@ def main():
         mapped = None
         mapped_hash_cache = {}
         ready_elapsed_s = None
+        resource_gate=RuntimeGuard(resource_protocol,manifest['cgroup_start']) if prospective else None
+        first_sample_t=None
+        last_sample_t=None
+        missing_since=None
         try:
             while process.poll() is None:
                 collection_start = time.monotonic()
@@ -378,9 +436,22 @@ def main():
                         stop_own_group(process)
                         break
                 avail = mem_available()
-                gpu = gpu_state()
-                thermal = thermal_state()
+                gpu = gpu_state(prospective=prospective)
+                thermal = thermal_state(prospective=prospective)
                 cg = cgroup_state()
+                if prospective and (not gpu or not thermal or avail is None or not cg):
+                    gpu = gpu_state(prospective=True)
+                    thermal = thermal_state(prospective=True)
+                    avail = mem_available()
+                    cg = cgroup_state()
+                    elapsed_missing=time.monotonic()-t0
+                    if not gpu or not thermal or avail is None or not cg:
+                        missing_since=elapsed_missing if missing_since is None else missing_since
+                        if elapsed_missing-missing_since >= resource_contract['telemetry']['loss_persistence_s']:
+                            reason='PROSPECTIVE_TELEMETRY_MISSING_PERSISTED'
+                            stop_own_group(process);break
+                        time.sleep(0.5);continue
+                if prospective:missing_since=None
                 fds = model_fd_state(process.pid, model_path)
                 try:
                     identity = process_identity(process.pid)
@@ -405,9 +476,18 @@ def main():
                           "process_identity": identity,
                           "mem_available_bytes": avail, "gpu": gpu, "thermal": thermal, "cgroup": cg,
                           "model_fds": fds,"collection_s":time.monotonic()-collection_start}
-                samples.write(json.dumps(sample) + "\n")
+                if prospective:
+                    sample['resource_observation']={'host_psi_full_avg10':host_pressure(),
+                                                    'power':live_power()}
+                samples.write(json.dumps(sample,allow_nan=False) + "\n")
                 samples.flush()
                 last = sample
+                if first_sample_t is None:first_sample_t=sample['elapsed_s']
+                if prospective and last_sample_t is not None and \
+                   sample['elapsed_s']-last_sample_t>resource_contract['telemetry']['max_gap_s']:
+                    reason='PROSPECTIVE_TELEMETRY_GAP'
+                    stop_own_group(process);break
+                last_sample_t=sample['elapsed_s']
                 maxima["rss_bytes"] = max(maxima["rss_bytes"], status["VmRSS"])
                 maxima["swap_bytes"] = max(maxima["swap_bytes"], status["VmSwap"])
                 if cg:
@@ -418,13 +498,20 @@ def main():
                     maxima["gpu_used_mib"] = max(maxima["gpu_used_mib"], gpu["used_mib"])
                     maxima["gpu_temperature_c"] = max(maxima["gpu_temperature_c"], gpu["temperature_c"])
                 if thermal:
-                    for name in ("cpu_tctl_c", "nvme_composite_c"):
-                        maxima[name] = max(maxima[name], thermal.get(name, 0))
+                    maxima['cpu_tctl_c']=max(maxima['cpu_tctl_c'],thermal.get('cpu_tctl_c',0))
+                    nvme_values=(thermal.get('nvme_composite_by_sensor',{}).values()
+                                 if prospective else [thermal.get('nvme_composite_c',0)])
+                    maxima['nvme_composite_c']=max(maxima['nvme_composite_c'],*nvme_values)
                 if fds:
                     maxima["direct_model_fds"] = max(maxima["direct_model_fds"], fds["direct"])
                     maxima["buffered_model_fds"] = max(maxima["buffered_model_fds"], fds["buffered"])
                 if sample["elapsed_s"] > a.timeout_s:
                     reason = "TIMEOUT"
+                elif prospective:
+                    try:
+                        reason=resource_gate.check(sample)
+                    except (ResourcePolicyError,KeyError,TypeError) as exc:
+                        reason=f'PROSPECTIVE_TELEMETRY_INVALID:{type(exc).__name__}:{exc}'
                 elif a.require_telemetry and (not status or not cg or not gpu or not thermal or avail is None or
                                               "cpu_tctl_c" not in thermal or "nvme_composite_c" not in thermal):
                     reason = "REQUIRED_TELEMETRY_MISSING"
@@ -467,6 +554,9 @@ def main():
         except KeyboardInterrupt:
             reason = "INTERRUPTED"
             stop_own_group(process)
+        except Exception as exc:
+            reason=f'MONITOR_ERROR:{type(exc).__name__}:{exc}'
+            stop_own_group(process)
         finally:
             stop_own_group(process)
             if a.stdin_file:
@@ -481,6 +571,11 @@ def main():
     manifest["ready_elapsed_s"] = ready_elapsed_s
     expected_libs = manifest["backend_libraries_sha256"]
     manifest["mapped_libraries_match_ldd"] = mapped_libraries_match(expected_libs, mapped)
+    if prospective and reason is None:
+        reason=prospective_endpoint_reason(
+            first_sample_t,last_sample_t,manifest['elapsed_s'],
+            manifest['cgroup_end'],manifest['cgroup_start'],resource_contract)
+        if reason is not None:manifest['stop_reason']=reason
     if a.require_telemetry and not manifest["mapped_libraries_match_ldd"] and reason is None:
         reason = "MAPPED_LIBRARY_IDENTITY_MISMATCH"
         manifest["stop_reason"] = reason
