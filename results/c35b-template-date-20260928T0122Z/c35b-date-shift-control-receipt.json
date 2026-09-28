@@ -1,0 +1,183 @@
+{
+  "actual_common_prefix_ids": 35,
+  "arm": "shifted",
+  "completed_utc": "2026-09-28T01:37:26.757678+00:00",
+  "cpu_diagnostics": {
+    "clock_source": "cpuinfo_avg_freq per cpufreq policy",
+    "cpu_effective_clock_max_mhz": 3306.5015000000003,
+    "cpu_effective_clock_median_mhz": 3059.5335,
+    "cpu_effective_clock_min_mhz": 605.264,
+    "cpu_max_c": 95.125,
+    "cpu_package_power_max_w": 70.52581085228428,
+    "cpu_package_power_median_w": 60.93725586243888,
+    "cpu_policy_count": 24,
+    "cpu_warning_observed": true,
+    "cpu_warning_sample_count": 164,
+    "explicit_thermal_flag_source": "ACPI Processor cooling cur_state; AMD hardware flag unavailable",
+    "gpu_power_max_w": 22.03,
+    "power_source": "package-0 RAPL energy counter; interval power estimate",
+    "processor_cooling_max_state": 0,
+    "sample_count": 547
+  },
+  "elapsed_s": 581.9627057300022,
+  "idle": {
+    "baseline": null,
+    "cadence_breaks": [],
+    "duration_s": 300.04749607800477,
+    "end": {
+      "cpu_c": 43.625,
+      "cpu_fan_rpm": 2500.0,
+      "elapsed_s": 300.04749607800477,
+      "gpu": {
+        "driver": "615.71.09",
+        "temperature_c": 41.0,
+        "used_mib": 12.0
+      },
+      "gpu_fan_rpm": 2400.0,
+      "mem_available_bytes": 25427582976,
+      "nvme_c": 35.85,
+      "run_id": "c35b-date-shift-control",
+      "utc": "2026-09-28T01:27:44.536277+00:00"
+    },
+    "last60_trend_c": {
+      "cpu_c": -4.400000000000006,
+      "gpu_c": -4.0,
+      "nvme_c": -1.0
+    },
+    "match_tolerance_c": [
+      5,
+      5,
+      3
+    ],
+    "max_gap_overall_s": 0.7828726820007432,
+    "max_gap_qualifying_s": 0.7828726820007432,
+    "max_start_c": [
+      50,
+      50,
+      45
+    ],
+    "qualifying_duration_s": 300.00360189800267,
+    "qualifying_start_s": 0.04389418000209844,
+    "sample_count": 601,
+    "series_sha256": "e23059f113d66ccd4730df419c14123e2727b1d3ffb3fe24751c6eb67b8b4866",
+    "start": {
+      "cpu_c": 45.625,
+      "cpu_fan_rpm": 0.0,
+      "elapsed_s": 0.04389418000209844,
+      "gpu": {
+        "driver": "615.71.09",
+        "temperature_c": 42.0,
+        "used_mib": 12.0
+      },
+      "gpu_fan_rpm": 0.0,
+      "mem_available_bytes": 25612996608,
+      "nvme_c": 32.85,
+      "run_id": "c35b-date-shift-control",
+      "utc": "2026-09-28T01:22:44.532677+00:00"
+    },
+    "status": "PASS"
+  },
+  "maxima": {
+    "cgroup_peak_bytes": 13089062912,
+    "cpu_c": 95.125,
+    "gpu_c": 62.0,
+    "gpu_total_mib": 5752.0,
+    "nvme_c": 53.85,
+    "rss_bytes": 13289381888,
+    "swap_bytes": 0
+  },
+  "measurement_commit": "c0560c7ea6292f578e311571474afb4cf3631cd1",
+  "order": 1,
+  "phase": "G1",
+  "protocol_sha256": "1f0311fbae5ae25bc8cad30f7fcf4e53fe3c4eb52e7107fbda77269f8c2aac9a",
+  "raw_sha256": "fcf82f323b93d8145df9eeb677929955c04fe371a3591c7bf68fc62988d83699",
+  "reason": null,
+  "results": [
+    {
+      "id": "c35b-first-turn2048",
+      "message_sha256": "5547eefff07c55ea015d3bae88c1dbd1d08cfe58223484d48891a63b067c2f58",
+      "request_elapsed_s": 286.6319400170032,
+      "stream_metrics": {
+        "done_observed": true,
+        "first_final_content_chunk_s": 286.4051542540037,
+        "first_reasoning_chunk_s": 271.945200578004,
+        "first_text_chunk_s": 271.945200578004,
+        "interpretation": "client receipt times of non-whitespace SSE chunks; not token timestamps",
+        "sse_event_count": 45
+      },
+      "timings": {
+        "cache_n": 0,
+        "predicted_ms": 15520.663,
+        "predicted_n": 52,
+        "predicted_per_second": 3.3503723391197915,
+        "predicted_per_token_ms": 298.4742884615385,
+        "prompt_ms": 271102.32,
+        "prompt_n": 2035,
+        "prompt_per_second": 7.506390944939166,
+        "prompt_per_token_ms": 133.21981326781327
+      },
+      "usage": {
+        "completion_tokens": 52,
+        "prompt_tokens": 2035,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "total_tokens": 2087
+      }
+    },
+    {
+      "id": "c35b-second-turn128",
+      "message_sha256": "164566a5b7da749f33fbfeff1e70af454de5e73756d572150cb23e7836b83f37",
+      "request_elapsed_s": 290.44629016999534,
+      "stream_metrics": {
+        "done_observed": true,
+        "first_final_content_chunk_s": 290.28677365399926,
+        "first_reasoning_chunk_s": 284.8115544769971,
+        "first_text_chunk_s": 284.8115544769971,
+        "interpretation": "client receipt times of non-whitespace SSE chunks; not token timestamps",
+        "sse_event_count": 19
+      },
+      "timings": {
+        "cache_n": 35,
+        "predicted_ms": 6307.177,
+        "predicted_n": 26,
+        "predicted_per_second": 4.122287990332284,
+        "predicted_per_token_ms": 242.58373076923075,
+        "prompt_ms": 284129.797,
+        "prompt_n": 2144,
+        "prompt_per_second": 7.5458470834018145,
+        "prompt_per_token_ms": 132.52322621268658
+      },
+      "usage": {
+        "completion_tokens": 26,
+        "prompt_tokens": 2179,
+        "prompt_tokens_details": {
+          "cached_tokens": 35
+        },
+        "total_tokens": 2205
+      }
+    }
+  ],
+  "run_id": "c35b-date-shift-control",
+  "schema": "c24-p12-streaming-session-bridge-v1",
+  "server_gate": {
+    "active_s": 577.0782301869986,
+    "cgroup_peak_bytes": 13089062912,
+    "completed_requests": 2,
+    "decode_s": 21.827840000000002,
+    "decode_tok_s": 3.5734181668914555,
+    "decode_tokens": 78,
+    "last_half_decode_tok_s": 4.122286029572646,
+    "run_id": "c35b-date-shift-control",
+    "sample_count": 547,
+    "schema_version": "c2-gate-result-v1",
+    "status": "PASS"
+  },
+  "server_returncode": 0,
+  "status": "PASS_BRIDGE",
+  "stop_reasons": [],
+  "token_id_sha256": {
+    "c35b-first-turn2048": "50f5c7f3d32c502fa1d0c9d4b93e97f6eb308ceac07d5c6d455c94fad3208fdf",
+    "c35b-second-turn128": "1d67fe229f6e0db82e4875f55859963179032952f786f444375e19f53401d7ad"
+  }
+}
