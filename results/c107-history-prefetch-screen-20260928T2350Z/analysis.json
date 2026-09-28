@@ -1,0 +1,72 @@
+{
+  "decision_rule": "Recent-route prefetch merits physical test only if it covers material absent-primary demand with bounded proposals and real lead time; zero/near-zero coverage rejects this simple policy here",
+  "default_changed": false,
+  "evidence_class": "INFERIDO_FROM_MEASURED_TRACE",
+  "input": "189 prompt plus 32 teacher-forced continuation IDs, not free-generation session",
+  "limitations": [
+    "fixed trace; cache state/prefetch feedback not modeled",
+    "a smart scheduler would avoid I/O for already-resident proposals; proposal count is not wasted physical bytes",
+    "no lead-time, critical-path or quality/sampling claim",
+    "does not reject learned/oracle prediction or different workloads"
+  ],
+  "next_action": "Do not build recent-token expert prefetch for this workload. Investigate bounded overlap with measured waits or another backend mechanism; only revisit prediction with a discriminant that targets novel absent experts.",
+  "results": [
+    {
+      "absent_coverage_fraction": 0.0,
+      "absent_demands_covered": 0,
+      "absent_primary_expert_demands": 1191,
+      "covered_absent_logical_bytes": 0,
+      "evaluated_decode_steps": 31,
+      "history_tokens": 1,
+      "oracle_absent_logical_bytes": 15744067200,
+      "proposals_targeting_absent_demand_fraction": 0.0,
+      "proposed_layer_experts": 4464,
+      "selected_layer_experts": 4464,
+      "selected_route_coverage_fraction": 0.24238351254480286
+    },
+    {
+      "absent_coverage_fraction": 0.0,
+      "absent_demands_covered": 0,
+      "absent_primary_expert_demands": 1140,
+      "covered_absent_logical_bytes": 0,
+      "evaluated_decode_steps": 30,
+      "history_tokens": 2,
+      "oracle_absent_logical_bytes": 15069888000,
+      "proposals_targeting_absent_demand_fraction": 0.0,
+      "proposed_layer_experts": 7626,
+      "selected_layer_experts": 4320,
+      "selected_route_coverage_fraction": 0.29768518518518516
+    },
+    {
+      "absent_coverage_fraction": 0.0,
+      "absent_demands_covered": 0,
+      "absent_primary_expert_demands": 982,
+      "covered_absent_logical_bytes": 0,
+      "evaluated_decode_steps": 28,
+      "history_tokens": 4,
+      "oracle_absent_logical_bytes": 12981254400,
+      "proposals_targeting_absent_demand_fraction": 0.0,
+      "proposed_layer_experts": 12501,
+      "selected_layer_experts": 4032,
+      "selected_route_coverage_fraction": 0.42336309523809523
+    },
+    {
+      "absent_coverage_fraction": 0.0027624309392265192,
+      "absent_demands_covered": 2,
+      "absent_primary_expert_demands": 724,
+      "covered_absent_logical_bytes": 26438400,
+      "evaluated_decode_steps": 24,
+      "history_tokens": 8,
+      "oracle_absent_logical_bytes": 9570700800,
+      "proposals_targeting_absent_demand_fraction": 0.00011588828369451848,
+      "proposed_layer_experts": 17258,
+      "selected_layer_experts": 3456,
+      "selected_route_coverage_fraction": 0.6160300925925926
+    }
+  ],
+  "schema": "c107-history-prefetch-v1",
+  "segmentation": "32 decode passes, layers 0..35, four unique DEMAND experts per layer; excluded one final-prefill layer35 n_tokens=1 set",
+  "source_decision_sha256": "40435abc0d827f4ae42a47295f87e304a673fb8b05b3833b33b45cda10189bd5",
+  "status": "NO_GO_RECENT_HISTORY_PREFETCH_ON_C105_DECODE",
+  "trace_sha256": "bb3ae9352749283f76ce12b65ea76801916396f87849d609169215fefdf4e40d"
+}
