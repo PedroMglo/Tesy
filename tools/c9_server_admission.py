@@ -15,6 +15,7 @@ from c2_gate import GateError, strict_json
 from c7_timing_runner import cool_start
 from c8_observer_runner import model_stat, program_physical_consumed
 from run_bounded import backend_library_hashes, relevant_environment, sha256
+from host_resource_policy import freeze_protocol_resource_limits, ResourcePolicyError
 
 ROOT = Path(__file__).resolve().parents[1]
 BACKEND = Path('/home/pmglo/Projects/Tesy/tesy-scale-lab/backends/streaming')
@@ -83,15 +84,54 @@ def configuration(root):
                        'backend_dirty': subprocess.check_output(
                            ['git', '-C', str(BACKEND), 'status', '--porcelain'], text=True).strip(),
                        'server_runner_sha256': sha256(server.__file__),
+                       'cgroup_memory_max_bytes': 18 * 2**30,
                        'admission_runner_sha256': sha256(__file__),
                        'monitor_scope': 'systemd user scope E18, zero swap',
                        'claim': 'load/context admission only; no forward workspace or API claim'}}
     return protocol, config
 
 
+
+def apply_prospective_resource_policy(protocol, preflight, *, cgroup_memory_max_bytes):
+    """Apply a live hardware-derived policy to a NEW, not-yet-frozen protocol.
+
+    Historical protocols must never call this helper. The chosen cgroup cap is
+    still an experiment profile; it is checked against the live admission bound.
+    """
+    if type(protocol) is not dict or type(preflight) is not dict:
+        raise GateError('prospective resource policy inputs invalid')
+    policy = preflight.get('resource_policy')
+    if type(policy) is not dict or policy.get('schema') != 'tesy-resource-policy-v1' or \
+       policy.get('status') == 'FAIL_EVIDENCE':
+        raise GateError('prospective resource policy missing/invalid')
+    try:
+        frozen = freeze_protocol_resource_limits(
+            policy, cgroup_memory_max_bytes=cgroup_memory_max_bytes)
+    except ResourcePolicyError as exc:
+        raise GateError(f'prospective resource admission failed: {exc}') from exc
+    cap = frozen.pop('cgroup_memory_max_bytes')
+    for key, value in frozen.items():
+        if key not in protocol['limits']:
+            raise GateError(f'prospective resource limit key unsupported: {key}')
+        protocol['limits'][key] = value
+    extension = protocol.setdefault('c9', {})
+    if type(extension) is not dict:
+        raise GateError('c9 extension invalid')
+    extension['cgroup_memory_max_bytes'] = cap
+    extension['resource_policy_schema'] = policy['schema']
+    extension['resource_policy_class'] = 'PROSPECTIVE_DEVICE_DERIVED'
+    extension['resource_policy_snapshot'] = {
+        'cpu': policy['cpu'],
+        'gpu': policy['gpu'],
+        'nvme': policy['nvme'],
+        'memory': policy['memory'],
+    }
+    return protocol
+
+
+
 def cpu_guard_violation(cpu_c, protocol):
-    return (cpu_c >= protocol['limits']['cpu_max_c'] if 'c18' in protocol
-            else cpu_c > 95)
+    return cpu_c >= protocol['limits']['cpu_max_c']
 
 
 def validate_receipt(protocol, config, raw, samples, root, *, run_id=RUN_ID,
@@ -119,7 +159,8 @@ def validate_receipt(protocol, config, raw, samples, root, *, run_id=RUN_ID,
         raise GateError('endpoint telemetry absent')
     start = pre['cgroup_start']
     end = raw['cgroup_end']
-    if not end or start['memory_max'] != 18 * 2**30 or start['swap_max'] != 0 or \
+    expected_cgroup_max = protocol.get('c9', {}).get('cgroup_memory_max_bytes', 18 * 2**30)
+    if not end or start['memory_max'] != expected_cgroup_max or start['swap_max'] != 0 or \
        end['swap_current'] != 0:
         raise GateError('cgroup cap/swap invalid')
     for key in ('events', 'events_local'):
@@ -141,7 +182,7 @@ def validate_receipt(protocol, config, raw, samples, root, *, run_id=RUN_ID,
         for key in ('VmRSS', 'VmSwap', 'VmHWM'):
             if type(ps.get(key)) is not int or ps[key] < 0:
                 raise GateError('missing/negative process memory')
-        if cg['memory_max'] != 18 * 2**30 or cg['swap_max'] != 0 or \
+        if cg['memory_max'] != expected_cgroup_max or cg['swap_max'] != 0 or \
            cg['swap_current'] != 0 or ps['VmSwap'] != 0 or \
            any(cg[k][name] != start[k][name] for k in ('events', 'events_local')
                for name in ('max', 'oom', 'oom_kill')):
@@ -151,7 +192,8 @@ def validate_receipt(protocol, config, raw, samples, root, *, run_id=RUN_ID,
            cg['memory_peak'] > protocol['limits']['memory_max_bytes'] or \
            gpu['used_mib'] > protocol['limits']['gpu_max_mib'] or \
            sample['mem_available_bytes'] < protocol['limits']['min_mem_available_bytes'] or \
-           cpu_limit_exceeded or gpu['temperature_c'] > 80 or th['nvme_composite_c'] > 70:
+           cpu_limit_exceeded or gpu['temperature_c'] > protocol['limits']['gpu_max_c'] or \
+           th['nvme_composite_c'] > protocol['limits']['nvme_max_c']:
             raise GateError('sample resource reservation/guard exceeded')
         maxima['rss_bytes'] = max(maxima['rss_bytes'], ps['VmRSS'])
         maxima['cgroup_peak_bytes'] = max(maxima['cgroup_peak_bytes'], cg['memory_peak'])
