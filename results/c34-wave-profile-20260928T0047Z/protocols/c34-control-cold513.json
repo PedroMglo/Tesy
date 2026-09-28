@@ -1,0 +1,71 @@
+{
+  "c18": {
+    "clock_collapse_rule": "five consecutive warning samples below half prewarning median",
+    "cpu_stop_c": 100,
+    "cpu_warning_c": 95,
+    "explicit_thermal_limit": "any Processor cooling cur_state > 0"
+  },
+  "c34": {
+    "backend_dirty": "",
+    "backend_tree": "8219dfba2414cdcbb388e43b1c67a49f1f70e4aa",
+    "model_stat": {
+      "ctime_ns": 1790389637807910988,
+      "dev": 53,
+      "inode": 14833675,
+      "mtime_ns": 1790389637795911032,
+      "size_bytes": 63387346208
+    },
+    "monitor_scope": "systemd user scope E18, zero swap",
+    "numerical_scope": "greedy four-token output equality only; full logits NOT_RUN",
+    "order": 1,
+    "phase": "CONTROL",
+    "run_id": "c34-control-cold513",
+    "runner_sha256": "2b84020f87b8bdd7a6d93140e93504f6d042971b87a20da2d292a3b6ee54ea5b",
+    "server_runner_sha256": "c7d39d00b35cf2212c6c1b56eb185f25b5d7124778105b74fb6a8f61ef3c17bf",
+    "timing_promotable": false
+  },
+  "campaign_id": "tesy-c34-wave-profile-20260928",
+  "expected_request_ids": [
+    "c17-cold513"
+  ],
+  "identity": {
+    "backend_sha": "1248fd8fa8cfebaece5ea992e4d951c1e18bb9d5",
+    "binary_sha256": "f19a4b490e60b4205193c25691e350ed577926dfcfe3ef7e2dcc2c24d3f84e86",
+    "config_sha256": "7aba9b7fd0c204dc665515c33dbf28966ab60bededbe571d2b76b815f162d9fe",
+    "input_sha256": {
+      "input.json": "93e903655663ce28667e597fee4c4d1b4737f0a69c964c327bbff6de2f1cd8de",
+      "usage-contract.json": "470207decbe8a455f34748087cc0cddcea35b05f7fdd322401199009d67a4fbb"
+    },
+    "library_sha256": {
+      "build-gcc15/bin/libggml-base.so.0.15.3": "4c322a199c86b801389ed4bda94074083624e0a6460e25681be4b626cc72873d",
+      "build-gcc15/bin/libggml-cpu.so.0.15.3": "b57845ea9f9ce9455d78e6fe290c09b50b9414db9280409b9e5cc143d1b13b61",
+      "build-gcc15/bin/libggml-cuda.so.0.15.3": "5b363c951b87164e94d5b6af35a82c875634aadcb29c9278245cd7516f44cc7e",
+      "build-gcc15/bin/libggml.so.0.15.3": "97a33247336b56aaabe1a8bee4da6cd05e73e8b4327afd2cef67c5526df8ab71",
+      "build-gcc15/bin/libllama-common.so.0.0.1": "b0c96af5cd577f851954afb050601099608f29a2d4890322c2e69ab6d74733f9",
+      "build-gcc15/bin/libllama-server-impl.so": "ab3106f10dcf5bf94bd1cbe556ab1114cb29625d4d9511fd15a67f483c4775a5",
+      "build-gcc15/bin/libllama.so.0.0.1": "31b56002c36c159f71eba54c0d8e625ae140d34b2b1a503f3dc4db47237719cc",
+      "build-gcc15/bin/libmtmd.so.0.0.1": "801002ce83276d33b5a09c98362e34e04fb867aed63a738650d8a2e29930bab9"
+    },
+    "model_id": "target120b",
+    "model_sha256": "582bd40f6886200101f4c4ed9f25f3fe80cc14c86e9e2b37746cd8904a0c622d",
+    "workload_sha256": "93e903655663ce28667e597fee4c4d1b4737f0a69c964c327bbff6de2f1cd8de"
+  },
+  "limits": {
+    "boundary_s": 2,
+    "cpu_max_c": 100,
+    "gpu_max_c": 80,
+    "gpu_max_mib": 6500,
+    "max_gap_s": 3,
+    "memory_max_bytes": 17716740096,
+    "min_active_s": 0,
+    "min_decode_s": 0,
+    "min_decode_tok_s": 0,
+    "min_elapsed_s": 0,
+    "min_last_half_tok_s": 0,
+    "min_mem_available_bytes": 6442450944,
+    "nvme_max_c": 70,
+    "rss_max_bytes": 17179869184
+  },
+  "protocol_id": "c34-control-cold513-v1",
+  "schema_version": "c2-protocol-v1"
+}
