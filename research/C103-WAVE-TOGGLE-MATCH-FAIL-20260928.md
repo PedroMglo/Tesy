@@ -1,0 +1,6 @@
+# C103 matched-start failure
+
+- **Objective/base:** Same-binary C75 OFF/ON diagnostic, measurement commit `d62a2e434e83e2faeef3b59a704e0934b0241d1c`.
+- **Observed:** OFF completed both requests with official 2043/2081 prompt IDs, 2044 cached IDs on the second, valid resources and no swap. Its backend prefill/decode were 276.585/24.475 s cold and 9.518/18.789 s warm. The ON arm waited 300 s for the frozen 3/3/2 °C CPU/GPU/NVMe start match and stopped before model launch; its original receipt records `FAIL_RESOURCES_OR_EVIDENCE` with the exact matched-start error. At the end of the wait, NVMe remained ~39.85 °C versus the OFF start 34.85 °C.
+- **Decision:** `MATCHED_START_NOT_ADMITTED` for the paired diagnostic. No OFF/ON gain exists; pair 2 is `NOT_RUN`. The OFF versus C100 control resemblance is descriptive across campaigns only. C100 `NO_GO_CONFIRM` and C102 prelaunch failure remain unchanged.
+- **Next gate:** A new hot-regime identity with first-arm NVMe start band and the same 3/3/2 °C within-pair matching, frozen before runs. No longer cold-matched claim; page cache remains uncontrolled. If that also fails, pivot from physical toggle timing to model-free cost analysis rather than waiting indefinitely.
