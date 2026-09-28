@@ -1,0 +1,8 @@
+# C51 generated-token prefix accounting
+
+- **Objective:** retest the actual assistant-history bridge with a source-backed cache predicate. C50's frozen gate failed on `cache_n=2044` against an old input prompt of 2043 IDs; its FAIL remains unchanged.
+- **Base:** investigation `df5f624`; P12 server backend `c3759bad92c0e6f71bb936afea9b0a162fb83f76` and model/source/binary pins recorded in C51 protocol. Same 8K full-SWA profile, fixed template date, two synthetic turns, output cap 256, medium effort, E18/CPU100 and <=55/55/50 °C 300 s idle admission as C50.
+- **Source observation:** pinned `server-context.cpp` appends `sampled` tokens to `slot.prompt.tokens` and computes next `n_past` using `slot.prompt.tokens.get_common_prefix(input_tokens)`. Thus cache reuse may include generated tokens beyond the previous **input** prompt. The source file SHA is frozen. This is an inference about C50's one-token excess, not a retroactive C50 PASS.
+- **Prospective cache gate:** official old-prompt LCP >=1900 and tail lost <=32; `LCP-32 <= cache_n <= min(current_prompt_len, LCP+previous_completion_tokens)`; `prompt_n+cache_n=current_prompt_len`. The second answer must exactly equal the actual first five-digit final content, with complete SSE fence and `finish_reason=stop` on both turns.
+- **Alternatives:** server cache may not align with the source bound on a fresh process, or functional continuity may fail. First gate failure stops this one-run unit. No timing speedup claim from a single arm.
+- **Evidence class before run:** C50 raw is a diagnostic positive example for the revised numeric predicate only; 46 focused model-free tests passed, C51 physical output NOT_RUN. The C37 20-request user-only session and C48 numeric FAIL are separate.

@@ -1,0 +1,69 @@
+{
+  "c18": {
+    "monitor_sha256": "5f4a640a1de2c7807d926e9b005cebc09e0e0ed2274ab327c2165bf5c77d5998",
+    "thermal_monitor": "CPU95 warning, CPU100/explicit cooling/clock collapse stop"
+  },
+  "c51": {
+    "admission_runner_sha256": "eebb2642ce2c270367854c5575c1ebc5b3fc013af24923d1f9da4ddca3d0b8dc",
+    "backend_dirty": "",
+    "backend_tree": "b1e1647729c6e81ae8b2a4fa8119c626e674f6a1",
+    "claim": "load/context admission only; no forward workspace or API claim",
+    "mode": "actual-assistant-history",
+    "model_stat": {
+      "ctime_ns": 1790389637807910988,
+      "dev": 53,
+      "inode": 14833675,
+      "mtime_ns": 1790389637795911032,
+      "size_bytes": 63387346208
+    },
+    "monitor_scope": "systemd user scope E18, zero swap",
+    "n_gpu_layers": 12,
+    "runner_sha256": "2817188743a28e445e04585bdf9bb9a218faa4e0e41737de904208fa5757aa45",
+    "server_runner_sha256": "5f4a640a1de2c7807d926e9b005cebc09e0e0ed2274ab327c2165bf5c77d5998"
+  },
+  "campaign_id": "tesy-c51-assistant-history-20260928",
+  "expected_request_ids": [
+    "c51-turn00",
+    "c51-turn01"
+  ],
+  "identity": {
+    "backend_sha": "c3759bad92c0e6f71bb936afea9b0a162fb83f76",
+    "binary_sha256": "2c91e0572ad71e4977e3e9134c9f8339256e6481a3f316f6fef9493a370d4822",
+    "config_sha256": "837456bba88926417e65f8f17d8a6b2e3dc4146fd514706db0eff33890bfbbf3",
+    "input_sha256": {
+      "protocol.json": "f7a3cf932f3344bef36f60c48f40019f34a4436e9a2a5e82881cbefaee1ef079",
+      "session-input.json": "483cee2a07c42ccc3c32029871b7a06c5bcc0aeb135655b339b2fb831939e12d"
+    },
+    "library_sha256": {
+      "build-c35-gcc15/bin/libggml-base.so.0.15.3": "6666b1fa65172a992429c516864dd1fb44a2ae4370ec2d044ed684d0b33d6f9e",
+      "build-c35-gcc15/bin/libggml-cpu.so.0.15.3": "b2ed71c16ad669536840c63a999305a3c6ae0e2ab278e9a891c1d0fab96b8a2b",
+      "build-c35-gcc15/bin/libggml-cuda.so.0.15.3": "4d4ef9068b1057abf9e4a73a872f48703723d30591ebafb962bfb0612df70dcc",
+      "build-c35-gcc15/bin/libggml.so.0.15.3": "45bd5d9edee4c8a3eeec23166478ef7ec495dc55785e3942aa72afddc0125417",
+      "build-c35-gcc15/bin/libllama-common.so.0.0.2": "e64791fe0c072c3710c2f9ed92f1e3d9487f2c34f626086b196f60077bd1d374",
+      "build-c35-gcc15/bin/libllama-server-impl.so": "3cbba6ad27138ef34adf0a2c8e8f5b204ea7c73111e2bef4acc8288cef5f6e05",
+      "build-c35-gcc15/bin/libllama.so.0.0.2": "4ba0477592acb4a8808c259d836aea42f20aeef88ad7c3b4ea41572dae8418c6",
+      "build-c35-gcc15/bin/libmtmd.so.0.0.2": "48efbf1711ec3b170d8651ab1149f9fe7549972d2e420fa40f2ecae39670a253"
+    },
+    "model_id": "target120b",
+    "model_sha256": "582bd40f6886200101f4c4ed9f25f3fe80cc14c86e9e2b37746cd8904a0c622d",
+    "workload_sha256": "483cee2a07c42ccc3c32029871b7a06c5bcc0aeb135655b339b2fb831939e12d"
+  },
+  "limits": {
+    "boundary_s": 2,
+    "cpu_max_c": 100,
+    "gpu_max_c": 80,
+    "gpu_max_mib": 6500,
+    "max_gap_s": 3,
+    "memory_max_bytes": 17716740096,
+    "min_active_s": 0,
+    "min_decode_s": 0,
+    "min_decode_tok_s": 0,
+    "min_elapsed_s": 0,
+    "min_last_half_tok_s": 0,
+    "min_mem_available_bytes": 6442450944,
+    "nvme_max_c": 70,
+    "rss_max_bytes": 17179869184
+  },
+  "protocol_id": "c51-p12-assistant-history01-v1",
+  "schema_version": "c2-protocol-v1"
+}
