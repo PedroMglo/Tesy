@@ -51,7 +51,7 @@ class ResourcePolicyTests(unittest.TestCase):
         self.assertEqual(policy["cpu"]["device_limit_c"], CPU_TJMAX_C)
         self.assertEqual(policy["gpu"]["memory_admission_max_mib"], 8188 - 512)
         self.assertEqual(policy["gpu"]["warning_c"], 87)
-        self.assertEqual(policy["gpu"]["stop_c"], 92)
+        self.assertEqual(policy["gpu"]["stop_c"], 96)
         self.assertEqual(policy["nvme"]["warning_c"], 86.85)
         self.assertEqual(policy["nvme"]["critical_c"], 89.85)
         self.assertEqual(policy["memory"]["host_reserve_bytes"], 2 * 2**30)
