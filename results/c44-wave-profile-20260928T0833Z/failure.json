@@ -1,0 +1,19 @@
+{
+  "api": "NOT_RUN",
+  "idle": "NOT_RUN",
+  "measurement_commit": "0179cdbb5a6ce80ddddf2034114788677b011578",
+  "model": "NOT_RUN",
+  "model_free_evidence": {
+    "nvtx_cuda": "extra nvperf libraries and CUDA_INJECTION64_PATH observed in scoped probe",
+    "nvtx_only": "frozen LD_PRELOAD matched in scoped parent/child"
+  },
+  "next_action": "C45 fresh profiler-only identity with --trace=nvtx and same C43 references; no CUDA trace needed for CPU wave interval bound",
+  "nsys_report_sha256": "cecff0d3c94b3b07f289dc1491f8022fb9bbd214bbdd5234b46992360a128663",
+  "nsys_report_size_bytes": 169544,
+  "post_failure_gpu_model_processes": 0,
+  "post_failure_port_18367_listeners": 0,
+  "reason": "nvtx,cuda trace mode adds libnvperf_target.so, libnvperf_host.so and CUDA_INJECTION64_PATH; frozen config expected only the two NVTX injection libraries",
+  "run_id": "c44-c15-profile-cold513",
+  "schema": "c44-profile-prelaunch-failure-v1",
+  "status": "FAIL_HARNESS_PROFILER_TRACE_ENV_NO_MODEL"
+}
