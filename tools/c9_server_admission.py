@@ -11,6 +11,7 @@ import subprocess
 from types import SimpleNamespace
 
 import c2_server_run as server
+from c2_server_run import protocol_cgroup_memory_max
 from c2_gate import GateError, strict_json
 from c7_timing_runner import cool_start
 from c8_observer_runner import model_stat, program_physical_consumed
@@ -159,7 +160,7 @@ def validate_receipt(protocol, config, raw, samples, root, *, run_id=RUN_ID,
         raise GateError('endpoint telemetry absent')
     start = pre['cgroup_start']
     end = raw['cgroup_end']
-    expected_cgroup_max = protocol.get('c9', {}).get('cgroup_memory_max_bytes', 18 * 2**30)
+    expected_cgroup_max = protocol_cgroup_memory_max(protocol)
     if not end or start['memory_max'] != expected_cgroup_max or start['swap_max'] != 0 or \
        end['swap_current'] != 0:
         raise GateError('cgroup cap/swap invalid')
