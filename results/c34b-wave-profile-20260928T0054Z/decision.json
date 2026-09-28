@@ -1,0 +1,56 @@
+{
+  "c15_plain": "NOT_RUN",
+  "c15_profile": "NOT_RUN",
+  "c15_timing_promoted": false,
+  "cpu_diagnostics": {
+    "clock_source": "cpuinfo_avg_freq per cpufreq policy",
+    "cpu_effective_clock_max_mhz": 3303.6310000000003,
+    "cpu_effective_clock_median_mhz": 2781.2455,
+    "cpu_effective_clock_min_mhz": 605.264,
+    "cpu_max_c": 95.125,
+    "cpu_package_power_max_w": 69.39847563713182,
+    "cpu_package_power_median_w": 61.96559464118731,
+    "cpu_policy_count": 24,
+    "cpu_warning_observed": true,
+    "cpu_warning_sample_count": 15,
+    "explicit_thermal_flag_source": "ACPI Processor cooling cur_state; AMD hardware flag unavailable",
+    "gpu_power_max_w": 16.36,
+    "power_source": "package-0 RAPL energy counter; interval power estimate",
+    "processor_cooling_max_state": 0,
+    "sample_count": 80
+  },
+  "default_changed": false,
+  "measurement_commit": "435b90b8ac0e1785aef979e255ab0f029b2e880a",
+  "next_action": "prospective template-date stability test on separate identity; only then decide session bridge vs C15",
+  "old_failures_preserved": [
+    "C29 cache_n35",
+    "C34 prelaunch dirty failure"
+  ],
+  "original_control_result": "REQUEST_COMPLETED_BUT_INPUT_IDENTITY_FAILED",
+  "original_control_run_id": "c34b-control-cold513",
+  "reason": "Frozen 513 prompt ID SHA mismatch after midnight at position 35; C34b receipt remains FAIL. No C15 arm launched.",
+  "resource_gate": "PASS_DIAGNOSTIC_ONLY_NOT_PROMOTED",
+  "resource_maxima": {
+    "cgroup_peak_bytes": 13052203008,
+    "cpu_c": 95.125,
+    "gpu_c": 61.0,
+    "gpu_total_mib": 5752.0,
+    "nvme_c": 45.85,
+    "rss_bytes": 13290643456,
+    "swap_bytes": 0
+  },
+  "schema": "c34b-wave-profile-decision-v1",
+  "status": "FAIL_RESOURCES_OR_EVIDENCE",
+  "timing_diagnostic": {
+    "cache_n": 0,
+    "predicted_ms": 856.267,
+    "predicted_n": 4,
+    "predicted_per_second": 4.671440099875389,
+    "predicted_per_token_ms": 214.06675,
+    "prompt_ms": 80226.831,
+    "prompt_n": 513,
+    "prompt_per_second": 6.394369484692721,
+    "prompt_per_token_ms": 156.38758479532166
+  },
+  "token_audit_sha256": "35c7a4654454a9e4ade1869988497decd1fc00d9feba942733379fb0c21c1b54"
+}
