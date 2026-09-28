@@ -1,0 +1,29 @@
+{
+  "schema": "c80-session-numeric-source-v1",
+  "status": "SOURCE_ONLY_NOT_MEASURED",
+  "objective": "Qualify the C75 wave skip in the C35 8192-context preload-ON numeric profile before any server timing.",
+  "hypothesis": "The C75 parked-pair skip preserves active routed states and full logits with the C35 session context/KV/preload options.",
+  "alternative": "The 8192-context unified-KV graph or preload path changes active computation or exposes a race absent from the 4096 preload-OFF probe.",
+  "backend_source_commit": "27d2e42d8c994507ee6d71acc7c58d3eddd3f7a5",
+  "backend_tree": "45b2b5b97353845d9d982a06f20c4f2f420528e2",
+  "binary_path_local": "/tmp/c80_session_boundary_capture",
+  "binary_sha256": "df915e8ca3ac0f0a11235619de6eaa2e7e8319324beb044440cec76c4ca005e5",
+  "capture_source_sha256": "74835805fec93c5bf18e3d02bf1f1e65250a0c7a5b31b49a296878228efefe58",
+  "parent_capture_source_sha256": "1ce72bddd91b8b970a04e56804c70bf75be2fcb8fb04182678f886ef2db03a5a",
+  "C52b_server_preflight_sha256": "1654a6f8bd3a2083e245d482a75a58481705feae5da08e69ac98dd635280c45a",
+  "model_sha256_previously_verified": "582bd40f6886200101f4c4ed9f25f3fe80cc14c86e9e2b37746cd8904a0c622d",
+  "profile": {
+    "ngl": 12, "n_ctx": 8192, "n_batch": 256, "n_ubatch": 32,
+    "n_seq_max": 1, "threads": 8, "threads_batch": 8, "slots": 32,
+    "moe_stream": true, "direct_io": true, "moe_stream_direct": true,
+    "use_mmap": false, "use_extra_bufts": false, "op_offload": false,
+    "flash_attention": true, "kv_type": "F16", "swa_full": true,
+    "kv_offload": true, "kv_unified": true, "preload": "ON"
+  },
+  "frozen_input": "results/c2-target-numeric-v1.ids log_medium 189 prompt IDs plus first 32 of 43 continuation IDs",
+  "call_plan": "One external 189-ID prefill call with internal ub32 and final-position logits mask, then 32 single-token teacher-forced decode calls.",
+  "expected_schema": {"numeric_states": 250, "masked_states": 2, "full_logit_vectors": 5, "vocab_f32": 201088, "canonical_layer_loads": 36},
+  "planned_gate_order": ["fresh capacity admission", "OFF/ON full boundary", "resident same-build FFN reference", "fresh ON repetition", "server exact-prefix bridge", "server performance and functional qualification"],
+  "claim_limit": "This low-level capture does not exercise server cache-prompt, token template, HTTP streaming, exact-prefix reuse, session scheduling or independent attention/KV correctness.",
+  "publication": "local source checkpoint only; no physical run or default change"
+}
