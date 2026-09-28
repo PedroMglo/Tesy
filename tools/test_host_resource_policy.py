@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 import unittest
 
+from c9_server_admission import apply_prospective_resource_policy
 from host_resource_policy import (
     CPU_TJMAX_C,
     derive_policy,
@@ -71,6 +72,35 @@ class ResourcePolicyTests(unittest.TestCase):
         self.assertEqual(limits["nvme_max_c"], 89.85)
         self.assertEqual(limits["min_mem_available_bytes"], 2 * 2**30)
         self.assertEqual(limits["rss_max_bytes"], 32698777600)
+
+
+    def test_apply_prospective_protocol_policy(self):
+        policy = derive_policy(
+            memory={"MemTotal": 32698777600, "MemAvailable": 23675543552},
+            gpu_csv="GPU, 8188, 12, 44, 1",
+            sensors=SENSORS,
+            nvidia_temperature_query=GPU_Q,
+        )
+        protocol = {
+            "limits": {
+                "memory_max_bytes": 1, "rss_max_bytes": 1,
+                "gpu_max_mib": 1, "min_mem_available_bytes": 1,
+                "cpu_max_c": 1, "gpu_max_c": 1, "nvme_max_c": 1,
+                "max_gap_s": 3, "boundary_s": 2,
+                "min_elapsed_s": 0, "min_active_s": 0,
+                "min_decode_s": 0, "min_decode_tok_s": 0,
+                "min_last_half_tok_s": 0,
+            },
+            "c9": {},
+        }
+        out = apply_prospective_resource_policy(
+            protocol, {"resource_policy": policy},
+            cgroup_memory_max_bytes=20 * 2**30)
+        self.assertEqual(out["c9"]["cgroup_memory_max_bytes"], 20 * 2**30)
+        self.assertEqual(out["limits"]["cpu_max_c"], 100)
+        self.assertEqual(out["limits"]["gpu_max_mib"], 7676)
+        self.assertEqual(out["limits"]["min_mem_available_bytes"], 2 * 2**30)
+        self.assertEqual(out["limits"]["memory_max_bytes"], 20 * 2**30 - 512 * 2**20)
 
     def test_implausible_secondary_nvme_threshold_is_ignored(self):
         policy = derive_policy(
