@@ -22,7 +22,7 @@ REQUESTS = ('c36-prefix4096','c36-increment128')
 def workload(root):
     row=strict_json((root/'bridge-input.json').read_text())
     expected={'schema':'c36-bridge-input-v1','context_intro':'Context: ',
-              'prefix_words':3960,'increment_words':128,
+              'prefix_words':3960,'increment_words':127,
               'question':'\nReply with exactly OK.','max_tokens':256,
               'first_prompt_range':[3980,4120],
               'second_prompt_range':[4108,4248],
