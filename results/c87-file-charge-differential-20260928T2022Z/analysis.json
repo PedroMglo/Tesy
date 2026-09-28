@@ -1,0 +1,264 @@
+{
+  "C78_capture_bytes": 25912848,
+  "C78_last_sample": {
+    "anon_bytes": 11202682880,
+    "cgroup_current_bytes": 16702390272,
+    "cgroup_peak_bytes": 16723869696,
+    "elapsed_s": 14.731,
+    "file_bytes": 5454848000,
+    "file_mapped_bytes": 1491943424,
+    "file_minus_shmem_bytes": 3965001728,
+    "model_buffered_fds": 1,
+    "model_direct_fds": 1,
+    "proc_read_bytes": 24999383040,
+    "rss_bytes": 12971515904,
+    "shmem_bytes": 1489846272
+  },
+  "C78_terminal_peak_bytes": 16723869696,
+  "at_14s_delta_C78_minus_C76b_bytes": {
+    "anon_bytes": -12288,
+    "cgroup_current_bytes": 2502569984,
+    "file_bytes": 2498019328,
+    "file_mapped_bytes": 0,
+    "file_minus_shmem_bytes": 2498019328,
+    "rss_bytes": 208896,
+    "shmem_bytes": 0
+  },
+  "caps_bytes": {
+    "C76b": 19327352832,
+    "C78": 17179869184
+  },
+  "evidence_class": "INFERIDO_FROM_HASH_VERIFIED_TELEMETRY",
+  "interpretation": "C78 file charge grew after anon stabilized while C76b file charge stayed lower; the source of those file pages and their reclaimability are not identified by these counters.",
+  "limits": [
+    "C78 stopped before complete capture; no numeric comparison from C78",
+    "memory.stat file includes shmem and other file-backed charge, not an inode attribution",
+    "different envelope and external host conditions can change reclaim behavior",
+    "the raw capture payload size is too small to explain the full file-charge delta by itself",
+    "do not change the C78 guard or relabel its FAIL"
+  ],
+  "parent_status": {
+    "C76b": "SAME_PROFILE_BITWISE_PASS_FULL_BOUNDARY",
+    "C78": "FAIL_RESOURCES_OR_EVIDENCE"
+  },
+  "same_backend_binary_model_profile_call_plan": true,
+  "sample_counts": {
+    "C76b": 77,
+    "C78": 22
+  },
+  "schema": "c87-file-charge-differential-v1",
+  "source_sha256": {
+    "C76b": {
+      "decision": "14e13d1cb4cbd8ac9471bd2ca914ffe6a19e5f6b7775074d47d72cce446238ab",
+      "protocol": "368068f4b92269b816018a247ff28616b7802cc98327e34e81e275c1baa4d6af",
+      "samples": "77881bfa7328e85a8ad913d0b1740f40728af4cdc133520c74226adbaf5c7231"
+    },
+    "C78": {
+      "decision": "dfb985f2321c8a5274ac2327af39483c12b51efde8b8726f40704c5faf767106",
+      "protocol": "a603bc5bd7f9cb6313de94e823b927a7976059852001ab2222df874db9a2ac24",
+      "samples": "4e192ae2eca9b4f7995d643fee9bfd5daec467954c687e6839678ecae259a3c1"
+    }
+  },
+  "timeline": {
+    "C76b": {
+      "10": {
+        "anon_bytes": 9713754112,
+        "cgroup_current_bytes": 12850159616,
+        "cgroup_peak_bytes": 12850348032,
+        "elapsed_s": 10.017,
+        "file_bytes": 3100266496,
+        "file_mapped_bytes": 1489846272,
+        "file_minus_shmem_bytes": 1612517376,
+        "model_buffered_fds": 1,
+        "model_direct_fds": 1,
+        "proc_read_bytes": 16715530240,
+        "rss_bytes": 11302711296,
+        "shmem_bytes": 1487749120
+      },
+      "12": {
+        "anon_bytes": 11202695168,
+        "cgroup_current_bytes": 14154436608,
+        "cgroup_peak_bytes": 14175879168,
+        "elapsed_s": 12.012,
+        "file_bytes": 2912198656,
+        "file_mapped_bytes": 1491943424,
+        "file_minus_shmem_bytes": 1422352384,
+        "model_buffered_fds": 1,
+        "model_direct_fds": 1,
+        "proc_read_bytes": 20239753216,
+        "rss_bytes": 12971307008,
+        "shmem_bytes": 1489846272
+      },
+      "14": {
+        "anon_bytes": 11202695168,
+        "cgroup_current_bytes": 14138949632,
+        "cgroup_peak_bytes": 14180536320,
+        "elapsed_s": 14.052,
+        "file_bytes": 2895908864,
+        "file_mapped_bytes": 1491943424,
+        "file_minus_shmem_bytes": 1406062592,
+        "model_buffered_fds": 1,
+        "model_direct_fds": 1,
+        "proc_read_bytes": 24253997056,
+        "rss_bytes": 12971307008,
+        "shmem_bytes": 1489846272
+      },
+      "2": {
+        "anon_bytes": 283254784,
+        "cgroup_current_bytes": 2215886848,
+        "cgroup_peak_bytes": 2814570496,
+        "elapsed_s": 1.94,
+        "file_bytes": 1917431808,
+        "file_mapped_bytes": 1479692288,
+        "file_minus_shmem_bytes": 439836672,
+        "model_buffered_fds": 1,
+        "model_direct_fds": 2,
+        "proc_read_bytes": 1771319296,
+        "rss_bytes": 2026123264,
+        "shmem_bytes": 1477595136
+      },
+      "4": {
+        "anon_bytes": 1702916096,
+        "cgroup_current_bytes": 4884459520,
+        "cgroup_peak_bytes": 4884647936,
+        "elapsed_s": 3.962,
+        "file_bytes": 3161620480,
+        "file_mapped_bytes": 1489846272,
+        "file_minus_shmem_bytes": 1673871360,
+        "model_buffered_fds": 1,
+        "model_direct_fds": 1,
+        "proc_read_bytes": 5543985152,
+        "rss_bytes": 3302940672,
+        "shmem_bytes": 1487749120
+      },
+      "6": {
+        "anon_bytes": 4086771712,
+        "cgroup_current_bytes": 7277285376,
+        "cgroup_peak_bytes": 7277527040,
+        "elapsed_s": 5.935,
+        "file_bytes": 3166855168,
+        "file_mapped_bytes": 1489846272,
+        "file_minus_shmem_bytes": 1679106048,
+        "model_buffered_fds": 1,
+        "model_direct_fds": 1,
+        "proc_read_bytes": 9248792576,
+        "rss_bytes": 5719117824,
+        "shmem_bytes": 1487749120
+      },
+      "8": {
+        "anon_bytes": 6862807040,
+        "cgroup_current_bytes": 10066444288,
+        "cgroup_peak_bytes": 10087460864,
+        "elapsed_s": 7.96,
+        "file_bytes": 3172540416,
+        "file_mapped_bytes": 1489846272,
+        "file_minus_shmem_bytes": 1684791296,
+        "model_buffered_fds": 1,
+        "model_direct_fds": 1,
+        "proc_read_bytes": 13187239936,
+        "rss_bytes": 8581881856,
+        "shmem_bytes": 1487749120
+      }
+    },
+    "C78": {
+      "10": {
+        "anon_bytes": 9061613568,
+        "cgroup_current_bytes": 12289576960,
+        "cgroup_peak_bytes": 12289576960,
+        "elapsed_s": 9.713,
+        "file_bytes": 3192463360,
+        "file_mapped_bytes": 1489846272,
+        "file_minus_shmem_bytes": 1704714240,
+        "model_buffered_fds": 1,
+        "model_direct_fds": 1,
+        "proc_read_bytes": 15372984320,
+        "rss_bytes": 10565021696,
+        "shmem_bytes": 1487749120
+      },
+      "12": {
+        "anon_bytes": 11202682880,
+        "cgroup_current_bytes": 15353860096,
+        "cgroup_peak_bytes": 15354454016,
+        "elapsed_s": 12.027,
+        "file_bytes": 4109488128,
+        "file_mapped_bytes": 1491943424,
+        "file_minus_shmem_bytes": 2619641856,
+        "model_buffered_fds": 1,
+        "model_direct_fds": 1,
+        "proc_read_bytes": 19879694336,
+        "rss_bytes": 12971515904,
+        "shmem_bytes": 1489846272
+      },
+      "14": {
+        "anon_bytes": 11202682880,
+        "cgroup_current_bytes": 16641519616,
+        "cgroup_peak_bytes": 16641519616,
+        "elapsed_s": 13.987,
+        "file_bytes": 5393928192,
+        "file_mapped_bytes": 1491943424,
+        "file_minus_shmem_bytes": 3904081920,
+        "model_buffered_fds": 1,
+        "model_direct_fds": 1,
+        "proc_read_bytes": 23570997248,
+        "rss_bytes": 12971515904,
+        "shmem_bytes": 1489846272
+      },
+      "2": {
+        "anon_bytes": 283250688,
+        "cgroup_current_bytes": 2399428608,
+        "cgroup_peak_bytes": 2998816768,
+        "elapsed_s": 1.958,
+        "file_bytes": 2101145600,
+        "file_mapped_bytes": 1479692288,
+        "file_minus_shmem_bytes": 623550464,
+        "model_buffered_fds": 1,
+        "model_direct_fds": 2,
+        "proc_read_bytes": 1854939136,
+        "rss_bytes": 2026332160,
+        "shmem_bytes": 1477595136
+      },
+      "4": {
+        "anon_bytes": 1694109696,
+        "cgroup_current_bytes": 4883644416,
+        "cgroup_peak_bytes": 4883910656,
+        "elapsed_s": 3.974,
+        "file_bytes": 3170119680,
+        "file_mapped_bytes": 1489846272,
+        "file_minus_shmem_bytes": 1682370560,
+        "model_buffered_fds": 1,
+        "model_direct_fds": 1,
+        "proc_read_bytes": 5271568384,
+        "rss_bytes": 3320430592,
+        "shmem_bytes": 1487749120
+      },
+      "6": {
+        "anon_bytes": 3901710336,
+        "cgroup_current_bytes": 7101308928,
+        "cgroup_peak_bytes": 7122436096,
+        "elapsed_s": 5.983,
+        "file_bytes": 3174731776,
+        "file_mapped_bytes": 1489846272,
+        "file_minus_shmem_bytes": 1686982656,
+        "model_buffered_fds": 1,
+        "model_direct_fds": 1,
+        "proc_read_bytes": 8784666624,
+        "rss_bytes": 5656285184,
+        "shmem_bytes": 1487749120
+      },
+      "8": {
+        "anon_bytes": 6809931776,
+        "cgroup_current_bytes": 10021638144,
+        "cgroup_peak_bytes": 10022088704,
+        "elapsed_s": 8.078,
+        "file_bytes": 3180822528,
+        "file_mapped_bytes": 1489846272,
+        "file_minus_shmem_bytes": 1693073408,
+        "model_buffered_fds": 1,
+        "model_direct_fds": 1,
+        "proc_read_bytes": 12695830528,
+        "rss_bytes": 8379437056,
+        "shmem_bytes": 1487749120
+      }
+    }
+  }
+}

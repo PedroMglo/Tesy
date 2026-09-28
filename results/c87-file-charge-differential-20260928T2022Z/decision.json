@@ -1,0 +1,21 @@
+{
+  "schema": "c87-decision-v1",
+  "status": "ANALYSIS_ONLY_FILE_CHARGE_DIFFERENTIAL",
+  "evidence_class": "INFERIDO_FROM_HASH_VERIFIED_TELEMETRY",
+  "measurement_commit": "8f2cdcab8340c1ad4ae0dd7dc628cb5658b412ec",
+  "model_runs": 0,
+  "at_14s_C78_minus_C76b_bytes": {
+    "cgroup_current": 2502569984,
+    "memory_file": 2498019328,
+    "memory_anon": -12288,
+    "VmRSS": 208896
+  },
+  "C78_old_status_preserved": "FAIL_RESOURCES_OR_EVIDENCE_CGROUP_PREVENTIVE_MARGIN",
+  "finding": "The aggregate file charge accounts for almost all of the cgroup charge differential at matched elapsed time. This is not inode attribution or proof of reclaimability.",
+  "bridge_state": "NOT_RUN_CAPACITY_NOT_ADMITTED",
+  "M3": "PARTIAL_HISTORICAL_C52B",
+  "M4": "NOT_MET",
+  "next_action": "Inventory removable own scratch/build memory without losing evidence; then obtain a new 60-second capacity preflight only if host headroom materially changes. Do not lower the C78 guard.",
+  "default_changed": false,
+  "publication": "local_only"
+}
