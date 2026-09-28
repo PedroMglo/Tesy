@@ -15,6 +15,7 @@ from c2_gate import GateError, strict_json
 from c7_timing_runner import cool_start
 from c8_observer_runner import model_stat, program_physical_consumed
 from run_bounded import backend_library_hashes, relevant_environment, sha256
+from host_resource_policy import freeze_protocol_resource_limits, ResourcePolicyError
 
 ROOT = Path(__file__).resolve().parents[1]
 BACKEND = Path('/home/pmglo/Projects/Tesy/tesy-scale-lab/backends/streaming')
@@ -88,6 +89,45 @@ def configuration(root):
                        'monitor_scope': 'systemd user scope E18, zero swap',
                        'claim': 'load/context admission only; no forward workspace or API claim'}}
     return protocol, config
+
+
+
+def apply_prospective_resource_policy(protocol, preflight, *, cgroup_memory_max_bytes):
+    """Apply a live hardware-derived policy to a NEW, not-yet-frozen protocol.
+
+    Historical protocols must never call this helper. The chosen cgroup cap is
+    still an experiment profile; it is checked against the live admission bound.
+    """
+    if type(protocol) is not dict or type(preflight) is not dict:
+        raise GateError('prospective resource policy inputs invalid')
+    policy = preflight.get('resource_policy')
+    if type(policy) is not dict or policy.get('schema') != 'tesy-resource-policy-v1' or \
+       policy.get('status') == 'FAIL_EVIDENCE':
+        raise GateError('prospective resource policy missing/invalid')
+    try:
+        frozen = freeze_protocol_resource_limits(
+            policy, cgroup_memory_max_bytes=cgroup_memory_max_bytes)
+    except ResourcePolicyError as exc:
+        raise GateError(f'prospective resource admission failed: {exc}') from exc
+    cap = frozen.pop('cgroup_memory_max_bytes')
+    for key, value in frozen.items():
+        if key not in protocol['limits']:
+            raise GateError(f'prospective resource limit key unsupported: {key}')
+        protocol['limits'][key] = value
+    extension = protocol.setdefault('c9', {})
+    if type(extension) is not dict:
+        raise GateError('c9 extension invalid')
+    extension['cgroup_memory_max_bytes'] = cap
+    extension['resource_policy_schema'] = policy['schema']
+    extension['resource_policy_class'] = 'PROSPECTIVE_DEVICE_DERIVED'
+    extension['resource_policy_snapshot'] = {
+        'cpu': policy['cpu'],
+        'gpu': policy['gpu'],
+        'nvme': policy['nvme'],
+        'memory': policy['memory'],
+    }
+    return protocol
+
 
 
 def cpu_guard_violation(cpu_c, protocol):
