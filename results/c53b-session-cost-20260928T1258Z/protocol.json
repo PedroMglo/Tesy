@@ -1,0 +1,22 @@
+{
+  "analyzer_sha256": "3b066928fff4b4deebbfc5ebb6793875e8c2b497cc366225ca3c3f14dd4a5cd2",
+  "base_commit": "7a2a596d8c768f7cd3158c8dbbbe7dc6d89bb1b4",
+  "causal_claim": "NONE",
+  "complete_incremental_windows_min": 18,
+  "default_changed": false,
+  "input_sha256": {
+    "decision": "90049fa07f59b81b3c78a020c6d15d072a3e06f44db32547fe82328d756192a5",
+    "manifest": "9b74df9783079eccdf39725168a71ae424aeea3cec675b12478810a48133e6ef",
+    "raw": "be2bf54e1fda221f2338fe12f7e29821cb991111aa21b9d17b60a05dd6db9ddb",
+    "samples": "afbf404c03b7bcbcf3cf9fb7a29a29674be80a84225db048b9e6c91071ff6ea8"
+  },
+  "max_terminal_gap_s": 2,
+  "method": "interpolate cumulative /proc counters for bracketed boundaries; if only final request end is <=2 s beyond last sample, use last counter as a lower bound and exclude that request from I/O medians",
+  "objective": "repeat C53 read-only process I/O accounting with an explicit terminal sample lower-bound policy",
+  "parent_c53_failure_sha256": "4cd19a1370483d792b049666ca0113e5e0294f3e1ca272e39016459aafd576fd",
+  "physical_model_run": "NOT_RUN",
+  "schema": "c53b-session-cost-protocol-v1",
+  "source_c46_phase_summary_sha256": "b8309e7e3725bf527afcaa66a426d9c50f92e2782712daedbbfe594d31ddb4c9",
+  "status": "MODEL_FREE_FROZEN",
+  "utc": "2026-09-28T12:59:41.142655+00:00"
+}
