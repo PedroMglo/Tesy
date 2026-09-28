@@ -19,7 +19,7 @@
     "M4": "NOT_MET_BY_OBSERVED_LATENCY_AND_DECODE"
   },
   "mission": "local usable main GPT-OSS 120B, original weights and authoritative routing",
-  "next_action": "C60b new model-free monitor smoke after endpoint regression test; no 120B C57 boundary until it passes.",
+  "next_action": "Freeze C61 targeted layer0/prefill0 OFF/ON 120B numeric boundary on repaired backend; full 36-layer and timing remain gated.",
   "open_hypotheses": [
     "C57 shared-activation repair passes a model-free MMID discriminant; full-layer and full-logit same-profile fidelity remain NOT_RUN",
     "Additional placement P14/slots32 may reduce CPU expert demand but may exceed VRAM or harm decode; accounting and forward admission required",
@@ -420,7 +420,12 @@
       "identity": "c60",
       "root": "results/c60-monitor-smoke-20260928T1503Z",
       "status": "FAIL_HARNESS_ENDPOINT_TELEMETRY_NO_MODEL"
+    },
+    {
+      "identity": "c60b",
+      "root": "results/c60b-monitor-smoke-20260928T1508Z",
+      "status": "REPRODUZIDO_MODEL_FREE_PROSPECTIVE_WATCHDOG"
     }
   ],
-  "updated_utc": "2026-09-28T15:00:00.056873+00:00"
+  "updated_utc": "2026-09-28T15:01:05.333978+00:00"
 }
