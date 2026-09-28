@@ -8,3 +8,11 @@
 - **Prospective gate:** parser/model-free tests, clean source/build and model identity, E18 preflight, 300-second thermal idle before each arm, OFF→ON→fresh ON, full logits and six core stages for 250 states, 2 explicit masked states, active-byte witnesses. Stop at the first failure, preserve it, and use a new identity for any diagnosis. CPU 95 °C warns; 100 °C or explicit thermal limit stops. No new power policy.
 - **Evidence class now:** source fix and parser tests only. Full-model, references, timing, quality, and M4 are NOT_RUN for C48 until receipts exist.
 - **Decision path:** a boundary PASS permits a separately frozen same-pin canonical reference unit. Failure closes C48. No C47 receipt is reused as a C48 PASS.
+
+## Result and decision
+
+- Measurement commit `e091b7134a94314d199278dc4d374e740e26ac1d`; OFF `c48-g2-off01` completed in 71.150 s and ON `c48-g2-on01` completed in 58.063 s. Both individual capture/resource gates passed, with zero swap and OOM. These instrumented durations are diagnostic and cannot be promoted as speedup.
+- The first OFF/ON mismatch is `prefill0`, layer 0, `ffn_moe_out`, token 4, feature 0: 0.4479004741 versus 0.0882117599. The preceding captured states in that layer matched. In total, 1442/1500 core rows and all five complete logits differed. The ON capture had 80,800 parked sentinels. The thermal peaks were below the guards; the failure is numerical, not thermal.
+- **FAIL_SAME_PROFILE_FIDELITY.** The fresh ON repetition, canonical resident references and timing were NOT_RUN by the stop rule. The C47 assertion remains a separate FAIL. The C48 correction resolved that assertion but did not validate the mechanism.
+- **Alternative now favored:** zeroing parked pairs inside the existing CPU MMID pipeline changes active wave results after the first mixed active/parked token. The exact kernel or graph dependency remains unknown. A local source diagnosis may use C48 raw, but any repaired full-model mechanism needs a new identity and fresh reference gates.
+- **Next discriminating gate:** exact-prefix/session server pair for M3, because existing C19/C23/C37 evidence already shows reuse potential while full session utility remains open. This pivots mechanism rather than retrying the failed C48 allocation. M4 remains NOT_RUN.

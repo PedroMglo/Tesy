@@ -1,0 +1,37 @@
+{
+  "canonical_reference": "NOT_RUN",
+  "complete_logits_equal": {
+    "decode0": false,
+    "decode1": false,
+    "decode31": false,
+    "decode7": false,
+    "prefill_final": false
+  },
+  "core_mismatch_by_stage": {
+    "attn_post_norm": 243,
+    "ffn_moe_logits": 243,
+    "ffn_moe_out": 246,
+    "ffn_moe_probs": 243,
+    "ffn_moe_topk": 224,
+    "ffn_moe_weights_softmax": 243
+  },
+  "core_mismatch_rows": 1442,
+  "core_rows_per_arm": 1500,
+  "first_observed_difference": {
+    "feature": 0,
+    "flat_f32_index": 11520,
+    "layer": 0,
+    "off_f32": 0.4479004740715027,
+    "on_f32": 0.08821175992488861,
+    "phase": "prefill0",
+    "stage": "ffn_moe_out",
+    "token_in_chunk": 4
+  },
+  "fresh_on_repeat": "NOT_RUN",
+  "masked_states_per_arm": 2,
+  "numeric_states_per_arm": 250,
+  "schema": "c48-boundary-summary-v1",
+  "sentinel_values_off": 0,
+  "sentinel_values_on": 80800,
+  "status": "FAIL_SAME_PROFILE_FIDELITY"
+}

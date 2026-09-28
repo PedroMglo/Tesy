@@ -1,0 +1,57 @@
+{
+  "M3": "PARTIAL",
+  "M4": "NOT_RUN",
+  "backend_commit": "0bc5c75c273abaa34e51d0af932a96969665c3a3",
+  "closed_utc": "2026-09-28T10:17:17.096242+00:00",
+  "complete_logits_equal": {
+    "decode0": false,
+    "decode1": false,
+    "decode31": false,
+    "decode7": false,
+    "prefill_final": false
+  },
+  "core_mismatch_rows": 1442,
+  "default_changed": false,
+  "first_observed_difference": {
+    "feature": 0,
+    "flat_f32_index": 11520,
+    "layer": 0,
+    "off_f32": 0.4479004740715027,
+    "on_f32": 0.08821175992488861,
+    "phase": "prefill0",
+    "stage": "ffn_moe_out",
+    "token_in_chunk": 4
+  },
+  "measurement_commit": "e091b7134a94314d199278dc4d374e740e26ac1d",
+  "next_action": "Pivot to the exact-prefix/session M3 gate: define a new contemporary OFF/ON server pair with frozen session inputs and endpoint timings; do not reuse C48 for performance",
+  "off": {
+    "elapsed_s": 71.15,
+    "run_id": "c48-g2-off01",
+    "status": "PASS_CAPTURE_SCOPE"
+  },
+  "old_failures_preserved": [
+    "C47 first ON runtime assertion",
+    "C43/C44 profiler prelaunch FAILs",
+    "C9-C17 CPU95 protocol thermal FAILs"
+  ],
+  "on": {
+    "elapsed_s": 58.063,
+    "run_id": "c48-g2-on01",
+    "sentinel_values": 80800,
+    "status": "PASS_CAPTURE_SCOPE_BUT_PAIR_FAIL"
+  },
+  "on_fresh_repeat": {
+    "run_id": "c48-g2-on02",
+    "status": "NOT_RUN_AFTER_PAIR_FAIL"
+  },
+  "physical_budget_consumed_s": 48988.24846073396,
+  "physical_budget_remaining_s": 8611.751539266043,
+  "run_order": [
+    "c48-g2-off01",
+    "c48-g2-on01"
+  ],
+  "same_pin_canonical_reference": "NOT_RUN",
+  "schema": "c48-decision-v1",
+  "status": "FAIL_SAME_PROFILE_FIDELITY",
+  "timing": "NOT_RUN"
+}

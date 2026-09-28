@@ -8,7 +8,7 @@
     "M4": "NOT_RUN"
   },
   "mission": "local usable main GPT-OSS 120B, original weights and authoritative routing",
-  "next_action": "C48 new identity: use ggml_backend_buffer_is_host for CPU execution eligibility, new source commit/build/operator test/preflight and contemporary OFF/ON/ON captures; no C47 retry",
+  "next_action": "Pivot to the exact-prefix/session M3 gate: define a new contemporary OFF/ON server pair with frozen session inputs and endpoint timings; do not reuse C48 for performance",
   "open_hypotheses": [
     "Wave/parking work may occupy removable exclusive critical-path time in prefill; summed stalls and CPU cycle shares do not bound this yet",
     "Reducing CPU batch-thread concurrency in a distinct P12 numerical profile may lower peak heat; latency and same-profile fidelity remain unmeasured",
@@ -301,7 +301,22 @@
       "root": "results/c47-skip-boundary-20260928T0927Z",
       "specific_failure": "RUNTIME_ASSERT_CPU_BUFFER_TYPE_DEVICE_NULL",
       "status": "FAIL_RESOURCES_OR_EVIDENCE"
+    },
+    {
+      "first_observed_difference": {
+        "feature": 0,
+        "flat_f32_index": 11520,
+        "layer": 0,
+        "off_f32": 0.4479004740715027,
+        "on_f32": 0.08821175992488861,
+        "phase": "prefill0",
+        "stage": "ffn_moe_out",
+        "token_in_chunk": 4
+      },
+      "identity": "c48",
+      "root": "results/c48-skip-boundary-20260928T0954Z",
+      "status": "FAIL_SAME_PROFILE_FIDELITY"
     }
   ],
-  "updated_utc": "2026-09-28T09:50:25.934385+00:00"
+  "updated_utc": "2026-09-28T10:17:17.096242+00:00"
 }
