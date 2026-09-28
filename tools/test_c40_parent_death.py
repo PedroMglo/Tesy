@@ -34,7 +34,11 @@ class ParentDeathTests(unittest.TestCase):
                 deadline=time.monotonic()+3
                 while time.monotonic()<deadline:
                     status=Path(f'/proc/{child_pid}/stat')
-                    if not status.exists() or status.read_text().split()[2]=='Z':
+                    try:
+                        state=status.read_text().split()[2]
+                    except (FileNotFoundError,ProcessLookupError):
+                        break  # exit may remove /proc after the preceding poll
+                    if state=='Z':
                         break
                     time.sleep(.02)
                 else:
