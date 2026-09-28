@@ -453,6 +453,9 @@ def child_exited_after_sample_loss(server):
 
 def protocol_cgroup_memory_max(protocol):
     """Return the frozen cgroup hard cap without assuming every campaign is E18."""
+    if 'resources' in protocol:
+        from host_resource_policy import validate_resource_protocol
+        return validate_resource_protocol(protocol)['cgroup']['memory_max_bytes']
     values = []
     for value in protocol.values():
         if type(value) is dict and 'cgroup_memory_max_bytes' in value:
@@ -466,6 +469,12 @@ def protocol_cgroup_memory_max(protocol):
 
 
 def run(args, protocol, config, task_rows, model):
+    prospective = 'resources' in protocol
+    if prospective:
+        from host_resource_policy import (RuntimeGuard, validate_resource_protocol,
+                                          validate_start_observation,
+                                          live_power, host_pressure)
+        resource_contract = validate_resource_protocol(protocol)
     between = session_idle_seconds(config)
     dynamic_history = config.get('append_previous_assistant_to_next', False)
     if dynamic_history is not False and dynamic_history is not True:
@@ -485,10 +494,23 @@ def run(args, protocol, config, task_rows, model):
     cg_start = cgroup_state()
     if not cg_start or cg_start["memory_max"] != expected_cgroup_max or cg_start["swap_max"] != 0:
         raise GateError("frozen cgroup cap and zero swap not enforced")
-    if model.stat().st_size <= 0 or mem_available() < 6*2**30:
+    available_start = mem_available()
+    minimum_available = (resource_contract['memory']['reserve_bytes'] if prospective
+                         else 6*2**30)
+    if model.stat().st_size <= 0 or available_start is None or available_start < minimum_available:
         raise GateError("model or host headroom unavailable")
-    if not gpu_state() or not thermal_state():
+    gpu_start = gpu_state(prospective=prospective)
+    thermal_start = thermal_state(prospective=prospective)
+    if not gpu_start or not thermal_start:
         raise GateError("required GPU or thermal sensors unavailable before launch")
+    if prospective:
+        power_start=live_power()
+        psi_start=host_pressure()
+        start_reasons=validate_start_observation(
+            protocol,available_bytes=available_start,gpu=gpu_start,
+            thermal=thermal_start,power=power_start,psi_full_avg10=psi_start)
+        if start_reasons:
+            raise GateError('prospective start admission: '+','.join(start_reasons))
     with socket.socket() as sock:
         sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         sock.bind(("127.0.0.1",18367))
@@ -516,6 +538,11 @@ def run(args, protocol, config, task_rows, model):
                  "started_utc":dt.datetime.now(dt.timezone.utc).isoformat(),
                  "cgroup_start":cg_start,"timeout_s":total_timeout,
                  "relevant_environment":relevant_environment(env)}
+    if prospective:
+        preflight['resource_start_observation']={
+            'mem_available_bytes':available_start,'gpu':gpu_start,'thermal':thermal_start,
+            'power':power_start,'host_psi_full_avg10':psi_start,
+            'admission_reasons':start_reasons}
     with open(paths[".preflight.json"],"x") as out:
         json.dump(preflight,out,indent=2,allow_nan=False);out.write("\n")
     t0 = time.monotonic()
@@ -525,6 +552,7 @@ def run(args, protocol, config, task_rows, model):
     samples = []
     stop = threading.Event()
     c18_request_active = threading.Event()
+    resource_gate = RuntimeGuard(protocol,cg_start) if prospective else None
     with reserve(paths[".stdout"]) as stdout, reserve(paths[".stderr"]) as stderr, \
          open(paths[".samples.jsonl"],"x") as sample_file:
         server = subprocess.Popen(command, stdout=stdout, stderr=stderr,
@@ -547,12 +575,26 @@ def run(args, protocol, config, task_rows, model):
             previous_cpu_diag_t = None
             prewarning_clocks = []
             warning_clocks = []
+            missing_since = None
             while not stop.is_set() and server.poll() is None:
                 try:
                     collection_start = time.monotonic()
                     ps = proc_status(server.pid); cg = cgroup_state()
-                    gpu = gpu_state(); th = thermal_state(); available = mem_available()
+                    gpu = gpu_state(prospective=prospective)
+                    th = thermal_state(prospective=prospective)
+                    available = mem_available()
+                    if prospective and (not gpu or not th or available is None):
+                        gpu = gpu_state(prospective=True)
+                        th = thermal_state(prospective=True)
+                        available = mem_available()
                     now = time.monotonic()-t0
+                    if prospective and (not gpu or not th or available is None):
+                        missing_since = now if missing_since is None else missing_since
+                        if now-missing_since >= resource_contract['telemetry']['loss_persistence_s']:
+                            reasons.append('TELEMETRY_MISSING_PERSISTED')
+                            stop_own_server(server);break
+                        stop.wait(0.5);continue
+                    missing_since = None
                     cpu_diag = None
                     if protocol.get('c18'):
                         from c18_cpu_telemetry import capture, package_power_w
@@ -579,6 +621,10 @@ def run(args, protocol, config, task_rows, model):
                             reasons.append("TELEMETRY_MISSING_LIVE_PROCESS")
                             stop_own_server(server)
                         break
+                    if identity != launch['process_identity']:
+                        reasons.append('PROCESS_IDENTITY_CHANGED')
+                        stop_own_server(server)
+                        break
                     if not ps or any(field not in ps for field in ("VmRSS", "VmSwap", "VmHWM")):
                         if not child_exited_after_sample_loss(server):
                             reasons.append("TELEMETRY_MISSING_LIVE_PROCESS")
@@ -590,6 +636,10 @@ def run(args, protocol, config, task_rows, model):
                               "gpu":gpu,"thermal":th,"mem_available_bytes":available,
                               "model_fds":model_fd_state(server.pid,str(model)),
                               "collection_s":time.monotonic()-collection_start}
+                    if prospective:
+                        sample['resource_observation'] = {
+                            'host_psi_full_avg10':host_pressure(),
+                            'power':live_power()}
                     if cpu_diag is not None:
                         sample['cpu_diagnostics'] = cpu_diag
                     samples.append(sample)
@@ -597,6 +647,8 @@ def run(args, protocol, config, task_rows, model):
                     reason = None
                     if now > total_timeout: reason = "TIMEOUT"
                     elif not ps or not cg or not gpu or not th or available is None: reason = "TELEMETRY_MISSING"
+                    elif prospective:
+                        reason = resource_gate.check(sample)
                     elif ps["VmSwap"] or cg["swap_current"]: reason = "SWAP_USED"
                     elif cg["events"]["oom"] > cg_start["events"]["oom"]: reason = "CGROUP_OOM"
                     elif cg["events"]["max"] > cg_start["events"]["max"]: reason = "CGROUP_LIMIT_HIT"
@@ -811,7 +863,7 @@ def run(args, protocol, config, task_rows, model):
                                (".launch.json",".tokenization.json",".stdout",".stderr",".samples.jsonl") and p.exists()}}
     with open(paths[".json"],"x") as out:
         json.dump(result,out,indent=2,allow_nan=False);out.write("\n")
-    if not reasons and len(raw) == len(task_rows) and server.returncode == 0:
+    if not prospective and not reasons and len(raw) == len(task_rows) and server.returncode == 0:
         try:
             doc = normalize(raw,protocol,config,samples,paths[".stderr"].read_text(errors="replace"),
                             ended,server.returncode,reasons)
@@ -821,7 +873,8 @@ def run(args, protocol, config, task_rows, model):
             reasons.append(f"NORMALIZATION_ERROR:{type(exc).__name__}:{exc}")
     print(json.dumps({"run_id":args.run_id,"completed":len(raw),"elapsed_s":ended,
                       "stop_reasons":reasons,"normalized":paths[".normalized.json"].exists()}),flush=True)
-    return 0 if not reasons and paths[".normalized.json"].exists() else 1
+    return 0 if not reasons and len(raw)==len(task_rows) and server.returncode==0 and \
+           (prospective or paths[".normalized.json"].exists()) else 1
 
 
 def main():

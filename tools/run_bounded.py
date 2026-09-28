@@ -168,28 +168,52 @@ def model_fd_state(pid, model_path):
     return result
 
 
-def gpu_state():
+def gpu_state(*, prospective=False):
     try:
+        fields = ("uuid,pci.bus_id,memory.used,temperature.gpu,power.draw" if prospective
+                  else "memory.used,temperature.gpu,power.draw")
         p = subprocess.run(
-            ["nvidia-smi", "--query-gpu=memory.used,temperature.gpu,power.draw", "--format=csv,noheader,nounits"],
+            ["nvidia-smi", "--query-gpu="+fields, "--format=csv,noheader,nounits"],
             capture_output=True, text=True, timeout=3, check=True,
         )
-        parts = p.stdout.strip().splitlines()[0].split(",")
+        if len(p.stdout.strip().splitlines()) != 1:
+            return None
+        parts = [x.strip() for x in p.stdout.strip().split(",")]
+        if prospective:
+            from host_resource_policy import finite
+            if len(parts)!=5:
+                return None
+            uuid,bdf=parts[:2]
+            row={"uuid":uuid,"bdf":bdf,
+                 "used_mib":finite(float(parts[2]),"GPU used MiB",0),
+                 "temperature_c":finite(float(parts[3]),"GPU temperature",0,120),
+                 "power_w":finite(float(parts[4]),"GPU power",0)}
+            return row
         return {"used_mib": float(parts[0]), "temperature_c": float(parts[1]), "power_w": float(parts[2])}
     except (OSError, ValueError, IndexError, subprocess.SubprocessError):
         return None
 
 
-def thermal_state():
+def thermal_state(*, prospective=False):
     try:
         p = subprocess.run(["sensors", "-j"], capture_output=True, text=True, timeout=3, check=True)
         devices = json.loads(p.stdout)
         result = {}
+        nvme = {}
         for device, reading in devices.items():
             if device.startswith("k10temp-"):
                 result["cpu_tctl_c"] = reading["Tctl"]["temp1_input"]
             elif device.startswith("nvme-"):
-                result["nvme_composite_c"] = reading["Composite"]["temp1_input"]
+                value = reading["Composite"]["temp1_input"]
+                if prospective:
+                    from host_resource_policy import temp
+                    nvme[device] = temp(value, "NVMe Composite")
+                else:
+                    result["nvme_composite_c"] = value
+        if prospective:
+            from host_resource_policy import temp
+            result["cpu_tctl_c"] = temp(result["cpu_tctl_c"], "CPU Tctl")
+            result["nvme_composite_by_sensor"] = nvme
         return result or None
     except (OSError, ValueError, KeyError, TypeError, subprocess.SubprocessError):
         return None

@@ -20,15 +20,17 @@ def call(*argv):
     return subprocess.check_output(argv, text=True, timeout=15).strip()
 
 
-def scope_test():
-    output = call("systemd-run", "--user", "--scope", "-p", "MemoryMax=19327352832",
+def scope_test(memory_max_bytes=19327352832):
+    if type(memory_max_bytes) is not int or memory_max_bytes < 2**30:
+        raise ValueError('scope cap must be positive integer bytes')
+    output = call("systemd-run", "--user", "--scope", "-p", f"MemoryMax={memory_max_bytes}",
                   "-p", "MemorySwapMax=0", "--", "python3", "-c",
                   'import json,sys;sys.path.insert(0,"tools");import c2_server_run as s;'
                   'c=s.cgroup_state();print(json.dumps({"path":c["path"],'
                   '"memory_max":c["memory_max"],"swap_max":c["swap_max"],'
                   '"swap_current":c["swap_current"]}))')
     result = strict_json(output.splitlines()[-1])
-    result["status"] = "PASS" if result["memory_max"] == 19327352832 and \
+    result["status"] = "PASS" if result["memory_max"] == memory_max_bytes and \
         result["swap_max"] == 0 and result["swap_current"] == 0 else "FAIL"
     return result
 

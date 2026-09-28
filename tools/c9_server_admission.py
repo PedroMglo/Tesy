@@ -102,47 +102,48 @@ def apply_prospective_resource_policy(protocol, preflight, *, cgroup_memory_max_
     if type(protocol) is not dict or type(preflight) is not dict:
         raise GateError('prospective resource policy inputs invalid')
     policy = preflight.get('resource_policy')
-    if type(policy) is not dict or policy.get('schema') != 'tesy-resource-policy-v1' or \
-       policy.get('status') == 'FAIL_EVIDENCE':
+    if type(policy) is not dict or policy.get('schema') != 'tesy-resource-inventory-v2':
         raise GateError('prospective resource policy missing/invalid')
     try:
-        frozen = freeze_protocol_resource_limits(
-            policy, cgroup_memory_max_bytes=cgroup_memory_max_bytes)
+        from host_resource_policy import apply_prospective_resource_policy as apply
+        return apply(protocol, policy, cgroup_memory_max_bytes=cgroup_memory_max_bytes)
     except ResourcePolicyError as exc:
         raise GateError(f'prospective resource admission failed: {exc}') from exc
-    cap = frozen.pop('cgroup_memory_max_bytes')
-    for key, value in frozen.items():
-        if key not in protocol['limits']:
-            raise GateError(f'prospective resource limit key unsupported: {key}')
-        protocol['limits'][key] = value
-    if type(profile_key) is not str or not profile_key or profile_key in ('limits', 'identity'):
-        raise GateError('prospective resource profile key invalid')
-    extension = protocol.setdefault(profile_key, {})
-    if type(extension) is not dict:
-        raise GateError('prospective resource extension invalid')
-    extension['cgroup_memory_max_bytes'] = cap
-    extension['resource_policy_schema'] = policy['schema']
-    extension['resource_policy_class'] = 'PROSPECTIVE_DEVICE_DERIVED'
-    extension['resource_policy_snapshot'] = {
-        'cpu': policy['cpu'],
-        'gpu': policy['gpu'],
-        'nvme': policy['nvme'],
-        'memory': policy['memory'],
-    }
-    return protocol
 
 
 
 def cpu_guard_violation(cpu_c, protocol):
-    return cpu_c >= protocol['limits']['cpu_max_c']
+    if 'resources' in protocol:
+        from host_resource_policy import validate_resource_protocol
+        return cpu_c >= validate_resource_protocol(protocol)['cpu']['temperature_stop_c']
+    return (cpu_c >= protocol['limits']['cpu_max_c'] if 'c18' in protocol
+            else cpu_c > 95)
 
 
 def validate_receipt(protocol, config, raw, samples, root, *, run_id=RUN_ID,
                      protocol_filename='protocol.json', expected_results=0):
+    prospective = 'resources' in protocol
+    if prospective:
+        from host_resource_policy import RuntimeGuard, validate_resource_protocol
+        resource_contract = validate_resource_protocol(protocol)
     if raw['stop_reasons'] or raw['returncode'] != 0 or \
        len(raw['results']) != expected_results:
         raise GateError('server load exit/result invalid')
     pre = raw['preflight']
+    if prospective:
+        from host_resource_policy import validate_start_observation
+        observation=pre.get('resource_start_observation')
+        if type(observation) is not dict or observation.get('admission_reasons')!=[]:
+            raise GateError('prospective start observation missing/failed')
+        try:
+            reasons=validate_start_observation(
+                protocol,available_bytes=observation['mem_available_bytes'],
+                gpu=observation['gpu'],thermal=observation['thermal'],
+                power=observation['power'],
+                psi_full_avg10=observation['host_psi_full_avg10'])
+        except (ResourcePolicyError, KeyError, TypeError) as exc:
+            raise GateError(f'prospective start observation invalid: {exc}') from exc
+        if reasons:raise GateError('prospective start admission: '+','.join(reasons))
     if pre['protocol_sha256'] != sha256(root / protocol_filename) or \
        pre['config'] != dict(config, run_id=run_id) or \
        pre['relevant_environment'] != relevant_environment(config['explicit_env']):
@@ -171,6 +172,7 @@ def validate_receipt(protocol, config, raw, samples, root, *, run_id=RUN_ID,
             raise GateError('cgroup cap/OOM event')
     maxima = {'rss_bytes': 0, 'cgroup_peak_bytes': 0, 'gpu_total_mib': 0,
               'cpu_c': 0, 'gpu_c': 0, 'nvme_c': 0, 'swap_bytes': 0}
+    resource_gate = RuntimeGuard(protocol,start) if prospective else None
     previous = None
     for sample in samples:
         t = sample['elapsed_s']
@@ -190,13 +192,31 @@ def validate_receipt(protocol, config, raw, samples, root, *, run_id=RUN_ID,
            any(cg[k][name] != start[k][name] for k in ('events', 'events_local')
                for name in ('max', 'oom', 'oom_kill')):
             raise GateError('sample cgroup identity/cap/swap/event invalid')
+        if prospective:
+            try:
+                reason = resource_gate.check(sample)
+            except (ResourcePolicyError, KeyError, TypeError) as exc:
+                raise GateError(f'invalid prospective resource sample: {exc}') from exc
+            if reason:
+                raise GateError('prospective resource gate: '+reason)
+            maxima['rss_bytes'] = max(maxima['rss_bytes'], ps['VmRSS'])
+            maxima['cgroup_peak_bytes'] = max(maxima['cgroup_peak_bytes'], cg['memory_peak'])
+            maxima['gpu_total_mib'] = max(maxima['gpu_total_mib'], gpu['used_mib'])
+            maxima['cpu_c'] = max(maxima['cpu_c'], th['cpu_tctl_c'])
+            maxima['gpu_c'] = max(maxima['gpu_c'], gpu['temperature_c'])
+            maxima['nvme_c'] = max(maxima['nvme_c'],
+                                   *(th['nvme_composite_by_sensor'][row['sensor']]
+                                     for row in resource_contract['nvme']))
+            continue
         cpu_limit_exceeded = cpu_guard_violation(th['cpu_tctl_c'], protocol)
+        gpu_temp_limit = protocol['limits'].get('gpu_max_c', 80)
+        nvme_temp_limit = protocol['limits'].get('nvme_max_c', 70)
         if ps['VmRSS'] > protocol['limits']['rss_max_bytes'] or \
            cg['memory_peak'] > protocol['limits']['memory_max_bytes'] or \
            gpu['used_mib'] > protocol['limits']['gpu_max_mib'] or \
            sample['mem_available_bytes'] < protocol['limits']['min_mem_available_bytes'] or \
-           cpu_limit_exceeded or gpu['temperature_c'] > protocol['limits']['gpu_max_c'] or \
-           th['nvme_composite_c'] > protocol['limits']['nvme_max_c']:
+           cpu_limit_exceeded or gpu['temperature_c'] > gpu_temp_limit or \
+           th['nvme_composite_c'] > nvme_temp_limit:
             raise GateError('sample resource reservation/guard exceeded')
         maxima['rss_bytes'] = max(maxima['rss_bytes'], ps['VmRSS'])
         maxima['cgroup_peak_bytes'] = max(maxima['cgroup_peak_bytes'], cg['memory_peak'])

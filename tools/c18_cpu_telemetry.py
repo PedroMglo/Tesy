@@ -91,9 +91,14 @@ def clock_collapse(prewarning_mhz, warning_mhz, consecutive):
     return all(value < baseline * 0.5 for value in warning_mhz[-consecutive:])
 
 
-def thermal_stop_reason(cpu_c, diagnostics, prewarning_mhz, warning_mhz):
+def thermal_stop_reason(cpu_c, diagnostics, prewarning_mhz, warning_mhz,
+                        *, prospective=False):
     if cpu_c >= 100:
         return 'CPU_TJMAX_100'
+    if prospective:
+        # Firmware cooling and heterogeneous/idle clocks are diagnostics.
+        # Neither is evidence of a numerical failure or device overtemperature.
+        return None
     if diagnostics['processor_cooling_max_state'] > 0:
         return 'CPU_PROCESSOR_COOLING_ACTIVE'
     if cpu_c >= 95 and clock_collapse(prewarning_mhz, warning_mhz, 5):
@@ -101,7 +106,7 @@ def thermal_stop_reason(cpu_c, diagnostics, prewarning_mhz, warning_mhz):
     return None
 
 
-def summarize_samples(samples, *, require_safe):
+def summarize_samples(samples, *, require_safe, prospective=False):
     """Check C18 telemetry coverage and return physical diagnostics."""
     if len(samples) < 2:
         raise GateError('C18 telemetry samples absent')
@@ -164,7 +169,7 @@ def summarize_samples(samples, *, require_safe):
         warnings += int(diag['thermal_warning'])
         max_cooling = max(max_cooling, diag['processor_cooling_max_state'])
         energy.append(diag['package_energy_uj'])
-    if require_safe and (max(temperatures) >= 100 or max_cooling):
+    if require_safe and (max(temperatures) >= 100 or (max_cooling and not prospective)):
         raise GateError('CPU thermal stop condition observed in completed run')
     return {'sample_count': len(samples), 'cpu_max_c': max(temperatures),
             'cpu_warning_sample_count': warnings, 'cpu_warning_observed': bool(warnings),
