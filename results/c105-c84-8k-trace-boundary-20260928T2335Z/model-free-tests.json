@@ -1,0 +1,22 @@
+{
+  "checks": [
+    {
+      "binary_sha256": "c828a9de8c065f7b1b63cf4e5f40658b1e6bfe6641ba4f4b7040f36e74d95a5b",
+      "command": "g++-15 -std=c++17 -O2 -Wall -Wextra -Werror tools/c80_session_boundary_capture.cpp linked to C84 libraries",
+      "status": "PASS"
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=tools python3 tools/c55_inventory.py results/c105-c84-8k-trace-boundary-20260928T2335Z",
+      "snapshot_sha256": "696aa28146c994bab4db6c5e042b4301419f14a441f7fc8a50a521c01e38b456",
+      "status": "PASS_60_SECOND_FRESH_INVENTORY"
+    },
+    {
+      "command": "C105 frozen() equality with protocol and C93 reference raw hashes",
+      "status": "PASS"
+    }
+  ],
+  "model_loaded": false,
+  "schema": "c105-model-free-tests-v1",
+  "status": "PASS",
+  "utc": "2026-09-28T23:38:03.509224+00:00"
+}
