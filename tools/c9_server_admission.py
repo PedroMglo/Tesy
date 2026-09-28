@@ -93,7 +93,7 @@ def configuration(root):
 
 
 
-def apply_prospective_resource_policy(protocol, preflight, *, cgroup_memory_max_bytes):
+def apply_prospective_resource_policy(protocol, preflight, *, cgroup_memory_max_bytes, profile_key='c9'):
     """Apply a live hardware-derived policy to a NEW, not-yet-frozen protocol.
 
     Historical protocols must never call this helper. The chosen cgroup cap is
@@ -115,9 +115,11 @@ def apply_prospective_resource_policy(protocol, preflight, *, cgroup_memory_max_
         if key not in protocol['limits']:
             raise GateError(f'prospective resource limit key unsupported: {key}')
         protocol['limits'][key] = value
-    extension = protocol.setdefault('c9', {})
+    if type(profile_key) is not str or not profile_key or profile_key in ('limits', 'identity'):
+        raise GateError('prospective resource profile key invalid')
+    extension = protocol.setdefault(profile_key, {})
     if type(extension) is not dict:
-        raise GateError('c9 extension invalid')
+        raise GateError('prospective resource extension invalid')
     extension['cgroup_memory_max_bytes'] = cap
     extension['resource_policy_schema'] = policy['schema']
     extension['resource_policy_class'] = 'PROSPECTIVE_DEVICE_DERIVED'
