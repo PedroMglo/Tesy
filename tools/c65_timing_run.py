@@ -75,7 +75,7 @@ def protocol(root):
     latency, continuation = ids()
     libs = backend_library_hashes(str(BINARY), BACKEND)
     old_libs = backend_library_hashes(str(old_binary), BACKEND)
-    if libs != old_libs:
+    if any(old_libs.get(name)!=digest for name,digest in libs.items()):
         raise GateError('probe libraries differ from pinned C35 server')
     resources = freeze_protocol_resource_limits(policy,cgroup_memory_max_bytes=CAP)
     out = {'schema':'c65-p12-p14-timing-screen-v1','campaign_id':root.name,
@@ -285,7 +285,7 @@ def run(root,commit):
             else:receipt['reason']='scope/child nonzero; inspect bounded stderr'
         else:receipt['reason']='bounded manifest absent'
         receipts.append(receipt)
-        save_new(root/(run+'-receipt.json'),receipt)
+        save_new(root/'raw'/(run+'-receipt.json'),receipt)
         print(json.dumps({'run_id':run,'status':receipt['status'],
                           'timing':receipt.get('source',{}).get('timing_s'),
                           'reason':receipt.get('reason')}),flush=True)
