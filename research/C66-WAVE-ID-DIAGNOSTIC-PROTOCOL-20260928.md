@@ -1,0 +1,8 @@
+# C66 invalid routed-ID diagnostic
+
+- Objective/base: locate the first invalid selected expert ID behind C61's assertion without recovering the computation. Base Tesy `92a07dc24092a4ee9773be66308c44fcfaffafe6`; isolated backend C57 `aac3bbde35575044d290798a120cde038f85b670` plus diagnostic commit `1c6f503bbb2ee0ee315540a17cbfb6b2bab68f22`. C48 and C61 failures remain unchanged.
+- Alternatives: the plain graph already receives an invalid ID; the capture observer is required to trigger it; or C61 does not reproduce in the new bounded unit. A nonreproduction cannot relabel C61.
+- Mechanism: inspect exactly the contiguous I32 ID buffer passed to `llama_moe_stream_wave_ids` and abort on the first out-of-range value with layer, wave, index, value and shape. No fallback, change to weights/routing, timing claim or skip-parked mode.
+- Model-free gate: C66 helper control with valid, negative and out-of-range IDs passed; 16 focused Python tests passed; C66 CUDA arch89 `libllama` build and both probe binaries completed. Patch is `research/patches/C66-wave-id-diagnostic-source-only.patch`.
+- Prospective physical gate: plain C7 pattern on C66 backend first, then observer OFF C60 pattern, P12/ub32/slots32/n_ctx4096/no preload with one 189-ID prefill external call plus 32 teacher-forced steps. Fresh processes, E18 zero swap, current resource policy and raw hashes. First failure ends unit. If both complete, compare five full selected logits bitwise; results are diagnostic only.
+- NOT_RUN now: physical C66, canonical reference, wave ON and timing. Any full-model execution requires fresh inventory, frozen protocol and a clean measurement commit.
