@@ -8,3 +8,9 @@
 - **Resources:** new preflight, 300 seconds of idle telemetry, E18/zero swap, CPU95 warning/100 stop, GPU80/NVMe70, GPU <=6500 MiB reservation, MemAvailable >=6 GiB. One process, no external service change.
 - **Evidence class before run:** source/harness and 46 model-free tests passed. No C49 output or timing claim yet.
 - **Limit:** one synthetic two-turn conversation cannot certify long-term assistant-history sessions, quality generally, speedup causality, or M4. The existing 20-request C37 regime remains user-only synthetic.
+
+## Admission result
+
+- Measurement commit `5e166223be6f5147d15bcff55e4693aa1736bf40`. The 900.047 s idle series had 1801 samples, maximum gap 0.914 s, and zero GPU model load. The CPU began at 51.0 °C, ended at 48.0 °C, and had isolated readings above the frozen 50 °C admission band. The last 60 s trend was +0.225 °C; the conservative contiguous admission predicate still failed.
+- **THERMAL_PREFLIGHT_BLOCKED.** No model or request was run, so this is neither a runtime thermal guard failure nor a session fidelity result. M3 remains partial and M4 NOT_RUN.
+- **Next:** C50 new identity with a prospective idle band of CPU/GPU/NVMe <=55/55/50 °C for 300 contiguous seconds. The CPU warning at 95 °C and stop at 100 °C, GPU/NVMe/RAM/swap guards, model, backend, workload and generation policy remain unchanged. The owner explicitly requested continuation even if the CPU does not cool further.
