@@ -1,0 +1,198 @@
+{
+  "M3": "SESSION_MECHANICS_TESTED_SCOPE_LATENCY_OPEN",
+  "M4": "NOT_MET",
+  "budget_consumed": {
+    "full_epoch_reconciliation": "NOT_RUN",
+    "inventory_s_minimum": 60,
+    "matched_start_wait_s": 197.84913486598816,
+    "model_process_elapsed_s": 1397.8706880179961
+  },
+  "default_changed": false,
+  "gate_status": {
+    "identity_outputs": "PASS",
+    "matched_start": "PASS",
+    "resources": "PASS",
+    "server_confirmation": "NO_GO"
+  },
+  "historical_failures_unchanged": [
+    "C48",
+    "C78",
+    "C96 candidate prelaunch",
+    "C97 candidate prelaunch"
+  ],
+  "limitations": [
+    "three pairs do not establish p95 or broad performance",
+    "synthetic prompt/history; no diverse quality test",
+    "page cache uncontrolled; no physical expert I/O attribution"
+  ],
+  "measurement_commit": "6850b366dda058fc123ef5a70b6226a3ce1ff708",
+  "median_paired_gain_percent": {
+    "cold_decode_s": -9.362931414379652,
+    "cold_first_final_content_s": 68.04928271525422,
+    "cold_prefill_s": 74.75773705011916,
+    "warm_decode_s": -6.200969630887729,
+    "warm_first_final_content_s": 2.950962252061765
+  },
+  "next_action": "Preserve negative screen and pivot to next mechanism/phase.",
+  "pairs": [
+    {
+      "candidate_run_id": "c100-p1-candidate",
+      "control_run_id": "c100-p1-control",
+      "matched_start_wait_s": 197.5674807070027,
+      "metrics": {
+        "cold_decode_s": {
+          "candidate": 25.671058000000002,
+          "control": 24.766285,
+          "paired_gain_percent": -3.6532447236232737
+        },
+        "cold_first_final_content_s": {
+          "candidate": 99.13214246999996,
+          "control": 300.5254216470057,
+          "paired_gain_percent": 67.01372485338707
+        },
+        "cold_prefill_s": {
+          "candidate": 74.129714,
+          "control": 276.41178,
+          "paired_gain_percent": 73.18142012616104
+        },
+        "cold_request_wall_s": {
+          "candidate": 99.81933189100528,
+          "control": 301.191970882006,
+          "paired_gain_percent": 66.85856810900508
+        },
+        "warm_decode_s": {
+          "candidate": 20.435769,
+          "control": 20.505125,
+          "paired_gain_percent": 0.33823739187153984
+        },
+        "warm_first_final_content_s": {
+          "candidate": 27.248423259006813,
+          "control": 29.78181348599901,
+          "paired_gain_percent": 8.50650088243683
+        },
+        "warm_prefill_s": {
+          "candidate": 7.300009,
+          "control": 9.732053,
+          "paired_gain_percent": 24.99004064198993
+        },
+        "warm_request_wall_s": {
+          "candidate": 27.751231728994753,
+          "control": 30.24872369901277,
+          "paired_gain_percent": 8.256520158896915
+        }
+      },
+      "pair": 1,
+      "run_order": [
+        "c100-p1-control",
+        "c100-p1-candidate"
+      ]
+    },
+    {
+      "candidate_run_id": "c100-p2-candidate",
+      "control_run_id": "c100-p2-control",
+      "matched_start_wait_s": 0.1316880739905173,
+      "metrics": {
+        "cold_decode_s": {
+          "candidate": 26.958527999999998,
+          "control": 24.650517,
+          "paired_gain_percent": -9.362931414379652
+        },
+        "cold_first_final_content_s": {
+          "candidate": 96.18430865601113,
+          "control": 301.0395910639927,
+          "paired_gain_percent": 68.04928271525422
+        },
+        "cold_prefill_s": {
+          "candidate": 69.932491,
+          "control": 277.045252,
+          "paired_gain_percent": 74.75773705011916
+        },
+        "cold_request_wall_s": {
+          "candidate": 96.9068117870047,
+          "control": 301.7085605739994,
+          "paired_gain_percent": 67.8806555562627
+        },
+        "warm_decode_s": {
+          "candidate": 20.607686,
+          "control": 18.868406,
+          "paired_gain_percent": -9.217948776383128
+        },
+        "warm_first_final_content_s": {
+          "candidate": 27.76982905100158,
+          "control": 28.077337084992905,
+          "paired_gain_percent": 1.0952179441393182
+        },
+        "warm_prefill_s": {
+          "candidate": 7.59711,
+          "control": 9.644041999999999,
+          "paired_gain_percent": 21.22483498101729
+        },
+        "warm_request_wall_s": {
+          "candidate": 28.220491333995597,
+          "control": 28.522282345991698,
+          "paired_gain_percent": 1.0580885790807444
+        }
+      },
+      "pair": 2,
+      "run_order": [
+        "c100-p2-candidate",
+        "c100-p2-control"
+      ]
+    },
+    {
+      "candidate_run_id": "c100-p3-candidate",
+      "control_run_id": "c100-p3-control",
+      "matched_start_wait_s": 0.14996608499495778,
+      "metrics": {
+        "cold_decode_s": {
+          "candidate": 26.924112,
+          "control": 24.361493,
+          "paired_gain_percent": -10.51913772279885
+        },
+        "cold_first_final_content_s": {
+          "candidate": 94.81780219399661,
+          "control": 300.7459689380048,
+          "paired_gain_percent": 68.47246115091166
+        },
+        "cold_prefill_s": {
+          "candidate": 68.599967,
+          "control": 277.030172,
+          "paired_gain_percent": 75.23736620284089
+        },
+        "cold_request_wall_s": {
+          "candidate": 95.54318151800544,
+          "control": 301.4051237220119,
+          "paired_gain_percent": 68.30074408219895
+        },
+        "warm_decode_s": {
+          "candidate": 19.865827,
+          "control": 18.705881,
+          "paired_gain_percent": -6.200969630887729
+        },
+        "warm_first_final_content_s": {
+          "candidate": 26.975514876001398,
+          "control": 27.795757177998894,
+          "paired_gain_percent": 2.950962252061765
+        },
+        "warm_prefill_s": {
+          "candidate": 7.530818,
+          "control": 9.531666,
+          "paired_gain_percent": 20.99158740979803
+        },
+        "warm_request_wall_s": {
+          "candidate": 27.412729711999418,
+          "control": 28.248030813003425,
+          "paired_gain_percent": 2.957024178193306
+        }
+      },
+      "pair": 3,
+      "run_order": [
+        "c100-p3-control",
+        "c100-p3-candidate"
+      ]
+    }
+  ],
+  "reference_coverage": "C93-C95 8K P12 observed numeric scope; no independent attention/KV certification",
+  "schema": "c100-decision-v1",
+  "status": "NO_GO_CONFIRM"
+}
