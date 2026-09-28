@@ -52,6 +52,16 @@ def digest(value):
     return hashlib.sha256(json_bytes(value)).hexdigest()
 
 
+def task_template_kwargs(task):
+    if 'chat_template_kwargs' not in task:
+        return {}
+    value = task['chat_template_kwargs']
+    if type(value) is not dict or not value or any(type(key) is not str for key in value):
+        raise GateError('chat template kwargs must be a nonempty string-keyed object')
+    json_bytes(value)
+    return {'chat_template_kwargs': value}
+
+
 def parse_chat_stream(lines, elapsed):
     """Collect one OpenAI chat SSE response and timestamp received text chunks."""
     content = []
@@ -537,10 +547,11 @@ def run(args, protocol, config, task_rows, model):
                 token_ids = {}
                 for row_id, task in task_rows:
                     messages = task.get("messages") or [{"role":"user","content":task["prompt"]}]
+                    kwargs = task_template_kwargs(task)
                     template = fetch("/apply-template",{"model":model_id,
                                       "messages":messages,
                                       "max_tokens":config["request_policy"]["max_tokens"],
-                                      "temperature":0,"seed":42})
+                                      "temperature":0,"seed":42, **kwargs})
                     if type(template.get("prompt")) is not str:
                         raise GateError(f"official template unavailable for {row_id}")
                     tokenized = fetch("/tokenize",{"content":template["prompt"],
@@ -566,7 +577,8 @@ def run(args, protocol, config, task_rows, model):
                 stream_requests = config.get('stream_requests', False)
                 payload = {"model":model_id,"messages":messages,
                            "max_tokens":config["request_policy"]["max_tokens"],
-                           "temperature":0,"seed":42,"stream":stream_requests}
+                           "temperature":0,"seed":42,"stream":stream_requests,
+                           **task_template_kwargs(task)}
                 if stream_requests:
                     payload['stream_options'] = {'include_usage': True}
                 if "cache_prompt" in task:
