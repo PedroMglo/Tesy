@@ -1,0 +1,22 @@
+{
+  "alternative": "warm exact-prefix latency may be dominated by CPU wave work, I/O wait, overlap or another operator",
+  "analyzer_sha256": "ee46c37fc05216f0593235477a46052f529853233e6a934729405ab45ae7a7f6",
+  "base_commit": "38b34cdfeeac117d267f05a3073eb3f9b1fa99a8",
+  "default_changed": false,
+  "evidence_class": "exploratory diagnostic; no causal performance claim",
+  "input_sha256": {
+    "decision": "90049fa07f59b81b3c78a020c6d15d072a3e06f44db32547fe82328d756192a5",
+    "manifest": "9b74df9783079eccdf39725168a71ae424aeea3cec675b12478810a48133e6ef",
+    "raw": "be2bf54e1fda221f2338fe12f7e29821cb991111aa21b9d17b60a05dd6db9ddb",
+    "samples": "afbf404c03b7bcbcf3cf9fb7a29a29674be80a84225db048b9e6c91071ff6ea8"
+  },
+  "limit": "C46 cold513 and C52b warm153 are different workloads; no numerical transfer of critical-path fraction",
+  "max_sample_gap_s": 3,
+  "method": "linearly interpolate monotone /proc/PID/io read_bytes/rchar/syscr at each request start, start+prompt_ms and end; report all 20 rows and median over 19 incremental requests",
+  "objective": "attribute C52b incremental request time to server prefill/decode phases and process I/O accounting before choosing a physical diagnostic",
+  "physical_model_run": "NOT_RUN",
+  "schema": "c53-session-cost-protocol-v1",
+  "source_c46_phase_summary_sha256": "b8309e7e3725bf527afcaa66a426d9c50f92e2782712daedbbfe594d31ddb4c9",
+  "status": "MODEL_FREE_FROZEN",
+  "utc": "2026-09-28T12:56:36.720554+00:00"
+}
