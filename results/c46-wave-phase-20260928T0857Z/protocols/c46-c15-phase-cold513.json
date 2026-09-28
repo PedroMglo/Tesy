@@ -1,0 +1,80 @@
+{
+  "c18": {
+    "clock_collapse_rule": "five consecutive warning samples below half prewarning median",
+    "cpu_stop_c": 100,
+    "cpu_warning_c": 95,
+    "explicit_thermal_limit": "any Processor cooling cur_state > 0"
+  },
+  "c34b": {
+    "backend_dirty": "",
+    "backend_tree": "5e3d2a58632dfd6f4c8705d158da181a1490cb51",
+    "model_stat": {
+      "ctime_ns": 1790389637807910988,
+      "dev": 53,
+      "inode": 14833675,
+      "mtime_ns": 1790389637795911032,
+      "size_bytes": 63387346208
+    },
+    "monitor_scope": "systemd user scope E18, zero swap",
+    "numerical_scope": "greedy four-token output equality only; full logits NOT_RUN",
+    "order": 1,
+    "phase": "C15_PROFILE",
+    "run_id": "c46-c15-phase-cold513",
+    "runner_sha256": "c670b409d1b08dd869abd2907bff44228a6f2c70687f595c41553965bd8eaf49",
+    "server_runner_sha256": "0f7db04350f6a23b96ac0d3062a884c52cdab05a7bd74733c72ea47450f604d1",
+    "timing_promotable": false
+  },
+  "c46": {
+    "parent_c45_decision_sha256": "66244f62caf2a5b215fdc37adeb51e4d25cfb55c9dcfbe3a4137984a8ca5781c",
+    "phase_contract": "one server slot, prefilling when state PROCESSING_PROMPT or DONE_PROMPT before first sample",
+    "profiled_timing_promotable": false,
+    "profiler_trace_mode": "nvtx",
+    "reference_message_sha256": "1b4631ffc9fd59b6b233f7e3102af60328dd5bafb0e6b0c4904b147cba7f740a",
+    "runner_sha256": "bc4944c65ee4d34ad3c53ad8d283c7362151bae83e475a47c2dfcfd8049b31c5",
+    "source_commit": "005e8ff8dd264a2fdecd6dd99e42580d8d2674dc"
+  },
+  "campaign_id": "tesy-c46-wave-phase-20260928",
+  "expected_request_ids": [
+    "c17-cold513"
+  ],
+  "identity": {
+    "backend_sha": "005e8ff8dd264a2fdecd6dd99e42580d8d2674dc",
+    "binary_sha256": "a78aaf977d68767eed620f71c5843d1c49ab67a39a1dac1ccce0ac57b1fec32e",
+    "config_sha256": "f5cf2863d2007c9387dce8ad948c97c27081ad7d52d6e56b4aacf4882d44ac2c",
+    "input_sha256": {
+      "input.json": "93e903655663ce28667e597fee4c4d1b4737f0a69c964c327bbff6de2f1cd8de",
+      "usage-contract.json": "0dcf1b7584eb450f805e369a95fe09c79557983235a8d7ce59fae0d438e06189"
+    },
+    "library_sha256": {
+      "build-c46-nvtx/bin/libggml-base.so.0.15.3": "6a7b67cb42062ffd9a338ce4e2f5c3b161471b4e28b3000eee7650af4154f088",
+      "build-c46-nvtx/bin/libggml-cpu.so.0.15.3": "e6ae22e9ac2ee8d5dad4fb6ec4f1458f8fb5fe145d1cf39d853ec5c80e4dde18",
+      "build-c46-nvtx/bin/libggml-cuda.so.0.15.3": "a6fb36c376f1c83b49a6545a93afb4914ac14a22a8ed795ff65adc6cde101f5d",
+      "build-c46-nvtx/bin/libggml.so.0.15.3": "86a5f3b5f51394892d16c51c09bebb9c38ae55d3ebefcb6ccc99854c32526f1e",
+      "build-c46-nvtx/bin/libllama-common.so.0.0.3": "ebd82ebffea20898d1fa0871512c5f96cf0a3a497b0ad3822ed4707a822899f6",
+      "build-c46-nvtx/bin/libllama-server-impl.so": "ddeb634f2aa06945c278720defbe7c581f7a451a0c58461049345db62984259e",
+      "build-c46-nvtx/bin/libllama.so.0.0.3": "5894bb91d10eff6079e2d53f06c1646d98dbe567aea894054b60c68cde2cba00",
+      "build-c46-nvtx/bin/libmtmd.so.0.0.3": "a27576f5eacb9c19ded88876a219d0f311237dad3d881d0af4a9ddb4f8e22c64"
+    },
+    "model_id": "target120b",
+    "model_sha256": "582bd40f6886200101f4c4ed9f25f3fe80cc14c86e9e2b37746cd8904a0c622d",
+    "workload_sha256": "93e903655663ce28667e597fee4c4d1b4737f0a69c964c327bbff6de2f1cd8de"
+  },
+  "limits": {
+    "boundary_s": 2,
+    "cpu_max_c": 100,
+    "gpu_max_c": 80,
+    "gpu_max_mib": 6500,
+    "max_gap_s": 3,
+    "memory_max_bytes": 17716740096,
+    "min_active_s": 0,
+    "min_decode_s": 0,
+    "min_decode_tok_s": 0,
+    "min_elapsed_s": 0,
+    "min_last_half_tok_s": 0,
+    "min_mem_available_bytes": 6442450944,
+    "nvme_max_c": 70,
+    "rss_max_bytes": 17179869184
+  },
+  "protocol_id": "c46-c15-phase-cold513-v1",
+  "schema_version": "c2-protocol-v1"
+}
