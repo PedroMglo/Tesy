@@ -8,3 +8,11 @@
 - Primary metric: completion-fenced first-request prefill seconds. Pairwise gain = 100*(control−candidate)/control; screening GO requires median >=5% and both pairs positive. Protected medians for cold first final, warm first final, cold decode and warm decode must each be >=−5%. Full request IDs/outputs, exact-prefix cache, resource/telemetry and library gates must pass. Two pairs are screening, not confirmation or p95.
 - Bounds: E18 cap/zero swap, fresh 60 s host inventory, current prospective resource policy, no other 120B process; per-request timeout450 s, process timeout960 s, start match wait300 s. No default/service change, raw local only.
 - NOT_RUN at freeze: C99 model, fresh confirmation, M3 diverse/active sustained, M4 quality and latency gates. Next action depends on all frozen outcomes; no selective repetition.
+
+## Result
+
+- Measurement commit: `3b0d9e6c3f2f0995f97b0eca85ee7af96c1017f2`. Four fresh processes, 2/2 complete responses each, official token arrays and complete assistant messages equal across all four. All resource and mapped-library receipts passed. Evidence class: MEDIDO_NO_TARGET.
+- Pair 1 control→candidate: matched-start wait 226.514 s; cold prefill 276.290→67.668 s, paired gain 75.508%. Pair 2 candidate→control: matched-start wait 9.410 s; cold prefill 274.504→67.635 s, paired gain 75.361%. Median paired cold-prefill gain 75.435% under the frozen formula.
+- Median paired gains for protected metrics: cold first final +69.527%, warm first final +12.374%, cold decode duration +2.314%, warm decode duration +3.110%. Second request reused 2044/2081 prompt tokens in every arm. Maximum CPU 95.125 °C, GPU 63 °C, NVMe 54.85 °C, GPU total 5758 MiB, cgroup peak 13,152,948,224 B, swap zero. Cgroup values are charged memory and may include file cache; they are not summed with RSS.
+- Decision: `SCREEN_GO_CONFIRMATION_PENDING`, not a server performance promotion. Model process elapsed 913.418 s, paired start waits 235.924 s, inventory at least 60 s; raw manifest hashes 38 files. Page-cache state and physical I/O attribution remain open. No M3 diverse session or M4 quality claim.
+- Next: three fresh alternating pairs with unchanged profile and exact input, new identity, frozen primary/protections and >=8% confirmation threshold. C48/C78 and C96/C97 harness prelaunch failures remain unchanged.
