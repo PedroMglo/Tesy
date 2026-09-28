@@ -1,0 +1,45 @@
+{
+  "C15_model_status": "PLAIN_PASS_PROFILE_NOT_RUN",
+  "M3": "PARTIAL",
+  "M4": "NOT_RUN",
+  "c15_plain": "PASS_DIAGNOSTIC_BRIDGE",
+  "c15_plain_prefill_s": 79.708878,
+  "c15_profile": "FAIL_HARNESS_PROFILER_ENV_DOUBLE_INJECTION_NO_MODEL",
+  "closed_utc": "2026-09-28T08:28:55.831423+00:00",
+  "control": "PASS_DIAGNOSTIC_BRIDGE",
+  "control_prefill_s": 79.5204,
+  "default_changed": false,
+  "next_action": "C44 profile-only new identity; omit outer LD_PRELOAD because Nsight supplies exactly the frozen injection once; use C43 control/plain receipts as immutable references",
+  "numeric_scope": "greedy 4-token equality only; full logits NOT_RUN",
+  "old_failures_preserved": [
+    "C34b frozen token SHA FAIL",
+    "C41 prelaunch FAIL",
+    "C41b telemetry FAIL"
+  ],
+  "output_message_sha256": "1b4631ffc9fd59b6b233f7e3102af60328dd5bafb0e6b0c4904b147cba7f740a",
+  "physical_budget_consumed_s": 46764.21058510798,
+  "physical_budget_remaining_s": 10835.789414892017,
+  "profile_failure_sha256": "90c2aa63c63eec430d84c474b40d7af8fb9a7a8a828ba332cafba086b8dcacb1",
+  "resource_maxima_by_arm": {
+    "control": {
+      "cgroup_peak_bytes": 13133905920,
+      "cpu_c": 95.125,
+      "gpu_c": 59.0,
+      "gpu_total_mib": 5752.0,
+      "nvme_c": 43.85,
+      "rss_bytes": 13290061824,
+      "swap_bytes": 0
+    },
+    "plain": {
+      "cgroup_peak_bytes": 13189615616,
+      "cpu_c": 95.0,
+      "gpu_c": 59.0,
+      "gpu_total_mib": 5752.0,
+      "nvme_c": 44.85,
+      "rss_bytes": 13288665088,
+      "swap_bytes": 0
+    }
+  },
+  "schema": "c43-decision-v1",
+  "status": "PARTIAL_CONTROL_PLAIN_PASS_PROFILE_PRELAUNCH_FAIL"
+}

@@ -1,0 +1,7 @@
+# C43 wave diagnostic checkpoint
+
+- Objective/base: original versus C15 513+4 cold prefill, diagnostic only, frozen at `d5a23e30aed8eea6dd65445aae7c57a2c4fa8109`; prior C34b date-token FAIL untouched. The 513 official IDs were frozen from the current-date C34b raw and verified anew.
+- Measured: original prefill 79.520 s and C15 plain 79.709 s. Both requests completed with the same four-token greedy message SHA `1b4631ff…`, zero cache reuse and valid E18 resources. This one-arm comparison is not a speedup claim or full-logit parity.
+- Failure: the third arm's launcher set outer `LD_PRELOAD`, and Nsight added the same two injection libraries again. The frozen environment gate stopped before idle/model/API; profile interval coverage remains NOT_RUN. The 170198 B trace is only a prelaunch error record. Model-free probes reproduced duplication with outer `LD_PRELOAD` and one exact copy without it.
+- Alternatives: no wave interval trace yet, so C43 cannot bound removable critical-path time. Similar uninstrumented prefill times do not establish a small wave fraction. A persistent profiler incompatibility would pivot to another diagnostic or residency analysis.
+- Decision/tests: preserve `PARTIAL_CONTROL_PLAIN_PASS_PROFILE_PRELAUNCH_FAIL`, source/outputs/resources for both valid arms, and failure raw. The next C44 campaign freezes a profiler-only arm without outer `LD_PRELOAD`, with C43 receipts as references. Full logits, phase-specific attribution and any optimization remain NOT_RUN. No default or remote change.

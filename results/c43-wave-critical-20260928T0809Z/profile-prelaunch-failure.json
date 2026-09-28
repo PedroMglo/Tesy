@@ -1,0 +1,16 @@
+{
+  "api": "NOT_RUN",
+  "command_policy": "outer LD_PRELOAD plus nsys automatic injection",
+  "expected_effective_ld_preload": "one copy of the two frozen Nsight injection libraries",
+  "idle": "NOT_RUN",
+  "model": "NOT_RUN",
+  "model_free_root_cause": "Nsight model-free probe with outer LD_PRELOAD doubled it; probe without outer LD_PRELOAD yielded the frozen single copy",
+  "next_action": "C44 fresh profiler-only identity without outer LD_PRELOAD, with C43 control/plain as immutable references",
+  "nsys_report_sha256": "a2441fa24ba134727e673148f7f5380ae16315fe215b65354b20f9734e4295ac",
+  "nsys_report_size_bytes": 170198,
+  "observed_effective_ld_preload": "two consecutive copies of the two frozen Nsight injection libraries",
+  "post_failure_gpu_model_processes": 0,
+  "post_failure_port_listeners": 0,
+  "schema": "c43-profile-prelaunch-failure-v1",
+  "status": "FAIL_HARNESS_PROFILER_ENV_DOUBLE_INJECTION_NO_MODEL"
+}
