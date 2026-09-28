@@ -88,6 +88,13 @@ class Pipeline(unittest.TestCase):
             ('R00-foundations','1.0.0','reports-R00-foundations-v1.0.0'),
             ('D00-research-dossier','1.0.0','reports-D00-research-dossier-v1.0.0'),
         ])
+    def test_registered_draft_locks_are_current(self):
+        for report_id in ('C04-prefill-cost','C05-first-divergence','C06-attn-dispatch-compat','R01-prior-art'):
+            with self.subTest(report_id=report_id):
+                verified=r.verify(self.root,report_id)
+                committed=r.read(verified['folder']/'evidence-lock.json')
+                self.assertEqual(committed['inputs_sha256'],verified['lock']['inputs_sha256'])
+
     def test_automatic_release_candidate_requires_reviewed_audit(self):
         p=self.root/'campaigns'/'C03-boundary-prefill'/'audit.json';a=r.read(p);a['status']='DRAFT';p.write_bytes(r.canonical(a))
         with self.assertRaisesRegex(r.EvidenceError,'AUTO_RELEASE_REQUIRES_REVIEWED_AUDIT'):rc.candidates(self.root)
