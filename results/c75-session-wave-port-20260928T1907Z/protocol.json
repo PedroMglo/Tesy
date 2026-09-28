@@ -1,0 +1,23 @@
+{
+  "schema": "c75-session-wave-port-v1",
+  "evidence_class": "SOURCE_AUDITED_AND_REPRODUZIDO_MODEL_FREE",
+  "base_session_backend": "c3759bad92c0e6f71bb936afea9b0a162fb83f76",
+  "candidate_backend": "27d2e42d8c994507ee6d71acc7c58d3eddd3f7a5",
+  "candidate_tree": "45b2b5b97353845d9d982a06f20c4f2f420528e2",
+  "source_patch": "research/patches/C75-session-wave-skip-port.patch",
+  "mechanism": "On CPU host buffers only, assign -1 to parked wave IDs and omit their MMID rows; keep shared activation conversion complete and write +0 for parked outputs.",
+  "hypothesis": "The C57 operator repair ports without arithmetic changes to the pinned C35 session backend.",
+  "alternative": "The session backend has different graph, scheduler, or memory behavior that breaks active states, logits, or session reuse.",
+  "build": {
+    "toolchain": "gcc/g++-15 and /usr/local/cuda/bin/nvcc",
+    "cuda_arch": 89,
+    "ggml_cuda": true,
+    "llama_build_server": true,
+    "c_flags": "-DTESY_C47_CPU_SKIP_PARKED",
+    "cxx_flags": "-DTESY_C47_CPU_SKIP_PARKED"
+  },
+  "model_free_gate": "MXFP4/F16/F32 broadcast and FFN controls with poisoned scratch must pass; negative historical C48 cases are preserved.",
+  "physical_gate": "New campaign identity and freeze required. First compare full P12 OFF/ON boundary on the C75 build, then resident canonical reference and fresh repeat before any session performance claim.",
+  "claim_limit": "No full-model or server correctness/performance claim at C75; C48/C61/C66 failures remain FAIL.",
+  "publication": "local commits only; raw and builds remain untracked"
+}
