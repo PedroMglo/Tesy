@@ -1,0 +1,10 @@
+# C62 P14 load and forward result
+
+- Objective/base: test P14/slots32/ub32 on the unchanged C35 session backend under E18, with context8192. Measurement commit `36819f62f4127603ae237e939511ab50501eb068`; C59 accounting is the prior estimate, not the observed result.
+- Evidence class: `MEDIDO_NO_TARGET` for command identity, mapped libraries, load, one forward and resources. Per-layer placement is `INCOMPLETE_EVIDENCE` because the server's verbosity 3 stderr did not emit the layer assignment map.
+- `c62-p14-init01`: complete, ready in 4.020 s, GPU total peak 6600 MiB, cgroup peak 4,439,064,576 B.
+- `c62-p14-cold51301`: complete, 513 official prompt IDs and 4 capped completion tokens; prompt eval 76.791 s, decode 0.876 s. GPU total peak 6660 MiB; cgroup peak 12,104,060,928 B; RSS peak 12,340,846,592 B; CPU 95.125 °C, GPU 62 °C, NVMe 44.85 °C. CPU 95 °C is a warning in the frozen prospective policy. Zero swap/OOM/stop reasons. Finish reason `length` is expected from the cap4 capacity test, not a functional completion claim.
+- Alternative/decision: static workspace could have exceeded P14 memory limits; this did not occur in the single tested forward. Exact P14 layer map, same-profile numeric fidelity, speedup, quality and sustained use remain `NOT_RUN` or incomplete. A single 76.791 s prefill is not compared to historical P12 times.
+- Tests: 121 existing/model-free tests passed before C62, plus two directed freeze tests. Actual server mapped libraries, output hashes, cgroup events and temporal samples passed the prospective receipt validator. Raw is local, indexed by SHA in the C62 manifest.
+- Failures preserved: C61 invalid-ID abort and C48 same-profile mismatch are unchanged and belong to another backend identity. M3 remains C52b tested scope; M4 is not met.
+- Next discriminating gate: obtain loader placement evidence at a new identity and qualify P14 against a canonical resident reference and full selected logits before paired performance; diagnose the independent C61 invalid-ID failure model-free.
