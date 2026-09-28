@@ -1,0 +1,11 @@
+# C61 targeted wave boundary protocol
+
+- Objective: test whether the C57 shared activation conversion repair removes the first C48 same-profile mismatch at layer 0, prefill microbatch 0. C48 remains `FAIL_SAME_PROFILE_FIDELITY`.
+- Base: investigation commit `bbe63c54f3fc7e8c3d57e052c59a93d3a662fc65`, tree `b0a683a19f1950f0490083cb4d2f096999522e98`; isolated C57 backend `aac3bbde35575044d290798a120cde038f85b670`.
+- Evidence class now: `REPRODUZIDO_MODEL_FREE` for C57/C57b and this gate's historical fixture; physical C61 is `NOT_RUN` until fresh inventory and committed freeze.
+- Hypothesis: converting all shared activation rows and skipping only parked MMID pairs restores bitwise active output and full selected logits. Alternative: another producer, consumer, alias or race defect remains.
+- Frozen intervention: P12, `ngl12`, `ub32`, slots32, original 189+32 teacher-forced ID schedule. OFF and ON differ only by `TESY_CPU_WAVE_SKIP_PARKED=1`. Fresh processes, OFF then ON. Capture only layer 0/prefill0 tensor rows while the full call schedule and five complete logits execute. No timing claim from instrumented capture.
+- Gate: exact schema/payload/byte witnesses, ordered IDs and router/weights/active output bitwise, five full logits bitwise. Any mismatch, nonfinite, resource or evidence failure stops C61 and is preserved. No retry in this identity. Canonical resident reference and remaining 35 layers are later gates, not inherited from this targeted result.
+- Model-free tests: `PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=tools python3 -m unittest discover -s tools -p 'test_*.py'` passed 121 tests. C61 fixture reproduced C48 mismatch and accepted a synthetic valid OFF/ON pair; zero payload and false width failed. C61 protocol freeze was also exercised from a prior valid inventory in a temporary root without inference.
+- Limits: historical fixture coverage does not validate C57 on the 120B; the old C48 FAIL is not repaired retrospectively. The new resource inventory, measurement commit, full model capture, canonical reference and timing are `NOT_RUN` at this checkpoint.
+- Next discriminating gate: fresh host inventory, freeze C61 protocol in a clean measurement commit, then bounded OFF/ON layer-0 capture. If PASS, fresh ON repetition and resident canonical boundary across 36 layers precede timing.
