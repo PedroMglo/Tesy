@@ -1,0 +1,14 @@
+{
+  "schema": "c82-e18-capacity-decision-v1",
+  "status": "CAPACITY_NOT_ADMITTED",
+  "requested_cgroup_cap_bytes": 19327352832,
+  "fresh_cap_max_bytes": 18790481920,
+  "shortfall_bytes": 536870912,
+  "physical_runs": [],
+  "model_loaded": false,
+  "gpu_stop_c_from_this_snapshot": 90,
+  "gpu_threshold_note": "The driver's current-plus-T.Limit-margin derived max operating value differed by 1 C from C79; relative specifications were unchanged. No cross-campaign guard is silently substituted.",
+  "reason": "Fresh 60-second host inventory did not admit E18; C78 E16 capture had already stopped at the preventive margin with rising file charge.",
+  "next_action": "Stop repeated E18 preflights until external host headroom materially changes; continue model-free decode demand/residency source feasibility.",
+  "default_changed": false
+}
