@@ -6,11 +6,17 @@ Sistema documental model-free: uma classe LuaLaTeX, fontes congeladas, seletores
 
 | ID | Conteúdo |
 |---|---|
+| `R01-prior-art` | Revisão bibliográfica de prior art e claim boundary, data de corte 28 setembro 2026. DRAFT até revisão do PDF. |
+| `C06-attn-dispatch-compat` | Campanha 6: compatibilidade de dispatch CPU e divergência seguinte em GPU Flash. DRAFT. |
+| `C05-first-divergence` | Campanha 5: primeira divergência causalmente localizada em CPU Flash Attention. DRAFT. |
+| `C04-prefill-cost` | Campanha 4: relógio de prefill, paridade contemporânea e bloqueio de ubatch64. DRAFT. |
 | `C02-correctness-usability` | Campanha 2 no snapshot `81531d9dc33caddbbf07928106de47cfe2a6d42a`. Mantém `CORRECTNESS_BLOCKED`. |
 | `C03-boundary-prefill` | Edição revista v1.0.0 de C3 em `a0b673965b6e7c5aac69ae464d8275c176f4b14a`; seis fontes congeladas, auditoria e PDF de seis páginas. |
 | `C01-scale-lab` | Auditoria original em `c67529e290844bb3d9033615072d5878014a46bc`. `SUCCESS` apenas no âmbito histórico. |
 | `R00-foundations` | Recorte do ledger datado de 24 setembro, em main `7a7d3dcbd1ff8e594ac57459c3db06306083c3ca`. Não é retrospectiva exaustiva de todas as branches. |
 | `D00-research-dossier` | Síntese R00/C1/C2, com versões e digests dos relatórios filhos congelados. |
+
+As versões v1.0.0 já publicadas de R00/C01/C02/C03/D00 são imutáveis. C04/C05/C06 e R01 usam uma bibliografia por relatório em `sections/bibliography.bib`, precisamente para não alterar o digest das releases históricas ao acrescentar literatura nova.
 
 O dossier D00 é a entrada histórica para R00/C1/C2; os relatórios de campanha contêm contrato, resultados, falhas e limites. O corte de D00 é 26 setembro 2026. **C3 tem edição própria**: consultar C03, [CURRENT-LAB.md](CURRENT-LAB.md) e a publicação autoritativa em `research/C3-FINAL-20260927.md`. D00 não foi retroativamente reescrito. Autoria pessoal/universidade/orientação não foram inventadas: `author` é null.
 
@@ -42,7 +48,7 @@ As releases ficam em `published/<id>/v<versão>/release/`; drafts usam `draft-<d
 
 ## Fontes e autoridade
 
-`sources/catalog.json` associa cada fonte a commit, path, Git blob SHA, SHA-256 e tamanho. `sources/objects/` contém cópias exatas de sete publicações compactas, não pesos ou dados brutos. As cópias não são uma nova fonte autoritativa: tornam o mesmo snapshot verificável offline sem incorporar a história separada do laboratório em main.
+`sources/catalog.json` associa cada fonte interna a commit, path, Git blob SHA, SHA-256 e tamanho. `sources/objects/` contém cópias exatas de sete publicações compactas, não pesos ou dados brutos. As cópias não são uma nova fonte autoritativa: tornam o mesmo snapshot verificável offline sem incorporar a história separada do laboratório em main.
 
 A associação commit/path foi adquirida pelo conector GitHub. Tamanho, Git blob SHA e SHA-256 foram verificados sobre os bytes. Esses hashes não provam, sozinhos, a validade de uma experiência. Verificar o resumo JSON também não recalcula os pesos nem todos os manifests que ele menciona.
 
@@ -55,7 +61,7 @@ python tools/verify_evidence.py C02-correctness-usability \
 
 O modo Git não faz fetch, não muda branch e não usa HEAD como fallback. Recusa configurações partial/promisor para evitar aquisição implícita. Para derivar e compilar nesse modo, usar a mesma opção nesses comandos: o modo faz parte do lock. O modo default desta entrega é `snapshot`.
 
-Cada família de afirmações declara as suas fontes. C2 usa o gate para desempenho, resumo para estado e agregados, fecho para âmbito/falhas, índice para autoridade e relatório D para latência. O índice aponta analysis-v2 para detalhe de eventos; o ficheiro integral e os raws não foram reanalisados neste pacote. C1 usa a auditoria no commit original. R00 é deliberadamente um recorte do ledger.
+Cada família de afirmações declara as suas fontes internas. Literatura externa usa `biblatex`/`biber` e `\\cite{...}`; não entra no evidence index e nunca é usada como prova de uma métrica Tesy.  C2 usa o gate para desempenho, resumo para estado e agregados, fecho para âmbito/falhas, índice para autoridade e relatório D para latência. O índice aponta analysis-v2 para detalhe de eventos; o ficheiro integral e os raws não foram reanalisados neste pacote. C1 usa a auditoria no commit original. R00 é deliberadamente um recorte do ledger.
 
 ## Dados e estados
 
