@@ -2,6 +2,7 @@
 """Frozen C2 localhost server run; reuse run_task_server and run_bounded primitives."""
 
 import argparse
+import ctypes
 import datetime as dt
 import hashlib
 import json
@@ -21,6 +22,21 @@ from run_bounded import (backend_library_hashes, cgroup_state, gpu_state,
                          mem_available, model_fd_state, proc_status, sha256,
                          thermal_state, relevant_environment)
 from run_task_server import PORT, fetch, stop_own_server
+
+
+_LIBC = ctypes.CDLL(None, use_errno=True)
+_LIBC.prctl.argtypes = [ctypes.c_int, ctypes.c_ulong, ctypes.c_ulong,
+                       ctypes.c_ulong, ctypes.c_ulong]
+_LIBC.prctl.restype = ctypes.c_int
+
+
+def parent_death_guard(parent_pid):
+    """Stop our server if the runner dies, including a fork-to-prctl race."""
+    def arm():
+        if _LIBC.prctl(1, int(signal.SIGTERM), 0, 0, 0) != 0 or \
+           os.getppid() != parent_pid:
+            os._exit(127)
+    return arm
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -456,7 +472,8 @@ def run(args, protocol, config, task_rows, model):
     with reserve(paths[".stdout"]) as stdout, reserve(paths[".stderr"]) as stderr, \
          open(paths[".samples.jsonl"],"x") as sample_file:
         server = subprocess.Popen(command, stdout=stdout, stderr=stderr,
-                                  env=env, start_new_session=True)
+                                  env=env, start_new_session=True,
+                                  preexec_fn=parent_death_guard(os.getpid()))
         try:
             launch = {"schema_version":"c3-launch-v1", "run_id":args.run_id,
                       "process_identity":process_identity(server.pid),
