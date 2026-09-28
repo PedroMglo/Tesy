@@ -94,6 +94,7 @@ class Pipeline(unittest.TestCase):
                 verified=r.verify(self.root,report_id)
                 committed=r.read(verified['folder']/'evidence-lock.json')
                 self.assertEqual(committed['inputs_sha256'],verified['lock']['inputs_sha256'])
+                self.assertEqual((verified['folder']/'generated/metadata.tex').read_bytes(),r.generated(verified)['metadata.tex'])
 
     def test_automatic_release_candidate_requires_reviewed_audit(self):
         p=self.root/'campaigns'/'C03-boundary-prefill'/'audit.json';a=r.read(p);a['status']='DRAFT';p.write_bytes(r.canonical(a))
