@@ -1,0 +1,14 @@
+{
+  "arms": [
+    "original",
+    "C15 plain",
+    "C15 profiled"
+  ],
+  "claim": "diagnostic optimistic MMID occupancy bound only; no instrumented speedup or quality claim",
+  "default_changed": false,
+  "guards": "E18 zero swap, CPU95 warning/100 stop, GPU80 NVMe70, GPU total6500 reservation/7000 absolute",
+  "model": "GPT-OSS 120B original GGUF",
+  "profile": "P12 ngl12 ub32 slots32 preload ON full-SWA 8K E18",
+  "schema": "c43-wave-diagnostic-usage-v1",
+  "workload": "same synthetic cold 513 official IDs from C34b Sep28 tokenization, cap4 greedy, no cache reuse"
+}
