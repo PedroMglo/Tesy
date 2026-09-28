@@ -1,0 +1,12 @@
+{
+  "schema": "c87-file-charge-differential-protocol-v1",
+  "identity": "C87",
+  "mode": "read_only_model_free",
+  "parents": ["C76b", "C78"],
+  "question": "Which cgroup memory.stat component accounts for the C78 minus C76b charge at matched elapsed 14 seconds?",
+  "selection": "Nearest sample to each 2,4,6,8,10,12,14 second target, within 0.75 seconds; no interpolation.",
+  "gates": ["Verify parent sample and protocol hashes against manifests", "Require identical backend binary/model/profile/call plan", "Require C76b PASS and preserve C78 resource FAIL", "Reject missing/negative/nonfinite counters, invalid sample intervals, and swap"],
+  "claim_limit": "Aggregate cgroup file/anon differential only. No inode attribution, reclaimability, allocator diagnosis, or new numeric PASS.",
+  "model_runs": 0,
+  "publication": "local_only"
+}
