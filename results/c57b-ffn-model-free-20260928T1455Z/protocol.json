@@ -1,0 +1,35 @@
+{
+  "claim_limit": "synthetic operator graph only; full 120B numeric fidelity NOT_RUN",
+  "negative": "old MXFP4/F16 broadcast conversion mismatch reproduced",
+  "positive": "repaired active output bitwise equal to parked-replaced control and finite",
+  "schema": "c57b-synthetic-ffn-protocol-v1",
+  "scratch_poison": [
+    "0x00",
+    "0x7f"
+  ],
+  "shape": {
+    "experts": 4,
+    "pairs": 4,
+    "tokens": 2,
+    "width": 64
+  },
+  "source_old": "0bc5c75c273abaa34e51d0af932a96969665c3a3",
+  "source_repaired": "aac3bbde35575044d290798a120cde038f85b670",
+  "stages": [
+    "gate MMID",
+    "up MMID",
+    "biases",
+    "OAI SwiGLU",
+    "down MMID",
+    "down bias",
+    "active mask",
+    "pair reduction"
+  ],
+  "test_source_sha256": "f919e6a6c691b4ce48d942430ffa123b15f5bc317f63b843f366065db102aa84",
+  "threads": 4,
+  "weights": [
+    "MXFP4",
+    "F16",
+    "F32"
+  ]
+}
