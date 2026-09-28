@@ -451,6 +451,20 @@ def child_exited_after_sample_loss(server):
         return False
 
 
+def protocol_cgroup_memory_max(protocol):
+    """Return the frozen cgroup hard cap without assuming every campaign is E18."""
+    values = []
+    for value in protocol.values():
+        if type(value) is dict and 'cgroup_memory_max_bytes' in value:
+            cap = value['cgroup_memory_max_bytes']
+            if type(cap) is not int or cap <= 0:
+                raise GateError('invalid frozen cgroup memory cap')
+            values.append(cap)
+    if len(set(values)) > 1:
+        raise GateError('conflicting frozen cgroup memory caps')
+    return values[0] if values else 18 * 2**30
+
+
 def run(args, protocol, config, task_rows, model):
     between = session_idle_seconds(config)
     dynamic_history = config.get('append_previous_assistant_to_next', False)
@@ -467,9 +481,10 @@ def run(args, protocol, config, task_rows, model):
     if max_lost is not None and (minimum is None or type(max_lost) is not int or
                                  not 0 <= max_lost <= 128):
         raise GateError('invalid adjacent-prefix tail bound')
+    expected_cgroup_max = protocol_cgroup_memory_max(protocol)
     cg_start = cgroup_state()
-    if not cg_start or cg_start["memory_max"] != 18*2**30 or cg_start["swap_max"] != 0:
-        raise GateError("18 GiB cgroup and zero swap not enforced")
+    if not cg_start or cg_start["memory_max"] != expected_cgroup_max or cg_start["swap_max"] != 0:
+        raise GateError("frozen cgroup cap and zero swap not enforced")
     if model.stat().st_size <= 0 or mem_available() < 6*2**30:
         raise GateError("model or host headroom unavailable")
     if not gpu_state() or not thermal_state():
