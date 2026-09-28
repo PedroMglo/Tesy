@@ -39,7 +39,7 @@ def save_new(path, value):
         out.write('\n')
 
 def run_id(case, pair, ngl):
-    return f'c65-{case.removeprefix("latency-")}-p{pair}-ngl{ngl}'
+    return f'c65b-{case.removeprefix("latency-")}-p{pair}-ngl{ngl}'
 
 def ids():
     rows = [line.split('\t') for line in LATENCY.read_text().splitlines()]
