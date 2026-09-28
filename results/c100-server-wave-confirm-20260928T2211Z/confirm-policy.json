@@ -1,0 +1,45 @@
+{
+  "alternative": "the C99 two-pair screening gain was caused by selection, order, page-cache, thermal or run variance",
+  "base_harness_sha256": "2a7a38da648418dbd147f3e270ed5cbc594db326c566bcb1c80d0922146e754c",
+  "confirm_go": "median paired primary gain >=8%, all three pairs positive; protected medians >=-5%; all identity/output/resource gates pass",
+  "default_changed": false,
+  "gain_formula": "100*(control-candidate)/control, positive denominator",
+  "input_sha256": "a19fcef2b1cd07451ccf5b965d7591a2b7580a00f143992ff4f7de231a9d3353",
+  "limitations": [
+    "synthetic two-turn history; not M3 diverse or M4 quality",
+    "three confirmation pairs do not certify p95 or broad quality",
+    "page cache uncontrolled; O_DIRECT configured for expert I/O"
+  ],
+  "objective": "confirm C99 C75 wave server screen on cold 2043-token prefill and exact-prefix actual-history increment using three fresh pairs",
+  "order": [
+    "c100-p1-control",
+    "c100-p1-candidate",
+    "c100-p2-candidate",
+    "c100-p2-control",
+    "c100-p3-control",
+    "c100-p3-candidate"
+  ],
+  "pairs": 3,
+  "primary": "cold request prefill_s",
+  "prior_c99_decision_sha256": "a93479cb1b27e40979f49a5539bf9499371d2d6316e1d05cec97765e99887f8f",
+  "protected": [
+    "cold first_final_content_s",
+    "warm first_final_content_s",
+    "cold decode_s",
+    "warm decode_s"
+  ],
+  "resource_cap_bytes": 19327352832,
+  "runner_sha256": "eaee92f7af597a383d02e5246a384536db263a28228640afff20089b3312a61b",
+  "schema": "c100-confirm-policy-v1",
+  "scope_memory_swap_max_bytes": 0,
+  "start": {
+    "maximum_wait_s": 300,
+    "mode": "CAUSAL_AB_COLD_MATCHED",
+    "on_mismatch": "CLOSE_PAIR_NO_MODEL; new warm-regime identity if justified",
+    "sample_interval_s": 1,
+    "within_pair_cpu_c": 3,
+    "within_pair_gpu_c": 3,
+    "within_pair_nvme_c": 2
+  },
+  "status": "FROZEN_BEFORE_MODEL"
+}
