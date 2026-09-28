@@ -79,6 +79,21 @@ def parse_gpu_csv(csv_line: str) -> dict[str, Any]:
     }
 
 
+def _find_cpu_tctl(sensors: dict[str, Any]) -> float:
+    values = []
+    for name, device in sensors.items():
+        if not str(name).startswith("k10temp-") or type(device) is not dict:
+            continue
+        tctl = device.get("Tctl")
+        if type(tctl) is dict:
+            value = _plausible_temp(tctl.get("temp1_input"))
+            if value is not None:
+                values.append(value)
+    if len(values) != 1:
+        raise ResourcePolicyError(f"expected exactly one CPU Tctl sensor, got {len(values)}")
+    return values[0]
+
+
 def _find_nvme_composite(sensors: dict[str, Any]) -> dict[str, Any]:
     if type(sensors) is not dict:
         raise ResourcePolicyError("sensors: object required")
@@ -149,6 +164,7 @@ def derive_policy(
     if gpu_stop is not None and gpu_warning is not None and gpu_stop < gpu_warning:
         raise ResourcePolicyError("GPU threshold ordering invalid")
 
+    cpu_current = _find_cpu_tctl(sensors)
     nvme = _find_nvme_composite(sensors)
 
     return {
@@ -159,6 +175,7 @@ def derive_policy(
             "experiment_admission": "prospective margin for safe/comparable execution, not a device limit",
         },
         "cpu": {
+            "current_c": cpu_current,
             "warning_c": CPU_WARNING_C,
             "device_limit_c": CPU_TJMAX_C,
             "source": "AMD Ryzen AI 9 HX 370 Tjmax",
@@ -222,4 +239,6 @@ def ready_for_launch(policy: dict[str, Any]) -> tuple[bool, list[str]]:
         reasons.append("nvme-critical-threshold")
     if cpu["device_limit_c"] != CPU_TJMAX_C:
         reasons.append("cpu-policy-invalid")
+    if cpu["current_c"] >= cpu["device_limit_c"]:
+        reasons.append("cpu-device-limit")
     return not reasons, reasons
