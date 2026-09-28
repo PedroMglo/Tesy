@@ -1,0 +1,5 @@
+# C86 — E18 necessary headroom check
+
+- Objective/base: decide whether the host changed enough after C79/C82 to justify another full E18 admission. Script/measurement commit `b4361a4e17c3247ab37929add2b28953d91e42ec`. Evidence DIAGNOSTIC_SPOTCHECK, not a sustained capacity measurement.
+- Observation: one MemAvailable sample 19,767,382,016 B. The most optimistic cap after the mandatory 2 GiB reserve and 256 MiB rounding is 17,448,304,640 B, 1,879,048,192 B below E18. A prior `nvidia-smi` query failed once; subsequent `-L` and metric queries passed with expected GPU UUID, 12 MiB use and 43 °C. No kernel warning was observed in the available log window.
+- Decision: no 60 s preflight or model run. The memory necessary condition already fails; a single good GPU reread does not certify sustained telemetry. Continue model-free work until external host headroom changes materially. C78 failure and C79/C82 non-admissions retain their historical status. E18 capacity, C75 8K session bridge, C84 physical trace and M4 remain NOT_RUN here.

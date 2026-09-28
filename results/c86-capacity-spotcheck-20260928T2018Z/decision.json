@@ -1,0 +1,22 @@
+{
+  "E18_shortfall_lower_bound_bytes": 1879048192,
+  "MemAvailable_single_sample_bytes": 19767382016,
+  "cap_upper_with_minimum_reserve_bytes": 17448304640,
+  "default_changed": false,
+  "gpu_recheck": "RTX4060 UUID matched, 12 MiB, 43 C; first query transiently failed, two subsequent queries passed; no sustained GPU telemetry loss established",
+  "measurement_commit": "b4361a4e17c3247ab37929add2b28953d91e42ec",
+  "model_loaded": false,
+  "next_action": "No full-model run. Continue model-free request/trace attribution and recheck capacity only after material external headroom change.",
+  "physical_model_runs": 0,
+  "preserved_failures": [
+    "C78 resource stop"
+  ],
+  "preserved_nonadmissions": [
+    "C79",
+    "C82"
+  ],
+  "publication": "local only",
+  "reason": "Necessary E18 headroom condition fails even before accounting for external variation/ancestors; 60-second admission would not be justified by this sample.",
+  "schema": "c86-decision-v1",
+  "status": "E18_NECESSARY_HEADROOM_ABSENT_NO_FULL_PREFLIGHT"
+}

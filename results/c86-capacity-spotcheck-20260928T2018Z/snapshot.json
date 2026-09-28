@@ -1,0 +1,28 @@
+{
+  "E18_required_bytes": 19327352832,
+  "E18_shortfall_lower_bound_bytes": 1879048192,
+  "cap_upper_from_single_memavailable_sample_bytes": 17448304640,
+  "ended_utc": "2026-09-28T20:18:22.299220+00:00",
+  "evidence_class": "DIAGNOSTIC_SPOTCHECK",
+  "gpu_query": {
+    "returncode": 0,
+    "stderr": "",
+    "stdout": "GPU-83d90c55-1d92-75da-fc30-7771a85f2521, 12, 43, 0"
+  },
+  "limits": [
+    "single MemAvailable sample can reject the necessary E18 condition but cannot admit a workload",
+    "external memory variation and ancestor cgroup headroom can lower the admissible cap",
+    "one earlier nvidia-smi query failed transiently; this snapshot is independent"
+  ],
+  "memory_bytes": {
+    "MemAvailable": 19767382016,
+    "MemTotal": 32698777600,
+    "SwapFree": 7211347968,
+    "SwapTotal": 16348868608
+  },
+  "model_loaded": false,
+  "reserve_lower_bound_bytes": 2147483648,
+  "schema": "c86-capacity-spotcheck-v1",
+  "started_utc": "2026-09-28T20:18:22.280297+00:00",
+  "status": "E18_NECESSARY_HEADROOM_ABSENT"
+}
