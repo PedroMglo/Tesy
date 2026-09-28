@@ -98,6 +98,16 @@ Reject implausible threshold encodings (for example values in the tens of thousa
 
 Requested `pread` bytes are not physical NVMe traffic.
 
+## Start-condition classes
+
+Do not reuse one thermal idle rule for every experiment.
+
+- `CAUSAL_AB_START`: when two arms are compared for a small performance difference, freeze a comparable initial thermal band and alternate order. The band is a comparability condition, not a device limit.
+- `OPERATIONAL_SESSION_START`: for sustained/session qualification, require AC/performance, no conflicting model process, valid telemetry and all devices below their warning thresholds. Do not require an artificially cold 50/50/45 or 55/55/50 °C state.
+- `CAPACITY_ADMISSION_START`: for memory/placement expansion, use the live resource policy plus bounded init/forward before a long run.
+
+A sustained run reaching a normal firmware-managed thermal steady state is valid performance evidence as long as it stays below the frozen device/admission stop thresholds and does not violate correctness/resource contracts.
+
 ## Implementation
 
 `tools/host_resource_policy.py` derives the prospective policy from the live host/device snapshot.
