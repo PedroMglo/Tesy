@@ -1,0 +1,54 @@
+{
+  "C15_model_status": "NOT_RUN",
+  "M3": "PARTIAL_PREFIX4096_SYNTHETIC_NO_SUSTAINED_OR_QUALITY",
+  "M4": "NOT_RUN",
+  "budget_physical_cap_s": 57600,
+  "budget_physical_consumed_s": 28147.697618423954,
+  "closed_utc": "2026-09-28T02:20:41.694025+00:00",
+  "cpu_diagnostics": {
+    "clock_source": "cpuinfo_avg_freq per cpufreq policy",
+    "cpu_effective_clock_max_mhz": 3309.083,
+    "cpu_effective_clock_median_mhz": 3002.2219999999998,
+    "cpu_effective_clock_min_mhz": 605.264,
+    "cpu_max_c": 95.125,
+    "cpu_package_power_max_w": 70.20627174502552,
+    "cpu_package_power_median_w": 61.39536309817102,
+    "cpu_policy_count": 24,
+    "cpu_warning_observed": true,
+    "cpu_warning_sample_count": 263,
+    "explicit_thermal_flag_source": "ACPI Processor cooling cur_state; AMD hardware flag unavailable",
+    "gpu_power_max_w": 22.81,
+    "power_source": "package-0 RAPL energy counter; interval power estimate",
+    "processor_cooling_max_state": 0,
+    "sample_count": 551
+  },
+  "default_changed": false,
+  "measurement_commit": "08ede325aa3a6b245334eb5319277e6901076488",
+  "next_action": "C37 >=60 minute/20 request fixed-date 8K session retention and resource regime, then functional suite if stable",
+  "old_failures_preserved": [
+    "C29 cache_n35",
+    "C34b token identity",
+    "C35 scope prelaunch",
+    "C36 preflight schema",
+    "C36b token relation"
+  ],
+  "reason": "official 4035/4163 prompt IDs, delta128 and LCP4026; second cache_n4026; two complete requests and resource gates valid",
+  "request_elapsed_s": [
+    545.9824764590012,
+    37.667081280000275
+  ],
+  "resource_maxima": {
+    "cgroup_peak_bytes": 13085249536,
+    "cpu_c": 95.125,
+    "gpu_c": 62.0,
+    "gpu_total_mib": 5752.0,
+    "nvme_c": 52.85,
+    "rss_bytes": 13296885760,
+    "swap_bytes": 0
+  },
+  "run_id": "c36c-prefix4096-bridge",
+  "schema": "c36c-decision-v1",
+  "second_decode_tok_s": 4.024812108904554,
+  "second_first_final_content_s": 37.431531777998316,
+  "status": "PASS_PREFIX4096_SYNTHETIC_SCOPE"
+}
