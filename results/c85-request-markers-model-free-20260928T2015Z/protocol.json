@@ -1,0 +1,37 @@
+{
+  "alternative": "relative server timing and old C54 gaps are sufficient to attribute requests and phases; explicit markers add no information",
+  "default_changed": false,
+  "hypothesis": "an opt-in runner marker receipt can identify complete/non-overlapping request windows and preserve interrupted starts",
+  "interface": {
+    "clock": "CLOCK_MONOTONIC ns",
+    "config_flag": "record_monotonic_request_markers=True",
+    "output_suffix": ".request-markers.jsonl",
+    "protocol_trace_request_marker_schema": "c85-request-monotonic-v1"
+  },
+  "negative_gates": [
+    "contract absent",
+    "flag non-bool",
+    "missing completion",
+    "overlap/duplicate",
+    "raw marker mismatch",
+    "JSON overflow/bool"
+  ],
+  "non_claims": [
+    "no 120B",
+    "no server phase boundary from client markers alone",
+    "no physical NVMe attribution",
+    "no instrumented timing promotion"
+  ],
+  "objective": "pair backend CLOCK_MONOTONIC expert events with exact API request windows without relying on artificial idle gaps",
+  "parent_C84_manifest_sha256": "8d5d700e8511a0ba53cd5f3367c19004f6f9a2b4c8b065dcab4218580d4f5bb8",
+  "positive_gate": "real c2_server_run entrypoint with tiny child and mocked sensors/API; one request complete and marker/raw match",
+  "publication": "local compact only",
+  "schema": "c85-request-markers-protocol-v1",
+  "source_sha256": {
+    "c2_server_run.py": "592a9c3e11eeaa4d0aed47bf5bc965e6c9e1459dc2ce107dabf0c3ac57b92f36",
+    "c85_request_markers.py": "fbe3d9028d4ae8896f366644fba9c963a1637279b5be6f42afa42dec6e517051",
+    "test_c85_request_markers.py": "26a038936f579715e2e3a5878a10f26c53e1cdf28041800b0906cd726f07a782",
+    "test_c85_runner_markers.py": "9a6d7e380010eb0fddfe9470d8bd35eaa79e617617a2926638e1c1088f3e7419"
+  },
+  "status": "FROZEN_MODEL_FREE"
+}

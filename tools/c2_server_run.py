@@ -2,6 +2,7 @@
 """Frozen C2 localhost server run; reuse run_task_server and run_bounded primitives."""
 
 import argparse
+from contextlib import nullcontext
 import ctypes
 import datetime as dt
 import hashlib
@@ -470,6 +471,12 @@ def protocol_cgroup_memory_max(protocol):
 
 def run(args, protocol, config, task_rows, model):
     prospective = 'resources' in protocol
+    request_markers = config.get('record_monotonic_request_markers', False)
+    trace_contract = protocol.get('trace')
+    if type(request_markers) is not bool or (request_markers and
+       (not prospective or type(trace_contract) is not dict or
+        trace_contract.get('request_marker_schema') != 'c85-request-monotonic-v1')):
+        raise GateError('unfrozen or invalid monotonic request marker contract')
     if prospective:
         from host_resource_policy import (RuntimeGuard, validate_resource_protocol,
                                           validate_start_observation,
@@ -520,6 +527,8 @@ def run(args, protocol, config, task_rows, model):
     stem = output_root / args.run_id
     paths = {suffix:Path(str(stem)+suffix) for suffix in
              (".preflight.json",".launch.json",".tokenization.json",".json",".normalized.json",".stdout",".stderr",".samples.jsonl")}
+    if request_markers:
+        paths['.request-markers.jsonl'] = Path(str(stem) + '.request-markers.jsonl')
     if any(path.exists() for path in paths.values()):
         raise GateError("run ID/output already exists")
     config = dict(config, run_id=args.run_id)
@@ -543,6 +552,8 @@ def run(args, protocol, config, task_rows, model):
             'mem_available_bytes':available_start,'gpu':gpu_start,'thermal':thermal_start,
             'power':power_start,'host_psi_full_avg10':psi_start,
             'admission_reasons':start_reasons}
+    if request_markers:
+        preflight['trace_clock'] = 'CLOCK_MONOTONIC; request marker ns and backend ggml_time_us share host clock'
     with open(paths[".preflight.json"],"x") as out:
         json.dump(preflight,out,indent=2,allow_nan=False);out.write("\n")
     t0 = time.monotonic()
@@ -553,8 +564,10 @@ def run(args, protocol, config, task_rows, model):
     stop = threading.Event()
     c18_request_active = threading.Event()
     resource_gate = RuntimeGuard(protocol,cg_start) if prospective else None
+    marker_context = (open(paths['.request-markers.jsonl'], 'x') if request_markers
+                      else nullcontext())
     with reserve(paths[".stdout"]) as stdout, reserve(paths[".stderr"]) as stderr, \
-         open(paths[".samples.jsonl"],"x") as sample_file:
+         open(paths[".samples.jsonl"],"x") as sample_file, marker_context as marker_file:
         server = subprocess.Popen(command, stdout=stdout, stderr=stderr,
                                   env=env, start_new_session=True,
                                   preexec_fn=parent_death_guard(os.getpid()))
@@ -766,7 +779,15 @@ def run(args, protocol, config, task_rows, model):
                     payload['stream_options'] = {'include_usage': True}
                 if "cache_prompt" in task:
                     payload["cache_prompt"] = task["cache_prompt"]
-                request_started = time.monotonic()
+                if request_markers:
+                    request_started_ns = time.monotonic_ns()
+                    request_started = request_started_ns / 1e9
+                    marker_file.write(json.dumps({'schema':'c85-request-monotonic-v1',
+                        'run_id':args.run_id,'request_id':row_id,'kind':'REQUEST_START',
+                        'mono_ns':request_started_ns},allow_nan=False)+'\n')
+                    marker_file.flush(); os.fsync(marker_file.fileno())
+                else:
+                    request_started = time.monotonic()
                 start = request_started-t0
                 if protocol.get('c18'):
                     c18_request_active.set()
@@ -778,7 +799,15 @@ def run(args, protocol, config, task_rows, model):
                 else:
                     response = fetch("/v1/chat/completions",payload,
                                      timeout=config["request_policy"]["per_request_timeout_s"])
-                end = time.monotonic()-t0
+                if request_markers:
+                    request_ended_ns = time.monotonic_ns()
+                    end = request_ended_ns / 1e9 - t0
+                    marker_file.write(json.dumps({'schema':'c85-request-monotonic-v1',
+                        'run_id':args.run_id,'request_id':row_id,'kind':'RESPONSE_COMPLETE',
+                        'mono_ns':request_ended_ns},allow_nan=False)+'\n')
+                    marker_file.flush(); os.fsync(marker_file.fileno())
+                else:
+                    end = time.monotonic()-t0
                 if protocol.get('c18'):
                     c18_request_active.clear()
                 choices = response.get("choices")
@@ -796,6 +825,10 @@ def run(args, protocol, config, task_rows, model):
                         "message":choices[0]["message"]}
                 if stream_metrics is not None:
                     item['stream_metrics'] = stream_metrics
+                if request_markers:
+                    item['monotonic_request_markers_ns'] = {
+                        'request_start': request_started_ns,
+                        'response_complete': request_ended_ns}
                 raw.append(item)
                 required_pattern = config.get('first_assistant_content_pattern')
                 if required_pattern is not None:
