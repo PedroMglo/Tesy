@@ -1,0 +1,62 @@
+{
+  "backend_source_commit": "5a1f4c5d9ed06021d58813ffb41792e83f337513",
+  "backend_source_tree": "f527410e12f59e76485986498e61f8e879834591",
+  "build": "GCC15.3.1 CUDA13.3 arch89, server --help exit0; moe-stream/cache-prompt options present",
+  "build_products_sha256": {
+    "/tmp/c75_stream_callback_control": "295979cccf0e994d61d97659936fb1f430ee379a9af3d27a399e574f80a5aa38",
+    "/tmp/c84_stream_callback_smoke_verified": "76e688ea2cb5b48c35a79d6c361e7554c4e56e1e2bc41046f15be6cdbf8cac23",
+    "/tmp/c84_trace_smoke_verified": "700171a855b7ee18d7d46d043830b230dae0ee199bec5984273b6e2c55439f7a",
+    "/tmp/tesy-c84-backend-20260928/build-c84-cuda/bin/libggml-cpu.so.0.15.3": "b7285169c4aea8cb9b9dd67717fb6facc1918a2833ad53058adc73caaf0e7944",
+    "/tmp/tesy-c84-backend-20260928/build-c84-cuda/bin/libggml-cuda.so.0.15.3": "a1ff9dc2013a267c56a0dddb5ba1a6796a5d4724df5150219127f6e639bfbe56",
+    "/tmp/tesy-c84-backend-20260928/build-c84-cuda/bin/libllama.so.0.0.4": "ead9ce492880e25d518539a4d73b85beea4906765c550050961fca737b74f681",
+    "/tmp/tesy-c84-backend-20260928/build-c84-cuda/bin/llama-server": "776d7445d95139e24f078a2e83d6255200f23d0155b91ea7bbdc520ddee8ccab"
+  },
+  "claim": "tiny synthetic CPU streaming callback and trace format only; no 120B, CUDA-path trace, server-session neutrality or physical I/O attribution",
+  "negative_no_replace": {
+    "expected_error": "C84 expert trace open failed",
+    "preexisting_trace_sha256_unchanged": true,
+    "returncode": -6,
+    "status": "PASS_NEGATIVE"
+  },
+  "parser_unittest": {
+    "command": "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=tools python3 -m unittest tools.test_c84_trace_validate",
+    "failed": 0,
+    "passed": 5
+  },
+  "raw_local": {
+    "/tmp/c75-synthetic-experts-control.bin": {
+      "bytes": 512,
+      "sha256": "9a7da1da62b9bde6e5fc843d1003baa8358e30e88e196434321e4235a8d7e435"
+    },
+    "/tmp/c84-callback-trace-verified.tsv": {
+      "bytes": 8837,
+      "sha256": "97bf4035d7246eec27a480c99c474703fcc22f299a5825f7039e540930ca8dec"
+    },
+    "/tmp/c84-synthetic-experts-verified.bin": {
+      "bytes": 512,
+      "sha256": "9a7da1da62b9bde6e5fc843d1003baa8358e30e88e196434321e4235a8d7e435"
+    },
+    "/tmp/c84-trace-smoke-final.tsv": {
+      "bytes": 403,
+      "sha256": "0b38859320d64236407be6b01855fd002e04afa159bf06abcebb9597fadfd8a9"
+    }
+  },
+  "schema": "c84-model-free-tests-v1",
+  "source_freeze_commit": "8760850d6f8ca4d43af772891a90337697299005",
+  "status": "PASS_MODEL_FREE_SOURCE_ONLY",
+  "synthetic_stream_callback": {
+    "C75_control_slot_hash": "4342555887178113839",
+    "candidate_slot_hash": "4342555887178113839",
+    "demands": 44,
+    "events": 192,
+    "evictions": 8,
+    "loads": 40,
+    "status": "PASS",
+    "waits": 10
+  },
+  "synthetic_trace_writer": {
+    "events": 7,
+    "layers": 1,
+    "status": "PASS"
+  }
+}
