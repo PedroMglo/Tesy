@@ -6,3 +6,10 @@
 - **Prospective cache gate:** official old-prompt LCP >=1900 and tail lost <=32; `LCP-32 <= cache_n <= min(current_prompt_len, LCP+previous_completion_tokens)`; `prompt_n+cache_n=current_prompt_len`. The second answer must exactly equal the actual first five-digit final content, with complete SSE fence and `finish_reason=stop` on both turns.
 - **Alternatives:** server cache may not align with the source bound on a fresh process, or functional continuity may fail. First gate failure stops this one-run unit. No timing speedup claim from a single arm.
 - **Evidence class before run:** C50 raw is a diagnostic positive example for the revised numeric predicate only; 46 focused model-free tests passed, C51 physical output NOT_RUN. The C37 20-request user-only session and C48 numeric FAIL are separate.
+
+## Result
+
+- Measurement commit `5cbd8b49fd551f09d52a2c40ba94b7ab82d4b520`. Idle admission and both full server requests passed. Official prompts had 2043/2197 IDs, old-prompt LCP 2043, cache_n 2044 and processed prompt_n 153. Both final contents were the same five digits. Request wall times were 300.754/40.380 s; first final content arrived after 300.024/39.860 s. Decode rates were 3.086/3.699 tok/s.
+- E18 resource gate passed: CPU max95.125 °C (warning under CPU100), GPU62 °C, NVMe55.85 °C, GPU5752 MiB, RSS13.289 GB, swap/OOM zero. Server return code zero, two completion fences, no stop reason.
+- **SESSION_PROFILE_PARTIAL:** this is a valid two-turn actual assistant-history and exact-prefix observation under the tested source pin. The C37 20-request/72-minute user-only synthetic regime is a different workload; a sustained actual assistant-history session is NOT_RUN. Incremental first-final-content 39.860 s and decode 3.699 tok/s miss the proposed M4 goals. M4 is not reached; default unchanged.
+- Next separately budgeted C52 is a 20-request >=60-minute actual assistant-history session with frozen content and E18 guards. Then latency improvement must target incremental final content and decode before proposing a main profile. C47, C48, C49 and C50 failures remain preserved.
