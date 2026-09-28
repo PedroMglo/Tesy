@@ -8,7 +8,7 @@
     "M4": "NOT_RUN"
   },
   "mission": "local usable main GPT-OSS 120B, original weights and authoritative routing",
-  "next_action": "C50 new identity: same P12 server/session/model/backend/input and E18/CPU100 guards; prospectively admit idle CPU/GPU/NVMe <=55/55/50 C for 300 contiguous seconds, then execute the two-turn assistant-history gate once",
+  "next_action": "C51 new identity: source-backed assistant-history cache bound allows matched generated tokens beyond previous prompt length; same model/backend/workload/guards; preserve C50 FAIL",
   "open_hypotheses": [
     "Wave/parking work may occupy removable exclusive critical-path time in prefill; summed stalls and CPU cycle shares do not bound this yet",
     "Reducing CPU batch-thread concurrency in a distinct P12 numerical profile may lower peak heat; latency and same-profile fidelity remain unmeasured",
@@ -322,7 +322,13 @@
       "model_loaded": false,
       "root": "results/c49-assistant-history-20260928T1021Z",
       "status": "THERMAL_PREFLIGHT_BLOCKED"
+    },
+    {
+      "identity": "c50",
+      "root": "results/c50-assistant-history-20260928T1042Z",
+      "specific_failure": "PREFIX_ACCOUNTING_GATE_BOUNDED_TO_OLD_PROMPT_ONLY",
+      "status": "FAIL_RESOURCES_OR_EVIDENCE"
     }
   ],
-  "updated_utc": "2026-09-28T10:41:27.796719+00:00"
+  "updated_utc": "2026-09-28T11:01:05.416412+00:00"
 }
