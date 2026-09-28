@@ -18,7 +18,13 @@ class Cpu100PolicyTests(unittest.TestCase):
         self.assertEqual(value,3300000)
         self.assertEqual(diagnostic,{'policy':'policy7','first_khz':0,
                                       'second_khz':3300000})
-        for values in ((0,0),(0,10000000),(-1,), (10000000,)):
+        readings=iter((21786195,3300000))
+        value, diagnostic=read_effective_clock(policy, lambda: next(readings))
+        self.assertEqual(value,3300000)
+        self.assertEqual(diagnostic,{'policy':'policy7','first_khz':21786195,
+                                      'second_khz':3300000})
+        for values in ((0,0),(0,10000000),(-1,), (10000000,10000000),
+                       (21786195,0),(21786195,-1)):
             with self.subTest(values=values), self.assertRaisesRegex(GateError,'policy7'):
                 readings=iter(values)
                 read_effective_clock(policy,lambda: next(readings))
@@ -61,6 +67,14 @@ class Cpu100PolicyTests(unittest.TestCase):
         retried[1]['cpu_diagnostics']['effective_clock_transient_zero_reads'][0]['second_khz']=0
         with self.assertRaises(GateError):
             summarize_samples(retried,require_safe=True)
+        high=copy.deepcopy(good)
+        high[1]['cpu_diagnostics']['effective_clock_transient_high_reads']=[
+            {'policy':'policy1','first_khz':21786195,'second_khz':3000000}]
+        self.assertEqual(summarize_samples(high,require_safe=True)[
+            'cpu_effective_clock_transient_high_read_count'],1)
+        high[1]['cpu_diagnostics']['effective_clock_transient_high_reads'][0]['second_khz']=21786195
+        with self.assertRaises(GateError):
+            summarize_samples(high,require_safe=True)
         for mutant in ('missing', 'cooling', 'hundred'):
             bad = copy.deepcopy(good)
             if mutant == 'missing':

@@ -13,12 +13,12 @@ COOLING = Path('/sys/class/thermal')
 
 
 def read_effective_clock(policy, read_khz=None):
-    """Record and reread a single zero; keep persistent/other invalid reads fatal."""
+    """Record one immediate reread of a zero or impossible high sysfs value."""
     reader = read_khz or (lambda: int((policy / 'cpuinfo_avg_freq').read_text()))
     first = reader()
     if type(first) is not int:
         raise GateError(f'CPU effective frequency invalid {policy.name}: {first!r}')
-    if first == 0:
+    if first == 0 or first >= 10_000_000:
         second = reader()
         if type(second) is int and 0 < second < 10_000_000:
             return second, {'policy': policy.name, 'first_khz': first,
@@ -34,11 +34,15 @@ def read_effective_clock(policy, read_khz=None):
 def capture():
     clocks = {}
     transient_zero_reads = []
+    transient_high_reads = []
     for policy in sorted(POLICIES.glob('policy[0-9]*'), key=lambda p: int(p.name[6:])):
         value, transient = read_effective_clock(policy)
         clocks[policy.name] = value / 1000
         if transient is not None:
-            transient_zero_reads.append(transient)
+            if transient['first_khz'] == 0:
+                transient_zero_reads.append(transient)
+            else:
+                transient_high_reads.append(transient)
     if len(clocks) < 12:
         raise GateError('CPU effective clock coverage incomplete')
     if (RAPL / 'name').read_text().strip() != 'package-0':
@@ -60,6 +64,7 @@ def capture():
     return {'effective_clock_mhz_by_policy': clocks,
             'effective_clock_median_mhz': median(clocks.values()),
             'effective_clock_transient_zero_reads': transient_zero_reads,
+            'effective_clock_transient_high_reads': transient_high_reads,
             'package_energy_uj': energy,
             'package_energy_range_uj': energy_range,
             'processor_cooling_states': states,
@@ -106,6 +111,7 @@ def summarize_samples(samples, *, require_safe):
     energy = []
     policy_set = None
     transient_zero_count = 0
+    transient_high_count = 0
     for i, sample in enumerate(samples):
         diag = sample.get('cpu_diagnostics')
         if type(diag) is not dict:
@@ -125,6 +131,17 @@ def summarize_samples(samples, *, require_safe):
                diag['effective_clock_mhz_by_policy'][retry['policy']] != retry['second_khz']/1000:
                 raise GateError('CPU transient zero diagnostic inconsistent')
         transient_zero_count += len(retries)
+        high_retries = diag.get('effective_clock_transient_high_reads', [])
+        if type(high_retries) is not list:
+            raise GateError('CPU transient high diagnostic malformed')
+        for retry in high_retries:
+            if type(retry) is not dict or set(retry) != {'policy','first_khz','second_khz'} or \
+               retry['policy'] not in keys or type(retry['first_khz']) is not int or \
+               retry['first_khz'] < 10_000_000 or type(retry['second_khz']) is not int or \
+               not 0 < retry['second_khz'] < 10_000_000 or \
+               diag['effective_clock_mhz_by_policy'][retry['policy']] != retry['second_khz']/1000:
+                raise GateError('CPU transient high diagnostic inconsistent')
+        transient_high_count += len(high_retries)
         clock = diag['effective_clock_median_mhz']
         if type(clock) not in (float, int) or not math.isfinite(clock) or clock <= 0:
             raise GateError('CPU effective clock invalid')
@@ -160,6 +177,7 @@ def summarize_samples(samples, *, require_safe):
             'processor_cooling_max_state': max_cooling,
             'cpu_policy_count': len(policy_set),
             'cpu_effective_clock_transient_zero_read_count': transient_zero_count,
+            'cpu_effective_clock_transient_high_read_count': transient_high_count,
             'power_source': 'package-0 RAPL energy counter; interval power estimate',
             'clock_source': 'cpuinfo_avg_freq per cpufreq policy',
             'explicit_thermal_flag_source': 'ACPI Processor cooling cur_state; AMD hardware flag unavailable'}
