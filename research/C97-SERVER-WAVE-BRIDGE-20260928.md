@@ -7,3 +7,9 @@
 - Frozen gates: E18/zero swap and current resource-policy snapshot; model/backend/binary/mapped libraries, official token IDs, generated-history cache bounds, full finite responses, final content, stream completion, monotonic request markers and telemetry. First failure closes its run. Do not reuse any C96 run ID.
 - NOT_RUN at freeze: C97 model, alternating performance screening, M3 diverse/active sustained test, M4 quality and latency qualification.
 - Next gate if both arms pass: compare official token IDs and outputs; choose a separately frozen alternating screen only if the bridge has comparable inputs and no resource/fidelity failure.
+
+## Result
+
+- Measurement commit: `586aa5488af58a8faa6159e8b53dead18017a55b`. Control C35 passed both turns: first request 2043 prompt/77 completion tokens, 300.398 s; second 2081 prompt/60 completion tokens, 2044 cached, 28.646 s. Cgroup peak 13,145,841,664 B, GPU total 5752 MiB, CPU 95.125 °C, swap zero. Evidence: MEDIDO_NO_TARGET, synthetic one-arm bridge.
+- Candidate `c97-candidate01` failed before model launch. Its extra port precheck used `bind` without `SO_REUSEADDR`; an independent socket inspection found port 18367 in `TIME_WAIT`, with no listener. Preserve `FAIL_HARNESS_PRELAUNCH` and `NOT_RUN_MODEL`. This is not a C75 result.
+- C97 control is a valid contemporary comparator for a new C98 candidate identity if its raw and compact hashes remain valid. C98 must remove the redundant bind and rely on the existing server runner's `SO_REUSEADDR` check. No C97 candidate ID is reused.
