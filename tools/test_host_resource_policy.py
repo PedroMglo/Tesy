@@ -4,6 +4,7 @@ import unittest
 from host_resource_policy import (
     CPU_TJMAX_C,
     derive_policy,
+    freeze_protocol_resource_limits,
     parse_nvidia_temperature_query,
     ResourcePolicyError,
 )
@@ -55,6 +56,21 @@ class ResourcePolicyTests(unittest.TestCase):
         self.assertEqual(policy["nvme"]["critical_c"], 89.85)
         self.assertEqual(policy["memory"]["host_reserve_bytes"], 2 * 2**30)
         self.assertGreater(policy["memory"]["suggested_cgroup_max_bytes"], 18 * 2**30)
+
+    def test_freeze_protocol_limits_uses_policy_not_legacy_guards(self):
+        policy = derive_policy(
+            memory={"MemTotal": 32698777600, "MemAvailable": 23675543552},
+            gpu_csv="GPU, 8188, 12, 44, 1",
+            sensors=SENSORS,
+            nvidia_temperature_query=GPU_Q,
+        )
+        limits = freeze_protocol_resource_limits(policy, cgroup_memory_max_bytes=20 * 2**30)
+        self.assertEqual(limits["cpu_max_c"], 100)
+        self.assertEqual(limits["gpu_max_mib"], 7676)
+        self.assertEqual(limits["gpu_max_c"], 92)
+        self.assertEqual(limits["nvme_max_c"], 89.85)
+        self.assertEqual(limits["min_mem_available_bytes"], 2 * 2**30)
+        self.assertEqual(limits["rss_max_bytes"], 20 * 2**30)
 
     def test_implausible_secondary_nvme_threshold_is_ignored(self):
         policy = derive_policy(
