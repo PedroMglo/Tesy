@@ -1,0 +1,50 @@
+{
+  "all_three_union_s": 78.423671798,
+  "analyzer_sha256": "a1df03689053b3d6d81cba22de7f711e64a9d4a834d7071604097d5bdee1ac6d",
+  "bound_rule": "all tagged MMID intervals across profiled process, including decode, divided by completed uninstrumented control prefill; optimistic upper bound only",
+  "control_prefill_s": 79.5204,
+  "labels": {
+    "C15_CPU_STREAM_MATMUL_ID": {
+      "events": 12300,
+      "span_s": 82.996768981,
+      "summed_duration_s": 58.307347312,
+      "union_duration_s": 58.307347312
+    },
+    "C15_EXPERT_PREAD": {
+      "events": 10818,
+      "span_s": 83.15911116,
+      "summed_duration_s": 76.771132221,
+      "union_duration_s": 22.393705288
+    },
+    "C15_EXPERT_UPLOAD": {
+      "events": 10818,
+      "span_s": 83.156385012,
+      "summed_duration_s": 4.038193484,
+      "union_duration_s": 3.960626792
+    }
+  },
+  "limits": [
+    "tag uses CPU MUL_MAT_ID src0 ne[2]==32; not a proved exact streaming-only marker",
+    "interval occupancy is not removable exclusive critical-path work",
+    "phase boundaries are not marked in this trace",
+    "NVTX timing cannot be promoted to production speedup",
+    "four greedy output tokens match; full logits bitwise NOT_RUN"
+  ],
+  "mmid_pread_overlap_s": 2.435673256000001,
+  "mmid_pread_union_s": 78.265379344,
+  "mmid_union_over_control_prefill_percent": 73.32376008168974,
+  "model_pid": 513247,
+  "nsys_global_pid": 290085832491008,
+  "pread_union_over_control_prefill_percent": 28.160956544484186,
+  "profiled_prefill_s_diagnostic_only": 79.860587,
+  "schema": "c45-nvtx-occupancy-v1",
+  "source_sha256": {
+    "results/c43-wave-critical-20260928T0809Z/c43-c15-plain-cold513-receipt.json": "abe9c6f8d4054f2c1158e0bb0058f575d9bf404e96ee0c520280553ed8e27708",
+    "results/c43-wave-critical-20260928T0809Z/c43-control-cold513-receipt.json": "cc1789305fc9fcc21234a59f4d2e9a1a3c6ac6f455feeefea3a0f5c50761db89",
+    "results/c45-wave-profile-20260928T0846Z/c45-c15-profile-cold513-receipt.json": "6a1c534cad0c3434ebcd471fe0891965650c0353ac5c2fc21c9aeec94f008051",
+    "results/c45-wave-profile-20260928T0846Z/output-comparison.json": "e07e1bd234001603af1580f9e7f2655b0182ed015e313b76a269dc419d28e1e4",
+    "results/c45-wave-profile-20260928T0846Z/raw/c45-c15-profile.nsys-rep": "5853c685e9a0be65c698bd0f100bbe68119d17f56093df493acadf66aa6d7dcb",
+    "results/c45-wave-profile-20260928T0846Z/raw/c45-c15-profile.sqlite": "4782384bfad8c9deaf0b0fad362466b7b94b0d95280e083a9da9f6a002f61867"
+  },
+  "status": "MATERIAL_UPPER_BOUND_PHASE_ATTRIBUTION_REQUIRED"
+}
