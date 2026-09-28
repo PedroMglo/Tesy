@@ -18,7 +18,7 @@ class AdmissionReceiptTests(unittest.TestCase):
         self.root = Path(self.tmp.name)
         (self.root / 'raw').mkdir()
         (self.root / 'protocol.json').write_text('{}\n')
-        self.config = {'mode': 'synthetic'}
+        self.config = {'mode': 'synthetic', 'explicit_env': {}}
         self.identity = {'pid': 123, 'start_ticks': 456,
                          'cgroup_path': '/test.scope', 'cgroup_inode': 789}
         self.cg = {'memory_max': 18*2**30, 'swap_max': 0, 'swap_current': 0,
