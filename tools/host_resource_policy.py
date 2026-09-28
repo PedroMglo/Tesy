@@ -250,6 +250,30 @@ def freeze_protocol_resource_limits(policy: dict[str, Any], *, cgroup_memory_max
     }
 
 
+
+def operational_session_ready(policy: dict[str, Any], *, processor_cooling_active: bool = False) -> tuple[bool, list[str]]:
+    """Operational-session start gate.
+
+    This is deliberately weaker than a causal A/B cold-start match: it only
+    requires the host to be below warning/device thresholds and otherwise ready.
+    """
+    ok, reasons = ready_for_launch(policy)
+    reasons = list(reasons)
+    if processor_cooling_active:
+        reasons.append("processor-cooling-active")
+    cpu = policy["cpu"]
+    gpu = policy["gpu"]
+    nvme = policy["nvme"]
+    if cpu["current_c"] >= cpu["warning_c"]:
+        reasons.append("cpu-warning-at-start")
+    if gpu["warning_c"] is not None and gpu["temperature_c"] >= gpu["warning_c"]:
+        reasons.append("gpu-warning-at-start")
+    if nvme["warning_c"] is not None and nvme["current_c"] >= nvme["warning_c"]:
+        reasons.append("nvme-warning-at-start")
+    return ok and not reasons, reasons
+
+
+
 def ready_for_launch(policy: dict[str, Any]) -> tuple[bool, list[str]]:
     reasons = []
     gpu = policy["gpu"]
