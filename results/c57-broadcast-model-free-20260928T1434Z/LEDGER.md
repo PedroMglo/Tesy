@@ -1,0 +1,1 @@
+C57: old C48 CPU operator reproduced parked-broadcast mismatch for MXFP4/F16; isolated repair converts shared activation rows and passes tested graph controls. Backend repair source-only. C48 FAIL preserved.

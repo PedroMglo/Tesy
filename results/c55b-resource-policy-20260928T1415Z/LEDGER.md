@@ -1,0 +1,1 @@
+C55b: new 60 s host inventory after C55 root-cgroup parser failure. Derived cap max 19 GiB; real E18 scope/swap-zero and small subprocess monitor passed. Full model-free suite 116/116. Hash rechecked C52b/C54; C54 remains interrupted. 120B NOT_RUN in this unit.

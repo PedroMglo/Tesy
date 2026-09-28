@@ -1,0 +1,9 @@
+{
+  "followup_test": "tools.test_c55_inventory.AncestorTests.test_unbounded_root_but_bounded_child",
+  "model_loaded": false,
+  "reason": "ancestor_headroom attempted /sys/fs/cgroup/memory.max; root cgroup has no memory.max",
+  "reproduction": "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=tools python3 tools/c55_inventory.py results/c55-resource-policy-20260928T1412Z",
+  "retry_policy": "new identity C55b after model-free test, no result reclassification",
+  "schema": "c55-model-free-failure-v1",
+  "status": "FAIL_HARNESS_ANCESTOR_ROOT"
+}

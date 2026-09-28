@@ -1,0 +1,1 @@
+C56: hash checked C54 and exported existing Nsight report to local raw SQLite. Closed warm prefill interval diagnostic in phase-partial.json; C54 remains INTERRUPTED_BY_OWNER. No model launch or timing promotion.

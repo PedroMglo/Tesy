@@ -1,15 +1,6 @@
 {
   "default_changed": false,
-  "historical_protocol_note": "Six C9-C17 CPU95 stops are preserved as FAIL_PROTOCOL_THERMAL_GUARD in C18 audit; old receipts and decisions unchanged. CPU100 C18 result is prospective and independent.",
-  "milestones": {
-    "M1": "QUALIFIED_PROSPECTIVE_SCOPE_HISTORICAL_PARTIAL",
-    "M2": "CONFIRMED_496_TEACHER_FORCED_SCOPE_NATIVE_PRELOAD",
-    "M3": "SESSION_MECHANICS_20_REQUEST_70_MIN_TESTED_SCOPE_LATENCY_OPEN",
-    "M4": "NOT_MET_BY_OBSERVED_LATENCY_AND_DECODE"
-  },
-  "mission": "local usable main GPT-OSS 120B, original weights and authoritative routing",
-  "next_action": "Astra review of C54 interruption checkpoint; future physical continuation requires a new frozen identity and explicit instruction.",
-  "open_hypotheses": [
+  "historical_open_hypotheses_at_c54": [
     "Wave/parking work may occupy removable exclusive critical-path time in prefill; summed stalls and CPU cycle shares do not bound this yet",
     "Reducing CPU batch-thread concurrency in a distinct P12 numerical profile may lower peak heat; latency and same-profile fidelity remain unmeasured",
     "Exact-prefix mechanism reused 510/510 common IDs in C19 ON arm; causal latency benefit and session utility versus OFF remain unmeasured",
@@ -20,6 +11,22 @@
     "C38 P8 monitor stopped on unlogged out-of-range cpuinfo_avg_freq after 2/12 tasks; transient zero is plausible but unproved; C39 diagnostic must establish value/policy",
     "C39 P8 reached last valid 2281 s with zero clock rereads, then control-plane restart killed runner; incomplete raw cannot qualify 12-task result"
   ],
+  "historical_protocol_note": "Six C9-C17 CPU95 stops are preserved as FAIL_PROTOCOL_THERMAL_GUARD in C18 audit; old receipts and decisions unchanged. CPU100 C18 result is prospective and independent.",
+  "milestones": {
+    "M1": "QUALIFIED_PROSPECTIVE_SCOPE_HISTORICAL_PARTIAL",
+    "M2": "CONFIRMED_496_TEACHER_FORCED_SCOPE_NATIVE_PRELOAD",
+    "M3": "SESSION_MECHANICS_20_REQUEST_70_MIN_TESTED_SCOPE_LATENCY_OPEN",
+    "M4": "NOT_MET_BY_OBSERVED_LATENCY_AND_DECODE"
+  },
+  "mission": "local usable main GPT-OSS 120B, original weights and authoritative routing",
+  "next_action": "Freeze fresh C55c resource inventory and one short unchanged-backend physical policy canary; then targeted C57 fidelity boundary and placement accounting, subject to gates and budget.",
+  "open_hypotheses": [
+    "C57 shared-activation repair passes a model-free MMID discriminant; full-layer and full-logit same-profile fidelity remain NOT_RUN",
+    "Additional placement P14/slots32 may reduce CPU expert demand but may exceed VRAM or harm decode; accounting and forward admission required",
+    "Warm153 exclusive critical-path cost remains uncertain: C56 instrumented closed intervals are diagnostic, not removable fraction",
+    "Bounded RAM L2 may reduce demand NVMe reads only if reuse traces, equal-memory accounting and exposed wait support investment",
+    "M3 diverse conversation and active sustained load, and M4 latency/decode/quality gates remain open"
+  ],
   "rejected_claims": [
     "P12 general-medium timing gain >=5% at 496+32 under E18",
     "Unmitigated 8K P8 preload-on E18 server qualified for 513-token cold prefill: thermal guard failed before completion",
@@ -28,6 +35,11 @@
     "P12 current 8K server repeatably admits 513-ID first request under CPU95: C13 first request failed after C11 one pass",
     "P12 native ub64 admits a 513-ID cold server request with CPU<=92 C and prefill<=75 s: request failed CPU95 guard",
     "Cooling-placement change alone admits P8/P12 ub32 preload-on 8K cold513 under CPU95: both C17 T2 arms failed before completion"
+  ],
+  "resolved_at_c55_c57": [
+    "C52b raw and compact hashes rechecked: 20-request assistant-history session remains PASS in tested scope",
+    "C54 raw and compact hashes rechecked: owner interruption, incomplete second response, no thermal cause asserted",
+    "C48 broadcast conversion flaw reproduced model-free in MXFP4/F16; isolated source repair passed operator controls; C48 FAIL unchanged"
   ],
   "schema": "120b-program-index-v1",
   "units": [
@@ -366,7 +378,27 @@
       "model_executed": true,
       "root": "results/c54-warm-phase-20260928T1304Z",
       "status": "INTERRUPTED_BY_OWNER"
+    },
+    {
+      "identity": "c55",
+      "root": "results/c55-resource-policy-20260928T1412Z",
+      "status": "FAIL_HARNESS_ANCESTOR_ROOT_NO_MODEL"
+    },
+    {
+      "identity": "c55b",
+      "root": "results/c55b-resource-policy-20260928T1415Z",
+      "status": "REPRODUZIDO_MODEL_FREE_E18_SCOPE"
+    },
+    {
+      "identity": "c56",
+      "root": "results/c56-c54-partial-20260928T1420Z",
+      "status": "EXPLORATORY_CLOSED_WARM_PREFILL_RANGES_NO_MODEL"
+    },
+    {
+      "identity": "c57",
+      "root": "results/c57-broadcast-model-free-20260928T1434Z",
+      "status": "SOURCE_ONLY_MODEL_FREE_PASS_NO_120B"
     }
   ],
-  "updated_utc": "2026-09-28T13:31:38.650012+00:00"
+  "updated_utc": "2026-09-28T14:39:13.310142+00:00"
 }

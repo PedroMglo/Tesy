@@ -1,0 +1,15 @@
+{
+  "cap_candidate_bytes": 19327352832,
+  "commands": [
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=tools python3 tools/c55_inventory.py ROOT",
+    "systemd-run --user --scope -p MemoryMax=18G -p MemorySwapMax=0 ... c24_preflight.scope_test",
+    "systemd-run --user --scope -p MemoryMax=18G -p MemorySwapMax=0 ... tools/c55_monitor_smoke.py ROOT",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=tools python3 -m unittest discover -s tools -p 'test_*.py'"
+  ],
+  "inventory_duration_s": 60,
+  "model_loaded": false,
+  "required_sample_gap_max_s": 3,
+  "required_scope_swap_max_bytes": 0,
+  "schema": "c55b-model-free-protocol-v1",
+  "source_commit": "7f7326ef00eddd660e1dd999bd6602bc350e8733"
+}
