@@ -9,6 +9,7 @@ from host_resource_policy import (
 )
 
 SENSORS = {
+    "k10temp-pci-00c3": {"Tctl": {"temp1_input": 48.25}},
     "nvme-pci-c100": {
         "Composite": {
             "temp1_input": 34.85,
