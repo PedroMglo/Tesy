@@ -1,0 +1,46 @@
+{
+  "categories": {
+    "code": 4,
+    "planning": 4,
+    "sql_data": 4
+  },
+  "completion_fence": "stream done plus backend/API token-count match",
+  "context_tokens_total": 8192,
+  "critical_tasks": "all 12",
+  "evidence_class": "new synthetic, not historical user tasks",
+  "failure_policy": "guard/evidence/same-profile failure stops arm; no hidden retry; task timeout is functional timeout and preserved",
+  "kv_clean_each_task": true,
+  "models": [
+    "target120b",
+    "stock20b"
+  ],
+  "no_prefix_reuse_between_tasks": true,
+  "output_cap_tokens": 3072,
+  "per_task_timeout_s": 600,
+  "profiles": {
+    "20B": "stock backend ngl13 selected for GPU reservation, 8K context, stock model/template",
+    "P12": "same backend/config except ngl12",
+    "P8": "C35 backend ngl8 full-SWA ub32 slots32, embedded GGUF template with fixed 2026-09-28 render date"
+  },
+  "publication": "local commits only, no default change",
+  "quality_gate": "P12 must resolve every task resolved by P8; all critical tasks required for M4 candidate, with context/session/resource gates separately",
+  "reasoning_effort": "medium",
+  "resource_envelope": "E18, zero swap, GPU reservation 6500 MiB, absolute 7000 MiB, CPU95 warning/100 stop, GPU80/NVMe70 stop, MemAvailable>=6GiB",
+  "run_order": [
+    "stock20-init",
+    "stock20-smoke",
+    "stock20",
+    "p8",
+    "p12"
+  ],
+  "schema": "c38-quality-usage-contract-v1",
+  "seed": 42,
+  "speed_claim": "descriptive only: one process per model/profile, no repeated paired confirmation",
+  "tasks": 12,
+  "temperature": 0,
+  "time_to_solution_deadlines_s": [
+    30,
+    120,
+    600
+  ]
+}

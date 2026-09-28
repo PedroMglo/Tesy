@@ -1,0 +1,20 @@
+{
+  "admission": "init-only followed by 1-request monitored smoke; require GPU <=6500 MiB, cgroup <=16.5 GiB, RSS <=16 GiB, zero swap/events before 12 tasks",
+  "environment_note": "stock20B comparator is a distinct numerical/model profile; no causal speedup claim across models",
+  "gpu_absolute_guard_mib": 7000,
+  "historical_20b_reference": {
+    "cgroup_peak_gib": 7.410816192626953,
+    "gpu_max_mib": 6578,
+    "profile": "stock20b ngl14, 4K, historical",
+    "rss_max_gib": 6.442436218261719,
+    "source": "tesy-scale-lab/results/c2e-stock20-eval12-01.samples.jsonl"
+  },
+  "new_20b_profile": "ngl13 8K; changed layer placement and KV/workspace mean historical peak is not a capacity certificate",
+  "schema": "c38-accounting-v1",
+  "status": "BOUNDED_ADMISSION_REQUIRED_FOR_STOCK20B_8K",
+  "target_reuse": {
+    "P12_8K_C37_cgroup_peak_bytes": 13154242560,
+    "P12_8K_C37_gpu_max_mib": 5752,
+    "P8_8K_C18_513_gpu_max_mib": 3947
+  }
+}

@@ -1,0 +1,73 @@
+{
+  "c18": {
+    "monitor_sha256": "a5d6f36a864b3fca80d2f6946c2bf884337819bdaca559f2cd31799e255ff92f",
+    "thermal_monitor": "CPU95 warning, CPU100/explicit cooling/clock collapse stop"
+  },
+  "c38": {
+    "admission_runner_sha256": "eebb2642ce2c270367854c5575c1ebc5b3fc013af24923d1f9da4ddca3d0b8dc",
+    "arm": "stock20-smoke",
+    "backend_dirty": "",
+    "backend_tree": "18393b20c61b6d3f66a8f838716363e0c38d5bef",
+    "claim": "load/context admission only; no forward workspace or API claim",
+    "grader_sha256": "4e2b44f18851171aa924f594a9dbfe6de11bf446e6137744311643bf34b8d624",
+    "mode": "init-only",
+    "model_free_validator_status": "PASS_12_GOLD_AND_12_MUTANT",
+    "model_stat": {
+      "ctime_ns": 1790194592158498919,
+      "dev": 53,
+      "inode": 14614950,
+      "mtime_ns": 1790194591952490074,
+      "size_bytes": 12109564352
+    },
+    "monitor_scope": "systemd user scope E18, zero swap",
+    "n_gpu_layers": 13,
+    "runner_sha256": "7d54b6ab73b57743af114d127dbf2654e846341376538de369b618c8ad8edace",
+    "server_runner_sha256": "a5d6f36a864b3fca80d2f6946c2bf884337819bdaca559f2cd31799e255ff92f",
+    "workload_sha256": "682fee2bd9aca770e43196f70daea785f38c75e9f638f851e241f1c979b9b7bc"
+  },
+  "campaign_id": "tesy-c38-functional-20260928",
+  "expected_request_ids": [
+    "c38-capacity-smoke"
+  ],
+  "identity": {
+    "backend_sha": "4b1a27fa0eb875bbca4f6cfe936e3d65adc685c0",
+    "binary_sha256": "74f0c9015aea0ba44159c616800d4d09b62ff61a9726b786579c05b0219d8efa",
+    "config_sha256": "09c63a8bda68fdfc9f8189f4dd83c4057cddef5221a42dab406a27f4c305c7db",
+    "input_sha256": {
+      "protocol.json": "b89325877e2626f1ae60d6248cc54a7e2199b7299fecfddf640c371edbc5613c",
+      "usage-contract.json": "9eaa34b2474edf79e5c7cfa14dfe361fe40883b9154c736ff247fc2391df05a0",
+      "workloads/c38_quality12.json": "682fee2bd9aca770e43196f70daea785f38c75e9f638f851e241f1c979b9b7bc"
+    },
+    "library_sha256": {
+      "build-gcc15/bin/libggml-base.so.0.25.3": "16a2f9e854b7398e3d6ea792b2f4854a2050c0c87202a779475c8c1de004192b",
+      "build-gcc15/bin/libggml-cpu.so.0.25.3": "0c3a606103a100bd42ce42e3679256cd366eeb72863cf8b61eb2b615d34196f7",
+      "build-gcc15/bin/libggml-cuda.so.0.25.3": "a9b0a6c60fba088b89bdbc3970a33ed4ebe263698699d571283486b0b5a72410",
+      "build-gcc15/bin/libggml.so.0.25.3": "1594c6f8cff69f406587a3d815172560f0bcea5cdb5699d294ee84e1cbcc05b6",
+      "build-gcc15/bin/libllama-common.so.0.5.0": "bf3ae6cdf9d2a639d4316c1c1835e94b86ebc89a5b7d645dafcdcbfbf76659df",
+      "build-gcc15/bin/libllama-server-impl.so": "650912e7a4a8b5d5dd9fe9ac821b8cc51298219a21dd2b049d3e067ea120ca6c",
+      "build-gcc15/bin/libllama.so.0.5.0": "f396b03cf69740dcde9d76b355ca39786406091b8fde1c669d2d2fdec2b0002b",
+      "build-gcc15/bin/libmtmd.so.0.5.0": "e91440344ca2d98a39e12603f7369a67cb8723f149ce247f22cbcb15779bfd2c"
+    },
+    "model_id": "stock20b",
+    "model_sha256": "52f57ab7d3df3ba9173827c1c6832e73375553a846f3e32b49f1ae2daad688d4",
+    "workload_sha256": "682fee2bd9aca770e43196f70daea785f38c75e9f638f851e241f1c979b9b7bc"
+  },
+  "limits": {
+    "boundary_s": 2,
+    "cpu_max_c": 100,
+    "gpu_max_c": 80,
+    "gpu_max_mib": 6500,
+    "max_gap_s": 3,
+    "memory_max_bytes": 17716740096,
+    "min_active_s": 0,
+    "min_decode_s": 0,
+    "min_decode_tok_s": 0,
+    "min_elapsed_s": 0,
+    "min_last_half_tok_s": 0,
+    "min_mem_available_bytes": 6442450944,
+    "nvme_max_c": 70,
+    "rss_max_bytes": 17179869184
+  },
+  "protocol_id": "c38-stock20-smoke-v1",
+  "schema_version": "c2-protocol-v1"
+}
