@@ -1,0 +1,187 @@
+{
+  "actual_common_prefix_ids": 2035,
+  "arm": "stable",
+  "completed_utc": "2026-09-28T01:48:29.571331+00:00",
+  "cpu_diagnostics": {
+    "clock_source": "cpuinfo_avg_freq per cpufreq policy",
+    "cpu_effective_clock_max_mhz": 3307.4705000000004,
+    "cpu_effective_clock_median_mhz": 3027.45525,
+    "cpu_effective_clock_min_mhz": 605.264,
+    "cpu_max_c": 95.125,
+    "cpu_package_power_max_w": 71.22021641081642,
+    "cpu_package_power_median_w": 61.40975644601608,
+    "cpu_policy_count": 24,
+    "cpu_warning_observed": true,
+    "cpu_warning_sample_count": 104,
+    "explicit_thermal_flag_source": "ACPI Processor cooling cur_state; AMD hardware flag unavailable",
+    "gpu_power_max_w": 19.05,
+    "power_source": "package-0 RAPL energy counter; interval power estimate",
+    "processor_cooling_max_state": 0,
+    "sample_count": 304
+  },
+  "elapsed_s": 322.99416329999804,
+  "idle": {
+    "baseline": {
+      "cpu_c": 43.625,
+      "gpu_c": 41.0,
+      "nvme_c": 35.85
+    },
+    "cadence_breaks": [],
+    "duration_s": 302.02727470999525,
+    "end": {
+      "cpu_c": 40.75,
+      "cpu_fan_rpm": 2600.0,
+      "elapsed_s": 302.02727470999525,
+      "gpu": {
+        "driver": "615.71.09",
+        "temperature_c": 38.0,
+        "used_mib": 12.0
+      },
+      "gpu_fan_rpm": 2500.0,
+      "mem_available_bytes": 25518903296,
+      "nvme_c": 34.85,
+      "run_id": "c35b-date-stable-candidate",
+      "utc": "2026-09-28T01:43:06.371285+00:00"
+    },
+    "last60_trend_c": {
+      "cpu_c": -0.9499999999999957,
+      "gpu_c": -1.0,
+      "nvme_c": -1.1999999999999957
+    },
+    "match_tolerance_c": [
+      5,
+      5,
+      3
+    ],
+    "max_gap_overall_s": 0.7597303439979441,
+    "max_gap_qualifying_s": 0.7597303439979441,
+    "max_start_c": [
+      50,
+      50,
+      45
+    ],
+    "qualifying_duration_s": 300.4738105449942,
+    "qualifying_start_s": 1.5534641650010599,
+    "sample_count": 605,
+    "series_sha256": "51b374df0d5ce06a328637c311dbf7965b684dbb0b208cc4dd524247e3810fe4",
+    "start": {
+      "cpu_c": 51.375,
+      "cpu_fan_rpm": 2600.0,
+      "elapsed_s": 0.04131220999988727,
+      "gpu": {
+        "driver": "615.71.09",
+        "temperature_c": 46.0,
+        "used_mib": 12.0
+      },
+      "gpu_fan_rpm": 2400.0,
+      "mem_available_bytes": 25642934272,
+      "nvme_c": 43.85,
+      "run_id": "c35b-date-stable-candidate",
+      "utc": "2026-09-28T01:38:04.385325+00:00"
+    },
+    "status": "PASS"
+  },
+  "maxima": {
+    "cgroup_peak_bytes": 13108576256,
+    "cpu_c": 95.125,
+    "gpu_c": 62.0,
+    "gpu_total_mib": 5752.0,
+    "nvme_c": 51.85,
+    "rss_bytes": 13299429376,
+    "swap_bytes": 0
+  },
+  "measurement_commit": "7b550bf79f4a0bc3c1980d6d8338b71f65152ea2",
+  "order": 2,
+  "phase": "G2",
+  "protocol_sha256": "367649491efa3b1ccd8cde0d35c257aeb0112ea76eca5db2445b287150e4aaf5",
+  "raw_sha256": "5d6dc9cbe2642bce3e71ca1fc9432a63c69ea6f2673ccb19a89d51b39b8bb407",
+  "reason": null,
+  "results": [
+    {
+      "id": "c35b-first-turn2048",
+      "message_sha256": "5547eefff07c55ea015d3bae88c1dbd1d08cfe58223484d48891a63b067c2f58",
+      "request_elapsed_s": 288.0159151300031,
+      "stream_metrics": {
+        "done_observed": true,
+        "first_final_content_chunk_s": 287.78362438800104,
+        "first_reasoning_chunk_s": 273.2868190989975,
+        "first_text_chunk_s": 273.2868190989975,
+        "interpretation": "client receipt times of non-whitespace SSE chunks; not token timestamps",
+        "sse_event_count": 45
+      },
+      "timings": {
+        "cache_n": 0,
+        "predicted_ms": 15573.539,
+        "predicted_n": 52,
+        "predicted_per_second": 3.3389969999754068,
+        "predicted_per_token_ms": 299.4911346153846,
+        "prompt_ms": 272433.53,
+        "prompt_n": 2035,
+        "prompt_per_second": 7.469711969741756,
+        "prompt_per_token_ms": 133.87397051597054
+      },
+      "usage": {
+        "completion_tokens": 52,
+        "prompt_tokens": 2035,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "total_tokens": 2087
+      }
+    },
+    {
+      "id": "c35b-second-turn128",
+      "message_sha256": "164566a5b7da749f33fbfeff1e70af454de5e73756d572150cb23e7836b83f37",
+      "request_elapsed_s": 29.56051860700245,
+      "stream_metrics": {
+        "done_observed": true,
+        "first_final_content_chunk_s": 29.415878782005166,
+        "first_reasoning_chunk_s": 23.712110017004306,
+        "first_text_chunk_s": 23.712110017004306,
+        "interpretation": "client receipt times of non-whitespace SSE chunks; not token timestamps",
+        "sse_event_count": 19
+      },
+      "timings": {
+        "cache_n": 2036,
+        "predicted_ms": 6644.962,
+        "predicted_n": 26,
+        "predicted_per_second": 3.912738703396648,
+        "predicted_per_token_ms": 255.57546153846155,
+        "prompt_ms": 22906.168,
+        "prompt_n": 143,
+        "prompt_per_second": 6.242860001725298,
+        "prompt_per_token_ms": 160.18299300699303
+      },
+      "usage": {
+        "completion_tokens": 26,
+        "prompt_tokens": 2179,
+        "prompt_tokens_details": {
+          "cached_tokens": 2036
+        },
+        "total_tokens": 2205
+      }
+    }
+  ],
+  "run_id": "c35b-date-stable-candidate",
+  "schema": "c24-p12-streaming-session-bridge-v1",
+  "server_gate": {
+    "active_s": 317.5764337370056,
+    "cgroup_peak_bytes": 13108576256,
+    "completed_requests": 2,
+    "decode_s": 22.218500000000002,
+    "decode_tok_s": 3.510588023493935,
+    "decode_tokens": 78,
+    "last_half_decode_tok_s": 3.9127398810527074,
+    "run_id": "c35b-date-stable-candidate",
+    "sample_count": 304,
+    "schema_version": "c2-gate-result-v1",
+    "status": "PASS"
+  },
+  "server_returncode": 0,
+  "status": "PASS_BRIDGE",
+  "stop_reasons": [],
+  "token_id_sha256": {
+    "c35b-first-turn2048": "50f5c7f3d32c502fa1d0c9d4b93e97f6eb308ceac07d5c6d455c94fad3208fdf",
+    "c35b-second-turn128": "6d9ebc8fec46c5092dd11dd296db45ad012b049276725888061439887786d200"
+  }
+}

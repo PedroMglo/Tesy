@@ -1,0 +1,127 @@
+{
+  "all_pass": true,
+  "arms": [
+    {
+      "cpu_diagnostics": {
+        "clock_source": "cpuinfo_avg_freq per cpufreq policy",
+        "cpu_effective_clock_max_mhz": 3306.5015000000003,
+        "cpu_effective_clock_median_mhz": 3059.5335,
+        "cpu_effective_clock_min_mhz": 605.264,
+        "cpu_max_c": 95.125,
+        "cpu_package_power_max_w": 70.52581085228428,
+        "cpu_package_power_median_w": 60.93725586243888,
+        "cpu_policy_count": 24,
+        "cpu_warning_observed": true,
+        "cpu_warning_sample_count": 164,
+        "explicit_thermal_flag_source": "ACPI Processor cooling cur_state; AMD hardware flag unavailable",
+        "gpu_power_max_w": 22.03,
+        "power_source": "package-0 RAPL energy counter; interval power estimate",
+        "processor_cooling_max_state": 0,
+        "sample_count": 547
+      },
+      "idle_end": {
+        "cpu_c": 43.625,
+        "cpu_fan_rpm": 2500.0,
+        "elapsed_s": 300.04749607800477,
+        "gpu": {
+          "driver": "615.71.09",
+          "temperature_c": 41.0,
+          "used_mib": 12.0
+        },
+        "gpu_fan_rpm": 2400.0,
+        "mem_available_bytes": 25427582976,
+        "nvme_c": 35.85,
+        "run_id": "c35b-date-shift-control",
+        "utc": "2026-09-28T01:27:44.536277+00:00"
+      },
+      "idle_start": {
+        "cpu_c": 45.625,
+        "cpu_fan_rpm": 0.0,
+        "elapsed_s": 0.04389418000209844,
+        "gpu": {
+          "driver": "615.71.09",
+          "temperature_c": 42.0,
+          "used_mib": 12.0
+        },
+        "gpu_fan_rpm": 0.0,
+        "mem_available_bytes": 25612996608,
+        "nvme_c": 32.85,
+        "run_id": "c35b-date-shift-control",
+        "utc": "2026-09-28T01:22:44.532677+00:00"
+      },
+      "maxima": {
+        "cgroup_peak_bytes": 13089062912,
+        "cpu_c": 95.125,
+        "gpu_c": 62.0,
+        "gpu_total_mib": 5752.0,
+        "nvme_c": 53.85,
+        "rss_bytes": 13289381888,
+        "swap_bytes": 0
+      },
+      "run_id": "c35b-date-shift-control",
+      "stop_reasons": []
+    },
+    {
+      "cpu_diagnostics": {
+        "clock_source": "cpuinfo_avg_freq per cpufreq policy",
+        "cpu_effective_clock_max_mhz": 3307.4705000000004,
+        "cpu_effective_clock_median_mhz": 3027.45525,
+        "cpu_effective_clock_min_mhz": 605.264,
+        "cpu_max_c": 95.125,
+        "cpu_package_power_max_w": 71.22021641081642,
+        "cpu_package_power_median_w": 61.40975644601608,
+        "cpu_policy_count": 24,
+        "cpu_warning_observed": true,
+        "cpu_warning_sample_count": 104,
+        "explicit_thermal_flag_source": "ACPI Processor cooling cur_state; AMD hardware flag unavailable",
+        "gpu_power_max_w": 19.05,
+        "power_source": "package-0 RAPL energy counter; interval power estimate",
+        "processor_cooling_max_state": 0,
+        "sample_count": 304
+      },
+      "idle_end": {
+        "cpu_c": 40.75,
+        "cpu_fan_rpm": 2600.0,
+        "elapsed_s": 302.02727470999525,
+        "gpu": {
+          "driver": "615.71.09",
+          "temperature_c": 38.0,
+          "used_mib": 12.0
+        },
+        "gpu_fan_rpm": 2500.0,
+        "mem_available_bytes": 25518903296,
+        "nvme_c": 34.85,
+        "run_id": "c35b-date-stable-candidate",
+        "utc": "2026-09-28T01:43:06.371285+00:00"
+      },
+      "idle_start": {
+        "cpu_c": 51.375,
+        "cpu_fan_rpm": 2600.0,
+        "elapsed_s": 0.04131220999988727,
+        "gpu": {
+          "driver": "615.71.09",
+          "temperature_c": 46.0,
+          "used_mib": 12.0
+        },
+        "gpu_fan_rpm": 2400.0,
+        "mem_available_bytes": 25642934272,
+        "nvme_c": 43.85,
+        "run_id": "c35b-date-stable-candidate",
+        "utc": "2026-09-28T01:38:04.385325+00:00"
+      },
+      "maxima": {
+        "cgroup_peak_bytes": 13108576256,
+        "cpu_c": 95.125,
+        "gpu_c": 62.0,
+        "gpu_total_mib": 5752.0,
+        "nvme_c": 51.85,
+        "rss_bytes": 13299429376,
+        "swap_bytes": 0
+      },
+      "run_id": "c35b-date-stable-candidate",
+      "stop_reasons": []
+    }
+  ],
+  "guards": "E18 zero swap, CPU95 warning/100 stop, GPU80/NVMe70, GPU total7000MiB, MemAvailable6GiB minimum",
+  "schema": "c35b-resources-v1"
+}

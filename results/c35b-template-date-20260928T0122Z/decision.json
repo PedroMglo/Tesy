@@ -1,0 +1,58 @@
+{
+  "C15_status": "COMPILED_MODEL_FREE_ONLY_MODEL_NOT_RUN",
+  "M3": "PARTIAL_TWO_TURN_SYNTHETIC_CACHE",
+  "M4": "NOT_RUN",
+  "budget_physical_cap_s": 57600,
+  "budget_physical_consumed_s": 26915.327545624954,
+  "candidate_run_id": "c35b-date-stable-candidate",
+  "claim": "changing only rendered date between turns reproduces cache_n35; fixing date at session start restores cache_n2036 under frozen synthetic 2048+128 protocol",
+  "closed_utc": "2026-09-28T01:49:49.819970+00:00",
+  "control_run_id": "c35b-date-shift-control",
+  "default_changed": false,
+  "evidence": "two complete bounded fresh-process arms with official token IDs and source-derived cache accounting",
+  "limits": [
+    "no general performance claim across prompt dates",
+    "not a 20-request 60-minute session",
+    "no functional quality suite",
+    "no logits parity for opt-in prompt-date profile",
+    "no server default changed"
+  ],
+  "maxima_by_run": {
+    "c35b-date-shift-control": {
+      "cgroup_peak_bytes": 13089062912,
+      "cpu_c": 95.125,
+      "gpu_c": 62.0,
+      "gpu_total_mib": 5752.0,
+      "nvme_c": 53.85,
+      "rss_bytes": 13289381888,
+      "swap_bytes": 0
+    },
+    "c35b-date-stable-candidate": {
+      "cgroup_peak_bytes": 13108576256,
+      "cpu_c": 95.125,
+      "gpu_c": 62.0,
+      "gpu_total_mib": 5752.0,
+      "nvme_c": 51.85,
+      "rss_bytes": 13299429376,
+      "swap_bytes": 0
+    }
+  },
+  "measurement_commits": [
+    "c0560c7ea6292f578e311571474afb4cf3631cd1",
+    "7b550bf79f4a0bc3c1980d6d8338b71f65152ea2"
+  ],
+  "next_action": "C36 current-date 4096+128 exact-prefix server bridge under E18, then 20-request >=60-minute session if resource/cache gates pass",
+  "old_failures_preserved": [
+    "C29 FAIL cache_n35",
+    "C34b FAIL frozen token SHA",
+    "C35 FAIL prelaunch scope"
+  ],
+  "resource_status": "PASS_BOTH",
+  "schema": "c35b-decision-v1",
+  "second_request_diagnostic_reduction_percent": 89.82238038237604,
+  "second_request_elapsed_s": [
+    290.44629016999534,
+    29.56051860700245
+  ],
+  "status": "TEMPLATE_DATE_CAUSE_CONFIRMED_TESTED_SCOPE"
+}
