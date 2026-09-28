@@ -1,0 +1,27 @@
+{
+  "C15_model_status": "NOT_RUN",
+  "M3": "PARTIAL_C37_SYNTHETIC_SESSION",
+  "M4": "NOT_RUN",
+  "budget_physical_cap_s": 57600,
+  "budget_physical_consumed_s": 34874.41430456595,
+  "closed_utc": "2026-09-28T04:35:04.879423+00:00",
+  "default_changed": false,
+  "measurement_commits": {
+    "p8": "98932b9c4cf32ce606723db0ad2721f41426c9bb",
+    "stock20": "b22931c874401b1ab79639150478ac3d2658afc9",
+    "stock20-init": "691db3cff129346d5e9c2b765ad624ce9665d63f",
+    "stock20-smoke": "99b12ab98e0adc1aff4c644535da137627daa46c"
+  },
+  "next_action": "C39 new campaign/measurement identity: log cpufreq policy/value; one immediate retry only for zero; preserve zero occurrence; model-free fault tests; then fresh P8 and P12 12-task arms if budget/guards admit",
+  "old_failures_preserved": [
+    "C29 cache_n35",
+    "C34b token SHA date drift",
+    "C38 P8 telemetry failure"
+  ],
+  "p12": "NOT_RUN",
+  "p8": "FAIL_TELEMETRY_AFTER_TWO_COMPLETE_REQUESTS_NO_SUITE_CLAIM",
+  "qualified_20b": "11/12 PASS, plan-01 FAIL_TRUNCATED, ngl13 under E18/8K",
+  "reason": "P8 monitor rejected an effective CPU frequency read but did not capture value/policy; third stream stopped as consequence; only 2/12 complete outputs",
+  "schema": "c38-decision-v1",
+  "status": "FAIL_TELEMETRY_P8_C38"
+}
