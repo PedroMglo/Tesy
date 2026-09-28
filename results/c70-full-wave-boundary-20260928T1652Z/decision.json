@@ -1,0 +1,68 @@
+{
+  "M3": "C52B_TESTED_SCOPE_UNCHANGED",
+  "M4": "NOT_MET",
+  "coverage": {
+    "byte_witness_rows_each": 996,
+    "core_stage_comparisons": 1500,
+    "full_logits": 5,
+    "masked_states": 2,
+    "numeric_states": 250,
+    "on_sentinels_masked_cpu": 80800
+  },
+  "default_changed": false,
+  "measurement_commit": "1151213c88c7b3527a5c3aa7797d00bfbc531b8a",
+  "mismatch_count": 0,
+  "next_action": "run C57 P12 resident canonical reference on this captured ON profile, then fresh-process ON repetition before timing",
+  "not_run": [
+    "C57 full 36 resident canonical layer reference",
+    "fresh-process ON repetition",
+    "timing",
+    "quality",
+    "M4"
+  ],
+  "old_failures_preserved": [
+    "C48 FAIL_SAME_PROFILE_FIDELITY",
+    "C61 FAIL_NUMERIC_RUNTIME_ASSERTION",
+    "C66 FAIL_NUMERIC_RUNTIME_ASSERTION"
+  ],
+  "runs": {
+    "off": {
+      "elapsed_s": 70.786,
+      "maxima": {
+        "buffered_model_fds": 1,
+        "cgroup_file_bytes": 2701639680,
+        "cgroup_memory_bytes": 13992824832,
+        "cgroup_peak_bytes": 14014435328,
+        "cpu_tctl_c": 89.125,
+        "direct_model_fds": 2,
+        "gpu_temperature_c": 56.0,
+        "gpu_used_mib": 5698.0,
+        "nvme_composite_c": 48.85,
+        "rss_bytes": 13090639872,
+        "swap_bytes": 0
+      },
+      "raw_manifest_sha256": "25f049206d2cb57164a54d3b09b069ae7e4653d0120f6cba002877c152147826",
+      "run_id": "c70-p12-wave-off01"
+    },
+    "on": {
+      "elapsed_s": 53.683,
+      "maxima": {
+        "buffered_model_fds": 1,
+        "cgroup_file_bytes": 2930335744,
+        "cgroup_memory_bytes": 14290595840,
+        "cgroup_peak_bytes": 14312017920,
+        "cpu_tctl_c": 66.5,
+        "direct_model_fds": 2,
+        "gpu_temperature_c": 53.0,
+        "gpu_used_mib": 5698.0,
+        "nvme_composite_c": 54.85,
+        "rss_bytes": 13090734080,
+        "swap_bytes": 0
+      },
+      "raw_manifest_sha256": "8d1c679ed7a21385b05384dcb08038754c618fe41b8990bbab6b7512270a0ad4",
+      "run_id": "c70-p12-wave-on01"
+    }
+  },
+  "schema": "c70-decision-v1",
+  "status": "SAME_PROFILE_BITWISE_PASS_FULL_BOUNDARY"
+}
