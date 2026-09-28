@@ -19,7 +19,7 @@
     "M4": "NOT_MET_BY_OBSERVED_LATENCY_AND_DECODE"
   },
   "mission": "local usable main GPT-OSS 120B, original weights and authoritative routing",
-  "next_action": "C57 physical same-profile boundary/reference under resource policy after isolated CUDA build; placement P14 accounting model-free remains open.",
+  "next_action": "C57 physical fidelity after isolated CUDA build, then P14 bounded forward admission; P16 not statically admitted due to only 180 MiB VRAM margin before new workspace.",
   "open_hypotheses": [
     "C57 shared-activation repair passes a model-free MMID discriminant; full-layer and full-logit same-profile fidelity remain NOT_RUN",
     "Additional placement P14/slots32 may reduce CPU expert demand but may exceed VRAM or harm decode; accounting and forward admission required",
@@ -410,7 +410,12 @@
       "root": "results/c57b-ffn-model-free-20260928T1455Z",
       "source_commit": "aac3bbde35575044d290798a120cde038f85b670",
       "status": "MODEL_FREE_FFN_PASS_NO_120B"
+    },
+    {
+      "identity": "c59",
+      "root": "results/c59-placement-static-20260928T1453Z",
+      "status": "P14_FORWARD_ADMISSION_SCREEN_PLAUSIBLE_NO_MODEL"
     }
   ],
-  "updated_utc": "2026-09-28T14:51:08.569641+00:00"
+  "updated_utc": "2026-09-28T14:53:40.888577+00:00"
 }
