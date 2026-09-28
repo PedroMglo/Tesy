@@ -1,0 +1,10 @@
+# C48 CPU buffer identification boundary
+
+- **Objective:** resolve the C47 source assertion and test the parked-pair mechanism at a new identity. This unit only asks whether OFF, ON, and fresh-process ON have bitwise identical selected full logits and 250 captured states. No timing claim is permitted before same-pin canonical references.
+- **Base:** investigation `2ca6382`; isolated backend C47 `6a2c6c1` plus C48 fix `0bc5c75`. The original backend remains an independent control. Source patch: `research/patches/C48-host-buffer-fix.patch`.
+- **Prior evidence:** C46 found 71,260 active of 708,540 prefill wave pair slots; its diagnostic ranges cannot be treated as removable time. C47 OFF captured successfully. C47 first ON aborted at `GGML_ASSERT(device)` before prefill because the stock CPU buffer type has a null device; this remains a FAIL. C47 fresh ON, references, and timing were NOT_RUN.
+- **Hypothesis:** testing host accessibility of the streamed weight cache identifies the CPU execution path without dereferencing a null device. The C47 parked-pair `+0` contract then remains bitwise equal to OFF in selected outputs.
+- **Alternative:** an incorrect buffer classification, output dependency, lifetime change, or numeric implementation difference causes an assertion or same-profile mismatch.
+- **Prospective gate:** parser/model-free tests, clean source/build and model identity, E18 preflight, 300-second thermal idle before each arm, OFF→ON→fresh ON, full logits and six core stages for 250 states, 2 explicit masked states, active-byte witnesses. Stop at the first failure, preserve it, and use a new identity for any diagnosis. CPU 95 °C warns; 100 °C or explicit thermal limit stops. No new power policy.
+- **Evidence class now:** source fix and parser tests only. Full-model, references, timing, quality, and M4 are NOT_RUN for C48 until receipts exist.
+- **Decision path:** a boundary PASS permits a separately frozen same-pin canonical reference unit. Failure closes C48. No C47 receipt is reused as a C48 PASS.
