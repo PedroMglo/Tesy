@@ -1,0 +1,312 @@
+{
+  "arm": "p8",
+  "completed_requests": 12,
+  "cpu_diagnostics": {
+    "clock_source": "cpuinfo_avg_freq per cpufreq policy",
+    "cpu_effective_clock_max_mhz": 3309.6045,
+    "cpu_effective_clock_median_mhz": 3118.6565,
+    "cpu_effective_clock_min_mhz": 605.264,
+    "cpu_effective_clock_transient_zero_read_count": 0,
+    "cpu_max_c": 89.0,
+    "cpu_package_power_max_w": 61.33692675122632,
+    "cpu_package_power_median_w": 24.40757032090013,
+    "cpu_policy_count": 24,
+    "cpu_warning_observed": false,
+    "cpu_warning_sample_count": 0,
+    "explicit_thermal_flag_source": "ACPI Processor cooling cur_state; AMD hardware flag unavailable",
+    "gpu_power_max_w": 17.95,
+    "power_source": "package-0 RAPL energy counter; interval power estimate",
+    "processor_cooling_max_state": 0,
+    "sample_count": 2433
+  },
+  "default_changed": false,
+  "elapsed_s": 2621.682223890006,
+  "idle": {
+    "baseline": null,
+    "cadence_breaks": [],
+    "duration_s": 495.56764909400954,
+    "end": {
+      "cpu_c": 44.25,
+      "cpu_fan_rpm": 2500.0,
+      "elapsed_s": 495.56764909400954,
+      "gpu": {
+        "driver": "615.71.09",
+        "temperature_c": 41.0,
+        "used_mib": 12.0
+      },
+      "gpu_fan_rpm": 0.0,
+      "mem_available_bytes": 26278277120,
+      "nvme_c": 33.85,
+      "run_id": "c40-p8",
+      "utc": "2026-09-28T05:38:25.503086+00:00"
+    },
+    "last60_trend_c": {
+      "cpu_c": -0.19999999999999574,
+      "gpu_c": -0.7000000000000028,
+      "nvme_c": 0.0
+    },
+    "match_tolerance_c": [
+      5,
+      5,
+      3
+    ],
+    "max_gap_overall_s": 0.792416645999765,
+    "max_gap_qualifying_s": 0.792416645999765,
+    "max_start_c": [
+      50,
+      50,
+      45
+    ],
+    "qualifying_duration_s": 300.02697835500294,
+    "qualifying_start_s": 195.5406707390066,
+    "sample_count": 992,
+    "series_sha256": "06f9c4f337252dd871f40a4a5720ad4193fca22ca4f21fa7c3d895513cbabf0a",
+    "start": {
+      "cpu_c": 46.75,
+      "cpu_fan_rpm": 0.0,
+      "elapsed_s": 0.07902495200687554,
+      "gpu": {
+        "driver": "615.71.09",
+        "temperature_c": 42.0,
+        "used_mib": 12.0
+      },
+      "gpu_fan_rpm": 0.0,
+      "mem_available_bytes": 26367475712,
+      "nvme_c": 33.85,
+      "run_id": "c40-p8",
+      "utc": "2026-09-28T05:30:10.014465+00:00"
+    },
+    "status": "PASS"
+  },
+  "launch_error": null,
+  "maxima": {
+    "cgroup_peak_bytes": 15070109696,
+    "cpu_c": 89.0,
+    "gpu_c": 55.0,
+    "gpu_total_mib": 3938.0,
+    "nvme_c": 56.85,
+    "rss_bytes": 15193976832,
+    "swap_bytes": 0
+  },
+  "measurement_commit": "7372cab03ae8c600921650f18f6c1f0a66c360d6",
+  "parent_c39_decision_sha256": "da8b334c2579eba1fdb150c316cc79d2e609ed86b6f5e3c7af2068e3842da711",
+  "pass_count": 12,
+  "raw_sha256": "667b068b82cbb683fcf102ea14df4f8feaeee52a70af8b2d0e90bb015a5fc2f6",
+  "results": [
+    {
+      "category": "code",
+      "completion_tokens": 557,
+      "detail": {
+        "exit_code": 0,
+        "status": "PASS",
+        "stderr_tail": "",
+        "stdout_tail": "TESY_TESTS_PASSED_94027\n"
+      },
+      "finish_reason": "stop",
+      "first_final_content_s": 110.12510852199921,
+      "id": "c38-code-01",
+      "message_sha256": "879f4b2bf7668eb5495560c97882973ab4809ecb3e0c728c983808d7f039eabc",
+      "prompt_tokens": 138,
+      "status": "PASS",
+      "wall_s": 223.62537092799903
+    },
+    {
+      "category": "code",
+      "completion_tokens": 414,
+      "detail": {
+        "exit_code": 0,
+        "status": "PASS",
+        "stderr_tail": "",
+        "stdout_tail": "TESY_TESTS_PASSED_94027\n"
+      },
+      "finish_reason": "stop",
+      "first_final_content_s": 74.68357045199082,
+      "id": "c38-code-02",
+      "message_sha256": "dc3c33eb5cbbcd24e14b69ef6bd47ab1d34ecc1f6de4ec9b8771935d87a797b1",
+      "prompt_tokens": 143,
+      "status": "PASS",
+      "wall_s": 177.8169007539982
+    },
+    {
+      "category": "code",
+      "completion_tokens": 852,
+      "detail": {
+        "exit_code": 0,
+        "status": "PASS",
+        "stderr_tail": "",
+        "stdout_tail": "TESY_TESTS_PASSED_94027\n"
+      },
+      "finish_reason": "stop",
+      "first_final_content_s": 171.80113600300683,
+      "id": "c38-code-03",
+      "message_sha256": "4a5fb53242290efe377ae634782719a3ca792a6a6fba9fff42e7533daf45cbf2",
+      "prompt_tokens": 144,
+      "status": "PASS",
+      "wall_s": 292.27868164199754
+    },
+    {
+      "category": "code",
+      "completion_tokens": 425,
+      "detail": {
+        "exit_code": 0,
+        "status": "PASS",
+        "stderr_tail": "",
+        "stdout_tail": "TESY_TESTS_PASSED_94027\n"
+      },
+      "finish_reason": "stop",
+      "first_final_content_s": 114.74449691399059,
+      "id": "c38-code-04",
+      "message_sha256": "e7743ef33f95aa1fdaa5694665d2455a81a295ef2e94ff14e87116643aef24c2",
+      "prompt_tokens": 140,
+      "status": "PASS",
+      "wall_s": 183.91878954599088
+    },
+    {
+      "category": "sql_data",
+      "completion_tokens": 236,
+      "detail": {
+        "exit_code": 0,
+        "status": "PASS",
+        "stderr_tail": "",
+        "stdout_tail": "TESY_TESTS_PASSED_94027\n"
+      },
+      "finish_reason": "stop",
+      "first_final_content_s": 96.9472771610017,
+      "id": "c38-sql-01",
+      "message_sha256": "d89f0e51e50e0b392ea4d143fa301c9476d8401d34fcb45725256770720c58c8",
+      "prompt_tokens": 149,
+      "status": "PASS",
+      "wall_s": 117.59228857699782
+    },
+    {
+      "category": "sql_data",
+      "completion_tokens": 246,
+      "detail": {
+        "exit_code": 0,
+        "status": "PASS",
+        "stderr_tail": "",
+        "stdout_tail": "TESY_TESTS_PASSED_94027\n"
+      },
+      "finish_reason": "stop",
+      "first_final_content_s": 100.00052458200662,
+      "id": "c38-sql-02",
+      "message_sha256": "3bcdbb3e3cc4ec1075e3cc398d1f80b92391be0be1a20e173985ed505ce0f07b",
+      "prompt_tokens": 124,
+      "status": "PASS",
+      "wall_s": 116.40241868300654
+    },
+    {
+      "category": "sql_data",
+      "completion_tokens": 536,
+      "detail": {
+        "exit_code": 0,
+        "status": "PASS",
+        "stderr_tail": "",
+        "stdout_tail": "TESY_TESTS_PASSED_94027\n"
+      },
+      "finish_reason": "stop",
+      "first_final_content_s": 171.4874973219994,
+      "id": "c38-sql-03",
+      "message_sha256": "06f7988b3113063851d236d8d637c2f7fab723935d02bfc0142abc558aab7122",
+      "prompt_tokens": 149,
+      "status": "PASS",
+      "wall_s": 201.73232422700676
+    },
+    {
+      "category": "sql_data",
+      "completion_tokens": 332,
+      "detail": {
+        "exit_code": 0,
+        "status": "PASS",
+        "stderr_tail": "",
+        "stdout_tail": "TESY_TESTS_PASSED_94027\n"
+      },
+      "finish_reason": "stop",
+      "first_final_content_s": 125.02874916300061,
+      "id": "c38-sql-04",
+      "message_sha256": "dbaf61564e37d960077986c47797562bac6ec8b9cb3ebedee471802faf9fd935",
+      "prompt_tokens": 153,
+      "status": "PASS",
+      "wall_s": 150.97472484699392
+    },
+    {
+      "category": "planning",
+      "completion_tokens": 1812,
+      "detail": {
+        "reason": null,
+        "status": "PASS"
+      },
+      "finish_reason": "stop",
+      "first_final_content_s": 484.4575325909973,
+      "id": "c38-plan-01",
+      "message_sha256": "6bdb44df4e293cd96e7c4887e6f442a6803fd22a528d36c42726cf039507581b",
+      "prompt_tokens": 167,
+      "status": "PASS",
+      "wall_s": 502.12651540499064
+    },
+    {
+      "category": "planning",
+      "completion_tokens": 650,
+      "detail": {
+        "reason": null,
+        "status": "PASS"
+      },
+      "finish_reason": "stop",
+      "first_final_content_s": 192.72681893499976,
+      "id": "c38-plan-02",
+      "message_sha256": "ca0b6b5b0a386e75a7de039cc114806f4cae0cab6c9c4a50e22ccf546b593ddf",
+      "prompt_tokens": 148,
+      "status": "PASS",
+      "wall_s": 202.8555114720075
+    },
+    {
+      "category": "planning",
+      "completion_tokens": 594,
+      "detail": {
+        "reason": null,
+        "status": "PASS"
+      },
+      "finish_reason": "stop",
+      "first_final_content_s": 207.60205282799143,
+      "id": "c38-plan-03",
+      "message_sha256": "4e1b2fed7ffc3f8d11efaf7404e4f789ea9272e3949f25bc0f02a3d753f5472b",
+      "prompt_tokens": 159,
+      "status": "PASS",
+      "wall_s": 218.2790812579915
+    },
+    {
+      "category": "planning",
+      "completion_tokens": 543,
+      "detail": {
+        "reason": null,
+        "status": "PASS"
+      },
+      "finish_reason": "stop",
+      "first_final_content_s": 215.53835644500214,
+      "id": "c38-plan-04",
+      "message_sha256": "2d3b3f6d7cd12aa5e5b7c9977a9759460ef632f14c422449b34bf0707345ba20",
+      "prompt_tokens": 172,
+      "status": "PASS",
+      "wall_s": 228.51315380200685
+    }
+  ],
+  "returncode": 0,
+  "run_id": "c40-p8",
+  "runner_returncode": 0,
+  "schema": "c40-quality-receipt-v1",
+  "server_gate": {
+    "active_s": 2616.115761140987,
+    "cgroup_peak_bytes": 15070109696,
+    "completed_requests": 12,
+    "decode_s": 2047.5095000000001,
+    "decode_tok_s": 3.515002006095698,
+    "decode_tokens": 7197,
+    "last_half_decode_tok_s": 3.7010875124089377,
+    "run_id": "c40-p8",
+    "sample_count": 2433,
+    "schema_version": "c2-gate-result-v1",
+    "status": "PASS"
+  },
+  "status": "PASS_COMPLETE_12_TASKS",
+  "stop_reasons": []
+}
