@@ -1,0 +1,49 @@
+{
+  "C15_model": "NOT_RUN",
+  "M1": "QUALIFIED_PROSPECTIVE_SCOPE_HISTORICAL_PARTIAL",
+  "M2": "CONFIRMED_496_TEACHER_FORCED_SCOPE_NATIVE_PRELOAD",
+  "M3": "PARTIAL_8K_BOUNDARY_AND_SYNTHETIC_SPACED_SESSION",
+  "M4": "NOT_RUN",
+  "boundary": {
+    "answer_matches": true,
+    "first_final_content_s": 1092.6271607209928,
+    "input_ids": 7936,
+    "output_cap": 256,
+    "output_ids": 85,
+    "request_wall_s": 1094.1564955319918
+  },
+  "closed_utc": "2026-09-28T08:06:54.312287+00:00",
+  "cpu_high_rereads": 0,
+  "cpu_warning_samples": 598,
+  "default_changed": false,
+  "limits": [
+    "one synthetic retrieval input near 8K boundary",
+    "no independent full-8K logits/reference",
+    "not an assistant-history 20-request session",
+    "latency goals unmet",
+    "no default change"
+  ],
+  "measurement_commit": "c65c1b9d609f9630c1a85a90906055513046cd3e",
+  "next_action": "C43: freeze a bounded C15 original-versus-instrumented 513-ID numerical/phase bridge to bound removable wave critical-path time; if no material bound, pivot to residency/session analysis",
+  "old_failures_preserved": [
+    "C41 prelaunch commit argument FAIL",
+    "C41b monitor high-frequency FAIL",
+    "C38 P8 telemetry FAIL",
+    "C39 P8 orchestrator interruption FAIL",
+    "C9-C17 CPU95 protocol thermal FAILs"
+  ],
+  "physical_budget_consumed_s": 45992.387279096976,
+  "physical_budget_remaining_s": 11607.612720903024,
+  "resource_maxima": {
+    "cgroup_peak_bytes": 13088030720,
+    "cpu_c": 95.25,
+    "gpu_c": 63.0,
+    "gpu_total_mib": 5752.0,
+    "nvme_c": 54.85,
+    "rss_bytes": 13290373120,
+    "swap_bytes": 0
+  },
+  "run_id": "c42-p12-boundary7936",
+  "schema": "c42-decision-v1",
+  "status": "PASS_BOUNDARY_RETRIEVAL_TESTED_SCOPE"
+}
