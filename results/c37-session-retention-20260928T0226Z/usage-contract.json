@@ -1,0 +1,23 @@
+{
+  "date": "2026-09-28",
+  "flash_attention": true,
+  "idle_between_requests_s": 180,
+  "kv_offload": true,
+  "kv_types": "F16/F16",
+  "kv_unified": true,
+  "min_process_duration_s": 3600,
+  "n_batch": 256,
+  "n_ctx": 8192,
+  "n_gpu_layers": 12,
+  "n_seq_max": 1,
+  "n_ubatch": 32,
+  "no_context_shift": true,
+  "no_retries": true,
+  "output_cap_each": 64,
+  "prompt_pattern": "same user text extended each request; no generated assistant history",
+  "requests": 20,
+  "schema": "c37-8k-session-retention-contract-v1",
+  "slots": 32,
+  "swa_full": true,
+  "template": "embedded GGUF, fixed render date via opt-in C35 backend"
+}

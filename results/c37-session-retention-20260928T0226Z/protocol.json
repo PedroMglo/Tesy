@@ -1,0 +1,38 @@
+{
+  "M3_claim_if_pass": "PARTIAL_8K_SPACED_SESSION_RETENTION_ONLY",
+  "alternative": "server idle policy or KV retention expires the prefix after 180 seconds, or resource/thermal drift prevents prolonged use",
+  "analysis": "report every request, first/last ten medians, CPU clocks/power, cache retention, no p95/quality claim",
+  "backend_candidate_commit": "c3759bad92c0e6f71bb936afea9b0a162fb83f76",
+  "backend_commit": "c3759bad92c0e6f71bb936afea9b0a162fb83f76",
+  "created_utc": "2026-09-28T02:23:50.779193+00:00",
+  "default_changed": false,
+  "failure_policy": "first cache, output, telemetry or guard failure stops; preserve FAIL, no retry",
+  "hypothesis": "with fixed template date and compatible options, all 19 incremental requests reuse the adjacent ordered prefix and finish under E18 guards",
+  "input_sha256": {
+    "session-input.json": "c25a912f1bd426a2e69a8b57e373d26dbc7f02cacf9e89d9951345970303499c",
+    "usage-contract.json": "1e862c1ec3e36bd461d964c689996cac86639409506ed54fd0deb45337b4a060"
+  },
+  "limitations": [
+    "synthetic prompt extension, not generated-assistant conversation",
+    "3-minute idle gaps, not continuous throughput stress",
+    "response cap64 may truncate; not a functional quality suite",
+    "one process, no p95 claim"
+  ],
+  "model_sha256": "582bd40f6886200101f4c4ed9f25f3fe80cc14c86e9e2b37746cd8904a0c622d",
+  "objective": "observe whether one 8K P12 server retains exact-prefix cache and resource safety for 20 spaced requests over at least 60 minutes",
+  "prefix_gate": "first cache_n0; each adjacent LCP >= previous prompt IDs-32 and >=1900, cache_n in [LCP-32,LCP]",
+  "primary_gate": "20 complete requests, process elapsed>=3600s; every request >0 and <=64 completion tokens, done fence, exact official prompt count, no hidden retry",
+  "profile": "P12 ngl12 ub32 slots32 full-SWA 8K, embedded template, date fixed Sep28, zero swap E18",
+  "resource_gate": "E18 18GiB cgroup zero swap, RSS<=16GiB reservation, cgroup peak<=16.5GiB, GPU<=6500MiB reservation, MemAvailable>=6GiB, CPU95 warning/100 stop, GPU80/NVMe70 stop",
+  "resource_guards": "E18 18GiB cgroup zero swap, RSS<=16GiB reservation, cgroup peak<=16.5GiB, GPU<=6500MiB reservation, MemAvailable>=6GiB, CPU95 warning/100 stop, GPU80/NVMe70 stop",
+  "schema": "c37-session-retention-protocol-v1",
+  "source_parent_decision_sha256": "9d7099fa9401ce7251e36e635b9c2859ae06980d25adab051847b747c5aa963b",
+  "status": "PROSPECTIVE_FROZEN_BEFORE_MODEL_OUTPUT",
+  "thermal_admission": "300s contiguous idle <=1s cadence, starts <=50/50/45C; AC/performance unchanged",
+  "time_budget_s": {
+    "physical_reserve": 8400,
+    "server": 7200,
+    "thermal_idle": 900
+  },
+  "workload": "one process, 20 synthetic same-user prompt extensions, 127 beta words per step, output cap64, 180s idle after each completed request except last"
+}

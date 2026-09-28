@@ -5,6 +5,7 @@ import argparse
 import datetime as dt
 import hashlib
 import json
+import math
 import os
 from pathlib import Path
 import re
@@ -60,6 +61,23 @@ def task_template_kwargs(task):
         raise GateError('chat template kwargs must be a nonempty string-keyed object')
     json_bytes(value)
     return {'chat_template_kwargs': value}
+
+
+def session_idle_seconds(config):
+    value = config.get('inter_request_idle_s', 0)
+    if type(value) not in (int, float) or not math.isfinite(value) or not 0 <= value <= 600:
+        raise GateError('invalid inter-request idle duration')
+    return float(value)
+
+
+def validate_adjacent_cache(previous_ids, current_ids, cache_n, min_common, max_lost=None):
+    common = next((i for i, (a, b) in enumerate(zip(previous_ids, current_ids))
+                   if a != b), min(len(previous_ids), len(current_ids)))
+    if type(cache_n) is not int or common < min_common or \
+            (max_lost is not None and common < len(previous_ids) - max_lost) or \
+            not common - 32 <= cache_n <= common:
+        raise GateError('adjacent exact-prefix cache outside frozen band')
+    return common
 
 
 def parse_chat_stream(lines, elapsed):
@@ -383,6 +401,15 @@ def child_exited_after_sample_loss(server):
 
 
 def run(args, protocol, config, task_rows, model):
+    between = session_idle_seconds(config)
+    minimum = config.get('adjacent_cache_min_common')
+    if minimum is not None and (type(minimum) is not int or minimum <= 0 or
+                                not config.get('pretokenize')):
+        raise GateError('adjacent cache gate requires a positive bound and official tokens')
+    max_lost = config.get('adjacent_prefix_tail_max')
+    if max_lost is not None and (minimum is None or type(max_lost) is not int or
+                                 not 0 <= max_lost <= 128):
+        raise GateError('invalid adjacent-prefix tail bound')
     cg_start = cgroup_state()
     if not cg_start or cg_start["memory_max"] != 18*2**30 or cg_start["swap_max"] != 0:
         raise GateError("18 GiB cgroup and zero swap not enforced")
@@ -571,7 +598,13 @@ def run(args, protocol, config, task_rows, model):
                 validate_token_relationships(token_ids,
                                              config.get('token_id_relationships', []))
                 preflight["prompt_tokenization"] = tokenization
-            for row_id, task in task_rows:
+            for row_index, (row_id, task) in enumerate(task_rows):
+                if row_index and between:
+                    until = time.monotonic() + between
+                    while time.monotonic() < until:
+                        if reasons or server.poll() is not None:
+                            raise GateError('server/watchdog stopped during session idle')
+                        stop.wait(max(0, min(1, until - time.monotonic())))
                 if reasons or server.poll() is not None: raise GateError("server/watchdog stopped")
                 messages = task.get("messages") or [{"role":"user","content":task["prompt"]}]
                 stream_requests = config.get('stream_requests', False)
@@ -615,6 +648,15 @@ def run(args, protocol, config, task_rows, model):
                     item['stream_metrics'] = stream_metrics
                 raw.append(item)
                 print(json.dumps({"id":row_id,"elapsed_s":end-start,"usage":item["usage"]}),flush=True)
+                if minimum is not None:
+                    cache_n = item.get('timings',{}).get('cache_n')
+                    if row_index == 0:
+                        if cache_n != 0:
+                            raise GateError('first session request unexpectedly reused cache')
+                    else:
+                        validate_adjacent_cache(token_ids[task_rows[row_index-1][0]],
+                                                token_ids[row_id], cache_n, minimum,
+                                                max_lost)
         except Exception as exc:
             reasons.append(f"RUN_ERROR:{type(exc).__name__}:{exc}")
         finally:
