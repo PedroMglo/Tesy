@@ -1,0 +1,6 @@
+# C92: C75 8K server load/forward admission
+
+- **Objective/base:** resolve C91 launcher error with a new identity and test C75 P12 8K preload-ON server load plus one token. Source `45598141a70c6446eb69cf01a9a26728cedb63e6`; measurement `cca90b9aa6fb934290f6e8ec4ab6759b6603b3dc`. C90 E18 host preflight and model-free scope test preceded launch.
+- **Evidence:** one `systemd-run --user --scope` run passed receipt validation. Server ready at 4.052 s; whole run 23.589 s; request 18.435 s for 71 prompt tokens and one truncated completion token. Cgroup peak 13,047,279,616 B, GPU total 5710 MiB, CPU/GPU/NVMe maxima 75.875/49/44.85 °C, zero workload swap/OOM/stop. Eight `/proc/PID/maps` backend libraries matched frozen hashes. **MEDIDO_NO_TARGET** within this synthetic canary.
+- **Alternative/limit:** short forward cannot bound the full 8K graph, 32-token decode, numeric fidelity, session reuse or useful-answer latency. The completion ended with `length`; its text is incomplete. Do not use its timing as a decode-rate claim.
+- **Decision:** preserve C92 `PASS_LOAD_AND_SHORT_FORWARD_TESTED_SCOPE`, C91 harness FAIL, C78 resource FAIL and C48 fidelity FAIL. Proceed to prospectively frozen 8K OFF/ON boundary; server performance/M4 **NOT_RUN**. No default or service change.
