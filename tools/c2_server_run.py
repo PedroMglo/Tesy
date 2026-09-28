@@ -96,6 +96,22 @@ def validate_adjacent_cache(previous_ids, current_ids, cache_n, min_common, max_
     return common
 
 
+def validate_generated_prefix_cache(previous_ids, current_ids, cache_n,
+                                    prompt_n, previous_completion_n,
+                                    min_common, max_lost=32):
+    """Bound a live history cache, which may include prior generated tokens."""
+    common = next((i for i, (a, b) in enumerate(zip(previous_ids, current_ids))
+                   if a != b), min(len(previous_ids), len(current_ids)))
+    upper = min(len(current_ids), common + previous_completion_n)
+    if (type(cache_n) is not int or type(prompt_n) is not int or
+        type(previous_completion_n) is not int or previous_completion_n <= 0 or
+        common < min_common or len(previous_ids)-common > max_lost or
+        not common-32 <= cache_n <= upper or
+        prompt_n + cache_n != len(current_ids)):
+        raise GateError('generated-token prefix cache outside frozen band')
+    return common
+
+
 def parse_chat_stream(lines, elapsed):
     """Collect one OpenAI chat SSE response and timestamp received text chunks."""
     content = []
@@ -204,17 +220,20 @@ def validate_expected_message(message, task):
 
 
 def assistant_history_messages(first_messages, assistant_message, followup_messages):
-    """Build a second turn from the actual first API answer, preserving its content."""
-    if (type(first_messages) is not list or len(first_messages) != 1 or
-        type(first_messages[0]) is not dict or first_messages[0].get('role') != 'user' or
-        type(first_messages[0].get('content')) is not str or
+    """Append an actual answer and user turn to an alternating session history."""
+    if (type(first_messages) is not list or not first_messages or
+        len(first_messages) % 2 != 1 or
+        any(type(message) is not dict or
+            message.get('role') != ('user' if index % 2 == 0 else 'assistant') or
+            type(message.get('content')) is not str or not message['content']
+            for index, message in enumerate(first_messages)) or
         type(followup_messages) is not list or len(followup_messages) != 1 or
         type(followup_messages[0]) is not dict or followup_messages[0].get('role') != 'user' or
         type(followup_messages[0].get('content')) is not str or
         type(assistant_message) is not dict or assistant_message.get('role') != 'assistant' or
         type(assistant_message.get('content')) is not str or not assistant_message['content']):
         raise GateError('actual assistant-history turn unavailable')
-    return [dict(first_messages[0]),
+    return [dict(message) for message in first_messages] + [
             {'role': 'assistant', 'content': assistant_message['content']},
             dict(followup_messages[0])]
 
@@ -437,9 +456,9 @@ def run(args, protocol, config, task_rows, model):
     dynamic_history = config.get('append_previous_assistant_to_next', False)
     if dynamic_history is not False and dynamic_history is not True:
         raise GateError('invalid assistant-history flag')
-    if dynamic_history and (len(task_rows) != 2 or not config.get('pretokenize') or
+    if dynamic_history and (not 2 <= len(task_rows) <= 20 or not config.get('pretokenize') or
                             not config.get('freeze_token_ids')):
-        raise GateError('assistant-history requires two officially tokenized turns')
+        raise GateError('assistant-history requires 2-20 officially tokenized turns')
     minimum = config.get('adjacent_cache_min_common')
     if minimum is not None and (type(minimum) is not int or minimum <= 0 or
                                 not config.get('pretokenize')):
@@ -613,7 +632,7 @@ def run(args, protocol, config, task_rows, model):
                 token_ids = {}
                 for row_index, (row_id, task) in enumerate(task_rows):
                     if dynamic_history and row_index:
-                        continue  # the second turn depends on the actual first API answer
+                        continue  # later turns depend on actual previous API answers
                     messages = task.get("messages") or [{"role":"user","content":task["prompt"]}]
                     kwargs = task_template_kwargs(task)
                     template = fetch("/apply-template",{"model":model_id,
@@ -640,6 +659,8 @@ def run(args, protocol, config, task_rows, model):
                                              config.get('token_id_relationships', []))
                 preflight["prompt_tokenization"] = tokenization
             previous_assistant = None
+            history_messages = None
+            first_assistant_content = None
             for row_index, (row_id, task) in enumerate(task_rows):
                 if row_index and between:
                     until = time.monotonic() + between
@@ -651,7 +672,7 @@ def run(args, protocol, config, task_rows, model):
                 messages = task.get("messages") or [{"role":"user","content":task["prompt"]}]
                 if dynamic_history and row_index:
                     messages = assistant_history_messages(
-                        task_rows[0][1]['messages'], previous_assistant, messages)
+                        history_messages, previous_assistant, messages)
                     template = fetch('/apply-template', {'model':model_id,
                                      'messages':messages,
                                      'max_tokens':config['request_policy']['max_tokens'],
@@ -709,7 +730,29 @@ def run(args, protocol, config, task_rows, model):
                 if stream_metrics is not None:
                     item['stream_metrics'] = stream_metrics
                 raw.append(item)
-                if dynamic_history and row_index == 0:
+                required_pattern = config.get('first_assistant_content_pattern')
+                if required_pattern is not None:
+                    content = item['message'].get('content')
+                    if row_index == 0:
+                        if type(content) is not str or re.fullmatch(required_pattern, content) is None:
+                            raise GateError('first assistant content outside frozen pattern')
+                        first_assistant_content = content
+                    elif content != first_assistant_content:
+                        raise GateError('assistant-history answer changed')
+                dynamic_minimum = config.get('dynamic_cache_min_common')
+                if dynamic_minimum is not None:
+                    timing = item.get('timings') or {}
+                    if row_index == 0:
+                        if timing.get('cache_n') != 0:
+                            raise GateError('first dynamic request unexpectedly cached')
+                    else:
+                        validate_generated_prefix_cache(
+                            token_ids[task_rows[row_index-1][0]], token_ids[row_id],
+                            timing.get('cache_n'), timing.get('prompt_n'),
+                            raw[-2]['usage']['completion_tokens'], dynamic_minimum,
+                            config.get('dynamic_cache_max_lost',32))
+                if dynamic_history:
+                    history_messages = messages
                     previous_assistant = choices[0]['message']
                 print(json.dumps({"id":row_id,"elapsed_s":end-start,"usage":item["usage"]}),flush=True)
                 if minimum is not None:
