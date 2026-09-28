@@ -83,6 +83,7 @@ def configuration(root):
                        'backend_dirty': subprocess.check_output(
                            ['git', '-C', str(BACKEND), 'status', '--porcelain'], text=True).strip(),
                        'server_runner_sha256': sha256(server.__file__),
+                       'cgroup_memory_max_bytes': 18 * 2**30,
                        'admission_runner_sha256': sha256(__file__),
                        'monitor_scope': 'systemd user scope E18, zero swap',
                        'claim': 'load/context admission only; no forward workspace or API claim'}}
@@ -90,8 +91,7 @@ def configuration(root):
 
 
 def cpu_guard_violation(cpu_c, protocol):
-    return (cpu_c >= protocol['limits']['cpu_max_c'] if 'c18' in protocol
-            else cpu_c > 95)
+    return cpu_c >= protocol['limits']['cpu_max_c']
 
 
 def validate_receipt(protocol, config, raw, samples, root, *, run_id=RUN_ID,
@@ -119,7 +119,8 @@ def validate_receipt(protocol, config, raw, samples, root, *, run_id=RUN_ID,
         raise GateError('endpoint telemetry absent')
     start = pre['cgroup_start']
     end = raw['cgroup_end']
-    if not end or start['memory_max'] != 18 * 2**30 or start['swap_max'] != 0 or \
+    expected_cgroup_max = protocol.get('c9', {}).get('cgroup_memory_max_bytes', 18 * 2**30)
+    if not end or start['memory_max'] != expected_cgroup_max or start['swap_max'] != 0 or \
        end['swap_current'] != 0:
         raise GateError('cgroup cap/swap invalid')
     for key in ('events', 'events_local'):
@@ -141,7 +142,7 @@ def validate_receipt(protocol, config, raw, samples, root, *, run_id=RUN_ID,
         for key in ('VmRSS', 'VmSwap', 'VmHWM'):
             if type(ps.get(key)) is not int or ps[key] < 0:
                 raise GateError('missing/negative process memory')
-        if cg['memory_max'] != 18 * 2**30 or cg['swap_max'] != 0 or \
+        if cg['memory_max'] != expected_cgroup_max or cg['swap_max'] != 0 or \
            cg['swap_current'] != 0 or ps['VmSwap'] != 0 or \
            any(cg[k][name] != start[k][name] for k in ('events', 'events_local')
                for name in ('max', 'oom', 'oom_kill')):
@@ -151,7 +152,8 @@ def validate_receipt(protocol, config, raw, samples, root, *, run_id=RUN_ID,
            cg['memory_peak'] > protocol['limits']['memory_max_bytes'] or \
            gpu['used_mib'] > protocol['limits']['gpu_max_mib'] or \
            sample['mem_available_bytes'] < protocol['limits']['min_mem_available_bytes'] or \
-           cpu_limit_exceeded or gpu['temperature_c'] > 80 or th['nvme_composite_c'] > 70:
+           cpu_limit_exceeded or gpu['temperature_c'] > protocol['limits']['gpu_max_c'] or \
+           th['nvme_composite_c'] > protocol['limits']['nvme_max_c']:
             raise GateError('sample resource reservation/guard exceeded')
         maxima['rss_bytes'] = max(maxima['rss_bytes'], ps['VmRSS'])
         maxima['cgroup_peak_bytes'] = max(maxima['cgroup_peak_bytes'], cg['memory_peak'])
