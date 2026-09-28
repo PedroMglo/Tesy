@@ -1,0 +1,9 @@
+# C61 numeric boundary result
+
+- Objective/base: test the C57 repaired shared-activation conversion on the first failed C48 boundary. Measurement commit `16919da411deade9ce35e091503e8db642d9d211`; isolated backend `aac3bbde35575044d290798a120cde038f85b670`. Protocol and 60-second host inventory are in `results/c61-wave-boundary-20260928T1509Z/`.
+- Evidence class: `MEDIDO_NO_TARGET` for the bounded process abort and resources; `DIAGNOSTIC` for partial tensor comparisons. The causal explanation remains `HIPÓTESE`.
+- Outcome: OFF arm `c61-p12-wave-off01` returned -6 after 18.764 s. Backend assertion at `src/llama-moe-stream.cpp:609` rejected an expert ID in `plan_waves_locked`. ON arm was `NOT_RUN` under the frozen stop rule. No full selected logits or completed index were written; same-profile fidelity and timing remain `NOT_RUN`.
+- Resources: 28 samples, maximum gap 0.928 s; cgroup peak 3,949,522,944 B; GPU peak 5624 MiB; CPU 76.375 °C, GPU 50 °C, NVMe 41.85 °C. Swap and OOM events stayed zero. The abort was not a thermal or memory guard stop.
+- Observation: all 26 partial layer-0/prefill0 payloads match the historical C48 OFF capture bitwise. This localizes the observed difference to after that partial boundary, but does not identify the producer of the invalid ID. The callback coverage is narrower than C48 and may change synchronization; a race or another backend defect remains possible.
+- Alternatives/decision: do not relabel C48 and do not retry C61. A new model-free source diagnostic should record the first invalid ID, layer and call context without recovering the computation; only then consider one new bounded physical identity. P14 placement is independent and remains open.
+- Tests: 121 model-free tests passed before measurement; raw manifest/output hashes and mapped backend libraries were checked; C61 raw is local and untracked. Canonical resident reference, full 36-layer comparison, C57 timing and C57 utility are `NOT_RUN`.
