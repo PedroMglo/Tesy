@@ -29,6 +29,10 @@ def candidates(root: Path) -> list[tuple[str, str, str]]:
         verified = verify(root, report_id)
         check_derived(verified)
         meta = verified['meta']
+        # DRAFT reports belong in the registry so CI can verify and build previews,
+        # but they are not release candidates and do not require a review audit yet.
+        if meta['editorial_state'] == 'DRAFT':
+            continue
         audit = read(verified['folder'] / 'audit.json')
         validate(root, 'audit', audit)
         require(meta['editorial_state'] == 'REVIEWED', 'AUTO_RELEASE_REQUIRES_REVIEWED_EDITORIAL_STATE: ' + report_id)
