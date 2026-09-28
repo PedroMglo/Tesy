@@ -1,0 +1,164 @@
+{
+  "candidate_measurement_commit": "ea7aec95707875d3229201290951b4f185573a40",
+  "candidate_run_id": "c98-candidate01",
+  "control_measurement_commit": "586aa5488af58a8faa6159e8b53dead18017a55b",
+  "control_run_id": "c97-control01",
+  "limitations": [
+    "one sequential pair; not performance screening or confirmation",
+    "page-cache state uncontrolled; O_DIRECT configured, physical I/O attribution not established",
+    "equal assistant messages do not prove all full-model logits bitwise for these requests",
+    "synthetic two-turn history, not diverse quality or M4"
+  ],
+  "maxima": {
+    "candidate": {
+      "cgroup_peak_bytes": 13207437312,
+      "cpu_c": 94.375,
+      "gpu_c": 60.0,
+      "gpu_total_mib": 5758.0,
+      "nvme_c": 52.85,
+      "rss_bytes": 13296193536,
+      "swap_bytes": 0
+    },
+    "control": {
+      "cgroup_peak_bytes": 13145841664,
+      "cpu_c": 95.125,
+      "gpu_c": 62.0,
+      "gpu_total_mib": 5752.0,
+      "nvme_c": 54.85,
+      "rss_bytes": 13286535168,
+      "swap_bytes": 0
+    }
+  },
+  "rows": [
+    {
+      "assistant_message_equal": true,
+      "assistant_message_sha256": "570dd70754164cc0f75273829e378068176ae8ac0c117518ba29f532b1e03a4a",
+      "candidate_cached_tokens": 0,
+      "candidate_completion_tokens": 77,
+      "candidate_prompt_tokens": 2043,
+      "control_cached_tokens": 0,
+      "control_completion_tokens": 77,
+      "control_prompt_tokens": 2043,
+      "decode_tokens_per_s": {
+        "candidate": 3.1676011501436365,
+        "control": 3.1479963432547415
+      },
+      "metrics": {
+        "decode_s": {
+          "candidate": 24.308616,
+          "control": 24.460003,
+          "paired_gain_percent": 0.6189165226185774
+        },
+        "first_final_content_s": {
+          "candidate": 91.87966712701018,
+          "control": 299.73686701399856,
+          "paired_gain_percent": 69.34655785178433
+        },
+        "prefill_s": {
+          "candidate": 68.21102400000001,
+          "control": 275.912961,
+          "paired_gain_percent": 75.27806459226103
+        },
+        "request_wall_s": {
+          "candidate": 92.53759387299942,
+          "control": 300.39840047499456,
+          "paired_gain_percent": 69.19504440547036
+        }
+      },
+      "official_prompt_ids_equal": true,
+      "request_id": "c97-code"
+    },
+    {
+      "assistant_message_equal": true,
+      "assistant_message_sha256": "820c24b73539290bbe34ff2e1e22e436fede820d270d0e0eadab6f2e122865f1",
+      "candidate_cached_tokens": 2044,
+      "candidate_completion_tokens": 60,
+      "candidate_prompt_tokens": 2081,
+      "control_cached_tokens": 2044,
+      "control_completion_tokens": 60,
+      "control_prompt_tokens": 2081,
+      "decode_tokens_per_s": {
+        "candidate": 3.217024148645389,
+        "control": 3.156257635842041
+      },
+      "metrics": {
+        "decode_s": {
+          "candidate": 18.650776999999998,
+          "control": 19.009854999999998,
+          "paired_gain_percent": 1.8889044656048153
+        },
+        "first_final_content_s": {
+          "candidate": 25.062880384997698,
+          "control": 28.19055101000413,
+          "paired_gain_percent": 11.094748108671228
+        },
+        "prefill_s": {
+          "candidate": 6.833868000000001,
+          "control": 9.625995999999999,
+          "paired_gain_percent": 29.00612050950362
+        },
+        "request_wall_s": {
+          "candidate": 25.500310471004923,
+          "control": 28.646198019006988,
+          "paired_gain_percent": 10.98186763183981
+        }
+      },
+      "official_prompt_ids_equal": true,
+      "request_id": "c97-correction"
+    }
+  ],
+  "schema": "c98-server-bridge-summary-v1",
+  "start_observations": {
+    "candidate": {
+      "admission_reasons": [],
+      "gpu": {
+        "bdf": "00000000:C4:00.0",
+        "power_w": 11.14,
+        "temperature_c": 42.0,
+        "used_mib": 12.0,
+        "uuid": "GPU-83d90c55-1d92-75da-fc30-7771a85f2521"
+      },
+      "host_psi_full_avg10": 0.0,
+      "mem_available_bytes": 25284751360,
+      "power": {
+        "online_sources": [
+          "AC0"
+        ],
+        "profile": "performance",
+        "source": "AC"
+      },
+      "thermal": {
+        "cpu_tctl_c": 45.5,
+        "nvme_composite_by_sensor": {
+          "nvme-pci-c100": 34.85
+        }
+      }
+    },
+    "control": {
+      "admission_reasons": [],
+      "gpu": {
+        "bdf": "00000000:C4:00.0",
+        "power_w": 4.01,
+        "temperature_c": 42.0,
+        "used_mib": 12.0,
+        "uuid": "GPU-83d90c55-1d92-75da-fc30-7771a85f2521"
+      },
+      "host_psi_full_avg10": 0.0,
+      "mem_available_bytes": 25280548864,
+      "power": {
+        "online_sources": [
+          "AC0"
+        ],
+        "profile": "performance",
+        "source": "AC"
+      },
+      "thermal": {
+        "cpu_tctl_c": 47.0,
+        "nvme_composite_by_sensor": {
+          "nvme-pci-c100": 35.85
+        }
+      }
+    }
+  },
+  "status": "PASS_ONE_PAIR_BRIDGE_TESTED_SCOPE"
+}
