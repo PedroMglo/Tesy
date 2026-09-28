@@ -1,0 +1,21 @@
+{
+  "checks": [
+    {
+      "command": "C104 full-SHA positive / short-SHA negative model-free identity test",
+      "result": "PASS"
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=tools python3 tools/c55_inventory.py results/c104-server-wave-hot-toggle-20260928T2309Z",
+      "result": "PASS fresh 60 s inventory",
+      "snapshot_sha256": "40d9326c40dcb66db2ace471a16d690435af8e12a41731fd4fb7a8bb7336f623"
+    },
+    {
+      "command": "C104 freeze and four effective config comparisons, same binary/library and ON/OFF env sequence",
+      "result": "PASS"
+    }
+  ],
+  "model_loaded": false,
+  "schema": "c104-model-free-tests-v1",
+  "status": "PASS",
+  "utc": "2026-09-28T23:11:31.824264+00:00"
+}

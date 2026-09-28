@@ -1,0 +1,619 @@
+{
+  "cpu": {
+    "current_c": 47.375,
+    "driver": "k10temp",
+    "family": 26,
+    "model": "AMD Ryzen AI 9 HX 370 w/ Radeon 890M",
+    "model_id": 36,
+    "sensor": "k10temp-pci-00c3",
+    "source": "AMD HX370 Tjmax; Tctl, no assumed Tdie offset",
+    "stop_c": 100.0,
+    "warning_c": 95.0
+  },
+  "gpu": {
+    "bdf": "00000000:C4:00.0",
+    "current_c": 43.0,
+    "driver": "615.71.09",
+    "margin_c": 44.0,
+    "max_operating_c": 87.0,
+    "memory_stop_total_mib": 7676.0,
+    "name": "NVIDIA GeForce RTX 4060 Laptop GPU",
+    "raw_labels": {
+      "margin": "44 C",
+      "maxop_offset": "0 C",
+      "shutdown_offset": "-12 C",
+      "slowdown_offset": "-2 C",
+      "target": "87 C"
+    },
+    "shutdown_c": 99.0,
+    "slowdown_c": 89.0,
+    "source": "nvidia-smi -q -d TEMPERATURE; T.Limit relative to maximum operating",
+    "status": "DEVICE_DERIVED_EXPERIMENT_ADMISSION",
+    "stop_c": 89.0,
+    "target_c": 87.0,
+    "temperature_c": 43.0,
+    "total_mib": 8188.0,
+    "used_mib": 12.0,
+    "uuid": "GPU-83d90c55-1d92-75da-fc30-7771a85f2521",
+    "warning_c": 87.0
+  },
+  "memory": {
+    "ancestor_headroom_bytes": 32698777600,
+    "available_max_bytes": 24909840384,
+    "available_min_bytes": 24547721216,
+    "cap_max_bytes": 22280142848,
+    "external_variation_bytes": 362119168,
+    "reserve_bytes": 2147483648,
+    "total_bytes": 32698777600
+  },
+  "nvme": [
+    {
+      "bdf": "0000:c1:00.0",
+      "controller": "nvme0",
+      "critical_c": 89.85,
+      "current_c": 35.85,
+      "firmware": "V3MA101",
+      "model": "MTFDKBK1T0QFM-1BD1AABGB",
+      "sensor": "nvme-pci-c100",
+      "source": "Composite critical minus 2C admission; max is warning",
+      "stop_c": 87.85,
+      "warning_c": 86.85
+    }
+  ],
+  "power": {
+    "batteries": [
+      {
+        "name": "BAT0",
+        "status": "Not charging"
+      },
+      {
+        "name": "hid-0018:04F3:4359.0005-battery-7",
+        "status": "Unknown"
+      }
+    ],
+    "online_sources": [
+      "AC0"
+    ],
+    "profile": "performance",
+    "source": "AC"
+  },
+  "psi": {
+    "full_avg10": 0.0,
+    "raw": {
+      "avg10": 0.0,
+      "avg300": 0.0,
+      "avg60": 0.0,
+      "total": 14510844
+    }
+  },
+  "schema": "tesy-resource-inventory-v2",
+  "snapshot": {
+    "ancestors": [
+      {
+        "memory_current": 3435122688,
+        "memory_max": "max",
+        "path": "/sys/fs/cgroup/user.slice/user-1000.slice/user@1000.service/app.slice/app-gnome-org.wezfurlong.wezterm-37314.scope"
+      },
+      {
+        "memory_current": 6166319104,
+        "memory_max": "max",
+        "path": "/sys/fs/cgroup/user.slice/user-1000.slice/user@1000.service/app.slice"
+      },
+      {
+        "memory_current": 7115042816,
+        "memory_max": "max",
+        "path": "/sys/fs/cgroup/user.slice/user-1000.slice/user@1000.service"
+      },
+      {
+        "memory_current": 7147859968,
+        "memory_max": "max",
+        "path": "/sys/fs/cgroup/user.slice/user-1000.slice"
+      },
+      {
+        "memory_current": 7203164160,
+        "memory_max": "max",
+        "path": "/sys/fs/cgroup/user.slice"
+      },
+      {
+        "memory_current": null,
+        "memory_max": "UNBOUNDED_ROOT",
+        "path": "/sys/fs/cgroup"
+      }
+    ],
+    "baseline": [
+      {
+        "MemAvailable": 24874745856,
+        "elapsed_s": 2.8000795282423496e-07,
+        "psi_full_avg10": 0.0
+      },
+      {
+        "MemAvailable": 24878665728,
+        "elapsed_s": 1.000414782000007,
+        "psi_full_avg10": 0.0
+      },
+      {
+        "MemAvailable": 24879624192,
+        "elapsed_s": 2.000509259989485,
+        "psi_full_avg10": 0.0
+      },
+      {
+        "MemAvailable": 24881467392,
+        "elapsed_s": 3.0006066740024835,
+        "psi_full_avg10": 0.0
+      },
+      {
+        "MemAvailable": 24883613696,
+        "elapsed_s": 4.00073635901208,
+        "psi_full_avg10": 0.0
+      },
+      {
+        "MemAvailable": 24887181312,
+        "elapsed_s": 5.000979978009127,
+        "psi_full_avg10": 0.0
+      },
+      {
+        "MemAvailable": 24889966592,
+        "elapsed_s": 6.0010865190124605,
+        "psi_full_avg10": 0.0
+      },
+      {
+        "MemAvailable": 24896905216,
+        "elapsed_s": 7.001178892998723,
+        "psi_full_avg10": 0.0
+      },
+      {
+        "MemAvailable": 24893288448,
+        "elapsed_s": 8.0012766479922,
+        "psi_full_avg10": 0.0
+      },
+      {
+        "MemAvailable": 24896434176,
+        "elapsed_s": 9.001372177997837,
+        "psi_full_avg10": 0.0
+      },
+      {
+        "MemAvailable": 24896368640,
+        "elapsed_s": 10.00151219201507,
+        "psi_full_avg10": 0.0
+      },
+      {
+        "MemAvailable": 24899932160,
+        "elapsed_s": 11.001619363989448,
+        "psi_full_avg10": 0.0
+      },
+      {
+        "MemAvailable": 24902234112,
+        "elapsed_s": 12.001733468991006,
+        "psi_full_avg10": 0.0
+      },
+      {
+        "MemAvailable": 24902356992,
+        "elapsed_s": 13.001826955995057,
+        "psi_full_avg10": 0.0
+      },
+      {
+        "MemAvailable": 24903364608,
+        "elapsed_s": 14.001931151986355,
+        "psi_full_avg10": 0.0
+      },
+      {
+        "MemAvailable": 24901419008,
+        "elapsed_s": 15.002081865997752,
+        "psi_full_avg10": 0.0
+      },
+      {
+        "MemAvailable": 24904085504,
+        "elapsed_s": 16.00220487799379,
+        "psi_full_avg10": 0.0
+      },
+      {
+        "MemAvailable": 24904617984,
+        "elapsed_s": 17.00231610800256,
+        "psi_full_avg10": 0.0
+      },
+      {
+        "MemAvailable": 24906788864,
+        "elapsed_s": 18.002486699988367,
+        "psi_full_avg10": 0.0
+      },
+      {
+        "MemAvailable": 24908894208,
+        "elapsed_s": 19.002580297004897,
+        "psi_full_avg10": 0.0
+      },
+      {
+        "MemAvailable": 24561537024,
+        "elapsed_s": 20.002682007994736,
+        "psi_full_avg10": 0.0
+      },
+      {
+        "MemAvailable": 24564830208,
+        "elapsed_s": 21.002773701009573,
+        "psi_full_avg10": 0.0
+      },
+      {
+        "MemAvailable": 24566951936,
+        "elapsed_s": 22.0028678989911,
+        "psi_full_avg10": 0.0
+      },
+      {
+        "MemAvailable": 24573767680,
+        "elapsed_s": 23.002965552994283,
+        "psi_full_avg10": 0.0
+      },
+      {
+        "MemAvailable": 24577798144,
+        "elapsed_s": 24.003069328988204,
+        "psi_full_avg10": 0.0
+      },
+      {
+        "MemAvailable": 24579764224,
+        "elapsed_s": 25.003167915012455,
+        "psi_full_avg10": 0.0
+      },
+      {
+        "MemAvailable": 24577699840,
+        "elapsed_s": 26.003257623990066,
+        "psi_full_avg10": 0.0
+      },
+      {
+        "MemAvailable": 24577470464,
+        "elapsed_s": 27.00334882599418,
+        "psi_full_avg10": 0.0
+      },
+      {
+        "MemAvailable": 24580505600,
+        "elapsed_s": 28.00344751199009,
+        "psi_full_avg10": 0.0
+      },
+      {
+        "MemAvailable": 24578129920,
+        "elapsed_s": 29.003517784993164,
+        "psi_full_avg10": 0.0
+      },
+      {
+        "MemAvailable": 24579428352,
+        "elapsed_s": 30.00358810700709,
+        "psi_full_avg10": 0.0
+      },
+      {
+        "MemAvailable": 24580734976,
+        "elapsed_s": 31.003681292990223,
+        "psi_full_avg10": 0.0
+      },
+      {
+        "MemAvailable": 24576765952,
+        "elapsed_s": 32.003770851995796,
+        "psi_full_avg10": 0.0
+      },
+      {
+        "MemAvailable": 24547721216,
+        "elapsed_s": 33.003858728014166,
+        "psi_full_avg10": 0.0
+      },
+      {
+        "MemAvailable": 24909840384,
+        "elapsed_s": 34.00394801600487,
+        "psi_full_avg10": 0.0
+      },
+      {
+        "MemAvailable": 24885366784,
+        "elapsed_s": 35.00402018200839,
+        "psi_full_avg10": 0.0
+      },
+      {
+        "MemAvailable": 24885379072,
+        "elapsed_s": 36.0041102420073,
+        "psi_full_avg10": 0.0
+      },
+      {
+        "MemAvailable": 24885379072,
+        "elapsed_s": 37.00418158699176,
+        "psi_full_avg10": 0.0
+      },
+      {
+        "MemAvailable": 24882413568,
+        "elapsed_s": 38.004258842993295,
+        "psi_full_avg10": 0.0
+      },
+      {
+        "MemAvailable": 24883871744,
+        "elapsed_s": 39.00433119898662,
+        "psi_full_avg10": 0.0
+      },
+      {
+        "MemAvailable": 24890855424,
+        "elapsed_s": 40.004401582002174,
+        "psi_full_avg10": 0.0
+      },
+      {
+        "MemAvailable": 24891023360,
+        "elapsed_s": 41.00449372600997,
+        "psi_full_avg10": 0.0
+      },
+      {
+        "MemAvailable": 24891375616,
+        "elapsed_s": 42.00459418501123,
+        "psi_full_avg10": 0.0
+      },
+      {
+        "MemAvailable": 24890572800,
+        "elapsed_s": 43.00468873299542,
+        "psi_full_avg10": 0.0
+      },
+      {
+        "MemAvailable": 24892026880,
+        "elapsed_s": 44.004759726987686,
+        "psi_full_avg10": 0.0
+      },
+      {
+        "MemAvailable": 24896032768,
+        "elapsed_s": 45.00484895601403,
+        "psi_full_avg10": 0.0
+      },
+      {
+        "MemAvailable": 24897572864,
+        "elapsed_s": 46.00493944599293,
+        "psi_full_avg10": 0.0
+      },
+      {
+        "MemAvailable": 24898134016,
+        "elapsed_s": 47.00501972800703,
+        "psi_full_avg10": 0.0
+      },
+      {
+        "MemAvailable": 24897593344,
+        "elapsed_s": 48.005097093991935,
+        "psi_full_avg10": 0.0
+      },
+      {
+        "MemAvailable": 24897716224,
+        "elapsed_s": 49.00516833801521,
+        "psi_full_avg10": 0.0
+      },
+      {
+        "MemAvailable": 24900182016,
+        "elapsed_s": 50.00526568200439,
+        "psi_full_avg10": 0.0
+      },
+      {
+        "MemAvailable": 24901255168,
+        "elapsed_s": 51.0053365160129,
+        "psi_full_avg10": 0.0
+      },
+      {
+        "MemAvailable": 24901931008,
+        "elapsed_s": 52.00542623500223,
+        "psi_full_avg10": 0.0
+      },
+      {
+        "MemAvailable": 24895041536,
+        "elapsed_s": 53.0055156229937,
+        "psi_full_avg10": 0.0
+      },
+      {
+        "MemAvailable": 24897564672,
+        "elapsed_s": 54.00560505199246,
+        "psi_full_avg10": 0.0
+      },
+      {
+        "MemAvailable": 24553046016,
+        "elapsed_s": 55.00570194498869,
+        "psi_full_avg10": 0.0
+      },
+      {
+        "MemAvailable": 24554762240,
+        "elapsed_s": 56.00579375799862,
+        "psi_full_avg10": 0.0
+      },
+      {
+        "MemAvailable": 24556023808,
+        "elapsed_s": 57.00588584199431,
+        "psi_full_avg10": 0.0
+      },
+      {
+        "MemAvailable": 24561778688,
+        "elapsed_s": 58.005976732994895,
+        "psi_full_avg10": 0.0
+      },
+      {
+        "MemAvailable": 24563179520,
+        "elapsed_s": 59.00606646199594,
+        "psi_full_avg10": 0.0
+      },
+      {
+        "MemAvailable": 24571502592,
+        "elapsed_s": 60.00633782398654,
+        "psi_full_avg10": 0.0
+      }
+    ],
+    "cpu_identity": {
+      "family": 26,
+      "model": "AMD Ryzen AI 9 HX 370 w/ Radeon 890M",
+      "model_id": 36
+    },
+    "gpu_csv": "GPU-83d90c55-1d92-75da-fc30-7771a85f2521, 00000000:C4:00.0, NVIDIA GeForce RTX 4060 Laptop GPU, 8188, 12, 43, 615.71.09",
+    "gpu_power_query": {
+      "output": "10.02, [N/A], 75.00",
+      "status": "SUPPORTED"
+    },
+    "gpu_temperature_query": "==============NVSMI LOG==============\n\nTimestamp                                              : Tue Sep 29 00:11:02 2026\nDriver Version                                         : 615.71.09 [Deprecated; will be removed in CUDA 14.0. Use KMD Version instead]\nCUDA Version                                           : 13.4 [Deprecated; will be removed in CUDA 14.0. Use CUDA UMD Version instead]\nKMD Version                                            : 615.71.09\nCUDA UMD Version                                       : 13.4\n\nAttached GPUs                                          : 1\nGPU 00000000:C4:00.0\n    Temperature\n        GPU Current Temp                               : 43 C\n        GPU Current Max Temp                           : N/A\n        GPU Current T.Limit Temp                       : 44 C\n        GPU Shutdown T.Limit Temp Specification        : -12 C\n        GPU Slowdown T.Limit Temp Specification        : -2 C\n        GPU Max Operating T.Limit Temp Specification   : 0 C\n        GPU Target Temperature Specification           : 87 C\n        Memory Current Temp                            : N/A\n        Memory Max Operating T.Limit Temp Specification: N/A",
+    "involved_nvme": {
+      "nvme0": {
+        "bdf": "0000:c1:00.0",
+        "firmware": "V3MA101",
+        "model": "MTFDKBK1T0QFM-1BD1AABGB"
+      }
+    },
+    "memory": {
+      "MemAvailable": 24571502592,
+      "MemAvailable_max": 24909840384,
+      "MemAvailable_min": 24547721216,
+      "MemTotal": 32698777600,
+      "SwapFree": 9140477952,
+      "SwapTotal": 16348868608,
+      "ancestor_headroom_bytes": 32698777600
+    },
+    "model_stat": {
+      "dev": 53,
+      "inode": 14833675,
+      "mtime_ns": 1790389637795911032,
+      "size_bytes": 63387346208
+    },
+    "mounts": {
+      "model": {
+        "fstype": "btrfs",
+        "path": "/home/pmglo/models/gpt-oss-120b-gguf/gpt-oss-120b-MXFP4.gguf",
+        "source": "/dev/nvme0n1p3[/home]",
+        "target": "/home"
+      },
+      "raw": {
+        "fstype": "btrfs",
+        "path": "results/c104-server-wave-hot-toggle-20260928T2309Z",
+        "source": "/dev/nvme0n1p3[/home]",
+        "target": "/home"
+      },
+      "workspace": {
+        "fstype": "tmpfs",
+        "path": "/tmp",
+        "source": "tmpfs",
+        "target": "/tmp"
+      }
+    },
+    "power": {
+      "batteries": [
+        {
+          "name": "BAT0",
+          "status": "Not charging"
+        },
+        {
+          "name": "hid-0018:04F3:4359.0005-battery-7",
+          "status": "Unknown"
+        }
+      ],
+      "online_sources": [
+        "AC0"
+      ],
+      "profile": "performance",
+      "source": "AC"
+    },
+    "psi": {
+      "full_avg10": 0.0,
+      "raw": {
+        "avg10": 0.0,
+        "avg300": 0.0,
+        "avg60": 0.0,
+        "total": 14510844
+      }
+    },
+    "schema": "c55-host-snapshot-v1",
+    "sensors": {
+      "BAT0-acpi-0": {
+        "Adapter": "ACPI interface",
+        "in0": {
+          "in0_input": 16.242
+        },
+        "power1": {
+          "power1_input": 0.0
+        }
+      },
+      "acpi_fan-isa-0000": {
+        "Adapter": "ISA adapter",
+        "fan1": {
+          "fan1_input": 2636.0
+        }
+      },
+      "acpitz-acpi-0": {
+        "Adapter": "ACPI interface",
+        "temp1": {
+          "temp1_input": 45.0
+        },
+        "temp2": {
+          "temp2_input": 47.0
+        },
+        "temp3": {
+          "temp3_input": 20.0
+        }
+      },
+      "amdgpu-pci-c500": {
+        "Adapter": "PCI adapter",
+        "PPT": {
+          "power1_average": 11.682,
+          "power1_input": 11.682
+        },
+        "edge": {
+          "temp1_input": 42.0
+        },
+        "vddgfx": {
+          "in0_input": 0.0
+        },
+        "vddnb": {
+          "in1_input": 0.0
+        }
+      },
+      "asus-isa-0000": {
+        "Adapter": "ISA adapter",
+        "cpu_fan": {
+          "fan1_input": 2600.0
+        },
+        "gpu_fan": {
+          "fan2_input": 2400.0
+        }
+      },
+      "k10temp-pci-00c3": {
+        "Adapter": "PCI adapter",
+        "Tctl": {
+          "temp1_input": 47.375
+        }
+      },
+      "mt7925_phy0-pci-c300": {
+        "Adapter": "PCI adapter",
+        "temp1": {
+          "temp1_input": 38.0
+        }
+      },
+      "nvme-pci-c100": {
+        "Adapter": "PCI adapter",
+        "Composite": {
+          "temp1_alarm": 0.0,
+          "temp1_crit": 89.85,
+          "temp1_input": 35.85,
+          "temp1_max": 86.85,
+          "temp1_min": -0.15
+        },
+        "Sensor 1": {
+          "temp2_input": 35.85,
+          "temp2_max": 65261.85,
+          "temp2_min": -273.15
+        }
+      },
+      "ucsi_source_psy_USBC000:001-isa-0000": {
+        "Adapter": "ISA adapter",
+        "curr1": {
+          "curr1_input": 0.0,
+          "curr1_max": 0.0
+        },
+        "in0": {
+          "in0_input": 0.0,
+          "in0_max": 0.0,
+          "in0_min": 0.0
+        }
+      },
+      "ucsi_source_psy_USBC000:002-isa-0000": {
+        "Adapter": "ISA adapter",
+        "curr1": {
+          "curr1_input": 0.0,
+          "curr1_max": 0.0
+        },
+        "in0": {
+          "in0_input": 0.0,
+          "in0_max": 0.0,
+          "in0_min": 0.0
+        }
+      }
+    },
+    "storage_free_bytes": 411825356800,
+    "utc": "2026-09-28T23:11:00.435108+00:00"
+  },
+  "snapshot_sha256": "08e1543dbf33b6fbe944688fbbb8bbf6a3d434b91a97234fef3f36ec047fd99e"
+}
