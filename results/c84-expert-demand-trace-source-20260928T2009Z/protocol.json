@@ -1,0 +1,52 @@
+{
+  "alternative": "Existing 32-slot pools retain useful experts and the observed decode cost is compute, transfer, or hidden I/O rather than demand NVMe misses",
+  "build_flags": [
+    "CUDA arch 89",
+    "GCC 15.3.1",
+    "CUDA 13.3",
+    "TESY_C47_CPU_SKIP_PARKED",
+    "TESY_C84_EXPERT_TRACE"
+  ],
+  "control_backend_commit": "27d2e42d8c994507ee6d71acc7c58d3eddd3f7a5",
+  "default_changed": false,
+  "events": [
+    "DEMAND",
+    "RESERVE",
+    "EVICT",
+    "PRELOAD",
+    "LOAD_BEGIN",
+    "LOAD_END",
+    "LOAD_ERROR",
+    "WAIT_BEGIN",
+    "WAIT_END"
+  ],
+  "future_physical_gate": "C75 8K preload-ON same-profile numeric/session fidelity and fresh capacity admission first; no instrumented timing promotion",
+  "hypothesis": "A 153-ID incremental session may expose repeated expert demand after eviction and I/O waits that RAM L2 could reduce",
+  "limits": [
+    "not a production backend or L2 implementation",
+    "logical bytes and source timestamps do not measure physical NVMe traffic",
+    "no request/phase result without external markers and complete trace"
+  ],
+  "measurement_note": "Instrumented timings are diagnostic only; production timing needs neutral same-profile bridge",
+  "model_120b": "NOT_RUN",
+  "model_free_sources_sha256": {
+    "build_c84_trace_smoke.sh": "baa7ea9b375ea11a867acdb26eded10b5932619621c500219c59784b243d618a",
+    "c84_stream_callback_smoke.cpp": "044223573bb30a23a44116def5fe9efe3aa713a3494633e33a0ec356f6d5ddc7",
+    "c84_trace_smoke.cpp": "5c29c61ae22487ebce40a7e9ebc59fbd0b3256371362bbee1f8c85b8a98df13b",
+    "c84_trace_validate.py": "81939084f030fb85200cc642929398cb0bfdd1e2907b9fa99c2f6b8d0c530e48",
+    "test_c84_trace_validate.py": "d5faa75e1370fe530d2e27f394f68f25989d472eab09fd04e562db324debd637"
+  },
+  "objective": "record continuous per-layer demand/residency/eviction/load/wait events to decide whether bounded RAM L2 merits a prototype",
+  "phase_note": "n_tokens and wave are emitted; request boundaries must be supplied by a future client/server monotonic marker receipt, not inferred from totals",
+  "publication": "local compact only",
+  "schema": "c84-diagnostic-source-protocol-v1",
+  "source_commit": "5a1f4c5d9ed06021d58813ffb41792e83f337513",
+  "source_parent_commit": "27d2e42d8c994507ee6d71acc7c58d3eddd3f7a5",
+  "source_patch_sha256": "597bc1aa78de44ffb93f670395726f8dd1f737b1a845a56be05d5c4dbc67f927",
+  "source_tree": "f527410e12f59e76485986498e61f8e879834591",
+  "status": "SOURCE_ONLY_MODEL_FREE",
+  "trace_cap_events": 300000,
+  "trace_clock": "CLOCK_MONOTONIC ggml_time_us; event seq under manager mutex; worker LOAD_BEGIN/END timestamps captured around I/O and inserted together at completion",
+  "trace_raw_cap_bytes": 67108864,
+  "trace_schema": "c84-expert-demand-v1"
+}
