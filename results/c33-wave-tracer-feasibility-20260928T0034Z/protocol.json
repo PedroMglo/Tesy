@@ -1,0 +1,33 @@
+{
+  "schema": "c33-wave-tracer-feasibility-protocol-v1",
+  "status": "FROZEN_BEFORE_BUILD",
+  "objective": "check whether C15 source-only NVTX intervals can be built and collected without a model run",
+  "hypothesis": "the optional C15 intervals can expose per-thread CPU MMID, expert pread and upload intervals in a local process-tree trace; exclusive critical-path time still requires a separately frozen physical test",
+  "alternative": "the patch fails to build/collect, or the intervals are insufficient to attribute removable exclusive prefill time",
+  "evidence_class": "SOURCE_BUILD_AND_MODEL_FREE_SMOKE",
+  "backend_source_commit": "1691fb65a00c963ec3aa64a5b66a1b951de52d15",
+  "backend_base_commit": "1248fd8fa8cfebaece5ea992e4d951c1e18bb9d5",
+  "patch_sha256": "fca4c9b7a41003f7abcc2ac4b7301be6a75bd06537da48dd612b649f4185df8f",
+  "backend_worktree": "/tmp/tesy-c15-backend-20260927",
+  "build_directory": "/tmp/tesy-c15-backend-20260927/build-c33-nvtx",
+  "build_flags": {
+    "CMAKE_BUILD_TYPE": "Release",
+    "CMAKE_C_COMPILER": "/usr/bin/gcc-15",
+    "CMAKE_CXX_COMPILER": "/usr/bin/g++-15",
+    "CMAKE_CUDA_COMPILER": "/usr/local/cuda/bin/nvcc",
+    "CMAKE_CUDA_HOST_COMPILER": "/usr/bin/g++-15",
+    "CMAKE_CUDA_ARCHITECTURES": "89",
+    "CMAKE_C_FLAGS": "-DTESY_C15_NVTX -I/usr/local/cuda/targets/x86_64-linux/include",
+    "CMAKE_CXX_FLAGS": "-DTESY_C15_NVTX -I/usr/local/cuda/targets/x86_64-linux/include",
+    "GGML_CUDA": "ON",
+    "GGML_NATIVE": "ON",
+    "LLAMA_BUILD_SERVER": "ON"
+  },
+  "build_jobs": 4,
+  "model_runs": 0,
+  "test_gates": ["clean diagnostic source identity", "configure and build isolated server", "help process with no model", "NVTX process-tree collection smoke", "source interval boundaries reviewed"],
+  "trace_policy": "model-free tiny NVTX smoke only; raw profiler output local, hashed and not committed",
+  "claim_limit": "build/smoke cannot show interval coverage, exclusive prefill fraction, causal speedup or 120B numerical fidelity",
+  "failure_policy": "preserve FAIL; next debug has new identity",
+  "default_changed": false
+}
