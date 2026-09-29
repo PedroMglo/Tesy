@@ -26,6 +26,33 @@ def observation():
 
 
 class TestStartInventory(unittest.TestCase):
+    def test_clock_origin_does_not_change_duration(self):
+        for origin in (0, 1, 100000, 123456.789):
+            with self.subTest(origin=origin), TemporaryDirectory() as temp:
+                root = Path(temp)
+                (root / "raw").mkdir()
+                clock = [float(origin)]
+                calls = [0]
+                def sample():
+                    calls[0] += 1
+                    if calls[0] == 1:
+                        clock[0] += .01
+                    return observation()
+                def sleep(seconds):
+                    clock[0] += seconds
+                utc_base = datetime.fromisoformat("2026-09-29T12:00:00+00:00")
+                receipt = collect(root, "translated", policy=POLICY, cap_bytes=10_000,
+                                  expected_power=POWER, sample=sample,
+                                  monotonic=lambda: clock[0], sleep=sleep, duration_s=60,
+                                  utc_now=lambda: utc_base + timedelta(seconds=clock[0]-origin))
+                self.assertEqual(receipt["sample_count"], 61)
+                self.assertAlmostEqual(receipt["duration_s"], 60, places=6)
+                last = utc_base + timedelta(seconds=60.01)
+                self.assertEqual(require_inventory(root, "translated", receipt,
+                                  policy=POLICY, cap_bytes=10_000,
+                                  expected_power=POWER, duration_s=60,
+                                  now=last + timedelta(seconds=1)), 61)
+
     def test_complete_and_mutants(self):
         with TemporaryDirectory() as temp:
             root = Path(temp)

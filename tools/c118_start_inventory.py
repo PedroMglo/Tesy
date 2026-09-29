@@ -64,7 +64,8 @@ def collect(root: Path, run_id: str, *, policy: dict, cap_bytes: int,
         raise ValueError("positive inventory duration required")
     path = root / "raw" / f"{run_id}.start-inventory.jsonl"
     start = None
-    previous = None
+    previous_end = None
+    previous_elapsed = None
     count = 0
     with path.open("x") as out:
         while True:
@@ -74,8 +75,8 @@ def collect(root: Path, run_id: str, *, policy: dict, cap_bytes: int,
             if start is None:
                 start = sample_end
             elapsed = sample_end - start
-            if sample_end < sample_start or (previous is not None and
-                    not 0 < sample_end - previous <= 1.5):
+            if sample_end < sample_start or (previous_end is not None and
+                    not 0 < sample_end - previous_end <= 1.5):
                 raise GateError("start inventory cadence gap")
             validate_sample(obs, policy=policy, cap_bytes=cap_bytes,
                             expected_power=expected_power)
@@ -85,14 +86,15 @@ def collect(root: Path, run_id: str, *, policy: dict, cap_bytes: int,
             out.write(json.dumps(row, allow_nan=False, sort_keys=True) + "\n")
             out.flush()
             count += 1
-            previous = elapsed
+            previous_end = sample_end
+            previous_elapsed = elapsed
             if elapsed + 1e-6 >= duration_s:
                 break
             sleep(max(0, start + count - monotonic()))
     if count < math.floor(duration_s) + 1:
         raise GateError("start inventory too few samples")
     return {"schema": "c118-per-arm-start-inventory-v2", "run_id": run_id,
-            "duration_s": previous, "sample_count": count, "sha256": sha256(path),
+            "duration_s": previous_elapsed, "sample_count": count, "sha256": sha256(path),
             "policy_sha256": digest(policy), "cap_bytes": cap_bytes,
             "expected_power": expected_power,
             "path": str(path)}
