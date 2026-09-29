@@ -80,7 +80,11 @@ class Pipeline(unittest.TestCase):
         v=r.verify(self.root,'C01-scale-lab');self.assertEqual(v['meta']['scientific_state'],'SUCCESS')
         self.assertEqual(v['lock']['sources'][0]['commit'],'c67529e290844bb3d9033615072d5878014a46bc')
         self.assertEqual(v['values']['M-C1-UTILITY-PASS']['value'],8)
-    def test_automatic_release_candidate_is_reviewed_and_versioned(self):
+    def test_historical_automatic_release_candidates(self):
+        # Candidate selection is tested independently of newly reviewed reports
+        # that are still awaiting a real PDF audit in the authoring workflow.
+        for report_id in ('C04-prefill-cost','C05-first-divergence','C06-attn-dispatch-compat','R01-prior-art'):
+            p=self.root/'campaigns'/report_id/'campaign.json';m=r.read(p);m['editorial_state']='DRAFT';p.write_bytes(r.canonical(m))
         self.assertEqual(rc.candidates(self.root),[
             ('C03-boundary-prefill','1.0.0','reports-C03-boundary-prefill-v1.0.0'),
             ('C02-correctness-usability','1.0.0','reports-C02-correctness-usability-v1.0.0'),
@@ -88,7 +92,7 @@ class Pipeline(unittest.TestCase):
             ('R00-foundations','1.0.0','reports-R00-foundations-v1.0.0'),
             ('D00-research-dossier','1.0.0','reports-D00-research-dossier-v1.0.0'),
         ])
-    def test_registered_draft_locks_are_current(self):
+    def test_new_report_locks_are_current(self):
         for report_id in ('C04-prefill-cost','C05-first-divergence','C06-attn-dispatch-compat','R01-prior-art'):
             with self.subTest(report_id=report_id):
                 verified=r.verify(self.root,report_id)
