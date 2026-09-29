@@ -9,7 +9,7 @@ it measures possible logical read avoidance on this trace, not elapsed gain.
 import argparse
 import hashlib
 import json
-from collections import Counter, OrderedDict, defaultdict
+from collections import Counter, OrderedDict, defaultdict, deque
 from pathlib import Path
 
 from c122_trace_validate import HEADER, union_us, validate
@@ -55,6 +55,7 @@ def phase(cid):
 
 def summarize_spans(rows, layers):
     starts = {}
+    enqueues = defaultdict(deque)
     stats = defaultdict(lambda: defaultdict(list))
     pair_names = ('WAIT', 'READ', 'TENSOR_SET', 'LOAD', 'VICTIM_WAIT', 'MUTEX_WAIT')
     for e in rows:
@@ -67,12 +68,12 @@ def summarize_spans(rows, layers):
         if kind == 'DEMAND':
             stats[p]['demand_states'].append(e['state'])
         if kind == 'ENQUEUE':
-            starts[('QUEUE', e['layer'], e['expert'], e['slot'], e['generation'])] = e['mono_us']
+            enqueues[(e['call_id'], e['layer'], e['expert'], e['slot'], e['generation'])].append(e['mono_us'])
         if kind == 'DEQUEUE':
-            key = ('QUEUE', e['layer'], e['expert'], e['slot'], e['generation'])
-            if key not in starts:
+            key = (e['call_id'], e['layer'], e['expert'], e['slot'], e['generation'])
+            if not enqueues[key]:
                 raise GateError('orphan dequeue')
-            stats[p]['QUEUE'].append((starts.pop(key), e['mono_us']))
+            stats[p]['QUEUE'].append((enqueues[key].popleft(), e['mono_us']))
         for name in pair_names:
             if kind == name + '_BEGIN':
                 key = (name, e['call_id'], e['layer'], e['expert'], e['slot'], e['generation'], e['component'], e['wave'])
@@ -88,10 +89,10 @@ def summarize_spans(rows, layers):
                 if name == 'WAIT':
                     device = layers[e['layer']]['device']
                     stats[p]['WAIT_' + device].append((a, e['mono_us']))
-    # Some ENQUEUE events have no matching DEQUEUE in this trace. Their fate is
-    # unknown here; only dequeued tasks have an observed queue-delay interval.
-    pending_enqueues = sum(key[0] == 'QUEUE' for key in starts)
-    if any(key[0] != 'QUEUE' for key in starts):
+    # The worker explicitly discards stale/duplicate queued items before its
+    # DEQUEUE trace point. Only accepted items have an observed queue delay.
+    unmatched_enqueues = sum(len(q) for q in enqueues.values())
+    if starts:
         raise GateError(f'incomplete analysis span: {list(starts)[:3]}')
     out = {}
     for p, values in stats.items():
@@ -104,7 +105,7 @@ def summarize_spans(rows, layers):
             else:
                 out[p][k] = {'count': len(v), 'sum_s': sum(b-a for a,b in v)/1e6,
                              'union_s': union_us(v)/1e6}
-    out['unmatched_enqueue_events'] = pending_enqueues
+    out['enqueue_without_dequeue_events'] = unmatched_enqueues
     return out
 
 
