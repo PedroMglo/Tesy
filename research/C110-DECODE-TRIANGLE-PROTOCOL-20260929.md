@@ -1,0 +1,11 @@
+# C110 — prospective timeout correction for the decode triangle
+
+Objective: complete the C35/C75 OFF/C75 ON attribution question that C109 could not answer. C109 is preserved as `FAIL_TIMEOUT`: its first 2009+192 arm stopped at the frozen 450 s limit without complete output. This is a new physical identity, not a continuation or reclassification of C109.
+
+Base: C109 result commit `6230655`; C110 measurement commit is recorded after this protocol and its code are frozen. The copied C109 probe binaries and official ID TSVs have identical hashes to their C109 originals; backend source, original libraries, model, 2009+192 call plan, P12/8K profile, E18, masks, output fence, three triangular block orders, per-block thermal matching, and decision rules are unchanged. The only changed experimental limit is a **prospective 750 s timeout per long arm**. Canaries remain 120 s. Same-profile full-logit equality is required for all completed arms.
+
+Admission: fresh 60 s host snapshot at 2026-09-29 09:00 UTC derived cap maximum 23,085,449,216 B; common arm cap remains 18 GiB. GPU stop is 89 °C. C108's conservative epoch ledger, charging every intervening wall second to physical time, left at least 12,555 s physical and 10,782 s wall at freeze. The entire planned unit including worst-case 9×750 s arms, 3×120 s canaries, 180 s block inventories, 900 s matching, and 600 s closure reserve is 8,790 s. Recheck budget before run; stop if not admitted. No automatic retry after a failure.
+
+Primary: completion-fenced decode steps 65–192. Diagnostics: steps 1–64, 1–77, 32-step windows, prefill and total. Compare B/A and C/B per block; three blocks are required for the frozen attribution rule. This is synthetic teacher forcing, not free server generation, API TTFT, or product quality. A failed arm leaves remaining arms NOT_RUN. Raw and binaries stay local outside Git; no push or default change.
+
+Tests before model: 22 relevant model-free tests pass; copied binaries and input TSVs hash-match C109; both binaries accept the 2009+192 ID schema. C109's canaries already showed bitwise A/B/C equality on 16+2, but C110 repeats these before long arms to validate this unit. Attention/KV independent reference remains outside this probe.
