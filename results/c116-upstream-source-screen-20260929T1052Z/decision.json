@@ -1,0 +1,20 @@
+{
+  "schema": "c116-decision-v1",
+  "status": "BACKEND_SCREEN_NO_IMMEDIATE_BUILD",
+  "evidence_class": "SOURCE_AUDITED",
+  "source_repo": "https://github.com/ggml-org/llama.cpp",
+  "source_commit": "8019dc563b1ecbae6b161a70c3a1359f1b206c1e",
+  "source_screen": "results/c116-upstream-source-screen-20260929T1052Z/source-screen.json",
+  "reason": "GPT-OSS/MXFP4 implementation is present, but its expert tensors are not marked for explicit lazy row loading; mmap page-cache fit and target benefit are untested",
+  "model_run": "NOT_RUN",
+  "build": "NOT_RUN",
+  "numeric_fidelity": "NOT_RUN",
+  "capacity_on_target": "NOT_RUN",
+  "performance_on_target": "NOT_RUN",
+  "M3": "C52B_TESTED_SCOPE_UNCHANGED",
+  "M4": "NOT_DEMONSTRATED",
+  "old_failures_preserved": ["C48", "C100", "C109", "C112", "C113", "C114"],
+  "next_action": "prioritize one bounded phase-marked warm153 trace with neutrality bridge if a new admitted unit and epoch budget permit; upstream canary remains conditional",
+  "default_changed": false,
+  "publication": "LOCAL_ONLY"
+}
