@@ -27,6 +27,7 @@ ROOT_NAME = "c120-nominal153-20260929T1331Z"
 EPOCH_START_UTC = "2026-09-29T13:31:15+00:00"
 EPOCH_WALL_S = 12 * 3600
 EPOCH_PHYSICAL_S = 8 * 3600
+CAMPAIGN_WRAPPER_FILE = None
 
 
 def save_new(path, value):
@@ -42,7 +43,8 @@ def budget(root, remaining):
     # Count live units once, by their own receipts. The initial live host
     # inventory and model-free scope smoke have a separate reserved allowance.
     spent = 120.0
-    for path in sorted((root / "raw").glob("c120-p*-*.receipt.json")):
+    prefix = ORDER[0][0].split("-p", 1)[0]
+    for path in sorted((root / "raw").glob(f"{prefix}-p*-*.receipt.json")):
         if ".start-inventory." in path.name:
             continue
         row = strict_json(path.read_text())
@@ -76,6 +78,7 @@ def screen_policy(root):
                       "narrow_thermal_match": False},
             "cap_bytes": CAP, "swap_max_bytes": 0,
             "input_sha256": sha256(root / "session-input.json"),
+            "campaign_wrapper_sha256": sha256(CAMPAIGN_WRAPPER_FILE) if CAMPAIGN_WRAPPER_FILE else None,
             "historical_c117_effective_sha256": sha256(base.REPO / "results/c117-operational-nominal-server-20260929T1058Z/decision-effective.json"),
             "default_changed": False}
 
@@ -93,6 +96,7 @@ def make(root, spec):
                         "model_stat": old["model_stat"],
                         "backend_tree": old["backend_tree"],
                         "runner_sha256": sha256(__file__),
+                        "campaign_wrapper_sha256": sha256(CAMPAIGN_WRAPPER_FILE) if CAMPAIGN_WRAPPER_FILE else None,
                         "screen_policy_sha256": sha256(root / "confirm-policy.json")}
     protocol["start_inventory"] = {"schema": "c120-start-inventory-v1",
                                     "duration_s": 60, "max_age_s": 3,
@@ -155,9 +159,11 @@ def run(root, spec, commit):
     started = datetime.now(timezone.utc)
     try:
         budget(root, len(ORDER) - ORDER.index(spec))
-        if base.git("rev-parse", "HEAD") != commit or base.git("status", "--porcelain") or \
-           relevant_environment(os.environ):
-            raise GateError("C120 measurement commit/worktree/environment changed")
+        actual = base.git("rev-parse", "HEAD")
+        if actual != commit:
+            raise GateError(f"measurement SHA mismatch: supplied {commit}, HEAD {actual}")
+        if base.git("status", "--porcelain") or relevant_environment(os.environ):
+            raise GateError("measurement worktree/environment changed")
         scope = server.cgroup_state()
         if not scope or scope["memory_max"] != CAP or scope["swap_max"] != 0:
             raise GateError("C120 parent scope cap/swap invalid")

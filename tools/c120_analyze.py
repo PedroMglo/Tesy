@@ -38,6 +38,7 @@ def analyze(root):
     if type(commit) is not str or len(commit) != 40:
         raise GateError("C120 measurement commit missing")
     rows = []
+    prefix = ORDER[0][0].split("-p", 1)[0]
     for run_id, arm, pair in ORDER:
         receipt_path = root / "raw" / f"{run_id}.receipt.json"
         receipt = strict_json(receipt_path.read_text())
@@ -59,7 +60,7 @@ def analyze(root):
         # The frozen C117 per-request validator is reused only after the
         # stronger prospective inventory and launch chain has passed.
         rows.append(previous.run_row(root, pair, arm, commit, resource,
-                                     run_prefix="c120"))
+                                     run_prefix=prefix))
     pairs = []
     for pair in (1, 2):
         control = next(row for row in rows if row["pair"] == pair and row["arm"] == "control")

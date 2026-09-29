@@ -37,7 +37,10 @@ def run(campaign_root):
               "server_command": ["python3", "tools/c120_smoke_server.py"],
               "backend_root": str(backend_root), "explicit_env": {},
               "request_policy": {"max_tokens": 1}, "total_timeout_s": 15}
-    old = strict_json((campaign_root / "protocols/c120-p1-control.json").read_text())
+    first_protocol = sorted((campaign_root / "protocols").glob("*-p1-control.json"))
+    if len(first_protocol) != 1:
+        raise GateError("model-free smoke first control protocol missing")
+    old = strict_json(first_protocol[0].read_text())
     protocol = {"schema_version": "c120-model-free-smoke-v1",
                 "campaign_id": root.name, "protocol_id": run_id,
                 "resources": old["resources"], "limits": old["limits"],
