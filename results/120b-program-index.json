@@ -2,8 +2,8 @@
   "current_checkpoint": {
     "M4": "NOT_DEMONSTRATED",
     "default_changed": false,
-    "effective_status": "FAIL_OUTPUT_CAP_INTERRUPTED_OPERATOR",
-    "effective_unit": "c132",
+    "effective_status": "SESSION_QUALITY_OR_DURATION_NO_GO",
+    "effective_unit": "c133",
     "prior_confirmed_profile": "C129 C75 slots40 CONFIRMED_SLOTS40_NOMINAL153",
     "publication": "LOCAL_ONLY"
   },
@@ -23,18 +23,18 @@
   "milestones": {
     "M1": "QUALIFIED_PROSPECTIVE_SCOPE_HISTORICAL_PARTIAL",
     "M2": "CONFIRMED_496_TEACHER_FORCED_SCOPE_NATIVE_PRELOAD",
-    "M3": "SESSION_MECHANICS_20_REQUEST_70_MIN_TESTED_SCOPE_LATENCY_OPEN",
+    "M3": "SESSION_MECHANICS_20_VARIED_83MIN_ACTIVE31MIN_FUNCTIONAL_19_OF_20; HISTORICAL_C52B_SPACED_PASS",
     "M4": "NOT_MET_BY_OBSERVED_LATENCY_AND_DECODE"
   },
   "mission": "local usable main GPT-OSS 120B, original weights and authoritative routing",
-  "next_action": "Repair cap-stop/raw path model-free, then one new bounded diverse-active session attempt if budget and context accounting admit it",
+  "next_action": "Test slots40 7936+256 boundary (new C134); then evaluate remaining decode bottleneck and epoch budget",
   "open_hypotheses": [
     "C75 waves give large observed prefill benefit; C100 server NO_GO_CONFIRM remains due its protected decode regression, while C121 nominal153 two-pair screen passed under per-arm inventory; C117 remains failed and C100 remains NO_GO_CONFIRM.",
     "Upstream llama.cpp source pin 8019dc5 implements GPT-OSS/MXFP4 but does not mark GPT-OSS experts for explicit lazy row loading; bounded mmap/page-cache viability on this host is unmeasured.",
     "M3 diverse and active sustained session coverage and M4 functional/quality gates remain open.",
     "C123 nominal153 trace observed 10.646 s readiness waits in 13.046 s decode calls; removable portion is unknown and physical NVMe bytes are not identified.",
     "C123 completed-load fixed-stream LRU saved only 4.11% of decode loads with 3 GiB global, or 15.02% of GPU loads with GPU-only 3 GiB; richer policies and workloads remain open.",
-    "C126 C75/slots32 passed the original C40 twelve tasks with exactly equal official prompt IDs and final messages; holdout8 passed 8/8 with equal full messages; varied assistant-history session and active sustained duty cycle remain NOT_RUN.",
+    "C126 C75/slots32 passed the original C40 twelve tasks with exactly equal official prompt IDs and final messages; holdout8 passed 8/8 with equal full messages; C133 varied active session completed 20/20 over 83.3 min but strict functional gate failed 1/20 (literal Aster omission).",
     "C123 observed 302/1509 decode misses after an in-trace eviction with <=8 distinct subsequent same-layer reservations; this is a capacity heuristic, not a validated slots40 counterfactual because initial LFU hotness/occupancy are incomplete."
   ],
   "rejected_claims": [
@@ -903,7 +903,14 @@
       "measurement_commit": "21143aa4ca3efa52adf8f2c1203f192847469bde",
       "root": "results/c132-diverse-active-session-20260929T1939Z",
       "status": "FAIL_OUTPUT_CAP_INTERRUPTED_OPERATOR"
+    },
+    {
+      "decision": "results/c133-diverse-active-session-20260929T2000Z/decision.json",
+      "identity": "c133",
+      "measurement_commit": "ff9d1d7ff6d7df99156cc8e33a613b99afbc4ed4",
+      "root": "results/c133-diverse-active-session-20260929T2000Z",
+      "status": "SESSION_QUALITY_OR_DURATION_NO_GO"
     }
   ],
-  "updated_utc": "2026-09-29T19:59:08.461676+00:00"
+  "updated_utc": "2026-09-29T21:30:37.476876+00:00"
 }
