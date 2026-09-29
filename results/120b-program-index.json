@@ -1,10 +1,13 @@
 {
   "current_checkpoint": {
+    "M4": "NOT_DEMONSTRATED",
+    "candidate_warm_decode_tok_s_approx": 3.549312792629512,
+    "candidate_warm_first_final_median_s": 25.18,
     "default_changed": false,
-    "effective_status": "PASS_DIAGNOSTIC_READINESS_WAIT_OBSERVED",
-    "effective_unit": "c123",
-    "measurement_commit": "71226aa90d59203917e982dfd23d974bab3a799e",
-    "prior_screen": "C121 SCREEN_GO_OPERATIONAL_NOMINAL153",
+    "effective_status": "CONFIRMED_OPERATIONAL_NOMINAL153",
+    "effective_unit": "c124",
+    "measurement_commit": "6d7c600603c4507be1ffdcd5da745a3f5472a293",
+    "median_warm_first_final_gain_percent": 36.45435023517667,
     "publication": "LOCAL_ONLY"
   },
   "default_changed": false,
@@ -27,7 +30,7 @@
     "M4": "NOT_MET_BY_OBSERVED_LATENCY_AND_DECODE"
   },
   "mission": "local usable main GPT-OSS 120B, original weights and authoritative routing",
-  "next_action": "Confirm C75 nominal153 screen with three fresh pairs; test bounded expert-component read concurrency only if same-binary neutrality and a model-free I/O discriminator support it.",
+  "next_action": "Model-free exact-offset O_DIRECT component-read concurrency discriminator, then bounded backend intervention only if material; qualify diverse/active session of best candidate within epoch.",
   "open_hypotheses": [
     "C75 waves give large observed prefill benefit; C100 server NO_GO_CONFIRM remains due its protected decode regression, while C121 nominal153 two-pair screen passed under per-arm inventory; C117 remains failed and C100 remains NO_GO_CONFIRM.",
     "Upstream llama.cpp source pin 8019dc5 implements GPT-OSS/MXFP4 but does not mark GPT-OSS experts for explicit lazy row loading; bounded mmap/page-cache viability on this host is unmeasured.",
@@ -826,7 +829,14 @@
       "measurement_commit": "71226aa90d59203917e982dfd23d974bab3a799e",
       "root": "results/c123-warm153-decode-trace-20260929T1450Z",
       "status": "PASS_DIAGNOSTIC_READINESS_WAIT_OBSERVED"
+    },
+    {
+      "decision": "results/c124-nominal153-confirm-20260929T1515Z/decision.json",
+      "identity": "c124",
+      "measurement_commit": "6d7c600603c4507be1ffdcd5da745a3f5472a293",
+      "root": "results/c124-nominal153-confirm-20260929T1515Z",
+      "status": "CONFIRMED_OPERATIONAL_NOMINAL153"
     }
   ],
-  "updated_utc": "2026-09-29T15:10:26.015436+00:00"
+  "updated_utc": "2026-09-29T15:49:58.552274+00:00"
 }
