@@ -50,7 +50,10 @@ def trace_rows(path):
 
 
 def phase(cid):
-    return 'prefill' if cid <= 2 else 'decode'
+    # Specific frozen C123/C135 48-call plan, never an n_tokens heuristic.
+    if cid not in range(1,49):
+        raise GateError('explicit segmentation required outside frozen warm153 call plan')
+    return 'prefill' if cid in (1,2) else 'decode'
 
 
 def summarize_spans(rows, layers):

@@ -15,7 +15,7 @@ class TraceGate(unittest.TestCase):
     def write(self, rows, *, overflow=0):
         header = 'kind\tseq\tmono_us\tlayer\texpert\tslot\tvictim\tn_tokens\twave\tstate\tlogical_bytes\tcall_id\tgeneration\tcomponent'
         text = ['#c122-expert-decode-v1', '#layer\tlayer\tlogical_expert_bytes\tbuffer_name',
-                'L\t25\t128\tCUDA', header]
+                'L\t25\t64\tCUDA0', header]
         text += ['\t'.join(map(str, [kind, i, when, layer, expert, slot, -1,
                                       tokens, -1, -1, size, 1, gen, component]))
                  for i, (kind, when, layer, expert, slot, tokens, size, gen, component)
@@ -27,12 +27,12 @@ class TraceGate(unittest.TestCase):
         return [('CALL_BEGIN',100,-1,2044,2075,32,0,0,-1),
                 ('ENQUEUE',101,25,7,3,0,0,9,-1),
                 ('DEQUEUE',110,25,7,3,0,0,9,-1),
-                ('LOAD_BEGIN',111,25,7,3,0,128,9,-1),
+                ('LOAD_BEGIN',111,25,7,3,0,64,9,-1),
                 ('READ_BEGIN',112,25,7,3,0,64,9,0),
                 ('READ_END',120,25,7,3,0,64,9,0),
                 ('TENSOR_SET_BEGIN',121,25,7,3,0,64,9,0),
                 ('TENSOR_SET_RETURN',130,25,7,3,0,64,9,0),
-                ('LOAD_END',131,25,7,3,0,128,9,-1),
+                ('LOAD_END',131,25,7,3,0,64,9,-1),
                 ('CALL_END',140,-1,2044,2075,32,0,0,-1)]
 
     def test_complete(self):
@@ -41,6 +41,38 @@ class TraceGate(unittest.TestCase):
         self.assertEqual(row['events'], 10)
         self.assertEqual(row['loads'], 1)
         self.assertEqual(row['span_union_us']['READ_BEGIN'], 8)
+
+    def test_read_outside_load(self):
+        rows = self.rows(); rows[4] = (*rows[4][:1], 110, *rows[4][2:])
+        self.write(rows)
+        with self.assertRaisesRegex(GateError, 'outside LOAD'): validate(self.path)
+
+    def test_call_ends_before_synchronous_wait(self):
+        rows = self.rows(); rows.insert(-1, ('WAIT_BEGIN',135,25,-1,-1,32,0,0,-1))
+        rows.insert(-1, ('WAIT_END',145,25,-1,-1,32,0,0,-1))
+        self.write(rows)
+        with self.assertRaisesRegex(GateError, 'outside origin call'): validate(self.path)
+
+    def test_pair_metadata_changed(self):
+        rows=self.rows();r=list(rows[5]);r[6]=63;rows[5]=tuple(r);self.write(rows)
+        with self.assertRaisesRegex(GateError,'metadata mismatch'):validate(self.path)
+
+    def test_component_size_wrong(self):
+        rows=self.rows()
+        for i in (4,5,6,7):
+            r=list(rows[i]);r[6]=63;rows[i]=tuple(r)
+        self.write(rows)
+        with self.assertRaisesRegex(GateError,'sum to expert'):validate(self.path)
+
+    def test_unknown_kind(self):
+        rows = self.rows(); rows.insert(1, ('ALIEN',101,25,7,3,0,0,9,-1))
+        self.write(rows)
+        with self.assertRaisesRegex(GateError, 'unknown kind'): validate(self.path)
+
+    def test_legal_async_tail(self):
+        rows = self.rows(); rows[-1] = (*rows[-1][:1], 115, *rows[-1][2:])
+        self.write(rows)
+        self.assertTrue(validate(self.path)['worker_tails'])
 
     def test_orphan_end(self):
         rows = self.rows(); rows.pop(4)

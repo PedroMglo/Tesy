@@ -1,0 +1,19 @@
+{
+  "schema": "c138-tests-v1",
+  "status": "REPRODUZIDO_MODEL_FREE",
+  "command": "PYTHONPATH=tools python3 -m unittest tools.test_c122_trace_validate tools.test_c123_analyze_trace tools.test_c138_reanalysis -v",
+  "tests": 17,
+  "skip": 0,
+  "controls": [
+    "READ outside LOAD rejected",
+    "CALL_END before synchronous WAIT rejected",
+    "unknown kind rejected",
+    "legal asynchronous worker tail accepted",
+    "pair metadata/bytes rejected",
+    "exact published local raw manifests checked"
+  ],
+  "NOT_RUN": [
+    "new inference",
+    "faithful warm primary replay"
+  ]
+}

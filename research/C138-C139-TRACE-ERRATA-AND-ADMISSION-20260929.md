@@ -1,0 +1,17 @@
+# Trace errata and uniform44 host admission
+
+Base: 9f335df9dc04184242a0a6c52dfca4784912a5fa. Original C137 remains NOT_RUN_OWNER_REQUESTED_PUBLICATION. The owner resumed the same epoch; deadline remains 2026-09-30T01:31:15Z, pause included, no new budget/publication authority.
+
+C138 REPRODUZIDO_MODEL_FREE: 17 relevant tests PASS, no raw-dependent skip. The strengthened C122 gate rejects unknown kinds, invalid layer/generation/component metadata, unmatched/changed pairs, READ outside LOAD, wrong READ/SET order/bytes, overlapping synchronous calls and synchronous events outside their call. Legal asynchronous worker tails are retained and reconciled separately. C123 segmentation is explicitly limited to its frozen48-call warm153 plan. New plans need explicit segmentation.
+
+C138 MEDIDO_NO_TARGET reanalysis: all files in the published C135/C136/C129 raw manifests hash-check. Exactly three C129 candidates and their receipts/official input arrays/full messages are required. Trigger/request markers, exact CPU0–24/CUDA0 25–35 map and the three4,406,400-byte MXFP4 components are checked. C135 raw passes:58,181 events,2,299 loads; decode6,624 demands,775 CPU and302 GPU loads. No worker tails in this raw. The original8.753159s WAIT union and bounded exact-output neutral observation are preserved; they are not removable-time claims.
+
+Layer/call tables reconcile worker spans by intersection with each call window, keeping publication seq separate from timestamp order. Loads precede resident commit; commit itself is not traced. Ready is bounded between transfer return and the relevant WAIT_END, not equated to LOAD_END. There are zero intra-call evictions of a later demanded expert in decode.828 such later-demand occurrences exist in prefill, where waves/parking/repetition differ; their performance effect is UNKNOWN and no eviction patch is mixed with capacity.
+
+SOURCE_AUDITED at C75 27d2e42d8c994507ee6d71acc7c58d3eddd3f7a5: victim empty-first, then minimum hotness/LRU; LOADING/keep excluded. Normal remap updates saturating distinct-expert hotness and periodic global decay; plan_waves_locked does not perform the same hotness update. Wave stage protects current/next wave and parking slots. C135 begins at second request and has no complete pre-request hotness/recency/global counter snapshot. SOURCE_FAITHFUL_PRIMARY_REPLAY_NOT_IDENTIFIABLE_FROM_C135. Stored boundary activations and trace metadata do not supply that complete state. No zeros are presented as historical state.
+
+ESTIMADO conditional simulations use empty initial per-layer caches over the exact46-step decode routing. Uniform40/44 and CPU44/GPU40, CPU46/GPU40 are compared by tier bytes. Sequential LRU/offline minimum-load-count oracles are screening only: neither warm bounds nor latency oracles nor backend replay. They cannot reject the authorized physical44 slope.
+
+C139: fresh60s physical inventory accepts policy v2 but cap_max=19,864,223,744B is below E20=21,474,836,480B. NOT_ADMITTED_HOST_HEADROOM, before model or protocol freeze. Inventory60s charged once; no GPU allocation/forward/numeric run. CPU/GPU capacity and numerical fidelity remain NOT_RUN. No stop/protection relaxed; no unrelated service stopped. Owner is freeing RAM; a new snapshot/new attempt may proceed only if E20 is actually admitted.
+
+C75 preserved C and C++ build flags both include TESY_C47_CPU_SKIP_PARKED. Trace backend remains separate, with its additional C++ trace macro. No rebuild or server substitution.

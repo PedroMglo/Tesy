@@ -33,6 +33,17 @@ def validate(path, *, max_bytes=64 * 2**20):
     table = next((i for i, line in enumerate(lines) if line.startswith('kind\t')), None)
     if table is None or lines[table].split('\t') != HEADER or table < 2:
         raise GateError('C122 trace columns invalid')
+    layers = {}
+    for line in lines[1:table]:
+        if line.startswith('L\t'):
+            _, number, size, device = line.split('\t')
+            number, size = int(number), int(size)
+            if number in layers or not 0 <= number < 36 or size <= 0 or device not in ('CPU', 'CUDA0'):
+                raise GateError('C122 invalid layer metadata')
+            layers[number] = {'bytes': size, 'device': device}
+    if not layers:
+        raise GateError('C122 layer metadata missing')
+    allowed = set(PAIRS) | set(PAIRS.values()) | {'DEMAND', 'PRELOAD', 'ENQUEUE', 'DEQUEUE', 'RESERVE', 'EVICT'}
     events = []
     for seq, line in enumerate(lines[table+1:-1]):
         parts = line.split('\t')
@@ -44,6 +55,14 @@ def validate(path, *, max_bytes=64 * 2**20):
             raise GateError('C122 event number invalid') from exc
         if row['seq'] != seq or row['mono_us'] < 0 or row['call_id'] < 1:
             raise GateError('C122 event seq/time/call invalid')
+        if row['kind'] not in allowed or row['logical_bytes'] < 0:
+            raise GateError('C122 unknown kind/negative bytes')
+        if not row['kind'].startswith('CALL_') and row['layer'] not in layers:
+            raise GateError('C122 unknown event layer')
+        if row['kind'] in ('DEQUEUE','LOAD_BEGIN','LOAD_END','READ_BEGIN','READ_END','TENSOR_SET_BEGIN','TENSOR_SET_RETURN') and (row['generation'] < 1 or row['slot'] < 0 or not 0 <= row['expert'] < 128):
+            raise GateError('C122 invalid worker generation/slot/expert')
+        if row['kind'] == 'DEMAND' and (row['state'] not in (0, 1, 2) or not 0 <= row['expert'] < 128):
+            raise GateError('C122 invalid demand state/expert')
         events.append(row)
     if lines[-1] != f'#end\t{len(events)}\t0':
         raise GateError('C122 event count/overflow invalid')
@@ -52,6 +71,8 @@ def validate(path, *, max_bytes=64 * 2**20):
     open_pairs = {}
     spans = defaultdict(list)
     loads = defaultdict(dict)
+    detailed = []
+    begin_rows = {}
     for e in events:
         kind = e['kind']
         if kind == 'CALL_BEGIN':
@@ -68,6 +89,7 @@ def validate(path, *, max_bytes=64 * 2**20):
             if key in open_pairs:
                 raise GateError('C122 duplicate BEGIN')
             open_pairs[key] = e['mono_us']
+            begin_rows[key] = e
         elif kind in PAIRS.values():
             start_kind = next(k for k, v in PAIRS.items() if v == kind)
             key = (start_kind, e['call_id'], e['layer'], e['expert'], e['slot'],
@@ -75,9 +97,13 @@ def validate(path, *, max_bytes=64 * 2**20):
             if key not in open_pairs:
                 raise GateError('C122 orphan/duplicate END')
             begin = open_pairs.pop(key)
+            br = begin_rows.pop(key)
+            if any(br[k] != e[k] for k in ('logical_bytes', 'n_tokens', 'state', 'victim')):
+                raise GateError('C122 BEGIN/END metadata mismatch')
             if e['mono_us'] < begin:
                 raise GateError('C122 negative interval')
             spans[start_kind].append((begin, e['mono_us'], e['call_id']))
+            detailed.append((start_kind, begin, e['mono_us'], e))
             if kind == 'CALL_END':
                 calls[e['call_id']]['end_us'] = e['mono_us']
             if kind == 'LOAD_END':
@@ -100,8 +126,53 @@ def validate(path, *, max_bytes=64 * 2**20):
         raise GateError('C122 incomplete load generation')
     if any(c['n_tokens'] <= 0 or c['end_us'] < c['start_us'] for c in calls.values()):
         raise GateError('C122 invalid call duration')
+    ordered = list(calls.values())
+    if any(b['start_us'] < a['end_us'] for a, b in zip(ordered, ordered[1:])):
+        raise GateError('C122 synchronous calls overlap')
+    worker = {'DEQUEUE', 'LOAD_BEGIN', 'LOAD_END', 'READ_BEGIN', 'READ_END',
+              'TENSOR_SET_BEGIN', 'TENSOR_SET_RETURN'}
+    for e in events:
+        call = calls[e['call_id']]
+        if e['mono_us'] < call['start_us'] or (e['kind'] not in worker and e['mono_us'] > call['end_us']):
+            raise GateError('C122 synchronous event outside origin call')
+    load_intervals = {}
+    components = defaultdict(lambda: defaultdict(dict))
+    for kind, start, end, e in detailed:
+        key = (e['layer'], e['expert'], e['slot'], e['generation'])
+        if kind == 'LOAD_BEGIN':
+            if e['component'] != -1 or e['logical_bytes'] != layers[e['layer']]['bytes']:
+                raise GateError('C122 load bytes/component invalid')
+            if loads[key]['dequeued'] > start:
+                raise GateError('C122 load before dequeue')
+            load_intervals[key] = (start, end)
+        elif kind in ('READ_BEGIN', 'TENSOR_SET_BEGIN'):
+            if e['component'] < 0 or e['logical_bytes'] <= 0 or kind in components[key][e['component']]:
+                raise GateError('C122 component identity/bytes invalid')
+            components[key][e['component']][kind] = (start, end, e['logical_bytes'])
+    for key, interval in load_intervals.items():
+        comp = components[key]
+        if sorted(comp) != list(range(len(comp))) or not comp:
+            raise GateError('C122 missing/noncontiguous load components')
+        size = 0; previous = interval[0]
+        for item in comp.values():
+            if set(item) != {'READ_BEGIN', 'TENSOR_SET_BEGIN'}:
+                raise GateError('C122 missing read/set component')
+            ra, rb, rsize = item['READ_BEGIN']; sa, sb, ssize = item['TENSOR_SET_BEGIN']
+            if not interval[0] <= previous <= ra <= rb <= sa <= sb <= interval[1] or rsize != ssize:
+                raise GateError('C122 component outside LOAD or READ/SET order invalid')
+            size += rsize; previous = sb
+        if size != layers[key[0]]['bytes']:
+            raise GateError('C122 component bytes do not sum to expert tensor bytes')
+    if set(components) != set(load_intervals):
+        raise GateError('C122 components without load')
+    # Worker timestamps may legally cross calls: do not equate origin call with temporal window.
+    tails = [{'layer': e['layer'], 'expert': e['expert'], 'generation': e['generation'],
+              'origin_call': e['call_id'], 'kind': kind, 'end_us': end,
+              'origin_call_end_us': calls[e['call_id']]['end_us']}
+             for kind, start, end, e in detailed if kind in ('LOAD_BEGIN', 'READ_BEGIN', 'TENSOR_SET_BEGIN')
+             and end > calls[e['call_id']]['end_us']]
     return {'schema':'c122-trace-summary-v1','events':len(events),
             'calls':calls,'counts':dict(by_kind),'loads':len(loads),
             'span_sum_us':{k:sum(b-a for a,b,_ in v) for k,v in spans.items()},
             'span_union_us':{k:union_us((a,b) for a,b,_ in v) for k,v in spans.items()},
-            'trace_bytes':path.stat().st_size}
+            'trace_bytes':path.stat().st_size, 'worker_tails':tails, 'layers':layers}

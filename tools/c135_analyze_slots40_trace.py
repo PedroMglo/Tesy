@@ -34,6 +34,31 @@ def read_arm(root, name, status):
     return receipt, data, ids
 
 
+def verify_manifest(root):
+    manifest = strict_json((root/'manifest.json').read_text())
+    entries = manifest.get('files')
+    if entries is None:
+        entries = {'raw/'+name: row for name,row in manifest['raw'].items()}
+    for name, info in entries.items():
+        path = root/name
+        if not path.is_file() or path.stat().st_size != info['bytes'] or sha256(path) != info['sha256']:
+            raise GateError('frozen raw manifest differs: '+name)
+
+
+def verify_markers(root, run, calls, rows):
+    markers = [strict_json(line) for line in (root/'raw'/f'{run}.request-markers.jsonl').read_text().splitlines()]
+    trigger = strict_json((root/'raw'/f'{run}.trace-trigger.json').read_text())
+    expected = [('c112-code','REQUEST_START'), ('c112-code','RESPONSE_COMPLETE'),
+                ('c112-repeat','REQUEST_START'), ('c112-repeat','RESPONSE_COMPLETE')]
+    if [(x['request_id'],x['kind']) for x in markers] != expected or any(x['run_id'] != run for x in markers):
+        raise GateError('C135 request marker identity/order invalid')
+    if trigger['run_id'] != run or trigger['request_id'] != 'c112-repeat' or not (
+        markers[0]['mono_ns'] < markers[1]['mono_ns'] < trigger['mono_ns'] < markers[2]['mono_ns'] < markers[3]['mono_ns']):
+        raise GateError('C135 trigger order/identity invalid')
+    if not markers[2]['mono_ns']//1000 <= min(e['mono_us'] for e in rows) <= max(e['mono_us'] for e in rows) <= markers[3]['mono_ns']//1000:
+        raise GateError('C135 trace outside second request')
+
+
 def metrics(data):
     item = data['results'][1]
     return {'warm_prefill_s': item['timings']['prompt_ms']/1000,
@@ -44,10 +69,18 @@ def metrics(data):
 
 
 def analyze():
+    for root in (ROOT_ON, ROOT_OFF):
+        verify_manifest(root)
+    verify_manifest(REFERENCE)
     on_receipt, on, on_ids = read_arm(ROOT_ON, ON, 'PASS_DIAGNOSTIC_CAPTURE')
     off_receipt, off, off_ids = read_arm(ROOT_OFF, OFF, 'PASS_TRACE_OFF_NEUTRAL')
     ref_ids = None
-    for path in sorted((REFERENCE/'raw').glob('c129-p*-candidate.tokenization.json')):
+    reference_ids = [REFERENCE/'raw'/f'c129-p{i}-candidate.tokenization.json' for i in (1,2,3)]
+    reference_raw = [REFERENCE/'raw'/f'c129-p{i}-candidate.json' for i in (1,2,3)]
+    if set((REFERENCE/'raw').glob('c129-p*-candidate.tokenization.json')) != set(reference_ids) or any(not p.is_file() for p in reference_raw):
+        raise GateError('exactly three C129 candidates required')
+    for i, path in enumerate(reference_ids, 1):
+        read_arm(REFERENCE, f'c129-p{i}-candidate', 'PASS_SCREEN_ARM_TESTED_SCOPE')
         other = strict_json(path.read_text())
         if ref_ids is None: ref_ids = other
         if other != ref_ids:
@@ -58,7 +91,7 @@ def analyze():
                             for x in data['results']]
     if outputs(on) != outputs(off) or \
        any(outputs(on) != outputs(strict_json(path.read_text())) for path in
-           sorted((REFERENCE/'raw').glob('c129-p*-candidate.json'))):
+           reference_raw):
         raise GateError('C135/C136/C129 outputs differ')
     trace_path = ROOT_ON/'raw'/f'{ON}.expert.trace'
     if sha256(trace_path) != on_receipt['trace_sha256']:
@@ -73,9 +106,11 @@ def analyze():
         raise GateError('C135 traced warm153 call plan invalid')
     layers, rows = trace_rows(trace_path)
     if sorted(layers) != list(range(36)) or \
-       sum(x['device']=='CPU' for x in layers.values()) != 25 or \
-       sum(x['device']=='CUDA0' for x in layers.values()) != 11:
+       any(layers[i]['device'] != ('CPU' if i < 25 else 'CUDA0') or layers[i]['bytes'] != 13219200 for i in range(36)):
         raise GateError('C135 layer destination invalid')
+    verify_markers(ROOT_ON, ON, calls, rows)
+    if any(e['logical_bytes'] != 4406400 or e['component'] not in (0,1,2) for e in rows if e['kind'] == 'READ_BEGIN'):
+        raise GateError('C135 component tensors changed')
     spans = summarize_spans(rows, layers)
     durations = {phase: sum(calls[i]['end_us']-calls[i]['start_us'] for i in ids)/1e6
                  for phase,ids in (('prefill',(1,2)),('decode',range(3,49)))}
