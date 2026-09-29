@@ -1,0 +1,21 @@
+{
+  "completed_requests": 0,
+  "default_changed": false,
+  "first_run": "c112-p1-control",
+  "measurement_commit": "0e2793e7509bfd866372fbbabd2258838ac44799",
+  "model_loaded": false,
+  "next_action": "model-free scope test then new campaign identity with scoped launcher; do not reuse C112 run IDs",
+  "old_failures_preserved": [
+    "C100",
+    "C109",
+    "C110",
+    "C112"
+  ],
+  "other_arms": "NOT_RUN",
+  "publication": "LOCAL_ONLY",
+  "reason": "GateError: frozen cgroup cap and zero swap not enforced",
+  "receipt_sha256": "3b28649c0fd8b62b85ca3c559f740edec57429347f4f3601b27cc93f1300063f",
+  "root_cause": "runner invoked outside the frozen systemd user scope; c2_server_run correctly rejected memory.max/swap.max before launch",
+  "schema": "c112-decision-v1",
+  "status": "FAIL_LAUNCH_SCOPE_PREMODEL"
+}
