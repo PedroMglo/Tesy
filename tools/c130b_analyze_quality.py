@@ -36,7 +36,7 @@ def analyze(root):
     power = {key:policy['power'][key] for key in ('source','profile')}
     at = datetime.fromisoformat(launch['start_inventory']['popen_invoked_utc'])
     require_inventory(root,run_id,inventory,policy=policy,
-                      cap_bytes=campaign.prior.CAP,expected_power=power,
+                      cap_bytes=campaign.prior.campaign.CAP,expected_power=power,
                       duration_s=60,now=at,max_age_s=3)
     if receipt['status'] != 'PASS_QUALITY_12_OF_12' or \
        receipt['model_launch_observed'] is not True or \
