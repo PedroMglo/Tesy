@@ -38,7 +38,7 @@ def positive(value, name):
     return float(value)
 
 
-def arm(root, spec, commit, policy):
+def arm(root, spec, commit, policy, *, slots_by_role=None):
     run_id, role, pair = spec
     raw_dir = root/'raw'
     receipt_path = raw_dir/(run_id+'.receipt.json')
@@ -65,7 +65,7 @@ def arm(root, spec, commit, policy):
     power = {key:policy['power'][key] for key in ('source','profile')}
     require_inventory(root,run_id,inv,policy=policy,cap_bytes=campaign.campaign.CAP,
                       expected_power=power,duration_s=60,now=launch_time,max_age_s=3)
-    expected_slots = '32s' if role == 'control' else '40s'
+    expected_slots = (slots_by_role or {'control':'32s','candidate':'40s'})[role]
     command = config['server_command']
     if command[command.index('--moe-stream-cache')+1] != expected_slots or \
        config['explicit_env'] != {'TESY_CPU_WAVE_SKIP_PARKED':'1'} or \
