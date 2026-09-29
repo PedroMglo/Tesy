@@ -1,0 +1,67 @@
+{
+  "canary_logit_sha256": "1fb158e3fa6bd7ec2e48d4c85c1f0a79b8d3575e9ca58d8a696b5c3ea8f4e613",
+  "claim_limits": [
+    "No long-arm completion or timing pair",
+    "No thermal/resource guard breach observed",
+    "C100 NO_GO_CONFIRM remains",
+    "C104 does not replace C100"
+  ],
+  "default_changed": false,
+  "failure": {
+    "arm": "A",
+    "cgroup_end_events": {
+      "high": 0,
+      "low": 0,
+      "max": 0,
+      "oom": 0,
+      "oom_group_kill": 0,
+      "oom_kill": 0,
+      "sock_throttled": 0
+    },
+    "cgroup_end_swap_current": 0,
+    "completed_logit_rows": 0,
+    "elapsed_s": 451.144,
+    "end_utc": "2026-09-29T08:34:39.530188+00:00",
+    "last_sample_elapsed_s": 450.492,
+    "manifest_sha256": "b8217db3fe5243752a316bb3a21506738902ee11abb619fd58a76d1b189f3b32",
+    "maxima": {
+      "buffered_model_fds": 0,
+      "cgroup_file_bytes": 1511014400,
+      "cgroup_memory_bytes": 13004689408,
+      "cgroup_peak_bytes": 13026258944,
+      "cpu_tctl_c": 91.625,
+      "direct_model_fds": 2,
+      "gpu_temperature_c": 58.0,
+      "gpu_used_mib": 5764.0,
+      "nvme_composite_c": 56.85,
+      "rss_bytes": 13217787904,
+      "swap_bytes": 0
+    },
+    "raw_outputs_verified": true,
+    "returncode": -15,
+    "run_id": "c109-b1-a",
+    "start_utc": "2026-09-29T08:27:08.385943+00:00",
+    "stop_reason": "TIMEOUT"
+  },
+  "gate_status": {
+    "canary": "PASS_3_ARMS_BITWISE_FULL_LOGITS",
+    "long_decode": "FAIL_TIMEOUT_FIRST_ARM",
+    "server_bridge": "NOT_RUN",
+    "triangle": "NOT_RUN"
+  },
+  "measurement_commit": "176721646b56b157aa11693403f601b3a60b85a5",
+  "next_action": "Freeze a new identity with a sufficient prospective timeout or pivot; do not retry C109",
+  "old_failures_preserved": [
+    "C48",
+    "C61",
+    "C66",
+    "C78",
+    "C96",
+    "C97",
+    "C100"
+  ],
+  "protocol_sha256": "469b6e823ec46e206d800b73cfedfb1046be744cd9694eeecf77f6fc29ba249c",
+  "publication": "LOCAL_ONLY",
+  "schema": "c109-decision-v1",
+  "status": "FAIL_TIMEOUT"
+}
