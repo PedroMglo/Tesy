@@ -2,8 +2,8 @@
   "current_checkpoint": {
     "M4": "NOT_DEMONSTRATED",
     "default_changed": false,
-    "effective_status": "PASS_SLOTS40_NUMERIC_AND_SHORT_FORWARD_ADMISSION",
-    "effective_unit": "c127",
+    "effective_status": "SCREEN_GO_SLOTS40_NOMINAL153",
+    "effective_unit": "c128",
     "prior_confirmed_profile": "C124 C75 slots32 CONFIRMED_OPERATIONAL_NOMINAL153",
     "publication": "LOCAL_ONLY"
   },
@@ -27,7 +27,7 @@
     "M4": "NOT_MET_BY_OBSERVED_LATENCY_AND_DECODE"
   },
   "mission": "local usable main GPT-OSS 120B, original weights and authoritative routing",
-  "next_action": "C128 two-pair C75 ON slots32 versus slots40 nominal153 operational screen, only after fresh inventory and prospective freeze; then qualify best profile",
+  "next_action": "C129 three fresh pairs C75 waves ON slots32/slots40 nominal153 confirmation under strong per-arm inventory; then qualify slots40 quality and diverse sustained use if confirmed",
   "open_hypotheses": [
     "C75 waves give large observed prefill benefit; C100 server NO_GO_CONFIRM remains due its protected decode regression, while C121 nominal153 two-pair screen passed under per-arm inventory; C117 remains failed and C100 remains NO_GO_CONFIRM.",
     "Upstream llama.cpp source pin 8019dc5 implements GPT-OSS/MXFP4 but does not mark GPT-OSS experts for explicit lazy row loading; bounded mmap/page-cache viability on this host is unmeasured.",
@@ -861,7 +861,14 @@
       "measurement_commit": "785d816a986c640cd8ead1753d20c7f123a49986",
       "root": "results/c127-slots40-numeric-20260929T1654Z",
       "status": "PASS_SLOTS40_NUMERIC_AND_SHORT_FORWARD_ADMISSION"
+    },
+    {
+      "decision": "results/c128-slots40-nominal153-20260929T1710Z/decision.json",
+      "identity": "c128",
+      "measurement_commit": "05f9d18b0b5e99dfb1cf067c2d71c9cb1e27055e",
+      "root": "results/c128-slots40-nominal153-20260929T1710Z",
+      "status": "SCREEN_GO_SLOTS40_NOMINAL153"
     }
   ],
-  "updated_utc": "2026-09-29T17:08:06.941284+00:00"
+  "updated_utc": "2026-09-29T17:30:56.220086+00:00"
 }
