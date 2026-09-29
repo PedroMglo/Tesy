@@ -1,0 +1,173 @@
+{
+  "measurement_commit": "3abc0071d26d87f5ea8cabca19b2d7c3ae388f60",
+  "median_paired_gain_percent": {
+    "cold_decode_s": 1.3688578670011267,
+    "cold_first_final_s": 69.26282221358026,
+    "cold_prefill_s": 75.27731087075135,
+    "warm_decode_s": -3.628608450445472,
+    "warm_first_final_s": 34.597178314856265,
+    "warm_prefill_s": 53.09090115602328
+  },
+  "pairs": [
+    {
+      "candidate": "c121-p1-candidate",
+      "control": "c121-p1-control",
+      "gain_percent": {
+        "cold_decode_s": 2.7737215808114515,
+        "cold_first_final_s": 69.49051443254379,
+        "cold_prefill_s": 75.46308860163435,
+        "warm_decode_s": -1.0961580766190884,
+        "warm_first_final_s": 35.410714139479694,
+        "warm_prefill_s": 53.015411024130145
+      },
+      "pair": 1,
+      "start_delta_candidate_minus_control_c": [
+        3.75,
+        2.0,
+        8.0
+      ]
+    },
+    {
+      "candidate": "c121-p2-candidate",
+      "control": "c121-p2-control",
+      "gain_percent": {
+        "cold_decode_s": -0.036005846809198105,
+        "cold_first_final_s": 69.03512999461674,
+        "cold_prefill_s": 75.09153313986835,
+        "warm_decode_s": -6.161058824271856,
+        "warm_first_final_s": 33.78364249023283,
+        "warm_prefill_s": 53.166391287916404
+      },
+      "pair": 2,
+      "start_delta_candidate_minus_control_c": [
+        2.375,
+        2.0,
+        2.0
+      ]
+    }
+  ],
+  "runs": [
+    {
+      "arm": "control",
+      "decode_tok_s_warm": 3.580075160250258,
+      "maxima": {
+        "cgroup_peak_bytes": 13072019456,
+        "cpu_c": 95.125,
+        "gpu_c": 64.0,
+        "gpu_total_mib": 5752.0,
+        "nvme_c": 56.85,
+        "rss_bytes": 13288955904,
+        "swap_bytes": 0
+      },
+      "metrics": {
+        "cold_decode_s": 25.517882,
+        "cold_first_final_s": 302.79893308502506,
+        "cold_prefill_s": 277.876522,
+        "warm_decode_s": 13.128216,
+        "warm_first_final_s": 39.083980778988916,
+        "warm_prefill_s": 26.357236
+      },
+      "pair": 1,
+      "raw_sha256": "20b0120fd183b30a91a393f99a7f3a6161970b8bce1364c26b69ffb9eaf71cd9",
+      "receipt_sha256": "095766acaf353da77b8f4157da03d0f14e5bc351c17db46936439de799a4eda1",
+      "run_id": "c121-p1-control",
+      "start_cpu_gpu_nvme_c": [
+        46.0,
+        43.0,
+        34.85
+      ]
+    },
+    {
+      "arm": "candidate",
+      "decode_tok_s_warm": 3.541257381449628,
+      "maxima": {
+        "cgroup_peak_bytes": 13073969152,
+        "cpu_c": 95.125,
+        "gpu_c": 63.0,
+        "gpu_total_mib": 5758.0,
+        "nvme_c": 57.85,
+        "rss_bytes": 13298921472,
+        "swap_bytes": 0
+      },
+      "metrics": {
+        "cold_decode_s": 24.810087,
+        "cold_first_final_s": 92.38239678798709,
+        "cold_prefill_s": 68.182316,
+        "warm_decode_s": 13.272122,
+        "warm_first_final_s": 25.244064071011962,
+        "warm_prefill_s": 12.383839
+      },
+      "pair": 1,
+      "raw_sha256": "58d45e4660627f9b2a0ee1b40238b84b7171aafbdaf6d2b25da0e5ea2e450632",
+      "receipt_sha256": "27dc5d1ea455e159bec8b60f9f8f17df72a5f5b9ee9493410b04473553dd9d8f",
+      "run_id": "c121-p1-candidate",
+      "start_cpu_gpu_nvme_c": [
+        49.75,
+        45.0,
+        42.85
+      ]
+    },
+    {
+      "arm": "candidate",
+      "decode_tok_s_warm": 3.3260565820253674,
+      "maxima": {
+        "cgroup_peak_bytes": 13098582016,
+        "cpu_c": 95.125,
+        "gpu_c": 62.0,
+        "gpu_total_mib": 5758.0,
+        "nvme_c": 56.85,
+        "rss_bytes": 13298462720,
+        "swap_bytes": 0
+      },
+      "metrics": {
+        "cold_decode_s": 24.882694,
+        "cold_first_final_s": 93.25052079401212,
+        "cold_prefill_s": 68.967527,
+        "warm_decode_s": 14.130848,
+        "warm_first_final_s": 26.128207242989447,
+        "warm_prefill_s": 12.439472
+      },
+      "pair": 2,
+      "raw_sha256": "635203cc5238802c41380fa4d2f9032d1ab357364be3e98dbce700d19c12e266",
+      "receipt_sha256": "5be12f92fed6de3f40816f057968bf78dc92a9f9564cfa7b3689db6ddb30c732",
+      "run_id": "c121-p2-candidate",
+      "start_cpu_gpu_nvme_c": [
+        49.375,
+        45.0,
+        41.85
+      ]
+    },
+    {
+      "arm": "control",
+      "decode_tok_s_warm": 3.530976884572516,
+      "maxima": {
+        "cgroup_peak_bytes": 13071974400,
+        "cpu_c": 95.125,
+        "gpu_c": 65.0,
+        "gpu_total_mib": 5752.0,
+        "nvme_c": 57.85,
+        "rss_bytes": 13288845312,
+        "swap_bytes": 0
+      },
+      "metrics": {
+        "cold_decode_s": 24.873738,
+        "cold_first_final_s": 301.14940181502607,
+        "cold_prefill_s": 276.88387,
+        "warm_decode_s": 13.310763999999999,
+        "warm_first_final_s": 39.45884102600394,
+        "warm_prefill_s": 26.560993999999997
+      },
+      "pair": 2,
+      "raw_sha256": "48cc7529a258eea3fc256b33a45b2c3eafa0aef50d2025003a0cb9281838d514",
+      "receipt_sha256": "7433e9fd0b9427c3c613dded99a6fa868ae92064b99083b17487f7c7ec84b422",
+      "run_id": "c121-p2-control",
+      "start_cpu_gpu_nvme_c": [
+        47.0,
+        43.0,
+        39.85
+      ]
+    }
+  ],
+  "schema": "c120-timing-pairs-v1",
+  "start_regime": "OPERATIONAL_WARM_NO_NARROW_THERMAL_MATCH"
+}

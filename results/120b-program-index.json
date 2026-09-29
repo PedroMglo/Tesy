@@ -1,10 +1,11 @@
 {
   "current_checkpoint": {
     "default_changed": false,
-    "diagnostic_median_warm_decode_gain_percent": -0.18022752047399893,
-    "diagnostic_median_warm_first_final_gain_percent": 36.20055313687047,
-    "effective_status": "FAIL_RESOURCES_OR_EVIDENCE_START_INVENTORY",
-    "effective_unit": "c117",
+    "effective_status": "SCREEN_GO_OPERATIONAL_NOMINAL153",
+    "effective_unit": "c121",
+    "measurement_commit": "3abc0071d26d87f5ea8cabca19b2d7c3ae388f60",
+    "median_warm_decode_gain_percent": -3.628608450445472,
+    "median_warm_first_final_gain_percent": 34.597178314856265,
     "publication": "LOCAL_ONLY"
   },
   "default_changed": false,
@@ -27,10 +28,10 @@
     "M4": "NOT_MET_BY_OBSERVED_LATENCY_AND_DECODE"
   },
   "mission": "local usable main GPT-OSS 120B, original weights and authoritative routing",
-  "next_action": "New identity: integrate/test 60-second inventory before every nominal153 server arm; run a fresh two-pair screen only under a new admitted budget. Then confirm any survivor in three new pairs and collect one phase-marked warm153 trace for decode mechanism attribution.",
+  "next_action": "Directed warm nominal153 decode capture with phase/position and read/H2D/compute timing under new frozen protocol; then choose one discriminating intervention and confirm surviving candidate if budget permits.",
   "open_hypotheses": [
-    "C75 waves give large observed prefill benefit; C100 server NO_GO_CONFIRM remains due its protected decode regression, while C117 operational nominal153 timing is diagnostic because a frozen per-arm inventory was omitted.",
-    "M4 decode remains ~3.54 tok/s in C117 observations against 6 tok/s target; first final warm ~25.21 s against 10 s target. A phase-marked warm153 trace is needed to identify removable critical-path wait versus compute.",
+    "C75 waves give large observed prefill benefit; C100 server NO_GO_CONFIRM remains due its protected decode regression, while C121 nominal153 two-pair screen passed under per-arm inventory; C117 remains failed and C100 remains NO_GO_CONFIRM.",
+    "M4 decode remains ~3.43 tok/s in C121 admitted screen against 6 tok/s target; first final warm ~25.69 s against 10 s target. A phase-marked warm153 trace is needed to identify removable critical-path wait versus compute.",
     "C108 corrected C105 trace leaves simple 1-3 GiB global L2 and recent-token prefetch below their investment gates on 189+32; warm153/cache representativeness remains open.",
     "Upstream llama.cpp source pin 8019dc5 implements GPT-OSS/MXFP4 but does not mark GPT-OSS experts for explicit lazy row loading; bounded mmap/page-cache viability on this host is unmeasured.",
     "M3 diverse and active sustained session coverage and M4 functional/quality gates remain open."
@@ -795,7 +796,24 @@
       "identity": "c118",
       "root": "results/c118-per-arm-inventory-model-free-20260929T1125Z",
       "status": "HARNESS_COMPONENT_READY_MODEL_FREE"
+    },
+    {
+      "identity": "c119",
+      "root": "results/c119-inventory-gate-model-free-20260929T1250Z",
+      "status": "HARNESS_COMPONENT_REPAIRED_MODEL_FREE"
+    },
+    {
+      "identity": "c120",
+      "root": "results/c120-nominal153-20260929T1331Z",
+      "status": "FAIL_HARNESS_PREMODEL_MEASUREMENT_SHA"
+    },
+    {
+      "decision": "results/c121-nominal153-20260929T1350Z/decision.json",
+      "identity": "c121",
+      "measurement_commit": "3abc0071d26d87f5ea8cabca19b2d7c3ae388f60",
+      "root": "results/c121-nominal153-20260929T1350Z",
+      "status": "SCREEN_GO_OPERATIONAL_NOMINAL153"
     }
   ],
-  "updated_utc": "2026-09-29T11:26:45.520997+00:00"
+  "updated_utc": "2026-09-29T14:20:16.105994+00:00"
 }
