@@ -1,0 +1,19 @@
+{
+  "evidence_class": "REPRODUZIDO_MODEL_FREE_AGAINST_MEASURED_RAW",
+  "frozen_policy_sha256": "779d75b3a58006c5a4a2b0c8f5f1eb1ec40f049c646da10f8a60b976d499abfc",
+  "missing": [
+    "raw/c117-p1-control.start-inventory.jsonl",
+    "raw/c117-p1-candidate.start-inventory.jsonl",
+    "raw/c117-p2-candidate.start-inventory.jsonl",
+    "raw/c117-p2-control.start-inventory.jsonl"
+  ],
+  "model_runs": "four completed; timings remain diagnostic observations, no qualified screen",
+  "observed": "one 60-second family C55 inventory plus instantaneous observations at each arm",
+  "old_failures_unchanged": true,
+  "preliminary_decision_sha256": "53bfa90ed98b384f584a80dcd972070f06459a917a39aed3825347e334bb2684",
+  "raw_manifest_sha256": "3a50a94f91b40ea7d26b7bd90aee6a0ed8a13af9d6f9b5bca825e0cb0154bc7e",
+  "required": "60-second <=1s per-arm inventory before each arm",
+  "schema": "c117-start-admission-reaudit-v1",
+  "status": "FAIL_PROTOCOL_START_ADMISSION",
+  "strict_analyzer_result": "GateError: C117 missing per-arm 60 s inventory: c117-p1-control"
+}
