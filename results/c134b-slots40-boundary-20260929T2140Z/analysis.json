@@ -1,0 +1,38 @@
+{
+  "detail": {
+    "answer_sha256": "71bd518864a416a3cf3c2b4d26b9f0c0591e31a038da6e9258703fbc07f08b5b",
+    "finish_reason": "stop",
+    "first_final_content_s": 266.575138685992,
+    "official_input_token_ids_sha256": "1202716e4e666d2c0bbe48cb8a2c98b23ef5c20f0fb0cd04eed4c2f09dc85bb4",
+    "official_input_tokens": 7936,
+    "output_tokens": 85,
+    "request_wall_s": 267.8188223949983
+  },
+  "evidence_class": "MEDIDO_NO_TARGET",
+  "inventory_sha256": "62d20cdf6517dc8fd6f225a41f66dbcc55594aa17f7d025737a3cb9e5cc75399",
+  "limits": [
+    "one synthetic 7936-ID retrieval; 85 generated tokens, not 256",
+    "no independent full-8K logits or general attention/KV proof",
+    "no causal timing comparison to C42",
+    "M4 warm first-final/decode targets remain unmet"
+  ],
+  "maxima": {
+    "cgroup_peak_bytes": 15722098688,
+    "cpu_c": 95.375,
+    "gpu_c": 63.0,
+    "gpu_total_mib": 6877.0,
+    "nvme_c": 53.85,
+    "rss_bytes": 15942529024,
+    "swap_bytes": 0
+  },
+  "measurement_commit": "733a17633c99183b7a742ce4e15c0c5bac7f8e47",
+  "raw_sha256": "4ade0add6ef07ae24b808136dbde042d48f1bd23df2c8667c533f046350557e5",
+  "receipt_sha256": "5089ce651620cf9d573b3ad474dccfe85cb467717455db49c1a078b50103a2f3",
+  "revalidation": "independent c134b configure/frozen/validate matched receipt",
+  "schema": "c134b-analysis-v1",
+  "service_exec_main_status": 0,
+  "service_result": "success",
+  "service_unit": "tesy-c134b-boundary.service",
+  "status": "PASS_SLOTS40_BOUNDARY_RETRIEVAL",
+  "utc": "2026-09-29T21:49:35.040454+00:00"
+}

@@ -2,8 +2,8 @@
   "current_checkpoint": {
     "M4": "NOT_DEMONSTRATED",
     "default_changed": false,
-    "effective_status": "INTERRUPTED_BY_CONTROL_PLANE",
-    "effective_unit": "c134",
+    "effective_status": "PASS_SLOTS40_BOUNDARY_RETRIEVAL",
+    "effective_unit": "c134b",
     "prior_confirmed_profile": "C129 C75 slots40 CONFIRMED_SLOTS40_NOMINAL153",
     "publication": "LOCAL_ONLY"
   },
@@ -27,7 +27,7 @@
     "M4": "NOT_MET_BY_OBSERVED_LATENCY_AND_DECODE"
   },
   "mission": "local usable main GPT-OSS 120B, original weights and authoritative routing",
-  "next_action": "Detached user-service model-free scope smoke, then C134b 7936+256 slots40 boundary only if admitted",
+  "next_action": "Bound slots40 residual decode cost with one discriminant if existing trace cannot decide; then close epoch with reproducible partial candidate and M4 gaps",
   "open_hypotheses": [
     "C75 waves give large observed prefill benefit; C100 server NO_GO_CONFIRM remains due its protected decode regression, while C121 nominal153 two-pair screen passed under per-arm inventory; C117 remains failed and C100 remains NO_GO_CONFIRM.",
     "Upstream llama.cpp source pin 8019dc5 implements GPT-OSS/MXFP4 but does not mark GPT-OSS experts for explicit lazy row loading; bounded mmap/page-cache viability on this host is unmeasured.",
@@ -917,7 +917,14 @@
       "measurement_commit": "ffbf139503a304510360afed0c9d4812228d6910",
       "root": "results/c134-slots40-boundary-20260929T2131Z",
       "status": "INTERRUPTED_BY_CONTROL_PLANE"
+    },
+    {
+      "decision": "results/c134b-slots40-boundary-20260929T2140Z/decision.json",
+      "identity": "c134b",
+      "measurement_commit": "733a17633c99183b7a742ce4e15c0c5bac7f8e47",
+      "root": "results/c134b-slots40-boundary-20260929T2140Z",
+      "status": "PASS_SLOTS40_BOUNDARY_RETRIEVAL"
     }
   ],
-  "updated_utc": "2026-09-29T21:38:21.829532+00:00"
+  "updated_utc": "2026-09-29T21:49:35.041106+00:00"
 }
