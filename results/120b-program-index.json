@@ -1,11 +1,10 @@
 {
   "current_checkpoint": {
     "default_changed": false,
-    "effective_status": "SCREEN_GO_OPERATIONAL_NOMINAL153",
-    "effective_unit": "c121",
-    "measurement_commit": "3abc0071d26d87f5ea8cabca19b2d7c3ae388f60",
-    "median_warm_decode_gain_percent": -3.628608450445472,
-    "median_warm_first_final_gain_percent": 34.597178314856265,
+    "effective_status": "PASS_DIAGNOSTIC_READINESS_WAIT_OBSERVED",
+    "effective_unit": "c123",
+    "measurement_commit": "71226aa90d59203917e982dfd23d974bab3a799e",
+    "prior_screen": "C121 SCREEN_GO_OPERATIONAL_NOMINAL153",
     "publication": "LOCAL_ONLY"
   },
   "default_changed": false,
@@ -28,13 +27,14 @@
     "M4": "NOT_MET_BY_OBSERVED_LATENCY_AND_DECODE"
   },
   "mission": "local usable main GPT-OSS 120B, original weights and authoritative routing",
-  "next_action": "Directed warm nominal153 decode capture with phase/position and read/H2D/compute timing under new frozen protocol; then choose one discriminating intervention and confirm surviving candidate if budget permits.",
+  "next_action": "Confirm C75 nominal153 screen with three fresh pairs; test bounded expert-component read concurrency only if same-binary neutrality and a model-free I/O discriminator support it.",
   "open_hypotheses": [
     "C75 waves give large observed prefill benefit; C100 server NO_GO_CONFIRM remains due its protected decode regression, while C121 nominal153 two-pair screen passed under per-arm inventory; C117 remains failed and C100 remains NO_GO_CONFIRM.",
-    "M4 decode remains ~3.43 tok/s in C121 admitted screen against 6 tok/s target; first final warm ~25.69 s against 10 s target. A phase-marked warm153 trace is needed to identify removable critical-path wait versus compute.",
-    "C108 corrected C105 trace leaves simple 1-3 GiB global L2 and recent-token prefetch below their investment gates on 189+32; warm153/cache representativeness remains open.",
     "Upstream llama.cpp source pin 8019dc5 implements GPT-OSS/MXFP4 but does not mark GPT-OSS experts for explicit lazy row loading; bounded mmap/page-cache viability on this host is unmeasured.",
-    "M3 diverse and active sustained session coverage and M4 functional/quality gates remain open."
+    "M3 diverse and active sustained session coverage and M4 functional/quality gates remain open.",
+    "C123 nominal153 trace observed 10.646 s readiness waits in 13.046 s decode calls; removable portion is unknown and physical NVMe bytes are not identified.",
+    "C123 completed-load fixed-stream LRU saved only 4.11% of decode loads with 3 GiB global, or 15.02% of GPU loads with GPU-only 3 GiB; richer policies and workloads remain open.",
+    "Trace-on overhead neutrality and a bounded read-concurrency mechanism are NOT_RUN; C121 requires three fresh pairs for confirmation."
   ],
   "rejected_claims": [
     "P12 general-medium timing gain >=5% at 496+32 under E18",
@@ -813,7 +813,20 @@
       "measurement_commit": "3abc0071d26d87f5ea8cabca19b2d7c3ae388f60",
       "root": "results/c121-nominal153-20260929T1350Z",
       "status": "SCREEN_GO_OPERATIONAL_NOMINAL153"
+    },
+    {
+      "effective_decision": "results/c122-warm153-decode-trace-20260929T1433Z/decision-effective.json",
+      "identity": "c122",
+      "root": "results/c122-warm153-decode-trace-20260929T1433Z",
+      "status": "FAIL_CANARY_SEGFAULT_BUILD_PROFILE_UNRESOLVED"
+    },
+    {
+      "decision": "results/c123-warm153-decode-trace-20260929T1450Z/decision.json",
+      "identity": "c123",
+      "measurement_commit": "71226aa90d59203917e982dfd23d974bab3a799e",
+      "root": "results/c123-warm153-decode-trace-20260929T1450Z",
+      "status": "PASS_DIAGNOSTIC_READINESS_WAIT_OBSERVED"
     }
   ],
-  "updated_utc": "2026-09-29T14:20:16.105994+00:00"
+  "updated_utc": "2026-09-29T15:10:26.015436+00:00"
 }
