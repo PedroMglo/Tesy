@@ -88,8 +88,11 @@ def summarize_spans(rows, layers):
                 if name == 'WAIT':
                     device = layers[e['layer']]['device']
                     stats[p]['WAIT_' + device].append((a, e['mono_us']))
-    if starts:
-        raise GateError('incomplete analysis span')
+    # Some ENQUEUE events have no matching DEQUEUE in this trace. Their fate is
+    # unknown here; only dequeued tasks have an observed queue-delay interval.
+    pending_enqueues = sum(key[0] == 'QUEUE' for key in starts)
+    if any(key[0] != 'QUEUE' for key in starts):
+        raise GateError(f'incomplete analysis span: {list(starts)[:3]}')
     out = {}
     for p, values in stats.items():
         out[p] = {}
@@ -101,6 +104,7 @@ def summarize_spans(rows, layers):
             else:
                 out[p][k] = {'count': len(v), 'sum_s': sum(b-a for a,b in v)/1e6,
                              'union_s': union_us(v)/1e6}
+    out['unmatched_enqueue_events'] = pending_enqueues
     return out
 
 
