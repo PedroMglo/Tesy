@@ -1,0 +1,55 @@
+{
+  "M3": "C52B_SCOPE_UNCHANGED",
+  "M4": "NOT_DEMONSTRATED_SINGLE_CANDIDATE_RUN_BELOW_TARGET",
+  "candidate_maxima": {
+    "cgroup_peak_bytes": 13074575360,
+    "cpu_c": 95.0,
+    "gpu_c": 62.0,
+    "gpu_total_mib": 5758.0,
+    "nvme_c": 52.85,
+    "rss_bytes": 13298565120,
+    "swap_bytes": 0
+  },
+  "candidate_metrics": {
+    "cache_n": 2044,
+    "cold_prompt_n": 2043,
+    "decode_tok_s_increment": 3.5714101173337403,
+    "finish_reasons": [
+      "stop",
+      "stop"
+    ],
+    "first_final_cold_s": 92.96098496299237,
+    "first_final_increment_s": 25.115189839998493,
+    "increment_prompt_n": 153
+  },
+  "candidate_run": "c114-p1-candidate",
+  "candidate_status": "PASS_SCREEN_ARM_TESTED_SCOPE",
+  "control_model_loaded": false,
+  "control_receipt_status": "FAIL_RESOURCES_OR_EVIDENCE",
+  "default_changed": false,
+  "match_stop": {
+    "elapsed_s": 300.4615018769982,
+    "last_thermal": {
+      "cpu_tctl_c": 46.375,
+      "nvme_composite_by_sensor": {
+        "nvme-pci-c100": 37.85
+      }
+    },
+    "reason": "GateError: C114 matched-start window exhausted",
+    "series_sha256": "62e2191a90fe92c16f091ff596d680972948d209509c91d4fe6179f5331bef6f"
+  },
+  "measurement_commit": "58029cc0f4401bdeccbe5e7b34e452471fbd15aa",
+  "next_action": "No further identical cold-match retry; model-free source/trace bound and next prospective mechanism in a later admitted unit",
+  "old_failures_preserved": [
+    "C100",
+    "C109",
+    "C110",
+    "C112",
+    "C113"
+  ],
+  "pair2": "NOT_RUN",
+  "pair_gain": "NOT_RUN",
+  "publication": "LOCAL_ONLY",
+  "schema": "c114-decision-v1",
+  "status": "INCOMPLETE_MATCH_NOT_ADMITTED"
+}
