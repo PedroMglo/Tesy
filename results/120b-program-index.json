@@ -2,8 +2,8 @@
   "current_checkpoint": {
     "M4": "NOT_DEMONSTRATED",
     "default_changed": false,
-    "effective_status": "PASS_QUALITY_12_OF_12",
-    "effective_unit": "c130b",
+    "effective_status": "PASS_HOLDOUT_8_OF_8_NO_QUALITY_LOSS",
+    "effective_unit": "c131",
     "prior_confirmed_profile": "C129 C75 slots40 CONFIRMED_SLOTS40_NOMINAL153",
     "publication": "LOCAL_ONLY"
   },
@@ -27,14 +27,14 @@
     "M4": "NOT_MET_BY_OBSERVED_LATENCY_AND_DECODE"
   },
   "mission": "local usable main GPT-OSS 120B, original weights and authoritative routing",
-  "next_action": "Prospectively freeze balanced holdout8 and evaluate slots32 control/slots40 candidate; then diverse active sustained session and remaining M4 gates",
+  "next_action": "Freeze and run diverse active 20-request >=60-minute slots40 session; then assess remaining M4 gates and epoch budget",
   "open_hypotheses": [
     "C75 waves give large observed prefill benefit; C100 server NO_GO_CONFIRM remains due its protected decode regression, while C121 nominal153 two-pair screen passed under per-arm inventory; C117 remains failed and C100 remains NO_GO_CONFIRM.",
     "Upstream llama.cpp source pin 8019dc5 implements GPT-OSS/MXFP4 but does not mark GPT-OSS experts for explicit lazy row loading; bounded mmap/page-cache viability on this host is unmeasured.",
     "M3 diverse and active sustained session coverage and M4 functional/quality gates remain open.",
     "C123 nominal153 trace observed 10.646 s readiness waits in 13.046 s decode calls; removable portion is unknown and physical NVMe bytes are not identified.",
     "C123 completed-load fixed-stream LRU saved only 4.11% of decode loads with 3 GiB global, or 15.02% of GPU loads with GPU-only 3 GiB; richer policies and workloads remain open.",
-    "C126 C75/slots32 passed the original C40 twelve tasks with exactly equal official prompt IDs and final messages; holdout8, varied assistant-history session and active sustained duty cycle remain NOT_RUN.",
+    "C126 C75/slots32 passed the original C40 twelve tasks with exactly equal official prompt IDs and final messages; holdout8 passed 8/8 with equal full messages; varied assistant-history session and active sustained duty cycle remain NOT_RUN.",
     "C123 observed 302/1509 decode misses after an in-trace eviction with <=8 distinct subsequent same-layer reservations; this is a capacity heuristic, not a validated slots40 counterfactual because initial LFU hotness/occupancy are incomplete."
   ],
   "rejected_claims": [
@@ -889,7 +889,14 @@
       "measurement_commit": "80ca50e6f484c66ba1d5e90122c831604ba5f728",
       "root": "results/c130b-slots40-quality-20260929T1808Z",
       "status": "PASS_QUALITY_12_OF_12"
+    },
+    {
+      "decision": "results/c131-holdout8-20260929T1847Z/decision.json",
+      "identity": "c131",
+      "measurement_commit": "3a695ca412b4198e3405b2054fb450bb7193350f",
+      "root": "results/c131-holdout8-20260929T1847Z",
+      "status": "PASS_HOLDOUT_8_OF_8_NO_QUALITY_LOSS"
     }
   ],
-  "updated_utc": "2026-09-29T18:44:20.943728+00:00"
+  "updated_utc": "2026-09-29T19:37:48.852061+00:00"
 }
