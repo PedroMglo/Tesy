@@ -2,8 +2,8 @@
   "current_checkpoint": {
     "M4": "NOT_DEMONSTRATED",
     "default_changed": false,
-    "effective_status": "SESSION_QUALITY_OR_DURATION_NO_GO",
-    "effective_unit": "c133",
+    "effective_status": "INTERRUPTED_BY_CONTROL_PLANE",
+    "effective_unit": "c134",
     "prior_confirmed_profile": "C129 C75 slots40 CONFIRMED_SLOTS40_NOMINAL153",
     "publication": "LOCAL_ONLY"
   },
@@ -27,7 +27,7 @@
     "M4": "NOT_MET_BY_OBSERVED_LATENCY_AND_DECODE"
   },
   "mission": "local usable main GPT-OSS 120B, original weights and authoritative routing",
-  "next_action": "Test slots40 7936+256 boundary (new C134); then evaluate remaining decode bottleneck and epoch budget",
+  "next_action": "Detached user-service model-free scope smoke, then C134b 7936+256 slots40 boundary only if admitted",
   "open_hypotheses": [
     "C75 waves give large observed prefill benefit; C100 server NO_GO_CONFIRM remains due its protected decode regression, while C121 nominal153 two-pair screen passed under per-arm inventory; C117 remains failed and C100 remains NO_GO_CONFIRM.",
     "Upstream llama.cpp source pin 8019dc5 implements GPT-OSS/MXFP4 but does not mark GPT-OSS experts for explicit lazy row loading; bounded mmap/page-cache viability on this host is unmeasured.",
@@ -910,7 +910,14 @@
       "measurement_commit": "ff9d1d7ff6d7df99156cc8e33a613b99afbc4ed4",
       "root": "results/c133-diverse-active-session-20260929T2000Z",
       "status": "SESSION_QUALITY_OR_DURATION_NO_GO"
+    },
+    {
+      "decision": "results/c134-slots40-boundary-20260929T2131Z/decision.json",
+      "identity": "c134",
+      "measurement_commit": "ffbf139503a304510360afed0c9d4812228d6910",
+      "root": "results/c134-slots40-boundary-20260929T2131Z",
+      "status": "INTERRUPTED_BY_CONTROL_PLANE"
     }
   ],
-  "updated_utc": "2026-09-29T21:30:37.476876+00:00"
+  "updated_utc": "2026-09-29T21:38:21.829532+00:00"
 }
