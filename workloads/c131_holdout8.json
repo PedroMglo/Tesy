@@ -1,0 +1,55 @@
+{
+  "schema": "c131-holdout8-v1",
+  "evidence_class": "prospective synthetic holdout, never shown to C75 slots32/40 before freeze",
+  "policy": {
+    "reasoning_effort": "medium",
+    "temperature": 0,
+    "seed": 42,
+    "max_output_tokens": 3072,
+    "context_tokens": 8192,
+    "task_timeout_s": 600,
+    "task_count": 8
+  },
+  "tasks": [
+    {
+      "id": "c131-code-01",
+      "category": "code",
+      "prompt": "Write only a Python function rle_pairs(xs). xs is a list of integers. Return a list of (value,count) tuples for each maximal consecutive run of equal values, in original order. For an empty list return []. Do not mutate xs."
+    },
+    {
+      "id": "c131-code-02",
+      "category": "code",
+      "prompt": "Write only a Python function window_peaks(xs,width). xs is a list of integers and width is a positive integer. Return the maximum of every contiguous window of exactly width elements, in order. If width exceeds len(xs), return []. Do not mutate xs."
+    },
+    {
+      "id": "c131-code-03",
+      "category": "code",
+      "prompt": "Write only a Python function uncovered_spans(spans,lo,hi). spans is a list of integer half-open intervals (start,end) whose union is covered; ignore empty or reversed intervals. Return sorted disjoint nonempty (start,end) tuples for the uncovered portion of [lo,hi). Clip coverage to [lo,hi); touching covered intervals have no gap. If hi<=lo return []. Do not mutate spans."
+    },
+    {
+      "id": "c131-sql-01",
+      "category": "sql_data",
+      "prompt": "Return only one SQLite SELECT query. Tables: employees(id INTEGER, team TEXT), shifts(employee_id INTEGER, minutes INTEGER, day TEXT). For every team appearing in employees, return (team,total_minutes) where total_minutes is the sum of non-NULL shift minutes only on day='d3'. Teams without d3 shifts have 0. Sort by team ascending. Multiple employees may share a team, and each may have multiple shifts."
+    },
+    {
+      "id": "c131-sql-02",
+      "category": "sql_data",
+      "prompt": "Return only one SQLite SELECT query. Table: scores(player TEXT, round INTEGER, points INTEGER, entry_id INTEGER). For each player choose its best row by greatest points, then greatest round, then greatest entry_id. Return (player,points,round) sorted by player ascending."
+    },
+    {
+      "id": "c131-sql-03",
+      "category": "sql_data",
+      "prompt": "Return only one SQLite SELECT query. Tables: projects(id INTEGER), tasks(id INTEGER, project_id INTEGER, state TEXT). Return the project id for every project with no task whose state='open'. A project with no tasks must be included. Sort by project id ascending. Return one column named id."
+    },
+    {
+      "id": "c131-plan-01",
+      "category": "planning",
+      "prompt": "Return only JSON with keys items,total_units,total_cost. Choose whole packs under capacity 11 units. Packs are A(size 6,cost 8), B(5,6), C(4,5), D(3,4). Maximize total_units. Ties choose lower total_cost, then lexicographically smallest sorted items list. items must be sorted."
+    },
+    {
+      "id": "c131-plan-02",
+      "category": "planning",
+      "prompt": "Return only JSON with keys route,arrival_minute. Start at S at minute 0. Directed travel times are S->A 2, S->B 3, A->C 3, B->C 1, A->T 8, B->T 7, C->T 2. T opens at minute 6; arrivals earlier than 6 wait there until 6. Find earliest arrival at T; ties use the lexicographically smallest route list."
+    }
+  ]
+}
