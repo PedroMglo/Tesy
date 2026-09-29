@@ -66,6 +66,7 @@ def collect(root: Path, run_id: str, *, policy: dict, cap_bytes: int,
     start = None
     previous_end = None
     previous_elapsed = None
+    last_utc = None
     count = 0
     with path.open("x") as out:
         while True:
@@ -80,8 +81,9 @@ def collect(root: Path, run_id: str, *, policy: dict, cap_bytes: int,
                 raise GateError("start inventory cadence gap")
             validate_sample(obs, policy=policy, cap_bytes=cap_bytes,
                             expected_power=expected_power)
+            last_utc = utc_now().isoformat()
             row = {"run_id": run_id, "elapsed_s": elapsed,
-                   "utc": utc_now().isoformat(),
+                   "utc": last_utc,
                    "observation": obs}
             out.write(json.dumps(row, allow_nan=False, sort_keys=True) + "\n")
             out.flush()
@@ -95,6 +97,7 @@ def collect(root: Path, run_id: str, *, policy: dict, cap_bytes: int,
         raise GateError("start inventory too few samples")
     return {"schema": "c118-per-arm-start-inventory-v2", "run_id": run_id,
             "duration_s": previous_elapsed, "sample_count": count, "sha256": sha256(path),
+            "last_utc": last_utc,
             "policy_sha256": digest(policy), "cap_bytes": cap_bytes,
             "expected_power": expected_power,
             "path": str(path)}
@@ -134,7 +137,8 @@ def require_inventory(root: Path, run_id: str, receipt: dict, *, policy: dict,
         stamps.append(stamp)
         validate_sample(row.get("observation"), policy=policy, cap_bytes=cap_bytes,
                         expected_power=expected_power)
-    if times[0] != 0 or times[-1] - times[0] + 1e-6 < duration_s or \
+    if receipt.get("last_utc") != rows[-1]["utc"] or \
+       times[0] != 0 or times[-1] - times[0] + 1e-6 < duration_s or \
        receipt.get("duration_s") != times[-1] or \
        any(not 0 < b - a <= 1.5 for a, b in zip(times, times[1:])) or \
        any((b-a).total_seconds() < -0.1 for a, b in zip(stamps, stamps[1:])) or \

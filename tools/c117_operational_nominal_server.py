@@ -205,7 +205,9 @@ def validate_run(root, spec, protocol, config, raw):
        type(cache_n) is not int or not common-32<=cache_n<=bound or \
        second['timings']['prompt_n']+cache_n!=len(current_ids):
         raise GateError('C117 official nominal increment/prefix cache outside frozen bounds')
-    if os.stat(MODEL).st_mtime_ns != protocol['c117']['model_stat']['mtime_ns']:
+    profile = protocol.get('c120', protocol.get('c117'))
+    if type(profile) is not dict or \
+       os.stat(MODEL).st_mtime_ns != profile['model_stat']['mtime_ns']:
         raise GateError('C117 model stat changed')
     return maxima
 

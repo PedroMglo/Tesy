@@ -42,8 +42,8 @@ def require_arm_inventory(root, run_id):
     return len(rows)
 
 
-def run_row(root, pair, arm, measurement_commit, resources):
-    run_id = f"c117-p{pair}-{arm}"
+def run_row(root, pair, arm, measurement_commit, resources, *, run_prefix="c117"):
+    run_id = f"{run_prefix}-p{pair}-{arm}"
     require_arm_inventory(root, run_id)
     receipt_path = root / "raw" / f"{run_id}.receipt.json"
     raw_path = root / "raw" / f"{run_id}.json"

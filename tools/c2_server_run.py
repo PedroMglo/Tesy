@@ -568,6 +568,35 @@ def run(args, protocol, config, task_rows, model):
                       else nullcontext())
     with reserve(paths[".stdout"]) as stdout, reserve(paths[".stderr"]) as stderr, \
          open(paths[".samples.jsonl"],"x") as sample_file, marker_context as marker_file:
+        start_inventory = None
+        if 'start_inventory' in protocol:
+            from c118_start_inventory import require_inventory
+            contract = protocol['start_inventory']
+            if type(contract) is not dict or contract.get('schema') != 'c120-start-inventory-v1' or \
+               contract.get('duration_s') != 60 or contract.get('max_age_s') != 3 or \
+               output_root.name != 'raw':
+                raise GateError('frozen start inventory contract invalid')
+            inventory_root = output_root.parent
+            policy_path = inventory_root / 'resource-policy.json'
+            receipt_path = output_root / f'{args.run_id}.start-inventory.receipt.json'
+            if sha256(policy_path) != contract.get('policy_sha256'):
+                raise GateError('start inventory policy SHA changed')
+            policy = strict_json(policy_path.read_text())
+            receipt = strict_json(receipt_path.read_text())
+            power = {'source':policy['power']['source'],
+                     'profile':policy['power']['profile']}
+            checked_utc = dt.datetime.now(dt.timezone.utc)
+            require_inventory(inventory_root, args.run_id, receipt, policy=policy,
+                              cap_bytes=expected_cgroup_max, expected_power=power,
+                              duration_s=60, now=checked_utc, max_age_s=3)
+            invoked_utc = dt.datetime.now(dt.timezone.utc)
+            age = (invoked_utc-dt.datetime.fromisoformat(receipt['last_utc'])).total_seconds()
+            if not 0 <= age <= 3:
+                raise GateError('start inventory stale at process creation')
+            start_inventory = {'receipt_sha256':sha256(receipt_path),
+                               'checked_utc':checked_utc.isoformat(),
+                               'popen_invoked_utc':invoked_utc.isoformat(),
+                               'popen_invoked_monotonic_ns':time.monotonic_ns()}
         server = subprocess.Popen(command, stdout=stdout, stderr=stderr,
                                   env=env, start_new_session=True,
                                   preexec_fn=parent_death_guard(os.getpid()))
@@ -575,6 +604,8 @@ def run(args, protocol, config, task_rows, model):
             launch = {"schema_version":"c3-launch-v1", "run_id":args.run_id,
                       "process_identity":process_identity(server.pid),
                       "cgroup_start":cg_start, "preflight_sha256":sha256(paths[".preflight.json"])}
+            if start_inventory is not None:
+                launch['start_inventory'] = start_inventory
             if launch["process_identity"]["cgroup_path"] != cg_start["path"]:
                 raise GateError("model process is outside the preflight cgroup")
             with open(paths[".launch.json"],"x") as out:

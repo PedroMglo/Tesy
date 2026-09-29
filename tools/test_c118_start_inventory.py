@@ -115,7 +115,8 @@ class TestStartInventory(unittest.TestCase):
 
             def reject(rows, match):
                 path.write_text("".join(json.dumps(row) + "\n" for row in rows))
-                changed = {**receipt, "sha256": sha256(path)}
+                changed = {**receipt, "sha256": sha256(path),
+                           "last_utc": rows[-1]["utc"]}
                 with self.assertRaisesRegex(GateError, match):
                     require_inventory(root, "arm-2", changed, policy=POLICY,
                                       cap_bytes=10_000, expected_power=POWER,
