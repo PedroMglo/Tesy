@@ -194,10 +194,11 @@ def freeze(root):
     stat=Path(MODEL).stat()
     if stat.st_size != 63387346208 or policy['memory']['cap_max_bytes'] < CAP:
         raise GateError('C125 model stat or capacity changed')
-    protocol={'schema':'c125-component-io-v1','status':'FROZEN_NOT_MEASURED',
+    protocol={'schema':'c125-component-io-v1','campaign_id':root.name,
+              'status':'FROZEN_NOT_MEASURED',
               'source_commit':git('rev-parse','HEAD'),'order':list(ORDER),
               'trace_sha256':sha(TRACE),'gguf_inventory_sha256':sha(INVENTORY),
-              'resource_policy_sha256':sha(POLICY),'model_path':MODEL,
+              'resource_policy_sha256':sha(POLICY),'model_path':str(MODEL),
               'model_sha256_from_prior_verified_provenance':MODEL_SHA,
               'model_stat':{'size':stat.st_size,'mtime_ns':stat.st_mtime_ns,'inode':stat.st_ino},
               'group_digest':digest(workload),'group_count':len(workload),
@@ -217,7 +218,7 @@ def run(root, commit):
         raise GateError('C125 measurement commit/worktree/environment changed')
     protocol=strict_json((root/'protocol.json').read_text())
     workload,total=groups()
-    if protocol['group_digest'] != digest(workload) or protocol['logical_bytes_per_arm'] != total or \
+    if protocol.get('campaign_id') != root.name or protocol['group_digest'] != digest(workload) or protocol['logical_bytes_per_arm'] != total or \
        protocol['trace_sha256'] != sha(TRACE) or protocol['resource_policy_sha256'] != sha(POLICY):
         raise GateError('C125 frozen source/workload/policy changed')
     stat=Path(MODEL).stat()
