@@ -1,0 +1,82 @@
+{
+  "M3": "NOT_INHERITED_FROM_SLOTS40",
+  "M4": "NOT_DEMONSTRATED",
+  "boundary_sha256": "3fe38a8f167e809d06423fedbdf0dbb4f6104d495f17553b298a740002ca5a12",
+  "captures": {
+    "off": {
+      "coverage": {
+        "capture_bytes": 84187760,
+        "checked_slices": 996,
+        "index_rows": 3045,
+        "index_sha256": "3bcf4c67e5422479dd4e22209b66796c5fc7bc00d38a2114720881d119df29fa",
+        "masked_sha256": "1c01ae46d4a6b2636f6c95c5a277190b8a0c3146420e9e3c71829cdf818e5a14",
+        "masked_states": 2,
+        "numeric_states": 250
+      },
+      "elapsed_s": 46.556,
+      "manifest_sha256": "ac7bf1439090f9d5d7f503a8e6a70fe0c4294476a339b1d1a11b4cd6303e164c",
+      "maxima": {
+        "buffered_model_fds": 1,
+        "cgroup_file_bytes": 3513036800,
+        "cgroup_memory_bytes": 18654744576,
+        "cgroup_peak_bytes": 18677768192,
+        "cpu_tctl_c": 93.25,
+        "direct_model_fds": 2,
+        "gpu_temperature_c": 58.0,
+        "gpu_used_mib": 7446.0,
+        "nvme_composite_c": 46.85,
+        "rss_bytes": 17260359680,
+        "swap_bytes": 0
+      },
+      "sentinels": 0,
+      "status": "PASS_CAPTURE_ARM"
+    },
+    "on": {
+      "coverage": {
+        "capture_bytes": 84187760,
+        "checked_slices": 996,
+        "index_rows": 3045,
+        "index_sha256": "3bcf4c67e5422479dd4e22209b66796c5fc7bc00d38a2114720881d119df29fa",
+        "masked_sha256": "1c01ae46d4a6b2636f6c95c5a277190b8a0c3146420e9e3c71829cdf818e5a14",
+        "masked_states": 2,
+        "numeric_states": 250
+      },
+      "elapsed_s": 33.964,
+      "manifest_sha256": "14b9134ce2551418584df946ce78eee7898a1aabd80face65b351537f2351415",
+      "maxima": {
+        "buffered_model_fds": 1,
+        "cgroup_file_bytes": 2748477440,
+        "cgroup_memory_bytes": 17406935040,
+        "cgroup_peak_bytes": 17428398080,
+        "cpu_tctl_c": 79.75,
+        "direct_model_fds": 2,
+        "gpu_temperature_c": 53.0,
+        "gpu_used_mib": 7450.0,
+        "nvme_composite_c": 51.85,
+        "rss_bytes": 17262690304,
+        "swap_bytes": 0
+      },
+      "sentinels": 52900,
+      "status": "PASS_CAPTURE_ARM"
+    }
+  },
+  "default_changed": false,
+  "evidence": "MEDIDO_NO_TARGET",
+  "gpu_peak_mib": 7450.0,
+  "limits": [
+    "189+32 short boundary; not independent full8K attention/KV",
+    "quality/holdout/session/retrieval44 NOT_RUN",
+    "no timing promotion"
+  ],
+  "measurement_commit": "36036632a540253d1aa45aa0fd9d4ae53447b8e1",
+  "next_gate": "new two-pair uniform40/44 same C75 server/E20 nominal153 screen; no eviction patch",
+  "numeric_rows": 250,
+  "physical_with_inventory_s": 233.11426107899752,
+  "profile": "C75 ON/OFF P12 uniform44 ub32 ctx8192 preloadON fullSWA KVF16 E20",
+  "publication": "LOCAL_ONLY",
+  "reference_layers": 36,
+  "reference_sha256": "ba0faffbaa1670fe6a5592ecc4faa6d5fae3e11d9f26fd5b630399cf911ebddd",
+  "schema": "c140-decision-v1",
+  "status": "PASS_UNIFORM44_NUMERIC_BOUNDARY_AND_36_FFN",
+  "unit_elapsed_s": 173.11426107899752
+}
