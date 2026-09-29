@@ -1,0 +1,33 @@
+{
+  "cap_bytes": 19327352832,
+  "default_changed": false,
+  "gain_formula": "100*(control-candidate)/control per pair",
+  "historical_c117_effective_sha256": "408cce72942a4bcf38d69e9915b80f4ada6a3c94ad02250544b842d4820eb68a",
+  "input_sha256": "57cdc0a34842943a4abc0cad852ed2f50adb4fe183aede17f23dff1bcd0a0fed",
+  "order": [
+    "c120-p1-control",
+    "c120-p1-candidate",
+    "c120-p2-candidate",
+    "c120-p2-control"
+  ],
+  "pairs": 2,
+  "primary": "warm first_final_content_s",
+  "protected": [
+    "warm decode_s",
+    "cold decode_s",
+    "cold first_final_content_s",
+    "cold prefill_s",
+    "answer/prefix/resources/identity/inventory"
+  ],
+  "schema": "c120-screen-policy-v1",
+  "screen_go": "median primary >=5%; both pairs positive; all four protected timing medians >=-5%; all other gates PASS",
+  "start": {
+    "inventory_per_arm_s": 60,
+    "max_gap_s": 1.5,
+    "max_launch_age_s": 3,
+    "mode": "OPERATIONAL_WARM",
+    "narrow_thermal_match": false
+  },
+  "status": "FROZEN_BEFORE_MODEL",
+  "swap_max_bytes": 0
+}
