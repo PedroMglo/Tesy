@@ -1,0 +1,98 @@
+{
+  "guard_failure": false,
+  "match_stop": {
+    "last_observation": {
+      "gpu": {
+        "bdf": "00000000:C4:00.0",
+        "power_w": 2.21,
+        "temperature_c": 44.0,
+        "used_mib": 12.0,
+        "uuid": "GPU-83d90c55-1d92-75da-fc30-7771a85f2521"
+      },
+      "power": {
+        "online_sources": [
+          "AC0"
+        ],
+        "profile": "performance",
+        "source": "AC"
+      },
+      "thermal": {
+        "cpu_tctl_c": 47.25,
+        "nvme_composite_by_sensor": {
+          "nvme-pci-c100": 39.85
+        }
+      }
+    },
+    "reason": "300s aggregate matching wait exhausted before C",
+    "second_wait_s": 146.64215983601753
+  },
+  "maxima_by_run": {
+    "c110-b1-a": {
+      "buffered_model_fds": 0,
+      "cgroup_file_bytes": 1746120704,
+      "cgroup_memory_bytes": 13177692160,
+      "cgroup_peak_bytes": 13333647360,
+      "cpu_tctl_c": 91.75,
+      "direct_model_fds": 2,
+      "gpu_temperature_c": 58.0,
+      "gpu_used_mib": 5770.0,
+      "nvme_composite_c": 57.85,
+      "rss_bytes": 13412827136,
+      "swap_bytes": 0
+    },
+    "c110-b1-b": {
+      "buffered_model_fds": 0,
+      "cgroup_file_bytes": 1637122048,
+      "cgroup_memory_bytes": 13178146816,
+      "cgroup_peak_bytes": 13333864448,
+      "cpu_tctl_c": 92.25,
+      "direct_model_fds": 2,
+      "gpu_temperature_c": 59.0,
+      "gpu_used_mib": 5776.0,
+      "nvme_composite_c": 58.85,
+      "rss_bytes": 13422100480,
+      "swap_bytes": 0
+    },
+    "c110-canary-a": {
+      "buffered_model_fds": 0,
+      "cgroup_file_bytes": 1493540864,
+      "cgroup_memory_bytes": 12258463744,
+      "cgroup_peak_bytes": 12422819840,
+      "cpu_tctl_c": 62.625,
+      "direct_model_fds": 2,
+      "gpu_temperature_c": 48.0,
+      "gpu_used_mib": 5712.0,
+      "nvme_composite_c": 41.85,
+      "rss_bytes": 12455698432,
+      "swap_bytes": 0
+    },
+    "c110-canary-b": {
+      "buffered_model_fds": 0,
+      "cgroup_file_bytes": 1490460672,
+      "cgroup_memory_bytes": 12414914560,
+      "cgroup_peak_bytes": 12435079168,
+      "cpu_tctl_c": 67.375,
+      "direct_model_fds": 2,
+      "gpu_temperature_c": 50.0,
+      "gpu_used_mib": 5718.0,
+      "nvme_composite_c": 43.85,
+      "rss_bytes": 12638076928,
+      "swap_bytes": 0
+    },
+    "c110-canary-c": {
+      "buffered_model_fds": 0,
+      "cgroup_file_bytes": 1490460672,
+      "cgroup_memory_bytes": 12414197760,
+      "cgroup_peak_bytes": 12434571264,
+      "cpu_tctl_c": 66.375,
+      "direct_model_fds": 2,
+      "gpu_temperature_c": 51.0,
+      "gpu_used_mib": 5718.0,
+      "nvme_composite_c": 45.85,
+      "rss_bytes": 12642574336,
+      "swap_bytes": 0
+    }
+  },
+  "schema": "c110-resource-summary-v1",
+  "status": "PASS_FOR_COMPLETED_ARMS"
+}
