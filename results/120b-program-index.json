@@ -2,9 +2,9 @@
   "current_checkpoint": {
     "M4": "NOT_DEMONSTRATED",
     "default_changed": false,
-    "effective_status": "CONFIRMED_SLOTS40_NOMINAL153",
-    "effective_unit": "c129",
-    "prior_confirmed_profile": "C124 C75 slots32 CONFIRMED_OPERATIONAL_NOMINAL153",
+    "effective_status": "FAIL_HARNESS_PREMODEL_START_INVENTORY_CADENCE",
+    "effective_unit": "c130",
+    "prior_confirmed_profile": "C129 C75 slots40 CONFIRMED_SLOTS40_NOMINAL153",
     "publication": "LOCAL_ONLY"
   },
   "default_changed": false,
@@ -27,7 +27,7 @@
     "M4": "NOT_MET_BY_OBSERVED_LATENCY_AND_DECODE"
   },
   "mission": "local usable main GPT-OSS 120B, original weights and authoritative routing",
-  "next_action": "C130 slots40 original quality12 plus prospectively frozen holdout8, then diverse/active sustained session on confirmed profile; maintain M4 separate",
+  "next_action": "C130b new identity for original quality12 after preserving C130 premodel cadence failure; no change of inventory gate",
   "open_hypotheses": [
     "C75 waves give large observed prefill benefit; C100 server NO_GO_CONFIRM remains due its protected decode regression, while C121 nominal153 two-pair screen passed under per-arm inventory; C117 remains failed and C100 remains NO_GO_CONFIRM.",
     "Upstream llama.cpp source pin 8019dc5 implements GPT-OSS/MXFP4 but does not mark GPT-OSS experts for explicit lazy row loading; bounded mmap/page-cache viability on this host is unmeasured.",
@@ -875,7 +875,14 @@
       "measurement_commit": "03fb94d74e54e410c92725bfdcdba43c54064aed",
       "root": "results/c129-slots40-confirm-20260929T1735Z",
       "status": "CONFIRMED_SLOTS40_NOMINAL153"
+    },
+    {
+      "decision": "results/c130-slots40-quality-20260929T1800Z/decision.json",
+      "identity": "c130",
+      "measurement_commit": "5673be142eb3dbf3c91ffb9a4aa2e7a5e113db9e",
+      "root": "results/c130-slots40-quality-20260929T1800Z",
+      "status": "FAIL_HARNESS_PREMODEL_START_INVENTORY_CADENCE"
     }
   ],
-  "updated_utc": "2026-09-29T18:00:25.361361+00:00"
+  "updated_utc": "2026-09-29T18:05:58.998070+00:00"
 }
