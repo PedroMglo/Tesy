@@ -2,8 +2,8 @@
   "current_checkpoint": {
     "M4": "NOT_DEMONSTRATED",
     "default_changed": false,
-    "effective_status": "PASS_DIAGNOSTIC_RESIDUAL_READINESS_OBSERVED",
-    "effective_unit": "c135/c136",
+    "effective_status": "NOT_RUN_OWNER_REQUESTED_PUBLICATION",
+    "effective_unit": "c137",
     "prior_confirmed_profile": "C129 C75 slots40 CONFIRMED_SLOTS40_NOMINAL153",
     "publication": "LOCAL_ONLY"
   },
@@ -27,7 +27,7 @@
     "M4": "NOT_MET_BY_OBSERVED_LATENCY_AND_DECODE"
   },
   "mission": "local usable main GPT-OSS 120B, original weights and authoritative routing",
-  "next_action": "C137 slots44 numeric/forward admission under E20 if physical VRAM/RAM budget fits; then bounded nominal153 screen, or close partial slots40 profile.",
+  "next_action": "Paused by owner after publishing local checkpoint. C137 source/build only: freeze and physical numeric/forward gates on a future order; C129 slots40 remains best confirmed partial candidate.",
   "open_hypotheses": [
     "C75 waves give large observed prefill benefit; C100 server NO_GO_CONFIRM remains due its protected decode regression, while C121 nominal153 two-pair screen passed under per-arm inventory; C117 remains failed and C100 remains NO_GO_CONFIRM.",
     "Upstream llama.cpp source pin 8019dc5 implements GPT-OSS/MXFP4 but does not mark GPT-OSS experts for explicit lazy row loading; bounded mmap/page-cache viability on this host is unmeasured.",
@@ -940,7 +940,14 @@
       "measurement_commit": "df4d50752561fff30e4f879adbfda8e0f9813f6a",
       "root": "results/c136-slots40-trace-neutral-20260929T2205Z",
       "status": "PASS_TRACE_OFF_NEUTRAL"
+    },
+    {
+      "decision": "results/c137-slots44-numeric-20260929T2217Z/decision.json",
+      "identity": "c137",
+      "root": "results/c137-slots44-numeric-20260929T2217Z",
+      "source_commit": "8938195b1c0fdcfe91af1c306cadfd8c36736340",
+      "status": "NOT_RUN_OWNER_REQUESTED_PUBLICATION"
     }
   ],
-  "updated_utc": "2026-09-29T22:13:27.062502+00:00"
+  "updated_utc": "2026-09-29T22:17:52.961327+00:00"
 }

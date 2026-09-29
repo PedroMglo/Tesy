@@ -1,0 +1,42 @@
+{
+  "build_and_weights_in_git": false,
+  "not_run": [
+    "C137 protocol freeze",
+    "OFF/ON 120B boundary",
+    "36-layer resident reference",
+    "slots44 server forward",
+    "slots44 performance screen"
+  ],
+  "schema": "c137-model-free-v1",
+  "source_commit": "8938195b1c0fdcfe91af1c306cadfd8c36736340",
+  "status": "SOURCE_AND_BUILD_MODEL_FREE_ONLY",
+  "tests": [
+    {
+      "name": "python_compile",
+      "result": "PASS"
+    },
+    {
+      "generated_source_sha256": "10450fdc6d508bca65adb025a6b50c5d2e0d388535e8a2b49b2381d06a5436de",
+      "name": "unique_source_transform_40_to_44",
+      "original_source_sha256": "8ea008162827059d5195a10e3cdbd7488a1b497fddf8dc56373768c74d1c5635",
+      "result": "PASS"
+    },
+    {
+      "binary_sha256": "471f6fcc5e0e5a935e94b8110a6b45fda86239d9695a8e9fdcc2c4e099805b6c",
+      "name": "g++15_build",
+      "result": "PASS"
+    },
+    {
+      "cap_bytes": 21474836480,
+      "name": "effective_profile",
+      "result": "PASS_MODEL_FREE",
+      "slots": 44
+    },
+    {
+      "name": "c55_physical_host_inventory",
+      "policy_sha256": "3aa0a1fcd78164e9e5ca916b4f38b55f873838cc9dc13d88b8d2e8a7f98e2220",
+      "result": "PASS_60_S_NO_MODEL",
+      "snapshot_sha256": "be2679d81e59ff5d3bed58afdf76347ecefa3e659debeb0a446233fb8117c2fa"
+    }
+  ]
+}

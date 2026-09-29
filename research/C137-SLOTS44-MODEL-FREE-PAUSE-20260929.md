@@ -1,0 +1,11 @@
+# C137 — 44-slot hypothesis paused before inference
+
+The owner requested publication of the current checkpoint and a pause. No C137 model process was launched. C135/C136 showed residual expert readiness wait at 40 slots, so C137 was prepared as a prospective numeric profile with 44 slots and E20. The proposed mechanism is fewer expert misses under the same original GPT-OSS120B weights and authoritative routing. It is a hypothesis, not a performance result.
+
+Source commit `8938195b1c0fdcfe91af1c306cadfd8c36736340`. The model-free C55 inventory passed for the physical host and admitted E20. A generated capture source was built on NVMe by exactly two transformations of the C127 source (`slot_count` and `moe_stream_slots`, 40 to 44). The generated source SHA256 is `10450fdc6d508bca65adb025a6b50c5d2e0d388535e8a2b49b2381d06a5436de`; the local binary SHA256 is `471f6fcc5e0e5a935e94b8110a6b45fda86239d9695a8e9fdcc2c4e099805b6c`. Syntax, build and effective profile construction passed without loading the model. The binary and generated build files remain local, outside Git.
+
+No protocol freeze, OFF/ON boundary, 36-layer reference, slots44 forward admission or timing took place. E20 RAM admission is preliminary; the predicted GPU headroom is narrow and requires live allocation and forward checks. C137 is `NOT_RUN_OWNER_REQUESTED_PUBLICATION`, not a failed numeric gate and not a new candidate. Resume only with a new owner order, then freeze the protocol before physical inference and preserve any failure under its own identity.
+
+The best confirmed useful profile remains C75 wave ON/slots40 at the C129 nominal153 gate, with C130b quality12/12, C131 holdout8/8 and C134b one 7936-token boundary retrieval. C133 completed a varied 20-request, 83-minute active session but failed its strict lexical gate 19/20. M3 is partial in that scope; M4 is not met. The C135/C136 trace adds diagnostic evidence, not a product promotion.
+
+See `results/c137-slots44-numeric-20260929T2217Z/` for the current inventory, model-free tests, decision and epoch checkpoint. Historical FAILs remain unchanged. The epoch checkpoint conservatively leaves 7097.7 s physical and about 11602 s wall at its timestamp; this is a balance for accounting, not an automatic license to continue during the requested pause. No default was changed.
