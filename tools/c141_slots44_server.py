@@ -68,7 +68,7 @@ def budget(root,remaining):
         if path.is_file():
             row=strict_json(path.read_text());a,b=map(datetime.fromisoformat,(row['started_utc'],row['ended_utc']))
             if b<a:raise GateError('family receipt time reversed')
-            intervals.append({'run':rid,'seconds':(b-a).total_seconds(),'status':row['status']})
+            intervals.append({'run':rid,'seconds':(b-a).total_seconds()+15,'receipt_elapsed_s':(b-a).total_seconds(),'outside_receipt_upper_bound_s':15,'status':row['status']})
     spent=sum(r['seconds'] for r in intervals)
     family_limit=2250 if len(campaign.ORDER)==6 else 1500
     physical=old['physical_remaining_lower_bound_s']-spent;wall=(DEADLINE-now).total_seconds()
@@ -85,7 +85,7 @@ def configure(root):
     ROOT_NAME=root.name;UNIT=root.name.split('-',1)[0]
     if UNIT not in ('c141','c142'):raise GateError('explicit screen/confirmation ID required')
     n=3 if UNIT=='c142' else 2
-    if n==3:CHECKPOINT=REPO/'results/c141-uniform44-screen-20260929T2330Z/epoch-checkpoint.json'
+    if n==3:CHECKPOINT=REPO/'results/c141-uniform44-screen-20260929T2330Z/epoch-checkpoint-service-envelope.json'
     specs=[]
     for i in range(1,n+1):
         roles=('control','candidate') if i%2 else ('candidate','control')

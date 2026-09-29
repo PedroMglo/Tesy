@@ -54,11 +54,12 @@ def analyze(root):
         'raw':{f.name:{'bytes':f.stat().st_size,'sha256':sha256(f)} for f in sorted((root/'raw').iterdir()) if f.is_file()}}
     elapsed=sum((datetime.fromisoformat(strict_json((root/'raw'/f'{s[0]}.receipt.json').read_text())['ended_utc'])-
                  datetime.fromisoformat(strict_json((root/'raw'/f'{s[0]}.receipt.json').read_text())['started_utc'])).total_seconds() for s in family.campaign.ORDER)
-    old=strict_json(family.CHECKPOINT.read_text());charged=old['physical_charged_upper_estimate_s']+elapsed
+    outside_receipt_upper_bound_s=15*len(family.campaign.ORDER)
+    old=strict_json(family.CHECKPOINT.read_text());charged=old['physical_charged_upper_estimate_s']+elapsed+outside_receipt_upper_bound_s
     checkpoint={'epoch_id':'post-c119-20260929T133115Z','utc':datetime.now(timezone.utc).isoformat(),
         'physical_charged_upper_estimate_s':charged,'physical_remaining_lower_bound_s':28800-charged,
         'wall_remaining_s':(family.DEADLINE-datetime.now(timezone.utc)).total_seconds(),
-        'family_live_elapsed_s':elapsed,'includes':'per-arm60s inventory, server, launch/preflight/cleanup; counted once',
+        'family_receipt_elapsed_s':elapsed,'nonreceipt_service_setup_cleanup_upper_bound_s':outside_receipt_upper_bound_s,'family_live_upper_bound_s':elapsed+outside_receipt_upper_bound_s,'includes':'per-arm60s inventory and server within receipts plus15s per-arm bound for service setup/cleanup outside receipt, deduplicated',
         'prior_checkpoint_sha256':sha256(family.CHECKPOINT)}
     return timing,decision,manifest,checkpoint
 

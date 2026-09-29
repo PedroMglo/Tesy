@@ -2,8 +2,8 @@
   "current_checkpoint": {
     "M4": "NOT_DEMONSTRATED",
     "default_changed": false,
-    "effective_status": "NOT_RUN_OWNER_REQUESTED_PUBLICATION",
-    "effective_unit": "c140",
+    "effective_status": "SCREEN_GO_UNIFORM44_NOMINAL153",
+    "effective_unit": "c141",
     "prior_confirmed_profile": "C129 C75 slots40 CONFIRMED_SLOTS40_NOMINAL153",
     "publication": "LOCAL_ONLY"
   },
@@ -27,7 +27,7 @@
     "M4": "NOT_MET_BY_OBSERVED_LATENCY_AND_DECODE"
   },
   "mission": "local usable main GPT-OSS 120B, original weights and authoritative routing",
-  "next_action": "Two fresh original C75/E20 uniform40/44 nominal153 pairs after C140 numeric admission; slots40 remains opt-in",
+  "next_action": "Three fresh confirmation pairs original C75/E20 uniform40/44, same nominal153 workload; no profile promotion yet",
   "open_hypotheses": [
     "C75 waves give large observed prefill benefit; C100 server NO_GO_CONFIRM remains due its protected decode regression, while C121 nominal153 two-pair screen passed under per-arm inventory; C117 remains failed and C100 remains NO_GO_CONFIRM.",
     "Upstream llama.cpp source pin 8019dc5 implements GPT-OSS/MXFP4 but does not mark GPT-OSS experts for explicit lazy row loading; bounded mmap/page-cache viability on this host is unmeasured.",
@@ -966,6 +966,11 @@
       "measurement_commit": "36036632a540253d1aa45aa0fd9d4ae53447b8e1",
       "root": "results/c140-slots44-numeric-20260929T2324Z",
       "status": "PASS_UNIFORM44_NUMERIC_BOUNDARY_AND_36_FFN"
+    },
+    {
+      "identity": "c141",
+      "root": "results/c141-uniform44-screen-20260929T2330Z",
+      "status": "SCREEN_GO_UNIFORM44_NOMINAL153"
     }
   ],
   "updated_utc": "2026-09-29T23:31:25Z"
