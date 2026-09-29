@@ -1,0 +1,7 @@
+# C122 canary failure and C123 rebuild discriminator
+
+The first C122 numerical canary ended with SIGSEGV (`returncode=-11`) after `C80_CONTEXT_READY`, during the first CPU graph evaluation. Its receipt and bounded manifest remain at `results/c122-warm153-decode-trace-20260929T1433Z/raw/`; `decision-effective.json` records `FAIL_CANARY_SEGFAULT_BUILD_PROFILE_UNRESOLVED`. The C122 server trace was **NOT_RUN**. This is neither a thermal stop nor an OOM: the scope reported zero OOM events and about 2.50 GiB peak charge. Its numeric fidelity is unknown because no capture was completed.
+
+The local core backtrace placed the fault in `ggml_graph_compute_thread` in `libggml-cpu.so.0`, reached through `llama_context::decode`. Its executable and mapped libraries matched the C122 build. Comparing pinned CMake caches found `CMAKE_C_FLAGS=-DTESY_C47_CPU_SKIP_PARKED` in C84 and an empty `CMAKE_C_FLAGS` in the first C122 build; both had the C++ skip and trace macros. A missing parked-pair guard in C code is a concrete causal hypothesis for the crash, not yet a demonstrated cause.
+
+C123 is a new attempt identity. It preserves C122 raw and source, builds a fresh copy on NVMe with C84-matched C and C++ flags, and repeats only the failed 189+32 same-profile canary. If it passes, the bounded nominal153 trace may run under a new frozen protocol. If it fails, no server trace or performance claim follows until the defect is isolated. This is the first failed physical iteration of this build-profile hypothesis; no historical FAIL is reclassified.
