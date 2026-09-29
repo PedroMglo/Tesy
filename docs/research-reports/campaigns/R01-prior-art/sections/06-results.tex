@@ -1,14 +1,17 @@
 \section{Mapa de prior art}
-\begin{tabularx}{\linewidth}{@{}p{32mm}Y@{}}\toprule
-\textbf{Eixo} & \textbf{Prior art / consequência}\\\midrule
-Sparse routing & Shazeer et al. \cite{shazeer2017moe}: arquitetura-base não é contribuição.\\
-Multi-tier offload & FlexGen \cite{sheng2023flexgen}: GPU/CPU/disk é prior art geral, mas o sistema também explora compressão a 4 bits e não é baseline de exactness equivalente.\\
-MoE cache/prefetch & MoE-Infinity \cite{xue2024moeinfinity}: tracing, cache e prefetch têm overlap direto.\\
-CPU/GPU execution & Fiddler/KTransformers \cite{kamahori2025fiddler,chen2025ktransformers}: execução heterogénea é prior art. O Expert Deferral de KTransformers admite pequena perda média de accuracy e não é contract-equivalent ao Tesy exacto.\\
-Exact prefetch & SpecPrefetch \cite{kong2026specprefetch}: prediction-for-transfer sem routing authority é publicado.\\
-Local MoE & OSDI'26 \cite{wang2026localslo}: comparador contemporâneo de serving local/híbrido, embora em hardware e workloads diferentes.\\
-Cache bounds & Belady/Mattson \cite{belady1966replacement,mattson1970storage}: oracle/stack methodology anterior.\\
-Performance bounds & Amdahl/Roofline \cite{amdahl1967validity,williams2009roofline}: metodologia estabelecida.\\
+\begin{tabularx}{\linewidth}{@{}p{31mm}Y@{}}\toprule
+\textbf{Eixo} & \textbf{Prior art e consequência para Tesy}\\\midrule
+Sparse MoE / routing & Shazeer et al. e Switch Transformer \cite{shazeer2017moe,fedus2022switch}: conditional sparse routing e top-k/top-1 MoE são arquitetura-base, não contribuição Tesy.\\
+Multi-tier LLM & FlexGen e \emph{LLM in a flash} \cite{sheng2023flexgen,alizadeh2023llmflash}: GPU/CPU/storage, cost models e selective loading já existem fora de MoE; não são baseline exacto por si só.\\
+Consumer MoE offload & Eliseev--Mazur e EdgeMoE \cite{eliseev2023offloading,yi2023edgemoe}: experts acima da memória do acelerador e loading on-demand em hardware limitado têm precedentes diretos.\\
+Expert cache / prefetch & MoE-Infinity, ProMoE e SpecPrefetch \cite{xue2024moeinfinity,song2024promoe,kong2026specprefetch}: caching, proactive loading e prediction-for-transfer têm overlap direto.\\
+Gating/prediction co-design & Pre-gated MoE \cite{hwang2024pregated}: antecipar experts via mudança do gating é prior art, mas muda o modelo/contrato.\\
+CPU/GPU hybrid & PowerInfer, Fiddler, KTransformers e Wang et al. \cite{song2024powerinfer,kamahori2025fiddler,chen2025ktransformers,wang2026localslo}: heterogeneous execution/local inference é uma linha estabelecida.\\
+Pipelines / scheduling & MoE-Lightning, DAOP e Klotski \cite{cao2025moelightning,zhang2025daop,fang2025klotski}: overlap de compute--I/O, placement dinâmico e expert-aware batching/pipelining são prior art.\\
+Quality-altering efficiency & EdgeMoE, SiDA-MoE, SwapMoE, HOBBIT e AdapMoE \cite{yi2023edgemoe,du2023sidamoe,kong2024swapmoe,tang2024hobbit,zhong2024adapmoe}: importantes comparadores, mas não equivalentes ao contrato exacto quando mudam precisão, gating ou accuracy.\\
+Routing locality & Liang et al. \cite{liang2026routing}: cacheability/local consistency varia por modelo; Tesy deve medir em vez de assumir.\\
+Speculation & Leviathan et al. \cite{leviathan2023speculative}: exact speculative decoding é anterior; futura integração Tesy não é novidade por usar speculation.\\
+Bounds / metodologia & Belady, Mattson, Amdahl e Roofline \cite{belady1966replacement,mattson1970storage,amdahl1967validity,williams2009roofline}: oracle de cache, stack analysis e performance bounds são metodologia estabelecida.\\
 \bottomrule\end{tabularx}
 
-Routing locality/cacheability é também objeto explícito de caracterização: Liang et al. mostram que a consistência local varia entre modelos \cite{liang2026routing}. Klotski coloca I/O-compute overlap num pipeline multi-batch expert-aware \cite{fang2025klotski}. AdapMoE combina cache/prefetch com redução dinâmica de experts ativados \cite{zhong2024adapmoe}; é related work importante, mas não baseline exacto por alterar o conjunto de experts executados.
+O mapa elimina como claims amplas: expert offloading, cache, prefetch, learned/predictive prefetch, storage tiering, CPU experts, CPU/GPU hybrid execution, overlap por pipeline e speculative decoding. A comparação científica futura deve privilegiar os vizinhos de mecanismo mais próximos e declarar quando um baseline otimiza sob um contrato de qualidade diferente.

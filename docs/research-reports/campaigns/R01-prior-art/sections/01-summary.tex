@@ -1,2 +1,7 @@
 \section{Síntese executiva}
-\claim{CL-R01-NOVELTY}{Estado: BROAD\_NOVELTY\_NO\_GO / ENGINEERING\_AND\_MEASUREMENT\_GO.} Sparse MoE \cite{shazeer2017moe}, offload \cite{sheng2023flexgen,xue2024moeinfinity}, hybrid execution \cite{kamahori2025fiddler,chen2025ktransformers}, exact prefetch \cite{kong2026specprefetch} e local MoE \cite{wang2026localslo} são prior art. Tesy não começou do zero.
+\claim{CL-R01-NOVELTY}{Estado: BROAD\_NOVELTY\_NO\_GO / ENGINEERING\_AND\_MEASUREMENT\_GO.}
+Tesy não começou do zero. A arquitetura sparse MoE e o routing seletivo são anteriores ao projeto \cite{shazeer2017moe,fedus2022switch}; inferência multi-tier GPU/CPU/storage já foi estudada em LLMs densos e sparse \cite{sheng2023flexgen,alizadeh2023llmflash,eliseev2023offloading,yi2023edgemoe}; e cache, prefetch e prediction de experts aparecem em vários sistemas MoE \cite{xue2024moeinfinity,hwang2024pregated,song2024promoe,kong2026specprefetch}.
+
+Execução heterogénea CPU/GPU em hardware de consumo também tem precedentes fortes \cite{song2024powerinfer,kamahori2025fiddler,chen2025ktransformers,wang2026localslo}. Técnicas adjacentes que mudam precisão, routing ou o conjunto efetivamente executado de experts continuam relevantes como related work, mas não são baselines de exactness equivalentes \cite{du2023sidamoe,kong2024swapmoe,tang2024hobbit,zhong2024adapmoe}. Mesmo speculative decoding exacto tem prior art estabelecido \cite{leviathan2023speculative}.
+
+A consequência científica é restritiva: uma contribuição Tesy só poderá ser reclamada num mecanismo estreito, comparado com os sistemas mais próximos e demonstrado sob o contrato exacto, budgets e telemetria do target. Esta revisão não promove nenhuma claim de novidade.

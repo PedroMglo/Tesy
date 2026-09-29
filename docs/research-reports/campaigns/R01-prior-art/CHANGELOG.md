@@ -1,6 +1,8 @@
 # 1.0.0
 
-Primeira edição REVIEWED. Conteúdo científico preservado face ao draft 0.1.0; revisão final inclui bibliografia externa, provenance interna, build reprodutível e auditoria visual do PDF.
+Reaberto como DRAFT em 2026-09-30, antes da primeira publicação, para ampliar e tornar mais explícito o mapa de prior art. A revisão acrescenta consumer MoE offload, storage-tier inference, proactive/predictive expert loading, CPU/GPU hybrid execution, mecanismos que alteram quality/precision e speculative decoding; separa overlap de mecanismo de equivalência do contrato exacto Tesy.
+
+O PDF anteriormente revisto ficou stale após esta expansão. Nova compilação e revisão visual são obrigatórias antes de restaurar REVIEWED.
 
 # 0.1.0
 

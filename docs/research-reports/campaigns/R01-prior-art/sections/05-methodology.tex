@@ -1,2 +1,6 @@
 \section{Metodologia da revisão}
-Fontes primárias/model card; agrupamento por mecanismo; números externos não projetados para o target. Literatura externa não valida métricas Tesy.
+A revisão é orientada ao problema e tem corte em 30 de setembro de 2026. Foram priorizadas fontes primárias: papers de conferência/journal, páginas oficiais das venues e arXiv quando não existe publicação archival claramente aplicável. A survey recente \cite{liu2026survey} é usada como instrumento de cobertura, não como substituto das fontes primárias.
+
+Os trabalhos foram classificados por mecanismo: (i) sparse routing/MoE; (ii) multi-tier storage e parameter offload; (iii) expert cache, residency e replacement; (iv) prediction/prefetch; (v) CPU/GPU heterogeneous execution e pipelining; (vi) técnicas que alteram precisão/routing/experts; (vii) speculation; e (viii) bounds/metodologia de medição. Para cada grupo, a revisão separa \emph{overlap de mecanismo} de \emph{equivalência de contrato}.
+
+Números externos não são projetados para o Ryzen/RTX de referência e não validam métricas Tesy. Literatura externa sustenta contexto, prior art e claim boundaries; resultados Tesy continuam a exigir evidência interna congelada. Esta não é uma systematic review, meta-analysis ou patent search.

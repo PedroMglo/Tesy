@@ -1,4 +1,6 @@
 \section{Hipóteses de novidade eliminadas}
-Não reclamar como novidade ampla: expert offloading/prefetch/cache, CPU experts, CPU/GPU hybrid, storage tier, predictor só para transfer, Belady ou Roofline/Amdahl.
+Não reclamar como novidade ampla: sparse MoE/routing; expert offloading para CPU/storage; caches LRU-like; prefetch de experts; learned/predictive prefetch; residency hot/cold; CPU/GPU heterogeneous execution; pipelining compute--I/O; storage-tier inference; predictor usado apenas para transferência; Belady/Mattson; Roofline/Amdahl; ou speculative decoding.
 
-Um comparador pode ser relevante sem satisfazer o mesmo contrato. Técnicas que alteram routing, fazem expert deferral/drop, comprimem adicionalmente pesos/KV ou aceitam perda de accuracy devem ser comparadas como sistemas relacionados, não apresentadas como equivalentes exactos ao target Tesy.
+Também não é defensável usar a ausência de exactness num sistema relacionado como argumento de que o mecanismo subjacente é novo. EdgeMoE, SiDA-MoE, SwapMoE, HOBBIT e AdapMoE ocupam pontos diferentes do trade-off qualidade/memória/latência \cite{yi2023edgemoe,du2023sidamoe,kong2024swapmoe,tang2024hobbit,zhong2024adapmoe}; servem para delimitar o espaço, mesmo quando o Tesy recusa essas concessões.
+
+O claim boundary correto é positivo apenas depois de um teste discriminante: identificar um mecanismo estreito que não esteja coberto pelos comparadores mais próximos, congelar o contrato, demonstrar correctness e medir o ganho no target. Até lá, o estado permanece \Code{BROAD_NOVELTY_NO_GO}.
