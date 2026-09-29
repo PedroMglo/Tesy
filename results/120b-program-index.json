@@ -2,9 +2,9 @@
   "current_checkpoint": {
     "M4": "NOT_DEMONSTRATED",
     "default_changed": false,
-    "effective_status": "NO_GO_MODEL_FREE_COMPONENT_PARALLELISM",
-    "effective_unit": "c125b",
-    "measurement_commit": "27e46fa5c5e01be6b154ff3de4a4792942fc5e5c",
+    "effective_status": "PASS_QUALITY_12_OF_12",
+    "effective_unit": "c126",
+    "measurement_commit": "784f387e8cf775b9bf863cf04f9047d4fa6fa6e4",
     "prior_confirmed_profile": "C124 CONFIRMED_OPERATIONAL_NOMINAL153",
     "publication": "LOCAL_ONLY"
   },
@@ -28,14 +28,15 @@
     "M4": "NOT_MET_BY_OBSERVED_LATENCY_AND_DECODE"
   },
   "mission": "local usable main GPT-OSS 120B, original weights and authoritative routing",
-  "next_action": "Source-faithful equal-memory primary-slot quota simulation from C123 DEMAND events; if weak, bounded backend/loader pivot; qualify diverse sustained use of C75 separately.",
+  "next_action": "C127 P12 slots40 numeric/forward admission from fresh live policy; only if faithful and within E18/VRAM, two-pair C75 slots32/40 nominal153 screen; holdout8 and diverse sustained use on best candidate.",
   "open_hypotheses": [
     "C75 waves give large observed prefill benefit; C100 server NO_GO_CONFIRM remains due its protected decode regression, while C121 nominal153 two-pair screen passed under per-arm inventory; C117 remains failed and C100 remains NO_GO_CONFIRM.",
     "Upstream llama.cpp source pin 8019dc5 implements GPT-OSS/MXFP4 but does not mark GPT-OSS experts for explicit lazy row loading; bounded mmap/page-cache viability on this host is unmeasured.",
     "M3 diverse and active sustained session coverage and M4 functional/quality gates remain open.",
     "C123 nominal153 trace observed 10.646 s readiness waits in 13.046 s decode calls; removable portion is unknown and physical NVMe bytes are not identified.",
     "C123 completed-load fixed-stream LRU saved only 4.11% of decode loads with 3 GiB global, or 15.02% of GPU loads with GPU-only 3 GiB; richer policies and workloads remain open.",
-    "Trace-on overhead neutrality and a bounded read-concurrency mechanism are NOT_RUN; C121 requires three fresh pairs for confirmation."
+    "C126 C75/slots32 passed the original C40 twelve tasks with exactly equal official prompt IDs and final messages; holdout8, varied assistant-history session and active sustained duty cycle remain NOT_RUN.",
+    "C123 observed 302/1509 decode misses after an in-trace eviction with <=8 distinct subsequent same-layer reservations; this is a capacity heuristic, not a validated slots40 counterfactual because initial LFU hotness/occupancy are incomplete."
   ],
   "rejected_claims": [
     "P12 general-medium timing gain >=5% at 496+32 under E18",
@@ -847,7 +848,14 @@
       "measurement_commit": "27e46fa5c5e01be6b154ff3de4a4792942fc5e5c",
       "root": "results/c125b-component-io-probe-20260929T1555Z",
       "status": "NO_GO_MODEL_FREE_COMPONENT_PARALLELISM"
+    },
+    {
+      "decision": "results/c126-wave-quality-20260929T1610Z/decision.json",
+      "identity": "c126",
+      "measurement_commit": "784f387e8cf775b9bf863cf04f9047d4fa6fa6e4",
+      "root": "results/c126-wave-quality-20260929T1610Z",
+      "status": "PASS_QUALITY_12_OF_12"
     }
   ],
-  "updated_utc": "2026-09-29T15:59:02.920281+00:00"
+  "updated_utc": "2026-09-29T16:52:58.951654+00:00"
 }
