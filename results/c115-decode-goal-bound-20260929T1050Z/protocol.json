@@ -1,0 +1,30 @@
+{
+  "alternative": "decode phase is already short enough and prefill alone could meet the target",
+  "analyzer_sha256": "e210404996c79e7a02b7521fdc00e7357b518b49d1a87ef720264010a2bf9f4c",
+  "claim_limit": "one C114 candidate request; conditional phase subtraction only; no causal server A/B or M4 promotion",
+  "input_sha256": {
+    "c108_analysis": "00280576ffcc014e446254b3ae17a07a8c9d7095b4415b7d4a77442c936d4a5d",
+    "c111_timing": "05f36eb77210fa3a8090179168faf7d024f9897d532c575e094a93214b98719a",
+    "c114_candidate_raw": "e89e434502639b10e8308e37734acdadf146f1e95994a47d49882f6e61bcfc8e",
+    "c114_decision": "293e3b10e57a48eac159903aa64a0b074d2732653f997ed456a0920964296fcf",
+    "c114_manifest": "0476a0676f458c6eee4f6fa501f5307381676cade93bdb539f9e272f92d1f7e7"
+  },
+  "inputs": {
+    "c108_analysis": "results/c108-trace-errata-20260929T0805Z/analysis.json",
+    "c111_timing": "results/c111-long-toggle-20260929T0930Z/timing-pairs.json",
+    "c114_candidate_raw": "results/c114-warm-nominal-server-20260929T1035Z/raw/c114-p1-candidate.json",
+    "c114_decision": "results/c114-warm-nominal-server-20260929T1035Z/decision.json",
+    "c114_manifest": "results/c114-warm-nominal-server-20260929T1035Z/manifest.json"
+  },
+  "method": "first_final - prompt_ms/1000; 100*(1-observed_tps/6) for per-token time reduction; no cross-workload time ratio",
+  "objective": "quantify whether eliminating prefill alone could reach the 10s first-final target on the observed C114 nominal153 request, holding decode fixed",
+  "publication": "local only",
+  "schema": "c115-decode-goal-bound-protocol-v1",
+  "status": "FROZEN_BEFORE_ANALYSIS",
+  "stops": "any input hash, result, count, finite or trace gate invalid",
+  "targets": {
+    "decode_tok_s": 6,
+    "first_final_s": 10
+  },
+  "utc": "2026-09-29T10:47:08.873887+00:00"
+}
