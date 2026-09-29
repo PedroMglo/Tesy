@@ -198,7 +198,7 @@ def analyze(root):
             'request':'c112-repeat','tokens':{'new_prompt':153,'cached_prompt':2044,'output':47,'traced_decode_evaluations':46},
             'layer_devices':dict(Counter(v['device'] for v in layers.values())),
             'trace':{'events':parsed['events'],'loads':parsed['loads'],'calls':len(calls),'call_duration_s':duration,'spans':spans},
-            'server':{'warm_first_final_s':b['stream_metrics']['time_to_first_final_s'] if 'time_to_first_final_s' in b['stream_metrics'] else None,
+            'server':{'warm_first_final_s':b['stream_metrics']['first_final_content_chunk_s'],
                       'warm_prefill_s':b['timings']['prompt_ms']/1000,'warm_decode_s':observed_decode_s,
                       'warm_decode_tok_s':b['timings']['predicted_per_second']},
             'conditional_bounds':{'decode_target_6tok_s':target_decode_s,
