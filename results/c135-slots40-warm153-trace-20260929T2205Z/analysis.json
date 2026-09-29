@@ -1,0 +1,262 @@
+{
+  "conditional_target": {
+    "fraction_of_trace_on_wait_if_trace_on_rest_fixed": 0.38153992937483117,
+    "six_tok_s_decode_s_for_47_tokens": 7.833333333333333,
+    "trace_off_decode_saving_needed_s": 2.3729916666666684,
+    "trace_on_decode_saving_needed_s": 3.339679666666668
+  },
+  "evidence": "MEDIDO_NO_TARGET",
+  "fixed_stream_completed_lru": {
+    "global": {
+      "1": {
+        "decode_hit_fraction": 0.0018570102135561746,
+        "hits": {
+          "decode": 2,
+          "prefill": 2
+        },
+        "load_counts": {
+          "decode": 1077,
+          "prefill": 1222
+        },
+        "logical_bytes_avoided": {
+          "decode": 26438400,
+          "prefill": 26438400
+        },
+        "policy": "timestamp ordered, completed load insertion; fixed observed primary miss stream; zero insertion cost"
+      },
+      "2": {
+        "decode_hit_fraction": 0.012999071494893221,
+        "hits": {
+          "decode": 14,
+          "prefill": 13
+        },
+        "load_counts": {
+          "decode": 1077,
+          "prefill": 1222
+        },
+        "logical_bytes_avoided": {
+          "decode": 185068800,
+          "prefill": 171849600
+        },
+        "policy": "timestamp ordered, completed load insertion; fixed observed primary miss stream; zero insertion cost"
+      },
+      "3": {
+        "decode_hit_fraction": 0.03714020427112349,
+        "hits": {
+          "decode": 40,
+          "prefill": 18
+        },
+        "load_counts": {
+          "decode": 1077,
+          "prefill": 1222
+        },
+        "logical_bytes_avoided": {
+          "decode": 528768000,
+          "prefill": 237945600
+        },
+        "policy": "timestamp ordered, completed load insertion; fixed observed primary miss stream; zero insertion cost"
+      }
+    },
+    "gpu_only": {
+      "1": {
+        "decode_hit_fraction": 0.019867549668874173,
+        "hits": {
+          "decode": 6,
+          "prefill": 6
+        },
+        "load_counts": {
+          "decode": 302,
+          "prefill": 424
+        },
+        "logical_bytes_avoided": {
+          "decode": 79315200,
+          "prefill": 79315200
+        },
+        "policy": "timestamp ordered, completed load insertion; fixed observed primary miss stream; zero insertion cost"
+      },
+      "2": {
+        "decode_hit_fraction": 0.059602649006622516,
+        "hits": {
+          "decode": 18,
+          "prefill": 40
+        },
+        "load_counts": {
+          "decode": 302,
+          "prefill": 424
+        },
+        "logical_bytes_avoided": {
+          "decode": 237945600,
+          "prefill": 528768000
+        },
+        "policy": "timestamp ordered, completed load insertion; fixed observed primary miss stream; zero insertion cost"
+      },
+      "3": {
+        "decode_hit_fraction": 0.10927152317880795,
+        "hits": {
+          "decode": 33,
+          "prefill": 56
+        },
+        "load_counts": {
+          "decode": 302,
+          "prefill": 424
+        },
+        "logical_bytes_avoided": {
+          "decode": 436233600,
+          "prefill": 740275200
+        },
+        "policy": "timestamp ordered, completed load insertion; fixed observed primary miss stream; zero insertion cost"
+      }
+    }
+  },
+  "inputs_and_outputs_equal_to_all_c129_candidate_arms": true,
+  "limitations": [
+    "Single ordered trace-on/trace-off pair; environmental order remains a confounder.",
+    "Trace-on is slower; its interval fractions are diagnostic, not a calibrated production time breakdown.",
+    "WAIT is observed readiness blocking, not automatically removable time.",
+    "READ bytes are logical expert slabs, not NVMe controller traffic.",
+    "LRU fixes primary misses and assumes free insertion; no causal speed claim.",
+    "Compute and attention/KV are not independently decomposed in this trace."
+  ],
+  "raw_sha256": {
+    "c135_server": "b9892c1255ea6c3d1a0187d1288cc8da936b326c961e6228b3ef6678b55355fd",
+    "c135_trace": "91610b12291d5a42a12bba09f5d4ff188d25ee0001ab89e894bdd508005e82fb",
+    "c136_server": "cce9c1e547c88c85f6e0b41730cbdfdc1c8afea2c082e7b47f77d856de23f435"
+  },
+  "receipt_sha256": {
+    "c135": "1a096a2f2d0be1b3c18f0490f5d667fb5dee4035275a28390b1dab5f2cb6dd43",
+    "c136": "e22a4fd8070b3f987ab06c054b08e18270e287af4c716e8ad63634858d835c1e"
+  },
+  "run_elapsed_s": {
+    "off": 172.661307,
+    "on": 172.258467
+  },
+  "schema": "c135-c136-analysis-v1",
+  "server": {
+    "trace_off": {
+      "warm_decode_s": 10.206325000000001,
+      "warm_decode_tok_s": 4.604987593477573,
+      "warm_first_final_s": 20.87149629299529,
+      "warm_output_tokens": 47,
+      "warm_prefill_s": 10.906051999999999
+    },
+    "trace_on": {
+      "warm_decode_s": 11.173013000000001,
+      "warm_decode_tok_s": 4.206564513976668,
+      "warm_first_final_s": 22.619140231981874,
+      "warm_output_tokens": 47,
+      "warm_prefill_s": 11.706565000000001
+    },
+    "trace_on_minus_off_decode_s": 0.9666879999999995,
+    "trace_on_minus_off_first_final_s": 1.7476439389865845
+  },
+  "trace": {
+    "decode_call_duration_s": 11.021767,
+    "events": 58181,
+    "layer_devices": {
+      "CPU": 25,
+      "CUDA0": 11
+    },
+    "loads": 2299,
+    "prefill_call_duration_s": 11.702723,
+    "spans": {
+      "decode": {
+        "LOAD": {
+          "count": 1077,
+          "sum_s": 13.324844,
+          "union_s": 8.717757
+        },
+        "MUTEX_WAIT": {
+          "count": 1656,
+          "sum_s": 0.000946,
+          "union_s": 0.000946
+        },
+        "QUEUE": {
+          "count": 1077,
+          "sum_s": 0.023127,
+          "union_s": 0.018832
+        },
+        "READ": {
+          "count": 3231,
+          "sum_s": 12.530585,
+          "union_s": 8.252098
+        },
+        "TENSOR_SET": {
+          "count": 3231,
+          "sum_s": 0.792409,
+          "union_s": 0.772158
+        },
+        "WAIT": {
+          "count": 780,
+          "sum_s": 8.753159,
+          "union_s": 8.753159
+        },
+        "WAIT_CPU": {
+          "count": 547,
+          "sum_s": 6.318393,
+          "union_s": 6.318393
+        },
+        "WAIT_CUDA0": {
+          "count": 233,
+          "sum_s": 2.434766,
+          "union_s": 2.434766
+        },
+        "demand_states": {
+          "0": 1077,
+          "2": 5547
+        },
+        "load_bytes": 14237078400,
+        "logical_read_bytes": 14237078400
+      },
+      "enqueue_without_dequeue_events": 356,
+      "prefill": {
+        "LOAD": {
+          "count": 1222,
+          "sum_s": 29.220273,
+          "union_s": 8.450859
+        },
+        "MUTEX_WAIT": {
+          "count": 36,
+          "sum_s": 4.5e-05,
+          "union_s": 4.5e-05
+        },
+        "QUEUE": {
+          "count": 1222,
+          "sum_s": 29.204783,
+          "union_s": 5.236026
+        },
+        "READ": {
+          "count": 3666,
+          "sum_s": 28.211922,
+          "union_s": 8.373041
+        },
+        "TENSOR_SET": {
+          "count": 3666,
+          "sum_s": 1.006665,
+          "union_s": 0.973727
+        },
+        "WAIT": {
+          "count": 249,
+          "sum_s": 7.901561,
+          "union_s": 7.901561
+        },
+        "WAIT_CPU": {
+          "count": 160,
+          "sum_s": 5.061395,
+          "union_s": 5.061395
+        },
+        "WAIT_CUDA0": {
+          "count": 89,
+          "sum_s": 2.840166,
+          "union_s": 2.840166
+        },
+        "demand_states": {
+          "0": 774,
+          "1": 356,
+          "2": 2703
+        },
+        "load_bytes": 16153862400,
+        "logical_read_bytes": 16153862400
+      }
+    }
+  }
+}

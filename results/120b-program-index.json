@@ -2,8 +2,8 @@
   "current_checkpoint": {
     "M4": "NOT_DEMONSTRATED",
     "default_changed": false,
-    "effective_status": "PASS_SLOTS40_BOUNDARY_RETRIEVAL",
-    "effective_unit": "c134b",
+    "effective_status": "PASS_DIAGNOSTIC_RESIDUAL_READINESS_OBSERVED",
+    "effective_unit": "c135/c136",
     "prior_confirmed_profile": "C129 C75 slots40 CONFIRMED_SLOTS40_NOMINAL153",
     "publication": "LOCAL_ONLY"
   },
@@ -27,7 +27,7 @@
     "M4": "NOT_MET_BY_OBSERVED_LATENCY_AND_DECODE"
   },
   "mission": "local usable main GPT-OSS 120B, original weights and authoritative routing",
-  "next_action": "Bound slots40 residual decode cost with one discriminant if existing trace cannot decide; then close epoch with reproducible partial candidate and M4 gaps",
+  "next_action": "C137 slots44 numeric/forward admission under E20 if physical VRAM/RAM budget fits; then bounded nominal153 screen, or close partial slots40 profile.",
   "open_hypotheses": [
     "C75 waves give large observed prefill benefit; C100 server NO_GO_CONFIRM remains due its protected decode regression, while C121 nominal153 two-pair screen passed under per-arm inventory; C117 remains failed and C100 remains NO_GO_CONFIRM.",
     "Upstream llama.cpp source pin 8019dc5 implements GPT-OSS/MXFP4 but does not mark GPT-OSS experts for explicit lazy row loading; bounded mmap/page-cache viability on this host is unmeasured.",
@@ -35,7 +35,9 @@
     "C123 nominal153 trace observed 10.646 s readiness waits in 13.046 s decode calls; removable portion is unknown and physical NVMe bytes are not identified.",
     "C123 completed-load fixed-stream LRU saved only 4.11% of decode loads with 3 GiB global, or 15.02% of GPU loads with GPU-only 3 GiB; richer policies and workloads remain open.",
     "C126 C75/slots32 passed the original C40 twelve tasks with exactly equal official prompt IDs and final messages; holdout8 passed 8/8 with equal full messages; C133 varied active session completed 20/20 over 83.3 min but strict functional gate failed 1/20 (literal Aster omission).",
-    "C123 observed 302/1509 decode misses after an in-trace eviction with <=8 distinct subsequent same-layer reservations; this is a capacity heuristic, not a validated slots40 counterfactual because initial LFU hotness/occupancy are incomplete."
+    "C123 observed 302/1509 decode misses after an in-trace eviction with <=8 distinct subsequent same-layer reservations; this is a capacity heuristic, not a validated slots40 counterfactual because initial LFU hotness/occupancy are incomplete.",
+    "C135 slots40 trace observed 8.753 s readiness waits in 11.022 s decode calls; C136 same-binary trace-off first-final20.871 s/decode4.605 tok/s. Trace adds0.967 s to decode in one ordered pair; removable wait remains unknown.",
+    "C135 slots40 completed-load fixed-stream LRU at 3 GiB hits 40/1077 global decode loads (3.71%) or 33/302 GPU loads (10.93%); this does not justify simple L2 on this trace."
   ],
   "rejected_claims": [
     "P12 general-medium timing gain >=5% at 496+32 under E18",
@@ -924,7 +926,21 @@
       "measurement_commit": "733a17633c99183b7a742ce4e15c0c5bac7f8e47",
       "root": "results/c134b-slots40-boundary-20260929T2140Z",
       "status": "PASS_SLOTS40_BOUNDARY_RETRIEVAL"
+    },
+    {
+      "decision": "results/c135-slots40-warm153-trace-20260929T2205Z/decision.json",
+      "identity": "c135",
+      "measurement_commit": "f59fa2a0eb5b262b788125e8f0b77ecf8407043c",
+      "root": "results/c135-slots40-warm153-trace-20260929T2205Z",
+      "status": "PASS_DIAGNOSTIC_RESIDUAL_READINESS_OBSERVED"
+    },
+    {
+      "decision": "results/c136-slots40-trace-neutral-20260929T2205Z/decision.json",
+      "identity": "c136",
+      "measurement_commit": "df4d50752561fff30e4f879adbfda8e0f9813f6a",
+      "root": "results/c136-slots40-trace-neutral-20260929T2205Z",
+      "status": "PASS_TRACE_OFF_NEUTRAL"
     }
   ],
-  "updated_utc": "2026-09-29T21:49:35.041106+00:00"
+  "updated_utc": "2026-09-29T22:13:27.062502+00:00"
 }
