@@ -2,10 +2,9 @@
   "current_checkpoint": {
     "M4": "NOT_DEMONSTRATED",
     "default_changed": false,
-    "effective_status": "PASS_QUALITY_12_OF_12",
-    "effective_unit": "c126",
-    "measurement_commit": "784f387e8cf775b9bf863cf04f9047d4fa6fa6e4",
-    "prior_confirmed_profile": "C124 CONFIRMED_OPERATIONAL_NOMINAL153",
+    "effective_status": "PASS_SLOTS40_NUMERIC_AND_SHORT_FORWARD_ADMISSION",
+    "effective_unit": "c127",
+    "prior_confirmed_profile": "C124 C75 slots32 CONFIRMED_OPERATIONAL_NOMINAL153",
     "publication": "LOCAL_ONLY"
   },
   "default_changed": false,
@@ -28,7 +27,7 @@
     "M4": "NOT_MET_BY_OBSERVED_LATENCY_AND_DECODE"
   },
   "mission": "local usable main GPT-OSS 120B, original weights and authoritative routing",
-  "next_action": "C127 P12 slots40 numeric/forward admission from fresh live policy; only if faithful and within E18/VRAM, two-pair C75 slots32/40 nominal153 screen; holdout8 and diverse sustained use on best candidate.",
+  "next_action": "C128 two-pair C75 ON slots32 versus slots40 nominal153 operational screen, only after fresh inventory and prospective freeze; then qualify best profile",
   "open_hypotheses": [
     "C75 waves give large observed prefill benefit; C100 server NO_GO_CONFIRM remains due its protected decode regression, while C121 nominal153 two-pair screen passed under per-arm inventory; C117 remains failed and C100 remains NO_GO_CONFIRM.",
     "Upstream llama.cpp source pin 8019dc5 implements GPT-OSS/MXFP4 but does not mark GPT-OSS experts for explicit lazy row loading; bounded mmap/page-cache viability on this host is unmeasured.",
@@ -855,7 +854,14 @@
       "measurement_commit": "784f387e8cf775b9bf863cf04f9047d4fa6fa6e4",
       "root": "results/c126-wave-quality-20260929T1610Z",
       "status": "PASS_QUALITY_12_OF_12"
+    },
+    {
+      "decision": "results/c127-slots40-numeric-20260929T1654Z/decision.json",
+      "identity": "c127",
+      "measurement_commit": "785d816a986c640cd8ead1753d20c7f123a49986",
+      "root": "results/c127-slots40-numeric-20260929T1654Z",
+      "status": "PASS_SLOTS40_NUMERIC_AND_SHORT_FORWARD_ADMISSION"
     }
   ],
-  "updated_utc": "2026-09-29T16:52:58.951654+00:00"
+  "updated_utc": "2026-09-29T17:08:06.941284+00:00"
 }
