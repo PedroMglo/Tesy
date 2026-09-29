@@ -1,0 +1,77 @@
+{
+  "c117_four_process_elapsed_s": 943.3674291510542,
+  "closure_reserve_s_in_worst_case": 600,
+  "decision": "NO_NEW_PHYSICAL_UNIT_ADMITTED; finish compact evidence and close before wall deadline",
+  "delta_units": [
+    {
+      "decision_sha256": "204dc9cc58a17d048f65a821cb96e66e04085d6e6284a3cc40665566966a7b60",
+      "status": "FAIL_TIMEOUT",
+      "unit": "c109-decode-triangle-20260929T0815Z"
+    },
+    {
+      "decision_sha256": "a643869bf4ea78e6a8af20da11ea9ba00e114cd0b7be968d9abdada0ad048b9e",
+      "status": "INCOMPLETE_ATTRIBUTION_MATCH_NOT_ADMITTED",
+      "unit": "c110-decode-triangle-20260929T0900Z"
+    },
+    {
+      "decision_sha256": "4ff08a3d8ee9650557670b1f0ed2264c7efc87923571f9340bfa6975f33b0141",
+      "status": "NO_PERSISTENT_LATE_DECODE_FLAG_PENALTY_IN_PROBE",
+      "unit": "c111-long-toggle-20260929T0930Z"
+    },
+    {
+      "decision_sha256": "af3c6eff78ff3fc3a3c51fcfe447ca101bdc5a7edca1c702002d273c2adb357b",
+      "status": "FAIL_LAUNCH_SCOPE_PREMODEL",
+      "unit": "c112-nominal-server-20260929T1015Z"
+    },
+    {
+      "decision_sha256": "f41b4f7cace1e976bf69136cb8a51f4354f5f34dafa45c6aba09545170cefbe7",
+      "status": "INCOMPLETE_MATCH_NOT_ADMITTED",
+      "unit": "c113-nominal-server-scoped-20260929T1020Z"
+    },
+    {
+      "decision_sha256": "293e3b10e57a48eac159903aa64a0b074d2732653f997ed456a0920964296fcf",
+      "status": "INCOMPLETE_MATCH_NOT_ADMITTED",
+      "unit": "c114-warm-nominal-server-20260929T1035Z"
+    },
+    {
+      "decision_sha256": "d23311148eb51aaa504f7c9f3e75de5e89e49b028f76e95d8a5b1f17053de5f9",
+      "status": "PREFILL_ONLY_INSUFFICIENT_UNDER_FIXED_DECODE_FOR_OBSERVED_C114_REQUEST",
+      "unit": "c115-decode-goal-bound-20260929T1050Z"
+    },
+    {
+      "decision_sha256": "07dd47d527b9dd78b5afbf22bc7dda920c2b77d2802e2d066e2bf3956c8cfe44",
+      "status": "BACKEND_SCREEN_NO_IMMEDIATE_BUILD",
+      "unit": "c116-upstream-source-screen-20260929T1052Z"
+    },
+    {
+      "decision_sha256": "408cce72942a4bcf38d69e9915b80f4ada6a3c94ad02250544b842d4820eb68a",
+      "status": "FAIL_RESOURCES_OR_EVIDENCE",
+      "unit": "c117-operational-nominal-server-20260929T1058Z"
+    },
+    {
+      "decision_sha256": "091397825ab5acb7f5385f23d5b533cbfb25053187fa1974aeace983f74654bf",
+      "status": "HARNESS_COMPONENT_READY_MODEL_FREE",
+      "unit": "c118-per-arm-inventory-model-free-20260929T1125Z"
+    }
+  ],
+  "epoch_start_conservative_utc": "2026-09-28T12:00:00+00:00",
+  "evidence_class": "MIXED_MEASURED_AND_CONSERVATIVE_BOUND",
+  "last_physical_end_utc": "2026-09-29T11:18:01.265945+00:00",
+  "last_physical_raw_sha256": "95dddab229937b612e60098d5a666016fd3696aa4c58f2a3160b951074aa90b7",
+  "last_physical_run": "c117-p2-control",
+  "new_epoch_raw_bytes_local_c55_through_c118": 2800226783,
+  "next_valid_two_pair_admitted": false,
+  "next_valid_two_pair_worst_case_s": 3240,
+  "now_utc": "2026-09-29T11:27:44.850176+00:00",
+  "owner_pause_wall_discount_s": 0,
+  "physical_limit_s": 57600,
+  "physical_remaining_lower_bound_s": 4292.103927999997,
+  "physical_upper_bound_method": "C108 upper bound through its last run, plus every elapsed wall second from C108 checkpoint to C117 last model end; includes all intervening process, preflight, waiting and model-free time; no physical run after C117",
+  "physical_upper_bound_s": 53307.896072,
+  "prior_epoch_ledger_sha256": "4de7dc5bf559e166e555bbfb75bc7f997ca50631c195320b4aea9865265006a3",
+  "raw_quota_bytes": 42949672960,
+  "schema": "c118-epoch-checkpoint-v1",
+  "wall_deadline_utc": "2026-09-29T12:00:00+00:00",
+  "wall_elapsed_s_no_pause_discount": 84464.850176,
+  "wall_remaining_s_no_pause_discount": 1935.149824
+}
