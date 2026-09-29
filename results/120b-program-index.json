@@ -2,8 +2,8 @@
   "current_checkpoint": {
     "M4": "NOT_DEMONSTRATED",
     "default_changed": false,
-    "effective_status": "PASS_HOLDOUT_8_OF_8_NO_QUALITY_LOSS",
-    "effective_unit": "c131",
+    "effective_status": "FAIL_OUTPUT_CAP_INTERRUPTED_OPERATOR",
+    "effective_unit": "c132",
     "prior_confirmed_profile": "C129 C75 slots40 CONFIRMED_SLOTS40_NOMINAL153",
     "publication": "LOCAL_ONLY"
   },
@@ -27,7 +27,7 @@
     "M4": "NOT_MET_BY_OBSERVED_LATENCY_AND_DECODE"
   },
   "mission": "local usable main GPT-OSS 120B, original weights and authoritative routing",
-  "next_action": "Freeze and run diverse active 20-request >=60-minute slots40 session; then assess remaining M4 gates and epoch budget",
+  "next_action": "Repair cap-stop/raw path model-free, then one new bounded diverse-active session attempt if budget and context accounting admit it",
   "open_hypotheses": [
     "C75 waves give large observed prefill benefit; C100 server NO_GO_CONFIRM remains due its protected decode regression, while C121 nominal153 two-pair screen passed under per-arm inventory; C117 remains failed and C100 remains NO_GO_CONFIRM.",
     "Upstream llama.cpp source pin 8019dc5 implements GPT-OSS/MXFP4 but does not mark GPT-OSS experts for explicit lazy row loading; bounded mmap/page-cache viability on this host is unmeasured.",
@@ -896,7 +896,14 @@
       "measurement_commit": "3a695ca412b4198e3405b2054fb450bb7193350f",
       "root": "results/c131-holdout8-20260929T1847Z",
       "status": "PASS_HOLDOUT_8_OF_8_NO_QUALITY_LOSS"
+    },
+    {
+      "decision": "results/c132-diverse-active-session-20260929T1939Z/decision.json",
+      "identity": "c132",
+      "measurement_commit": "21143aa4ca3efa52adf8f2c1203f192847469bde",
+      "root": "results/c132-diverse-active-session-20260929T1939Z",
+      "status": "FAIL_OUTPUT_CAP_INTERRUPTED_OPERATOR"
     }
   ],
-  "updated_utc": "2026-09-29T19:37:48.852061+00:00"
+  "updated_utc": "2026-09-29T19:59:08.461676+00:00"
 }
