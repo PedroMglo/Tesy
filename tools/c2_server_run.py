@@ -105,6 +105,16 @@ def session_idle_schedule(config, request_count):
     return values
 
 
+def require_natural_completion(item, max_tokens):
+    """Reject capped or incomplete output after retaining the response in raw."""
+    if type(max_tokens) is not int or max_tokens <= 0 or \
+       type(item.get('usage')) is not dict or \
+       type(item['usage'].get('completion_tokens')) is not int or \
+       item.get('finish_reason') != 'stop' or \
+       not 0 < item['usage']['completion_tokens'] < max_tokens:
+        raise GateError(f"output capped or incomplete for {item.get('id')}")
+
+
 def validate_adjacent_cache(previous_ids, current_ids, cache_n, min_common, max_lost=None):
     common = next((i for i, (a, b) in enumerate(zip(previous_ids, current_ids))
                    if a != b), min(len(previous_ids), len(current_ids)))
@@ -501,6 +511,9 @@ def run(args, protocol, config, task_rows, model):
                                           live_power, host_pressure)
         resource_contract = validate_resource_protocol(protocol)
     idle_schedule = session_idle_schedule(config, len(task_rows))
+    require_natural = config.get('require_natural_stop', False)
+    if type(require_natural) is not bool:
+        raise GateError('require_natural_stop must be boolean')
     dynamic_history = config.get('append_previous_assistant_to_next', False)
     if dynamic_history is not False and dynamic_history is not True:
         raise GateError('invalid assistant-history flag')
@@ -899,6 +912,9 @@ def run(args, protocol, config, task_rows, model):
                         'request_start': request_started_ns,
                         'response_complete': request_ended_ns}
                 raw.append(item)
+                if require_natural:
+                    require_natural_completion(
+                        item, config['request_policy']['max_tokens'])
                 required_pattern = config.get('first_assistant_content_pattern')
                 if required_pattern is not None:
                     content = item['message'].get('content')
@@ -935,6 +951,8 @@ def run(args, protocol, config, task_rows, model):
                                                 max_lost)
         except Exception as exc:
             reasons.append(f"RUN_ERROR:{type(exc).__name__}:{exc}")
+        except KeyboardInterrupt:
+            reasons.append('INTERRUPTED_BY_OPERATOR')
         finally:
             # Keep sampling through graceful shutdown; ending the sampler first
             # left an unobserved >2 s process tail in the initial target smoke.

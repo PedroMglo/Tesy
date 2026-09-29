@@ -1,0 +1,273 @@
+{
+  "schema": "c132-diverse-session-workload-v1",
+  "tasks": [
+    {
+      "category": "planning",
+      "id": "c133-turn01",
+      "message": "We are building Aster, an offline data-checking tool. The budget is twelve hours and the deadline is Friday. Propose three phases, with one concrete deliverable and one risk for each. Write about 160 words and keep these facts available for later turns.",
+      "required": [
+        "Aster",
+        "Friday"
+      ]
+    },
+    {
+      "category": "planning",
+      "id": "c133-turn02",
+      "message": "Prioritize the Aster phases under the original twelve-hour budget. Explain which scope you would cut first and why. Write about 160 words, with practical tradeoffs.",
+      "required": [
+        "Aster"
+      ]
+    },
+    {
+      "category": "correction",
+      "id": "c133-turn03",
+      "message": "Correction to the earlier Aster brief: the budget is nine hours, not twelve. Revise the schedule for Friday using that corrected limit. Write about 160 words and make the correction explicit.",
+      "required_any": [
+        [
+          "nine",
+          "9"
+        ],
+        [
+          "Friday"
+        ]
+      ]
+    },
+    {
+      "category": "code",
+      "id": "c133-turn04",
+      "message": "Review this Python idea for Aster: `sum(int(x) for x in line.split(','))`. Inputs may contain empty cells, whitespace, and quoted commas. Explain the failure cases and a safer parsing approach in about 160 words.",
+      "required_any": [
+        [
+          "csv",
+          "CSV"
+        ],
+        [
+          "empty",
+          "blank"
+        ]
+      ]
+    },
+    {
+      "category": "code",
+      "id": "c133-turn05",
+      "message": "Write a small Python `parse_total` function for one CSV row of integers, handling surrounding whitespace and an empty cell explicitly. Add a short explanation; aim for about 160 words overall. Keep the code self-contained.",
+      "required": [
+        "def",
+        "csv"
+      ]
+    },
+    {
+      "category": "code",
+      "id": "c133-turn06",
+      "message": "Suggest useful tests for the `parse_total` function you just wrote: normal row, whitespace, empty field, quoted field, and invalid integer. Include runnable-looking Python assertions or pytest examples and explain expected behavior in about 160 words.",
+      "required_any": [
+        [
+          "assert",
+          "pytest"
+        ],
+        [
+          "empty",
+          "blank"
+        ]
+      ]
+    },
+    {
+      "category": "sql",
+      "id": "c133-turn07",
+      "message": "Aster has `customers(id,name)` and `orders(id,customer_id,amount)`. Write SQL listing each order with its customer name. State how unmatched orders are treated. Explain the join choice in about 160 words.",
+      "required_any": [
+        [
+          "JOIN",
+          "join"
+        ],
+        [
+          "customer"
+        ]
+      ]
+    },
+    {
+      "category": "sql",
+      "id": "c133-turn08",
+      "message": "Extend the preceding SQL task: return total order amount per customer, including customers without orders with a zero total. Show the SQL and explain NULL handling in about 160 words.",
+      "required_any": [
+        [
+          "GROUP BY",
+          "group by"
+        ],
+        [
+          "COALESCE",
+          "coalesce"
+        ]
+      ]
+    },
+    {
+      "category": "history",
+      "id": "c133-turn09",
+      "message": "Look back to the project brief and its correction. State the project name, corrected hour budget, and deadline, then explain how these change the implementation plan. Write about 160 words.",
+      "required_any": [
+        [
+          "Aster"
+        ],
+        [
+          "nine",
+          "9"
+        ],
+        [
+          "Friday"
+        ]
+      ]
+    },
+    {
+      "category": "data",
+      "id": "c133-turn10",
+      "message": "The Aster import has duplicate customer IDs, NULL amounts, and inconsistent date formats. Give an ordered validation plan and say what must be rejected versus flagged. Write about 160 words.",
+      "required_any": [
+        [
+          "duplicate"
+        ],
+        [
+          "NULL",
+          "null",
+          "missing"
+        ]
+      ]
+    },
+    {
+      "category": "planning",
+      "id": "c133-turn11",
+      "message": "In two sentences, list the Friday release checks for Aster: an actual CSV import and a rollback point.",
+      "required_any": [
+        [
+          "Friday"
+        ],
+        [
+          "rollback"
+        ],
+        [
+          "CSV",
+          "csv"
+        ]
+      ]
+    },
+    {
+      "category": "writing",
+      "id": "c133-turn12",
+      "message": "Draft a two-sentence stakeholder update about Aster, Friday delivery, and the CSV validation scope.",
+      "required_any": [
+        [
+          "Aster"
+        ],
+        [
+          "Friday"
+        ],
+        [
+          "CSV",
+          "csv"
+        ]
+      ]
+    },
+    {
+      "category": "correction",
+      "id": "c133-turn13",
+      "message": "Correct that update in two sentences: Aster runs locally without a cloud service, and explain the data implication.",
+      "required_any": [
+        [
+          "local",
+          "offline"
+        ],
+        [
+          "data"
+        ]
+      ]
+    },
+    {
+      "category": "code",
+      "id": "c133-turn14",
+      "message": "In two sentences, say what `values = [1, 2, 3]; print(values[-1])` prints and one related Aster check.",
+      "required": [
+        "3",
+        "Aster"
+      ]
+    },
+    {
+      "category": "api",
+      "id": "c133-turn15",
+      "message": "In two sentences, name fields for an Aster JSON import result: accepted rows, rejected rows, and rejection reason.",
+      "required_any": [
+        [
+          "JSON",
+          "json"
+        ],
+        [
+          "rejected"
+        ]
+      ]
+    },
+    {
+      "category": "history",
+      "id": "c133-turn16",
+      "message": "In one sentence, recall Aster's corrected hour budget and Friday deadline.",
+      "required_any": [
+        [
+          "nine",
+          "9"
+        ],
+        [
+          "Friday"
+        ]
+      ]
+    },
+    {
+      "category": "sql",
+      "id": "c133-turn17",
+      "message": "In one sentence, name the SQL operation used earlier to combine orders with customers.",
+      "required_any": [
+        [
+          "JOIN",
+          "join"
+        ]
+      ]
+    },
+    {
+      "category": "code",
+      "id": "c133-turn18",
+      "message": "In one sentence, say what the earlier Python `values[-1]` example prints.",
+      "required": [
+        "3"
+      ]
+    },
+    {
+      "category": "correction",
+      "id": "c133-turn19",
+      "message": "In one sentence, state whether Aster is local or cloud-based after the correction.",
+      "required_any": [
+        [
+          "local",
+          "offline"
+        ]
+      ]
+    },
+    {
+      "category": "history",
+      "id": "c133-turn20",
+      "message": "Summarize in two sentences the Aster project name, corrected nine-hour budget, Friday deadline, and local execution requirement.",
+      "required_any": [
+        [
+          "Aster"
+        ],
+        [
+          "nine",
+          "9"
+        ],
+        [
+          "Friday"
+        ],
+        [
+          "local",
+          "offline"
+        ]
+      ]
+    }
+  ],
+  "template_date": "2026-09-29"
+}

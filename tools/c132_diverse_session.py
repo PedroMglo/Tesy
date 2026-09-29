@@ -188,7 +188,7 @@ def validate(root,p,c,raw):
         if item.get('finish_reason')!='stop' or not stream or \
            stream.get('done_observed') is not True or \
            usage.get('prompt_tokens')!=len(ids[item['id']]) or \
-           not 0<usage.get('completion_tokens',0)<512:
+           not 0<usage.get('completion_tokens',0)<c['request_policy']['max_tokens']:
             raise GateError(f'C132 incomplete request/usage: {item["id"]}')
         details.append({'id':item['id'],'category':item['category'],
                         'grade':grade(item,spec),

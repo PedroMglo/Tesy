@@ -1,7 +1,7 @@
 import unittest
 
 from c2_gate import GateError
-from c2_server_run import session_idle_schedule
+from c2_server_run import require_natural_completion, session_idle_schedule
 
 
 class IdleScheduleTest(unittest.TestCase):
@@ -20,6 +20,14 @@ class IdleScheduleTest(unittest.TestCase):
                          [0, float('nan'), 0], [0, 601, 0], [0, -1, 0]):
             with self.subTest(schedule=schedule), self.assertRaises(GateError):
                 session_idle_schedule({'inter_request_idle_schedule_s': schedule}, 3)
+
+    def test_natural_completion_gate(self):
+        good={'id':'turn','finish_reason':'stop','usage':{'completion_tokens':767}}
+        require_natural_completion(good,768)
+        for reason,count in [('length',767),('stop',768),('stop',0)]:
+            with self.subTest(reason=reason,count=count), self.assertRaises(GateError):
+                require_natural_completion({'id':'turn','finish_reason':reason,
+                                            'usage':{'completion_tokens':count}},768)
 
 
 if __name__ == '__main__':
