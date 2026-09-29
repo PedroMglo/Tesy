@@ -99,10 +99,17 @@ def validate(path, expected_layers=36, expected_expert_bytes=EXPERT_BYTES):
             last_demand_time = row['mono_us']
         if kind == 'LOAD_BEGIN':
             if index + 1 >= len(rows) or rows[index+1]['kind'] != 'LOAD_END' or \
-               any(rows[index+1][key] != row[key] for key in ('layer','expert','slot','logical_bytes')) or \
+               any(rows[index+1][key] != row[key] for key in
+                   ('layer','expert','slot','victim','n_tokens','wave','state','logical_bytes')) or \
                rows[index+1]['mono_us'] < row['mono_us']:
                 raise GateError('C84 load pair incomplete')
             load_count += 1
+        if kind == 'LOAD_END':
+            if index == 0 or rows[index-1]['kind'] != 'LOAD_BEGIN' or \
+               any(rows[index-1][key] != row[key] for key in
+                   ('layer','expert','slot','victim','n_tokens','wave','state','logical_bytes')) or \
+               rows[index-1]['mono_us'] > row['mono_us']:
+                raise GateError('C84 orphan or duplicate load end')
         if kind in ('WAIT_BEGIN','WAIT_END'):
             key = (row['layer'], row['wave'])
             if kind == 'WAIT_BEGIN':

@@ -18,6 +18,45 @@ ROOT=REPO/'results/c106-l2-fixed-trace-screen-20260928T2340Z'
 BUDGETS=(1*GIB,2*GIB,3*GIB)
 
 
+def layer_destinations(path):
+    """Read device names emitted by the loader, without assuming an ngl split."""
+    with path.open(newline='') as stream:
+        if stream.readline() != '#c84-expert-demand-v1\n' or \
+           stream.readline() != '#layer\tlayer\tlogical_expert_bytes\tbuffer_name\n':
+            raise GateError('C106 layer header invalid')
+        destinations = {}
+        for line in stream:
+            if not line.startswith('L\t'):
+                break
+            fields = line.rstrip('\n').split('\t')
+            if len(fields) != 4:
+                raise GateError('C106 layer row invalid')
+            layer = int(fields[1])
+            name = fields[3]
+            if layer in destinations or name not in ('CPU', 'CUDA0'):
+                raise GateError('C106 layer destination invalid')
+            destinations[layer] = 'GPU' if name == 'CUDA0' else 'CPU'
+    if set(destinations) != set(range(36)):
+        raise GateError('C106 layer destination coverage invalid')
+    return destinations
+
+
+def c105_phase_boundary(events):
+    """Strict C105 189+32 call plan; sequence order is publication order."""
+    singles = [row for row in events if row['kind'] == 'DEMAND' and row['n_tokens'] == 1]
+    if len(singles) != 4 + 32*36*4 or \
+       [row['layer'] for row in singles[:4]] != [35]*4:
+        raise GateError('C106 final-prefill single-token demand invalid')
+    expected = [layer for _token in range(32) for layer in range(36) for _expert in range(4)]
+    if [row['layer'] for row in singles[4:]] != expected:
+        raise GateError('C106 decode order/cardinality invalid')
+    boundary = singles[4]['seq']
+    if any(row['n_tokens'] not in (29,32) for row in events
+           if row['kind'] == 'DEMAND' and row['seq'] < singles[0]['seq']):
+        raise GateError('C106 prefill chunk shape invalid')
+    return boundary
+
+
 def rows(path):
     validate_trace(path)
     with path.open(newline='') as stream:
@@ -33,7 +72,7 @@ def rows(path):
             yield {'kind':row['kind'],**{key:int(value) for key,value in row.items() if key!='kind'}}
 
 
-def simulate(events, slots, mode):
+def simulate(events, slots, mode, *, destinations, phase_of):
     if mode not in ('on_load_lru','on_evict_lru') or type(slots)!=int or slots<=0:
         raise ValueError('invalid C106 simulator setting')
     cache=OrderedDict();demand=defaultdict(lambda:{'misses':0,'saved':0,'hits_primary':0,'inflight_primary':0})
@@ -47,16 +86,16 @@ def simulate(events, slots, mode):
         if row['kind']=='LOAD_END' and mode=='on_load_lru':insert(key)
         if row['kind']=='EVICT' and mode=='on_evict_lru' and row['expert']>=0:insert(key)
         if row['kind']!='DEMAND':continue
-        phase='decode' if row['n_tokens']==1 else 'prefill'
-        destination='GPU' if row['layer']>=25 else 'CPU'
+        phase=phase_of(row)
+        destination=destinations[row['layer']]
         record=demand[(phase,destination)]
         if row['state']==0:
             record['misses']+=1
             if key in cache:
                 record['saved']+=1
                 cache.move_to_end(key)
-        elif row['state']==1:record['hits_primary']+=1
-        elif row['state']==2:record['inflight_primary']+=1
+        elif row['state']==1:record['inflight_primary']+=1
+        elif row['state']==2:record['hits_primary']+=1
     return demand
 
 
@@ -70,17 +109,16 @@ def union_us(intervals):
     return total
 
 
-def wait_summary(events):
+def wait_summary(events, phase_of):
     open_wait={};intervals=defaultdict(list)
     for row in events:
         if row['kind'] not in ('WAIT_BEGIN','WAIT_END'):continue
         key=(row['layer'],row['wave'])
-        phase='decode' if row['n_tokens']==1 else 'prefill'
+        phase=phase_of(row)
         if row['kind']=='WAIT_BEGIN':open_wait[key]=(row['mono_us'],phase)
         else:
             start,started_phase=open_wait.pop(key)
-            if started_phase!=phase:raise GateError('C106 phase changed across wait')
-            intervals[phase].append((start,row['mono_us']))
+            intervals[started_phase if started_phase == phase else 'UNKNOWN'].append((start,row['mono_us']))
     if open_wait:raise GateError('C106 open wait')
     return {phase:{'wait_intervals':len(value),'union_s':union_us(value)/1e6,
                    'sum_s':sum(b-a for a,b in value)/1e6}
@@ -95,12 +133,17 @@ def main():
        sha256(TRACE)!=manifest['raw_files'][TRACE.name]['sha256']:
         raise GateError('C106 prior trace/decision invalid')
     events=list(rows(TRACE))
-    wait=wait_summary(events)
+    destinations=layer_destinations(TRACE)
+    if any(destinations[layer] != ('CPU' if layer < 25 else 'GPU') for layer in range(36)):
+        raise GateError('C106 trace placement differs from frozen C105 P12')
+    boundary=c105_phase_boundary(events)
+    phase_of=lambda row: 'prefill' if row['seq'] < boundary else 'decode'
+    wait=wait_summary(events,phase_of)
     scenarios=[]
     for budget in BUDGETS:
         slots=budget//EXPERT_BYTES
         for mode in ('on_load_lru','on_evict_lru'):
-            observed=simulate(events,slots,mode)
+            observed=simulate(events,slots,mode,destinations=destinations,phase_of=phase_of)
             phase={}
             for (name,dest),count in sorted(observed.items()):
                 miss=count['misses'];saved=count['saved']
@@ -119,7 +162,7 @@ def main():
             'evidence_class':'INFERIDO_FROM_MEASURED_TRACE',
             'trace_sha256':sha256(TRACE),'source_decision_sha256':sha256(SOURCE/'decision.json'),
             'trace_events':len(events),'expert_bytes':EXPERT_BYTES,
-            'baseline':'C84 primary 32 slots per layer; counted DEMAND state=0 as absent-primary demand, state=1 resident, state=2 loading',
+            'baseline':'C84 primary 32 slots per layer; DEMAND state=0 absent, state=1 loading, state=2 resident',
             'modes':{'on_load_lru':'insert every completed expert load; encoded RAM copy assumed free and retained while primary may still hold it',
                      'on_evict_lru':'insert evicted primary expert; transfer/copy from CPU/GPU to encoded RAM assumed free, optimistic'},
             'budgets_bytes':list(BUDGETS),'scenarios':scenarios,'wait_intervals':wait,

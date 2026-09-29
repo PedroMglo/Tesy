@@ -71,6 +71,27 @@ class TraceReceiptTest(unittest.TestCase):
         with self.assertRaises(GateError):
             self.check(lines)
 
+    def test_orphan_and_duplicate_load_end_with_consistent_footer(self):
+        original = fixture()
+        header = original[:39]
+        events = [line.split('\t') for line in original[39:-1]]
+        for changed in (events[:4] + events[5:], events[:5] + [events[4]] + events[5:]):
+            for seq, row in enumerate(changed):
+                row[1] = str(seq)
+            lines = header + ['\t'.join(row) for row in changed]
+            lines.append(f'#end\t{len(changed)}\t0')
+            with self.subTest(events=len(changed)), self.assertRaises(GateError):
+                self.check(lines)
+
+    def test_load_identity_and_negative_duration(self):
+        for field, replacement in ((4, '8'), (5, '1'), (2, '102')):
+            lines = fixture()
+            end = lines[43].split('\t')
+            end[field] = replacement
+            lines[43] = '\t'.join(end)
+            with self.subTest(field=field), self.assertRaises(GateError):
+                self.check(lines)
+
 
 if __name__ == '__main__':
     unittest.main()

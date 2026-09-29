@@ -7,18 +7,21 @@ from pathlib import Path
 
 from c2_gate import GateError, strict_json
 from run_bounded import sha256
-from c106_l2_trace_screen import rows, TRACE, SOURCE, EXPERT_BYTES
+from c106_l2_trace_screen import rows, TRACE, SOURCE, EXPERT_BYTES, c105_phase_boundary
 
 REPO=Path(__file__).resolve().parents[1]
 ROOT=REPO/'results/c107-history-prefetch-screen-20260928T2350Z'
 HORIZONS=(1,2,4,8)
+HISTORICAL_TRACE_SHA='bb3ae9352749283f76ce12b65ea76801916396f87849d609169215fefdf4e40d'
+HISTORICAL_COVERAGE=(0,0,0,2)
 
 
 def decode_route(events):
+    boundary=c105_phase_boundary(events)
     selected=defaultdict(set);absent=defaultdict(set)
     token=-1;finished_last=False
     for row in events:
-        if row['kind']!='DEMAND' or row['n_tokens']!=1:continue
+        if row['kind']!='DEMAND' or row['n_tokens']!=1 or row['seq']<boundary:continue
         layer=row['layer']
         if layer==0 and (token<0 or finished_last):
             token+=1;finished_last=False
@@ -59,6 +62,15 @@ def evaluate(selected,absent,horizon):
             'covered_absent_logical_bytes':covered*EXPERT_BYTES}
 
 
+def historical_status(trace_sha, results):
+    """The C107 verdict is a receipt for one observed trace, not a generic gate."""
+    coverage=tuple(result['absent_demands_covered'] for result in results)
+    if trace_sha==HISTORICAL_TRACE_SHA and coverage==HISTORICAL_COVERAGE and \
+       tuple(result['history_tokens'] for result in results)==HORIZONS:
+        return 'NO_GO_RECENT_HISTORY_PREFETCH_ON_C105_DECODE'
+    return 'ANALYSIS_ONLY_NO_PROSPECTIVE_THRESHOLD'
+
+
 def main():
     if ROOT.exists():raise GateError('C107 no-replace root exists')
     prior=strict_json((SOURCE/'decision.json').read_text())
@@ -68,10 +80,11 @@ def main():
         raise GateError('C107 prior trace/decision invalid')
     selected,absent=decode_route(list(rows(TRACE)))
     results=[evaluate(selected,absent,h) for h in HORIZONS]
+    trace_sha=sha256(TRACE)
     ROOT.mkdir()
-    output={'schema':'c107-history-prefetch-v1','status':'NO_GO_RECENT_HISTORY_PREFETCH_ON_C105_DECODE',
+    output={'schema':'c107-history-prefetch-v1','status':historical_status(trace_sha,results),
             'evidence_class':'INFERIDO_FROM_MEASURED_TRACE',
-            'trace_sha256':sha256(TRACE),'source_decision_sha256':sha256(SOURCE/'decision.json'),
+            'trace_sha256':trace_sha,'source_decision_sha256':sha256(SOURCE/'decision.json'),
             'segmentation':'32 decode passes, layers 0..35, four unique DEMAND experts per layer; excluded one final-prefill layer35 n_tokens=1 set',
             'input':'189 prompt plus 32 teacher-forced continuation IDs, not free-generation session',
             'results':results,
