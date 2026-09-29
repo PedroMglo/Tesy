@@ -1,0 +1,68 @@
+{
+  "argv": [
+    "systemd-run",
+    "--user",
+    "--scope",
+    "-p",
+    "MemoryMax=19327352832",
+    "-p",
+    "MemorySwapMax=0",
+    "--",
+    "python3",
+    "-c",
+    "import sys,json;sys.path.insert(0,\"tools\");from c2_server_run import cgroup_state;print(json.dumps(cgroup_state(),sort_keys=True))"
+  ],
+  "cgroup": {
+    "events": {
+      "high": 0,
+      "low": 0,
+      "max": 0,
+      "oom": 0,
+      "oom_group_kill": 0,
+      "oom_kill": 0,
+      "sock_throttled": 0
+    },
+    "events_local": {
+      "high": 0,
+      "low": 0,
+      "max": 0,
+      "oom": 0,
+      "oom_group_kill": 0,
+      "oom_kill": 0,
+      "sock_throttled": 0
+    },
+    "memory_current": 13008896,
+    "memory_max": 19327352832,
+    "memory_peak": 13008896,
+    "memory_stat": {
+      "anon": 11956224,
+      "file": 0,
+      "file_mapped": 0,
+      "kernel": 180224,
+      "shmem": 0
+    },
+    "path": "/user.slice/user-1000.slice/user@1000.service/app.slice/run-p1059398-i1098512.scope",
+    "pressure": {
+      "full": {
+        "avg10": 0.0,
+        "avg300": 0.0,
+        "avg60": 0.0,
+        "total": 0
+      },
+      "some": {
+        "avg10": 0.0,
+        "avg300": 0.0,
+        "avg60": 0.0,
+        "total": 0
+      }
+    },
+    "swap_current": 0,
+    "swap_max": 0
+  },
+  "returncode": 0,
+  "schema": "c113-scope-test-v1",
+  "status": "REPRODUCED_MODEL_FREE",
+  "stderr": "Running as unit: run-p1059398-i1098512.scope; invocation ID: 1a23674cabcd4e85a2d2700243bd57da\n",
+  "stdout": "{\"events\": {\"high\": 0, \"low\": 0, \"max\": 0, \"oom\": 0, \"oom_group_kill\": 0, \"oom_kill\": 0, \"sock_throttled\": 0}, \"events_local\": {\"high\": 0, \"low\": 0, \"max\": 0, \"oom\": 0, \"oom_group_kill\": 0, \"oom_kill\": 0, \"sock_throttled\": 0}, \"memory_current\": 13008896, \"memory_max\": 19327352832, \"memory_peak\": 13008896, \"memory_stat\": {\"anon\": 11956224, \"file\": 0, \"file_mapped\": 0, \"kernel\": 180224, \"shmem\": 0}, \"path\": \"/user.slice/user-1000.slice/user@1000.service/app.slice/run-p1059398-i1098512.scope\", \"pressure\": {\"full\": {\"avg10\": 0.0, \"avg300\": 0.0, \"avg60\": 0.0, \"total\": 0}, \"some\": {\"avg10\": 0.0, \"avg300\": 0.0, \"avg60\": 0.0, \"total\": 0}}, \"swap_current\": 0, \"swap_max\": 0}\n",
+  "utc": "2026-09-29T10:18:18.389724+00:00"
+}

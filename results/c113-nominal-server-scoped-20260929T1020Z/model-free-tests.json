@@ -1,0 +1,10 @@
+{
+  "schema": "c113-model-free-tests-v1",
+  "status": "PASS_BEFORE_MODEL",
+  "scope_test": "Real small E18 systemd user scope: memory.max=19327352832, swap.max=0, swap.current=0, OOM=0",
+  "negative_unscoped_entry": "Rejected by C113 scope gate before identity/model",
+  "scoped_wrong_sha_entry": "Passed C113 scope gate; rejected deliberate wrong measurement SHA before model",
+  "suite": "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=tools python3 -m unittest tools.test_c55_inventory tools.test_c55_runner_entrypoint tools.test_c58_canary tools.test_c97_bridge_prelaunch",
+  "suite_passed": 5,
+  "c112_failure": "Preserved FAIL_LAUNCH_SCOPE_PREMODEL, zero requests and no model load"
+}
