@@ -87,6 +87,24 @@ def session_idle_seconds(config):
     return float(value)
 
 
+def session_idle_schedule(config, request_count):
+    """Idle before each request; index zero is always zero."""
+    fallback = session_idle_seconds(config)
+    schedule = config.get('inter_request_idle_schedule_s')
+    if schedule is None:
+        return [0.0] + [fallback] * (request_count - 1)
+    if type(schedule) is not list or len(schedule) != request_count or \
+       not schedule or schedule[0] != 0:
+        raise GateError('invalid inter-request idle schedule shape')
+    values = []
+    for value in schedule:
+        if type(value) not in (int, float) or not math.isfinite(value) or \
+           not 0 <= value <= 600:
+            raise GateError('invalid inter-request idle schedule value')
+        values.append(float(value))
+    return values
+
+
 def validate_adjacent_cache(previous_ids, current_ids, cache_n, min_common, max_lost=None):
     common = next((i for i, (a, b) in enumerate(zip(previous_ids, current_ids))
                    if a != b), min(len(previous_ids), len(current_ids)))
@@ -482,7 +500,7 @@ def run(args, protocol, config, task_rows, model):
                                           validate_start_observation,
                                           live_power, host_pressure)
         resource_contract = validate_resource_protocol(protocol)
-    between = session_idle_seconds(config)
+    idle_schedule = session_idle_schedule(config, len(task_rows))
     dynamic_history = config.get('append_previous_assistant_to_next', False)
     if dynamic_history is not False and dynamic_history is not True:
         raise GateError('invalid assistant-history flag')
@@ -783,8 +801,8 @@ def run(args, protocol, config, task_rows, model):
             history_messages = None
             first_assistant_content = None
             for row_index, (row_id, task) in enumerate(task_rows):
-                if row_index and between:
-                    until = time.monotonic() + between
+                if idle_schedule[row_index]:
+                    until = time.monotonic() + idle_schedule[row_index]
                     while time.monotonic() < until:
                         if reasons or server.poll() is not None:
                             raise GateError('server/watchdog stopped during session idle')
