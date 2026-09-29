@@ -529,6 +529,16 @@ def run(args, protocol, config, task_rows, model):
              (".preflight.json",".launch.json",".tokenization.json",".json",".normalized.json",".stdout",".stderr",".samples.jsonl")}
     if request_markers:
         paths['.request-markers.jsonl'] = Path(str(stem) + '.request-markers.jsonl')
+    trace_trigger_id = config.get('trace_trigger_request_id')
+    if trace_trigger_id is not None:
+        trigger = Path(config.get('explicit_env', {}).get('TESY_C122_TRACE_TRIGGER_FILE', ''))
+        if not request_markers or not trace_contract or \
+           trace_contract.get('expert_trace_schema') != 'c122-expert-decode-v1' or \
+           trace_trigger_id not in [row_id for row_id, _ in task_rows] or \
+           not trigger.is_absolute() or trigger.parent != output_root.resolve() or \
+           trigger.name != args.run_id + '.trace-trigger.json':
+            raise GateError('unfrozen C122 trace trigger identity')
+        paths['.trace-trigger.json'] = trigger
     if any(path.exists() for path in paths.values()):
         raise GateError("run ID/output already exists")
     config = dict(config, run_id=args.run_id)
@@ -810,6 +820,16 @@ def run(args, protocol, config, task_rows, model):
                     payload['stream_options'] = {'include_usage': True}
                 if "cache_prompt" in task:
                     payload["cache_prompt"] = task["cache_prompt"]
+                if row_id == trace_trigger_id:
+                    trigger_mono_ns = time.monotonic_ns()
+                    with paths['.trace-trigger.json'].open('x') as trigger_out:
+                        json.dump({'schema':'c122-trace-trigger-v1',
+                                   'run_id':args.run_id,'request_id':row_id,
+                                   'mono_ns':trigger_mono_ns,
+                                   'utc':dt.datetime.now(dt.timezone.utc).isoformat()},
+                                  trigger_out,allow_nan=False)
+                        trigger_out.write('\n')
+                        trigger_out.flush(); os.fsync(trigger_out.fileno())
                 if request_markers:
                     request_started_ns = time.monotonic_ns()
                     request_started = request_started_ns / 1e9
