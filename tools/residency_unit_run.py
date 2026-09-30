@@ -27,6 +27,29 @@ def post_timeout(run):
         raise ValueError('post-run timeout must be finite and in (0,90]')
     return value
 
+def server_run(directory,p,run_id):
+    from types import SimpleNamespace
+    import c2_server_run as server
+    from c9_server_admission import validate_receipt
+    from run_bounded import inventory_before_spawn
+    from c118_start_inventory import require_inventory
+    from datetime import datetime
+    run=next(r for r in p['runs'] if r['id']==run_id)
+    spec=run['server'];protocol_path=Path(spec['protocol']);arm=json.loads(protocol_path.read_text())
+    config=json.loads(Path(spec['config']).read_text());tasks=json.loads(Path(spec['tasks']).read_text())
+    inventory_before_spawn(directory,run_id,arm)
+    code=server.run(SimpleNamespace(run_id=run_id,protocol=protocol_path,suite='native-prefix',model='target120b'),arm,config,[(r['id'],r) for r in tasks],Path(spec['model_path']))
+    if code:return code
+    raw=json.loads((directory/'raw'/(run_id+'.json')).read_text())
+    samples=[json.loads(x) for x in (directory/'raw'/(run_id+'.samples.jsonl')).read_text().splitlines()]
+    validate_receipt(arm,config,raw,samples,directory,run_id=run_id,protocol_filename=str(protocol_path),expected_results=len(tasks))
+    receipt=json.loads((directory/'raw'/(run_id+'.start-inventory.receipt.json')).read_text())
+    launch=json.loads((directory/'raw'/(run_id+'.launch.json')).read_text())
+    if launch['start_inventory']['receipt_sha256']!=sha256(directory/'raw'/(run_id+'.start-inventory.receipt.json')):raise RuntimeError('launch inventory hash')
+    policy=json.loads((directory/'resource-policy.json').read_text())
+    require_inventory(directory,run_id,receipt,policy=policy,cap_bytes=arm['resources']['cgroup']['memory_max_bytes'],expected_power={k:policy['power'][k] for k in ('source','profile')},duration_s=60,now=datetime.fromisoformat(launch['start_inventory']['popen_invoked_utc']),max_age_s=3)
+    return 0
+
 def inside(root,directory,p):
     started=time.monotonic();attempts=[];status='FAIL_HARNESS_PREMODEL';error=None
     try:
@@ -38,6 +61,8 @@ def inside(root,directory,p):
             cmd=[sys.executable,str(root/'tools/run_bounded.py'),'--run-id',run['id'],'--model-id','model-free' if run.get('model_free') else p['model_id'],'--backend','stock','--backend-root',p['backend_root'],'--output-root',str(directory/'raw'),'--variant',run['variant'],'--workload',str(directory/'protocol.json'),'--cache-condition',run['label'],'--resource-protocol',str(directory/'protocol.json'),'--require-telemetry','--timeout-s',str(run['timeout_s'])]
             if run['inventory']:cmd+=['--collect-start-inventory']
             cmd+=['--',*run['command']]
+            if run.get('server'):
+                cmd=[sys.executable,str(root/'tools/residency_unit_run.py'),str(directory),'--server-run',run['id']]
             a=now();r=subprocess.run(cmd,env=env,text=True,capture_output=True,timeout=needed);b=now()
             row={'id':run['id'],'start':a,'end':b,'argv':cmd,'returncode':r.returncode,'stdout':r.stdout,'stderr':r.stderr};attempts.append(row);publish(directory/(run['id']+'-attempt.json'),row)
             if r.returncode:raise RuntimeError('bounded subprocess failed: '+run['id'])
@@ -55,8 +80,9 @@ def inside(root,directory,p):
     return 0 if error is None else 1
 
 def main():
-    a=argparse.ArgumentParser();a.add_argument('directory',type=Path);a.add_argument('--inside',action='store_true');args=a.parse_args()
+    a=argparse.ArgumentParser();a.add_argument('directory',type=Path);a.add_argument('--inside',action='store_true');a.add_argument('--server-run');args=a.parse_args()
     directory=args.directory.resolve();root=directory.parents[1];p=json.loads((directory/'protocol.json').read_text())
+    if args.server_run:return server_run(directory,p,args.server_run)
     if args.inside:return inside(root,directory,p)
     epoch=Epoch(root/p['epoch_path']);head=subprocess.check_output(['git','rev-parse','HEAD'],cwd=root,text=True).strip()
     start=now();result=None;live_started=False

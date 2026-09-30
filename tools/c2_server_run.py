@@ -447,16 +447,33 @@ def reserve(path):
 
 
 def loaded_backend_libraries(pid, backend):
-    root = backend.resolve()
-    found = {}
-    for line in Path(f"/proc/{pid}/maps").read_text().splitlines():
-        path = line.rsplit(" ",1)[-1]
-        if not path.startswith("/") or " (deleted)" in line:
-            continue
-        candidate = Path(path).resolve()
-        if candidate.is_file() and candidate.is_relative_to(root) and ".so" in candidate.name:
-            found[str(candidate.relative_to(root))] = sha256(candidate)
-    return found
+    from run_bounded import mapped_backend_libraries
+    return mapped_backend_libraries(pid, backend)
+
+
+def prospective_server_start_scope(protocol, current, contract):
+    if contract.get('execution_class') == 'FILE_PAGING' and current.get('memory_high') != contract['cgroup']['memory_high_bytes']:
+        raise GateError('prospective server memory.high differs from authority')
+    unit = protocol.get('execution_scope_unit')
+    if unit and not current.get('path', '').endswith('/'+unit+'.service'):
+        raise GateError('prospective server scope differs from authority')
+
+
+def server_endpoint_reasons(end, start, contract=None):
+    if not end:
+        return ['CGROUP_END_MISSING']
+    if contract is not None:
+        from run_bounded import prospective_endpoint_reason
+        # Cadence is independently checked against the saved samples by the gate.
+        reason = prospective_endpoint_reason(0, 0, 0, end, start, contract)
+        return [] if reason is None else [reason]
+    reasons = []
+    if end['swap_current'] or end['memory_peak'] > end['memory_max']:
+        reasons.append('CGROUP_END_RESOURCE_VIOLATION')
+    for name in ('events','events_local'):
+        if any(end[name][key] > start[name][key] for key in ('max','oom','oom_kill')):
+            reasons.append('CGROUP_END_'+name.upper()+'_EVENT')
+    return reasons
 
 
 def process_identity(pid):
@@ -532,6 +549,8 @@ def run(args, protocol, config, task_rows, model):
     cg_start = cgroup_state()
     if not cg_start or cg_start["memory_max"] != expected_cgroup_max or cg_start["swap_max"] != 0:
         raise GateError("frozen cgroup cap and zero swap not enforced")
+    if prospective:
+        prospective_server_start_scope(protocol, cg_start, resource_contract)
     available_start = mem_available()
     minimum_available = (resource_contract['memory']['reserve_bytes'] if prospective
                          else 6*2**30)
@@ -776,8 +795,7 @@ def run(args, protocol, config, task_rows, model):
             loaded = loaded_backend_libraries(server.pid,
                                               Path(config.get("backend_root", ROOT/"backends"/MODEL[args.model][0])))
             preflight["actually_loaded_backend_libraries_sha256"] = loaded
-            if any(loaded.get(path) != digest_value for path,digest_value in
-                   protocol["identity"]["library_sha256"].items()):
+            if loaded != protocol["identity"]["library_sha256"]:
                 raise GateError("loaded backend libraries differ from frozen identity")
             if args.suite in ("c2core8", "c2eval12", "c3followup2") or config.get("pretokenize",False):
                 tokenization = {}
@@ -802,6 +820,9 @@ def run(args, protocol, config, task_rows, model):
                     bounds = config.get("prompt_token_ranges",{}).get(row_id)
                     if bounds and not bounds[0] <= len(ids) <= bounds[1]:
                         raise GateError(f"official tokenization outside frozen range for {row_id}")
+                    expected_ids = config.get("expected_official_token_ids", {}).get(row_id)
+                    if expected_ids is not None and ids != expected_ids:
+                        raise GateError("official rendered IDs differ from frozen fixture")
                     tokenization[row_id] = {"count":len(ids),"token_ids_sha256":digest(ids)}
                     token_ids[row_id] = ids
                 if config.get("freeze_token_ids",False) and not dynamic_history:
@@ -966,14 +987,7 @@ def run(args, protocol, config, task_rows, model):
        (model_before.st_dev,model_before.st_ino,model_before.st_size,model_before.st_mtime_ns):
         reasons.append("MODEL_IDENTITY_CHANGED")
     cg_end = cgroup_state()
-    if not cg_end:
-        reasons.append("CGROUP_END_MISSING")
-    else:
-        if cg_end["swap_current"] or cg_end["memory_peak"] > cg_end["memory_max"]:
-            reasons.append("CGROUP_END_RESOURCE_VIOLATION")
-        for name in ("events","events_local"):
-            if any(cg_end[name][key] > cg_start[name][key] for key in ("max","oom","oom_kill")):
-                reasons.append(f"CGROUP_END_{name.upper()}_EVENT")
+    reasons.extend(server_endpoint_reasons(cg_end, cg_start, resource_contract if prospective else None))
     result = {"schema_version":"c2-server-raw-v1","preflight":preflight,
               "ended_utc":dt.datetime.now(dt.timezone.utc).isoformat(),"elapsed_s":ended,
               "returncode":server.returncode,"stop_reasons":reasons,"results":raw,

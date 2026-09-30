@@ -167,8 +167,9 @@ def validate_receipt(protocol, config, raw, samples, root, *, run_id=RUN_ID,
     if not end or start['memory_max'] != expected_cgroup_max or start['swap_max'] != 0 or \
        end['swap_current'] != 0:
         raise GateError('cgroup cap/swap invalid')
+    stop_events = ('oom', 'oom_kill') if prospective and resource_contract.get('execution_class') == 'FILE_PAGING' else ('max', 'oom', 'oom_kill')
     for key in ('events', 'events_local'):
-        if any(end[key][k] != start[key][k] for k in ('max', 'oom', 'oom_kill')):
+        if any(end[key][k] != start[key][k] for k in stop_events):
             raise GateError('cgroup cap/OOM event')
     maxima = {'rss_bytes': 0, 'cgroup_peak_bytes': 0, 'gpu_total_mib': 0,
               'cpu_c': 0, 'gpu_c': 0, 'nvme_c': 0, 'swap_bytes': 0}
@@ -190,7 +191,7 @@ def validate_receipt(protocol, config, raw, samples, root, *, run_id=RUN_ID,
         if cg['memory_max'] != expected_cgroup_max or cg['swap_max'] != 0 or \
            cg['swap_current'] != 0 or ps['VmSwap'] != 0 or \
            any(cg[k][name] != start[k][name] for k in ('events', 'events_local')
-               for name in ('max', 'oom', 'oom_kill')):
+               for name in stop_events):
             raise GateError('sample cgroup identity/cap/swap/event invalid')
         if prospective:
             try:

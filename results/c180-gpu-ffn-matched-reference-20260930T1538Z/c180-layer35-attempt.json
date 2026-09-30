@@ -1,0 +1,48 @@
+{
+  "id": "c180-layer35",
+  "start": {
+    "utc": "2026-09-30T15:40:02.852952+00:00",
+    "monotonic_s": 277182.326175905
+  },
+  "end": {
+    "utc": "2026-09-30T15:40:05.073276+00:00",
+    "monotonic_s": 277184.54651143
+  },
+  "argv": [
+    "/usr/bin/python3",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/tools/run_bounded.py",
+    "--run-id",
+    "c180-layer35",
+    "--model-id",
+    "gpt-oss-120b-mxfp4-gguf",
+    "--backend",
+    "stock",
+    "--backend-root",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/backends/c165-mmap-diagnostic",
+    "--output-root",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c180-gpu-ffn-matched-reference-20260930T1538Z/raw",
+    "--variant",
+    "nativeCPU-MoE-canonical-resident-layer",
+    "--workload",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c180-gpu-ffn-matched-reference-20260930T1538Z/protocol.json",
+    "--cache-condition",
+    "canonical-reference-not-performance",
+    "--resource-protocol",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c180-gpu-ffn-matched-reference-20260930T1538Z/protocol.json",
+    "--require-telemetry",
+    "--timeout-s",
+    "15",
+    "--",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c173-native-reference-model-free-20260930T1510Z/build/mmap_phase_reference",
+    "/home/pmglo/models/gpt-oss-120b-gguf/gpt-oss-120b-MXFP4.gguf",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c166-mmap-phase-diagnostic-20260930T1230Z/raw/verify.capture",
+    "35",
+    "--ngl",
+    "12",
+    "--plan-map",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c172-native-ffn-plan-model-free-20260930T1458Z/reference-map.tsv"
+  ],
+  "returncode": 0,
+  "stdout": "{\"run_id\": \"c180-layer35\", \"elapsed_s\": 1.99, \"returncode\": 0, \"stop_reason\": null, \"maxima\": {\"rss_bytes\": 2547556352, \"swap_bytes\": 0, \"cgroup_memory_bytes\": 5240451072, \"cgroup_peak_bytes\": 5720334336, \"cgroup_file_bytes\": 3931971584, \"gpu_used_mib\": 116.0, \"gpu_temperature_c\": 50.0, \"cpu_tctl_c\": 63.625, \"nvme_composite_c\": 40.85, \"direct_model_fds\": 0, \"buffered_model_fds\": 1}}\n",
+  "stderr": ""
+}
