@@ -10,3 +10,5 @@ A ordem recomendada é:
 \end{enumerate}
 
 Em paralelo, qualquer claim de I/O deve medir o tier certo. \texttt{read\_bytes}, bytes de tensor e requests de copy não substituem instrumentação de tráfego físico. Amdahl/Roofline servem para limitar o ganho possível antes de acrescentar mecanismos \cite{amdahl1967validity,williams2009roofline}.
+
+APEX e Cache-Aware Joint Router Adaptation passam a integrar a matriz mínima de comparadores para pre-attention prefetch exacto e cache-aware router adaptation \cite{kanani2026apex,wu2026cacheaware}. Benchmarks externos de consumo justificam medir throughput, footprint e energia, sem extrapolar magnitudes \cite{alfarizy2026consumer}.

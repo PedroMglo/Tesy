@@ -1,12 +1,12 @@
 # Auditoria editorial
 
-Estado: **REVIEWED candidate — CI byte hash pending**
+Estado: DRAFT — nova revisão visual pendente.
 
-- inputs_sha256: `a6a934595c24535bb83fcbf2fb4d8813e08bc86064f3f9b6516b20bdc9f71ed8`
-- candidate PDF SHA-256: `a8a2aaa0195d4f1cb9800bc31b44640c7722338d8f30aaae59c0263e4507d7a6`
-- páginas revistas: 9
+- inputs_sha256: 6dfa9c25f9ae8934990cbb91be1d32816e44e8084a48503c87683dd24ceeb14a
+- hash PDF anteriormente revisto (inputs obsoletos): a2f07f30b81797ca1f2a81912578fcc30068c3c414e93662b45303eb5eb546df
+- páginas do novo PDF: revisão pendente
 - reprodução experimental: NOT_RUN
 - raws: NOT_ACCESSED
-- blockers científicos/editoriais: 0
+- blockers: revisão visual da nova compilação CI
 
-O source final e todas as páginas foram revistos. Como o ambiente local TeX não é byte-idêntico ao runner oficial, o próximo preflight CI é deliberadamente o gate para obter o hash final de publicação; o PR não fica pronto enquanto esse hash não for reconciliado.
+O relatório foi reaberto para incluir APEX, Cache-Aware Joint Router Adaptation e um estudo de hardware consumer/edge. A auditoria e o hash acima referem-se à versão anterior; a nova compilação CI tem de ser revista página a página antes de restaurar REVIEWED.

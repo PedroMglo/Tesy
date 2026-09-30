@@ -6,7 +6,7 @@ Sistema documental model-free: uma classe LuaLaTeX, fontes congeladas, seletores
 
 | ID | Conteúdo |
 |---|---|
-| `R01-prior-art` | Revisão bibliográfica de prior art e claim boundary, corte em 30 setembro 2026. REVIEWED; publicação continua sujeita ao hash de PDF da CI. |
+| `R01-prior-art` | Revisão bibliográfica de prior art e claim boundary, corte em 30 setembro 2026. DRAFT; nova bibliografia integrada, revisão visual do PDF CI pendente. |
 | `S01-120b-research-synthesis` | Síntese de época C108--C189: residency, mmap, referência nativa, integração real e prior art. DRAFT até revisão visual do PDF. |
 | `C06-attn-dispatch-compat` | Campanha 6: compatibilidade de dispatch CPU e divergência seguinte em GPU Flash. REVIEWED. |
 | `C05-first-divergence` | Campanha 5: primeira divergência causalmente localizada em CPU Flash Attention. REVIEWED. |

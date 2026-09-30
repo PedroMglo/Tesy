@@ -4,3 +4,5 @@ Esta é uma revisão orientada ao problema, não uma systematic review, meta-ana
 A cobertura privilegia sistemas e papers com overlap direto em sparse/MoE inference, offload, cache/prefetch, execução heterogénea, storage e speculation. Não pretende enumerar toda a literatura de training, distributed MoE, quantization, KV-cache ou serving geral. Preprints podem evoluir de título, venue ou resultados; sempre que possível são preferidas versões archival/official.
 
 Finalmente, nenhum speedup, consumo de memória ou accuracy reportado por outro trabalho é tratado como previsão do target Tesy. Diferenças de modelo, quantização, hardware, batch, contexto, routing e contrato de qualidade impedem essa extrapolação.
+
+APEX e Cache-Aware Joint Router Adaptation são preprints arXiv de 2026; as suas descrições sustentam a classificação de mecanismos, não uma auditoria independente dos resultados. O estudo de edge de Alfarizy et al. cobre OLMoE-1B-7B e dois dispositivos (Apple M2 Pro e Jetson Orin Nano 8 GB), pelo que qualquer generalização para modelos muito maiores, incluindo gpt-oss-120b, fica fora da evidência citada. Esta revisão não reproduziu esses benchmarks.
