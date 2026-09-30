@@ -176,7 +176,7 @@ def derive_policy(*,snapshot):
                       'cap_max_bytes':cap_max}}
 
 def freeze_protocol_resource_limits(policy,*,cgroup_memory_max_bytes,
-                                    start_mode='OPERATIONAL_SESSION_START'):
+                                    start_mode='OPERATIONAL_SESSION_START', execution_class='STREAMING'):
     if type(policy) is not dict or policy.get('schema')!='tesy-resource-inventory-v2' or \
        digest(policy.get('snapshot'))!=policy.get('snapshot_sha256'):
         raise ResourcePolicyError('inventory snapshot/hash invalid')
@@ -187,8 +187,10 @@ def freeze_protocol_resource_limits(policy,*,cgroup_memory_max_bytes,
         raise ResourcePolicyError('cap not admitted or not 256MiB aligned')
     if start_mode not in ('OPERATIONAL_SESSION_START','CAPACITY_ADMISSION_START','CAUSAL_AB_START'):
         raise ResourcePolicyError('start mode invalid')
+    if execution_class not in ('STREAMING','FILE_PAGING'):
+        raise ResourcePolicyError('unknown execution class')
     gpu,cpu=policy['gpu'],policy['cpu']
-    return {'schema':'tesy-resources-v2','snapshot_sha256':policy['snapshot_sha256'],
+    result = {'schema':'tesy-resources-v2','snapshot_sha256':policy['snapshot_sha256'],
             'inventory_snapshot':deepcopy(policy['snapshot']),
             'cgroup':{'memory_max_bytes':cap,'memory_swap_max_bytes':0,
                       'memory_stop_bytes':cap-512*MIB,'memory_high_bytes':cap},
@@ -220,19 +222,30 @@ def freeze_protocol_resource_limits(policy,*,cgroup_memory_max_bytes,
                        'cgroup_cap':'EXPERIMENT_ADMISSION',
                        'nvme_stop':'EXPERIMENT_ADMISSION'},
             'units':{'memory':'bytes','gpu_memory':'MiB','temperature':'C','time':'s'}}
+    if execution_class == 'FILE_PAGING':
+        result['schema'] = 'tesy-resources-v3'
+        result['execution_class'] = 'FILE_PAGING'
+        result['cgroup']['memory_high_bytes'] = cap-512*MIB
+        result['cgroup']['memory_stop_bytes'] = None
+    return result
 
 def validate_resource_protocol(protocol):
     r=protocol.get('resources') if type(protocol) is dict else None
-    if type(r) is not dict or r.get('schema')!='tesy-resources-v2':
+    if type(r) is not dict or r.get('schema') not in ('tesy-resources-v2','tesy-resources-v3'):
         raise ResourcePolicyError('v2 resources authority absent')
     required={'schema','snapshot_sha256','inventory_snapshot','cgroup','memory','gpu','cpu','nvme',
               'power','start','telemetry','comparators','classes','units'}
+    paging = r['schema']=='tesy-resources-v3'
+    if paging:
+        required.add('execution_class')
+        if r.get('execution_class') != 'FILE_PAGING':
+            raise ResourcePolicyError('v3 requires explicit FILE_PAGING class')
     if set(r)!=required:
         raise ResourcePolicyError('v2 resources fields missing/extra')
     cap=integer(r.get('cgroup',{}).get('memory_max_bytes'),'frozen cap',GIB)
     if cap%Q or r['cgroup'].get('memory_swap_max_bytes')!=0 or \
-       r['cgroup'].get('memory_stop_bytes')!=cap-512*MIB or \
-       r['cgroup'].get('memory_high_bytes')!=cap:
+       r['cgroup'].get('memory_stop_bytes')!=(None if paging else cap-512*MIB) or \
+       r['cgroup'].get('memory_high_bytes')!=(cap-512*MIB if paging else cap):
         raise ResourcePolicyError('cgroup authority inconsistent')
     if type(r.get('snapshot_sha256')) is not str or \
        re.fullmatch(r'[0-9a-f]{64}',r['snapshot_sha256']) is None:
@@ -275,7 +288,8 @@ def validate_resource_protocol(protocol):
     try:
         expected=freeze_protocol_resource_limits(
             derive_policy(snapshot=r['inventory_snapshot']),
-            cgroup_memory_max_bytes=cap,start_mode=r['start']['mode'])
+            cgroup_memory_max_bytes=cap,start_mode=r['start']['mode'],
+            execution_class='FILE_PAGING' if paging else 'STREAMING')
     except (KeyError,TypeError,ValueError) as exc:
         raise ResourcePolicyError('inventory snapshot cannot reproduce resource authority') from exc
     if r!=expected:
@@ -399,13 +413,17 @@ class RuntimeGuard:
         if cg['memory_max']!=r['cgroup']['memory_max_bytes'] or cg['swap_max']!=0 or \
            cg['path']!=self.start['path']:
             return 'CGROUP_IDENTITY_OR_CAP'
+        paging = r.get('execution_class') == 'FILE_PAGING'
+        if paging and cg.get('memory_high') != r['cgroup']['memory_high_bytes']:
+            return 'CGROUP_HIGH_INCONSISTENT'
         if ps['VmSwap'] or cg['swap_current']:
             return 'WORKLOAD_SWAP'
         for kind in ('events','events_local'):
-            if any(cg[kind][name]>self.start[kind][name] for name in ('max','oom','oom_kill')):
+            if any(cg[kind][name]>self.start[kind][name]
+                   for name in (('oom','oom_kill') if paging else ('max','oom','oom_kill'))):
                 return 'CGROUP_EVENT'
-        if cg['memory_current']>=r['cgroup']['memory_stop_bytes'] or \
-           cg['memory_peak']>=r['cgroup']['memory_stop_bytes']:
+        if not paging and (cg['memory_current']>=r['cgroup']['memory_stop_bytes'] or \
+           cg['memory_peak']>=r['cgroup']['memory_stop_bytes']):
             return 'CGROUP_PREVENTIVE_MARGIN'
         if gpu['uuid']!=r['gpu']['uuid'] or gpu['bdf']!=r['gpu']['bdf']:
             return 'GPU_IDENTITY'

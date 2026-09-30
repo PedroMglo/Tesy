@@ -99,7 +99,7 @@ def proc_status(pid):
         lines = Path(f"/proc/{pid}/status").read_text().splitlines()
         d = {}
         for line in lines:
-            if line.startswith(("VmRSS:", "VmSwap:", "VmHWM:")):
+            if line.startswith(("VmRSS:", "VmSwap:", "VmHWM:", "VmLck:")):
                 k, v = line.split(":", 1)
                 d[k] = int(v.strip().split()[0]) * 1024
         for line in Path(f"/proc/{pid}/io").read_text().splitlines():
@@ -141,9 +141,9 @@ def cgroup_state():
         memstat = {}
         for line in (base / "memory.stat").read_text().splitlines():
             k, v = line.split()
-            if k in ("anon", "file", "kernel", "file_mapped", "shmem"):
-                memstat[k] = int(v)
+            memstat[k] = int(v)
         return {"path": rel, "memory_max": number("memory.max"),
+                "memory_high": number("memory.high"),
                 "swap_max": number("memory.swap.max"), "memory_current": number("memory.current"),
                 "memory_peak": number("memory.peak"),
                 "swap_current": number("memory.swap.current"), "memory_stat": memstat,
@@ -225,10 +225,17 @@ def thermal_state(*, prospective=False):
 
 def stop_own_group(process):
     if process.poll() is None:
+        expected = getattr(process, '_tesy_identity', None)
+        if expected is not None:
+            if process_identity(process.pid) != expected or \
+               os.path.realpath(f'/proc/{process.pid}/exe') != process._tesy_executable:
+                raise RuntimeError('own child PID/start ticks/executable/scope changed; stop refused')
         os.killpg(process.pid, signal.SIGTERM)
         try:
             process.wait(timeout=5)
         except subprocess.TimeoutExpired:
+            if expected is not None and process_identity(process.pid) != expected:
+                raise RuntimeError('own child identity changed during stop')
             os.killpg(process.pid, signal.SIGKILL)
             process.wait()
 
@@ -241,9 +248,13 @@ def prospective_endpoint_reason(first_sample_s,last_sample_s,elapsed_s,end,start
     if not end or end.get('memory_max')!=resources['cgroup']['memory_max_bytes'] or \
        end.get('swap_max')!=0 or end.get('swap_current')!=0:
         return 'PROSPECTIVE_CGROUP_END_INVALID'
+    if resources.get('execution_class') == 'FILE_PAGING' and \
+       end.get('memory_high') != resources['cgroup']['memory_high_bytes']:
+        return 'PROSPECTIVE_CGROUP_END_HIGH_INVALID'
     if any(end[group][event]>start[group][event]
            for group in ('events','events_local')
-           for event in ('max','oom','oom_kill')):
+           for event in (('oom','oom_kill') if resources.get('execution_class') == 'FILE_PAGING'
+                         else ('max','oom','oom_kill'))):
         return 'PROSPECTIVE_CGROUP_END_EVENT'
     return None
 
@@ -397,6 +408,12 @@ def main():
         if not start_cg or start_cg['memory_max']!=resource_contract['cgroup']['memory_max_bytes'] or \
            start_cg['swap_max']!=0:
             p.error('prospective cgroup cap/swap differs from single authority')
+        if resource_contract.get('execution_class') == 'FILE_PAGING' and \
+           start_cg.get('memory_high') != resource_contract['cgroup']['memory_high_bytes']:
+            p.error('FILE_PAGING memory.high differs from single authority')
+        expected_scope = resource_protocol.get('execution_scope_unit')
+        if expected_scope and not start_cg['path'].endswith('/'+expected_scope+'.service'):
+            p.error('frozen campaign scope differs at actual entrypoint')
         gpu_start=gpu_state(prospective=True)
         thermal_start=thermal_state(prospective=True)
         available_start=mem_available()
@@ -451,6 +468,11 @@ def main():
             stop_own_group(process)
             raise RuntimeError(f"cannot establish child identity: {exc}") from exc
         manifest["process_identity"] = launch_identity
+        process._tesy_identity = launch_identity
+        process._tesy_executable = os.path.realpath(f'/proc/{process.pid}/exe')
+        if prospective and launch_identity['cgroup_path'] != manifest['cgroup_start']['path']:
+            stop_own_group(process)
+            raise RuntimeError('model child escaped frozen monitor scope')
         if start_inventory is not None:
             manifest['start_inventory'] = start_inventory
             launch_path = Path(str(stem)+'.launch.json')
@@ -536,6 +558,8 @@ def main():
                 if prospective:
                     sample['resource_observation']={'host_psi_full_avg10':host_pressure(),
                                                     'power':live_power()}
+                    if resource_contract.get('execution_class') == 'FILE_PAGING':
+                        sample['smaps_rollup'] = Path(f'/proc/{process.pid}/smaps_rollup').read_text()
                 samples.write(json.dumps(sample,allow_nan=False) + "\n")
                 samples.flush()
                 last = sample
