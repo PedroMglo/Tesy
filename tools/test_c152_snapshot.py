@@ -52,4 +52,26 @@ class NativeSnapshot(unittest.TestCase):
                 p.write_bytes(b)
                 with self.assertRaises(ValueError):routes(p)
 
+
+class SnapshotIdentityAndBounds(unittest.TestCase):
+    def test_hash_expectation_and_partial(self):
+        import tempfile
+        p=ROOT/'golden-v3-loading/after.snap';hashes=['0'*64]*4
+        snapshot(p,physical=False,expected_hashes=hashes)
+        with self.assertRaisesRegex(ValueError,'identity hashes'):snapshot(p,physical=False,expected_hashes=['f'*64]*4)
+        with tempfile.TemporaryDirectory() as d:
+            q=Path(d)/'failed.partial';q.write_bytes(p.read_bytes())
+            with self.assertRaises(ValueError):snapshot(q,physical=False)
+    def test_snapshot_and_route_capacity_bound(self):
+        with tempfile.TemporaryDirectory() as d:
+            p=Path(d)/'too-large.snap';p.write_bytes(b'x'*(1024*1024+1))
+            with self.assertRaises(ValueError):snapshot(p,physical=False)
+            p=Path(d)/'too-large.routes';p.write_bytes(b'x'*(8*1024*1024+8))
+            with self.assertRaises(ValueError):routes(p)
+    def test_native_v4_journal(self):
+        from c152_journal_validate import validate
+        root=ROOT.parent/'c156-snapshot-gates-20260930T1000Z'
+        for mode in ('remap','loading','wave'):
+            with self.subTest(mode=mode):validate(root/('native-v4-'+mode)/'journal.trace',physical=False)
+
 if __name__=='__main__':unittest.main()

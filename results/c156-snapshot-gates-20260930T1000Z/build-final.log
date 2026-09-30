@@ -1,0 +1,14 @@
+[  0%] Building CXX object src/CMakeFiles/llama.dir/llama-moe-stream.cpp.o
+[  0%] Building CXX object src/CMakeFiles/llama.dir/llama-graph.cpp.o
+[  1%] Building CXX object src/CMakeFiles/llama.dir/llama-model.cpp.o
+[  1%] Building CXX object src/CMakeFiles/llama.dir/llama-context.cpp.o
+In file included from /home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/backends/c156-qualified-snapshot/src/llama-moe-stream.cpp:1133:
+/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/backends/c156-qualified-snapshot/src/c152-snapshot.inl: In member function ‘void llama_moe_stream::snapshot(const char*, int64_t, int32_t, int32_t, int32_t)’:
+/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/backends/c156-qualified-snapshot/src/c152-snapshot.inl:60:17: warning: this ‘for’ clause does not guard... [-Wmisleading-indentation]
+   60 |                 for (auto x:wt.cache->ne)put(x);for (auto x:wt.cache->nb)put(x);
+      |                 ^~~
+/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/backends/c156-qualified-snapshot/src/c152-snapshot.inl:60:49: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘for’
+   60 |                 for (auto x:wt.cache->ne)put(x);for (auto x:wt.cache->nb)put(x);
+      |                                                 ^~~
+[  3%] Linking CXX shared library ../bin/libllama.so
+[100%] Built target llama

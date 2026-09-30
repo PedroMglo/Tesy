@@ -101,5 +101,37 @@ def main():
         }''')
     with (B/c).open('a') as f:f.write('\n#ifdef TESY_C84_EXPERT_TRACE\n#include "c152-snapshot.inl"\n#endif\n')
     (B/'src/c152-snapshot.inl').write_bytes((ROOT/'tools/c152_snapshot.inl').read_bytes())
+    # C156 evidence-only repairs, applied after the byte-exact C152 base generation.
+    replace(h,'    std::vector<uint8_t> snapshot_bytes;',
+            '    std::string trace_output_path;\n    std::vector<std::pair<int64_t,size_t>> request_starts;\n    uint32_t snapshot_count=0;\n    std::vector<uint8_t> snapshot_bytes;')
+    replace(c,'#include <stdexcept>','#include <stdexcept>\n#include <filesystem>\n#ifdef TESY_C84_EXPERT_TRACE\n#include "c156-atomic-output.inl"\n#endif')
+    replace(c,'        trace_file = std::fopen(path, "wx"); // no replacement of an earlier diagnostic',
+            '        trace_output_path=path;\n        trace_file = c156_open_output(path);')
+    replace(c,'#c152-expert-snapshot-v1','#c156-expert-snapshot-v2')
+    replace(c,'        std::fprintf(trace_file, "kind\\tseq',
+            '        for(size_t i=0;i<request_starts.size();++i) std::fprintf(trace_file,"R\\t%" PRId64 "\\t%zu\\t%zu\\n",request_starts[i].first,request_starts[i].second,i+1<request_starts.size()?request_starts[i+1].second:trace_events.size());\n        size_t serialized_request=0, serialized_total=0, request_index=0;\n        std::fprintf(trace_file, "kind\\tseq')
+    replace(c,'        for (const auto & e : trace_events) {\n            std::fprintf(trace_file,',
+            '        for (const auto & e : trace_events) {\n            if(request_index+1<request_starts.size()&&e.seq>=request_starts[request_index+1].second){++request_index;serialized_request=0;}\n            const int written=std::fprintf(trace_file,')
+    replace(c,'e.call_id, e.generation, e.component, e.work_id);',
+            'e.call_id, e.generation, e.component, e.work_id);\n            if(written<0){trace_overflow=true;break;}\n            serialized_request+=written;serialized_total+=written;\n            if(serialized_request>32*1024*1024||serialized_total>64*1024*1024-65536){trace_overflow=true;break;}')
+    oldclose='        const bool write_failed = std::ferror(trace_file) != 0;\n        if (std::fclose(trace_file) != 0 || write_failed) {'
+    replace(c,oldclose,'        if (!c156_finish_output(trace_file,trace_output_path.c_str(),!trace_overflow&&!snapshot_overflow)) {')
+    oldroute='                FILE * out = std::fopen(route_path,"wx");\n                if (!out || std::fwrite(routed_journal.data(),sizeof(int64_t),routed_journal.size(),out) != routed_journal.size() || std::fclose(out)) {'
+    replace(c,oldroute,'                FILE * out = c156_open_output(route_path);\n                const bool complete=out&&std::fwrite(routed_journal.data(),sizeof(int64_t),routed_journal.size(),out)==routed_journal.size();\n                if (!c156_finish_output(out,route_path,complete&&!trace_overflow&&!snapshot_overflow)) {')
+    replace(c,'logical_bytes, load_begin_us, w.trace_call_id, w.gen);',
+            'logical_bytes, load_begin_us, w.trace_call_id, w.gen, -1, w.snapshot_work_id);')
+    replace(c,'w.trace_call_id, w.gen, component);','w.trace_call_id, w.gen, component, w.snapshot_work_id);',count=4)
+    replace(c,'                         w.trace_call_id, w.gen);',
+            '                         w.trace_call_id, w.gen, -1, w.snapshot_work_id);')
+    replace(c,'        q_demand.clear();', '        for(const auto & w:q_demand) {\n#ifdef TESY_C84_EXPERT_TRACE\n            trace_locked("CANCEL_WORK",w.sl->il,w.expert,w.slot,-1,0,-1,-1,0,-1,w.trace_call_id,w.gen,-1,w.snapshot_work_id);\n#endif\n        }\n        q_demand.clear();')
+    replace(c,'trace_slot < 0 ? 0 : sl->slot_state[trace_slot]);',
+            'trace_slot < 0 ? 0 : sl->slot_state[trace_slot],0,-1,0,trace_slot<0?0:sl->slot_gen[trace_slot]);')
+    replace(c,'trace_slot < 0 ? 0 : sl.slot_state[trace_slot]);',
+            'trace_slot < 0 ? 0 : sl.slot_state[trace_slot],0,-1,0,trace_slot<0?0:sl.slot_gen[trace_slot]);')
+    replace(c,'sl.slot_state[slot]);','sl.slot_state[slot],0,-1,0,sl.slot_gen[slot]);')
+    replace(c,'trace_locked("PRELOAD", sl.il, e, v, -1, n_tokens, w + 1);',
+            'trace_locked("PRELOAD", sl.il, e, v, -1, n_tokens, w + 1,sl.slot_state[v],0,-1,0,sl.slot_gen[v]);')
+    (B/'src/c156-atomic-output.inl').write_bytes((ROOT/'tools/c156_atomic_output.inl').read_bytes())
+
 
 if __name__=='__main__':main()

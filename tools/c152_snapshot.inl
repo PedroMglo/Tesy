@@ -4,7 +4,8 @@ void llama_moe_stream::journal_request(int64_t request) {
     std::lock_guard<std::mutex> lock(mtx);
     if (snapshot_bytes.empty()) return;
     if (request <= snapshot_request) throw std::runtime_error("C152 request order");
-    snapshot_request = request;
+    snapshot_request = request; snapshot_count=0;
+    request_starts.emplace_back(request,trace_events.size());
     request_event_begin = trace_events.size(); request_route_begin = routed_journal.size();
 }
 
@@ -29,6 +30,7 @@ void llama_moe_stream::snapshot(const char * path,int64_t sequence,int32_t phase
     size_t used=0;
     {
         std::lock_guard<std::mutex> lock(mtx);
+        if(snapshot_count++>=3){snapshot_overflow=true;throw std::runtime_error("C156 snapshot count overflow");}
         auto bytes=[&](const void * p,size_t n) {
             if (used+n>snapshot_bytes.size()) { snapshot_overflow=true; throw std::runtime_error("C152 snapshot overflow"); }
             std::memcpy(snapshot_bytes.data()+used,p,n);used+=n;
@@ -75,8 +77,9 @@ void llama_moe_stream::snapshot(const char * path,int64_t sequence,int32_t phase
             put(i);put(owned_phase[i].load(std::memory_order_acquire));work(owned_work[i]);
         }
     }
-    FILE * out=std::fopen(path,"wx");
+    FILE * out=c156_open_output(path);
     if(!out)throw std::runtime_error("C152 new snapshot output required");
     const bool failed=std::fwrite(snapshot_bytes.data(),1,used,out)!=used || std::ferror(out);
-    const int rc=std::fclose(out);if(failed||rc)throw std::runtime_error("C152 snapshot write failed");
+    if(!c156_finish_output(out,path,!failed&&!snapshot_overflow&&!trace_overflow&&!load_failed))
+        throw std::runtime_error("C156 snapshot write/publication failed");
 }

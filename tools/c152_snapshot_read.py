@@ -8,7 +8,8 @@ HEADER=('request','sequence','call_id','phase','first_pos','last_pos','transitio
         'n_calls','hot_decay_interval','workers','error','shutdown','next_work_id','overflow','layer_count')
 WORK=('layer','expert','slot','generation','origin_call','enqueue_us','work_id')
 
-def snapshot(path, *, physical=True):
+def snapshot(path, *, physical=True, expected_hashes=None):
+    if Path(path).name.endswith(".partial"):raise ValueError("incomplete snapshot")
     data=Path(path).read_bytes();offset=0
     if len(data)>1024*1024 or len(data)<276 or data[:8]!=b'TESYS152' or data[8:12]!=b'\x04\x03\x02\x01':raise ValueError('snapshot size/magic/endian')
     offset=12
@@ -27,8 +28,11 @@ def snapshot(path, *, physical=True):
         s=data[offset:offset+64].decode('ascii');offset+=64
         if len(s)!=64 or any(c not in '0123456789abcdefABCDEF' for c in s):raise ValueError('snapshot hash')
         hashes.append(s)
+    if expected_hashes is not None and hashes!=list(expected_hashes):raise ValueError('snapshot identity hashes')
     out=dict(zip(HEADER,(integer() for _ in HEADER)));out['hashes']=hashes
     if out['overflow'] or out['error'] or not 0<out['layer_count']<=36 or not 0<out['workers']<=18 or out['phase'] not in (0,1,2):raise ValueError('snapshot manager/error/overflow')
+    if not 0<=out['first_pos']<=out['last_pos']<8192:raise ValueError('snapshot positions')
+    if out['request']<1 or not 0<=out['sequence']<=2 or out['transition_seq']<0 or out['mono_us']<0 or out['n_calls']<0 or out['hot_decay_interval']<0 or out['next_work_id']<0:raise ValueError('manager identity/cardinality')
     layers=[]
     for index in range(out['layer_count']):
         present=integer()
@@ -57,6 +61,10 @@ def snapshot(path, *, physical=True):
                 mapping[expert]=slot
         if mapping!=sl['expert_slot']:raise ValueError('expert_slot inverse')
         if any(not 0<=x<=2**32-1 for x in sl['route_hotness']) or any(x<0 for x in sl['slot_gen']):raise ValueError('hotness/generation range')
+        if any(sl['slot_gen'][i]<1 for i,x in enumerate(sl['slot_state']) if x) or sl['use_counter']<0 or any(not 0<=x<=sl['use_counter'] for x in sl['slot_last_use']):raise ValueError('slot generation/recency')
+        if len(set(sl['uniq']))!=len(sl['uniq']) or any(not 0<=x<128 for x in sl['uniq']):raise ValueError('uniq experts')
+        if any(not 0<=x<sl['n_slots'] for x in sl['demand_slots']+sl['plan_pool']) or any(x not in (0,1) for x in sl['touched']+sl['pool_used']):raise ValueError('planning state')
+        if not 0<=sl['plan_capacity']<=sl['n_slots'] or not -1<=sl['next_wave']<=sl['n_waves']:raise ValueError('wave cardinality')
         layers.append(sl)
     qn=integer()
     if not 0<=qn<=4096:raise ValueError('queue bound')
@@ -67,6 +75,8 @@ def snapshot(path, *, physical=True):
     out['layers']=layers
     for w in out['queue']+[x for x in out['owned'] if x['phase']]:
         if not 0<=w['layer']<len(layers) or layers[w['layer']] is None or not 0<=w['expert']<128 or not 0<=w['slot']<layers[w['layer']]['n_slots'] or w['generation']<0 or w['work_id']<=0:raise ValueError('work identity')
+    active=out['queue']+[w for w in out['owned'] if w['phase']]
+    if len({w['work_id'] for w in active})!=len(active) or any(w['work_id']>out['next_work_id'] or w['generation']>layers[w['layer']]['slot_gen'][w['slot']] or w['origin_call']<1 or w['enqueue_us']<0 for w in active):raise ValueError('work generation/counter/duplicate')
     for i,w in enumerate(out['owned']):
         if w['worker']!=i or w['phase'] not in (0,1,2):raise ValueError('owned phase/worker')
         if w['phase']:
@@ -79,13 +89,14 @@ def snapshot(path, *, physical=True):
     return out
 
 def routes(path):
+    if Path(path).name.endswith('.partial'):raise ValueError('incomplete routing')
     data=Path(path).read_bytes()
     if len(data)%8 or len(data)>8*1024*1024:raise ValueError('routing size/overflow')
     offset=0;out=[]
     while offset<len(data):
         if offset+64>len(data):raise ValueError('route header truncated')
         req,call,layer,mode,ncalls,n,mono,seq=struct.unpack_from('<8q',data,offset);offset+=64
-        if req<1 or call<1 or not 0<=layer<36 or mode not in (0,1) or not 0<n<=128 or n%4 or offset+8*n>len(data):raise ValueError('route identity/truncation')
+        if req<1 or call<1 or ncalls<1 or mono<0 or seq<0 or not 0<=layer<36 or mode not in (0,1) or not 0<n<=128 or n%4 or offset+8*n>len(data):raise ValueError('route identity/truncation')
         ids=list(struct.unpack_from('<'+'q'*n,data,offset));offset+=8*n
         if any(not 0<=x<128 for x in ids):raise ValueError('route expert')
         for i in range(0,n,4):
