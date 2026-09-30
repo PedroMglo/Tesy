@@ -215,7 +215,7 @@ struct row_result {
 
 row_result replay(const std::string & phase, const std::vector<captured> & rows,
                   ggml_backend_t backend, ggml_backend_t route_backend,
-                  const std::array<ggml_tensor *,8> & tensors) {
+                  const std::array<ggml_tensor *,8> & tensors, ggml_backend_t reduction_backend = nullptr) {
     const auto & activation = one(rows,phase,"attn_post_norm");
     const auto & ids_capture = one(rows,phase,"ffn_moe_topk");
     const auto & weights_capture = one(rows,phase,"ffn_moe_weights_softmax");
@@ -240,7 +240,10 @@ row_result replay(const std::string & phase, const std::vector<captured> & rows,
     auto * c = graph.ctx;
     auto * inp = ggml_new_tensor_2d(c,GGML_TYPE_F32,embd,n);
     auto * logits = ggml_mul_mat(c,tensors[6],inp);
+    ggml_set_output(logits); // Native observer requests raw router matmul before bias.
     logits = ggml_add(c,logits,tensors[7]);
+    ggml_set_output(logits); // Native observer requests biased logits/probs.
+    ggml_tensor * biased_logits = logits;
     auto * route_ids = ggml_cont(c,ggml_argsort_top_k(c,logits,topk));
     auto * prob = ggml_reshape_3d(c,logits,1,experts,n);
     auto * route_weights = ggml_get_rows(c,prob,route_ids);
@@ -255,12 +258,12 @@ row_result replay(const std::string & phase, const std::vector<captured> & rows,
     auto * act = ggml_swiglu_oai(c,gate,up,1.702f,7.0f);
     auto * down = ggml_mul_mat_id(c,tensors[2],act,route_ids);
     down = ggml_add_id(c,down,tensors[5],route_ids);
-    down = ggml_mul(c,down,route_weights);
-    ggml_tensor * sum = nullptr;
-    for (int e = 0; e < topk; ++e) {
-        auto * view = ggml_view_2d(c,down,embd,n,down->nb[2],e*down->nb[1]);
-        sum = sum ? ggml_add(c,sum,view) : view;
-    }
+    auto * weighted = ggml_mul(c,down,route_weights);
+    down = weighted;
+    std::array<ggml_tensor *,4> views;
+    for (int e = 0; e < topk; ++e) views[e] = ggml_view_2d(c,down,embd,n,down->nb[2],e*down->nb[1]);
+    ggml_tensor * sum = views[0];
+    for (int e = 1; e < topk; ++e) sum = ggml_add(c,sum,views[e]);
     auto * output = ggml_cont(c,sum);
     // These intermediates are read after all downstream FFN operations. Merely
     // expanding them into the graph does not keep their storage alive.
@@ -270,11 +273,25 @@ row_result replay(const std::string & phase, const std::vector<captured> & rows,
     auto * gf = ggml_new_graph(c);
     ggml_build_forward_expand(gf,route_ids);
     ggml_build_forward_expand(gf,route_weights);
+    ggml_build_forward_expand(gf,weighted);
+    for(auto*t:views) ggml_build_forward_expand(gf,t);
     ggml_build_forward_expand(gf,output);
-    ggml_backend_t backends[2] = {route_backend, backend};
-    auto sched = ggml_backend_sched_new(backends,nullptr,route_backend == backend ? 1 : 2,GGML_DEFAULT_GRAPH_SIZE,false,false);
+    std::vector<ggml_backend_t> backends;
+    for(auto b:{reduction_backend,route_backend,backend}) if(b && std::find(backends.begin(),backends.end(),b)==backends.end()) backends.push_back(b);
+    auto sched = ggml_backend_sched_new(backends.data(),nullptr,backends.size(),GGML_DEFAULT_GRAPH_SIZE,false,false);
     require(sched != nullptr,"reference scheduler init");
     ggml_backend_sched_set_tensor_backend(sched,inp,route_backend);
+    if(reduction_backend){
+        ggml_backend_sched_set_tensor_backend(sched,weighted,reduction_backend);
+        for(auto * t:views) ggml_backend_sched_set_tensor_backend(sched,t,reduction_backend);
+        ggml_backend_sched_set_tensor_backend(sched,sum,reduction_backend);
+        ggml_backend_sched_set_tensor_backend(sched,output,reduction_backend);
+    }
+    // Same observer checkpoints as C166; no native outputs are supplied to reference.
+    std::array<ggml_tensor *,4> checkpoints{biased_logits->src[0],biased_logits,route_ids,route_weights};
+    ggml_backend_sched_set_eval_callback(sched,[](ggml_tensor * t,bool,void * u){
+        auto & c=*static_cast<std::array<ggml_tensor *,4> *>(u);return std::find(c.begin(),c.end(),t)!=c.end();
+    },&checkpoints);
     require(ggml_backend_sched_alloc_graph(sched,gf),"reference graph allocation");
     ggml_backend_tensor_set(inp,input.data(),0,input.size()*sizeof(float));
     require(ggml_backend_sched_graph_compute(sched,gf) == GGML_STATUS_SUCCESS,
@@ -311,8 +328,8 @@ std::string render(const row_result & row) {
 } // namespace
 
 int main(int argc, char ** argv) {
-    if (argc != 6) {
-        std::cerr << "usage: c7_layer_reference MODEL.gguf CAPTURE_DIR LAYER --ngl 12\n";
+    if (argc != 8) {
+        std::cerr << "usage: c7_layer_reference MODEL.gguf CAPTURE_DIR LAYER --ngl 12 --plan-map MAP.tsv\n";
         return 2;
     }
     try {
@@ -324,7 +341,12 @@ int main(int argc, char ** argv) {
         require(layer >= 0 && layer < 36 && ngl == 12, "reference outside frozen P12 map");
         const int first_gpu_layer = 36 - (ngl - 1); // one of the ngl placements is output
         const std::string device = "cpu";
-        const std::string route_device = layer < first_gpu_layer ? "cpu" : "gpu";
+        require(std::string(argv[6])=="--plan-map","explicit native map required");
+        std::ifstream map(argv[7]);std::string line;std::getline(map,line);require(line=="layer\trouter\texperts\treduction\tfusion","plan map header");
+        std::string router_name,tail_name;int seen=0;
+        for(int l=0;std::getline(map,line);++l){auto f=split(line,'\t');require(f.size()==5 && std::stoi(f[0])==l && f[2]=="CPU" && (f[1]=="CPU"||f[1]=="CUDA0") && (f[3]=="CPU"||f[3]=="CUDA0") && f[4]==(f[3]=="CPU"?"0":"1"),"plan map contract");if(l==layer){router_name=f[1];tail_name=f[3];}++seen;}
+        require(seen==36 && !router_name.empty(),"exact36 plan map");
+        const std::string route_device=router_name=="CPU"?"cpu":"gpu";
         const auto rows = index(capture_root,layer);
         std::vector<std::string> phases;
         {
@@ -358,6 +380,11 @@ int main(int argc, char ** argv) {
             router_backend.value = ggml_backend_dev_init(gpu,nullptr);
             require(router_backend.value != nullptr,"router backend init");
             route = router_backend.value;
+        }
+        backend_owner tail; ggml_backend_t reduction=backend.value;
+        if(tail_name=="CUDA0"){
+            if(router_backend.value)reduction=router_backend.value;
+            else {auto*d=ggml_backend_dev_by_type(GGML_BACKEND_DEVICE_TYPE_GPU);require(d,"tail GPU device");tail.value=ggml_backend_dev_init(d,nullptr);require(tail.value,"tail backend init");reduction=tail.value;}
         }
         std::array<ggml_tensor *,8> tensors{
             ggml_new_tensor_3d(c,GGML_TYPE_MXFP4,embd,embd,experts),
@@ -404,7 +431,7 @@ int main(int argc, char ** argv) {
         int numeric_rows = 0;
         int masked_rows = 0;
         for (const auto & phase : phases) {
-            const auto row = replay(phase,rows,backend.value,route,tensors);
+            const auto row = replay(phase,rows,backend.value,route,tensors,reduction);
             const size_t expected_tokens = phase == "prefill0" || phase == "prefill128" ? 32 :
                 phase == "prefill_final" ? 29 : 1;
             require(row.tokens == expected_tokens, "reference phase token count changed");
