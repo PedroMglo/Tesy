@@ -2,8 +2,8 @@
   "current_checkpoint": {
     "M4": "NOT_DEMONSTRATED",
     "default_changed": false,
-    "effective_status": "CLOSED_CONFIRMED_POOL_INTERVENTION_AND_OPTIN_DELIVERED",
-    "effective_unit": "c145",
+    "effective_status": "BUDGET_CLOSED_WITH_PRESERVED_NOT_RUN",
+    "effective_unit": "c154",
     "experimental_profile": "C75/P12/uniform44 C142 nominal153 confirmed, quality/session7936 NOT_RUN",
     "prior_confirmed_profile": "C129 C75 slots40 CONFIRMED_SLOTS40_NOMINAL153",
     "publication": "LOCAL_ONLY",
@@ -29,10 +29,10 @@
     "M4": "NOT_MET_BY_OBSERVED_LATENCY_AND_DECODE"
   },
   "mission": "local usable main GPT-OSS 120B, original weights and authoritative routing",
-  "next_action": "Next separately authorized epoch: bounded full state snapshot and source-faithful replay with independent routing before retention/quotas, or pinned upstream bounded mmap/CPU-MoE canary. No ongoing inference; no physical backend authorized in this epoch.",
+  "next_action": "New owner-authorized epoch required; first complete C152 journal/async negative controls, then bounded same-binary numeric/overhead qualification and dev + 2 heldout captures; no slots intervention until faithful replay/bound",
   "open_hypotheses": [
     "C75 waves give large observed prefill benefit; C100 server NO_GO_CONFIRM remains due its protected decode regression, while C121 nominal153 two-pair screen passed under per-arm inventory; C117 remains failed and C100 remains NO_GO_CONFIRM.",
-    "Upstream llama.cpp source pin 8019dc5 implements GPT-OSS/MXFP4 but does not mark GPT-OSS experts for explicit lazy row loading; bounded mmap/page-cache viability on this host is unmeasured.",
+    "Upstream llama.cpp source pin 8019dc5 implements GPT-OSS/MXFP4 but does not mark GPT-OSS experts for explicit lazy row loading; C151 ctx8192/short forward passed under FILE_PAGING; boundary numeric timed out, performance and exact-prefix unqualified.",
     "C123 nominal153 trace observed 10.646 s readiness waits in 13.046 s decode calls; removable portion is unknown and physical NVMe bytes are not identified.",
     "C123 completed-load fixed-stream LRU saved only 4.11% of decode loads with 3 GiB global, or 15.02% of GPU loads with GPU-only 3 GiB; richer policies and workloads remain open.",
     "C126 C75/slots32 passed the original C40 twelve tasks with exactly equal official prompt IDs and final messages; holdout8 passed 8/8 with equal full messages; C133 varied active session completed 20/20 over 83.3 min but strict functional gate failed 1/20 (literal Aster omission).",
@@ -993,13 +993,74 @@
       "identity": "c145",
       "root": "results/c145-post-c137-closure-20260930T0019Z",
       "status": "CLOSED_CONFIRMED_POOL_INTERVENTION_AND_OPTIN_DELIVERED"
+    },
+    {
+      "identity": "c146",
+      "root": "results/c146-post-c145-resume-20260930T011645Z",
+      "status": "EPOCH_OPENED_AND_NOW_CLOSED_WALL_LIMIT"
+    },
+    {
+      "identity": "c147",
+      "root": "results/c147-file-paging-harness-20260930T0123Z",
+      "status": "FILE_PAGING_TESTS_PASS_INITIAL_SMOKE_FAIL_PRESERVED"
+    },
+    {
+      "identity": "c147b",
+      "root": "results/c147b-file-paging-smoke-20260930T0134Z",
+      "status": "LIVE_NO_MODEL_SMOKE_PASS"
+    },
+    {
+      "identity": "c148",
+      "root": "results/c148-upstream-mmap-build-20260930T0125Z",
+      "status": "PINNED_BUILD_TEMPLATE_CAPACITY_SOURCE_ONLY"
+    },
+    {
+      "identity": "c149",
+      "root": "results/c149-upstream-mmap-numeric-20260930T0153Z",
+      "status": "FAIL_HARNESS_PREMODEL"
+    },
+    {
+      "identity": "c150",
+      "root": "results/c150-upstream-mmap-canary-20260930T0151Z",
+      "status": "FAIL_OBSERVER_BUFFER_IDENTITY"
+    },
+    {
+      "identity": "c151",
+      "root": "results/c151-upstream-mmap-canary-20260930T0155Z",
+      "status": "SHORT_FORWARD_PASS_BOUNDARY_TIMEOUT_NUMERIC_NOT_QUALIFIED"
+    },
+    {
+      "identity": "c152",
+      "root": "results/c152-slots44-snapshot-model-free-20260930T0215Z",
+      "status": "PARTIAL_MODEL_FREE_PHYSICAL_NOT_RUN_BUDGET"
+    },
+    {
+      "identity": "c153",
+      "root": "results/c153-slots44-snapshot-capture-20260930T0235Z",
+      "status": "VOCAB_ONLY_CAPTURE_NOT_RUN_BUDGET"
+    },
+    {
+      "identity": "c154",
+      "root": "results/c154-post-c145-budget-closure-20260930T0900Z",
+      "status": "BUDGET_CLOSED_WITH_PRESERVED_NOT_RUN"
     }
   ],
-  "updated_utc": "2026-09-30T01:18:35.937617+00:00",
+  "updated_utc": "2026-09-30T09:09:17.123929+00:00",
   "post_c145_epoch": {
     "epoch_path": "results/c146-post-c145-resume-20260930T011645Z/epoch.json",
     "resume_path": "results/c146-post-c145-resume-20260930T011645Z/resume.json",
-    "status": "PREPARING_BOUNDED_MMAP_BASELINE",
-    "M4": "NOT_MET"
+    "status": "CLOSED_WALL_LIMIT",
+    "M4": "NOT_MET",
+    "closure_path": "results/c154-post-c145-budget-closure-20260930T0900Z"
+  },
+  "previous_checkpoint_c145": {
+    "M4": "NOT_DEMONSTRATED",
+    "default_changed": false,
+    "effective_status": "CLOSED_CONFIRMED_POOL_INTERVENTION_AND_OPTIN_DELIVERED",
+    "effective_unit": "c145",
+    "experimental_profile": "C75/P12/uniform44 C142 nominal153 confirmed, quality/session7936 NOT_RUN",
+    "prior_confirmed_profile": "C129 C75 slots40 CONFIRMED_SLOTS40_NOMINAL153",
+    "publication": "LOCAL_ONLY",
+    "useful_optin": "C75/P12/slots40 C143 launcher; M3 partial"
   }
 }

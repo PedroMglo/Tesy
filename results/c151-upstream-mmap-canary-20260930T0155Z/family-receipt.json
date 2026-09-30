@@ -1,0 +1,38 @@
+{
+  "measurement_commit": "aa45b97591f4f489f5f3c65a57404a8f31deeeed",
+  "start": {
+    "utc": "2026-09-30T01:52:51.071715+00:00",
+    "monotonic_s": 227550.544929303
+  },
+  "end": {
+    "utc": "2026-09-30T01:56:27.826270+00:00",
+    "monotonic_s": 227767.299504583
+  },
+  "argv": [
+    "systemd-run",
+    "--user",
+    "--slice=tesy-post-c145.slice",
+    "--unit=c151-mmap-canary",
+    "--collect",
+    "--pipe",
+    "--wait",
+    "--working-directory=/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc",
+    "-p",
+    "MemoryMax=21474836480",
+    "-p",
+    "MemoryHigh=20937965568",
+    "-p",
+    "MemorySwapMax=0",
+    "-p",
+    "RuntimeMaxSec=800",
+    "-p",
+    "TimeoutStopSec=10",
+    "--",
+    "/usr/bin/python",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/tools/c151_run_canary.py",
+    "--inside"
+  ],
+  "returncode": 1,
+  "stdout": "",
+  "stderr": "Running as unit: c151-mmap-canary.service\n          Finished with result: exit-code\nMain processes terminated with: code=exited, status=1/FAILURE\n               Service runtime: 3min 36.738s\n             CPU time consumed: 3min 55.914s\n                   Memory peak: 19.5G (swap: 0B)\n"
+}
