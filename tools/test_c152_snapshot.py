@@ -75,3 +75,29 @@ class SnapshotIdentityAndBounds(unittest.TestCase):
             with self.subTest(mode=mode):validate(root/('native-v4-'+mode)/'journal.trace',physical=False)
 
 if __name__=='__main__':unittest.main()
+
+class PoolUsedSourceSemantics(unittest.TestCase):
+    def test_slot_ids_empty_waves_and_invalid_bounds(self):
+        raw=(ROOT/'golden-v3-wave/after.snap').read_bytes()
+        # Header 20+256+16*8, present flag, eight layer integers, components then vectors.
+        at=20+256+16*8;present=struct.unpack_from('<q',raw,at)[0];at+=8
+        self.assertEqual(present,1)
+        layer_at=at;components=struct.unpack_from('<q',raw,at+7*8)[0];at+=8*8+components*(4*8+8*8+64)
+        from c152_snapshot_read import VECTORS
+        for name in VECTORS:
+            count=struct.unpack_from('<q',raw,at)[0]
+            if name=='pool_used':break
+            at+=8+count*8
+        self.assertEqual(count,0)
+        with tempfile.TemporaryDirectory() as d:
+            p=Path(d)/'wave.snap'
+            for values,valid in (([2,3],True),([4],False),([2,2],False),([-1],False)):
+                b=bytearray(raw[:at]+struct.pack('<q',len(values))+struct.pack('<'+'q'*len(values),*values)+raw[at+8:])
+                # Source executes fixed graph wave count even for empty groups.
+                struct.pack_into('<q',b,layer_at+6*8,3)
+                p.write_bytes(b)
+                if valid:snapshot(p,physical=False)
+                else:
+                    with self.assertRaises(ValueError):snapshot(p,physical=False)
+            b=bytearray(raw);struct.pack_into('<q',b,layer_at+6*8,129);p.write_bytes(b)
+            with self.assertRaises(ValueError):snapshot(p,physical=False)
