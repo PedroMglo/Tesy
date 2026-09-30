@@ -523,7 +523,27 @@ def protocol_cgroup_memory_max(protocol):
     return values[0] if values else 18 * 2**30
 
 
-def run(args, protocol, config, task_rows, model):
+def per_task_request_policy(config, row_id):
+    """Optional frozen task overrides; historical global policy remains default."""
+    overrides = config.get('per_task_request_policy', {})
+    if type(overrides) is not dict or any(k not in config.get('task_ids', []) for k in overrides):
+        raise GateError('per-task request policy identity invalid')
+    for value in overrides.values():
+        if type(value) is not dict or set(value) - {'max_tokens', 'per_request_timeout_s'}:
+            raise GateError('per-task request policy fields invalid')
+        if 'max_tokens' in value and (type(value['max_tokens']) is not int or value['max_tokens'] <= 0):
+            raise GateError('per-task max_tokens invalid')
+        if 'per_request_timeout_s' in value and (type(value['per_request_timeout_s']) not in (int, float) or not math.isfinite(value['per_request_timeout_s']) or value['per_request_timeout_s'] <= 0):
+            raise GateError('per-task deadline invalid')
+    return dict(config['request_policy'], **overrides.get(row_id, {}))
+
+
+def run(args, protocol, config, task_rows, model, *, result_validator=None):
+    readiness_timeout = config.get('readiness_timeout_s', 90)
+    if type(readiness_timeout) not in (int, float) or not math.isfinite(readiness_timeout) or readiness_timeout <= 0:
+        raise GateError('readiness deadline invalid')
+    for row_id, _ in task_rows:
+        per_task_request_policy(config, row_id)
     prospective = 'resources' in protocol
     request_markers = config.get('record_monotonic_request_markers', False)
     trace_contract = protocol.get('trace')
@@ -809,7 +829,7 @@ def run(args, protocol, config, task_rows, model):
         watcher = threading.Thread(target=monitor,daemon=True);watcher.start()
         try:
             ready = False
-            while time.monotonic()-t0 < 90 and not reasons:
+            while time.monotonic()-t0 < readiness_timeout and not reasons:
                 if server.poll() is not None: raise GateError("server exited during load")
                 try:
                     ready = fetch("/health",timeout=3).get("status") == "ok"
@@ -817,7 +837,7 @@ def run(args, protocol, config, task_rows, model):
                     pass
                 if ready: break
                 time.sleep(0.5)
-            if not ready: raise GateError("readiness timeout")
+            if not ready or time.monotonic()-t0 >= readiness_timeout: raise GateError("readiness timeout")
             preflight["ready_elapsed_s"] = time.monotonic()-t0
             model_id = fetch("/v1/models")["data"][0]["id"]
             preflight["server_model_id"] = model_id
@@ -830,13 +850,14 @@ def run(args, protocol, config, task_rows, model):
                 tokenization = {}
                 token_ids = {}
                 for row_index, (row_id, task) in enumerate(task_rows):
+                    task_policy = per_task_request_policy(config, row_id)
                     if dynamic_history and row_index:
                         continue  # later turns depend on actual previous API answers
                     messages = task.get("messages") or [{"role":"user","content":task["prompt"]}]
                     kwargs = task_template_kwargs(task)
                     template = fetch("/apply-template",{"model":model_id,
                                       "messages":messages,
-                                      "max_tokens":config["request_policy"]["max_tokens"],
+                                      "max_tokens":task_policy["max_tokens"],
                                       "temperature":0,"seed":42, **kwargs})
                     if type(template.get("prompt")) is not str:
                         raise GateError(f"official template unavailable for {row_id}")
@@ -844,7 +865,7 @@ def run(args, protocol, config, task_rows, model):
                                        "add_special":False,"parse_special":True})
                     ids = tokenized.get("tokens")
                     if type(ids) is not list or any(type(x) is not int for x in ids) or \
-                       not 0 < len(ids) <= config.get("n_ctx",4096)-config["request_policy"]["max_tokens"]:
+                       not 0 < len(ids) <= config.get("n_ctx",4096)-task_policy["max_tokens"]:
                         raise GateError(f"official tokenization exceeds output reserve for {row_id}")
                     bounds = config.get("prompt_token_ranges",{}).get(row_id)
                     if bounds and not bounds[0] <= len(ids) <= bounds[1]:
@@ -864,6 +885,7 @@ def run(args, protocol, config, task_rows, model):
             history_messages = None
             first_assistant_content = None
             for row_index, (row_id, task) in enumerate(task_rows):
+                task_policy = per_task_request_policy(config, row_id)
                 if idle_schedule[row_index]:
                     until = time.monotonic() + idle_schedule[row_index]
                     while time.monotonic() < until:
@@ -877,7 +899,7 @@ def run(args, protocol, config, task_rows, model):
                         history_messages, previous_assistant, messages)
                     template = fetch('/apply-template', {'model':model_id,
                                      'messages':messages,
-                                     'max_tokens':config['request_policy']['max_tokens'],
+                                     'max_tokens':task_policy['max_tokens'],
                                      'temperature':0,'seed':42,
                                      **task_template_kwargs(task)})
                     if type(template.get('prompt')) is not str:
@@ -885,7 +907,7 @@ def run(args, protocol, config, task_rows, model):
                     ids = fetch('/tokenize', {'content':template['prompt'],
                                 'add_special':False,'parse_special':True}).get('tokens')
                     if type(ids) is not list or any(type(x) is not int for x in ids) or \
-                       not 0 < len(ids) <= config.get('n_ctx',4096)-config['request_policy']['max_tokens']:
+                       not 0 < len(ids) <= config.get('n_ctx',4096)-task_policy['max_tokens']:
                         raise GateError('dynamic official tokenization exceeds reserve')
                     bounds = config.get('prompt_token_ranges',{}).get(row_id)
                     if bounds and not bounds[0] <= len(ids) <= bounds[1]:
@@ -894,7 +916,7 @@ def run(args, protocol, config, task_rows, model):
                     token_ids[row_id] = ids
                 stream_requests = config.get('stream_requests', False)
                 payload = {"model":model_id,"messages":messages,
-                           "max_tokens":config["request_policy"]["max_tokens"],
+                           "max_tokens":task_policy["max_tokens"],
                            "temperature":0,"seed":42,"stream":stream_requests,
                            **task_template_kwargs(task)}
                 if stream_requests:
@@ -924,7 +946,7 @@ def run(args, protocol, config, task_rows, model):
                 if protocol.get('c18'):
                     c18_request_active.set()
                 stream_metrics = None
-                request_timeout = config["request_policy"]["per_request_timeout_s"]
+                request_timeout = task_policy["per_request_timeout_s"]
                 if type(request_timeout) not in (int,float) or not math.isfinite(request_timeout) or request_timeout <= 0:
                     raise GateError("invalid per-request wall timeout")
                 evidence = Evidence(Path(str(stem)+f'.request-{row_index+1}.jsonl'),
@@ -938,11 +960,11 @@ def run(args, protocol, config, task_rows, model):
                 request_watchdog.start()
                 if stream_requests:
                     response, stream_metrics = stream_chat(
-                        payload, config['request_policy']['per_request_timeout_s'],
+                        payload, task_policy['per_request_timeout_s'],
                         request_started)
                 else:
                     response = fetch("/v1/chat/completions",payload,
-                                     timeout=config["request_policy"]["per_request_timeout_s"])
+                                     timeout=task_policy["per_request_timeout_s"])
                 request_completed = time.monotonic()
                 within_deadline = request_watchdog.complete(request_completed)
                 evidence.write('RESPONSE_COMPLETE', response=response,
@@ -981,6 +1003,8 @@ def run(args, protocol, config, task_rows, model):
                 if type(choices) is not list or len(choices) != 1 or type(choices[0].get("message")) is not dict:
                     raise GateError(f"missing assistant message for {row_id}")
                 validate_expected_message(choices[0]['message'], task)
+                if result_validator is not None:
+                    current_item['functional_validation'] = result_validator(row_id, current_item)
                 if (args.suite in ("c2core8", "c2eval12", "c3followup2") or
                     config.get("pretokenize",False)) and \
                    response.get("usage",{}).get("prompt_tokens") != \
@@ -993,7 +1017,7 @@ def run(args, protocol, config, task_rows, model):
                         'response_complete':request_ended_ns}
                 if require_natural:
                     require_natural_completion(
-                        item, config['request_policy']['max_tokens'])
+                        item, task_policy['max_tokens'])
                 required_pattern = config.get('first_assistant_content_pattern')
                 if required_pattern is not None:
                     content = item['message'].get('content')

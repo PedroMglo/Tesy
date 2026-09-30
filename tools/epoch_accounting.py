@@ -25,10 +25,12 @@ class Epoch:
     def budget(self,worst_case_s=0,raw_projection=0):
         if worst_case_s<0 or raw_projection<0:raise ValueError('negative admission')
         rows=[json.loads(x) for x in (self.path/'ledger.jsonl').read_text().splitlines()]
-        intervals=sorted((r['start']['monotonic_s'],r['end']['monotonic_s']) for r in rows if r['live'])
+        intervals=sorted((r['start']['monotonic_s'],r['end']['monotonic_s']) for r in rows if r['live'] and r['start'] is not None and r['end'] is not None)
         spent=0;finish=None
         for a,b in intervals:
             spent+=max(0,b-max(a,a if finish is None else finish));finish=max(b,b if finish is None else finish)
+        # Charges without observed endpoint timestamps cannot receive overlap credit.
+        spent += sum(r['physical_charge_s'] for r in rows if r['live'] and (r['start'] is None or r['end'] is None))
         wall=time.monotonic()-self.config['start_monotonic_s']
         roots=[self.root/p for p in self.config.get('raw_roots',[])]
         raw=sum(p.stat().st_size for d in roots for p in d.rglob('*') if p.is_file())
