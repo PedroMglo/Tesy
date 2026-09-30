@@ -110,6 +110,16 @@ def proc_status(pid):
     except (FileNotFoundError, ProcessLookupError):
         return {}
 
+def live_smaps_rollup(process):
+    try:
+        return Path(f'/proc/{process.pid}/smaps_rollup').read_text()
+    except (FileNotFoundError, ProcessLookupError):
+        try:
+            process.wait(timeout=0.2)
+            return None
+        except subprocess.TimeoutExpired:
+            raise RuntimeError('required live smaps_rollup missing')
+
 
 def mem_available():
     for line in Path("/proc/meminfo").read_text().splitlines():
@@ -559,7 +569,9 @@ def main():
                     sample['resource_observation']={'host_psi_full_avg10':host_pressure(),
                                                     'power':live_power()}
                     if resource_contract.get('execution_class') == 'FILE_PAGING':
-                        sample['smaps_rollup'] = Path(f'/proc/{process.pid}/smaps_rollup').read_text()
+                        rollup=live_smaps_rollup(process)
+                        if rollup is None:break
+                        sample['smaps_rollup'] = rollup
                 samples.write(json.dumps(sample,allow_nan=False) + "\n")
                 samples.flush()
                 last = sample

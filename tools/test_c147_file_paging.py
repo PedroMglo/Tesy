@@ -82,4 +82,11 @@ class FilePaging(unittest.TestCase):
             with self.assertRaises(RuntimeError):bounded.stop_own_group(process)
             kill.assert_not_called()
 
+    def test_terminal_smaps_race_is_not_monitor_failure(self):
+        process=MagicMock();process.pid=1
+        with patch.object(bounded.Path,'read_text',side_effect=ProcessLookupError):
+            self.assertIsNone(bounded.live_smaps_rollup(process))
+            process.wait.side_effect=bounded.subprocess.TimeoutExpired('fixture',.2)
+            with self.assertRaises(RuntimeError):bounded.live_smaps_rollup(process)
+
 if __name__=='__main__':unittest.main()
