@@ -1,4 +1,5 @@
 \section{Mapa de prior art}
+\small
 \begin{tabularx}{\linewidth}{@{}p{31mm}Y@{}}\toprule
 \textbf{Eixo} & \textbf{Prior art e consequência para Tesy}\\\midrule
 Sparse MoE / routing & Shazeer et al. e Switch Transformer \cite{shazeer2017moe,fedus2022switch}: conditional sparse routing e top-k/top-1 MoE são arquitetura-base, não contribuição Tesy.\\
@@ -20,5 +21,6 @@ Routing locality & Liang et al. \cite{liang2026routing}: cacheability/local cons
 Speculation & Leviathan et al. \cite{leviathan2023speculative}: exact speculative decoding é anterior; futura integração Tesy não é novidade por usar speculation.\\
 Bounds / metodologia & Belady, Mattson, Amdahl e Roofline \cite{belady1966replacement,mattson1970storage,amdahl1967validity,williams2009roofline}: oracle de cache, stack analysis e performance bounds são metodologia estabelecida.\\
 \bottomrule\end{tabularx}
+\normalsize
 
 O mapa elimina como claims amplas: expert offloading, cache, prefetch antes da atenção, learned/predictive prefetch, cache-aware routing/adaptation, storage tiering, CPU experts, CPU/GPU hybrid execution, dynamic assignment, cache replacement, overlap por pipeline e speculative decoding. A comparação científica futura deve privilegiar os vizinhos de mecanismo mais próximos e declarar quando um baseline muda o checkpoint ou otimiza sob um contrato de qualidade diferente. Os benchmarks de edge citados motivam métricas locais, não substituem medições Tesy.

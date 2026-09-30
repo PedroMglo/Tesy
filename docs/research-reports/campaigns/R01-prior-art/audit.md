@@ -3,7 +3,7 @@
 Estado: DRAFT — revisão visual da nova edição pendente.
 
 - versão: 1.0.2
-- inputs_sha256: 573c69e078eaedba0026a04c0568cf5641a54c8d0bb3d0531b74b5cde9c1eafa
+- inputs_sha256: 105d6d441e83ce378e4a059752617d8c28fbe8e6afcd7b3a71e55eb3c3dc788d
 - hash PDF anteriormente revisto (inputs obsoletos): a2f07f30b81797ca1f2a81912578fcc30068c3c414e93662b45303eb5eb546df
 - páginas da nova compilação: revisão pendente
 - reprodução experimental: NOT_RUN
