@@ -23,6 +23,9 @@ from run_bounded import (backend_library_hashes, cgroup_state, gpu_state,
                          mem_available, model_fd_state, proc_status, sha256,
                          thermal_state, relevant_environment)
 from run_task_server import PORT, fetch, stop_own_server
+from request_evidence import Deadline, Evidence
+
+_REQUEST_LOCAL = threading.local()
 
 
 _LIBC = ctypes.CDLL(None, use_errno=True)
@@ -221,7 +224,13 @@ def stream_chat(payload, timeout, started_monotonic):
     with urlopen(req, timeout=timeout) as response:
         if response.status != 200:
             raise GateError('chat stream HTTP status not 200')
-        return parse_chat_stream(response,
+        def observed():
+            for line in response:
+                evidence = getattr(_REQUEST_LOCAL, 'evidence', None)
+                if evidence is not None:
+                    evidence.write('SSE_FRAGMENT', fragment=line.decode('utf-8', errors='replace'))
+                yield line
+        return parse_chat_stream(observed(),
                                  lambda: time.monotonic() - started_monotonic)
 
 
@@ -623,7 +632,9 @@ def run(args, protocol, config, task_rows, model):
     samples = []
     stop = threading.Event()
     c18_request_active = threading.Event()
-    request_deadline = [None]
+    request_watchdog = None
+    evidence = None
+    current_item = None
     resource_gate = RuntimeGuard(protocol,cg_start) if prospective else None
     marker_context = (open(paths['.request-markers.jsonl'], 'x') if request_markers
                       else nullcontext())
@@ -661,6 +672,23 @@ def run(args, protocol, config, task_rows, model):
         server = subprocess.Popen(command, stdout=stdout, stderr=stderr,
                                   env=env, start_new_session=True,
                                   preexec_fn=parent_death_guard(os.getpid()))
+        owned_identity = process_identity(server.pid)
+        cleanup_lock = threading.Lock()
+        def stop_server():
+            # Only our exact child may be signalled; recheck before escalation.
+            with cleanup_lock:
+                if server.poll() is not None:
+                    return
+                if process_identity(server.pid) != owned_identity:
+                    raise GateError('PROCESS_IDENTITY_CHANGED_BEFORE_CANCEL')
+                os.killpg(server.pid, signal.SIGTERM)
+                try:
+                    server.wait(timeout=5)
+                except subprocess.TimeoutExpired:
+                    if process_identity(server.pid) != owned_identity:
+                        raise GateError('PROCESS_IDENTITY_CHANGED_BEFORE_KILL')
+                    os.killpg(server.pid, signal.SIGKILL)
+                    server.wait(timeout=1)
         try:
             launch = {"schema_version":"c3-launch-v1", "run_id":args.run_id,
                       "process_identity":process_identity(server.pid),
@@ -673,7 +701,7 @@ def run(args, protocol, config, task_rows, model):
                 json.dump(launch,out,indent=2,allow_nan=False);out.write("\n")
             preflight["launch_identity"] = launch["process_identity"]
         except Exception:
-            stop_own_server(server)
+            stop_server()
             raise
         def monitor():
             previous_cpu_diag = None
@@ -697,7 +725,7 @@ def run(args, protocol, config, task_rows, model):
                         missing_since = now if missing_since is None else missing_since
                         if now-missing_since >= resource_contract['telemetry']['loss_persistence_s']:
                             reasons.append('TELEMETRY_MISSING_PERSISTED')
-                            stop_own_server(server);break
+                            stop_server();break
                         stop.wait(0.5);continue
                     missing_since = None
                     cpu_diag = None
@@ -724,16 +752,16 @@ def run(args, protocol, config, task_rows, model):
                         # terminal partial sample only after the child exits.
                         if not child_exited_after_sample_loss(server):
                             reasons.append("TELEMETRY_MISSING_LIVE_PROCESS")
-                            stop_own_server(server)
+                            stop_server()
                         break
                     if identity != launch['process_identity']:
                         reasons.append('PROCESS_IDENTITY_CHANGED')
-                        stop_own_server(server)
+                        stop_server()
                         break
                     if not ps or any(field not in ps for field in ("VmRSS", "VmSwap", "VmHWM")):
                         if not child_exited_after_sample_loss(server):
                             reasons.append("TELEMETRY_MISSING_LIVE_PROCESS")
-                            stop_own_server(server)
+                            stop_server()
                         break
                     sample = {"elapsed_s":now,"pid":server.pid,
                               "process_identity":identity,
@@ -751,8 +779,6 @@ def run(args, protocol, config, task_rows, model):
                     sample_file.write(json.dumps(sample,allow_nan=False)+"\n");sample_file.flush()
                     reason = None
                     if now > total_timeout: reason = "TIMEOUT"
-                    elif request_deadline[0] is not None and time.monotonic() >= request_deadline[0]:
-                        reason = "PER_REQUEST_WALL_TIMEOUT"
                     elif not ps or not cg or not gpu or not th or available is None: reason = "TELEMETRY_MISSING"
                     elif prospective:
                         reason = resource_gate.check(sample)
@@ -775,11 +801,11 @@ def run(args, protocol, config, task_rows, model):
                          th["nvme_composite_c"] > protocol["limits"]["nvme_max_c"]:
                         reason = "THERMAL_GUARD"
                     if reason:
-                        reasons.append(reason);stop_own_server(server);break
+                        reasons.append(reason);stop_server();break
                     stop.wait(1)
                 except Exception as exc:
                     reasons.append(f"MONITOR_ERROR:{type(exc).__name__}:{exc}")
-                    stop_own_server(server);break
+                    stop_server();break
         watcher = threading.Thread(target=monitor,daemon=True);watcher.start()
         try:
             ready = False
@@ -901,7 +927,15 @@ def run(args, protocol, config, task_rows, model):
                 request_timeout = config["request_policy"]["per_request_timeout_s"]
                 if type(request_timeout) not in (int,float) or not math.isfinite(request_timeout) or request_timeout <= 0:
                     raise GateError("invalid per-request wall timeout")
-                request_deadline[0] = request_started + request_timeout
+                evidence = Evidence(Path(str(stem)+f'.request-{row_index+1}.jsonl'),
+                                    row_id, request_started, request_timeout)
+                _REQUEST_LOCAL.evidence = evidence
+                def cancel_request():
+                    reasons.append('PER_REQUEST_WALL_TIMEOUT')
+                    stop_server()
+                request_watchdog = Deadline(request_started + request_timeout,
+                                            cancel_request)
+                request_watchdog.start()
                 if stream_requests:
                     response, stream_metrics = stream_chat(
                         payload, config['request_policy']['per_request_timeout_s'],
@@ -910,8 +944,27 @@ def run(args, protocol, config, task_rows, model):
                     response = fetch("/v1/chat/completions",payload,
                                      timeout=config["request_policy"]["per_request_timeout_s"])
                 request_completed = time.monotonic()
-                request_deadline[0] = None
-                if request_completed - request_started > request_timeout:
+                within_deadline = request_watchdog.complete(request_completed)
+                evidence.write('RESPONSE_COMPLETE', response=response,
+                               stream_metrics=stream_metrics,
+                               completed_monotonic=request_completed,
+                               accepted=False, validation_pending=True)
+                choices = response.get('choices') if type(response) is dict else None
+                choice = choices[0] if type(choices) is list and len(choices) == 1 and type(choices[0]) is dict else {}
+                current_item = {"id":row_id,"source_task_id":task["id"],"category":task["category"],
+                    "started_s":start,"ended_s":request_completed-t0,
+                    "finish_reason":choice.get('finish_reason'),
+                    "usage":response.get('usage') if type(response) is dict else None,
+                    "timings":response.get('timings') if type(response) is dict else None,
+                    "message":choice.get('message'), "raw_response":response,
+                    "accepted":False, "invalid_reason":"VALIDATION_PENDING",
+                    "deadline_monotonic":request_started+request_timeout,
+                    "completed_monotonic":request_completed}
+                if stream_metrics is not None:
+                    current_item['stream_metrics'] = stream_metrics
+                raw.append(current_item)
+                if not within_deadline:
+                    current_item['invalid_reason'] = 'PER_REQUEST_WALL_TIMEOUT'
                     raise GateError("PER_REQUEST_WALL_TIMEOUT")
                 if request_markers:
                     request_ended_ns = time.monotonic_ns()
@@ -933,17 +986,11 @@ def run(args, protocol, config, task_rows, model):
                    response.get("usage",{}).get("prompt_tokens") != \
                    tokenization[row_id]["count"]:
                     raise GateError(f"API prompt count differs from preflight tokenizer for {row_id}")
-                item = {"id":row_id,"source_task_id":task["id"],"category":task["category"],
-                        "started_s":start,"ended_s":end,"finish_reason":choices[0].get("finish_reason"),
-                        "usage":response.get("usage"),"timings":response.get("timings"),
-                        "message":choices[0]["message"]}
-                if stream_metrics is not None:
-                    item['stream_metrics'] = stream_metrics
+                item = current_item
                 if request_markers:
                     item['monotonic_request_markers_ns'] = {
-                        'request_start': request_started_ns,
-                        'response_complete': request_ended_ns}
-                raw.append(item)
+                        'request_start':request_started_ns,
+                        'response_complete':request_ended_ns}
                 if require_natural:
                     require_natural_completion(
                         item, config['request_policy']['max_tokens'])
@@ -981,14 +1028,40 @@ def run(args, protocol, config, task_rows, model):
                         validate_adjacent_cache(token_ids[task_rows[row_index-1][0]],
                                                 token_ids[row_id], cache_n, minimum,
                                                 max_lost)
+                if reasons:
+                    raise GateError('REQUEST_INVALIDATED_BY_MONITOR')
+                item['accepted'] = True
+                item['invalid_reason'] = None
+                evidence.write('REQUEST_TERMINAL', accepted=True,
+                               watchdog=request_watchdog.finish())
+                evidence.close(); evidence = None; current_item = None
+                _REQUEST_LOCAL.evidence = None
         except Exception as exc:
+            if current_item is not None:
+                current_item['accepted'] = False
+                current_item['invalid_reason'] = str(exc)
+            if evidence is not None and not evidence.truncated:
+                evidence.write('REQUEST_TERMINAL', accepted=False,
+                    invalid_reason=str(exc), transport_complete=current_item is not None,
+                    watchdog=request_watchdog.finish() if request_watchdog else None)
             reasons.append(f"RUN_ERROR:{type(exc).__name__}:{exc}")
         except KeyboardInterrupt:
             reasons.append('INTERRUPTED_BY_OPERATOR')
         finally:
             # Keep sampling through graceful shutdown; ending the sampler first
             # left an unobserved >2 s process tail in the initial target smoke.
-            stop_own_server(server);stop.set();watcher.join(timeout=5)
+            if request_watchdog is not None:
+                watchdog_status = request_watchdog.finish()
+                if watchdog_status['cancel_error']:
+                    reasons.append('CANCEL_ERROR:'+watchdog_status['cancel_error'])
+            if evidence is not None:
+                evidence.close()
+            _REQUEST_LOCAL.evidence = None
+            try:
+                stop_server()
+            except Exception as exc:
+                reasons.append(f'CLEANUP_IDENTITY_OR_TIMEOUT:{exc}')
+            stop.set();watcher.join(timeout=5)
             if dynamic_history and token_ids:
                 with open(paths['.tokenization.json'],'x') as out:
                     json.dump(token_ids,out,indent=2,allow_nan=False);out.write('\n')
@@ -999,11 +1072,13 @@ def run(args, protocol, config, task_rows, model):
         reasons.append("MODEL_IDENTITY_CHANGED")
     cg_end = cgroup_state()
     reasons.extend(server_endpoint_reasons(cg_end, cg_start, resource_contract if prospective else None))
+    request_evidence = [{'path':str(p),'bytes':p.stat().st_size,'sha256':sha256(p)}
+                        for p in sorted(output_root.glob(args.run_id+'.request-*.jsonl'))]
     result = {"schema_version":"c2-server-raw-v1","preflight":preflight,
               "ended_utc":dt.datetime.now(dt.timezone.utc).isoformat(),"elapsed_s":ended,
               "returncode":server.returncode,"stop_reasons":reasons,"results":raw,
               "cgroup_end":cg_end,"sample_count":len(samples),
-              "launch_identity":launch["process_identity"],
+              "launch_identity":launch["process_identity"], "request_evidence":request_evidence,
               "source_sha256":{s:sha256(p) for s,p in paths.items() if s in
                                (".launch.json",".tokenization.json",".stdout",".stderr",".samples.jsonl") and p.exists()}}
     with open(paths[".json"],"x") as out:

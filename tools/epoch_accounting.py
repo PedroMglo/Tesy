@@ -33,6 +33,7 @@ class Epoch:
         roots=[self.root/p for p in self.config.get('raw_roots',[])]
         raw=sum(p.stat().st_size for d in roots for p in d.rglob('*') if p.is_file())
         reserve=self.config['closure_reserve_s']
+        wall_reserve=self.config.get('wall_closure_reserve_s',reserve)
         out={'utc':now()['utc'],'physical_used_s':spent,'wall_used_s':wall,'raw_bytes':raw,
              'physical_remaining_s':self.config['physical_limit_s']-spent,
              'wall_remaining_s':self.config['wall_limit_s']-wall,
@@ -40,6 +41,6 @@ class Epoch:
              'next_worst_case_s':worst_case_s}
         out['admitted']=not (self.path/'closure.json').exists() and all((
             spent+worst_case_s+reserve<=self.config['physical_limit_s'],
-            wall+worst_case_s+reserve<=self.config['wall_limit_s'],
+            wall+worst_case_s+wall_reserve<=self.config['wall_limit_s'],
             raw+raw_projection<=self.config['raw_limit_bytes']))
         return out

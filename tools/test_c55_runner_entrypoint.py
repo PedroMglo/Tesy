@@ -18,7 +18,7 @@ from test_host_resource_policy import runtime_fixture
 
 
 class ProspectiveRunnerEntryPoint(unittest.TestCase):
-    def _exercise(self, request_timeout=10):
+    def _exercise(self, request_timeout=10, slow_telemetry=False, two_requests=False):
         protocol,cgroup,sample=runtime_fixture()
         protocol.update(identity={'model_sha256':'a'*64,
                                   'library_sha256':{'libfake.so':'b'*64}})
@@ -54,6 +54,8 @@ class ProspectiveRunnerEntryPoint(unittest.TestCase):
             thermal_calls=[0]
             def thermal_read(*,prospective):
                 thermal_calls[0]+=1
+                if slow_telemetry and thermal_calls[0]>1:
+                    time.sleep(1.5)
                 return start_thermal if thermal_calls[0]==1 else thermal
             with patch.object(runner,'cgroup_state',return_value=cgroup), \
                  patch.object(runner,'proc_status',return_value=ps), \
@@ -65,12 +67,28 @@ class ProspectiveRunnerEntryPoint(unittest.TestCase):
                  patch.object(host_resource_policy,'live_power',return_value=sample['resource_observation']['power']), \
                  patch.object(runner,'loaded_backend_libraries',return_value={'libfake.so':'b'*64}), \
                  patch.object(runner,'fetch',side_effect=fetch):
-                code=runner.run(args,protocol,config,[('mock-1',task)],model)
+                rows=[('mock-1',task)]
+                if two_requests:rows.append(('mock-2',dict(task,id='mock-2')))
+                code=runner.run(args,protocol,config,rows,model)
+                requests=[x for x in runner.fetch.call_args_list if x.args[0]=='/v1/chat/completions']
             result=strict_json((rawroot/'c55-entry.json').read_text())
             if request_timeout < 2.2:
                 self.assertEqual(code,1)
                 self.assertTrue(any('PER_REQUEST_WALL_TIMEOUT' in reason for reason in result['stop_reasons']))
                 self.assertIsNotNone(result['returncode'])
+                self.assertEqual(len(requests),1)
+                self.assertEqual(len(result['results']),1)
+                item=result['results'][0]
+                self.assertFalse(item['accepted'])
+                self.assertEqual(item['message']['content'],'ok')
+                self.assertEqual(item['usage']['completion_tokens'],1)
+                events=[json.loads(x) for x in (rawroot/'c55-entry.request-1.jsonl').read_text().splitlines()]
+                complete=next(x for x in events if x['kind']=='RESPONSE_COMPLETE')
+                self.assertEqual(complete['response']['choices'][0]['message']['content'],'ok')
+                terminal=events[-1];self.assertFalse(terminal['accepted'])
+                wd=terminal['watchdog']
+                self.assertLess(wd['cancel_requested_monotonic']-wd['deadline_monotonic'],.250)
+                self.assertFalse(wd['watchdog_alive'])
                 return
             self.assertEqual(code,0)
             samples=[strict_json(line) for line in
@@ -101,5 +119,8 @@ class ProspectiveRunnerEntryPoint(unittest.TestCase):
 
     def test_wall_deadline_stops_child_even_when_transport_completes(self):
         self._exercise(request_timeout=.2)
+
+    def test_sensor_delay_does_not_delay_request_cancel_or_start_next(self):
+        self._exercise(request_timeout=.2,slow_telemetry=True,two_requests=True)
 
 if __name__=='__main__':unittest.main()
