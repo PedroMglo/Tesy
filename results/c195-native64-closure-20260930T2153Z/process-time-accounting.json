@@ -1,0 +1,27 @@
+{
+  "process_elapsed": [
+    {
+      "phase": "N",
+      "model_process_elapsed_sum_s": 159.299,
+      "records": 38,
+      "class": "PROCESS_ELAPSED_INCLUDES_LOAD_OBSERVER_OUTPUT_IO_NOT_DEVICE_COMPUTE",
+      "request_active_total": "UNKNOWN_UNINSTRUMENTED"
+    },
+    {
+      "phase": "W",
+      "model_process_elapsed_sum_s": 326.961,
+      "records": 4,
+      "class": "PROCESS_ELAPSED_INCLUDES_LOAD_OBSERVER_OUTPUT_IO_NOT_DEVICE_COMPUTE",
+      "request_active_total": "completion-fenced eval windows separately below"
+    }
+  ],
+  "W_fenced_windows_sum_s": {
+    "prefix_prepare_s": 245.352605,
+    "prefill153_s": 37.215045,
+    "decode32_s": 32.345862
+  },
+  "nonoverlap": "Prefix/warm/decode are disjoint within each W process, summed across four processes as eval-window total, not one request wall or user latency. These spans are nested within already charged process/unit envelopes; no additional physical charge.",
+  "S_model_process_elapsed_s": 0,
+  "N_device_compute": "UNKNOWN",
+  "human_analysis_build_wait_partition": "UNKNOWN"
+}

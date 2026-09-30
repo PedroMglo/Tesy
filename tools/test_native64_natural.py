@@ -22,6 +22,12 @@ class NaturalTests(unittest.TestCase):
     def test_sql_positive_and_discriminating_negatives(self):
         self.assertTrue(grade(QUERY)['PASS'])
         self.assertTrue(grade('```sql\n'+QUERY+'\n```')['PASS'])
+        # A distinct relational formulation must not be rejected for differing text.
+        alternative=('SELECT e.cliente,SUM(COALESCE(e.valor,0)) FROM eventos e '
+                     'WHERE NOT EXISTS (SELECT 1 FROM eventos n WHERE n.event_id=e.event_id '
+                     'AND (n.atualizado>e.atualizado OR (n.atualizado=e.atualizado AND n.ingest_id>e.ingest_id))) '
+                     'GROUP BY e.cliente ORDER BY e.cliente')
+        self.assertTrue(grade(alternative)['PASS'])
         for bad in ('DELETE FROM eventos',QUERY+'; SELECT 1',
                     'SELECT cliente,SUM(COALESCE(valor,0)) FROM eventos GROUP BY cliente ORDER BY cliente',
                     QUERY.replace('ingest_id DESC','ingest_id ASC'),
