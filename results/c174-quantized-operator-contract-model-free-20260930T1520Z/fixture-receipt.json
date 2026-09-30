@@ -1,0 +1,14 @@
+{
+  "start": {
+    "utc": "2026-09-30T15:09:35.537044+00:00",
+    "monotonic_s": 275355.010258894
+  },
+  "end": {
+    "utc": "2026-09-30T15:09:39.046260+00:00",
+    "monotonic_s": 275358.519501864
+  },
+  "rc": -6,
+  "stdout": "[New LWP 1618151]\n[New LWP 1618150]\n[New LWP 1618149]\n[New LWP 1618148]\n[New LWP 1618147]\n[New LWP 1618146]\n[New LWP 1618145]\n[New LWP 1618126]\n\nThis GDB supports auto-downloading debuginfo from the following URLs:\n  <ima:enforcing>\n  <https://debuginfod.fedoraproject.org/>\n  <ima:ignore>\nEnable debuginfod for this session? (y or [n]) [answered N; input not from terminal]\nDebuginfod has been disabled.\nTo make this setting permanent, add 'set debuginfod enabled off' to .gdbinit.\n[Thread debugging using libthread_db enabled]\nUsing host libthread_db library \"/lib64/libthread_db.so.1\".\n0x00007f7771482312 in __syscall_cancel_arch () from /lib64/libc.so.6\n#0  0x00007f7771482312 in __syscall_cancel_arch () from /lib64/libc.so.6\n#1  0x00007f777147652c in __internal_syscall_cancel () from /lib64/libc.so.6\n#2  0x00007f7771476574 in __syscall_cancel () from /lib64/libc.so.6\n#3  0x00007f77714e614f in wait4 () from /lib64/libc.so.6\n#4  0x00007f7771d90f73 in ggml_print_backtrace () from /home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/backends/c165-mmap-diagnostic/build-diagnostic/bin/libggml-base.so.0\n#5  0x00007f7771d910bf in ggml_abort () from /home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/backends/c165-mmap-diagnostic/build-diagnostic/bin/libggml-base.so.0\n#6  0x00007f7771daad9d in ggml_backend_sched_new () from /home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/backends/c165-mmap-diagnostic/build-diagnostic/bin/libggml-base.so.0\n#7  0x000000000040123b in compute(ggml_backend*, int, std::vector<float, std::allocator<float> > const&, std::vector<float, std::allocator<float> > const&) ()\n#8  0x0000000000400d97 in main ()\n[Inferior 1 (process 1618125) detached]\n",
+  "stderr": "ggml_cuda_init: found 1 CUDA devices (Total VRAM: 7888 MiB):\n  Device 0: NVIDIA GeForce RTX 4060 Laptop GPU, compute capability 8.9, VMM: yes, VRAM: 7888 MiB\n/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/backends/c148-upstream-mmap/ggml/src/ggml-backend.cpp:1873: GGML_ASSERT(ggml_backend_dev_type(ggml_backend_get_device(backends[n_backends - 1])) == GGML_BACKEND_DEVICE_TYPE_CPU) failed\n\u26a0\ufe0f warning: The current terminal doesn't support styling.  Styled output might not appear as expected.\n",
+  "measurement_sha": "a7000f94e014f3d09d6e7f738dbea19d27f49029"
+}

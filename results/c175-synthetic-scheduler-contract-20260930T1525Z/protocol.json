@@ -1,0 +1,11 @@
+{
+  "scope": "Synthetic operator only; no model",
+  "causal_repair": "C174 scheduler assertion: last backend must CPU. Add actual CPU last and explicit synthetic GPU node/input assignments; no arithmetic change",
+  "previous": "C173 and C174 failures preserved",
+  "timeout_s": 30,
+  "gates": [
+    "independent fused FMA bitwise",
+    "separate arithmetic negative",
+    "MXFP4/F16 known contracts"
+  ]
+}
