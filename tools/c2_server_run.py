@@ -623,6 +623,7 @@ def run(args, protocol, config, task_rows, model):
     samples = []
     stop = threading.Event()
     c18_request_active = threading.Event()
+    request_deadline = [None]
     resource_gate = RuntimeGuard(protocol,cg_start) if prospective else None
     marker_context = (open(paths['.request-markers.jsonl'], 'x') if request_markers
                       else nullcontext())
@@ -750,6 +751,8 @@ def run(args, protocol, config, task_rows, model):
                     sample_file.write(json.dumps(sample,allow_nan=False)+"\n");sample_file.flush()
                     reason = None
                     if now > total_timeout: reason = "TIMEOUT"
+                    elif request_deadline[0] is not None and time.monotonic() >= request_deadline[0]:
+                        reason = "PER_REQUEST_WALL_TIMEOUT"
                     elif not ps or not cg or not gpu or not th or available is None: reason = "TELEMETRY_MISSING"
                     elif prospective:
                         reason = resource_gate.check(sample)
@@ -895,6 +898,10 @@ def run(args, protocol, config, task_rows, model):
                 if protocol.get('c18'):
                     c18_request_active.set()
                 stream_metrics = None
+                request_timeout = config["request_policy"]["per_request_timeout_s"]
+                if type(request_timeout) not in (int,float) or not math.isfinite(request_timeout) or request_timeout <= 0:
+                    raise GateError("invalid per-request wall timeout")
+                request_deadline[0] = request_started + request_timeout
                 if stream_requests:
                     response, stream_metrics = stream_chat(
                         payload, config['request_policy']['per_request_timeout_s'],
@@ -902,6 +909,10 @@ def run(args, protocol, config, task_rows, model):
                 else:
                     response = fetch("/v1/chat/completions",payload,
                                      timeout=config["request_policy"]["per_request_timeout_s"])
+                request_completed = time.monotonic()
+                request_deadline[0] = None
+                if request_completed - request_started > request_timeout:
+                    raise GateError("PER_REQUEST_WALL_TIMEOUT")
                 if request_markers:
                     request_ended_ns = time.monotonic_ns()
                     end = request_ended_ns / 1e9 - t0

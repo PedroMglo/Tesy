@@ -18,7 +18,7 @@ from test_host_resource_policy import runtime_fixture
 
 
 class ProspectiveRunnerEntryPoint(unittest.TestCase):
-    def test_child_launch_monitor_receipt_and_negative_controls(self):
+    def _exercise(self, request_timeout=10):
         protocol,cgroup,sample=runtime_fixture()
         protocol.update(identity={'model_sha256':'a'*64,
                                   'library_sha256':{'libfake.so':'b'*64}})
@@ -32,7 +32,7 @@ class ProspectiveRunnerEntryPoint(unittest.TestCase):
                         'while True:time.sleep(.1)\n')
             config={'server_command':[sys.executable,'-c',child_code],
                     'explicit_env':{},'request_policy':{'max_tokens':8,
-                    'per_request_timeout_s':10},'total_timeout_s':15,
+                    'per_request_timeout_s':request_timeout},'total_timeout_s':15,
                     'output_root':str(rawroot),'backend_root':str(root),
                     'stream_requests':False}
             args=SimpleNamespace(run_id='c55-entry',protocol=protocol_path,
@@ -65,8 +65,14 @@ class ProspectiveRunnerEntryPoint(unittest.TestCase):
                  patch.object(host_resource_policy,'live_power',return_value=sample['resource_observation']['power']), \
                  patch.object(runner,'loaded_backend_libraries',return_value={'libfake.so':'b'*64}), \
                  patch.object(runner,'fetch',side_effect=fetch):
-                self.assertEqual(runner.run(args,protocol,config,[('mock-1',task)],model),0)
+                code=runner.run(args,protocol,config,[('mock-1',task)],model)
             result=strict_json((rawroot/'c55-entry.json').read_text())
+            if request_timeout < 2.2:
+                self.assertEqual(code,1)
+                self.assertTrue(any('PER_REQUEST_WALL_TIMEOUT' in reason for reason in result['stop_reasons']))
+                self.assertIsNotNone(result['returncode'])
+                return
+            self.assertEqual(code,0)
             samples=[strict_json(line) for line in
                      (rawroot/'c55-entry.samples.jsonl').read_text().splitlines()]
             self.assertEqual(len(result['results']),1)
@@ -90,5 +96,10 @@ class ProspectiveRunnerEntryPoint(unittest.TestCase):
                 validate_receipt(protocol,config,broken,samples,root,
                                  run_id='c55-entry',expected_results=1)
 
+    def test_child_launch_monitor_receipt_and_negative_controls(self):
+        self._exercise()
+
+    def test_wall_deadline_stops_child_even_when_transport_completes(self):
+        self._exercise(request_timeout=.2)
 
 if __name__=='__main__':unittest.main()
