@@ -1,0 +1,44 @@
+{
+  "pin": "8019dc563b1ecbae6b161a70c3a1359f1b206c1e",
+  "source_commit": "d12811df4e9f37cefd7ad4b5405b9e0825ea4fe5",
+  "loader_patch_sha256": "bc57a67d571c83ccf3c4a4268b5cb0d6bc071ea3daf78c6f4ac99ad9bb3333bb",
+  "source_byte_exact_to_preserved_patched_C148": true,
+  "libraries": {
+    "build-diagnostic/bin/libggml-base.so.0.25.3": {
+      "sha256": "2bd068feb8fb290e3ad5ef49d6b24fc45169bd1102a0b043263a157ddd06bf8b",
+      "bytes": 925128
+    },
+    "build-diagnostic/bin/libggml-cpu.so.0.25.3": {
+      "sha256": "98e438e2406a36f33311003b9f644920549c1a05782967fcfbe60fe376cf0d97",
+      "bytes": 1678304
+    },
+    "build-diagnostic/bin/libggml-cuda.so.0.25.3": {
+      "sha256": "59f60ca8c0c125ab55aa6c7104919209a055a0057ec2fe90c6d243ff9e51bcbb",
+      "bytes": 65634192
+    },
+    "build-diagnostic/bin/libggml.so.0.25.3": {
+      "sha256": "dc557e99a6d696530f2a7fafcc1c52c62b1f61afca67d1dd3c4512c641b0f90e",
+      "bytes": 55760
+    },
+    "build-diagnostic/bin/libllama.so.0.5.0": {
+      "sha256": "f7b1983625bedbc04bcb076fad4bf538d21c2518b8d7a103b72558b511389b8a",
+      "bytes": 4605360
+    },
+    "build-diagnostic/bin/libmtmd.so.0.5.0": {
+      "sha256": "6da5385b872b97231032b350337a74f63b7393cda30b86b4b55d42dcc3c55604",
+      "bytes": 1928208
+    },
+    "build-diagnostic/bin/libllama-common.so.0.5.0": {
+      "sha256": "3234cd91d45585bf2c1b951a2aa0b9a6f3f77be3259eda0370fe5a54fbb71d81",
+      "bytes": 6095816
+    },
+    "build-diagnostic/bin/libllama-server-impl.so": {
+      "sha256": "9594dfa31da6efa6621677b274d10cd7a4b92c73038b6f9b5b26418931510381",
+      "bytes": 7051272
+    }
+  },
+  "build_reused": "Existing GCC15/CUDA13.3/arch89 libraries, exact copies. New probe/reference harness compiled GCC15 O3; compiler commands/logs including original compile failure preserved. Original installations untouched",
+  "test_scope": "16 targeted FILE_PAGING/numeric/wrapper tests +3 new phase gate tests PASS; not whole repo suite",
+  "numerical_scope": "32+4 small boundary prospective states/logits before performance,36nativeFFNs if B ceiling admits; no189+32/8192position/general quality inheritance",
+  "source_alias": "SOFTMAX_WEIGHT probs aliases biased logits and cb renames tensor; actual selected stage ffn_moe_probs required, historical C149 contract unchanged"
+}
