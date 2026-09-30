@@ -1,0 +1,58 @@
+{
+  "status": "NO_GO_S_SCREEN",
+  "requirements": {
+    "all_four_arms": true,
+    "nominal153_all": true,
+    "numeric_reuse": true,
+    "T2_primary_median_at_least15": false,
+    "both_T2_positive": true,
+    "SQL_median_at_least0": false,
+    "protections": {
+      "cold_prefill_s": {
+        "median_gain_percent": 10.739296652816549,
+        "PASS": true
+      },
+      "cold_first_final_s": {
+        "median_gain_percent": 7.9926840383180995,
+        "PASS": true
+      },
+      "T2_completion_s": {
+        "median_gain_percent": 3.4887578942484687,
+        "PASS": true
+      },
+      "T3_first_final_s": {
+        "median_gain_percent": -20.921647081740904,
+        "PASS": false
+      },
+      "incremental_prefill_s": {
+        "median_gain_percent": 8.324384238024285,
+        "PASS": true
+      },
+      "decode_seconds_per_reported_output": {
+        "median_gain_percent": -3.3328967168975754,
+        "PASS": true
+      }
+    }
+  },
+  "pairs": [
+    {
+      "pair": 1,
+      "A": "c196-1-A32",
+      "B": "c196-2-B64",
+      "final_answers_equal": [],
+      "T2_first_final_gain": 5.357437956782448,
+      "SQL_gain": -26.312120185961316
+    },
+    {
+      "pair": 2,
+      "A": "c196-4-A32",
+      "B": "c196-3-B64",
+      "final_answers_equal": [],
+      "T2_first_final_gain": 2.5294608648836894,
+      "SQL_gain": -9.717295213419746
+    }
+  ],
+  "C": "NOT_RUN_S_GATE",
+  "recovery_used": false,
+  "analyzer_reproduction": "analyze_arm + evaluate rerun after model termination; exact equality with original receipts/metrics"
+}
