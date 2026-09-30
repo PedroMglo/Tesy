@@ -31,7 +31,7 @@ def budget(worst_case_s=0, raw_projection=0):
         spent+=max(0,b-max(a,finish if finish is not None else a));finish=max(b,finish or b)
     wall=time.monotonic()-epoch['start_monotonic_s']
     raw=sum(p.stat().st_size for p in ROOT.glob('results/c*/raw/**/*') if p.is_file()
-            and any(x in str(p.relative_to(ROOT)) for x in ('c147-','c148-','c149-','c150-','c151-','c152-','c153-','c154-','c155-','c156-')))
+            and any(x in str(p.relative_to(ROOT)) for x in ('c147-','c147b-','c148-','c149-','c150-','c151-','c152-','c153-','c154-','c155-','c156-')))
     reserve=epoch['physical_closure_reserve_s']
     out={'utc':now()['utc'],'physical_used_s':spent,'wall_used_s':wall,'raw_bytes':raw,
          'physical_remaining_s':epoch['physical_limit_s']-spent,'wall_remaining_s':epoch['wall_limit_s']-wall,
