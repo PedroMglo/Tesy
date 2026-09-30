@@ -44,9 +44,11 @@ def backend_library_hashes(binary, backend_dir):
             continue
         target = line.split("=>", 1)[1].strip().split()[0]
         path = Path(target)
-        if path.is_file() and path.resolve().is_relative_to(root):
+        if path.is_file():
             resolved = path.resolve()
-            result[str(resolved.relative_to(root))] = sha256(resolved)
+            if resolved.is_relative_to(root) or resolved.name.startswith(("libllama", "libggml")):
+                key = str(resolved.relative_to(root)) if resolved.is_relative_to(root) else str(resolved)
+                result[key] = sha256(resolved)
     return result
 
 
