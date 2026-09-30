@@ -1,0 +1,3 @@
+# C188 — actual C143 slots40 integration
+
+Owner complete aditamento replaces unused previous balance. Four frozen natural tasks, C129 actual assistant history then Lume JSON continuity. Existing launcher invoked prepare→command→start→client→stop. Identity C75 and libraries preserved, no graph/kernel changes. E18 live admission, ctx8192 medium, fixed date. T1 180s/T2–T4 90s; readiness180s from Popen; entire attempt900s including inventories and cleanup. Same port18440, no permanent service. Graders frozen in protocol/client. Raw complete responses and SSE fragments persisted before reject, independent25ms watchdog; failure ends attempt and blocks further transport after timeout/resource loss. Numeric coverage reused C127; quality/sustained/8K not rerun.

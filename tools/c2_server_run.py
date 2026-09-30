@@ -217,8 +217,8 @@ def parse_chat_stream(lines, elapsed):
     return response, metrics
 
 
-def stream_chat(payload, timeout, started_monotonic):
-    req = Request(f'http://127.0.0.1:{PORT}/v1/chat/completions',
+def stream_chat(payload, timeout, started_monotonic, base_url=None):
+    req = Request((base_url or f'http://127.0.0.1:{PORT}')+'/v1/chat/completions',
                   data=json.dumps(payload, allow_nan=False).encode(),
                   headers={'Content-Type': 'application/json'}, method='POST')
     with urlopen(req, timeout=timeout) as response:

@@ -38,9 +38,9 @@ MODELS = {
 }
 
 
-def fetch(path, payload=None, timeout=10):
+def fetch(path, payload=None, timeout=10, base_url=None):
     body = None if payload is None else json.dumps(payload).encode()
-    req = Request(f"http://127.0.0.1:{PORT}{path}", data=body,
+    req = Request((base_url or f"http://127.0.0.1:{PORT}")+path, data=body,
                   headers={"Content-Type": "application/json"} if body else {},
                   method="POST" if body else "GET")
     with urlopen(req, timeout=timeout) as response:
