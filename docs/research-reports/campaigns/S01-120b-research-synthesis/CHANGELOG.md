@@ -1,3 +1,7 @@
+# 0.9.2
+
+Ajuste tipográfico da linha com o SHA do commit-base para permitir quebra de linha no PDF e evitar overfull hbox. Não altera resultados, claims ou âmbito científico. Auditoria permanece DRAFT enquanto o preview exato aguarda revisão visual.
+
 # 0.9.1
 
 Revisão material antes da publicação inicial: inclusão de APEX, Cache-Aware Joint Router Adaptation e estudo consumer/edge na síntese e fronteira de contribuição. Nova auditoria e PDF CI pendentes.

@@ -2,7 +2,7 @@
 
 Estado: DRAFT — claims e PDF pendentes de revisão da nova versão.
 
-- inputs_sha256: 1fb52d18c09464274171f06f9eab924ca1bb58ce3b9b1c6b8bf72c56780e9489
+- inputs_sha256: 593c2914e97a658b98dcc8bfea5de533702cfdae4445baf969f31d1f76ad3c53
 - PDF anterior: não revisto
 - reprodução experimental: NOT_RUN
 - raws: NOT_ACCESSED
