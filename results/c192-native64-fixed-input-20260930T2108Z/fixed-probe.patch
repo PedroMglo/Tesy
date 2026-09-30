@@ -1,0 +1,170 @@
+--- tools/c109_decode_triangle_probe.cpp
++++ native64-fixed-probe.cpp
+@@ -1,4 +1,4 @@
+-// One identical P12/8K 2009+192 teacher-forced call plan for C35 and C75.
++// One identical P12/8K 2044+153+32 teacher-forced call plan for C35 and C75.
+ #include "llama.h"
+ #include "ggml.h"
+ 
+@@ -17,6 +17,7 @@
+ #include <unistd.h>
+ 
+ using clock_type = std::chrono::steady_clock;
++static std::string executed_calls="first_abs\tn_tokens\tlast_abs\toutput_abs\n";
+ 
+ static void check(bool value, const char * why) {
+     if (!value) throw std::runtime_error(why);
+@@ -48,11 +49,11 @@
+     std::string first,second,extra;
+     check(bool(std::getline(stream,first)) && bool(std::getline(stream,second)) &&
+           !bool(std::getline(stream,extra)),"ID row count invalid");
+-    check(first.rfind("prompt\t",0)==0 && second.rfind("continuation192\t",0)==0,
++    check(first.rfind("prompt\t",0)==0 && second.rfind("continuation32\t",0)==0,
+           "ID labels invalid");
+     auto prompt=parse_ids(first.substr(7));
+-    auto continuation=parse_ids(second.substr(16));
+-    check(prompt.size()==2009 && continuation.size()==192,"ID count differs from freeze");
++    auto continuation=parse_ids(second.substr(15));
++    check(prompt.size()==2197 && continuation.size()==32,"ID count differs from freeze");
+     return {std::move(prompt),std::move(continuation)};
+ }
+ 
+@@ -83,6 +84,7 @@
+     llama_batch_free(batch);
+     check(rc==0,"llama_decode failed");
+     llama_synchronize(ctx);
++    executed_calls+=std::to_string(base+offset)+'\t'+std::to_string(count)+'\t'+std::to_string(base+offset+count-1)+'\t'+std::to_string(output_abs)+'\n';
+ }
+ 
+ static void append_logits(llama_context * ctx,int vocab,std::vector<float> & output) {
+@@ -96,47 +98,40 @@
+     if (argc==3 && std::strcmp(argv[1],"--check-input")==0) {
+         try {
+             const auto [prompt,continuation]=input(argv[2]);
+-            std::cout << "C109_INPUT_PASS prompt=" << prompt.size()
++            std::cout << "NATIVE_FIXED_INPUT_PASS prompt=" << prompt.size()
+                       << " continuation=" << continuation.size() << '\n';
+             return 0;
+         } catch (const std::exception & error) {
+-            std::cerr << "C109_INPUT_FAIL " << error.what() << '\n';
++            std::cerr << "NATIVE_FIXED_INPUT_FAIL " << error.what() << '\n';
+             return 1;
+         }
+     }
+-    if ((argc!=6 && argc!=7) || std::strcmp(argv[4],"--arm")!=0 ||
+-        (argc==7 && std::strcmp(argv[6],"--canary")!=0)) {
+-        std::cerr << "usage: c109_probe MODEL IDS_TSV OUTPUT_PREFIX --arm A|B|C [--canary]\n";
++    if (argc!=6 || std::strcmp(argv[4],"--arm")!=0) {
++        std::cerr << "usage: c109_probe MODEL IDS_TSV OUTPUT_PREFIX --arm A32|B64\n";
+         return 2;
+     }
+     try {
+         const std::string arm=argv[5];
+-        check(arm=="A" || arm=="B" || arm=="C","invalid arm");
++        check(arm=="A32" || arm=="B64","invalid arm");
+         check(std::getenv("LLAMA_MOE_STREAM_NO_PRELOAD")==nullptr &&
+               std::getenv("TESY_CPU_FA_PREFILL_VEC_COMPAT")==nullptr &&
+               std::getenv("LD_PRELOAD")==nullptr,"profile environment differs from freeze");
+         const char * flag=std::getenv("TESY_CPU_WAVE_SKIP_PARKED");
+-        check((arm=="C" && flag && std::strcmp(flag,"1")==0) ||
+-              (arm!="C" && !flag),"wave flag/arm mismatch");
++        check(flag && std::strcmp(flag,"1")==0,"wave flag/arm mismatch");
+         auto [prompt,continuation]=input(argv[2]);
+-        const bool canary=argc==7;
+-        if (canary) {
+-            prompt.resize(16);
+-            continuation.resize(2);
+-        }
+         const std::string prefix=argv[3];
+         const auto started=clock_type::now();
+         llama_backend_init();
+         auto mp=llama_model_default_params();
+         mp.n_gpu_layers=12;mp.use_mmap=false;mp.use_direct_io=true;
+-        mp.use_extra_bufts=false;mp.moe_stream=true;mp.moe_stream_slots=32;
++        mp.use_extra_bufts=false;mp.moe_stream=true;mp.moe_stream_slots=40;
+         mp.moe_stream_io_threads=4;mp.moe_stream_direct=true;
+         llama_model * model=llama_model_load_from_file(argv[1],mp);
+         check(model!=nullptr,"model load failed");
+         const double model_load_s=seconds(started);
+         const auto ctx_started=clock_type::now();
+         auto cp=llama_context_default_params();
+-        cp.n_ctx=8192;cp.n_batch=256;cp.n_ubatch=32;cp.n_seq_max=1;
++        cp.n_ctx=8192;cp.n_batch=256;cp.n_ubatch=arm=="A32"?32:64;cp.n_seq_max=1;
+         cp.n_threads=8;cp.n_threads_batch=8;cp.op_offload=false;
+         cp.flash_attn_type=LLAMA_FLASH_ATTN_TYPE_ENABLED;
+         cp.type_k=GGML_TYPE_F16;cp.type_v=GGML_TYPE_F16;
+@@ -146,22 +141,27 @@
+         const double context_init_s=seconds(ctx_started);
+         const int vocab=llama_vocab_n_tokens(llama_model_get_vocab(model));
+         check(vocab==201088,"vocab differs from freeze");
+-        std::cout << "C109_READY arm=" << arm << " prompt=" << prompt.size()
++        std::cout << "NATIVE_FIXED_READY arm=" << arm << " prompt=" << prompt.size()
+                   << " continuation=" << continuation.size() << '\n' << std::flush;
+         llama_memory_clear(llama_get_memory(ctx),true);
+         llama_synchronize(ctx);
+         std::vector<float> full_logits;
+-        full_logits.reserve((1+continuation.size())*static_cast<size_t>(vocab));
++        full_logits.reserve(3*static_cast<size_t>(vocab));
+         const auto prefill_started=clock_type::now();
+-        for (int offset=0;offset<static_cast<int>(prompt.size());offset+=256) {
+-            const int count=std::min(256,static_cast<int>(prompt.size())-offset);
+-            decode(ctx,prompt,offset,count,0,static_cast<int>(prompt.size())-1);
++        for (int offset=0;offset<2044;offset+=256) {
++            const int count=std::min(256,2044-offset);
++            decode(ctx,prompt,offset,count,0,2043);
+         }
+-        const double prefill_s=seconds(prefill_started);
++        const double prefix_prepare_s=seconds(prefill_started);
++        append_logits(ctx,vocab,full_logits);
++        const auto warm_started=clock_type::now();
++        decode(ctx,prompt,2044,153,0,2196);
++        const double prefill_s=seconds(warm_started);
+         append_logits(ctx,vocab,full_logits);
+         std::string steps="step\tposition\ttoken_id\tcompletion_s\n";
+         std::vector<double> durations;
+         durations.reserve(continuation.size());
++        const auto decode_started=clock_type::now();
+         for (int step=0;step<static_cast<int>(continuation.size());++step) {
+             const auto begin=clock_type::now();
+             decode(ctx,continuation,step,1,static_cast<int>(prompt.size()),
+@@ -169,31 +169,34 @@
+             const double elapsed=seconds(begin);
+             check(elapsed>0 && std::isfinite(elapsed),"invalid step duration");
+             durations.push_back(elapsed);
+-            append_logits(ctx,vocab,full_logits);
++
+             steps+=std::to_string(step)+'\t'+std::to_string(prompt.size()+step)+'\t'+
+                    std::to_string(continuation[static_cast<size_t>(step)])+'\t'+
+                    std::to_string(elapsed)+'\n';
+         }
++        const double decode32_s=seconds(decode_started);
++        append_logits(ctx,vocab,full_logits);
+         const auto sum=[](const std::vector<double> & a,int begin,int end) {
+             double value=0;for (int i=begin;i<end;++i)value+=a[static_cast<size_t>(i)];return value;
+         };
+         const int total=static_cast<int>(durations.size());
+-        const std::string ops="arm\tprompt_tokens\tcontinuation_tokens\tmodel_load_s\tcontext_init_s\tprefill_s\tdecode_s\tstep1_64_s\tstep65_192_s\tstep1_77_s\tlogit_rows\n"+
++        const std::string ops="arm\tprompt_tokens\tcontinuation_tokens\tmodel_load_s\tcontext_init_s\tprefix_prepare_s\tprefill_s\tdecode_s\tstep1_64_s\tstep65_192_s\tstep1_77_s\tlogit_rows\n"+
+             arm+'\t'+std::to_string(prompt.size())+'\t'+std::to_string(continuation.size())+'\t'+
+             std::to_string(model_load_s)+'\t'+std::to_string(context_init_s)+'\t'+
+-            std::to_string(prefill_s)+'\t'+std::to_string(sum(durations,0,total))+'\t'+
++            std::to_string(prefix_prepare_s)+'\t'+std::to_string(prefill_s)+'\t'+std::to_string(decode32_s)+'\t'+
+             std::to_string(sum(durations,0,std::min(64,total)))+'\t'+
+             std::to_string(sum(durations,std::min(64,total),total))+'\t'+
+             std::to_string(sum(durations,0,std::min(77,total)))+'\t'+
+-            std::to_string(1+total)+'\n';
++            std::to_string(3)+'\n';
++        write_new(prefix+".calls.tsv",executed_calls.data(),executed_calls.size());
+         write_new(prefix+".steps.tsv",steps.data(),steps.size());
+         write_new(prefix+".ops.tsv",ops.data(),ops.size());
+         write_new(prefix+".logits.f32",full_logits.data(),full_logits.size()*sizeof(float));
+         llama_free(ctx);llama_model_free(model);llama_backend_free();
+-        std::cout << "C109_DONE arm=" << arm << " prefill_s=" << prefill_s
++        std::cout << "NATIVE_FIXED_DONE arm=" << arm << " prefill_s=" << prefill_s
+                   << " decode_s=" << sum(durations,0,total) << '\n' << std::flush;
+     } catch (const std::exception & error) {
+-        std::cerr << "C109_FAIL " << error.what() << '\n';
++        std::cerr << "NATIVE_FIXED_FAIL " << error.what() << '\n';
+         return 1;
+     }
+     return 0;

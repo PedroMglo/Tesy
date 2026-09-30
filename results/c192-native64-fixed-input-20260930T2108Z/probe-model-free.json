@@ -1,0 +1,32 @@
+{
+  "status": "PASS",
+  "checks": [
+    {
+      "case": "valid",
+      "rc": 0,
+      "stdout": "NATIVE_FIXED_INPUT_PASS prompt=2197 continuation=32\n",
+      "stderr": ""
+    },
+    {
+      "case": "truncated",
+      "rc": 1,
+      "stdout": "",
+      "stderr": "NATIVE_FIXED_INPUT_FAIL ID row count invalid\n"
+    },
+    {
+      "case": "negative",
+      "rc": 1,
+      "stdout": "",
+      "stderr": "NATIVE_FIXED_INPUT_FAIL invalid frozen ID\n"
+    },
+    {
+      "case": "label",
+      "rc": 1,
+      "stdout": "",
+      "stderr": "NATIVE_FIXED_INPUT_FAIL ID labels invalid\n"
+    }
+  ],
+  "no_logits_readback_or_disk_dump_inside_decode32_window": true,
+  "no_capture_callback": true,
+  "equal_profile_params_except_ubatch": true
+}
