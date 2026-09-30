@@ -1,0 +1,39 @@
+{
+  "measurement_commit": "cc02c847e8d6ed88b7ec539e2f0aeb7d1af29635",
+  "start": {
+    "utc": "2026-09-30T15:36:06.927293+00:00",
+    "monotonic_s": 276946.400531025
+  },
+  "end": {
+    "utc": "2026-09-30T15:37:13.607302+00:00",
+    "monotonic_s": 277013.080538596
+  },
+  "argv": [
+    "systemd-run",
+    "--user",
+    "--slice=tesy-post-c154.slice",
+    "--unit=c179-layer24-reference-after-smoke",
+    "--collect",
+    "--pipe",
+    "--wait",
+    "--working-directory=/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc",
+    "-p",
+    "MemoryMax=21474836480",
+    "-p",
+    "MemoryHigh=20937965568",
+    "-p",
+    "MemorySwapMax=0",
+    "-p",
+    "RuntimeMaxSec=180",
+    "-p",
+    "TimeoutStopSec=10",
+    "--",
+    "/usr/bin/python3",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/tools/residency_unit_run.py",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c179-layer24-reference-after-smoke-20260930T1529Z",
+    "--inside"
+  ],
+  "returncode": 0,
+  "stdout": "",
+  "stderr": "Running as unit: c179-layer24-reference-after-smoke.service\n          Finished with result: success\nMain processes terminated with: code=exited, status=0/SUCCESS\n               Service runtime: 1min 6.526s\n             CPU time consumed: 11.895s\n                   Memory peak: 2.4G (swap: 0B)\n"
+}
