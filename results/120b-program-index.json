@@ -1,13 +1,10 @@
 {
   "current_checkpoint": {
-    "M4": "NOT_DEMONSTRATED",
-    "default_changed": false,
-    "effective_status": "BUDGET_CLOSED_WITH_PRESERVED_NOT_RUN",
-    "effective_unit": "c154",
-    "experimental_profile": "C75/P12/uniform44 C142 nominal153 confirmed, quality/session7936 NOT_RUN",
-    "prior_confirmed_profile": "C129 C75 slots40 CONFIRMED_SLOTS40_NOMINAL153",
+    "effective_unit": "c156",
+    "status": "MODEL_FREE_SOURCE_GATES_PASS_PHYSICAL_NUMERIC_NOT_RUN",
     "publication": "LOCAL_ONLY",
-    "useful_optin": "C75/P12/slots40 C143 launcher; M3 partial"
+    "M3": "PARTIAL",
+    "M4": "NOT_MET"
   },
   "default_changed": false,
   "historical_open_hypotheses_at_c54": [
@@ -29,7 +26,7 @@
     "M4": "NOT_MET_BY_OBSERVED_LATENCY_AND_DECODE"
   },
   "mission": "local usable main GPT-OSS 120B, original weights and authoritative routing",
-  "next_action": "New owner-authorized epoch required; first complete C152 journal/async negative controls, then bounded same-binary numeric/overhead qualification and dev + 2 heldout captures; no slots intervention until faithful replay/bound",
+  "next_action": "C158 frozen dummy and numeric bridge; no performance claim",
   "open_hypotheses": [
     "C75 waves give large observed prefill benefit; C100 server NO_GO_CONFIRM remains due its protected decode regression, while C121 nominal153 two-pair screen passed under per-arm inventory; C117 remains failed and C100 remains NO_GO_CONFIRM.",
     "Upstream llama.cpp source pin 8019dc5 implements GPT-OSS/MXFP4 but does not mark GPT-OSS experts for explicit lazy row loading; C151 ctx8192/short forward passed under FILE_PAGING; boundary numeric timed out, performance and exact-prefix unqualified.",
@@ -1043,6 +1040,26 @@
       "identity": "c154",
       "root": "results/c154-post-c145-budget-closure-20260930T0900Z",
       "status": "BUDGET_CLOSED_WITH_PRESERVED_NOT_RUN"
+    },
+    {
+      "identity": "c155",
+      "root": "results/c155-post-c154-resume-20260930T094754Z",
+      "status": "AUTHORIZED_NEW_EPOCH_OPEN"
+    },
+    {
+      "identity": "c156",
+      "root": "results/c156-snapshot-gates-20260930T1000Z",
+      "status": "MODEL_FREE_SOURCE_GATES_PASS"
+    },
+    {
+      "identity": "c157",
+      "root": "results/c157-instrumentation-numeric-20260930T1018Z",
+      "status": "E20_NOT_ADMITTED_MODEL_NOT_RUN"
+    },
+    {
+      "identity": "c158",
+      "root": "results/c158-short-numeric-bridge-20260930T1058Z",
+      "status": "FROZEN_NOT_RUN"
     }
   ],
   "updated_utc": "2026-09-30T09:09:17.123929+00:00",
@@ -1062,5 +1079,20 @@
     "prior_confirmed_profile": "C129 C75 slots40 CONFIRMED_SLOTS40_NOMINAL153",
     "publication": "LOCAL_ONLY",
     "useful_optin": "C75/P12/slots40 C143 launcher; M3 partial"
+  },
+  "previous_checkpoint_c154": {
+    "M4": "NOT_DEMONSTRATED",
+    "default_changed": false,
+    "effective_status": "BUDGET_CLOSED_WITH_PRESERVED_NOT_RUN",
+    "effective_unit": "c154",
+    "experimental_profile": "C75/P12/uniform44 C142 nominal153 confirmed, quality/session7936 NOT_RUN",
+    "prior_confirmed_profile": "C129 C75 slots40 CONFIRMED_SLOTS40_NOMINAL153",
+    "publication": "LOCAL_ONLY",
+    "useful_optin": "C75/P12/slots40 C143 launcher; M3 partial"
+  },
+  "post_c154_epoch": {
+    "epoch_path": "results/c155-post-c154-resume-20260930T094754Z",
+    "status": "OPEN",
+    "wall_deadline_utc": "2026-09-30T17:47:54.879252Z"
   }
 }
