@@ -1,0 +1,39 @@
+{
+  "measurement_commit": "58db173624dba627add1085cfd30f27e58272f18",
+  "start": {
+    "utc": "2026-09-30T11:40:01.343256+00:00",
+    "monotonic_s": 262780.816491786
+  },
+  "end": {
+    "utc": "2026-09-30T11:49:50.091540+00:00",
+    "monotonic_s": 263369.564772248
+  },
+  "argv": [
+    "systemd-run",
+    "--user",
+    "--slice=tesy-post-c154.slice",
+    "--unit=c163-instrumentation-overhead",
+    "--collect",
+    "--pipe",
+    "--wait",
+    "--working-directory=/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc",
+    "-p",
+    "MemoryMax=21474836480",
+    "-p",
+    "MemoryHigh=21474836480",
+    "-p",
+    "MemorySwapMax=0",
+    "-p",
+    "RuntimeMaxSec=1200",
+    "-p",
+    "TimeoutStopSec=10",
+    "--",
+    "/usr/bin/python3",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/tools/residency_unit_run.py",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c163-instrumentation-overhead-20260930T1145Z",
+    "--inside"
+  ],
+  "returncode": 0,
+  "stdout": "",
+  "stderr": "Running as unit: c163-instrumentation-overhead.service; invocation ID: de74c5bf320d4155beda2a3d95507e6e\n          Finished with result: success\nMain processes terminated with: code=exited, status=0/SUCCESS\n               Service runtime: 9min 48.571s\n             CPU time consumed: 28min 50.375s\n                   Memory peak: 16.1G (swap: 0B)\n"
+}
