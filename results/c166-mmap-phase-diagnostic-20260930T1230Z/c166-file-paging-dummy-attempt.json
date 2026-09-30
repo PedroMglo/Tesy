@@ -1,0 +1,42 @@
+{
+  "id": "c166-file-paging-dummy",
+  "start": {
+    "utc": "2026-09-30T12:34:19.686570+00:00",
+    "monotonic_s": 266039.159791768
+  },
+  "end": {
+    "utc": "2026-09-30T12:35:27.560874+00:00",
+    "monotonic_s": 266107.034110277
+  },
+  "argv": [
+    "/usr/bin/python3",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/tools/run_bounded.py",
+    "--run-id",
+    "c166-file-paging-dummy",
+    "--model-id",
+    "model-free",
+    "--backend",
+    "stock",
+    "--backend-root",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/backends/c165-mmap-diagnostic",
+    "--output-root",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c166-mmap-phase-diagnostic-20260930T1230Z/raw",
+    "--variant",
+    "FILE_PAGING-live-entrypoint-smoke",
+    "--workload",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c166-mmap-phase-diagnostic-20260930T1230Z/protocol.json",
+    "--cache-condition",
+    "dummy",
+    "--resource-protocol",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c166-mmap-phase-diagnostic-20260930T1230Z/protocol.json",
+    "--require-telemetry",
+    "--timeout-s",
+    "20",
+    "--collect-start-inventory",
+    "--",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c156-snapshot-gates-20260930T1000Z/build/dummy"
+  ],
+  "returncode": 0,
+  "stdout": "{\"run_id\": \"c166-file-paging-dummy\", \"elapsed_s\": 5.318, \"returncode\": 0, \"stop_reason\": null, \"maxima\": {\"rss_bytes\": 258359296, \"swap_bytes\": 0, \"cgroup_memory_bytes\": 161124352, \"cgroup_peak_bytes\": 182345728, \"cgroup_file_bytes\": 962560, \"gpu_used_mib\": 15.0, \"gpu_temperature_c\": 42.0, \"cpu_tctl_c\": 46.375, \"nvme_composite_c\": 30.85, \"direct_model_fds\": 0, \"buffered_model_fds\": 0}}\n",
+  "stderr": ""
+}

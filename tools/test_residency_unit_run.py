@@ -24,6 +24,14 @@ class FamilyTests(unittest.TestCase):
   p=self.protocol();p['runs'][0]['post_run_command']=['numeric-gate']
   with tempfile.TemporaryDirectory() as d,patch.object(r.subprocess,'run',side_effect=[subprocess.CompletedProcess([],0,'',''),subprocess.CompletedProcess([],1,'','mismatch')]) as spawn:
    self.assertEqual(r.inside(Path('/fixture'),Path(d),p),1);self.assertEqual(spawn.call_count,2)
+ def test_small_numeric_gate_timeout_is_frozen_and_counted(self):
+  p=self.protocol();p['runs']=p['runs'][:1];p['runs'][0].update(post_run_command=['gate'],post_run_timeout_s=2);p['physical_envelope_s']=100
+  with tempfile.TemporaryDirectory() as d,patch.object(r.subprocess,'run',return_value=subprocess.CompletedProcess([],0,'','')) as spawn:
+   self.assertEqual(r.inside(Path('/fixture'),Path(d),p),0);self.assertEqual(spawn.call_args_list[1].kwargs['timeout'],2)
+  for bad in (0,-1,91,float('nan'),True):
+   p['runs'][0]['post_run_timeout_s']=bad
+   with tempfile.TemporaryDirectory() as d,patch.object(r.subprocess,'run') as spawn:
+    self.assertEqual(r.inside(Path('/fixture'),Path(d),p),1);spawn.assert_not_called()
  def test_atomic_no_replace(self):
   with tempfile.TemporaryDirectory() as d:
    p=Path(d)/'receipt.json';r.publish(p,{'original':1})

@@ -47,7 +47,27 @@ def phases(root):
   if a<prior or b<a or not 0<=int(x['verify_us'])<=int(x['callback_us'])<=b-a or not 0<=int(x['capture_us'])<=int(x['callback_us']):raise ValueError('nested phase interval')
   prior=b
  return rows
+def reference_result(path,layer):
+ rows=[json.loads(line) for line in Path(path).read_text().splitlines() if line.startswith('{')]
+ if len(rows)!=1:raise ValueError('one complete native reference JSON required')
+ result=rows[0]
+ if result.get('schema')!='c149-upstream-cpu-expert-layer-reference-v1' or result.get('layer')!=layer or result.get('device')!='cpu' or result.get('canonical_layer_bytes')!=1697956352 or result.get('all_bitwise') is not True or result.get('numeric_rows')!=5 or result.get('masked_rows')!=0:raise ValueError('reference identity/coverage/bitwise')
+ values=result.get('rows',[])
+ if [r.get('phase') for r in values]!=list(PHASES):raise ValueError('reference phase coverage')
+ for r in values:
+  if r.get('state')!='NUMERIC' or r.get('tokens')!=(32 if r['phase']=='prefill0' else 1) or r.get('routing_ids_equal') is not True or r.get('routing_weights_bitwise') is not True or r.get('ffn_bitwise') is not True:raise ValueError('canonical reference row mismatch')
+  for key in ('routing_weights_max_abs','routing_weights_rmse','routing_weights_nonfinite','ffn_max_abs','ffn_rmse','ffn_nonfinite'):
+   if type(r.get(key)) not in (int,float) or not math.isfinite(r[key]) or r[key]!=0:raise ValueError('reference nonfinite/nonzero error')
+ return result
 if __name__=='__main__':
+ if sys.argv[1]=='reference':print(json.dumps(reference_result(Path(sys.argv[2]),int(sys.argv[3]))));raise SystemExit(0)
+ if sys.argv[1]=='reference-family':
+  protocol=Path(sys.argv[2]);p=json.loads(protocol.read_text());runs=p['runs']
+  if len(runs)!=36 or [r['command'][-3] for r in runs]!=[str(i) for i in range(36)]:raise ValueError('exact36 reference arms')
+  results=[reference_result(protocol.parent/'raw'/(r['id']+'.stdout'),i) for i,r in enumerate(runs)]
+  out={'status':'NATIVE32_PLUS4_CANONICAL36_FFN_BITWISE_PASS','layers':36,'numeric_rows':180,'scope':'Captured native32+4 selected FFN activations,original routing/biases/weights. Not whole-model attention/KV proof or189+32/prefix153/server qualification'}
+  with (protocol.parent/'reference-summary.json').open('x') as f:json.dump(out,f,indent=2);f.write('\n')
+  print(json.dumps(out));raise SystemExit(0)
  if sys.argv[1]=='compare':print(json.dumps(compare_logits(Path(sys.argv[2]),Path(sys.argv[3]))));raise SystemExit(0)
  protocol=Path(sys.argv[1]);p=json.loads(protocol.read_text());runs=[r for r in p['runs'] if not r.get('model_free')];roots=[Path(r['command'][-2]) for r in runs];tensors={x['name']:x for x in map(json.loads,Path(p['tensor_metadata_path']).read_text().splitlines()) if 'name' in x}
  n,s,v=roots;compare_logits(n,s);compare_logits(n,v);a=inspect(s,tensors,False);b=inspect(v,tensors,True)

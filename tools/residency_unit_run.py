@@ -21,11 +21,17 @@ def preflight(root,p):
         if sha256(Path(path))!=h:raise RuntimeError('frozen file hash changed: '+path)
     if subprocess.check_output(['git','-C',p['backend_root'],'rev-parse','HEAD'],text=True).strip()!=p['backend_commit'] or subprocess.check_output(['git','-C',p['backend_root'],'status','--porcelain'],text=True):raise RuntimeError('backend source changed')
 
+def post_timeout(run):
+    value=run.get('post_run_timeout_s',90)
+    if type(value) not in (int,float) or not 0<value<=90:
+        raise ValueError('post-run timeout must be finite and in (0,90]')
+    return value
+
 def inside(root,directory,p):
     started=time.monotonic();attempts=[];status='FAIL_HARNESS_PREMODEL';error=None
     try:
         for run in p['runs']:
-            needed=run['timeout_s']+(65 if run['inventory'] else 0)+15+(90 if run.get('post_run_command') else 0)
+            needed=run['timeout_s']+(65 if run['inventory'] else 0)+15+(post_timeout(run) if run.get('post_run_command') else 0)
             if time.monotonic()-started+needed>p['physical_envelope_s']-5:raise RuntimeError('envelope before next launch exhausted')
             env={k:v for k,v in os.environ.items() if not k.startswith(('LLAMA_','TESY_','GGML_','CUDA_')) and k not in ('LD_PRELOAD','LD_LIBRARY_PATH')}
             env.update(p['common_env']);env.update(run['env'])
@@ -36,7 +42,7 @@ def inside(root,directory,p):
             row={'id':run['id'],'start':a,'end':b,'argv':cmd,'returncode':r.returncode,'stdout':r.stdout,'stderr':r.stderr};attempts.append(row);publish(directory/(run['id']+'-attempt.json'),row)
             if r.returncode:raise RuntimeError('bounded subprocess failed: '+run['id'])
             if run.get('post_run_command'):
-                gate=subprocess.run(run['post_run_command'],cwd=root,text=True,capture_output=True,timeout=90)
+                gate=subprocess.run(run['post_run_command'],cwd=root,text=True,capture_output=True,timeout=post_timeout(run))
                 publish(directory/(run['id']+'-gate.json'),{'returncode':gate.returncode,'stdout':gate.stdout,'stderr':gate.stderr})
                 if gate.returncode:raise RuntimeError('post-run correctness gate failed: '+run['id'])
         if p.get('analysis_command'):
