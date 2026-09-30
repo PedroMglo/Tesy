@@ -5,6 +5,8 @@
 #include <limits>
 #include <stdexcept>
 
+#include "residency_journal_window.inl"
+
 static void check(bool x,const char * why){if(!x)throw std::runtime_error(why);}
 int main(int argc,char ** argv) {
     try {
@@ -35,13 +37,20 @@ int main(int argc,char ** argv) {
             check(sl.route_hotness[0]==std::numeric_limits<uint32_t>::max()/2,"saturating distinct hotness/decay");
             check(out[0]==out[4]&&out[2]==out[6],"multiplicity stable");
             check(sl.uniq==std::vector<int32_t>({0,1,4,5}),"first use order");ggml_free(c);
-        } else if(mode=="loading") {
+        } else if(mode=="loading"||mode=="window") {
             sl.keep[0]=1;sl.slot_state[1]=1;sl.slot_claimed[1]=1;
             mgr.snapshot_work_id=7;mgr.owned_work[0]={&sl,1,1,1,1,123,7};mgr.owned_phase[0].store(2);
             check(mgr.pick_victim_locked(sl,sl.keep.data())==2,"keep/loading excluded");
             mgr.reserve_slot_locked(sl,4,2);mgr.queue_load_locked(&sl,4,2);
             mgr.queue_load_locked(&sl,4,2); // legal promotion duplicate, unique work IDs
             check(mgr.q_demand[0].snapshot_work_id!=mgr.q_demand[1].snapshot_work_id,"unique queue identity");
+            if(mode=="window") {
+                mgr.trace_end_call(2,0,1);
+                mgr.snapshot((root/"pending-before.snap").c_str(),1,1,0,1);
+                reset_warmup_journal(&mgr);mgr.journal_request(2);
+                mgr.snapshot((root/"pending-after.snap").c_str(),0,1,0,1);
+                std::cout<<"NATIVE_WARM_WINDOW_PENDING_PASS no drain or state mutation\n";return 0;
+            }
         } else if(mode=="wave") {
             sl.plan_capacity=3;int32_t ids[]={0,1,2,3,4,5,0,1};
             mgr.plan_waves_locked(sl,ids,8);

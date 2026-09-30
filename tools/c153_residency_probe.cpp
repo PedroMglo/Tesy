@@ -6,6 +6,7 @@
 #include "ggml-backend.h"
 #include <array>
 #include <map>
+#include <mutex>
 #include <cstring>
 #include <cmath>
 #include <filesystem>
@@ -14,6 +15,8 @@
 #include <sstream>
 #include <stdexcept>
 #include <vector>
+
+#include "residency_journal_window.inl"
 
 static void require(bool x,const char * s){if(!x)throw std::runtime_error(s);}
 struct witness_state {
@@ -94,6 +97,13 @@ int main(int argc,char ** argv) {
         if(logged)mgr->journal_request(1);
         for(size_t p=0;p<prefix.size();p+=256) {
             size_t end=std::min(prefix.size(),p+256);decode({prefix.begin()+p,prefix.begin()+end},p,1,"prefix-warmup");
+            if(logged) {
+                // The accepted journal is the warm window. Bound temporary prefix logs
+                // at each natural call boundary; retain all logical manager/worker state.
+                // No draining, cancellation or cache mutation. Retrospective pending
+                // worker spans can publish later and are seeded by before-warm.snap.
+                reset_warmup_journal(mgr);
+            }
         }
         if(logged) {
             mgr->journal_request(2);
