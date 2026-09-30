@@ -80,7 +80,7 @@ def prepare(root,port,duration):
         'session_date':date,'duration_s':duration,'port':port,'cap_bytes':CAP,'swap_max_bytes':0,
         'default_changed':False,'publication':'LOCAL_ONLY_PRIVATE_SESSION_ROOT',
         'reuse':'same process/model/template/profile/date/KV only; restart persistence NOT_RUN'}
-    resource={'schema':'tesy-optin-start-v1','resources':freeze_protocol_resource_limits(policy,cgroup_memory_max_bytes=CAP),
+    resource={'schema':'tesy-optin-start-v1','limits':{},'resources':freeze_protocol_resource_limits(policy,cgroup_memory_max_bytes=CAP),
         'start_inventory':{'schema':'c120-start-inventory-v1','duration_s':60,'max_age_s':3,'policy_sha256':sha256(root/'resource-policy.json')},
         'preset_run_id':rid,'preset_sha256':__import__('host_resource_policy').digest(preset)}
     validate_resource_protocol(resource);save(root/'preset.json',preset);save(root/'resource-protocol.json',resource)

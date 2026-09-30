@@ -68,6 +68,24 @@ class InventoryEntrypoint(unittest.TestCase):
                 else:
                     with self.assertRaises((GateError,RuntimeError)):bounded.main()
                     self.assertEqual(spawn.call_count,0)
+    def test_actual_preset_builder_emits_valid_single_authority(self):
+        import c143_slots40_optin as launcher
+        import shutil
+        from types import SimpleNamespace
+        from host_resource_policy import validate_resource_protocol
+        with tempfile.TemporaryDirectory() as temp:
+            root=Path(temp)/'new-session';source=Path.cwd()/'results/c140-slots44-numeric-20260929T2324Z'
+            old=launcher.SOURCE
+            protocol=strict_json((old/'protocols/c129-p1-candidate.json').read_text())
+            config=strict_json((old/'c129-p1-candidate-config.json').read_text())
+            def live_fixture(target):
+                for name in ('snapshot.json','resource-policy.json'):shutil.copy2(source/name,target/name)
+            with patch.object(launcher,'identity',return_value=(protocol,config,{})),patch.object(launcher,'no_other_model'),patch.object(launcher.c55_inventory,'run',live_fixture),patch.object(launcher.os,'statvfs',return_value=SimpleNamespace(f_bavail=30*2**30,f_frsize=1)),patch.dict(launcher.os.environ,{},clear=True):
+                launcher.prepare(root,18449,3600)
+            frozen=strict_json((root/'resource-protocol.json').read_text());validate_resource_protocol(frozen)
+            self.assertEqual(frozen['limits'],{})
+            self.assertEqual(frozen['resources']['cgroup']['memory_max_bytes'],18*2**30)
+
     def test_positive_real_entrypoint(self):self.exercise()
     def test_invalid_inventory_prevents_launch(self):
         for bad in ('sensor','cap','old','arm','scope','protocol','hot_start'):
