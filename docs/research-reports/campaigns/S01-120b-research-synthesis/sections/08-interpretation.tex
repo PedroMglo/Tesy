@@ -1,0 +1,8 @@
+\section{Interpretação e fronteira de contribuição}
+A evidência acumulada desloca a questão de “conseguimos carregar um 120B?” para “qual parte do caminho crítico é removível sem violar exactness e sob que workload?”. O histórico mostra que mais residency pode ajudar, mas os ganhos marginais e a transferência de cobertura entre perfis têm de ser medidos; C142 não autoriza uma grelha 44/46/48 nem um default novo. \evidence{E-S01-C145}
+
+A literatura impede claims amplas. Expert offload/cache/prefetch e execução CPU--GPU são linhas estabelecidas \cite{xue2024moeinfinity,kamahori2025fiddler,chen2025ktransformers,yu2026finemoe,he2026expertflow,wang2026localslo}. Prediction-for-transfer sem substituir o routing exato aparece explicitamente em SpecPrefetch \cite{kong2026specprefetch}. Locality-aware online balancing e cache também têm vizinhos próximos como Kairox \cite{jiang2026kairox}; placement orientado por traces aparece em \emph{Patterns Behind Chaos} \cite{yu2026patterns}.
+
+Uma contribuição Tesy defensável teria de ser estreita: por exemplo, um crossover causal CPU/transfer/GPU sob budgets consumer e routing exato; uma política causal de residency que sobreviva a baselines fortes; ou uma metodologia de medição multi-tier que prove que fração do caminho crítico foi removida. Nenhuma destas contribuições está atualmente demonstrada como novidade.
+
+O ramo mmap é particularmente instrutivo: resolver correctness da referência removeu um blocker, mas não tornou o mecanismo competitivo. C184 e C189 tratam-no como investimento depriorizado, não como impossibilidade universal. \evidence{E-S01-C184} \evidence{E-S01-C189}

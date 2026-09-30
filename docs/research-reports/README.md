@@ -6,17 +6,18 @@ Sistema documental model-free: uma classe LuaLaTeX, fontes congeladas, seletores
 
 | ID | Conteúdo |
 |---|---|
-| `R01-prior-art` | Revisão bibliográfica de prior art e claim boundary, data de corte 28 setembro 2026. DRAFT até revisão do PDF. |
-| `C06-attn-dispatch-compat` | Campanha 6: compatibilidade de dispatch CPU e divergência seguinte em GPU Flash. DRAFT. |
-| `C05-first-divergence` | Campanha 5: primeira divergência causalmente localizada em CPU Flash Attention. DRAFT. |
-| `C04-prefill-cost` | Campanha 4: relógio de prefill, paridade contemporânea e bloqueio de ubatch64. DRAFT. |
+| `R01-prior-art` | Revisão bibliográfica de prior art e claim boundary, corte em 30 setembro 2026. REVIEWED; publicação continua sujeita ao hash de PDF da CI. |
+| `S01-120b-research-synthesis` | Síntese de época C108--C189: residency, mmap, referência nativa, integração real e prior art. DRAFT até revisão visual do PDF. |
+| `C06-attn-dispatch-compat` | Campanha 6: compatibilidade de dispatch CPU e divergência seguinte em GPU Flash. REVIEWED. |
+| `C05-first-divergence` | Campanha 5: primeira divergência causalmente localizada em CPU Flash Attention. REVIEWED. |
+| `C04-prefill-cost` | Campanha 4: relógio de prefill, paridade contemporânea e bloqueio de ubatch64. REVIEWED. |
 | `C02-correctness-usability` | Campanha 2 no snapshot `81531d9dc33caddbbf07928106de47cfe2a6d42a`. Mantém `CORRECTNESS_BLOCKED`. |
 | `C03-boundary-prefill` | Edição revista v1.0.0 de C3 em `a0b673965b6e7c5aac69ae464d8275c176f4b14a`; seis fontes congeladas, auditoria e PDF de seis páginas. |
 | `C01-scale-lab` | Auditoria original em `c67529e290844bb3d9033615072d5878014a46bc`. `SUCCESS` apenas no âmbito histórico. |
 | `R00-foundations` | Recorte do ledger datado de 24 setembro, em main `7a7d3dcbd1ff8e594ac57459c3db06306083c3ca`. Não é retrospectiva exaustiva de todas as branches. |
 | `D00-research-dossier` | Síntese R00/C1/C2, com versões e digests dos relatórios filhos congelados. |
 
-As versões v1.0.0 já publicadas de R00/C01/C02/C03/D00 são imutáveis. C04/C05/C06 e R01 usam uma bibliografia por relatório em `sections/bibliography.bib`, precisamente para não alterar o digest das releases históricas ao acrescentar literatura nova.
+As versões v1.0.0 já publicadas de R00/C01/C02/C03/D00 são imutáveis. C04/C05/C06, R01 e S01 usam uma bibliografia por relatório em `sections/bibliography.bib`, precisamente para não alterar o digest das releases históricas ao acrescentar literatura nova.
 
 O dossier D00 é a entrada histórica para R00/C1/C2; os relatórios de campanha contêm contrato, resultados, falhas e limites. O corte de D00 é 26 setembro 2026. **C3 tem edição própria**: consultar C03, [CURRENT-LAB.md](CURRENT-LAB.md) e a publicação autoritativa em `research/C3-FINAL-20260927.md`. D00 não foi retroativamente reescrito. Autoria pessoal/universidade/orientação não foram inventadas: `author` é null.
 

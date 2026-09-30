@@ -1,0 +1,8 @@
+\section{Falhas e não-resultados preservados}
+Três classes de “resultado negativo” não devem ser confundidas.
+
+Primeiro, \textbf{falha de protocolo}: C117 produziu observações de desempenho, mas falhou o requisito de inventário por braço. O fecho explicitamente bloqueia promoção \claim{CL-S01-C117}. C182, já no ramo mmap, respondeu ao primeiro pedido mas ultrapassou o wall deadline; aumentar o timeout retroativamente teria mudado o protocolo \evidence{E-S01-C184}.
+
+Segundo, \textbf{NO\_GO no scope}: CPU52/GPU44 falhou o gate congelado de holdouts e foi terminada antes de implementação \claim{CL-S01-POLICY}. Não é evidência de impossibilidade universal de residency adaptativa.
+
+Terceiro, \textbf{NOT\_RUN por orçamento/gate}: C154 fecha depois do wall deadline com etapas mmap ainda não executadas \claim{CL-S01-C154-CLOSE}; C184 recusa performance porque o prefix gate não foi demonstrado \claim{CL-S01-MMAP}. Estes estados são informação científica, não lacunas a preencher com extrapolação.
