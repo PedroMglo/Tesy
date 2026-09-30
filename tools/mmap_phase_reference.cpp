@@ -1,4 +1,6 @@
 #include "ggml-backend.h"
+#include "ggml-backend-impl.h"
+#include "ggml-impl.h"
 #include "ggml-cpu.h"
 #include "ggml.h"
 #include "gguf.h"
@@ -258,6 +260,7 @@ row_result replay(const std::string & phase, const std::vector<captured> & rows,
     auto * act = ggml_swiglu_oai(c,gate,up,1.702f,7.0f);
     auto * down = ggml_mul_mat_id(c,tensors[2],act,route_ids);
     down = ggml_add_id(c,down,tensors[5],route_ids);
+    auto * expert_down = down;
     auto * weighted = ggml_mul(c,down,route_weights);
     down = weighted;
     std::array<ggml_tensor *,4> views;
@@ -293,6 +296,9 @@ row_result replay(const std::string & phase, const std::vector<captured> & rows,
         auto & c=*static_cast<std::array<ggml_tensor *,4> *>(u);return std::find(c.begin(),c.end(),t)!=c.end();
     },&checkpoints);
     require(ggml_backend_sched_alloc_graph(sched,gf),"reference graph allocation");
+    require(ggml_backend_sched_get_tensor_backend(sched,expert_down)==backend && ggml_backend_sched_get_tensor_backend(sched,act)==backend && ggml_backend_sched_get_tensor_backend(sched,gate)==backend && ggml_backend_sched_get_tensor_backend(sched,up)==backend,"reference expert plan must CPU");
+    require(ggml_backend_sched_get_tensor_backend(sched,weighted)==reduction_backend && ggml_backend_sched_get_tensor_backend(sched,sum)==reduction_backend,"reference tail map");
+    require(ggml_backend_sched_get_tensor_backend(sched,biased_logits)==route_backend,"reference router map");
     ggml_backend_tensor_set(inp,input.data(),0,input.size()*sizeof(float));
     require(ggml_backend_sched_graph_compute(sched,gf) == GGML_STATUS_SUCCESS,
             "reference graph compute failed");
@@ -420,6 +426,8 @@ int main(int argc, char ** argv) {
         require(storage.buffer != nullptr, "canonical layer allocation failed");
         router_storage.buffer = ggml_backend_alloc_ctx_tensors_from_buft(rctx,ggml_backend_get_default_buffer_type(route));
         require(router_storage.buffer != nullptr,"canonical router allocation");
+        ggml_backend_buffer_set_usage(storage.buffer,GGML_BACKEND_BUFFER_USAGE_WEIGHTS);
+        ggml_backend_buffer_set_usage(router_storage.buffer,GGML_BACKEND_BUFFER_USAGE_WEIGHTS);
         const int fd = open(model.c_str(),O_RDONLY|O_CLOEXEC);
         require(fd >= 0, "cannot open canonical GGUF file");
         const size_t model_size = std::filesystem::file_size(model);
@@ -444,6 +452,7 @@ int main(int argc, char ** argv) {
         std::cout << "{\"schema\":\"c149-upstream-cpu-expert-layer-reference-v1\","
                   << "\"classification\":\"DIAGNOSTIC_UNQUALIFIED\","
                   << "\"layer\":" << layer << ",\"device\":\"" << device << "\","
+                  << "\"router_backend\":\"" << router_name << "\",\"expert_backend\":\"CPU\",\"reduction_backend\":\"" << tail_name << "\",\"plan_assertions\":true,"
                   << "\"canonical_layer_bytes\":" << bytes_total << ","
                   << "\"all_bitwise\":" << (pass ? "true" : "false")
                   << ",\"numeric_rows\":" << numeric_rows << ",\"masked_rows\":" << masked_rows
