@@ -262,6 +262,11 @@ row_result replay(const std::string & phase, const std::vector<captured> & rows,
         sum = sum ? ggml_add(c,sum,view) : view;
     }
     auto * output = ggml_cont(c,sum);
+    // These intermediates are read after all downstream FFN operations. Merely
+    // expanding them into the graph does not keep their storage alive.
+    ggml_set_output(route_ids);
+    ggml_set_output(route_weights);
+    ggml_set_output(output);
     auto * gf = ggml_new_graph(c);
     ggml_build_forward_expand(gf,route_ids);
     ggml_build_forward_expand(gf,route_weights);

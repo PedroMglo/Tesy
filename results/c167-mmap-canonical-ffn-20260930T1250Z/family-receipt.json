@@ -1,0 +1,39 @@
+{
+  "measurement_commit": "4147adfbbfc19d699a2dbd05e9bdf648aa39c5e8",
+  "start": {
+    "utc": "2026-09-30T12:47:45.832680+00:00",
+    "monotonic_s": 266845.305912266
+  },
+  "end": {
+    "utc": "2026-09-30T12:48:50.602807+00:00",
+    "monotonic_s": 266910.076034526
+  },
+  "argv": [
+    "systemd-run",
+    "--user",
+    "--slice=tesy-post-c154.slice",
+    "--unit=c167-mmap-canonical-ffn",
+    "--collect",
+    "--pipe",
+    "--wait",
+    "--working-directory=/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc",
+    "-p",
+    "MemoryMax=21474836480",
+    "-p",
+    "MemoryHigh=20937965568",
+    "-p",
+    "MemorySwapMax=0",
+    "-p",
+    "RuntimeMaxSec=1150",
+    "-p",
+    "TimeoutStopSec=10",
+    "--",
+    "/usr/bin/python3",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/tools/residency_unit_run.py",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c167-mmap-canonical-ffn-20260930T1250Z",
+    "--inside"
+  ],
+  "returncode": 1,
+  "stdout": "",
+  "stderr": "Running as unit: c167-mmap-canonical-ffn.service\n          Finished with result: exit-code\nMain processes terminated with: code=exited, status=1/FAILURE\n               Service runtime: 1min 4.546s\n             CPU time consumed: 11.335s\n                   Memory peak: 2.3G (swap: 0B)\n"
+}
