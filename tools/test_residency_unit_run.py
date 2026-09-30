@@ -20,9 +20,18 @@ class FamilyTests(unittest.TestCase):
   p=self.protocol();p['physical_envelope_s']=80
   with tempfile.TemporaryDirectory() as d,patch.object(r.subprocess,'run') as spawn:
    self.assertEqual(r.inside(Path('/fixture'),Path(d),p),1);spawn.assert_not_called()
+ def test_numeric_failure_stops_before_following_arm(self):
+  p=self.protocol();p['runs'][0]['post_run_command']=['numeric-gate']
+  with tempfile.TemporaryDirectory() as d,patch.object(r.subprocess,'run',side_effect=[subprocess.CompletedProcess([],0,'',''),subprocess.CompletedProcess([],1,'','mismatch')]) as spawn:
+   self.assertEqual(r.inside(Path('/fixture'),Path(d),p),1);self.assertEqual(spawn.call_count,2)
  def test_atomic_no_replace(self):
   with tempfile.TemporaryDirectory() as d:
    p=Path(d)/'receipt.json';r.publish(p,{'original':1})
    with self.assertRaises(FileExistsError):r.publish(p,{'original':2})
    self.assertEqual(json.loads(p.read_text()),{'original':1})
+ def test_suffixed_or_invalid_scope_rejected_before_any_external_call(self):
+  for scope in ('unit.service','unit/scope','unit;other',''):
+   with self.subTest(scope=scope),patch.object(r.subprocess,'check_output') as check:
+    with self.assertRaisesRegex(RuntimeError,'unsuffixed'):r.preflight(Path('/fixture'),{'execution_scope_unit':scope})
+    check.assert_not_called()
 if __name__=='__main__':unittest.main()

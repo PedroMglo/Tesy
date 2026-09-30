@@ -1,5 +1,5 @@
 """One frozen serial family using the existing bounded scope/inventory/monitor path."""
-import argparse,hashlib,json,os,subprocess,sys,time
+import argparse,hashlib,json,os,re,subprocess,sys,time
 from pathlib import Path
 from epoch_accounting import Epoch,now
 from run_bounded import sha256,file_identity
@@ -10,6 +10,8 @@ def publish(path,data):
     os.link(tmp,path);tmp.unlink()
 
 def preflight(root,p):
+    if not re.fullmatch(r'[A-Za-z0-9_-]+',p['execution_scope_unit']):
+        raise RuntimeError('scope must be an unsuffixed unit name; entrypoint adds .service')
     if subprocess.check_output(['git','status','--porcelain'],cwd=root,text=True):raise RuntimeError('measurement tree dirty')
     if file_identity(Path(p['model_path']))!=p['model_stat']:raise RuntimeError('model stat changed')
     lock=json.loads((root/'models.lock.json').read_text())
@@ -23,7 +25,7 @@ def inside(root,directory,p):
     started=time.monotonic();attempts=[];status='FAIL_HARNESS_PREMODEL';error=None
     try:
         for run in p['runs']:
-            needed=run['timeout_s']+(65 if run['inventory'] else 0)+15
+            needed=run['timeout_s']+(65 if run['inventory'] else 0)+15+(90 if run.get('post_run_command') else 0)
             if time.monotonic()-started+needed>p['physical_envelope_s']-5:raise RuntimeError('envelope before next launch exhausted')
             env={k:v for k,v in os.environ.items() if not k.startswith(('LLAMA_','TESY_','GGML_','CUDA_')) and k not in ('LD_PRELOAD','LD_LIBRARY_PATH')}
             env.update(p['common_env']);env.update(run['env'])
@@ -33,6 +35,10 @@ def inside(root,directory,p):
             a=now();r=subprocess.run(cmd,env=env,text=True,capture_output=True,timeout=needed);b=now()
             row={'id':run['id'],'start':a,'end':b,'argv':cmd,'returncode':r.returncode,'stdout':r.stdout,'stderr':r.stderr};attempts.append(row);publish(directory/(run['id']+'-attempt.json'),row)
             if r.returncode:raise RuntimeError('bounded subprocess failed: '+run['id'])
+            if run.get('post_run_command'):
+                gate=subprocess.run(run['post_run_command'],cwd=root,text=True,capture_output=True,timeout=90)
+                publish(directory/(run['id']+'-gate.json'),{'returncode':gate.returncode,'stdout':gate.stdout,'stderr':gate.stderr})
+                if gate.returncode:raise RuntimeError('post-run correctness gate failed: '+run['id'])
         if p.get('analysis_command'):
             r=subprocess.run(p['analysis_command'],cwd=root,text=True,capture_output=True,timeout=90)
             publish(directory/'analysis-attempt.json',{'returncode':r.returncode,'stdout':r.stdout,'stderr':r.stderr})
