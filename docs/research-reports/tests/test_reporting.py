@@ -90,6 +90,7 @@ class Pipeline(unittest.TestCase):
             ('C04-prefill-cost','1.0.0','reports-C04-prefill-cost-v1.0.0'),
             ('C05-first-divergence','1.0.0','reports-C05-first-divergence-v1.0.0'),
             ('C06-attn-dispatch-compat','1.0.0','reports-C06-attn-dispatch-compat-v1.0.0'),
+            ('R01-prior-art','1.0.0','reports-R01-prior-art-v1.0.0'),
         ])
     def test_new_report_locks_are_current(self):
         for report_id in ('C04-prefill-cost','C05-first-divergence','C06-attn-dispatch-compat','R01-prior-art'):
