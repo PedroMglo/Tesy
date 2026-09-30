@@ -1,0 +1,39 @@
+{
+  "command": "python3 -m unittest discover -s tools -p test_c143_optin*.py",
+  "fixture_limits": "unit tests replace sensors/clock/filesystem/identity/process boundaries; actual gates/entrypoint are not replaced. Live smoke has real sensors and subprocess. Full opt-in model chat/start/stop is NOT_RUN.",
+  "matrix": [
+    {
+      "requirement": "actual preset builder -> strongv2 resource validator",
+      "result": "PASS",
+      "test": "test_actual_preset_builder_emits_valid_single_authority"
+    },
+    {
+      "requirement": "real run_bounded entrypoint at actual spawn",
+      "result": "PASS, origin100000; real producer/consumer; external model creation spied",
+      "test": "test_positive_real_entrypoint"
+    },
+    {
+      "requirement": "invalid sensor/cap/old/cross-arm/scope/protocol/warning-at-start prevents launch",
+      "result": "7 negatives PASS; model creation count0",
+      "test": "test_invalid_inventory_prevents_launch"
+    },
+    {
+      "requirement": "PID reused -> no signal",
+      "result": "PASS",
+      "test": "test_reused_pid_cannot_be_stopped"
+    },
+    {
+      "requirement": "own identity -> owner-stop record and SIGINT",
+      "result": "PASS",
+      "test": "test_matching_own_identity_records_owner_stop"
+    },
+    {
+      "requirement": "real sensors/scope/clock/protocol -> harmless subprocess",
+      "result": "PASS; no weights",
+      "test": "live-smoke-receipt.json"
+    }
+  ],
+  "methods": 5,
+  "schema": "c143-tests-v1",
+  "status": "PASS"
+}
