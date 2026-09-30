@@ -1,0 +1,49 @@
+{
+  "id": "c176-layer24",
+  "start": {
+    "utc": "2026-09-30T15:20:06.900738+00:00",
+    "monotonic_s": 275986.37395987
+  },
+  "end": {
+    "utc": "2026-09-30T15:20:09.081326+00:00",
+    "monotonic_s": 275988.554552659
+  },
+  "argv": [
+    "/usr/bin/python3",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/tools/run_bounded.py",
+    "--run-id",
+    "c176-layer24",
+    "--model-id",
+    "gpt-oss-120b-mxfp4-gguf",
+    "--backend",
+    "stock",
+    "--backend-root",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/backends/c165-mmap-diagnostic",
+    "--output-root",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c176-layer24-native-reference-20260930T1530Z/raw",
+    "--variant",
+    "nativeCPU-MoE-canonical-resident-layer",
+    "--workload",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c176-layer24-native-reference-20260930T1530Z/protocol.json",
+    "--cache-condition",
+    "canonical-reference-not-performance",
+    "--resource-protocol",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c176-layer24-native-reference-20260930T1530Z/protocol.json",
+    "--require-telemetry",
+    "--timeout-s",
+    "15",
+    "--collect-start-inventory",
+    "--",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c173-native-reference-model-free-20260930T1510Z/build/mmap_phase_reference",
+    "/home/pmglo/models/gpt-oss-120b-gguf/gpt-oss-120b-MXFP4.gguf",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c166-mmap-phase-diagnostic-20260930T1230Z/raw/verify.capture",
+    "24",
+    "--ngl",
+    "12",
+    "--plan-map",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c172-native-ffn-plan-model-free-20260930T1458Z/reference-map.tsv"
+  ],
+  "returncode": 1,
+  "stdout": "",
+  "stderr": "Traceback (most recent call last):\n  File \"/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/tools/run_bounded.py\", line 702, in <module>\n    sys.exit(main())\n             ~~~~^^\n  File \"/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/tools/run_bounded.py\", line 452, in main\n    start_inventory = inventory_before_spawn(out.parent,a.run_id,resource_protocol)\n  File \"/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/tools/run_bounded.py\", line 280, in inventory_before_spawn\n    if sha256(policy_path)!=contract.get('policy_sha256'):raise RuntimeError('opt-in policy SHA changed')\n                                                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nRuntimeError: opt-in policy SHA changed\n"
+}
