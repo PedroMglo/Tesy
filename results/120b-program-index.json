@@ -2,10 +2,12 @@
   "current_checkpoint": {
     "M4": "NOT_DEMONSTRATED",
     "default_changed": false,
-    "effective_status": "CONFIRMED_UNIFORM44_NOMINAL153",
-    "effective_unit": "c142",
+    "effective_status": "CLOSED_CONFIRMED_POOL_INTERVENTION_AND_OPTIN_DELIVERED",
+    "effective_unit": "c145",
+    "experimental_profile": "C75/P12/uniform44 C142 nominal153 confirmed, quality/session7936 NOT_RUN",
     "prior_confirmed_profile": "C129 C75 slots40 CONFIRMED_SLOTS40_NOMINAL153",
-    "publication": "LOCAL_ONLY"
+    "publication": "LOCAL_ONLY",
+    "useful_optin": "C75/P12/slots40 C143 launcher; M3 partial"
   },
   "default_changed": false,
   "historical_open_hypotheses_at_c54": [
@@ -27,7 +29,7 @@
     "M4": "NOT_MET_BY_OBSERVED_LATENCY_AND_DECODE"
   },
   "mission": "local usable main GPT-OSS 120B, original weights and authoritative routing",
-  "next_action": "Deliver original slots40 opt-in; uniform44 experimental numeric/performance confirmed, future state-snapshot/replay plus independent-routing qualification before retention/quotas; no additional physical pools grid in this epoch",
+  "next_action": "Next separately authorized epoch: bounded full state snapshot and source-faithful replay with independent routing before retention/quotas, or pinned upstream bounded mmap/CPU-MoE canary. No ongoing inference; no physical backend authorized in this epoch.",
   "open_hypotheses": [
     "C75 waves give large observed prefill benefit; C100 server NO_GO_CONFIRM remains due its protected decode regression, while C121 nominal153 two-pair screen passed under per-arm inventory; C117 remains failed and C100 remains NO_GO_CONFIRM.",
     "Upstream llama.cpp source pin 8019dc5 implements GPT-OSS/MXFP4 but does not mark GPT-OSS experts for explicit lazy row loading; bounded mmap/page-cache viability on this host is unmeasured.",
@@ -976,6 +978,21 @@
       "identity": "c142",
       "root": "results/c142-uniform44-confirm-20260929T2353Z",
       "status": "CONFIRMED_UNIFORM44_NOMINAL153"
+    },
+    {
+      "identity": "c143",
+      "root": "results/c143-slots40-optin-20260930T0012Z",
+      "status": "OPTIN_SLOTS40_PREPARED_GUARDED_LAUNCHER_NO_ACTIVATION"
+    },
+    {
+      "identity": "c144",
+      "root": "results/c144-backend-capability-20260930T0015Z",
+      "status": "SOURCE_ONLY_CONDITIONAL_MMAP_CANARY_NEXT_EPOCH"
+    },
+    {
+      "identity": "c145",
+      "root": "results/c145-post-c137-closure-20260930T0019Z",
+      "status": "CLOSED_CONFIRMED_POOL_INTERVENTION_AND_OPTIN_DELIVERED"
     }
   ],
   "updated_utc": "2026-09-29T23:31:25Z"
