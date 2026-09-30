@@ -167,6 +167,7 @@ def analyze_arm(root,rid,profile,p,c):
         'raw_sha256':sha256(root/'raw'/(rid+'.json'))}
 
 def arm(root,rid,measurement):
+    root=root.resolve()
     start=now();failure=None;row=None
     try:
         require_freeze(root)
@@ -193,6 +194,7 @@ def arm(root,rid,measurement):
     return 0 if failure is None else 1
 
 def family(root):
+    root=root.resolve()
     require_freeze(root)
     p=read(root/'protocol.json');ep=Epoch(p['epoch']);start=now();rows=[];failure=None;status='FAIL_OR_INCOMPLETE_EVIDENCE'
     measurement=git('rev-parse','HEAD')

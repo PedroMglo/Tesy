@@ -1,0 +1,59 @@
+{
+  "gpu_processes": {
+    "argv": [
+      "nvidia-smi",
+      "--query-compute-apps=pid,process_name,used_memory",
+      "--format=csv,noheader"
+    ],
+    "rc": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  "gpu_live": {
+    "argv": [
+      "nvidia-smi",
+      "--query-gpu=uuid,memory.used,memory.total,temperature.gpu,power.draw",
+      "--format=csv,noheader"
+    ],
+    "rc": 0,
+    "stdout": "GPU-83d90c55-1d92-75da-fc30-7771a85f2521, 12 MiB, 8188 MiB, 42, 3.49 W",
+    "stderr": ""
+  },
+  "experimental_port": {
+    "argv": [
+      "ss",
+      "-ltn",
+      "sport = :18367"
+    ],
+    "rc": 0,
+    "stdout": "State Recv-Q Send-Q Local Address:Port Peer Address:Port",
+    "stderr": ""
+  },
+  "units": {
+    "argv": [
+      "systemctl",
+      "--user",
+      "show",
+      "tesy-c191-native64-numeric-20260930T2102Z.service",
+      "tesy-c192-native64-fixed-20260930T2115Z.service",
+      "tesy-c193-native64-natural-20260930T2140Z.service",
+      "tesy-c193-1-A32.service",
+      "--property=LoadState,ActiveState,SubState,MainPID,ControlGroup"
+    ],
+    "rc": 0,
+    "stdout": "LoadState=not-found\nActiveState=inactive\nSubState=dead\nMainPID=0\nControlGroup=\n\nLoadState=not-found\nActiveState=inactive\nSubState=dead\nMainPID=0\nControlGroup=\n\nLoadState=not-found\nActiveState=inactive\nSubState=dead\nMainPID=0\nControlGroup=\n\nLoadState=not-found\nActiveState=inactive\nSubState=dead\nMainPID=0\nControlGroup=",
+    "stderr": ""
+  },
+  "start": {
+    "utc": "2026-09-30T21:47:56.734097+00:00",
+    "monotonic_s": 299256.207317704
+  },
+  "end": {
+    "utc": "2026-09-30T21:47:56.801207+00:00",
+    "monotonic_s": 299256.274432517
+  },
+  "experimental_processes": [],
+  "experimental_port_free": true,
+  "gpu_compute_processes_empty": true,
+  "model_kills_issued": 0
+}
