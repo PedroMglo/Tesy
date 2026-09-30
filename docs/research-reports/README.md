@@ -8,6 +8,7 @@ Sistema documental model-free: uma classe LuaLaTeX, fontes congeladas, seletores
 |---|---|
 | `R01-prior-art` | Revisão bibliográfica de prior art e claim boundary, corte em 30 setembro 2026. DRAFT; nova bibliografia integrada, revisão visual do PDF CI pendente. |
 | `S01-120b-research-synthesis` | Síntese de época C108--C189: residency, mmap, referência nativa, integração real e prior art. DRAFT até revisão visual do PDF. |
+| `S02-development-branch-synthesis` | Matriz científica das 32 branches de desenvolvimento em 30 setembro 2026, cobrindo linhas sem relatório próprio e o avanço 120B C190--C198 após o corte de S01. DRAFT até revisão de claims e PDF. |
 | `C06-attn-dispatch-compat` | Campanha 6: compatibilidade de dispatch CPU e divergência seguinte em GPU Flash. REVIEWED. |
 | `C05-first-divergence` | Campanha 5: primeira divergência causalmente localizada em CPU Flash Attention. REVIEWED. |
 | `C04-prefill-cost` | Campanha 4: relógio de prefill, paridade contemporânea e bloqueio de ubatch64. REVIEWED. |
@@ -17,9 +18,9 @@ Sistema documental model-free: uma classe LuaLaTeX, fontes congeladas, seletores
 | `R00-foundations` | Recorte do ledger datado de 24 setembro, em main `7a7d3dcbd1ff8e594ac57459c3db06306083c3ca`. Não é retrospectiva exaustiva de todas as branches. |
 | `D00-research-dossier` | Síntese R00/C1/C2, com versões e digests dos relatórios filhos congelados. |
 
-As versões v1.0.0 já publicadas de R00/C01/C02/C03/D00 são imutáveis. C04/C05/C06, R01 e S01 usam uma bibliografia por relatório em `sections/bibliography.bib`, precisamente para não alterar o digest das releases históricas ao acrescentar literatura nova.
+As versões v1.0.0 já publicadas de R00/C01/C02/C03/D00 são imutáveis. C04/C05/C06, R01, S01 e S02 usam uma bibliografia por relatório em `sections/bibliography.bib`, precisamente para não alterar o digest das releases históricas ao acrescentar literatura nova.
 
-O dossier D00 é a entrada histórica para R00/C1/C2; os relatórios de campanha contêm contrato, resultados, falhas e limites. O corte de D00 é 26 setembro 2026. **C3 tem edição própria**: consultar C03, [CURRENT-LAB.md](CURRENT-LAB.md) e a publicação autoritativa em `research/C3-FINAL-20260927.md`. D00 não foi retroativamente reescrito. Autoria pessoal/universidade/orientação não foram inventadas: `author` é null.
+O dossier D00 é a entrada histórica para R00/C1/C2; os relatórios de campanha contêm contrato, resultados, falhas e limites. O corte de D00 é 26 setembro 2026. **C3 tem edição própria**: consultar C03, [CURRENT-LAB.md](CURRENT-LAB.md) e a publicação autoritativa em `research/C3-FINAL-20260927.md`. D00 não foi retroativamente reescrito. S02 apresenta a fotografia branch-by-branch das 32 refs de desenvolvimento no cutoff de 30 setembro, incluindo o avanço C190--C198 da linha 120B posterior ao corte de S01. Autoria pessoal/universidade/orientação não foram inventadas: `author` é null.
 
 O contrato de cobertura e a divisão de responsabilidades estão em [REPORTING-PROCESS.md](REPORTING-PROCESS.md). A CI deteta campanhas fechadas sem relatório revisto; C2 e C3 passam esse gate na revisão atual. PDFs gerados ficam fora de Git e são distribuídos como artefactos versionados separados.
 
@@ -49,7 +50,7 @@ As releases ficam em `published/<id>/v<versão>/release/`; drafts usam `draft-<d
 
 ## Fontes e autoridade
 
-`sources/catalog.json` associa cada fonte interna a commit, path, Git blob SHA, SHA-256 e tamanho. `sources/objects/` contém cópias exatas de sete publicações compactas, não pesos ou dados brutos. As cópias não são uma nova fonte autoritativa: tornam o mesmo snapshot verificável offline sem incorporar a história separada do laboratório em main.
+`sources/catalog.json` associa cada fonte interna a commit, path, Git blob SHA, SHA-256 e tamanho. `sources/objects/` contém snapshots byte-exatos de relatórios e pequenos ficheiros JSON selecionados pelos relatórios, incluindo documentos de branch; não contém pesos de modelos nem bundles grandes de tensores/telemetria raw. As cópias não são uma nova fonte autoritativa: tornam o mesmo snapshot verificável offline sem incorporar a história separada do laboratório em main.
 
 A associação commit/path foi adquirida pelo conector GitHub. Tamanho, Git blob SHA e SHA-256 foram verificados sobre os bytes. Esses hashes não provam, sozinhos, a validade de uma experiência. Verificar o resumo JSON também não recalcula os pesos nem todos os manifests que ele menciona.
 

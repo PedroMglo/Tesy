@@ -5,4 +5,6 @@ A cobertura privilegia sistemas e papers com overlap direto em sparse/MoE infere
 
 Finalmente, nenhum speedup, consumo de memória ou accuracy reportado por outro trabalho é tratado como previsão do target Tesy. Diferenças de modelo, quantização, hardware, batch, contexto, routing e contrato de qualidade impedem essa extrapolação.
 
+Os resultados publicados em ISCA'26 e OSDI'26 citados nesta edição também são específicos aos modelos, hardware e arquitetura experimental de cada estudo. Em particular, a medição de movement em modelos de 200B--1000B, a avaliação de GPU I/O e a distribuição de neurónios sob activation sparsity não podem ser combinadas numa previsão para o target Tesy nem tratadas como medições no mesmo contrato.
+
 APEX e Cache-Aware Joint Router Adaptation são preprints arXiv de 2026; as suas descrições sustentam a classificação de mecanismos, não uma auditoria independente dos resultados. O estudo de edge de Alfarizy et al. cobre OLMoE-1B-7B e dois dispositivos (Apple M2 Pro e Jetson Orin Nano 8 GB), pelo que qualquer generalização para modelos muito maiores, incluindo gpt-oss-120b, fica fora da evidência citada. Esta revisão não reproduziu esses benchmarks.
