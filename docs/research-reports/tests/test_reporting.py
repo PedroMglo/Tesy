@@ -1,242 +1,1 @@
-"""Model-free documentary fault tests. No inference validation is implied."""
-import copy
-from pathlib import Path
-import shutil
-import subprocess
-import sys
-import tempfile
-import unittest
-from unittest.mock import patch
-ROOT=Path(__file__).resolve().parents[1]
-sys.path.insert(0,str(ROOT/'tools'))
-sys.path.insert(0,str(ROOT.parents[1]/'tools'))
-import reportlib as r
-import build_report as b
-import new_campaign as n
-import release_candidates as rc
-C2='C02-correctness-usability'
-
-class Primitives(unittest.TestCase):
-    def test_duplicate_json(self):
-        with self.assertRaisesRegex(r.EvidenceError,'DUPLICATE'):r.strict_json(b'{"a":1,"a":2}')
-    def test_nested_duplicate(self):
-        with self.assertRaises(r.EvidenceError):r.strict_json(b'{"x":{"a":1,"a":2}}')
-    def test_nonfinite(self):
-        for text in [b'NaN',b'Infinity',b'-Infinity',b'1e999']:
-            with self.subTest(text=text),self.assertRaises(r.EvidenceError):r.strict_json(text)
-    def test_bad_json_utf8(self):
-        for text in [b'\xff',b'{',b'{"x":1,}']:
-            with self.subTest(text=text),self.assertRaises(r.EvidenceError):r.strict_json(text)
-    def test_pointer_escape(self):
-        x={'a/b':{'~':3},'':4};self.assertEqual(r.pointer(x,'/a~1b/~0'),3);self.assertEqual(r.pointer(x,'/'),4);self.assertEqual(r.pointer(x,''),x)
-    def test_pointer_refuses_alias(self):
-        for p in ['x','/absent','/a/~2','/a/00','/a/-','/a/9']:
-            with self.subTest(p=p),self.assertRaises(r.EvidenceError):r.pointer({'a':[2]},p)
-    def test_units(self):
-        self.assertEqual(r.convert(2**30,'B','GiB'),1);self.assertEqual(r.convert(10**9,'B','GB'),1)
-        self.assertEqual(r.convert(7000,'MiB','GiB'),6.8359375);self.assertEqual(r.convert(60,'s','min'),1)
-    def test_invalid_units(self):
-        for raw,u in [('B','s'),('token/s','GiB')]:
-            with self.subTest(raw=raw),self.assertRaises(r.EvidenceError):r.convert(1,raw,u)
-    def test_paths(self):
-        with tempfile.TemporaryDirectory() as td:
-            for p in ['.','../x','/tmp/x','a/../b','a//b','a/./b','a\\b','a:b']:
-                with self.subTest(p=p),self.assertRaises(r.EvidenceError):r.safe(Path(td),p)
-    def test_symlink(self):
-        with tempfile.TemporaryDirectory() as td:
-            root=Path(td);(root/'link').symlink_to('/tmp',target_is_directory=True)
-            with self.assertRaisesRegex(r.EvidenceError,'SYMLINK'):r.safe(root,'link/x')
-    def test_atomic_no_replace(self):
-        with tempfile.TemporaryDirectory() as td:
-            root=Path(td);a=root/'a';z=root/'z';a.mkdir();(a/'x').write_text('original');r.publish_no_replace(a,z)
-            a.mkdir();(a/'x').write_text('new')
-            with self.assertRaises(r.EvidenceError):r.publish_no_replace(a,z)
-            self.assertEqual((z/'x').read_text(),'original');self.assertEqual((a/'x').read_text(),'new')
-    def test_canonical(self):self.assertEqual(r.canonical({'b':2,'a':1}),r.canonical({'a':1,'b':2}))
-    def test_escape(self):
-        x=r.escape('a_b%&$#{}'+chr(92));self.assertIn(r'\_',x);self.assertIn(r'\%',x);self.assertIn(r'\textbackslash{}',x)
-
-class Pipeline(unittest.TestCase):
-    def setUp(self):
-        self.temp=tempfile.TemporaryDirectory();self.root=Path(self.temp.name)/'reports'
-        shutil.copytree(ROOT,self.root,ignore=shutil.ignore_patterns('_build','published','__pycache__','*.pyc'))
-        self.d=self.root/'campaigns'/C2
-    def tearDown(self):self.temp.cleanup()
-    def result(self):return r.verify(self.root,C2)
-    def edit(self,file,fn):
-        p=self.d/file;v=r.read(p);fn(v);p.write_bytes(r.canonical(v))
-    def med(self,fn):self.edit('evidence-spec.json',lambda s:fn(s['metrics'][0]))
-    def audit(self,digest,pdf=b'PDF-FIXTURE'):
-        a={'schema_version':'tesy-audit-v1','inputs_sha256':digest,'reviewed_pdf_sha256':r.sha(pdf),'status':'REVIEWED',
-           'reviewer':'SYNTHETIC TEST FIXTURE','scientific_endorsement':False,'claims_reviewed':True,
-           'all_pages_visually_reviewed':True,'open_blockers':[],'notes':['Not a real visual audit.']}
-        (self.d/'audit.json').write_bytes(r.canonical(a))
-    def test_c2_blocked_valid(self):
-        v=self.result();self.assertEqual(v['meta']['scientific_state'],'CORRECTNESS_BLOCKED')
-        self.assertEqual(v['lock']['experimental_reproduction'],'NOT_RUN');self.assertEqual(v['lock']['raw_data_availability'],'NOT_ACCESSED')
-        self.assertEqual(v['lock']['checks_passed'],7);self.assertEqual(v['values']['M-C2-CASES']['value'],12)
-        self.assertEqual(v['values']['M-C2-HOST-PEAK']['value'],15344664576/2**30)
-    def test_c1_original(self):
-        v=r.verify(self.root,'C01-scale-lab');self.assertEqual(v['meta']['scientific_state'],'SUCCESS')
-        self.assertEqual(v['lock']['sources'][0]['commit'],'c67529e290844bb3d9033615072d5878014a46bc')
-        self.assertEqual(v['values']['M-C1-UTILITY-PASS']['value'],8)
-    def test_automatic_release_candidates_include_new_reviewed_reports(self):
-        self.assertEqual(rc.candidates(self.root),[
-            ('C03-boundary-prefill','1.0.0','reports-C03-boundary-prefill-v1.0.0'),
-            ('C02-correctness-usability','1.0.0','reports-C02-correctness-usability-v1.0.0'),
-            ('C01-scale-lab','1.0.0','reports-C01-scale-lab-v1.0.0'),
-            ('R00-foundations','1.0.0','reports-R00-foundations-v1.0.0'),
-            ('D00-research-dossier','1.0.0','reports-D00-research-dossier-v1.0.0'),
-            ('C04-prefill-cost','1.0.0','reports-C04-prefill-cost-v1.0.0'),
-            ('C05-first-divergence','1.0.0','reports-C05-first-divergence-v1.0.0'),
-            ('C06-attn-dispatch-compat','1.0.0','reports-C06-attn-dispatch-compat-v1.0.0'),
-            ('R01-prior-art','1.0.0','reports-R01-prior-art-v1.0.0'),
-        ])
-    def test_new_report_locks_are_current(self):
-        for report_id in ('C04-prefill-cost','C05-first-divergence','C06-attn-dispatch-compat','R01-prior-art'):
-            with self.subTest(report_id=report_id):
-                verified=r.verify(self.root,report_id)
-                committed=r.read(verified['folder']/'evidence-lock.json')
-                self.assertEqual(committed['inputs_sha256'],verified['lock']['inputs_sha256'])
-                self.assertEqual((verified['folder']/'generated/metadata.tex').read_bytes(),r.generated(verified)['metadata.tex'])
-
-    def test_automatic_release_candidate_requires_reviewed_audit(self):
-        p=self.root/'campaigns'/'C03-boundary-prefill'/'audit.json';a=r.read(p);a['status']='DRAFT';p.write_bytes(r.canonical(a))
-        with self.assertRaisesRegex(r.EvidenceError,'AUTO_RELEASE_REQUIRES_REVIEWED_AUDIT'):rc.candidates(self.root)
-    def test_extra_field(self):
-        self.edit('campaign.json',lambda m:m.update(unknown=True))
-        with self.assertRaisesRegex(r.EvidenceError,'SCHEMA'):self.result()
-    def test_invalid_date(self):
-        self.edit('campaign.json',lambda m:m.update(date='2026-02-30'))
-        with self.assertRaisesRegex(r.EvidenceError,'INVALID_REPORT_DATE'):self.result()
-    def test_promoted_state(self):
-        self.edit('campaign.json',lambda m:m.update(scientific_state='PASS'))
-        with self.assertRaisesRegex(r.EvidenceError,'SCIENTIFIC_STATE_MISMATCH'):self.result()
-    def test_duplicate_metric(self):
-        self.edit('evidence-spec.json',lambda s:s['metrics'].append(copy.deepcopy(s['metrics'][0])))
-        with self.assertRaisesRegex(r.EvidenceError,'DUPLICATE_ID'):self.result()
-    def test_duplicate_source_alias(self):
-        p=self.root/'sources/catalog.json';s=r.read(p);x=copy.deepcopy(s['sources'][0]);x['id']='E-ALIAS';s['sources'].append(x);p.write_bytes(r.canonical(s))
-        with self.assertRaisesRegex(r.EvidenceError,'DUPLICATE_SOURCE_ALIAS'):self.result()
-    def test_corrupt_byte(self):
-        s=self.result()['catalog']['E-C2-GATE'];p=self.root/'sources/objects'/(s['sha256']+'.source');data=p.read_bytes();p.write_bytes(b'X'+data[1:])
-        with self.assertRaisesRegex(r.EvidenceError,'SHA256_MISMATCH'):self.result()
-    def test_source_missing(self):
-        s=self.result()['catalog']['E-C2-GATE'];(self.root/'sources/objects'/(s['sha256']+'.source')).unlink()
-        with self.assertRaisesRegex(r.EvidenceError,'SOURCE_UNAVAILABLE'):self.result()
-    def test_source_truncated(self):
-        s=self.result()['catalog']['E-C2-GATE'];p=self.root/'sources/objects'/(s['sha256']+'.source');p.write_bytes(p.read_bytes()[:-1])
-        with self.assertRaisesRegex(r.EvidenceError,'SIZE_MISMATCH'):self.result()
-    def test_blob_sha(self):
-        p=self.root/'sources/catalog.json';s=r.read(p);s['sources'][0]['git_blob_sha1']='0'*40;p.write_bytes(r.canonical(s))
-        with self.assertRaisesRegex(r.EvidenceError,'GIT_BLOB_MISMATCH'):self.result()
-    def test_old_summary_wrong_path(self):
-        self.edit('evidence-spec.json',lambda s:s['source_contracts'][0].update(path='results/campaign-summary.json'))
-        with self.assertRaisesRegex(r.EvidenceError,'AUTHORITY_PATH_MISMATCH'):self.result()
-    def test_unpinned_commit(self):
-        self.edit('campaign.json',lambda m:m.update(evidence_snapshot_commits=['0'*40]))
-        with self.assertRaisesRegex(r.EvidenceError,'UNPINNED_COMMIT'):self.result()
-    def test_identity_condition(self):
-        def change(s):next(x for x in s['source_contracts'] if x['json_values'])['json_values'][0]['expected']='WRONG'
-        self.edit('evidence-spec.json',change)
-        with self.assertRaisesRegex(r.EvidenceError,'AUTHORITY_IDENTITY_MISMATCH'):self.result()
-    def test_missing_pointer(self):
-        self.med(lambda m:m.update(extract={'type':'json','source':'E-C2-GATE','pointer':'/absent'}))
-        with self.assertRaisesRegex(r.EvidenceError,'MISSING_POINTER'):self.result()
-    def test_boolean_not_number(self):
-        def change(s):
-            x=next(m for m in s['metrics'] if m['extract'].get('source')=='E-C2-SUMMARY');x['extract']['pointer']='/performance/goal_4_tok_s_met'
-        self.edit('evidence-spec.json',change)
-        with self.assertRaisesRegex(r.EvidenceError,'NOT_FINITE_NUMERIC'):self.result()
-    def test_wrong_conversion(self):
-        self.med(lambda m:m.update(unit='GiB'))
-        with self.assertRaisesRegex(r.EvidenceError,'INVALID_UNIT_CONVERSION'):self.result()
-    def test_wrong_dataset_unit(self):
-        self.edit('evidence-spec.json',lambda s:s['datasets'][0]['columns'][0].update(unit='GiB'))
-        with self.assertRaisesRegex(r.EvidenceError,'DATASET_UNIT_MISMATCH'):self.result()
-    def test_duplicate_dataset_label(self):
-        self.edit('evidence-spec.json',lambda s:s['datasets'][0]['rows'].append(copy.deepcopy(s['datasets'][0]['rows'][0])))
-        with self.assertRaisesRegex(r.EvidenceError,'DUPLICATE_ID'):self.result()
-    def test_crosscheck_conflict(self):
-        self.edit('evidence-spec.json',lambda s:s['checks'].append({'type':'equal','left':'M-C2-DECODE','right':'M-C2-SECOND-HALF','atol':0}))
-        with self.assertRaisesRegex(r.EvidenceError,'CROSSCHECK_CONFLICT'):self.result()
-    def test_hash_link_conflict(self):
-        def change(s):next(x for x in s['checks'] if x['type']=='hash-link')['target']='E-C2-SUMMARY'
-        self.edit('evidence-spec.json',change)
-        with self.assertRaisesRegex(r.EvidenceError,'HASH_LINK_CONFLICT'):self.result()
-    def test_cycle(self):
-        self.med(lambda m:m.update(extract={'type':'ratio','inputs':[m['id'],m['id']]}))
-        with self.assertRaisesRegex(r.EvidenceError,'METRIC_CYCLE'):self.result()
-    def test_wrong_authority(self):
-        self.med(lambda m:m.update(family='wrong'))
-        with self.assertRaisesRegex(r.EvidenceError,'SOURCE_NOT_AUTHORITATIVE'):self.result()
-    def test_withdrawn_promoted(self):
-        self.edit('evidence-spec.json',lambda s:[x.update(status='WITHDRAWN') for x in s['claims']])
-        with self.assertRaisesRegex(r.EvidenceError,'NONCURRENT_CLAIM_PROMOTED'):self.result()
-    def test_missing_claim(self):
-        p=self.d/'sections/01-summary.tex';p.write_text(p.read_text()+r'\claim{CL-MISSING}{x}')
-        with self.assertRaisesRegex(r.EvidenceError,'UNKNOWN_TEX_CLAIM'):self.result()
-    def test_missing_section(self):
-        (self.d/'sections/07-failures.tex').unlink()
-        with self.assertRaisesRegex(r.EvidenceError,'MISSING_SECTION'):self.result()
-    def test_unsafe_tex_primitive(self):
-        p=self.d/'sections/01-summary.tex';p.write_text(p.read_text()+r'\write18{foo}')
-        with self.assertRaisesRegex(r.EvidenceError,'UNSAFE_TEX'):self.result()
-    def test_roundtrip_derive(self):
-        v=self.result();r.derive(v);r.check_derived(v);before=(self.d/'generated/values.json').read_bytes();r.derive(self.result());self.assertEqual(before,(self.d/'generated/values.json').read_bytes())
-    def test_stale_derived(self):
-        v=self.result();r.derive(v);p=self.d/'generated/metrics.tex';p.write_text(p.read_text()+'% changed\n')
-        with self.assertRaisesRegex(r.EvidenceError,'DERIVED_STALE'):r.check_derived(v)
-    def test_extra_generated(self):
-        v=self.result();r.derive(v);(self.d/'generated/rogue').write_text('x')
-        with self.assertRaisesRegex(r.EvidenceError,'DERIVED_FILE_SET_MISMATCH'):r.check_derived(v)
-        with self.assertRaisesRegex(r.EvidenceError,'UNEXPECTED_GENERATED_FILES'):r.derive(v)
-    def test_missing_lock(self):
-        v=self.result();r.derive(v);(self.d/'evidence-lock.json').unlink()
-        with self.assertRaisesRegex(r.EvidenceError,'MISSING_JSON'):r.check_derived(v)
-    def test_changed_prose_invalidates(self):
-        v=self.result();r.derive(v);p=self.d/'sections/01-summary.tex';p.write_text(p.read_text()+'\nEditorial change.\n');v2=self.result()
-        self.assertNotEqual(v['lock']['inputs_sha256'],v2['lock']['inputs_sha256'])
-        with self.assertRaises(r.EvidenceError):r.check_derived(v2)
-    def test_release_needs_audit(self):
-        r.derive(self.result());p=self.d/'audit.json'
-        if p.exists():p.unlink()
-        with self.assertRaisesRegex(r.EvidenceError,'MISSING_JSON'):b.build(self.root,C2,'release')
-    def test_stale_audit(self):
-        r.derive(self.result());self.audit('0'*64)
-        with self.assertRaisesRegex(r.EvidenceError,'AUDIT_STALE'):b.build(self.root,C2,'release')
-    def test_mock_release_preserves_blocked(self):
-        v=self.result();r.derive(v);self.audit(v['lock']['inputs_sha256']);fake=(b'PDF-FIXTURE',b'log',[],self.root)
-        with patch.object(b,'version',return_value='TEST'),patch.object(b,'compile_one',return_value=fake):
-            dest=b.build(self.root,C2,'release',check_reproducible=True);m=r.read(dest/'release.json');self.assertEqual(m['scientific_state'],'CORRECTNESS_BLOCKED');self.assertEqual(m['experimental_reproduction'],'NOT_RUN')
-            with self.assertRaisesRegex(r.EvidenceError,'PUBLICATION_EXISTS'):b.build(self.root,C2,'release')
-    def test_reviewed_pdf_required(self):
-        v=self.result();r.derive(v);self.audit(v['lock']['inputs_sha256']);fake=(b'UNREVIEWED',b'log',[],self.root)
-        with patch.object(b,'version',return_value='TEST'),patch.object(b,'compile_one',return_value=fake):
-            with self.assertRaisesRegex(r.EvidenceError,'PDF_DIFFERS_FROM_REVIEWED_ARTIFACT'):b.build(self.root,C2,'release')
-    def test_concurrent_input_change(self):
-        r.derive(self.result())
-        def compile_changed(*args):
-            p=self.d/'sections/01-summary.tex';p.write_text(p.read_text()+'\nChanged during build.\n');return b'PDF-FIXTURE',b'log',[],self.root
-        with patch.object(b,'version',return_value='TEST'),patch.object(b,'compile_one',side_effect=compile_changed):
-            with self.assertRaisesRegex(r.EvidenceError,'INPUTS_CHANGED_DURING_BUILD'):b.build(self.root,C2)
-    def test_pdf_repro_mismatch(self):
-        r.derive(self.result())
-        with patch.object(b,'version',return_value='TEST'),patch.object(b,'compile_one',side_effect=[(b'A',b'log',[],self.root),(b'B',b'log',[],self.root)]):
-            with self.assertRaisesRegex(r.EvidenceError,'PDF_BYTE_DIFFERENT'):b.build(self.root,C2,check_reproducible=True)
-    def test_dossier_pin(self):
-        d=self.root/'dossier/D00-research-dossier';p=d/'campaign.json';m=r.read(p);m['included_reports']=[{'id':C2,'version':'1.0.0','inputs_sha256':'0'*64}];p.write_bytes(r.canonical(m))
-        with self.assertRaisesRegex(r.EvidenceError,'DOSSIER_INPUTS_STALE'):r.verify(self.root,m['id'])
-    def test_new_skeleton_no_fake_result(self):
-        p=n.create(self.root,'TEST-FUTURE','0'*40,'2026-09-26');self.assertEqual(r.read(p/'campaign.json')['scientific_state'],'NOT_RUN');self.assertEqual(r.read(p/'evidence-spec.json')['metrics'],[])
-        with self.assertRaisesRegex(r.EvidenceError,'CAMPAIGN_EXISTS'):n.create(self.root,'TEST-FUTURE','0'*40,'2026-09-26')
-    def test_git_missing_no_fallback(self):
-        with tempfile.TemporaryDirectory() as td:
-            subprocess.run(['git','init','-q',td],check=True)
-            with self.assertRaisesRegex(r.EvidenceError,'GIT_SOURCE_UNAVAILABLE'):r.source_bytes(self.root,self.result()['catalog']['E-C2-GATE'],'git',Path(td))
-    def test_partial_clone_refused(self):
-        with tempfile.TemporaryDirectory() as td:
-            subprocess.run(['git','init','-q',td],check=True);subprocess.run(['git','-C',td,'config','remote.origin.promisor','true'],check=True)
-            with self.assertRaisesRegex(r.EvidenceError,'PARTIAL_OR_UNREADABLE'):r.source_bytes(self.root,self.result()['catalog']['E-C2-GATE'],'git',Path(td))
-
-if __name__=='__main__':unittest.main()
+YªçŠx-®éÜj×¢ëiºÚ+Š§j[h‘éÜ¢éíçÏxN‹Z–‹­¦ëeŠw¬Ôˆˆ‰5½‘•°µ™É•”‘½Õµ•¹Ñ…Éä™…Õ±ĞÑ•ÍÑÌ¸9¼¥¹™•É•¹”Ù…±¥‘…Ñ¥½¸¥Ì¥µÁ±¥•¸ˆˆˆ)¥µÁ½ÉĞ½Áä)™É½´Á…Ñ¡±¥ˆ¥µÁ½ÉĞA…Ñ )¥µÁ½ÉĞÍ¡ÕÑ¥°)¥µÁ½ÉĞÍÕ‰ÁÉ½•ÍÌ)¥µÁ½ÉĞÍåÌ)¥µÁ½ÉĞÑ•µÁ™¥±”)¥µÁ½ÉĞÕ¹¥ÑÑ•ÍĞ)™É½´Õ¹¥ÑÑ•ÍĞ¹µ½¬¥µÁ½ÉĞÁ…Ñ )I==PõA…Ñ ¡}}™¥±•}|¤¹É•Í½±Ù” ¤¹Á…É•¹ÑÍlÅt)ÍåÌ¹Á…Ñ ¹¥¹Í•ÉĞ À±ÍÑÈ¡I==P¼Ñ½½±Ìœ¤¤)ÍåÌ¹Á…Ñ ¹¥¹Í•ÉĞ À±ÍÑÈ¡I==P¹Á…É•¹ÑÍlÅt¼Ñ½½±Ìœ¤¤)¥µÁ½ÉĞÉ•Á½ÉÑ±¥ˆ…ÌÈ)¥µÁ½ÉĞ‰Õ¥±‘}É•Á½ÉĞ…Ìˆ)¥µÁ½ÉĞ¹•İ}…µÁ…¥¸…Ì¸)¥µÁ½ÉĞÉ•±•…Í•}…¹‘¥‘…Ñ•Ì…ÌÉŒ)ÈôÀÈµ½ÉÉ•Ñ¹•ÍÌµÕÍ…‰¥±¥Ñäœ()±…ÍÌAÉ¥µ¥Ñ¥Ù•Ì¡Õ¹¥ÑÑ•ÍĞ¹Q•ÍÑ…Í”¤è(€€€‘•˜Ñ•ÍÑ}‘ÕÁ±¥…Ñ•}©Í½¸¡Í•±˜¤è(€€€€€€€İ¥Ñ Í•±˜¹…ÍÍ•ÉÑI…¥Í•ÍI••à¡È¹Ù¥‘•¹•ÉÉ½È°UA1%Qœ¤éÈ¹ÍÑÉ¥Ñ}©Í½¸¡ˆì‰„ˆèÄ°‰„ˆèÉôœ¤(€€€‘•˜Ñ•ÍÑ}¹•ÍÑ•‘}‘ÕÁ±¥…Ñ”¡Í•±˜¤è(€€€€€€€İ¥Ñ Í•±˜¹…ÍÍ•ÉÑI…¥Í•Ì¡È¹Ù¥‘•¹•ÉÉ½È¤éÈ¹ÍÑÉ¥Ñ}©Í½¸¡ˆì‰àˆéì‰„ˆèÄ°‰„ˆèÉõôœ¤(€€€‘•˜Ñ•ÍÑ}¹½¹™¥¹¥Ñ”¡Í•±˜¤è(€€€€€€€™½ÈÑ•áĞ¥¸mˆ9…8œ±ˆ%¹™¥¹¥Ñäœ±ˆœµ%¹™¥¹¥Ñäœ±ˆœÅ”ääätè(€€€€€€€€€€€İ¥Ñ Í•±˜¹ÍÕ‰Q•ÍĞ¡Ñ•áĞõÑ•áĞ¤±Í•±˜¹…ÍÍ•ÉÑI…¥Í•Ì¡È¹Ù¥‘•¹•ÉÉ½È¤éÈ¹ÍÑÉ¥Ñ}©Í½¸¡Ñ•áĞ¤(€€€‘•˜Ñ•ÍÑ}‰…‘}©Í½¹}ÕÑ˜à¡Í•±˜¤è(€€€€€€€™½ÈÑ•áĞ¥¸mˆqá™˜œ±ˆìœ±ˆì‰àˆèÄ±ôtè(€€€€€€€€€€€İ¥Ñ Í•±˜¹ÍÕ‰Q•ÍĞ¡Ñ•áĞõÑ•áĞ¤±Í•±˜¹…ÍÍ•ÉÑI…¥Í•Ì¡È¹Ù¥‘•¹•ÉÉ½È¤éÈ¹ÍÑÉ¥Ñ}©Í½¸¡Ñ•áĞ¤(€€€‘•˜Ñ•ÍÑ}Á½¥¹Ñ•É}•Í…Á”¡Í•±˜¤è(€€€€€€€àõì„½ˆœéìøœèÍô°œœèÑôíÍ•±˜¹…ÍÍ•ÉÑÅÕ…°¡È¹Á½¥¹Ñ•È¡à°œ½…øÅˆ½øÀœ¤°Ì¤íÍ•±˜¹…ÍÍ•ÉÑÅÕ…°¡È¹Á½¥¹Ñ•È¡à°œ¼œ¤°Ğ¤íÍ•±˜¹…ÍÍ•ÉÑÅÕ…°¡È¹Á½¥¹Ñ•È¡à°œœ¤±à¤(€€€‘•˜Ñ•ÍÑ}Á½¥¹Ñ•É}É•™ÕÍ•Í}…±¥…Ì¡Í•±˜¤è(€€€€€€€™½ÈÀ¥¸làœ°œ½…‰Í•¹Ğœ°œ½„½øÈœ°œ½„¼ÀÀœ°œ½„¼´œ°œ½„¼ätè(€€€€€€€€€€€İ¥Ñ Í•±˜¹ÍÕ‰Q•ÍĞ¡ÀõÀ¤±Í•±˜¹…ÍÍ•ÉÑI…¥Í•Ì¡È¹Ù¥‘•¹•ÉÉ½È¤éÈ¹Á½¥¹Ñ•È¡ì„œélÉuô±À¤(€€€‘•˜Ñ•ÍÑ}Õ¹¥ÑÌ¡Í•±˜¤è(€€€€€€€Í•±˜¹…ÍÍ•ÉÑÅÕ…°¡È¹½¹Ù•ÉĞ È¨¨ÌÀ°œ°¥œ¤°Ä¤íÍ•±˜¹…ÍÍ•ÉÑÅÕ…°¡È¹½¹Ù•ÉĞ ÄÀ¨¨ä°œ°œ¤°Ä¤(€€€€€€€Í•±˜¹…ÍÍ•ÉÑÅÕ…°¡È¹½¹Ù•ÉĞ ÜÀÀÀ°5¥œ°¥œ¤°Ø¸àÌÔäÌÜÔ¤íÍ•±˜¹…ÍÍ•ÉÑÅÕ…°¡È¹½¹Ù•ÉĞ ØÀ°Ìœ°µ¥¸œ¤°Ä¤(€€€‘•˜Ñ•ÍÑ}¥¹Ù…±¥‘}Õ¹¥ÑÌ¡Í•±˜¤è(€€€€€€€™½ÈÉ…Ü±Ô¥¸l œ°Ìœ¤° Ñ½­•¸½Ìœ°¥œ¥tè(€€€€€€€€€€€İ¥Ñ Í•±˜¹ÍÕ‰Q•ÍĞ¡É…ÜõÉ…Ü¤±Í•±˜¹…ÍÍ•ÉÑI…¥Í•Ì¡È¹Ù¥‘•¹•ÉÉ½È¤éÈ¹½¹Ù•ÉĞ Ä±É…Ü±Ô¤(€€€‘•˜Ñ•ÍÑ}Á…Ñ¡Ì¡Í•±˜¤è(€€€€€€€İ¥Ñ Ñ•µÁ™¥±”¹Q•µÁ½É…Éå¥É•Ñ½Éä ¤…ÌÑè(€€€€€€€€€€€™½ÈÀ¥¸lœ¸œ°œ¸¸½àœ°œ½ÑµÀ½àœ°„¼¸¸½ˆœ°„¼½ˆœ°„¼¸½ˆœ°…qqˆœ°„éˆtè(€€€€€€€€€€€€€€€İ¥Ñ Í•±˜¹ÍÕ‰Q•ÍĞ¡ÀõÀ¤±Í•±˜¹…ÍÍ•ÉÑI…¥Í•Ì¡È¹Ù¥‘•¹•ÉÉ½È¤éÈ¹Í…™”¡A…Ñ ¡Ñ¤±À¤(€€€‘•˜Ñ•ÍÑ}Íåµ±¥¹¬¡Í•±˜¤è(€€€€€€€İ¥Ñ Ñ•µÁ™¥±”¹Q•µÁ½É…Éå¥É•Ñ½Éä ¤…ÌÑè(€€€€€€€€€€€É½½ĞõA…Ñ ¡Ñ¤ì¡É½½Ğ¼±¥¹¬œ¤¹Íåµ±¥¹­}Ñ¼ œ½ÑµÀœ±Ñ…É•Ñ}¥Í}‘¥É•Ñ½ÉäõQÉÕ”¤(€€€€€€€€€€€İ¥Ñ Í•±˜¹…ÍÍ•ÉÑI…¥Í•ÍI••à¡È¹Ù¥‘•¹•ÉÉ½È°Me51%9,œ¤éÈ¹Í…™”¡É½½Ğ°±¥¹¬½àœ¤(€€€‘•˜Ñ•ÍÑ}…Ñ½µ¥}¹½}É•Á±…”¡Í•±˜¤è(€€€€€€€İ¥Ñ Ñ•µÁ™¥±”¹Q•µÁ½É…Éå¥É•Ñ½Éä ¤…ÌÑè(€€€€€€€€€€€É½½ĞõA…Ñ ¡Ñ¤í„õÉ½½Ğ¼„œíèõÉ½½Ğ¼èœí„¹µ­‘¥È ¤ì¡„¼àœ¤¹İÉ¥Ñ•}Ñ•áĞ ½É¥¥¹…°œ¤íÈ¹ÁÕ‰±¥Í¡}¹½}É•Á±…”¡„±è¤(€€€€€€€€€€€„¹µ­‘¥È ¤ì¡„¼àœ¤¹İÉ¥Ñ•}Ñ•áĞ ¹•Üœ¤(€€€€€€€€€€€İ¥Ñ Í•±˜¹…ÍÍ•ÉÑI…¥Í•Ì¡È¹Ù¥‘•¹•ÉÉ½È¤éÈ¹ÁÕ‰±¥Í¡}¹½}É•Á±…”¡„±è¤(€€€€€€€€€€€Í•±˜¹…ÍÍ•ÉÑÅÕ…° ¡è¼àœ¤¹É•…‘}Ñ•áĞ ¤°½É¥¥¹…°œ¤íÍ•±˜¹…ÍÍ•ÉÑÅÕ…° ¡„¼àœ¤¹É•…‘}Ñ•áĞ ¤°¹•Üœ¤(€€€‘•˜Ñ•ÍÑ}…¹½¹¥…°¡Í•±˜¤éÍ•±˜¹…ÍÍ•ÉÑÅÕ…°¡È¹…¹½¹¥…°¡ìˆœèÈ°„œèÅô¤±È¹…¹½¹¥…°¡ì„œèÄ°ˆœèÉô¤¤(€€€‘•˜Ñ•ÍÑ}•Í…Á”¡Í•±˜¤è(€€€€€€€àõÈ¹•Í…Á” …}ˆ”˜íôœ­¡È äÈ¤¤íÍ•±˜¹…ÍÍ•ÉÑ%¸¡Èq|œ±à¤íÍ•±˜¹…ÍÍ•ÉÑ%¸¡Èp”œ±à¤íÍ•±˜¹…ÍÍ•ÉÑ%¸¡ÈqÑ•áÑ‰…­Í±…Í¡íôœ±à¤()±…ÍÌA¥Á•±¥¹”¡Õ¹¥ÑÑ•ÍĞ¹Q•ÍÑ…Í”¤è(€€€‘•˜Í•ÑUÀ¡Í•±˜¤è(€€€€€€€Í•±˜¹Ñ•µÀõÑ•µÁ™¥±”¹Q•µÁ½É…Éå¥É•Ñ½Éä ¤íÍ•±˜¹É½½ĞõA…Ñ ¡Í•±˜¹Ñ•µÀ¹¹…µ”¤¼É•Á½ÉÑÌœ(€€€€€€€Í¡ÕÑ¥°¹½ÁåÑÉ•”¡I==P±Í•±˜¹É½½Ğ±¥¹½É”õÍ¡ÕÑ¥°¹¥¹½É•}Á…ÑÑ•É¹Ì }‰Õ¥±œ°ÁÕ‰±¥Í¡•œ°}}Áå…¡•}|œ°œ¨¹ÁåŒœ¤¤(€€€€€€€Í•±˜¹õÍ•±˜¹É½½Ğ¼…µÁ…¥¹Ìœ½È(€€€‘•˜Ñ•…É½İ¸¡Í•±˜¤éÍ•±˜¹Ñ•µÀ¹±•…¹ÕÀ ¤(€€€‘•˜É•ÍÕ±Ğ¡Í•±˜¤éÉ•ÑÕÉ¸È¹Ù•É¥™ä¡Í•±˜¹É½½Ğ±È¤(€€€‘•˜•‘¥Ğ¡Í•±˜±™¥±”±™¸¤è(€€€€€€€ÀõÍ•±˜¹½™¥±”íØõÈ¹É•…¡À¤í™¸¡Ø¤íÀ¹İÉ¥Ñ•}‰åÑ•Ì¡È¹…¹½¹¥…°¡Ø¤¤(€€€‘•˜µ•¡Í•±˜±™¸¤éÍ•±˜¹•‘¥Ğ •Ù¥‘•¹”µÍÁ•Œ¹©Í½¸œ±±…µ‰‘„Ìé™¸¡Ílµ•ÑÉ¥ÌulÁt¤¤(€€€‘•˜…Õ‘¥Ğ¡Í•±˜±‘¥•ÍĞ±Á‘˜õˆAµ%aQUIœ¤è(€€€€€€€„õìÍ¡•µ…}Ù•ÉÍ¥½¸œèÑ•Íäµ…Õ‘¥ĞµØÄœ°¥¹ÁÕÑÍ}Í¡„ÈÔØœé‘¥•ÍĞ°É•Ù¥•İ•‘}Á‘™}Í¡„ÈÔØœéÈ¹Í¡„¡Á‘˜¤°ÍÑ…ÑÕÌœèIY%]œ°(€€€€€€€€€€€É•Ù¥•İ•ÈœèMe9Q!Q%QMP%aQUIœ°Í¥•¹Ñ¥™¥}•¹‘½ÉÍ•µ•¹Ğœé…±Í”°±…¥µÍ}É•Ù¥•İ•œéQÉÕ”°(€€€€€€€€€€€…±±}Á…•Í}Ù¥ÍÕ…±±å}É•Ù¥•İ•œéQÉÕ”°½Á•¹}‰±½­•ÉÌœémt°¹½Ñ•Ìœél9½Ğ„É•…°Ù¥ÍÕ…°…Õ‘¥Ğ¸uô(€€€€€€€€¡Í•±˜¹¼…Õ‘¥Ğ¹©Í½¸œ¤¹İÉ¥Ñ•}‰åÑ•Ì¡È¹…¹½¹¥…°¡„¤¤(€€€‘•˜Ñ•ÍÑ}ŒÉ}‰±½­•‘}Ù…±¥¡Í•±˜¤è(€€€€€€€ØõÍ•±˜¹É•ÍÕ±Ğ ¤íÍ•±˜¹…ÍÍ•ÉÑÅÕ…°¡Ùlµ•Ñ„ulÍ¥•¹Ñ¥™¥}ÍÑ…Ñ”t°=IIQ9MM}	1=-œ¤(€€€€€€€Í•±˜¹…ÍÍ•ÉÑÅÕ…°¡Ùl±½¬ul•áÁ•É¥µ•¹Ñ…±}É•ÁÉ½‘ÕÑ¥½¸t°9=Q}IU8œ¤íÍ•±˜¹…ÍÍ•ÉÑÅÕ…°¡Ùl±½¬ulÉ…İ}‘…Ñ…}…Ù…¥±…‰¥±¥Ñät°9=Q}MMœ¤(€€€€€€€Í•±˜¹…ÍÍ•ÉÑÅÕ…°¡Ùl±½¬ul¡•­Í}Á…ÍÍ•t°Ü¤íÍ•±˜¹…ÍÍ•ÉÑÅÕ…°¡ÙlÙ…±Õ•Ìul4µÈµMLulÙ…±Õ”t°ÄÈ¤(€€€€€€€Í•±˜¹…ÍÍ•ÉÑÅÕ…°¡ÙlÙ…±Õ•Ìul4µÈµ!=MPµA,ulÙ…±Õ”t°ÄÔÌĞĞØØĞÔÜØ¼È¨¨ÌÀ¤(€€€‘•˜Ñ•ÍÑ}ŒÅ}½É¥¥¹…°¡Í•±˜¤è(€€€€€€€ØõÈ¹Ù•É¥™ä¡Í•±˜¹É½½Ğ°ÀÄµÍ…±”µ±…ˆœ¤íÍ•±˜¹…ÍÍ•ÉÑÅÕ…°¡Ùlµ•Ñ„ulÍ¥•¹Ñ¥™¥}ÍÑ…Ñ”t°MUMLœ¤(€€€€€€€Í•±˜¹…ÍÍ•ÉÑÅÕ…°¡Ùl±½¬ulÍ½ÕÉ•ÌulÁul½µµ¥Ğt°ŒØÜÔÈå”ÈäÀàĞÑ‰ˆÍäÀÌÌØÄÔÀÜÉÔàÜàÀÄÑ„ĞÙ‰Œœ¤(€€€€€€€Í•±˜¹…ÍÍ•ÉÑÅÕ…°¡ÙlÙ…±Õ•Ìul4µÄµUQ%1%QdµAMLulÙ…±Õ”t°à¤(€€€‘•˜Ñ•ÍÑ}…ÕÑ½µ…Ñ¥}É•±•…Í•}…¹‘¥‘…Ñ•Í}•á±Õ‘•}Õ¹É•Ù¥•İ•‘}Í¥•¹Ñ¥™¥}É•Á½ÉÑÌ¡Í•±˜¤è(€€€€€€€…¹‘¥‘…Ñ•ÌõÉŒ¹…¹‘¥‘…Ñ•Ì¡Í•±˜¹É½½Ğ¤(€€€€€€€Í•±˜¹…ÍÍ•ÉÑÅÕ…°¡…¹‘¥‘…Ñ•Ì±l(€€€€€€€€€€€€ ÀÌµ‰½Õ¹‘…ÉäµÁÉ•™¥±°œ°œÄ¸À¸Àœ°É•Á½ÉÑÌµÀÌµ‰½Õ¹‘…ÉäµÁÉ•™¥±°µØÄ¸À¸Àœ¤°(€€€€€€€€€€€€ ÀÈµ½ÉÉ•Ñ¹•ÍÌµÕÍ…‰¥±¥Ñäœ°œÄ¸À¸Àœ°É•Á½ÉÑÌµÀÈµ½ÉÉ•Ñ¹•ÍÌµÕÍ…‰¥±¥ÑäµØÄ¸À¸Àœ¤°(€€€€€€€€€€€€ ÀÄµÍ…±”µ±…ˆœ°œÄ¸À¸Àœ°É•Á½ÉÑÌµÀÄµÍ…±”µ±…ˆµØÄ¸À¸Àœ¤°(€€€€€€€€€€€€ HÀÀµ™½Õ¹‘…Ñ¥½¹Ìœ°œÄ¸À¸Àœ°É•Á½ÉÑÌµHÀÀµ™½Õ¹‘…Ñ¥½¹ÌµØÄ¸À¸Àœ¤°(€€€€€€€€€€€€ ÀÀµÉ•Í•…É µ‘½ÍÍ¥•Èœ°œÄ¸À¸Àœ°É•Á½ÉÑÌµÀÀµÉ•Í•…É µ‘½ÍÍ¥•ÈµØÄ¸À¸Àœ¤°(€€€€€€€€€€€€ ÀĞµÁÉ•™¥±°µ½ÍĞœ°œÄ¸À¸Àœ°É•Á½ÉÑÌµÀĞµÁÉ•™¥±°µ½ÍĞµØÄ¸À¸Àœ¤°(€€€€€€€€€€€€ ÀÔµ™¥ÉÍĞµ‘¥Ù•É•¹”œ°œÄ¸À¸Àœ°É•Á½ÉÑÌµÀÔµ™¥ÉÍĞµ‘¥Ù•É•¹”µØÄ¸À¸Àœ¤°(€€€€€€€€€€€€ ÀØµ…ÑÑ¸µ‘¥ÍÁ…Ñ µ½µÁ…Ğœ°œÄ¸À¸Àœ°É•Á½ÉÑÌµÀØµ…ÑÑ¸µ‘¥ÍÁ…Ñ µ½µÁ…ĞµØÄ¸À¸Àœ¤°(€€€€€€€t¤(€€€€€€€Í•±˜¹…ÍÍ•ÉÑ9½Ñ%¸ HÀÄµÁÉ¥½Èµ…ÉĞœ±málÁt™½Èà¥¸…¹‘¥‘…Ñ•Ít¤(€€€€€€€Í•±˜¹…ÍÍ•ÉÑ9½Ñ%¸ LÀÄ´ÄÈÁˆµÉ•Í•…É µÍå¹Ñ¡•Í¥Ìœ±málÁt™½Èà¥¸…¹‘¥‘…Ñ•Ít¤(€€€‘•˜Ñ•ÍÑ}¹•İ}É•Á½ÉÑ}±½­Í}…É•}ÕÉÉ•¹Ğ¡Í•±˜¤è(€€€€€€€™½ÈÉ•Á½ÉÑ}¥¥¸€ ÀĞµÁÉ•™¥±°µ½ÍĞœ°ÀÔµ™¥ÉÍĞµ‘¥Ù•É•¹”œ°ÀØµ…ÑÑ¸µ‘¥ÍÁ…Ñ µ½µÁ…Ğœ°HÀÄµÁÉ¥½Èµ…ÉĞœ°LÀÄ´ÄÈÁˆµÉ•Í•…É µÍå¹Ñ¡•Í¥Ìœ¤è(€€€€€€€€€€€İ¥Ñ Í•±˜¹ÍÕ‰Q•ÍĞ¡É•Á½ÉÑ}¥õÉ•Á½ÉÑ}¥¤è(€€€€€€€€€€€€€€€Ù•É¥™¥•õÈ¹Ù•É¥™ä¡Í•±˜¹É½½Ğ±É•Á½ÉÑ}¥¤(€€€€€€€€€€€€€€€½µµ¥ÑÑ•õÈ¹É•…¡Ù•É¥™¥•‘l™½±‘•Èt¼•Ù¥‘•¹”µ±½¬¹©Í½¸œ¤(€€€€€€€€€€€€€€€Í•±˜¹…ÍÍ•ÉÑÅÕ…°¡½µµ¥ÑÑ•‘l¥¹ÁÕÑÍ}Í¡„ÈÔØt±Ù•É¥™¥•‘l±½¬ul¥¹ÁÕÑÍ}Í¡„ÈÔØt¤(€€€€€€€€€€€€€€€Í•±˜¹…ÍÍ•ÉÑÅÕ…° ¡Ù•É¥™¥•‘l™½±‘•Èt¼•¹•É…Ñ•½µ•Ñ…‘…Ñ„¹Ñ•àœ¤¹É•…‘}‰åÑ•Ì ¤±È¹•¹•É…Ñ•¡Ù•É¥™¥•¥lµ•Ñ…‘…Ñ„¹Ñ•àt¤((€€€‘•˜Ñ•ÍÑ}…ÕÑ½µ…Ñ¥}É•±•…Í•}…¹‘¥‘…Ñ•}É•ÅÕ¥É•Í}É•Ù¥•İ•‘}…Õ‘¥Ğ¡Í•±˜¤è(€€€€€€€ÀõÍ•±˜¹É½½Ğ¼…µÁ…¥¹Ìœ¼ÀÌµ‰½Õ¹‘…ÉäµÁÉ•™¥±°œ¼…Õ‘¥Ğ¹©Í½¸œí„õÈ¹É•…¡À¤í…lÍÑ…ÑÕÌtôIPœíÀ¹İÉ¥Ñ•}‰åÑ•Ì¡È¹…¹½¹¥…°¡„¤¤(€€€€€€€İ¥Ñ Í•±˜¹…ÍÍ•ÉÑI…¥Í•ÍI••à¡È¹Ù¥‘•¹•ÉÉ½È°UQ=}I1M}IEU%IM}IY%]}U%Pœ¤éÉŒ¹…¹‘¥‘…Ñ•Ì¡Í•±˜¹É½½Ğ¤(€€€‘•˜Ñ•ÍÑ}•áÑÉ…}™¥•±¡Í•±˜¤è(€€€€€€€Í•±˜¹•‘¥Ğ …µÁ…¥¸¹©Í½¸œ±±…µ‰‘„´é´¹ÕÁ‘…Ñ”¡Õ¹­¹½İ¸õQÉÕ”¤¤(€€€€€€€İ¥Ñ Í•±˜¹…ÍÍ•ÉÑI…¥Í•ÍI••à¡È¹Ù¥‘•¹•ÉÉ½È°M!5œ¤éÍ•±˜¹É•ÍÕ±Ğ ¤(€€€‘•˜Ñ•ÍÑ}¥¹Ù…±¥‘}‘…Ñ”¡Í•±˜¤è(€€€€€€€Í•±˜¹•‘¥Ğ …µÁ…¥¸¹©Í½¸œ±±…µ‰‘„´é´¹ÕÁ‘…Ñ”¡‘…Ñ”ôœÈÀÈØ´ÀÈ´ÌÀœ¤¤(€€€€€€€İ¥Ñ Í•±˜¹…ÍÍ•ÉÑI…¥Í•ÍI••à¡È¹Ù¥‘•¹•ÉÉ½È°%9Y1%}IA=IQ}Qœ¤éÍ•±˜¹É•ÍÕ±Ğ ¤(€€€‘•˜Ñ•ÍÑ}ÁÉ½µ½Ñ•‘}ÍÑ…Ñ”¡Í•±˜¤è(€€€€€€€Í•±˜¹•‘¥Ğ …µÁ…¥¸¹©Í½¸œ±±…µ‰‘„´é´¹ÕÁ‘…Ñ”¡Í¥•¹Ñ¥™¥}ÍÑ…Ñ”ôAMLœ¤¤(€€€€€€€İ¥Ñ Í•±˜¹…ÍÍ•ÉÑI…¥Í•ÍI••à¡È¹Ù¥‘•¹•ÉÉ½È°M%9Q%%}MQQ}5%M5Q œ¤éÍ•±˜¹É•ÍÕ±Ğ ¤(€€€‘•˜Ñ•ÍÑ}‘ÕÁ±¥…Ñ•}µ•ÑÉ¥Œ¡Í•±˜¤è(€€€€€€€Í•±˜¹•‘¥Ğ •Ù¥‘•¹”µÍÁ•Œ¹©Í½¸œ±±…µ‰‘„ÌéÍlµ•ÑÉ¥Ìt¹…ÁÁ•¹¡Ïx¶‰ËkºwµçV—6W5&VvW‚‡"äWf–FVæ6TW'&÷"ÂtäõEôd”ä•DUôåTÔU$”2r“§6VÆbç&W7VÇB‚¢FVbFW7E÷w&öæuö6öçfW'6–öâ‡6VÆb“ ¢6VÆbæÖVB†ÆÖ&FÓ¦ÒçWFFR‡Væ—CÒtv”"r’¢v—F‚6VÆbæ76W'E&—6W5&VvW‚‡"äWf–FVæ6TW'&÷"Ât”ådÄ”EõTä•Eô4ôådU%4”ôâr“§6VÆbç&W7VÇB‚¢FVbFW7E÷w&öæuöFF6WE÷Væ—B‡6VÆb“ ¢6VÆbæVF—B‚vWf–FVæ6R×7V2æ§6öârÆÆÖ&F3§5²vFF6WG2uÕ³Õ²v6öÇVÖç2uÕ³ÒçWFFR‡Væ—CÒtv”"r’¢v—F‚6VÆbæ76W'E&—6W5&VvW‚‡"äWf–FVæ6TW'&÷"ÂtDD4UEõTä•EôÔ•4ÔD4‚r“§6VÆbç&W7VÇB‚¢FVbFW7EöGWÆ–6FUöFF6WEöÆ&VÂ‡6VÆb“ ¢6VÆbæVF—B‚vWf–FVæ6R×7V2æ§6öârÆÆÖ&F3§5²vFF6WG2uÕ³Õ²w&÷w2uÒæVæB†6÷’æFVW6÷’‡5²vFF6WG2uÕ³Õ²w&÷w2uÕ³Ò’’¢v—F‚6VÆbæ76W'E&—6W5&VvW‚‡"äWf–FVæ6TW'&÷"ÂtEUÄ”4DUô”Br“§6VÆbç&W7VÇB‚¢FVbFW7Eö7&÷766†V6µö6öæfÆ–7B‡6VÆb“ ¢6VÆbæVF—B‚vWf–FVæ6R×7V2æ§6öârÆÆÖ&F3§5²v6†V6·2uÒæVæB‡²wG—Rs¢vWVÂrÂvÆVgBs¢tÒÔ3"ÔDT4ôDRrÂw&–v‡Bs¢tÒÔ3"Õ4T4ôäBÔ„ÄbrÂvFöÂs£Ò’¢v—F‚6VÆbæ76W'E&—6W5&VvW‚‡"äWf–FVæ6TW'&÷"Ât5$õ544„T4µô4ôädÄ”5Br“§6VÆbç&W7VÇB‚¢FVbFW7Eö†6…öÆ–æµö6öæfÆ–7B‡6VÆb“ ¢FVb6†ævR‡2“¦æW‡B‡‚f÷"‚–â5²v6†V6·2uÒ–b…²wG—RuÓÓÒv†6‚ÖÆ–æ²r•²wF&vWBuÓÒtRÔ3"Õ5TÔÔ%’p¢6VÆbæVF—B‚vWf–FVæ6R×7V2æ§6öârÆ6†ævR¢v—F‚6VÆbæ76W'E&—6W5&VvW‚‡"äWf–FVæ6TW'&÷"Ât„4…ôÄ”äµô4ôädÄ”5Br“§6VÆbç&W7VÇB‚¢FVbFW7Eö7–6ÆR‡6VÆb“ ¢6VÆbæÖVB†ÆÖ&FÓ¦ÒçWFFR†W‡G&7C×²wG—Rs¢w&F–òrÂv–çWG2s¥¶Õ²v–BuÒÆÕ²v–BuÕ×Ò’¢v—F‚6VÆbæ76W'E&—6W5&VvW‚‡"äWf–FVæ6TW'&÷"ÂtÔUE$”5ô5”4ÄRr“§6VÆbç&W7VÇB‚¢FVbFW7E÷w&öæuöWF†÷&—G’‡6VÆb“ ¢6VÆbæÖVB†ÆÖ&FÓ¦ÒçWFFR†fÖ–Ç“Òww&öærr’¢v—F‚6VÆbæ76W'E&—6W5&VvW‚‡"äWf–FVæ6TW'&÷"Âu4õU$4UôäõEôUD„õ$•DD•dRr“§6VÆbç&W7VÇB‚¢FVbFW7E÷v—F†G&vå÷&öÖ÷FVB‡6VÆb“ ¢6VÆbæVF—B‚vWf–FVæ6R×7V2æ§6öârÆÆÖ&F3¥·‚çWFFR‡7FGW3Òut•D„E$târ’f÷"‚–â5²v6Æ–×2uÕÒ¢v—F‚6VÆbæ76W'E&—6W5&VvW‚‡"äWf–FVæ6TW'&÷"Âtäôä5U%$TåEô4Ä”Õõ$ôÔõDTBr“§6VÆbç&W7VÇB‚¢FVbFW7EöÖ—76–æuö6Æ–Ò‡6VÆb“ ¢×6VÆbæBòw6V7F–öç2ó×7VÖÖ'’çFW‚s·çw&—FU÷FW‡B‡ç&VE÷FW‡B‚’·"uÆ6Æ–×´4ÂÔÔ•54”äw×·‡Òr¢v—F‚6VÆbæ76W'E&—6W5&VvW‚‡"äWf–FVæ6TW'&÷"ÂuTä´äõtåõDU…ô4Ä”Òr“§6VÆbç&W7VÇB‚¢FVbFW7EöÖ—76–æu÷6V7F–öâ‡6VÆb“ ¢‡6VÆbæBòw6V7F–öç2órÖf–ÇW&W2çFW‚r’çVæÆ–æ²‚¢v—F‚6VÆbæ76W'E&—6W5&VvW‚‡"äWf–FVæ6TW'&÷"ÂtÔ•54”äuõ4T5D”ôâr“§6VÆbç&W7VÇB‚¢FVbFW7E÷Vç6fU÷FW…÷&–Ö—F—fR‡6VÆb“ ¢×6VÆbæBòw6V7F–öç2ó×7VÖÖ'’çFW‚s·çw&—FU÷FW‡B‡ç&VE÷FW‡B‚’·"uÇw&—FS‡¶fö÷Òr¢v—F‚6VÆbæ76W'E&—6W5&VvW‚‡"äWf–FVæ6TW'&÷"ÂuTå4dUõDU‚r“§6VÆbç&W7VÇB‚¢FVbFW7E÷&÷VæGG&—öFW&—fR‡6VÆb“ ¢c×6VÆbç&W7VÇB‚“·"æFW&—fR‡b“·"æ6†V6µöFW&—fVB‡b“¶&Vf÷&SÒ‡6VÆbæBòvvVæW&FVB÷fÇVW2æ§6öâr’ç&VEö'—FW2‚“·"æFW&—fR‡6VÆbç&W7VÇB‚’“·6VÆbæ76W'DWVÂ†&Vf÷&RÂ‡6VÆbæBòvvVæW&FVB÷fÇVW2æ§6öâr’ç&VEö'—FW2‚’¢FVbFW7E÷7FÆUöFW&—fVB‡6VÆb“ ¢c×6VÆbç&W7VÇB‚“·"æFW&—fR‡b“·×6VÆbæBòvvVæW&FVBöÖWG&–72çFW‚s·çw&—FU÷FW‡B‡ç&VE÷FW‡B‚’²rR6†ævVEÆâr¢v—F‚6VÆbæ76W'E&—6W5&VvW‚‡"äWf–FVæ6TW'&÷"ÂtDU$•dTEõ5DÄRr“§"æ6†V6µöFW&—fVB‡b¢FVbFW7EöW‡G&övVæW&FVB‡6VÆb“ ¢c×6VÆbç&W7VÇB‚“·"æFW&—fR‡b“²‡6VÆbæBòvvVæW&FVB÷&öwVRr’çw&—FU÷FW‡B‚w‚r¢v—F‚6VÆbæ76W'E&—6W5&VvW‚‡"äWf–FVæ6TW'&÷"ÂtDU$•dTEôd”ÄUõ4UEôÔ•4ÔD4‚r“§"æ6†V6µöFW&—fVB‡b¢v—F‚6VÆbæ76W'E&—6W5&VvW‚‡"äWf–FVæ6TW'&÷"ÂuTäU…T5DTEôtTäU$DTEôd”ÄU2r“§"æFW&—fR‡b¢FVbFW7EöÖ—76–æuöÆö6²‡6VÆb“ ¢c×6VÆbç&W7VÇB‚“·"æFW&—fR‡b“²‡6VÆbæBòvWf–FVæ6RÖÆö6²æ§6öâr’çVæÆ–æ²‚¢v—F‚6VÆbæ76W'E&—6W5&VvW‚‡"äWf–FVæ6TW'&÷"ÂtÔ•54”äuô¥4ôâr“§"æ6†V6µöFW&—fVB‡b¢FVbFW7Eö6†ævVE÷&÷6Uö–çfÆ–FFW2‡6VÆb“ ¢c×6VÆbç&W7VÇB‚“·"æFW&—fR‡b“·×6VÆbæBòw6V7F–öç2ó×7VÖÖ'’çFW‚s·çw&—FU÷FW‡B‡ç&VE÷FW‡B‚’²uÆäVF—F÷&–Â6†ævRåÆâr“·c#×6VÆbç&W7VÇB‚¢6VÆbæ76W'Dæ÷DWVÂ‡e²vÆö6²uÕ²v–çWG5÷6†#SbuÒÇc%²vÆö6²uÕ²v–çWG5÷6†#SbuÒ¢v—F‚6VÆbæ76W'E&—6W2‡"äWf–FVæ6TW'&÷"“§"æ6†V6µöFW&—fVB‡c"¢FVbFW7E÷&VÆV6UöæVVG5öVF—B‡6VÆb“ ¢"æFW&—fR‡6VÆbç&W7VÇB‚’“·×6VÆbæBòvVF—Bæ§6öâp¢–bæW†—7G2‚“§çVæÆ–æ²‚¢v—F‚6VÆbæ76W'E&—6W5&VvW‚‡"äWf–FVæ6TW'&÷"ÂtÔ•54”äuô¥4ôâr“¦"æ'V–ÆB‡6VÆbç&ö÷BÄ3"Âw&VÆV6Rr¢FVbFW7E÷7FÆUöVF—B‡6VÆb“ ¢"æFW&—fR‡6VÆbç&W7VÇB‚’“·6VÆbæVF—B‚sr£cB¢v—F‚6VÆbæ76W'E&—6W5&VvW‚‡"äWf–FVæ6TW'&÷"ÂtTD•Eõ5DÄRr“¦"æ'V–ÆB‡6VÆbç&ö÷BÄ3"Âw&VÆV6Rr¢FVbFW7EöÖö6µ÷&VÆV6U÷&W6W'fW5ö&Æö6¶VB‡6VÆb“ ¢c×6VÆbç&W7VÇB‚“·"æFW&—fR‡b“·6VÆbæVF—B‡e²vÆö6²uÕ²v–çWG5÷6†#SbuÒ“¶f¶SÒ†"uDbÔd•…EU$RrÆ"vÆörrÅµÒÇ6VÆbç&ö÷B¢v—F‚F6‚æö&¦V7B†"ÂwfW'6–öârÇ&WGW&å÷fÇVSÒuDU5Br’ÇF6‚æö&¦V7B†"Âv6ö×–ÆUööæRrÇ&WGW&å÷fÇVSÖf¶R“ ¢FW7CÖ"æ'V–ÆB‡6VÆbç&ö÷BÄ3"Âw&VÆV6RrÆ6†V6µ÷&W&öGV6–&ÆSÕG'VR“¶Ó×"ç&VB†FW7Bòw&VÆV6Ræ§6öâr“·6VÆbæ76W'DWVÂ†Õ²w66–VçF–f–5÷7FFRuÒÂt4õ%$T5DäU55ô$Äô4´TBr“·6VÆbæ76W'DWVÂ†Õ²vW‡W&–ÖVçFÅ÷&W&öGV7F–öâuÒÂtäõEõ%Târ¢v—F‚6VÆbæ76W'E&—6W5&VvW‚‡"äWf–FVæ6TW'&÷"ÂuT$Ä”4D”ôåôU„•5E2r“¦"æ'V–ÆB‡6VÆbç&ö÷BÄ3"Âw&VÆV6Rr¢FVbFW7E÷&Wf–WvVE÷Fe÷&WV—&VB‡6VÆb“ ¢c×6VÆbç&W7VÇB‚“·"æFW&—fR‡b“·6VÆbæVF—B‡e²vÆö6²uÕ²v–çWG5÷6†#SbuÒ“¶f¶SÒ†"uTå$Ud”UtTBrÆ"vÆörrÅµÒÇ6VÆbç&ö÷B¢v—F‚F6‚æö&¦V7B†"ÂwfW'6–öârÇ&WGW&å÷fÇVSÒuDU5Br’ÇF6‚æö&¦V7B†"Âv6ö×–ÆUööæRrÇ&WGW&å÷fÇVSÖf¶R“ ¢v—F‚6VÆbæ76W'E&—6W5&VvW‚‡"äWf–FVæ6TW'&÷"ÂuDeôD”ddU%5ôe$ôÕõ$Ud”UtTEô%D”d5Br“¦"æ'V–ÆB‡6VÆbç&ö÷BÄ3"Âw&VÆV6Rr¢FVbFW7Eö6öæ7W'&VçEö–çWEö6†ævR‡6VÆb“ ¢"æFW&—fR‡6VÆbç&W7VÇB‚’¢FVb6ö×–ÆUö6†ævVB‚¦&w2“ ¢×6VÆbæBòw6V7F–öç2ó×7VÖÖ'’çFW‚s·çw&—FU÷FW‡B‡ç&VE÷FW‡B‚’²uÆä6†ævVBGW&–ær'V–ÆBåÆâr“·&WGW&â"uDbÔd•…EU$RrÆ"vÆörrÅµÒÇ6VÆbç&ö÷@¢v—F‚F6‚æö&¦V7B†"ÂwfW'6–öârÇ&WGW&å÷fÇVSÒuDU5Br’ÇF6‚æö&¦V7B†"Âv6ö×–ÆUööæRrÇ6–FUöVffV7CÖ6ö×–ÆUö6†ævVB“ ¢v—F‚6VÆbæ76W'E&—6W5&VvW‚‡"äWf–FVæ6TW'&÷"Ât”åUE5ô4„ätTEôEU$”äuô%T”ÄBr“¦"æ'V–ÆB‡6VÆbç&ö÷BÄ3"¢FVbFW7E÷Fe÷&W&õöÖ—6ÖF6‚‡6VÆb“ ¢"æFW&—fR‡6VÆbç&W7VÇB‚’¢v—F‚F6‚æö&¦V7B†"ÂwfW'6–öârÇ&WGW&å÷fÇVSÒuDU5Br’ÇF6‚æö&¦V7B†"Âv6ö×–ÆUööæRrÇ6–FUöVffV7CÕ²†"trÆ"vÆörrÅµÒÇ6VÆbç&ö÷B’Â†"t"rÆ"vÆörrÅµÒÇ6VÆbç&ö÷B•Ò“ ¢v—F‚6VÆbæ76W'E&—6W5&VvW‚‡"äWf–FVæ6TW'&÷"ÂuDeô%•DUôD”ddU$TåBr“¦"æ'V–ÆB‡6VÆbç&ö÷BÄ3"Æ6†V6µ÷&W&öGV6–&ÆSÕG'VR¢FVbFW7EöF÷76–W%÷–â‡6VÆb“ ¢C×6VÆbç&ö÷BòvF÷76–W"ôC×&W6V&6‚ÖF÷76–W"s·ÖBòv6×–vâæ§6öâs¶Ó×"ç&VB‡“¶Õ²v–æ6ÇVFVE÷&W÷'G2uÓÕ·²v–Bs¤3"ÂwfW'6–öâs¢sããrÂv–çWG5÷6†#Sbs¢sr£cGÕÓ·çw&—FUö'—FW2‡"æ6æöæ–6Â†Ò’¢v—F‚6VÆbæ76W'E&—6W5&VvW‚‡"äWf–FVæ6TW'&÷"ÂtDõ54”U%ô”åUE5õ5DÄRr“§"çfW&–g’‡6VÆbç&ö÷BÆÕ²v–BuÒ¢FVbFW7EöæWu÷6¶VÆWFöåöæõöf¶U÷&W7VÇB‡6VÆb“ ¢Öâæ7&VFR‡6VÆbç&ö÷BÂuDU5BÔeUEU$RrÂsr£CÂs##bÓ’Ó#br“·6VÆbæ76W'DWVÂ‡"ç&VB‡òv6×–vâæ§6öâr•²w66–VçF–f–5÷7FFRuÒÂtäõEõ%Târ“·6VÆbæ76W'DWVÂ‡"ç&VB‡òvWf–FVæ6R×7V2æ§6öâr•²vÖWG&–72uÒÅµÒ¢v—F‚6VÆbæ76W'E&—6W5&VvW‚‡"äWf–FVæ6TW'&÷"Ât4Õ”tåôU„•5E2r“¦âæ7&VFR‡6VÆbç&ö÷BÂuDU5BÔeUEU$RrÂsr£CÂs##bÓ’Ó#br¢FVbFW7Eöv—EöÖ—76–æuöæõöfÆÆ&6²‡6VÆb“ ¢v—F‚FV×f–ÆRåFV×÷&'”F—&V7F÷'’‚’2FC ¢7V'&ö6W72ç'Vâ…²vv—BrÂv–æ—BrÂr×rÇFEÒÆ6†V6³ÕG'VR¢v—F‚6VÆbæ76W'E&—6W5&VvW‚‡"äWf–FVæ6TW'&÷"Âtt•Eõ4õU$4UõTäd”Ä$ÄRr“§"ç6÷W&6Uö'—FW2‡6VÆbç&ö÷BÇ6VÆbç&W7VÇB‚•²v6FÆöruÕ²tRÔ3"ÔtDRuÒÂvv—BrÅF‚‡FB’¢FVbFW7E÷'F–Åö6ÆöæU÷&VgW6VB‡6VÆb“ ¢v—F‚FV×f–ÆRåFV×÷&'”F—&V7F÷'’‚’2FC ¢7V'&ö6W72ç'Vâ…²vv—BrÂv–æ—BrÂr×rÇFEÒÆ6†V6³ÕG'VR“·7V'&ö6W72ç'Vâ…²vv—BrÂrÔ2rÇFBÂv6öæf–rrÂw&VÖ÷FRæ÷&–v–âç&öÖ—6÷"rÂwG'VRuÒÆ6†V6³ÕG'VR¢v—F‚6VÆbæ76W'E&—6W5&VvW‚‡"äWf–FVæ6TW'&÷"Âu%D”Åôõ%õTå$TD$ÄRr“§"ç6÷W&6Uö'—FW2‡6VÆbç&ö÷BÇ6VÆbç&W7VÇB‚•²v6FÆöruÕ²tRÔ3"ÔtDRuÒÂvv—BrÅF‚‡FB’ ¦–bõöæÖUõóÓÒuõöÖ–åõòs§Væ—GFW7BæÖ–â‚
