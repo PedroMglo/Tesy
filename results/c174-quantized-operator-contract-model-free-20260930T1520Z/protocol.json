@@ -1,0 +1,8 @@
+{
+  "scope": "Known small MXFP4/F16/F32 operator fixture, no model",
+  "C173_preserved": "FAIL known dot32 expected ignored Q8_0 activation scale rounding; causal source repair only",
+  "derived_contract": "ggml-quants.c:276-298 Q8_0 scale fp16(amax/127); ones MXFP4 exact1, activation 127*half(1/127),dot32=(32*127)*half(1/127); F16=32",
+  "threshold": "BITWISE exact derived value; no epsilon",
+  "fused_reduction_oracle": "std::fma exact same F32 expert ordering after first separate multiply",
+  "timeout_s": 30
+}
