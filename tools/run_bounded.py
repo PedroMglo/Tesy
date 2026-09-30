@@ -248,6 +248,29 @@ def prospective_endpoint_reason(first_sample_s,last_sample_s,elapsed_s,end,start
     return None
 
 
+def inventory_before_spawn(root,run_id,protocol):
+    """Only new opt-in flag uses this real producer/consumer chain at Popen."""
+    from c118_start_inventory import collect,require_inventory
+    r=validate_resource_protocol(protocol)
+    contract=protocol.get('start_inventory')
+    if not isinstance(contract,dict) or contract.get('schema')!='c120-start-inventory-v1' or contract.get('duration_s')!=60 or contract.get('max_age_s')!=3:
+        raise RuntimeError('opt-in frozen inventory contract invalid')
+    policy_path=root/'resource-policy.json'
+    if sha256(policy_path)!=contract.get('policy_sha256'):raise RuntimeError('opt-in policy SHA changed')
+    policy=strict_json(policy_path.read_text());power={k:policy['power'][k] for k in ('source','profile')}
+    cap=r['cgroup']['memory_max_bytes']
+    receipt=collect(root,run_id,policy=policy,cap_bytes=cap,expected_power=power,duration_s=60)
+    path=root/'raw'/f'{run_id}.start-inventory.receipt.json'
+    with path.open('x') as f:json.dump(receipt,f,indent=2,sort_keys=True);f.write('\n')
+    now=dt.datetime.now(dt.timezone.utc)
+    require_inventory(root,run_id,receipt,policy=policy,cap_bytes=cap,expected_power=power,duration_s=60,now=now,max_age_s=3)
+    invoked=dt.datetime.now(dt.timezone.utc)
+    if not 0<=(invoked-dt.datetime.fromisoformat(receipt['last_utc'])).total_seconds()<=3:
+        raise RuntimeError('opt-in inventory stale at process creation')
+    return {'receipt_sha256':sha256(path),'checked_utc':now.isoformat(),
+            'popen_invoked_utc':invoked.isoformat(),'popen_invoked_monotonic_ns':time.monotonic_ns()}
+
+
 def main():
     p = argparse.ArgumentParser()
     p.add_argument("--run-id", required=True)
@@ -270,6 +293,8 @@ def main():
     p.add_argument("--require-telemetry", action="store_true")
     p.add_argument("--resource-protocol", type=Path,
                    help="versioned prospective resource authority; legacy caps disallowed")
+    p.add_argument("--collect-start-inventory", action="store_true",
+                   help="opt-in only: collect/validate60s inventory immediately at actual spawn")
     p.add_argument("--allow-cgroup-max-reclaim", action="store_true",
                    help="diagnostic reference only; OOM and memory.peak remain stop conditions")
     p.add_argument("--env", action="append", default=[], help="explicit KEY=VALUE for the child")
@@ -393,6 +418,29 @@ def main():
         p.error("GPU and thermal sensors required before launch")
     with open(str(stem) + ".stdout", "xb") as stdout, open(str(stem) + ".stderr", "xb") as stderr, open(str(stem) + ".samples.jsonl", "x") as samples:
         stdin = open(a.stdin_file, "rb") if a.stdin_file else subprocess.DEVNULL
+        start_inventory = None
+        if a.collect_start_inventory:
+            if not prospective or out.name != 'raw':
+                raise RuntimeError('fresh inventory requires prospective protocol/raw session root')
+            start_inventory = inventory_before_spawn(out.parent,a.run_id,resource_protocol)
+            cg_now=cgroup_state()
+            if not cg_now or cg_now.get('memory_max')!=resource_contract['cgroup']['memory_max_bytes'] or cg_now.get('swap_max')!=0 or cg_now.get('path')!=manifest['cgroup_start'].get('path'):
+                raise RuntimeError('opt-in cgroup identity/cap changed during inventory')
+            if sha256(a.resource_protocol)!=manifest['limits']['resource_protocol_sha256'] or sha256(cmd[0])!=manifest['binary_sha256'] or backend_library_hashes(cmd[0],backend_dir)!=manifest['backend_libraries_sha256']:
+                raise RuntimeError('opt-in protocol/binary/library identity changed during inventory')
+            if artifact_identity and file_identity(model_path)!=artifact_identity['stat_at_launch']:
+                raise RuntimeError('opt-in model changed during inventory')
+            receipt_path=out/(a.run_id+'.start-inventory.receipt.json')
+            receipt_now=strict_json(receipt_path.read_text())
+            if sha256(receipt_path)!=start_inventory['receipt_sha256'] or not 0<=(dt.datetime.now(dt.timezone.utc)-dt.datetime.fromisoformat(receipt_now['last_utc'])).total_seconds()<=3:
+                raise RuntimeError('opt-in inventory changed/stale at actual spawn')
+            final_obs=strict_json((out/(a.run_id+'.start-inventory.jsonl')).read_text().splitlines()[-1])['observation']
+            final_reasons=validate_start_observation(resource_protocol,available_bytes=final_obs['mem_available_bytes'],gpu=final_obs['gpu'],thermal=final_obs['thermal'],power=final_obs['power'],psi_full_avg10=host_pressure())
+            if final_reasons:raise RuntimeError('opt-in start authority failed at Popen: '+','.join(final_reasons))
+            invoked_now=dt.datetime.now(dt.timezone.utc)
+            if not 0<=(invoked_now-dt.datetime.fromisoformat(receipt_now['last_utc'])).total_seconds()<=3:raise RuntimeError('opt-in final freshness expired')
+            start_inventory['popen_invoked_utc']=invoked_now.isoformat()
+            start_inventory['popen_invoked_monotonic_ns']=time.monotonic_ns()
         t0 = time.monotonic()
         manifest["started_utc"] = dt.datetime.now(dt.timezone.utc).isoformat()
         process = subprocess.Popen(cmd, stdin=stdin, stdout=stdout, stderr=stderr,
@@ -403,6 +451,15 @@ def main():
             stop_own_group(process)
             raise RuntimeError(f"cannot establish child identity: {exc}") from exc
         manifest["process_identity"] = launch_identity
+        if start_inventory is not None:
+            manifest['start_inventory'] = start_inventory
+            launch_path = Path(str(stem)+'.launch.json')
+            with launch_path.open('x') as launch_file:
+                json.dump({'run_id':a.run_id,'process_identity':launch_identity,
+                           'executable':str(Path(cmd[0]).resolve()),'binary_sha256':manifest['binary_sha256'],
+                           'start_inventory':start_inventory,'resource_protocol_sha256':sha256(a.resource_protocol),
+                           'model_stat':artifact_identity},launch_file,indent=2,sort_keys=True)
+                launch_file.write('\n')
         reason = None
         maxima = {"rss_bytes": 0, "swap_bytes": 0, "cgroup_memory_bytes": 0,
                   "cgroup_peak_bytes": 0,
@@ -562,6 +619,9 @@ def main():
             if a.stdin_file:
                 stdin.close()
         rc = process.returncode
+        if a.collect_start_inventory and Path(str(stem)+'.owner-stop.json').is_file() and reason is None:
+            reason = 'INTERRUPTED_BY_OWNER'
+
     manifest.update({"ended_utc": dt.datetime.now(dt.timezone.utc).isoformat(),
                      "elapsed_s": round(time.monotonic() - t0, 3), "returncode": rc,
                      "stop_reason": reason, "maxima": maxima, "last_sample": last,
