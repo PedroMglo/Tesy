@@ -2,10 +2,10 @@
 
 Estado: **DRAFT**
 
-- inputs_sha256: `9a31b4348bb51d5d0edb9081225a1edb6c8b841e3cc05c123a0553f32336ef0e`
-- PDF da revisão anterior: `ae5241f31389ef2ef9fa933466f1bce38b312117f58d1b659b1ed070e23329df` (STALE para este digest)
+- inputs_sha256: `49b1107d15614c7be41a917c100fae40908555b9b3a8d4524334c53ef76a1636`
+- preview anterior: `efb254dac4b88c6b0bad94b9e19cccc5338a6aed21c27d92dfa346e83e18ce73` (STALE após nova revisão bibliográfica)
 - reprodução experimental: NOT_RUN
 - raws: NOT_ACCESSED
 - blocker: compilar e rever visualmente o PDF novo
 
-R01 foi reaberto antes da primeira publicação para ampliar o prior art e tornar explícita a diferença entre overlap de mecanismo e equivalência do contrato exacto Tesy.
+A revisão corrente acrescenta FineMoE, ExpertFlow, DALI, PreScope e pre-attention prediction, e substitui referências preprint por versões archival quando verificadas.

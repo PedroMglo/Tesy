@@ -2,16 +2,17 @@
 \begin{tabularx}{\linewidth}{@{}p{31mm}Y@{}}\toprule
 \textbf{Eixo} & \textbf{Prior art e consequência para Tesy}\\\midrule
 Sparse MoE / routing & Shazeer et al. e Switch Transformer \cite{shazeer2017moe,fedus2022switch}: conditional sparse routing e top-k/top-1 MoE são arquitetura-base, não contribuição Tesy.\\
-Multi-tier LLM & FlexGen e \emph{LLM in a flash} \cite{sheng2023flexgen,alizadeh2023llmflash}: GPU/CPU/storage, cost models e selective loading já existem fora de MoE; não são baseline exacto por si só.\\
+Multi-tier LLM & FlexGen e \emph{LLM in a flash} \cite{sheng2023flexgen,alizadeh2024llmflash}: GPU/CPU/storage, cost models e selective loading já existem fora de MoE; não são baseline exacto por si só.\\
 Consumer MoE offload & Eliseev--Mazur e EdgeMoE \cite{eliseev2023offloading,yi2023edgemoe}: experts acima da memória do acelerador e loading on-demand em hardware limitado têm precedentes diretos.\\
 Expert cache / prefetch & MoE-Infinity, ProMoE e SpecPrefetch \cite{xue2024moeinfinity,song2024promoe,kong2026specprefetch}: caching, proactive loading e prediction-for-transfer têm overlap direto.\\
-Gating/prediction co-design & Pre-gated MoE \cite{hwang2024pregated}: antecipar experts via mudança do gating é prior art, mas muda o modelo/contrato.\\
+Contemporary residency & PreScope, ExpertFlow, FineMoE e DALI \cite{yu2025prescope,he2026expertflow,yu2026finemoe,zhu2026dali}: prediction, cache replacement, CPU/GPU assignment e fine-grained offload já são linhas ativas e diretamente próximas.\\
+Gating/prediction co-design & Pre-gated MoE e pre-attention prediction \cite{hwang2024pregated,zhu2025preattention}: antecipar experts por routers/predictors auxiliares também é prior art; o contrato tem de ser comparado separadamente.\\
 CPU/GPU hybrid & PowerInfer, Fiddler, KTransformers e Wang et al. \cite{song2024powerinfer,kamahori2025fiddler,chen2025ktransformers,wang2026localslo}: heterogeneous execution/local inference é uma linha estabelecida.\\
 Pipelines / scheduling & MoE-Lightning, DAOP e Klotski \cite{cao2025moelightning,zhang2025daop,fang2025klotski}: overlap de compute--I/O, placement dinâmico e expert-aware batching/pipelining são prior art.\\
-Quality-altering efficiency & EdgeMoE, SiDA-MoE, SwapMoE, HOBBIT e AdapMoE \cite{yi2023edgemoe,du2023sidamoe,kong2024swapmoe,tang2024hobbit,zhong2024adapmoe}: importantes comparadores, mas não equivalentes ao contrato exacto quando mudam precisão, gating ou accuracy.\\
+Quality-altering efficiency & EdgeMoE, SiDA, SwapMoE, HOBBIT e AdapMoE \cite{yi2023edgemoe,du2024sida,kong2024swapmoe,tang2024hobbit,zhong2024adapmoe}: importantes comparadores, mas não equivalentes ao contrato exacto quando mudam precisão, gating ou accuracy.\\
 Routing locality & Liang et al. \cite{liang2026routing}: cacheability/local consistency varia por modelo; Tesy deve medir em vez de assumir.\\
 Speculation & Leviathan et al. \cite{leviathan2023speculative}: exact speculative decoding é anterior; futura integração Tesy não é novidade por usar speculation.\\
 Bounds / metodologia & Belady, Mattson, Amdahl e Roofline \cite{belady1966replacement,mattson1970storage,amdahl1967validity,williams2009roofline}: oracle de cache, stack analysis e performance bounds são metodologia estabelecida.\\
 \bottomrule\end{tabularx}
 
-O mapa elimina como claims amplas: expert offloading, cache, prefetch, learned/predictive prefetch, storage tiering, CPU experts, CPU/GPU hybrid execution, overlap por pipeline e speculative decoding. A comparação científica futura deve privilegiar os vizinhos de mecanismo mais próximos e declarar quando um baseline otimiza sob um contrato de qualidade diferente.
+O mapa elimina como claims amplas: expert offloading, cache, prefetch, learned/predictive prefetch, storage tiering, CPU experts, CPU/GPU hybrid execution, dynamic assignment, cache replacement, overlap por pipeline e speculative decoding. A comparação científica futura deve privilegiar os vizinhos de mecanismo mais próximos e declarar quando um baseline otimiza sob um contrato de qualidade diferente.
