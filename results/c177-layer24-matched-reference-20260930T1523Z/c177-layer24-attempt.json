@@ -1,0 +1,49 @@
+{
+  "id": "c177-layer24",
+  "start": {
+    "utc": "2026-09-30T15:22:53.821195+00:00",
+    "monotonic_s": 276153.29441812
+  },
+  "end": {
+    "utc": "2026-09-30T15:22:54.240943+00:00",
+    "monotonic_s": 276153.714169487
+  },
+  "argv": [
+    "/usr/bin/python3",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/tools/run_bounded.py",
+    "--run-id",
+    "c177-layer24",
+    "--model-id",
+    "gpt-oss-120b-mxfp4-gguf",
+    "--backend",
+    "stock",
+    "--backend-root",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/backends/c165-mmap-diagnostic",
+    "--output-root",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c177-layer24-matched-reference-20260930T1523Z/raw",
+    "--variant",
+    "nativeCPU-MoE-canonical-resident-layer",
+    "--workload",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c177-layer24-matched-reference-20260930T1523Z/protocol.json",
+    "--cache-condition",
+    "canonical-reference-not-performance",
+    "--resource-protocol",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c177-layer24-matched-reference-20260930T1523Z/protocol.json",
+    "--require-telemetry",
+    "--timeout-s",
+    "15",
+    "--collect-start-inventory",
+    "--",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c173-native-reference-model-free-20260930T1510Z/build/mmap_phase_reference",
+    "/home/pmglo/models/gpt-oss-120b-gguf/gpt-oss-120b-MXFP4.gguf",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c166-mmap-phase-diagnostic-20260930T1230Z/raw/verify.capture",
+    "24",
+    "--ngl",
+    "12",
+    "--plan-map",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c172-native-ffn-plan-model-free-20260930T1458Z/reference-map.tsv"
+  ],
+  "returncode": 1,
+  "stdout": "",
+  "stderr": "Traceback (most recent call last):\n  File \"/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/tools/run_bounded.py\", line 702, in <module>\n    sys.exit(main())\n             ~~~~^^\n  File \"/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/tools/run_bounded.py\", line 452, in main\n    start_inventory = inventory_before_spawn(out.parent,a.run_id,resource_protocol)\n  File \"/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/tools/run_bounded.py\", line 283, in inventory_before_spawn\n    receipt=collect(root,run_id,policy=policy,cap_bytes=cap,expected_power=power,duration_s=60)\n  File \"/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/tools/c118_start_inventory.py\", line 82, in collect\n    validate_sample(obs, policy=policy, cap_bytes=cap_bytes,\n    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n                    expected_power=expected_power)\n                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/tools/c118_start_inventory.py\", line 49, in validate_sample\n    cpu >= policy[\"cpu\"][\"stop_c\"] or \\\n           ~~~~~~~~~~~~~^^^^^^^^^^\nKeyError: 'stop_c'\n"
+}
