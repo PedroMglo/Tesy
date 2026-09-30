@@ -14,6 +14,9 @@ def save(path,data):
     with Path(path).open('x') as f:json.dump(data,f,indent=2,allow_nan=False);f.write('\n');f.flush();__import__('os').fsync(f.fileno())
 
 
+def native_output_ids(value):
+    return (value, 'NATIVE_VERBOSE_FINAL') if type(value) is list and value and all(type(x) is int for x in value) else (None, 'NOT_EXPOSED_EMPTY_OR_ABSENT')
+
 def grade(index,content,first):
     if index==0:return re.fullmatch(r'\d{5}',content) is not None
     if index==1:return content==first
@@ -85,8 +88,9 @@ def run(root,protocol_path):
                 if row['kind']=='SSE_FRAGMENT' and row['fragment'].startswith('data: ') and '[DONE]' not in row['fragment']:
                     obj=json.loads(row['fragment'][6:]);v=obj.get('__verbose')
                     if v is not None:verbose.append(v)
-            item['output_ids']=verbose[-1].get('tokens') if verbose else None
-            item['output_ids_authority']='NATIVE_VERBOSE_FINAL' if verbose else 'NOT_EXPOSED'
+            native_ids=verbose[-1].get('tokens') if verbose else None
+            item['output_ids'],item['output_ids_authority']=native_output_ids(native_ids)
+            # C188 preserved old raw with tokens=[]; no token IDs can be inferred from that array.
             save(root/'raw'/f'T{index+1}-result.json',item)
             history,answer=messages,item['message'];previous_ids=ids;previous_outputs=item['usage']['completion_tokens']
             if index==0:first=item['message']['content']

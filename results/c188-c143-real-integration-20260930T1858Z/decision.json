@@ -1,0 +1,53 @@
+{
+  "status": "OPTIN_REAL_PATH_VALIDATED_IN_SCOPE",
+  "LAUNCHER": "PASS",
+  "PREFIX": "PASS",
+  "CONTENT": "PASS",
+  "evidence": "MEDIDO_NO_TARGET",
+  "measurement_head": "c53ac21e8d56dc625be08301423097d91e458bc1",
+  "profile": "original C75/P12/slots40/ub32/ctx8192/medium/fullSWA/KVF16/unified/offloaded/preloadON/E18",
+  "actual_C143_lifecycle": "prepare command start health four requests stop terminated",
+  "freshness_at_real_Popen": "PASS",
+  "mapped_libraries": "exact frozen PASS",
+  "resources_runtime_replayed": "PASS257 samples",
+  "ordinary_service_changed": false,
+  "controlled_stop": "Original raw INTERRUPTED_BY_OWNER and serve returncode1 preserved. Launcher stop was deliberately called after four completed accepted responses; raw server returncode0 and verified owner-stop identity. No stop regraded as numerical/resource PASS. Integration lifecycle evaluated separately.",
+  "M3": "PARTIAL",
+  "M4": "NOT_MET",
+  "slots44": "experimental coverage unchanged",
+  "limitations": [
+    "No quality12/holdout8/session83min/retrieval7936 repeated or inherited",
+    "Generated output IDs not exposed by this OpenAI SSE path: final native verbose tokens=[] despite request flags; historical client incorrectly labelled empty array native IDs, errata below. No text retokenization invented.",
+    "GPU per-process memory not recorded; total6866MiB guard observed",
+    "No CPU clock/energy/compute-exclusive decomposition; GPU reported power contextual only",
+    "Single natural integration, output counts differ from C129/C142, no paired speedup claim"
+  ],
+  "output_ids_errata": {
+    "old_raw": "output_ids=[] authority NATIVE_VERBOSE_FINAL",
+    "effective": "NOT_EXPOSED_EMPTY_ARRAY, all four requests",
+    "source": "server-task.cpp to_json_oaicompat_chat_stream verbose final did not populate token arrays for this path",
+    "fix": "Future client classifies empty or absent arrays as NOT_EXPOSED; no physical retry"
+  },
+  "resources_maxima": {
+    "rss_bytes": 15952654336,
+    "swap_bytes": 0,
+    "cgroup_memory_bytes": 15877062656,
+    "cgroup_peak_bytes": 15898312704,
+    "cgroup_file_bytes": 2200293376,
+    "gpu_used_mib": 6866.0,
+    "gpu_temperature_c": 62.0,
+    "cpu_tctl_c": 95.125,
+    "nvme_composite_c": 54.85,
+    "direct_model_fds": 2,
+    "buffered_model_fds": 0
+  },
+  "readiness_after_popen_s": 5.1594539289944805,
+  "runtime_s": 174.504,
+  "received_date": "2026-09-30",
+  "nominal153_observed_T2": {
+    "total": 2197,
+    "cache_n": 2044,
+    "prompt_n": 153,
+    "common_prefix_original_prompt": 2043
+  }
+}

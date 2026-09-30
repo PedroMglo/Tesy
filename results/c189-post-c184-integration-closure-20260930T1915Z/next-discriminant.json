@@ -1,0 +1,24 @@
+{
+  "status": "PROPOSED_NOT_AUTHORIZED_NOT_RUN",
+  "hypothesis": "Larger prefill microbatch on existing C75 waves amortizes repeated remaps/waves for warm153 enough to reduce first-final; alternative is compute/union increase cancels batching gain.",
+  "mechanism": "One native ub64 profile versus original ub32, all other weights/router/top-k/placement/slots/thread/KV/medium inputs held fixed; new numerical profile because shape changes arithmetic. No KV cross-engine transfer.",
+  "why_now": "C188 T2 prefill10.937314s already exceeds10s first-final target. C142 uniform44 prefill10.334557s and first-final19.312233s independently show prefill must also improve. Decode alone cannot close that gate in these workloads.",
+  "evidence": [
+    "C188 real launcher/accounting new153",
+    "C142 exact confirmation",
+    "C135 prefills (5,148) source/call plan known; C138 raw reliability gates",
+    "C4/C6 native shape divergence already established; C6 CPU Flash and GPU Flash regrouping differences; no cross-shape bitwise equivalence claim",
+    "C14 old native64 had only minimum forward admission, no same-profile numerical reference or qualified paired153; old95C guard FAIL remains preserved"
+  ],
+  "minimal_missing_observation": "Source-level current C75 wave counts/parking capacity for the warm153 call plan at ub32 versus ub64 and tensor/workspace accounting, using retained routing rather than inventing warm state. Existing traces may screen whether fewer boundaries actually avoid reloads. If this cannot identify plausible first-final improvement, do not build or run by routine.",
+  "counterfactual": "Same backend/kernel family/slots40 and memory envelope; only ubatch32→64. Decode shape1 retained but upstream KV values can differ from different prefill arithmetic; validate per-profile numerical/canonical and functional contract.",
+  "workload": "Frozen C129 nominal153 real assistant history at current fixed date, plus predetermined short functional holdout. Official IDs and outputs preserved, divergent outputs imply no equal-work timing claim.",
+  "gate_before_timing": "Model-free planner/layout capacity first; same-profile native64 FFN/routers/full-logit gates and held-out functionality before accepted timing. Reuse32 references only within valid assumptions. Do not rediscover known native shape delta as a streaming corruption.",
+  "primary": "warm first-final",
+  "useful_minimum": "Prospective paired median>=15% first-final gain, all gains positive; decode/cold and other protected medians>=-5%. This is investment threshold, not forecast or M4.",
+  "engineering_ceiling_proposed_s": 7200,
+  "live_ceiling_proposed_s": 2700,
+  "physical_serial": true,
+  "abandon": "Insufficient admissible workspace, no avoidable prefill repetition, per-profile numeric/functional fail, or bounded two-pair screen fails protected investment criterion. No ub64/96/128 grid, no automatic extra epoch.",
+  "confidence": "HIPOTESE. Current traces do not provide certified timing projection."
+}
