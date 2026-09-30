@@ -1,0 +1,28 @@
+[  2%] Built target llama-common-base
+[  2%] Built target llama-ui-embed
+[  0%] Built target cpp-httplib
+[  2%] Provisioning UI assets
+-- UI: npm output up-to-date, skipping build
+[  2%] Building CXX object src/CMakeFiles/llama.dir/llama-moe-stream.cpp.o
+-- UI: gzip compression applied (/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/backends/c152-slots44-snapshot/build-c152/tools/ui/dist/_gzip)
+[  2%] Built target llama-ui-assets
+In file included from /home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/backends/c152-slots44-snapshot/src/llama-moe-stream.cpp:1117:
+/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/backends/c152-slots44-snapshot/src/c152-snapshot.inl: In member function ‘void llama_moe_stream::snapshot(const char*, int64_t, int32_t, int32_t, int32_t)’:
+/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/backends/c152-slots44-snapshot/src/c152-snapshot.inl:58:17: warning: this ‘for’ clause does not guard... [-Wmisleading-indentation]
+   58 |                 for (auto x:wt.cache->ne)put(x);for (auto x:wt.cache->nb)put(x);
+      |                 ^~~
+/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/backends/c152-slots44-snapshot/src/c152-snapshot.inl:58:49: note: ...this statement, but the latter is misleadingly indented as if it were guarded by the ‘for’
+   58 |                 for (auto x:wt.cache->ne)put(x);for (auto x:wt.cache->nb)put(x);
+      |                                                 ^~~
+[  3%] Built target llama-ui
+[  4%] Linking CXX shared library ../bin/libllama.so
+[ 67%] Built target llama
+[ 69%] Linking CXX shared library ../../bin/libmtmd.so
+[ 69%] Linking CXX shared library ../bin/libllama-common.so
+[ 82%] Built target mtmd
+[ 93%] Built target llama-common
+[ 97%] Built target server-context
+[ 97%] Linking CXX shared library ../../bin/libllama-server-impl.so
+[ 98%] Built target llama-server-impl
+[ 98%] Linking CXX executable ../../bin/llama-server
+[100%] Built target llama-server
