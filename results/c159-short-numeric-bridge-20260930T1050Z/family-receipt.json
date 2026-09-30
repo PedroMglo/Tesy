@@ -1,0 +1,39 @@
+{
+  "measurement_commit": "9ed0dc1839d736e6f0881c2e3e3a154a2d43c682",
+  "start": {
+    "utc": "2026-09-30T10:49:25.145026+00:00",
+    "monotonic_s": 259744.61825512
+  },
+  "end": {
+    "utc": "2026-09-30T10:54:00.398587+00:00",
+    "monotonic_s": 260019.871813137
+  },
+  "argv": [
+    "systemd-run",
+    "--user",
+    "--slice=tesy-post-c154.slice",
+    "--unit=c159-short-numeric-bridge",
+    "--collect",
+    "--pipe",
+    "--wait",
+    "--working-directory=/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc",
+    "-p",
+    "MemoryMax=21206401024",
+    "-p",
+    "MemoryHigh=21206401024",
+    "-p",
+    "MemorySwapMax=0",
+    "-p",
+    "RuntimeMaxSec=750",
+    "-p",
+    "TimeoutStopSec=10",
+    "--",
+    "/usr/bin/python3",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/tools/residency_unit_run.py",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c159-short-numeric-bridge-20260930T1050Z",
+    "--inside"
+  ],
+  "returncode": 0,
+  "stdout": "",
+  "stderr": "Running as unit: c159-short-numeric-bridge.service\n          Finished with result: success\nMain processes terminated with: code=exited, status=0/SUCCESS\n               Service runtime: 4min 35.127s\n             CPU time consumed: 3min 30.559s\n                   Memory peak: 17.3G (swap: 0B)\n"
+}
