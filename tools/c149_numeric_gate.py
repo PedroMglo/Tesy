@@ -25,7 +25,7 @@ def payload(row,data):
 
 def byte_entry(row,tensors):
     layer=int(row['layer']);kind=int(row['component']);expert=int(row['expert'])
-    if not 0<=layer<36 or not 0<=kind<6 or not 0<=expert<128 or row['status']!='PASS' or row['buffer']!='CPU':raise ValueError('byte check identity')
+    if not 0<=layer<36 or not 0<=kind<6 or not 0<=expert<128 or row['status']!='PASS' or row['buffer']!='CPU_Mapped':raise ValueError('byte check identity')
     name=f'blk.{layer}.ffn_{("gate","up","down")[kind%3]}_exps.{"weight" if kind<3 else "bias"}'
     t=tensors[name];per=t['n_bytes']//128
     if int(row['bytes'])!=per or int(row['offset'])!=t['data_offset']+expert*per:raise ValueError('canonical slice offset/bytes')

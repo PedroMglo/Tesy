@@ -1,0 +1,16 @@
+{
+  "source_name": "CPU_Mapped",
+  "source_path": "ggml/src/ggml-backend.cpp:2504",
+  "native_mmap_buffer_from_ptr": true,
+  "accepted": "CPU_Mapped",
+  "rejected": [
+    "CPU",
+    "CUDA_Host",
+    "CPU_REPACK",
+    "CUDA0"
+  ],
+  "numeric_tests": "3 PASS without I/O shims",
+  "canary_family_cumulative_ceiling_s": 900,
+  "retry_envelope_s": 800,
+  "earlier_consumed_s": 66.787
+}

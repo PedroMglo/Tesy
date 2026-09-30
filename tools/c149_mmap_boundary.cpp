@@ -64,7 +64,7 @@ void verify_component(observer & s,int layer,int kind,ggml_tensor * t,const std:
     require(t->type==c.type && ggml_nbytes(t)==128*c.bytes,"expert type/bytes");
     size_t stride=kind<3?t->nb[2]:t->nb[1];
     require(stride==c.bytes && (kind<3?t->ne[2]:t->ne[1])==128,"expert stride/shape");
-    require(std::string(ggml_backend_buffer_name(t->buffer))=="CPU","expert buffer must be CPU default without repack/registration");
+    require(std::string(ggml_backend_buffer_name(t->buffer))=="CPU_Mapped","expert buffer must be native CPU_Mapped without repack/registration");
     std::set<int32_t> uniq(ids.begin(),ids.end());
     for (int id:uniq) {
         if (!s.checked.insert({layer*6+kind,id}).second)continue;
@@ -77,7 +77,7 @@ void verify_component(observer & s,int layer,int kind,ggml_tensor * t,const std:
         require(actual==expected,"canonical expert/bias payload mismatch");s.checked_bytes+=c.bytes;
         s.checks+=s.phases[layer]+"\t"+std::to_string(layer)+"\t"+std::to_string(id)+"\t"+
                   std::to_string(kind)+"\t"+std::to_string(c.offset+id*c.bytes)+"\t"+
-                  std::to_string(c.bytes)+"\tCPU\tPASS\n";
+                  std::to_string(c.bytes)+"\tCPU_Mapped\tPASS\n";
     }
 }
 bool callback(ggml_tensor * t,bool ask,void * userdata) {
