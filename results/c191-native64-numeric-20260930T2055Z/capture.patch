@@ -1,0 +1,78 @@
+--- tools/c127_slots40_boundary_capture.cpp
++++ results/c191-native64-numeric-20260930T2055Z/build/capture.cpp
+@@ -356,18 +356,18 @@
+     if (state.prefill && stage == "attn_post_norm") {
+         if (ask) return true;
+         const int chunk = ++state.chunk_by_layer[static_cast<size_t>(layer_id)];
+-        check(chunk >= 0 && chunk < 6, "extra internal prefill microbatch at attn_post_norm");
+-        const int expected_tokens = chunk == 5 ? 29 : 32;
+-        const int expected_rows = layer_id == 35 ? (chunk == 5 ? 1 : 0) : expected_tokens;
++        check(chunk >= 0 && chunk < 3, "extra internal prefill microbatch at attn_post_norm");
++        const int expected_tokens = chunk == 2 ? 61 : 64;
++        const int expected_rows = layer_id == 35 ? (chunk == 2 ? 1 : 0) : expected_tokens;
+         check(tensor->type == GGML_TYPE_F32 && tensor->ne[0] == 2880 &&
+               tensor->ne[1] == expected_rows && tensor->ne[2] == 1 && tensor->ne[3] == 1,
+               "per-layer attn_post_norm shape/mask differs from frozen graph plan");
+-        const std::string phase = chunk == 0 ? "prefill0" : chunk == 4 ?
+-                                  "prefill128" : chunk == 5 ? "prefill_final" : "";
++        const std::string phase = chunk == 0 ? "prefill0" : chunk == 1 ?
++                                  "prefill64" : chunk == 2 ? "prefill_final" : "";
+         state.phase_by_layer[static_cast<size_t>(layer_id)] = phase;
+-        if (layer_id == 35 && (chunk == 0 || chunk == 4)) {
++        if (layer_id == 35 && (chunk == 0 || chunk == 1)) {
+             state.masked += phase + "\t35\t" + std::to_string(chunk) + "\t" +
+-                            std::to_string(chunk*32) + "\t0\tN/A_MASKED\toutput-mask-zero-rows\n";
++                            std::to_string(chunk*64) + "\t0\tN/A_MASKED\toutput-mask-zero-rows\n";
+             ++state.masked_count;
+         }
+         if (phase.empty() || expected_rows == 0) return true;
+@@ -375,7 +375,7 @@
+     if (state.prefill) {
+         if (state.chunk_by_layer[static_cast<size_t>(layer_id)] < 0)
+             return false;
+-        if (layer_id == 35 && state.chunk_by_layer[35] < 5)
++        if (layer_id == 35 && state.chunk_by_layer[35] < 2)
+             return false;
+         state.phase = state.phase_by_layer[static_cast<size_t>(layer_id)];
+         if (state.phase.empty()) return false;
+@@ -417,10 +417,10 @@
+     write_new(state.root / file, data.data(), data.size());
+     state.bytes += size;
+     const int chunk = state.prefill ? state.chunk_by_layer[static_cast<size_t>(layer_id)] : -1;
+-    const int first_abs = state.prefill ? (layer_id == 35 ? 188 : chunk*32) :
++    const int first_abs = state.prefill ? (layer_id == 35 ? 188 : chunk*64) :
+                                                189 + state.decode_step;
+     const int state_tokens = state.prefill ? (layer_id == 35 ? 1 :
+-                                              (chunk == 5 ? 29 : 32)) : 1;
++                                              (chunk == 2 ? 61 : 64)) : 1;
+     state.index += state.phase + "\t" + layer + "\t" + std::to_string(chunk) + "\t" +
+                    std::to_string(first_abs) + "\t" + std::to_string(state_tokens) + "\t" +
+                    stage + "\t" + ggml_type_name(tensor->type) + "\t" + shape(tensor) + "\t" +
+@@ -547,7 +547,7 @@
+         auto cp = llama_context_default_params();
+         cp.n_ctx = 8192;
+         cp.n_batch = 256;
+-        cp.n_ubatch = 32;
++        cp.n_ubatch = 64;
+         cp.n_seq_max = 1;
+         cp.n_threads = 8;
+         cp.n_threads_batch = 8;
+@@ -579,15 +579,15 @@
+         state.enabled = false;
+         state.prefill = false;
+         for (int layer = 0; layer < 36; ++layer)
+-            check(state.chunk_by_layer[static_cast<size_t>(layer)] == 5,
+-                  "per-layer prefill chunk count differs from six internal microbatches");
++            check(state.chunk_by_layer[static_cast<size_t>(layer)] == 2,
++                  "per-layer prefill chunk count differs from three internal microbatches");
+         check(state.masked_count == 2, "last-layer masked state count differs from graph plan");
+         const float * logits = llama_get_logits(ctx);
+         check(logits != nullptr, "prefill final logits unavailable");
+         for (int k = 0; k < vocab; ++k) check(std::isfinite(logits[k]), "nonfinite prefill logit");
+         write_new(state.root / "prefill_final.logits.f32",logits,
+                   static_cast<size_t>(vocab)*sizeof(float));
+-        state.phases = {"prefill0","prefill128","prefill_final"};
++        state.phases = {"prefill0","prefill64","prefill_final"};
+         std::cout << "captured=prefill_final tensors=" << state.count << "\n" << std::flush;
+         for (int i = 0; i < 32; ++i) {
+             state.enabled = i == 0 || i == 1 || i == 7 || i == 31;

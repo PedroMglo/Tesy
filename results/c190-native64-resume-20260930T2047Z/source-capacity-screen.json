@@ -1,0 +1,72 @@
+{
+  "evidence": "SOURCE_AUDITED/FORMAL conditional graph counts; workspace opportunity HIPOTESE",
+  "wave_cap": 18,
+  "formula": "cap=(40-4)/2=18; touch=min(128,4*n); waves=ceil(touch/18) if touch>40 else1",
+  "conditioned_5_plus_148": {
+    "ub32_chunks": [
+      5,
+      32,
+      32,
+      32,
+      32,
+      20
+    ],
+    "ub32_waves": [
+      1,
+      8,
+      8,
+      8,
+      8,
+      5
+    ],
+    "ub64_chunks": [
+      5,
+      64,
+      64,
+      20
+    ],
+    "ub64_waves": [
+      1,
+      8,
+      8,
+      5
+    ],
+    "ub32_blocks": 38,
+    "ub64_blocks": 22,
+    "tokens_times_waves_both": 1129
+  },
+  "fixed_external153": {
+    "ub32_chunks": [
+      32,
+      32,
+      32,
+      32,
+      25
+    ],
+    "ub64_chunks": [
+      64,
+      64,
+      25
+    ],
+    "tokens_times_waves_both": 1174,
+    "not_same_call_plan_as_5_plus_148": true
+  },
+  "logical_expert_copy_bytes": 13219200,
+  "fixed_primary_CPU_bytes": 13219200000,
+  "fixed_primary_GPU_bytes": 5816448000,
+  "no_expert_pool_growth": true,
+  "unmasked_input_64_vs32_delta_bytes": 368640,
+  "single_gate_or_up_64_vs32_delta_bytes": 1474560,
+  "single_down_64_vs32_delta_bytes": 1474560,
+  "workspace_exact_allocator_peak": "UNKNOWN until bounded init/forward; liveness/reuse prevents summing all nodes as peak",
+  "decision": "GO_N_BOUNDED_FORWARD_E18. Current live E18 admitted; weights/pools/KV fixed, no optimistic historical workspace threshold used. Init/transient guard remains authoritative.",
+  "native_path": "Original CPU MXFP4 dot/MMID dispatch, original CUDA MMID/MMQ and native FlashAttention; C75 macro in C and C++; no compatibility patch. Known cross-shape arithmetic differences preserved.",
+  "source_references": [
+    "src/llama-graph.cpp:1964-2000",
+    "src/llama-graph.cpp build_expert_gemms",
+    "ggml/src/ggml-cpu/ggml-cpu.c GGML_OP_MUL_MAT_ID",
+    "ggml/src/ggml-cuda/ggml-cuda.cu MMID/fusion dispatch"
+  ],
+  "possible_savings": "Fewer graph/wave/remap invocations and fewer repeated expert sweeps across microbatches; actual route union64 UNKNOWN, cannot combine observed32 routes and call observed64",
+  "no_speedup_forecast": true
+}

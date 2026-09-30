@@ -93,7 +93,20 @@ def source(stem, variant, binary, input_sha):
     return manifest, {"manifest_sha256": sha(manifest_path), "samples": n_samples}
 
 
-def state_metadata(phase, layer):
+def phase_contract(ubatch=32):
+    if ubatch not in (32,64):raise GateError("unqualified capture ubatch")
+    phases=PHASES if ubatch==32 else ("prefill0","prefill64","prefill_final","decode0","decode1","decode7","decode31")
+    masked=MASKED if ubatch==32 else [dict(row,phase="prefill64",chunk="1",first_abs="64") if row["phase"]=="prefill128" else dict(row) for row in MASKED]
+    return phases,masked
+
+
+def state_metadata(phase, layer, *, ubatch=32):
+    phases,_=phase_contract(ubatch)
+    if phase not in phases:raise GateError("phase outside capture contract")
+    if ubatch==64:
+        if phase=="prefill0":return 0,0,64
+        if phase=="prefill64":return 1,64,64
+        if phase=="prefill_final":return 2,188 if layer==35 else 128,1 if layer==35 else 61
     if phase == "prefill0":
         return 0, 0, 32
     if phase == "prefill128":
@@ -104,15 +117,16 @@ def state_metadata(phase, layer):
     return -1, 189 + step, 1
 
 
-def capture(root, *, allow_parked=False):
-    if (root / "phases.txt").read_text().splitlines() != list(PHASES):
+def capture(root, *, allow_parked=False, ubatch=32):
+    phases,expected_masked=phase_contract(ubatch)
+    if (root / "phases.txt").read_text().splitlines() != list(phases):
         raise GateError("capture phase schedule differs from freeze")
     masked = rows(root / "masked.tsv", list(MASKED[0]))
-    if masked != MASKED:
+    if masked != expected_masked:
         raise GateError("masked entries incomplete/extra")
     index = rows(root / "index.tsv", INDEX_FIELDS)
-    expected_states = {(phase, layer) for phase in PHASES for layer in range(36)
-                       if not (layer == 35 and phase in ("prefill0", "prefill128"))}
+    expected_states = {(phase, layer) for phase in phases for layer in range(36)
+                       if not (layer == 35 and phase in phases[:2])}
     observed_core = {}
     files = set()
     total_bytes = 0
@@ -126,7 +140,7 @@ def capture(root, *, allow_parked=False):
         except (ValueError, TypeError) as exc:
             raise GateError("malformed capture index value") from exc
         if (phase, layer) not in expected_states or stage not in CORE | OPTIONAL or \
-           (chunk, first_abs, tokens) != state_metadata(phase, layer) or \
+           (chunk, first_abs, tokens) != state_metadata(phase, layer, ubatch=ubatch) or \
            row["type"] not in ("f32", "i32") or len(ne) != 4 or len(nb) != 4 or \
            any(x <= 0 for x in ne) or any(x <= 0 for x in nb) or nb[0] != 4 or \
            size != 4 + sum((ne[i]-1)*nb[i] for i in range(4)) or size <= 0:

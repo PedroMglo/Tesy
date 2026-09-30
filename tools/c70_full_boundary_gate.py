@@ -30,9 +30,9 @@ def _values(root, row):
         for i1 in range(ne[1]) for i0 in range(ne[0])]
 
 
-def inspect(root, *, skip_on):
+def inspect(root, *, skip_on, ubatch=32):
     root = Path(root)
-    logits, coverage = c7.capture(root, allow_parked=skip_on)
+    logits, coverage = c7.capture(root, allow_parked=skip_on, ubatch=ubatch)
     core = {}
     waves = defaultdict(lambda: {'ffn_moe_wave_ids': [], 'ffn_moe_wave_mask': []})
     for row in _index(root):
@@ -81,9 +81,9 @@ def inspect(root, *, skip_on):
             'byte_witness_rows': len(checks)}
 
 
-def compare(off_root, on_root):
-    off = inspect(off_root, skip_on=False)
-    on = inspect(on_root, skip_on=True)
+def compare(off_root, on_root, *, ubatch=32):
+    off = inspect(off_root, skip_on=False, ubatch=ubatch)
+    on = inspect(on_root, skip_on=True, ubatch=ubatch)
     if off['core'].keys() != on['core'].keys() or off['masks'].keys() != on['masks'].keys():
         raise GateError('C70 core/wave state keys changed')
     mismatch = []

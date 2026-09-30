@@ -1,0 +1,51 @@
+{
+  "actual_final_build_commands": {
+    "capture": [
+      "g++-15",
+      "-std=c++17",
+      "-O2",
+      "-Wall",
+      "-Wextra",
+      "-Werror",
+      "-I",
+      "/tmp/tesy-c75-backend-20260928/include",
+      "-I",
+      "/tmp/tesy-c75-backend-20260928/src",
+      "-I",
+      "/tmp/tesy-c75-backend-20260928/ggml/include",
+      "results/c191-native64-numeric-20260930T2055Z/build/capture.cpp",
+      "/tmp/tesy-c75-backend-20260928/build-c75-cuda/bin/libllama.so",
+      "/tmp/tesy-c75-backend-20260928/build-c75-cuda/bin/libggml.so",
+      "/tmp/tesy-c75-backend-20260928/build-c75-cuda/bin/libggml-base.so",
+      "-Wl,-rpath,/tmp/tesy-c75-backend-20260928/build-c75-cuda/bin",
+      "-ldl",
+      "-o",
+      "results/c191-native64-numeric-20260930T2055Z/build/capture"
+    ],
+    "reference": [
+      "g++-15",
+      "-std=c++17",
+      "-O2",
+      "-Wall",
+      "-Wextra",
+      "-Werror",
+      "-I",
+      "/tmp/tesy-c75-backend-20260928/include",
+      "-I",
+      "/tmp/tesy-c75-backend-20260928/src",
+      "-I",
+      "/tmp/tesy-c75-backend-20260928/ggml/include",
+      "results/c191-native64-numeric-20260930T2055Z/build/reference.cpp",
+      "-Wl,--no-as-needed",
+      "/tmp/tesy-c75-backend-20260928/build-c75-cuda/bin/libllama.so",
+      "/tmp/tesy-c75-backend-20260928/build-c75-cuda/bin/libggml.so",
+      "/tmp/tesy-c75-backend-20260928/build-c75-cuda/bin/libggml-base.so",
+      "/tmp/tesy-c75-backend-20260928/build-c75-cuda/bin/libggml-cpu.so",
+      "-Wl,-rpath,/tmp/tesy-c75-backend-20260928/build-c75-cuda/bin",
+      "-o",
+      "results/c191-native64-numeric-20260930T2055Z/build/reference"
+    ]
+  },
+  "no_backend_rebuild": true,
+  "model_free_link_gate": "Reference first link omitted unused libllama. Rebuilt only small reference with --no-as-needed before any physical run; both compute library sets now identical to C127/C75."
+}
