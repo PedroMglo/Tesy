@@ -88,13 +88,13 @@ def main():
     start=now();result=None;live_started=False
     try:
         preflight(root,p)
-        if not epoch.budget(p['physical_envelope_s'],p['raw_projection_bytes'])['admitted']:raise RuntimeError('unit and closure not admitted')
+        if not epoch.budget(p['physical_envelope_s']+15,p['raw_projection_bytes'])['admitted']:raise RuntimeError('unit and closure not admitted')
         c=p['resources']['cgroup'];deadline=epoch.config['start_monotonic_s']+epoch.config['wall_limit_s'];runtime=min(p['physical_envelope_s'],int(deadline-time.monotonic()))
         argv=['systemd-run','--user','--slice=tesy-post-c154.slice','--unit='+p['execution_scope_unit'],'--collect','--pipe','--wait','--working-directory='+str(root),'-p','MemoryMax='+str(c['memory_max_bytes']),'-p','MemoryHigh='+str(c['memory_high_bytes']),'-p','MemorySwapMax=0','-p','RuntimeMaxSec='+str(runtime),'-p','TimeoutStopSec=10','--',sys.executable,str(Path(__file__).resolve()),str(directory),'--inside']
         live_started=True
         result=subprocess.run(argv,text=True,capture_output=True,timeout=runtime+15);end=now()
         publish(directory/'family-receipt.json',{'measurement_commit':head,'start':start,'end':end,'argv':argv,'returncode':result.returncode,'stdout':result.stdout,'stderr':result.stderr})
-        epoch.record(p['campaign_id'],start,end,live=True,status='PASS' if result.returncode==0 else 'FAIL_UNIT',paths=[directory/'family-receipt.json'],worst_case_s=p['physical_envelope_s'])
+        epoch.record(p['campaign_id'],start,end,live=True,status='PASS' if result.returncode==0 else 'FAIL_UNIT',paths=[directory/'family-receipt.json'],worst_case_s=p['physical_envelope_s']+15)
     except Exception as exc:
         if live_started:
             subprocess.run(['systemctl','--user','stop',p['execution_scope_unit']],capture_output=True,timeout=15)
