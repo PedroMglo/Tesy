@@ -47,7 +47,7 @@ class NaturalTests(unittest.TestCase):
             cfg['per_task_request_policy']=override
             with self.assertRaises(GateError):server.per_task_request_policy(cfg,'two')
 
-    def entrypoint(self,late=False,parallel=False):
+    def entrypoint(self,late=False,parallel=False,fixed=False):
         protocol,cg,sample=runtime_fixture();protocol['identity']={'model_sha256':'a'*64,'library_sha256':{'fake':'b'*64}}
         with tempfile.TemporaryDirectory() as tmp:
             root=Path(tmp);(root/'raw').mkdir();model=root/'model';model.write_bytes(b'not weights')
@@ -62,6 +62,16 @@ class NaturalTests(unittest.TestCase):
                 'pretokenize':True,'freeze_token_ids':True,'append_previous_assistant_to_next':True,
                 'stream_requests':True,'require_natural_stop':True,'dynamic_cache_min_common':5}
             tasks=[(k,{'id':k,'category':'fixture','messages':[{'role':'user','content':k}]}) for k in cfg['task_ids']]
+            if fixed:
+                cfg['append_previous_assistant_to_next']=False
+                cfg['task_ids'].append('four')
+                cfg['per_task_request_policy']['four']={'max_tokens':16,'per_request_timeout_s':2}
+                supplied=[];fixed_tasks=[]
+                for k in cfg['task_ids']:
+                    supplied=supplied+[{'role':'user','content':k}]
+                    fixed_tasks.append((k,{'id':k,'category':'provided-history-fixture','messages':list(supplied)}))
+                    supplied=supplied+[{'role':'assistant','content':QUERY if k=='three' else '48327'}]
+                tasks=fixed_tasks
             transports=[]
             def fetch(path,payload=None,timeout=None):
                 if path=='/health':
@@ -69,12 +79,15 @@ class NaturalTests(unittest.TestCase):
                     return {'status':'ok'}
                 if path=='/v1/models':return {'data':[{'id':'fixture'}]}
                 if path=='/apply-template':return {'prompt':str(len(payload['messages']))}
-                if path=='/tokenize':return {'tokens':list(range({1:10,3:13,5:15}[int(payload['content'])]))}
+                if path=='/tokenize':return {'tokens':list(range({1:10,3:13,5:15,7:18}[int(payload['content'])]))}
                 raise AssertionError(path)
             def stream(payload,timeout,started):
                 transports.append((deepcopy(payload),timeout));time.sleep(.6)
-                i=len(transports)-1;n=[10,13,15][i];cache=[0,10,13][i]
-                response={'choices':[{'message':{'role':'assistant','content':['12345','12345',QUERY][i]},'finish_reason':'stop'}],
+                i=len(transports)-1;n=[10,13,15,18][i];cache=[0,10,13,15][i]
+                if fixed and i==3:
+                    from test_useful_latency_portfolio import QUERY as holdout_query
+                else:holdout_query=''
+                response={'choices':[{'message':{'role':'assistant','content':['12345','12345',QUERY,holdout_query][i]},'finish_reason':'stop'}],
                           'usage':{'prompt_tokens':n,'completion_tokens':1},
                           'timings':{'cache_n':cache,'prompt_n':n-cache}}
                 return response,{'done_observed':True,'first_final_content_chunk_s':.5}
@@ -89,6 +102,9 @@ class NaturalTests(unittest.TestCase):
             validations=[]
             def validator(rid,item):
                 validations.append(rid)
+                if rid=='four':
+                    from portfolio_workload import grade_holdout
+                    return grade_holdout(item['message']['content'])
                 return grade(item['message']['content']) if rid=='three' else {'PASS':True}
             ps={'VmRSS':100*2**20,'VmHWM':100*2**20,'VmSwap':0}
             thermal=deepcopy(sample['thermal']);thermal['cpu_tctl_c']=45
@@ -107,17 +123,18 @@ class NaturalTests(unittest.TestCase):
                 self.assertEqual(raw['results'][-1]['message']['content'],'12345')
                 self.assertTrue(any('PER_REQUEST_WALL_TIMEOUT' in r for r in raw['stop_reasons']))
             else:
-                self.assertEqual(rc,0);self.assertEqual(len(transports),3)
-                self.assertEqual([r[0]['max_tokens'] for r in transports],[8,8,12])
-                self.assertEqual([r[1] for r in transports],[2,2,2])
-                self.assertEqual(len(transports[-1][0]['messages']),5)
-                self.assertEqual(transports[-1][0]['messages'][1]['content'],'12345')
+                self.assertEqual(rc,0);self.assertEqual(len(transports),4 if fixed else 3)
+                self.assertEqual([r[0]['max_tokens'] for r in transports],[8,8,12,16] if fixed else [8,8,12])
+                self.assertEqual([r[1] for r in transports],[2,2,2,2] if fixed else [2,2,2])
+                self.assertEqual(len(transports[-1][0]['messages']),7 if fixed else 5)
+                self.assertEqual(transports[-1][0]['messages'][1]['content'],'48327' if fixed else '12345')
                 self.assertTrue(raw['results'][-1]['functional_validation']['PASS'])
-                self.assertEqual(list(json.loads((root/'raw/test.tokenization.json').read_text())),['one','two','three'])
+                self.assertEqual(list(json.loads((root/'raw/test.tokenization.json').read_text())),['one','two','three','four'] if fixed else ['one','two','three'])
             if parallel:self.assertEqual(raw['preflight']['actually_loaded_parallel_runtime']['initial_process_environment']['values']['GOMP_SPINCOUNT'],'0')
             self.assertIsNotNone(raw['returncode']);self.assertGreaterEqual(raw['sample_count'],1)
             self.assertFalse(Path('/proc') .joinpath(str(raw['launch_identity']['pid'])).exists())
 
+    def test_four_supplied_messages_child_entrypoint_and_holdout_prefix(self):self.entrypoint(fixed=True)
     def test_three_turn_actual_child_entrypoint(self):self.entrypoint()
     def test_parallel_runtime_actual_child_entrypoint(self):self.entrypoint(parallel=True)
     def test_late_second_preserved_and_third_never_launched(self):self.entrypoint(late=True)
