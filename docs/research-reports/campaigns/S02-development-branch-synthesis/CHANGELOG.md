@@ -1,3 +1,7 @@
+# 0.1.3 — 2026-10-01
+
+Ajusta a quebra de linha dos 32 prefixos SHA na tabela de branches após a revisão do PDF ter detetado overflow na coluna. Não altera resultados, claims ou classificação científica; mantém DRAFT até à revisão visual do preview final.
+
 # 0.1.2 — 2026-10-01
 
 Corrige as chamadas LaTeX de claims históricos para respeitar a assinatura da macro, preservando as afirmações e ligando cada uma ao seu índice de evidência. Revalida as 40 refs remotas: os 32 nomes de desenvolvimento e os 32 heads correspondem à fotografia de 2026-09-30. Atualiza derivados e auditoria DRAFT; sem nova execução experimental nem alteração de claims científicos.
