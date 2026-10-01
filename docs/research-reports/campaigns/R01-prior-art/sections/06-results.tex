@@ -1,0 +1,26 @@
+\section{Mapa de prior art}
+\small
+\begin{tabularx}{\linewidth}{@{}p{31mm}Y@{}}\toprule
+\textbf{Eixo} & \textbf{Prior art e consequência para Tesy}\\\midrule
+Sparse MoE / routing & Shazeer et al. e Switch Transformer \cite{shazeer2017moe,fedus2022switch}: conditional sparse routing e top-k/top-1 MoE são arquitetura-base, não contribuição Tesy.\\
+Multi-tier LLM & FlexGen e \emph{LLM in a flash} \cite{sheng2023flexgen,alizadeh2024llmflash}: GPU/CPU/storage, cost models e selective loading já existem fora de MoE; não são baseline exacto por si só.\\
+Consumer MoE offload & Eliseev--Mazur e EdgeMoE \cite{eliseev2023offloading,yi2023edgemoe}: experts acima da memória do acelerador e loading on-demand em hardware limitado têm precedentes diretos.\\
+Expert cache / prefetch & MoE-Infinity, ProMoE e SpecPrefetch \cite{xue2024moeinfinity,song2024promoe,kong2026specprefetch}: caching, proactive loading e prediction-for-transfer têm overlap direto.\\
+Contemporary residency & PreScope, ExpertFlow, FineMoE e DALI \cite{yu2025prescope,he2026expertflow,yu2026finemoe,zhu2026dali}: prediction, cache replacement, CPU/GPU assignment e fine-grained offload já são linhas ativas e diretamente próximas.\\
+Pre-attention e exact routing & APEX \cite{kanani2026apex}: prefetch router antes da atenção tem overlap directo; distingue modo com routing exacto de modo stall-free que executa experts disponíveis. Não prova equivalência ao checkpoint/backend Tesy.\\
+Cache-aware model adaptation & Wu et al. \cite{wu2026cacheaware}: backbone e routers de cache são adaptados no pós-treino e a regra Top-K nativa é mantida em inferência; mecanismo próximo, mas não checkpoint congelado.\\
+Consumer/edge measurements & Alfarizy et al. \cite{alfarizy2026consumer}: dados de throughput, memória e energia em OLMoE-1B-7B no M2 Pro e Jetson Orin Nano 8 GB apoiam medição física; o âmbito não permite extrapolação quantitativa para o Tesy.\\
+Data-movement forecasting & Yu et al. / Patterns Behind Chaos \cite{yu2026patterns}: perfis de quatro MoEs de 200B--1000B e placement de experts sensível ao prefill; motivação para estudar movement locality, sem comparação quantitativa transferível.\\
+GPU I/O architecture & CoPilotIO \cite{chen2026copilotio}: CPU cores fazem polling de conclusão de I/O iniciado pela GPU; avalia também serving MoE, mas não equivale a um router/cache de experts Tesy.\\
+Hybrid neuron placement & Kairox \cite{jiang2026kairox}: predição de ativações e balanceamento online de neurónios CPU/GPU; mecanismo adjacente baseado em activation sparsity, não placement de experts top-k.\\
+Gating/prediction co-design & Pre-gated MoE e pre-attention prediction \cite{hwang2024pregated,zhu2025preattention}: antecipar experts por routers/predictors auxiliares também é prior art; o contrato tem de ser comparado separadamente.\\
+CPU/GPU hybrid & PowerInfer, Fiddler, KTransformers e Wang et al. \cite{song2024powerinfer,kamahori2025fiddler,chen2025ktransformers,wang2026localslo}: heterogeneous execution/local inference é uma linha estabelecida.\\
+Pipelines / scheduling & MoE-Lightning, DAOP e Klotski \cite{cao2025moelightning,zhang2025daop,fang2025klotski}: overlap de compute--I/O, placement dinâmico e expert-aware batching/pipelining são prior art.\\
+Quality-altering efficiency & EdgeMoE, SiDA, SwapMoE, HOBBIT e AdapMoE \cite{yi2023edgemoe,du2024sida,kong2024swapmoe,tang2024hobbit,zhong2024adapmoe}: importantes comparadores, mas não equivalentes ao contrato exacto quando mudam precisão, gating ou accuracy.\\
+Routing locality & Liang et al. \cite{liang2026routing}: cacheability/local consistency varia por modelo; Tesy deve medir em vez de assumir.\\
+Speculation & Leviathan et al. \cite{leviathan2023speculative}: exact speculative decoding é anterior; futura integração Tesy não é novidade por usar speculation.\\
+Bounds / metodologia & Belady, Mattson, Amdahl e Roofline \cite{belady1966replacement,mattson1970storage,amdahl1967validity,williams2009roofline}: oracle de cache, stack analysis e performance bounds são metodologia estabelecida.\\
+\bottomrule\end{tabularx}
+\normalsize
+
+O mapa elimina como claims amplas: expert offloading, cache, prefetch antes da atenção, learned/predictive prefetch, cache-aware routing/adaptation, storage tiering, CPU experts, CPU/GPU hybrid execution, dynamic assignment, cache replacement, overlap por pipeline e speculative decoding. A comparação científica futura deve privilegiar os vizinhos de mecanismo mais próximos e declarar quando um baseline muda o checkpoint ou otimiza sob um contrato de qualidade diferente. Os benchmarks de edge citados motivam métricas locais, não substituem medições Tesy.

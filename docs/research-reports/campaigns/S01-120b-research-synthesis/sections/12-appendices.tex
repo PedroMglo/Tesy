@@ -1,0 +1,18 @@
+\section{Apêndices: rastreabilidade e taxonomia}
+\subsection*{Autoridades internas}
+\begin{itemize}
+\item \evidence{E-S01-EPOCH120B}: fecho C108--C118.
+\item \evidence{E-S01-C145}: fecho C138--C145.
+\item \evidence{E-S01-C154}: fecho da época mmap inicial.
+\item \evidence{E-S01-C170}: replay/policy e referência em progresso.
+\item \evidence{E-S01-C184}: referência nativa e prefix gate mmap.
+\item \evidence{E-S01-C189}: integração real slots40 e fecho corrente.
+\end{itemize}
+
+\subsection*{Leitura dos rótulos}
+\textbf{MEDIDO} significa observado no protocolo indicado pela fonte; não significa reproduzido por este relatório. \textbf{REPRODUZIDO} é reservado a repetição efetivamente documentada. \textbf{TRACE\_DERIVED} descreve conclusões derivadas de traces/replay e não um ganho físico. \textbf{DIAGNÓSTICO} não é baseline de performance. \textbf{NOT\_RUN} é preservado como estado terminal quando um gate, recurso ou budget impediu execução.
+
+\subsection*{Claim boundary}
+Este relatório não reclama invenção de MoE, expert offload, caching, prefetch, routing prediction, CPU/GPU hybrid execution, storage tiering ou speculative execution. A literatura citada mostra precedentes para essas famílias. Qualquer claim futura deve nomear o mecanismo estreito, baseline, contrato de exactness, população/workload e evidência causal.
+
+Como exemplos de precedentes próximos para estas famílias, consultar MoE-Infinity, SpecPrefetch, APEX, cache-aware router adaptation, Fiddler e KTransformers \cite{xue2024moeinfinity,kong2026specprefetch,kanani2026apex,wu2026cacheaware,kamahori2025fiddler,chen2025ktransformers}.

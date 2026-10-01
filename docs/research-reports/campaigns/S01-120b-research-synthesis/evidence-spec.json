@@ -1,0 +1,203 @@
+{
+  "authorities": {
+    "epoch": [
+      "E-S01-EPOCH120B",
+      "E-S01-C145",
+      "E-S01-C154"
+    ],
+    "integration": [
+      "E-S01-C189"
+    ],
+    "mmap": [
+      "E-S01-C154",
+      "E-S01-C170",
+      "E-S01-C184"
+    ],
+    "residency": [
+      "E-S01-C145",
+      "E-S01-C170"
+    ],
+    "synthesis": [
+      "E-S01-EPOCH120B",
+      "E-S01-C145",
+      "E-S01-C154",
+      "E-S01-C170",
+      "E-S01-C184",
+      "E-S01-C189"
+    ]
+  },
+  "checks": [],
+  "claims": [
+    {
+      "evidence": [
+        {
+          "quote": "`MEDIDO_NO_TARGET`: C111's two pairs found no persistent late teacher-forced decode penalty from the C75 ON flag;",
+          "source": "E-S01-EPOCH120B",
+          "type": "text"
+        }
+      ],
+      "evidence_class": "DIAGNOSTICO",
+      "family": "epoch",
+      "id": "CL-S01-C117",
+      "limitation": "C117 violou o inventário de arranque por braço; não é promoção de desempenho.",
+      "source_class": "Fecho de época Tesy congelado",
+      "statement": "C117 não sustenta promoção de desempenho.",
+      "status": "CURRENT"
+    },
+    {
+      "evidence": [
+        {
+          "quote": "C142 CONFIRMED_UNIFORM44_NOMINAL153 in three fresh pairs:",
+          "source": "E-S01-C145",
+          "type": "text"
+        }
+      ],
+      "evidence_class": "MEDIDO",
+      "family": "residency",
+      "id": "CL-S01-SLOTS44",
+      "limitation": "Âmbito nominal153; não herda cobertura de qualidade, sessão ou 8K de slots40.",
+      "source_class": "Fecho de época Tesy congelado",
+      "statement": "Slots44 obteve ganho medido no workload nominal153.",
+      "status": "CURRENT"
+    },
+    {
+      "evidence": [
+        {
+          "quote": "**BUDGET_CLOSED_WITH_PRESERVED_NOT_RUN.**",
+          "source": "E-S01-C154",
+          "type": "text"
+        }
+      ],
+      "evidence_class": "NOT_RUN",
+      "family": "epoch",
+      "id": "CL-S01-C154-CLOSE",
+      "limitation": "O fecho por wall deadline não é um NO_GO universal do mecanismo.",
+      "source_class": "Fecho de época Tesy congelado",
+      "statement": "C154 fechou preservando testes não executados.",
+      "status": "CURRENT"
+    },
+    {
+      "evidence": [
+        {
+          "quote": "**POLICY_NO_GO_TESTED_SCOPE.**",
+          "source": "E-S01-C170",
+          "type": "text"
+        }
+      ],
+      "evidence_class": "TRACE_DERIVED",
+      "family": "residency",
+      "id": "CL-S01-POLICY",
+      "limitation": "Rejeita CPU52/GPU44 apenas no scope e holdouts congelados.",
+      "source_class": "Fecho de época Tesy congelado",
+      "statement": "CPU52/GPU44 foi rejeitada no scope testado antes de implementação.",
+      "status": "CURRENT"
+    },
+    {
+      "evidence": [
+        {
+          "quote": "**MMAP_REFERENCE_NUMERIC_QUALIFIED_SELECTED_SCOPE; PREFIX_NOT_DEMONSTRATED; PERFORMANCE_NOT_RUN_PREFIX_GATE.**",
+          "source": "E-S01-C184",
+          "type": "text"
+        }
+      ],
+      "evidence_class": "MEDIDO",
+      "family": "mmap",
+      "id": "CL-S01-MMAP",
+      "limitation": "A referência numérica qualificada não demonstra prefix reuse nem desempenho mmap.",
+      "source_class": "Fecho de época Tesy congelado",
+      "statement": "A referência mmap ficou numericamente qualificada apenas no scope selecionado.",
+      "status": "CURRENT"
+    },
+    {
+      "evidence": [
+        {
+          "quote": "**OPTIN_REAL_PATH_VALIDATED_IN_SCOPE.**",
+          "source": "E-S01-C189",
+          "type": "text"
+        }
+      ],
+      "evidence_class": "MEDIDO",
+      "family": "integration",
+      "id": "CL-S01-OPTIN",
+      "limitation": "Quatro pedidos naturais; sem par causal de speedup e sem promoção a default.",
+      "source_class": "Fecho de época Tesy congelado",
+      "statement": "O caminho slots40 opt-in foi validado end-to-end no scope C188.",
+      "status": "CURRENT"
+    },
+    {
+      "evidence": [
+        {
+          "quote": "M4 is conjunctive and **NOT_MET**;",
+          "source": "E-S01-C189",
+          "type": "text"
+        }
+      ],
+      "evidence_class": "MEDIDO",
+      "family": "integration",
+      "id": "CL-S01-M4",
+      "limitation": "Não extrapolar para outros workloads ou hardware.",
+      "source_class": "Fecho de época Tesy congelado",
+      "statement": "M4 permanece não atingido.",
+      "status": "CURRENT"
+    }
+  ],
+  "datasets": [],
+  "metrics": [],
+  "schema_version": "tesy-evidence-spec-v1",
+  "source_contracts": [
+    {
+      "json_values": [],
+      "path": "research/120B-EPOCH-CLOSURE-20260929.md",
+      "source": "E-S01-EPOCH120B",
+      "text": [
+        "MEDIDO_NO_TARGET",
+        "REPRODUZIDO_MODEL_FREE"
+      ]
+    },
+    {
+      "json_values": [],
+      "path": "research/C145-POST-C137-EPOCH-CLOSURE-20260930.md",
+      "source": "E-S01-C145",
+      "text": [
+        "CONFIRMED_UNIFORM44_NOMINAL153",
+        "M4 NOT_DEMONSTRATED"
+      ]
+    },
+    {
+      "json_values": [],
+      "path": "research/C154-POST-C145-EPOCH-CLOSURE-20260930.md",
+      "source": "E-S01-C154",
+      "text": [
+        "BUDGET_CLOSED_WITH_PRESERVED_NOT_RUN",
+        "NUMERIC_NOT_QUALIFIED"
+      ]
+    },
+    {
+      "json_values": [],
+      "path": "research/C170-POST-C154-EPOCH-CLOSURE-20260930.md",
+      "source": "E-S01-C170",
+      "text": [
+        "POLICY_NO_GO_TESTED_SCOPE",
+        "INCONCLUSIVE_TOOLING_OR_MEASUREMENT"
+      ]
+    },
+    {
+      "json_values": [],
+      "path": "research/C184-POST-C170-EPOCH-CLOSURE-20260930.md",
+      "source": "E-S01-C184",
+      "text": [
+        "MMAP_REFERENCE_NUMERIC_QUALIFIED_SELECTED_SCOPE",
+        "PREFIX_NOT_DEMONSTRATED"
+      ]
+    },
+    {
+      "json_values": [],
+      "path": "research/C189-C143-REAL-PATH-AND-EPOCH-CLOSURE-20260930.md",
+      "source": "E-S01-C189",
+      "text": [
+        "OPTIN_REAL_PATH_VALIDATED_IN_SCOPE",
+        "M4 is conjunctive and **NOT_MET**"
+      ]
+    }
+  ]
+}

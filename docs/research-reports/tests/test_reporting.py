@@ -80,14 +80,28 @@ class Pipeline(unittest.TestCase):
         v=r.verify(self.root,'C01-scale-lab');self.assertEqual(v['meta']['scientific_state'],'SUCCESS')
         self.assertEqual(v['lock']['sources'][0]['commit'],'c67529e290844bb3d9033615072d5878014a46bc')
         self.assertEqual(v['values']['M-C1-UTILITY-PASS']['value'],8)
-    def test_automatic_release_candidate_is_reviewed_and_versioned(self):
-        self.assertEqual(rc.candidates(self.root),[
+    def test_automatic_release_candidates_exclude_unreviewed_scientific_reports(self):
+        candidates=rc.candidates(self.root)
+        self.assertEqual(candidates,[
             ('C03-boundary-prefill','1.0.0','reports-C03-boundary-prefill-v1.0.0'),
             ('C02-correctness-usability','1.0.0','reports-C02-correctness-usability-v1.0.0'),
             ('C01-scale-lab','1.0.0','reports-C01-scale-lab-v1.0.0'),
             ('R00-foundations','1.0.0','reports-R00-foundations-v1.0.0'),
             ('D00-research-dossier','1.0.0','reports-D00-research-dossier-v1.0.0'),
+            ('C04-prefill-cost','1.0.0','reports-C04-prefill-cost-v1.0.0'),
+            ('C05-first-divergence','1.0.0','reports-C05-first-divergence-v1.0.0'),
+            ('C06-attn-dispatch-compat','1.0.0','reports-C06-attn-dispatch-compat-v1.0.0'),
         ])
+        self.assertNotIn('R01-prior-art',[x[0] for x in candidates])
+        self.assertNotIn('S01-120b-research-synthesis',[x[0] for x in candidates])
+    def test_new_report_locks_are_current(self):
+        for report_id in ('C04-prefill-cost','C05-first-divergence','C06-attn-dispatch-compat','R01-prior-art','S01-120b-research-synthesis'):
+            with self.subTest(report_id=report_id):
+                verified=r.verify(self.root,report_id)
+                committed=r.read(verified['folder']/'evidence-lock.json')
+                self.assertEqual(committed['inputs_sha256'],verified['lock']['inputs_sha256'])
+                self.assertEqual((verified['folder']/'generated/metadata.tex').read_bytes(),r.generated(verified)['metadata.tex'])
+
     def test_automatic_release_candidate_requires_reviewed_audit(self):
         p=self.root/'campaigns'/'C03-boundary-prefill'/'audit.json';a=r.read(p);a['status']='DRAFT';p.write_bytes(r.canonical(a))
         with self.assertRaisesRegex(r.EvidenceError,'AUTO_RELEASE_REQUIRES_REVIEWED_AUDIT'):rc.candidates(self.root)

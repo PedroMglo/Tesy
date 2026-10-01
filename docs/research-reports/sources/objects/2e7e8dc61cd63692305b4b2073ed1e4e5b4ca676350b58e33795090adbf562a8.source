@@ -1,0 +1,34 @@
+# Campaign 4 — local checkpoint for review
+
+## Result
+
+**The completed-prefill clock is qualified; the fresh long-first no-preload/preload numerical profile is bitwise equal; ubatch64 is blocked at the first full-model numeric gate.** No new default or confirmed prefill gain. The historical C2/C3 free-generation discrepancy remains unexplained because the original exact token/control-token sequence, logits and sampler state are not available. C4 leaves the C2 sustained no-preload profile untouched and does not reclassify any C1–C3 result.
+
+| Axis | C4 status and exact scope |
+|---|---|
+| Timing | `TIMING_SCOPE_QUALIFIED`: monotonic whole-prompt clock ends after `llama_get_logits` makes output available; dispatch and final pending tail are separate. Physical short OFF 44.621714 s dispatch / **44.624687 s complete**, 0.002973 s final tail. No correction percentage was applied to C3. |
+| Numerical history | `HISTORICAL_ORIGIN_UNRESOLVED` / `NOT_REPRODUCIBLE_FROM_LOCAL_DATA` for the older free-generation difference. Original first differing token position cannot be attested. |
+| Current profile | `CURRENT_PROFILE_PARITY_PASS` for five exact-ID, long-first, **pre-sampler** full-logit vectors in OFF1/OFF2/ON fresh processes; all bitwise equal. This is not sampler or all-history parity. |
+| Changed boundary | `BOUNDARY_DIFFERENTIAL_PASS` on 36 captured ub64 layers × seven states = 252 bitwise resident-layer rows, with production CPU0–28/GPU29–35 placement. |
+| Candidate | `NON_BITWISE_REQUIRES_SEPARATE_QUALIFICATION`; `SHORT_ONLY` diagnostic. Under fixed external b256 and 113 exact IDs, changing only ubatch32→64 changed 201,087/201,088 final logits. Screening ended before medium/long, decode, confirmation and sustained runs. |
+| Budget/novelty | One of three optimization interventions used, well below eight hours elapsed; gate stop rather than resource/safety stop. `BROAD_NOVELTY_NO_GO / ENGINEERING_AND_MEASUREMENT_GO`. |
+
+The candidate's one-shot fenced time was **40.774453 s** versus control **44.624687 s** (−8.63%, diagnostic only). Top-1 remained ID 200005, but max absolute logit difference was 1.5265813 and RMSE 0.2294881. Its backend miss count fell 4324→3627 (−16.12%) and wave callbacks 1225→700; these runs routed differently and are not a valid exactness-preserving speedup comparison. No ≥25% claim, contemporary preload performance ranking or default promotion follows.
+
+## What was learned
+
+Q0 model-free delayed-work and missing-output tests passed; 33 existing model-free tests passed. The physical C4 short smoke matched the C3 short logits bitwise. The measured **final** synchronization tail was ~2.6–3.0 ms in C4 short/long controls; deferred work may have waited inside earlier decode calls, so this is not a retroactive estimate of the C3 timing error. C3 prefill A/B medians 17.5149%/18.2400% remain historical dispatch-scope summaries; the C3 sustained server used a different timing path. C4 did not run a new matched three-pair preload A/B.
+
+Two OFF and one ON long-first control used the same 1522 IDs and four frozen teacher-forced continuation IDs. Their five full logits vectors were bitwise equal with OFF preloads 0 and ON preloads 19,293. Completed prefill times 442.112886/446.287775/367.557353 s were collected for numerical diagnostics, not accepted as matched causal performance confirmation. C2/C3 historical server text had no sufficient exact original IDs or sampler state to locate the older divergence. The contemporary fixed-ID result cannot erase it.
+
+P0 found real repeated load/wait activity and static parking work, but did not establish which fraction of critical prefill time is avoidable. C3's 1522-ID OFF trace had 432.962 GB of application `pread` returns and 69.44% empty wave callbacks. On a C4 short OFF Nsight diagnostic, 4048 GPU kernel events summed to 0.191 s and 3017 CUDA copy events to 0.800 s; sums overlap. A separate loss-free `perf` sample attributed 81.81% of user CPU cycles to MXFP4 vector dot but did not distinguish parked MoE pairs from useful or dense operations. Static ten-wave counts are not ten equivalent executed GEMMs or a 10× opportunity. A 25% total saving from eliminating 90% of a serial component would require that component to occupy at least 27.8% of critical time before overhead; this fraction was not measured. Wave-capacity and pair-compaction patches were therefore **NOT_RUN**.
+
+The ub64 canonical layer replay passed on n64/64/30 prefill and n1 decode captured states, while the fixed-external-batch short full model diverged. This narrows the next numerical investigation to shape-dependent full-model execution; it does not identify the first changed internal operator or prove a fault in the streamed expert boundary. No tolerance, model, top-k, weights, quantization, context, sampler or output cap was changed to accept the candidate.
+
+## Environment, resources and review unit
+
+Runs used the physical Fedora Ryzen AI 9 HX 370 / RTX 4060 Laptop, internal NVMe GGUF with full SHA-256 `582bd40f6886200101f4c4ed9f25f3fe80cc14c86e9e2b37746cd8904a0c622d`, driver 615.71.09, CUDA toolkit 13.3, GCC 15.3.1, streaming backend `1248fd8fa8cfebaece5ea992e4d951c1e18bb9d5`. Model identity, checksums, exact binary/library hashes and commands are in run manifests. Key flags: `-ngl 8` actual placement CPU0–28/GPU29–35, b256, ub32 control or ub64 candidate, slots32, ctx4096, threads8, I/O4, direct reads, preload OFF unless the Q1 ON arm explicitly removed `LLAMA_MOE_STREAM_NO_PRELOAD`. The target GGUF remained unchanged.
+
+All target work used an 18 GiB cgroup, swap.max=0, RSS17 GiB, GPU7000 MiB, MemAvailable6 GiB and 95/80/70 °C guards. The highest reported C4 target cgroup peak among the principal runs was 15.364 GiB (ub32 capture bridge); Q1 ON CPU reached 93.625 °C; no monitored process exceeded a guard, used cgroup swap, or recorded max/OOM events. The ub64 short process peaked at 13.657 GiB cgroup and 3893 MiB GPU. No server was launched; model processes exited. Host swap already used by unrelated processes was not altered.
+
+The review unit is the C4 branch with [protocol](C4-PROTOCOL-20260927.md), [ledger](C4-LEDGER-20260927.md), this summary, compact `results/c4-*` summaries, and `tools/c4_*` probes/analyzers. Large raw captures, logits, Nsight/perf files, weights and builds remain local/untracked. Source/backend and stock build are unchanged. The original campaign order did not authorize remote publication; the owner's later `publica já` instruction authorizes publishing this branch without merge or PR. See `results/INDEX.md` for authority and preserved failure links.
