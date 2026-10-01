@@ -1,0 +1,1457 @@
+{
+  "status": "REPRODUZIDO_MODEL_FREE_RECEIPT_AUDIT",
+  "hypothesis": "H1",
+  "all_planned_arms": [
+    {
+      "run_id": "c203-1-A",
+      "profile": "A",
+      "status": "PASS_NATURAL_ARM",
+      "reason": null,
+      "measurement_head": "22b476257daa3fb7a740b01ca5bb6604d08d46e3",
+      "requests": [
+        {
+          "id": "c112-code",
+          "official_ids_n": 2043,
+          "official_ids_sha256": "6a7ca59da874e5541e1fb8a1279d5bce5d375bd3238efe08cf94f73b7e014459",
+          "cache_n": 0,
+          "prompt_n": 2043,
+          "outputs_reported": 77,
+          "output_ids": "NOT_EXPOSED",
+          "finish_reason": "stop",
+          "accepted": true,
+          "invalid_reason": null,
+          "prefill_s": 62.354353,
+          "decode_s": 20.279756000000003,
+          "native_predicted_n": 77,
+          "first_reasoning_s": 63.123197216016706,
+          "first_final_s": 82.16421053401427,
+          "completion_s": 82.65257050300715,
+          "validated_s": null,
+          "validator_s": null,
+          "final": "48327",
+          "reasoning": "The user gave a huge repetitive text \"alpha ...\" and then asks: \"Choose any five-digit code. Reply with the five digits only.\"\n\nWe need to comply. Provide a five-digit code, e.g., 48327. Must be only the digits, no extra text. Ensure no disallowed content. It's fine.",
+          "functional": {
+            "PASS": true,
+            "scope": "five ASCII digits"
+          }
+        },
+        {
+          "id": "c112-repeat",
+          "official_ids_n": 2197,
+          "official_ids_sha256": "6a7ca59da874e5541e1fb8a1279d5bce5d375bd3238efe08cf94f73b7e014459",
+          "cache_n": 2044,
+          "prompt_n": 153,
+          "outputs_reported": 37,
+          "output_ids": "NOT_EXPOSED",
+          "finish_reason": "stop",
+          "accepted": true,
+          "invalid_reason": null,
+          "prefill_s": 10.775094,
+          "decode_s": 7.782913,
+          "native_predicted_n": 37,
+          "first_reasoning_s": 11.505353975982871,
+          "first_final_s": 18.25863446400035,
+          "completion_s": 18.571663487993646,
+          "validated_s": null,
+          "validator_s": null,
+          "final": "48327",
+          "reasoning": "The user wants the exact text of the previous answer, which was \"48327\". Must repeat exactly that, no additions.",
+          "functional": {
+            "PASS": true,
+            "scope": "exact supplied prior answer48327"
+          }
+        },
+        {
+          "id": "native64-sql",
+          "official_ids_n": 2292,
+          "official_ids_sha256": "6a7ca59da874e5541e1fb8a1279d5bce5d375bd3238efe08cf94f73b7e014459",
+          "cache_n": 2198,
+          "prompt_n": 94,
+          "outputs_reported": 255,
+          "output_ids": "NOT_EXPOSED",
+          "finish_reason": "stop",
+          "accepted": true,
+          "invalid_reason": null,
+          "prefill_s": 14.797319,
+          "decode_s": 62.058601,
+          "native_predicted_n": 255,
+          "first_reasoning_s": 15.523819174966775,
+          "first_final_s": 61.678717773989774,
+          "completion_s": 76.87406448594993,
+          "validated_s": 76.87726048700279,
+          "validator_s": 0.0014775629970245063,
+          "final": "```sql\nSELECT cliente,\n       SUM(COALESCE(valor, 0)) AS total_valor\nFROM (\n    SELECT *,\n           ROW_NUMBER() OVER (PARTITION BY event_id\n                              ORDER BY atualizado DESC, ingest_id DESC) AS rn\n    FROM eventos\n) AS sub\nWHERE rn = 1\nGROUP BY cliente\nORDER BY cliente ASC;\n```",
+          "reasoning": "User asks: Provide a single read query that for each event_id retains the row with max atualizado, tie break max ingest_id; then sum COALESCE(valor,0) per cliente, order by cliente asc. Return only the query or a single SQL block, no explanations.\n\nWe need to write a query. Use subquery with ROW_NUMBER partition by event_id order by atualizado desc, ingest_id desc. Then select rows where rn=1, group by cliente sum.\n\nSQL:\n\nSELECT cliente, SUM(COALESCE(valor,0)) AS total_valor\nFROM (\n    SELECT *,\n           ROW_NUMBER() OVER (PARTITION BY event_id ORDER BY atualizado DESC, ingest_id DESC) AS rn\n    FROM eventos\n) AS sub\nWHERE rn = 1\nGROUP BY cliente\nORDER BY cliente ASC;\n\nReturn just that.",
+          "functional": {
+            "PASS": true,
+            "query": "SELECT cliente,\n       SUM(COALESCE(valor, 0)) AS total_valor\nFROM (\n    SELECT *,\n           ROW_NUMBER() OVER (PARTITION BY event_id\n                              ORDER BY atualizado DESC, ingest_id DESC) AS rn\n    FROM eventos\n) AS sub\nWHERE rn = 1\nGROUP BY cliente\nORDER BY cliente ASC;",
+            "fixtures": [
+              {
+                "rows": 0,
+                "expected": [],
+                "actual": [],
+                "instruction_bound": 100000
+              },
+              {
+                "rows": 4,
+                "expected": [
+                  [
+                    "ana",
+                    7
+                  ],
+                  [
+                    "bia",
+                    8
+                  ]
+                ],
+                "actual": [
+                  [
+                    "ana",
+                    7
+                  ],
+                  [
+                    "bia",
+                    8
+                  ]
+                ],
+                "instruction_bound": 100000
+              },
+              {
+                "rows": 6,
+                "expected": [
+                  [
+                    "ana",
+                    8
+                  ],
+                  [
+                    "bia",
+                    -2
+                  ]
+                ],
+                "actual": [
+                  [
+                    "ana",
+                    8
+                  ],
+                  [
+                    "bia",
+                    -2
+                  ]
+                ],
+                "instruction_bound": 100000
+              },
+              {
+                "rows": 4,
+                "expected": [
+                  [
+                    "a",
+                    10
+                  ],
+                  [
+                    "z",
+                    0
+                  ]
+                ],
+                "actual": [
+                  [
+                    "a",
+                    10
+                  ],
+                  [
+                    "z",
+                    0
+                  ]
+                ],
+                "instruction_bound": 100000
+              }
+            ],
+            "validator_s": 0.0014775629970245063,
+            "validated_monotonic_s": 308182.885326041
+          }
+        }
+      ],
+      "stop_reasons": [],
+      "maxima": {
+        "rss_bytes": 15947591680,
+        "cgroup_peak_bytes": 15729283072,
+        "gpu_total_mib": 6866.0,
+        "cpu_c": 94.75,
+        "gpu_c": 60.0,
+        "nvme_c": 51.85,
+        "swap_bytes": 0
+      },
+      "cgroup_end": {
+        "path": "/user.slice/user-1000.slice/user@1000.service/app.slice/tesy-c203-1-A.service",
+        "memory_max": 21474836480,
+        "memory_high": 21474836480,
+        "swap_max": 0,
+        "memory_current": 27156480,
+        "memory_peak": 15729283072,
+        "swap_current": 0,
+        "memory_stat": {
+          "anon": 21118976,
+          "file": 970752,
+          "kernel": 688128,
+          "kernel_stack": 0,
+          "pagetables": 176128,
+          "sec_pagetables": 0,
+          "percpu": 1664,
+          "sock": 0,
+          "vmalloc": 0,
+          "shmem": 0,
+          "zswap": 0,
+          "zswapped": 0,
+          "zswap_incomp": 0,
+          "file_mapped": 0,
+          "file_dirty": 53248,
+          "file_writeback": 0,
+          "swapcached": 0,
+          "anon_thp": 0,
+          "file_thp": 0,
+          "shmem_thp": 0,
+          "inactive_anon": 0,
+          "active_anon": 21053440,
+          "inactive_file": 958464,
+          "active_file": 4096,
+          "unevictable": 0,
+          "slab_reclaimable": 92704,
+          "slab_unreclaimable": 107960,
+          "slab": 200664,
+          "hugetlb": 0,
+          "workingset_refault_anon": 0,
+          "workingset_refault_file": 0,
+          "workingset_activate_anon": 0,
+          "workingset_activate_file": 0,
+          "workingset_restore_anon": 0,
+          "workingset_restore_file": 0,
+          "workingset_nodereclaim": 0,
+          "pgdemote_kswapd": 0,
+          "pgdemote_direct": 0,
+          "pgdemote_khugepaged": 0,
+          "pgdemote_proactive": 0,
+          "pgsteal_kswapd": 24,
+          "pgsteal_direct": 0,
+          "pgsteal_khugepaged": 0,
+          "pgsteal_proactive": 0,
+          "pgscan_kswapd": 49,
+          "pgscan_direct": 0,
+          "pgscan_khugepaged": 0,
+          "pgscan_proactive": 0,
+          "pgrefill": 6,
+          "pgpromote_success": 0,
+          "pgscan": 49,
+          "pgsteal": 24,
+          "pswpin": 0,
+          "pswpout": 0,
+          "pgfault": 6631732,
+          "pgmajfault": 2,
+          "pgactivate": 25,
+          "pgdeactivate": 0,
+          "pglazyfree": 0,
+          "pglazyfreed": 0,
+          "swpin_zero": 0,
+          "swpout_zero": 0,
+          "zswpin": 0,
+          "zswpout": 0,
+          "zswpwb": 0,
+          "thp_fault_alloc": 0,
+          "thp_collapse_alloc": 0,
+          "thp_swpout": 0,
+          "thp_swpout_fallback": 0,
+          "numa_pages_migrated": 0,
+          "numa_pte_updates": 0,
+          "numa_hint_faults": 0
+        },
+        "events": {
+          "low": 0,
+          "high": 0,
+          "max": 0,
+          "oom": 0,
+          "oom_kill": 0,
+          "oom_group_kill": 0,
+          "sock_throttled": 0
+        },
+        "events_local": {
+          "low": 0,
+          "high": 0,
+          "max": 0,
+          "oom": 0,
+          "oom_kill": 0,
+          "oom_group_kill": 0,
+          "sock_throttled": 0
+        },
+        "pressure": {
+          "some": {
+            "avg10": 0.0,
+            "avg60": 0.0,
+            "avg300": 0.0,
+            "total": 1452
+          },
+          "full": {
+            "avg10": 0.0,
+            "avg60": 0.0,
+            "avg300": 0.0,
+            "total": 1452
+          }
+        }
+      }
+    },
+    {
+      "run_id": "c203-2-B",
+      "profile": "B",
+      "status": "PASS_NATURAL_ARM",
+      "reason": null,
+      "measurement_head": "22b476257daa3fb7a740b01ca5bb6604d08d46e3",
+      "requests": [
+        {
+          "id": "c112-code",
+          "official_ids_n": 2043,
+          "official_ids_sha256": "6a7ca59da874e5541e1fb8a1279d5bce5d375bd3238efe08cf94f73b7e014459",
+          "cache_n": 0,
+          "prompt_n": 2043,
+          "outputs_reported": 77,
+          "output_ids": "NOT_EXPOSED",
+          "finish_reason": "stop",
+          "accepted": true,
+          "invalid_reason": null,
+          "prefill_s": 60.077983,
+          "decode_s": 18.555275,
+          "native_predicted_n": 77,
+          "first_reasoning_s": 60.803094770002645,
+          "first_final_s": 78.22009559499566,
+          "completion_s": 78.65131477901014,
+          "validated_s": null,
+          "validator_s": null,
+          "final": "48327",
+          "reasoning": "The user gave a huge repetitive text \"alpha ...\" and then asks: \"Choose any five-digit code. Reply with the five digits only.\"\n\nWe need to comply. Provide a five-digit code, e.g., 48327. Must be only the digits, no extra text. Ensure no disallowed content. It's fine.",
+          "functional": {
+            "PASS": true,
+            "scope": "five ASCII digits"
+          }
+        },
+        {
+          "id": "c112-repeat",
+          "official_ids_n": 2197,
+          "official_ids_sha256": "6a7ca59da874e5541e1fb8a1279d5bce5d375bd3238efe08cf94f73b7e014459",
+          "cache_n": 2044,
+          "prompt_n": 153,
+          "outputs_reported": 37,
+          "output_ids": "NOT_EXPOSED",
+          "finish_reason": "stop",
+          "accepted": true,
+          "invalid_reason": null,
+          "prefill_s": 10.352155,
+          "decode_s": 6.712134,
+          "native_predicted_n": 37,
+          "first_reasoning_s": 10.986230348004028,
+          "first_final_s": 16.78109001897974,
+          "completion_s": 17.080375342979096,
+          "validated_s": null,
+          "validator_s": null,
+          "final": "48327",
+          "reasoning": "The user wants the exact text of the previous answer, which was \"48327\". Must repeat exactly that, no additions.",
+          "functional": {
+            "PASS": true,
+            "scope": "exact supplied prior answer48327"
+          }
+        },
+        {
+          "id": "native64-sql",
+          "official_ids_n": 2292,
+          "official_ids_sha256": "6a7ca59da874e5541e1fb8a1279d5bce5d375bd3238efe08cf94f73b7e014459",
+          "cache_n": 2198,
+          "prompt_n": 94,
+          "outputs_reported": 255,
+          "output_ids": "NOT_EXPOSED",
+          "finish_reason": "stop",
+          "accepted": true,
+          "invalid_reason": null,
+          "prefill_s": 13.458716,
+          "decode_s": 60.386584,
+          "native_predicted_n": 255,
+          "first_reasoning_s": 14.107208981004078,
+          "first_final_s": 59.20546328899218,
+          "completion_s": 73.86273210699437,
+          "validated_s": 73.86536078900099,
+          "validator_s": 0.0011156710097566247,
+          "final": "```sql\nSELECT cliente,\n       SUM(COALESCE(valor, 0)) AS total_valor\nFROM (\n    SELECT *,\n           ROW_NUMBER() OVER (PARTITION BY event_id\n                              ORDER BY atualizado DESC, ingest_id DESC) AS rn\n    FROM eventos\n) AS sub\nWHERE rn = 1\nGROUP BY cliente\nORDER BY cliente ASC;\n```",
+          "reasoning": "User asks: Provide a single read query that for each event_id retains the row with max atualizado, tie break max ingest_id; then sum COALESCE(valor,0) per cliente, order by cliente asc. Return only the query or a single SQL block, no explanations.\n\nWe need to write a query. Use subquery with ROW_NUMBER partition by event_id order by atualizado desc, ingest_id desc. Then select rows where rn=1, group by cliente sum.\n\nSQL:\n\nSELECT cliente, SUM(COALESCE(valor,0)) AS total_valor\nFROM (\n    SELECT *,\n           ROW_NUMBER() OVER (PARTITION BY event_id ORDER BY atualizado DESC, ingest_id DESC) AS rn\n    FROM eventos\n) AS sub\nWHERE rn = 1\nGROUP BY cliente\nORDER BY cliente ASC;\n\nReturn just that.",
+          "functional": {
+            "PASS": true,
+            "query": "SELECT cliente,\n       SUM(COALESCE(valor, 0)) AS total_valor\nFROM (\n    SELECT *,\n           ROW_NUMBER() OVER (PARTITION BY event_id\n                              ORDER BY atualizado DESC, ingest_id DESC) AS rn\n    FROM eventos\n) AS sub\nWHERE rn = 1\nGROUP BY cliente\nORDER BY cliente ASC;",
+            "fixtures": [
+              {
+                "rows": 0,
+                "expected": [],
+                "actual": [],
+                "instruction_bound": 100000
+              },
+              {
+                "rows": 4,
+                "expected": [
+                  [
+                    "ana",
+                    7
+                  ],
+                  [
+                    "bia",
+                    8
+                  ]
+                ],
+                "actual": [
+                  [
+                    "ana",
+                    7
+                  ],
+                  [
+                    "bia",
+                    8
+                  ]
+                ],
+                "instruction_bound": 100000
+              },
+              {
+                "rows": 6,
+                "expected": [
+                  [
+                    "ana",
+                    8
+                  ],
+                  [
+                    "bia",
+                    -2
+                  ]
+                ],
+                "actual": [
+                  [
+                    "ana",
+                    8
+                  ],
+                  [
+                    "bia",
+                    -2
+                  ]
+                ],
+                "instruction_bound": 100000
+              },
+              {
+                "rows": 4,
+                "expected": [
+                  [
+                    "a",
+                    10
+                  ],
+                  [
+                    "z",
+                    0
+                  ]
+                ],
+                "actual": [
+                  [
+                    "a",
+                    10
+                  ],
+                  [
+                    "z",
+                    0
+                  ]
+                ],
+                "instruction_bound": 100000
+              }
+            ],
+            "validator_s": 0.0011156710097566247,
+            "validated_monotonic_s": 308418.061047689
+          }
+        }
+      ],
+      "stop_reasons": [],
+      "maxima": {
+        "rss_bytes": 17266413568,
+        "cgroup_peak_bytes": 17052069888,
+        "gpu_total_mib": 7420.0,
+        "cpu_c": 95.25,
+        "gpu_c": 61.0,
+        "nvme_c": 53.85,
+        "swap_bytes": 0
+      },
+      "cgroup_end": {
+        "path": "/user.slice/user-1000.slice/user@1000.service/app.slice/tesy-c203-2-B.service",
+        "memory_max": 21474836480,
+        "memory_high": 21474836480,
+        "swap_max": 0,
+        "memory_current": 26537984,
+        "memory_peak": 17052069888,
+        "swap_current": 0,
+        "memory_stat": {
+          "anon": 20975616,
+          "file": 2228224,
+          "kernel": 421888,
+          "kernel_stack": 0,
+          "pagetables": 180224,
+          "sec_pagetables": 0,
+          "percpu": 416,
+          "sock": 0,
+          "vmalloc": 0,
+          "shmem": 0,
+          "zswap": 0,
+          "zswapped": 0,
+          "zswap_incomp": 0,
+          "file_mapped": 4096,
+          "file_dirty": 110592,
+          "file_writeback": 0,
+          "swapcached": 0,
+          "anon_thp": 0,
+          "file_thp": 0,
+          "shmem_thp": 0,
+          "inactive_anon": 0,
+          "active_anon": 20934656,
+          "inactive_file": 2215936,
+          "active_file": 4096,
+          "unevictable": 0,
+          "slab_reclaimable": 89216,
+          "slab_unreclaimable": 141168,
+          "slab": 230384,
+          "hugetlb": 0,
+          "workingset_refault_anon": 0,
+          "workingset_refault_file": 0,
+          "workingset_activate_anon": 0,
+          "workingset_activate_file": 0,
+          "workingset_restore_anon": 0,
+          "workingset_restore_file": 0,
+          "workingset_nodereclaim": 0,
+          "pgdemote_kswapd": 0,
+          "pgdemote_direct": 0,
+          "pgdemote_khugepaged": 0,
+          "pgdemote_proactive": 0,
+          "pgsteal_kswapd": 77,
+          "pgsteal_direct": 0,
+          "pgsteal_khugepaged": 0,
+          "pgsteal_proactive": 0,
+          "pgscan_kswapd": 110,
+          "pgscan_direct": 0,
+          "pgscan_khugepaged": 0,
+          "pgscan_proactive": 0,
+          "pgrefill": 7,
+          "pgpromote_success": 0,
+          "pgscan": 110,
+          "pgsteal": 77,
+          "pswpin": 0,
+          "pswpout": 0,
+          "pgfault": 6871673,
+          "pgmajfault": 8,
+          "pgactivate": 33,
+          "pgdeactivate": 0,
+          "pglazyfree": 0,
+          "pglazyfreed": 0,
+          "swpin_zero": 0,
+          "swpout_zero": 0,
+          "zswpin": 0,
+          "zswpout": 0,
+          "zswpwb": 0,
+          "thp_fault_alloc": 0,
+          "thp_collapse_alloc": 0,
+          "thp_swpout": 0,
+          "thp_swpout_fallback": 0,
+          "numa_pages_migrated": 0,
+          "numa_pte_updates": 0,
+          "numa_hint_faults": 0
+        },
+        "events": {
+          "low": 0,
+          "high": 0,
+          "max": 0,
+          "oom": 0,
+          "oom_kill": 0,
+          "oom_group_kill": 0,
+          "sock_throttled": 0
+        },
+        "events_local": {
+          "low": 0,
+          "high": 0,
+          "max": 0,
+          "oom": 0,
+          "oom_kill": 0,
+          "oom_group_kill": 0,
+          "sock_throttled": 0
+        },
+        "pressure": {
+          "some": {
+            "avg10": 0.0,
+            "avg60": 0.0,
+            "avg300": 0.0,
+            "total": 192
+          },
+          "full": {
+            "avg10": 0.0,
+            "avg60": 0.0,
+            "avg300": 0.0,
+            "total": 192
+          }
+        }
+      }
+    },
+    {
+      "run_id": "c203-3-B",
+      "profile": "B",
+      "status": "PASS_NATURAL_ARM",
+      "reason": null,
+      "measurement_head": "22b476257daa3fb7a740b01ca5bb6604d08d46e3",
+      "requests": [
+        {
+          "id": "c112-code",
+          "official_ids_n": 2043,
+          "official_ids_sha256": "6a7ca59da874e5541e1fb8a1279d5bce5d375bd3238efe08cf94f73b7e014459",
+          "cache_n": 0,
+          "prompt_n": 2043,
+          "outputs_reported": 77,
+          "output_ids": "NOT_EXPOSED",
+          "finish_reason": "stop",
+          "accepted": true,
+          "invalid_reason": null,
+          "prefill_s": 60.549492,
+          "decode_s": 18.931613000000002,
+          "native_predicted_n": 77,
+          "first_reasoning_s": 61.34306638000999,
+          "first_final_s": 79.07831309502944,
+          "completion_s": 79.50015971000539,
+          "validated_s": null,
+          "validator_s": null,
+          "final": "48327",
+          "reasoning": "The user gave a huge repetitive text \"alpha ...\" and then asks: \"Choose any five-digit code. Reply with the five digits only.\"\n\nWe need to comply. Provide a five-digit code, e.g., 48327. Must be only the digits, no extra text. Ensure no disallowed content. It's fine.",
+          "functional": {
+            "PASS": true,
+            "scope": "five ASCII digits"
+          }
+        },
+        {
+          "id": "c112-repeat",
+          "official_ids_n": 2197,
+          "official_ids_sha256": "6a7ca59da874e5541e1fb8a1279d5bce5d375bd3238efe08cf94f73b7e014459",
+          "cache_n": 2044,
+          "prompt_n": 153,
+          "outputs_reported": 37,
+          "output_ids": "NOT_EXPOSED",
+          "finish_reason": "stop",
+          "accepted": true,
+          "invalid_reason": null,
+          "prefill_s": 10.386581,
+          "decode_s": 6.709371,
+          "native_predicted_n": 37,
+          "first_reasoning_s": 11.006769967032596,
+          "first_final_s": 16.809829879028257,
+          "completion_s": 17.11268459400162,
+          "validated_s": null,
+          "validator_s": null,
+          "final": "48327",
+          "reasoning": "The user wants the exact text of the previous answer, which was \"48327\". Must repeat exactly that, no additions.",
+          "functional": {
+            "PASS": true,
+            "scope": "exact supplied prior answer48327"
+          }
+        },
+        {
+          "id": "native64-sql",
+          "official_ids_n": 2292,
+          "official_ids_sha256": "6a7ca59da874e5541e1fb8a1279d5bce5d375bd3238efe08cf94f73b7e014459",
+          "cache_n": 2198,
+          "prompt_n": 94,
+          "outputs_reported": 255,
+          "output_ids": "NOT_EXPOSED",
+          "finish_reason": "stop",
+          "accepted": true,
+          "invalid_reason": null,
+          "prefill_s": 13.456635,
+          "decode_s": 56.858518,
+          "native_predicted_n": 255,
+          "first_reasoning_s": 14.1048646440031,
+          "first_final_s": 56.26603641000111,
+          "completion_s": 70.33177769597387,
+          "validated_s": 70.3361859510187,
+          "validator_s": 0.001280291995499283,
+          "final": "```sql\nSELECT cliente,\n       SUM(COALESCE(valor, 0)) AS total_valor\nFROM (\n    SELECT *,\n           ROW_NUMBER() OVER (PARTITION BY event_id\n                              ORDER BY atualizado DESC, ingest_id DESC) AS rn\n    FROM eventos\n) AS sub\nWHERE rn = 1\nGROUP BY cliente\nORDER BY cliente ASC;\n```",
+          "reasoning": "User asks: Provide a single read query that for each event_id retains the row with max atualizado, tie break max ingest_id; then sum COALESCE(valor,0) per cliente, order by cliente asc. Return only the query or a single SQL block, no explanations.\n\nWe need to write a query. Use subquery with ROW_NUMBER partition by event_id order by atualizado desc, ingest_id desc. Then select rows where rn=1, group by cliente sum.\n\nSQL:\n\nSELECT cliente, SUM(COALESCE(valor,0)) AS total_valor\nFROM (\n    SELECT *,\n           ROW_NUMBER() OVER (PARTITION BY event_id ORDER BY atualizado DESC, ingest_id DESC) AS rn\n    FROM eventos\n) AS sub\nWHERE rn = 1\nGROUP BY cliente\nORDER BY cliente ASC;\n\nReturn just that.",
+          "functional": {
+            "PASS": true,
+            "query": "SELECT cliente,\n       SUM(COALESCE(valor, 0)) AS total_valor\nFROM (\n    SELECT *,\n           ROW_NUMBER() OVER (PARTITION BY event_id\n                              ORDER BY atualizado DESC, ingest_id DESC) AS rn\n    FROM eventos\n) AS sub\nWHERE rn = 1\nGROUP BY cliente\nORDER BY cliente ASC;",
+            "fixtures": [
+              {
+                "rows": 0,
+                "expected": [],
+                "actual": [],
+                "instruction_bound": 100000
+              },
+              {
+                "rows": 4,
+                "expected": [
+                  [
+                    "ana",
+                    7
+                  ],
+                  [
+                    "bia",
+                    8
+                  ]
+                ],
+                "actual": [
+                  [
+                    "ana",
+                    7
+                  ],
+                  [
+                    "bia",
+                    8
+                  ]
+                ],
+                "instruction_bound": 100000
+              },
+              {
+                "rows": 6,
+                "expected": [
+                  [
+                    "ana",
+                    8
+                  ],
+                  [
+                    "bia",
+                    -2
+                  ]
+                ],
+                "actual": [
+                  [
+                    "ana",
+                    8
+                  ],
+                  [
+                    "bia",
+                    -2
+                  ]
+                ],
+                "instruction_bound": 100000
+              },
+              {
+                "rows": 4,
+                "expected": [
+                  [
+                    "a",
+                    10
+                  ],
+                  [
+                    "z",
+                    0
+                  ]
+                ],
+                "actual": [
+                  [
+                    "a",
+                    10
+                  ],
+                  [
+                    "z",
+                    0
+                  ]
+                ],
+                "instruction_bound": 100000
+              }
+            ],
+            "validator_s": 0.001280291995499283,
+            "validated_monotonic_s": 308650.63444589
+          }
+        }
+      ],
+      "stop_reasons": [],
+      "maxima": {
+        "rss_bytes": 17266061312,
+        "cgroup_peak_bytes": 17050083328,
+        "gpu_total_mib": 7420.0,
+        "cpu_c": 95.0,
+        "gpu_c": 60.0,
+        "nvme_c": 54.85,
+        "swap_bytes": 0
+      },
+      "cgroup_end": {
+        "path": "/user.slice/user-1000.slice/user@1000.service/app.slice/tesy-c203-3-B.service",
+        "memory_max": 21474836480,
+        "memory_high": 21474836480,
+        "swap_max": 0,
+        "memory_current": 26382336,
+        "memory_peak": 17050087424,
+        "swap_current": 0,
+        "memory_stat": {
+          "anon": 20926464,
+          "file": 1265664,
+          "kernel": 421888,
+          "kernel_stack": 0,
+          "pagetables": 176128,
+          "sec_pagetables": 0,
+          "percpu": 832,
+          "sock": 0,
+          "vmalloc": 0,
+          "shmem": 0,
+          "zswap": 0,
+          "zswapped": 0,
+          "zswap_incomp": 0,
+          "file_mapped": 8192,
+          "file_dirty": 12288,
+          "file_writeback": 0,
+          "swapcached": 0,
+          "anon_thp": 0,
+          "file_thp": 0,
+          "shmem_thp": 0,
+          "inactive_anon": 0,
+          "active_anon": 20918272,
+          "inactive_file": 1269760,
+          "active_file": 0,
+          "unevictable": 0,
+          "slab_reclaimable": 94880,
+          "slab_unreclaimable": 120704,
+          "slab": 215584,
+          "hugetlb": 0,
+          "workingset_refault_anon": 0,
+          "workingset_refault_file": 0,
+          "workingset_activate_anon": 0,
+          "workingset_activate_file": 0,
+          "workingset_restore_anon": 0,
+          "workingset_restore_file": 0,
+          "workingset_nodereclaim": 0,
+          "pgdemote_kswapd": 0,
+          "pgdemote_direct": 0,
+          "pgdemote_khugepaged": 0,
+          "pgdemote_proactive": 0,
+          "pgsteal_kswapd": 17,
+          "pgsteal_direct": 0,
+          "pgsteal_khugepaged": 0,
+          "pgsteal_proactive": 0,
+          "pgscan_kswapd": 17,
+          "pgscan_direct": 0,
+          "pgscan_khugepaged": 0,
+          "pgscan_proactive": 0,
+          "pgrefill": 7,
+          "pgpromote_success": 0,
+          "pgscan": 17,
+          "pgsteal": 17,
+          "pswpin": 0,
+          "pswpout": 0,
+          "pgfault": 6841247,
+          "pgmajfault": 5,
+          "pgactivate": 0,
+          "pgdeactivate": 0,
+          "pglazyfree": 0,
+          "pglazyfreed": 0,
+          "swpin_zero": 0,
+          "swpout_zero": 0,
+          "zswpin": 0,
+          "zswpout": 0,
+          "zswpwb": 0,
+          "thp_fault_alloc": 0,
+          "thp_collapse_alloc": 0,
+          "thp_swpout": 0,
+          "thp_swpout_fallback": 0,
+          "numa_pages_migrated": 0,
+          "numa_pte_updates": 0,
+          "numa_hint_faults": 0
+        },
+        "events": {
+          "low": 0,
+          "high": 0,
+          "max": 0,
+          "oom": 0,
+          "oom_kill": 0,
+          "oom_group_kill": 0,
+          "sock_throttled": 0
+        },
+        "events_local": {
+          "low": 0,
+          "high": 0,
+          "max": 0,
+          "oom": 0,
+          "oom_kill": 0,
+          "oom_group_kill": 0,
+          "sock_throttled": 0
+        },
+        "pressure": {
+          "some": {
+            "avg10": 0.0,
+            "avg60": 0.0,
+            "avg300": 0.0,
+            "total": 0
+          },
+          "full": {
+            "avg10": 0.0,
+            "avg60": 0.0,
+            "avg300": 0.0,
+            "total": 0
+          }
+        }
+      }
+    },
+    {
+      "run_id": "c203-4-A",
+      "profile": "A",
+      "status": "PASS_NATURAL_ARM",
+      "reason": null,
+      "measurement_head": "22b476257daa3fb7a740b01ca5bb6604d08d46e3",
+      "requests": [
+        {
+          "id": "c112-code",
+          "official_ids_n": 2043,
+          "official_ids_sha256": "6a7ca59da874e5541e1fb8a1279d5bce5d375bd3238efe08cf94f73b7e014459",
+          "cache_n": 0,
+          "prompt_n": 2043,
+          "outputs_reported": 77,
+          "output_ids": "NOT_EXPOSED",
+          "finish_reason": "stop",
+          "accepted": true,
+          "invalid_reason": null,
+          "prefill_s": 62.560093,
+          "decode_s": 20.161354,
+          "native_predicted_n": 77,
+          "first_reasoning_s": 63.32301659497898,
+          "first_final_s": 82.26082669600146,
+          "completion_s": 82.74136833101511,
+          "validated_s": null,
+          "validator_s": null,
+          "final": "48327",
+          "reasoning": "The user gave a huge repetitive text \"alpha ...\" and then asks: \"Choose any five-digit code. Reply with the five digits only.\"\n\nWe need to comply. Provide a five-digit code, e.g., 48327. Must be only the digits, no extra text. Ensure no disallowed content. It's fine.",
+          "functional": {
+            "PASS": true,
+            "scope": "five ASCII digits"
+          }
+        },
+        {
+          "id": "c112-repeat",
+          "official_ids_n": 2197,
+          "official_ids_sha256": "6a7ca59da874e5541e1fb8a1279d5bce5d375bd3238efe08cf94f73b7e014459",
+          "cache_n": 2044,
+          "prompt_n": 153,
+          "outputs_reported": 37,
+          "output_ids": "NOT_EXPOSED",
+          "finish_reason": "stop",
+          "accepted": true,
+          "invalid_reason": null,
+          "prefill_s": 10.946995999999999,
+          "decode_s": 7.70126,
+          "native_predicted_n": 37,
+          "first_reasoning_s": 11.659695481997915,
+          "first_final_s": 18.340043124975637,
+          "completion_s": 18.664643778989557,
+          "validated_s": null,
+          "validator_s": null,
+          "final": "48327",
+          "reasoning": "The user wants the exact text of the previous answer, which was \"48327\". Must repeat exactly that, no additions.",
+          "functional": {
+            "PASS": true,
+            "scope": "exact supplied prior answer48327"
+          }
+        },
+        {
+          "id": "native64-sql",
+          "official_ids_n": 2292,
+          "official_ids_sha256": "6a7ca59da874e5541e1fb8a1279d5bce5d375bd3238efe08cf94f73b7e014459",
+          "cache_n": 2198,
+          "prompt_n": 94,
+          "outputs_reported": 255,
+          "output_ids": "NOT_EXPOSED",
+          "finish_reason": "stop",
+          "accepted": true,
+          "invalid_reason": null,
+          "prefill_s": 14.853546,
+          "decode_s": 65.234706,
+          "native_predicted_n": 255,
+          "first_reasoning_s": 15.573440515028778,
+          "first_final_s": 64.78124742698856,
+          "completion_s": 80.10549521498615,
+          "validated_s": 80.1086561200209,
+          "validator_s": 0.0016599869704805315,
+          "final": "```sql\nSELECT cliente,\n       SUM(COALESCE(valor, 0)) AS total_valor\nFROM (\n    SELECT *,\n           ROW_NUMBER() OVER (PARTITION BY event_id\n                              ORDER BY atualizado DESC, ingest_id DESC) AS rn\n    FROM eventos\n) AS sub\nWHERE rn = 1\nGROUP BY cliente\nORDER BY cliente ASC;\n```",
+          "reasoning": "User asks: Provide a single read query that for each event_id retains the row with max atualizado, tie break max ingest_id; then sum COALESCE(valor,0) per cliente, order by cliente asc. Return only the query or a single SQL block, no explanations.\n\nWe need to write a query. Use subquery with ROW_NUMBER partition by event_id order by atualizado desc, ingest_id desc. Then select rows where rn=1, group by cliente sum.\n\nSQL:\n\nSELECT cliente, SUM(COALESCE(valor,0)) AS total_valor\nFROM (\n    SELECT *,\n           ROW_NUMBER() OVER (PARTITION BY event_id ORDER BY atualizado DESC, ingest_id DESC) AS rn\n    FROM eventos\n) AS sub\nWHERE rn = 1\nGROUP BY cliente\nORDER BY cliente ASC;\n\nReturn just that.",
+          "functional": {
+            "PASS": true,
+            "query": "SELECT cliente,\n       SUM(COALESCE(valor, 0)) AS total_valor\nFROM (\n    SELECT *,\n           ROW_NUMBER() OVER (PARTITION BY event_id\n                              ORDER BY atualizado DESC, ingest_id DESC) AS rn\n    FROM eventos\n) AS sub\nWHERE rn = 1\nGROUP BY cliente\nORDER BY cliente ASC;",
+            "fixtures": [
+              {
+                "rows": 0,
+                "expected": [],
+                "actual": [],
+                "instruction_bound": 100000
+              },
+              {
+                "rows": 4,
+                "expected": [
+                  [
+                    "ana",
+                    7
+                  ],
+                  [
+                    "bia",
+                    8
+                  ]
+                ],
+                "actual": [
+                  [
+                    "ana",
+                    7
+                  ],
+                  [
+                    "bia",
+                    8
+                  ]
+                ],
+                "instruction_bound": 100000
+              },
+              {
+                "rows": 6,
+                "expected": [
+                  [
+                    "ana",
+                    8
+                  ],
+                  [
+                    "bia",
+                    -2
+                  ]
+                ],
+                "actual": [
+                  [
+                    "ana",
+                    8
+                  ],
+                  [
+                    "bia",
+                    -2
+                  ]
+                ],
+                "instruction_bound": 100000
+              },
+              {
+                "rows": 4,
+                "expected": [
+                  [
+                    "a",
+                    10
+                  ],
+                  [
+                    "z",
+                    0
+                  ]
+                ],
+                "actual": [
+                  [
+                    "a",
+                    10
+                  ],
+                  [
+                    "z",
+                    0
+                  ]
+                ],
+                "instruction_bound": 100000
+              }
+            ],
+            "validator_s": 0.0016599869704805315,
+            "validated_monotonic_s": 308897.865398065
+          }
+        }
+      ],
+      "stop_reasons": [],
+      "maxima": {
+        "rss_bytes": 15947202560,
+        "cgroup_peak_bytes": 15729922048,
+        "gpu_total_mib": 6866.0,
+        "cpu_c": 94.875,
+        "gpu_c": 59.0,
+        "nvme_c": 54.85,
+        "swap_bytes": 0
+      },
+      "cgroup_end": {
+        "path": "/user.slice/user-1000.slice/user@1000.service/app.slice/tesy-c203-4-A.service",
+        "memory_max": 21474836480,
+        "memory_high": 21474836480,
+        "swap_max": 0,
+        "memory_current": 26095616,
+        "memory_peak": 15729922048,
+        "swap_current": 0,
+        "memory_stat": {
+          "anon": 21143552,
+          "file": 1945600,
+          "kernel": 409600,
+          "kernel_stack": 0,
+          "pagetables": 172032,
+          "sec_pagetables": 0,
+          "percpu": 832,
+          "sock": 0,
+          "vmalloc": 0,
+          "shmem": 0,
+          "zswap": 0,
+          "zswapped": 0,
+          "zswap_incomp": 0,
+          "file_mapped": 0,
+          "file_dirty": 94208,
+          "file_writeback": 0,
+          "swapcached": 0,
+          "anon_thp": 0,
+          "file_thp": 0,
+          "shmem_thp": 0,
+          "inactive_anon": 0,
+          "active_anon": 21082112,
+          "inactive_file": 1925120,
+          "active_file": 0,
+          "unevictable": 0,
+          "slab_reclaimable": 91336,
+          "slab_unreclaimable": 121496,
+          "slab": 212832,
+          "hugetlb": 0,
+          "workingset_refault_anon": 0,
+          "workingset_refault_file": 0,
+          "workingset_activate_anon": 0,
+          "workingset_activate_file": 0,
+          "workingset_restore_anon": 0,
+          "workingset_restore_file": 0,
+          "workingset_nodereclaim": 0,
+          "pgdemote_kswapd": 0,
+          "pgdemote_direct": 0,
+          "pgdemote_khugepaged": 0,
+          "pgdemote_proactive": 0,
+          "pgsteal_kswapd": 0,
+          "pgsteal_direct": 0,
+          "pgsteal_khugepaged": 0,
+          "pgsteal_proactive": 0,
+          "pgscan_kswapd": 0,
+          "pgscan_direct": 0,
+          "pgscan_khugepaged": 0,
+          "pgscan_proactive": 0,
+          "pgrefill": 0,
+          "pgpromote_success": 0,
+          "pgscan": 0,
+          "pgsteal": 0,
+          "pswpin": 0,
+          "pswpout": 0,
+          "pgfault": 6652044,
+          "pgmajfault": 5,
+          "pgactivate": 0,
+          "pgdeactivate": 0,
+          "pglazyfree": 0,
+          "pglazyfreed": 0,
+          "swpin_zero": 0,
+          "swpout_zero": 0,
+          "zswpin": 0,
+          "zswpout": 0,
+          "zswpwb": 0,
+          "thp_fault_alloc": 0,
+          "thp_collapse_alloc": 0,
+          "thp_swpout": 0,
+          "thp_swpout_fallback": 0,
+          "numa_pages_migrated": 0,
+          "numa_pte_updates": 0,
+          "numa_hint_faults": 0
+        },
+        "events": {
+          "low": 0,
+          "high": 0,
+          "max": 0,
+          "oom": 0,
+          "oom_kill": 0,
+          "oom_group_kill": 0,
+          "sock_throttled": 0
+        },
+        "events_local": {
+          "low": 0,
+          "high": 0,
+          "max": 0,
+          "oom": 0,
+          "oom_kill": 0,
+          "oom_group_kill": 0,
+          "sock_throttled": 0
+        },
+        "pressure": {
+          "some": {
+            "avg10": 0.0,
+            "avg60": 0.0,
+            "avg300": 0.0,
+            "total": 0
+          },
+          "full": {
+            "avg10": 0.0,
+            "avg60": 0.0,
+            "avg300": 0.0,
+            "total": 0
+          }
+        }
+      }
+    }
+  ],
+  "paired_result": {
+    "status": "GO_SCREEN",
+    "hypothesis": "H1",
+    "gains": {
+      "SQL_validated_s": [
+        3.917803104483677,
+        12.1990189853651
+      ],
+      "T2_first_final_s": [
+        8.092305303191287,
+        8.34356405554751
+      ],
+      "T2_completion_s": [
+        8.029911515350523,
+        8.314968147074673
+      ],
+      "SQL_first_final_s": [
+        4.009899320638246,
+        13.144561667455516
+      ],
+      "cold_prefill_s": [
+        3.650699414682404,
+        3.2138715011181347
+      ],
+      "cold_first_final_s": [
+        4.800283375674664,
+        3.8688081907238008
+      ],
+      "incremental_prefill_s": [
+        3.925153692394698,
+        5.119349637105915
+      ],
+      "T2_seconds_per_output": [
+        13.75807490074731,
+        12.879567759042033
+      ],
+      "SQL_seconds_per_output": [
+        2.6942550638548943,
+        12.840079328325647
+      ]
+    },
+    "medians": {
+      "SQL_validated_s": 8.058411044924389,
+      "T2_first_final_s": 8.2179346793694,
+      "T2_completion_s": 8.172439831212598,
+      "SQL_first_final_s": 8.57723049404688,
+      "cold_prefill_s": 3.432285457900269,
+      "cold_first_final_s": 4.334545783199232,
+      "incremental_prefill_s": 4.522251664750307,
+      "T2_seconds_per_output": 13.318821329894671,
+      "SQL_seconds_per_output": 7.767167196090271
+    },
+    "checks": {
+      "SQL_median8": true,
+      "SQL_all_positive": true,
+      "protected_medians": true,
+      "protected_individuals": true
+    },
+    "scope": "Same supplied transcript, free outputs; no equal-compute claim"
+  },
+  "raw_manifest": {
+    "raw_root": "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c203-slots44-useful-screen-20261001/raw",
+    "files": {
+      "c203-1-A.json": {
+        "bytes": 163807,
+        "sha256": "f2be739d78e7a01a8da3bbfcf3d5386bdab46bdb850c2c34093692f9eb21929e"
+      },
+      "c203-1-A.launch.json": {
+        "bytes": 3408,
+        "sha256": "bc056b54fb4c90a718410e8aa891045a78591c33745a043a7b6a832cd07c3ebe"
+      },
+      "c203-1-A.preflight.json": {
+        "bytes": 129007,
+        "sha256": "4b4cfa73673c89df069886a8aec22770034b370ebf2cdc8a509b024521c0f218"
+      },
+      "c203-1-A.request-1.jsonl": {
+        "bytes": 39877,
+        "sha256": "a553c0ef2b3570c8dfdbe8e33f95524e1b6e6cc26758ea69d548af5f4fc859c2"
+      },
+      "c203-1-A.request-2.jsonl": {
+        "bytes": 18097,
+        "sha256": "2333d8fa8734a2d4e2c0538595c0f5b741efaec724f0b3ea02c9ce5f6ae677be"
+      },
+      "c203-1-A.request-3.jsonl": {
+        "bytes": 135874,
+        "sha256": "895d81b4c3d06059debe8bcc5d8ba29adc30168849ba5874e7561d002498921b"
+      },
+      "c203-1-A.request-markers.jsonl": {
+        "bytes": 868,
+        "sha256": "98ff54c73a224d98acb6ae2c1bbe63594358a82e9af0a2a707bcc5798d2c63c7"
+      },
+      "c203-1-A.samples.jsonl": {
+        "bytes": 605392,
+        "sha256": "e46a062aae597d339faf8aceb9a0cd638149be253a20e7e40ce0e1becf576d5a"
+      },
+      "c203-1-A.start-inventory.jsonl": {
+        "bytes": 28386,
+        "sha256": "e95eba26e011c8670882b4eafb144390e0d13262b9210ab170cac146e02efa5e"
+      },
+      "c203-1-A.start-inventory.receipt.json": {
+        "bytes": 615,
+        "sha256": "ae0bd563aeac4ba09dffb39677317e0f72c781c30ab40f78885d0c8f9a24a969"
+      },
+      "c203-1-A.stderr": {
+        "bytes": 6223,
+        "sha256": "d0c4c98f2901356e140d332fa082d068321bf08a016c2db205102dcda289c37d"
+      },
+      "c203-1-A.stdout": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "c203-1-A.tokenization.json": {
+        "bytes": 71519,
+        "sha256": "6a7ca59da874e5541e1fb8a1279d5bce5d375bd3238efe08cf94f73b7e014459"
+      },
+      "c203-2-B.json": {
+        "bytes": 163829,
+        "sha256": "fd0235c443eb862683ce06a440b7d953c9fbc7311e52369c6c6594d9333fdddd"
+      },
+      "c203-2-B.launch.json": {
+        "bytes": 3407,
+        "sha256": "b294479ded0cd7d26e06b8f81c7c89525b5333a384375047df474abae9b3f3af"
+      },
+      "c203-2-B.preflight.json": {
+        "bytes": 129004,
+        "sha256": "f3b686f4e4cba15b0b05eb074af8307cc4419a787816830d3ec7e7d20070d2be"
+      },
+      "c203-2-B.request-1.jsonl": {
+        "bytes": 39881,
+        "sha256": "ad8d48e4d377a521301ae32d5e2657805f74f6078644515f107e7b0c53d0a8ef"
+      },
+      "c203-2-B.request-2.jsonl": {
+        "bytes": 18123,
+        "sha256": "115d19772565028881a426698f4125387db5c110f3b669e7e27e8e0bb161618d"
+      },
+      "c203-2-B.request-3.jsonl": {
+        "bytes": 135865,
+        "sha256": "238a83b55022a36784e8b6f903cae254ccc0e47ca52f556e14705eaa41f9dfaf"
+      },
+      "c203-2-B.request-markers.jsonl": {
+        "bytes": 868,
+        "sha256": "302bb56581fe00d50d1cc4977356e3bcb0a56af8b0eb968222e66f8e292932d7"
+      },
+      "c203-2-B.samples.jsonl": {
+        "bytes": 574327,
+        "sha256": "0c070ddd29e16a02019381ddfdf09705f2b6555cc0e04fc7b1ff4b991fb631b9"
+      },
+      "c203-2-B.start-inventory.jsonl": {
+        "bytes": 28377,
+        "sha256": "798c9b78161f62111948b891cbf405bfeaa1c7f79679756f7d5ea640d2550854"
+      },
+      "c203-2-B.start-inventory.receipt.json": {
+        "bytes": 614,
+        "sha256": "68254f5e6904dcf40024da313255b1e3f6642d0d5941d2a7aca7ecefafd986f4"
+      },
+      "c203-2-B.stderr": {
+        "bytes": 6223,
+        "sha256": "93b99b2a3e9298afd45255cba24e88982d6c76fdbd3038a982bad244878582b6"
+      },
+      "c203-2-B.stdout": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "c203-2-B.tokenization.json": {
+        "bytes": 71519,
+        "sha256": "6a7ca59da874e5541e1fb8a1279d5bce5d375bd3238efe08cf94f73b7e014459"
+      },
+      "c203-3-B.json": {
+        "bytes": 163811,
+        "sha256": "3b7960b5ed5f78852d49b9ce1fc73ff623160e2c8a27aae841b80be34ce3aaeb"
+      },
+      "c203-3-B.launch.json": {
+        "bytes": 3412,
+        "sha256": "e580c87586136fa0f3c6ca53134aa5e06e144af613f0747a3ca0861248c9b2f3"
+      },
+      "c203-3-B.preflight.json": {
+        "bytes": 129012,
+        "sha256": "fced3ece4819ffb1dd6936d22f29d6c622fae3ae4cda36ac9575728c999d9b98"
+      },
+      "c203-3-B.request-1.jsonl": {
+        "bytes": 39870,
+        "sha256": "27189ddb1ec9d2faa4840a58393243ba2c77b6a4d69b802c03a009299a60a482"
+      },
+      "c203-3-B.request-2.jsonl": {
+        "bytes": 18122,
+        "sha256": "9643d396d9b6d18a17ffbef31be02dbc25cfbaf8cc7201eb546911de46c76095"
+      },
+      "c203-3-B.request-3.jsonl": {
+        "bytes": 135857,
+        "sha256": "82c1bbc4af9d240c480fa4149a41ec3a594fc13c57e80b0ed980ad84b25f5e9f"
+      },
+      "c203-3-B.request-markers.jsonl": {
+        "bytes": 868,
+        "sha256": "60b4cd5d82088f7db6af2104af2a9dddbe9d8ea31151136f3537093fd166f7ce"
+      },
+      "c203-3-B.samples.jsonl": {
+        "bytes": 560831,
+        "sha256": "8104ea34b1f79b8abbb3bf71c57a95d23e8a276f6cd24578b140454b6d927c38"
+      },
+      "c203-3-B.start-inventory.jsonl": {
+        "bytes": 28383,
+        "sha256": "485533e02c3e5298fe3521aa55c3670d91af0490b1b5812a32d0a20c078b35c6"
+      },
+      "c203-3-B.start-inventory.receipt.json": {
+        "bytes": 614,
+        "sha256": "56db0ef032883c198f484bdce7fa5633aed129703f5378cd51ed1cbc281e313a"
+      },
+      "c203-3-B.stderr": {
+        "bytes": 6114,
+        "sha256": "40e46cb5d246a8834fd10d5bd777bdd0d4e07574bb3415601bc4ff0de5fa8df1"
+      },
+      "c203-3-B.stdout": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "c203-3-B.tokenization.json": {
+        "bytes": 71519,
+        "sha256": "6a7ca59da874e5541e1fb8a1279d5bce5d375bd3238efe08cf94f73b7e014459"
+      },
+      "c203-4-A.json": {
+        "bytes": 163813,
+        "sha256": "1cd03ac99b6604e3bfd56ecbd7d1822a5721d1a5d11eee8571a4074eb2fca70e"
+      },
+      "c203-4-A.launch.json": {
+        "bytes": 3408,
+        "sha256": "155fce5398e6cd2e31ae03934830e63765cc615a35c4be8f10c2ca7b81f92af3"
+      },
+      "c203-4-A.preflight.json": {
+        "bytes": 129005,
+        "sha256": "9540771013875b98228d5d2171b31b06c42b17d105d8a18a7f296c32fe2d342b"
+      },
+      "c203-4-A.request-1.jsonl": {
+        "bytes": 39877,
+        "sha256": "8f48d4c00088c38da0e747db7a61dbc5da3b27f530dfaa796333bcfe1f5fb5ea"
+      },
+      "c203-4-A.request-2.jsonl": {
+        "bytes": 18121,
+        "sha256": "dee55c9b6ffd237bce6532f3b7307294ccb34fabf59bbca8274ec82fcfb12c8f"
+      },
+      "c203-4-A.request-3.jsonl": {
+        "bytes": 135864,
+        "sha256": "d1daab3870ce8f00870c173d5e866d2c9c44dbe868cdc316daf51430bb19a673"
+      },
+      "c203-4-A.request-markers.jsonl": {
+        "bytes": 868,
+        "sha256": "dcd94317b5bf48a4d57b317321eb3dc526049d284902cecbbdeac62533efa909"
+      },
+      "c203-4-A.samples.jsonl": {
+        "bytes": 611096,
+        "sha256": "7725e7d6a20d51ffe543507863d7f43a68d864c1cd153deff0d5f2f18fbeb9d0"
+      },
+      "c203-4-A.start-inventory.jsonl": {
+        "bytes": 28380,
+        "sha256": "ae3917fff7851f57d88b880a82ad73f4e438f4f83e6074aba2cfb09a2abb7cb8"
+      },
+      "c203-4-A.start-inventory.receipt.json": {
+        "bytes": 614,
+        "sha256": "78cae9b4da2b0c4bc59efb315bfea4b1987c43f410859457119a412196cc07ea"
+      },
+      "c203-4-A.stderr": {
+        "bytes": 6223,
+        "sha256": "c34fc811868f4f378a1487be326c9f2c8c4d09409ee013962c29c4837ffc63c2"
+      },
+      "c203-4-A.stdout": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "c203-4-A.tokenization.json": {
+        "bytes": 71519,
+        "sha256": "6a7ca59da874e5541e1fb8a1279d5bce5d375bd3238efe08cf94f73b7e014459"
+      }
+    },
+    "total_bytes": 4742311,
+    "includes_invalid_and_partial": true
+  }
+}
