@@ -1,0 +1,23 @@
+{
+  "status": "SOURCE_AUDITED_AND_REPRODUZIDO_MODEL_FREE",
+  "source_sha256": "bda1c2c81077d89813c3b4776079a5ddf65eaf28bf1e33338473818cc56831f5",
+  "stream_source_sha256": "c38e99fb1d5015c8e4e0a7e1a96e56a95e08b740b06cf99d920e8bfe860d64f0",
+  "CMake_cache_sha256": "55343c5cc0d5f1fc61b82d6d4575fee182f986bf632e0d95b3459009c60334b4",
+  "openmp": true,
+  "actual_fixture_mappings_sha256": {
+    "/usr/lib64/libgomp.so.1.0.0": "637b2ab4eedf3ce72173a9d34a4c41c480082d68662db3f0ef4998117df8f9b2",
+    "/tmp/tesy-c75-backend-20260928/build-c75-cuda/bin/libggml-base.so.0.15.3": "c91a937208a64dd1beabf13de83a5896729f3983b51e8636eaa44b111bb6f229",
+    "/tmp/tesy-c75-backend-20260928/build-c75-cuda/bin/libggml-cpu.so.0.15.3": "ec5de96d7cacaf0a96e7d678ec28f337c1082c57ae6fbfbbbbcbaaf945cf5697"
+  },
+  "installed_runtime": "libgomp-16.2.1-2.fc44.x86_64\nlibgomp-16.2.1-2.fc44.i686",
+  "original_wait_policy": "OMP_WAIT_POLICY and GOMP_SPINCOUNT unset at exec; actual spinning in delay fixture",
+  "fixture_source_sha256": "cd6a615ca92a2317b4180b1ead0a603d0cd3ac71db8c6dd2ade84ac0c7b96de0",
+  "compiler": "c++ (GCC) 16.2.1 20260819 (Red Hat 16.2.1-2)",
+  "build_command": "c++ -O2 -std=c++17 -I/tmp/tesy-c75-backend-20260928/ggml/include tools/cpu_wait_fixture.cpp -L/tmp/tesy-c75-backend-20260928/build-c75-cuda/bin -Wl,-rpath,/tmp/tesy-c75-backend-20260928/build-c75-cuda/bin -lggml-cpu -lggml-base -o results/c201-libgomp-wait-fixture-20261001T0015Z/build/wait-fixture",
+  "negative_control": "delay0 has no blocked ith0; output arithmetic and mask255 identical all16processes",
+  "limitations": [
+    "CPU seconds are not model speedup",
+    "fixture graph is small and retains no model state",
+    "thread barriers observed, exact critical share in120B unknown"
+  ]
+}
