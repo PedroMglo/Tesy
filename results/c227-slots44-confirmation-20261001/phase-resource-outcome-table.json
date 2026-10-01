@@ -1,0 +1,330 @@
+{
+  "arms": [
+    {
+      "run_id": "c227-1-A",
+      "profile": "A",
+      "official_counts": {
+        "c112-code": 2043,
+        "c112-repeat": 2197,
+        "native64-sql": 2292,
+        "passive-json-pipeline": 2707
+      },
+      "nominal153": true,
+      "maxima": {
+        "rss_bytes": 15953915904,
+        "cgroup_peak_bytes": 15782072320,
+        "gpu_total_mib": 6866.0,
+        "cpu_c": 95.125,
+        "gpu_c": 61.0,
+        "nvme_c": 54.85,
+        "swap_bytes": 0
+      },
+      "requests": [
+        {
+          "id": "c112-code",
+          "outcome": "SUCCESS",
+          "functional_success": true,
+          "L": 0.6795914841722316,
+          "first_final_s": 82.43004107498564,
+          "completion_s": 82.90831040596822,
+          "validated_observed_s": 82.91016106901225,
+          "validated_success_s": 82.91016106901225,
+          "validator_s": 0.00019465596415102482,
+          "native_timings": {
+            "cache_n": 0,
+            "prompt_n": 2043,
+            "prompt_ms": 62520.993,
+            "prompt_per_token_ms": 30.602541850220266,
+            "prompt_per_second": 32.67702417970233,
+            "predicted_n": 77,
+            "predicted_ms": 20368.665,
+            "predicted_per_token_ms": 264.5281168831169,
+            "predicted_per_second": 3.780316481222505
+          },
+          "usage": {
+            "completion_tokens": 77,
+            "prompt_tokens": 2043,
+            "total_tokens": 2120,
+            "prompt_tokens_details": {
+              "cached_tokens": 0
+            }
+          },
+          "first_reasoning_s": null,
+          "output_ids": "NOT_EXPOSED",
+          "final_text": "48327",
+          "reasoning_sha256": "955b341b565b08ce4a5e22af20a4eee94df246f5cf2bc313c204cc65ec7a39f8",
+          "caption": "L=1 is penalized loss for OUTPUT_CAP, not observed failure latency"
+        },
+        {
+          "id": "c112-repeat",
+          "outcome": "SUCCESS",
+          "functional_success": true,
+          "L": 0.2994650986126339,
+          "first_final_s": 18.251972108962946,
+          "completion_s": 18.56528995395638,
+          "validated_observed_s": 18.5668361139833,
+          "validated_success_s": 18.5668361139833,
+          "validator_s": 5.731009878218174e-06,
+          "native_timings": {
+            "cache_n": 2044,
+            "prompt_n": 153,
+            "prompt_ms": 10884.332,
+            "prompt_per_token_ms": 71.13942483660131,
+            "prompt_per_second": 14.0569030786639,
+            "predicted_n": 37,
+            "predicted_ms": 7667.13,
+            "predicted_per_token_ms": 207.21972972972972,
+            "predicted_per_second": 4.825795310631227
+          },
+          "usage": {
+            "completion_tokens": 37,
+            "prompt_tokens": 2197,
+            "total_tokens": 2234,
+            "prompt_tokens_details": {
+              "cached_tokens": 2044
+            }
+          },
+          "first_reasoning_s": null,
+          "output_ids": "NOT_EXPOSED",
+          "final_text": "48327",
+          "reasoning_sha256": "d8b429f413b352f75114de489f1280f5c511ed08682f730c7403ff2a860c38d1",
+          "caption": "L=1 is penalized loss for OUTPUT_CAP, not observed failure latency"
+        },
+        {
+          "id": "native64-sql",
+          "outcome": "SUCCESS",
+          "functional_success": true,
+          "L": 0.6253851986639049,
+          "first_final_s": 61.266517354990356,
+          "completion_s": 76.29392529203324,
+          "validated_observed_s": 76.2969942369964,
+          "validated_success_s": 76.2969942369964,
+          "validator_s": 0.0016865429934114218,
+          "native_timings": {
+            "cache_n": 2198,
+            "prompt_n": 94,
+            "prompt_ms": 14796.907,
+            "prompt_per_token_ms": 157.41390425531915,
+            "prompt_per_second": 6.3526789754102,
+            "predicted_n": 255,
+            "predicted_ms": 61483.503,
+            "predicted_per_token_ms": 241.1117764705882,
+            "predicted_per_second": 4.147453992658812
+          },
+          "usage": {
+            "completion_tokens": 255,
+            "prompt_tokens": 2292,
+            "total_tokens": 2547,
+            "prompt_tokens_details": {
+              "cached_tokens": 2198
+            }
+          },
+          "first_reasoning_s": null,
+          "output_ids": "NOT_EXPOSED",
+          "final_text": "```sql\nSELECT cliente,\n       SUM(COALESCE(valor, 0)) AS total_valor\nFROM (\n    SELECT *,\n           ROW_NUMBER() OVER (PARTITION BY event_id\n                              ORDER BY atualizado DESC, ingest_id DESC) AS rn\n    FROM eventos\n) AS sub\nWHERE rn = 1\nGROUP BY cliente\nORDER BY cliente ASC;\n```",
+          "reasoning_sha256": "23dd89fcdb9e01cd0526533ad6f102d94cb30ff94abf6b7f84a83f9d64b2a3f2",
+          "caption": "L=1 is penalized loss for OUTPUT_CAP, not observed failure latency"
+        },
+        {
+          "id": "passive-json-pipeline",
+          "outcome": "OUTPUT_CAP",
+          "functional_success": false,
+          "L": 1.0,
+          "first_final_s": null,
+          "completion_s": 163.50585397001123,
+          "validated_observed_s": 163.50710131699452,
+          "validated_success_s": null,
+          "validator_s": 0,
+          "native_timings": {
+            "cache_n": 2293,
+            "prompt_n": 414,
+            "prompt_ms": 47752.132,
+            "prompt_per_token_ms": 115.34331400966182,
+            "prompt_per_second": 8.669769969642404,
+            "predicted_n": 512,
+            "predicted_ms": 115734.293,
+            "predicted_per_token_ms": 226.043541015625,
+            "predicted_per_second": 4.423926450218174
+          },
+          "usage": {
+            "completion_tokens": 512,
+            "prompt_tokens": 2707,
+            "total_tokens": 3219,
+            "prompt_tokens_details": {
+              "cached_tokens": 2293
+            }
+          },
+          "first_reasoning_s": null,
+          "output_ids": "NOT_EXPOSED",
+          "final_text": "",
+          "reasoning_sha256": "d8f4f1f199d7d0004961b1bb2376b2e938eb190d8b4294b778fa767f35e47ab3",
+          "caption": "L=1 is penalized loss for OUTPUT_CAP, not observed failure latency"
+        }
+      ]
+    },
+    {
+      "run_id": "c227-2-B",
+      "profile": "B",
+      "official_counts": {
+        "c112-code": 2043,
+        "c112-repeat": 2197,
+        "native64-sql": 2292,
+        "passive-json-pipeline": 2707
+      },
+      "nominal153": true,
+      "maxima": {
+        "rss_bytes": 17274626048,
+        "cgroup_peak_bytes": 17258049536,
+        "gpu_total_mib": 7420.0,
+        "cpu_c": 95.125,
+        "gpu_c": 61.0,
+        "nvme_c": 57.85,
+        "swap_bytes": 0
+      },
+      "requests": [
+        {
+          "id": "c112-code",
+          "outcome": "SUCCESS",
+          "functional_success": true,
+          "L": 0.6436819326310022,
+          "first_final_s": 78.09371863299748,
+          "completion_s": 78.52765210601501,
+          "validated_observed_s": 78.52919578098226,
+          "validated_success_s": 78.52919578098226,
+          "validator_s": 0.00018429697956889868,
+          "native_timings": {
+            "cache_n": 0,
+            "prompt_n": 2043,
+            "prompt_ms": 60044.152,
+            "prompt_per_token_ms": 29.390186979931475,
+            "prompt_per_second": 34.024962164508544,
+            "predicted_n": 77,
+            "predicted_ms": 18467.543,
+            "predicted_per_token_ms": 239.8382207792208,
+            "predicted_per_second": 4.16947722823767
+          },
+          "usage": {
+            "completion_tokens": 77,
+            "prompt_tokens": 2043,
+            "total_tokens": 2120,
+            "prompt_tokens_details": {
+              "cached_tokens": 0
+            }
+          },
+          "first_reasoning_s": null,
+          "output_ids": "NOT_EXPOSED",
+          "final_text": "48327",
+          "reasoning_sha256": "955b341b565b08ce4a5e22af20a4eee94df246f5cf2bc313c204cc65ec7a39f8",
+          "caption": "L=1 is penalized loss for OUTPUT_CAP, not observed failure latency"
+        },
+        {
+          "id": "c112-repeat",
+          "outcome": "SUCCESS",
+          "functional_success": true,
+          "L": 0.27409885917703863,
+          "first_final_s": 16.69377195899142,
+          "completion_s": 16.992062620003708,
+          "validated_observed_s": 16.994129268976394,
+          "validated_success_s": 16.994129268976394,
+          "validator_s": 1.2853997759521008e-05,
+          "native_timings": {
+            "cache_n": 2044,
+            "prompt_n": 153,
+            "prompt_ms": 10310.209,
+            "prompt_per_token_ms": 67.38698692810458,
+            "prompt_per_second": 14.839660379338575,
+            "predicted_n": 37,
+            "predicted_ms": 6670.101,
+            "predicted_per_token_ms": 180.273,
+            "predicted_per_second": 5.547142389597998
+          },
+          "usage": {
+            "completion_tokens": 37,
+            "prompt_tokens": 2197,
+            "total_tokens": 2234,
+            "prompt_tokens_details": {
+              "cached_tokens": 2044
+            }
+          },
+          "first_reasoning_s": null,
+          "output_ids": "NOT_EXPOSED",
+          "final_text": "48327",
+          "reasoning_sha256": "d8b429f413b352f75114de489f1280f5c511ed08682f730c7403ff2a860c38d1",
+          "caption": "L=1 is penalized loss for OUTPUT_CAP, not observed failure latency"
+        },
+        {
+          "id": "native64-sql",
+          "outcome": "SUCCESS",
+          "functional_success": true,
+          "L": 0.583684816491813,
+          "first_final_s": 57.17647158098407,
+          "completion_s": 71.20699727302417,
+          "validated_observed_s": 71.20954761200119,
+          "validated_success_s": 71.20954761200119,
+          "validator_s": 0.0011492730118334293,
+          "native_timings": {
+            "cache_n": 2198,
+            "prompt_n": 94,
+            "prompt_ms": 13825.532,
+            "prompt_per_token_ms": 147.08012765957446,
+            "prompt_per_second": 6.7990150397105875,
+            "predicted_n": 255,
+            "predicted_ms": 57364.082,
+            "predicted_per_token_ms": 224.9571843137255,
+            "predicted_per_second": 4.445290347364052
+          },
+          "usage": {
+            "completion_tokens": 255,
+            "prompt_tokens": 2292,
+            "total_tokens": 2547,
+            "prompt_tokens_details": {
+              "cached_tokens": 2198
+            }
+          },
+          "first_reasoning_s": null,
+          "output_ids": "NOT_EXPOSED",
+          "final_text": "```sql\nSELECT cliente,\n       SUM(COALESCE(valor, 0)) AS total_valor\nFROM (\n    SELECT *,\n           ROW_NUMBER() OVER (PARTITION BY event_id\n                              ORDER BY atualizado DESC, ingest_id DESC) AS rn\n    FROM eventos\n) AS sub\nWHERE rn = 1\nGROUP BY cliente\nORDER BY cliente ASC;\n```",
+          "reasoning_sha256": "23dd89fcdb9e01cd0526533ad6f102d94cb30ff94abf6b7f84a83f9d64b2a3f2",
+          "caption": "L=1 is penalized loss for OUTPUT_CAP, not observed failure latency"
+        },
+        {
+          "id": "passive-json-pipeline",
+          "outcome": "OUTPUT_CAP",
+          "functional_success": false,
+          "L": 1.0,
+          "first_final_s": null,
+          "completion_s": 166.228423913999,
+          "validated_observed_s": 166.22997430199757,
+          "validated_success_s": null,
+          "validator_s": 0,
+          "native_timings": {
+            "cache_n": 2293,
+            "prompt_n": 414,
+            "prompt_ms": 40874.298,
+            "prompt_per_token_ms": 98.73018840579711,
+            "prompt_per_second": 10.128614318954174,
+            "predicted_n": 512,
+            "predicted_ms": 125334.966,
+            "predicted_per_token_ms": 244.79485546875,
+            "predicted_per_second": 4.0850531686425
+          },
+          "usage": {
+            "completion_tokens": 512,
+            "prompt_tokens": 2707,
+            "total_tokens": 3219,
+            "prompt_tokens_details": {
+              "cached_tokens": 2293
+            }
+          },
+          "first_reasoning_s": null,
+          "output_ids": "NOT_EXPOSED",
+          "final_text": "",
+          "reasoning_sha256": "d8f4f1f199d7d0004961b1bb2376b2e938eb190d8b4294b778fa767f35e47ab3",
+          "caption": "L=1 is penalized loss for OUTPUT_CAP, not observed failure latency"
+        }
+      ]
+    }
+  ],
+  "contexts": "CPUwarning normal, resources validated; outputcap task outcome distinct from invalid measurement",
+  "raw_reasoning": "Full immutable reasoning/finals in native raw and arm receipts; no reconstructed output IDs"
+}
