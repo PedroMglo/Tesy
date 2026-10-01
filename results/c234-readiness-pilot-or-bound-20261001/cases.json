@@ -1,0 +1,279 @@
+{
+  "cases": [
+    {
+      "name": "all-hit",
+      "operator_layer": 12,
+      "activation_origin": "C127 ON decode0",
+      "trace_origin": "C163-on1 slots44 C-API",
+      "trace_call": 11,
+      "trace_experts": [
+        111,
+        28,
+        76,
+        42
+      ],
+      "trace_slots": [
+        2,
+        18,
+        6,
+        17
+      ],
+      "miss_mask": [
+        false,
+        false,
+        false,
+        false
+      ],
+      "selection": "first structural match in validated decode47 trace, not selected by pilot timings",
+      "native_components": [
+        {
+          "file_index": 0,
+          "offset": 22553456672,
+          "expert_bytes": 4406400,
+          "type": 39,
+          "shape": [
+            2880,
+            2880,
+            44,
+            1
+          ],
+          "stride": [
+            17,
+            1530,
+            4406400,
+            193881600
+          ],
+          "device": "CPU"
+        },
+        {
+          "file_index": 0,
+          "offset": 21987962912,
+          "expert_bytes": 4406400,
+          "type": 39,
+          "shape": [
+            2880,
+            2880,
+            44,
+            1
+          ],
+          "stride": [
+            17,
+            1530,
+            4406400,
+            193881600
+          ],
+          "device": "CPU"
+        },
+        {
+          "file_index": 0,
+          "offset": 23120425504,
+          "expert_bytes": 4406400,
+          "type": 39,
+          "shape": [
+            2880,
+            2880,
+            44,
+            1
+          ],
+          "stride": [
+            17,
+            1530,
+            4406400,
+            193881600
+          ],
+          "device": "CPU"
+        }
+      ]
+    },
+    {
+      "name": "mixed",
+      "operator_layer": 24,
+      "activation_origin": "C127 ON decode0",
+      "trace_origin": "C163-on1 slots44 C-API",
+      "trace_call": 12,
+      "trace_experts": [
+        17,
+        114,
+        110,
+        60
+      ],
+      "trace_slots": [
+        10,
+        6,
+        7,
+        11
+      ],
+      "miss_mask": [
+        false,
+        true,
+        false,
+        true
+      ],
+      "selection": "first structural match in validated decode47 trace, not selected by pilot timings",
+      "native_components": [
+        {
+          "file_index": 0,
+          "offset": 43268007968,
+          "expert_bytes": 4406400,
+          "type": 39,
+          "shape": [
+            2880,
+            2880,
+            44,
+            1
+          ],
+          "stride": [
+            17,
+            1530,
+            4406400,
+            193881600
+          ],
+          "device": "CPU"
+        },
+        {
+          "file_index": 0,
+          "offset": 42702514208,
+          "expert_bytes": 4406400,
+          "type": 39,
+          "shape": [
+            2880,
+            2880,
+            44,
+            1
+          ],
+          "stride": [
+            17,
+            1530,
+            4406400,
+            193881600
+          ],
+          "device": "CPU"
+        },
+        {
+          "file_index": 0,
+          "offset": 43834976800,
+          "expert_bytes": 4406400,
+          "type": 39,
+          "shape": [
+            2880,
+            2880,
+            44,
+            1
+          ],
+          "stride": [
+            17,
+            1530,
+            4406400,
+            193881600
+          ],
+          "device": "CPU"
+        }
+      ]
+    },
+    {
+      "name": "all-absent",
+      "operator_layer": 0,
+      "activation_origin": "C127 ON decode0",
+      "trace_origin": "C163-on1 slots44 C-API",
+      "trace_call": 19,
+      "trace_experts": [
+        47,
+        82,
+        75,
+        52
+      ],
+      "trace_slots": [
+        18,
+        28,
+        22,
+        2
+      ],
+      "miss_mask": [
+        true,
+        true,
+        true,
+        true
+      ],
+      "selection": "first structural match in validated decode47 trace, not selected by pilot timings",
+      "native_components": [
+        {
+          "file_index": 0,
+          "offset": 1838905376,
+          "expert_bytes": 4406400,
+          "type": 39,
+          "shape": [
+            2880,
+            2880,
+            44,
+            1
+          ],
+          "stride": [
+            17,
+            1530,
+            4406400,
+            193881600
+          ],
+          "device": "CPU"
+        },
+        {
+          "file_index": 0,
+          "offset": 1273411616,
+          "expert_bytes": 4406400,
+          "type": 39,
+          "shape": [
+            2880,
+            2880,
+            44,
+            1
+          ],
+          "stride": [
+            17,
+            1530,
+            4406400,
+            193881600
+          ],
+          "device": "CPU"
+        },
+        {
+          "file_index": 0,
+          "offset": 2405874208,
+          "expert_bytes": 4406400,
+          "type": 39,
+          "shape": [
+            2880,
+            2880,
+            44,
+            1
+          ],
+          "stride": [
+            17,
+            1530,
+            4406400,
+            193881600
+          ],
+          "device": "CPU"
+        }
+      ]
+    }
+  ],
+  "scope": "Trace-derived positional miss masks applied to C127 selected activations/IDs. Not exact replay of C163 routing/compute.",
+  "schedule": "ABBAABBA",
+  "pairs": [
+    [
+      0,
+      1
+    ],
+    [
+      3,
+      2
+    ],
+    [
+      4,
+      5
+    ],
+    [
+      7,
+      6
+    ]
+  ]
+}

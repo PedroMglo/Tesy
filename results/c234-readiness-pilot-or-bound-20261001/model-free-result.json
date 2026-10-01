@@ -1,0 +1,25 @@
+{
+  "status": "PASS_MODEL_FREE_PRIVATE_EXECUTOR_READINESS",
+  "arithmetic_source_delta": "exactly extern declaration + one pre-consumer call; original arithmetic/chunk/quantization source restored byte-for-byte",
+  "known_small": "Independent F32 expected dots and graph order PASS, 64 callbacks across 8-thread MMIDs",
+  "identity_tests": [
+    "stale generation",
+    "wrong expert",
+    "lost pin before publication",
+    "read failure",
+    "cancel pending",
+    "late worker does not revive cancel",
+    "valid resident generation",
+    "unknown slot"
+  ],
+  "fast_path_precondition": "No reserve/eviction while graph live, keep pinned; generation tags immutable until joined consumption. Does not promise protection against a rogue writer violating pinning.",
+  "direct_reader": "C211 bounded O_DIRECT fixture reused, C75 native fds verified O_DIRECT; no fallback allowed",
+  "tests": "test_readiness_feasibility 6 directed tests PASS; not full suite",
+  "model_weights_loaded": false,
+  "shared_backend_changed": false,
+  "premodel_failures_preserved": [
+    "generator first include name mismatch before compiler/model (corrected exact include)",
+    "known-small fixture first wrapper main macro conflict, build error (raw retained)"
+  ],
+  "toolchain": "g++ (GCC) 16.2.1 20260819 (Red Hat 16.2.1-2)"
+}

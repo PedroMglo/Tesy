@@ -1,0 +1,39 @@
+{
+  "measurement_commit": "dbd9586c601d93049cdf1cf763127666ab244fcd",
+  "start": {
+    "utc": "2026-10-01T18:25:46.704323+00:00",
+    "monotonic_s": 373526.177545241
+  },
+  "end": {
+    "utc": "2026-10-01T18:28:58.987554+00:00",
+    "monotonic_s": 373718.460781168
+  },
+  "argv": [
+    "systemd-run",
+    "--user",
+    "--slice=tesy-post-c154.slice",
+    "--unit=tesy-c233-readiness-operator",
+    "--collect",
+    "--pipe",
+    "--wait",
+    "--working-directory=/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc",
+    "-p",
+    "MemoryMax=2147483648",
+    "-p",
+    "MemoryHigh=2147483648",
+    "-p",
+    "MemorySwapMax=0",
+    "-p",
+    "RuntimeMaxSec=450",
+    "-p",
+    "TimeoutStopSec=10",
+    "--",
+    "/usr/bin/python3",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/tools/residency_unit_run.py",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c233-readiness-native-operator-20261001",
+    "--inside"
+  ],
+  "returncode": 0,
+  "stdout": "",
+  "stderr": "Running as unit: tesy-c233-readiness-operator.service\n          Finished with result: success\nMain processes terminated with: code=exited, status=0/SUCCESS\n               Service runtime: 3min 12.215s\n             CPU time consumed: 38.570s\n                   Memory peak: 409.1M (swap: 0B)\n"
+}

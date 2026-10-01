@@ -1,0 +1,45 @@
+{
+  "id": "c233-layer12",
+  "start": {
+    "utc": "2026-10-01T18:26:52.020830+00:00",
+    "monotonic_s": 373591.494057359
+  },
+  "end": {
+    "utc": "2026-10-01T18:27:55.627372+00:00",
+    "monotonic_s": 373655.100607014
+  },
+  "argv": [
+    "/usr/bin/python3",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/tools/run_bounded.py",
+    "--run-id",
+    "c233-layer12",
+    "--model-id",
+    "gpt-oss-120b-mxfp4-gguf",
+    "--backend",
+    "stock",
+    "--backend-root",
+    "/tmp/tesy-c75-backend-20260928",
+    "--output-root",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c233-readiness-native-operator-20261001/raw",
+    "--variant",
+    "first-MMID-and-fullFFN-original-CPU",
+    "--workload",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c233-readiness-native-operator-20261001/protocol.json",
+    "--cache-condition",
+    "cpu-layer12",
+    "--resource-protocol",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c233-readiness-native-operator-20261001/protocol.json",
+    "--require-telemetry",
+    "--timeout-s",
+    "60",
+    "--collect-start-inventory",
+    "--",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c232-post-c231-readiness-20261001T180602Z/build/readiness_operator",
+    "/home/pmglo/models/gpt-oss-120b-gguf/gpt-oss-120b-MXFP4.gguf",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c127-slots40-numeric-20260929T1654Z/raw/c127-slots40-on01.capture",
+    "12"
+  ],
+  "returncode": 0,
+  "stdout": "{\"run_id\": \"c233-layer12\", \"elapsed_s\": 2.879, \"returncode\": 0, \"stop_reason\": null, \"maxima\": {\"rss_bytes\": 394833920, \"swap_bytes\": 0, \"cgroup_memory_bytes\": 383221760, \"cgroup_peak_bytes\": 409014272, \"cgroup_file_bytes\": 41246720, \"gpu_used_mib\": 12.0, \"gpu_temperature_c\": 43.0, \"cpu_tctl_c\": 52.5, \"nvme_composite_c\": 34.85, \"direct_model_fds\": 1, \"buffered_model_fds\": 0}}\n",
+  "stderr": ""
+}

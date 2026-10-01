@@ -1,0 +1,29 @@
+{
+  "case_pairs": [
+    [
+      0,
+      1
+    ],
+    [
+      3,
+      2
+    ],
+    [
+      4,
+      5
+    ],
+    [
+      7,
+      6
+    ]
+  ],
+  "gain_formula": "100*(A_wall-B_wall)/A_wall, paired first then median",
+  "all_hit_gate": "median paired regression <=5%, bitwise/finite/byte-witness PASS all cases",
+  "projection_scope": "C163/C164 CPU decode47 traces separately, conditional transfer of three isolated miss cases, not server/production speedup",
+  "per_case_service": "median paired signed absolute saving_us; retain every rep including unfavorable",
+  "row_transfer": "misses0 => all-hit, 1..3 => mixed, 4 => all-absent. For positive savings cap by observed ready window, following-router gross gap and maximum C233 first op1025.49us. For negative savings charge full signed per-case overhead. No added wake tail credit.",
+  "integration_design_gate": "all_hit_pass AND net scenario >=5% full decode AND numerical/resource/identity/telemetry valid. Positive result still conditional and limited. Missing applicability yields INCONCLUSIVE, never fabricate rigorous physical NO_GO.",
+  "full_ffn": "Separate conditional envelope only, no full-FFN scheduler/fusion implementation authorized",
+  "samples": "8 reps/case fixed ABBAABBA; never remove slow/unfavorable samples",
+  "no_retries": true
+}
