@@ -2,7 +2,7 @@
 
 Estado: DRAFT — revisão de claims e PDF pendente.
 
-- inputs_sha256: 0820bf56531f192ca191510014f41f8275fe99c757dc496db2b66d10b3bd5012
+- inputs_sha256: 165c6a454930eacf91b9679426f4fc8a3a349479b1ad8b789c51807223a76c10
 - cobertura de branches: 32 de 32 refs de desenvolvimento no snapshot; 8 refs de infraestrutura/auditoria/main excluídas e listadas no relatório
 - snapshots internos congelados: 17 documentos; Git blob SHA e SHA-256 verificados
 - branch 120B: S01 cobre C108--C189; S02 inclui o head c974844 e os fechos C190--C198

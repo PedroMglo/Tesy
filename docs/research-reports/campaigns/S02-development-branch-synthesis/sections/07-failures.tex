@@ -2,13 +2,13 @@
 As branches preservam resultados adversos em vez de os converter numa narrativa de progresso monotónica:
 
 \begin{itemize}
-\item O primeiro probe N-CPU-MoE falhou porque misturou a superfície de flags do \texttt{llama-cli} com o papel do \texttt{llama-server}. Não é um OOM, limite físico ou resultado de throughput \historicalclaim{CL-S02-NCPU-FAIL}.
-\item O candidato vertical não passou o contrato congelado na terceira layer substituída; a execução parou, o controlo negativo e o caminho temporizado ficaram NOT\_RUN \historicalclaim{CL-S02-VERTICAL}.
-\item N2 identificou uma diferença numérica no operador GPU, mas não localizou correção técnica aceite; a revisão A+B manteve o contrato pendente \historicalclaim{CL-S02-N2} \historicalclaim{CL-S02-NUMERICAL-AB}.
-\item C54 tem receipt de falha por conclusão incompleta do stream após SIGTERM verificado ao processo do próprio ensaio. A fonte classifica-o como \texttt{INTERRUPTED\_BY\_OWNER}, não como falha térmica nem equivalência numérica \historicalclaim{CL-S02-C54}.
-\item C52b fica limitado ao preflight nesta fotografia de branch; não se preenche a ausência de um fecho com resultados de outra sessão \historicalclaim{CL-S02-C52B}.
+\item O primeiro probe N-CPU-MoE falhou porque misturou a superfície de flags do \texttt{llama-cli} com o papel do \texttt{llama-server}. Não é um OOM, limite físico ou resultado de throughput \historicalclaim{CL-S02-NCPU-FAIL}{}.
+\item O candidato vertical não passou o contrato congelado na terceira layer substituída; a execução parou, o controlo negativo e o caminho temporizado ficaram NOT\_RUN \historicalclaim{CL-S02-VERTICAL}{}.
+\item N2 identificou uma diferença numérica no operador GPU, mas não localizou correção técnica aceite; a revisão A+B manteve o contrato pendente \historicalclaim{CL-S02-N2}{} \historicalclaim{CL-S02-NUMERICAL-AB}{}.
+\item C54 tem receipt de falha por conclusão incompleta do stream após SIGTERM verificado ao processo do próprio ensaio. A fonte classifica-o como \texttt{INTERRUPTED\_BY\_OWNER}, não como falha térmica nem equivalência numérica \historicalclaim{CL-S02-C54}{}.
+\item C52b fica limitado ao preflight nesta fotografia de branch; não se preenche a ausência de um fecho com resultados de outra sessão \historicalclaim{CL-S02-C52B}{}.
 \end{itemize}
 
-O C198 não é uma falha de harness: é um NO-GO natural no scope medido, após doze pedidos válidos; C197 ficou NOT\_RUN pelo gate, sem confirmação física. Este resultado não converte o sinal favorável de prefill fixo C192 em latência natural útil e tampouco prova falha universal de native64 \historicalclaim{CL-S02-C198}.
+O C198 não é uma falha de harness: é um NO-GO natural no scope medido, após doze pedidos válidos; C197 ficou NOT\_RUN pelo gate, sem confirmação física. Este resultado não converte o sinal favorável de prefill fixo C192 em latência natural útil e tampouco prova falha universal de native64 \historicalclaim{CL-S02-C198}{}.
 
-Os casos de reinjection/split-graph que passaram e o resultado async favorável também permanecem delimitados: exactness por caso e ganho de operador não anulam as falhas verticais nem estabelecem desempenho total \historicalclaim{CL-S02-REINJECTION} \historicalclaim{CL-S02-SPLIT} \historicalclaim{CL-S02-ASYNC}.
+Os casos de reinjection/split-graph que passaram e o resultado async favorável também permanecem delimitados: exactness por caso e ganho de operador não anulam as falhas verticais nem estabelecem desempenho total \historicalclaim{CL-S02-REINJECTION}{} \historicalclaim{CL-S02-SPLIT}{} \historicalclaim{CL-S02-ASYNC}{}.

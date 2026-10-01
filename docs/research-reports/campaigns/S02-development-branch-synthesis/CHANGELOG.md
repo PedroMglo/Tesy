@@ -1,3 +1,7 @@
+# 0.1.2 — 2026-10-01
+
+Corrige as chamadas LaTeX de claims históricos para respeitar a assinatura da macro, preservando as afirmações e ligando cada uma ao seu índice de evidência. Revalida as 40 refs remotas: os 32 nomes de desenvolvimento e os 32 heads correspondem à fotografia de 2026-09-30. Atualiza derivados e auditoria DRAFT; sem nova execução experimental nem alteração de claims científicos.
+
 # 0.1.1 — 2026-09-30
 
 Atualiza a fotografia da branch 120B até C198 no head `c97484433925`. Preserva C195 como resultado histórico e acrescenta o resultado natural C196, o gate C197 não executado e a decisão C198 (`NATIVE64_NATURAL_NO_GO_IN_TESTED_SCOPE`). O apêndice continua a cobrir as mesmas 32 branches de desenvolvimento; entra um novo snapshot interno exato para C198 e o claim distingue evidência parcial de input fixo do resultado natural medido.
