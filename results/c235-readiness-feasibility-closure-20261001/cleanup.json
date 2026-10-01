@@ -1,0 +1,66 @@
+{
+  "start": {
+    "utc": "2026-10-01T19:05:43.836651+00:00",
+    "monotonic_s": 375923.309876218
+  },
+  "end": {
+    "utc": "2026-10-01T19:05:45.845655+00:00",
+    "monotonic_s": 375925.318879598
+  },
+  "observations": [
+    {
+      "argv": [
+        "systemctl",
+        "--user",
+        "show",
+        "tesy-c233-readiness-operator.service",
+        "tesy-c234-readiness-pilot.service",
+        "-p",
+        "ActiveState",
+        "-p",
+        "SubState",
+        "-p",
+        "MainPID"
+      ],
+      "returncode": 0,
+      "stdout": "ActiveState=inactive\nSubState=dead\nMainPID=0\n\nActiveState=inactive\nSubState=dead\nMainPID=0\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "nvidia-smi",
+        "--query-gpu=uuid,memory.used,temperature.gpu",
+        "--format=csv,noheader"
+      ],
+      "returncode": 0,
+      "stdout": "GPU-83d90c55-1d92-75da-fc30-7771a85f2521, 12 MiB, 40\n",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "nvidia-smi",
+        "--query-compute-apps=pid,process_name,used_memory",
+        "--format=csv,noheader"
+      ],
+      "returncode": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "argv": [
+        "ss",
+        "-ltnp"
+      ],
+      "returncode": 0,
+      "stdout": "State  Recv-Q Send-Q               Local Address:Port  Peer Address:PortProcess                              \nLISTEN 0      4096                       0.0.0.0:5355       0.0.0.0:*                                        \nLISTEN 0      128                      127.0.0.1:35609      0.0.0.0:*    users:((\"codex\",pid=38090,fd=38))   \nLISTEN 0      128                        0.0.0.0:22         0.0.0.0:*                                        \nLISTEN 0      4096                100.105.242.38:44927      0.0.0.0:*                                        \nLISTEN 0      4096                     127.0.0.1:8384       0.0.0.0:*    users:((\"syncthing\",pid=1829,fd=22))\nLISTEN 0      5                          0.0.0.0:8767       0.0.0.0:*    users:((\"python\",pid=1986,fd=5))    \nLISTEN 0      4096                 127.0.0.53%lo:53         0.0.0.0:*                                        \nLISTEN 0      4096                    127.0.0.54:53         0.0.0.0:*                                        \nLISTEN 0      10                         0.0.0.0:27500      0.0.0.0:*                                        \nLISTEN 0      4096                          [::]:5355          [::]:*                                        \nLISTEN 0      4096   [fd7a:115c:a1e0::1a33:f227]:46223         [::]:*                                        \nLISTEN 0      4096                             *:22000            *:*    users:((\"syncthing\",pid=1829,fd=18))\nLISTEN 0      128                           [::]:22            [::]:*                                        \nLISTEN 0      4096                             *:9090             *:*                                        \nLISTEN 0      4096                             *:11434            *:*                                        \n",
+      "stderr": ""
+    }
+  ],
+  "own_operators_remaining": [],
+  "model_processes_observed": [],
+  "signals_sent": [],
+  "no_experimental_server_port_created": true,
+  "usual_service": "No mutation performed; listeners observed before/after, all other processes preserved",
+  "shared_backend_status": "",
+  "conclusion": "OWN_OPERATORS_TERMINATED"
+}

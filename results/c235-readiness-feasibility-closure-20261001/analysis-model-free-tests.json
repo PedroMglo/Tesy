@@ -1,0 +1,31 @@
+{
+  "status": "PASS_DIRECTED_ANALYSIS_COUNTERPROOFS",
+  "cases": [
+    {
+      "mutation": "omitted_rep",
+      "rejected": true,
+      "reason": "pilot must contain all 24 planned repetitions"
+    },
+    {
+      "mutation": "wrong_arm",
+      "rejected": true,
+      "reason": "incomplete or reordered case"
+    },
+    {
+      "mutation": "wrong_hook_count",
+      "rejected": true,
+      "reason": "arithmetic/byte/plan/clock evidence missing"
+    },
+    {
+      "mutation": "nonfinite_clock",
+      "rejected": true,
+      "reason": "arithmetic/byte/plan/clock evidence missing"
+    },
+    {
+      "mutation": "numeric_fail",
+      "rejected": true,
+      "reason": "arithmetic/byte/plan/clock evidence missing"
+    }
+  ],
+  "full_suite": "NOT_RUN_NOT_REQUIRED"
+}
