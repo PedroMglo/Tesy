@@ -47,7 +47,7 @@ class NaturalTests(unittest.TestCase):
             cfg['per_task_request_policy']=override
             with self.assertRaises(GateError):server.per_task_request_policy(cfg,'two')
 
-    def entrypoint(self,late=False,parallel=False,fixed=False):
+    def entrypoint(self,late=False,parallel=False,fixed=False,outcomes=False):
         protocol,cg,sample=runtime_fixture();protocol['identity']={'model_sha256':'a'*64,'library_sha256':{'fake':'b'*64}}
         with tempfile.TemporaryDirectory() as tmp:
             root=Path(tmp);(root/'raw').mkdir();model=root/'model';model.write_bytes(b'not weights')
@@ -62,6 +62,7 @@ class NaturalTests(unittest.TestCase):
                 'pretokenize':True,'freeze_token_ids':True,'append_previous_assistant_to_next':True,
                 'stream_requests':True,'require_natural_stop':True,'dynamic_cache_min_common':5}
             tasks=[(k,{'id':k,'category':'fixture','messages':[{'role':'user','content':k}]}) for k in cfg['task_ids']]
+            if outcomes:cfg['prospective_task_outcomes']=True
             if fixed:
                 cfg['append_previous_assistant_to_next']=False
                 cfg['task_ids'].append('four')
@@ -90,6 +91,9 @@ class NaturalTests(unittest.TestCase):
                 response={'choices':[{'message':{'role':'assistant','content':['12345','12345',QUERY,holdout_query][i]},'finish_reason':'stop'}],
                           'usage':{'prompt_tokens':n,'completion_tokens':1},
                           'timings':{'cache_n':cache,'prompt_n':n-cache}}
+                if outcomes and i==0:
+                    response['choices'][0]['finish_reason']='length'
+                    response['usage']['completion_tokens']=8
                 return response,{'done_observed':True,'first_final_content_chunk_s':.5}
             if parallel:
                 from parallel_runtime import parallel_environment
@@ -102,6 +106,8 @@ class NaturalTests(unittest.TestCase):
             validations=[]
             def validator(rid,item):
                 validations.append(rid)
+                if outcomes:
+                    return {'PASS':rid!='one','outcome':'OUTPUT_CAP' if rid=='one' else 'SUCCESS'}
                 if rid=='four':
                     from portfolio_workload import grade_holdout
                     return grade_holdout(item['message']['content'])
@@ -130,9 +136,14 @@ class NaturalTests(unittest.TestCase):
                 self.assertEqual(transports[-1][0]['messages'][1]['content'],'48327' if fixed else '12345')
                 self.assertTrue(raw['results'][-1]['functional_validation']['PASS'])
                 self.assertEqual(list(json.loads((root/'raw/test.tokenization.json').read_text())),['one','two','three','four'] if fixed else ['one','two','three'])
+            if outcomes:
+                self.assertTrue(raw['results'][0]['measurement_valid']);self.assertFalse(raw['results'][0]['accepted'])
+                self.assertEqual(raw['results'][0]['outcome'],'OUTPUT_CAP');self.assertEqual(len(raw['results']),4)
             if parallel:self.assertEqual(raw['preflight']['actually_loaded_parallel_runtime']['initial_process_environment']['values']['GOMP_SPINCOUNT'],'0')
             self.assertIsNotNone(raw['returncode']);self.assertGreaterEqual(raw['sample_count'],1)
             self.assertFalse(Path('/proc') .joinpath(str(raw['launch_identity']['pid'])).exists())
+
+    def test_length_kept_and_next_requests_execute_real_child(self):self.entrypoint(fixed=True,outcomes=True)
 
     def test_four_supplied_messages_child_entrypoint_and_holdout_prefix(self):self.entrypoint(fixed=True)
     def test_three_turn_actual_child_entrypoint(self):self.entrypoint()

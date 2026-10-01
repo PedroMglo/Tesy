@@ -994,6 +994,7 @@ def run(args, protocol, config, task_rows, model, *, result_validator=None):
                     "message":choice.get('message'), "raw_response":response,
                     "accepted":False, "invalid_reason":"VALIDATION_PENDING",
                     "deadline_monotonic":request_started+request_timeout,
+                    "request_start_monotonic":request_started,
                     "completed_monotonic":request_completed}
                 if stream_metrics is not None:
                     current_item['stream_metrics'] = stream_metrics
@@ -1028,7 +1029,7 @@ def run(args, protocol, config, task_rows, model, *, result_validator=None):
                     item['monotonic_request_markers_ns'] = {
                         'request_start':request_started_ns,
                         'response_complete':request_ended_ns}
-                if require_natural:
+                if require_natural and not config.get("prospective_task_outcomes",False):
                     require_natural_completion(
                         item, task_policy['max_tokens'])
                 required_pattern = config.get('first_assistant_content_pattern')
@@ -1067,10 +1068,21 @@ def run(args, protocol, config, task_rows, model, *, result_validator=None):
                                                 max_lost)
                 if reasons:
                     raise GateError('REQUEST_INVALIDATED_BY_MONITOR')
-                item['accepted'] = True
-                item['invalid_reason'] = None
-                evidence.write('REQUEST_TERMINAL', accepted=True,
-                               watchdog=request_watchdog.finish())
+                if config.get('prospective_task_outcomes',False):
+                    validation=item.get('functional_validation')
+                    if type(validation) is not dict or type(validation.get('PASS')) is not bool or validation.get('outcome') not in ('SUCCESS','OUTPUT_CAP','WRONG_FINAL'):
+                        raise GateError('prospective outcome adapter absent/invalid')
+                    item['measurement_valid']=True
+                    item['outcome']=validation['outcome']
+                    item['functional_success']=validation['PASS'] and item['finish_reason']=='stop'
+                    item['accepted']=item['functional_success']
+                    item['invalid_reason']=None if item['accepted'] else item['outcome']
+                else:
+                    item['accepted'] = True
+                    item['invalid_reason'] = None
+                evidence.write('REQUEST_TERMINAL', accepted=item['accepted'],
+                               measurement_valid=item.get('measurement_valid'),
+                               outcome=item.get('outcome'),watchdog=request_watchdog.finish())
                 evidence.close(); evidence = None; current_item = None
                 _REQUEST_LOCAL.evidence = None
         except Exception as exc:

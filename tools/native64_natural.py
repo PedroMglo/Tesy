@@ -184,7 +184,7 @@ def arm(root,rid,measurement,*,hooks=None):
         require_inventory(root,rid,inv,policy=policy,cap_bytes=cap,expected_power=power,duration_s=60)
         args=SimpleNamespace(run_id=rid,protocol=root/'protocols'/(rid+'.json'),suite=hooks.get('suite','native64natural'),model='target120b')
         code=server.run(args,p,c,hooks.get('tasks',tasks)(root),MODEL,result_validator=hooks.get('checker',checker)())
-        if code:raise ValueError('server response/resource/identity gate failed; raw preserved')
+        if code and not hooks.get('accept_terminal_censor',lambda *_:False)(root,rid):raise ValueError('server response/resource/identity gate failed; raw preserved')
         row=hooks.get('analyze',analyze_arm)(root,rid,profile,p,c)
         if now()['monotonic_s']-start['monotonic_s']>family.get('arm_maximum_s',300):raise ValueError('arm envelope exceeded')
     except Exception as exc:failure=type(exc).__name__+': '+str(exc)
