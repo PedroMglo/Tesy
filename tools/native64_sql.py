@@ -36,6 +36,22 @@ def extract(content):
     if not re.match(r'^(SELECT|WITH)\b',s,re.I):raise GateError('only SELECT/WITH accepted')
     return s
 
+def read_only_result(db, query, start, *, functions=None):
+    """Shared bounded executor; caller loads only frozen fixture data beforehand."""
+    db.execute('PRAGMA query_only=ON');db.enable_load_extension(False)
+    allowed={sqlite3.SQLITE_SELECT,sqlite3.SQLITE_READ,sqlite3.SQLITE_FUNCTION,sqlite3.SQLITE_RECURSIVE}
+    funcs=functions or {'coalesce','row_number','sum','max','ifnull'}
+    def authorizer(action,a,b,dbname,trigger):
+        if action not in allowed:return sqlite3.SQLITE_DENY
+        if action==sqlite3.SQLITE_FUNCTION and (b or a or '').lower() not in funcs:return sqlite3.SQLITE_DENY
+        return sqlite3.SQLITE_OK
+    db.set_authorizer(authorizer);ticks=[0]
+    def progress():
+        ticks[0]+=1
+        return int(ticks[0]>1000 or time.monotonic()-start>2)
+    db.set_progress_handler(progress,100)
+    return db.execute(query).fetchmany(100)
+
 def grade(content):
     start=time.monotonic();query=extract(content);results=[]
     for rows in FIXTURES:
@@ -43,19 +59,7 @@ def grade(content):
         try:
             db.execute('CREATE TABLE eventos(event_id INTEGER,cliente TEXT,atualizado INTEGER,ingest_id INTEGER,valor INTEGER)')
             db.executemany('INSERT INTO eventos VALUES(?,?,?,?,?)',rows);db.commit()
-            db.execute('PRAGMA query_only=ON');db.enable_load_extension(False)
-            allowed={sqlite3.SQLITE_SELECT,sqlite3.SQLITE_READ,sqlite3.SQLITE_FUNCTION,sqlite3.SQLITE_RECURSIVE}
-            funcs={'coalesce','row_number','sum','max','ifnull'}
-            def authorizer(action,a,b,dbname,trigger):
-                if action not in allowed:return sqlite3.SQLITE_DENY
-                if action==sqlite3.SQLITE_FUNCTION and (b or a or '').lower() not in funcs:return sqlite3.SQLITE_DENY
-                return sqlite3.SQLITE_OK
-            db.set_authorizer(authorizer);ticks=[0]
-            def progress():
-                ticks[0]+=1
-                return int(ticks[0]>1000 or time.monotonic()-start>2)
-            db.set_progress_handler(progress,100)
-            actual=db.execute(query).fetchmany(100)
+            actual=read_only_result(db,query,start)
             want=expected(rows)
             if actual!=want:raise GateError('SQL functional result mismatch')
             results.append({'rows':len(rows),'expected':want,'actual':actual,'instruction_bound':100000})

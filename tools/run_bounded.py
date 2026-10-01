@@ -89,7 +89,7 @@ def mapped_backend_libraries(pid, backend_dir, hash_cache=None):
 def relevant_environment(env):
     exact = {"LD_LIBRARY_PATH", "LD_PRELOAD", "CUDA_VISIBLE_DEVICES", "CUDA_DEVICE_ORDER"}
     return {key: value for key, value in env.items()
-            if key in exact or key.startswith(("LLAMA_", "TESY_", "GGML_", "CUDA_"))}
+            if key in exact or key.startswith(("LLAMA_", "TESY_", "GGML_", "CUDA_", "OMP_", "GOMP_", "KMP_"))}
 
 
 def mapped_libraries_match(expected, mapped):

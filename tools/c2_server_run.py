@@ -624,6 +624,11 @@ def run(args, protocol, config, task_rows, model, *, result_validator=None):
     total_timeout = config.get("total_timeout_s",3600)
     model_before = model.stat()
     env = os.environ.copy();env.update(config["explicit_env"])
+    parallel_launch = None
+    token_ids = {}
+    if protocol.get('parallel_runtime') is not None:
+        from parallel_runtime import validate_launch_runtime
+        parallel_launch = validate_launch_runtime(protocol['parallel_runtime'], env)
     if args.suite == "c3sustained20":
         env.pop("LLAMA_MOE_STREAM_NO_PRELOAD", None)
     preflight = {"schema_version":"c2-server-preflight-v1","run_id":args.run_id,
@@ -641,6 +646,8 @@ def run(args, protocol, config, task_rows, model, *, result_validator=None):
             'mem_available_bytes':available_start,'gpu':gpu_start,'thermal':thermal_start,
             'power':power_start,'host_psi_full_avg10':psi_start,
             'admission_reasons':start_reasons}
+    if parallel_launch is not None:
+        preflight['parallel_runtime_at_launch'] = parallel_launch
     if request_markers:
         preflight['trace_clock'] = 'CLOCK_MONOTONIC; request marker ns and backend ggml_time_us share host clock'
     with open(paths[".preflight.json"],"x") as out:
@@ -795,6 +802,9 @@ def run(args, protocol, config, task_rows, model, *, result_validator=None):
                             'power':live_power()}
                     if cpu_diag is not None:
                         sample['cpu_diagnostics'] = cpu_diag
+                    if protocol.get('optional_cpu_telemetry'):
+                        from parallel_runtime import optional_cpu_observation
+                        sample['optional_cpu_observation'] = optional_cpu_observation()
                     samples.append(sample)
                     sample_file.write(json.dumps(sample,allow_nan=False)+"\n");sample_file.flush()
                     reason = None
@@ -846,6 +856,9 @@ def run(args, protocol, config, task_rows, model, *, result_validator=None):
             preflight["actually_loaded_backend_libraries_sha256"] = loaded
             if loaded != protocol["identity"]["library_sha256"]:
                 raise GateError("loaded backend libraries differ from frozen identity")
+            if parallel_launch is not None:
+                from parallel_runtime import mapped_parallel_runtime
+                preflight['actually_loaded_parallel_runtime'] = mapped_parallel_runtime(server.pid, protocol['parallel_runtime'])
             if args.suite in ("c2core8", "c2eval12", "c3followup2") or config.get("pretokenize",False):
                 tokenization = {}
                 token_ids = {}

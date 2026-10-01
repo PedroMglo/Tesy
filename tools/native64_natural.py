@@ -166,8 +166,9 @@ def analyze_arm(root,rid,profile,p,c):
         'decode_convention':'C75 n_decoded/t_token_generation as predicted_n/predicted_ms; natural descriptive, not equal compute',
         'raw_sha256':sha256(root/'raw'/(rid+'.json'))}
 
-def arm(root,rid,measurement):
+def arm(root,rid,measurement,*,hooks=None):
     root=root.resolve()
+    hooks=hooks or {};cap=hooks.get('cap',CAP)
     start=now();failure=None;row=None
     try:
         require_freeze(root)
@@ -175,17 +176,17 @@ def arm(root,rid,measurement):
         p=read(root/'protocols'/(rid+'.json'));c=read(root/(rid+'-config.json'))
         if git('rev-parse','HEAD')!=measurement or relevant_environment(os.environ):raise ValueError('measurement/environment changed')
         if any(sha256(base.REPO/k)!=v for k,v in family['source_sha256'].items()) or sha256(root/'workload.json')!=family['workload_sha256']:raise ValueError('frozen source/workload changed')
-        if server.digest(c)!=p['identity']['config_sha256'] or p['native64']['profile']!=profile:raise ValueError('frozen profile/config changed')
+        if server.digest(c)!=p['identity']['config_sha256'] or p.get('portfolio',p.get('native64'))['profile']!=profile:raise ValueError('frozen profile/config changed')
         no_other_model()
         policy=read(root/'resource-policy.json');power={k:policy['power'][k] for k in ('source','profile')}
-        inv=collect(root,rid,policy=policy,cap_bytes=CAP,expected_power=power,duration_s=60)
+        inv=collect(root,rid,policy=policy,cap_bytes=cap,expected_power=power,duration_s=60)
         save(root/'raw'/(rid+'.start-inventory.receipt.json'),inv)
-        require_inventory(root,rid,inv,policy=policy,cap_bytes=CAP,expected_power=power,duration_s=60)
-        args=SimpleNamespace(run_id=rid,protocol=root/'protocols'/(rid+'.json'),suite='native64natural',model='target120b')
-        code=server.run(args,p,c,tasks(root),MODEL,result_validator=checker())
+        require_inventory(root,rid,inv,policy=policy,cap_bytes=cap,expected_power=power,duration_s=60)
+        args=SimpleNamespace(run_id=rid,protocol=root/'protocols'/(rid+'.json'),suite=hooks.get('suite','native64natural'),model='target120b')
+        code=server.run(args,p,c,hooks.get('tasks',tasks)(root),MODEL,result_validator=hooks.get('checker',checker)())
         if code:raise ValueError('server response/resource/identity gate failed; raw preserved')
-        row=analyze_arm(root,rid,profile,p,c)
-        if now()['monotonic_s']-start['monotonic_s']>300:raise ValueError('arm envelope300 exceeded')
+        row=hooks.get('analyze',analyze_arm)(root,rid,profile,p,c)
+        if now()['monotonic_s']-start['monotonic_s']>family.get('arm_maximum_s',300):raise ValueError('arm envelope exceeded')
     except Exception as exc:failure=type(exc).__name__+': '+str(exc)
     receipt={'status':'PASS_NATURAL_ARM' if failure is None else 'FAIL_OR_INCOMPLETE_NATURAL_ARM',
         'reason':failure,'run_id':rid,'start':start,'end':now(),'measurement_head':measurement,
@@ -193,28 +194,29 @@ def arm(root,rid,measurement):
     save(root/(rid+'-receipt.json'),receipt);print(json.dumps(receipt),flush=True)
     return 0 if failure is None else 1
 
-def family(root):
+def family(root,*,hooks=None):
     root=root.resolve()
+    hooks=hooks or {};cap=hooks.get('cap',CAP)
     require_freeze(root)
     p=read(root/'protocol.json');ep=Epoch(p['epoch']);start=now();rows=[];failure=None;status='FAIL_OR_INCOMPLETE_EVIDENCE'
     measurement=git('rev-parse','HEAD')
-    if git('status','--porcelain') or not ep.budget(p['maximum_live_s'],32*2**20)['admitted']:raise ValueError('natural freeze not clean/admitted')
+    if git('status','--porcelain') or not ep.budget(p['maximum_live_s']+p.get('remaining_reserved_live_s',0),32*2**20+p.get('remaining_reserved_raw_bytes',0))['admitted']:raise ValueError('natural freeze not clean/admitted')
     try:
         for rid,profile in p['order']:
             command=['systemd-run','--user','--unit='+unit(rid),'--wait','--collect',
-                '--property=MemoryMax='+str(CAP),'--property=MemoryHigh='+str(CAP),
-                '--property=MemorySwapMax=0','--property=RuntimeMaxSec=295','--property=TimeoutStopSec=3',
+                '--property=MemoryMax='+str(cap),'--property=MemoryHigh='+str(cap),
+                '--property=MemorySwapMax=0','--property=RuntimeMaxSec='+str(p.get('unit_runtime_max_s',295)),'--property=TimeoutStopSec=3',
                 '--working-directory='+str(base.REPO),'--setenv=PYTHONPATH=tools','--setenv=PYTHONDONTWRITEBYTECODE=1',
-                '/usr/bin/python3','tools/native64_natural.py','arm',str(root),'--run-id',rid,'--measurement-head',measurement]
+                '/usr/bin/python3',hooks.get('arm_script','tools/native64_natural.py'),'arm',str(root),'--run-id',rid,'--measurement-head',measurement]
             arm_started=now()
-            completed=subprocess.run(command,capture_output=True,text=True,timeout=300)
+            completed=subprocess.run(command,capture_output=True,text=True,timeout=p.get('arm_maximum_s',300))
             if completed.returncode:raise ValueError('natural arm failed '+rid+': '+completed.stderr[-600:])
             receipt=read(root/(rid+'-receipt.json'))
-            if receipt['status']!='PASS_NATURAL_ARM' or now()['monotonic_s']-arm_started['monotonic_s']>300:raise ValueError('natural arm invalid/envelope exceeded')
-            rows.append(receipt['row']);print(json.dumps({'arm':rid,'first_final_T2_s':rows[-1]['T2_first_final_s'],'SQL_validated_s':rows[-1]['SQL_validated_s'],'nominal153':rows[-1]['nominal153']}),flush=True)
+            if receipt['status']!='PASS_NATURAL_ARM' or now()['monotonic_s']-arm_started['monotonic_s']>p.get('arm_maximum_s',300):raise ValueError('natural arm invalid/envelope exceeded')
+            rows.append(receipt['row']);print(json.dumps({'arm':rid,'first_final_T2_s':rows[-1]['T2_first_final_s'],'SQL_validated_s':rows[-1]['SQL_validated_s'],'nominal153':rows[-1].get('nominal153')}),flush=True)
         pairs=[(rows[0],rows[1]),(rows[3],rows[2])]
         if p['confirmation']:pairs.append((rows[4],rows[5]))
-        result=evaluate(pairs,'S',confirmation=p['confirmation']);status=result['status'];save(root/'paired-metrics.json',result)
+        result=hooks.get('evaluate',lambda v:evaluate(v,'S',confirmation=p['confirmation']))(pairs);status=result['status'];save(root/'paired-metrics.json',result)
     except Exception as exc:
         failure=type(exc).__name__+': '+str(exc)
         # These are our own uniquely frozen scopes; never touch the usual service.
@@ -224,9 +226,9 @@ def family(root):
         end=now();ep.record(root.name.split('-')[0]+'-natural-family',start,end,live=True,status=status,paths=[root/'decision.json'])
         save(root/'decision.json',{'status':status,'reason':failure,'measurement_head':measurement,
             'arms':rows,'start':start,'end':end,'confirmation':p['confirmation'],'publication':'LOCAL_ONLY',
-            'claim':'Natural utility with own real history; different output work retained, not same-compute speedup'})
+            'claim':p.get('claim','Natural utility with own real history; different output work retained, not same-compute speedup')})
         save(root/'budget-checkpoint.json',ep.budget())
-    print(status,failure,flush=True);return 0 if status in ('GO_S_SCREEN','GO_S_CONFIRMATION') else 1
+    print(status,failure,flush=True);return 0 if status in ('GO_S_SCREEN','GO_S_CONFIRMATION','GO_SCREEN','GO_CONFIRMATION') else 1
 
 if __name__=='__main__':
     parser=argparse.ArgumentParser();parser.add_argument('mode',choices=('freeze','arm','family'))

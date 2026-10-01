@@ -47,7 +47,7 @@ class NaturalTests(unittest.TestCase):
             cfg['per_task_request_policy']=override
             with self.assertRaises(GateError):server.per_task_request_policy(cfg,'two')
 
-    def entrypoint(self,late=False):
+    def entrypoint(self,late=False,parallel=False):
         protocol,cg,sample=runtime_fixture();protocol['identity']={'model_sha256':'a'*64,'library_sha256':{'fake':'b'*64}}
         with tempfile.TemporaryDirectory() as tmp:
             root=Path(tmp);(root/'raw').mkdir();model=root/'model';model.write_bytes(b'not weights')
@@ -64,7 +64,9 @@ class NaturalTests(unittest.TestCase):
             tasks=[(k,{'id':k,'category':'fixture','messages':[{'role':'user','content':k}]}) for k in cfg['task_ids']]
             transports=[]
             def fetch(path,payload=None,timeout=None):
-                if path=='/health':return {'status':'ok'}
+                if path=='/health':
+                    if parallel:time.sleep(.08) # real dummy child must exec/load lib before mocked HTTP readiness
+                    return {'status':'ok'}
                 if path=='/v1/models':return {'data':[{'id':'fixture'}]}
                 if path=='/apply-template':return {'prompt':str(len(payload['messages']))}
                 if path=='/tokenize':return {'tokens':list(range({1:10,3:13,5:15}[int(payload['content'])]))}
@@ -76,6 +78,14 @@ class NaturalTests(unittest.TestCase):
                           'usage':{'prompt_tokens':n,'completion_tokens':1},
                           'timings':{'cache_n':cache,'prompt_n':n-cache}}
                 return response,{'done_observed':True,'first_final_content_chunk_s':.5}
+            if parallel:
+                from parallel_runtime import parallel_environment
+                from run_bounded import sha256
+                lib=Path('/lib64/libgomp.so.1').resolve()
+                protocol['parallel_runtime']={'schema':'parallel-runtime-v1','environment':parallel_environment(dict(os.environ,GOMP_SPINCOUNT='0')),'libraries_sha256':{str(lib):sha256(lib)}}
+                cfg['explicit_env']={'GOMP_SPINCOUNT':'0'}
+                cfg['server_command'][2]='import ctypes; ctypes.CDLL("'+str(lib)+'"); '+cfg['server_command'][2]
+                pp.write_text(json.dumps(protocol))
             validations=[]
             def validator(rid,item):
                 validations.append(rid)
@@ -104,10 +114,12 @@ class NaturalTests(unittest.TestCase):
                 self.assertEqual(transports[-1][0]['messages'][1]['content'],'12345')
                 self.assertTrue(raw['results'][-1]['functional_validation']['PASS'])
                 self.assertEqual(list(json.loads((root/'raw/test.tokenization.json').read_text())),['one','two','three'])
+            if parallel:self.assertEqual(raw['preflight']['actually_loaded_parallel_runtime']['initial_process_environment']['values']['GOMP_SPINCOUNT'],'0')
             self.assertIsNotNone(raw['returncode']);self.assertGreaterEqual(raw['sample_count'],1)
             self.assertFalse(Path('/proc') .joinpath(str(raw['launch_identity']['pid'])).exists())
 
     def test_three_turn_actual_child_entrypoint(self):self.entrypoint()
+    def test_parallel_runtime_actual_child_entrypoint(self):self.entrypoint(parallel=True)
     def test_late_second_preserved_and_third_never_launched(self):self.entrypoint(late=True)
 
 if __name__=='__main__':unittest.main()
