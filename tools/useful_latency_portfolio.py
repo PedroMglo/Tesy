@@ -50,8 +50,8 @@ def checker():
   out['validated_monotonic_s']=time.monotonic();return out
  return check
 
-def make(root,rid,profile,hypothesis,confirmation):
- cap=(20 if hypothesis=='H1' else 18)*2**30
+def make(root,rid,profile,hypothesis,confirmation,*,cap_bytes=None):
+ cap=(20 if hypothesis=='H1' else 18)*2**30 if cap_bytes is None else cap_bytes
  runner.base.CAP=cap
  runner.base.BACKENDS={k:(BACKEND,'build-c75-cuda','27d2e42d8c994507ee6d71acc7c58d3eddd3f7a5',{'TESY_CPU_WAVE_SKIP_PARKED':'1'}) for k in ('control','candidate')}
  runner.base.input_row=lambda unused:read(root/'session-input.json')

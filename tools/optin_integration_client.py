@@ -30,7 +30,9 @@ def run(root,protocol_path):
     p=json.loads(protocol_path.read_text());preset=launcher.verified(root)
     endpoint=f'http://127.0.0.1:{preset["port"]}'
     launchpath=root/'raw'/f'{preset["run_id"]}.launch.json'
-    deadline=time.monotonic()+245 # inventory60 + readiness180 + small dispatch allowance
+    ready_timeout=p.get('readiness_after_Popen_s',180)
+    if type(ready_timeout) not in (int,float) or not 0<ready_timeout<=180:raise GateError('invalid frozen readiness timeout')
+    deadline=time.monotonic()+60+ready_timeout+5
     while not launchpath.exists():
         if (root/'serve-receipt.json').exists():raise GateError('launcher ended before weights launch')
         if time.monotonic()>=deadline:raise GateError('launcher inventory/launch deadline')
@@ -39,7 +41,7 @@ def run(root,protocol_path):
     popen=launch['start_inventory']['popen_invoked_monotonic_ns']/1e9
     while True:
         if process_identity(pid)!=identity:raise GateError('launcher model identity changed')
-        if time.monotonic()>=popen+180:raise GateError('readiness180 deadline')
+        if time.monotonic()>=popen+ready_timeout:raise GateError('frozen readiness deadline')
         try:
             if fetch('/health',timeout=1,base_url=endpoint).get('status')=='ok':break
         except Exception:pass

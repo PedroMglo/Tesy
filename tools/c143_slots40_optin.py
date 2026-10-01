@@ -24,15 +24,22 @@ BACKEND_SHA='27d2e42d8c994507ee6d71acc7c58d3eddd3f7a5'
 PROFILE='slots40'
 CONFIG_NAME='c129-p1-candidate'
 
-def select_profile(profile):
-    global SOURCE,BACKEND,BACKEND_SHA,PROFILE,CONFIG_NAME
+def select_profile(profile,cap_bytes=None):
+    global SOURCE,BACKEND,BACKEND_SHA,PROFILE,CONFIG_NAME,CAP
     PROFILE=profile
+    CAP=18*2**30
     if profile=='slots40':
         SOURCE=REPO/'results/c129-slots40-confirm-20260929T1735Z';BACKEND=Path('/tmp/tesy-c75-backend-20260928')
         BACKEND_SHA='27d2e42d8c994507ee6d71acc7c58d3eddd3f7a5';CONFIG_NAME='c129-p1-candidate'
     elif profile=='c35':
         SOURCE=REPO/'results/c121-nominal153-20260929T1350Z';BACKEND=Path('/tmp/tesy-c35-backend-20260928')
         BACKEND_SHA='c3759bad92c0e6f71bb936afea9b0a162fb83f76';CONFIG_NAME='c121-p1-control'
+    elif profile=='slots44':
+        if type(cap_bytes) is not int or not 18*2**30<=cap_bytes<=20*2**30 or cap_bytes%(256*2**20):
+            raise GateError('slots44 needs explicit admitted common cap, 18-20GiB/256MiB aligned')
+        CAP=cap_bytes
+        SOURCE=REPO/'results/c142-uniform44-confirm-20260929T2353Z';BACKEND=Path('/tmp/tesy-c75-backend-20260928')
+        BACKEND_SHA='27d2e42d8c994507ee6d71acc7c58d3eddd3f7a5';CONFIG_NAME='c142-p1-candidate'
     else:raise GateError('unknown explicit profile')
 
 
@@ -80,6 +87,10 @@ def prepare(root,port,duration):
         'session_date':date,'duration_s':duration,'port':port,'cap_bytes':CAP,'swap_max_bytes':0,
         'default_changed':False,'publication':'LOCAL_ONLY_PRIVATE_SESSION_ROOT',
         'reuse':'same process/model/template/profile/date/KV only; restart persistence NOT_RUN'}
+    if PROFILE=='slots44':
+        from parallel_runtime import parallel_environment
+        preset['status']='RESEARCH_QUALIFICATION_ONLY_NOT_DELIVERED'
+        preset['parallel_environment']=parallel_environment(dict(os.environ,**c['explicit_env']))
     resource={'schema':'tesy-optin-start-v1','limits':{},'resources':freeze_protocol_resource_limits(policy,cgroup_memory_max_bytes=CAP),
         'start_inventory':{'schema':'c120-start-inventory-v1','duration_s':60,'max_age_s':3,'policy_sha256':sha256(root/'resource-policy.json')},
         'preset_run_id':rid,'preset_sha256':__import__('host_resource_policy').digest(preset)}
@@ -89,7 +100,11 @@ def prepare(root,port,duration):
 
 def verified(root):
     if relevant_environment(os.environ):raise GateError('unexpected inherited backend environment')
-    preset=strict_json((root/'preset.json').read_text());select_profile(preset['profile']);protocol=strict_json((root/'resource-protocol.json').read_text())
+    preset=strict_json((root/'preset.json').read_text());select_profile(preset['profile'],preset['cap_bytes'] if preset['profile']=='slots44' else None);protocol=strict_json((root/'resource-protocol.json').read_text())
+    if PROFILE=='slots44':
+        from parallel_runtime import parallel_environment
+        if parallel_environment(dict(os.environ,**preset['explicit_env']))!=preset.get('parallel_environment') or 'GOMP_SPINCOUNT' in preset.get('parallel_environment',{}).get('values',{}):
+            raise GateError('slots44 evaluated OpenMP environment changed')
     p,c,stat=identity()
     if preset['server_command']!=configured_command(c,preset['port'],preset['session_date']) or preset['explicit_env']!=c['explicit_env'] or preset['cap_bytes']!=CAP or preset['swap_max_bytes']!=0 or not 60<=preset['duration_s']<=7200 or preset['source_configuration_sha256']!=sha256(SOURCE/f'{CONFIG_NAME}-config.json'):
         raise GateError('opt-in frozen configuration/profile changed')
@@ -169,8 +184,8 @@ def stop(root):
 
 if __name__=='__main__':
     ap=argparse.ArgumentParser();ap.add_argument('mode',choices=('prepare','start','serve','stop','command'));ap.add_argument('--root',type=Path,required=True)
-    ap.add_argument('--profile',choices=('slots40','c35'),default='slots40');ap.add_argument('--port',type=int,default=18440);ap.add_argument('--duration-s',type=int,default=3600);a=ap.parse_args();root=a.root.resolve()
-    if a.mode=='prepare':select_profile(a.profile);prepare(root,a.port,a.duration_s)
+    ap.add_argument('--profile',choices=('slots40','c35','slots44'),default='slots40');ap.add_argument('--cap-bytes',type=int);ap.add_argument('--port',type=int,default=18440);ap.add_argument('--duration-s',type=int,default=3600);a=ap.parse_args();root=a.root.resolve()
+    if a.mode=='prepare':select_profile(a.profile,a.cap_bytes);prepare(root,a.port,a.duration_s)
     elif a.mode=='start':start(root)
     elif a.mode=='stop':stop(root)
     elif a.mode=='command':print(json.dumps(monitor_command(root,verified(root)),indent=2))
