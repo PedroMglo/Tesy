@@ -1,0 +1,35 @@
+{
+  "C135_manifest_checked": {
+    "files": 13,
+    "bytes": 3911053,
+    "manifest_sha256": "9ab37fd286df45272a35ff64d107671f4583afa8d6894e1dc6ea5b960d29d8b1"
+  },
+  "C127_ON_capture_tree": {
+    "files": 3266,
+    "total_bytes": 88704231,
+    "sha256_name_size_content_v1": "3b1c13734120f430d779960e3e8123eb58ffeee1947a1844636743b1e3aa1f03"
+  },
+  "C75": "27d2e42d8c994507ee6d71acc7c58d3eddd3f7a5",
+  "base_streaming": "1248fd8fa8cfebaece5ea992e4d951c1e18bb9d5",
+  "source_sha256": {
+    "src/llama-graph.cpp": "eab00ef87d7212708f3ac4ec4f643dfc1c640f9949633827ff5017e7c56c705c",
+    "src/llama-moe-stream.cpp": "c38e99fb1d5015c8e4e0a7e1a96e56a95e08b740b06cf99d920e8bfe860d64f0",
+    "src/llama-moe-stream.h": "9835d3c08097a2d08973d6cdc921c8be1fd4088778d6c3cd2991266702e05195",
+    "ggml/src/ggml-cpu/ggml-cpu.c": "bda1c2c81077d89813c3b4776079a5ddf65eaf28bf1e33338473818cc56831f5",
+    "ggml/src/ggml.c": "ef2a64f06c900993396612ab2bfb98238d5ea931abbc938ddb0c72d31a0bd043"
+  },
+  "model_stat": {
+    "dev": 53,
+    "inode": 14833675,
+    "size_bytes": 63387346208,
+    "mtime_ns": 1790389637795911032,
+    "ctime_ns": 1790389637807910988
+  },
+  "shared_backend_changed": false,
+  "runtime_rebuilt": false,
+  "FFN_first_MMID_actual": "gate, despite up constructed first; LEFT_TO_RIGHT graph traversal swiglu gate/up inputs and actual native known-small graph proof",
+  "eligibility": "CPU0..24 only; reserve/remap complete, wait per expert+slot+generation before first gate_MMID weight read; keep survives up/bias/activation/down/reduction until next layer remap",
+  "worker_commit": "all three MXFP4 slabs set outside mutex, RESIDENT published under mutex; C156 journal actual commit observed. Biases resident canonical, not part of asynchronous slab commit",
+  "native_MMID": "F32 activation quantized to Q8_0, ggml_vec_dot_mxfp4_q8_0 into F32, slots ascending, independent row/chunk outputs, no arrival-order reduction",
+  "full_FFN_boundary": "graph has separate gate/up MMID, SWIGLU_OAI, down MMID and ordered 4-expert weighted reduction; per-expert fullFFN-first requires larger graph/operator change, NOT_IMPLEMENTED"
+}
