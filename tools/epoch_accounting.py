@@ -32,7 +32,27 @@ class Epoch:
         # Charges without observed endpoint timestamps cannot receive overlap credit.
         spent += sum(r['physical_charge_s'] for r in rows if r['live'] and (r['start'] is None or r['end'] is None))
         wall=time.monotonic()-self.config['start_monotonic_s']
-        roots=[self.root/p for p in self.config.get('raw_roots',[])]
+        names=list(self.config.get('raw_roots',[]))
+        addendum=self.path/'raw-roots-addendum.json'
+        if addendum.exists():
+            extra=json.loads(addendum.read_text())
+            if set(extra)!={'effective_raw_roots','reason'} or type(extra['effective_raw_roots']) is not list:
+                raise ValueError('raw root addendum schema invalid')
+            names+=extra['effective_raw_roots']
+        transition=self.path/'raw-root-transition.json'
+        if transition.exists():
+            extra=json.loads(transition.read_text())
+            if set(extra)!={'previous_addendum_sha256','append_roots','reason'} or type(extra['append_roots']) is not list:
+                raise ValueError('raw root transition schema invalid')
+            import hashlib
+            if hashlib.sha256(addendum.read_bytes()).hexdigest()!=extra['previous_addendum_sha256']:
+                raise ValueError('raw root transition parent changed')
+            names+=extra['append_roots']
+        roots=[]
+        for name in dict.fromkeys(names):
+            p=(self.root/name).resolve()
+            if not p.is_relative_to(self.root/'results') or p.name!='raw':raise ValueError('raw root outside declared results/raw')
+            roots.append(p)
         raw=sum(p.stat().st_size for d in roots for p in d.rglob('*') if p.is_file())
         reserve=self.config['closure_reserve_s']
         wall_reserve=self.config.get('wall_closure_reserve_s',reserve)

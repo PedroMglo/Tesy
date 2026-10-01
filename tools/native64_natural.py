@@ -214,6 +214,13 @@ def family(root,*,hooks=None):
             receipt=read(root/(rid+'-receipt.json'))
             if receipt['status']!='PASS_NATURAL_ARM' or now()['monotonic_s']-arm_started['monotonic_s']>p.get('arm_maximum_s',300):raise ValueError('natural arm invalid/envelope exceeded')
             rows.append(receipt['row']);print(json.dumps({'arm':rid,'first_final_T2_s':rows[-1]['T2_first_final_s'],'SQL_validated_s':rows[-1]['SQL_validated_s'],'nominal153':rows[-1].get('nominal153')}),flush=True)
+            if p['confirmation'] and len(rows)%2==0 and hooks.get('futility_after_pair'):
+                a,b=(rows[-2],rows[-1]) if rows[-2]['profile'].startswith('A') else (rows[-1],rows[-2])
+                reason=hooks['futility_after_pair'](a,b)
+                if reason:
+                    status='NO_GO_USEFUL_CONFIRMATION_FUTILITY'
+                    save(root/'futility.json',{'reason':reason,'completed_arms':[r['run_id'] for r in rows],'remaining_arms':'NOT_RUN_FUTILITY','no_simulated_three_pair_median':True})
+                    return 1
         pairs=[(rows[0],rows[1]),(rows[3],rows[2])]
         if p['confirmation']:pairs.append((rows[4],rows[5]))
         result=hooks.get('evaluate',lambda v:evaluate(v,'S',confirmation=p['confirmation']))(pairs);status=result['status'];save(root/'paired-metrics.json',result)

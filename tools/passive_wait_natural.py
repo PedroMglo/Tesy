@@ -101,8 +101,14 @@ def terminal_censor_allowed(root,rid):
  try:censor_record(root,rid);return True
  except (GateError,KeyError,ValueError,OSError):return False
 
+def futility(a,b):
+ for ar,br in zip(a['requests'],b['requests']):
+  if not ar['functional_success'] and not br['functional_success']:return 'BOTH_FAIL_REQUIRED_TASK:'+ar['id']
+  if ar['functional_success'] and not br['functional_success']:return 'CANDIDATE_FUNCTIONAL_REGRESSION:'+ar['id']
+ return None
+
 def hooks(root):
- p=read(root/'protocol.json');return {'cap':18*2**30,'suite':'passivewaitutility','tasks':tasks,'checker':checker,'analyze':analyze,'arm_script':'tools/passive_wait_natural.py','evaluate':lambda pairs:evaluate(pairs,p['confirmation']),'accept_terminal_censor':terminal_censor_allowed}
+ p=read(root/'protocol.json');return {'cap':18*2**30,'suite':'passivewaitutility','tasks':tasks,'checker':checker,'analyze':analyze,'arm_script':'tools/passive_wait_natural.py','evaluate':lambda pairs:evaluate(pairs,p['confirmation']),'accept_terminal_censor':terminal_censor_allowed,'futility_after_pair':futility}
 if __name__=='__main__':
  q=argparse.ArgumentParser();q.add_argument('mode',choices=('freeze','arm','family'));q.add_argument('root',type=Path);q.add_argument('--epoch',type=Path);q.add_argument('--confirmation',action='store_true');q.add_argument('--run-id');q.add_argument('--measurement-head');a=q.parse_args()
  if a.mode=='freeze':freeze(a.root,a.epoch,a.confirmation)
