@@ -22,12 +22,12 @@ NAMES = {
 
 
 def rope_rows(shape, heads):
-    """Independent row-index oracle: interleaved HF RoPE to split-half GGML."""
+    """Independent row-index oracle: split-half HF RoPE to interleaved GGML."""
     if len(shape) != 2 or shape[0] % (2*heads):
         raise ValueError('invalid RoPE shape/head mapping')
     width = shape[0] // heads
-    return np.asarray([h*width + 2*i + half for h in range(heads)
-                       for half in (0,1) for i in range(width//2)])
+    return np.asarray([h*width + i + half*(width//2) for h in range(heads)
+                       for i in range(width//2) for half in (0,1)])
 
 
 def compare(original, tensor, gguf_type):
@@ -75,7 +75,11 @@ def audit(head, converted, target, backend):
         if np.any((original & 0x7f80)==0x7f80):raise ValueError('nonfinite source tensor')
         if key.endswith('q_proj.weight'):original=original[rope_rows(shape,64)]
         if key.endswith('k_proj.weight'):original=original[rope_rows(shape,8)]
-        rows.append({'source':key,'converted':name,**compare(original,tensors[name],gguf.GGMLQuantizationType)})
+        try:
+            evidence=compare(original,tensors[name],gguf.GGMLQuantizationType)
+        except ValueError as exc:
+            raise ValueError(key+': '+str(exc)) from exc
+        rows.append({'source':key,'converted':name,**evidence})
     # Native converter's deterministic Llama3 frequency factors. Independently
     # apply the three wavelength regions from the pinned head configuration.
     cfg=json.loads((head/'config.json').read_text());scale=cfg['rope_scaling']

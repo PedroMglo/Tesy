@@ -14,6 +14,9 @@ class Types(IntEnum):
 class IndependentHeadBytes(unittest.TestCase):
     def test_split_half_mapping_explicit_rows(self):
         self.assertEqual(rope_rows((8,2),2).tolist(),[0,2,1,3,4,6,5,7])
+        # Width4 is self-inverse and cannot detect conversion direction.
+        self.assertEqual(rope_rows((16,1),2).tolist(),[0,4,1,5,2,6,3,7,8,12,9,13,10,14,11,15])
+        self.assertNotEqual(rope_rows((8,1),1).tolist(),[0,2,4,6,1,3,5,7])
         with self.assertRaises(ValueError):rope_rows((7,2),2)
 
     def test_dtype_values_shapes_corruption_are_not_tolerated(self):
