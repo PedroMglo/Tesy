@@ -1,0 +1,39 @@
+{
+  "measurement_commit": "b2e3c42e85e80b77e9b1226119aef83fe8973278",
+  "start": {
+    "utc": "2026-10-04T15:36:08.421186+00:00",
+    "monotonic_s": 17891.881675
+  },
+  "end": {
+    "utc": "2026-10-04T15:37:50.637464+00:00",
+    "monotonic_s": 17994.097949175
+  },
+  "argv": [
+    "systemd-run",
+    "--user",
+    "--slice=tesy-post-c154.slice",
+    "--unit=tesy-c256-head-feature-boundary",
+    "--collect",
+    "--pipe",
+    "--wait",
+    "--working-directory=/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc",
+    "-p",
+    "MemoryMax=17985175552",
+    "-p",
+    "MemoryHigh=17985175552",
+    "-p",
+    "MemorySwapMax=0",
+    "-p",
+    "RuntimeMaxSec=600",
+    "-p",
+    "TimeoutStopSec=10",
+    "--",
+    "/usr/bin/python3",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/tools/residency_unit_run.py",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c256-eagle3-draft-kv-boundary-repair-20261004",
+    "--inside"
+  ],
+  "returncode": 0,
+  "stdout": "",
+  "stderr": "Running as unit: tesy-c256-head-feature-boundary.service\n          Finished with result: success\nMain processes terminated with: code=exited, status=0/SUCCESS\n               Service runtime: 1min 41.476s\n             CPU time consumed: 2min 22.191s\n                   Memory peak: 15.7G (swap: 0B)\n"
+}
