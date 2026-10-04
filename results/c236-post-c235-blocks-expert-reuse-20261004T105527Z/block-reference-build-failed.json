@@ -1,0 +1,32 @@
+{
+  "argv": [
+    "g++-15",
+    "-std=c++17",
+    "-O2",
+    "-Wall",
+    "-Wextra",
+    "-Werror",
+    "-I",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/backends/c236-block-verifier-c75/include",
+    "-I",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/backends/c236-block-verifier-c75/src",
+    "-I",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/backends/c236-block-verifier-c75/ggml/include",
+    "-I",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/tools",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/tools/block_layer_reference.cpp",
+    "-L",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/backends/c236-block-verifier-c75/build-c236-cuda/bin",
+    "-Wl,-rpath,/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/backends/c236-block-verifier-c75/build-c236-cuda/bin",
+    "-lllama",
+    "-lggml-cpu",
+    "-lggml-base",
+    "-lggml",
+    "-ldl",
+    "-o",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c236-post-c235-blocks-expert-reuse-20261004T105527Z/build/block-reference"
+  ],
+  "returncode": 1,
+  "stdout": "",
+  "stderr": "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/tools/block_layer_reference.cpp: In function \u2018int main(int, char**)\u2019:\n/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/tools/block_layer_reference.cpp:52:34: error: invalid initialization of reference of type \u2018const std::vector<{anonymous}::captured>&\u2019 from expression of type \u2018char* const\u2019\n   52 |         const auto & input = one(rows, phase, \"attn_post_norm\");\n      |                                  ^~~~\nIn file included from /home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/tools/block_layer_reference.cpp:4:\n/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/tools/c7_layer_reference.cpp:106:52: note: in passing argument 1 of \u2018const {anonymous}::captured& {anonymous}::one(const std::vector<captured>&, const std::string&, const char*)\u2019\n  106 | const captured & one(const std::vector<captured> & rows,\n      |                      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~\n/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/tools/block_layer_reference.cpp:54:36: error: invalid initialization of reference of type \u2018const std::vector<{anonymous}::captured>&\u2019 from expression of type \u2018char* const\u2019\n   54 |         const auto & ids_row = one(rows, phase, \"ffn_moe_topk\");\n      |                                    ^~~~\n/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/tools/c7_layer_reference.cpp:106:52: note: in passing argument 1 of \u2018const {anonymous}::captured& {anonymous}::one(const std::vector<captured>&, const std::string&, const char*)\u2019\n  106 | const captured & one(const std::vector<captured> & rows,\n      |                      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~\n/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/tools/block_layer_reference.cpp:116:32: error: invalid initialization of reference of type \u2018const std::vector<{anonymous}::captured>&\u2019 from expression of type \u2018char* const\u2019\n  116 |         precheck_router(phase, rows, backend.value, tensors);\n      |                                ^~~~\n/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/tools/block_layer_reference.cpp:10:79: note: in passing argument 2 of \u2018void {anonymous}::precheck_router(const std::string&, const std::vector<captured>&, ggml_backend_t, const std::array<ggml_tensor*, 8>&)\u2019\n   10 | void precheck_router(const std::string & phase, const std::vector<captured> & rows,\n      |                                                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~\n/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/tools/block_layer_reference.cpp:117:43: error: invalid initialization of reference of type \u2018const std::vector<{anonymous}::captured>&\u2019 from expression of type \u2018char* const\u2019\n  117 |         const auto result = replay(phase, rows, backend.value, tensors);\n      |                                           ^~~~\n/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/tools/c7_layer_reference.cpp:216:76: note: in passing argument 2 of \u2018{anonymous}::row_result {anonymous}::replay(const std::string&, const std::vector<captured>&, ggml_backend_t, const std::array<ggml_tensor*, 8>&)\u2019\n  216 | row_result replay(const std::string & phase, const std::vector<captured> & rows,\n      |                                              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~\n"
+}
