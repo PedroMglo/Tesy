@@ -84,7 +84,7 @@ MEDIDO_NO_TARGET C259/C260: operador CPU0/12/24, mesmos três tiles capturados32
 |12|67/64|6,3538 /8,2005|7,2772|
 |24|88/68|21,6953 /21,8326|21,7640|
 
-Cada load lógico corresponde a **13219200B** pelos três componentes peso/bias desse expert. Isto não mede tráfego físico NVMe. Não é só loop reorder com cargas idênticas: a mesma carga serve múltiplos tiles antes de substituição. Estes tiles são disjuntos, não todo warm153.
+Cada load lógico corresponde a **13219200B** pelos três componentes de pesos desse expert; os bias de11520B/component têm checks separados e não estão incluídos neste contador de pesos. Isto não mede tráfego físico NVMe. Não é só loop reorder com cargas idênticas: a mesma carga serve múltiplos tiles antes de substituição. Estes tiles são disjuntos, não todo warm153.
 
 C268 integração inicial: prefill+28,67%, decode−10,29%, NO_GO da proteção; preservada. Diagnóstico C269: últimos quatro tokens tinham371 ready hits no tile-major contra303 na ordem shared first-use. Ordem de último tile consumidor usa apenas o router atual; C270 mostrou373 hits e selected neutrality/fidelity. Hits não provam causalidade exclusiva nem previsão do próximo token.
 
@@ -148,3 +148,7 @@ Raw, source e falhas permanecem locais/imutáveis. C274 `all-raw-sha256-manifest
 Ledger append-only da mesma época C236, sem crédito histórico. `results/c236-post-c235-blocks-expert-reuse-20261004T105527Z/closure.json` e o C274 `ledger-final.json` fixam consumo/saldo encerrado, clocks e motivo; não transformar saldo em autorização nova. Sessão ativa conservadora inclui todo elapsed desde10:49UTC, builds/análise/esperas/compactions; partição humana não observada UNKNOWN. Envelopes físicos medidos em união por boot, não somar duração nativa/request/uptime. Observação cleanup com endpoint incompleto recebe5s conservadores, sem overlap artificial; último cleanup tem endpoints reais.
 
 Cleanup final observado AC/performance, scopes próprios inactive/dead/MainPID0, GPU13MiB/39°C, nenhum compute ou processo experimental. Ollama1393 e bridge1696 apenas observados, sem sinais; cliente CAPI não abriu endpoint HTTP experimental. Portas/lista completa de processos preservadas apenas no raw privado. Estado Git final limpo e SHA são verificados depois do commit de fecho. LOCAL_ONLY: sem push, PR ou merge.
+
+## Ledger final
+
+Fecho 2026-10-04T22:13:42.406425+00:00: wall 41142.406432s (sessão conservadora 41082.406432s +60s ESTIMADO de serialização final, sem timestamp/overlap inventado); físico 16777.722110s/57600s; raw 2328852706B/12884901888B; derivados4083185030B/21474836480B. Saldos encerrados: wall390857.593568s, físico40822.277890s, raw10556049182B. Reservas não financiam outra época. `admitted=false` após fecho.
