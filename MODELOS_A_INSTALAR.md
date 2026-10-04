@@ -21,3 +21,7 @@ sha256sum /home/pmglo/models/gpt-oss-120b-gguf/gpt-oss-120b-MXFP4.gguf
 ```
 
 O comando acima não foi executado por esta sessão. Metadados da origem estão em `results/hf-gpt-oss-120b-gguf-*.json`.
+
+## C249 — EAGLE-3 experimental, condicional após C247
+
+Head NVIDIA `nvidia/gpt-oss-120b-Eagle3-long-context`, revisão `633caf45f31288cbb70ee237f7c939db707ecc94`, apenas `model.safetensors` (430.964.464 B) e metadados. Aquisição autorizada pelo gate C247 e ordem pós-C235; ainda não instalado/qualificado neste freeze. Pin e SHA em `models.lock.json` e `results/c249-eagle3-head-acquisition-20261004/manifest.json`. Não descarregar pesos do target nem alterar o opt-in original.
