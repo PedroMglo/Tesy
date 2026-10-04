@@ -1,0 +1,39 @@
+{
+  "measurement_commit": "2c57e793347e7cb55a825060db98e2d570aa94c4",
+  "start": {
+    "utc": "2026-10-04T12:35:38.454668+00:00",
+    "monotonic_s": 7061.915158042
+  },
+  "end": {
+    "utc": "2026-10-04T12:40:26.403929+00:00",
+    "monotonic_s": 7349.864414049
+  },
+  "argv": [
+    "systemd-run",
+    "--user",
+    "--slice=tesy-post-c154.slice",
+    "--unit=tesy-c243-production-prefix",
+    "--collect",
+    "--pipe",
+    "--wait",
+    "--working-directory=/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc",
+    "-p",
+    "MemoryMax=17985175552",
+    "-p",
+    "MemoryHigh=17985175552",
+    "-p",
+    "MemorySwapMax=0",
+    "-p",
+    "RuntimeMaxSec=930",
+    "-p",
+    "TimeoutStopSec=10",
+    "--",
+    "/usr/bin/python3",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/tools/residency_unit_run.py",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c243-production-grid-reference-20261004",
+    "--inside"
+  ],
+  "returncode": 0,
+  "stdout": "",
+  "stderr": "Running as unit: tesy-c243-production-prefix.service\n          Finished with result: success\nMain processes terminated with: code=exited, status=0/SUCCESS\n               Service runtime: 4min 47.700s\n             CPU time consumed: 6min 424ms\n                   Memory peak: 14.7G (swap: 0B)\n"
+}
