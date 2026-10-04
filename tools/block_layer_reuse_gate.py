@@ -59,7 +59,8 @@ def inspect(directory,fixture,mode):
               [4,n,1,1] if stage=='ffn_moe_topk' else \
               [1,4,n,1] if stage=='ffn_moe_weights_softmax' else [128,n,1,1]
         dtype='i32' if stage=='ffn_moe_topk' else 'f32'
-        if r.get('ne')!=shape or r.get('dtype')!=dtype or r.get('name')!=f'{stage}-{layer}' or r.get('file')!=f'{stage}-{layer}.bin':
+        native=f'ffn_moe_argsort-{layer}' if stage=='ffn_moe_logits_biased' else f'{stage}-{layer}'
+        if r.get('ne')!=shape or r.get('dtype')!=dtype or r.get('name')!=f'{stage}-{layer}' or r.get('file')!=f'{stage}-{layer}.bin' or r.get('native_name')!=native:
             raise ValueError('native whole-layer shape/type changed')
         path=directory/r['file'];size=int(np.prod(shape))*4
         if not path.is_file() or path.stat().st_size!=size or r.get('bytes')!=size:

@@ -56,15 +56,22 @@ void consumer(observer & o,ggml_tensor * t,int layer) {
 }
 bool observe(ggml_tensor * t,bool ask,void * pointer){auto & o=*static_cast<observer*>(pointer);const bool row_interest=o.owner&&observe_rows(t,ask,&o.owner->rows);if(!o.enabled)return row_interest;
     const std::string name=ggml_get_name(t);const auto sep=name.rfind('-');if(sep==std::string::npos)return row_interest;
-    const std::string stage=name.substr(0,sep);int layer=-1;try{layer=std::stoi(name.substr(sep+1));}catch(...){return row_interest;}if(layer<0||layer>=36||name!=stage+"-"+std::to_string(layer))return row_interest;
+    std::string stage=name.substr(0,sep);int layer=-1;try{layer=std::stoi(name.substr(sep+1));}catch(...){return row_interest;}if(layer<0||layer>=36||name!=stage+"-"+std::to_string(layer))return row_interest;
+    if(stage=="ffn_moe_argsort"){
+        // build_moe_ffn names selected_experts->src[0] after the biased
+        // router callback. Observe that actual ADD, never synthesize logits.
+        check(t->op==GGML_OP_ADD&&t->type==GGML_TYPE_F32&&t->ne[0]==128&&t->src[0]&&t->src[1]&&t->src[0]->ne[0]==128&&t->src[1]->ne[0]==128&&t->src[1]->ne[1]==1,"biased router alias is not the native bias ADD");
+        stage="ffn_moe_logits_biased";
+    }
     const std::set<std::string> wanted={"attn_post_norm","ffn_moe_logits","ffn_moe_logits_biased","ffn_moe_topk","ffn_moe_weights_softmax","ffn_moe_out"};
     if(stage=="c262_shared_slots"||stage=="ffn_moe_topk_stream"){if(ask)return true;consumer(o,t,layer);return true;}
     if(!wanted.count(stage))return row_interest;if(ask)return true;
-    check(o.emitted.insert(name).second,"duplicate complete-layer stage");check(t->type==GGML_TYPE_F32||t->type==GGML_TYPE_I32,"capture dtype changed");
+    const std::string canonical_name=stage+"-"+std::to_string(layer);
+    check(o.emitted.insert(canonical_name).second,"duplicate complete-layer stage");check(t->type==GGML_TYPE_F32||t->type==GGML_TYPE_I32,"capture dtype changed");
     std::vector<uint8_t> raw(ggml_nbytes(t));ggml_backend_tensor_get(t,raw.data(),0,raw.size());std::vector<float> compact(ggml_nelements(t));size_t i=0;
     for(int64_t d=0;d<t->ne[3];++d)for(int64_t c=0;c<t->ne[2];++c)for(int64_t b=0;b<t->ne[1];++b)for(int64_t a=0;a<t->ne[0];++a){const size_t off=a*t->nb[0]+b*t->nb[1]+c*t->nb[2]+d*t->nb[3];check(off+4<=raw.size(),"capture stride outside bytes");std::memcpy(&compact[i],raw.data()+off,4);if(t->type==GGML_TYPE_F32)check(std::isfinite(compact[i]),"nonfinite stage");++i;}
-    o.bytes+=compact.size()*4;check(o.bytes<=256*1024*1024,"capture bound exceeded");binary(o.root/(name+".bin"),compact);
-    o.stages.push_back({{"name",name},{"layer",layer},{"stage",stage},{"dtype",t->type==GGML_TYPE_F32?"f32":"i32"},{"ne",{t->ne[0],t->ne[1],t->ne[2],t->ne[3]}},{"bytes",compact.size()*4},{"file",name+".bin"}});return true;
+    o.bytes+=compact.size()*4;check(o.bytes<=256*1024*1024,"capture bound exceeded");binary(o.root/(canonical_name+".bin"),compact);
+    o.stages.push_back({{"name",canonical_name},{"native_name",name},{"layer",layer},{"stage",stage},{"dtype",t->type==GGML_TYPE_F32?"f32":"i32"},{"ne",{t->ne[0],t->ne[1],t->ne[2],t->ne[3]}},{"bytes",compact.size()*4},{"file",canonical_name+".bin"}});return true;
 }
 void ancestors(ggml_tensor * t,std::set<ggml_tensor*> & nodes,std::set<std::string> & names){if(!t||!nodes.insert(t).second)return;names.insert(ggml_get_name(t));for(auto * s:t->src)ancestors(s,nodes,names);}
 void graph_test(){llama_backend_init();ggml_init_params cp{16*1024*1024,nullptr,true};auto * c=ggml_init(cp);check(c,"test metadata allocation failed");llama_moe_stream manager(36,40,4,true);
@@ -82,6 +89,13 @@ void graph_test(){llama_backend_init();ggml_init_params cp{16*1024*1024,nullptr,
         auto * derived=ggml_view_2d(c,slots[0],4,1,slots[0]->nb[1],0);
         check(!observe(derived,true,&probe),"derived view mistaken for native consumer");
         auto * copied=ggml_cont(c,derived);check(!observe(copied,true,&probe),"derived contiguous copy mistaken for consumer");
+        auto * router=ggml_new_tensor_2d(c,GGML_TYPE_F32,128,153);
+        auto * bias=ggml_new_tensor_1d(c,GGML_TYPE_F32,128);
+        auto * biased=ggml_add(c,router,bias);ggml_set_name(biased,"ffn_moe_argsort-0");
+        check(observe(biased,true,&probe),"native biased ADD alias not requested");
+        ggml_set_name(router,"ffn_moe_argsort-0");bool rejected=false;
+        try{observe(router,true,&probe);}catch(const std::exception&){rejected=true;}
+        check(rejected,"unbiased tensor accepted as biased alias");
         if(reuse){const auto complete=[&]{std::set<ggml_tensor*> nodes;std::set<std::string> names;ancestors(slots[1]->src[1],nodes,names);for(int t=0;t<5;++t)if(!names.count("c262-tile-"+std::to_string(t)+"-wave-0"))return false;return true;};
             check(complete(),"replacement lacks all five consumers");auto * full=slots[1]->src[1];slots[1]->src[1]=ggml_graph_node(g,0);check(!complete(),"missing-consumer mutation escaped");slots[1]->src[1]=full;}
     }
