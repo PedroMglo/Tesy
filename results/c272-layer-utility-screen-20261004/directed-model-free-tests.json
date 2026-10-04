@@ -1,0 +1,42 @@
+{
+  "start": {
+    "utc": "2026-10-04T20:56:04.982981+00:00",
+    "monotonic_s": 37088.443462573
+  },
+  "end": {
+    "utc": "2026-10-04T20:56:05.234970+00:00",
+    "monotonic_s": 37088.695461312
+  },
+  "graders": {
+    "c131-code-01": {
+      "gold": {
+        "status": "PASS",
+        "exit_code": 0,
+        "stdout_tail": "TESY_TESTS_PASSED_94027\n",
+        "stderr_tail": ""
+      },
+      "mutant": {
+        "status": "FAIL",
+        "exit_code": 1,
+        "stdout_tail": "",
+        "stderr_tail": "st):\n  File \"/tmp/runner.py\", line 3, in <module>\n    exec('assert rle_pairs([])==[]\\na=[2,2,-1,-1,2];assert rle_pairs(a)==[(2,2),(-1,2),(2,1)];assert a==[2,2,-1,-1,2]\\nassert rle_pairs([5])==[(5,1)]\\nassert rle_pairs([0,0,0])==[(0,3)]',namespace)\n    ~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"<string>\", line 2, in <module>\nAssertionError\n"
+      }
+    },
+    "c131-plan-02": {
+      "gold": {
+        "status": "PASS",
+        "reason": null
+      },
+      "mutant": {
+        "status": "FAIL",
+        "reason": "wrong plan or tie break"
+      }
+    }
+  },
+  "evaluator": {
+    "returncode": 0,
+    "stdout": "",
+    "stderr": "test_actual_validator_clock_and_negative_population (test_block_layer_utility_gate.Gates.test_actual_validator_clock_and_negative_population) ... ok\ntest_no_false_gain_fast_wrong_or_both_failed (test_block_layer_utility_gate.Gates.test_no_false_gain_fast_wrong_or_both_failed) ... ok\ntest_pairs_different_valid_outputs_and_exact_population (test_block_layer_utility_gate.Gates.test_pairs_different_valid_outputs_and_exact_population) ... ok\ntest_real_receipt_contract_counterproofs (test_block_layer_utility_gate.Gates.test_real_receipt_contract_counterproofs) ... ok\n\n----------------------------------------------------------------------\nRan 4 tests in 0.077s\n\nOK\n"
+  },
+  "claim": "Actual bwrap-isolated gold/mutants, receipt/population faults; no weights/forwards"
+}
