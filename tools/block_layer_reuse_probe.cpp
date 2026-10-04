@@ -56,7 +56,7 @@ void consumer(observer & o,ggml_tensor * t,int layer) {
 }
 bool observe(ggml_tensor * t,bool ask,void * pointer){auto & o=*static_cast<observer*>(pointer);const bool row_interest=o.owner&&observe_rows(t,ask,&o.owner->rows);if(!o.enabled)return row_interest;
     const std::string name=ggml_get_name(t);const auto sep=name.rfind('-');if(sep==std::string::npos)return row_interest;
-    const std::string stage=name.substr(0,sep);int layer=-1;try{layer=std::stoi(name.substr(sep+1));}catch(...){return row_interest;}if(layer<0||layer>=36)return row_interest;
+    const std::string stage=name.substr(0,sep);int layer=-1;try{layer=std::stoi(name.substr(sep+1));}catch(...){return row_interest;}if(layer<0||layer>=36||name!=stage+"-"+std::to_string(layer))return row_interest;
     const std::set<std::string> wanted={"attn_post_norm","ffn_moe_logits","ffn_moe_logits_biased","ffn_moe_topk","ffn_moe_weights_softmax","ffn_moe_out"};
     if(stage=="c262_shared_slots"||stage=="ffn_moe_topk_stream"){if(ask)return true;consumer(o,t,layer);return true;}
     if(!wanted.count(stage))return row_interest;if(ask)return true;
@@ -75,6 +75,13 @@ void graph_test(){llama_backend_init();ggml_init_params cp{16*1024*1024,nullptr,
             [&](ggml_tensor * cur,ggml_tensor * pi,ggml_tensor *){check(cur->ne[2]==32||cur->ne[2]==25,"native MMID shape changed");++gemms;return ggml_mul_mat_id(c,w[0],cur,pi);},
             [&](ggml_tensor * t){slots.push_back(t);});ggml_build_forward_expand(g,result);check(result->ne[2]==153,"tile concat lost positions");
         check(slots.size()==static_cast<size_t>(reuse?8:38)&&gemms==(reuse?40:38),"wave/tile plan changed");
+        // The scheduler names derived views/contiguous copies from their source.
+        // Only the exact native callback name denotes a remap consumer.
+        observer probe;probe.enabled=true;ggml_set_name(slots[0],"c262_shared_slots-0");
+        check(observe(slots[0],true,&probe),"native consumer name omitted");
+        auto * derived=ggml_view_2d(c,slots[0],4,1,slots[0]->nb[1],0);
+        check(!observe(derived,true,&probe),"derived view mistaken for native consumer");
+        auto * copied=ggml_cont(c,derived);check(!observe(copied,true,&probe),"derived contiguous copy mistaken for consumer");
         if(reuse){const auto complete=[&]{std::set<ggml_tensor*> nodes;std::set<std::string> names;ancestors(slots[1]->src[1],nodes,names);for(int t=0;t<5;++t)if(!names.count("c262-tile-"+std::to_string(t)+"-wave-0"))return false;return true;};
             check(complete(),"replacement lacks all five consumers");auto * full=slots[1]->src[1];slots[1]->src[1]=ggml_graph_node(g,0);check(!complete(),"missing-consumer mutation escaped");slots[1]->src[1]=full;}
     }
