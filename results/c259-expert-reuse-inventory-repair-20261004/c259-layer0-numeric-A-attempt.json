@@ -1,0 +1,47 @@
+{
+  "id": "c259-layer0-numeric-A",
+  "start": {
+    "utc": "2026-10-04T16:22:23.823383+00:00",
+    "monotonic_s": 20667.283863209
+  },
+  "end": {
+    "utc": "2026-10-04T16:23:29.846291+00:00",
+    "monotonic_s": 20733.30677701
+  },
+  "argv": [
+    "/usr/bin/python",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/tools/run_bounded.py",
+    "--run-id",
+    "c259-layer0-numeric-A",
+    "--model-id",
+    "gpt-oss-120b-mxfp4-gguf",
+    "--backend",
+    "stock",
+    "--backend-root",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/backends/c236-block-verifier-c75",
+    "--output-root",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c259-expert-reuse-inventory-repair-20261004/raw",
+    "--variant",
+    "C75-slots40-CPU-three-native-tiles-numeric-A",
+    "--workload",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c259-expert-reuse-inventory-repair-20261004/protocol.json",
+    "--cache-condition",
+    "CPU0-numeric-A-empty-native-pool",
+    "--resource-protocol",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c259-expert-reuse-inventory-repair-20261004/protocol.json",
+    "--require-telemetry",
+    "--timeout-s",
+    "90",
+    "--collect-start-inventory",
+    "--",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c236-post-c235-blocks-expert-reuse-20261004T105527Z/build/block-expert-reuse",
+    "/home/pmglo/models/gpt-oss-120b-gguf/gpt-oss-120b-MXFP4.gguf",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c127-slots40-numeric-20260929T1654Z/raw/c127-slots40-on01.capture",
+    "0",
+    "numeric-A",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c259-expert-reuse-inventory-repair-20261004/raw/c259-layer0-numeric-A.operator.json"
+  ],
+  "returncode": 0,
+  "stdout": "{\"run_id\": \"c259-layer0-numeric-A\", \"elapsed_s\": 3.048, \"returncode\": 0, \"stop_reason\": null, \"maxima\": {\"rss_bytes\": 1020604416, \"swap_bytes\": 0, \"cgroup_memory_bytes\": 979668992, \"cgroup_peak_bytes\": 1000574976, \"cgroup_file_bytes\": 1536000, \"gpu_used_mib\": 13.0, \"gpu_temperature_c\": 41.0, \"cpu_tctl_c\": 43.75, \"nvme_composite_c\": 41.85, \"direct_model_fds\": 2, \"buffered_model_fds\": 0}}\n",
+  "stderr": ""
+}

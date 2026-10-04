@@ -1,0 +1,39 @@
+{
+  "measurement_commit": "9d0c1265c72d4085d02fe718862fb5620f09903c",
+  "start": {
+    "utc": "2026-10-04T16:22:23.495639+00:00",
+    "monotonic_s": 20666.956129474
+  },
+  "end": {
+    "utc": "2026-10-04T16:28:45.049831+00:00",
+    "monotonic_s": 21048.510317363
+  },
+  "argv": [
+    "systemd-run",
+    "--user",
+    "--slice=tesy-post-c154.slice",
+    "--unit=tesy-c259-selected-reuse-numeric",
+    "--collect",
+    "--pipe",
+    "--wait",
+    "--working-directory=/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc",
+    "-p",
+    "MemoryMax=4294967296",
+    "-p",
+    "MemoryHigh=4294967296",
+    "-p",
+    "MemorySwapMax=0",
+    "-p",
+    "RuntimeMaxSec=1260",
+    "-p",
+    "TimeoutStopSec=10",
+    "--",
+    "/usr/bin/python",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/tools/residency_unit_run.py",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c259-expert-reuse-inventory-repair-20261004",
+    "--inside"
+  ],
+  "returncode": 0,
+  "stdout": "",
+  "stderr": "Running as unit: tesy-c259-selected-reuse-numeric.service\n          Finished with result: success\nMain processes terminated with: code=exited, status=0/SUCCESS\n               Service runtime: 6min 21.295s\n             CPU time consumed: 1min 41.436s\n                   Memory peak: 1G (swap: 0B)\n"
+}

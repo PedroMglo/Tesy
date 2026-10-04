@@ -1,0 +1,9 @@
+# C260 — selected native reuse service freeze
+
+After C259 correctness and byte/load fidelity PASS, measure three CPU layers0/12/24, each in four fresh A–B–B–A processes. Each services exactly the same three original captured numerical tiles32/32/29; control separate native wave plans, candidate one authoritative union with all tile consumers before slot replacement. Same qualified executable/libraries/env, threads8, pool40, native four-worker/preload/O_DIRECT path, empty initial pool and common4GiB cap/high/3.5GiB guard/swap0. No CUDA experiment or full-model inference.
+
+Native synchronized service wall includes demand/preload loads, MMIDs, activation, bias, masks, accumulation/reduction and coordination. Bias initialization, metadata and graph allocation are outside this service metric, but inside charged physical envelope. Consumer byte checks are disabled during timing; selected outputs remain independently checked bitwise/finite afterward. OS cache is not globally flushed. Warmth/temperatures/pressure and order are recorded; no unfavorable run is excluded.
+
+Per-layer local gate: both paired net service gains positive, median>0 and actual B loads<A in each pair. All twelve attempted receipts/cardinality/order/profile, complete outputs, actual native generations/load counters and identical initial pool/accounting are validated. Each ratio is calculated first, then median. A local gain is not a full153 prefill or first-final gain; workload-specific contiguous inputs/accounting and integration remain conditional. Mixed layers remain visible.
+
+Each process own60s inventory,90s operator,30s postgate; full family2520s, raw64MiB, existing reserves preserved. Two directed timing-boundary tests passed, rejecting omitted arms/outputs, wrong layer, witness in timing and NaN. Workloads, clocks, gates and paths frozen before measurement. LOCAL_ONLY.
