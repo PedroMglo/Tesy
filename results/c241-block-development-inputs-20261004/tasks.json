@@ -1,0 +1,32 @@
+[
+  {
+    "id": "development-code-rle",
+    "class": "code",
+    "origin": "c131-code-01 now development, not a holdout",
+    "messages": [
+      {
+        "role": "system",
+        "content": "You are a helpful assistant. Reasoning: medium."
+      },
+      {
+        "role": "user",
+        "content": "Write only a Python function rle_pairs(xs). xs is a list of integers. Return a list of (value,count) tuples for each maximal consecutive run of equal values, in original order. For an empty list return []. Do not mutate xs."
+      }
+    ]
+  },
+  {
+    "id": "development-structured-route",
+    "class": "structured",
+    "origin": "c131-plan-02 now development, not a holdout",
+    "messages": [
+      {
+        "role": "system",
+        "content": "You are a helpful assistant. Reasoning: medium."
+      },
+      {
+        "role": "user",
+        "content": "Return only JSON with keys route,arrival_minute. Start at S at minute 0. Directed travel times are S->A 2, S->B 3, A->C 3, B->C 1, A->T 8, B->T 7, C->T 2. T opens at minute 6; arrivals earlier than 6 wait there until 6. Find earliest arrival at T; ties use the lexicographically smallest route list."
+      }
+    ]
+  }
+]

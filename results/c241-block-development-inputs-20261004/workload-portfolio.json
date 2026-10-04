@@ -1,0 +1,36 @@
+{
+  "schema": "post-c235-development-confirmation-v1",
+  "template_date": "2026-09-30",
+  "medium": true,
+  "temperature": 0,
+  "seed": 42,
+  "development": [
+    "anchor-nominal153",
+    "development-code-rle",
+    "development-structured-route"
+  ],
+  "confirmation_status": "NOT_RUN_UNOBSERVED",
+  "selection_rule": "Never query confirmation tasks to choose block size or scheduler",
+  "confirmation": [
+    {
+      "id": "confirm-code-job-totals",
+      "class": "code",
+      "prompt": "Write only a Python function job_totals(events). Each event is a dict with keys job (string), team (string), seq (integer), state (\"active\" or \"cancel\"), minutes (nonnegative integer or None). For each job retain the event with greatest seq; in a tie retain the last such event in input order. Ignore jobs whose retained state is cancel. For each team among retained active jobs, return (team,number_of_jobs,total_minutes), treating None as zero. Return the tuples as a list sorted by team ascending. Empty input gives []. Do not mutate input.",
+      "cap": 768,
+      "deadline_2k_s": 360,
+      "deadline_4k_s": 540,
+      "oracle_contract": "Independent per-job latest-index selection then aggregation; isolated Python tester, no I/O/network",
+      "expected_tests_status": "Oracle fixtures must be frozen before any confirmation output; task text already frozen before development controls"
+    },
+    {
+      "id": "confirm-json-bin-allocation",
+      "class": "structured",
+      "prompt": "Allocate these items into bins. Bin capacities: A=9, B=7, C=5. Items (id,priority,weight): (u1,2,4),(u2,3,6),(u3,2,3),(u4,1,5),(u5,2,2),(u6,1,4). Process items by priority descending, then id ascending. For each item choose, among bins with enough remaining capacity, the bin with the smallest remaining capacity BEFORE allocation; tie by bin id ascending. Reduce that bin by the item weight. If no bin fits, leave the item waiting. Return only JSON with keys assignments (list of objects with id and bin, sorted by item id), remaining (object mapping A/B/C to integer capacities), waiting (list of item ids ascending). No extra keys or prose.",
+      "cap": 768,
+      "deadline_2k_s": 360,
+      "deadline_4k_s": 540,
+      "oracle_contract": "Independent literal greedy allocation with conservation and sorting; strict JSON parser; no generated host execution",
+      "expected_tests_status": "Oracle fixtures must be frozen before any confirmation output; task text already frozen before development controls"
+    }
+  ]
+}
