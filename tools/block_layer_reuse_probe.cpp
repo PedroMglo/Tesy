@@ -109,12 +109,12 @@ void graph_test(){llama_backend_init();ggml_init_params cp{16*1024*1024,nullptr,
 int main(int argc,char ** argv){try{if(argc==2&&std::string(argv[1])=="--graph-self-test"){graph_test();return 0;}
     check(argc==7&&std::string(argv[6])=="v1","usage MODEL FIXTURE CASE NEWROOT MODE(r0|r2-tile|r2-reuse) v1");
     const std::filesystem::path root=argv[4];check(!std::filesystem::exists(root),"root reused");std::filesystem::create_directories(root);
-    check(getenv("TESY_C262_LAYER_SPAN")&&std::string(getenv("TESY_C262_LAYER_SPAN"))=="153","layer-span identity absent");const std::string mode=argv[5];check(mode=="r0"||mode=="r2-tile"||mode=="r2-reuse","mode invalid");
+    check(getenv("TESY_C262_LAYER_SPAN")&&std::string(getenv("TESY_C262_LAYER_SPAN"))=="153","layer-span identity absent");const std::string mode=argv[5];const bool clean=mode=="r2-reuse-clean";check(mode=="r0"||mode=="r2-tile"||mode=="r2-reuse"||clean,"mode invalid");
     std::ifstream f(argv[2]);json fixtures;f>>fixtures;check(bool(f),"fixture missing");const auto ids=fixtures.at(argv[3]).at("ids").get<std::vector<llama_token>>();const auto continuation=fixtures.at(argv[3]).at("continuation_ids").get<std::vector<llama_token>>();check(ids.size()==2197&&continuation.size()>=6,"frozen warm153 input absent");
-    observer o;o.root=root;if(mode!="r0")o.canonical(argv[1]);runtime r(argv[1],observe,&o);o.owner=&r;
+    observer o;o.root=root;if(mode!="r0"&&!clean)o.canonical(argv[1]);runtime r(argv[1],observe,&o);o.owner=&r;
     for(int pos=0;pos<2044;pos+=256){const int n=std::min(256,2044-pos);r.call(std::vector<llama_token>(ids.begin()+pos,ids.begin()+pos+n),pos,false);}
-    const auto initial=r.snapshot();const int m=mode=="r0"?0:(mode=="r2-tile"?1:2);check(llama_c262_set_layer_mode(r.ctx,m),"mode change rejected");o.enabled=m!=0;
+    const auto initial=r.snapshot();const int m=mode=="r0"?0:(mode=="r2-tile"?1:2);check(llama_c262_set_layer_mode(r.ctx,m),"mode change rejected");o.enabled=m!=0&&!clean;
     auto logits=r.call(std::vector<llama_token>(ids.begin()+2044,ids.end()),2044,false);o.enabled=false;binary(root/"prefill.logits.f32",logits);const auto final=r.snapshot();std::vector<int> winners={greedy(logits.data())};
     for(int i=0;i<6;++i){logits=r.call({continuation[i]},2197+i,false);binary(root/("decode"+std::to_string(i)+".logits.f32"),logits);winners.push_back(greedy(logits.data()));}
-    save(root/"result.json",{{"status","COMPLETE_NATIVE_LAYER_REUSE_FIDELITY"},{"mode",mode},{"input_ids",ids},{"teacher_forced_ids",std::vector<int>(continuation.begin(),continuation.begin()+6)},{"native_argmax_ids",winners},{"initial",initial},{"after_prefill",final},{"stages",o.stages},{"witness",o.witness},{"capture_bytes",o.bytes},{"layer_span",153},{"ffn_tile",32},{"last_layer_rows",r.rows.ffn}});return 0;
+    save(root/"result.json",{{"status","COMPLETE_NATIVE_LAYER_REUSE_FIDELITY"},{"mode",mode},{"capture_enabled",m!=0&&!clean},{"input_ids",ids},{"teacher_forced_ids",std::vector<int>(continuation.begin(),continuation.begin()+6)},{"native_argmax_ids",winners},{"initial",initial},{"after_prefill",final},{"stages",o.stages},{"witness",o.witness},{"capture_bytes",o.bytes},{"layer_span",153},{"ffn_tile",32},{"last_layer_rows",r.rows.ffn}});return 0;
 }catch(const std::exception & e){std::cerr<<"LAYER_REUSE_FAIL "<<e.what()<<'\n';return 1;}}

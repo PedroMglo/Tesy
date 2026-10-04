@@ -3,7 +3,7 @@ import unittest
 import json
 import tempfile
 from pathlib import Path
-from block_layer_reuse_gate import components,SELECTED,inspect
+from block_layer_reuse_gate import components,SELECTED,inspect,clean
 
 class Coverage(unittest.TestCase):
     def test_bias_generation_and_union_counterproofs(self):
@@ -30,5 +30,11 @@ class Coverage(unittest.TestCase):
                 receipt['stages']=stages
                 (Path(d)/'result.json').write_text(json.dumps(receipt))
                 with self.assertRaisesRegex(ValueError,'stages omitted/duplicated'):inspect(d,fixture,'r2-tile')
+
+    def test_clean_is_not_an_empty_capture_fallback(self):
+        with tempfile.TemporaryDirectory() as d:
+            for mode,enabled in [('r2-tile',False),('r2-reuse-clean',True)]:
+                (Path(d)/'result.json').write_text(json.dumps(dict(status='COMPLETE_NATIVE_LAYER_REUSE_FIDELITY',mode=mode,capture_enabled=enabled,stages=[],witness=[],capture_bytes=0)))
+                with self.assertRaisesRegex(ValueError,'explicit clean'):clean(d,{'ids':[1],'continuation_ids':[2]*6},Path(d)/'reference')
 
 if __name__=='__main__':unittest.main()

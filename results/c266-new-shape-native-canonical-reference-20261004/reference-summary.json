@@ -1,0 +1,41 @@
+{
+  "status": "PASS_SELECTED_NATIVE_CANONICAL_R2_REFERENCES",
+  "layers": [
+    0,
+    25,
+    35
+  ],
+  "devices": [
+    "cpu",
+    "cuda",
+    "cuda"
+  ],
+  "router_tokens": [
+    153,
+    153,
+    1
+  ],
+  "ffn_tile_shapes": [
+    [
+      32,
+      32,
+      32,
+      32,
+      25
+    ],
+    [
+      32,
+      32,
+      32,
+      32,
+      25
+    ],
+    [
+      1
+    ]
+  ],
+  "independent_same_device_FFN_tiles": 11,
+  "reference": "Original logical-expert128 weight namespace, independently loaded selected MXFP4/bias/router slices, whole-span router then mature native FFN tiles, bitwise/finite",
+  "full_8K": "NOT_QUALIFIED",
+  "latency": "NOT_MEASURED_REFERENCE_IS_NOT_TIMING"
+}

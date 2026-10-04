@@ -84,6 +84,23 @@ def inspect(directory,fixture,mode):
             'scope':'Bounded warm153 R2 and six teacher-forced decode calls; not useful latency or universal8K'}
 
 
+def clean(directory,fixture,reference):
+    directory=Path(directory);v=json.loads((directory/'result.json').read_text())
+    if v.get('status')!='COMPLETE_NATIVE_LAYER_REUSE_FIDELITY' or v.get('mode')!='r2-reuse-clean' or v.get('capture_enabled') is not False or v.get('stages')!=[] or v.get('witness')!=[] or v.get('capture_bytes')!=0 or v.get('input_ids')!=fixture['ids'] or v.get('teacher_forced_ids')!=fixture['continuation_ids'][:6] or v.get('layer_span')!=153 or v.get('ffn_tile')!=32 or v.get('last_layer_rows')!=1:
+        raise ValueError('explicit clean instrumentation/profile contract invalid')
+    original=inspect(reference,fixture,'r2-reuse')
+    state=v.get('after_prefill',{})
+    if state.get('pending_queue')!=0 or [x.get('layer') for x in state.get('layers',[])]!=list(range(36)) or any(len(x.get('slot_state',[]))!=40 or len(x.get('slot_claimed',[]))!=40 or any(x['slot_claimed']) or any(y not in (0,2) for y in x['slot_state']) for x in state['layers']):
+        raise ValueError('clean completed drained state missing')
+    if v.get('native_argmax_ids')!=original['native_argmax_ids'] or {k:v.get('initial',{}).get(k) for k in ('layers','pending_queue','n_calls')}!={k:original['initial'][k] for k in ('layers','pending_queue','n_calls')}:
+        raise ValueError('clean initial state/native row contract differs')
+    for name in ['prefill.logits.f32',*[f'decode{i}.logits.f32' for i in range(6)]]:
+        p=directory/name
+        if not p.is_file() or p.stat().st_size!=201088*4 or not np.isfinite(np.fromfile(p,dtype='<f4')).all() or sha256(p)!=original['stage_payloads'][name]:
+            raise ValueError('clean full logit fidelity missing/different')
+    return {'status':'PASS_SELECTED_R2_INSTRUMENTATION_NEUTRALITY','full_logits':7,'scope':'Warm153 and six teacher-forced calls; no production speedup or universal guarantee'}
+
+
 def main():
     p=argparse.ArgumentParser();p.add_argument('directory',type=Path);p.add_argument('--fixture',type=Path)
     p.add_argument('--mode');p.add_argument('--paired-root',type=Path);p.add_argument('--bridge-reference',type=Path)
@@ -95,8 +112,10 @@ def main():
         out={'status':'PASS_PRIVATE_R0_SELECTED_BRIDGE','core_payloads':len(new['core']),
              'full_logits':len(new['logits']),'prospective_witness':new['prospective_witness']}
     else:
-        fixture=json.loads(a.fixture.read_text())['anchor-nominal153'];out=inspect(a.directory,fixture,a.mode)
-        if a.paired_root:
+        fixture=json.loads(a.fixture.read_text())['anchor-nominal153']
+        if a.mode=='r2-reuse-clean':out=clean(a.directory,fixture,a.paired_root)
+        else:out=inspect(a.directory,fixture,a.mode)
+        if a.paired_root and a.mode!='r2-reuse-clean':
             other=inspect(a.paired_root,fixture,'r2-tile')
             if {k:out['initial'][k] for k in ('layers','pending_queue','n_calls')}!= \
                {k:other['initial'][k] for k in ('layers','pending_queue','n_calls')}:
