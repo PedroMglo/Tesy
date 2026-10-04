@@ -1,0 +1,49 @@
+[
+  {
+    "argv": [
+      "systemctl",
+      "--user",
+      "show",
+      "tesy-c247-b8-amortization.service",
+      "-p",
+      "ActiveState",
+      "-p",
+      "SubState",
+      "-p",
+      "MainPID"
+    ],
+    "utc": "2026-10-04T14:41:38.121839+00:00",
+    "start_monotonic_s": 14621.573087787,
+    "end_monotonic_s": 14621.58232656,
+    "returncode": 0,
+    "stdout": "ActiveState=inactive\nSubState=dead\nMainPID=0\n",
+    "stderr": ""
+  },
+  {
+    "argv": [
+      "nvidia-smi",
+      "--query-gpu=memory.used,temperature.gpu",
+      "--format=csv,noheader,nounits"
+    ],
+    "utc": "2026-10-04T14:41:40.108401+00:00",
+    "start_monotonic_s": 14621.582331559,
+    "end_monotonic_s": 14623.568889068,
+    "returncode": 0,
+    "stdout": "13, 47\n",
+    "stderr": ""
+  },
+  {
+    "argv": [
+      "pgrep",
+      "-a",
+      "-f",
+      "block-native-fixed|llama-server|ollama"
+    ],
+    "utc": "2026-10-04T14:41:40.168201+00:00",
+    "start_monotonic_s": 14623.568893807,
+    "end_monotonic_s": 14623.628686996,
+    "returncode": 0,
+    "stdout": "1393 /usr/local/bin/ollama serve\n1696 python3 /home/pmglo/.local/libexec/ai-local/ollama_unix_bridge.py --socket-path /run/user/1000/ai-local/ollama.sock --upstream-port 11434\n",
+    "stderr": ""
+  }
+]
