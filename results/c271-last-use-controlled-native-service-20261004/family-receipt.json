@@ -1,0 +1,39 @@
+{
+  "measurement_commit": "78d82b938a53a63c0a9314a0cf917c208cd044bb",
+  "start": {
+    "utc": "2026-10-04T20:24:33.162430+00:00",
+    "monotonic_s": 35196.622912301
+  },
+  "end": {
+    "utc": "2026-10-04T20:36:42.297384+00:00",
+    "monotonic_s": 35925.757869967
+  },
+  "argv": [
+    "systemd-run",
+    "--user",
+    "--slice=tesy-post-c154.slice",
+    "--unit=tesy-c271-last-use-controlled-native-service",
+    "--collect",
+    "--pipe",
+    "--wait",
+    "--working-directory=/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc",
+    "-p",
+    "MemoryMax=21474836480",
+    "-p",
+    "MemoryHigh=21474836480",
+    "-p",
+    "MemorySwapMax=0",
+    "-p",
+    "RuntimeMaxSec=1500",
+    "-p",
+    "TimeoutStopSec=10",
+    "--",
+    "/usr/bin/python3",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/tools/residency_unit_run.py",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c271-last-use-controlled-native-service-20261004",
+    "--inside"
+  ],
+  "returncode": 0,
+  "stdout": "",
+  "stderr": "Running as unit: tesy-c271-last-use-controlled-native-service.service\n          Finished with result: success\nMain processes terminated with: code=exited, status=0/SUCCESS\n               Service runtime: 12min 8.742s\n             CPU time consumed: 49min 53.920s\n                   Memory peak: 15G (swap: 0B)\n"
+}

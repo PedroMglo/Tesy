@@ -1,0 +1,62 @@
+{
+  "status": "GO_CONTROLLED_WARM153_NATIVE_COST",
+  "measurement_commit": "78d82b9",
+  "family_s": 729.1349576659995,
+  "paired_analysis": {
+    "status": "GO_CONTROLLED_WARM153_NATIVE_COST",
+    "pairs": [
+      {
+        "A_arm": 1,
+        "B_arm": 2,
+        "gain_percent": {
+          "prefix2044_s": 0.9764034765655257,
+          "prefill153_s": 18.62582855523742,
+          "decode32_s": -0.09227470026684591,
+          "total_s": 10.174445058148246
+        },
+        "loads_A": {
+          "CPU": 1486,
+          "GPU": 638
+        },
+        "loads_B": {
+          "CPU": 1465,
+          "GPU": 608
+        },
+        "greedy_rows_equal": false
+      },
+      {
+        "A_arm": 4,
+        "B_arm": 3,
+        "gain_percent": {
+          "prefix2044_s": 4.098840068241491,
+          "prefill153_s": 17.753268279700197,
+          "decode32_s": -0.9922275595198907,
+          "total_s": 9.466554338244212
+        },
+        "loads_A": {
+          "CPU": 1486,
+          "GPU": 638
+        },
+        "loads_B": {
+          "CPU": 1465,
+          "GPU": 608
+        },
+        "greedy_rows_equal": false
+      }
+    ],
+    "median_paired_gain_percent": {
+      "prefix2044_s": 2.5376217724035084,
+      "prefill153_s": 18.189548417468806,
+      "decode32_s": -0.5422511298933683,
+      "total_s": 9.82049969819623
+    },
+    "scope": "Fixed official warm153 input plus32teacher-forced calls; cross-profile computation may differ, no generated/confirmed throughput or natural utility claim"
+  },
+  "scope": "Fixed inputs/teacher forcing, not natural useful latency, no R0 equality",
+  "cleanup": {
+    "utc": "2026-10-04T20:38:03Z",
+    "gpu": "GPU-83d90c55-1d92-75da-fc30-7771a85f2521, 13 MiB, 46\n",
+    "own_scope": "inactive\n"
+  },
+  "raw_manifest": "raw-manifest.json"
+}
