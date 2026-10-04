@@ -1,0 +1,39 @@
+{
+  "measurement_commit": "dbcd1a51c0433b33d0b084dc5e163de364346596",
+  "start": {
+    "utc": "2026-10-04T15:26:46.116782+00:00",
+    "monotonic_s": 17329.577266368
+  },
+  "end": {
+    "utc": "2026-10-04T15:28:16.198875+00:00",
+    "monotonic_s": 17419.659359332
+  },
+  "argv": [
+    "systemd-run",
+    "--user",
+    "--slice=tesy-post-c154.slice",
+    "--unit=tesy-c254-head-value-audit",
+    "--collect",
+    "--pipe",
+    "--wait",
+    "--working-directory=/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc",
+    "-p",
+    "MemoryMax=4294967296",
+    "-p",
+    "MemoryHigh=4294967296",
+    "-p",
+    "MemorySwapMax=0",
+    "-p",
+    "RuntimeMaxSec=180",
+    "-p",
+    "TimeoutStopSec=10",
+    "--",
+    "/usr/bin/python3",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/tools/residency_unit_run.py",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c254-head-conversion-row-oracle-repair-20261004",
+    "--inside"
+  ],
+  "returncode": 0,
+  "stdout": "",
+  "stderr": "Running as unit: tesy-c254-head-value-audit.service\n          Finished with result: success\nMain processes terminated with: code=exited, status=0/SUCCESS\n               Service runtime: 1min 29.448s\n             CPU time consumed: 51.239s\n                   Memory peak: 1.6G (swap: 0B)\n"
+}

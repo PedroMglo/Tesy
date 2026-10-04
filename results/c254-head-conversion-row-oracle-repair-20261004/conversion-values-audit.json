@@ -1,0 +1,143 @@
+{
+  "status": "PASS_PINNED_HEAD_CONVERSION_VALUES_METADATA",
+  "head_sha256": "1831df81533be3ce4901a382afdedc1ad7c1af3ab3f4b4708e21210c00e3b6f6",
+  "gguf_sha256": "4f6b2fec94d4d891a10841e7ea0d24d70524ee6ee4f1a430d922aefe7928a7ee",
+  "gguf_bytes": 443967840,
+  "tensors": [
+    {
+      "source": "fc.weight",
+      "converted": "fc.weight",
+      "shape": [
+        2880,
+        8640
+      ],
+      "dtype": "BF16",
+      "elements": 24883200,
+      "exact_source_values": true
+    },
+    {
+      "source": "midlayer.hidden_norm.weight",
+      "converted": "blk.0.attn_norm_2.weight",
+      "shape": [
+        2880
+      ],
+      "dtype": "F32",
+      "elements": 2880,
+      "exact_source_values": true
+    },
+    {
+      "source": "midlayer.input_layernorm.weight",
+      "converted": "blk.0.attn_norm.weight",
+      "shape": [
+        2880
+      ],
+      "dtype": "F32",
+      "elements": 2880,
+      "exact_source_values": true
+    },
+    {
+      "source": "midlayer.post_attention_layernorm.weight",
+      "converted": "blk.0.ffn_norm.weight",
+      "shape": [
+        2880
+      ],
+      "dtype": "F32",
+      "elements": 2880,
+      "exact_source_values": true
+    },
+    {
+      "source": "norm.weight",
+      "converted": "output_norm.weight",
+      "shape": [
+        2880
+      ],
+      "dtype": "F32",
+      "elements": 2880,
+      "exact_source_values": true
+    },
+    {
+      "source": "midlayer.mlp.down_proj.weight",
+      "converted": "blk.0.ffn_down.weight",
+      "shape": [
+        2880,
+        17280
+      ],
+      "dtype": "BF16",
+      "elements": 49766400,
+      "exact_source_values": true
+    },
+    {
+      "source": "midlayer.mlp.gate_proj.weight",
+      "converted": "blk.0.ffn_gate.weight",
+      "shape": [
+        17280,
+        2880
+      ],
+      "dtype": "BF16",
+      "elements": 49766400,
+      "exact_source_values": true
+    },
+    {
+      "source": "midlayer.mlp.up_proj.weight",
+      "converted": "blk.0.ffn_up.weight",
+      "shape": [
+        17280,
+        2880
+      ],
+      "dtype": "BF16",
+      "elements": 49766400,
+      "exact_source_values": true
+    },
+    {
+      "source": "midlayer.self_attn.q_proj.weight",
+      "converted": "blk.0.attn_q.weight",
+      "shape": [
+        4096,
+        5760
+      ],
+      "dtype": "BF16",
+      "elements": 23592960,
+      "exact_source_values": true
+    },
+    {
+      "source": "midlayer.self_attn.k_proj.weight",
+      "converted": "blk.0.attn_k.weight",
+      "shape": [
+        512,
+        5760
+      ],
+      "dtype": "BF16",
+      "elements": 2949120,
+      "exact_source_values": true
+    },
+    {
+      "source": "midlayer.self_attn.v_proj.weight",
+      "converted": "blk.0.attn_v.weight",
+      "shape": [
+        512,
+        5760
+      ],
+      "dtype": "BF16",
+      "elements": 2949120,
+      "exact_source_values": true
+    },
+    {
+      "source": "midlayer.self_attn.o_proj.weight",
+      "converted": "blk.0.attn_output.weight",
+      "shape": [
+        2880,
+        4096
+      ],
+      "dtype": "BF16",
+      "elements": 11796480,
+      "exact_source_values": true
+    }
+  ],
+  "derived_rope_values": 32,
+  "derived_rope_oracle_relative_bound": 3.814697265625e-06,
+  "derived_rope_max_relative_error": 9.069955098084392e-08,
+  "original_tokenizer_fields": 9,
+  "target_weights_converted": false,
+  "target_weights_rehashed": false,
+  "scope": "Exact head value conversion/metadata only; no head/target forward, fidelity or acceptance qualification"
+}
