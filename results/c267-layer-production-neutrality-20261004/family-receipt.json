@@ -1,0 +1,39 @@
+{
+  "measurement_commit": "c8e8647a3f46231ada8d38ee1bc6fcb6e42fcf09",
+  "start": {
+    "utc": "2026-10-04T19:23:43.370921+00:00",
+    "monotonic_s": 31546.831409411
+  },
+  "end": {
+    "utc": "2026-10-04T19:26:36.086440+00:00",
+    "monotonic_s": 31719.546924817
+  },
+  "argv": [
+    "systemd-run",
+    "--user",
+    "--slice=tesy-post-c154.slice",
+    "--unit=tesy-c267-layer-production-neutrality",
+    "--collect",
+    "--pipe",
+    "--wait",
+    "--working-directory=/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc",
+    "-p",
+    "MemoryMax=21474836480",
+    "-p",
+    "MemoryHigh=21474836480",
+    "-p",
+    "MemorySwapMax=0",
+    "-p",
+    "RuntimeMaxSec=400",
+    "-p",
+    "TimeoutStopSec=10",
+    "--",
+    "/usr/bin/python3",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/tools/residency_unit_run.py",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c267-layer-production-neutrality-20261004",
+    "--inside"
+  ],
+  "returncode": 0,
+  "stdout": "",
+  "stderr": "Running as unit: tesy-c267-layer-production-neutrality.service\n          Finished with result: success\nMain processes terminated with: code=exited, status=0/SUCCESS\n               Service runtime: 2min 52.437s\n             CPU time consumed: 11min 40.525s\n                   Memory peak: 14.7G (swap: 0B)\n"
+}
