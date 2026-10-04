@@ -84,7 +84,7 @@ struct runtime {
     llama_context * ctx=nullptr;
     rows_observer rows;
     ~runtime() { if(ctx)llama_free(ctx); if(model)llama_model_free(model); llama_backend_free(); }
-    explicit runtime(const char * path) {
+    explicit runtime(const char * path, ggml_backend_sched_eval_callback callback=observe_rows, void * opaque=nullptr) {
         check(!getenv("GOMP_SPINCOUNT") && !getenv("LD_PRELOAD") &&
               !getenv("LLAMA_MOE_STREAM_NO_PRELOAD") && !getenv("TESY_CPU_FA_PREFILL_VEC_COMPAT"), "unfrozen profile environment");
         llama_backend_init();
@@ -97,7 +97,7 @@ struct runtime {
         cp.n_threads=8;cp.n_threads_batch=8;cp.op_offload=false;
         cp.flash_attn_type=LLAMA_FLASH_ATTN_TYPE_ENABLED;cp.type_k=GGML_TYPE_F16;cp.type_v=GGML_TYPE_F16;
         cp.swa_full=true;cp.offload_kqv=true;cp.kv_unified=true;
-        cp.cb_eval=observe_rows;cp.cb_eval_user_data=&rows;
+        cp.cb_eval=callback;cp.cb_eval_user_data=opaque?opaque:&rows;
         ctx=llama_init_from_model(model,cp);check(ctx,"native context init failed");
         check(llama_vocab_n_tokens(llama_model_get_vocab(model))==vocab,"vocabulary changed");
         std::cout<<"C80_CONTEXT_READY native=1 P12 slots40 ub32 ctx8192\n"<<std::flush;
