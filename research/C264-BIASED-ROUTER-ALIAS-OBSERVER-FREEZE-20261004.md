@@ -1,0 +1,9 @@
+# C264 — native biased-router alias evidence
+
+C263 native R2-tile completed153+six teacher-forced calls with finite logits, but the gate rejected180 rather than216 stages. All36 missing stages were the biased router. R2-reuse was NOT_RUN_UNIT_FAIL. Its complete/partial raw and hashes remain; no retroactive PASS. Cleanup observed own scope inactive and GPU13MiB.
+
+SOURCE_AUDITED: `build_moe_ffn` names the router bias ADD `ffn_moe_logits_biased`, then `probs=logits` and `cb(selected_experts->src[0], "ffn_moe_argsort", il)` rename that same tensor. This alias was also identified in C239; its historical result is unchanged. The new observer requests the **actual** exact-named `ffn_moe_argsort-layer` ADD, verifies F32/128expert inputs and broadcast bias shape, and records both native name and canonical biased stage. No logits are reconstructed from another tensor or synthesized.
+
+REPRODUZIDO_MODEL_FREE: actual native metadata/production-helper tests biasADD alias acceptance and rejection of an unbiased nonADD carrying the alias, derived view/cont name rejection, five-consumer dependencies and removed-consumer counterproof. Existing directed gates retain216-stage cardinality, exact shapes/names/types/bytes, finite arrays, expert-union witness and all-layer/7-logit bitwise comparison. No arithmetic/source/library change.
+
+New identity and binary/root, identical R2-tile/reuse inputs153, five32/25 tiles, whole-span attention/router,20GiB cap/high/guard/swap0 and resource policy. Frozen740s family; two240s execution limits plus own60s inventory,30s post gate and cleanup; raw600MiB. R0 C262 selected bridge reused only within unchanged shapes/devices/output scope. No36references rerun. Independent canonical new-shape references and useful-latency tests remain conditional. No performance, general-quality,8K orM4 promotion. LOCAL_ONLY.
