@@ -1,0 +1,39 @@
+{
+  "measurement_commit": "f9a35add588dc2edba38fb15a286a4ef6ce3088d",
+  "start": {
+    "utc": "2026-10-04T16:30:40.967652+00:00",
+    "monotonic_s": 21164.428141845
+  },
+  "end": {
+    "utc": "2026-10-04T16:43:10.030584+00:00",
+    "monotonic_s": 21913.491074632
+  },
+  "argv": [
+    "systemd-run",
+    "--user",
+    "--slice=tesy-post-c154.slice",
+    "--unit=tesy-c260-selected-reuse-service",
+    "--collect",
+    "--pipe",
+    "--wait",
+    "--working-directory=/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc",
+    "-p",
+    "MemoryMax=4294967296",
+    "-p",
+    "MemoryHigh=4294967296",
+    "-p",
+    "MemorySwapMax=0",
+    "-p",
+    "RuntimeMaxSec=2520",
+    "-p",
+    "TimeoutStopSec=10",
+    "--",
+    "/usr/bin/python",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/tools/residency_unit_run.py",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c260-expert-reuse-native-service-20261004",
+    "--inside"
+  ],
+  "returncode": 0,
+  "stdout": "",
+  "stderr": "Running as unit: tesy-c260-selected-reuse-service.service\n          Finished with result: success\nMain processes terminated with: code=exited, status=0/SUCCESS\n               Service runtime: 12min 28.806s\n             CPU time consumed: 3min 13.280s\n                   Memory peak: 1005.2M (swap: 0B)\n"
+}
