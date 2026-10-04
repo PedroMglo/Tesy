@@ -1,0 +1,14 @@
+{
+  "schema": "c236-confirmation-oracles-freeze-v1",
+  "status": "FROZEN_UNOBSERVED_MODEL_OUTPUTS_NOT_RUN",
+  "evidence": "REPRODUZIDO_MODEL_FREE",
+  "files": {
+    "workloads/c236_confirmation_fixtures.json": "3a31ab4a74efeeb283ff96f2eb7c9d40637038e86492b85b08a74f4fa060857f",
+    "tools/block_confirmation_grade.py": "6d9f37f79bd69328d80d27f2f2fb761ae69d45a551767ef9f05f4a2c4c496d5e",
+    "tools/test_block_confirmation_grade.py": "2ebe8a0edd3057c23dce07a534fc3ec74821d047218c9aeafbab964fb022995b",
+    "results/c241-block-development-inputs-20261004/workload-portfolio.json": "ff7ac10ebf296417815c85cad00e738d5929d2353321b651e8676af0ed9d5534"
+  },
+  "test_receipt": "confirmation-grader-directed-tests.json",
+  "tasks": "Two original C241 confirmation task texts unchanged; nine code edge fixtures, independent oracle and strict JSON literal fixture; no gold data sent to model",
+  "isolation": "Existing bwrap no-network read-only host mounts with CPU/address-space/file-size/time bounds; actual trusted positive and first-tie/cancel/input-mutation negatives PASS. Parent-sandbox failure retained as environment error, no shim or unisolated host execution"
+}
