@@ -92,8 +92,19 @@ def relevant_environment(env):
             if key in exact or key.startswith(("LLAMA_", "TESY_", "GGML_", "CUDA_", "OMP_", "GOMP_", "KMP_"))}
 
 
-def mapped_libraries_match(expected, mapped):
-    return type(expected) is dict and bool(expected) and type(mapped) is dict and mapped == expected
+def mapped_libraries_match(expected, mapped, artifact_contract=None):
+    # Production remains strict. Metadata/conversion Python processes do not
+    # load C75; an explicit frozen contract requires observing the empty map.
+    artifact = artifact_contract == {
+        'schema': 'bounded-artifact-only-v1',
+        'kind': 'PINNED_HEAD_CONVERSION_OR_VALUE_AUDIT',
+        'full_model_forward': False,
+        'expected_backend_libraries': {},
+    }
+    if artifact_contract is not None and not artifact:
+        raise ValueError('invalid artifact-only mapping contract')
+    return type(expected) is dict and (bool(expected) or artifact) and \
+        type(mapped) is dict and mapped == expected and (not artifact or expected == {})
 
 
 def proc_status(pid):
@@ -367,6 +378,7 @@ def main():
         explicit_env[key] = value
         child_env[key] = value
 
+    artifact_contract = resource_protocol.get('artifact_execution') if prospective else None
     parallel_contract = resource_protocol.get('parallel_runtime') if prospective else None
     if parallel_contract is not None:
         from parallel_runtime import validate_launch_runtime, mapped_parallel_runtime
@@ -421,6 +433,11 @@ def main():
         manifest['limits']={'resource_protocol_sha256':sha256(a.resource_protocol),
                             'timeout_s':a.timeout_s,'require_telemetry':True}
         manifest['resource_authority']=resource_contract
+        if artifact_contract is not None:
+            mapped_libraries_match(manifest['backend_libraries_sha256'], {}, artifact_contract)
+            if manifest['backend_libraries_sha256']:
+                p.error('artifact-only process unexpectedly links inference libraries')
+            manifest['artifact_execution']=artifact_contract
         start_cg=manifest['cgroup_start']
         if not start_cg or start_cg['memory_max']!=resource_contract['cgroup']['memory_max_bytes'] or \
            start_cg['swap_max']!=0:
@@ -564,8 +581,12 @@ def main():
                     if ready_elapsed_s is not None or not a.ready_marker:
                         candidate_mapped = mapped_backend_libraries(process.pid, backend_dir,
                                                                      mapped_hash_cache)
-                        if candidate_mapped:
+                        if candidate_mapped or artifact_contract is not None:
                             mapped = candidate_mapped
+                        if artifact_contract is not None and candidate_mapped:
+                            reason = 'UNEXPECTED_INFERENCE_LIBRARY_IN_ARTIFACT_PROCESS'
+                            stop_own_group(process)
+                            break
                         if parallel_contract is not None and parallel_mapped is None:
                             parallel_mapped = mapped_parallel_runtime(process.pid, parallel_contract)
                 except (OSError, ValueError, StopIteration):
@@ -683,7 +704,7 @@ def main():
             manifest['stop_reason'] = reason
     manifest["ready_elapsed_s"] = ready_elapsed_s
     expected_libs = manifest["backend_libraries_sha256"]
-    manifest["mapped_libraries_match_ldd"] = mapped_libraries_match(expected_libs, mapped)
+    manifest["mapped_libraries_match_ldd"] = mapped_libraries_match(expected_libs, mapped, artifact_contract)
     if prospective and reason is None:
         reason=prospective_endpoint_reason(
             first_sample_t,last_sample_t,manifest['elapsed_s'],
