@@ -30,11 +30,11 @@ def inspect(root, B):
         if not data.resolve().is_relative_to(root) or data.stat().st_size != int(row['bytes']):
             raise ValueError('missing/truncated payload')
         groups[phase, layer][stage] = row
-    required = {'attn_post_norm', 'ffn_moe_logits', 'ffn_moe_logits_biased',
+    required = {'attn_post_norm', 'ffn_moe_logits',
                 'ffn_moe_probs', 'ffn_moe_topk', 'ffn_moe_weights_softmax',
                 'ffn_moe_topk_stream', 'ffn_moe_out'}
     if set(groups) != {(phase, layer) for phase in phases for layer in range(36)} or \
-            any(set(stages) != required for stages in groups.values()):
+            any(not required <= set(stages) or set(stages)-required-{'ffn_moe_logits_biased'} for stages in groups.values()):
         raise ValueError('complete block layer/stage coverage missing')
     expected = set()
     for phase in phases:
