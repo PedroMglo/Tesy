@@ -57,9 +57,9 @@ void consumer(observer & o,ggml_tensor * t,int layer) {
 bool observe(ggml_tensor * t,bool ask,void * pointer){auto & o=*static_cast<observer*>(pointer);const bool row_interest=o.owner&&observe_rows(t,ask,&o.owner->rows);if(!o.enabled)return row_interest;
     const std::string name=ggml_get_name(t);const auto sep=name.rfind('-');if(sep==std::string::npos)return row_interest;
     std::string stage=name.substr(0,sep);int layer=-1;try{layer=std::stoi(name.substr(sep+1));}catch(...){return row_interest;}if(layer<0||layer>=36||name!=stage+"-"+std::to_string(layer))return row_interest;
-    if(stage=="ffn_moe_argsort"){
-        // build_moe_ffn names selected_experts->src[0] after the biased
-        // router callback. Observe that actual ADD, never synthesize logits.
+    if(stage=="ffn_moe_probs"){
+        // SOFTMAX_WEIGHT aliases probs=biased logits and renames the ADD.
+        // argsort_top_k returns a view of a separate I32 ARGSORT, not this ADD.
         check(t->op==GGML_OP_ADD&&t->type==GGML_TYPE_F32&&t->ne[0]==128&&t->src[0]&&t->src[1]&&t->src[0]->ne[0]==128&&t->src[1]->ne[0]==128&&t->src[1]->ne[1]==1,"biased router alias is not the native bias ADD");
         stage="ffn_moe_logits_biased";
     }
@@ -91,9 +91,13 @@ void graph_test(){llama_backend_init();ggml_init_params cp{16*1024*1024,nullptr,
         auto * copied=ggml_cont(c,derived);check(!observe(copied,true,&probe),"derived contiguous copy mistaken for consumer");
         auto * router=ggml_new_tensor_2d(c,GGML_TYPE_F32,128,153);
         auto * bias=ggml_new_tensor_1d(c,GGML_TYPE_F32,128);
-        auto * biased=ggml_add(c,router,bias);ggml_set_name(biased,"ffn_moe_argsort-0");
+        auto * biased=ggml_add(c,router,bias);ggml_set_name(biased,"ffn_moe_logits_biased-0");
+        auto * probs=biased;ggml_set_name(probs,"ffn_moe_probs-0");
+        auto * selected=ggml_argsort_top_k(c,probs,4);ggml_set_name(selected->src[0],"ffn_moe_argsort-0");
+        check(selected->op==GGML_OP_VIEW&&selected->src[0]->type==GGML_TYPE_I32&&selected->src[0]->op==GGML_OP_ARGSORT,"native topk view/argsort contract changed");
+        check(!observe(selected->src[0],true,&probe),"I32 argsort accepted as biased logits");
         check(observe(biased,true,&probe),"native biased ADD alias not requested");
-        ggml_set_name(router,"ffn_moe_argsort-0");bool rejected=false;
+        ggml_set_name(router,"ffn_moe_probs-0");bool rejected=false;
         try{observe(router,true,&probe);}catch(const std::exception&){rejected=true;}
         check(rejected,"unbiased tensor accepted as biased alias");
         if(reuse){const auto complete=[&]{std::set<ggml_tensor*> nodes;std::set<std::string> names;ancestors(slots[1]->src[1],nodes,names);for(int t=0;t<5;++t)if(!names.count("c262-tile-"+std::to_string(t)+"-wave-0"))return false;return true;};
