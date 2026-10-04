@@ -1,0 +1,44 @@
+{
+  "evidence": "MEDIDO_NO_TARGET",
+  "commands": [
+    {
+      "command": [
+        "systemctl",
+        "--user",
+        "show",
+        "tesy-c246-b4-amortization.service",
+        "--property=ActiveState,SubState,MainPID"
+      ],
+      "observed_utc": "2026-10-04T14:11:31.824333+00:00",
+      "elapsed_s": 0.010179847000472364,
+      "returncode": 0,
+      "stdout": "ActiveState=inactive\nSubState=dead\nMainPID=0\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "nvidia-smi",
+        "--query-gpu=memory.used,temperature.gpu",
+        "--format=csv,noheader"
+      ],
+      "observed_utc": "2026-10-04T14:11:33.825521+00:00",
+      "elapsed_s": 2.001200266999149,
+      "returncode": 0,
+      "stdout": "13 MiB, 42\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "ps",
+        "-eo",
+        "pid,comm,args"
+      ],
+      "observed_utc": "2026-10-04T14:11:33.852287+00:00",
+      "elapsed_s": 0.02674330599984387,
+      "returncode": 0,
+      "stdout": "   1393 ollama          /usr/local/bin/ollama serve",
+      "stderr": ""
+    }
+  ],
+  "scope": "Read-only own scope/GPU/process cleanup; foreign services untouched"
+}
