@@ -1,0 +1,39 @@
+{
+  "measurement_commit": "e32f35854582e151f7b12f3780aaebf547fc4457",
+  "start": {
+    "utc": "2026-10-04T15:03:32.779167+00:00",
+    "monotonic_s": 15936.239656648
+  },
+  "end": {
+    "utc": "2026-10-04T15:03:33.123052+00:00",
+    "monotonic_s": 15936.58353838
+  },
+  "argv": [
+    "systemd-run",
+    "--user",
+    "--slice=tesy-post-c154.slice",
+    "--unit=tesy-c249-head-conversion",
+    "--collect",
+    "--pipe",
+    "--wait",
+    "--working-directory=/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc",
+    "-p",
+    "MemoryMax=4294967296",
+    "-p",
+    "MemoryHigh=4294967296",
+    "-p",
+    "MemorySwapMax=0",
+    "-p",
+    "RuntimeMaxSec=360",
+    "-p",
+    "TimeoutStopSec=10",
+    "--",
+    "/usr/bin/python3",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/tools/residency_unit_run.py",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c249-eagle3-head-acquisition-20261004",
+    "--inside"
+  ],
+  "returncode": 1,
+  "stdout": "",
+  "stderr": "Running as unit: tesy-c249-head-conversion.service\n          Finished with result: exit-code\nMain processes terminated with: code=exited, status=1/FAILURE\n               Service runtime: 189ms\n             CPU time consumed: 171ms\n                   Memory peak: 23.7M (swap: 0B)\n"
+}
