@@ -5,9 +5,9 @@ Scientific result from preserved target raw: NO_GO_CURRENT_HEAD_GRID_DEVELOPMENT
 | Class | Pair | AR32 wall s | Actual head wall s | Gain % |
 |---|---:|---:|---:|---:|
 | RLE code | 1 | 14.740787788 | 17.267693181 | -17.142268306 |
-| RLE code | 2 | 13.235810018 | 16.481299092 | -24.520513025 |
-| Route | 1 | 11.604039010 | 17.271688020 | -48.842044514 |
-| Route | 2 | 10.544076048 | 17.964228563 | -70.372722670 |
+| RLE code | 2 | 13.235810318 | 16.481298911 | -24.520513025 |
+| Route | 1 | 11.604038591 | 17.271688285 | -48.842044514 |
+| Route | 2 | 10.544075587 | 17.964228658 | -70.372722670 |
 
 Use the exact values in reanalysis-v2/development-screen.json as authority. Median paired decode gains: code -20.831390665%, route -59.607383592%. Prefill gains were +9.352578212% and +0.606663059%, respectively; favorable prefill cannot compensate for the failed decode gate. All pairs confirmed32 new decode tokens, with the prefill anchor separately excluded. Native greedy token arrays matched the genuine n1 control in every observed pair. This is selected token equality, not full cross-shape state equivalence or stochastic sampling preservation.
 
