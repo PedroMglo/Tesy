@@ -1,0 +1,39 @@
+{
+  "measurement_commit": "1623077a3760162b7ac499971ac816203c715d69",
+  "start": {
+    "utc": "2026-10-04T16:02:52.571634+00:00",
+    "monotonic_s": 19496.032123231
+  },
+  "end": {
+    "utc": "2026-10-04T16:17:53.460833+00:00",
+    "monotonic_s": 20396.921317894
+  },
+  "argv": [
+    "systemd-run",
+    "--user",
+    "--slice=tesy-post-c154.slice",
+    "--unit=tesy-c258-real-head-development",
+    "--collect",
+    "--pipe",
+    "--wait",
+    "--working-directory=/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc",
+    "-p",
+    "MemoryMax=17985175552",
+    "-p",
+    "MemoryHigh=17985175552",
+    "-p",
+    "MemorySwapMax=0",
+    "-p",
+    "RuntimeMaxSec=4100",
+    "-p",
+    "TimeoutStopSec=10",
+    "--",
+    "/usr/bin/python",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/tools/residency_unit_run.py",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c258-eagle3-real-head-development-20261004",
+    "--inside"
+  ],
+  "returncode": 1,
+  "stdout": "",
+  "stderr": "Running as unit: tesy-c258-real-head-development.service\n          Finished with result: exit-code\nMain processes terminated with: code=exited, status=1/FAILURE\n               Service runtime: 15min 166ms\n             CPU time consumed: 22min 23.746s\n                   Memory peak: 15.5G (swap: 0B)\n"
+}

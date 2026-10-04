@@ -45,15 +45,16 @@ def evaluate(arms):
 
 
 def main():
-    p=argparse.ArgumentParser();p.add_argument('directory',type=Path);a=p.parse_args();proto=json.loads((a.directory/'protocol.json').read_text());fixtures=json.loads(Path(proto['development_fixture']).read_text());arms=[]
+    p=argparse.ArgumentParser();p.add_argument('directory',type=Path);p.add_argument('--output-dir',type=Path);a=p.parse_args();proto=json.loads((a.directory/'protocol.json').read_text());fixtures=json.loads(Path(proto['development_fixture']).read_text());arms=[]
     native_roots=[]
     for run in proto['runs']:
         native=Path(run['command'][5]);v=json.loads((native/'result.json').read_text());validate(v,fixtures[v['case']]);arms.append(v);native_roots.append(native)
     result=evaluate(arms)
     result['native_residency']=[residency(d,v) for d,v in zip(native_roots,arms)]
-    for a,b in ((0,1),(3,2),(4,5),(7,6)):
-        result['native_residency'][b]=residency(native_roots[b],arms[b],native_roots[a])
-    with (a.directory/'development-screen.json').open('x') as f:json.dump(result,f,indent=2);f.write('\n')
+    for ia,ib in ((0,1),(3,2),(4,5),(7,6)):
+        result['native_residency'][ib]=residency(native_roots[ib],arms[ib],native_roots[ia])
+    output_dir=a.output_dir or a.directory
+    with (output_dir/'development-screen.json').open('x') as f:json.dump(result,f,indent=2);f.write('\n')
     print(result['decision'])
 
 if __name__=='__main__':main()
