@@ -1,8 +1,10 @@
 import copy
 import subprocess
+import json
+import tempfile
 import unittest
 from pathlib import Path
-from block_eagle3_loop_gate import validate
+from block_eagle3_loop_gate import validate, residency
 
 class IntegratedBoundary(unittest.TestCase):
     def test_real_native_acceptance_selftest_before_weights(self):
@@ -23,5 +25,23 @@ class IntegratedBoundary(unittest.TestCase):
         for key,replacement in [('iterations',[]),('native_confirmed_ids',[]),('wall_s',float('nan')),('decode_confirmed_excluding_anchor',17),('target_full_logit_rows',1),('official_prefix_ids',[1])]:
             bad=copy.deepcopy(value);bad[key]=replacement
             with self.assertRaises(ValueError):validate(bad,fixture)
+
+    def test_full_initial_residency_and_no_hidden_forward(self):
+        with tempfile.TemporaryDirectory() as td:
+            root=Path(td);a=root/'a';b=root/'b';a.mkdir();b.mkdir()
+            state={'pending_queue':0,'n_calls':36,'n_miss':0,'n_preload':0,'stall_us':0,
+                'layers':[{'layer':i,'slot_generation':[0]*40,'slot_state':[0]*40,'slot_claimed':[False]*40,
+                    'slot_expert':[-1]*40,'native_cache_buffer':'CPU','logical_bytes_per_load':4} for i in range(36)]}
+            final=copy.deepcopy(state);final['n_calls']+=36*16
+            for d in (a,b):
+                (d/'initial-residency.json').write_text(json.dumps(state));(d/'final-residency.json').write_text(json.dumps(final))
+            v={'mode':'ar','target_verification_calls':16}
+            self.assertTrue(residency(b,v,a)['paired_full_initial_state_equal'])
+            changed=copy.deepcopy(state);changed['layers'][0]['slot_expert'][0]=5
+            (b/'initial-residency.json').write_text(json.dumps(changed))
+            with self.assertRaises(ValueError):residency(b,v,a)
+            (b/'initial-residency.json').write_text(json.dumps(state));final['n_calls']+=36
+            (b/'final-residency.json').write_text(json.dumps(final))
+            with self.assertRaises(ValueError):residency(b,v)
 
 if __name__=='__main__':unittest.main()

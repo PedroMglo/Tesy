@@ -44,9 +44,33 @@ def validate(value,fixture):
     return {'status':'PASS_SELECTED_NATIVE_GRID_LOOP','mode':mode,'decode_confirmed_excluding_anchor':len(tokens)-1,'wall_s':value['wall_s'],'iterations':len(steps),'scope':'Selected native loop only, no general quality or utility claim'}
 
 
+def residency(directory,value,paired=None):
+    initial=json.loads((directory/'initial-residency.json').read_text());final=json.loads((directory/'final-residency.json').read_text())
+    for state in (initial,final):
+        if len(state.get('layers',[]))!=36 or state.get('pending_queue')!=0:raise ValueError('complete drained expert state missing')
+        if [x.get('layer') for x in state['layers']]!=list(range(36)):raise ValueError('expert layer ordering/cardinality wrong')
+        for layer in state['layers']:
+            if len(layer.get('slot_generation',[]))!=40 or len(layer.get('slot_state',[]))!=40 or any(layer.get('slot_claimed',[True])) or 1 in layer['slot_state']:raise ValueError('expert slot generation/worker state invalid')
+    keys=('layers','pending_queue','n_calls')
+    if paired is not None:
+        other=json.loads((paired/'initial-residency.json').read_text())
+        if {k:initial[k] for k in keys}!={k:other[k] for k in keys}:raise ValueError('paired complete initial expert state differs, not comparable by KV alone')
+    calls=final['n_calls']-initial['n_calls']
+    if calls<=0 or calls%36:raise ValueError('invalid native routed-layer call accounting')
+    if value['mode']!='head-diagnostic' and calls!=36*value['target_verification_calls']:raise ValueError('hidden/omitted production forwards')
+    tiers={};loads=0
+    for old,new in zip(initial['layers'],final['layers']):
+        n=sum(new['slot_generation'])-sum(old['slot_generation'])
+        if n<0 or old['logical_bytes_per_load']!=new['logical_bytes_per_load']:raise ValueError('invalid expert load/byte accounting')
+        tier=old['native_cache_buffer'];entry=tiers.setdefault(tier,{'loads':0,'logical_bytes':0});entry['loads']+=n;entry['logical_bytes']+=n*old['logical_bytes_per_load'];loads+=n
+    if loads!=final['n_miss']-initial['n_miss']+final['n_preload']-initial['n_preload']:raise ValueError('reservations do not match demand+preload accounting')
+    return {'total_native_target_calls':calls//36,'logical_loads_by_tier':tiers,'paired_full_initial_state_equal':True if paired else None,
+            'wait_union_s':(final['stall_us']-initial['stall_us'])/1e6,'note':'Logical loads/bytes and native exposed wait, not physical NVMe or whole-model exclusive phase decomposition'}
+
+
 def main():
-    p=argparse.ArgumentParser();p.add_argument('directory',type=Path);p.add_argument('fixture',type=Path);p.add_argument('case');p.add_argument('--output',type=Path,required=True);a=p.parse_args()
-    value=json.loads((a.directory/'result.json').read_text());r=validate(value,json.loads(a.fixture.read_text())[a.case])
+    p=argparse.ArgumentParser();p.add_argument('directory',type=Path);p.add_argument('fixture',type=Path);p.add_argument('case');p.add_argument('--output',type=Path,required=True);p.add_argument('--paired-root',type=Path);a=p.parse_args()
+    value=json.loads((a.directory/'result.json').read_text());r=validate(value,json.loads(a.fixture.read_text())[a.case]);r['native_residency']=residency(a.directory,value,a.paired_root)
     if value['mode']=='head-diagnostic':
         patterns=[row['diagnostic_pattern'] for row in value['iterations']]
         if patterns[:4]!=['ORACLE_ALL_ACCEPT','ORACLE_REJECT_0','ORACLE_REJECT_3','ORACLE_REJECT_1']:raise ValueError('all/first/middle/last coverage incomplete')
