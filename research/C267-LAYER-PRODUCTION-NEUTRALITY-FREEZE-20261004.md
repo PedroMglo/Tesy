@@ -1,0 +1,7 @@
+# C267 — production observation neutrality, selected scope
+
+C265 all216 R2tile/shared stages/seven logits bitwise PASS; C266 three independent same-device router/eleven FFNtile references PASS. Now execute one new R2shared process with exact same153 input shape/five32/25 tiles/prefix2044/six native published teacher-forced calls and initial drained expert state, but no requested intermediate capture, consumer witness or canonical-reader IO. Only seven synchronized output logit rows are stored. Their full finite bytes must equal the C265 captured reference.
+
+Explicit clean mode is not an empty-capture fallback: capture_enabledfalse and zero capture/stage/witness values are accepted only under this separate seven-logit neutrality contract. Directed tests reject mislabelled/nonclean or enabled captures; historical full-stage gate still requires216, correct shapes/types/bytes/witness. Native graph/tensor-name/top-k/lifetime counterproofs pass.
+
+Same private source93151fc4/libs, originalweights/P12/slots40/ub32/context8192/fullSWA/F16/preload/threads/workers/GOMPunset. Newbinary/root,20GiBcap/high/swap0/sameguard, own60s inventory/freshness3s,240srun,45spostgate, family400s/raw16MiB. No production timing or quality claim. Next production benchmark excludes output dumps during its window and uses the true operational R0 comparator; no deliberately slow R2reference as product baseline. LOCAL_ONLY.
