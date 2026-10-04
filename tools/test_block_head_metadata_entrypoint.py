@@ -1,5 +1,7 @@
 """Metadata-reader lock identity regression; mocks only inspect argv, not guards."""
 import subprocess
+import json
+import hashlib
 import sys
 import tempfile
 import unittest
@@ -36,5 +38,15 @@ class MetadataReaderIdentity(unittest.TestCase):
             self.assertIn('--collect-start-inventory',argv)
             self.assertIn('--require-telemetry',argv)
 
+    def test_inventory_policy_hash_binding_rejects_stale_contract(self):
+        root=Path(__file__).resolve().parents[1]
+        old=root/'results/c250-head-conversion-lock-repair-20261004'
+        new=root/'results/c251-head-conversion-policy-binding-20261004'
+        previous=json.loads((old/'protocol.json').read_text())
+        prospective=json.loads((new/'protocol.json').read_text())
+        self.assertNotEqual(previous['start_inventory']['policy_sha256'],hashlib.sha256((old/'resource-policy.json').read_bytes()).hexdigest())
+        self.assertEqual(prospective['start_inventory']['policy_sha256'],hashlib.sha256((new/'resource-policy.json').read_bytes()).hexdigest())
+        self.assertEqual(prospective['resources'],json.loads((new/'resource-policy.json').read_text()))
 
-if __name__=='__main__':unittest.main()
+
+if __name__=='__main__' :unittest.main()
