@@ -1,0 +1,71 @@
+{
+  "receipts": [
+    {
+      "path": "results/c269-layer-last-use-engineering-20261004/actual-graph-self-test.json",
+      "sha256": "3843bd3380b88b2d18c0c2638cc976bbeee05389311b345043293386b3f81412",
+      "recorded_returncode": 0,
+      "result": {
+        "returncode": 0,
+        "stdout": "{\"status\":\"PASS_REAL_C262_GRAPH_METADATA_AND_LIFETIME_COUNTERPROOF\",\"weights_loaded\":false,\"forwards\":0}\n",
+        "stderr": "ggml_cuda_init: found 1 CUDA devices (Total VRAM: 7888 MiB):\n  Device 0: NVIDIA GeForce RTX 4060 Laptop GPU, compute capability 8.9, VMM: yes, VRAM: 7888 MiB\nalloc_bufs:          CPU expert cache size =     0.01 MiB (40 slots per layer)\n"
+      },
+      "rerun_at_closure": false
+    },
+    {
+      "path": "results/c269-layer-last-use-engineering-20261004/directed-gate-tests-final.json",
+      "sha256": "36d3d449b03bc46d4342990641b78e78c2e3fa8df201d24d08e8d10af6a52e0e",
+      "recorded_returncode": 0,
+      "result": {
+        "argv": [
+          "/usr/bin/python3",
+          "-m",
+          "unittest",
+          "tools/test_block_last_use_gate.py",
+          "tools/test_block_layer_reuse_gate.py"
+        ],
+        "returncode": 0,
+        "stdout": "",
+        "stderr": ".....\n----------------------------------------------------------------------\nRan 5 tests in 0.010s\n\nOK\n"
+      },
+      "rerun_at_closure": false
+    },
+    {
+      "path": "results/c272-layer-utility-screen-20261004/final-directed-evaluator-tests.json",
+      "sha256": "a8e8739eb1d10d40a194d35baecb200d65cf42d468586b8c19679e2fa36092be",
+      "recorded_returncode": 0,
+      "result": {
+        "returncode": 0,
+        "stdout": "",
+        "stderr": "test_actual_validator_clock_and_negative_population (test_block_layer_utility_gate.Gates.test_actual_validator_clock_and_negative_population) ... ok\ntest_no_false_gain_fast_wrong_or_both_failed (test_block_layer_utility_gate.Gates.test_no_false_gain_fast_wrong_or_both_failed) ... ok\ntest_pairs_different_valid_outputs_and_exact_population (test_block_layer_utility_gate.Gates.test_pairs_different_valid_outputs_and_exact_population) ... ok\ntest_real_receipt_contract_counterproofs (test_block_layer_utility_gate.Gates.test_real_receipt_contract_counterproofs) ... ok\n\n----------------------------------------------------------------------\nRan 4 tests in 0.077s\n\nOK\n"
+      },
+      "rerun_at_closure": false
+    },
+    {
+      "path": "results/c236-post-c235-blocks-expert-reuse-20261004T105527Z/confirmation-grader-directed-tests.json",
+      "sha256": "7445e550816f837fbb40992187d33697c282ac84254dfc66ff0eeac8acb52081",
+      "recorded_returncode": 0,
+      "result": {
+        "evidence": "REPRODUZIDO_MODEL_FREE",
+        "start_utc": "2026-10-04T13:38:52.152889+00:00",
+        "elapsed_s": 0.2964388519994827,
+        "command": [
+          "python",
+          "-m",
+          "unittest",
+          "discover",
+          "-s",
+          "tools",
+          "-p",
+          "test_block_confirmation_grade.py",
+          "-v"
+        ],
+        "returncode": 0,
+        "stdout": "",
+        "stderr": "test_actual_isolated_python_positive_and_discriminating_negatives (test_block_confirmation_grade.FrozenOracles.test_actual_isolated_python_positive_and_discriminating_negatives) ... ok\ntest_independent_oracles_positive_and_wrong_json_counterproofs (test_block_confirmation_grade.FrozenOracles.test_independent_oracles_positive_and_wrong_json_counterproofs) ... ok\ntest_no_substring_extraction_or_reasoning_as_final (test_block_confirmation_grade.FrozenOracles.test_no_substring_extraction_or_reasoning_as_final) ... ok\n\n----------------------------------------------------------------------\nRan 3 tests in 0.206s\n\nOK\n",
+        "scope": "Actual existing bwrap isolation, trusted positive implementation and three discriminating incorrect implementations; no 120B/holdout model query"
+      },
+      "rerun_at_closure": false
+    }
+  ],
+  "other_stage_tests": "See unchanged individual C236-C273 protocols and test receipts; no blanket whole-suite claim"
+}
