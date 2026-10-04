@@ -6,7 +6,14 @@ import unittest
 
 
 class NativeAdmissionBeforeWeights(unittest.TestCase):
-    binary=Path(__file__).resolve().parents[1]/'results/c236-post-c235-blocks-expert-reuse-20261004T105527Z/build/block-native'
+    binary=Path(__file__).resolve().parents[1]/'results/c236-post-c235-blocks-expert-reuse-20261004T105527Z/build/block-native-fixed'
+
+    def test_last_only_and_complete_position_mapping_without_weights(self):
+        result=subprocess.run([str(self.binary),'--self-test'],text=True,capture_output=True,timeout=5)
+        self.assertEqual(result.returncode,0)
+        out=json.loads(result.stdout)
+        self.assertEqual(out['last_only_index'],-1)
+        self.assertFalse(out['weights_loaded'])
 
     def test_bad_inputs_mode_shape_and_replaced_root_are_premodel(self):
         with tempfile.TemporaryDirectory() as folder:

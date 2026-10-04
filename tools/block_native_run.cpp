@@ -60,6 +60,13 @@ llama_token greedy(const float * row) {
     return winner;
 }
 
+int logit_index(bool all, int output_row) {
+    // Positive API indices identify input positions, not compact output rows.
+    // With only the last input flagged, -1 identifies its compact last output.
+    check(output_row>=0 && (all || output_row==0), "invalid compact logit mapping");
+    return all ? output_row : -1;
+}
+
 struct rows_observer {
     int expected=0, ffn=0, projection=0;
 };
@@ -103,7 +110,7 @@ struct runtime {
         const int rc=llama_decode(ctx,batch);llama_batch_free(batch);check(rc==0,"native decode failed");llama_synchronize(ctx);
         check(rows.ffn==rows.expected&&rows.projection==rows.expected,"native complete FFN/projection rows missing");
         std::vector<float> out(static_cast<size_t>(rows.expected)*vocab);
-        for(int i=0;i<rows.expected;++i){const float * data=llama_get_logits_ith(ctx,i);check(data,"missing native output row");std::memcpy(out.data()+static_cast<size_t>(i)*vocab,data,vocab*sizeof(float));}
+        for(int i=0;i<rows.expected;++i){const float * data=llama_get_logits_ith(ctx,logit_index(all,i));check(data,"missing native output row");std::memcpy(out.data()+static_cast<size_t>(i)*vocab,data,vocab*sizeof(float));}
         return out;
     }
     void trim(int position) {llama_synchronize(ctx);check(llama_memory_seq_rm(llama_get_memory(ctx),0,position,-1),"rollback rejected");}
@@ -144,6 +151,15 @@ struct runtime {
 } // namespace
 
 int main(int argc,char ** argv) {
+    if(argc==2 && std::string(argv[1])=="--self-test"){
+        try{
+            for(int B:{2,4,8})for(int i=0;i<B;++i)check(logit_index(true,i)==i,"all-row mapping changed");
+            check(logit_index(false,0)==-1,"last-only warmup must address -1");
+            bool rejected=false;try{logit_index(false,1);}catch(const std::exception&){rejected=true;}
+            check(rejected,"compact-index misuse not rejected");
+            std::cout<<"{\"status\":\"PASS_MODEL_FREE_NATIVE_LOGIT_MAPPING\",\"all_rows\":[2,4,8],\"last_only_index\":-1,\"weights_loaded\":false}\n";return 0;
+        }catch(const std::exception & exc){std::cerr<<exc.what()<<"\n";return 1;}
+    }
     if(argc!=8){std::cerr<<"usage: block_native_run MODEL FIXTURE CASE OUTPUT MODE(generate|grid|ar|block) COUNT v1\n";return 2;}
     try{
         std::ifstream input(argv[2]);json fixtures;input>>fixtures;check(bool(input),"fixture read failed");
@@ -156,6 +172,12 @@ int main(int argc,char ** argv) {
         check(!prefix.empty()&&prefix.size()<=7936,"input/context reserve invalid");
         for(llama_token token:prefix)check(token>=0&&token<vocab,"invalid official input ID");
         check((mode=="generate"&&count==128)||(mode!="generate"&&(count==2||count==4||count==8)),"unfrozen count/block shape");
+        std::vector<llama_token> continuation;
+        if(mode!="generate"){
+            continuation=fixture.at("continuation_ids").get<std::vector<llama_token>>();
+            for(llama_token token:continuation)check(token>=0&&token<vocab,"invalid native continuation ID");
+            check(continuation.size()>=static_cast<size_t>(mode=="grid"?count:32),"insufficient frozen native continuation");
+        }
         const std::filesystem::path root=argv[4];check(std::filesystem::create_directory(root),"native output root reused");
         runtime run(argv[1]);
         const int origin=static_cast<int>(prefix.size());
@@ -176,9 +198,6 @@ int main(int argc,char ** argv) {
                 if(i%8==0){receipt["native_generated_ids"]=generated;receipt["status"]="PARTIAL_NATIVE_CONTROL";save(root/"progress.json",receipt);}}
             receipt["native_generated_ids"]=generated;receipt["finish"]=finish;receipt["status"]="NATIVE_CONTROL_IDS_CAPTURED";
         }else{
-            const auto continuation=fixture.at("continuation_ids").get<std::vector<llama_token>>();
-            for(llama_token token:continuation)check(token>=0&&token<vocab,"invalid native continuation ID");
-            check(continuation.size()>=32,"insufficient frozen native continuation");
             if(mode=="grid"){
                 const std::vector<llama_token> first(continuation.begin(),continuation.begin()+count);
                 auto base=run.call(first,origin,true);binary(root/"production-base.logits.f32",base);
