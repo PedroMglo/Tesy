@@ -367,6 +367,11 @@ def main():
         explicit_env[key] = value
         child_env[key] = value
 
+    parallel_contract = resource_protocol.get('parallel_runtime') if prospective else None
+    if parallel_contract is not None:
+        from parallel_runtime import validate_launch_runtime, mapped_parallel_runtime
+        validate_launch_runtime(parallel_contract, child_env)
+
     out = a.output_root if a.output_root else ROOT / "results"
     out.mkdir(parents=True, exist_ok=True)
     stem = out / a.run_id
@@ -471,6 +476,8 @@ def main():
             start_inventory['popen_invoked_utc']=invoked_now.isoformat()
             start_inventory['popen_invoked_monotonic_ns']=time.monotonic_ns()
         t0 = time.monotonic()
+        if parallel_contract is not None:
+            validate_launch_runtime(parallel_contract, child_env)
         manifest["started_utc"] = dt.datetime.now(dt.timezone.utc).isoformat()
         process = subprocess.Popen(cmd, stdin=stdin, stdout=stdout, stderr=stderr,
                                    start_new_session=True, env=child_env)
@@ -502,6 +509,7 @@ def main():
                   "direct_model_fds": 0, "buffered_model_fds": 0}
         last = {}
         mapped = None
+        parallel_mapped = None
         mapped_hash_cache = {}
         ready_elapsed_s = None
         resource_gate=RuntimeGuard(resource_protocol,manifest['cgroup_start']) if prospective else None
@@ -558,6 +566,8 @@ def main():
                                                                      mapped_hash_cache)
                         if candidate_mapped:
                             mapped = candidate_mapped
+                        if parallel_contract is not None and parallel_mapped is None:
+                            parallel_mapped = mapped_parallel_runtime(process.pid, parallel_contract)
                 except (OSError, ValueError, StopIteration):
                     if process.poll() is None:
                         reason = "PROCESS_IDENTITY_OR_MAPS_MISSING"
@@ -666,6 +676,11 @@ def main():
                      "stdout_path": str(stem) + ".stdout", "stderr_path": str(stem) + ".stderr",
                      "cgroup_end": cgroup_state()})
     manifest["mapped_backend_libraries_sha256"] = mapped
+    if parallel_contract is not None:
+        manifest['parallel_runtime'] = parallel_mapped
+        if parallel_mapped is None and reason is None:
+            reason = 'REQUIRED_PARALLEL_RUNTIME_NOT_OBSERVED'
+            manifest['stop_reason'] = reason
     manifest["ready_elapsed_s"] = ready_elapsed_s
     expected_libs = manifest["backend_libraries_sha256"]
     manifest["mapped_libraries_match_ldd"] = mapped_libraries_match(expected_libs, mapped)
