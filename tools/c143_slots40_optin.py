@@ -34,6 +34,11 @@ def select_profile(profile,cap_bytes=None):
     elif profile=='c35':
         SOURCE=REPO/'results/c121-nominal153-20260929T1350Z';BACKEND=Path('/tmp/tesy-c35-backend-20260928')
         BACKEND_SHA='c3759bad92c0e6f71bb936afea9b0a162fb83f76';CONFIG_NAME='c121-p1-control'
+    elif profile=='slots40-persistent':
+        if cap_bytes!=20*2**30:raise GateError('persistent R0 needs explicit frozen 20GiB cap')
+        CAP=cap_bytes
+        SOURCE=REPO/'results/c281-persistent-r0-runtime-20261005';BACKEND=REPO/'backends/c269-layer-last-use'
+        BACKEND_SHA='d0ebfbcc6c8f456bc1083027c1b08075a32824d8';CONFIG_NAME='c281-r0-persistent'
     elif profile=='slots44':
         if type(cap_bytes) is not int or not 18*2**30<=cap_bytes<=20*2**30 or cap_bytes%(256*2**20):
             raise GateError('slots44 needs explicit admitted common cap, 18-20GiB/256MiB aligned')
@@ -48,6 +53,7 @@ def save(path,value):
 
 
 def identity():
+    if PROFILE=='slots40-persistent' and not (SOURCE/'protocols'/f'{CONFIG_NAME}.json').is_file():raise GateError('persistent R0 manifest absent; manual reconstruction and requalification required')
     p=strict_json((SOURCE/'protocols'/f'{CONFIG_NAME}.json').read_text())
     c=strict_json((SOURCE/f'{CONFIG_NAME}-config.json').read_text());cmd=c['server_command']
     actual=subprocess.check_output(['git','-C',str(BACKEND),'rev-parse','HEAD'],text=True).strip()
@@ -55,6 +61,11 @@ def identity():
         raise GateError('opt-in pinned backend source changed')
     if sha256(cmd[0])!=p['identity']['binary_sha256'] or backend_library_hashes(cmd[0],BACKEND)!=p['identity']['library_sha256']:
         raise GateError('opt-in pinned backend binary/library hash changed')
+    if PROFILE=='slots40-persistent':
+        from parallel_runtime import validate_launch_runtime
+        validate_launch_runtime(p['parallel_runtime'],dict(os.environ,**c['explicit_env']))
+        for name,expected in p['extra_library_sha256'].items():
+            if not Path(name).is_file() or sha256(name)!=expected:raise GateError('persistent server dependency missing/changed: '+name)
     stat=file_identity(MODEL);old=p['c120']['model_stat']
     if (stat['dev'],stat['inode'],stat['size_bytes'],stat['mtime_ns'])!=(old['dev'],old['ino'],old['size'],old['mtime_ns']):
         raise GateError('opt-in model stat changed; content must be reverified before using')
@@ -76,10 +87,10 @@ def prepare(root,port,duration):
     c55_inventory.run(root);policy=strict_json((root/'resource-policy.json').read_text())
     if os.statvfs(root).f_bavail*os.statvfs(root).f_frsize<11*2**30:raise GateError('opt-in reserve1GiB raw plus10GiB free required')
     if derive_policy(snapshot=strict_json((root/'snapshot.json').read_text()))!=policy or policy['memory']['cap_max_bytes']<CAP:
-        raise GateError('opt-in E18/reserve not admitted')
+        raise GateError('opt-in frozen cap/reserve not admitted')
     date=datetime.now(timezone.utc).date().isoformat();rid='tesy-optin-'+PROFILE+'-'+datetime.now(timezone.utc).strftime('%Y%m%dT%H%M%SZ')
     command=configured_command(c,port,date)
-    preset={'schema':'tesy-slots40-optin-v1','status':'SESSION_PROFILE_IMPROVED_M4_NOT_MET' if PROFILE=='slots40' else 'CONTROL_C35_TESTED_SCOPE','profile':PROFILE,'run_id':rid,
+    preset={'schema':'tesy-slots40-optin-v1','status':'SESSION_PROFILE_IMPROVED_M4_NOT_MET' if PROFILE in ('slots40','slots40-persistent') else 'CONTROL_C35_TESTED_SCOPE','profile':PROFILE,'run_id':rid,
         'backend_sha':BACKEND_SHA,'binary_sha256':p['identity']['binary_sha256'],'library_sha256':p['identity']['library_sha256'],
         'model_sha256_previously_verified':p['identity']['model_sha256'],'model_stat':stat,
         'source_configuration_sha256':sha256(SOURCE/f'{CONFIG_NAME}-config.json'),
@@ -87,6 +98,10 @@ def prepare(root,port,duration):
         'session_date':date,'duration_s':duration,'port':port,'cap_bytes':CAP,'swap_max_bytes':0,
         'default_changed':False,'publication':'LOCAL_ONLY_PRIVATE_SESSION_ROOT',
         'reuse':'same process/model/template/profile/date/KV only; restart persistence NOT_RUN'}
+    if PROFILE=='slots40-persistent':
+        preset['parallel_runtime']=p['parallel_runtime']
+        preset['extra_library_sha256']=p['extra_library_sha256']
+        preset['coverage']='R0 reconstructed selected bridge; two-request launcher restoration; M3 PARTIAL; M4 NOT_MET'
     if PROFILE=='slots44':
         from parallel_runtime import parallel_environment
         preset['status']='RESEARCH_QUALIFICATION_ONLY_NOT_DELIVERED'
@@ -94,13 +109,14 @@ def prepare(root,port,duration):
     resource={'schema':'tesy-optin-start-v1','limits':{},'resources':freeze_protocol_resource_limits(policy,cgroup_memory_max_bytes=CAP),
         'start_inventory':{'schema':'c120-start-inventory-v1','duration_s':60,'max_age_s':3,'policy_sha256':sha256(root/'resource-policy.json')},
         'preset_run_id':rid,'preset_sha256':__import__('host_resource_policy').digest(preset)}
+    if PROFILE=='slots40-persistent':resource['parallel_runtime']=preset['parallel_runtime']
     validate_resource_protocol(resource);save(root/'preset.json',preset);save(root/'resource-protocol.json',resource)
     print(json.dumps({'status':'PREPARED_NOT_STARTED','root':str(root),'run_id':rid,'endpoint':f'http://127.0.0.1:{port}','session_date':date}))
 
 
 def verified(root):
     if relevant_environment(os.environ):raise GateError('unexpected inherited backend environment')
-    preset=strict_json((root/'preset.json').read_text());select_profile(preset['profile'],preset['cap_bytes'] if preset['profile']=='slots44' else None);protocol=strict_json((root/'resource-protocol.json').read_text())
+    preset=strict_json((root/'preset.json').read_text());select_profile(preset['profile'],preset['cap_bytes'] if preset['profile'] in ('slots44','slots40-persistent') else None);protocol=strict_json((root/'resource-protocol.json').read_text())
     if PROFILE=='slots44':
         from parallel_runtime import parallel_environment
         if parallel_environment(dict(os.environ,**preset['explicit_env']))!=preset.get('parallel_environment') or 'GOMP_SPINCOUNT' in preset.get('parallel_environment',{}).get('values',{}):
@@ -113,6 +129,7 @@ def verified(root):
        __import__('host_resource_policy').digest(preset)!=protocol['preset_sha256'] or \
        preset['run_id']!=protocol['preset_run_id']:
         raise GateError('opt-in frozen preset identity changed')
+    if PROFILE=='slots40-persistent' and (preset.get('parallel_runtime')!=p['parallel_runtime'] or protocol.get('parallel_runtime')!=p['parallel_runtime'] or preset.get('extra_library_sha256')!=p['extra_library_sha256']):raise GateError('persistent runtime contract changed')
     validate_resource_protocol(protocol)
     if protocol['resources']['cgroup']['memory_max_bytes']!=CAP:raise GateError('opt-in cap differs')
     return preset
@@ -184,7 +201,7 @@ def stop(root):
 
 if __name__=='__main__':
     ap=argparse.ArgumentParser();ap.add_argument('mode',choices=('prepare','start','serve','stop','command'));ap.add_argument('--root',type=Path,required=True)
-    ap.add_argument('--profile',choices=('slots40','c35','slots44'),default='slots40');ap.add_argument('--cap-bytes',type=int);ap.add_argument('--port',type=int,default=18440);ap.add_argument('--duration-s',type=int,default=3600);a=ap.parse_args();root=a.root.resolve()
+    ap.add_argument('--profile',choices=('slots40','c35','slots44','slots40-persistent'),default='slots40');ap.add_argument('--cap-bytes',type=int);ap.add_argument('--port',type=int,default=18440);ap.add_argument('--duration-s',type=int,default=3600);a=ap.parse_args();root=a.root.resolve()
     if a.mode=='prepare':select_profile(a.profile,a.cap_bytes);prepare(root,a.port,a.duration_s)
     elif a.mode=='start':start(root)
     elif a.mode=='stop':stop(root)

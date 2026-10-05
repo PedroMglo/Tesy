@@ -26,8 +26,35 @@ def grade(index,content,first):
     return type(actual) is dict and actual==expected and type(actual.get('local')) is bool and type(actual.get('porta')) is int
 
 
+def validate_client_contract(p):
+    count=p.get('expected_request_count',4)
+    tasks=p.get('tasks')
+    if type(count) is not int or count not in (2,4) or type(tasks) is not list or len(tasks)!=count or len({t['id'] for t in tasks})!=count:
+        raise GateError('exact two/four unique frozen tasks required')
+    if type(p.get('allow_natural_stop_at_cap',False)) is not bool:raise GateError('invalid natural cap contract')
+    return count
+
+
+def natural_completion(item,cap,allow_exact_cap=False):
+    if not allow_exact_cap:return require_natural_completion(item,cap)
+    n=item.get('usage',{}).get('completion_tokens')
+    if item.get('finish_reason')!='stop' or type(n) is not int or not 0<n<=cap:
+        raise GateError('output capped or incomplete')
+
+
+def persistent_mappings(pid,preset):
+    expected=preset.get('extra_library_sha256',{})
+    if not expected:return {}
+    paths={line.rsplit(' ',1)[-1] for line in Path(f'/proc/{pid}/maps').read_text().splitlines()}
+    actual={}
+    for path,h in expected.items():
+        if path not in paths or sha256(path)!=h:raise GateError('persistent mapped dependency changed: '+path)
+        actual[path]=h
+    return actual
+
+
 def run(root,protocol_path):
-    p=json.loads(protocol_path.read_text());preset=launcher.verified(root)
+    p=json.loads(protocol_path.read_text());count=validate_client_contract(p);preset=launcher.verified(root)
     endpoint=f'http://127.0.0.1:{preset["port"]}'
     launchpath=root/'raw'/f'{preset["run_id"]}.launch.json'
     ready_timeout=p.get('readiness_after_Popen_s',180)
@@ -46,12 +73,13 @@ def run(root,protocol_path):
             if fetch('/health',timeout=1,base_url=endpoint).get('status')=='ok':break
         except Exception:pass
         time.sleep(.2)
-    ready=time.monotonic();model=fetch('/v1/models',base_url=endpoint)['data'][0]['id']
+    ready=time.monotonic();mapped_extra=persistent_mappings(pid,preset);model=fetch('/v1/models',base_url=endpoint)['data'][0]['id']
     history=None;answer=None;first=None;previous_ids=None;previous_outputs=None;rows=[];failure=None
     for index,task in enumerate(p['tasks']):
         evidence=None;wd=None;item=None
         try:
             if process_identity(pid)!=identity or (root/'serve-receipt.json').exists():raise GateError('resource monitor/process ended before request')
+            persistent_mappings(pid,preset)
             messages=task['messages'] if index==0 else assistant_history_messages(history,answer,task['messages'])
             kwargs={'reasoning_effort':'medium','tesy_template_date':preset['session_date']}
             rendered=fetch('/apply-template',{'model':model,'messages':messages,'chat_template_kwargs':kwargs},base_url=endpoint)
@@ -69,7 +97,7 @@ def run(root,protocol_path):
             save(root/'raw'/f'T{index+1}-complete-unvalidated.json',item)
             if not valid:raise GateError('PER_REQUEST_WALL_TIMEOUT')
             if process_identity(pid)!=identity or (root/'serve-receipt.json').exists():raise GateError('resource monitor/model ended during request')
-            require_natural_completion(item,256)
+            natural_completion(item,256,p.get('allow_natural_stop_at_cap',False))
             if item['usage']['prompt_tokens']!=len(ids):raise GateError('official prompt count mismatch')
             t=item['timings'];item['common_prefix']=None
             if index==0:
@@ -104,7 +132,7 @@ def run(root,protocol_path):
                 evidence.close()
             _REQUEST_LOCAL.evidence=None
             break # never launch a later request after failure
-    result={'status':'CLIENT_FOUR_REQUESTS_PASS' if failure is None and len(rows)==4 else 'CLIENT_FAILED_PRESERVED','failure':failure,'rows':rows,'launch_sha256':sha256(launchpath),'process_identity':identity,'ready_monotonic':ready,'readiness_after_popen_s':ready-popen,'endpoint':endpoint,'preset_sha256':sha256(root/'preset.json'),'scope':'integration descriptive only; no A/B/M4/quality suite'}
+    result={'status':('CLIENT_TWO_REQUESTS_PASS' if count==2 else 'CLIENT_FOUR_REQUESTS_PASS') if failure is None and len(rows)==count else 'CLIENT_FAILED_PRESERVED','mapped_extra_libraries_sha256':mapped_extra,'failure':failure,'rows':rows,'launch_sha256':sha256(launchpath),'process_identity':identity,'ready_monotonic':ready,'readiness_after_popen_s':ready-popen,'endpoint':endpoint,'preset_sha256':sha256(root/'preset.json'),'scope':'integration descriptive only; no A/B/M4/quality suite'}
     save(root/'client-receipt.json',result);return result
 
 if __name__=='__main__':
