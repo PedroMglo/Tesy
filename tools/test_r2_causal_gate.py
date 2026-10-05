@@ -13,6 +13,17 @@ def cases(t=8,e=8):
     return {c:[arm(p,c,10 if p=='R0' else t if p=='T' else e) for p in ('R0','T','E','E','T','R0')] for c in ('nominal153','code153')}
 
 class Gates(unittest.TestCase):
+    def test_missing_start_inventory_reproduces_c277_before_collect(self):
+        import json
+        from pathlib import Path
+        from unittest.mock import patch
+        from run_bounded import inventory_before_spawn
+        root=Path(__file__).resolve().parents[1]
+        protocol=json.loads((root/'results/c277-r2-new-input-fidelity-20261005/protocol.json').read_text())
+        with patch('c118_start_inventory.collect') as collect:
+            with self.assertRaisesRegex(RuntimeError,'opt-in frozen inventory contract invalid'):
+                inventory_before_spawn(root,'model-free-c277-counterproof',protocol)
+            collect.assert_not_called()
     def test_input_mode_rows_clocks_counterproofs(self):
         for c in ('nominal153','code153'):
             v=arm('T',c);f={'ids':v['official_input_ids'],'continuation_ids':[2]*32};validate(v,f,'T',c)
