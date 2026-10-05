@@ -1,0 +1,160 @@
+{
+  "status": "NO_GO_TWO_CLASS_NATIVE_UTILITY_SCREEN",
+  "classes": {
+    "development-code-rle": {
+      "status": "GO_CLASS_UTILITY_SCREEN",
+      "pairs": [
+        {
+          "A": "c273-1-1-a",
+          "B": "c273-1-2-b",
+          "gain_percent": {
+            "first_final_s": 8.59059911452768,
+            "cold_first_final_s": 1.56890853046101,
+            "completion_s": 4.647217506164093,
+            "validated_s": 5.1170652913394195,
+            "prefix_preparation_s": -3.2307855749947745,
+            "cold_prefill_s": 2.154506270545342,
+            "incremental_prefill_s": 22.492367440234368,
+            "decode_seconds_per_native_output": 0.6057796959801756
+          },
+          "both_success": true,
+          "A_outcome": "SUCCESS",
+          "B_outcome": "SUCCESS",
+          "native_outputs_equal": true
+        },
+        {
+          "A": "c273-1-4-a",
+          "B": "c273-1-3-b",
+          "gain_percent": {
+            "first_final_s": 9.239337772958885,
+            "cold_first_final_s": 4.059571072424615,
+            "completion_s": 4.909678530977898,
+            "validated_s": 5.3723817990773854,
+            "prefix_preparation_s": 0.4825706123137326,
+            "cold_prefill_s": 5.397171594555276,
+            "incremental_prefill_s": 23.66511778637119,
+            "decode_seconds_per_native_output": 0.630205430387833
+          },
+          "both_success": true,
+          "A_outcome": "SUCCESS",
+          "B_outcome": "SUCCESS",
+          "native_outputs_equal": true
+        }
+      ],
+      "median_paired_gain_percent": {
+        "first_final_s": 8.914968443743284,
+        "cold_first_final_s": 2.8142398014428123,
+        "completion_s": 4.778448018570995,
+        "validated_s": 5.2447235452084024,
+        "prefix_preparation_s": -1.374107481340521,
+        "cold_prefill_s": 3.7758389325503092,
+        "incremental_prefill_s": 23.07874261330278,
+        "decode_seconds_per_native_output": 0.6179925631840043
+      },
+      "population": [
+        {
+          "id": "c273-1-1-a",
+          "profile": "A",
+          "outcome": "SUCCESS",
+          "functional_success": true
+        },
+        {
+          "id": "c273-1-2-b",
+          "profile": "B",
+          "outcome": "SUCCESS",
+          "functional_success": true
+        },
+        {
+          "id": "c273-1-3-b",
+          "profile": "B",
+          "outcome": "SUCCESS",
+          "functional_success": true
+        },
+        {
+          "id": "c273-1-4-a",
+          "profile": "A",
+          "outcome": "SUCCESS",
+          "functional_success": true
+        }
+      ]
+    },
+    "development-structured-route": {
+      "status": "NO_GO_CLASS_UTILITY_SCREEN",
+      "pairs": [
+        {
+          "A": "c273-2-1-a",
+          "B": "c273-2-2-b",
+          "gain_percent": {
+            "first_final_s": null,
+            "cold_first_final_s": null,
+            "completion_s": null,
+            "validated_s": null,
+            "prefix_preparation_s": null,
+            "cold_prefill_s": null,
+            "incremental_prefill_s": null,
+            "decode_seconds_per_native_output": null
+          },
+          "both_success": false,
+          "A_outcome": "OUTPUT_CAP",
+          "B_outcome": "SUCCESS",
+          "native_outputs_equal": false
+        },
+        {
+          "A": "c273-2-4-a",
+          "B": "c273-2-3-b",
+          "gain_percent": {
+            "first_final_s": null,
+            "cold_first_final_s": null,
+            "completion_s": null,
+            "validated_s": null,
+            "prefix_preparation_s": null,
+            "cold_prefill_s": null,
+            "incremental_prefill_s": null,
+            "decode_seconds_per_native_output": null
+          },
+          "both_success": false,
+          "A_outcome": "OUTPUT_CAP",
+          "B_outcome": "SUCCESS",
+          "native_outputs_equal": false
+        }
+      ],
+      "median_paired_gain_percent": {
+        "first_final_s": null,
+        "cold_first_final_s": null,
+        "completion_s": null,
+        "validated_s": null,
+        "prefix_preparation_s": null,
+        "cold_prefill_s": null,
+        "incremental_prefill_s": null,
+        "decode_seconds_per_native_output": null
+      },
+      "population": [
+        {
+          "id": "c273-2-1-a",
+          "profile": "A",
+          "outcome": "OUTPUT_CAP",
+          "functional_success": false
+        },
+        {
+          "id": "c273-2-2-b",
+          "profile": "B",
+          "outcome": "SUCCESS",
+          "functional_success": true
+        },
+        {
+          "id": "c273-2-3-b",
+          "profile": "B",
+          "outcome": "SUCCESS",
+          "functional_success": true
+        },
+        {
+          "id": "c273-2-4-a",
+          "profile": "A",
+          "outcome": "OUTPUT_CAP",
+          "functional_success": false
+        }
+      ]
+    }
+  },
+  "scope": "Constructed native near2K warm153, fixed provided history, free greedy responses. R2 own profile; not server integration, stochastic exactness, full8K or M4."
+}
