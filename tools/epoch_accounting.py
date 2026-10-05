@@ -84,7 +84,12 @@ class Epoch:
         reconciliation is required rather than subtracting an invented idle gap.
         """
         rows=[json.loads(x) for x in (self.path/'active-wall.jsonl').read_text().splitlines()]
-        total=0;last={}
+        # Unknown-endpoint preparation is charged prospectively without making
+        # up a monotonic interval that could receive overlap credit.
+        total=getattr(self,'config',{}).get('preopen_wall_conservative_charge_s',0)
+        if type(total) not in (int,float) or not math.isfinite(total) or total<0:
+            raise ValueError('invalid preopen conservative wall charge')
+        last={}
         for row in rows:
             a,b=row['start_monotonic_s'],row['end_monotonic_s']
             if any(type(v) not in (int,float) or not math.isfinite(v) for v in (a,b)) or b<a:

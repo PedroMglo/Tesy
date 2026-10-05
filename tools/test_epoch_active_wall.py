@@ -50,6 +50,13 @@ class ActiveWall(unittest.TestCase):
         self.session = None
         self.assertEqual(self.measured(), 50)
 
+    def test_unknown_endpoint_preparation_receives_no_overlap_credit(self):
+        self.e.config={'preopen_wall_conservative_charge_s':17.5}
+        self.assertEqual(self.measured(),77.5)
+        for value in (-1,float('nan'),True):
+            self.e.config['preopen_wall_conservative_charge_s']=value
+            with self.assertRaises(ValueError):self.measured()
+
 
 if __name__ == '__main__':
     unittest.main()
