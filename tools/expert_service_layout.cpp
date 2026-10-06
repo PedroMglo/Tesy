@@ -46,7 +46,7 @@ void pack(const json &input,const char *model,const char *output,const char *rec
  check(stride*input["experts"].size()<=2ull*1024*1024*1024,"sample pack bound");
  int fd=open(output,O_CREAT|O_EXCL|O_WRONLY|O_CLOEXEC|O_DIRECT,0600);check(fd>=0,"new direct pack open");
  aligned_scratch staging(src.memory_alignment());json index=input;index["pack_path"]=output;index["stride"]=stride;index["weight_window"]=weight_window;index["alignment"]=a;
- auto start=Clock::now();uint64_t logical=0;
+ auto start=Clock::now();uint64_t logical=0;SHA256_CTX pack_hash;SHA256_Init(&pack_hash);
  try{for(size_t e=0;e<input["experts"].size();e++){
    memset(staging.data,0,stride);index["experts"][e]["pack_offset"]=e*stride;
    for(size_t k=0;k<6;k++){
@@ -56,9 +56,12 @@ void pack(const json &input,const char *model,const char *output,const char *rec
      index["experts"][e]["components"][k]["packed_relative_offset"]=relative;
      index["experts"][e]["components"][k]["sha256"]=hash(static_cast<uint8_t*>(staging.data)+relative,len);logical+=len;
    }
+   SHA256_Update(&pack_hash,staging.data,stride);
    ssize_t n;do{n=pwrite(fd,staging.data,stride,off_t(e*stride));}while(n<0&&errno==EINTR);
    check(n==ssize_t(stride),"direct pack short write");
  }check(fsync(fd)==0,"pack fsync failed");check(close(fd)==0,"pack close failed");fd=-1;}catch(...){if(fd>=0)close(fd);throw;}
+ unsigned char digest[32];SHA256_Final(digest,&pack_hash);std::string digest_hex;const char*hex="0123456789abcdef";for(auto byte:digest){digest_hex+=hex[byte>>4];digest_hex+=hex[byte&15];}
+ index["pack_sha256_write_stream"]=digest_hex;index["source_fd_direct"]=bool(fcntl(src.descriptor(),F_GETFL)&O_DIRECT);index["memory_alignment"]=src.memory_alignment();
  index["status"]="PACK_CREATED_BYTES_NOT_YET_QUALIFIED";index["logical_bytes"]=logical;index["pack_bytes"]=stride*input["experts"].size();index["creation_s"]=std::chrono::duration<double>(Clock::now()-start).count();save(receipt,index);
 }
 struct destination {
@@ -83,14 +86,16 @@ int main(int argc,char **argv){try{
    std::vector<size_t> requests;for(size_t i=0;i<spec["experts"].size();i++)if((int(spec["experts"][i]["layer"])>=25)==gpu)requests.push_back(i);
    check(requests.size()==32,"frozen CPU/GPU32 experts required");
    std::array<std::unique_ptr<destination>,4> dest;for(auto&p:dest)p=std::make_unique<destination>(gpu);
-   std::array<uint64_t,4> read_calls{},requested_bytes{};std::exception_ptr failed;
+   std::array<uint64_t,4> read_calls{},requested_bytes{};std::array<double,4> read_elapsed{},set_elapsed{};std::exception_ptr failed;
    std::mutex job_lock;std::condition_variable wake,done;uint64_t generation=0;size_t job_first=0,completed=0;bool stop=false;
    std::array<std::thread,4> workers;
    for(size_t w=0;w<4;w++)workers[w]=std::thread([&,w]{uint64_t seen=0;std::unique_lock<std::mutex> lock(job_lock);
      while(true){wake.wait(lock,[&]{return stop||generation!=seen;});if(stop)return;seen=generation;size_t first=job_first;lock.unlock();
        try{const auto &e=spec["experts"][requests[first+w]];
-         if(contiguous){auto *p=transport(packed,*scratch[w],e["pack_offset"],weights,read_calls[w],requested_bytes[w]);for(size_t k=0;k<3;k++)ggml_backend_tensor_set(dest[w]->tensors[k],p+k*slab,0,slab);}
-         else for(size_t k=0;k<3;k++){auto *p=transport(src,*scratch[w],e["components"][k]["source_offset"],slab,read_calls[w],requested_bytes[w]);ggml_backend_tensor_set(dest[w]->tensors[k],p,0,slab);}
+         auto get=[&](const tesy_witness::direct_reader &reader,uint64_t offset,size_t len){auto a=Clock::now();auto*p=transport(reader,*scratch[w],offset,len,read_calls[w],requested_bytes[w]);read_elapsed[w]+=std::chrono::duration<double>(Clock::now()-a).count();return p;};
+         auto put=[&](size_t k,const uint8_t*p){auto a=Clock::now();ggml_backend_tensor_set(dest[w]->tensors[k],p,0,slab);set_elapsed[w]+=std::chrono::duration<double>(Clock::now()-a).count();};
+         if(contiguous){auto *p=get(packed,e["pack_offset"],weights);for(size_t k=0;k<3;k++)put(k,p+k*slab);}
+         else for(size_t k=0;k<3;k++){auto *p=get(src,e["components"][k]["source_offset"],slab);put(k,p);}
        }catch(...){lock.lock();if(!failed)failed=std::current_exception();lock.unlock();}
        lock.lock();if(++completed==4)done.notify_one();
      }
@@ -106,7 +111,7 @@ int main(int argc,char **argv){try{
    // Validate last destination per worker outside timing. Source canonical bytes include inline MXFP4 scales.
    for(size_t w=0;w<4;w++){const auto &e=spec["experts"][requests[28+w]];for(size_t k=0;k<3;k++){std::vector<uint8_t>a(slab),b(slab);src.read(a.data(),slab,e["components"][k]["source_offset"]);ggml_backend_tensor_get(dest[w]->tensors[k],b.data(),0,slab);check(a==b,"destination not original bytes");}}
    uint64_t calls=0,bytes=0;for(size_t w=0;w<4;w++){calls+=read_calls[w];bytes+=requested_bytes[w];}
-   reports.push_back({{"tier",gpu?"GPU":"CPU"},{"service_s",std::chrono::duration<double>(end-start).count()},{"experts_served",256},{"logical_weight_bytes",256*weights},{"pread_calls",calls},{"aligned_request_bytes",bytes},{"destination_verified",true},{"destination_shape",{2880,2880}},{"publication","worker return only after native tensor_set; barrier after four ready destinations"}});
+   reports.push_back({{"tier",gpu?"GPU":"CPU"},{"service_s",std::chrono::duration<double>(end-start).count()},{"experts_served",256},{"logical_weight_bytes",256*weights},{"pread_calls",calls},{"aligned_request_bytes",bytes},{"destination_verified",true},{"worker_read_elapsed_s",read_elapsed},{"worker_set_elapsed_s",set_elapsed},{"worker_span_semantics","Per-worker elapsed intervals include blocking; concurrent across workers, never add these to end-to-end wall"},{"destination_shape",{2880,2880}},{"publication","worker return only after native tensor_set; barrier after four ready destinations"}});
  }
  save(argv[5],{{"status","PASS_LOSSLESS_SAMPLE_SERVICE"},{"arm",argv[4]},{"component_checks",checked},{"source_fd_direct",bool(fcntl(src.descriptor(),F_GETFL)&O_DIRECT)},{"pack_fd_direct",bool(fcntl(packed.descriptor(),F_GETFL)&O_DIRECT)},{"memory_alignment",src.memory_alignment()},{"offset_alignment",src.offset_alignment()},{"reports",reports},{"scope","Native CPU/CUDA destination service microprobe; no compute contention, no production latency or physical NVMe byte claim"}});return 0;
 }catch(const std::exception&e){std::cerr<<"SERVICE_LAYOUT_FAIL "<<e.what()<<'\n';return 1;}}

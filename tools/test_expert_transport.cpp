@@ -15,5 +15,6 @@ int main(int argc,char**argv){assert(argc==2);std::string path=std::string(argv[
  for(auto off:{uint64_t(0),uint64_t(1),uint64_t(4095),uint64_t(16384)}){auto*p=transport(r,s,off,4096,calls,bytes);assert(std::memcmp(p,expected.data()+off,4096)==0);}
  auto*p=transport(r,s,7,512,calls,bytes,interrupted_reader);assert(interruptions==2&&std::memcmp(p,expected.data()+7,512)==0);
  rejects([&]{transport(r,s,0,4096,calls,bytes,short_reader);});rejects([&]{transport(r,s,0,4096,calls,bytes,error_reader);});rejects([&]{transport(r,s,32767,2,calls,bytes);});rejects([&]{transport(r,s,UINT64_MAX,2,calls,bytes);});rejects([&]{transport(r,s,0,0,calls,bytes);});
+ std::this_thread::sleep_for(std::chrono::seconds(1)); // Observe actual library mappings in bounded runner; no timing claim.
  std::cout<<"PASS direct fd/alignment, logical offsets, reusable bounded buffer, EINTR, short read, no fallback, EOF and overflow; synthetic32KiB, no weights\n";
 }
