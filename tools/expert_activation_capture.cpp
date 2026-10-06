@@ -29,7 +29,7 @@ bool observe_window(ggml_tensor *t,bool ask,void *opaque) {
     const std::string name=ggml_get_name(t);
     const bool selected=o.on && sscanf(name.c_str(),"attn_norm-%d",&layer)==1 && name=="attn_norm-"+std::to_string(layer) && layer>=0 && layer<=24;
     int label_layer=-1;
-    const bool label=o.on && sscanf(name.c_str(),"ffn_moe_logits_biased-%d",&label_layer)==1 && name=="ffn_moe_logits_biased-"+std::to_string(label_layer) && label_layer>=2&&label_layer<=24;
+    const bool label=o.on && sscanf(name.c_str(),"ffn_moe_probs-%d",&label_layer)==1 && name=="ffn_moe_probs-"+std::to_string(label_layer) && label_layer>=2&&label_layer<=24;
     if(ask)return selected||label;
     if(label&&o.r->model->moe_stream()->window.call.load()>0)o.bank->label(t,label_layer,(int)o.r->model->moe_stream()->window.call.load());
     if(selected){
@@ -55,6 +55,10 @@ int main(int argc,char ** argv){try{
         check(observe_window(&tensor,true,&o),"feature point not selected");
         ggml_set_name(&tensor,"attn_norm-25");check(!observe_window(&tensor,true,&o),"GPU point accidentally selected");
         ggml_set_name(&tensor,"attn_norm-0-future");check(!observe_window(&tensor,true,&o),"noncanonical feature name accepted");
+        ggml_set_name(&tensor,"ffn_moe_probs-2");check(observe_window(&tensor,true,&o),"actual original biased routing score alias not selected");
+        ggml_set_name(&tensor,"ffn_moe_probs-24");check(observe_window(&tensor,true,&o),"last CPU true label not selected");
+        ggml_set_name(&tensor,"ffn_moe_probs-25");check(!observe_window(&tensor,true,&o),"GPU true label selected");
+        ggml_set_name(&tensor,"ffn_moe_logits_biased-2");check(!observe_window(&tensor,true,&o),"obsolete graph alias selected");
         o.on=false;ggml_set_name(&tensor,"attn_norm-0");check(!observe_window(&tensor,true,&o),"OFF feature callback requests tensor");
         auto cpu=ggml_backend_cpu_init();check(cpu,"estimator synthetic CPU backend");ggml_backend_cpu_set_n_threads(cpu,8);
         auto ctx=ggml_init({4*1024*1024,nullptr,true});check(ctx,"synthetic gate metadata");

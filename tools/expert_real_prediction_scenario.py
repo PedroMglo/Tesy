@@ -20,7 +20,7 @@ class PredictedService(Service):
         while self.running and self.running[0][0]<=t:
             self.now,_,key,part=heapq.heappop(self.running);j=self.jobs[key]
             if part=='READ':
-                self.reads+=1
+                self.reads+=1;j['read_completed']=True
                 if j.get('expired') and not j['demand']:
                     j['state']='CANCELLED';self.staged-=1;self.expired_reads+=1
                 else:
@@ -68,7 +68,7 @@ def simulate_real(data,records,scale=1.,arena=128*2**20):
         for w in cancel.get(key,[]):s.cancel(w) # expire wrong predictions at actual target router
         s.wait(g['need']);s.advance(s.now+g['after'])
     s.advance(s.now+tail)
-    return {'decode_us':s.now,'predictor_complete_us':sum(cost.values()),'staging_peak_bytes':s.peak*WEIGHT_BYTES,'read_completed':s.reads,'expired_read_completed':s.expired_reads,'queued_expirations_avoid_read':sum(j['state']=='CANCELLED' and not j.get('expired') for j in s.jobs.values()),'scope':'Development-only fixed observed missing-generation stream and compute, original OFF trace; actual predictor timings; false reads use target-layer measured median with service sensitivity. No speculation gain measured; primary cache held fixed; stage lookup/mutex service overhead not yet measured.'}
+    return {'decode_us':s.now,'predictor_complete_us':sum(cost.values()),'staging_peak_bytes':s.peak*WEIGHT_BYTES,'read_completed':s.reads,'expired_read_completed':s.expired_reads,'queued_expirations_avoid_read':sum(j['state']=='CANCELLED' and not j.get('expired') and not j.get('read_completed') for j in s.jobs.values()),'scope':'Development-only fixed observed missing-generation stream and compute, original OFF trace; actual predictor timings; false reads use target-layer measured median with service sensitivity. No speculation gain measured; primary cache held fixed; stage lookup/mutex service overhead not yet measured.'}
 
 
 def main():
