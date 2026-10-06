@@ -1,0 +1,39 @@
+{
+  "measurement_commit": "de06786d49b87e439cb7407579c67975c97d8287",
+  "start": {
+    "utc": "2026-10-06T21:06:29.335388+00:00",
+    "monotonic_s": 97007.780968426
+  },
+  "end": {
+    "utc": "2026-10-06T21:11:56.345430+00:00",
+    "monotonic_s": 97334.791011334
+  },
+  "argv": [
+    "systemd-run",
+    "--user",
+    "--slice=tesy-post-c154.slice",
+    "--unit=tesy-c290-integral-store",
+    "--collect",
+    "--pipe",
+    "--wait",
+    "--working-directory=/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc",
+    "-p",
+    "MemoryMax=6442450944",
+    "-p",
+    "MemoryHigh=6442450944",
+    "-p",
+    "MemorySwapMax=0",
+    "-p",
+    "RuntimeMaxSec=2000",
+    "-p",
+    "TimeoutStopSec=10",
+    "--",
+    "/usr/bin/python",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/tools/residency_unit_run.py",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c290-integral-lossless-store-20261006",
+    "--inside"
+  ],
+  "returncode": 0,
+  "stdout": "",
+  "stderr": "Running as unit: tesy-c290-integral-store.service\n          Finished with result: success\nMain processes terminated with: code=exited, status=0/SUCCESS\n               Service runtime: 5min 26.936s\n             CPU time consumed: 2min 33.692s\n                   Memory peak: 2G (swap: 0B)\n"
+}
