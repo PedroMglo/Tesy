@@ -1,0 +1,3 @@
+# C289 — same lossless service, prospectively admitted common6GiB
+
+Resource repair only, C288 preserved. Fresh live60s inventory admits cap6GiB, high=max/swap0/stop5.5GiB; device guards unchanged. Accounting explains original underestimation and remaining attribution uncertainty in C288 note and this protocol. Four new ABBA processes under a commoncap, entire original sample/layout/request/barrier sequence and native code unchanged. Same>=15%service/>=10%conditionedcritical/<=12heng gates. Allfailures and NOT_RUN remain. Not new B material design, not reclassification or performance retry. LOCAL_ONLY.
