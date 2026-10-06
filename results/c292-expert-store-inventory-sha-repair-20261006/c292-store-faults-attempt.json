@@ -1,0 +1,43 @@
+{
+  "id": "c292-store-faults",
+  "start": {
+    "utc": "2026-10-06T21:21:04.500833+00:00",
+    "monotonic_s": 97882.946401966
+  },
+  "end": {
+    "utc": "2026-10-06T21:22:06.375507+00:00",
+    "monotonic_s": 97944.821098333
+  },
+  "argv": [
+    "/usr/bin/python",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/tools/run_bounded.py",
+    "--run-id",
+    "c292-store-faults",
+    "--model-id",
+    "model-free",
+    "--backend",
+    "stock",
+    "--backend-root",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/backends/c291-expert-store",
+    "--output-root",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c292-expert-store-inventory-sha-repair-20261006/raw",
+    "--variant",
+    "C291-real-store-synthetic-faults",
+    "--workload",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c292-expert-store-inventory-sha-repair-20261006/protocol.json",
+    "--cache-condition",
+    "sameFS synthetic16MiB/no weights, actual DIO reader/cancellation identity predicates",
+    "--resource-protocol",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c292-expert-store-inventory-sha-repair-20261006/protocol.json",
+    "--require-telemetry",
+    "--timeout-s",
+    "10",
+    "--collect-start-inventory",
+    "--",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c283-exact-expert-service-epoch-20261006T194311Z/build/expert-store/bin/test-expert-store",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c292-expert-store-inventory-sha-repair-20261006/raw"
+  ],
+  "returncode": 0,
+  "stdout": "{\"run_id\": \"c292-store-faults\", \"elapsed_s\": 1.311, \"returncode\": 0, \"stop_reason\": null, \"maxima\": {\"rss_bytes\": 210096128, \"swap_bytes\": 0, \"cgroup_memory_bytes\": 184897536, \"cgroup_peak_bytes\": 206024704, \"cgroup_file_bytes\": 16822272, \"gpu_used_mib\": 23.0, \"gpu_temperature_c\": 44.0, \"cpu_tctl_c\": 50.625, \"nvme_composite_c\": 36.85, \"direct_model_fds\": 0, \"buffered_model_fds\": 0}}\n",
+  "stderr": ""
+}
