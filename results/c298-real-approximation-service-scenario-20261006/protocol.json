@@ -1,0 +1,28 @@
+{
+  "schema": "c298-development-actual-approximation-cost-scenario-v1",
+  "authority": "post-C282",
+  "source_family": "C297 observable-runtime repair, original untrained movement estimator",
+  "cases": [
+    "nominal153",
+    "code153"
+  ],
+  "input_policy": "Reuse frozen C297 OFF traces and ON actual predictor records/scores/costs, unchanged full33 reference and initial state. No new model execution. Verify labels match actual selected experts. Source provenance/raw hashes from C297 complete manifest.",
+  "arena_bytes": 134217728,
+  "workers": 4,
+  "horizon_CPU_layers": 2,
+  "service_sensitivity": [
+    0.8,
+    1.0,
+    1.2
+  ],
+  "wrong_read_reference": "Measured destination-layer median3-component read, fixed observed demand/compute stream; explicit conditioned sensitivity, not physical benefit",
+  "classification": "ESTIMADO_DEVELOPMENT_ONLY",
+  "promotion": false,
+  "decision": "Characterize whether original gate applied to earlier residual offers plausible real margin; heldout/cost>=10% still mandatory before staging. Approximation insufficient may motivate exactly one fixed small linear predictor under original authority; no hyperparameter grid.",
+  "physical_charge_s": 0,
+  "tests": "Five synthetic false-read/expiry/priority/copy/bounded-arena tests passed; these validate scoped queue algebra, not hardware/staging correctness",
+  "file_sha256": {
+    "tools/expert_real_prediction_scenario.py": "e9bb8fe7ee2d5889abc292192d26e416418d1e190389263f6841fe0d23b0645c",
+    "tools/test_expert_real_prediction_scenario.py": "cd33f097e8a42ae83c3618ed4fa3be7e9dbf6cbe4e6f77cc10ebd5264d413002"
+  }
+}
