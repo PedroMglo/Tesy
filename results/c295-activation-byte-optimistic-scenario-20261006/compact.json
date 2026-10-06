@@ -1,0 +1,97 @@
+{
+  "status": "GO_TWO_LAYER_ACTIVATION_ESTIMATOR_INVESTMENT",
+  "classification": "ESTIMADO_OPTIMISTIC_OFFLINE_SCENARIO",
+  "cases": {
+    "nominal153": {
+      "points": {
+        "0": {
+          "paired_observation_scenario_gains_percent": [
+            4.2717548071779206,
+            4.519762271116256
+          ],
+          "median_percent": 4.395758539147089,
+          "sensitivity_range_percent": [
+            3.6760454314973674,
+            5.386939503089464
+          ]
+        },
+        "2": {
+          "paired_observation_scenario_gains_percent": [
+            29.363158593004396,
+            29.444530229059843
+          ],
+          "median_percent": 29.403844411032118,
+          "sensitivity_range_percent": [
+            28.918784473658103,
+            30.047273098513365
+          ]
+        }
+      },
+      "nominal_service_baseline_calibration_percent": [
+        -0.3735230744993168,
+        -0.3294111799057268
+      ],
+      "GPU_gross_scope_percent": [
+        4.952294020659131,
+        4.902335204923477
+      ],
+      "GPU_scope_below15": true
+    },
+    "code153": {
+      "points": {
+        "0": {
+          "paired_observation_scenario_gains_percent": [
+            4.477207048071064,
+            4.394737875572664
+          ],
+          "median_percent": 4.435972461821864,
+          "sensitivity_range_percent": [
+            3.7669109123390117,
+            5.373541801113084
+          ]
+        },
+        "2": {
+          "paired_observation_scenario_gains_percent": [
+            33.40941290096708,
+            33.64856438933277
+          ],
+          "median_percent": 33.52898864514992,
+          "sensitivity_range_percent": [
+            33.01043862594702,
+            34.15766786908198
+          ]
+        }
+      },
+      "nominal_service_baseline_calibration_percent": [
+        -0.34543534274149323,
+        -0.317653940405712
+      ],
+      "GPU_gross_scope_percent": [
+        3.1376277693027825,
+        3.129809574213165
+      ],
+      "GPU_scope_below15": true
+    }
+  },
+  "same_layer": "NO_GO_CURRENT_SAME_LAYER_WINDOW_UNDER_FIXED_SERVICE_ASSUMPTIONS",
+  "GPU_module": "NO_OPERATOR_INVESTMENT_CURRENT_GROSS_SCOPE_LT15_UNDER_FIXED_RELEASE_SERVICE_ASSUMPTIONS",
+  "scope": "CPU same-layer and CPU two-layers-earlier only; fixed supplied153+32 inputs and observed residency, not learned predictor, generatedtoken or realizable production benefit.",
+  "assumptions": [
+    "Observed original missing-demand/generation stream held fixed; no new cache hits/evictions awarded",
+    "Same original three-read service and native copies; predictorzero/falsepositiveszero; staging reads before truth, destinationcopy only after true demand",
+    "Four nonpreemptible whole-expert worker tasks; demand priority,128MiB arena includes running/ready stages; no future token forecasting",
+    "Nonwait attention/compute/sampling gaps fixed; feature release recomputed as earlier readiness waits accelerate",
+    "Observed service duration fixed ONLY conditioned scenario; sensitivity0.8/1.0/1.2; physical bandwidth/cache/contention can change",
+    "No transfer of slots44 timing or logicalbytes into physicalNVMe claims"
+  ],
+  "actual_predictor": "NOT_RUN",
+  "training": "NOT_RUN",
+  "staging_canary": "NOT_RUN",
+  "next_gate": "Original destinationnorm/gate/bias on earlier residual; realmissprecision/recall and costs, thenheldout>=10%netdecode before integratedstaging; no paperaccuracytransfer",
+  "inputs": {
+    "C294_protocol_SHA256": "ac8c25f5a38313e75d4fbb25ba15908be16a350e733582e46ef11eb17b6b2c6e",
+    "C294_raw_manifest_SHA256": "5a689ed0c3e7e328973a12de229c3a6ff4e151c14d568d49e517ff7dee98fd84",
+    "scenario_source_SHA256": "0e63bb384249c740f7ccb48ec088d56c53f4e46647a42d16a410b85c489f127a",
+    "scenario_SHA256": "abc2644482869d77d1acb802ec541945c8588ccfb264ed6a9981415a351990fc"
+  }
+}
