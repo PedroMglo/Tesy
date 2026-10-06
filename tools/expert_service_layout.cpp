@@ -40,11 +40,11 @@ const uint8_t *transport(const tesy_witness::direct_reader &r,aligned_scratch&s,
  ++calls;request_bytes+=amount;check(n>=0&&uint64_t(n)>=end-start,"direct short/failed transport read");
  return static_cast<const uint8_t*>(s.data)+(off-start);
 }
-void pack(const json &input,const char *model,const char *output,const char *receipt){
+void pack(const json &input,const char *model,const char *output,const char *receipt,bool full=false){
  tesy_witness::direct_reader src;src.open_file(model);size_t a=src.offset_alignment();
- check(input["experts"].size()<=128,"sample experts bound");
+ check(full?(input.value("store_scope",std::string())=="INTEGRAL_GPT_OSS120B_36x128" && input["experts"].size()==4608):input["experts"].size()<=128,"expert pack administrative bound");
  const uint64_t weight_window=((weights+a-1)/a)*a,bias_window=((3*bias+a-1)/a)*a,stride=weight_window+bias_window;
- check(stride*input["experts"].size()<=2ull*1024*1024*1024,"sample pack bound");
+ check(stride*input["experts"].size()<=(full?80ull:2ull)*1024*1024*1024,"pack administrative byte bound");
  int fd=open(output,O_CREAT|O_EXCL|O_WRONLY|O_CLOEXEC|O_DIRECT,0600);check(fd>=0,"new direct pack open");
  aligned_scratch staging(src.memory_alignment());json index=input;index["pack_path"]=output;index["stride"]=stride;index["weight_window"]=weight_window;index["alignment"]=a;
  auto start=Clock::now();uint64_t logical=0;SHA256_CTX pack_hash;SHA256_Init(&pack_hash);
@@ -65,6 +65,14 @@ void pack(const json &input,const char *model,const char *output,const char *rec
  index["pack_sha256_write_stream"]=digest_hex;index["source_fd_direct"]=bool(fcntl(src.descriptor(),F_GETFL)&O_DIRECT);index["memory_alignment"]=src.memory_alignment();
  index["status"]="PACK_CREATED_BYTES_NOT_YET_QUALIFIED";index["logical_bytes"]=logical;index["pack_bytes"]=stride*input["experts"].size();index["creation_s"]=std::chrono::duration<double>(Clock::now()-start).count();save(receipt,index);
 }
+void verify_full(const json &spec,const char *model,const char *output){
+ check(spec.value("store_scope",std::string())=="INTEGRAL_GPT_OSS120B_36x128" && spec["experts"].size()==4608,"full readback scope");
+ tesy_witness::direct_reader src,packed;src.open_file(model);packed.open_file(spec["pack_path"].get<std::string>().c_str());const auto before=fd_identity(src.descriptor()),pack_before=fd_identity(packed.descriptor());
+ uint64_t logical=0;size_t checked=0;auto start=Clock::now();
+ for(const auto&e:spec["experts"])for(const auto&c:e["components"]){size_t n=c["size_bytes"];check(n==slab||n==bias,"full component size invalid");std::vector<uint8_t>a(n),b(n);src.read(a.data(),n,c["source_offset"]);packed.read(b.data(),n,uint64_t(e["pack_offset"])+uint64_t(c["packed_relative_offset"]));check(a==b&&hash(a.data(),n)==c["sha256"],"full canonical/pack mismatch");logical+=n;++checked;}
+ check(checked==27648 && fd_identity(src.descriptor())==before && fd_identity(packed.descriptor())==pack_before,"full readback identity/count");
+ save(output,{{"status","PASS_FULL_CANONICAL_PACK_READBACK"},{"component_checks",checked},{"logical_bytes",logical},{"elapsed_s",std::chrono::duration<double>(Clock::now()-start).count()},{"source_fd_direct",bool(fcntl(src.descriptor(),F_GETFL)&O_DIRECT)},{"pack_fd_direct",bool(fcntl(packed.descriptor(),F_GETFL)&O_DIRECT)},{"source_identity",before},{"pack_identity",pack_before},{"pack_sha256_write_stream",spec["pack_sha256_write_stream"]},{"scope","All integral store component bytes match canonical GGUF; no forward, production latency or new full GGUF SHA256 claim"}});
+}
 struct destination {
  ggml_context *ctx=nullptr;ggml_backend_buffer_t buf=nullptr;std::array<ggml_tensor*,3> tensors{};
  destination(bool gpu){ggml_init_params p{32768,nullptr,true};ctx=ggml_init(p);check(ctx,"metadata allocation failed");for(auto &t:tensors){t=ggml_new_tensor_2d(ctx,GGML_TYPE_MXFP4,2880,2880);check(ggml_nbytes(t)==slab,"destination shape changed");}
@@ -72,8 +80,10 @@ struct destination {
  ~destination(){if(buf)ggml_backend_buffer_free(buf);if(ctx)ggml_free(ctx);}
 };
 int main(int argc,char **argv){try{
- check(argc==6,"usage pack MODEL INPUT_PACK_SPEC PACK NEW_INDEX | probe MODEL INDEX A|B NEW_RESULT");
- json spec=read_json(argv[3]);if(std::string(argv[1])=="pack"){pack(spec,argv[2],argv[4],argv[5]);return 0;}
+ check(argc==5||argc==6,"usage pack[-full] MODEL SPEC PACK NEW_INDEX | verify-full MODEL INDEX NEW_RESULT | probe MODEL INDEX A|B NEW_RESULT");
+ json spec=read_json(argv[3]);if(std::string(argv[1])=="verify-full"){check(argc==5,"verify-full arguments");verify_full(spec,argv[2],argv[4]);return 0;}
+ if(std::string(argv[1])=="pack"||std::string(argv[1])=="pack-full"){check(argc==6,"pack arguments");pack(spec,argv[2],argv[4],argv[5],std::string(argv[1])=="pack-full");return 0;}
+ check(argc==6,"probe arguments");
  check(std::string(argv[1])=="probe"&&(std::string(argv[4])=="A"||std::string(argv[4])=="B"),"probe arm invalid");bool contiguous=std::string(argv[4])=="B";
  tesy_witness::direct_reader src,packed;src.open_file(argv[2]);packed.open_file(spec["pack_path"].get<std::string>().c_str());check(src.offset_alignment()==packed.offset_alignment(),"filesystem direct requirement differs");
  const auto source_identity=fd_identity(src.descriptor()),pack_identity=fd_identity(packed.descriptor());struct stat packed_stat{};check(fstat(packed.descriptor(),&packed_stat)==0 && !(packed_stat.st_mode&0222),"private pack must be readonly before probe");
