@@ -31,11 +31,11 @@ struct aligned_scratch {
 };
 // Transport has one bounded16MiB staging buffer, reused across all reads.
 // Witness read() retains its original8MiB/16MiB contract for individual components.
-const uint8_t *transport(const tesy_witness::direct_reader &r,aligned_scratch&s,uint64_t off,size_t len,uint64_t &calls,uint64_t &request_bytes){
+const uint8_t *transport(const tesy_witness::direct_reader &r,aligned_scratch&s,uint64_t off,size_t len,uint64_t &calls,uint64_t &request_bytes,tesy_witness::direct_reader::read_fn fn=::pread){
  r.validate_range(off,len);auto a=r.offset_alignment();uint64_t start=off-off%a,end=off+len;
  check(end<=UINT64_MAX-(a-1),"transport rounding overflow");uint64_t amount=((end+a-1)/a)*a-start;
  check(amount<=s.bytes&&amount<=uint64_t(INT64_MAX)-start,"transport bounded/off_t overflow");
- ssize_t n;do{n=pread(r.descriptor(),s.data,amount,off_t(start));}while(n<0&&errno==EINTR);
+ ssize_t n;do{n=fn(r.descriptor(),s.data,amount,off_t(start));}while(n<0&&errno==EINTR);
  ++calls;request_bytes+=amount;check(n>=0&&uint64_t(n)>=end-start,"direct short/failed transport read");
  return static_cast<const uint8_t*>(s.data)+(off-start);
 }
@@ -73,7 +73,10 @@ int main(int argc,char **argv){try{
  check(std::string(argv[1])=="probe"&&(std::string(argv[4])=="A"||std::string(argv[4])=="B"),"probe arm invalid");bool contiguous=std::string(argv[4])=="B";
  tesy_witness::direct_reader src,packed;src.open_file(argv[2]);packed.open_file(spec["pack_path"].get<std::string>().c_str());check(src.offset_alignment()==packed.offset_alignment(),"filesystem direct requirement differs");
  // All components revalidated outside timing from canonical C211, against stored hash and pack bytes.
- size_t checked=0;for(const auto &e:spec["experts"])for(const auto &c:e["components"]){size_t n=c["size_bytes"];std::vector<uint8_t>a(n),b(n);src.read(a.data(),n,c["source_offset"]);packed.read(b.data(),n,uint64_t(e["pack_offset"])+uint64_t(c["packed_relative_offset"]));check(a==b&&hash(a.data(),n)==c["sha256"],"canonical component/pack byte mismatch");++checked;}
+ size_t checked=0;size_t expert_index=0;for(const auto &e:spec["experts"]){for(const auto &c:e["components"]){size_t n=c["size_bytes"];std::vector<uint8_t>a(n),b(n);
+    const auto source_read=[&]{src.read(a.data(),n,c["source_offset"]);};const auto pack_read=[&]{packed.read(b.data(),n,uint64_t(e["pack_offset"])+uint64_t(c["packed_relative_offset"]));};
+    if(expert_index%2){pack_read();source_read();}else{source_read();pack_read();}
+    check(a==b&&hash(a.data(),n)==c["sha256"],"canonical component/pack byte mismatch");++checked;}++expert_index;}
  std::array<std::unique_ptr<aligned_scratch>,4> scratch;for(auto &p:scratch)p=std::make_unique<aligned_scratch>(src.memory_alignment());
  json reports=json::array();
  for(bool gpu:{false,true}){
@@ -94,7 +97,7 @@ int main(int argc,char **argv){try{
    });
    auto start=Clock::now();
    // Four persistent workers, four-expert barriers, eight fixed rotations.
-   for(int repetition=0;repetition<8;repetition++)for(size_t first=0;first<requests.size();first+=4){
+   for(int repetition=0;repetition<8&&!failed;repetition++)for(size_t first=0;first<requests.size();first+=4){
      std::unique_lock<std::mutex> lock(job_lock);job_first=first;completed=0;++generation;wake.notify_all();done.wait(lock,[&]{return completed==4;});
      if(failed)break;
    }

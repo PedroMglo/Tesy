@@ -1,5 +1,5 @@
 """Prospective per-layer routing policy; historical C280/C270 gates untouched."""
-import argparse,json,statistics
+import argparse,json,statistics,math
 from pathlib import Path
 from r2_causal_gate import inspect as inspect_cost,METRICS
 from block_layer_reuse_gate import inspect as inspect_capture
@@ -39,7 +39,18 @@ def evaluate(directory):
     return {'status':'GO_LOGICAL_ROUTE_POLICY_CANDIDATE' if passed else 'NO_GO_LOGICAL_ROUTE_POLICY_COST','rows':rows,'cases':reports,'scope':'E same numerical profile/own-policy prefix; supplied153+32; contemporary R0 promotion NOT_RUN'}
 
 if __name__=='__main__':
-    a=argparse.ArgumentParser();a.add_argument('directory',type=Path);a.add_argument('--numeric',action='store_true');a.add_argument('--reference',type=Path);a.add_argument('--fixture',type=Path);a.add_argument('--output',type=Path,required=True);v=a.parse_args()
-    r=numeric(v.directory,v.reference,json.loads(v.fixture.read_text())['anchor-nominal153']) if v.numeric else evaluate(v.directory)
+    a=argparse.ArgumentParser();a.add_argument('directory',type=Path);a.add_argument('--numeric',action='store_true');a.add_argument('--reference',type=Path);a.add_argument('--fixture',type=Path);a.add_argument('--arm-policy',choices=['OLD','LOGICAL']);a.add_argument('--case');a.add_argument('--expected-logits-sha256');a.add_argument('--output',type=Path,required=True);v=a.parse_args()
+    if v.arm_policy:
+        fixture=json.loads(v.fixture.read_text())[v.case];data,h=inspect_cost(v.directory,fixture,'E',v.case)
+        observed_path=v.directory/'prefill-end-nondraining.json'
+        observed=json.loads(observed_path.read_text()) if observed_path.exists() else None
+        if observed:
+            if observed['n_calls']!=data['initial']['n_calls']+36:raise ValueError('E prefill call boundary differs')
+            elapsed=observed['observer_s']
+            if type(elapsed) not in (int,float) or not math.isfinite(elapsed) or not 0<=elapsed<=.03*data['decode32_s']:raise ValueError('metadata observer exceeds prospective3% phase allowance')
+        if h!=v.expected_logits_sha256:raise ValueError('FAIL_SAME_PROFILE_FULL33_LOGITS_REFERENCE')
+        r={'status':'PASS_LOGICAL_ROUTE_COST_ARM','policy':v.arm_policy,'full_logits_sha256':h,'metadata_copy_s':observed['observer_s'] if observed else None,'observed_prefill_end_calls':observed['n_calls'] if observed else None,'null_reason':None if observed else 'NOT_RUN_NO_INTERMEDIATE_OBSERVER_IN_COST_WINDOW','metrics':{k:data[k] for k in METRICS},'scope':'Provided native IDs, own-policy prefix; no generated throughput'}
+    else:
+        r=numeric(v.directory,v.reference,json.loads(v.fixture.read_text())['anchor-nominal153']) if v.numeric else evaluate(v.directory)
     with v.output.open('x') as f:json.dump(r,f,indent=2,allow_nan=False);f.write('\n')
     print(r['status'])
