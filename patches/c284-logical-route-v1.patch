@@ -1,0 +1,178 @@
+diff --git a/src/c284-logical-route.h b/src/c284-logical-route.h
+new file mode 100644
+index 00000000..5239d72a
+--- /dev/null
++++ b/src/c284-logical-route.h
+@@ -0,0 +1,46 @@
++#pragma once
++#include <algorithm>
++#include <array>
++#include <cstdint>
++#include <limits>
++#include <stdexcept>
++#include <vector>
++// Selected routing rows only. Canonical IDs affect accounting, never compute order.
++struct c284_route_clock {
++    uint64_t rows=0, decay_epoch=0, event=0, lifecycle=0;
++    int32_t sequence=-1;
++    std::vector<int32_t> positions;
++    std::vector<std::array<int32_t,4>> accounted;
++    size_t cursor=0;
++    void reset(uint64_t life, int32_t seq, std::vector<uint32_t> & hot) {
++        rows=decay_epoch=event=0; lifecycle=life; sequence=seq;
++        positions.clear();accounted.clear();cursor=0;std::fill(hot.begin(),hot.end(),0);
++    }
++    void begin(uint64_t serial, const std::vector<int32_t> & pos) {
++        if(cursor!=positions.size() || serial<=event || pos.size()>256) throw std::runtime_error("logical incomplete/stale/unbounded event");
++        for(int32_t p:pos)if(p<0||p>=8192)throw std::runtime_error("logical position invalid");
++        event=serial;positions=pos;cursor=0;accounted.assign(pos.size(),{{-1,-1,-1,-1}});
++    }
++    // Repeat consumption of an identical event/range is idempotent. Reevaluation uses begin(new serial).
++    bool consume_at(size_t first, const int32_t * ids, size_t count, std::vector<uint32_t> & hot) {
++        if(first>positions.size()||count>positions.size()-first||(!ids&&count))throw std::runtime_error("logical range invalid");
++        std::vector<std::array<int32_t,4>> canonical(count);
++        for(size_t i=0;i<count;i++) {
++            std::copy_n(ids+i*4,4,canonical[i].begin());std::sort(canonical[i].begin(),canonical[i].end());
++            for(size_t k=0;k<4;k++)if(canonical[i][k]<0||size_t(canonical[i][k])>=hot.size()||(k&&canonical[i][k]==canonical[i][k-1]))throw std::runtime_error("logical top-k invalid/duplicate");
++        }
++        if(first<cursor) {
++            if(count>cursor-first)throw std::runtime_error("logical partial duplicate");
++            for(size_t i=0;i<count;i++)if(accounted[first+i]!=canonical[i])throw std::runtime_error("logical duplicate changed routing");
++            return false;
++        }
++        if(first!=cursor||count>std::numeric_limits<uint64_t>::max()-rows)throw std::runtime_error("logical order/overflow");
++        for(size_t i=0;i<count;i++) {
++            for(int32_t e:canonical[i])if(hot[e]<UINT32_MAX-1)++hot[e];
++            ++rows;if(rows%64==0){for(auto & h:hot)h>>=1;++decay_epoch;}
++            accounted[first+i]=canonical[i];++cursor;
++        }
++        return count!=0;
++    }
++    void consume(const int32_t * ids, size_t count, std::vector<uint32_t> & hot){consume_at(cursor,ids,count,hot);}
++};
+diff --git a/src/llama-context.cpp b/src/llama-context.cpp
+index 8fa5850b..9128db73 100644
+--- a/src/llama-context.cpp
++++ b/src/llama-context.cpp
+@@ -215,6 +215,14 @@ llama_context::llama_context(
+         cparams.c262_layer_span = 153;
+     }
+ 
++    if(const char * policy=std::getenv("TESY_LOGICAL_ROUTE_V1")) {
++        if(std::string(policy)!="1"||model.arch!=LLM_ARCH_OPENAI_MOE||!model.moe_stream()||
++           cparams.n_seq_max!=1||hparams.n_expert_used!=4||hparams.n_layer()!=36||cparams.n_ubatch!=32)
++            throw std::runtime_error("LOGICAL_ROUTE_V1 requires pinned openai-moe36/top4/ub32/one-sequence");
++        model.moe_stream()->logical_route_v1=true;
++        model.moe_stream()->logical_reset(this,0);
++    }
++
+     cparams.n_outputs_max = params.n_outputs_max == 0 || llama_model_has_encoder(&model) ? cparams.n_batch : params.n_outputs_max;
+ 
+     cparams.op_offload = params.op_offload;
+@@ -1396,6 +1404,17 @@ llm_graph_result * llama_context::process_ubatch(const llama_ubatch & ubatch, ll
+         //LLAMA_LOG_INFO("graph set inputs time: %.3f ms\n", (ggml_time_us() - t_start_us)/1000.0);
+     }
+ 
++    if(auto * mgr=model.moe_stream();mgr&&mgr->logical_route_v1) {
++        // Finish any preceding ubatch before replacing its event metadata. Cost is included.
++        ggml_backend_sched_synchronize(sched.get());
++        std::vector<int32_t> pos,out;
++        GGML_ASSERT(ubatch.n_tokens<=256);
++        for(uint32_t i=0;i<ubatch.n_tokens;i++) {
++            GGML_ASSERT(ubatch.n_seq_id[i]==1&&ubatch.seq_id[i][0]==0);
++            pos.push_back(ubatch.pos[i]);if(ubatch.output[i])out.push_back(ubatch.pos[i]);
++        }
++        mgr->logical_begin(this,0,pos,out);
++    }
+     const auto status = graph_compute(res->get_gf(), ubatch.n_tokens > 1);
+     if (status != GGML_STATUS_SUCCESS) {
+         LLAMA_LOG_ERROR("%s: failed to compute graph, compute status: %d\n", __func__, status);
+diff --git a/src/llama-moe-stream.cpp b/src/llama-moe-stream.cpp
+index 27c7ca0a..e3d10c08 100644
+--- a/src/llama-moe-stream.cpp
++++ b/src/llama-moe-stream.cpp
+@@ -298,6 +298,26 @@ void llama_moe_stream::open_files(const std::vector<std::string> & paths) {
+     hot_decay_interval = MOE_STREAM_HOT_DECAY_TOKENS * n_streamed;
+ }
+ 
++// Single-context greedy research policy; real ubatch positions supplied before execution.
++void llama_moe_stream::logical_reset(const void * owner, int32_t sequence) {
++    std::lock_guard<std::mutex> lk(mtx);
++    logical_owner=owner;logical_sequence=sequence;++logical_lifecycle;logical_event_serial=0;
++    for(auto & sl:layers)if(sl)sl->logical_route.reset(logical_lifecycle,sequence,sl->route_hotness);
++}
++void llama_moe_stream::logical_begin(const void * owner, int32_t sequence, const std::vector<int32_t> & positions, const std::vector<int32_t> & output_positions) {
++    if(owner!=logical_owner||sequence!=logical_sequence)logical_reset(owner,sequence);
++    std::lock_guard<std::mutex> lk(mtx);
++    GGML_ASSERT(logical_event_serial!=UINT64_MAX);++logical_event_serial;
++    try {
++        for(auto & sl:layers)if(sl)sl->logical_route.begin(logical_event_serial,sl->il==35?output_positions:positions);
++    }catch(const std::exception & e){GGML_ABORT("LOGICAL_ROUTE_V1 begin: %s",e.what());}
++}
++static void c284_account(llama_moe_stream_layer & sl, const int32_t * ids, int64_t n) {
++    GGML_ASSERT(n>=0&&n%4==0);
++    try {sl.logical_route.consume(ids,size_t(n/4),sl.route_hotness);}
++    catch(const std::exception & e){GGML_ABORT("LOGICAL_ROUTE_V1 consume: %s",e.what());}
++}
++
+ // spawn the I/O thread pool on first use (from the remap callback, under mtx)
+ void llama_moe_stream::start_workers_locked() {
+     if (workers_started) {
+@@ -481,6 +501,7 @@ void llama_moe_stream_remap(ggml_tensor * dst, const ggml_tensor * a, int ith, i
+                 sl->il, sl->uniq.size(), sl->n_slots);
+     }
+ 
++    if (mgr->logical_route_v1) { c284_account(*sl,ids,n); } else {
+     // route hotness for eviction; halved periodically so a formerly-hot expert ages out
+     for (const int32_t e : sl->uniq) {
+         sat_inc(sl->route_hotness[e]);
+@@ -495,6 +516,8 @@ void llama_moe_stream_remap(ggml_tensor * dst, const ggml_tensor * a, int ith, i
+         }
+     }
+ 
++    }
++
+     // classify the touched experts; reserve and enqueue demand loads in deterministic order
+     std::fill(sl->keep.begin(), sl->keep.end(), 0);
+     sl->demand_slots.clear();
+@@ -577,6 +600,7 @@ llama_moe_stream_wave * llama_moe_stream_layer::wave_userdata(int32_t wave, uint
+ // into consecutive groups of plan_capacity, one group per wave (sl.expert_wave[e] = e's wave)
+ void llama_moe_stream::plan_waves_locked(llama_moe_stream_layer & sl, const int32_t * ids, int64_t n) {
+     stats.n_calls++;
++    if(logical_route_v1)c284_account(sl,ids,n);
+     start_workers_locked();
+ 
+     sl.touched.assign(sl.n_expert, 0);
+diff --git a/src/llama-moe-stream.h b/src/llama-moe-stream.h
+index 95032fa3..a540d7f9 100644
+--- a/src/llama-moe-stream.h
++++ b/src/llama-moe-stream.h
+@@ -1,6 +1,7 @@
+ #pragma once
+ 
+ #include "llama-mmap.h"
++#include "c284-logical-route.h"
+ 
+ #include "ggml-cpp.h"
+ 
+@@ -73,6 +74,7 @@ struct llama_moe_stream_layer {
+     std::vector<int64_t>                 slot_last_use; // [n_slots] LRU stamps
+     std::unordered_map<int32_t, int32_t> expert_slot;   // RESIDENT and LOADING entries
+ 
++    c284_route_clock logical_route;
+     std::vector<uint32_t> route_hotness; // [n_expert] decayed selection counts, for eviction
+     std::vector<uint8_t>  seen;          // [n_expert] for cold-miss attribution
+     int64_t use_counter = 0;
+@@ -113,6 +115,12 @@ struct llama_moe_stream_work {
+ };
+ 
+ struct llama_moe_stream {
++    bool logical_route_v1 = false;
++    uint64_t logical_lifecycle = 0, logical_event_serial = 0;
++    const void * logical_owner = nullptr;
++    int32_t logical_sequence = -1;
++    void logical_reset(const void * owner, int32_t sequence);
++    void logical_begin(const void * owner, int32_t sequence, const std::vector<int32_t> & positions, const std::vector<int32_t> & output_positions);
+     uint32_t n_slots      = 0; // expert cache slots per streamed layer
+     int32_t  n_io_threads = 0;
+ 
