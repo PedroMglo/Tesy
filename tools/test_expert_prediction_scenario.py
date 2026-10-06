@@ -23,11 +23,11 @@ class Scenario(unittest.TestCase):
   s=self.service();s.request(0,False);s.advance(5);s.request(0,True);s.wait([0]);self.assertEqual(s.now,12)
 class GrossGPU(unittest.TestCase):
  def rows(self):
-  r=[{'kind':15,'call':0,'us':1},{'kind':16,'call':0,'us':10001}]
+  r=[{'kind':15,'call':0,'us':1,'layer':-1},{'kind':16,'call':0,'us':10001,'layer':-1}]
   for i in range(5):
    r.extend([{'kind':1,'call':0,'layer':0,'us':i*2000+1}, {'kind':1,'call':0,'layer':24,'us':i*2000+1001}])
    r.extend([{'kind':11,'call':0,'layer':25,'route':i,'us':i*2000+1101},{'kind':12,'call':0,'layer':25,'route':i,'us':i*2000+1601}])
-  return r
+  return [{"route":0,"layer":-1,**x} for x in r]
  def test_gross_contains_wait_subtraction_and_all_five_tiles(self):
   v=gpu_prefill_gross_upper(self.rows());self.assertEqual(v['gross_upper_us'],2500);self.assertEqual(v['remove_all_gross_percent'],25)
  def test_missing_feature_wait_endpoint(self):
