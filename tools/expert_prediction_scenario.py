@@ -119,13 +119,39 @@ def simulate(data,horizon,scale,arena):
     return {'decode_us':s.now,'staging_peak_bytes':s.peak*WEIGHT_BYTES,'staging_capacity_bytes':arena,'observed_decode_us':observed,'original_decode_wait_us':sum(g['wait'] for g in groups),'initial_inflight':len(initial)+len(late)}
 
 
+def gpu_prefill_gross_upper(rows):
+    # Current trace; deliberately includes CPU24 compute, all GPU attention,
+    # dispatch/copies and final logits. It is NOT first-MMID/GPU kernel time.
+    first=[x['us'] for x in rows if x['kind']==1 and x['call']==0 and x['layer']==0]
+    last=[x['us'] for x in rows if x['kind']==1 and x['call']==0 and x['layer']==24]
+    endpoints={x['kind']:x['us'] for x in rows if x['kind'] in (15,16) and x['call']==0}
+    if len(first)!=5 or len(last)!=5 or any(a>=b for a,b in zip(first,last)):raise ValueError('prefill tile feature coverage')
+    pending={};waits=[]
+    for x in rows:
+        if x['call']!=0 or x['layer']<24:continue
+        key=x['layer'],x['route']
+        if x['kind']==11:
+            if key in pending:raise ValueError('duplicate prefill wait')
+            pending[key]=x['us']
+        elif x['kind']==12:
+            if key not in pending:raise ValueError('missing wait begin')
+            waits.append((pending.pop(key),x['us']))
+    if pending:raise ValueError('incomplete prefill wait')
+    scopes=[]
+    for i,a in enumerate(last):
+        b=first[i+1] if i<4 else endpoints[16]
+        clipped=[(max(a,x),min(b,y)) for x,y in waits if x<b and y>a]
+        exposed=union_us(clipped);scopes.append({'begin_us':a,'end_us':b,'nonwait_gross_us':b-a-exposed,'readiness_wait_union_us':exposed})
+    total=endpoints[16]-endpoints[15];upper=sum(x['nonwait_gross_us'] for x in scopes)
+    return {'gross_upper_us':upper,'prefill_observed_us':total,'remove_all_gross_percent':100*upper/total,'tiles':scopes,'scope':'Conditional fixed observed work/release/wait scenario. Gross overestimate includes CPU24FFN plus all GPU attention, copies, dispatch and logits; NOT eligible parked-kernel duration or universal physical bound.'}
+
 def main():
     p=argparse.ArgumentParser();p.add_argument('directory',type=Path);p.add_argument('--output',type=Path,required=True);a=p.parse_args();protocol=json.loads((a.directory/'protocol.json').read_text());out={'schema':'optimistic-activation-byte-scenario-v1','classification':'OPTIMISTIC_OFFLINE_SCENARIO','assumptions':['Observed original missing-demand/generation stream held fixed; no new cache hits/evictions awarded','Same original three-read service and native copies; predictorzero/falsepositiveszero; staging reads before truth, destinationcopy only after true demand','Four nonpreemptible whole-expert worker tasks; demand priority,128MiB arena includes running/ready stages; no future token forecasting','Nonwait attention/compute/sampling gaps fixed; feature release recomputed as earlier readiness waits accelerate','Observed service duration fixed ONLY conditioned scenario; sensitivity0.8/1.0/1.2; physical bandwidth/cache/contention can change','No transfer of slots44 timing or logicalbytes into physicalNVMe claims'], 'cases':{}}
     for case in ('nominal153','code153'):
         reports=[]
         for run in protocol['runs']:
             if run['case']!=case or not run['trace']:continue
-            data=extract(events(Path(run['command'][4])/'events.tsv',True));observed=data[3];report={'run':run['id'],'service_sensitivity':[]}
+            raw=events(Path(run['command'][4])/'events.tsv',True);data=extract(raw);observed=data[3];report={'run':run['id'],'service_sensitivity':[],'gpu_prefill_gross_conditional_upper':gpu_prefill_gross_upper(raw)}
             for scale in (.8,1.,1.2):
                 baseline=simulate(data,None,scale,128*2**20);variants={}
                 for horizon in (0,2):
