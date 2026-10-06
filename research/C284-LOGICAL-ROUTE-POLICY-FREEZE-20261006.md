@@ -10,4 +10,6 @@ REPRODUZIDO_MODEL_FREE: actual accounting helper grouping153/32, multiple64 deca
 
 ## Prospective numerical gate
 
-Protocol results/c284-logical-route-selected-fidelity-20261006/protocol.json frozen before first model. OLD then LOGICAL captures, own policy prefix,240s each plus own60s fresh inventory, family650s, common20GiB/swap0/stop19.5GiB from new live policy. Canonical O_DIRECT consumer checks selected layers0/12/24/25/35; compare216 stage payloads and7 full logits/argmax with C270 original. Initial hotness/state may differ deliberately; numerical equality remains mandatory. No timing claim from capture. C285 cost is NOT_RUN until this gate passes. A sublimit1h physical includes this family and upcoming ABBA cost, no historical credit.
+Protocol results/c284-logical-route-selected-fidelity-20261006/protocol.json frozen before first model. OLD then LOGICAL captures, own policy prefix,240s each plus own60s fresh inventory, family680s, common20GiB/swap0/stop19.5GiB from new live policy. Canonical O_DIRECT consumer checks selected layers0/12/24/25/35; compare216 stage payloads and7 full logits/argmax with C270 original. Initial hotness/state may differ deliberately; numerical equality remains mandatory. No timing claim from capture. C285 cost is NOT_RUN until this gate passes. A sublimit1h physical includes this family and upcoming ABBA cost, no historical credit.
+
+Prospective envelope admission correction before any Popen:680s accommodates two240s model limits, two60s inventories, bounded15s validation and cleanup. No result observed.
