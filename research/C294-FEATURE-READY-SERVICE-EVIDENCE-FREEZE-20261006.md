@@ -1,0 +1,15 @@
+# C294: availability of CPU activations and authoritative bytes
+
+SOURCE_AUDITED: B/C293 is a valid economic NO_GO (+7.47%/+6.05% total), not a bytes failure. C is admitted by the new order. C135 has read/set/load-end but lacks feature-ready and exact resident commit; C163 has precise commits in slots44 CAPI, not this current slots40 R0. C135's 13 raw files were freshly size/SHA verified. No historical timing is a new control.
+
+Question: can same-layer pre-attention or the pre-attention point two CPU layers earlier supply enough real lead for missing authoritative bytes? These are the two points frozen before outputs. This family obtains the missing evidence; no prediction, training, staging or numerical change is enabled.
+
+Private backend C294 descends from C291/C269. Original GGML CPU/CUDA libraries, kernels, router/cache policy/keep/preload and original GGUF offsets remain. A bounded 131072-entry POD journal records CPU0–24 attn_norm completion, actual router/missing state, original four-worker enqueue/dequeue/read/set/commit and collective wait endpoints. Worker events retain enqueue owner/slot/expert/generation. All component copies finish before commit. Callback requests these exact CPU tensor boundaries without hidden payload retrieval. Final serialization follows the usual final drain. No prefill-end snapshot/drain.
+
+Each case uses fresh R0 processes OFF/ON/ON/OFF, own identical complete-prefix preparation and initial drain outside timing; supplied153+32, all33 full rows materialized equally. Old C280 R0 full-row hashes are checked per arm before proceeding. Same initial state, exact event cardinality, lifecycle/bytes/finite logits, actual guards and child cleanup are mandatory. Native header/thread/overflow/callback tests and four parser omission/causality/state tests passed model-free. An extra blank line in the synthetic test fixture was repaired before any model.
+
+Own new 60s live inventory: AC/performance, GPU free, ollama daemon has no loaded model; device-derived GPU77C/7676MiB and NVMe87.85C are this inventory's guards. Each arm has another60s inventory and <=3s freshness. Common20GiB/swap0/stop19.5GiB, additional bounded journal~9MiB; all worstcase2370s+15s admitted with4h physical reserve and512MiB raw. No build overlaps measurement. Heavy hash/files occur outside153+32 timing.
+
+Observer gate: each phase's median ON overhead <=3%; otherwise retain diagnostic timing and corresponding OFF production companions, without subtracting an imagined constant. A new atomic journal is a small observation boundary, not a new replay/snapshot framework. Existing replay/validators will support the next scoped optimistic scenario, with four workers, arena, non-preemptible reads, demand priority, causal chain and sensitivity. No training is authorized by a successful capture alone: the forecast bound must pass20% first.
+
+Measurement HEAD is the forthcoming protocol commit, recorded separately by the runner. LOCAL_ONLY; no endpoint/preset/M4 claim. EAGLE3 and historical negatives remain closed.
