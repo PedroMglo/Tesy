@@ -1,0 +1,39 @@
+{
+  "measurement_commit": "c5197db2e3ebd6ed35abfe4bfbdbe1ffb69cefb9",
+  "start": {
+    "utc": "2026-10-06T20:49:02.720357+00:00",
+    "monotonic_s": 95961.165937711
+  },
+  "end": {
+    "utc": "2026-10-06T20:50:04.953463+00:00",
+    "monotonic_s": 96023.399048105
+  },
+  "argv": [
+    "systemd-run",
+    "--user",
+    "--slice=tesy-post-c154.slice",
+    "--unit=tesy-c288-lossless-service",
+    "--collect",
+    "--pipe",
+    "--wait",
+    "--working-directory=/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc",
+    "-p",
+    "MemoryMax=2147483648",
+    "-p",
+    "MemoryHigh=2147483648",
+    "-p",
+    "MemorySwapMax=0",
+    "-p",
+    "RuntimeMaxSec=1110",
+    "-p",
+    "TimeoutStopSec=10",
+    "--",
+    "/usr/bin/python",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/tools/residency_unit_run.py",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c288-lossless-sample-service-20261006",
+    "--inside"
+  ],
+  "returncode": 1,
+  "stdout": "",
+  "stderr": "Running as unit: tesy-c288-lossless-service.service\n          Finished with result: exit-code\nMain processes terminated with: code=exited, status=1/FAILURE\n               Service runtime: 1min 2.158s\n             CPU time consumed: 9.015s\n                   Memory peak: 2G (swap: 0B)\n"
+}

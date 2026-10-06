@@ -1,0 +1,47 @@
+{
+  "id": "c288-1-a",
+  "start": {
+    "utc": "2026-10-06T20:49:02.835266+00:00",
+    "monotonic_s": 95961.280835676
+  },
+  "end": {
+    "utc": "2026-10-06T20:50:04.938745+00:00",
+    "monotonic_s": 96023.384331083
+  },
+  "argv": [
+    "/usr/bin/python",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/tools/run_bounded.py",
+    "--run-id",
+    "c288-1-a",
+    "--model-id",
+    "gpt-oss-120b-mxfp4-gguf",
+    "--backend",
+    "stock",
+    "--backend-root",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/backends/c284-logical-route",
+    "--output-root",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c288-lossless-sample-service-20261006/raw",
+    "--variant",
+    "original-components",
+    "--workload",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c288-lossless-sample-service-20261006/protocol.json",
+    "--cache-condition",
+    "All384 components canonical+pack checked outside timing; balanced verification order. CPU then GPU sequential, four persistent workers,4expert barriers,eight rotations,256experts/tier. Controller cache uncontrolled, no cold claim.",
+    "--resource-protocol",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c288-lossless-sample-service-20261006/protocol.json",
+    "--require-telemetry",
+    "--timeout-s",
+    "180",
+    "--collect-start-inventory",
+    "--",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c283-exact-expert-service-epoch-20261006T194311Z/build/logical-route/bin/expert-service-layout",
+    "probe",
+    "/home/pmglo/models/gpt-oss-120b-gguf/gpt-oss-120b-MXFP4.gguf",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c287-lossless-sample-producer-20261006/raw/sample-index.json",
+    "A",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c288-lossless-sample-service-20261006/raw/c288-1-a-service.json"
+  ],
+  "returncode": 1,
+  "stdout": "{\"run_id\": \"c288-1-a\", \"elapsed_s\": 1.508, \"returncode\": -15, \"stop_reason\": \"CGROUP_EVENT\", \"maxima\": {\"rss_bytes\": 210464768, \"swap_bytes\": 0, \"cgroup_memory_bytes\": 2147160064, \"cgroup_peak_bytes\": 2147483648, \"cgroup_file_bytes\": 1978355712, \"gpu_used_mib\": 23.0, \"gpu_temperature_c\": 44.0, \"cpu_tctl_c\": 54.25, \"nvme_composite_c\": 40.85, \"direct_model_fds\": 1, \"buffered_model_fds\": 0}}\n",
+  "stderr": ""
+}
