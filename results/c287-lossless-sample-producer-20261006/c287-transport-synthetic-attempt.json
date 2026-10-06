@@ -1,0 +1,43 @@
+{
+  "id": "c287-transport-synthetic",
+  "start": {
+    "utc": "2026-10-06T20:45:34.923810+00:00",
+    "monotonic_s": 95753.369385043
+  },
+  "end": {
+    "utc": "2026-10-06T20:46:36.790723+00:00",
+    "monotonic_s": 95815.236307992
+  },
+  "argv": [
+    "/usr/bin/python",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/tools/run_bounded.py",
+    "--run-id",
+    "c287-transport-synthetic",
+    "--model-id",
+    "model-free",
+    "--backend",
+    "stock",
+    "--backend-root",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/backends/c284-logical-route",
+    "--output-root",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c287-lossless-sample-producer-20261006/raw",
+    "--variant",
+    "actual-direct-reader-bounded-fault-tests",
+    "--workload",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c287-lossless-sample-producer-20261006/protocol.json",
+    "--cache-condition",
+    "Synthetic same-filesystem32KiB, no weights; hold1s to observe actual mappings only",
+    "--resource-protocol",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c287-lossless-sample-producer-20261006/protocol.json",
+    "--require-telemetry",
+    "--timeout-s",
+    "10",
+    "--collect-start-inventory",
+    "--",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c283-exact-expert-service-epoch-20261006T194311Z/build/logical-route/bin/test-expert-transport",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c287-lossless-sample-producer-20261006/raw"
+  ],
+  "returncode": 0,
+  "stdout": "{\"run_id\": \"c287-transport-synthetic\", \"elapsed_s\": 1.3, \"returncode\": 0, \"stop_reason\": null, \"maxima\": {\"rss_bytes\": 194555904, \"swap_bytes\": 0, \"cgroup_memory_bytes\": 152514560, \"cgroup_peak_bytes\": 173953024, \"cgroup_file_bytes\": 77824, \"gpu_used_mib\": 23.0, \"gpu_temperature_c\": 44.0, \"cpu_tctl_c\": 50.875, \"nvme_composite_c\": 36.85, \"direct_model_fds\": 0, \"buffered_model_fds\": 0}}\n",
+  "stderr": ""
+}

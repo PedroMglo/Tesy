@@ -1,0 +1,47 @@
+{
+  "id": "c287-produce64",
+  "start": {
+    "utc": "2026-10-06T20:46:36.792981+00:00",
+    "monotonic_s": 95815.238556816
+  },
+  "end": {
+    "utc": "2026-10-06T20:47:39.406804+00:00",
+    "monotonic_s": 95877.852388903
+  },
+  "argv": [
+    "/usr/bin/python",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/tools/run_bounded.py",
+    "--run-id",
+    "c287-produce64",
+    "--model-id",
+    "gpt-oss-120b-mxfp4-gguf",
+    "--backend",
+    "stock",
+    "--backend-root",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/backends/c284-logical-route",
+    "--output-root",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c287-lossless-sample-producer-20261006/raw",
+    "--variant",
+    "expert-contiguous-lossless-sample64-v1",
+    "--workload",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c287-lossless-sample-producer-20261006/protocol.json",
+    "--cache-condition",
+    "Frozen8layers/eight evenly spacedexperts/6canonicalcomponents, C211 witness, direct exclusive newpack, component and write-stream hashes",
+    "--resource-protocol",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c287-lossless-sample-producer-20261006/protocol.json",
+    "--require-telemetry",
+    "--timeout-s",
+    "180",
+    "--collect-start-inventory",
+    "--",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c283-exact-expert-service-epoch-20261006T194311Z/build/logical-route/bin/expert-service-layout",
+    "pack",
+    "/home/pmglo/models/gpt-oss-120b-gguf/gpt-oss-120b-MXFP4.gguf",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c283-exact-expert-service-epoch-20261006T194311Z/b-layout-sample-spec.json",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c283-exact-expert-service-epoch-20261006T194311Z/pack/sample64-v1.bin",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c287-lossless-sample-producer-20261006/raw/sample-index.json"
+  ],
+  "returncode": 0,
+  "stdout": "{\"run_id\": \"c287-produce64\", \"elapsed_s\": 2.003, \"returncode\": 0, \"stop_reason\": null, \"maxima\": {\"rss_bytes\": 215126016, \"swap_bytes\": 0, \"cgroup_memory_bytes\": 321118208, \"cgroup_peak_bytes\": 355336192, \"cgroup_file_bytes\": 150593536, \"gpu_used_mib\": 23.0, \"gpu_temperature_c\": 44.0, \"cpu_tctl_c\": 54.625, \"nvme_composite_c\": 38.85, \"direct_model_fds\": 1, \"buffered_model_fds\": 0}}\n",
+  "stderr": ""
+}

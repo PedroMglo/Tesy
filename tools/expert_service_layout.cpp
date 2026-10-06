@@ -20,6 +20,7 @@
 using json=nlohmann::ordered_json;using Clock=std::chrono::steady_clock;
 constexpr size_t slab=4406400, bias=11520, weights=3*slab;
 void check(bool v,const char *m){if(!v)throw std::runtime_error(m);}
+json fd_identity(int fd){struct stat st{};check(fstat(fd,&st)==0,"fd identity lost");return {{"dev",st.st_dev},{"inode",st.st_ino},{"size_bytes",st.st_size},{"mtime_s",st.st_mtim.tv_sec},{"mtime_ns",st.st_mtim.tv_nsec},{"ctime_s",st.st_ctim.tv_sec},{"ctime_ns",st.st_ctim.tv_nsec}};}
 json read_json(const char *p){std::ifstream f(p);json j;f>>j;check(bool(f),"manifest missing");return j;}
 void save(const char *p,const json&j){check(access(p,F_OK)!=0,"receipt already exists");std::ofstream f(p);f<<j.dump(2)<<'\n';check(bool(f),"receipt write failed");}
 std::string hash(const void*p,size_t n){unsigned char out[32];SHA256(static_cast<const unsigned char*>(p),n,out);const char*h="0123456789abcdef";std::string s;for(auto b:out){s+=h[b>>4];s+=h[b&15];}return s;}
@@ -75,6 +76,7 @@ int main(int argc,char **argv){try{
  json spec=read_json(argv[3]);if(std::string(argv[1])=="pack"){pack(spec,argv[2],argv[4],argv[5]);return 0;}
  check(std::string(argv[1])=="probe"&&(std::string(argv[4])=="A"||std::string(argv[4])=="B"),"probe arm invalid");bool contiguous=std::string(argv[4])=="B";
  tesy_witness::direct_reader src,packed;src.open_file(argv[2]);packed.open_file(spec["pack_path"].get<std::string>().c_str());check(src.offset_alignment()==packed.offset_alignment(),"filesystem direct requirement differs");
+ const auto source_identity=fd_identity(src.descriptor()),pack_identity=fd_identity(packed.descriptor());struct stat packed_stat{};check(fstat(packed.descriptor(),&packed_stat)==0 && !(packed_stat.st_mode&0222),"private pack must be readonly before probe");
  // All components revalidated outside timing from canonical C211, against stored hash and pack bytes.
  size_t checked=0;size_t expert_index=0;for(const auto &e:spec["experts"]){for(const auto &c:e["components"]){size_t n=c["size_bytes"];std::vector<uint8_t>a(n),b(n);
     const auto source_read=[&]{src.read(a.data(),n,c["source_offset"]);};const auto pack_read=[&]{packed.read(b.data(),n,uint64_t(e["pack_offset"])+uint64_t(c["packed_relative_offset"]));};
@@ -113,5 +115,6 @@ int main(int argc,char **argv){try{
    uint64_t calls=0,bytes=0;for(size_t w=0;w<4;w++){calls+=read_calls[w];bytes+=requested_bytes[w];}
    reports.push_back({{"tier",gpu?"GPU":"CPU"},{"service_s",std::chrono::duration<double>(end-start).count()},{"experts_served",256},{"logical_weight_bytes",256*weights},{"pread_calls",calls},{"aligned_request_bytes",bytes},{"destination_verified",true},{"worker_read_elapsed_s",read_elapsed},{"worker_set_elapsed_s",set_elapsed},{"worker_span_semantics","Per-worker elapsed intervals include blocking; concurrent across workers, never add these to end-to-end wall"},{"destination_shape",{2880,2880}},{"publication","worker return only after native tensor_set; barrier after four ready destinations"}});
  }
- save(argv[5],{{"status","PASS_LOSSLESS_SAMPLE_SERVICE"},{"arm",argv[4]},{"component_checks",checked},{"source_fd_direct",bool(fcntl(src.descriptor(),F_GETFL)&O_DIRECT)},{"pack_fd_direct",bool(fcntl(packed.descriptor(),F_GETFL)&O_DIRECT)},{"memory_alignment",src.memory_alignment()},{"offset_alignment",src.offset_alignment()},{"reports",reports},{"scope","Native CPU/CUDA destination service microprobe; no compute contention, no production latency or physical NVMe byte claim"}});return 0;
+ check(fd_identity(src.descriptor())==source_identity && fd_identity(packed.descriptor())==pack_identity,"source/pack changed during probe");
+ save(argv[5],{{"source_identity",source_identity},{"pack_identity",pack_identity},{"status","PASS_LOSSLESS_SAMPLE_SERVICE"},{"arm",argv[4]},{"component_checks",checked},{"source_fd_direct",bool(fcntl(src.descriptor(),F_GETFL)&O_DIRECT)},{"pack_fd_direct",bool(fcntl(packed.descriptor(),F_GETFL)&O_DIRECT)},{"memory_alignment",src.memory_alignment()},{"offset_alignment",src.offset_alignment()},{"reports",reports},{"scope","Native CPU/CUDA destination service microprobe; no compute contention, no production latency or physical NVMe byte claim"}});return 0;
 }catch(const std::exception&e){std::cerr<<"SERVICE_LAYOUT_FAIL "<<e.what()<<'\n';return 1;}}
