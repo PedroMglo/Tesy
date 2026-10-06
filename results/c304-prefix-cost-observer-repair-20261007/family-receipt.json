@@ -1,0 +1,39 @@
+{
+  "measurement_commit": "b6361896adf283056cd53f83b6e34c6786b64f2c",
+  "start": {
+    "utc": "2026-10-06T23:34:17.674758+00:00",
+    "monotonic_s": 105876.120340978
+  },
+  "end": {
+    "utc": "2026-10-06T23:57:30.120438+00:00",
+    "monotonic_s": 107268.56603328
+  },
+  "argv": [
+    "systemd-run",
+    "--user",
+    "--slice=tesy-post-c154.slice",
+    "--unit=tesy-c304-prefix-cost-observer",
+    "--collect",
+    "--pipe",
+    "--wait",
+    "--working-directory=/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc",
+    "-p",
+    "MemoryMax=21474836480",
+    "-p",
+    "MemoryHigh=21474836480",
+    "-p",
+    "MemorySwapMax=0",
+    "-p",
+    "RuntimeMaxSec=3100",
+    "-p",
+    "TimeoutStopSec=10",
+    "--",
+    "/usr/bin/python",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/tools/residency_unit_run.py",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c304-prefix-cost-observer-repair-20261007",
+    "--inside"
+  ],
+  "returncode": 0,
+  "stdout": "",
+  "stderr": "Running as unit: tesy-c304-prefix-cost-observer.service\n          Finished with result: success\nMain processes terminated with: code=exited, status=0/SUCCESS\n               Service runtime: 23min 12.332s\n             CPU time consumed: 43min 25.988s\n                   Memory peak: 14.9G (swap: 0B)\n"
+}

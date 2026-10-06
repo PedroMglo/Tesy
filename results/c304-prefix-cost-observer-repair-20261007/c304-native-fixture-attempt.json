@@ -1,0 +1,43 @@
+{
+  "id": "c304-native-fixture",
+  "start": {
+    "utc": "2026-10-06T23:34:17.834428+00:00",
+    "monotonic_s": 105876.280009932
+  },
+  "end": {
+    "utc": "2026-10-06T23:35:23.653225+00:00",
+    "monotonic_s": 105942.098809519
+  },
+  "argv": [
+    "/usr/bin/python",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/tools/run_bounded.py",
+    "--run-id",
+    "c304-native-fixture",
+    "--model-id",
+    "model-free",
+    "--backend",
+    "stock",
+    "--backend-root",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/backends/c294-service-window",
+    "--output-root",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c304-prefix-cost-observer-repair-20261007/raw",
+    "--variant",
+    "Rebuilt-prefix-progress-client-native-known-fixture",
+    "--workload",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c304-prefix-cost-observer-repair-20261007/protocol.json",
+    "--cache-condition",
+    "ActualCPU8 knownnorm/gate/bias + mapped qualifiedlibs/telemetry before firstmodel; originalauxfixture unchanged; no weights/forward",
+    "--resource-protocol",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c304-prefix-cost-observer-repair-20261007/protocol.json",
+    "--require-telemetry",
+    "--timeout-s",
+    "30",
+    "--collect-start-inventory",
+    "--",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c283-exact-expert-service-epoch-20261006T194311Z/build/prediction-heldout-progress/bin/expert-prediction-holdout",
+    "--self-test"
+  ],
+  "returncode": 0,
+  "stdout": "{\"run_id\": \"c304-native-fixture\", \"elapsed_s\": 5.197, \"returncode\": 0, \"stop_reason\": null, \"maxima\": {\"rss_bytes\": 212561920, \"swap_bytes\": 0, \"cgroup_memory_bytes\": 165244928, \"cgroup_peak_bytes\": 186585088, \"cgroup_file_bytes\": 65536, \"gpu_used_mib\": 23.0, \"gpu_temperature_c\": 41.0, \"cpu_tctl_c\": 46.5, \"nvme_composite_c\": 34.85, \"direct_model_fds\": 0, \"buffered_model_fds\": 0}}\n",
+  "stderr": ""
+}
