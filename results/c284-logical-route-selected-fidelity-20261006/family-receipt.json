@@ -1,0 +1,39 @@
+{
+  "measurement_commit": "d9ecd4c208a60983d978740188a159783a6f0209",
+  "start": {
+    "utc": "2026-10-06T19:58:55.440040+00:00",
+    "monotonic_s": 92953.885625498
+  },
+  "end": {
+    "utc": "2026-10-06T20:03:49.703517+00:00",
+    "monotonic_s": 93248.149103213
+  },
+  "argv": [
+    "systemd-run",
+    "--user",
+    "--slice=tesy-post-c154.slice",
+    "--unit=tesy-c284-logical-route",
+    "--collect",
+    "--pipe",
+    "--wait",
+    "--working-directory=/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc",
+    "-p",
+    "MemoryMax=21474836480",
+    "-p",
+    "MemoryHigh=21474836480",
+    "-p",
+    "MemorySwapMax=0",
+    "-p",
+    "RuntimeMaxSec=680",
+    "-p",
+    "TimeoutStopSec=10",
+    "--",
+    "/usr/bin/python",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/tools/residency_unit_run.py",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c284-logical-route-selected-fidelity-20261006",
+    "--inside"
+  ],
+  "returncode": 1,
+  "stdout": "",
+  "stderr": "Running as unit: tesy-c284-logical-route.service\n          Finished with result: exit-code\nMain processes terminated with: code=exited, status=1/FAILURE\n               Service runtime: 4min 54.180s\n             CPU time consumed: 28min 33.836s\n                   Memory peak: 14.7G (swap: 0B)\n"
+}
