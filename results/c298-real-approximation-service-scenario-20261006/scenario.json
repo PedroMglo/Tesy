@@ -1,0 +1,223 @@
+{
+  "status": "DEVELOPMENT_CONDITIONAL_REAL_PREDICTION_SCENARIO",
+  "classification": "ESTIMADO",
+  "training": false,
+  "staged_bytes_in_actual_model": 0,
+  "holdout": false,
+  "cases": {
+    "nominal153": {
+      "capture_analysis": {
+        "status": "PASS_ORIGINAL_MOVEMENT_ESTIMATOR_CAPTURE",
+        "case": "nominal153",
+        "full33_logits_sha256": "cb89a303f2c811d3cb75cf6df457a7bf8dcfb6279b729b326baec519748239a2",
+        "missing_demands": 621,
+        "predicted_missing_hits": 466,
+        "miss_recall": 0.750402576489533,
+        "issued_speculative_reads_if_enabled": 853,
+        "correct_issued": 466,
+        "issued_precision": 0.5463071512309496,
+        "predicted_resident_actual_hits_diagnostic": 1631,
+        "predicted_wasted_logical_bytes_if_enabled": 5115830400,
+        "predictor_complete_seconds": 0.035817570000000014,
+        "native_timings": {
+          "prefix_s": 64.438983106,
+          "prefill153_s": 9.723568298,
+          "decode32_s": 9.476923631,
+          "total_s": 19.200491929
+        },
+        "scope": "Development only; no bytes prefetched or runtime gain claimed; captured original norm/gate/bias + current features, not trained. Actual router remains authority."
+      },
+      "control": {
+        "status": "PASS_ORIGINAL_ESTIMATOR_OFF",
+        "full33_logits_sha256": "cb89a303f2c811d3cb75cf6df457a7bf8dcfb6279b729b326baec519748239a2",
+        "case": "nominal153",
+        "native_timings": {
+          "prefix_s": 65.110082272,
+          "prefill153_s": 10.451599039,
+          "decode32_s": 10.477983915,
+          "total_s": 20.929582954
+        }
+      },
+      "sensitivity": [
+        {
+          "service_scale": 0.8,
+          "baseline": {
+            "decode_us": 8717410.199999996,
+            "staging_peak_bytes": 0,
+            "staging_capacity_bytes": 134217728,
+            "observed_decode_us": 10477984.0,
+            "original_decode_wait_us": 8689033,
+            "initial_inflight": 0
+          },
+          "prediction": {
+            "decode_us": 7321523.226000004,
+            "predictor_complete_us": 35817.57,
+            "staging_peak_bytes": 105753600,
+            "read_completed": 821,
+            "expired_read_completed": 355,
+            "queued_expirations_avoid_read": 32,
+            "scope": "Development-only fixed observed missing-generation stream and compute, original OFF trace; actual predictor timings; false reads use target-layer measured median with service sensitivity. No speculation gain measured; primary cache held fixed; stage lookup/mutex service overhead not yet measured.",
+            "gain_percent": 16.01263382099413
+          }
+        },
+        {
+          "service_scale": 1.0,
+          "baseline": {
+            "decode_us": 10449525.0,
+            "staging_peak_bytes": 0,
+            "staging_capacity_bytes": 134217728,
+            "observed_decode_us": 10477984.0,
+            "original_decode_wait_us": 8689033,
+            "initial_inflight": 0
+          },
+          "prediction": {
+            "decode_us": 8820721.844999999,
+            "predictor_complete_us": 35817.57,
+            "staging_peak_bytes": 105753600,
+            "read_completed": 818,
+            "expired_read_completed": 352,
+            "queued_expirations_avoid_read": 35,
+            "scope": "Development-only fixed observed missing-generation stream and compute, original OFF trace; actual predictor timings; false reads use target-layer measured median with service sensitivity. No speculation gain measured; primary cache held fixed; stage lookup/mutex service overhead not yet measured.",
+            "gain_percent": 15.587341577727228
+          }
+        },
+        {
+          "service_scale": 1.2,
+          "baseline": {
+            "decode_us": 12181639.800000012,
+            "staging_peak_bytes": 0,
+            "staging_capacity_bytes": 134217728,
+            "observed_decode_us": 10477984.0,
+            "original_decode_wait_us": 8689033,
+            "initial_inflight": 0
+          },
+          "prediction": {
+            "decode_us": 10340981.775999997,
+            "predictor_complete_us": 35817.57,
+            "staging_peak_bytes": 105753600,
+            "read_completed": 813,
+            "expired_read_completed": 347,
+            "queued_expirations_avoid_read": 40,
+            "scope": "Development-only fixed observed missing-generation stream and compute, original OFF trace; actual predictor timings; false reads use target-layer measured median with service sensitivity. No speculation gain measured; primary cache held fixed; stage lookup/mutex service overhead not yet measured.",
+            "gain_percent": 15.110100562980145
+          }
+        }
+      ],
+      "raw": {
+        "control": "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c299-true-routing-score-alias-repair-20261006/raw/c299-nominal153-1-observe.native",
+        "estimator": "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c299-true-routing-score-alias-repair-20261006/raw/c299-nominal153-2-estimate.native"
+      }
+    },
+    "code153": {
+      "capture_analysis": {
+        "status": "PASS_ORIGINAL_MOVEMENT_ESTIMATOR_CAPTURE",
+        "case": "code153",
+        "full33_logits_sha256": "6e5223faff42fdb9ff60a1b07ece78dae5b9e191f52c66cc98bcdf008b5e6115",
+        "missing_demands": 816,
+        "predicted_missing_hits": 588,
+        "miss_recall": 0.7205882352941176,
+        "issued_speculative_reads_if_enabled": 1092,
+        "correct_issued": 588,
+        "issued_precision": 0.5384615384615384,
+        "predicted_resident_actual_hits_diagnostic": 1456,
+        "predicted_wasted_logical_bytes_if_enabled": 6662476800,
+        "predictor_complete_seconds": 0.03735068999999994,
+        "native_timings": {
+          "prefix_s": 58.922504069,
+          "prefill153_s": 15.846942416,
+          "decode32_s": 10.984770776,
+          "total_s": 26.831713192
+        },
+        "scope": "Development only; no bytes prefetched or runtime gain claimed; captured original norm/gate/bias + current features, not trained. Actual router remains authority."
+      },
+      "control": {
+        "status": "PASS_ORIGINAL_ESTIMATOR_OFF",
+        "full33_logits_sha256": "6e5223faff42fdb9ff60a1b07ece78dae5b9e191f52c66cc98bcdf008b5e6115",
+        "case": "code153",
+        "native_timings": {
+          "prefix_s": 58.871243015,
+          "prefill153_s": 15.785188475,
+          "decode32_s": 10.994370946,
+          "total_s": 26.779559421
+        }
+      },
+      "sensitivity": [
+        {
+          "service_scale": 0.8,
+          "baseline": {
+            "decode_us": 9132473.600000003,
+            "staging_peak_bytes": 0,
+            "staging_capacity_bytes": 134217728,
+            "observed_decode_us": 10994370.0,
+            "original_decode_wait_us": 9153034,
+            "initial_inflight": 0
+          },
+          "prediction": {
+            "decode_us": 7728216.425999994,
+            "predictor_complete_us": 37350.69,
+            "staging_peak_bytes": 105753600,
+            "read_completed": 1003,
+            "expired_read_completed": 415,
+            "queued_expirations_avoid_read": 89,
+            "scope": "Development-only fixed observed missing-generation stream and compute, original OFF trace; actual predictor timings; false reads use target-layer measured median with service sensitivity. No speculation gain measured; primary cache held fixed; stage lookup/mutex service overhead not yet measured.",
+            "gain_percent": 15.376525961159182
+          }
+        },
+        {
+          "service_scale": 1.0,
+          "baseline": {
+            "decode_us": 10955258.0,
+            "staging_peak_bytes": 0,
+            "staging_capacity_bytes": 134217728,
+            "observed_decode_us": 10994370.0,
+            "original_decode_wait_us": 9153034,
+            "initial_inflight": 0
+          },
+          "prediction": {
+            "decode_us": 9318490.921999993,
+            "predictor_complete_us": 37350.69,
+            "staging_peak_bytes": 105753600,
+            "read_completed": 993,
+            "expired_read_completed": 405,
+            "queued_expirations_avoid_read": 99,
+            "scope": "Development-only fixed observed missing-generation stream and compute, original OFF trace; actual predictor timings; false reads use target-layer measured median with service sensitivity. No speculation gain measured; primary cache held fixed; stage lookup/mutex service overhead not yet measured.",
+            "gain_percent": 14.940470393303446
+          }
+        },
+        {
+          "service_scale": 1.2,
+          "baseline": {
+            "decode_us": 12778042.4,
+            "staging_peak_bytes": 0,
+            "staging_capacity_bytes": 134217728,
+            "observed_decode_us": 10994370.0,
+            "original_decode_wait_us": 9153034,
+            "initial_inflight": 0
+          },
+          "prediction": {
+            "decode_us": 10909961.953999987,
+            "predictor_complete_us": 37350.69,
+            "staging_peak_bytes": 105753600,
+            "read_completed": 982,
+            "expired_read_completed": 394,
+            "queued_expirations_avoid_read": 110,
+            "scope": "Development-only fixed observed missing-generation stream and compute, original OFF trace; actual predictor timings; false reads use target-layer measured median with service sensitivity. No speculation gain measured; primary cache held fixed; stage lookup/mutex service overhead not yet measured.",
+            "gain_percent": 14.619457249570663
+          }
+        }
+      ],
+      "raw": {
+        "control": "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c299-true-routing-score-alias-repair-20261006/raw/c299-code153-1-observe.native",
+        "estimator": "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c299-true-routing-score-alias-repair-20261006/raw/c299-code153-2-estimate.native"
+      }
+    }
+  },
+  "assumptions": [
+    "Actual OFF trace services/work and observed missing-generation stream fixed, primary cache not resimulated",
+    "ON measured complete predictor duration and emitted top4 used, not oracle future IDs for issuing",
+    "False read durations use observed destination-layer median, service sensitivity0.8/1/1.2; no zero-cost false positives",
+    "Four nonpreemptible workers, at most3 unconfirmed speculative reads leave one worker for demand; priority and128MiB includes running/ready staged bytes",
+    "Wrong prediction expires at true router; running read cannot be undone and delays demands; destination copy only after truth",
+    "Stage lookup/staging-copy/coordination integration overhead still unmeasured; development scenario does not satisfy heldoutcanary gate"
+  ]
+}

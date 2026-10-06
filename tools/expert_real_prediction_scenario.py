@@ -7,6 +7,20 @@ from expert_prediction_scenario import Service, WEIGHT_BYTES
 class PredictedService(Service):
     def __init__(self,jobs,scale,arena):
         super().__init__(jobs,scale,arena); self.reads=0;self.expired_reads=0
+    def dispatch(self):
+        # At least one of the four native workers remains available to real demands.
+        while len(self.running)<4:
+            speculative_running=sum(part=='READ' and not self.jobs[key]['demand'] for _,_,key,part in self.running)
+            eligible=[k for k in self.queue if self.jobs[k]['demand'] or (self.staged<self.arena and speculative_running<3)]
+            if not eligible:return
+            key=min(eligible,key=lambda k:(not self.jobs[k]['demand'],self.jobs[k]['order']))
+            self.queue.remove(key);j=self.jobs[key]
+            if j['state']=='COPY_QUEUED':part='COPY';dt=j['copy']
+            elif j['stage']:
+                part='READ';dt=j['read'];self.staged+=1;self.peak=max(self.peak,self.staged)
+            else:part='FULL';dt=j['read']+j['copy']
+            j['state']='RUN_'+part;self.serial+=1
+            heapq.heappush(self.running,(self.now+dt*self.scale,self.serial,key,part))
     def cancel(self,key):
         j=self.jobs[key]
         if j['demand'] or j['state']=='DONE':return
@@ -78,16 +92,16 @@ def main():
     from expert_service_window_gate import events
     from expert_prediction_scenario import extract,simulate
     from expert_activation_gate import inspect_estimator
-    from r2_causal_gate import init_identity
+    from r2_causal_gate import initial_identity
     p=argparse.ArgumentParser();p.add_argument('directory',type=Path);p.add_argument('--output',type=Path,required=True);a=p.parse_args()
     protocol=json.loads((a.directory/'protocol.json').read_text());r0=a.directory.parents[1]
     fixture_path=r0/'results/c276-post-c274-r2-causal-qualification-20261005T204839Z/development-inputs.json'
-    fixture=json.loads(fixture_path.read_text());out={'status':'DEVELOPMENT_CONDITIONAL_REAL_PREDICTION_SCENARIO','classification':'ESTIMADO','training':False,'staged_bytes_in_actual_model':0,'holdout':False,'cases':{},'assumptions':['Actual OFF trace services/work and observed missing-generation stream fixed, primary cache not resimulated','ON measured complete predictor duration and emitted top4 used, not oracle future IDs for issuing','False read durations use observed destination-layer median, service sensitivity0.8/1/1.2; no zero-cost false positives','Four nonpreemptible workers, demand priority and128MiB includes running/ready staged bytes','Wrong prediction expires at true router; running read cannot be undone and delays demands; destination copy only after truth','Stage lookup/staging-copy/coordination integration overhead still unmeasured; development scenario does not satisfy heldoutcanary gate']}
+    fixture=json.loads(fixture_path.read_text());out={'status':'DEVELOPMENT_CONDITIONAL_REAL_PREDICTION_SCENARIO','classification':'ESTIMADO','training':False,'staged_bytes_in_actual_model':0,'holdout':False,'cases':{},'assumptions':['Actual OFF trace services/work and observed missing-generation stream fixed, primary cache not resimulated','ON measured complete predictor duration and emitted top4 used, not oracle future IDs for issuing','False read durations use observed destination-layer median, service sensitivity0.8/1/1.2; no zero-cost false positives','Four nonpreemptible workers, at most3 unconfirmed speculative reads leave one worker for demand; priority and128MiB includes running/ready staged bytes','Wrong prediction expires at true router; running read cannot be undone and delays demands; destination copy only after truth','Stage lookup/staging-copy/coordination integration overhead still unmeasured; development scenario does not satisfy heldoutcanary gate']}
     for case in ('nominal153','code153'):
         runs=[x for x in protocol['runs'] if x.get('case')==case];off,on=runs
         offroot=Path(off['command'][4]);onroot=Path(on['command'][4]);expected=protocol['expected_full_logits_sha256'][case]
         offv=inspect_estimator(offroot,fixture[case],case,False,expected);onv=inspect_estimator(onroot,fixture[case],case,True,expected)
-        if init_identity(json.loads((offroot/'initial.json').read_text()))!=init_identity(json.loads((onroot/'initial.json').read_text())):raise ValueError('estimator control initial state differs')
+        if initial_identity({'initial':json.loads((offroot/'initial.json').read_text())})!=initial_identity({'initial':json.loads((onroot/'initial.json').read_text())}):raise ValueError('estimator control initial state differs')
         rows=events(offroot/'events.tsv',True);data=extract(rows)
         labels=np.fromfile(onroot/'true-routing-scores.f32',dtype='<f4').reshape(32,23,128)
         true={}
