@@ -1,0 +1,43 @@
+{
+  "id": "c291-store-faults",
+  "start": {
+    "utc": "2026-10-06T21:20:31.128807+00:00",
+    "monotonic_s": 97849.574379008
+  },
+  "end": {
+    "utc": "2026-10-06T21:20:31.410953+00:00",
+    "monotonic_s": 97849.856539356
+  },
+  "argv": [
+    "/usr/bin/python",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/tools/run_bounded.py",
+    "--run-id",
+    "c291-store-faults",
+    "--model-id",
+    "model-free",
+    "--backend",
+    "stock",
+    "--backend-root",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/backends/c291-expert-store",
+    "--output-root",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c291-integral-worker-selected-fidelity-20261006/raw",
+    "--variant",
+    "C291-real-store-synthetic-faults",
+    "--workload",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c291-integral-worker-selected-fidelity-20261006/protocol.json",
+    "--cache-condition",
+    "sameFS synthetic16MiB/no weights, actual DIO reader/cancellation identity predicates",
+    "--resource-protocol",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c291-integral-worker-selected-fidelity-20261006/protocol.json",
+    "--require-telemetry",
+    "--timeout-s",
+    "10",
+    "--collect-start-inventory",
+    "--",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c283-exact-expert-service-epoch-20261006T194311Z/build/expert-store/bin/test-expert-store",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c291-integral-worker-selected-fidelity-20261006/raw"
+  ],
+  "returncode": 1,
+  "stdout": "",
+  "stderr": "Traceback (most recent call last):\n  File \"/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/tools/run_bounded.py\", line 740, in <module>\n    sys.exit(main())\n             ~~~~^^\n  File \"/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/tools/run_bounded.py\", line 476, in main\n    start_inventory = inventory_before_spawn(out.parent,a.run_id,resource_protocol)\n  File \"/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/tools/run_bounded.py\", line 293, in inventory_before_spawn\n    if sha256(policy_path)!=contract.get('policy_sha256'):raise RuntimeError('opt-in policy SHA changed')\n                                                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nRuntimeError: opt-in policy SHA changed\n"
+}
