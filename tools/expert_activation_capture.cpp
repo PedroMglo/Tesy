@@ -68,6 +68,8 @@ int main(int argc,char ** argv){try{
         {activation_estimator estimator(norm,gate,bias,1e-5f,2,cpu);auto scores=estimator.score(x.data());
          for(int k=0;k<128;k++)check(std::abs(scores[k]-((k+1)/std::sqrt(1.00001f)-.01f*k))<.0001f,"independent synthetic norm/gate/bias score");
          for(int k=1;k<128;k++)check(scores[k]>scores[k-1],"synthetic prediction ranking");}
+        // Keep the tested native backend alive for real /proc runtime and resource observation.
+        std::this_thread::sleep_for(std::chrono::seconds(5));
         ggml_backend_buffer_free(buffer);ggml_free(ctx);ggml_backend_free(cpu);
         std::cout<<"PASS_MODEL_FREE_WINDOW_AND_NATIVE_APPROXIMATION_FIXTURE\n";return 0;
     }
