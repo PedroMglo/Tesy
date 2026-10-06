@@ -1,0 +1,47 @@
+{
+  "id": "c289-2-b",
+  "start": {
+    "utc": "2026-10-06T20:54:27.722530+00:00",
+    "monotonic_s": 96286.168110337
+  },
+  "end": {
+    "utc": "2026-10-06T20:55:32.204083+00:00",
+    "monotonic_s": 96350.649658643
+  },
+  "argv": [
+    "/usr/bin/python",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/tools/run_bounded.py",
+    "--run-id",
+    "c289-2-b",
+    "--model-id",
+    "gpt-oss-120b-mxfp4-gguf",
+    "--backend",
+    "stock",
+    "--backend-root",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/backends/c284-logical-route",
+    "--output-root",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c289-lossless-service-resource-qualified-20261006/raw",
+    "--variant",
+    "contiguous-original-expert",
+    "--workload",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c289-lossless-service-resource-qualified-20261006/protocol.json",
+    "--cache-condition",
+    "All384 components canonical+pack checked outside timing; balanced verification order. CPU then GPU sequential, four persistent workers,4expert barriers,eight rotations,256experts/tier. Controller cache uncontrolled, no cold claim.",
+    "--resource-protocol",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c289-lossless-service-resource-qualified-20261006/protocol.json",
+    "--require-telemetry",
+    "--timeout-s",
+    "180",
+    "--collect-start-inventory",
+    "--",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c283-exact-expert-service-epoch-20261006T194311Z/build/logical-route/bin/expert-service-layout",
+    "probe",
+    "/home/pmglo/models/gpt-oss-120b-gguf/gpt-oss-120b-MXFP4.gguf",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c287-lossless-sample-producer-20261006/raw/sample-index.json",
+    "B",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c289-lossless-service-resource-qualified-20261006/raw/c289-2-b-service.json"
+  ],
+  "returncode": 0,
+  "stdout": "{\"run_id\": \"c289-2-b\", \"elapsed_s\": 3.898, \"returncode\": 0, \"stop_reason\": null, \"maxima\": {\"rss_bytes\": 481468416, \"swap_bytes\": 0, \"cgroup_memory_bytes\": 1020030976, \"cgroup_peak_bytes\": 1046396928, \"cgroup_file_bytes\": 759885824, \"gpu_used_mib\": 181.0, \"gpu_temperature_c\": 45.0, \"cpu_tctl_c\": 55.875, \"nvme_composite_c\": 41.85, \"direct_model_fds\": 1, \"buffered_model_fds\": 0}}\n",
+  "stderr": ""
+}

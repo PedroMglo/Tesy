@@ -1,0 +1,84 @@
+{
+  "source_identity": {
+    "dev": 53,
+    "inode": 14833675,
+    "size_bytes": 63387346208,
+    "mtime_s": 1790389637,
+    "mtime_ns": 795911032,
+    "ctime_s": 1790389637,
+    "ctime_ns": 807910988
+  },
+  "pack_identity": {
+    "dev": 53,
+    "inode": 15770222,
+    "size_bytes": 848560128,
+    "mtime_s": 1791319659,
+    "mtime_ns": 102721949,
+    "ctime_s": 1791319695,
+    "ctime_ns": 617667472
+  },
+  "status": "PASS_LOSSLESS_SAMPLE_SERVICE",
+  "arm": "B",
+  "component_checks": 384,
+  "source_fd_direct": true,
+  "pack_fd_direct": true,
+  "memory_alignment": 4096,
+  "offset_alignment": 4096,
+  "reports": [
+    {
+      "tier": "CPU",
+      "service_s": 0.886070741,
+      "experts_served": 256,
+      "logical_weight_bytes": 3384115200,
+      "pread_calls": 256,
+      "aligned_request_bytes": 3384803328,
+      "destination_verified": true,
+      "worker_read_elapsed_s": [
+        0.7588002710000001,
+        0.6741755539999998,
+        0.761027017,
+        0.6817117820000003
+      ],
+      "worker_set_elapsed_s": [
+        0.08602319100000001,
+        0.066964006,
+        0.08299102099999997,
+        0.07350752599999999
+      ],
+      "worker_span_semantics": "Per-worker elapsed intervals include blocking; concurrent across workers, never add these to end-to-end wall",
+      "destination_shape": [
+        2880,
+        2880
+      ],
+      "publication": "worker return only after native tensor_set; barrier after four ready destinations"
+    },
+    {
+      "tier": "GPU",
+      "service_s": 0.985595447,
+      "experts_served": 256,
+      "logical_weight_bytes": 3384115200,
+      "pread_calls": 256,
+      "aligned_request_bytes": 3384803328,
+      "destination_verified": true,
+      "worker_read_elapsed_s": [
+        0.7703009540000001,
+        0.6786604250000001,
+        0.7251115620000002,
+        0.7593262820000001
+      ],
+      "worker_set_elapsed_s": [
+        0.1532382439999999,
+        0.13116009500000003,
+        0.14268066399999993,
+        0.15234929100000008
+      ],
+      "worker_span_semantics": "Per-worker elapsed intervals include blocking; concurrent across workers, never add these to end-to-end wall",
+      "destination_shape": [
+        2880,
+        2880
+      ],
+      "publication": "worker return only after native tensor_set; barrier after four ready destinations"
+    }
+  ],
+  "scope": "Native CPU/CUDA destination service microprobe; no compute contention, no production latency or physical NVMe byte claim"
+}
