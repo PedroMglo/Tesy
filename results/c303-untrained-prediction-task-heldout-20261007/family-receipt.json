@@ -1,0 +1,39 @@
+{
+  "measurement_commit": "22cc3fdab6715b4dd3b5ece14cc2bcfe72ae379c",
+  "start": {
+    "utc": "2026-10-06T23:24:34.244553+00:00",
+    "monotonic_s": 105292.690133823
+  },
+  "end": {
+    "utc": "2026-10-06T23:29:15.972000+00:00",
+    "monotonic_s": 105574.417582452
+  },
+  "argv": [
+    "systemd-run",
+    "--user",
+    "--slice=tesy-post-c154.slice",
+    "--unit=tesy-c303-prediction-task-heldout",
+    "--collect",
+    "--pipe",
+    "--wait",
+    "--working-directory=/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc",
+    "-p",
+    "MemoryMax=21474836480",
+    "-p",
+    "MemoryHigh=21474836480",
+    "-p",
+    "MemorySwapMax=0",
+    "-p",
+    "RuntimeMaxSec=1450",
+    "-p",
+    "TimeoutStopSec=10",
+    "--",
+    "/usr/bin/python",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/tools/residency_unit_run.py",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c303-untrained-prediction-task-heldout-20261007",
+    "--inside"
+  ],
+  "returncode": 1,
+  "stdout": "",
+  "stderr": "Running as unit: tesy-c303-prediction-task-heldout.service\n          Finished with result: exit-code\nMain processes terminated with: code=exited, status=1/FAILURE\n               Service runtime: 4min 41.623s\n             CPU time consumed: 8min 6.612s\n                   Memory peak: 14.6G (swap: 0B)\n"
+}

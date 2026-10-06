@@ -29,7 +29,7 @@ def evaluate(cases):
 
 def main():
     a=argparse.ArgumentParser();a.add_argument('directory',type=Path);a.add_argument('--output',type=Path,required=True);args=a.parse_args()
-    protocol=json.loads((args.directory/'protocol.json').read_text());runs=protocol['runs'];fixture=json.loads(Path(protocol['fixture']).read_text())
+    protocol=json.loads((args.directory/'protocol.json').read_text());runs=[r for r in protocol['runs'] if r.get('case')];fixture=json.loads(Path(protocol['fixture']).read_text())
     order=[(c,e) for c in ('heldout-intervals','heldout-inventory') for e in (False,True)]
     if len(runs)!=4 or [(r['case'],r['estimate']) for r in runs]!=order or len({r['id'] for r in runs})!=4 or len({r['command'][4] for r in runs})!=4:raise ValueError('exact ordered independent arms')
     result={'classification':'ESTIMADO','training':False,'predictor_heldout':True,'staged_bytes_in_actual_model':0,'cases':{},

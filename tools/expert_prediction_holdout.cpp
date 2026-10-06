@@ -150,7 +150,14 @@ int main(int argc,char ** argv){try{
     const bool packed=bool(getenv("TESY_EXPERT_STORE_MANIFEST"));
     const auto load_before_prefix=r.model->moe_stream()->stats.n_store_loads;
     const auto prepare_begin=clock_type::now();int pos=0;
-    for(int n:plan){r.call({ids.begin()+pos,ids.begin()+pos+n},pos,false);pos+=n;}
+    save(root/"prefix-progress.json",{{"phase","PREFIX_PREPARATION"},{"completed_positions",0},{"required_prefix_positions",prefix},{"pending_call_size",0}});
+    for(int n:plan){
+        save(root/"prefix-progress.json",{{"phase","PREFIX_PREPARATION"},{"completed_positions",pos},{"required_prefix_positions",prefix},{"pending_call_size",n}});
+        r.call({ids.begin()+pos,ids.begin()+pos+n},pos,false);pos+=n;
+        int64_t calls=0,misses=0;
+        {auto *mgr=r.model->moe_stream();std::lock_guard<std::mutex> lock(mgr->mtx);calls=mgr->stats.n_calls;misses=mgr->stats.n_miss;}
+        save(root/"prefix-progress.json",{{"phase","PREFIX_PREPARATION"},{"completed_positions",pos},{"required_prefix_positions",prefix},{"pending_call_size",0},{"n_calls",calls},{"logical_miss_generations",misses}});
+    }
     const auto prepare_end=clock_type::now();const auto initial=r.snapshot();save(root/"initial.json",initial);
     std::vector<float> complete_rows(static_cast<size_t>(33)*vocab);std::vector<int> winners;winners.reserve(33);
     auto &window=r.model->moe_stream()->window;observer.on=trace;window.enabled.store(trace);window.call.store(0);

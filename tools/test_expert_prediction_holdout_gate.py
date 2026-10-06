@@ -73,4 +73,10 @@ class Prefix(unittest.TestCase):
   with self.assertRaises(ValueError):self.check(b,True,a)
   r=a/'true-routing-scores.f32';arr=np.memmap(r,dtype='<f4',mode='r+');arr[9]=100;arr.flush();del arr
   with self.assertRaises(ValueError):self.check(a)
+ def test_prefix_progress_identity(self):
+  a=self.make('a');p=a/'prefix-progress.json';v={'phase':'PREFIX_PREPARATION','completed_positions':1847,'required_prefix_positions':1847,'pending_call_size':0,'n_calls':123,'logical_miss_generations':1};p.write_text(json.dumps(v))
+  self.assertTrue(gate.prefix_arm(a,self.fixture,'synthetic',False,require_prefix_progress=True)['measurement_valid'])
+  for key,value in [('completed_positions',1792),('pending_call_size',256),('n_calls',0),('logical_miss_generations',False)]:
+   m=dict(v);m[key]=value;p.write_text(json.dumps(m))
+   with self.assertRaises(ValueError):gate.prefix_arm(a,self.fixture,'synthetic',False,require_prefix_progress=True)
 if __name__=='__main__':unittest.main()

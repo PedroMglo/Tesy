@@ -116,7 +116,7 @@ def extract_prefix(rows,n_calls):
     return jobs,groups,tail,float(end[n_calls]-t0),initial,late,t0
 
 
-def prefix_arm(root,fixture,case,on,control_root=None):
+def prefix_arm(root,fixture,case,on,control_root=None,require_prefix_progress=False):
     root=Path(root);v=json.loads((root/'result.json').read_text());ids=fixture['ids'];n=len(ids);calls=v.get('decode_calls')
     if type(calls) is not int or not 0<=calls<=32:raise ValueError('actual native call count')
     control=None
@@ -124,6 +124,12 @@ def prefix_arm(root,fixture,case,on,control_root=None):
         control=json.loads((Path(control_root)/'result.json').read_text())
         if initial_identity(control)!=initial_identity(v):raise ValueError('clean control initial state differs')
     prefix=n-153;plan=[min(256,prefix-pos) for pos in range(0,prefix,256)]+[153]
+    if require_prefix_progress:
+        progress=json.loads((root/'prefix-progress.json').read_text())
+        if progress.get('phase')!='PREFIX_PREPARATION' or progress.get('completed_positions')!=prefix or progress.get('required_prefix_positions')!=prefix or progress.get('pending_call_size')!=0:
+            raise ValueError('prefix preparation incomplete')
+        if type(progress.get('n_calls')) is not int or progress['n_calls']<=0 or progress['n_calls']!=v['initial']['n_calls'] or type(progress.get('logical_miss_generations')) is not int or progress['logical_miss_generations']<0:
+            raise ValueError('prefix progress counter identity')
     expected={'status':'COMPLETE_NATIVE_PREDICTION_HELDOUT_PREFIX','profile':'R0','case':case,'official_input_ids':ids,'external_prefill_calls':plan,'decode_calls':calls,'decode_positions':[n,n+calls-1] if calls else None,'output_rows':calls+1,'vocab':201088,'FFN_last_layer_rows_per_call':1,'mode':0,'layerspan':32,'numerical_FFN_tiles':[32,32,32,32,25],'last_use_order_env':None,'initial_prefix_mode':0,'full_row_retention_bytes':(calls+1)*201088*4,'heldout':True,'training':False,'sampling_policy':'native-greedy-temp0-seed42','template_date':'2026-09-30','reasoning_effort':'medium','prefix_capture_cap':32,'trace':True,'trace_capacity':131072,'continuation_origin':'PROVIDED_NATIVE_CONTROL_PREFIX' if on else 'NATIVE_GREEDY_CONTROL_PREFIX'}
     if not 2000<=n<=2600 or any(v.get(k)!=value for k,value in expected.items()):raise ValueError('heldout input/profile/call/shape/phase identity')
     for name,size in [('official_input_ids',n),('teacher_forced_ids',calls),('native_argmax_ids',calls+1)]:
@@ -183,7 +189,7 @@ def prefix_arm(root,fixture,case,on,control_root=None):
     return {'measurement_valid':True,'status':'PASS_NATIVE_HELDOUT_PREFIX' if calls>=16 else 'VALID_PARTIAL_EOS_PREFIX_NOT_COMPUTABLE_FOR_INVESTMENT','investment_window_valid':calls>=16,'case':case,'decode_calls':calls,'complete_logits_sha256':h,'miss_recall':hit/missing if missing else None,'issued_precision':correct/issued if issued else None,'missing_demands':missing if on else None,'hypothetical_issued':issued if on else None,'predictor_complete_s':cost/1e6 if on and calls else None,'native_timings':{k:v[k] for k in ('prefix_s','prefill153_s','decode_window_s','total_s')},'outcome_note':'At most32 nativegreedy input forwards for predictor data; not completefunctional response/quality success or promoted latency.'}
 
 def main():
-    p=argparse.ArgumentParser();p.add_argument('root',type=Path);p.add_argument('--fixture',type=Path,required=True);p.add_argument('--case',required=True);p.add_argument('--on',choices=('0','1'),required=True);p.add_argument('--control',type=Path);p.add_argument('--output',type=Path,required=True);a=p.parse_args();v=prefix_arm(a.root,json.loads(a.fixture.read_text())[a.case],a.case,a.on=='1',a.control)
+    p=argparse.ArgumentParser();p.add_argument('root',type=Path);p.add_argument('--fixture',type=Path,required=True);p.add_argument('--case',required=True);p.add_argument('--on',choices=('0','1'),required=True);p.add_argument('--control',type=Path);p.add_argument('--require-prefix-progress',action='store_true');p.add_argument('--output',type=Path,required=True);a=p.parse_args();v=prefix_arm(a.root,json.loads(a.fixture.read_text())[a.case],a.case,a.on=='1',a.control,a.require_prefix_progress)
     with a.output.open('x') as f:json.dump(v,f,indent=2,allow_nan=False);f.write('\n')
     print(v['status'])
 if __name__=='__main__':main()
