@@ -1,0 +1,43 @@
+{
+  "id": "c310-corpus-synthetic-boundary",
+  "start": {
+    "utc": "2026-10-07T01:42:28.370299+00:00",
+    "monotonic_s": 113566.8158692
+  },
+  "end": {
+    "utc": "2026-10-07T01:43:34.072099+00:00",
+    "monotonic_s": 113632.517684617
+  },
+  "argv": [
+    "/usr/bin/python",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/tools/run_bounded.py",
+    "--run-id",
+    "c310-corpus-synthetic-boundary",
+    "--model-id",
+    "model-free",
+    "--backend",
+    "stock",
+    "--backend-root",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/backends/c305-cpu-prediction-staging",
+    "--output-root",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c310-score-calibration-corpus-boundary-20261007/raw",
+    "--variant",
+    "Corpusposition-node-fixture",
+    "--workload",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c310-score-calibration-corpus-boundary-20261007/protocol.json",
+    "--cache-condition",
+    "Known32/33/128index boundary/canonicalnodes/capturebound only; noGGUF",
+    "--resource-protocol",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c310-score-calibration-corpus-boundary-20261007/protocol.json",
+    "--require-telemetry",
+    "--timeout-s",
+    "30",
+    "--collect-start-inventory",
+    "--",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c283-exact-expert-service-epoch-20261006T194311Z/build/score-corpus/bin/expert-prediction-corpus",
+    "--self-test"
+  ],
+  "returncode": 0,
+  "stdout": "{\"run_id\": \"c310-corpus-synthetic-boundary\", \"elapsed_s\": 5.102, \"returncode\": 0, \"stop_reason\": null, \"maxima\": {\"rss_bytes\": 198455296, \"swap_bytes\": 0, \"cgroup_memory_bytes\": 152444928, \"cgroup_peak_bytes\": 173543424, \"cgroup_file_bytes\": 65536, \"gpu_used_mib\": 23.0, \"gpu_temperature_c\": 41.0, \"cpu_tctl_c\": 46.375, \"nvme_composite_c\": 34.85, \"direct_model_fds\": 0, \"buffered_model_fds\": 0}}\n",
+  "stderr": ""
+}

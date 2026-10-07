@@ -1,0 +1,48 @@
+{
+  "id": "c310-code153-original-reference",
+  "start": {
+    "utc": "2026-10-07T01:44:40.743452+00:00",
+    "monotonic_s": 113699.189029845
+  },
+  "end": {
+    "utc": "2026-10-07T01:47:10.924202+00:00",
+    "monotonic_s": 113849.369788295
+  },
+  "argv": [
+    "/usr/bin/python",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/tools/run_bounded.py",
+    "--run-id",
+    "c310-code153-original-reference",
+    "--model-id",
+    "gpt-oss-120b-mxfp4-gguf",
+    "--backend",
+    "stock",
+    "--backend-root",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/backends/c305-cpu-prediction-staging",
+    "--output-root",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c310-score-calibration-corpus-boundary-20261007/raw",
+    "--variant",
+    "SelectedoriginalR0-corpus-boundary-reference",
+    "--workload",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c310-score-calibration-corpus-boundary-20261007/protocol.json",
+    "--cache-condition",
+    "Sameoriginal1952+153+32providednativeIDs; newboundedscores/truelabelcapture, no movement/learntweights. Native4workers/C47/40slots/ub32, full33oldR0gold; heavywrites/snapshot outsidecapturewindow",
+    "--resource-protocol",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c310-score-calibration-corpus-boundary-20261007/protocol.json",
+    "--require-telemetry",
+    "--timeout-s",
+    "240",
+    "--collect-start-inventory",
+    "--",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c283-exact-expert-service-epoch-20261006T194311Z/build/score-corpus/bin/expert-prediction-corpus",
+    "/home/pmglo/models/gpt-oss-120b-gguf/gpt-oss-120b-MXFP4.gguf",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c276-post-c274-r2-causal-qualification-20261005T204839Z/development-inputs.json",
+    "code153",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c310-score-calibration-corpus-boundary-20261007/raw/c310-code153-reference.native",
+    "reference32",
+    "v1"
+  ],
+  "returncode": 0,
+  "stdout": "{\"run_id\": \"c310-code153-original-reference\", \"elapsed_s\": 89.547, \"returncode\": 0, \"stop_reason\": null, \"maxima\": {\"rss_bytes\": 16000430080, \"swap_bytes\": 0, \"cgroup_memory_bytes\": 15784452096, \"cgroup_peak_bytes\": 15813636096, \"cgroup_file_bytes\": 1746759680, \"gpu_used_mib\": 6889.0, \"gpu_temperature_c\": 62.0, \"cpu_tctl_c\": 94.875, \"nvme_composite_c\": 50.85, \"direct_model_fds\": 2, \"buffered_model_fds\": 0}}\n",
+  "stderr": ""
+}
