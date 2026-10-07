@@ -1,0 +1,45 @@
+{
+  "id": "c315-heldout-inventory",
+  "start": {
+    "utc": "2026-10-07T02:50:28.056488+00:00",
+    "monotonic_s": 117646.502061084
+  },
+  "end": {
+    "utc": "2026-10-07T02:51:33.786904+00:00",
+    "monotonic_s": 117712.232488841
+  },
+  "argv": [
+    "/usr/bin/python",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/tools/run_bounded.py",
+    "--run-id",
+    "c315-heldout-inventory",
+    "--model-id",
+    "model-free",
+    "--backend",
+    "stock",
+    "--backend-root",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/backends/c305-cpu-prediction-staging",
+    "--output-root",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c315-native-affine-heldout-investment-20261007/raw",
+    "--variant",
+    "Fixed-affine-movement-only-native-CPU8",
+    "--workload",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c315-native-affine-heldout-investment-20261007/protocol.json",
+    "--cache-condition",
+    "Original score arrays; one training-only weight identity, fixed four repetitions, no target or byte reads",
+    "--resource-protocol",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c315-native-affine-heldout-investment-20261007/protocol.json",
+    "--require-telemetry",
+    "--timeout-s",
+    "90",
+    "--collect-start-inventory",
+    "--",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c283-exact-expert-service-epoch-20261006T194311Z/build/score-affine-native/bin/expert-score-native",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c314-affine-fit-inventory-contract-repair-20261007/raw/weights-v1",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c304-prefix-cost-observer-repair-20261007/raw/c304-heldout-inventory-2-estimate.native",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c315-native-affine-heldout-investment-20261007/raw/c315-heldout-inventory.native"
+  ],
+  "returncode": 0,
+  "stdout": "{\"run_id\": \"c315-heldout-inventory\", \"elapsed_s\": 5.146, \"returncode\": 0, \"stop_reason\": null, \"maxima\": {\"rss_bytes\": 200171520, \"swap_bytes\": 0, \"cgroup_memory_bytes\": 160018432, \"cgroup_peak_bytes\": 181477376, \"cgroup_file_bytes\": 1609728, \"gpu_used_mib\": 23.0, \"gpu_temperature_c\": 42.0, \"cpu_tctl_c\": 48.375, \"nvme_composite_c\": 37.85, \"direct_model_fds\": 0, \"buffered_model_fds\": 0}}\n",
+  "stderr": ""
+}
