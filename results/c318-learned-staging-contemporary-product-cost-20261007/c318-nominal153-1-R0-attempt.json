@@ -1,0 +1,48 @@
+{
+  "id": "c318-nominal153-1-R0",
+  "start": {
+    "utc": "2026-10-07T03:31:07.003458+00:00",
+    "monotonic_s": 120085.449029762
+  },
+  "end": {
+    "utc": "2026-10-07T03:33:33.568185+00:00",
+    "monotonic_s": 120232.013763907
+  },
+  "argv": [
+    "/usr/bin/python",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/tools/run_bounded.py",
+    "--run-id",
+    "c318-nominal153-1-R0",
+    "--model-id",
+    "gpt-oss-120b-mxfp4-gguf",
+    "--backend",
+    "stock",
+    "--backend-root",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/backends/c305-cpu-prediction-staging",
+    "--output-root",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c318-learned-staging-contemporary-product-cost-20261007/raw",
+    "--variant",
+    "ContemporaryR0-traceOFF",
+    "--workload",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c318-learned-staging-contemporary-product-cost-20261007/protocol.json",
+    "--cache-condition",
+    "Same nativeR0/40/ub32/P12 prefix/input153+32providedIDs, originalweights/IO/nativeworkers/KV/commoncap/allocations; only fixed movement prediction andoriginalbytes staging toggled. All cost/finish counted.",
+    "--resource-protocol",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c318-learned-staging-contemporary-product-cost-20261007/protocol.json",
+    "--require-telemetry",
+    "--timeout-s",
+    "240",
+    "--collect-start-inventory",
+    "--",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c283-exact-expert-service-epoch-20261006T194311Z/build/learned-staging/bin/expert-learned-staging",
+    "/home/pmglo/models/gpt-oss-120b-gguf/gpt-oss-120b-MXFP4.gguf",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c276-post-c274-r2-causal-qualification-20261005T204839Z/development-inputs.json",
+    "nominal153",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c318-learned-staging-contemporary-product-cost-20261007/raw/c318-nominal153-1-R0.native",
+    "R0",
+    "v1"
+  ],
+  "returncode": 0,
+  "stdout": "{\"run_id\": \"c318-nominal153-1-R0\", \"elapsed_s\": 85.954, \"returncode\": 0, \"stop_reason\": null, \"maxima\": {\"rss_bytes\": 16147255296, \"swap_bytes\": 0, \"cgroup_memory_bytes\": 15924404224, \"cgroup_peak_bytes\": 15952732160, \"cgroup_file_bytes\": 1507794944, \"gpu_used_mib\": 6889.0, \"gpu_temperature_c\": 62.0, \"cpu_tctl_c\": 94.75, \"nvme_composite_c\": 50.85, \"direct_model_fds\": 3, \"buffered_model_fds\": 0}}\n",
+  "stderr": ""
+}

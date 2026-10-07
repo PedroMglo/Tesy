@@ -1,0 +1,39 @@
+{
+  "measurement_commit": "bc7909d2e3ebdb36e3490505141ece1c9d730f98",
+  "start": {
+    "utc": "2026-10-07T03:31:06.837383+00:00",
+    "monotonic_s": 120085.282964369
+  },
+  "end": {
+    "utc": "2026-10-07T03:50:56.228884+00:00",
+    "monotonic_s": 121274.674459793
+  },
+  "argv": [
+    "systemd-run",
+    "--user",
+    "--slice=tesy-post-c154.slice",
+    "--unit=tesy-c318-learned-product-cost",
+    "--collect",
+    "--pipe",
+    "--wait",
+    "--working-directory=/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc",
+    "-p",
+    "MemoryMax=21474836480",
+    "-p",
+    "MemoryHigh=21474836480",
+    "-p",
+    "MemorySwapMax=0",
+    "-p",
+    "RuntimeMaxSec=2800",
+    "-p",
+    "TimeoutStopSec=10",
+    "--",
+    "/usr/bin/python",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/tools/residency_unit_run.py",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c318-learned-staging-contemporary-product-cost-20261007",
+    "--inside"
+  ],
+  "returncode": 0,
+  "stdout": "",
+  "stderr": "Running as unit: tesy-c318-learned-product-cost.service; invocation ID: 21facbb7aca843e28535474395163e1a\n          Finished with result: success\nMain processes terminated with: code=exited, status=0/SUCCESS\n               Service runtime: 19min 49.264s\n             CPU time consumed: 56min 11.457s\n                   Memory peak: 15.2G (swap: 0B)\n"
+}
