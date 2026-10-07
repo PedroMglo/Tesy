@@ -1,0 +1,66 @@
+{
+  "status": "PASS_SELECTED_R0_CPU_STAGING_FIDELITY",
+  "case": "nominal153",
+  "stage": true,
+  "witness": true,
+  "full33_logits_sha256": "cb89a303f2c811d3cb75cf6df457a7bf8dcfb6279b729b326baec519748239a2",
+  "metrics": {
+    "prefix_s": 65.562580838,
+    "prefill153_s": 9.699643063,
+    "decode32_s": 9.918521552,
+    "total_s": 19.618164615
+  },
+  "decode_forward_s": 9.918508317,
+  "stage_cleanup_s": 1.3235e-05,
+  "stats": {
+    "issued": 746,
+    "deduplicated": 0,
+    "no_capacity": 2,
+    "reads": 735,
+    "completed_reads": 735,
+    "logical_read_weight_bytes": 9716112000,
+    "expired_queued": 5,
+    "expired_ready": 151,
+    "expired_running": 115,
+    "consumed": 469,
+    "waits": 229,
+    "errors": 0,
+    "peak_running_spec": 3,
+    "validation_claims": 8,
+    "validation_components": 24
+  },
+  "journal_events": 4508,
+  "consumed_with_complete_canonical_witness": 8,
+  "scope": "Original full33 R0 selected same-profile rows/IDs. Real stage reads linked to primary slot/expert/generation; provided IDs are not confirmed throughput. Diagnostic witness timings are not promotion measurements.",
+  "native_event_count": 41787,
+  "actual_staged_primary_commits": 469,
+  "all_real_primary_commits": 2124,
+  "true_router_labels_checked": 736,
+  "learned_affine": {
+    "status": "PASS_INTEGRATED_AUXILIARY_AFFINE_REFERENCE",
+    "maximum_error": 1.0134229695424324e-06,
+    "gamma257": 3.0637726056050824e-05,
+    "weights_sha256": {
+      "weight.f32": "a43fc0451ab528027c4b518d4f92f275d1b47b665c6479d1edaaf1c07e212b7d",
+      "bias.f32": "651e39090c7e2dda24aad015aa78840fbf5791bdf7183c577a9922675109d964"
+    },
+    "scope": "Auxiliary F32 envelope, never a tolerance for target drift."
+  },
+  "stage_stats": {
+    "issued": 746,
+    "deduplicated": 0,
+    "no_capacity": 2,
+    "reads": 735,
+    "completed_reads": 735,
+    "logical_read_weight_bytes": 9716112000,
+    "expired_queued": 5,
+    "expired_ready": 151,
+    "expired_running": 115,
+    "consumed": 469,
+    "waits": 229,
+    "errors": 0,
+    "peak_running_spec": 3,
+    "validation_claims": 8,
+    "validation_components": 24
+  }
+}
