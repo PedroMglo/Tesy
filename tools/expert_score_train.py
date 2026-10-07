@@ -1,5 +1,5 @@
 """Fixed task-disjoint affine fit. This never reads development/holdout labels."""
-import argparse, hashlib, json, time
+import argparse, ctypes, hashlib, json, os, time
 from pathlib import Path
 import numpy as np
 from expert_prediction_corpus_gate import inspect
@@ -11,6 +11,8 @@ def checksum(path):
 def train(protocol, output):
     output=Path(output)
     if output.exists(): raise ValueError('new training output required')
+    if protocol.get('model_id')!='gpt-oss-120b-mxfp4-gguf' or protocol.get('model_sha256')!='582bd40f6886200101f4c4ed9f25f3fe80cc14c86e9e2b37746cd8904a0c622d':
+        raise ValueError('original target linkage for movement-only fit')
     fixture=json.loads(Path(protocol['official_fixture']).read_text())
     tasks=json.loads(Path(protocol['tasks']).read_text())
     runs=protocol['runs']
@@ -29,6 +31,16 @@ def train(protocol, output):
                                    ('result.json','early-native-scores.f32','true-routing-scores.f32','actual-router-ids.json')}})
     if not 512<=total<=1024:raise ValueError('frozen total training row gate')
     x=np.concatenate([a[0] for a in arrays]);y=np.concatenate([a[1] for a in arrays])
+    # Audit the actual installed BLAS selected by NumPy, not a claimed CPU
+    # thread count inferred from a variable or from inference's libgomp.
+    blas_paths={Path(line.rsplit(' ',1)[-1]).resolve() for line in Path('/proc/self/maps').read_text().splitlines()
+                if line.rsplit(' ',1)[-1].startswith('/') and 'openblas' in line.rsplit(' ',1)[-1]}
+    if len(blas_paths)!=1:raise ValueError('one actual pinned training BLAS required')
+    blas=next(iter(blas_paths));handle=ctypes.CDLL(str(blas))
+    threads=handle.scipy_openblas_get_num_threads64_();
+    if threads!=8 or os.environ.get('OPENBLAS_NUM_THREADS')!='8':raise ValueError('actual frozen training threads')
+    if np.__version__!=protocol['numpy_version'] or str(blas)!=protocol['BLAS_path'] or checksum(blas)!=protocol['BLAS_sha256']:
+        raise ValueError('frozen auxiliary BLAS/toolchain identity')
     begin=time.monotonic();weights=[];bias=[]
     for layer in range(23):
         w,b=fit(x[:,layer,:],y[:,layer,:])
@@ -40,14 +52,20 @@ def train(protocol, output):
     output.mkdir()
     w.tofile(output/'weight.f32');b.tofile(output/'bias.f32')
     result={'schema':'original-score-affine-calibration-v1','status':'PASS_FIXED_TRAINING_ONLY_FIT',
+            'model_id':protocol['model_id'],'model_sha256':protocol['model_sha256'],
             'classification':'MEDIDO_NO_TARGET','source_horizon':2,'CPU_target_layers':[2,24],
             'feature_dimension':128,'output_dimension':128,'training_rows_per_layer':total,
             'training_conversations':receipts,'fit_s':elapsed,'fit':'identity-prior standardized ridge lambda=n, F64 solve/F32 stored',
             'weights_layout':'23 layers, W[output,input] row-major little-endian F32; GGML ne0=input, ne1=output',
             'weights_bytes':w.nbytes+b.nbytes,'sha256':{'weight.f32':checksum(output/'weight.f32'),'bias.f32':checksum(output/'bias.f32')},
-            'numpy_version':np.__version__,'development_used':False,'holdout_used':False,
+            'numpy_version':np.__version__,'training_BLAS_path':str(blas),'training_BLAS_sha256':checksum(blas),
+            'training_BLAS_actual_threads':threads,'training_environment':{'OPENBLAS_NUM_THREADS':os.environ['OPENBLAS_NUM_THREADS']},
+            'development_used':False,'holdout_used':False,
             'scope':'Auxiliary movement-only weights; no target fine-tuning, router replacement, latency or quality claim.'}
     (output/'manifest.json').write_text(json.dumps(result,indent=2,allow_nan=False)+'\n')
+    # Keep the real completed process observable to the existing ownership,
+    # empty-inference-map and resource monitor. Charged in the physical envelope.
+    time.sleep(5)
     return result
 
 def main():

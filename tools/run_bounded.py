@@ -95,12 +95,13 @@ def relevant_environment(env):
 def mapped_libraries_match(expected, mapped, artifact_contract=None):
     # Production remains strict. Metadata/conversion Python processes do not
     # load C75; an explicit frozen contract requires observing the empty map.
-    artifact = artifact_contract == {
+    artifact = any(artifact_contract == {
         'schema': 'bounded-artifact-only-v1',
-        'kind': 'PINNED_HEAD_CONVERSION_OR_VALUE_AUDIT',
+        'kind': kind,
         'full_model_forward': False,
         'expected_backend_libraries': {},
-    }
+    } for kind in ('PINNED_HEAD_CONVERSION_OR_VALUE_AUDIT',
+                   'BOUNDED_AUXILIARY_CPU_FIT'))
     if artifact_contract is not None and not artifact:
         raise ValueError('invalid artifact-only mapping contract')
     return type(expected) is dict and (bool(expected) or artifact) and \
