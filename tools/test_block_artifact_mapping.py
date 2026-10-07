@@ -16,6 +16,14 @@ class ArtifactMap(unittest.TestCase):
         for bad in ({},{**c,'full_model_forward':True},{**c,'expected_backend_libraries':{'libllama':'pin'}}):
             with self.assertRaises(ValueError):mapped_libraries_match({}, {}, bad)
 
+    def test_bounded_lossless_characterization_requires_observed_empty_inference_map(self):
+        c={'schema':'bounded-artifact-only-v1','kind':'BOUNDED_LOSSLESS_COMPONENT_CHARACTERIZATION','full_model_forward':False,'expected_backend_libraries':{}}
+        self.assertTrue(mapped_libraries_match({}, {}, c))
+        self.assertFalse(mapped_libraries_match({}, None, c))
+        self.assertFalse(mapped_libraries_match({}, {'libllama':'pin'}, c))
+        for bad in ({**c,'kind':'ARBITRARY_CODEC'},{**c,'full_model_forward':True},{**c,'extra':'unchecked'}):
+            with self.assertRaises(ValueError):mapped_libraries_match({}, {}, bad)
+
     def test_bounded_auxiliary_fit_requires_observed_empty_inference_map(self):
         c={'schema':'bounded-artifact-only-v1','kind':'BOUNDED_AUXILIARY_CPU_FIT','full_model_forward':False,'expected_backend_libraries':{}}
         self.assertTrue(mapped_libraries_match({}, {}, c))

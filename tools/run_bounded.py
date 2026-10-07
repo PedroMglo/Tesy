@@ -101,7 +101,8 @@ def mapped_libraries_match(expected, mapped, artifact_contract=None):
         'full_model_forward': False,
         'expected_backend_libraries': {},
     } for kind in ('PINNED_HEAD_CONVERSION_OR_VALUE_AUDIT',
-                   'BOUNDED_AUXILIARY_CPU_FIT'))
+                   'BOUNDED_AUXILIARY_CPU_FIT',
+                   'BOUNDED_LOSSLESS_COMPONENT_CHARACTERIZATION'))
     if artifact_contract is not None and not artifact:
         raise ValueError('invalid artifact-only mapping contract')
     return type(expected) is dict and (bool(expected) or artifact) and \
