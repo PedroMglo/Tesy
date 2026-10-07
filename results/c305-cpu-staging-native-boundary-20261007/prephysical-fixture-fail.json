@@ -1,0 +1,8 @@
+{
+ "status":"FAIL_MODEL_FREE_FIXTURE_DIVISION_BY_ZERO",
+ "exit_code":136,
+ "cause":"Queue-only synthetic constructor has no reader/alignment. Completion head offsets were calculated unconditionally. No model or original slices were read.",
+ "repair":"Calculate byte head offsets only when the actual aligned arena exists. Production constructor always allocates it with verified DIO alignment; no buffered fallback. Queue-only constructor exists solely in synthetic test compilation.",
+ "classification":"REPRODUZIDO_MODEL_FREE",
+ "hypothesis_revision":false
+}
