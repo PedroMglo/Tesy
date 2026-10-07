@@ -1,0 +1,55 @@
+{
+  "status": "PASS_FIXED_CANONICAL_CODEC_CHARACTERIZATION",
+  "classification": "MEDIDO_NO_TARGET",
+  "groups": {
+    "CPU/weight": {
+      "components": 96,
+      "logical_bytes": 423014400,
+      "encoded_bytes": 403975810,
+      "aligned_encoded_bytes": 404164608,
+      "saved_logical_percent": 4.500695484598161,
+      "saved_aligned_percent": 4.456063907044294,
+      "decompress_ready_s_per_component_median": 0.002318928,
+      "ratio_min": 0.9109658678286129,
+      "ratio_max": 0.9658097312999274
+    },
+    "CPU/bias": {
+      "components": 96,
+      "logical_bytes": 1105920,
+      "encoded_bytes": 495568,
+      "aligned_encoded_bytes": 753664,
+      "saved_logical_percent": 55.18952546296296,
+      "saved_aligned_percent": 31.851851851851855,
+      "decompress_ready_s_per_component_median": 9.34275e-06,
+      "ratio_min": 0.35555555555555557,
+      "ratio_max": 0.7111111111111111
+    },
+    "GPU/weight": {
+      "components": 96,
+      "logical_bytes": 423014400,
+      "encoded_bytes": 404531341,
+      "aligned_encoded_bytes": 404729856,
+      "saved_logical_percent": 4.36936874962176,
+      "saved_aligned_percent": 4.322440087145973,
+      "decompress_ready_s_per_component_median": 0.0023025949999999997,
+      "ratio_min": 0.933275236020334,
+      "ratio_max": 0.9639506172839506
+    },
+    "GPU/bias": {
+      "components": 96,
+      "logical_bytes": 1105920,
+      "encoded_bytes": 503107,
+      "aligned_encoded_bytes": 786432,
+      "saved_logical_percent": 54.50783058449073,
+      "saved_aligned_percent": 28.888888888888886,
+      "decompress_ready_s_per_component_median": 9.31525e-06,
+      "ratio_min": 0.7111111111111111,
+      "ratio_max": 0.7111111111111111
+    }
+  },
+  "best_sample_weight_aligned_ratio": 0.9109658678286129,
+  "conditional_zero_reconstruction_all_work_byte_service_upper_percent": 8.903413217138711,
+  "integration_investment_threshold_percent": 20,
+  "scope": "Best sampled weight ratio hypothetically applies to every mandatory read, zero reconstruction/copy/CPU contention overhead; all work assumed byte-proportional. This generous conditional scenario is not a universal physical bound or measured target speedup. Biases are already resident and earn no per-expert I/O benefit.",
+  "unmeasured": "Compressed-store read service, target contention, unsampled expert ratios and integration. Actual reconstruction/copy cost reported independently; no codec runtime admitted without >=20% complete-path foundation."
+}
