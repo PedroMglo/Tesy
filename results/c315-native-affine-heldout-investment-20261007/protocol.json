@@ -1,0 +1,810 @@
+{
+  "model_path": "/home/pmglo/models/gpt-oss-120b-gguf/gpt-oss-120b-MXFP4.gguf",
+  "model_id": "gpt-oss-120b-mxfp4-gguf",
+  "model_stat": {
+    "dev": 53,
+    "inode": 14833675,
+    "size_bytes": 63387346208,
+    "mtime_ns": 1790389637795911032,
+    "ctime_ns": 1790389637807910988
+  },
+  "model_sha256_previously_verified": "582bd40f6886200101f4c4ed9f25f3fe80cc14c86e9e2b37746cd8904a0c622d",
+  "epoch_path": "results/c283-exact-expert-service-epoch-20261006T194311Z",
+  "backend_root": "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/backends/c305-cpu-prediction-staging",
+  "backend_commit": "c94780b12820c7b3fb20f2a9acf38bb27506c6ae",
+  "backend_tree": "e418713c063a33214d5bf75f3ff25b40090ab7a1",
+  "limits": {},
+  "parallel_runtime": {
+    "schema": "parallel-runtime-v1",
+    "environment": {
+      "values": {},
+      "unset": [
+        "OMP_WAIT_POLICY",
+        "OMP_NUM_THREADS",
+        "OMP_DYNAMIC",
+        "OMP_PROC_BIND",
+        "OMP_PLACES",
+        "GOMP_SPINCOUNT",
+        "GOMP_CPU_AFFINITY",
+        "KMP_BLOCKTIME",
+        "KMP_AFFINITY"
+      ]
+    },
+    "libraries_sha256": {
+      "/usr/lib64/libgomp.so.1.0.0": "637b2ab4eedf3ce72173a9d34a4c41c480082d68662db3f0ef4998117df8f9b2"
+    }
+  },
+  "schema": "c315-native-fixed-affine-evaluation-v1",
+  "campaign_id": "c315-native-affine-cost-and-heldout-service",
+  "execution_scope_unit": "tesy-c315-native-affine-evaluation",
+  "physical_envelope_s": 600,
+  "raw_projection_bytes": 67108864,
+  "publication": "LOCAL_ONLY",
+  "common_env": {},
+  "success_status": "PASS_NATIVE_FIXED_AFFINE_EVALUATION_AND_SERVICE_ANALYSIS",
+  "claim_scope": "Three isolated original-CPU8 GGML auxiliary affine value/cost runs, four fixed repetitions on complete old score rows. Two conversation-separated conditional investment scenarios, not actual staging or target useful latency.",
+  "resources": {
+    "schema": "tesy-resources-v2",
+    "snapshot_sha256": "caef332698d59a50eec8d9029bab79b4027737e5ad78b81d090064114afcf6d2",
+    "inventory_snapshot": {
+      "ancestors": [
+        {
+          "memory_current": 2655678464,
+          "memory_max": "max",
+          "path": "/sys/fs/cgroup/user.slice/user-1000.slice/user@1000.service/app.slice/app-gnome-org.wezfurlong.wezterm-51046.scope"
+        },
+        {
+          "memory_current": 3880546304,
+          "memory_max": "max",
+          "path": "/sys/fs/cgroup/user.slice/user-1000.slice/user@1000.service/app.slice"
+        },
+        {
+          "memory_current": 9863761920,
+          "memory_max": "max",
+          "path": "/sys/fs/cgroup/user.slice/user-1000.slice/user@1000.service"
+        },
+        {
+          "memory_current": 9871544320,
+          "memory_max": "max",
+          "path": "/sys/fs/cgroup/user.slice/user-1000.slice"
+        },
+        {
+          "memory_current": 10091102208,
+          "memory_max": "max",
+          "path": "/sys/fs/cgroup/user.slice"
+        },
+        {
+          "memory_current": null,
+          "memory_max": "UNBOUNDED_ROOT",
+          "path": "/sys/fs/cgroup"
+        }
+      ],
+      "baseline": [
+        {
+          "MemAvailable": 28374917120,
+          "elapsed_s": 2.399901859462261e-07,
+          "psi_full_avg10": 0.0
+        },
+        {
+          "MemAvailable": 28373954560,
+          "elapsed_s": 1.0001581679971423,
+          "psi_full_avg10": 0.0
+        },
+        {
+          "MemAvailable": 28359536640,
+          "elapsed_s": 2.0003139119944535,
+          "psi_full_avg10": 0.0
+        },
+        {
+          "MemAvailable": 28364148736,
+          "elapsed_s": 3.0007748609932605,
+          "psi_full_avg10": 0.0
+        },
+        {
+          "MemAvailable": 28363575296,
+          "elapsed_s": 4.000878346996615,
+          "psi_full_avg10": 0.0
+        },
+        {
+          "MemAvailable": 28367908864,
+          "elapsed_s": 5.0009867409971775,
+          "psi_full_avg10": 0.0
+        },
+        {
+          "MemAvailable": 28362166272,
+          "elapsed_s": 6.001188099995488,
+          "psi_full_avg10": 0.0
+        },
+        {
+          "MemAvailable": 28365291520,
+          "elapsed_s": 7.001625004995731,
+          "psi_full_avg10": 0.0
+        },
+        {
+          "MemAvailable": 28367925248,
+          "elapsed_s": 8.001832986992667,
+          "psi_full_avg10": 0.0
+        },
+        {
+          "MemAvailable": 28370153472,
+          "elapsed_s": 9.001905825003632,
+          "psi_full_avg10": 0.0
+        },
+        {
+          "MemAvailable": 28372492288,
+          "elapsed_s": 10.002003849993343,
+          "psi_full_avg10": 0.0
+        },
+        {
+          "MemAvailable": 28365148160,
+          "elapsed_s": 11.00210212499951,
+          "psi_full_avg10": 0.0
+        },
+        {
+          "MemAvailable": 28366471168,
+          "elapsed_s": 12.002191974999732,
+          "psi_full_avg10": 0.0
+        },
+        {
+          "MemAvailable": 28369694720,
+          "elapsed_s": 13.002281984998262,
+          "psi_full_avg10": 0.0
+        },
+        {
+          "MemAvailable": 28372381696,
+          "elapsed_s": 14.002370621994487,
+          "psi_full_avg10": 0.0
+        },
+        {
+          "MemAvailable": 28373405696,
+          "elapsed_s": 15.002467685000738,
+          "psi_full_avg10": 0.0
+        },
+        {
+          "MemAvailable": 28375543808,
+          "elapsed_s": 16.002564367998275,
+          "psi_full_avg10": 0.0
+        },
+        {
+          "MemAvailable": 28374736896,
+          "elapsed_s": 17.00266353499319,
+          "psi_full_avg10": 0.0
+        },
+        {
+          "MemAvailable": 28374011904,
+          "elapsed_s": 18.002771137995296,
+          "psi_full_avg10": 0.0
+        },
+        {
+          "MemAvailable": 28367982592,
+          "elapsed_s": 19.00305748799292,
+          "psi_full_avg10": 0.0
+        },
+        {
+          "MemAvailable": 28374507520,
+          "elapsed_s": 20.00317889699363,
+          "psi_full_avg10": 0.0
+        },
+        {
+          "MemAvailable": 28374855680,
+          "elapsed_s": 21.004275935993064,
+          "psi_full_avg10": 0.0
+        },
+        {
+          "MemAvailable": 28376408064,
+          "elapsed_s": 22.004413364993525,
+          "psi_full_avg10": 0.0
+        },
+        {
+          "MemAvailable": 28375355392,
+          "elapsed_s": 23.004510197992204,
+          "psi_full_avg10": 0.0
+        },
+        {
+          "MemAvailable": 28376289280,
+          "elapsed_s": 24.004599947002134,
+          "psi_full_avg10": 0.0
+        },
+        {
+          "MemAvailable": 28375793664,
+          "elapsed_s": 25.004697711992776,
+          "psi_full_avg10": 0.0
+        },
+        {
+          "MemAvailable": 28374245376,
+          "elapsed_s": 26.004801517003216,
+          "psi_full_avg10": 0.0
+        },
+        {
+          "MemAvailable": 28377026560,
+          "elapsed_s": 27.004951359995175,
+          "psi_full_avg10": 0.0
+        },
+        {
+          "MemAvailable": 28377026560,
+          "elapsed_s": 28.00505632799468,
+          "psi_full_avg10": 0.0
+        },
+        {
+          "MemAvailable": 28376326144,
+          "elapsed_s": 29.005155915991054,
+          "psi_full_avg10": 0.0
+        },
+        {
+          "MemAvailable": 28375523328,
+          "elapsed_s": 30.005252649003523,
+          "psi_full_avg10": 0.0
+        },
+        {
+          "MemAvailable": 28380000256,
+          "elapsed_s": 31.005354510998586,
+          "psi_full_avg10": 0.0
+        },
+        {
+          "MemAvailable": 28380049408,
+          "elapsed_s": 32.005454789992655,
+          "psi_full_avg10": 0.0
+        },
+        {
+          "MemAvailable": 28379930624,
+          "elapsed_s": 33.00556778299506,
+          "psi_full_avg10": 0.0
+        },
+        {
+          "MemAvailable": 28376948736,
+          "elapsed_s": 34.00572011100303,
+          "psi_full_avg10": 0.0
+        },
+        {
+          "MemAvailable": 28378734592,
+          "elapsed_s": 35.00619627899141,
+          "psi_full_avg10": 0.0
+        },
+        {
+          "MemAvailable": 28376612864,
+          "elapsed_s": 36.00631376999081,
+          "psi_full_avg10": 0.0
+        },
+        {
+          "MemAvailable": 28383531008,
+          "elapsed_s": 37.00641839799937,
+          "psi_full_avg10": 0.0
+        },
+        {
+          "MemAvailable": 28386062336,
+          "elapsed_s": 38.006518166002934,
+          "psi_full_avg10": 0.0
+        },
+        {
+          "MemAvailable": 28385296384,
+          "elapsed_s": 39.00661615100398,
+          "psi_full_avg10": 0.0
+        },
+        {
+          "MemAvailable": 28385148928,
+          "elapsed_s": 40.00672669999767,
+          "psi_full_avg10": 0.0
+        },
+        {
+          "MemAvailable": 28389765120,
+          "elapsed_s": 41.0068469169928,
+          "psi_full_avg10": 0.0
+        },
+        {
+          "MemAvailable": 28389736448,
+          "elapsed_s": 42.00690896400192,
+          "psi_full_avg10": 0.0
+        },
+        {
+          "MemAvailable": 28389928960,
+          "elapsed_s": 43.00700792999123,
+          "psi_full_avg10": 0.0
+        },
+        {
+          "MemAvailable": 28381708288,
+          "elapsed_s": 44.00709739899321,
+          "psi_full_avg10": 0.0
+        },
+        {
+          "MemAvailable": 28387618816,
+          "elapsed_s": 45.00758971799223,
+          "psi_full_avg10": 0.0
+        },
+        {
+          "MemAvailable": 28390010880,
+          "elapsed_s": 46.00769457599381,
+          "psi_full_avg10": 0.0
+        },
+        {
+          "MemAvailable": 28390625280,
+          "elapsed_s": 47.007794003002346,
+          "psi_full_avg10": 0.0
+        },
+        {
+          "MemAvailable": 28386328576,
+          "elapsed_s": 48.007892528999946,
+          "psi_full_avg10": 0.0
+        },
+        {
+          "MemAvailable": 28386091008,
+          "elapsed_s": 49.007962761999806,
+          "psi_full_avg10": 0.0
+        },
+        {
+          "MemAvailable": 28388831232,
+          "elapsed_s": 50.00806342100259,
+          "psi_full_avg10": 0.0
+        },
+        {
+          "MemAvailable": 28388585472,
+          "elapsed_s": 51.00816406100057,
+          "psi_full_avg10": 0.0
+        },
+        {
+          "MemAvailable": 28388954112,
+          "elapsed_s": 52.00826368900016,
+          "psi_full_avg10": 0.0
+        },
+        {
+          "MemAvailable": 28393537536,
+          "elapsed_s": 53.00835277799342,
+          "psi_full_avg10": 0.0
+        },
+        {
+          "MemAvailable": 28393312256,
+          "elapsed_s": 54.008449681001366,
+          "psi_full_avg10": 0.0
+        },
+        {
+          "MemAvailable": 28393484288,
+          "elapsed_s": 55.008556963002775,
+          "psi_full_avg10": 0.0
+        },
+        {
+          "MemAvailable": 28394397696,
+          "elapsed_s": 56.00865046000399,
+          "psi_full_avg10": 0.0
+        },
+        {
+          "MemAvailable": 28394582016,
+          "elapsed_s": 57.00875480599643,
+          "psi_full_avg10": 0.0
+        },
+        {
+          "MemAvailable": 28394979328,
+          "elapsed_s": 58.00885256100446,
+          "psi_full_avg10": 0.0
+        },
+        {
+          "MemAvailable": 28395081728,
+          "elapsed_s": 59.00895288999891,
+          "psi_full_avg10": 0.0
+        },
+        {
+          "MemAvailable": 28395372544,
+          "elapsed_s": 60.009054201000254,
+          "psi_full_avg10": 0.0
+        }
+      ],
+      "cpu_identity": {
+        "family": 26,
+        "model": "AMD Ryzen AI 9 HX 370 w/ Radeon 890M",
+        "model_id": 36
+      },
+      "gpu_csv": "GPU-83d90c55-1d92-75da-fc30-7771a85f2521, 00000000:C4:00.0, NVIDIA GeForce RTX 4060 Laptop GPU, 8188, 23, 41, 615.71.09",
+      "gpu_power_query": {
+        "output": "2.72, [N/A], 42.00",
+        "status": "SUPPORTED"
+      },
+      "gpu_temperature_query": "==============NVSMI LOG==============\n\nTimestamp                                              : Wed Oct  7 03:47:32 2026\nDriver Version                                         : 615.71.09 [Deprecated; will be removed in CUDA 14.0. Use KMD Version instead]\nCUDA Version                                           : 13.4 [Deprecated; will be removed in CUDA 14.0. Use CUDA UMD Version instead]\nKMD Version                                            : 615.71.09\nCUDA UMD Version                                       : 13.4\n\nAttached GPUs                                          : 1\nGPU 00000000:C4:00.0\n    Temperature\n        GPU Current Temp                               : 41 C\n        GPU Current Max Temp                           : N/A\n        GPU Current T.Limit Temp                       : 34 C\n        GPU Shutdown T.Limit Temp Specification        : -12 C\n        GPU Slowdown T.Limit Temp Specification        : -2 C\n        GPU Max Operating T.Limit Temp Specification   : 0 C\n        GPU Target Temperature Specification           : 75 C\n        Memory Current Temp                            : N/A\n        Memory Max Operating T.Limit Temp Specification: N/A",
+      "involved_nvme": {
+        "nvme0": {
+          "bdf": "0000:c1:00.0",
+          "firmware": "V3MA101",
+          "model": "MTFDKBK1T0QFM-1BD1AABGB"
+        }
+      },
+      "memory": {
+        "MemAvailable": 28395372544,
+        "MemAvailable_max": 28395372544,
+        "MemAvailable_min": 28359536640,
+        "MemTotal": 32698781696,
+        "SwapFree": 15152889856,
+        "SwapTotal": 16348868608,
+        "ancestor_headroom_bytes": 32698781696
+      },
+      "model_stat": {
+        "dev": 53,
+        "inode": 14833675,
+        "mtime_ns": 1790389637795911032,
+        "size_bytes": 63387346208
+      },
+      "mounts": {
+        "model": {
+          "fstype": "btrfs",
+          "path": "/home/pmglo/models/gpt-oss-120b-gguf/gpt-oss-120b-MXFP4.gguf",
+          "source": "/dev/nvme0n1p3[/home]",
+          "target": "/home"
+        },
+        "raw": {
+          "fstype": "btrfs",
+          "path": "results/c283-exact-expert-service-epoch-20261006T194311Z/raw/c315-inventory",
+          "source": "/dev/nvme0n1p3[/home]",
+          "target": "/home"
+        },
+        "workspace": {
+          "fstype": "tmpfs",
+          "path": "/tmp",
+          "source": "tmpfs",
+          "target": "/tmp"
+        }
+      },
+      "power": {
+        "batteries": [
+          {
+            "name": "BAT0",
+            "status": "Not charging"
+          },
+          {
+            "name": "hid-0018:04F3:4359.0005-battery-7",
+            "status": "Unknown"
+          }
+        ],
+        "online_sources": [
+          "AC0",
+          "ucsi-source-psy-USBC000:002"
+        ],
+        "profile": "performance",
+        "source": "AC"
+      },
+      "psi": {
+        "full_avg10": 0.0,
+        "raw": {
+          "avg10": 0.0,
+          "avg300": 0.0,
+          "avg60": 0.0,
+          "total": 926493
+        }
+      },
+      "schema": "c55-host-snapshot-v1",
+      "sensors": {
+        "BAT0-acpi-0": {
+          "Adapter": "ACPI interface",
+          "in0": {
+            "in0_input": 16.351
+          },
+          "power1": {
+            "power1_input": 0.0
+          }
+        },
+        "acpi_fan-isa-0000": {
+          "Adapter": "ISA adapter",
+          "fan1": {
+            "fan1_input": 2722.0
+          }
+        },
+        "acpitz-acpi-0": {
+          "Adapter": "ACPI interface",
+          "temp1": {
+            "temp1_input": 43.0
+          },
+          "temp2": {
+            "temp2_input": 43.0
+          },
+          "temp3": {
+            "temp3_input": 20.0
+          }
+        },
+        "amdgpu-pci-c500": {
+          "Adapter": "PCI adapter",
+          "PPT": {
+            "power1_average": 6.483,
+            "power1_input": 6.483
+          },
+          "edge": {
+            "temp1_input": 40.0
+          },
+          "vddgfx": {
+            "in0_input": 0.0
+          },
+          "vddnb": {
+            "in1_input": 0.0
+          }
+        },
+        "asus-isa-0000": {
+          "Adapter": "ISA adapter",
+          "cpu_fan": {
+            "fan1_input": 2700.0
+          },
+          "gpu_fan": {
+            "fan2_input": 2400.0
+          }
+        },
+        "k10temp-pci-00c3": {
+          "Adapter": "PCI adapter",
+          "Tctl": {
+            "temp1_input": 43.75
+          }
+        },
+        "mt7925_phy0-pci-c300": {
+          "Adapter": "PCI adapter",
+          "temp1": {
+            "temp1_input": 47.0
+          }
+        },
+        "nvme-pci-c100": {
+          "Adapter": "PCI adapter",
+          "Composite": {
+            "temp1_alarm": 0.0,
+            "temp1_crit": 89.85,
+            "temp1_input": 36.85,
+            "temp1_max": 86.85,
+            "temp1_min": -0.15
+          },
+          "Sensor 1": {
+            "temp2_input": 36.85,
+            "temp2_max": 65261.85,
+            "temp2_min": -273.15
+          }
+        },
+        "ucsi_source_psy_USBC000:001-isa-0000": {
+          "Adapter": "ISA adapter",
+          "curr1": {
+            "curr1_input": 0.0,
+            "curr1_max": 0.0
+          },
+          "in0": {
+            "in0_input": 0.0,
+            "in0_max": 0.0,
+            "in0_min": 0.0
+          }
+        },
+        "ucsi_source_psy_USBC000:002-isa-0000": {
+          "Adapter": "ISA adapter",
+          "curr1": {
+            "curr1_input": 4.8,
+            "curr1_max": 0.0
+          },
+          "in0": {
+            "in0_input": 0.0,
+            "in0_max": 0.0,
+            "in0_min": 0.0
+          }
+        }
+      },
+      "storage_free_bytes": 334740402176,
+      "utc": "2026-10-07T02:47:32.320688+00:00"
+    },
+    "cgroup": {
+      "memory_max_bytes": 4294967296,
+      "memory_swap_max_bytes": 0,
+      "memory_stop_bytes": 3758096384,
+      "memory_high_bytes": 4294967296
+    },
+    "memory": {
+      "reserve_bytes": 2147483648,
+      "available_stop_bytes": 1073741824,
+      "available_stop_samples": 2,
+      "reserve_stop_duration_s": 10,
+      "psi_full_avg10_stop_percent": 10,
+      "psi_stop_duration_s": 10
+    },
+    "gpu": {
+      "uuid": "GPU-83d90c55-1d92-75da-fc30-7771a85f2521",
+      "bdf": "00000000:C4:00.0",
+      "memory_total_mib": 8188.0,
+      "memory_stop_total_mib": 7676.0,
+      "temperature_stop_c": 77.0,
+      "temperature_warning_c": 75.0,
+      "thermal_status": "DEVICE_DERIVED_EXPERIMENT_ADMISSION"
+    },
+    "cpu": {
+      "model": "AMD Ryzen AI 9 HX 370 w/ Radeon 890M",
+      "sensor": "k10temp-pci-00c3",
+      "temperature_warning_c": 95.0,
+      "temperature_stop_c": 100.0
+    },
+    "nvme": [
+      {
+        "controller": "nvme0",
+        "bdf": "0000:c1:00.0",
+        "sensor": "nvme-pci-c100",
+        "stop_c": 87.85,
+        "warning_c": 86.85,
+        "critical_c": 89.85
+      }
+    ],
+    "power": {
+      "source": "AC",
+      "profile": "performance",
+      "online_sources": [
+        "AC0",
+        "ucsi-source-psy-USBC000:002"
+      ]
+    },
+    "start": {
+      "mode": "OPERATIONAL_SESSION_START",
+      "inventory_duration_s": 60,
+      "initial_cpu_below_warning": true,
+      "initial_gpu_below_warning_when_available": true,
+      "initial_nvme_below_warning_when_available": true
+    },
+    "telemetry": {
+      "max_gap_s": 3,
+      "retry_reads": 1,
+      "loss_persistence_s": 3
+    },
+    "comparators": {
+      "temperature": ">=",
+      "gpu_memory": ">=",
+      "cgroup_margin": ">=",
+      "host_available": "<"
+    },
+    "classes": {
+      "cpu_100": "DEVICE_LIMIT",
+      "cpu_95": "WARNING",
+      "gpu_stop": "EXPERIMENT_ADMISSION",
+      "cgroup_cap": "EXPERIMENT_ADMISSION",
+      "nvme_stop": "EXPERIMENT_ADMISSION"
+    },
+    "units": {
+      "memory": "bytes",
+      "gpu_memory": "MiB",
+      "temperature": "C",
+      "time": "s"
+    }
+  },
+  "start_inventory": {
+    "schema": "c120-start-inventory-v1",
+    "duration_s": 60,
+    "max_age_s": 3,
+    "policy_sha256": "876ab77b734c2ad707098b06953087f5eb9448698ed6366ad5a85e3bfcaee9f4"
+  },
+  "native_contract": {
+    "complete_operator": "input_set + native_CPU8_affine + sync + output_get + stable_top4_sort",
+    "repetitions": 4,
+    "in_profile_determinism": "bitwise across four repetitions",
+    "independent_reference": "F64(X W.T + b), frozen gamma257*(absX absW.T + absb + 1) auxiliary F32 error envelope; never tolerance for target drift",
+    "fixed_fitted_weights": "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c314-affine-fit-inventory-contract-repair-20261007/raw/weights-v1",
+    "scope": "No GGUF/target forward, no new weights downloaded, actual native math/backend and libgomp maps required. No artifact-empty inference exception."
+  },
+  "gate": {
+    "predictor_heldout_investment": "Fixed service_scale1 conditional decode gain>=10% in one case, other>=-5%, .8/1/1.2 service sensitivity reported. At most one bounded actual learned staging canary; no promotion.",
+    "no_recalibration": "No lambda,task,horizon,architecture grid; valid negative closes fixed affine revision."
+  },
+  "runs": [
+    {
+      "id": "c315-development-code",
+      "case": "development-code",
+      "model_free": true,
+      "inventory": true,
+      "timeout_s": 90,
+      "post_run_timeout_s": 15,
+      "env": {},
+      "variant": "Fixed-affine-movement-only-native-CPU8",
+      "label": "Original score arrays; one training-only weight identity, fixed four repetitions, no target or byte reads",
+      "command": [
+        "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c283-exact-expert-service-epoch-20261006T194311Z/build/score-affine-native/bin/expert-score-native",
+        "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c314-affine-fit-inventory-contract-repair-20261007/raw/weights-v1",
+        "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c299-true-routing-score-alias-repair-20261006/raw/c299-code153-2-estimate.native",
+        "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c315-native-affine-heldout-investment-20261007/raw/c315-development-code.native"
+      ],
+      "post_run_command": [
+        "/usr/bin/python",
+        "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/tools/expert_score_calibration_gate.py",
+        "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c315-native-affine-heldout-investment-20261007/raw/c315-development-code.native",
+        "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c314-affine-fit-inventory-contract-repair-20261007/raw/weights-v1",
+        "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c299-true-routing-score-alias-repair-20261006/raw/c299-code153-2-estimate.native",
+        "--output",
+        "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c315-native-affine-heldout-investment-20261007/c315-development-code-reference.json"
+      ]
+    },
+    {
+      "id": "c315-heldout-intervals",
+      "case": "heldout-intervals",
+      "model_free": true,
+      "inventory": true,
+      "timeout_s": 90,
+      "post_run_timeout_s": 15,
+      "env": {},
+      "variant": "Fixed-affine-movement-only-native-CPU8",
+      "label": "Original score arrays; one training-only weight identity, fixed four repetitions, no target or byte reads",
+      "command": [
+        "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c283-exact-expert-service-epoch-20261006T194311Z/build/score-affine-native/bin/expert-score-native",
+        "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c314-affine-fit-inventory-contract-repair-20261007/raw/weights-v1",
+        "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c304-prefix-cost-observer-repair-20261007/raw/c304-heldout-intervals-2-estimate.native",
+        "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c315-native-affine-heldout-investment-20261007/raw/c315-heldout-intervals.native"
+      ],
+      "post_run_command": [
+        "/usr/bin/python",
+        "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/tools/expert_score_calibration_gate.py",
+        "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c315-native-affine-heldout-investment-20261007/raw/c315-heldout-intervals.native",
+        "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c314-affine-fit-inventory-contract-repair-20261007/raw/weights-v1",
+        "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c304-prefix-cost-observer-repair-20261007/raw/c304-heldout-intervals-2-estimate.native",
+        "--output",
+        "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c315-native-affine-heldout-investment-20261007/c315-heldout-intervals-reference.json"
+      ]
+    },
+    {
+      "id": "c315-heldout-inventory",
+      "case": "heldout-inventory",
+      "model_free": true,
+      "inventory": true,
+      "timeout_s": 90,
+      "post_run_timeout_s": 15,
+      "env": {},
+      "variant": "Fixed-affine-movement-only-native-CPU8",
+      "label": "Original score arrays; one training-only weight identity, fixed four repetitions, no target or byte reads",
+      "command": [
+        "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c283-exact-expert-service-epoch-20261006T194311Z/build/score-affine-native/bin/expert-score-native",
+        "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c314-affine-fit-inventory-contract-repair-20261007/raw/weights-v1",
+        "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c304-prefix-cost-observer-repair-20261007/raw/c304-heldout-inventory-2-estimate.native",
+        "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c315-native-affine-heldout-investment-20261007/raw/c315-heldout-inventory.native"
+      ],
+      "post_run_command": [
+        "/usr/bin/python",
+        "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/tools/expert_score_calibration_gate.py",
+        "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c315-native-affine-heldout-investment-20261007/raw/c315-heldout-inventory.native",
+        "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c314-affine-fit-inventory-contract-repair-20261007/raw/weights-v1",
+        "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c304-prefix-cost-observer-repair-20261007/raw/c304-heldout-inventory-2-estimate.native",
+        "--output",
+        "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c315-native-affine-heldout-investment-20261007/c315-heldout-inventory-reference.json"
+      ]
+    }
+  ],
+  "analysis_command": [
+    "/usr/bin/python",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/tools/expert_learned_prediction_scenario.py",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c315-native-affine-heldout-investment-20261007/scenario-input.json",
+    "--output",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c315-native-affine-heldout-investment-20261007/heldout-service-scenario.json"
+  ],
+  "file_sha256": {
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/tools/run_bounded.py": "6b19e519a07a0da15c52a5ffe41ebefb56780e01eb23327b0388bd8da7253088",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/tools/residency_unit_run.py": "5635fe18004c42c97ccda13bff5566ced282ae959ce1c360ceb4502e15f4366a",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/tools/host_resource_policy.py": "5a3099cef6ac9dac6c5b33a6ce121698bbb249f099fab4cb1fa0d9e1a7f49a79",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/tools/c118_start_inventory.py": "2cc7485b0badf233eeb72043be7dd170b7d6d30c28e29db47c704d3ab936b329",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/tools/parallel_runtime.py": "f8e7f99208a5c1395d6f5d34df3e32e5d6abae61f43173bcff1e285c673ad258",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/tools/expert_score_native.cpp": "fa119eb275345d3e85c13af1ef6e56cadf2df7f5ada04990070a236cd70a157b",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/tools/expert_score_native_build/CMakeLists.txt": "0e5ca9f2797d13c6750e9b0fd095fe2e23b905bc06f932c92fbf43b4857ebe73",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/tools/expert_score_calibration_gate.py": "95227922b82abcef11827dfd2a88307be3bcbbd0a83b674df70fa78b77b372a6",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/tools/expert_learned_prediction_scenario.py": "9e749b5ee385ed0c84a2b20a76207e926a743aec496b3f63de83adce46eac762",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/tools/expert_native_stage_scenario.py": "bc703dfa296502da600029cbce157a57fc5b770f534bec1e0db67be3552a9a41",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/tools/expert_primary_state_replay.py": "3ec6c1a4154a3834210e7665c0a681deb06ee1c0a6e43495c7b860c76f416abb",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/tools/expert_prediction_holdout_gate.py": "502d65e8bd3257b808e09c534d3c5f7f86e54269ad92cb884dd132325c5a9ff2",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/tools/expert_prediction_holdout_scenario.py": "d7876e2770aa774fa266fb4324e08673375047a518352d137228385e5813c710",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/tools/expert_prediction_scenario.py": "0e63bb384249c740f7ccb48ec088d56c53f4e46647a42d16a410b85c489f127a",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/tools/expert_real_prediction_scenario.py": "4bbb7113ceec45a6a10602e08f3db762414b763068f33cfb9695e330d160b240",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c283-exact-expert-service-epoch-20261006T194311Z/build/score-affine-native/bin/expert-score-native": "163d41665a0b020e18d042051e0e2aded043ad3272516f0fdea442173631066d",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c315-native-affine-heldout-investment-20261007/resource-policy.json": "876ab77b734c2ad707098b06953087f5eb9448698ed6366ad5a85e3bfcaee9f4",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c315-native-affine-heldout-investment-20261007/scenario-input.json": "1b8e1267ae5507864853194a3768dd1b92796ea26d12a1bc730e07e651ca9d5c",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c304-prefix-cost-observer-repair-20261007/protocol.json": "c92a7360e728944095a9fe52c3857dbd2f34eab05e5db904135f45fbde2663d1",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c302-vocabulary-envelope-repair-20261007/raw/official-inputs.json": "d39c0ccf2ea85b2b0fc601d9103873e0ef640a65af75bd910ff75c58af862397",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c314-affine-fit-inventory-contract-repair-20261007/raw/weights-v1/weight.f32": "a43fc0451ab528027c4b518d4f92f275d1b47b665c6479d1edaaf1c07e212b7d",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c314-affine-fit-inventory-contract-repair-20261007/raw/weights-v1/bias.f32": "651e39090c7e2dda24aad015aa78840fbf5791bdf7183c577a9922675109d964",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c314-affine-fit-inventory-contract-repair-20261007/raw/weights-v1/manifest.json": "78112edf6389042276e40e4ed42cb9e646f12bc51c0839763d1fd66fa0a50270",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/backends/c269-layer-last-use/build-c269-cuda/bin/libggml-base.so.0.15.3": "6e27d9ecb86e4747177189d2d2f6390280a2ee1000221ad68a0404023ea72539",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/backends/c269-layer-last-use/build-c269-cuda/bin/libggml-cpu.so.0.15.3": "9aabce5751c5d7ca19b50e4cabb1fcf484c1581d275141dae8aba8ed33060313",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/backends/c269-layer-last-use/build-c269-cuda/bin/libggml-cuda.so.0.15.3": "ff43655b15df5f3de1d5e00b0da18469a14f118bd644eb4b6d7f1915c85a4493",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/backends/c269-layer-last-use/build-c269-cuda/bin/libggml.so.0.15.3": "70f635b8ba22ddd751590ec1fe11c895ef88e2aff0f4a63a3af96314e6a77d65",
+    "/usr/lib64/libgomp.so.1.0.0": "637b2ab4eedf3ce72173a9d34a4c41c480082d68662db3f0ef4998117df8f9b2",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c299-true-routing-score-alias-repair-20261006/raw/c299-code153-2-estimate.native/prediction-scores.f32": "941de5ca4bcfb4fdbb5771e678e57e274ad4ffc37eb78894d0a172fea128ff62",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c299-true-routing-score-alias-repair-20261006/raw/c299-code153-2-estimate.native/result.json": "60e410d4624662ce330991729ccac3c065f16294335479affd24d345967a390c",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c304-prefix-cost-observer-repair-20261007/raw/c304-heldout-intervals-2-estimate.native/prediction-scores.f32": "ac9fafbb1d6b1530db036605e1886bd64f023acbe83d374c2c1427cc49bc5361",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c304-prefix-cost-observer-repair-20261007/raw/c304-heldout-intervals-2-estimate.native/result.json": "dc63773b351f9e05c8d338db3e3b7bfece8ad2cc45f1bbb58f32485f1a1a190d",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c304-prefix-cost-observer-repair-20261007/raw/c304-heldout-inventory-2-estimate.native/prediction-scores.f32": "c4e3952d4ff46c2651b0a93b394c102af344b1c4df520b1a3e5a0046f22a8c17",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c304-prefix-cost-observer-repair-20261007/raw/c304-heldout-inventory-2-estimate.native/result.json": "cdb2c0758d70c9771ff0c5692e44613089fbc896becf56e68eb9addc28efda8a",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c304-prefix-cost-observer-repair-20261007/raw/c304-heldout-intervals-1-greedy.native/events.tsv": "8b3431ec713866b71abb976e03750f426c4180e774c8373e10872450dd1c6322",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c304-prefix-cost-observer-repair-20261007/raw/c304-heldout-intervals-1-greedy.native/initial.json": "fe34b9735039cd33cb1a76929129c9e5b10d72ea199c404b8b75daf3aa837b52",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c304-prefix-cost-observer-repair-20261007/raw/c304-heldout-intervals-1-greedy.native/result.json": "e46bb9749dfc336aa22ef8baf066fe614600e16f2691749a4fa2e30271b20c36",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c304-prefix-cost-observer-repair-20261007/raw/c304-heldout-intervals-2-estimate.native/events.tsv": "6a91e2c91e21513d47a12cd8a8e30298f17cb198dad643bbed4bc81b2878af4e",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c304-prefix-cost-observer-repair-20261007/raw/c304-heldout-intervals-2-estimate.native/initial.json": "8f2212fd681503e4660258a70ebee8ec4b45971c40fba156b3a94f07fa3a4739",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c304-prefix-cost-observer-repair-20261007/raw/c304-heldout-intervals-2-estimate.native/estimator.json": "b2d6f69144b61a1b2c7957b2dbda2079481f24b6a9d41ebb993c1c95e6a9ce16",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c304-prefix-cost-observer-repair-20261007/raw/c304-heldout-inventory-1-greedy.native/events.tsv": "9e08bc22f1879bb1d3b55158880692d4d1a01e257140d0699e0950e11d672f38",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c304-prefix-cost-observer-repair-20261007/raw/c304-heldout-inventory-1-greedy.native/initial.json": "30b17088e47dbb92d0cbcc8321fc5acf44b49d0a99659758e3ae3294334244a0",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c304-prefix-cost-observer-repair-20261007/raw/c304-heldout-inventory-1-greedy.native/result.json": "d863ba7a89b96ca4600a37f1282e3c177f8295b26201ebd20c6897c2a1c04a86",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c304-prefix-cost-observer-repair-20261007/raw/c304-heldout-inventory-2-estimate.native/events.tsv": "2d1998cddd58ac0b59b964c1875aead55dce81770094a73733a3b7f863452988",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c304-prefix-cost-observer-repair-20261007/raw/c304-heldout-inventory-2-estimate.native/initial.json": "dc3c30fb515b6b284f8908b2fe18fd39976d253169e9575f0278621201203d02",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c304-prefix-cost-observer-repair-20261007/raw/c304-heldout-inventory-2-estimate.native/estimator.json": "59418af24600a8fc3b48da37b7b9730bea5e05b2c0681d1edc59dad5d432470f"
+  }
+}

@@ -1,5 +1,5 @@
 """Native movement-only affine, with independent F64 value reference."""
-import hashlib,json,math
+import argparse,hashlib,json,math
 from pathlib import Path
 import numpy as np
 
@@ -40,3 +40,8 @@ def native(root,weights,source):
     return {'status':'PASS_NATIVE_AFFINE_REFERENCE','frames':n,'maximum_absolute_error':maximum,
             'gamma257':gamma,'calibration_complete_s':sum(dt)/1e6,'cost_us':dt,'native_top4':top,
             'classification':'MEDIDO_NO_TARGET','scope':'Isolated CPU8 auxiliary F32 operator includes input/compute/sync/output/sort. No full target or contention and no measured useful gain.'}
+
+if __name__=='__main__':
+    p=argparse.ArgumentParser();p.add_argument('root',type=Path);p.add_argument('weights',type=Path);p.add_argument('source',type=Path);p.add_argument('--output',type=Path,required=True);a=p.parse_args();v=native(a.root,a.weights,a.source)
+    with a.output.open('x') as f:json.dump(v,f,indent=2,allow_nan=False);f.write('\n')
+    print(v['status'])
