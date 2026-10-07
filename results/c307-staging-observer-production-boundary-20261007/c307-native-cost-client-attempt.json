@@ -1,0 +1,43 @@
+{
+  "id": "c307-native-cost-client",
+  "start": {
+    "utc": "2026-10-07T00:41:13.885187+00:00",
+    "monotonic_s": 109892.33075757
+  },
+  "end": {
+    "utc": "2026-10-07T00:42:19.622951+00:00",
+    "monotonic_s": 109958.068528399
+  },
+  "argv": [
+    "/usr/bin/python",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/tools/run_bounded.py",
+    "--run-id",
+    "c307-native-cost-client",
+    "--model-id",
+    "model-free",
+    "--backend",
+    "stock",
+    "--backend-root",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/backends/c305-cpu-prediction-staging",
+    "--output-root",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c307-staging-observer-production-boundary-20261007/raw",
+    "--variant",
+    "Native8thread-untrained-cost-client-fixture",
+    "--workload",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c307-staging-observer-production-boundary-20261007/protocol.json",
+    "--cache-condition",
+    "Knownnorm/gate/bias mapping +callbackboundary actualnewclient; no modelweights",
+    "--resource-protocol",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c307-staging-observer-production-boundary-20261007/protocol.json",
+    "--require-telemetry",
+    "--timeout-s",
+    "30",
+    "--collect-start-inventory",
+    "--",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c283-exact-expert-service-epoch-20261006T194311Z/build/staging-cost-client/bin/expert-prediction-staging-cost",
+    "--self-test"
+  ],
+  "returncode": 0,
+  "stdout": "{\"run_id\": \"c307-native-cost-client\", \"elapsed_s\": 5.158, \"returncode\": 0, \"stop_reason\": null, \"maxima\": {\"rss_bytes\": 212512768, \"swap_bytes\": 0, \"cgroup_memory_bytes\": 166100992, \"cgroup_peak_bytes\": 187531264, \"cgroup_file_bytes\": 65536, \"gpu_used_mib\": 23.0, \"gpu_temperature_c\": 41.0, \"cpu_tctl_c\": 46.5, \"nvme_composite_c\": 34.85, \"direct_model_fds\": 0, \"buffered_model_fds\": 0}}\n",
+  "stderr": ""
+}
