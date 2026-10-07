@@ -150,7 +150,7 @@ int main(int argc,char ** argv){try{
         for(int k=0;k<4;k++)states.push_back({{"expert",e.ids[k]},{"slot",e.slots[k]},{"state",e.states[k]},{"generation",e.generations[k]}});
         estimated.push_back({{"call",e.call},{"source_layer",e.source},{"target_layer",e.target},{"prediction_ids",e.ids},{"available_primary_state",states},{"complete_predictor_us",e.predictor_us}});
     }
-    save(root/"estimator.json",{{"schema","original-destination-gate-on-earlier-residual-v1"},{"enabled",observer.predict},{"records",estimated},{"training",false},{"source_horizon",2},{"capture_bytes",bank.inputs.size()*4+bank.scores.size()*4+bank.true_scores.size()*4},{"CPU_backend_threads",8},{"claims","Movement estimator only; true routing unchanged; no speculationbytes issued"}});
+    save(root/"estimator.json",{{"schema","original-destination-gate-on-earlier-residual-v1"},{"enabled",observer.predict},{"records",estimated},{"training",false},{"source_horizon",2},{"capture_bytes",bank.inputs.size()*4+bank.scores.size()*4+bank.true_scores.size()*4},{"CPU_backend_threads",8},{"claims","Movement estimator only; true routing unchanged; staging_enabled and staging.json explicitly report whether originalbytes were actually anticipated"}});
     check(bank.true_count==32*23,"exact true gate label coverage");binary(root/"true-routing-scores.f32",bank.true_scores);
     if(observer.predict){check(bank.count==32*23,"exact estimator call/layer coverage");binary(root/"earlier-input.f32",bank.inputs);binary(root/"prediction-scores.f32",bank.scores);}
     if(observer.predict){

@@ -1,0 +1,45 @@
+{
+  "id": "c305-native-original-slice-worker",
+  "start": {
+    "utc": "2026-10-07T00:22:27.277722+00:00",
+    "monotonic_s": 108765.723293312
+  },
+  "end": {
+    "utc": "2026-10-07T00:23:33.212547+00:00",
+    "monotonic_s": 108831.658133248
+  },
+  "argv": [
+    "/usr/bin/python",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/tools/run_bounded.py",
+    "--run-id",
+    "c305-native-original-slice-worker",
+    "--model-id",
+    "gpt-oss-120b-mxfp4-gguf",
+    "--backend",
+    "stock",
+    "--backend-root",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/backends/c305-cpu-prediction-staging",
+    "--output-root",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c305-cpu-staging-native-boundary-20261007/raw",
+    "--variant",
+    "CPU-original-slice-staging-native-worker-boundary",
+    "--workload",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c305-cpu-staging-native-boundary-20261007/protocol.json",
+    "--cache-condition",
+    "Originalsource only; CPU2/13/24 selectedslicechecks + native4worker CPU2primarycommit/demandpriority/cancellation/join; no fullTransformer",
+    "--resource-protocol",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c305-cpu-staging-native-boundary-20261007/protocol.json",
+    "--require-telemetry",
+    "--timeout-s",
+    "120",
+    "--collect-start-inventory",
+    "--",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c283-exact-expert-service-epoch-20261006T194311Z/build/cpu-staging/bin/expert-staging-fixture",
+    "/home/pmglo/models/gpt-oss-120b-gguf/gpt-oss-120b-MXFP4.gguf",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c305-cpu-staging-native-boundary-20261007/offset-fixture.json",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c305-cpu-staging-native-boundary-20261007/raw/native-fixture.json"
+  ],
+  "returncode": 0,
+  "stdout": "{\"run_id\": \"c305-native-original-slice-worker\", \"elapsed_s\": 5.259, \"returncode\": 0, \"stop_reason\": null, \"maxima\": {\"rss_bytes\": 337584128, \"swap_bytes\": 0, \"cgroup_memory_bytes\": 444751872, \"cgroup_peak_bytes\": 686325760, \"cgroup_file_bytes\": 150228992, \"gpu_used_mib\": 23.0, \"gpu_temperature_c\": 41.0, \"cpu_tctl_c\": 46.75, \"nvme_composite_c\": 34.85, \"direct_model_fds\": 1, \"buffered_model_fds\": 0}}\n",
+  "stderr": ""
+}

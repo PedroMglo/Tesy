@@ -1,0 +1,43 @@
+{
+  "status": "PASS_ACTUAL_NATIVE_SLICE_WORKER_BOUNDARY",
+  "scope": "Original9selectedMXFP4components, native4worker authoritativecommit/cancellation/join. No Transformer forward, timing or model-wide exactness claim.",
+  "receipt": {
+    "arena_bytes": 132464640,
+    "fd_O_DIRECT": true,
+    "full_model_loaded": false,
+    "memory_alignment": 4096,
+    "metadata_bytes": 1377984,
+    "offset_alignment": 4096,
+    "original_weight_slices_read": true,
+    "slice_checks": [
+      {
+        "components": 3,
+        "expert": 0,
+        "layer": 2,
+        "logical_bytes": 13219200
+      },
+      {
+        "components": 3,
+        "expert": 63,
+        "layer": 13,
+        "logical_bytes": 13219200
+      },
+      {
+        "components": 3,
+        "expert": 127,
+        "layer": 24,
+        "logical_bytes": 13219200
+      }
+    ],
+    "status": "PASS_NATIVE_STAGE_BYTES_QUEUE_WORKER_LIFETIME",
+    "transformer_forwards": 0,
+    "worker": {
+      "consumed": 1,
+      "delivered_expert": 7,
+      "native_workers": 4,
+      "primary_generation": 1,
+      "primary_slot": 0,
+      "priority_verified": true
+    }
+  }
+}
