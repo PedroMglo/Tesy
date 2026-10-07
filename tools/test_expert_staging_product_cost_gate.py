@@ -1,11 +1,17 @@
 import copy,unittest
-from expert_staging_product_cost_gate import evaluate
+from expert_staging_product_cost_gate import evaluate,validate_runs
 
 def rows(prefill=10.,decode=20.):
     initial=dict(layers=[],pending_queue=0,n_calls=10)
     return [dict(trace=False,staging_enabled=on,native_argmax_ids=[1,2],initial=copy.deepcopy(initial),final=copy.deepcopy(initial),prefix_s=10.,prefill153_s=prefill if on else 10.,decode32_s=decode if on else 20.,total_s=prefill+decode if on else 30.,stage_stats={}) for on in (False,True,True,False)]
 
 class ProductCost(unittest.TestCase):
+    def test_actual_environment_absence_boundary(self):
+        runs=[dict(id=f'{c}-{i}',case=c,stage=on,trace=False,env={'TESY_C296_ESTIMATOR':'1','TESY_C305_STAGE':'1'} if on else {},command=['binary','model','fixture',c,f'root-{c}-{i}','R0','v1']) for c in ('nominal153','code153') for i,on in enumerate((False,True,True,False))]
+        validate_runs(runs)
+        for bad in [{'TESY_C296_ESTIMATOR':'0'},{'TESY_C305_STAGE':'0'},{'TESY_C294_WINDOW':'1'}]:
+            r=copy.deepcopy(runs);r[0]['env']=bad
+            with self.assertRaises(ValueError):validate_runs(r)
     def test_global_and_phase_thresholds(self):
         self.assertEqual(evaluate(dict(nominal153=rows(10,16),code153=rows()))['status'],'GO_REAL_STAGING_INTEGRATED_COST')
         self.assertEqual(evaluate(dict(nominal153=rows(8.9,20),code153=rows()))['status'],'PHASE_SURVIVOR_REAL_STAGING_COST')

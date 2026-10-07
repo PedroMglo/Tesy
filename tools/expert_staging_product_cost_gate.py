@@ -31,9 +31,16 @@ def evaluate(cases):
             if m[target]>=10 and all(x['gain_percent'][target]>0 for x in p) and m['total_s']>0 and m[protection]>=-5 and other['total_s']>=-5:phase.append({'case':c,'phase':target})
     return {'status':'GO_REAL_STAGING_INTEGRATED_COST' if global_cases else 'PHASE_SURVIVOR_REAL_STAGING_COST' if phase else 'NO_GO_REAL_STAGING_INTEGRATED_COST','global_qualified_cases':global_cases,'phase_survivor':phase,'cases':report,'scope':'Real4worker originalbyte forecast/predictor/read/copy/cancellationcleanup included. Same supplied153+32/nativeR0full33reference. No newnaturalresponse, usefulgain/preset/M4 or physicalNVMe/energy claim. No replacement/retry because variance.'}
 
+def validate_runs(runs):
+    if len(runs)!=8 or [(r.get('case'),r.get('stage'),r.get('trace')) for r in runs]!=[(c,on,False) for c in ('nominal153','code153') for on in (False,True,True,False)] or len({r['id'] for r in runs})!=8 or len({r['command'][4] for r in runs})!=8:raise ValueError('exact8orderedproductionarms/IDs/roots')
+    for r in runs:
+        env=r['env'];expected={'TESY_C296_ESTIMATOR':'1','TESY_C305_STAGE':'1'} if r['stage'] else {}
+        if env!=expected:raise ValueError('control flags must be absent, candidate flags equal1')
+        if len(r['command'])!=7 or r['command'][3]!=r['case'] or r['command'][5:]!=['R0','v1']:raise ValueError('production numerical/call command differs')
+
 def main():
     p=argparse.ArgumentParser();p.add_argument('directory',type=Path);p.add_argument('--output',type=Path,required=True);a=p.parse_args();protocol=json.loads((a.directory/'protocol.json').read_text());runs=protocol['runs']
-    if len(runs)!=8 or [(r.get('case'),r.get('stage'),r.get('trace')) for r in runs]!=[(c,on,False) for c in ('nominal153','code153') for on in (False,True,True,False)] or len({r['id'] for r in runs})!=8 or len({r['command'][4] for r in runs})!=8:raise ValueError('exact8orderedproductionarms/IDs/roots')
+    validate_runs(runs)
     cases={};hashes={}
     for r in runs:
         cmd=r['command'];c=r['case'];fixture=json.loads(Path(cmd[2]).read_text())[c];v,out=cost_arm(cmd[4],fixture,c,r['stage'],False,protocol['expected_full_logits_sha256'][c]);v['stage_stats']=out['stage_stats'];cases.setdefault(c,[]).append(v);hashes.setdefault(c,[]).append(out['full33_logits_sha256'])
