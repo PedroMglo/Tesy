@@ -1,0 +1,186 @@
+{
+  "status": "NO_GO_REAL_STAGING_INTEGRATED_COST",
+  "global_qualified_cases": [],
+  "phase_survivor": [],
+  "cases": {
+    "nominal153": {
+      "pairs": [
+        {
+          "control_arm": 1,
+          "candidate_arm": 2,
+          "gain_percent": {
+            "prefix_s": -5.7050187406417665,
+            "prefill153_s": -12.083659685724875,
+            "decode32_s": -27.18334783517906,
+            "total_s": -19.53042911343404
+          },
+          "primary_generations_control": {
+            "CPU": 1486,
+            "GPU": 638
+          },
+          "primary_generations_candidate": {
+            "CPU": 1486,
+            "GPU": 638
+          },
+          "stage_stats_candidate": {
+            "issued": 852,
+            "deduplicated": 0,
+            "no_capacity": 1,
+            "reads": 831,
+            "completed_reads": 831,
+            "logical_read_weight_bytes": 10985155200,
+            "expired_queued": 10,
+            "expired_ready": 192,
+            "expired_running": 185,
+            "consumed": 454,
+            "waits": 238,
+            "errors": 0,
+            "peak_running_spec": 3,
+            "validation_claims": 0,
+            "validation_components": 0
+          },
+          "scope": "Logicalprimarygenerations/providedwork, not physicaltraffic/confirmedoutput count."
+        },
+        {
+          "control_arm": 4,
+          "candidate_arm": 3,
+          "gain_percent": {
+            "prefix_s": 0.4225531334187518,
+            "prefill153_s": -5.433226833337819,
+            "decode32_s": -17.58055488310461,
+            "total_s": -11.402789504846139
+          },
+          "primary_generations_control": {
+            "CPU": 1486,
+            "GPU": 638
+          },
+          "primary_generations_candidate": {
+            "CPU": 1486,
+            "GPU": 638
+          },
+          "stage_stats_candidate": {
+            "issued": 853,
+            "deduplicated": 0,
+            "no_capacity": 0,
+            "reads": 829,
+            "completed_reads": 829,
+            "logical_read_weight_bytes": 10958716800,
+            "expired_queued": 9,
+            "expired_ready": 204,
+            "expired_running": 174,
+            "consumed": 451,
+            "waits": 228,
+            "errors": 0,
+            "peak_running_spec": 3,
+            "validation_claims": 0,
+            "validation_components": 0
+          },
+          "scope": "Logicalprimarygenerations/providedwork, not physicaltraffic/confirmedoutput count."
+        }
+      ],
+      "median_paired_gain_percent": {
+        "prefix_s": -2.6412328036115076,
+        "prefill153_s": -8.758443259531347,
+        "decode32_s": -22.381951359141837,
+        "total_s": -15.46660930914009
+      }
+    },
+    "code153": {
+      "pairs": [
+        {
+          "control_arm": 1,
+          "candidate_arm": 2,
+          "gain_percent": {
+            "prefix_s": 0.08558108015608104,
+            "prefill153_s": -0.019521405048569224,
+            "decode32_s": -10.16317853845939,
+            "total_s": -4.219436940609067
+          },
+          "primary_generations_control": {
+            "CPU": 2595,
+            "GPU": 819
+          },
+          "primary_generations_candidate": {
+            "CPU": 2595,
+            "GPU": 819
+          },
+          "stage_stats_candidate": {
+            "issued": 1091,
+            "deduplicated": 0,
+            "no_capacity": 1,
+            "reads": 1055,
+            "completed_reads": 1055,
+            "logical_read_weight_bytes": 13946256000,
+            "expired_queued": 24,
+            "expired_ready": 229,
+            "expired_running": 250,
+            "consumed": 576,
+            "waits": 258,
+            "errors": 0,
+            "peak_running_spec": 3,
+            "validation_claims": 0,
+            "validation_components": 0
+          },
+          "scope": "Logicalprimarygenerations/providedwork, not physicaltraffic/confirmedoutput count."
+        },
+        {
+          "control_arm": 4,
+          "candidate_arm": 3,
+          "gain_percent": {
+            "prefix_s": -0.20215337878169432,
+            "prefill153_s": -5.985888140169508,
+            "decode32_s": -22.99736296287271,
+            "total_s": -13.014071376436586
+          },
+          "primary_generations_control": {
+            "CPU": 2595,
+            "GPU": 819
+          },
+          "primary_generations_candidate": {
+            "CPU": 2595,
+            "GPU": 819
+          },
+          "stage_stats_candidate": {
+            "issued": 1091,
+            "deduplicated": 0,
+            "no_capacity": 1,
+            "reads": 1052,
+            "completed_reads": 1052,
+            "logical_read_weight_bytes": 13906598400,
+            "expired_queued": 26,
+            "expired_ready": 217,
+            "expired_running": 260,
+            "consumed": 575,
+            "waits": 283,
+            "errors": 0,
+            "peak_running_spec": 3,
+            "validation_claims": 0,
+            "validation_components": 0
+          },
+          "scope": "Logicalprimarygenerations/providedwork, not physicaltraffic/confirmedoutput count."
+        }
+      ],
+      "median_paired_gain_percent": {
+        "prefix_s": -0.05828614931280664,
+        "prefill153_s": -3.0027047726090386,
+        "decode32_s": -16.58027075066605,
+        "total_s": -8.616754158522827
+      }
+    }
+  },
+  "scope": "Real4worker originalbyte forecast/predictor/read/copy/cancellationcleanup included. Same supplied153+32/nativeR0full33reference. No newnaturalresponse, usefulgain/preset/M4 or physicalNVMe/energy claim. No replacement/retry because variance.",
+  "full33_logits_sha256": {
+    "nominal153": [
+      "cb89a303f2c811d3cb75cf6df457a7bf8dcfb6279b729b326baec519748239a2",
+      "cb89a303f2c811d3cb75cf6df457a7bf8dcfb6279b729b326baec519748239a2",
+      "cb89a303f2c811d3cb75cf6df457a7bf8dcfb6279b729b326baec519748239a2",
+      "cb89a303f2c811d3cb75cf6df457a7bf8dcfb6279b729b326baec519748239a2"
+    ],
+    "code153": [
+      "6e5223faff42fdb9ff60a1b07ece78dae5b9e191f52c66cc98bcdf008b5e6115",
+      "6e5223faff42fdb9ff60a1b07ece78dae5b9e191f52c66cc98bcdf008b5e6115",
+      "6e5223faff42fdb9ff60a1b07ece78dae5b9e191f52c66cc98bcdf008b5e6115",
+      "6e5223faff42fdb9ff60a1b07ece78dae5b9e191f52c66cc98bcdf008b5e6115"
+    ]
+  }
+}

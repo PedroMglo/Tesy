@@ -1,0 +1,33 @@
+{
+  "status": "PASS_NATIVE_STAGING_COST_ARM",
+  "case": "code153",
+  "stage": true,
+  "trace": false,
+  "full33_logits_sha256": "6e5223faff42fdb9ff60a1b07ece78dae5b9e191f52c66cc98bcdf008b5e6115",
+  "metrics": {
+    "prefix_s": 58.698257733,
+    "prefill153_s": 16.66551456,
+    "decode32_s": 13.615569272,
+    "total_s": 30.281083832
+  },
+  "stage_cleanup_s": 1.5359e-05,
+  "decode_forward_s": 13.615553913,
+  "stage_stats": {
+    "issued": 1091,
+    "deduplicated": 0,
+    "no_capacity": 1,
+    "reads": 1052,
+    "completed_reads": 1052,
+    "logical_read_weight_bytes": 13906598400,
+    "expired_queued": 26,
+    "expired_ready": 217,
+    "expired_running": 260,
+    "consumed": 575,
+    "waits": 283,
+    "errors": 0,
+    "peak_running_spec": 3,
+    "validation_claims": 0,
+    "validation_components": 0
+  },
+  "claim": "Synchronized supplied-work cost. Actualstaging/predictor/cleanup included; no naturalconfirmedthroughput/energy/physicalNVMe or M4 claim."
+}
