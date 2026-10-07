@@ -1,0 +1,43 @@
+{
+  "id": "c306-native-auxiliary-client",
+  "start": {
+    "utc": "2026-10-07T00:28:19.339679+00:00",
+    "monotonic_s": 109117.785249407
+  },
+  "end": {
+    "utc": "2026-10-07T00:29:25.131969+00:00",
+    "monotonic_s": 109183.577554097
+  },
+  "argv": [
+    "/usr/bin/python",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/tools/run_bounded.py",
+    "--run-id",
+    "c306-native-auxiliary-client",
+    "--model-id",
+    "model-free",
+    "--backend",
+    "stock",
+    "--backend-root",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/backends/c305-cpu-prediction-staging",
+    "--output-root",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c306-real-staging-selected-forward-20261007/raw",
+    "--variant",
+    "Native-known-8thread-destination-gate-fixture",
+    "--workload",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c306-real-staging-selected-forward-20261007/protocol.json",
+    "--cache-condition",
+    "Existing nativeknownfixture actualnewclient; nooriginalmodelweights",
+    "--resource-protocol",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c306-real-staging-selected-forward-20261007/protocol.json",
+    "--require-telemetry",
+    "--timeout-s",
+    "30",
+    "--collect-start-inventory",
+    "--",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c283-exact-expert-service-epoch-20261006T194311Z/build/staging-canary-client/bin/expert-prediction-staging",
+    "--self-test"
+  ],
+  "returncode": 0,
+  "stdout": "{\"run_id\": \"c306-native-auxiliary-client\", \"elapsed_s\": 5.189, \"returncode\": 0, \"stop_reason\": null, \"maxima\": {\"rss_bytes\": 212480000, \"swap_bytes\": 0, \"cgroup_memory_bytes\": 167030784, \"cgroup_peak_bytes\": 187838464, \"cgroup_file_bytes\": 65536, \"gpu_used_mib\": 23.0, \"gpu_temperature_c\": 40.0, \"cpu_tctl_c\": 46.0, \"nvme_composite_c\": 33.85, \"direct_model_fds\": 0, \"buffered_model_fds\": 0}}\n",
+  "stderr": ""
+}
