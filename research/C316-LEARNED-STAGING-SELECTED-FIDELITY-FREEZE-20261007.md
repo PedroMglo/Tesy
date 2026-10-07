@@ -1,0 +1,9 @@
+# C316 — Selected fidelity of the one learned revision
+
+C315 admits this actual canary only. The target numerical profile/backend/worker are unchanged: original R0/40/ub32/P12/nativeCPU8+I/O4. A new client/header applies fixed C314 affine after the original native gate approximation. Actual hash/size/finite auxiliary weights checked before prefix; control and candidate will allocate the same auxiliary bank. Original predictions do not select execution/router experts or evict primary cache. No pack or logical-route-policy composition.
+
+First a genuine native synthetic affine identity+bias/row-order repeated fixture, original gate fixture, auxiliary badSHA/badsize and exact graph/capture bounded accounting. Then two diagnostic cases, nominal2197 and code2105, original prefix+153+32teacher-forced native IDs, all33full-logit bitwise gold and actual first8stagedconsumers/24canonicalweight-component checks each. Original biases and target math are unchanged. Complete code/shape/routing references are reused only where unchanged. Independent F64 affine check uses the same predeclared gamma257 auxiliary value envelope. Never relax target equality.
+
+Each own60s inventory/freshness3s, E20common/swap0/unchangeddevice/hostguards,90s synthetic and240s model deadlines;900s fullfamily. No concurrent compile. Diagnostic trace/witness times are not production latency. REPRODUZIDO_MODEL_FREE:15 directed learned boundary and existing observer/product tests passed. Build source/recipe and logs local/pinned. C315 isolatedoperator/codeccost not transported as measured modelgain.
+
+After fidelity, qualify the same trace instrumentation under revised treatment before newtrace-OFF R0/candidateABBA cost. Preserve all negatives; a valid costnegative closes the single learned revision. The older C309 result is unchanged. No utility/preset/M4 claim and no remote publication.
