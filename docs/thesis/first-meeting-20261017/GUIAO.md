@@ -1,5 +1,7 @@
 # Guião de fala — primeira reunião com Diana
 
+**Versão integral para apresentação:** [GUIAO_ORAL_COMPLETO.md](GUIAO_ORAL_COMPLETO.md). Este ficheiro é a versão breve. O documento integral acompanha os slides V3, com o texto que podes dizer, tempos, indicações visuais e respostas rápidas.
+
 **Tempo-alvo: 11–12 minutos de exposição, 3–4 minutos de discussão.** Os slides têm speaker notes. Não é necessário mostrar código, branches, patchsets ou campanhas individuais à orientadora.
 
 ## Slide 1 — Enquadramento (0:40)
