@@ -1,39 +1,27 @@
-# Tesy — primeira reunião de orientação
+# Tesy — primeira reunião de orientação (versão revista, 17-10-2026)
 
-Material deliberadamente curto para a primeira reunião com a orientadora. O objetivo é explicar o problema, mostrar evidência suficiente de que existe trabalho experimental real e discutir o enquadramento da tese **sem expor todo o histórico, patches, protocolos, raw ou desenhos experimentais internos**.
+**Duração:** ~11–12 min de exposição + ~3–4 min de discussão. **Objetivo:** explicar o problema, três ganhos de engenharia interna e a pergunta de tese, sem expor o detalhe da arquitetura/campanhas.
 
-## Ordem recomendada
+## Materiais
+- `APRESENTACAO.md`: estrutura dos 10 slides e respetivos claims/limites.
+- `GUIAO.md`: fala cronometrada e respostas às perguntas prováveis.
+- `GLOSSARIO.md`: termos técnicos, conceitos científicos e siglas, com explicações curtas.
+- `RESULTADOS_SELECIONADOS.md`: dados, métodos, limites e origens dos gráficos.
+- `REFERENCIAS.md`: bibliografia curta, links primários e fronteiras de comparação.
+- `data/resultados_apresentacao.csv`: dados numéricos selecionados.
+- `assets/`: figuras reutilizáveis. As figuras antigas não substituem a versão atualizada das métricas documentadas.
 
-1. `Tesy_primeira_reuniao_Diana.pptx` — apresentação de 8 slides, ~10–15 min.
-2. `GUIAO.md` — guião de fala e respostas curtas para perguntas prováveis.
-3. `RESULTADOS_SELECIONADOS.md` — números que podem ser mostrados com segurança e respetivos limites.
-4. `REFERENCIAS.md` — referências científicas mínimas para posicionar o trabalho.
-5. `data/resultados_apresentacao.csv` — dados usados no gráfico principal.
-6. `assets/arquitetura-conceitual.svg` e `assets/resultados-selecionados.svg` — figuras simples reutilizáveis.
+A apresentação PowerPoint revista (10 slides com notas) foi produzida em separado, com source `build_presentation.js` guardado na distribuição da reunião. **Não assumir que o ficheiro binário PPTX foi publicado nesta branch até existir o asset verificado no GitHub.** Guardar a versão apresentada juntamente com a data e o SHA da documentação.
 
 ## Mensagem central
+O Tesy investiga execução local e serviço dos experts de LLMs MoE muito maiores que a VRAM, preservando a seleção original dos experts. Já há medições favoráveis a **modificações do caminho de execução**: wave-skip C104, layout lossless C293 e reuso entre tiles C274. Estas não são prova de superioridade global do Tesy sobre alternativas bem configuradas.
 
-> O Tesy investiga até que ponto um LLM MoE muito maior do que a VRAM disponível pode ser executado localmente através de routing sparsity, residência dinâmica de experts, execução heterogénea CPU/GPU e storage multi-tier, preservando o routing/top-k/pesos autoritativos.
+## Separação essencial
+**Não apresentar o aumento de slots 32→40→44 como melhoria arquitetural isolada.** É essencialmente uma troca entre capacidade residente e desempenho; o efeito pode ainda combinar geometria de waves. Slots44 pode surgir apenas como contexto de orçamento de memória.
 
-Não apresentar o projeto como solução terminada nem reclamar novidade ampla. O estado defensável continua `BROAD_NOVELTY_NO_GO / ENGINEERING_AND_MEASUREMENT_GO`.
+Os *gates* de promoção e os objetivos M3/M4 foram regras internas de engenharia; serão objeto de revisão e negociação científica, nunca falsificados ou retroativamente alterados. Resultados abaixo dos gates continuam evidência com âmbito e limitações.
 
-## O que mostrar
+## Evidência de origem
+Consulta da branch publicada `campaign/120b-exact-expert-service-20261006T194311Z` em `623a5b97b6e14a39bc671f6d81e7a993a3efe7cb`, relatórios C100/C104/C129/C142/C274/C282/C293/C320. Sem nova inferência nem validação física nesta preparação.
 
-- target físico: Ryzen AI 9 HX 370, RTX 4060 Laptop 8 GiB, 32 GiB RAM, NVMe;
-- GPT-OSS 120B MXFP4 como modelo principal de investigação;
-- ganhos confirmados de residência de experts em workloads delimitados;
-- exemplos de hipóteses rejeitadas quando o ganho não sobreviveu ao caminho completo;
-- pergunta de investigação e metodologia de avaliação.
-
-## O que guardar para uma reunião posterior
-
-- patches e detalhes do scheduler;
-- IDs Cxxx, ledgers e protocolos completos;
-- raw traces e manifests;
-- políticas específicas de eviction/prefetch;
-- detalhes de branches e do stack histórico;
-- claims de novidade antes de prior-art/qualificação final.
-
-## Base documental usada
-
-A pasta foi preparada a partir da branch publicada `campaign/120b-exact-expert-service-20261006T194311Z`, observada em `623a5b97b6e14a39bc671f6d81e7a993a3efe7cb`, incluindo os resultados C129, C142, C274, C282 e C320. O `main` não foi alterado.
+Estado: `BROAD_NOVELTY_NO_GO / ENGINEERING_AND_MEASUREMENT_GO`; M3 PARTIAL; M4 NOT_MET; perfil operacional `slots40-persistent` opt-in. **Material de conversa inicial, não artigo científico nem documentação integral do Tesy.**
