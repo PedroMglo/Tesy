@@ -11,7 +11,7 @@
 - `data/resultados_apresentacao.csv`: dados numéricos selecionados.
 - `assets/`: figuras reutilizáveis. As figuras antigas não substituem a versão atualizada das métricas documentadas.
 
-A apresentação PowerPoint revista (10 slides com notas) foi produzida em separado, com source `build_presentation.js` guardado na distribuição da reunião. **Não assumir que o ficheiro binário PPTX foi publicado nesta branch até existir o asset verificado no GitHub.** Guardar a versão apresentada juntamente com a data e o SHA da documentação.
+A apresentação PowerPoint revista (10 slides com notas) foi produzida em separado. O `.pptx`, a pré-visualização, o ZIP e `build_presentation.js` estão arquivados na **Library pessoal**, em `/Tesy/Tese/Primeira-Reuniao-2026-10-17/`, e foram entregues também como artefactos descarregáveis na conversa. **O binário PPTX não está nesta branch do GitHub**; a apresentação em texto e os dados de origem estão versionados aqui. Guardar a versão efetivamente apresentada juntamente com a data e o SHA da documentação.
 
 ## Mensagem central
 O Tesy investiga execução local e serviço dos experts de LLMs MoE muito maiores que a VRAM, preservando a seleção original dos experts. Já há medições favoráveis a **modificações do caminho de execução**: wave-skip C104, layout lossless C293 e reuso entre tiles C274. Estas não são prova de superioridade global do Tesy sobre alternativas bem configuradas.
