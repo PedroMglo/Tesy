@@ -16,7 +16,7 @@ Se pedirem: *prefill* processa o prompt; *decode* produz os tokens seguintes. É
 O esquema NVMe↔RAM↔VRAM é conceptual. Não afirmar que todas as cargas atravessam fisicamente cada nível, nem que leituras solicitadas equivalem a tráfego físico.
 
 ## Slide 4 — Principal ganho: waves (1:55)
-> O primeiro resultado que considero realmente relevante para a arquitetura é evitar computação redundante no processamento em waves. No C104 comparei, no mesmo executável C75, a opção desativada e ativada. Naquele workload, o prefill frio ficou aproximadamente 75,35% mais rápido, e o prefill incremental 27,72%. O ponto importante é que isto não foi conseguido simplesmente reservando mais slots de memória.
+> O primeiro resultado que considero realmente relevante para a arquitetura é evitar computação redundante no processamento em waves. No C104 comparei, no mesmo executável C75, a opção desativada e ativada. Naquele workload, o prefill frio demorou aproximadamente 75,35% menos tempo, e o prefill incremental demorou 27,72% menos tempo. O ponto importante é que isto não foi conseguido simplesmente reservando mais slots de memória.
 
 Explica o gráfico: OFF=100% de duração, ON=24,65% no frio e 72,28% no warm. **Limite:** foram dois pares do mesmo workload; outra comparação entre builds (C100) revelou regressão de decode. É ganho interno, não prova de superioridade perante um outro backend.
 
