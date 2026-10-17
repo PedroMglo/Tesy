@@ -4,7 +4,8 @@
 
 ## Materiais
 - `APRESENTACAO.md`: estrutura dos 10 slides e respetivos claims/limites.
-- `GUIAO.md`: fala cronometrada e respostas às perguntas prováveis.
+- `GUIAO.md`: versão breve e respostas prováveis.
+- [GUIAO_ORAL_COMPLETO.md](GUIAO_ORAL_COMPLETO.md): **texto integral para dizer durante os 10 slides V3**, 12 min 10 s de fala planeada, com notas e perguntas. PDF e DOCX guardados na Library da reunião.
 - `GLOSSARIO.md`: termos técnicos, conceitos científicos e siglas, com explicações curtas.
 - `RESULTADOS_SELECIONADOS.md`: dados, métodos, limites e origens dos gráficos.
 - `REFERENCIAS.md`: bibliografia curta, links primários e fronteiras de comparação.
