@@ -1,8 +1,10 @@
-categoria,metrica,ganho_percentual,estado,fonte
-residencia_32_40,warm_decode,23.173,confirmado_ambito,C129
-residencia_32_40,warm_first_final,18.009,confirmado_ambito,C129
-residencia_40_44,warm_decode,11.745365,confirmado_ambito_experimental,C142
-reuso_experts,prefill153,18.189548,medido_perfil_experimental,C274_C271
-reuso_experts,codigo_first_final,8.914968,screen_positivo_nao_promovido,C274_C273
-servico_contiguo,total_nominal,7.472543,ganho_delimitado_nao_promovido,C320_C293
-servico_contiguo,total_codigo,6.048126,ganho_delimitado_nao_promovido,C320_C293
+fonte,caso,metrica,unidade,tipo,valorexato,amostra,notas
+C104,prefill frio,reducao duracao,percentagem,MEDIDO,75.350,2 pares,same-executable OFF ON; valor mediano
+C104,prefill warm,reducao duracao,percentagem,MEDIDO,27.718,2 pares,same-executable OFF ON; valor mediano
+C104,prefill frio,duracao ON normalizada OFF100,indice,DERIVADO,24.650,2 pares,OFF=100
+C104,prefill warm,duracao ON normalizada OFF100,indice,DERIVADO,72.282,2 pares,OFF=100
+C293,nominal153+32,reducao total,percentagem,MEDIDO,7.472543,2 pares,trabalho fornecido e logits selecionados bitwise
+C293,codigo153+32,reducao total,percentagem,MEDIDO,6.048126,2 pares,trabalho fornecido e logits selecionados bitwise
+C271,prefill153,reducao prefill,percentagem,MEDIDO,18.189548,2 pares,perfil R2 teacher-forced
+C273,codigo,reducao first-final,percentagem,MEDIDO,8.914968,2 pares,geracao livre; ganho limitado
+C282,nominal153+32,variacao decode R0 para E,percentagem,MEDIDO,-10.703390,2 pares,regressao decode nominal
