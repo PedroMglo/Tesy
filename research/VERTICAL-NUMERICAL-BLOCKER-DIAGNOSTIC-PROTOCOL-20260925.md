@@ -1,0 +1,20 @@
+# Protocolo N1 — atribuição numérica da layer 2
+
+Estado: **PRÉ-REGISTADO, diagnóstico; novos runs NOT_RUN**. Base: PR #33, `ca532aaa765ad551dcb8be4424f0abe6778eec96`, tree `b96da0aa9441a562c1511d9e27f8db191ac0d91a`. Falha original: measurement commit C2 `6f9beefc6b346b2a30d5e4a4af05c28f934d9289`, tree `ae518f02ea30ca61e5113aeb194bd512b58a9821`, root `results/vertical-live-diagnostic-20260924T215315Z/`. A root original permanece intacta.
+
+## Pergunta e caso congelado
+
+Localizar a primeira diferença causal no decode do prompt `benchmarks/prompts/vertical-short-summary.txt` (SHA-256 `99b2641845df47370c29f1661ccb7493bb51ce11dd26a0f3afabb5c49cf18710`), token ordinal 0, substituindo as layers 0–2. Layer 2: route stock `[4,0,31,17]`, GPU resident `{0,1,2,3}`, `h=1`. Modelo `gpt-oss-20b-mxfp4.gguf`, 12 109 564 352 bytes, SHA-256 `52f57ab7d3df3ba9173827c1c6832e73375553a846f3e32b49f1ae2daad688d4`; llama.cpp base `4e416ee7308dd6b581796f1a6241276cd5982691`. `--ctx 4096 --threads 12`; quantização, tokenizer, prompt, route, residência e build stock/patched ficam inalterados. O argv original está no pacote N1.
+
+O contrato prévio mantém `relative max <= 0.005`, `cosine >= 0.9999`, valores finitos e igualdade greedy quando aplicável. Nenhuma análise diagnóstica substitui esse contrato. Não há medição de performance Tesy nesta unidade.
+
+## Ordem dos controlos
+
+1. **Identidade efectivamente consumida.** No mesmo evento, registar slot → expert global → backend → índice local → routing weight, shape/dtype/strides de activation, IDs, weights e seis tensors de pesos/biases do expert GPU 0. Após o upload, sincronizar e fazer readback através de `ggml_backend_tensor_get`; comparar bytes apenas para representações efectivamente idênticas. Se o buffer for transformado, identificar a transformação e usar verificação semântica adequada. Publicar hashes/metadata, nunca pesos.
+2. **Primeira operação divergente.** Capturar as quatro contribuições por slot antes da redução, com os mesmos inputs stock. Para o expert relevante, comparar sequencialmente gate/up projection, biases, SwiGLU, down projection, down bias e multiply pelo routing weight, parando na primeira diferença. Comparar os operadores no backend pinado; precisão maior é apenas diagnóstico.
+3. **Associação da redução.** Confirmar no source do pin a ordem real dos adds. Com as mesmas contribuições, calcular (a) a associação stock, (b) a associação actual CPU/GPU por subconjuntos e (c) as contribuições mixed reordenadas para slots originais sob associação stock. A variante toda CPU é apenas controlo diagnóstico; não altera o candidato admitido.
+4. **Intervenção FFN → suffix.** Em contextos descartáveis com estado stock equivalente, comparar downstream stock com stock FFN, stock FFN capturado e reinjectado (controlo de instrumentação), e apenas o FFN mixed capturado. Se a troca isolada reproduzir a diferença de logits, atribuir a diferença ao FFN; caso contrário investigar primeiro KV, aliasing/lifetime, graph reuse, segmentação e inputs stale. Registar apenas a primeira activation/router/scores/weights/top-k downstream diferente e, se útil, a margem entre 4.º/5.º score. Não forçar rotas.
+
+Cada controlo negativo tem identidade de run própria e não é candidato a PASS. Um erro de provenance, recurso, execução, não-finito ou alteração inesperada do caso encerra a respectiva root. Roots falhadas não são reutilizadas. O candidato normal mantém a residência e rota stock. Uma correcção só é admissível com causa demonstrada, teste de regressão, delta localizado e run antes/depois em identidades diferentes. Se aritmética legítima entre backends exceder o contrato sem reparação localizada, publicar `NUMERICAL_CONTRACT_REVIEW_REQUIRED` e parar. Se a atribuição permanecer incompleta, publicar o que foi excluído e o que falta; não inventar causa.
+
+Só depois de uma correcção causal do caso original se retoma correctness vertical, com dois prompts públicos distintos congelados antes do run, até 16 decodes committed por prompt, residência fixa e routing variável; parar na primeira nova falha genuína. Timing Tesy continua NOT_RUN.

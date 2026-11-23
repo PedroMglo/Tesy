@@ -1,0 +1,11 @@
+vertical diagnostic layer=2 resident stock tensor bytes match GGUF for IDs 0,1,2,3
+vertical diagnostic CPU segmented-stage replay bitwise FFN=1; replay is diagnostic only
+vertical diagnostic GPU segmented-stage replay bitwise FFN=1; replay is diagnostic only
+vertical diagnostic slot=0 expert=4 backend=CPU local=0 local_id=4 routing_weight=0.269257545
+vertical diagnostic slot=1 expert=0 backend=GPU local=0 local_id=0 routing_weight=0.258087516
+vertical diagnostic slot=2 expert=31 backend=CPU local=1 local_id=31 routing_weight=0.244158253
+vertical diagnostic slot=3 expert=17 backend=CPU local=2 local_id=17 routing_weight=0.22849673
+vertical diagnostic layer=2 all-CPU shadow rel=0 cosine=1.000000000000 bitwise=1; not used for injection
+vertical FFN parity token=0 layer=2 h=1 rel=4.12584316e-05 cosine=0.999999995483 bitwise=0
+vertical logits failure token=0 rel=0.00855978666 cosine=0.999976613624 max_abs=0.155649185 max_ref=18.1837692 events=3
+vertical event layer=2 h=1 ids=4,0,31,17

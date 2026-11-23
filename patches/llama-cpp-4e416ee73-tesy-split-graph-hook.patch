@@ -1,0 +1,65 @@
+diff --git a/src/llama-context.cpp b/src/llama-context.cpp
+index fcd4dfb13..00eb7f432 100644
+--- a/src/llama-context.cpp
++++ b/src/llama-context.cpp
+@@ -21,6 +21,21 @@
+ #include <string>
+ #include <unordered_map>
+ 
++// Internal experimental surface only; deliberately absent from llama.h.
++extern "C" LLAMA_API void llama_tesy_set_graph_compute_hook(
++        llama_context * ctx,
++        ggml_status (* hook)(ggml_cgraph *, ggml_backend_sched_t, ggml_backend_t, void *),
++        void * user_data) {
++    ctx->tesy_set_graph_compute_hook(hook, user_data);
++}
++
++void llama_context::tesy_set_graph_compute_hook(
++        ggml_status (* hook)(ggml_cgraph *, ggml_backend_sched_t, ggml_backend_t, void *),
++        void * user_data) {
++    tesy_graph_compute_hook = hook;
++    tesy_graph_compute_user_data = user_data;
++}
++
+ //
+ // llama_context
+ //
+@@ -2585,7 +2600,9 @@ ggml_status llama_context::graph_compute(
+         set_n_threads_fn.second(set_n_threads_fn.first, n_threads);
+     }
+ 
+-    auto status = ggml_backend_sched_graph_compute_async(sched.get(), gf);
++    auto status = tesy_graph_compute_hook
++        ? tesy_graph_compute_hook(gf, sched.get(), backend_cpu, tesy_graph_compute_user_data)
++        : ggml_backend_sched_graph_compute_async(sched.get(), gf);
+     if (status != GGML_STATUS_SUCCESS) {
+         LLAMA_LOG_ERROR("%s: ggml_backend_sched_graph_compute_async failed with error %d\n", __func__, status);
+     }
+diff --git a/src/llama-context.h b/src/llama-context.h
+index 77ef92fc6..2c45ed34f 100644
+--- a/src/llama-context.h
++++ b/src/llama-context.h
+@@ -120,6 +120,10 @@ struct llama_context {
+     void set_causal_attn(bool value);
+     void set_warmup(bool value);
+ 
++    void tesy_set_graph_compute_hook(
++        ggml_status (* hook)(ggml_cgraph *, ggml_backend_sched_t, ggml_backend_t, void *),
++        void * user_data);
++
+     void set_adapters_lora(llama_adapter_lora ** adapters, size_t n_adapters, float * scales);
+ 
+     bool adapters_lora_are_same(llama_adapter_lora ** adapters, size_t n_adapters, float * scales);
+@@ -347,6 +351,12 @@ private:
+ 
+     ggml_backend_sched_ptr sched;
+ 
++    // Tesy-only experimental graph-compute seam; null preserves the stock path.
++    using tesy_graph_compute_hook_t = ggml_status (*)(
++        ggml_cgraph *, ggml_backend_sched_t, ggml_backend_t, void *);
++    tesy_graph_compute_hook_t tesy_graph_compute_hook = nullptr;
++    void * tesy_graph_compute_user_data = nullptr;
++
+     bool sched_need_reserve = true;
+ 
+     ggml_backend_t backend_cpu = nullptr;

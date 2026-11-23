@@ -58,6 +58,74 @@ target_compile_options(tesy-mixed-residency PRIVATE -Wall -Wextra -Wpedantic -We
 target_include_directories(
   tesy-mixed-residency
   PRIVATE
+    "${LLAMA_CPP_SOURCE_DIR}/include"
     "${LLAMA_CPP_SOURCE_DIR}/ggml/include"
 )
-target_link_libraries(tesy-mixed-residency PRIVATE ggml)
+target_include_directories(
+  tesy-mixed-residency
+  SYSTEM PRIVATE
+    "${LLAMA_CPP_SOURCE_DIR}/ggml/src"
+)
+target_link_libraries(tesy-mixed-residency PRIVATE llama ggml)
+
+add_executable(tesy-stock-prefix-logits tesy_stock_prefix_logits.cpp)
+target_compile_features(tesy-stock-prefix-logits PRIVATE cxx_std_17)
+target_compile_options(tesy-stock-prefix-logits PRIVATE -Wall -Wextra -Wpedantic -Werror)
+target_include_directories(tesy-stock-prefix-logits PRIVATE
+  "${LLAMA_CPP_SOURCE_DIR}/include"
+  "${LLAMA_CPP_SOURCE_DIR}/ggml/include"
+)
+target_link_libraries(tesy-stock-prefix-logits PRIVATE llama ggml)
+
+add_executable(tesy-down-replay-model-free tesy_down_replay_model_free.cpp)
+target_compile_features(tesy-down-replay-model-free PRIVATE cxx_std_17)
+target_compile_options(tesy-down-replay-model-free PRIVATE -Wall -Wextra -Wpedantic -Werror)
+target_include_directories(tesy-down-replay-model-free PRIVATE
+  "${LLAMA_CPP_SOURCE_DIR}/ggml/include"
+)
+target_include_directories(tesy-down-replay-model-free SYSTEM PRIVATE
+  "${LLAMA_CPP_SOURCE_DIR}/ggml/src"
+)
+target_link_libraries(tesy-down-replay-model-free PRIVATE ggml ggml-cpu)
+
+
+add_executable(tesy-routed-layer-capture tesy_routed_layer_capture.cpp)
+target_compile_features(tesy-routed-layer-capture PRIVATE cxx_std_17)
+target_compile_options(tesy-routed-layer-capture PRIVATE -Wall -Wextra -Wpedantic -Werror)
+target_include_directories(
+  tesy-routed-layer-capture
+  PRIVATE
+    "${LLAMA_CPP_SOURCE_DIR}/include"
+    "${LLAMA_CPP_SOURCE_DIR}/ggml/include"
+)
+target_link_libraries(tesy-routed-layer-capture PRIVATE llama ggml)
+
+add_executable(tesy-split-graph-model-free tesy_split_graph_model_free.cpp)
+target_compile_features(tesy-split-graph-model-free PRIVATE cxx_std_17)
+target_compile_options(tesy-split-graph-model-free PRIVATE -Wall -Wextra -Wpedantic -Werror)
+target_include_directories(
+  tesy-split-graph-model-free
+  PRIVATE
+    "${LLAMA_CPP_SOURCE_DIR}/ggml/include"
+)
+target_include_directories(
+  tesy-split-graph-model-free
+  SYSTEM PRIVATE
+    "${LLAMA_CPP_SOURCE_DIR}/ggml/src"
+)
+target_link_libraries(tesy-split-graph-model-free PRIVATE ggml ggml-cpu)
+
+add_executable(tesy-sum-graph-model-free tesy_sum_graph_model_free.cpp)
+target_compile_features(tesy-sum-graph-model-free PRIVATE cxx_std_17)
+target_compile_options(tesy-sum-graph-model-free PRIVATE -Wall -Wextra -Wpedantic -Werror)
+target_include_directories(
+  tesy-sum-graph-model-free PRIVATE "${LLAMA_CPP_SOURCE_DIR}/ggml/include"
+)
+target_include_directories(
+  tesy-sum-graph-model-free SYSTEM PRIVATE "${LLAMA_CPP_SOURCE_DIR}/ggml/src"
+)
+target_link_libraries(tesy-sum-graph-model-free PRIVATE ggml ggml-cpu)
+
+add_executable(tesy-static-residency-model-free tesy_static_residency_model_free.cpp)
+target_compile_features(tesy-static-residency-model-free PRIVATE cxx_std_17)
+target_compile_options(tesy-static-residency-model-free PRIVATE -Wall -Wextra -Wpedantic -Werror)

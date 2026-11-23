@@ -1,0 +1,73 @@
+{
+  "argv": {
+    "expected": [
+      "/home/pmglo/Projects/Tesy/build/tesy-split-patched-gcc15/tesy-mixed-residency",
+      "--model",
+      "/home/pmglo/.local/share/tesy/models/gpt-oss-20b/gpt-oss-20b-mxfp4.gguf",
+      "--output",
+      "results/numerical-characterization-a-20260925T004505Z/raw.json",
+      "--prompt-file",
+      "/home/pmglo/Projects/Tesy/benchmarks/prompts/vertical-short-summary.txt",
+      "--ctx",
+      "4096",
+      "--threads",
+      "12",
+      "--vertical-live-exactness",
+      "--vertical-layers",
+      "3",
+      "--vertical-tokens",
+      "1",
+      "--vertical-numerical-diagnostic",
+      "--vertical-down-matrix",
+      "--matrix-sidecars-dir",
+      "/home/pmglo/Projects/Tesy/research/vertical-numerical-blocker-20260925/diagnostic-233715"
+    ],
+    "observed": [
+      "/home/pmglo/Projects/Tesy/build/tesy-split-patched-gcc15/tesy-mixed-residency",
+      "--model",
+      "/home/pmglo/.local/share/tesy/models/gpt-oss-20b/gpt-oss-20b-mxfp4.gguf",
+      "--output",
+      "results/numerical-characterization-a-20260925T004505Z/raw.json",
+      "--prompt-file",
+      "/home/pmglo/Projects/Tesy/benchmarks/prompts/vertical-short-summary.txt",
+      "--ctx",
+      "4096",
+      "--threads",
+      "12",
+      "--vertical-live-exactness",
+      "--vertical-layers",
+      "3",
+      "--vertical-tokens",
+      "1",
+      "--vertical-numerical-diagnostic",
+      "--vertical-down-matrix",
+      "--matrix-sidecars-dir",
+      "/home/pmglo/Projects/Tesy/research/vertical-numerical-blocker-20260925/diagnostic-233715"
+    ],
+    "status": "PASS"
+  },
+  "claim_boundary": "PASS binds the live mixed-residency microbenchmark to the expected executable, exact argv and the single selected libggml-cuda artifact. It does not establish numerical parity, timing quality, cache behavior or physical memory traffic.",
+  "classification": "MEASURED_LOCAL_PROVENANCE",
+  "executable": {
+    "expected": "/home/pmglo/Projects/Tesy/build/tesy-split-patched-gcc15/tesy-mixed-residency",
+    "observed": "/home/pmglo/Projects/Tesy/build/tesy-split-patched-gcc15/tesy-mixed-residency",
+    "sha256": "b1c3505579d0615541053088d06b9eb708a8cf8c670d296d34da8cbd858ae72e"
+  },
+  "ggml_cuda": {
+    "inode": 14668528,
+    "mapped_matches": [
+      {
+        "deleted": false,
+        "device": "00:23",
+        "inode": 14668528,
+        "path": "/home/pmglo/Projects/Tesy/build/tesy-split-patched-gcc15/bin/libggml-cuda.so.0.25.0"
+      }
+    ],
+    "path": "/home/pmglo/Projects/Tesy/build/tesy-split-patched-gcc15/bin/libggml-cuda.so.0.25.0",
+    "sha256": "84f6e30603ac9ffc98bad42d3983fe0c2e6da8a602269e0aec79833f6e26f38a"
+  },
+  "mismatches": [],
+  "pid": 215074,
+  "schema": "tesy.mixed_residency_runtime_provenance.v1",
+  "status": "PASS"
+}
