@@ -94,8 +94,18 @@ Specs e LaTeX são código de autoria confiável a rever. `-no-shell-escape`, pa
 
 O workflow documental em `.github/workflows/research-reports.yml` executa os testes model-free, a verificação de todos os relatórios registados e compila previews PDF byte-reprodutíveis. Cada run conserva um artifact `tesy-reports-preview-…` durante 14 dias; é material de revisão, não uma publicação científica. O build TeX fica separado das dependências do runtime.
 
-As releases são automáticas para **todos os relatórios LaTeX em `registry.json`**. Em cada PR documental, `.github/workflows/publish-research-report.yml` recompila em modo `release` no ambiente da CI e exige que cada PDF seja byte-a-byte igual ao hash visualmente revisto em `audit.json`; este é o preflight, ainda sem publicar. Depois do merge em C3, o mesmo workflow recompila, cria a tag imutável `reports-<report-id>-v<version>` e a GitHub Release separada com PDF, `release.json`, `evidence-lock.json` e `SHA256SUMS`. Não há passo de UI nem tag manual. Só relatórios `REVIEWED`, com lock e auditoria válidos, são candidatos; um `DRAFT` nunca é publicado. Uma Release existente nunca é alterada: se os seus inputs ou PDF diferirem, a CI falha com `RELEASE_VERSION_ALREADY_PUBLISHED`; aumentar `campaign.json.version`, regenerar derivados e refazer a auditoria é obrigatório. Alterações sem efeito no relatório (por exemplo, este README) comparam a mesma identidade publicada e não criam outra Release. Falhas por toolchain, auditoria, hash, tag pré-existente ou Release prévia não publicam nada. Isto não depende de `main`, que não é a base autoritativa do Scale Lab. As releases são o local citável para PDFs oficiais; os PDFs e diretórios de build continuam fora de Git.
+O registo `registry.json` alimenta a publicação automática. Em cada PR documental, a CI recompila as versões `REVIEWED` e compara cada PDF com o hash da revisão visual em `audit.json`. Os relatórios `DRAFT` estão disponíveis no artefacto de previews. Depois do merge em `main`, o workflow de publicação recompila as versões elegíveis e cria uma GitHub Release por versão, com a tag `reports-<report-id>-v<version>`, o PDF, `release.json`, `evidence-lock.json` e `SHA256SUMS`. [Workflow de publicação](../../.github/workflows/publish-research-report.yml)
 
-Os registos em `validation/` e `IMPLEMENTATION.md` descrevem a entrega original, antes da integração; o estado atual é descrito em `CURRENT-LAB.md` e no PR. Testes globais do Tesy e execução experimental: NOT_RUN nesta integração.
+Nas releases geradas com o workflow da `main` consolidada, descarregar os quatro ficheiros para uma pasta e correr `sha256sum --strict --check SHA256SUMS` nessa pasta. Uma alteração à identidade de um relatório publicado produz `RELEASE_VERSION_ALREADY_PUBLISHED` e exige nova versão, derivados e auditoria. As [releases](https://github.com/PedroMglo/Tesy/releases) são a referência citável de cada PDF oficial.
+
+Algumas releases anteriores à consolidação indicam `release-assets/<tag>/` nos nomes em `SHA256SUMS`. O exemplo verifica C06 a partir de uma pasta vazia.
+
+```sh
+tag=reports-C06-attn-dispatch-compat-v1.0.0
+gh release download "$tag" --repo PedroMglo/Tesy --dir "release-assets/$tag"
+sha256sum --strict --check "release-assets/$tag/SHA256SUMS"
+```
+
+Os registos em `validation/` e `IMPLEMENTATION.md` descrevem a entrega original. [CURRENT-LAB.md](CURRENT-LAB.md) documenta a fronteira histórica C3. O [mapa de autoridade da main](../../research/consolidacao-20261123/README.md) identifica os fechos experimentais, a validação da integração e a próxima decisão.
 
 Nos estados apoiados por texto, o teste automatizado é lexical: verifica o rótulo na âncora, não interpreta negações ou toda a semântica. Escolher âncoras positivas estreitas e verificar o contexto na revisão; preferir campos JSON explícitos quando disponíveis.

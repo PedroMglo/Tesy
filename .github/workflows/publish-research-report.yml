@@ -82,7 +82,11 @@ jobs:
             cp "$destination/report.pdf" "release-assets/$release_tag/${report_id}-v${version}.pdf"
             cp "$destination/release.json" "release-assets/$release_tag/release.json"
             cp "$destination/evidence-lock.json" "release-assets/$release_tag/evidence-lock.json"
-            sha256sum "release-assets/$release_tag"/* > "release-assets/$release_tag/SHA256SUMS"
+            (
+              cd "release-assets/$release_tag"
+              sha256sum "${report_id}-v${version}.pdf" release.json evidence-lock.json > SHA256SUMS
+              sha256sum --strict --check SHA256SUMS
+            )
           done < release-candidates.tsv
       - name: Refuse an immutable version change
         env:
