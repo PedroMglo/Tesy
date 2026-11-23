@@ -99,8 +99,10 @@ jobs:
       - name: Fetch pinned llama.cpp
         run: |
           mkdir -p .deps
-          git clone --filter=blob:none https://github.com/ggml-org/llama.cpp.git .deps/llama.cpp
-          git -C .deps/llama.cpp checkout --detach 4e416ee7308dd6b581796f1a6241276cd5982691
+          git init .deps/llama.cpp
+          git -C .deps/llama.cpp fetch --depth=1 https://github.com/ggml-org/llama.cpp.git 4e416ee7308dd6b581796f1a6241276cd5982691
+          git -C .deps/llama.cpp checkout --detach FETCH_HEAD
+          test "$(git -C .deps/llama.cpp rev-parse HEAD)" = 4e416ee7308dd6b581796f1a6241276cd5982691
           test -z "$(git -C .deps/llama.cpp status --porcelain)"
       - name: Configure tracer
         run: |
@@ -108,8 +110,11 @@ jobs:
             -DLLAMA_CPP_SOURCE_DIR="$PWD/.deps/llama.cpp" \
             -DGGML_CUDA=OFF \
             -DCMAKE_BUILD_TYPE=Release
-      - name: Build tracer and graph model-free tests
-        run: cmake --build build/native-ci --parallel 2 --target tesy-moe-trace tesy-split-graph-model-free tesy-sum-graph-model-free tesy-static-residency-model-free tesy-down-replay-model-free
+      - name: Compile integrated residency, tracer and model-free graph tests
+        run: >-
+          cmake --build build/native-ci --parallel 2 --target tesy-moe-trace tesy-mixed-residency
+          tesy-split-graph-model-free tesy-sum-graph-model-free
+          tesy-static-residency-model-free tesy-down-replay-model-free
       - name: Smoke tracer CLI
         run: build/native-ci/tesy-moe-trace --help
       - name: Split-graph MF0/MF1/MF2
