@@ -77,3 +77,25 @@ def test_two_clocks_overlapping_workers_acceptance_and_ready_hit():
     journal[2]["generation"] = 2
     with pytest.raises(ValueError, match="generation join"):
         audit["summarize_trace"](primary, stage)
+
+
+def test_second_call_capacity_bound_uses_strict_threshold():
+    rows = []
+    # 60 total IDs still permits exactly 40 in call 2. 61 forces overflow.
+    for layer in range(36):
+        n = {0: 60, 1: 61, 35: 67}.get(layer, 32)
+        rows.append(
+            {
+                "layer": layer,
+                "tier": "CPU" if layer < 25 else "CUDA0",
+                "demanded_union": list(range(n)),
+                "union_count": n,
+            }
+        )
+    result = audit["prefill_union_sizes"](rows)
+    assert result["CPU"]["above_40"] == 2
+    assert result["CPU"]["second_call_min_ids_where_over_40"] == {1: 41}
+    assert result["CUDA0"]["second_call_min_ids_where_over_40"] == {35: 47}
+    rows[1]["demanded_union"][-1] = 0
+    with pytest.raises(ValueError, match="union cardinality"):
+        audit["prefill_union_sizes"](rows)

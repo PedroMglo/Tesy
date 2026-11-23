@@ -184,22 +184,29 @@ def checked_bytes(path, receipt):
     return data
 
 
-def prefill_union_sizes():
-    layers = archived("results/c261-slots40-prefill-opportunity-20261004/analysis.json")["layers"]
+def prefill_union_sizes(layers):
+    # In C135/C261 the first external call has five tokens, each routing to four experts.
+    # Even disjoint expert choices can therefore explain at most 20 IDs of the union.
+    first_call_max_ids = 5 * 4
     if sorted(layer["layer"] for layer in layers) != list(range(36)):
         raise ValueError("C261 layer inventory is incomplete")
-    counts = {"CPU": [], "CUDA0": []}
+    counts = {"CPU": {}, "CUDA0": {}}
     for layer in layers:
         experts = layer["demanded_union"]
         if len(experts) != len(set(experts)) or len(experts) != layer["union_count"]:
             raise ValueError("union cardinality disagrees with logical IDs")
-        counts[layer["tier"]].append(len(experts))
+        counts[layer["tier"]][layer["layer"]] = len(experts)
     return {
         tier: {
             "layers": len(sizes),
-            "above_40": sum(n > 40 for n in sizes),
-            "min": min(sizes),
-            "max": max(sizes),
+            "above_40": sum(n > 40 for n in sizes.values()),
+            "min": min(sizes.values()),
+            "max": max(sizes.values()),
+            "second_call_min_ids_where_over_40": {
+                layer: n - first_call_max_ids
+                for layer, n in sizes.items()
+                if n - first_call_max_ids > 40
+            },
         }
         for tier, sizes in counts.items()
     }
@@ -213,7 +220,9 @@ def report(raw_dir):
     inputs = required_files()
     result = {
         "source_commit": SOURCE,
-        "C261_whole_prefill_distinct_experts_per_layer": prefill_union_sizes(),
+        "C261_prefill_expert_set_bounds": prefill_union_sizes(
+            archived("results/c261-slots40-prefill-opportunity-20261004/analysis.json")["layers"]
+        ),
         "C136_fixed_work_scenario_s": {
             "first_final_less_entire_decode": c136["warm_first_final_s"] - c136["warm_decode_s"],
             "decode_saving_needed_for_6_tps": c136["warm_decode_s"]
