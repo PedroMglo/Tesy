@@ -1,0 +1,13 @@
+{
+  "schema": "c90-e18-capacity-preflight-protocol-v1",
+  "identity": "C90",
+  "objective": "After C88/C89 own-scratch preservation, test fresh host and ancestor capacity for the E18 session numeric bridge without loading the model.",
+  "source_inventory": "tools/c55_inventory.py",
+  "sampling": "60 s at 1 Hz, maximum gap 1.5 s; use minimum MemAvailable and external variation in existing host_resource_policy.",
+  "requested_cgroup_cap_bytes": 19327352832,
+  "necessary_host_reserve_min_bytes": 2147483648,
+  "pass_rule": "Existing policy cap_max_bytes >= requested cap, coherent sensors/power/storage/ancestors, no concurrent 120B process. A pass permits only a later separate bounded model admission.",
+  "fail_rule": "If cap_max is below E18 or inventory is incomplete, preserve nonadmission and do not load model or silently lower cap.",
+  "model_runs": 0,
+  "publication": "local_only"
+}

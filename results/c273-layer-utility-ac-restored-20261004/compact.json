@@ -1,0 +1,689 @@
+{
+  "status": "SCREEN_GO_CODE_ONLY_FUNCTIONAL_ADVANTAGE_PLANNING_NOT_GENERAL_LATENCY_CONFIRMED",
+  "frozen_gate": "NO_GO_TWO_CLASS_NATIVE_UTILITY_SCREEN",
+  "measurement_commit": "9c0c25a",
+  "arms": [
+    {
+      "id": "c273-1-1-a",
+      "profile": "A",
+      "case": "development-code-rle",
+      "official_input_count": 2105,
+      "prepared_prefix_n": 1952,
+      "evaluated_n": 153,
+      "output_count_including_eog": 256,
+      "decode_forward_calls": 255,
+      "finish_reason": "stop",
+      "functional_success": true,
+      "outcome": "SUCCESS",
+      "metrics": {
+        "first_final_s": 40.81275611,
+        "cold_first_final_s": 100.52605237200001,
+        "completion_s": 85.618304388,
+        "prefix_preparation_s": 59.706346869,
+        "cold_prefill_s": 75.516077314,
+        "incremental_prefill_s": 15.809730445,
+        "decode_seconds_per_native_output": 0.27268974196484375,
+        "validated_s": 87.15754390600341
+      },
+      "validator_duration_s": 0.017763431002094876,
+      "completion_to_validator_s": 1.5214760870003374,
+      "reasoning_chars": 355,
+      "final": "```python\ndef rle_pairs(xs):\n    \"\"\"\n    Run\u2011length encode a list of integers.\n\n    Parameters\n    ----------\n    xs : list[int]\n        Input list.\n\n    Returns\n    -------\n    list[tuple[int, int]]\n        A list of (value, count) tuples, one for each maximal consecutive\n        run of equal values in the original order. Returns [] for an empty input.\n    \"\"\"\n    if not xs:\n        return []\n\n    result = []\n    current_val = xs[0]\n    count = 1\n\n    for x in xs[1:]:\n        if x == current_val:\n            count += 1\n        else:\n            result.append((current_val, count))\n            current_val = x\n            count = 1\n\n    result.append((current_val, count))\n    return result\n```",
+      "native_output_ids_exposure": "Exposed by new native greedy client, not retokenization",
+      "completed_load_generation_delta": {
+        "CPU": 7119,
+        "GPU": 2682
+      },
+      "resources": {
+        "rss_bytes": 15910035456,
+        "swap_bytes": 0,
+        "cgroup_memory_bytes": 15692148736,
+        "cgroup_peak_bytes": 15713533952,
+        "cgroup_file_bytes": 1492119552,
+        "gpu_used_mib": 6889.0,
+        "gpu_temperature_c": 65.0,
+        "cpu_tctl_c": 95.375,
+        "nvme_composite_c": 58.85,
+        "direct_model_fds": 2,
+        "buffered_model_fds": 0
+      },
+      "cgroup_events": {
+        "low": 0,
+        "high": 0,
+        "max": 0,
+        "oom": 0,
+        "oom_kill": 0,
+        "oom_group_kill": 0,
+        "sock_throttled": 0
+      },
+      "resource_stop": null,
+      "receipt_sha256": "440892f468e1df6ff877683dd75450769cc598d15e1b17eb9c799a8489d0eca1",
+      "full_native_raw_path": "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c273-layer-utility-ac-restored-20261004/raw/c273-1-1-a.native/result.json",
+      "first_reasoning_s": 16.759523466
+    },
+    {
+      "id": "c273-1-2-b",
+      "profile": "B",
+      "case": "development-code-rle",
+      "official_input_count": 2105,
+      "prepared_prefix_n": 1952,
+      "evaluated_n": 153,
+      "output_count_including_eog": 256,
+      "decode_forward_calls": 255,
+      "finish_reason": "stop",
+      "functional_success": true,
+      "outcome": "SUCCESS",
+      "metrics": {
+        "first_final_s": 37.306695845,
+        "cold_first_final_s": 98.948890561,
+        "completion_s": 81.639435558,
+        "prefix_preparation_s": 61.635330911,
+        "cold_prefill_s": 73.889078693,
+        "incremental_prefill_s": 12.253747782,
+        "decode_seconds_per_native_output": 0.271037842875,
+        "validated_s": 82.6976354780054
+      },
+      "validator_duration_s": 0.014037335000466555,
+      "completion_to_validator_s": 1.0441625849998672,
+      "reasoning_chars": 355,
+      "final": "```python\ndef rle_pairs(xs):\n    \"\"\"\n    Run\u2011length encode a list of integers.\n\n    Parameters\n    ----------\n    xs : list[int]\n        Input list.\n\n    Returns\n    -------\n    list[tuple[int, int]]\n        A list of (value, count) tuples, one for each maximal consecutive\n        run of equal values in the original order. Returns [] for an empty input.\n    \"\"\"\n    if not xs:\n        return []\n\n    result = []\n    current_val = xs[0]\n    count = 1\n\n    for x in xs[1:]:\n        if x == current_val:\n            count += 1\n        else:\n            result.append((current_val, count))\n            current_val = x\n            count = 1\n\n    result.append((current_val, count))\n    return result\n```",
+      "native_output_ids_exposure": "Exposed by new native greedy client, not retokenization",
+      "completed_load_generation_delta": {
+        "CPU": 6818,
+        "GPU": 2661
+      },
+      "resources": {
+        "rss_bytes": 16020697088,
+        "swap_bytes": 0,
+        "cgroup_memory_bytes": 16194682880,
+        "cgroup_peak_bytes": 16215973888,
+        "cgroup_file_bytes": 1907834880,
+        "gpu_used_mib": 6972.0,
+        "gpu_temperature_c": 65.0,
+        "cpu_tctl_c": 95.375,
+        "nvme_composite_c": 59.85,
+        "direct_model_fds": 2,
+        "buffered_model_fds": 0
+      },
+      "cgroup_events": {
+        "low": 0,
+        "high": 0,
+        "max": 0,
+        "oom": 0,
+        "oom_kill": 0,
+        "oom_group_kill": 0,
+        "sock_throttled": 0
+      },
+      "resource_stop": null,
+      "receipt_sha256": "c03a04c490bb62c4c5a9477afba18c6084f2f0ac1b6211700dbb90eb887e60e1",
+      "full_native_raw_path": "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c273-layer-utility-ac-restored-20261004/raw/c273-1-2-b.native/result.json",
+      "first_reasoning_s": 13.203046596
+    },
+    {
+      "id": "c273-1-3-b",
+      "profile": "B",
+      "case": "development-code-rle",
+      "official_input_count": 2105,
+      "prepared_prefix_n": 1952,
+      "evaluated_n": 153,
+      "output_count_including_eog": 256,
+      "decode_forward_calls": 255,
+      "finish_reason": "stop",
+      "functional_success": true,
+      "outcome": "SUCCESS",
+      "metrics": {
+        "first_final_s": 37.410644479,
+        "cold_first_final_s": 96.830056922,
+        "completion_s": 82.208882992,
+        "prefix_preparation_s": 59.413724535,
+        "cold_prefill_s": 71.674253515,
+        "incremental_prefill_s": 12.26052898,
+        "decode_seconds_per_native_output": 0.273235757859375,
+        "validated_s": 82.96471799800202
+      },
+      "validator_duration_s": 0.014748535002581775,
+      "completion_to_validator_s": 0.7410864709963789,
+      "reasoning_chars": 355,
+      "final": "```python\ndef rle_pairs(xs):\n    \"\"\"\n    Run\u2011length encode a list of integers.\n\n    Parameters\n    ----------\n    xs : list[int]\n        Input list.\n\n    Returns\n    -------\n    list[tuple[int, int]]\n        A list of (value, count) tuples, one for each maximal consecutive\n        run of equal values in the original order. Returns [] for an empty input.\n    \"\"\"\n    if not xs:\n        return []\n\n    result = []\n    current_val = xs[0]\n    count = 1\n\n    for x in xs[1:]:\n        if x == current_val:\n            count += 1\n        else:\n            result.append((current_val, count))\n            current_val = x\n            count = 1\n\n    result.append((current_val, count))\n    return result\n```",
+      "native_output_ids_exposure": "Exposed by new native greedy client, not retokenization",
+      "completed_load_generation_delta": {
+        "CPU": 6818,
+        "GPU": 2661
+      },
+      "resources": {
+        "rss_bytes": 16020799488,
+        "swap_bytes": 0,
+        "cgroup_memory_bytes": 16199200768,
+        "cgroup_peak_bytes": 16220405760,
+        "cgroup_file_bytes": 1911201792,
+        "gpu_used_mib": 6972.0,
+        "gpu_temperature_c": 66.0,
+        "cpu_tctl_c": 95.375,
+        "nvme_composite_c": 60.85,
+        "direct_model_fds": 2,
+        "buffered_model_fds": 0
+      },
+      "cgroup_events": {
+        "low": 0,
+        "high": 0,
+        "max": 0,
+        "oom": 0,
+        "oom_kill": 0,
+        "oom_group_kill": 0,
+        "sock_throttled": 0
+      },
+      "resource_stop": null,
+      "receipt_sha256": "9c17e8f112dd6dbf9dfe2a41623951283aa8589497035019b874d48080ac42ec",
+      "full_native_raw_path": "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c273-layer-utility-ac-restored-20261004/raw/c273-1-3-b.native/result.json",
+      "first_reasoning_s": 13.201584689
+    },
+    {
+      "id": "c273-1-4-a",
+      "profile": "A",
+      "case": "development-code-rle",
+      "official_input_count": 2105,
+      "prepared_prefix_n": 1952,
+      "evaluated_n": 153,
+      "output_count_including_eog": 256,
+      "decode_forward_calls": 255,
+      "finish_reason": "stop",
+      "functional_success": true,
+      "outcome": "SUCCESS",
+      "metrics": {
+        "first_final_s": 41.21900784,
+        "cold_first_final_s": 100.92727122900001,
+        "completion_s": 86.453470471,
+        "prefix_preparation_s": 59.701828012,
+        "cold_prefill_s": 75.763330466,
+        "incremental_prefill_s": 16.061502454,
+        "decode_seconds_per_native_output": 0.27496862506640624,
+        "validated_s": 87.67495111400058
+      },
+      "validator_duration_s": 0.017857309001556132,
+      "completion_to_validator_s": 1.203623333996802,
+      "reasoning_chars": 355,
+      "final": "```python\ndef rle_pairs(xs):\n    \"\"\"\n    Run\u2011length encode a list of integers.\n\n    Parameters\n    ----------\n    xs : list[int]\n        Input list.\n\n    Returns\n    -------\n    list[tuple[int, int]]\n        A list of (value, count) tuples, one for each maximal consecutive\n        run of equal values in the original order. Returns [] for an empty input.\n    \"\"\"\n    if not xs:\n        return []\n\n    result = []\n    current_val = xs[0]\n    count = 1\n\n    for x in xs[1:]:\n        if x == current_val:\n            count += 1\n        else:\n            result.append((current_val, count))\n            current_val = x\n            count = 1\n\n    result.append((current_val, count))\n    return result\n```",
+      "native_output_ids_exposure": "Exposed by new native greedy client, not retokenization",
+      "completed_load_generation_delta": {
+        "CPU": 7119,
+        "GPU": 2682
+      },
+      "resources": {
+        "rss_bytes": 15910076416,
+        "swap_bytes": 0,
+        "cgroup_memory_bytes": 16089681920,
+        "cgroup_peak_bytes": 16220405760,
+        "cgroup_file_bytes": 1888587776,
+        "gpu_used_mib": 6878.0,
+        "gpu_temperature_c": 66.0,
+        "cpu_tctl_c": 95.25,
+        "nvme_composite_c": 61.85,
+        "direct_model_fds": 2,
+        "buffered_model_fds": 0
+      },
+      "cgroup_events": {
+        "low": 0,
+        "high": 0,
+        "max": 0,
+        "oom": 0,
+        "oom_kill": 0,
+        "oom_group_kill": 0,
+        "sock_throttled": 0
+      },
+      "resource_stop": null,
+      "receipt_sha256": "9363a6477f03068c7621d278ed5ce7c53e4c8613c47802946d0d5113a7e46839",
+      "full_native_raw_path": "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c273-layer-utility-ac-restored-20261004/raw/c273-1-4-a.native/result.json",
+      "first_reasoning_s": 17.009269861
+    },
+    {
+      "id": "c273-2-1-a",
+      "profile": "A",
+      "case": "development-structured-route",
+      "official_input_count": 2154,
+      "prepared_prefix_n": 2001,
+      "evaluated_n": 153,
+      "output_count_including_eog": 768,
+      "decode_forward_calls": 767,
+      "finish_reason": "length",
+      "functional_success": false,
+      "outcome": "OUTPUT_CAP",
+      "metrics": {
+        "first_final_s": null,
+        "cold_first_final_s": null,
+        "completion_s": 178.153493864,
+        "prefix_preparation_s": 60.064426795,
+        "cold_prefill_s": 79.84321993,
+        "incremental_prefill_s": 19.778793135,
+        "decode_seconds_per_native_output": 0.20621705824088543,
+        "validated_s": null
+      },
+      "validator_duration_s": 8.319984772242606e-07,
+      "completion_to_validator_s": 0.9528990050021093,
+      "reasoning_chars": 2336,
+      "final": "",
+      "native_output_ids_exposure": "Exposed by new native greedy client, not retokenization",
+      "completed_load_generation_delta": {
+        "CPU": 12972,
+        "GPU": 5433
+      },
+      "resources": {
+        "rss_bytes": 15910752256,
+        "swap_bytes": 0,
+        "cgroup_memory_bytes": 16093282304,
+        "cgroup_peak_bytes": 16220405760,
+        "cgroup_file_bytes": 1890975744,
+        "gpu_used_mib": 6878.0,
+        "gpu_temperature_c": 66.0,
+        "cpu_tctl_c": 95.375,
+        "nvme_composite_c": 61.85,
+        "direct_model_fds": 2,
+        "buffered_model_fds": 0
+      },
+      "cgroup_events": {
+        "low": 0,
+        "high": 0,
+        "max": 0,
+        "oom": 0,
+        "oom_kill": 0,
+        "oom_group_kill": 0,
+        "sock_throttled": 0
+      },
+      "resource_stop": null,
+      "receipt_sha256": "6053c75cdc1dd12add04c5b4a492f6d6b5fb3259f8b645485d5263c0ef6d09ee",
+      "full_native_raw_path": "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c273-layer-utility-ac-restored-20261004/raw/c273-2-1-a.native/result.json",
+      "first_reasoning_s": 20.896883386
+    },
+    {
+      "id": "c273-2-2-b",
+      "profile": "B",
+      "case": "development-structured-route",
+      "official_input_count": 2154,
+      "prepared_prefix_n": 2001,
+      "evaluated_n": 153,
+      "output_count_including_eog": 470,
+      "decode_forward_calls": 469,
+      "finish_reason": "stop",
+      "functional_success": true,
+      "outcome": "SUCCESS",
+      "metrics": {
+        "first_final_s": 120.489241631,
+        "cold_first_final_s": 180.898374493,
+        "completion_s": 128.8376304,
+        "prefix_preparation_s": 60.400361669,
+        "cold_prefill_s": 74.146665284,
+        "incremental_prefill_s": 13.746303615,
+        "decode_seconds_per_native_output": 0.24487516337234044,
+        "validated_s": 129.8703525289966
+      },
+      "validator_duration_s": 9.775399666978046e-05,
+      "completion_to_validator_s": 1.0326243750023423,
+      "reasoning_chars": 1425,
+      "final": "{\n  \"route\": [\"S\", \"B\", \"C\", \"T\"],\n  \"arrival_minute\": 6\n}",
+      "native_output_ids_exposure": "Exposed by new native greedy client, not retokenization",
+      "completed_load_generation_delta": {
+        "CPU": 9254,
+        "GPU": 3824
+      },
+      "resources": {
+        "rss_bytes": 16017453056,
+        "swap_bytes": 0,
+        "cgroup_memory_bytes": 16201998336,
+        "cgroup_peak_bytes": 16223293440,
+        "cgroup_file_bytes": 1917747200,
+        "gpu_used_mib": 6968.0,
+        "gpu_temperature_c": 66.0,
+        "cpu_tctl_c": 95.375,
+        "nvme_composite_c": 61.85,
+        "direct_model_fds": 2,
+        "buffered_model_fds": 0
+      },
+      "cgroup_events": {
+        "low": 0,
+        "high": 0,
+        "max": 0,
+        "oom": 0,
+        "oom_kill": 0,
+        "oom_group_kill": 0,
+        "sock_throttled": 0
+      },
+      "resource_stop": null,
+      "receipt_sha256": "885527d9f751f82999f23791a25cfb82cb498c51a07c4de4bbb57553da26980a",
+      "full_native_raw_path": "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c273-layer-utility-ac-restored-20261004/raw/c273-2-2-b.native/result.json",
+      "first_reasoning_s": 14.87215836
+    },
+    {
+      "id": "c273-2-3-b",
+      "profile": "B",
+      "case": "development-structured-route",
+      "official_input_count": 2154,
+      "prepared_prefix_n": 2001,
+      "evaluated_n": 153,
+      "output_count_including_eog": 470,
+      "decode_forward_calls": 469,
+      "finish_reason": "stop",
+      "functional_success": true,
+      "outcome": "SUCCESS",
+      "metrics": {
+        "first_final_s": 111.463776062,
+        "cold_first_final_s": 171.55328856699998,
+        "completion_s": 119.187062793,
+        "prefix_preparation_s": 60.080046993,
+        "cold_prefill_s": 73.943608043,
+        "incremental_prefill_s": 13.86356105,
+        "decode_seconds_per_native_output": 0.2240925569,
+        "validated_s": 120.26866679199884
+      },
+      "validator_duration_s": 9.495899575995281e-05,
+      "completion_to_validator_s": 1.0815090399992187,
+      "reasoning_chars": 1425,
+      "final": "{\n  \"route\": [\"S\", \"B\", \"C\", \"T\"],\n  \"arrival_minute\": 6\n}",
+      "native_output_ids_exposure": "Exposed by new native greedy client, not retokenization",
+      "completed_load_generation_delta": {
+        "CPU": 9254,
+        "GPU": 3824
+      },
+      "resources": {
+        "rss_bytes": 16017313792,
+        "swap_bytes": 0,
+        "cgroup_memory_bytes": 16204521472,
+        "cgroup_peak_bytes": 16225808384,
+        "cgroup_file_bytes": 1919868928,
+        "gpu_used_mib": 6968.0,
+        "gpu_temperature_c": 66.0,
+        "cpu_tctl_c": 95.375,
+        "nvme_composite_c": 61.85,
+        "direct_model_fds": 2,
+        "buffered_model_fds": 0
+      },
+      "cgroup_events": {
+        "low": 0,
+        "high": 0,
+        "max": 0,
+        "oom": 0,
+        "oom_kill": 0,
+        "oom_group_kill": 0,
+        "sock_throttled": 0
+      },
+      "resource_stop": null,
+      "receipt_sha256": "8700d5b58f175e4badac9a6768b323812333e8bfab6df82ed3390b316fdb39eb",
+      "full_native_raw_path": "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c273-layer-utility-ac-restored-20261004/raw/c273-2-3-b.native/result.json",
+      "first_reasoning_s": 15.011800141
+    },
+    {
+      "id": "c273-2-4-a",
+      "profile": "A",
+      "case": "development-structured-route",
+      "official_input_count": 2154,
+      "prepared_prefix_n": 2001,
+      "evaluated_n": 153,
+      "output_count_including_eog": 768,
+      "decode_forward_calls": 767,
+      "finish_reason": "length",
+      "functional_success": false,
+      "outcome": "OUTPUT_CAP",
+      "metrics": {
+        "first_final_s": null,
+        "cold_first_final_s": null,
+        "completion_s": 174.475473006,
+        "prefix_preparation_s": 59.875837069,
+        "cold_prefill_s": 80.03149276799999,
+        "incremental_prefill_s": 20.155655699,
+        "decode_seconds_per_native_output": 0.20093726211848958,
+        "validated_s": null
+      },
+      "validator_duration_s": 7.409980753436685e-07,
+      "completion_to_validator_s": 0.6828281280031661,
+      "reasoning_chars": 2336,
+      "final": "",
+      "native_output_ids_exposure": "Exposed by new native greedy client, not retokenization",
+      "completed_load_generation_delta": {
+        "CPU": 12972,
+        "GPU": 5433
+      },
+      "resources": {
+        "rss_bytes": 15910547456,
+        "swap_bytes": 0,
+        "cgroup_memory_bytes": 16099926016,
+        "cgroup_peak_bytes": 16225808384,
+        "cgroup_file_bytes": 1897713664,
+        "gpu_used_mib": 6878.0,
+        "gpu_temperature_c": 67.0,
+        "cpu_tctl_c": 95.5,
+        "nvme_composite_c": 62.85,
+        "direct_model_fds": 2,
+        "buffered_model_fds": 0
+      },
+      "cgroup_events": {
+        "low": 0,
+        "high": 0,
+        "max": 0,
+        "oom": 0,
+        "oom_kill": 0,
+        "oom_group_kill": 0,
+        "sock_throttled": 0
+      },
+      "resource_stop": null,
+      "receipt_sha256": "5fc2cbbc37340264f763f8391b8f5e1107f3a92e3a555dbf9c434ad3efe882f4",
+      "full_native_raw_path": "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c273-layer-utility-ac-restored-20261004/raw/c273-2-4-a.native/result.json",
+      "first_reasoning_s": 21.28905367
+    }
+  ],
+  "paired_analysis": {
+    "status": "NO_GO_TWO_CLASS_NATIVE_UTILITY_SCREEN",
+    "classes": {
+      "development-code-rle": {
+        "status": "GO_CLASS_UTILITY_SCREEN",
+        "pairs": [
+          {
+            "A": "c273-1-1-a",
+            "B": "c273-1-2-b",
+            "gain_percent": {
+              "first_final_s": 8.59059911452768,
+              "cold_first_final_s": 1.56890853046101,
+              "completion_s": 4.647217506164093,
+              "validated_s": 5.1170652913394195,
+              "prefix_preparation_s": -3.2307855749947745,
+              "cold_prefill_s": 2.154506270545342,
+              "incremental_prefill_s": 22.492367440234368,
+              "decode_seconds_per_native_output": 0.6057796959801756
+            },
+            "both_success": true,
+            "A_outcome": "SUCCESS",
+            "B_outcome": "SUCCESS",
+            "native_outputs_equal": true
+          },
+          {
+            "A": "c273-1-4-a",
+            "B": "c273-1-3-b",
+            "gain_percent": {
+              "first_final_s": 9.239337772958885,
+              "cold_first_final_s": 4.059571072424615,
+              "completion_s": 4.909678530977898,
+              "validated_s": 5.3723817990773854,
+              "prefix_preparation_s": 0.4825706123137326,
+              "cold_prefill_s": 5.397171594555276,
+              "incremental_prefill_s": 23.66511778637119,
+              "decode_seconds_per_native_output": 0.630205430387833
+            },
+            "both_success": true,
+            "A_outcome": "SUCCESS",
+            "B_outcome": "SUCCESS",
+            "native_outputs_equal": true
+          }
+        ],
+        "median_paired_gain_percent": {
+          "first_final_s": 8.914968443743284,
+          "cold_first_final_s": 2.8142398014428123,
+          "completion_s": 4.778448018570995,
+          "validated_s": 5.2447235452084024,
+          "prefix_preparation_s": -1.374107481340521,
+          "cold_prefill_s": 3.7758389325503092,
+          "incremental_prefill_s": 23.07874261330278,
+          "decode_seconds_per_native_output": 0.6179925631840043
+        },
+        "population": [
+          {
+            "id": "c273-1-1-a",
+            "profile": "A",
+            "outcome": "SUCCESS",
+            "functional_success": true
+          },
+          {
+            "id": "c273-1-2-b",
+            "profile": "B",
+            "outcome": "SUCCESS",
+            "functional_success": true
+          },
+          {
+            "id": "c273-1-3-b",
+            "profile": "B",
+            "outcome": "SUCCESS",
+            "functional_success": true
+          },
+          {
+            "id": "c273-1-4-a",
+            "profile": "A",
+            "outcome": "SUCCESS",
+            "functional_success": true
+          }
+        ]
+      },
+      "development-structured-route": {
+        "status": "NO_GO_CLASS_UTILITY_SCREEN",
+        "pairs": [
+          {
+            "A": "c273-2-1-a",
+            "B": "c273-2-2-b",
+            "gain_percent": {
+              "first_final_s": null,
+              "cold_first_final_s": null,
+              "completion_s": null,
+              "validated_s": null,
+              "prefix_preparation_s": null,
+              "cold_prefill_s": null,
+              "incremental_prefill_s": null,
+              "decode_seconds_per_native_output": null
+            },
+            "both_success": false,
+            "A_outcome": "OUTPUT_CAP",
+            "B_outcome": "SUCCESS",
+            "native_outputs_equal": false
+          },
+          {
+            "A": "c273-2-4-a",
+            "B": "c273-2-3-b",
+            "gain_percent": {
+              "first_final_s": null,
+              "cold_first_final_s": null,
+              "completion_s": null,
+              "validated_s": null,
+              "prefix_preparation_s": null,
+              "cold_prefill_s": null,
+              "incremental_prefill_s": null,
+              "decode_seconds_per_native_output": null
+            },
+            "both_success": false,
+            "A_outcome": "OUTPUT_CAP",
+            "B_outcome": "SUCCESS",
+            "native_outputs_equal": false
+          }
+        ],
+        "median_paired_gain_percent": {
+          "first_final_s": null,
+          "cold_first_final_s": null,
+          "completion_s": null,
+          "validated_s": null,
+          "prefix_preparation_s": null,
+          "cold_prefill_s": null,
+          "incremental_prefill_s": null,
+          "decode_seconds_per_native_output": null
+        },
+        "population": [
+          {
+            "id": "c273-2-1-a",
+            "profile": "A",
+            "outcome": "OUTPUT_CAP",
+            "functional_success": false
+          },
+          {
+            "id": "c273-2-2-b",
+            "profile": "B",
+            "outcome": "SUCCESS",
+            "functional_success": true
+          },
+          {
+            "id": "c273-2-3-b",
+            "profile": "B",
+            "outcome": "SUCCESS",
+            "functional_success": true
+          },
+          {
+            "id": "c273-2-4-a",
+            "profile": "A",
+            "outcome": "OUTPUT_CAP",
+            "functional_success": false
+          }
+        ]
+      }
+    },
+    "scope": "Constructed native near2K warm153, fixed provided history, free greedy responses. R2 own profile; not server integration, stochastic exactness, full8K or M4."
+  },
+  "planning_latency": "NOT_COMPUTABLE_CONTROL_OUTPUT_CAP; positive functional advantage in both pairs, not a ratio or physical mechanism rejection",
+  "four_k": "NOT_RUN_TWO_CLASS_SCREEN_GATE",
+  "confirmation": "NOT_RUN_TWO_CLASS_SCREEN_GATE",
+  "qualification": "NOT_RUN_TWO_CLASS_SCREEN_GATE",
+  "cleanup": {
+    "observed": {
+      "utc": "2026-10-04T21:55:16.045190+00:00",
+      "monotonic_s": 40639.505661701
+    },
+    "power": {
+      "source": "AC",
+      "online_sources": [
+        "AC0"
+      ],
+      "profile": "performance"
+    },
+    "scope": "ActiveState=inactive\nSubState=dead\nMainPID=0\n",
+    "gpu": "GPU-83d90c55-1d92-75da-fc30-7771a85f2521, 13, 44\n",
+    "compute_processes": "",
+    "budget": {
+      "utc": "2026-10-04T21:55:18.177502+00:00",
+      "physical_used_s": 16770.658822717,
+      "wall_used_s": 39978.099247891,
+      "raw_bytes": 2323441626,
+      "physical_remaining_s": 40829.341177283,
+      "wall_remaining_s": 392021.900752109,
+      "raw_remaining_bytes": 10561460262,
+      "closure_reserve_s": 14400,
+      "next_worst_case_s": 0,
+      "admitted": true
+    },
+    "habitual_processes": [
+      {
+        "pid": 1393,
+        "comm": "ollama",
+        "status": "Observed unchanged/unloaded, not signalled"
+      },
+      {
+        "pid": 1696,
+        "comm": "python3",
+        "status": "Observed original Unix bridge, not signalled"
+      }
+    ],
+    "private_full_process_evidence": "raw/cleanup-full-local.json"
+  },
+  "epoch_budget": {
+    "utc": "2026-10-04T21:57:40.957393+00:00",
+    "physical_used_s": 16770.658822717,
+    "wall_used_s": 40120.855302282,
+    "raw_bytes": 2323478595,
+    "physical_remaining_s": 40829.341177283,
+    "wall_remaining_s": 391879.144697718,
+    "raw_remaining_bytes": 10561423293,
+    "closure_reserve_s": 14400,
+    "next_worst_case_s": 0,
+    "admitted": true
+  },
+  "scope": "Constructed near2K warm153, ownR2 profile; two ABBA pairs/class, no three-pair confirmation, no C143 realpath delivery or M4, historical quality failures retained"
+}

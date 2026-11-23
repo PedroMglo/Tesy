@@ -1,0 +1,39 @@
+{
+  "schema": "c7-gate-repair-tests-v1",
+  "evidence_class": "model-free mutation suite",
+  "command": "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=tools python3 -m unittest tools.test_c7_gate_repair tools.test_c5_compare tools.test_c2_gate tools.test_c3_approval tools.test_c3_terminal_sample",
+  "baseline_focused_tests": 41,
+  "new_and_existing_tests": 53,
+  "failures": 0,
+  "status": "PASS",
+  "source_sha256": {
+    "tools/c2_gate.py": "1e023e2e944907144d8a56a45262a848e7154e413c4d75ff1b089fc4ae2a6d99",
+    "tools/c3_compare_capture_logits.py": "364c24dd117be5e0771588a8dca9f560e8c3aec187835b4c512a8da54d2193cc",
+    "tools/c6_compare_d2.py": "1da148d36157182d755599256375f4427e5c90acbe5bc924320483a3cc9f02bc",
+    "tools/run_bounded.py": "0785e36453039ecb5c6ec74edc11a0a71b0fda1ae927be1806a8fbfc0d65821d",
+    "tools/c7_reaudit.py": "5db0e83c40f539f9e2bf369b34770fa681a5160ae9c280143aa83a41d2219d92",
+    "tools/test_c7_gate_repair.py": "0301a1c89888ec92949ecd355ac9939475511a34f5513e9b6b6d509d677b6578"
+  },
+  "negative_coverage": [
+    "empty 113-token payload",
+    "one-feature payload declared 2880",
+    "stage",
+    "shape",
+    "stride",
+    "chunk",
+    "absolute position",
+    "missing/extra/duplicate state",
+    "masked zero-row positive",
+    "C equals A",
+    "earlier divergence",
+    "RSS missing",
+    "PID changed",
+    "OOM sample",
+    "cgroup/cap wrong",
+    "negative metric",
+    "JSON 1e309",
+    "post-terminal sample",
+    "unexpected mapped library",
+    "missing negative receipt"
+  ]
+}

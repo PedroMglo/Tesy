@@ -1,0 +1,148 @@
+{
+  "abort_on_first_new_failure": true,
+  "analyzer": {
+    "sha256": "b4e32bac0764576e1a5b6f7acd87c8c645720eeee18c841f197614187e8480de",
+    "source": "tools/c7_boundary_gate.py"
+  },
+  "backend_graph_source_sha256": {
+    "ggml/src/ggml-backend.cpp": "a96b54377e2b66732dcc5ed7ede82b6e0e873de53d515ac9fd6aa118b716bdd3",
+    "src/llama-context.cpp": "8f6824f144d44b1e9b0771701fae3bc1987fed167384cb6cb51a0c06f5146047",
+    "src/models/openai-moe.cpp": "239407aaa98f8b65eb280e4423588ba7cefc520371811b9c47d7457fc1f469d4"
+  },
+  "binaries": {
+    "c7_boundary_capture": {
+      "binary_sha256": "f4384d35f376c6ea08aca7a315ffa6a2cd331243f142684103a9efe68c5e2ede",
+      "source_sha256": "685c2c113f3be1483f02e55a9730a6926c7938950567ecea7e0d283aaf4e0be4"
+    },
+    "c7_layer_reference": {
+      "binary_sha256": "028c1de130f03d922cbbaeaf0b62dd428c2dec1df97682e885c6239663d1c142",
+      "source_sha256": "8e2cea78501bc1889fc99cada9613a60288a71e2014b8d2a201308cceabb21a9"
+    },
+    "c7_profile_probe": {
+      "binary_sha256": "4c0dc056cec3edcf5b05cd6b34208a9fe9a18bb92cf74d5e33f2f2553ccc5a43",
+      "source_sha256": "cdb95c9df8dcc2b6749d787c80d419e37bfcc6eeacfbbf246cfc26e9627f070c"
+    }
+  },
+  "claim": "same-profile full-logit bitwise OFF/ON/fresh-process; stream versus canonical routed layer deferred until observer gate passes",
+  "comparison": {
+    "cross_profile": "not part of G2",
+    "mismatch": "FAIL_SAME_PROFILE_FIDELITY; preserve raw; no timing promotion",
+    "off1_on_off2_selected_logits": "bitwise 5 complete vectors"
+  },
+  "created_utc": "2026-09-27T11:58:46.827515+00:00",
+  "external_call_plan": {
+    "all_decode_calls_finish_logits": true,
+    "decode_positions": [
+      189,
+      220
+    ],
+    "one_id_per_call": true,
+    "prefill_calls": [
+      {
+        "logit_mask": "only position 188",
+        "n_batch": 256,
+        "n_ubatch": 32,
+        "positions": [
+          0,
+          188
+        ],
+        "prompt_ids": 189
+      }
+    ],
+    "teacher_forced_decode_calls": 32
+  },
+  "inputs": {
+    "continuation_ids": 43,
+    "numeric_path": "results/c2-target-numeric-v1.ids",
+    "numeric_sha256": "8fb3aff447febaeaa5a8bdd0c485fd20d51d39fb6ac3e6ba4849eb4a664dbc23",
+    "prompt_ids": 189,
+    "used_teacher_forced_ids": 32
+  },
+  "internal_graph_plan": {
+    "byte_witness_layers": [
+      0,
+      25,
+      29,
+      35
+    ],
+    "chunk_anchor": "attn_post_norm !ask once per layer per internal microbatch; MoE waves do not advance the counter",
+    "last_layer_masked": [
+      {
+        "layer": 35,
+        "phase": "prefill0",
+        "state": "N/A_MASKED"
+      },
+      {
+        "layer": 35,
+        "phase": "prefill128",
+        "state": "N/A_MASKED"
+      }
+    ],
+    "logit_width_f32": 201088,
+    "masked_states": 2,
+    "microbatch_lengths": [
+      32,
+      32,
+      32,
+      32,
+      32,
+      29
+    ],
+    "microbatch_starts": [
+      0,
+      32,
+      64,
+      96,
+      128,
+      160
+    ],
+    "numeric_states": 250,
+    "output_logit_phases": [
+      "prefill_final",
+      "decode0",
+      "decode1",
+      "decode7",
+      "decode31"
+    ],
+    "reference_loads": 36,
+    "schema_positions": 252,
+    "selected_phases": [
+      "prefill0",
+      "prefill128",
+      "prefill_final",
+      "decode0",
+      "decode1",
+      "decode7",
+      "decode31"
+    ],
+    "source": [
+      "src/models/openai-moe.cpp",
+      "src/llama-context.cpp",
+      "ggml/src/ggml-backend.cpp"
+    ]
+  },
+  "parent_protocol_sha256": "a49377550b7a05e26225c38cbefa2dab8f1ecce38e27c6827b2e0c10a5aac108",
+  "profile": "P12-original-backend-ngl12-ub32-slots32-E18",
+  "publication": "local only; no usual-server changes",
+  "resource": {
+    "max_cpu_c": 95,
+    "max_gpu_c": 80,
+    "max_nvme_c": 70,
+    "min_mem_available_gib": 6,
+    "sample_gap_s_max": 3,
+    "sample_interval_s_max": 1,
+    "scope_memory_max_bytes": 19327352832,
+    "scope_swap_max_bytes": 0,
+    "timeout_per_process_s": 600,
+    "watchdog_max_cgroup_gib": 16.5,
+    "watchdog_max_gpu_mib": 6500,
+    "watchdog_max_rss_gib": 16
+  },
+  "run_order": [
+    "c7-g2-p12-off01",
+    "c7-g2-p12-on01",
+    "c7-g2-p12-off02"
+  ],
+  "schema": "c7-p12-g2-observer-protocol-v1",
+  "source_limits": "canonical layer graph is reused from C4 source with independent routing and same-device replay; it does not certify attention/KV independently"
+}

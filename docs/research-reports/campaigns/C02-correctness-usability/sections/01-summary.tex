@@ -1,0 +1,21 @@
+\section{Síntese executiva}
+\claim{CL-C2-STATE}{A Campanha 2 publicou execução funcional e desempenho sustentado do GPT-OSS 120B no envelope de memória declarado, mas não demonstrou a cobertura numérica independente necessária para certificar o caminho GPU8/32 em prefixes longos.}
+
+\begin{tabularx}{\linewidth}{@{}Y r@{}}
+\toprule \textbf{Resultado publicado} & \textbf{Valor}\\ \midrule
+Decode agregado C2-C & \metric{M-C2-DECODE} token/s\\
+Decode na segunda metade & \metric{M-C2-SECOND-HALF} token/s\\
+Pico de memória do cgroup C2-C & \metric{M-C2-HOST-PEAK} GiB\\
+Primeiro texto / primeiro conteúdo final, prompt curto & \metric{M-C2-FIRST-TEXT} / \metric{M-C2-FIRST-FINAL} s\\
+Tarefas corretas, target / stock20B & \metric{M-C2-TARGET-PASS}/\metric{M-C2-CASES} / \metric{M-C2-STOCK-PASS}/\metric{M-C2-CASES}\\
+Razão de wall time target / stock20B na suite & \metric{M-C2-WALL-RATIO}$\times$\\
+\bottomrule
+\end{tabularx}
+{\small Âmbitos diferentes: desempenho C2-C, latência C2-D e utilidade C2-E. \evidence{E-C2-GATE} \evidence{E-C2-SUMMARY} \evidence{E-C2-LATENCY}}
+
+\claim{CL-C2-PERFORMANCE}{O gate de timing/recursos passou; a meta de 4 token/s não foi atingida.} \claim{CL-C2-LATENCY}{As metas de 10 s para primeiro texto e 20 s para primeiro conteúdo final também falharam no prompt curto.}
+
+\begin{FindingBox}{Decisão e próximo gate}
+\claim{CL-C2-NEXT}{Qualificar uma referência independente para prefixes target mais longos, compatível com o placement e o orçamento de memória. Não promover uma otimização com o gate numérico por resolver.}
+\end{FindingBox}
+{\footnotesize Síntese retrospectiva de publicações congeladas. A construção deste relatório não executou modelos nem reanalisou os dados brutos locais.}

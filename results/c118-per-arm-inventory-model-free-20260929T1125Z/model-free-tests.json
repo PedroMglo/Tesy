@@ -1,0 +1,11 @@
+{
+  "schema": "c118-model-free-tests-v1",
+  "command": "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=tools python3 -m unittest tools.test_c117_start_inventory tools.test_c118_start_inventory",
+  "tests_passed": 2,
+  "positive": ["complete cadence/sample series accepted", "finite resource and AC/profile sample accepted"],
+  "negative": ["missing per-arm C117 series", "short series", "cadence gap", "duplicate output", "GPU at stop threshold", "loss of AC"],
+  "historical_reanalysis_command": "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=tools python3 tools/c117_analyze.py results/c117-operational-nominal-server-20260929T1058Z",
+  "historical_reanalysis_result": "GateError: C117 missing per-arm 60 s inventory: c117-p1-control",
+  "model_run": "NOT_RUN",
+  "full_entrypoint": "NOT_RUN"
+}

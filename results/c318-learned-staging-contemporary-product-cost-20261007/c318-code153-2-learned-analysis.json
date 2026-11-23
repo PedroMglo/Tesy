@@ -1,0 +1,43 @@
+{
+  "status": "PASS_NATIVE_STAGING_COST_ARM",
+  "case": "code153",
+  "stage": true,
+  "trace": false,
+  "full33_logits_sha256": "6e5223faff42fdb9ff60a1b07ece78dae5b9e191f52c66cc98bcdf008b5e6115",
+  "metrics": {
+    "prefix_s": 58.532713609,
+    "prefill153_s": 15.751908333,
+    "decode32_s": 11.403332607,
+    "total_s": 27.15524094
+  },
+  "stage_cleanup_s": 1.4638e-05,
+  "decode_forward_s": 11.403317969,
+  "stage_stats": {
+    "issued": 940,
+    "deduplicated": 0,
+    "no_capacity": 3,
+    "reads": 921,
+    "completed_reads": 921,
+    "logical_read_weight_bytes": 12174883200,
+    "expired_queued": 10,
+    "expired_ready": 140,
+    "expired_running": 178,
+    "consumed": 603,
+    "waits": 278,
+    "errors": 0,
+    "peak_running_spec": 3,
+    "validation_claims": 0,
+    "validation_components": 0
+  },
+  "claim": "Synchronized supplied-work cost. Actualstaging/predictor/cleanup included; no naturalconfirmedthroughput/energy/physicalNVMe or M4 claim.",
+  "learned_affine": {
+    "status": "PASS_INTEGRATED_AUXILIARY_AFFINE_REFERENCE",
+    "maximum_error": 9.12409753972554e-07,
+    "gamma257": 3.0637726056050824e-05,
+    "weights_sha256": {
+      "weight.f32": "a43fc0451ab528027c4b518d4f92f275d1b47b665c6479d1edaaf1c07e212b7d",
+      "bias.f32": "651e39090c7e2dda24aad015aa78840fbf5791bdf7183c577a9922675109d964"
+    },
+    "scope": "Auxiliary F32 envelope, never a tolerance for target drift."
+  }
+}

@@ -1,0 +1,494 @@
+{
+  "authorities": {
+    "historical": [
+      "E-C1-AUDIT"
+    ]
+  },
+  "checks": [
+    {
+      "atol": 0.0005,
+      "left": "M-C1-DECODE",
+      "right": "M-C1-RECALC",
+      "type": "equal"
+    }
+  ],
+  "claims": [
+    {
+      "evidence": [
+        {
+          "quote": "Decision: keep the principal `SUCCESS` classification **only under the original stated definition** (M4, M5, declared correctness coverage and task evaluation). Keep M2 partial, M6 advantage absent, extended-prefix resource failure and CLI timeout visible. There is no `STRONG_SUCCESS`, `EXCEPTIONAL_SUCCESS` or `HARD_NO_GO` evidence. Do not expand claims by modifying thresholds or deleting failed run identities. The next discriminating scientific work, if separately authorized and budgeted later, is per-layer/tier instrumented traffic, a sustained 32-slot run, and broader prospectively fixed quality tasks; none can be inferred from these results. The finite campaign stops after reporting and final branch publication.",
+          "source": "E-C1-AUDIT",
+          "type": "text"
+        }
+      ],
+      "evidence_class": "DIAGNOSTICO",
+      "family": "historical",
+      "id": "CL-C1-STATE",
+      "limitation": "Não transferir a cobertura C2.",
+      "source_class": "Original C1 audit",
+      "statement": "SUCCESS no âmbito original.",
+      "status": "HISTORICAL"
+    },
+    {
+      "evidence": [
+        {
+          "quote": "| Physical host, storage, toolchain, isolation | Measured Ryzen AI 9 HX 370, RTX 4060 Laptop 8188 MiB, 30 GiB reported RAM, internal NVMe filesystem, driver/toolchain; model path resolved on internal NVMe. User cgroup scopes enforced 9 GiB surrogate or 18 GiB target with `memory.swap.max=0`; RSS/GPU/MemAvailable/thermal watchdogs and local-only server bind. | Chassis power limits and exact clock-throttle state not measured. One-second samples can miss brief allocation spikes, though cgroup max/OOM events were monitored. |",
+          "source": "E-C1-AUDIT",
+          "type": "text"
+        }
+      ],
+      "evidence_class": "DIAGNOSTICO",
+      "family": "historical",
+      "id": "CL-C1-IDENTITY",
+      "limitation": "Sem inspeção live.",
+      "source_class": "Original C1 audit",
+      "statement": "Identidade física histórica publicada.",
+      "status": "HISTORICAL"
+    },
+    {
+      "evidence": [
+        {
+          "quote": "| Model provenance and M0.5 capacity | Selected 20B and 120B GGUF sizes/revisions/full SHA-256 verified; model lock and inventory now distinguish installed backend execution from validation. Actual GGUF tensors give 13,219,200 encoded bytes per expert/layer; KV full-BF16 upper calculation 288 MiB at context4096. Host/GPU nominal slot pools and observed peaks are recorded separately. No weights downloaded or converted. | Native 120B safetensors full shard hashes unverified and not the selected backend artefact. Exact fixed-allocation split and page-cache residency cannot be inferred solely from nominal pool bytes. |",
+          "source": "E-C1-AUDIT",
+          "type": "text"
+        }
+      ],
+      "evidence_class": "DIAGNOSTICO",
+      "family": "historical",
+      "id": "CL-C1-CAPACITY",
+      "limitation": "Payload não é I/O físico nem toda a residência.",
+      "source_class": "Original C1 audit",
+      "statement": "Inventário e KV são grandezas com limites.",
+      "status": "HISTORICAL"
+    },
+    {
+      "evidence": [
+        {
+          "quote": "| M4 target above RAM and correctness | Verified 63.387 GB GGUF executed with 24-slot exact-demand mechanism below 18 GiB host cgroup, two requests in one process, stable memory and no swap/OOM. Four-token complete 120B logits bitwise equal to a same-SHA, CPU-kernel, no-prefetch plain reference; GPU8 16/24 and 24/32 slot prefix pairs bitwise equal. Source audit keeps router IDs authoritative and separate biases on logical IDs. | These are bounded fixed-prefix comparisons, not all long routed states. Full-Harmony-prefix reference `probe120b-fullprefix-ref01` stopped at the 18 GiB cgroup limit before logits; no numerical claim was expanded. One original two-turn extraction task failed its exact field criterion. |",
+          "source": "E-C1-AUDIT",
+          "type": "text"
+        }
+      ],
+      "evidence_class": "DIAGNOSTICO",
+      "family": "historical",
+      "id": "CL-C1-M4",
+      "limitation": "Não demonstra todos os prefixes.",
+      "source_class": "Original C1 audit",
+      "statement": "120B executado com paridade restrita.",
+      "status": "HISTORICAL"
+    },
+    {
+      "evidence": [
+        {
+          "quote": "| M2 bytes, tiers and path | Diagnostic 16-slot run measured hits/misses/miss payload/stall; new post-hoc phase analysis estimates 612.258 MB process `read_bytes` per target completion token in the 24-slot server task run. Direct model FDs were observed during all task intervals. Source audit finds a per-layer pool on CPU **or** GPU, not an independently measured dynamic host tier; generic hits combine ready and in-flight slots. CUDA tensor-set synchronizes its upload before returning. | M2_IO_ACCOUNTED remains partial: process reads are not exclusive physical NVMe traffic; RAM-conditioned/GPU hits, H2D bytes, evictions, wasted prefetch, per-layer reuse and compute/I/O overlap are not measured. No three-tier-cache claim or physical lower bound is made. |",
+          "source": "E-C1-AUDIT",
+          "type": "text"
+        }
+      ],
+      "evidence_class": "DIAGNOSTICO",
+      "family": "historical",
+      "id": "CL-C1-M2",
+      "limitation": "read_bytes não é NVMe físico exclusivo.",
+      "source_class": "Original C1 audit",
+      "statement": "Accounting permaneceu parcial.",
+      "status": "HISTORICAL"
+    },
+    {
+      "evidence": [
+        {
+          "quote": "| M3 one change at a time | Three alternating 16/24 pairs measured +24.0% mean aggregate decode and -19.3% process reads. A separately frozen three-pair 24/32 A/B measured +27.324% bounded mean decode and -19.317% process reads, identical outputs and zero resource events. 32 slots retained for bounded two-turn use; 24 remains sustained-validated. | Both improvements are workload-specific. No 32-slot sustained rate, 4/8 tok/s claim, or exclusive physical I/O attribution follows from these runs. |",
+          "source": "E-C1-AUDIT",
+          "type": "text"
+        }
+      ],
+      "evidence_class": "DIAGNOSTICO",
+      "family": "historical",
+      "id": "CL-C1-M3",
+      "limitation": "Não prova taxa sustentada de 32 slots.",
+      "source_class": "Original C1 audit",
+      "statement": "Melhoria no A/B curto emparelhado.",
+      "status": "HISTORICAL"
+    },
+    {
+      "evidence": [
+        {
+          "quote": "| M5 sustained performance | Separate prospectively frozen localhost-server criterion passed: ten requests complete over 1342.188 s, 2294 tokens/839.312 s backend decode = 2.733 tok/s; last five 2.831, all ten rates >2, no swap/OOM. Thermal windows and end-to-end times retained. | Earlier eight-turn CLI campaign remains TIMEOUT after six turns. Server decode was 839 s distributed over 22m22s of continuous use, not uninterrupted 22-minute decode. Four/eight tok/s not achieved; p50/p95 per-token intervals and power-limit behavior unknown. |",
+          "source": "E-C1-AUDIT",
+          "type": "text"
+        }
+      ],
+      "evidence_class": "DIAGNOSTICO",
+      "family": "historical",
+      "id": "CL-C1-M5",
+      "limitation": "Wall time não é decode ininterrupto.",
+      "source_class": "Original C1 audit",
+      "statement": "Gate servidor passou, CLI TIMEOUT preservado.",
+      "status": "HISTORICAL"
+    },
+    {
+      "evidence": [
+        {
+          "quote": "| M6 task benefit | Two tune tasks kept separate; ten held-out code/SQL/extraction/quantitative/planning tasks fixed prospectively, one attempt, same max512 and medium/greedy policy. Isolated code/SQL validators and archived exact-criterion judgments. Target and stock 20B each passed 8/10, same failures; target summed request time 19.573x stock. | No larger-model advantage observed in this small suite; it cannot establish population-level equality or statistical significance. Different backend/tokenizer/template/GPU placement complicate attribution to parameter count. |",
+          "source": "E-C1-AUDIT",
+          "type": "text"
+        }
+      ],
+      "evidence_class": "DIAGNOSTICO",
+      "family": "historical",
+      "id": "CL-C1-M6",
+      "limitation": "Sem igualdade estatística ou superioridade geral.",
+      "source_class": "Original C1 audit",
+      "statement": "Empate 8/10, maior custo target.",
+      "status": "HISTORICAL"
+    },
+    {
+      "evidence": [
+        {
+          "quote": "| Cache lifetime and fault handling | Source has slot generation/state checks; selected CUDA upload callback synchronizes. A new one-shot synthetic 20B O_DIRECT `EIO` exited nonzero in 5.239 s with the backend's load-error abort and no answer, swap, OOM or timeout. | Partial/EOF reads, transfer failure, in-flight eviction and delayed publication across slot generations were not exhaustively fault-tested. A source claim of general lifetime correctness remains narrower than a proof. |",
+          "source": "E-C1-AUDIT",
+          "type": "text"
+        }
+      ],
+      "evidence_class": "DIAGNOSTICO",
+      "family": "historical",
+      "id": "CL-C1-FAULTS",
+      "limitation": "Não cobre todas as falhas/lifetimes.",
+      "source_class": "Original C1 audit",
+      "statement": "EIO abortou no surrogate.",
+      "status": "HISTORICAL"
+    },
+    {
+      "evidence": [
+        {
+          "quote": "| Prediction/speculation and alternative backends | Prefetch and speculative decoding remained disabled in measured target runs. Only one streaming candidate was selected; no repacking, requantization, training, new Transformer runtime, or unrelated repository dependency. | These are conditional future experiments, not missing prerequisites for the measured M4/M5 result. No novelty claim or speculative speedup is asserted. |",
+          "source": "E-C1-AUDIT",
+          "type": "text"
+        }
+      ],
+      "evidence_class": "DIAGNOSTICO",
+      "family": "historical",
+      "id": "CL-C1-PREFETCH",
+      "limitation": "Não lhes atribuir os ganhos.",
+      "source_class": "Original C1 audit",
+      "statement": "Prefetch/speculation desligados.",
+      "status": "HISTORICAL"
+    },
+    {
+      "evidence": [
+        {
+          "quote": "| Reproducibility and publication | Exact manifests, SHA pins, commands, compact analyses, decisions and failures are in this dedicated local Git history. The standalone `serve_target24.sh` answered a local chat smoke; the monitored task harness completed the target suite. The owner chose the existing Tesy GitHub repository as destination for this independent `scale-lab` branch; initial checkpoint `9ea05d0` was pushed there. | Final fast-forward publication is verified separately after committing this audit update. Frozen local-only raw logs/samples, `.f32` rows, builds and model files stay outside Git; compact manifests, hashes and summaries are publishable. |",
+          "source": "E-C1-AUDIT",
+          "type": "text"
+        }
+      ],
+      "evidence_class": "DIAGNOSTICO",
+      "family": "historical",
+      "id": "CL-C1-RAW",
+      "limitation": "Sem reanálise física neste PDF.",
+      "source_class": "Original C1 audit",
+      "statement": "Manifests/sínteses publicados; raws locais.",
+      "status": "HISTORICAL"
+    }
+  ],
+  "datasets": [],
+  "metrics": [
+    {
+      "decimals": 3,
+      "evidence_class": "MEDIDO",
+      "extract": {
+        "quote": "| M5 sustained performance | Separate prospectively frozen localhost-server criterion passed: ten requests complete over 1342.188 s, 2294 tokens/839.312 s backend decode = 2.733 tok/s; last five 2.831, all ten rates >2, no swap/OOM. Thermal windows and end-to-end times retained. | Earlier eight-turn CLI campaign remains TIMEOUT after six turns. Server decode was 839 s distributed over 22m22s of continuous use, not uninterrupted 22-minute decode. Four/eight tok/s not achieved; p50/p95 per-token intervals and power-limit behavior unknown. |",
+        "source": "E-C1-AUDIT",
+        "token": "2.733",
+        "type": "text-number"
+      },
+      "family": "historical",
+      "id": "M-C1-DECODE",
+      "label": "Decode sustentado",
+      "limitation": "Precisão da publicação, sem reanálise dos raws ou expansão de cobertura.",
+      "raw_unit": "token/s",
+      "run_id": null,
+      "scope": "Transcrição explícita de valor publicado na auditoria histórica.",
+      "source_class": "Original C1 audit: measured/source-audited as qualified",
+      "unit": "token/s"
+    },
+    {
+      "decimals": 0,
+      "evidence_class": "MEDIDO",
+      "extract": {
+        "quote": "| M5 sustained performance | Separate prospectively frozen localhost-server criterion passed: ten requests complete over 1342.188 s, 2294 tokens/839.312 s backend decode = 2.733 tok/s; last five 2.831, all ten rates >2, no swap/OOM. Thermal windows and end-to-end times retained. | Earlier eight-turn CLI campaign remains TIMEOUT after six turns. Server decode was 839 s distributed over 22m22s of continuous use, not uninterrupted 22-minute decode. Four/eight tok/s not achieved; p50/p95 per-token intervals and power-limit behavior unknown. |",
+        "source": "E-C1-AUDIT",
+        "token": "2294",
+        "type": "text-number"
+      },
+      "family": "historical",
+      "id": "M-C1-TOKENS",
+      "label": "Tokens de decode",
+      "limitation": "Precisão da publicação, sem reanálise dos raws ou expansão de cobertura.",
+      "raw_unit": "token",
+      "run_id": null,
+      "scope": "Transcrição explícita de valor publicado na auditoria histórica.",
+      "source_class": "Original C1 audit: measured/source-audited as qualified",
+      "unit": "token"
+    },
+    {
+      "decimals": 3,
+      "evidence_class": "MEDIDO",
+      "extract": {
+        "quote": "| M5 sustained performance | Separate prospectively frozen localhost-server criterion passed: ten requests complete over 1342.188 s, 2294 tokens/839.312 s backend decode = 2.733 tok/s; last five 2.831, all ten rates >2, no swap/OOM. Thermal windows and end-to-end times retained. | Earlier eight-turn CLI campaign remains TIMEOUT after six turns. Server decode was 839 s distributed over 22m22s of continuous use, not uninterrupted 22-minute decode. Four/eight tok/s not achieved; p50/p95 per-token intervals and power-limit behavior unknown. |",
+        "source": "E-C1-AUDIT",
+        "token": "839.312",
+        "type": "text-number"
+      },
+      "family": "historical",
+      "id": "M-C1-SECONDS",
+      "label": "Decode time arredondado",
+      "limitation": "Precisão da publicação, sem reanálise dos raws ou expansão de cobertura.",
+      "raw_unit": "s",
+      "run_id": null,
+      "scope": "Transcrição explícita de valor publicado na auditoria histórica.",
+      "source_class": "Original C1 audit: measured/source-audited as qualified",
+      "unit": "s"
+    },
+    {
+      "decimals": 3,
+      "evidence_class": "MEDIDO",
+      "extract": {
+        "quote": "| M5 sustained performance | Separate prospectively frozen localhost-server criterion passed: ten requests complete over 1342.188 s, 2294 tokens/839.312 s backend decode = 2.733 tok/s; last five 2.831, all ten rates >2, no swap/OOM. Thermal windows and end-to-end times retained. | Earlier eight-turn CLI campaign remains TIMEOUT after six turns. Server decode was 839 s distributed over 22m22s of continuous use, not uninterrupted 22-minute decode. Four/eight tok/s not achieved; p50/p95 per-token intervals and power-limit behavior unknown. |",
+        "source": "E-C1-AUDIT",
+        "token": "1342.188",
+        "type": "text-number"
+      },
+      "family": "historical",
+      "id": "M-C1-WALL",
+      "label": "Wall time",
+      "limitation": "Precisão da publicação, sem reanálise dos raws ou expansão de cobertura.",
+      "raw_unit": "s",
+      "run_id": null,
+      "scope": "Transcrição explícita de valor publicado na auditoria histórica.",
+      "source_class": "Original C1 audit: measured/source-audited as qualified",
+      "unit": "s"
+    },
+    {
+      "decimals": 3,
+      "evidence_class": "MEDIDO",
+      "extract": {
+        "quote": "| M5 sustained performance | Separate prospectively frozen localhost-server criterion passed: ten requests complete over 1342.188 s, 2294 tokens/839.312 s backend decode = 2.733 tok/s; last five 2.831, all ten rates >2, no swap/OOM. Thermal windows and end-to-end times retained. | Earlier eight-turn CLI campaign remains TIMEOUT after six turns. Server decode was 839 s distributed over 22m22s of continuous use, not uninterrupted 22-minute decode. Four/eight tok/s not achieved; p50/p95 per-token intervals and power-limit behavior unknown. |",
+        "source": "E-C1-AUDIT",
+        "token": "2.831",
+        "type": "text-number"
+      },
+      "family": "historical",
+      "id": "M-C1-SECOND-HALF",
+      "label": "Últimos cinco pedidos",
+      "limitation": "Precisão da publicação, sem reanálise dos raws ou expansão de cobertura.",
+      "raw_unit": "token/s",
+      "run_id": null,
+      "scope": "Transcrição explícita de valor publicado na auditoria histórica.",
+      "source_class": "Original C1 audit: measured/source-audited as qualified",
+      "unit": "token/s"
+    },
+    {
+      "decimals": 0,
+      "evidence_class": "MEDIDO",
+      "extract": {
+        "quote": "Target and stock 20B each passed 8/10, same failures",
+        "source": "E-C1-AUDIT",
+        "token": "8",
+        "type": "text-number"
+      },
+      "family": "historical",
+      "id": "M-C1-UTILITY-PASS",
+      "label": "Acertos por modelo",
+      "limitation": "Precisão da publicação, sem reanálise dos raws ou expansão de cobertura.",
+      "raw_unit": "count",
+      "run_id": null,
+      "scope": "Transcrição explícita de valor publicado na auditoria histórica.",
+      "source_class": "Original C1 audit: measured/source-audited as qualified",
+      "unit": "count"
+    },
+    {
+      "decimals": 0,
+      "evidence_class": "MEDIDO",
+      "extract": {
+        "quote": "Target and stock 20B each passed 8/10, same failures",
+        "source": "E-C1-AUDIT",
+        "token": "10",
+        "type": "text-number"
+      },
+      "family": "historical",
+      "id": "M-C1-UTILITY-N",
+      "label": "Casos na suite",
+      "limitation": "Precisão da publicação, sem reanálise dos raws ou expansão de cobertura.",
+      "raw_unit": "count",
+      "run_id": null,
+      "scope": "Transcrição explícita de valor publicado na auditoria histórica.",
+      "source_class": "Original C1 audit: measured/source-audited as qualified",
+      "unit": "count"
+    },
+    {
+      "decimals": 3,
+      "evidence_class": "MEDIDO",
+      "extract": {
+        "quote": "target summed request time 19.573x stock",
+        "source": "E-C1-AUDIT",
+        "token": "19.573",
+        "type": "text-number"
+      },
+      "family": "historical",
+      "id": "M-C1-COST",
+      "label": "Razão temporal target/stock",
+      "limitation": "Precisão da publicação, sem reanálise dos raws ou expansão de cobertura.",
+      "raw_unit": "ratio",
+      "run_id": null,
+      "scope": "Transcrição explícita de valor publicado na auditoria histórica.",
+      "source_class": "Original C1 audit: measured/source-audited as qualified",
+      "unit": "ratio"
+    },
+    {
+      "decimals": 0,
+      "evidence_class": "MEDIDO",
+      "extract": {
+        "quote": "24-slot exact-demand mechanism below 18 GiB host cgroup",
+        "source": "E-C1-AUDIT",
+        "token": "24",
+        "type": "text-number"
+      },
+      "family": "historical",
+      "id": "M-C1-SLOTS",
+      "label": "Slots sustentados",
+      "limitation": "Precisão da publicação, sem reanálise dos raws ou expansão de cobertura.",
+      "raw_unit": "count",
+      "run_id": null,
+      "scope": "Transcrição explícita de valor publicado na auditoria histórica.",
+      "source_class": "Original C1 audit: measured/source-audited as qualified",
+      "unit": "count"
+    },
+    {
+      "decimals": 0,
+      "evidence_class": "MEDIDO",
+      "extract": {
+        "quote": "24-slot exact-demand mechanism below 18 GiB host cgroup",
+        "source": "E-C1-AUDIT",
+        "token": "18",
+        "type": "text-number"
+      },
+      "family": "historical",
+      "id": "M-C1-HOST-LIMIT",
+      "label": "Limite host",
+      "limitation": "Precisão da publicação, sem reanálise dos raws ou expansão de cobertura.",
+      "raw_unit": "GiB",
+      "run_id": null,
+      "scope": "Transcrição explícita de valor publicado na auditoria histórica.",
+      "source_class": "Original C1 audit: measured/source-audited as qualified",
+      "unit": "GiB"
+    },
+    {
+      "decimals": 3,
+      "evidence_class": "MEDIDO",
+      "extract": {
+        "quote": "Verified 63.387 GB GGUF executed",
+        "source": "E-C1-AUDIT",
+        "token": "63.387",
+        "type": "text-number"
+      },
+      "family": "historical",
+      "id": "M-C1-MODEL-GB",
+      "label": "Tamanho GGUF arredondado",
+      "limitation": "Precisão da publicação, sem reanálise dos raws ou expansão de cobertura.",
+      "raw_unit": "GB",
+      "run_id": null,
+      "scope": "Transcrição explícita de valor publicado na auditoria histórica.",
+      "source_class": "Original C1 audit: measured/source-audited as qualified",
+      "unit": "GB"
+    },
+    {
+      "decimals": 3,
+      "evidence_class": "MEDIDO",
+      "extract": {
+        "quote": "+27.324% bounded mean decode",
+        "source": "E-C1-AUDIT",
+        "token": "27.324",
+        "type": "text-number"
+      },
+      "family": "historical",
+      "id": "M-C1-AB-GAIN",
+      "label": "Variação de decode A/B curto",
+      "limitation": "Precisão da publicação, sem reanálise dos raws ou expansão de cobertura.",
+      "raw_unit": "percent",
+      "run_id": null,
+      "scope": "Transcrição explícita de valor publicado na auditoria histórica.",
+      "source_class": "Original C1 audit: measured/source-audited as qualified",
+      "unit": "percent"
+    },
+    {
+      "decimals": 3,
+      "evidence_class": "MEDIDO",
+      "extract": {
+        "quote": "-19.317% process reads",
+        "source": "E-C1-AUDIT",
+        "token": "-19.317",
+        "type": "text-number"
+      },
+      "family": "historical",
+      "id": "M-C1-AB-READ",
+      "label": "Variação process read_bytes",
+      "limitation": "Precisão da publicação, sem reanálise dos raws ou expansão de cobertura.",
+      "raw_unit": "percent",
+      "run_id": null,
+      "scope": "Transcrição explícita de valor publicado na auditoria histórica.",
+      "source_class": "Original C1 audit: measured/source-audited as qualified",
+      "unit": "percent"
+    },
+    {
+      "decimals": 3,
+      "evidence_class": "MEDIDO",
+      "extract": {
+        "quote": "exited nonzero in 5.239 s",
+        "source": "E-C1-AUDIT",
+        "token": "5.239",
+        "type": "text-number"
+      },
+      "family": "historical",
+      "id": "M-C1-EIO-EXIT",
+      "label": "Tempo de saída EIO",
+      "limitation": "Precisão da publicação, sem reanálise dos raws ou expansão de cobertura.",
+      "raw_unit": "s",
+      "run_id": null,
+      "scope": "Transcrição explícita de valor publicado na auditoria histórica.",
+      "source_class": "Original C1 audit: measured/source-audited as qualified",
+      "unit": "s"
+    },
+    {
+      "decimals": 3,
+      "evidence_class": "INFERIDO",
+      "extract": {
+        "inputs": [
+          "M-C1-TOKENS",
+          "M-C1-SECONDS"
+        ],
+        "type": "ratio"
+      },
+      "family": "historical",
+      "id": "M-C1-RECALC",
+      "label": "Rate recomposto",
+      "limitation": "Tolerância documental 0.0005 token/s; não altera critérios experimentais.",
+      "raw_unit": "token/s",
+      "run_id": null,
+      "scope": "Valor da publicação selecionada; não é nova medição.",
+      "source_class": "Arithmetic on rounded publication",
+      "unit": "token/s"
+    }
+  ],
+  "schema_version": "tesy-evidence-spec-v1",
+  "source_contracts": [
+    {
+      "json_values": [],
+      "path": "research/PLAN-AUDIT-20260926.md",
+      "source": "E-C1-AUDIT",
+      "text": [
+        "keep the principal `SUCCESS` classification **only under the original stated definition**",
+        "Target and stock 20B each passed 8/10"
+      ]
+    }
+  ]
+}

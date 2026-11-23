@@ -1,0 +1,20 @@
+{
+  "status": "MODEL_FREE_SOURCE_GATES_PASS_PHYSICAL_NUMERIC_NOT_RUN",
+  "evidence_class": "REPRODUZIDO_MODEL_FREE",
+  "tests": {
+    "snapshot_journal": 20,
+    "trace_analysis": 15,
+    "policy_entrypoint": 22,
+    "family_ordering": 4
+  },
+  "suites": "Directed tests, not whole repository",
+  "limits": {
+    "snapshot_bytes": 1048576,
+    "routing_global_bytes": 8388608,
+    "journal_per_request_serialized_bytes": 33554432,
+    "journal_global_bytes": 67108864,
+    "snapshots_per_request": 3
+  },
+  "failure_preservation": "Initial missing fsync include and incorrect unset plan_next_wave validation fixed before physical units; initial build/test logs preserved. Original C152/C153 outputs unchanged.",
+  "next_gate": "E20 admission, real dummy entrypoint, C140 -> logger OFF -> logger ON numeric bridge"
+}

@@ -1,0 +1,50 @@
+{
+  "campaign_wrapper_sha256": "adbbdb5997aafa25945f26e791ec9d782710145524c5c7740550033e0bafc6c3",
+  "cap_bytes": 19327352832,
+  "default_changed": false,
+  "gain_formula": "100*(control-candidate)/control per pair",
+  "historical_c117_effective_sha256": "408cce72942a4bcf38d69e9915b80f4ada6a3c94ad02250544b842d4820eb68a",
+  "input_sha256": "57cdc0a34842943a4abc0cad852ed2f50adb4fe183aede17f23dff1bcd0a0fed",
+  "numerical_provenance": "C127 189+32 boundary and 36 resident FFN layers; full 8K independent NOT_RUN",
+  "objective": "C75 ON slots40 versus C75 ON slots32 on nominal153",
+  "order": [
+    "c128-p1-control",
+    "c128-p1-candidate",
+    "c128-p2-candidate",
+    "c128-p2-control"
+  ],
+  "pairs": 2,
+  "physical_reserve_after_screen_s": 7200,
+  "primary": "warm decode_s",
+  "profiles": {
+    "candidate": {
+      "backend": "C75",
+      "slots": 40,
+      "wave": "ON"
+    },
+    "control": {
+      "backend": "C75",
+      "slots": 32,
+      "wave": "ON"
+    }
+  },
+  "protected": [
+    "warm first_final_content_s",
+    "warm prefill_s",
+    "cold decode_s",
+    "cold first_final_content_s",
+    "cold prefill_s",
+    "answer/prefix/resources/identity/inventory"
+  ],
+  "schema": "c128-slots-screen-policy-v1",
+  "screen_go": "median paired warm decode duration gain >=8%; both pairs positive; each protected timing median >=-5%; all other gates PASS",
+  "start": {
+    "inventory_per_arm_s": 60,
+    "max_gap_s": 1.5,
+    "max_launch_age_s": 3,
+    "mode": "OPERATIONAL_WARM",
+    "narrow_thermal_match": false
+  },
+  "status": "FROZEN_BEFORE_MODEL",
+  "swap_max_bytes": 0
+}

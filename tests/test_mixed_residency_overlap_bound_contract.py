@@ -67,8 +67,10 @@ def test_overlap_bound_aggregation_uses_leaf_partials():
         encoding="utf-8"
     )
 
-    assert "result->gpu_partial =" in text
-    assert "result->cpu_partial =" in text
-    assert "ggml_add(ctx, result->gpu_partial, result->cpu_partial)" in text
+    assert "tesy_make_leaf_sum_nodes(ctx, k_embd)" in text
+    assert "result->gpu_partial = nodes.gpu_partial" in text
+    assert "result->cpu_partial = nodes.cpu_partial" in text
+    helper = (root / "native" / "tesy_sum_graph.h").read_text(encoding="utf-8")
+    assert "ggml_add(ctx, nodes.gpu_partial, nodes.cpu_partial)" in helper
     assert "aggregate = make_sum_graph(gpu_backend);" in text
     assert "gpu_graph->output, aggregate->gpu_partial" in text

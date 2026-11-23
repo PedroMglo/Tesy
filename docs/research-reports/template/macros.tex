@@ -1,0 +1,19 @@
+\DeclareRobustCommand{\metric}[1]{\ifcsname metric:#1\endcsname\csname metric:#1\endcsname\else\PackageError{tesy}{Unknown metric #1}{}\fi}
+\DeclareRobustCommand{\evidence}[1]{\hyperlink{ev:#1}{{\sffamily\scriptsize[#1]}}}
+\DeclareRobustCommand{\claim}[2]{#2\space\csname claim:#1\endcsname}
+\DeclareRobustCommand{\historicalclaim}[2]{{\sffamily\small\bfseries\csname claimstatus:#1\endcsname:} #2\space\csname claim:#1\endcsname}
+\newcommand{\Evidence}[2]{{\sffamily\bfseries\small[#1]} #2}
+\newcommand{\EvidenceMeasured}[1]{\Evidence{MEDIDO — fonte publicada}{#1}}
+\newcommand{\EvidenceReproduced}[1]{\Evidence{REPRODUZIDO}{#1}}
+\newcommand{\EvidenceEstimated}[1]{\Evidence{ESTIMADO}{#1}}
+\newcommand{\EvidenceInferred}[1]{\Evidence{INFERIDO}{#1}}
+\newcommand{\EvidenceHypothesis}[1]{\Evidence{HIPÓTESE}{#1}}
+\newcommand{\EvidenceDiagnostic}[1]{\Evidence{DIAGNÓSTICO}{#1}}
+\newcommand{\EvidenceFormal}[1]{\Evidence{FORMAL}{#1}}
+\newcommand{\EvidenceUnknown}[1]{\Evidence{DESCONHECIDO}{#1}}
+\newcommand{\EvidenceNotRun}[1]{\Evidence{NOT\_RUN}{#1}}
+\newcommand{\StatusPass}{{\sffamily\bfseries PASS}}
+\newcommand{\StatusFail}{{\sffamily\bfseries FAIL}}
+\newcommand{\StatusBlocked}{{\sffamily\bfseries BLOCKED}}
+\newcommand{\StatusNoGo}{{\sffamily\bfseries NO\_GO}}
+\newcommand{\Code}[1]{{\small\texttt{#1}}}

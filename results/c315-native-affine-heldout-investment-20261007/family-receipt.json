@@ -1,0 +1,39 @@
+{
+  "measurement_commit": "0850a576f50cd055ed4a89d0245ee05d879f63b1",
+  "start": {
+    "utc": "2026-10-07T02:48:16.091643+00:00",
+    "monotonic_s": 117514.537223032
+  },
+  "end": {
+    "utc": "2026-10-07T02:51:38.803206+00:00",
+    "monotonic_s": 117717.248790038
+  },
+  "argv": [
+    "systemd-run",
+    "--user",
+    "--slice=tesy-post-c154.slice",
+    "--unit=tesy-c315-native-affine-evaluation",
+    "--collect",
+    "--pipe",
+    "--wait",
+    "--working-directory=/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc",
+    "-p",
+    "MemoryMax=4294967296",
+    "-p",
+    "MemoryHigh=4294967296",
+    "-p",
+    "MemorySwapMax=0",
+    "-p",
+    "RuntimeMaxSec=600",
+    "-p",
+    "TimeoutStopSec=10",
+    "--",
+    "/usr/bin/python",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/tools/residency_unit_run.py",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c315-native-affine-heldout-investment-20261007",
+    "--inside"
+  ],
+  "returncode": 0,
+  "stdout": "",
+  "stderr": "Running as unit: tesy-c315-native-affine-evaluation.service\n          Finished with result: success\nMain processes terminated with: code=exited, status=0/SUCCESS\n               Service runtime: 3min 22.600s\n             CPU time consumed: 39.990s\n                   Memory peak: 222.5M (swap: 0B)\n"
+}

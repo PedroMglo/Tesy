@@ -1,0 +1,68 @@
+{
+  "status": "PROSPECTIVE_CPU52_GPU44_SELECTED_FOR_HOLDOUT_GATE",
+  "policy": "hotness/LRU original victim policy, only capacity changes",
+  "selection_only_development": true,
+  "development_comparisons": [
+    {
+      "CPU_slots": 44,
+      "GPU_slots": 44,
+      "victim_policy": "hotness",
+      "misses": 1243,
+      "new_misses": 0,
+      "conditional_avoided_wait_union_s": 0.0,
+      "credited_barriers": 0,
+      "no_observed_blocking_commit": 0,
+      "assumptions": "Fixed routed work and original per-load completion times; unchanged remaining service and wake tail. New misses need independent unknown penalty; original44 seeded extra empty slots is not warm52 state. This is a conditional scenario, not formal optimistic class bound or measured speedup.",
+      "conditional_decode_percent": 0.0,
+      "CPU_added_expert_bytes": 0,
+      "GPU_added_expert_bytes": 0
+    },
+    {
+      "CPU_slots": 48,
+      "GPU_slots": 44,
+      "victim_policy": "hotness",
+      "misses": 1113,
+      "new_misses": 0,
+      "conditional_avoided_wait_union_s": 0.613595,
+      "credited_barriers": 92,
+      "no_observed_blocking_commit": 0,
+      "assumptions": "Fixed routed work and original per-load completion times; unchanged remaining service and wake tail. New misses need independent unknown penalty; original44 seeded extra empty slots is not warm52 state. This is a conditional scenario, not formal optimistic class bound or measured speedup.",
+      "conditional_decode_percent": 5.439187859520305,
+      "CPU_added_expert_bytes": 1321920000,
+      "GPU_added_expert_bytes": 0
+    },
+    {
+      "CPU_slots": 52,
+      "GPU_slots": 44,
+      "victim_policy": "hotness",
+      "misses": 1031,
+      "new_misses": 0,
+      "conditional_avoided_wait_union_s": 1.041578,
+      "credited_barriers": 149,
+      "no_observed_blocking_commit": 0,
+      "assumptions": "Fixed routed work and original per-load completion times; unchanged remaining service and wake tail. New misses need independent unknown penalty; original44 seeded extra empty slots is not warm52 state. This is a conditional scenario, not formal optimistic class bound or measured speedup.",
+      "conditional_decode_percent": 9.23302571295959,
+      "CPU_added_expert_bytes": 2643840000,
+      "GPU_added_expert_bytes": 0
+    },
+    {
+      "CPU_slots": 44,
+      "GPU_slots": 44,
+      "victim_policy": "lru",
+      "misses": 1281,
+      "new_misses": 149,
+      "conditional_avoided_wait_union_s": 0.542472,
+      "credited_barriers": 82,
+      "no_observed_blocking_commit": 0,
+      "assumptions": "Fixed routed work and original per-load completion times; unchanged remaining service and wake tail. New misses need independent unknown penalty; original44 seeded extra empty slots is not warm52 state. This is a conditional scenario, not formal optimistic class bound or measured speedup.",
+      "conditional_decode_percent": 4.808720925903404,
+      "CPU_added_expert_bytes": 0,
+      "GPU_added_expert_bytes": 0
+    }
+  ],
+  "baseline_decode_s": 11.281004,
+  "candidate_cpu_slots": 52,
+  "candidate_gpu_slots": 44,
+  "holdout_gate": ">=8% conditional decode credit in BOTH holdouts, no newly required unobserved miss services, matched original logical replay, actual capacity/accounting. If fails: no implementation of this candidate; no retuning on holdouts. Conditional service scenario not production speedup or class upper bound",
+  "physical_uncertainty": "Actual warm52 initial state and shape arithmetic differ. A minimal numeric then server screen, if admitted, tests whether conditional decode saving survives. No inherited quality."
+}

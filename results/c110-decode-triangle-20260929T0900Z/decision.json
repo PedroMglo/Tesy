@@ -1,0 +1,106 @@
+{
+  "claim_limits": [
+    "one A/B pair is diagnostic, not three-block attribution",
+    "C arm was not launched",
+    "no server or product promotion",
+    "C100 NO_GO_CONFIRM remains"
+  ],
+  "default_changed": false,
+  "epoch_budget": {
+    "physical_remaining_lower_bound_s_conservative": 10888.901799999998,
+    "utc": "2026-09-29T09:28:04.468073+00:00",
+    "wall_remaining_s_no_pause_discount": 9115.531927
+  },
+  "gates": {
+    "A_B": "PASS_SAME_PROFILE_FULL_LOGITS_BITWISE",
+    "C_LONG": "NOT_RUN_MATCH_NOT_ADMITTED",
+    "M3_extension": "NOT_RUN",
+    "M4": "NOT_DEMONSTRATED",
+    "blocks_2_3": "NOT_RUN",
+    "canary": "PASS_3_ARMS_FULL_LOGITS_BITWISE",
+    "triangle": "INCOMPLETE"
+  },
+  "manifest_sha256": "278c6a9f72ee3df42de03d67dc56079ec8444b2baab503fb5aa0f1268c442869",
+  "match": {
+    "last_observation": {
+      "gpu": {
+        "bdf": "00000000:C4:00.0",
+        "power_w": 2.21,
+        "temperature_c": 44.0,
+        "used_mib": 12.0,
+        "uuid": "GPU-83d90c55-1d92-75da-fc30-7771a85f2521"
+      },
+      "power": {
+        "online_sources": [
+          "AC0"
+        ],
+        "profile": "performance",
+        "source": "AC"
+      },
+      "thermal": {
+        "cpu_tctl_c": 47.25,
+        "nvme_composite_by_sensor": {
+          "nvme-pci-c100": 39.85
+        }
+      }
+    },
+    "reason": "300s aggregate matching wait exhausted before C",
+    "second_wait_s": 146.64215983601753
+  },
+  "measurement_commit": "0790b899d9b87a35e5277144748c8f01ed5854df",
+  "next_action": "Evaluate long C75 ON numeric witness in a new identity if admitted; then nominal128 server bridge or pivot to source/trace analysis",
+  "old_failures_preserved": [
+    "C48",
+    "C61",
+    "C66",
+    "C78",
+    "C96",
+    "C97",
+    "C100",
+    "C109"
+  ],
+  "protocol_sha256": "ed5a536afccc90ab6a9babd4d74ffb7bb88783e5069c69768abef49980bc4b41",
+  "publication": "LOCAL_ONLY",
+  "resource_summary_sha256": "ef33d518631a6eb07eeb3d26170a99bc5ac6aca5f612f5726276b36161d6be10",
+  "result_commit": "RECORDED_BY_SUBSEQUENT_GIT_COMMIT",
+  "runs": [
+    "c110-canary-a",
+    "c110-canary-b",
+    "c110-canary-c",
+    "c110-b1-a",
+    "c110-b1-b"
+  ],
+  "schema": "c110-decision-v1",
+  "status": "INCOMPLETE_ATTRIBUTION_MATCH_NOT_ADMITTED",
+  "timing_pair": {
+    "A": "c110-b1-a",
+    "A_timing_s": {
+      "context_init_s": 0.082966,
+      "decode_s": 49.18886,
+      "model_load_s": 2.110674,
+      "prefill_s": 507.237868,
+      "step1_64_s": 19.925741,
+      "step1_77_s": 22.912058,
+      "step65_192_s": 29.263118
+    },
+    "B": "c110-b1-b",
+    "B_timing_s": {
+      "context_init_s": 0.08423,
+      "decode_s": 48.854176,
+      "model_load_s": 1.967917,
+      "prefill_s": 507.190119,
+      "step1_64_s": 19.56091,
+      "step1_77_s": 22.336554,
+      "step65_192_s": 29.293266
+    },
+    "C": "NOT_RUN",
+    "block": 1,
+    "gain_B_over_A_percent": {
+      "decode_s": 0.6804060919484529,
+      "prefill_s": 0.00941353219314656,
+      "step1_64_s": 1.830953237824374,
+      "step1_77_s": 2.511795317557239,
+      "step65_192_s": -0.10302388146061711
+    }
+  }
+}

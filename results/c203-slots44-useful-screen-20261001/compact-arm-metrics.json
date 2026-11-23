@@ -1,0 +1,955 @@
+{
+  "measurement_head": "22b476257daa3fb7a740b01ca5bb6604d08d46e3",
+  "arms": [
+    {
+      "profile": "A",
+      "run_id": "c203-1-A",
+      "valid": true,
+      "nominal153": true,
+      "maxima": {
+        "rss_bytes": 15947591680,
+        "cgroup_peak_bytes": 15729283072,
+        "gpu_total_mib": 6866.0,
+        "cpu_c": 94.75,
+        "gpu_c": 60.0,
+        "nvme_c": 51.85,
+        "swap_bytes": 0
+      },
+      "T2_first_final_s": 18.25863446400035,
+      "T2_completion_s": 18.571663487993646,
+      "SQL_first_final_s": 61.678717773989774,
+      "SQL_validated_s": 76.87726048700279,
+      "cold_prefill_s": 62.354353,
+      "cold_first_final_s": 82.16421053401427,
+      "incremental_prefill_s": 10.775094,
+      "T2_seconds_per_output": 0.21034899999999998,
+      "SQL_seconds_per_output": 0.24336706274509806
+    },
+    {
+      "profile": "B",
+      "run_id": "c203-2-B",
+      "valid": true,
+      "nominal153": true,
+      "maxima": {
+        "rss_bytes": 17266413568,
+        "cgroup_peak_bytes": 17052069888,
+        "gpu_total_mib": 7420.0,
+        "cpu_c": 95.25,
+        "gpu_c": 61.0,
+        "nvme_c": 53.85,
+        "swap_bytes": 0
+      },
+      "T2_first_final_s": 16.78109001897974,
+      "T2_completion_s": 17.080375342979096,
+      "SQL_first_final_s": 59.20546328899218,
+      "SQL_validated_s": 73.86536078900099,
+      "cold_prefill_s": 60.077983,
+      "cold_first_final_s": 78.22009559499566,
+      "incremental_prefill_s": 10.352155,
+      "T2_seconds_per_output": 0.18140902702702702,
+      "SQL_seconds_per_output": 0.23681013333333334
+    },
+    {
+      "profile": "B",
+      "run_id": "c203-3-B",
+      "valid": true,
+      "nominal153": true,
+      "maxima": {
+        "rss_bytes": 17266061312,
+        "cgroup_peak_bytes": 17050083328,
+        "gpu_total_mib": 7420.0,
+        "cpu_c": 95.0,
+        "gpu_c": 60.0,
+        "nvme_c": 54.85,
+        "swap_bytes": 0
+      },
+      "T2_first_final_s": 16.809829879028257,
+      "T2_completion_s": 17.11268459400162,
+      "SQL_first_final_s": 56.26603641000111,
+      "SQL_validated_s": 70.3361859510187,
+      "cold_prefill_s": 60.549492,
+      "cold_first_final_s": 79.07831309502944,
+      "incremental_prefill_s": 10.386581,
+      "T2_seconds_per_output": 0.18133435135135134,
+      "SQL_seconds_per_output": 0.22297458039215684
+    },
+    {
+      "profile": "A",
+      "run_id": "c203-4-A",
+      "valid": true,
+      "nominal153": true,
+      "maxima": {
+        "rss_bytes": 15947202560,
+        "cgroup_peak_bytes": 15729922048,
+        "gpu_total_mib": 6866.0,
+        "cpu_c": 94.875,
+        "gpu_c": 59.0,
+        "nvme_c": 54.85,
+        "swap_bytes": 0
+      },
+      "T2_first_final_s": 18.340043124975637,
+      "T2_completion_s": 18.664643778989557,
+      "SQL_first_final_s": 64.78124742698856,
+      "SQL_validated_s": 80.1086561200209,
+      "cold_prefill_s": 62.560093,
+      "cold_first_final_s": 82.26082669600146,
+      "incremental_prefill_s": 10.946995999999999,
+      "T2_seconds_per_output": 0.20814216216216216,
+      "SQL_seconds_per_output": 0.25582237647058825
+    }
+  ],
+  "requests": [
+    {
+      "run_id": "c203-1-A",
+      "rows": [
+        {
+          "id": "c112-code",
+          "output_ids": "NOT_EXPOSED",
+          "message": {
+            "role": "assistant",
+            "content": "48327",
+            "reasoning_content": "The user gave a huge repetitive text \"alpha ...\" and then asks: \"Choose any five-digit code. Reply with the five digits only.\"\n\nWe need to comply. Provide a five-digit code, e.g., 48327. Must be only the digits, no extra text. Ensure no disallowed content. It's fine."
+          },
+          "usage": {
+            "completion_tokens": 77,
+            "prompt_tokens": 2043,
+            "total_tokens": 2120,
+            "prompt_tokens_details": {
+              "cached_tokens": 0
+            }
+          },
+          "timings": {
+            "cache_n": 0,
+            "prompt_n": 2043,
+            "prompt_ms": 62354.353,
+            "prompt_per_token_ms": 30.52097552618698,
+            "prompt_per_second": 32.76435247431723,
+            "predicted_n": 77,
+            "predicted_ms": 20279.756,
+            "predicted_per_token_ms": 263.37345454545454,
+            "predicted_per_second": 3.7968898639608875
+          },
+          "stream_metrics": {
+            "first_text_chunk_s": 63.123197216016706,
+            "first_reasoning_chunk_s": 63.123197216016706,
+            "first_final_content_chunk_s": 82.16421053401427,
+            "sse_event_count": 70,
+            "done_observed": true,
+            "interpretation": "client receipt times of non-whitespace SSE chunks; not token timestamps"
+          },
+          "finish_reason": "stop",
+          "request_wall_s": 82.65257050300715,
+          "functional_validation": {
+            "PASS": true,
+            "scope": "five ASCII digits"
+          }
+        },
+        {
+          "id": "c112-repeat",
+          "output_ids": "NOT_EXPOSED",
+          "message": {
+            "role": "assistant",
+            "content": "48327",
+            "reasoning_content": "The user wants the exact text of the previous answer, which was \"48327\". Must repeat exactly that, no additions."
+          },
+          "usage": {
+            "completion_tokens": 37,
+            "prompt_tokens": 2197,
+            "total_tokens": 2234,
+            "prompt_tokens_details": {
+              "cached_tokens": 2044
+            }
+          },
+          "timings": {
+            "cache_n": 2044,
+            "prompt_n": 153,
+            "prompt_ms": 10775.094,
+            "prompt_per_token_ms": 70.42545098039216,
+            "prompt_per_second": 14.199412088655562,
+            "predicted_n": 37,
+            "predicted_ms": 7782.913,
+            "predicted_per_token_ms": 210.349,
+            "predicted_per_second": 4.754004059919467
+          },
+          "stream_metrics": {
+            "first_text_chunk_s": 11.505353975982871,
+            "first_reasoning_chunk_s": 11.505353975982871,
+            "first_final_content_chunk_s": 18.25863446400035,
+            "sse_event_count": 30,
+            "done_observed": true,
+            "interpretation": "client receipt times of non-whitespace SSE chunks; not token timestamps"
+          },
+          "finish_reason": "stop",
+          "request_wall_s": 18.571663487993646,
+          "functional_validation": {
+            "PASS": true,
+            "scope": "exact supplied prior answer48327"
+          }
+        },
+        {
+          "id": "native64-sql",
+          "output_ids": "NOT_EXPOSED",
+          "message": {
+            "role": "assistant",
+            "content": "```sql\nSELECT cliente,\n       SUM(COALESCE(valor, 0)) AS total_valor\nFROM (\n    SELECT *,\n           ROW_NUMBER() OVER (PARTITION BY event_id\n                              ORDER BY atualizado DESC, ingest_id DESC) AS rn\n    FROM eventos\n) AS sub\nWHERE rn = 1\nGROUP BY cliente\nORDER BY cliente ASC;\n```",
+            "reasoning_content": "User asks: Provide a single read query that for each event_id retains the row with max atualizado, tie break max ingest_id; then sum COALESCE(valor,0) per cliente, order by cliente asc. Return only the query or a single SQL block, no explanations.\n\nWe need to write a query. Use subquery with ROW_NUMBER partition by event_id order by atualizado desc, ingest_id desc. Then select rows where rn=1, group by cliente sum.\n\nSQL:\n\nSELECT cliente, SUM(COALESCE(valor,0)) AS total_valor\nFROM (\n    SELECT *,\n           ROW_NUMBER() OVER (PARTITION BY event_id ORDER BY atualizado DESC, ingest_id DESC) AS rn\n    FROM eventos\n) AS sub\nWHERE rn = 1\nGROUP BY cliente\nORDER BY cliente ASC;\n\nReturn just that."
+          },
+          "usage": {
+            "completion_tokens": 255,
+            "prompt_tokens": 2292,
+            "total_tokens": 2547,
+            "prompt_tokens_details": {
+              "cached_tokens": 2198
+            }
+          },
+          "timings": {
+            "cache_n": 2198,
+            "prompt_n": 94,
+            "prompt_ms": 14797.319,
+            "prompt_per_token_ms": 157.41828723404254,
+            "prompt_per_second": 6.352502098522036,
+            "predicted_n": 255,
+            "predicted_ms": 62058.601,
+            "predicted_per_token_ms": 243.36706274509805,
+            "predicted_per_second": 4.109019473384519
+          },
+          "stream_metrics": {
+            "first_text_chunk_s": 15.523819174966775,
+            "first_reasoning_chunk_s": 15.523819174966775,
+            "first_final_content_chunk_s": 61.678717773989774,
+            "sse_event_count": 248,
+            "done_observed": true,
+            "interpretation": "client receipt times of non-whitespace SSE chunks; not token timestamps"
+          },
+          "finish_reason": "stop",
+          "request_wall_s": 76.87406448594993,
+          "functional_validation": {
+            "PASS": true,
+            "query": "SELECT cliente,\n       SUM(COALESCE(valor, 0)) AS total_valor\nFROM (\n    SELECT *,\n           ROW_NUMBER() OVER (PARTITION BY event_id\n                              ORDER BY atualizado DESC, ingest_id DESC) AS rn\n    FROM eventos\n) AS sub\nWHERE rn = 1\nGROUP BY cliente\nORDER BY cliente ASC;",
+            "fixtures": [
+              {
+                "rows": 0,
+                "expected": [],
+                "actual": [],
+                "instruction_bound": 100000
+              },
+              {
+                "rows": 4,
+                "expected": [
+                  [
+                    "ana",
+                    7
+                  ],
+                  [
+                    "bia",
+                    8
+                  ]
+                ],
+                "actual": [
+                  [
+                    "ana",
+                    7
+                  ],
+                  [
+                    "bia",
+                    8
+                  ]
+                ],
+                "instruction_bound": 100000
+              },
+              {
+                "rows": 6,
+                "expected": [
+                  [
+                    "ana",
+                    8
+                  ],
+                  [
+                    "bia",
+                    -2
+                  ]
+                ],
+                "actual": [
+                  [
+                    "ana",
+                    8
+                  ],
+                  [
+                    "bia",
+                    -2
+                  ]
+                ],
+                "instruction_bound": 100000
+              },
+              {
+                "rows": 4,
+                "expected": [
+                  [
+                    "a",
+                    10
+                  ],
+                  [
+                    "z",
+                    0
+                  ]
+                ],
+                "actual": [
+                  [
+                    "a",
+                    10
+                  ],
+                  [
+                    "z",
+                    0
+                  ]
+                ],
+                "instruction_bound": 100000
+              }
+            ],
+            "validator_s": 0.0014775629970245063,
+            "validated_monotonic_s": 308182.885326041
+          }
+        }
+      ]
+    },
+    {
+      "run_id": "c203-2-B",
+      "rows": [
+        {
+          "id": "c112-code",
+          "output_ids": "NOT_EXPOSED",
+          "message": {
+            "role": "assistant",
+            "content": "48327",
+            "reasoning_content": "The user gave a huge repetitive text \"alpha ...\" and then asks: \"Choose any five-digit code. Reply with the five digits only.\"\n\nWe need to comply. Provide a five-digit code, e.g., 48327. Must be only the digits, no extra text. Ensure no disallowed content. It's fine."
+          },
+          "usage": {
+            "completion_tokens": 77,
+            "prompt_tokens": 2043,
+            "total_tokens": 2120,
+            "prompt_tokens_details": {
+              "cached_tokens": 0
+            }
+          },
+          "timings": {
+            "cache_n": 0,
+            "prompt_n": 2043,
+            "prompt_ms": 60077.983,
+            "prompt_per_token_ms": 29.406746451297114,
+            "prompt_per_second": 34.005802092257326,
+            "predicted_n": 77,
+            "predicted_ms": 18555.275,
+            "predicted_per_token_ms": 240.9775974025974,
+            "predicted_per_second": 4.149763342230174
+          },
+          "stream_metrics": {
+            "first_text_chunk_s": 60.803094770002645,
+            "first_reasoning_chunk_s": 60.803094770002645,
+            "first_final_content_chunk_s": 78.22009559499566,
+            "sse_event_count": 70,
+            "done_observed": true,
+            "interpretation": "client receipt times of non-whitespace SSE chunks; not token timestamps"
+          },
+          "finish_reason": "stop",
+          "request_wall_s": 78.65131477901014,
+          "functional_validation": {
+            "PASS": true,
+            "scope": "five ASCII digits"
+          }
+        },
+        {
+          "id": "c112-repeat",
+          "output_ids": "NOT_EXPOSED",
+          "message": {
+            "role": "assistant",
+            "content": "48327",
+            "reasoning_content": "The user wants the exact text of the previous answer, which was \"48327\". Must repeat exactly that, no additions."
+          },
+          "usage": {
+            "completion_tokens": 37,
+            "prompt_tokens": 2197,
+            "total_tokens": 2234,
+            "prompt_tokens_details": {
+              "cached_tokens": 2044
+            }
+          },
+          "timings": {
+            "cache_n": 2044,
+            "prompt_n": 153,
+            "prompt_ms": 10352.155,
+            "prompt_per_token_ms": 67.66114379084968,
+            "prompt_per_second": 14.779531411575658,
+            "predicted_n": 37,
+            "predicted_ms": 6712.134,
+            "predicted_per_token_ms": 181.40902702702704,
+            "predicted_per_second": 5.512404847698213
+          },
+          "stream_metrics": {
+            "first_text_chunk_s": 10.986230348004028,
+            "first_reasoning_chunk_s": 10.986230348004028,
+            "first_final_content_chunk_s": 16.78109001897974,
+            "sse_event_count": 30,
+            "done_observed": true,
+            "interpretation": "client receipt times of non-whitespace SSE chunks; not token timestamps"
+          },
+          "finish_reason": "stop",
+          "request_wall_s": 17.080375342979096,
+          "functional_validation": {
+            "PASS": true,
+            "scope": "exact supplied prior answer48327"
+          }
+        },
+        {
+          "id": "native64-sql",
+          "output_ids": "NOT_EXPOSED",
+          "message": {
+            "role": "assistant",
+            "content": "```sql\nSELECT cliente,\n       SUM(COALESCE(valor, 0)) AS total_valor\nFROM (\n    SELECT *,\n           ROW_NUMBER() OVER (PARTITION BY event_id\n                              ORDER BY atualizado DESC, ingest_id DESC) AS rn\n    FROM eventos\n) AS sub\nWHERE rn = 1\nGROUP BY cliente\nORDER BY cliente ASC;\n```",
+            "reasoning_content": "User asks: Provide a single read query that for each event_id retains the row with max atualizado, tie break max ingest_id; then sum COALESCE(valor,0) per cliente, order by cliente asc. Return only the query or a single SQL block, no explanations.\n\nWe need to write a query. Use subquery with ROW_NUMBER partition by event_id order by atualizado desc, ingest_id desc. Then select rows where rn=1, group by cliente sum.\n\nSQL:\n\nSELECT cliente, SUM(COALESCE(valor,0)) AS total_valor\nFROM (\n    SELECT *,\n           ROW_NUMBER() OVER (PARTITION BY event_id ORDER BY atualizado DESC, ingest_id DESC) AS rn\n    FROM eventos\n) AS sub\nWHERE rn = 1\nGROUP BY cliente\nORDER BY cliente ASC;\n\nReturn just that."
+          },
+          "usage": {
+            "completion_tokens": 255,
+            "prompt_tokens": 2292,
+            "total_tokens": 2547,
+            "prompt_tokens_details": {
+              "cached_tokens": 2198
+            }
+          },
+          "timings": {
+            "cache_n": 2198,
+            "prompt_n": 94,
+            "prompt_ms": 13458.716,
+            "prompt_per_token_ms": 143.17782978723406,
+            "prompt_per_second": 6.984321535575905,
+            "predicted_n": 255,
+            "predicted_ms": 60386.584,
+            "predicted_per_token_ms": 236.81013333333334,
+            "predicted_per_second": 4.222792267898446
+          },
+          "stream_metrics": {
+            "first_text_chunk_s": 14.107208981004078,
+            "first_reasoning_chunk_s": 14.107208981004078,
+            "first_final_content_chunk_s": 59.20546328899218,
+            "sse_event_count": 248,
+            "done_observed": true,
+            "interpretation": "client receipt times of non-whitespace SSE chunks; not token timestamps"
+          },
+          "finish_reason": "stop",
+          "request_wall_s": 73.86273210699437,
+          "functional_validation": {
+            "PASS": true,
+            "query": "SELECT cliente,\n       SUM(COALESCE(valor, 0)) AS total_valor\nFROM (\n    SELECT *,\n           ROW_NUMBER() OVER (PARTITION BY event_id\n                              ORDER BY atualizado DESC, ingest_id DESC) AS rn\n    FROM eventos\n) AS sub\nWHERE rn = 1\nGROUP BY cliente\nORDER BY cliente ASC;",
+            "fixtures": [
+              {
+                "rows": 0,
+                "expected": [],
+                "actual": [],
+                "instruction_bound": 100000
+              },
+              {
+                "rows": 4,
+                "expected": [
+                  [
+                    "ana",
+                    7
+                  ],
+                  [
+                    "bia",
+                    8
+                  ]
+                ],
+                "actual": [
+                  [
+                    "ana",
+                    7
+                  ],
+                  [
+                    "bia",
+                    8
+                  ]
+                ],
+                "instruction_bound": 100000
+              },
+              {
+                "rows": 6,
+                "expected": [
+                  [
+                    "ana",
+                    8
+                  ],
+                  [
+                    "bia",
+                    -2
+                  ]
+                ],
+                "actual": [
+                  [
+                    "ana",
+                    8
+                  ],
+                  [
+                    "bia",
+                    -2
+                  ]
+                ],
+                "instruction_bound": 100000
+              },
+              {
+                "rows": 4,
+                "expected": [
+                  [
+                    "a",
+                    10
+                  ],
+                  [
+                    "z",
+                    0
+                  ]
+                ],
+                "actual": [
+                  [
+                    "a",
+                    10
+                  ],
+                  [
+                    "z",
+                    0
+                  ]
+                ],
+                "instruction_bound": 100000
+              }
+            ],
+            "validator_s": 0.0011156710097566247,
+            "validated_monotonic_s": 308418.061047689
+          }
+        }
+      ]
+    },
+    {
+      "run_id": "c203-3-B",
+      "rows": [
+        {
+          "id": "c112-code",
+          "output_ids": "NOT_EXPOSED",
+          "message": {
+            "role": "assistant",
+            "content": "48327",
+            "reasoning_content": "The user gave a huge repetitive text \"alpha ...\" and then asks: \"Choose any five-digit code. Reply with the five digits only.\"\n\nWe need to comply. Provide a five-digit code, e.g., 48327. Must be only the digits, no extra text. Ensure no disallowed content. It's fine."
+          },
+          "usage": {
+            "completion_tokens": 77,
+            "prompt_tokens": 2043,
+            "total_tokens": 2120,
+            "prompt_tokens_details": {
+              "cached_tokens": 0
+            }
+          },
+          "timings": {
+            "cache_n": 0,
+            "prompt_n": 2043,
+            "prompt_ms": 60549.492,
+            "prompt_per_token_ms": 29.6375389133627,
+            "prompt_per_second": 33.74099323574837,
+            "predicted_n": 77,
+            "predicted_ms": 18931.613,
+            "predicted_per_token_ms": 245.8651038961039,
+            "predicted_per_second": 4.067270971575427
+          },
+          "stream_metrics": {
+            "first_text_chunk_s": 61.34306638000999,
+            "first_reasoning_chunk_s": 61.34306638000999,
+            "first_final_content_chunk_s": 79.07831309502944,
+            "sse_event_count": 70,
+            "done_observed": true,
+            "interpretation": "client receipt times of non-whitespace SSE chunks; not token timestamps"
+          },
+          "finish_reason": "stop",
+          "request_wall_s": 79.50015971000539,
+          "functional_validation": {
+            "PASS": true,
+            "scope": "five ASCII digits"
+          }
+        },
+        {
+          "id": "c112-repeat",
+          "output_ids": "NOT_EXPOSED",
+          "message": {
+            "role": "assistant",
+            "content": "48327",
+            "reasoning_content": "The user wants the exact text of the previous answer, which was \"48327\". Must repeat exactly that, no additions."
+          },
+          "usage": {
+            "completion_tokens": 37,
+            "prompt_tokens": 2197,
+            "total_tokens": 2234,
+            "prompt_tokens_details": {
+              "cached_tokens": 2044
+            }
+          },
+          "timings": {
+            "cache_n": 2044,
+            "prompt_n": 153,
+            "prompt_ms": 10386.581,
+            "prompt_per_token_ms": 67.88615032679739,
+            "prompt_per_second": 14.73054511393114,
+            "predicted_n": 37,
+            "predicted_ms": 6709.371,
+            "predicted_per_token_ms": 181.33435135135136,
+            "predicted_per_second": 5.514674922582162
+          },
+          "stream_metrics": {
+            "first_text_chunk_s": 11.006769967032596,
+            "first_reasoning_chunk_s": 11.006769967032596,
+            "first_final_content_chunk_s": 16.809829879028257,
+            "sse_event_count": 30,
+            "done_observed": true,
+            "interpretation": "client receipt times of non-whitespace SSE chunks; not token timestamps"
+          },
+          "finish_reason": "stop",
+          "request_wall_s": 17.11268459400162,
+          "functional_validation": {
+            "PASS": true,
+            "scope": "exact supplied prior answer48327"
+          }
+        },
+        {
+          "id": "native64-sql",
+          "output_ids": "NOT_EXPOSED",
+          "message": {
+            "role": "assistant",
+            "content": "```sql\nSELECT cliente,\n       SUM(COALESCE(valor, 0)) AS total_valor\nFROM (\n    SELECT *,\n           ROW_NUMBER() OVER (PARTITION BY event_id\n                              ORDER BY atualizado DESC, ingest_id DESC) AS rn\n    FROM eventos\n) AS sub\nWHERE rn = 1\nGROUP BY cliente\nORDER BY cliente ASC;\n```",
+            "reasoning_content": "User asks: Provide a single read query that for each event_id retains the row with max atualizado, tie break max ingest_id; then sum COALESCE(valor,0) per cliente, order by cliente asc. Return only the query or a single SQL block, no explanations.\n\nWe need to write a query. Use subquery with ROW_NUMBER partition by event_id order by atualizado desc, ingest_id desc. Then select rows where rn=1, group by cliente sum.\n\nSQL:\n\nSELECT cliente, SUM(COALESCE(valor,0)) AS total_valor\nFROM (\n    SELECT *,\n           ROW_NUMBER() OVER (PARTITION BY event_id ORDER BY atualizado DESC, ingest_id DESC) AS rn\n    FROM eventos\n) AS sub\nWHERE rn = 1\nGROUP BY cliente\nORDER BY cliente ASC;\n\nReturn just that."
+          },
+          "usage": {
+            "completion_tokens": 255,
+            "prompt_tokens": 2292,
+            "total_tokens": 2547,
+            "prompt_tokens_details": {
+              "cached_tokens": 2198
+            }
+          },
+          "timings": {
+            "cache_n": 2198,
+            "prompt_n": 94,
+            "prompt_ms": 13456.635,
+            "prompt_per_token_ms": 143.15569148936171,
+            "prompt_per_second": 6.985401625294882,
+            "predicted_n": 255,
+            "predicted_ms": 56858.518,
+            "predicted_per_token_ms": 222.97458039215684,
+            "predicted_per_second": 4.484816153667601
+          },
+          "stream_metrics": {
+            "first_text_chunk_s": 14.1048646440031,
+            "first_reasoning_chunk_s": 14.1048646440031,
+            "first_final_content_chunk_s": 56.26603641000111,
+            "sse_event_count": 248,
+            "done_observed": true,
+            "interpretation": "client receipt times of non-whitespace SSE chunks; not token timestamps"
+          },
+          "finish_reason": "stop",
+          "request_wall_s": 70.33177769597387,
+          "functional_validation": {
+            "PASS": true,
+            "query": "SELECT cliente,\n       SUM(COALESCE(valor, 0)) AS total_valor\nFROM (\n    SELECT *,\n           ROW_NUMBER() OVER (PARTITION BY event_id\n                              ORDER BY atualizado DESC, ingest_id DESC) AS rn\n    FROM eventos\n) AS sub\nWHERE rn = 1\nGROUP BY cliente\nORDER BY cliente ASC;",
+            "fixtures": [
+              {
+                "rows": 0,
+                "expected": [],
+                "actual": [],
+                "instruction_bound": 100000
+              },
+              {
+                "rows": 4,
+                "expected": [
+                  [
+                    "ana",
+                    7
+                  ],
+                  [
+                    "bia",
+                    8
+                  ]
+                ],
+                "actual": [
+                  [
+                    "ana",
+                    7
+                  ],
+                  [
+                    "bia",
+                    8
+                  ]
+                ],
+                "instruction_bound": 100000
+              },
+              {
+                "rows": 6,
+                "expected": [
+                  [
+                    "ana",
+                    8
+                  ],
+                  [
+                    "bia",
+                    -2
+                  ]
+                ],
+                "actual": [
+                  [
+                    "ana",
+                    8
+                  ],
+                  [
+                    "bia",
+                    -2
+                  ]
+                ],
+                "instruction_bound": 100000
+              },
+              {
+                "rows": 4,
+                "expected": [
+                  [
+                    "a",
+                    10
+                  ],
+                  [
+                    "z",
+                    0
+                  ]
+                ],
+                "actual": [
+                  [
+                    "a",
+                    10
+                  ],
+                  [
+                    "z",
+                    0
+                  ]
+                ],
+                "instruction_bound": 100000
+              }
+            ],
+            "validator_s": 0.001280291995499283,
+            "validated_monotonic_s": 308650.63444589
+          }
+        }
+      ]
+    },
+    {
+      "run_id": "c203-4-A",
+      "rows": [
+        {
+          "id": "c112-code",
+          "output_ids": "NOT_EXPOSED",
+          "message": {
+            "role": "assistant",
+            "content": "48327",
+            "reasoning_content": "The user gave a huge repetitive text \"alpha ...\" and then asks: \"Choose any five-digit code. Reply with the five digits only.\"\n\nWe need to comply. Provide a five-digit code, e.g., 48327. Must be only the digits, no extra text. Ensure no disallowed content. It's fine."
+          },
+          "usage": {
+            "completion_tokens": 77,
+            "prompt_tokens": 2043,
+            "total_tokens": 2120,
+            "prompt_tokens_details": {
+              "cached_tokens": 0
+            }
+          },
+          "timings": {
+            "cache_n": 0,
+            "prompt_n": 2043,
+            "prompt_ms": 62560.093,
+            "prompt_per_token_ms": 30.621680372001958,
+            "prompt_per_second": 32.656601069950455,
+            "predicted_n": 77,
+            "predicted_ms": 20161.354,
+            "predicted_per_token_ms": 261.8357662337662,
+            "predicted_per_second": 3.8191879374768183
+          },
+          "stream_metrics": {
+            "first_text_chunk_s": 63.32301659497898,
+            "first_reasoning_chunk_s": 63.32301659497898,
+            "first_final_content_chunk_s": 82.26082669600146,
+            "sse_event_count": 70,
+            "done_observed": true,
+            "interpretation": "client receipt times of non-whitespace SSE chunks; not token timestamps"
+          },
+          "finish_reason": "stop",
+          "request_wall_s": 82.74136833101511,
+          "functional_validation": {
+            "PASS": true,
+            "scope": "five ASCII digits"
+          }
+        },
+        {
+          "id": "c112-repeat",
+          "output_ids": "NOT_EXPOSED",
+          "message": {
+            "role": "assistant",
+            "content": "48327",
+            "reasoning_content": "The user wants the exact text of the previous answer, which was \"48327\". Must repeat exactly that, no additions."
+          },
+          "usage": {
+            "completion_tokens": 37,
+            "prompt_tokens": 2197,
+            "total_tokens": 2234,
+            "prompt_tokens_details": {
+              "cached_tokens": 2044
+            }
+          },
+          "timings": {
+            "cache_n": 2044,
+            "prompt_n": 153,
+            "prompt_ms": 10946.996,
+            "prompt_per_token_ms": 71.54899346405229,
+            "prompt_per_second": 13.976437006097381,
+            "predicted_n": 37,
+            "predicted_ms": 7701.26,
+            "predicted_per_token_ms": 208.14216216216218,
+            "predicted_per_second": 4.804408629237294
+          },
+          "stream_metrics": {
+            "first_text_chunk_s": 11.659695481997915,
+            "first_reasoning_chunk_s": 11.659695481997915,
+            "first_final_content_chunk_s": 18.340043124975637,
+            "sse_event_count": 30,
+            "done_observed": true,
+            "interpretation": "client receipt times of non-whitespace SSE chunks; not token timestamps"
+          },
+          "finish_reason": "stop",
+          "request_wall_s": 18.664643778989557,
+          "functional_validation": {
+            "PASS": true,
+            "scope": "exact supplied prior answer48327"
+          }
+        },
+        {
+          "id": "native64-sql",
+          "output_ids": "NOT_EXPOSED",
+          "message": {
+            "role": "assistant",
+            "content": "```sql\nSELECT cliente,\n       SUM(COALESCE(valor, 0)) AS total_valor\nFROM (\n    SELECT *,\n           ROW_NUMBER() OVER (PARTITION BY event_id\n                              ORDER BY atualizado DESC, ingest_id DESC) AS rn\n    FROM eventos\n) AS sub\nWHERE rn = 1\nGROUP BY cliente\nORDER BY cliente ASC;\n```",
+            "reasoning_content": "User asks: Provide a single read query that for each event_id retains the row with max atualizado, tie break max ingest_id; then sum COALESCE(valor,0) per cliente, order by cliente asc. Return only the query or a single SQL block, no explanations.\n\nWe need to write a query. Use subquery with ROW_NUMBER partition by event_id order by atualizado desc, ingest_id desc. Then select rows where rn=1, group by cliente sum.\n\nSQL:\n\nSELECT cliente, SUM(COALESCE(valor,0)) AS total_valor\nFROM (\n    SELECT *,\n           ROW_NUMBER() OVER (PARTITION BY event_id ORDER BY atualizado DESC, ingest_id DESC) AS rn\n    FROM eventos\n) AS sub\nWHERE rn = 1\nGROUP BY cliente\nORDER BY cliente ASC;\n\nReturn just that."
+          },
+          "usage": {
+            "completion_tokens": 255,
+            "prompt_tokens": 2292,
+            "total_tokens": 2547,
+            "prompt_tokens_details": {
+              "cached_tokens": 2198
+            }
+          },
+          "timings": {
+            "cache_n": 2198,
+            "prompt_n": 94,
+            "prompt_ms": 14853.546,
+            "prompt_per_token_ms": 158.01644680851064,
+            "prompt_per_second": 6.328455171579904,
+            "predicted_n": 255,
+            "predicted_ms": 65234.706,
+            "predicted_per_token_ms": 255.82237647058824,
+            "predicted_per_second": 3.908962201807118
+          },
+          "stream_metrics": {
+            "first_text_chunk_s": 15.573440515028778,
+            "first_reasoning_chunk_s": 15.573440515028778,
+            "first_final_content_chunk_s": 64.78124742698856,
+            "sse_event_count": 248,
+            "done_observed": true,
+            "interpretation": "client receipt times of non-whitespace SSE chunks; not token timestamps"
+          },
+          "finish_reason": "stop",
+          "request_wall_s": 80.10549521498615,
+          "functional_validation": {
+            "PASS": true,
+            "query": "SELECT cliente,\n       SUM(COALESCE(valor, 0)) AS total_valor\nFROM (\n    SELECT *,\n           ROW_NUMBER() OVER (PARTITION BY event_id\n                              ORDER BY atualizado DESC, ingest_id DESC) AS rn\n    FROM eventos\n) AS sub\nWHERE rn = 1\nGROUP BY cliente\nORDER BY cliente ASC;",
+            "fixtures": [
+              {
+                "rows": 0,
+                "expected": [],
+                "actual": [],
+                "instruction_bound": 100000
+              },
+              {
+                "rows": 4,
+                "expected": [
+                  [
+                    "ana",
+                    7
+                  ],
+                  [
+                    "bia",
+                    8
+                  ]
+                ],
+                "actual": [
+                  [
+                    "ana",
+                    7
+                  ],
+                  [
+                    "bia",
+                    8
+                  ]
+                ],
+                "instruction_bound": 100000
+              },
+              {
+                "rows": 6,
+                "expected": [
+                  [
+                    "ana",
+                    8
+                  ],
+                  [
+                    "bia",
+                    -2
+                  ]
+                ],
+                "actual": [
+                  [
+                    "ana",
+                    8
+                  ],
+                  [
+                    "bia",
+                    -2
+                  ]
+                ],
+                "instruction_bound": 100000
+              },
+              {
+                "rows": 4,
+                "expected": [
+                  [
+                    "a",
+                    10
+                  ],
+                  [
+                    "z",
+                    0
+                  ]
+                ],
+                "actual": [
+                  [
+                    "a",
+                    10
+                  ],
+                  [
+                    "z",
+                    0
+                  ]
+                ],
+                "instruction_bound": 100000
+              }
+            ],
+            "validator_s": 0.0016599869704805315,
+            "validated_monotonic_s": 308897.865398065
+          }
+        }
+      ]
+    }
+  ]
+}

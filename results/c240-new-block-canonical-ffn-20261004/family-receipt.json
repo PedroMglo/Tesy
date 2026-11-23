@@ -1,0 +1,39 @@
+{
+  "measurement_commit": "819cb9f2800b08fc0772747f5f3a32ee228e31c9",
+  "start": {
+    "utc": "2026-10-04T11:53:20.279153+00:00",
+    "monotonic_s": 4523.739642543
+  },
+  "end": {
+    "utc": "2026-10-04T12:02:40.371818+00:00",
+    "monotonic_s": 5083.832303246
+  },
+  "argv": [
+    "systemd-run",
+    "--user",
+    "--slice=tesy-post-c154.slice",
+    "--unit=tesy-c240-block-reference",
+    "--collect",
+    "--pipe",
+    "--wait",
+    "--working-directory=/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc",
+    "-p",
+    "MemoryMax=4294967296",
+    "-p",
+    "MemoryHigh=4294967296",
+    "-p",
+    "MemorySwapMax=0",
+    "-p",
+    "RuntimeMaxSec=1140",
+    "-p",
+    "TimeoutStopSec=10",
+    "--",
+    "/usr/bin/python3",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/tools/residency_unit_run.py",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c240-new-block-canonical-ffn-20261004",
+    "--inside"
+  ],
+  "returncode": 0,
+  "stdout": "",
+  "stderr": "Running as unit: tesy-c240-block-reference.service\n          Finished with result: success\nMain processes terminated with: code=exited, status=0/SUCCESS\n               Service runtime: 9min 19.853s\n             CPU time consumed: 2min 8.889s\n                   Memory peak: 542M (swap: 0B)\n"
+}

@@ -1,0 +1,57 @@
+{
+  "alternative": "C111 teacher-forced gain does not transfer to server final-content latency; C100 decode regression persists",
+  "base_harness_sha256": "b0b2393b8caf9f96630ce0c3b4189c4b919747a6d7e21ffecdd6ee90ba6a3c8e",
+  "default_changed": false,
+  "gain_formula": "100*(control-candidate)/control, positive denominator",
+  "input_sha256": "57cdc0a34842943a4abc0cad852ed2f50adb4fe183aede17f23dff1bcd0a0fed",
+  "launcher_prefix": [
+    "systemd-run",
+    "--user",
+    "--scope",
+    "-p",
+    "MemoryMax=19327352832",
+    "-p",
+    "MemorySwapMax=0",
+    "--"
+  ],
+  "limitations": [
+    "synthetic two-turn history; not M3 diverse or M4 quality",
+    "two screening pairs do not certify p95 or broad quality",
+    "page cache uncontrolled; O_DIRECT configured for expert I/O"
+  ],
+  "objective": "screen nominal128 actual-history server latency with candidate-first order after C113 control-first NVMe matching stopped",
+  "order": [
+    "c114-p1-candidate",
+    "c114-p1-control",
+    "c114-p2-control",
+    "c114-p2-candidate"
+  ],
+  "pairs": 2,
+  "primary": "warm first_final_content_s",
+  "prior_c111_decision_sha256": "4ff08a3d8ee9650557670b1f0ed2264c7efc87923571f9340bfa6975f33b0141",
+  "prior_c113_decision_sha256": "f41b4f7cace1e976bf69136cb8a51f4354f5f34dafa45c6aba09545170cefbe7",
+  "protected": [
+    "warm decode_s",
+    "cold decode_s",
+    "cold first_final_content_s",
+    "cold prefill_s",
+    "answer and prefix correctness"
+  ],
+  "resource_cap_bytes": 19327352832,
+  "runner_sha256": "d43e0d7809fd9a224b579ceeb72657d490cccd259ecf52c6efa3dd9ce006a06c",
+  "schema": "c114-screen-policy-v1",
+  "scope_memory_swap_max_bytes": 0,
+  "scope_test_sha256": "ed4e104302825f9fb7f3722da4aa151a0b9131bac0499019baf6a90719466c84",
+  "screen_go": "median paired primary gain >=5%, both pairs positive; warm/cold decode median gains >=-5%; all identity/output/resource gates pass",
+  "start": {
+    "maximum_wait_s": 300,
+    "mode": "CAUSAL_AB_OPERATIONAL_MATCHED_CANDIDATE_FIRST",
+    "no_artificial_heating": true,
+    "on_mismatch": "CLOSE_FAMILY_NO_MODEL; preserve partial observations",
+    "sample_interval_s": 1,
+    "within_pair_cpu_c": 3,
+    "within_pair_gpu_c": 3,
+    "within_pair_nvme_c": 2
+  },
+  "status": "FROZEN_BEFORE_MODEL"
+}

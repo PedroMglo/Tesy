@@ -1,0 +1,9 @@
+# C299 — actual original routing score hook repair
+
+C297 FAIL_OBSERVER_TRUE_ROUTING_LABEL_ALIAS preserved. Native numerical and runtime/telemetry fixture passed; the first R0 arm completed32calls before failing exact label coverage. Resource stop was null, runtime mappings matched, workload swap/OOM0. Complete rows had not yet been serialized, so numeric parity is NOT_EXPOSED, not PASS. Other arms NOT_RUN.
+
+SOURCE_AUDITED: src/models/openai-moe.cpp uses SOFTMAX_WEIGHT. In llama-graph.cpp, probs=logits aliases the biased tensor, then cb(probs, ffn_moe_probs, layer) changes its final graph name. The C296/C297 hook selected ffn_moe_logits_biased, an obsolete name. C299 selects only actual ffn_moe_probs CPU2–24, same128F32 original biased scores; no approximation/horizon/router/arithmetic/threshold revision. Native fixture now asserts actual low/high CPU labels and rejects GPU/obsolete aliases. Source/build binaries from the failed units preserved in distinct build directories and commits.
+
+Same C297 family design/limits before fresh model capture: actual8threadnative fixture with5s real mapping lifetime, then OFF/ON nominal andcode onepair each, own60s inventory/fresh3, common20GiBswap0/protective19.5GiB, worst1335s/384MiBraw plus reserve. Reuse immutable backend237e3b87 and originalGGML; no compilation during physics. All33R0completefinite/logits/IDs required bitwise. False forecasts do not issue actual bytes.
+
+C298 analysis had not run because C297 lacked mandatory labels. Its source-family addendum points to C299 only if the frozen same-design observer repair passes; queue algebra, false-read costs/sensitivity, development-only scope and futureheldout10% gate stay unchanged. No repeated valid negative, no training/staging/promotion/push. Measurement HEAD recorded separately by supervisor.

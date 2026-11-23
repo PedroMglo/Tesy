@@ -1,0 +1,80 @@
+{
+  "campaign_id": "C249",
+  "evidence": "SOURCE_AUDITED",
+  "prospective": true,
+  "created_utc": "2026-10-04T14:45:32.361204+00:00",
+  "gate_path": "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c247-b8-complete-output-amortization-20261004/amortization-summary.json",
+  "gate_sha256": "3ffb8e426fc646b730df77daabb678616086abfded3fc05ab2b7f84b0a3a1cd6",
+  "repository": "nvidia/gpt-oss-120b-Eagle3-long-context",
+  "revision": "633caf45f31288cbb70ee237f7c939db707ecc94",
+  "files": [
+    {
+      "name": "LICENSE.pdf",
+      "size": 76728,
+      "git_blob": "c39166a4ac12d8596ddf3c8960f63b56fb883916",
+      "lfs_sha256": null
+    },
+    {
+      "name": "README.md",
+      "size": 10563,
+      "git_blob": "75626cfc2b78e790722d59ee76024db526405c8d",
+      "lfs_sha256": null
+    },
+    {
+      "name": "config.json",
+      "size": 1115,
+      "git_blob": "bbff1f3edcb1ba19bd43d7f838e32e0f84e1e6e6",
+      "lfs_sha256": null
+    },
+    {
+      "name": "hf_quant_config.json",
+      "size": 238,
+      "git_blob": "42b78043256ad77feef0f2c8a1d22e8ac45bbce8",
+      "lfs_sha256": null
+    },
+    {
+      "name": "model.safetensors",
+      "size": 430964464,
+      "git_blob": "60c75f143fec02d2c257c59355ed0ccb5d8cb6c3",
+      "lfs_sha256": "1831df81533be3ce4901a382afdedc1ad7c1af3ab3f4b4708e21210c00e3b6f6"
+    }
+  ],
+  "weights_limit_bytes": 805306368,
+  "metadata_limit_bytes": 33554432,
+  "derived_gguf_limit_bytes": 2147483648,
+  "destination": "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c236-post-c235-blocks-expert-reuse-20261004T105527Z/build/eagle3-head-633caf45",
+  "download_command": [
+    "hf",
+    "download",
+    "nvidia/gpt-oss-120b-Eagle3-long-context",
+    "LICENSE.pdf",
+    "README.md",
+    "config.json",
+    "hf_quant_config.json",
+    "model.safetensors",
+    "--revision",
+    "633caf45f31288cbb70ee237f7c939db707ecc94",
+    "--local-dir",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c236-post-c235-blocks-expert-reuse-20261004T105527Z/build/eagle3-head-633caf45",
+    "--max-workers",
+    "1"
+  ],
+  "target_weights_downloaded": false,
+  "raw_projection_bytes": 4194304,
+  "budget": {
+    "utc": "2026-10-04T14:45:32.361056+00:00",
+    "physical_used_s": 7876.335272059004,
+    "wall_used_s": 14192.248718395998,
+    "raw_bytes": 1229496173,
+    "physical_remaining_s": 49723.664727940995,
+    "wall_remaining_s": 417807.751281604,
+    "raw_remaining_bytes": 11655405715,
+    "closure_reserve_s": 14400,
+    "next_worst_case_s": 0,
+    "admitted": true
+  },
+  "disk_free_bytes": 403013865472,
+  "qualification_status": "NOT_RUN",
+  "publication": "LOCAL_ONLY",
+  "scope": "Only pinned head acquisition; no profile/default or acceptance qualification; runtime artifacts preserve original C75 binary/library identity"
+}

@@ -1,0 +1,40 @@
+--- tools/c7_layer_reference.cpp
++++ results/c191-native64-numeric-20260930T2055Z/build/reference.cpp
+@@ -328,7 +328,7 @@
+                 phases.push_back(phase);
+             }
+         }
+-        const std::vector<std::string> broad{"prefill0","prefill128","prefill_final",
++        const std::vector<std::string> broad{"prefill0","prefill64","prefill_final",
+                                              "decode0","decode1","decode7","decode31"};
+         require(phases == broad, "capture phase schedule changed");
+         {
+@@ -341,7 +341,7 @@
+             while (std::getline(source,line)) masked.push_back(line);
+             require(masked == std::vector<std::string>{
+                 "prefill0\t35\t0\t0\t0\tN/A_MASKED\toutput-mask-zero-rows",
+-                "prefill128\t35\t4\t128\t0\tN/A_MASKED\toutput-mask-zero-rows"},
++                "prefill64\t35\t1\t64\t0\tN/A_MASKED\toutput-mask-zero-rows"},
+                 "masked-state set differs from frozen output mask");
+         }
+         ggml_backend_load_all();
+@@ -397,7 +397,7 @@
+         int numeric_rows = 0;
+         int masked_rows = 0;
+         for (const auto & phase : phases) {
+-            if (layer == 35 && (phase == "prefill0" || phase == "prefill128")) {
++            if (layer == 35 && (phase == "prefill0" || phase == "prefill64")) {
+                 for (const auto & item : rows)
+                     require(item.phase != phase, "masked phase has numeric payload");
+                 rendered_rows.push_back("{\"phase\":\"" + phase +
+@@ -406,8 +406,8 @@
+                 continue;
+             }
+             const auto row = replay(phase,rows,backend.value,tensors);
+-            const size_t expected_tokens = phase == "prefill0" || phase == "prefill128" ? 32 :
+-                phase == "prefill_final" ? (layer == 35 ? 1 : 29) : 1;
++            const size_t expected_tokens = phase == "prefill0" || phase == "prefill64" ? 64 :
++                phase == "prefill_final" ? (layer == 35 ? 1 : 61) : 1;
+             require(row.tokens == expected_tokens, "reference phase token count changed");
+             pass &= row.routing_ids_equal && row.routing_weights.bitwise &&
+                     row.ffn.bitwise && row.routing_weights.nonfinite == 0 &&

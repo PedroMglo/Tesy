@@ -1,0 +1,27 @@
+{
+  "analysis_sha256": "409321461ce305bd44d9fdf785a0f8d94251f5d7a3507c5331b5c6b65b9f1dd4",
+  "analysis_source_commit": "46a8bd2",
+  "candidate_pass": 8,
+  "candidate_raw_sha256": "47672fd3a346cdf5a5fc04f128ebae53dacf27119e168839c9ef92d78ae9d8e4",
+  "candidate_receipt_sha256": "13b15302e95320f1cd25e038bdae5029fa06568adfa5aa1c1198453ba2a7766a",
+  "control_pass": 8,
+  "control_raw_sha256": "a291015ac56c6b0b8e43a2df9f832c6895e34c21576d3139473cb6ddda887806",
+  "control_receipt_sha256": "f6288a9d1aa66863de462e0c1707107364183fcad8f5300df5f4c987946ac0e4",
+  "default_changed": false,
+  "evidence_class": "MEDIDO_NO_TARGET",
+  "full_messages_equal": true,
+  "input_ids_equal": true,
+  "limits": [
+    "No general quality equivalence from eight tasks",
+    "Holdout was sequential and not a causal timing test",
+    "M4 decode and warm first-final targets still not met",
+    "Diverse active sustained session and 7936 boundary for slots40 remain NOT_RUN"
+  ],
+  "measurement_commit": "3a695ca412b4198e3405b2054fb450bb7193350f",
+  "next_action": "Freeze and run diverse active 20-request 60-minute slots40 session with real assistant history, within epoch budget",
+  "no_loss": true,
+  "schema": "c131-holdout-decision-v1",
+  "scope": "eight new balanced frozen code/data/planning tasks, C75 waves ON slots32 versus slots40, one process per arm",
+  "source_commit": "c7843b79784b3516cff145ef88c8c991eab5437e",
+  "status": "PASS_HOLDOUT_8_OF_8_NO_QUALITY_LOSS"
+}

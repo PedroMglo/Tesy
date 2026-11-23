@@ -1,0 +1,159 @@
+{
+  "run_id": "stream20b-cpu-smoke01",
+  "started_utc": "2026-09-25T23:58:39.138086+00:00",
+  "model_id": "gpt-oss-20b-mxfp4-gguf",
+  "backend": "streaming",
+  "backend_sha": "1248fd8fa8cfebaece5ea992e4d951c1e18bb9d5",
+  "binary_sha256": "cca4aba352ec5587fc904e75ebc4f0448edb2f5bbf66c21628e5cee3636a2049",
+  "variant": "cpu16slots-direct-greedy8",
+  "workload": "arithmetic-smoke",
+  "cache_condition": "sha-verified-pagecache-warm-demand-only",
+  "command": [
+    "backends/streaming/build-cpu/bin/llama-cli",
+    "-m",
+    "/home/pmglo/.local/share/tesy/models/gpt-oss-20b/gpt-oss-20b-mxfp4.gguf",
+    "-ngl",
+    "0",
+    "-c",
+    "4096",
+    "-b",
+    "256",
+    "-ub",
+    "32",
+    "-t",
+    "8",
+    "-tb",
+    "8",
+    "-n",
+    "8",
+    "-s",
+    "42",
+    "--temp",
+    "0",
+    "-st",
+    "-p",
+    "Reply with the sum of 7 and 5, then stop.",
+    "--no-warmup",
+    "--simple-io",
+    "--no-display-prompt",
+    "--moe-stream-cache",
+    "16s",
+    "--moe-stream-io-threads",
+    "4",
+    "--moe-stream-direct"
+  ],
+  "explicit_env": {
+    "LLAMA_MOE_STREAM_NO_PRELOAD": "1"
+  },
+  "stdin_file": null,
+  "stdin_sha256": null,
+  "limits": {
+    "timeout_s": 300,
+    "max_rss_gib": 10.0,
+    "min_available_gib": 6.0,
+    "max_gpu_mib": 7000.0
+  },
+  "cgroup_start": {
+    "path": "/user.slice/user-1000.slice/user@1000.service/app.slice/run-p73457-i68771.scope",
+    "memory_max": 11811160064,
+    "swap_max": 0,
+    "memory_current": 12877824,
+    "swap_current": 0,
+    "memory_stat": {
+      "anon": 10665984,
+      "file": 503808,
+      "kernel": 282624,
+      "shmem": 0,
+      "file_mapped": 4096
+    },
+    "events": {
+      "low": 0,
+      "high": 0,
+      "max": 0,
+      "oom": 0,
+      "oom_kill": 0,
+      "oom_group_kill": 0,
+      "sock_throttled": 0
+    }
+  },
+  "publication": "local only; stdout/stderr are untracked",
+  "samples_path": "/home/pmglo/Projects/Tesy/tesy-scale-lab/results/stream20b-cpu-smoke01.samples.jsonl",
+  "cgroup_limit_enforced": true,
+  "ended_utc": "2026-09-25T23:59:00.671898+00:00",
+  "elapsed_s": 21.534,
+  "returncode": 0,
+  "stop_reason": null,
+  "maxima": {
+    "rss_bytes": 7225290752,
+    "swap_bytes": 0,
+    "cgroup_memory_bytes": 7242977280,
+    "cgroup_file_bytes": 4329472,
+    "gpu_used_mib": 23.0,
+    "gpu_temperature_c": 53.0
+  },
+  "last_sample": {
+    "elapsed_s": 20.534,
+    "proc": {
+      "VmHWM": 7249551360,
+      "VmRSS": 2156363776,
+      "VmSwap": 0,
+      "rchar": 19186242553,
+      "syscr": 11280,
+      "read_bytes": 17189580800
+    },
+    "mem_available_bytes": 24039337984,
+    "gpu": {
+      "used_mib": 23.0,
+      "temperature_c": 53.0,
+      "power_w": 5.47
+    },
+    "cgroup": {
+      "path": "/user.slice/user-1000.slice/user@1000.service/app.slice/run-p73457-i68771.scope",
+      "memory_max": 11811160064,
+      "swap_max": 0,
+      "memory_current": 1803345920,
+      "swap_current": 0,
+      "memory_stat": {
+        "anon": 1779470336,
+        "file": 4329472,
+        "kernel": 14970880,
+        "shmem": 0,
+        "file_mapped": 1191936
+      },
+      "events": {
+        "low": 0,
+        "high": 0,
+        "max": 0,
+        "oom": 0,
+        "oom_kill": 0,
+        "oom_group_kill": 0,
+        "sock_throttled": 0
+      }
+    }
+  },
+  "stdout_path": "/home/pmglo/Projects/Tesy/tesy-scale-lab/results/stream20b-cpu-smoke01.stdout",
+  "stderr_path": "/home/pmglo/Projects/Tesy/tesy-scale-lab/results/stream20b-cpu-smoke01.stderr",
+  "cgroup_end": {
+    "path": "/user.slice/user-1000.slice/user@1000.service/app.slice/run-p73457-i68771.scope",
+    "memory_max": 11811160064,
+    "swap_max": 0,
+    "memory_current": 16945152,
+    "swap_current": 0,
+    "memory_stat": {
+      "anon": 10702848,
+      "file": 4329472,
+      "kernel": 221184,
+      "shmem": 0,
+      "file_mapped": 4096
+    },
+    "events": {
+      "low": 0,
+      "high": 0,
+      "max": 0,
+      "oom": 0,
+      "oom_kill": 0,
+      "oom_group_kill": 0,
+      "sock_throttled": 0
+    }
+  }
+}

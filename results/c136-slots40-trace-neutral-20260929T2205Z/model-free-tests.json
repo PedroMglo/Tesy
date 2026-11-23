@@ -1,0 +1,11 @@
+{
+  "schema": "c136-model-free-v1",
+  "status": "PASS_MODEL_FREE_TESTED_SCOPE",
+  "tests": [
+    {"command": "python3 -m py_compile tools/c136_trace_neutral.py", "result": "PASS"},
+    {"command": "PYTHONPATH=tools python3 - [C136 effective profile assertions]", "result": "PASS_C136_PROFILE_MODEL_FREE"},
+    {"command": "python3 tools/c136_trace_neutral.py freeze results/c136-slots40-trace-neutral-20260929T2205Z", "result": "PASS_MODEL_FREE_PROFILE_CONSTRUCTION"}
+  ],
+  "live_inventory": "PASS_60_S_PHYSICAL_HOST",
+  "not_run": ["C136 model execution"]
+}

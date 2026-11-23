@@ -1,0 +1,39 @@
+{
+  "measurement_commit": "f4fc7087182e9b2dc8b9e7eb7099449980d7a7a5",
+  "start": {
+    "utc": "2026-09-30T15:24:59.266754+00:00",
+    "monotonic_s": 276278.739981594
+  },
+  "end": {
+    "utc": "2026-09-30T15:26:00.756900+00:00",
+    "monotonic_s": 276340.230127074
+  },
+  "argv": [
+    "systemd-run",
+    "--user",
+    "--slice=tesy-post-c154.slice",
+    "--unit=c178-layer24-reference-entrypoint",
+    "--collect",
+    "--pipe",
+    "--wait",
+    "--working-directory=/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc",
+    "-p",
+    "MemoryMax=21474836480",
+    "-p",
+    "MemoryHigh=20937965568",
+    "-p",
+    "MemorySwapMax=0",
+    "-p",
+    "RuntimeMaxSec=180",
+    "-p",
+    "TimeoutStopSec=10",
+    "--",
+    "/usr/bin/python3",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/tools/residency_unit_run.py",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c178-layer24-reference-entrypoint-20260930T1526Z",
+    "--inside"
+  ],
+  "returncode": 1,
+  "stdout": "",
+  "stderr": "Running as unit: c178-layer24-reference-entrypoint.service\n          Finished with result: exit-code\nMain processes terminated with: code=exited, status=1/FAILURE\n               Service runtime: 1min 1.342s\n             CPU time consumed: 7.730s\n                   Memory peak: 52.1M (swap: 0B)\n"
+}

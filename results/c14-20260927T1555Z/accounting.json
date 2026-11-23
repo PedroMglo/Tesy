@@ -1,0 +1,25 @@
+{
+  "admission": "bounded init and minimum forward before 513; no capacity guarantee from estimate",
+  "c10b_p8ub64_vs_c9_p8ub32_server_gpu_peak_delta_mib": 8,
+  "c11_p12ub32_513_cgroup_peak_bytes": 13061337088,
+  "c11_p12ub32_513_gpu_peak_mib": 5746,
+  "cgroup_reservation_bytes": 17716740096,
+  "cpu_pool_bytes": 10575360000,
+  "estimated_p12ub64_gpu_mib_before_workspace_change": 5754,
+  "evidence_class": "C7 GGUF tensors plus C11/C10b diagnostics",
+  "expert_bytes": 13219200,
+  "gpu_pool_bytes": 4653158400,
+  "gpu_reservation_mib": 6500,
+  "p12_cpu_gpu_pools": [
+    25,
+    11
+  ],
+  "rss_reservation_bytes": 17179869184,
+  "schema": "c14-p12ub64-accounting-v1",
+  "slots_per_layer": 32,
+  "unknown": [
+    "native64 server graph workspace and dynamic buffers",
+    "thermal response and P12 routing under new arithmetic profile",
+    "full-logit and layer fidelity"
+  ]
+}

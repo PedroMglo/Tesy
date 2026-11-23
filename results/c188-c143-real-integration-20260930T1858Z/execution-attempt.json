@@ -1,0 +1,77 @@
+{
+  "start": {
+    "utc": "2026-09-30T19:00:51.086214+00:00",
+    "monotonic_s": 289230.559434898
+  },
+  "measurement_head": "c53ac21e8d56dc625be08301423097d91e458bc1",
+  "calls": [
+    {
+      "mode": "start",
+      "start": {
+        "utc": "2026-09-30T19:00:51.097240+00:00",
+        "monotonic_s": 289230.570457689
+      },
+      "end": {
+        "utc": "2026-09-30T19:00:53.183058+00:00",
+        "monotonic_s": 289232.65628478
+      },
+      "argv": [
+        "/usr/bin/python3",
+        "tools/c143_slots40_optin.py",
+        "start",
+        "--root",
+        "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c188-c143-real-integration-20260930T1858Z/session"
+      ],
+      "returncode": 0,
+      "stdout": "{\"unit\": \"tesy-optin-slots40-20260930T185833Z.service\", \"endpoint\": \"http://127.0.0.1:18440\", \"state\": \"WAITING_60S_INVENTORY; check /health before requests\", \"root\": \"/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c188-c143-real-integration-20260930T1858Z/session\"}\n",
+      "stderr": ""
+    },
+    {
+      "mode": "stop",
+      "start": {
+        "utc": "2026-09-30T19:04:46.923120+00:00",
+        "monotonic_s": 289466.39633658
+      },
+      "end": {
+        "utc": "2026-09-30T19:04:48.581660+00:00",
+        "monotonic_s": 289468.054898321
+      },
+      "argv": [
+        "/usr/bin/python3",
+        "tools/c143_slots40_optin.py",
+        "stop",
+        "--root",
+        "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c188-c143-real-integration-20260930T1858Z/session"
+      ],
+      "returncode": 0,
+      "stdout": "",
+      "stderr": ""
+    }
+  ],
+  "client": {
+    "start": {
+      "utc": "2026-09-30T19:00:53.183136+00:00",
+      "monotonic_s": 289232.656350513
+    },
+    "end": {
+      "utc": "2026-09-30T19:04:46.922911+00:00",
+      "monotonic_s": 289466.396147816
+    },
+    "argv": [
+      "/usr/bin/python3",
+      "tools/optin_integration_client.py",
+      "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c188-c143-real-integration-20260930T1858Z/session",
+      "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c188-c143-real-integration-20260930T1858Z/protocol.json"
+    ],
+    "returncode": 0,
+    "stdout": "CLIENT_FOUR_REQUESTS_PASS None\n",
+    "stderr": ""
+  },
+  "end": {
+    "utc": "2026-09-30T19:04:48.582146+00:00",
+    "monotonic_s": 289468.055365436
+  },
+  "failure": null,
+  "external_deadline_expired": false,
+  "serve_receipt_present": true
+}

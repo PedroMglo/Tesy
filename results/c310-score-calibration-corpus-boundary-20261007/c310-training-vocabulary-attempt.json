@@ -1,0 +1,46 @@
+{
+  "id": "c310-training-vocabulary",
+  "start": {
+    "utc": "2026-10-07T01:43:34.074657+00:00",
+    "monotonic_s": 113632.520229238
+  },
+  "end": {
+    "utc": "2026-10-07T01:44:40.611160+00:00",
+    "monotonic_s": 113699.056745232
+  },
+  "argv": [
+    "/usr/bin/python",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/tools/run_bounded.py",
+    "--run-id",
+    "c310-training-vocabulary",
+    "--model-id",
+    "gpt-oss-120b-mxfp4-gguf",
+    "--backend",
+    "stock",
+    "--backend-root",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/backends/c305-cpu-prediction-staging",
+    "--output-root",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c310-score-calibration-corpus-boundary-20261007/raw",
+    "--variant",
+    "Originalvocabulary-only-trainingfixture",
+    "--workload",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c310-score-calibration-corpus-boundary-20261007/protocol.json",
+    "--cache-condition",
+    "Vocab/template/date/medium only, no targetweight/KV/forward/nativeanswer; fixed8trainingtasks",
+    "--resource-protocol",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c310-score-calibration-corpus-boundary-20261007/protocol.json",
+    "--require-telemetry",
+    "--timeout-s",
+    "140",
+    "--collect-start-inventory",
+    "--",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c283-exact-expert-service-epoch-20261006T194311Z/build/score-corpus/bin/expert-prediction-corpus",
+    "/home/pmglo/models/gpt-oss-120b-gguf/gpt-oss-120b-MXFP4.gguf",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/workloads/expert_score_calibration_training_v1.json",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c310-score-calibration-corpus-boundary-20261007/raw/official-training-inputs.json",
+    "--render-training"
+  ],
+  "returncode": 0,
+  "stdout": "{\"run_id\": \"c310-training-vocabulary\", \"elapsed_s\": 5.875, \"returncode\": 0, \"stop_reason\": null, \"maxima\": {\"rss_bytes\": 509816832, \"swap_bytes\": 0, \"cgroup_memory_bytes\": 278249472, \"cgroup_peak_bytes\": 299528192, \"cgroup_file_bytes\": 8937472, \"gpu_used_mib\": 125.0, \"gpu_temperature_c\": 42.0, \"cpu_tctl_c\": 51.25, \"nvme_composite_c\": 34.85, \"direct_model_fds\": 0, \"buffered_model_fds\": 0}}\n",
+  "stderr": ""
+}

@@ -1,0 +1,121 @@
+{
+  "all_assistant_messages_equal": true,
+  "all_official_prompt_ids_equal": true,
+  "claim_limit": "two pairs on one synthetic two-turn workload; no confirmation/p95/quality claim",
+  "measurement_commit": "3b0d9e6c3f2f0995f97b0eca85ee7af96c1017f2",
+  "median_paired_gain_percent": {
+    "cold_decode_s": 2.314303016421131,
+    "cold_first_final_content_s": 69.52727798549489,
+    "cold_prefill_s": 75.43473128738587,
+    "warm_decode_s": 3.1095285545986724,
+    "warm_first_final_content_s": 12.374449887068526
+  },
+  "pairs": [
+    {
+      "candidate_run_id": "c99-p1-candidate",
+      "control_run_id": "c99-p1-control",
+      "matched_start_wait_s": 226.51406895599212,
+      "metrics": {
+        "cold_decode_s": {
+          "candidate": 24.266508,
+          "control": 25.421792,
+          "paired_gain_percent": 4.5444632699378475
+        },
+        "cold_first_final_content_s": {
+          "candidate": 91.28676395300135,
+          "control": 301.03716052501113,
+          "paired_gain_percent": 69.6759151615048
+        },
+        "cold_prefill_s": {
+          "candidate": 67.667829,
+          "control": 276.290471,
+          "paired_gain_percent": 75.50844632640263
+        },
+        "cold_request_wall_s": {
+          "candidate": 91.95386375799717,
+          "control": 301.72508136001125,
+          "paired_gain_percent": 69.52395758963108
+        },
+        "warm_decode_s": {
+          "candidate": 18.679944,
+          "control": 19.528779999999998,
+          "paired_gain_percent": 4.3465900071586585
+        },
+        "warm_first_final_content_s": {
+          "candidate": 25.06700407800963,
+          "control": 29.088379686989356,
+          "paired_gain_percent": 13.82468068779508
+        },
+        "warm_prefill_s": {
+          "candidate": 6.812206,
+          "control": 10.011941,
+          "paired_gain_percent": 31.95918753416546
+        },
+        "warm_request_wall_s": {
+          "candidate": 25.507353521010373,
+          "control": 29.551311388990143,
+          "paired_gain_percent": 13.684529308186363
+        }
+      },
+      "pair": 1,
+      "run_order": [
+        "c99-p1-control",
+        "c99-p1-candidate"
+      ]
+    },
+    {
+      "candidate_run_id": "c99-p2-candidate",
+      "control_run_id": "c99-p2-control",
+      "matched_start_wait_s": 9.41033478200552,
+      "metrics": {
+        "cold_decode_s": {
+          "candidate": 24.368979,
+          "control": 24.389501,
+          "paired_gain_percent": 0.08414276290441411
+        },
+        "cold_first_final_content_s": {
+          "candidate": 91.3298962609988,
+          "control": 298.2555271070014,
+          "paired_gain_percent": 69.37864080948498
+        },
+        "cold_prefill_s": {
+          "candidate": 67.634976,
+          "control": 274.503919,
+          "paired_gain_percent": 75.36101624836911
+        },
+        "cold_request_wall_s": {
+          "candidate": 92.02219263999723,
+          "control": 298.9073986160074,
+          "paired_gain_percent": 69.21381234921725
+        },
+        "warm_decode_s": {
+          "candidate": 18.659704,
+          "control": 19.015768,
+          "paired_gain_percent": 1.8724671020386865
+        },
+        "warm_first_final_content_s": {
+          "candidate": 25.13095374799741,
+          "control": 28.21300412999699,
+          "paired_gain_percent": 10.924219086341969
+        },
+        "warm_prefill_s": {
+          "candidate": 6.896924,
+          "control": 9.679805,
+          "paired_gain_percent": 28.74934980611696
+        },
+        "warm_request_wall_s": {
+          "candidate": 25.568574410004658,
+          "control": 28.706042763005826,
+          "paired_gain_percent": 10.929644252618823
+        }
+      },
+      "pair": 2,
+      "run_order": [
+        "c99-p2-candidate",
+        "c99-p2-control"
+      ]
+    }
+  ],
+  "schema": "c99-server-screen-timing-v1",
+  "status": "SCREEN_GO_CONFIRMATION_PENDING"
+}

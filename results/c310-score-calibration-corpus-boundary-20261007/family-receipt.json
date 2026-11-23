@@ -1,0 +1,39 @@
+{
+  "measurement_commit": "cb698182a2c36e6f3bd0067721d71301a677fc13",
+  "start": {
+    "utc": "2026-10-07T01:42:28.205460+00:00",
+    "monotonic_s": 113566.651043616
+  },
+  "end": {
+    "utc": "2026-10-07T01:47:11.076080+00:00",
+    "monotonic_s": 113849.521659125
+  },
+  "argv": [
+    "systemd-run",
+    "--user",
+    "--slice=tesy-post-c154.slice",
+    "--unit=tesy-c310-score-corpus-boundary",
+    "--collect",
+    "--pipe",
+    "--wait",
+    "--working-directory=/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc",
+    "-p",
+    "MemoryMax=21474836480",
+    "-p",
+    "MemoryHigh=21474836480",
+    "-p",
+    "MemorySwapMax=0",
+    "-p",
+    "RuntimeMaxSec=800",
+    "-p",
+    "TimeoutStopSec=10",
+    "--",
+    "/usr/bin/python",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/tools/residency_unit_run.py",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c310-score-calibration-corpus-boundary-20261007",
+    "--inside"
+  ],
+  "returncode": 0,
+  "stdout": "",
+  "stderr": "Running as unit: tesy-c310-score-corpus-boundary.service\n          Finished with result: success\nMain processes terminated with: code=exited, status=0/SUCCESS\n               Service runtime: 4min 42.745s\n             CPU time consumed: 7min 17.074s\n                   Memory peak: 14.7G (swap: 0B)\n"
+}

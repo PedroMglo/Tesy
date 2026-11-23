@@ -1,0 +1,53 @@
+{
+  "diagnostic_only": {
+    "capture_consistent_if_unobservable_alias_excluded": true,
+    "claim": "diagnostic after seeing outputs; not a prospective G2 PASS",
+    "selected_full_logits_off_on_bitwise": [
+      true,
+      true,
+      true,
+      true,
+      true
+    ]
+  },
+  "expected_core_rows": 1750,
+  "failure": "frozen analyzer required ffn_moe_logits_biased once in each numeric state, but the captured graph exposes ffn_moe_probs for the same aliased tensor name; all 250 biased-label entries were absent",
+  "measurement_commit": "2dcc7e465a6904f0dbfb4266e587ff76b18dbd95",
+  "next_action": "new G2b identity, corrected observable-stage schema frozen before rerun; preserve this failed attempt and its raw",
+  "not_run": [
+    "c7-g2-p12-off02",
+    "canonical_layers",
+    "timing"
+  ],
+  "observed_core_rows": 1500,
+  "observed_stage_counts": {
+    "attn_post_norm": 250,
+    "ffn_moe_logits": 250,
+    "ffn_moe_out": 250,
+    "ffn_moe_probs": 250,
+    "ffn_moe_topk": 250,
+    "ffn_moe_topk_stream": 145,
+    "ffn_moe_wave_ids": 1015,
+    "ffn_moe_wave_mask": 1015,
+    "ffn_moe_weights_softmax": 250
+  },
+  "raw_sha256": {
+    "capture_index": "c5bb2d647b1e11bceca92ab0868d4e19bbc56b39dda9add326bd1bb2fbb86a64",
+    "capture_masked": "1c01ae46d4a6b2636f6c95c5a277190b8a0c3146420e9e3c71829cdf818e5a14",
+    "off_manifest": "2edfe5b9b575cf359cdec9072f35e3483581eeaf5ecf75322f1055e5d081ae85",
+    "on_manifest": "3aa5f2cd8c76af9fb381f30aa109ed45fb0cd1839d7792f562d987e3569bf390"
+  },
+  "recorded_utc": "2026-09-27T12:05:29.241107+00:00",
+  "resources": {
+    "off_returncode": 0,
+    "off_stop_reason": null,
+    "on_returncode": 0,
+    "on_stop_reason": null
+  },
+  "schema": "c7-g2-attempt01-failure-v1",
+  "status": "GATE_REPAIR_BLOCKED",
+  "units_run": [
+    "c7-g2-p12-off01",
+    "c7-g2-p12-on01"
+  ]
+}

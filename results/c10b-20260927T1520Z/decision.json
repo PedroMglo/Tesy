@@ -1,0 +1,49 @@
+{
+  "budget": {
+    "physical_limit_s": 57600,
+    "program_physical_after_s": 5276.703536331996
+  },
+  "claim_limits": [
+    "no native64 numerical parity/reference",
+    "no completed 513-ID request or serving timing",
+    "no prefix-cache/quality/8K/sustained evidence"
+  ],
+  "completed_requests": 0,
+  "default_changed": false,
+  "elapsed_s": 81.31359780799903,
+  "failures_preserved": [
+    "C9 513-ID ub32 CPU thermal FAIL",
+    "C10 two no-model 47 C start-precondition blocks",
+    "C10b 513-ID ub64 CPU thermal FAIL"
+  ],
+  "gates": {
+    "functional_quality": "NOT_RUN",
+    "init": "CAPACITY_ADMITTED_INIT_ONLY",
+    "minimum_forward": "MINIMUM_FORWARD_ADMITTED_NEW_PROFILE",
+    "model_free": "PASS_70_TESTS",
+    "prefix_reuse": "NOT_RUN",
+    "same_profile_numeric_reference": "NOT_RUN",
+    "short513": "FAIL_CPU_THERMAL_GUARD",
+    "sustained": "NOT_RUN"
+  },
+  "maxima": {
+    "cgroup_peak_bytes": 15007453184,
+    "cpu_c": 95.125,
+    "gpu_c": 61.0,
+    "gpu_total_mib": 3944.0,
+    "nvme_c": 48.85,
+    "rss_bytes": 15173025792,
+    "swap_bytes": 0
+  },
+  "measurement_commit": "261b34a166132869681ab86e536081ad2aa97728",
+  "next_action": "new C11 identity: static P12+preload ON ub32 capacity/thermal feasibility, then bounded init/minimum-forward/513 only if admitted; no C10b retry",
+  "profile": "P8 native ub64 preload ON original backend 8K full-SWA server E18",
+  "reason": "CPU Tctl sample 95.125 C at 75.848 s exceeded frozen 95 C absolute guard during first 513-ID prefill; zero completed requests; watchdog stopped server",
+  "sample_count": 72,
+  "schema": "c10b-native64-server-decision-v1",
+  "status": "FAIL_RESOURCES_OR_EVIDENCE",
+  "stop_reasons": [
+    "THERMAL_GUARD",
+    "RUN_ERROR:RemoteDisconnected:Remote end closed connection without response"
+  ]
+}

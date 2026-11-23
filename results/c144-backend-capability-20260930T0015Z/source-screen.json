@@ -1,0 +1,161 @@
+{
+  "capabilities": {
+    "CPU_MXFP4_dot_dispatch": {
+      "authority": "SOURCE_AUDITED; actual AMD dispatch/build NOT_RUN",
+      "lines": [
+        289
+      ],
+      "path": "ggml/src/ggml-cpu/ggml-cpu.c",
+      "primary_source": "https://github.com/ggml-org/llama.cpp/blob/8019dc563b1ecbae6b161a70c3a1359f1b206c1e/ggml/src/ggml-cpu/ggml-cpu.c#L289"
+    },
+    "CPU_expert_override": {
+      "authority": "SOURCE_AUDITED; alternative numeric placement, not Tesy P12 equivalence",
+      "lines": [
+        2757,
+        4119
+      ],
+      "path": "common/arg.cpp",
+      "primary_source": "https://github.com/ggml-org/llama.cpp/blob/8019dc563b1ecbae6b161a70c3a1359f1b206c1e/common/arg.cpp#L2757"
+    },
+    "CUDA_Ampere_MXFP4_configs": {
+      "authority": "SOURCE_AUDITED; build/physical NOT_RUN",
+      "lines": [
+        348,
+        349,
+        350,
+        351,
+        352,
+        353,
+        354,
+        355,
+        356,
+        357,
+        358,
+        359,
+        360,
+        361,
+        362,
+        363
+      ],
+      "path": "ggml/src/ggml-cuda/mmq-config-ampere.cuh",
+      "primary_source": "https://github.com/ggml-org/llama.cpp/blob/8019dc563b1ecbae6b161a70c3a1359f1b206c1e/ggml/src/ggml-cuda/mmq-config-ampere.cuh#L348"
+    },
+    "F16_KV_type_selection": {
+      "authority": "SOURCE_AUDITED; selected type/runtime NOT_RUN",
+      "lines": [
+        2434,
+        4087
+      ],
+      "path": "common/arg.cpp",
+      "primary_source": "https://github.com/ggml-org/llama.cpp/blob/8019dc563b1ecbae6b161a70c3a1359f1b206c1e/common/arg.cpp#L2434"
+    },
+    "GGUF_MXFP4_loader": {
+      "authority": "SOURCE_AUDITED",
+      "lines": [
+        47
+      ],
+      "path": "src/llama-model-loader.cpp",
+      "primary_source": "https://github.com/ggml-org/llama.cpp/blob/8019dc563b1ecbae6b161a70c3a1359f1b206c1e/src/llama-model-loader.cpp#L47"
+    },
+    "GPT_OSS_authoritative_MoE_graph": {
+      "authority": "SOURCE_AUDITED",
+      "lines": [
+        138
+      ],
+      "path": "src/models/openai-moe.cpp",
+      "primary_source": "https://github.com/ggml-org/llama.cpp/blob/8019dc563b1ecbae6b161a70c3a1359f1b206c1e/src/models/openai-moe.cpp#L138"
+    },
+    "GPU_tensor_full_upload_path": {
+      "authority": "SOURCE_AUDITED; explicit per-expert GPU streaming not established",
+      "lines": [
+        1670
+      ],
+      "path": "src/llama-model-loader.cpp",
+      "primary_source": "https://github.com/ggml-org/llama.cpp/blob/8019dc563b1ecbae6b161a70c3a1359f1b206c1e/src/llama-model-loader.cpp#L1670"
+    },
+    "KV_unified_flag": {
+      "authority": "SOURCE_AUDITED; F16 runtime NOT_RUN",
+      "lines": [
+        1647,
+        1721
+      ],
+      "path": "common/arg.cpp",
+      "primary_source": "https://github.com/ggml-org/llama.cpp/blob/8019dc563b1ecbae6b161a70c3a1359f1b206c1e/common/arg.cpp#L1647"
+    },
+    "SWA_full_flag": {
+      "authority": "SOURCE_AUDITED; model/runtime memory NOT_RUN",
+      "lines": [
+        1687
+      ],
+      "path": "common/arg.cpp",
+      "primary_source": "https://github.com/ggml-org/llama.cpp/blob/8019dc563b1ecbae6b161a70c3a1359f1b206c1e/common/arg.cpp#L1687"
+    },
+    "medium_template_kwarg": {
+      "authority": "SOURCE_AUDITED; exact rendered IDs NOT_RUN",
+      "lines": [
+        946
+      ],
+      "path": "common/chat.cpp",
+      "primary_source": "https://github.com/ggml-org/llama.cpp/blob/8019dc563b1ecbae6b161a70c3a1359f1b206c1e/common/chat.cpp#L946"
+    },
+    "mmap_virtual_weight_path": {
+      "authority": "SOURCE_AUDITED; bounded resident set/forward NOT_RUN",
+      "lines": [
+        1658
+      ],
+      "path": "src/llama-model-loader.cpp",
+      "primary_source": "https://github.com/ggml-org/llama.cpp/blob/8019dc563b1ecbae6b161a70c3a1359f1b206c1e/src/llama-model-loader.cpp#L1658"
+    },
+    "no_repack_flag": {
+      "authority": "SOURCE_AUDITED",
+      "lines": [
+        2420
+      ],
+      "path": "common/arg.cpp",
+      "primary_source": "https://github.com/ggml-org/llama.cpp/blob/8019dc563b1ecbae6b161a70c3a1359f1b206c1e/common/arg.cpp#L2420"
+    },
+    "prefix_reuse_server": {
+      "authority": "SOURCE_AUDITED; same target reuse NOT_RUN",
+      "lines": [
+        3198
+      ],
+      "path": "tools/server/server-context.cpp",
+      "primary_source": "https://github.com/ggml-org/llama.cpp/blob/8019dc563b1ecbae6b161a70c3a1359f1b206c1e/tools/server/server-context.cpp#L3198"
+    }
+  },
+  "decision": "CONDITIONAL_MMAP_CPU_EXPERT_CANARY_NEXT_EPOCH; NO_PHYSICAL_BACKEND_IN_THIS_ORDER",
+  "dirty": false,
+  "files": {
+    "common/arg.cpp": "216f20ed31c542a422295319225c2e3861bc019168a036c8e75498b12ddc54fb",
+    "common/chat.cpp": "3d28ec8d7d0d96c4b462b69026deaac3d6454327ae87ff09aeec7451c43f73f1",
+    "ggml/src/ggml-cpu/arch/x86/quants.c": "3c489fdc77e3ab484a5f188bff9c60c0e9483c951ed65c1a562a04c249d5628e",
+    "ggml/src/ggml-cpu/ggml-cpu.c": "8a2b58628993b9af52c53978afcd8800ec458274455605b3ecc08432b6344d5e",
+    "ggml/src/ggml-cuda/mmq-config-ampere.cuh": "6de9336a6c2f65c0ad83cbe9303dcd03e8cbb6185d15346133a31421000f6408",
+    "src/llama-model-loader.cpp": "efdb5f273bd1ab77301f2cadea1a5a804bafb28040aca033e45605a97a450242",
+    "src/llama-model.cpp": "15acd497f5ad85fd2754e8023b0ea524fd8961e326f6d3df15244fbd69b1b88b",
+    "src/models/openai-moe.cpp": "dbde7196916f83db11239e3b98292c57c05a34d36825d24f6e3b48e6e8d8bd1f",
+    "tools/server/server-context.cpp": "9661214669507b14f35b53e65f6a0fd0496b0f79fc142ee5bb843bb31f7a6109"
+  },
+  "future_discriminant": {
+    "before_model": [
+      "pin exact source/toolchain/binaries",
+      "original GGUF hash/template/official ID arrays",
+      "calculate persistent nonexpert+KV+workspace+file-page residency separately",
+      "no_mlock; disable repack; explicit CPU experts and fixed memory cap",
+      "prove no transform/quantization/download and validate timing/quality as distinct profile"
+    ],
+    "hypothesis": "mmap-backed CPU experts with GPU attention can remain within cap without copying all expert weights into GPU; useful bounded baseline not assumed faster",
+    "no_go_scope": "no demonstrated bounded CPU/GPU per-expert stream at this pin; not physical impossibility or blanket upstream rejection",
+    "unit_proposal_not_authorized_now": "fresh epoch, bounded load/short forward, explicit cgroup/swap0/PSI/I/O guards; may OOM or be slow; stop on evidence/resource error"
+  },
+  "limits": [
+    "No target build, forward, numeric/functional or performance run",
+    "GPT-OSS expert flags remain0, as audited C116; explicit lazy row loading not established",
+    "mmap is file paging, not anonymous swap; virtual59GiB is not resident59GiB",
+    "A CPU-MoE override changes placement/profile and cannot inherit bitwise P12/quality/latency",
+    "Server fixed-date template/token IDs and API contract need explicit qualification",
+    "8GiB/32GiB support and interactive speed NOT_DEMONSTRATED"
+  ],
+  "schema": "c144-source-capability-v1",
+  "source_commit": "8019dc563b1ecbae6b161a70c3a1359f1b206c1e"
+}

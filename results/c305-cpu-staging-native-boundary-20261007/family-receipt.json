@@ -1,0 +1,39 @@
+{
+  "measurement_commit": "f2615ac2f86f31c8241b0c7a2ce0931c710a1cd1",
+  "start": {
+    "utc": "2026-10-07T00:22:27.119157+00:00",
+    "monotonic_s": 108765.564740957
+  },
+  "end": {
+    "utc": "2026-10-07T00:23:33.343387+00:00",
+    "monotonic_s": 108831.788961357
+  },
+  "argv": [
+    "systemd-run",
+    "--user",
+    "--slice=tesy-post-c154.slice",
+    "--unit=tesy-c305-cpu-stage-boundary",
+    "--collect",
+    "--pipe",
+    "--wait",
+    "--working-directory=/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc",
+    "-p",
+    "MemoryMax=4294967296",
+    "-p",
+    "MemoryHigh=4294967296",
+    "-p",
+    "MemorySwapMax=0",
+    "-p",
+    "RuntimeMaxSec=320",
+    "-p",
+    "TimeoutStopSec=10",
+    "--",
+    "/usr/bin/python",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/tools/residency_unit_run.py",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c305-cpu-staging-native-boundary-20261007",
+    "--inside"
+  ],
+  "returncode": 0,
+  "stdout": "",
+  "stderr": "Running as unit: tesy-c305-cpu-stage-boundary.service\n          Finished with result: success\nMain processes terminated with: code=exited, status=0/SUCCESS\n               Service runtime: 1min 6.104s\n             CPU time consumed: 11.125s\n                   Memory peak: 654.5M (swap: 0B)\n"
+}

@@ -1,0 +1,85 @@
+{
+  "excluded": [
+    "storage_topology mountpoint enumeration",
+    "raw system details"
+  ],
+  "reference_check": {
+    "claim_boundary": "Host identity only. PASS does not qualify current free RAM/VRAM, driver/CUDA, storage mounts, thermal state, process isolation or model/runtime performance.",
+    "classification": "MEASURED_HOST_IDENTITY_CHECK",
+    "failures": [],
+    "profile_id": "linux-hx370-rtx4060laptop-8g-32g",
+    "schema": "tesy.reference_host_check.v1",
+    "status": "PASS",
+    "unknown": []
+  },
+  "schema": "tesy.numerical_characterization_public_doctor.v1",
+  "snapshot": {
+    "cpu": {
+      "logical_cpus": 24,
+      "model": "AMD Ryzen AI 9 HX 370 w/ Radeon 890M"
+    },
+    "disk": {
+      "free_bytes": 551636488192,
+      "path": "/home/pmglo/.local/share/tesy/models/gpt-oss-20b",
+      "total_bytes": 1021431513088,
+      "used_bytes": 448056012800
+    },
+    "gpu": {
+      "command": [
+        "nvidia-smi",
+        "--query-gpu=name,memory.total,memory.free,driver_version,temperature.gpu,pstate,pci.bus_id",
+        "--format=csv,noheader,nounits"
+      ],
+      "gpus": [
+        {
+          "driver_version": "615.71.09",
+          "memory_free_bytes": 8271167488,
+          "memory_total_bytes": 8585740288,
+          "name": "NVIDIA GeForce RTX 4060 Laptop GPU",
+          "pci_bus_id": "00000000:C4:00.0",
+          "pstate": "P8",
+          "temperature_c": 47.0
+        }
+      ],
+      "status": "OK"
+    },
+    "gpu_compute_processes": {
+      "command": [
+        "nvidia-smi",
+        "--query-compute-apps=pid,process_name,used_memory",
+        "--format=csv,noheader,nounits"
+      ],
+      "returncode": 0,
+      "status": "OK",
+      "stderr": "",
+      "stdout": ""
+    },
+    "memory": {
+      "available_bytes": 24690319360,
+      "swap_free_bytes": 16295518208,
+      "swap_total_bytes": 16348868608,
+      "total_bytes": 32698769408
+    },
+    "platform": {
+      "machine": "x86_64",
+      "python": "3.14.7",
+      "release": "7.2.7-200.fc44.x86_64",
+      "system": "Linux"
+    },
+    "virtualization": {
+      "cgroup_hints": [],
+      "kind": "none",
+      "markers": [],
+      "status": "PHYSICAL",
+      "systemd_detect_virt": {
+        "command": [
+          "systemd-detect-virt"
+        ],
+        "returncode": 1,
+        "status": "ERROR",
+        "stderr": "",
+        "stdout": "none"
+      }
+    }
+  }
+}

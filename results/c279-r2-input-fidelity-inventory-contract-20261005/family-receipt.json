@@ -1,0 +1,39 @@
+{
+  "measurement_commit": "b8163582571dc23f2536ba7de764dde1cb6c69c6",
+  "start": {
+    "utc": "2026-10-05T21:06:28.557276+00:00",
+    "monotonic_s": 10607.002856472
+  },
+  "end": {
+    "utc": "2026-10-05T21:11:27.509281+00:00",
+    "monotonic_s": 10905.954857288
+  },
+  "argv": [
+    "systemd-run",
+    "--user",
+    "--slice=tesy-post-c154.slice",
+    "--unit=tesy-c279-r2-causal",
+    "--collect",
+    "--pipe",
+    "--wait",
+    "--working-directory=/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc",
+    "-p",
+    "MemoryMax=21474836480",
+    "-p",
+    "MemoryHigh=21474836480",
+    "-p",
+    "MemorySwapMax=0",
+    "-p",
+    "RuntimeMaxSec=800",
+    "-p",
+    "TimeoutStopSec=10",
+    "--",
+    "/usr/bin/python3",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/tools/residency_unit_run.py",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c279-r2-input-fidelity-inventory-contract-20261005",
+    "--inside"
+  ],
+  "returncode": 0,
+  "stdout": "",
+  "stderr": "Running as unit: tesy-c279-r2-causal.service\n          Finished with result: success\nMain processes terminated with: code=exited, status=0/SUCCESS\n               Service runtime: 4min 58.889s\n             CPU time consumed: 14min 9.429s\n                   Memory peak: 15.4G (swap: 0B)\n"
+}

@@ -1,0 +1,59 @@
+{
+  "budget": {
+    "physical_limit_s": 57600,
+    "program_physical_after_s": 5528.802209855996
+  },
+  "claim_limits": [
+    "no P16/slots24 same-profile numeric reference",
+    "no P12/slots24 interaction control",
+    "no paired timing/quality/session claim",
+    "no per-layer C12 server placement proof"
+  ],
+  "default_changed": false,
+  "descriptive_C11_P12S32_513": {
+    "comparison_limit": "single unpaired diagnostics with placement and slots both changed; no causal/confirmatory speedup",
+    "cpu_max_c": 95.0,
+    "decode_s": 0.883842,
+    "prefill_s": 80.019864
+  },
+  "failures_preserved": [
+    "C9 P8 ub32 513-ID CPU thermal FAIL",
+    "C10b P8 ub64 513-ID CPU thermal FAIL",
+    "C10 no-model start-precondition blocks"
+  ],
+  "gates": {
+    "functional_quality": "NOT_RUN",
+    "init": "CAPACITY_ADMITTED_INIT_ONLY",
+    "minimum_forward": "MINIMUM_FORWARD_ADMITTED_NEW_PROFILE",
+    "model_free": "PASS_70_TESTS_AND_TWO_FLAG_COUPLED_CAPACITY_PROFILE",
+    "paired_timing": "NOT_RUN",
+    "same_profile_numeric_reference": "NOT_RUN",
+    "short513": "SHORT513_RESOURCE_PASS_NUMERIC_NOT_PROMOTED",
+    "sustained": "NOT_RUN",
+    "thermal_margin": "NO_GO_DIAGNOSTIC_ZERO_MARGIN"
+  },
+  "measurement_commit": "e04282874acea860fcb390baa822aa8697891192",
+  "next_action": "scoped model-free/source critical-path bound for wave/parking work, then one diagnostic if bound warrants; preserve original backend as control",
+  "observed": {
+    "backend_decode_s": 1.021933,
+    "backend_prefill_s": 88.076076,
+    "cache_n": 0,
+    "cpu_thermal_margin_c": 0.0,
+    "maxima": {
+      "cgroup_peak_bytes": 8943603712,
+      "cpu_c": 95.0,
+      "gpu_c": 62.0,
+      "gpu_total_mib": 6056.0,
+      "nvme_c": 48.85,
+      "rss_bytes": 9171992576,
+      "swap_bytes": 0
+    },
+    "output_tokens": 4,
+    "prompt_tokens": 513,
+    "scope_elapsed_s": 93.70772396800021
+  },
+  "profile": "P16 ngl16/ub32/slots24/preload ON original backend 8K full-SWA server E18",
+  "reason": "P16/slots24 completed one 513-ID request but still reached CPU95 C with no thermal margin; descriptive prefill 88.076s vs C11 80.020s; four-token decode also slower. New numeric-reference budget not warranted for timing promotion.",
+  "schema": "c12-p16s24-server-decision-v1",
+  "status": "CONTINUE_NEXT_HYPOTHESIS"
+}

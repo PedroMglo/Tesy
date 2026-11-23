@@ -1,0 +1,17 @@
+{
+  "server_command": [
+    "/usr/bin/python3",
+    "-c",
+    "import sys,time;sys.path.insert(0,'tools');import c120_smoke_server as s;old=s.Handler.do_GET\ndef get(self):\n if self.path=='/health':time.sleep(2.2)\n return old(self)\ns.Handler.do_GET=get;s.main()"
+  ],
+  "explicit_env": {
+    "LD_LIBRARY_PATH": "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/backends/c165-mmap-diagnostic/build-diagnostic/bin",
+    "TESY_MMAP_NO_PREFETCH": "1"
+  },
+  "backend_root": "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/backends/c165-mmap-diagnostic",
+  "output_root": "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c182-mmap-retained-prefix-20260930T1601Z/raw",
+  "request_policy": {
+    "max_tokens": 1
+  },
+  "total_timeout_s": 15
+}

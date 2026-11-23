@@ -1,0 +1,11 @@
+{
+  "schema": "c11-placement-limit-v1",
+  "run_id": "c11-g1-init",
+  "measurement_commit": "fd67dad8e1c7052c098e510a215db08b5be97097",
+  "raw_sha256": "83c28f8f86ee190faa0aedbb2003bf435806abcd6ef647c7bbe69aeb21d6bba8",
+  "evidence_class": "source and earlier 4K P12 probe; C11 server runtime map not enumerated",
+  "expected_from_loader_source": "CPU layers 0-24; CUDA layers 25-35 plus output",
+  "observed_c11_server_gpu_total_peak_mib": 5694,
+  "claim": "RESOURCE_INIT_ONLY; per-layer/tensor placement NOT_VERIFIED_C11_SERVER",
+  "next_check": "capture loader placement explicitly before numerical/timing promotion"
+}

@@ -1,0 +1,116 @@
+{
+  "all_33_rows_bitwise_within_each_profile": true,
+  "analysis_sha256": "f32a64f55c0b78dcf003977807d85d9fec61bbddd6c5279770b327312ba9df15",
+  "claim_limit": "synthetic teacher-forced 496+32; n=2 pairs; no server TTFT, quality or sustained claim",
+  "cross_profile_logits_mismatch_descriptive": true,
+  "decision": "Reject P12 general-medium claim under frozen 5% screen; do not run G5 confirmation or P12 specialized long screen in this unit. Continue program with independent native ubatch profile feasibility.",
+  "long_specialized_trigger": {
+    "increase_percentage_points": 1.4178082351559702,
+    "medium_prefill_gain_pct": 5.477734148714035,
+    "required_increase_percentage_points": 2,
+    "satisfied": false,
+    "short_prefill_gain_pct": 4.0599259135580645
+  },
+  "maxima": {
+    "cgroup_peak_bytes": 14759731200,
+    "cpu_tctl_c": 91.25,
+    "gpu_temperature_c": 59.0,
+    "gpu_used_mib": 5682.0,
+    "nvme_composite_c": 58.85,
+    "rss_bytes": 14963085312,
+    "swap_bytes": 0
+  },
+  "measurement_commit": "b30a39db9cdd99ab0da3f0e224726643fc0983b1",
+  "median_of_paired_gains_pct": {
+    "prefill_s": 5.477734148714035,
+    "tpot_aggregate_s": -3.2961278297002705,
+    "work_s": 4.937311542353774
+  },
+  "pairs": [
+    {
+      "gains_pct": {
+        "prefill_s": 5.819777757465021,
+        "tpot_aggregate_s": 0.857944402449972,
+        "work_s": 5.5138688886231115
+      },
+      "order": [
+        "P8",
+        "P12"
+      ],
+      "pair": 1,
+      "times_s": {
+        "P12": {
+          "cold_end_to_end_s": 154.68452299999998,
+          "context_init_s": 0.038287,
+          "model_load_s": 1.876659,
+          "prefill_s": 142.886854,
+          "tpot_aggregate_s": 9.882723,
+          "tpot_mean_s": 0.30883509375,
+          "work_s": 152.769577
+        },
+        "P8": {
+          "cold_end_to_end_s": 163.417152,
+          "context_init_s": 0.042415,
+          "model_load_s": 1.69008,
+          "prefill_s": 151.716412,
+          "tpot_aggregate_s": 9.968245,
+          "tpot_mean_s": 0.31150765625,
+          "work_s": 161.684657
+        }
+      }
+    },
+    {
+      "gains_pct": {
+        "prefill_s": 5.135690539963048,
+        "tpot_aggregate_s": -7.450200061850513,
+        "work_s": 4.360754196084435
+      },
+      "order": [
+        "P12",
+        "P8"
+      ],
+      "pair": 2,
+      "times_s": {
+        "P12": {
+          "cold_end_to_end_s": 156.817053,
+          "context_init_s": 0.037741,
+          "model_load_s": 1.827763,
+          "prefill_s": 144.232677,
+          "tpot_aggregate_s": 10.718872,
+          "tpot_mean_s": 0.33496475,
+          "work_s": 154.951549
+        },
+        "P8": {
+          "cold_end_to_end_s": 163.904192,
+          "context_init_s": 0.056092,
+          "model_load_s": 1.831401,
+          "prefill_s": 152.041034,
+          "tpot_aggregate_s": 9.975665,
+          "tpot_mean_s": 0.31173953125,
+          "work_s": 162.016699
+        }
+      }
+    }
+  ],
+  "raw_refs": {
+    "c7c-g4-pair1-p12": {
+      "logits_sha256": "3b9f3022258472e5d62e9b2fe65106ff4a347aa6123d06ca48f841740a48c8e4",
+      "manifest_sha256": "e0056ad43b3a3fa394efeeee0ae425de51c772a6f26df3a84a263d12397adde4"
+    },
+    "c7c-g4-pair1-p8": {
+      "logits_sha256": "b37439550a40dbe65f07f843eec1c00cdd8a9e8c5470aa91ca46d72e7e13e06d",
+      "manifest_sha256": "6cad33bcdb86e03db97a161be90700a8f90477206c6e3e421317eb944af50649"
+    },
+    "c7c-g4-pair2-p12": {
+      "logits_sha256": "3b9f3022258472e5d62e9b2fe65106ff4a347aa6123d06ca48f841740a48c8e4",
+      "manifest_sha256": "f33cbeb0f576f8a7b1fedeccd676bf0533220fac387ff63f8f3c9ccf060f9102"
+    },
+    "c7c-g4-pair2-p8": {
+      "logits_sha256": "b37439550a40dbe65f07f843eec1c00cdd8a9e8c5470aa91ca46d72e7e13e06d",
+      "manifest_sha256": "ad83f3f8e3960ef2bf6326776df86e83f6ab02d6ebd397fecc3bc84f45633810"
+    }
+  },
+  "runner_sha256": "700e6352fe46e67d2f03a30f73f2c0d24bcea7d8135de99755d07a3703fd1c94",
+  "schema": "c7c-timing496-evidence-v1",
+  "status": "NO_GO_SCREEN496"
+}

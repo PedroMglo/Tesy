@@ -1,0 +1,16 @@
+{
+  "harness_sha256": "5f4a640a1de2c7807d926e9b005cebc09e0e0ed2274ab327c2165bf5c77d5998",
+  "limits": [
+    "model-free only",
+    "server numeric profile and session outputs NOT_RUN at freeze"
+  ],
+  "negative": [
+    "empty first final content raises GateError",
+    "wrong assistant role raises GateError"
+  ],
+  "positive": "actual first assistant content retained exactly in second-turn messages",
+  "schema": "c49-gate-tests-v1",
+  "status": "PASS_MODEL_FREE",
+  "test_sha256": "38898adb7f303371d00dc2a96b09d5d77e16162dc6ce2beb6c4318cd8abb1839",
+  "unittest": "46/46 PASS (including 3 dynamic assistant-history cases)"
+}

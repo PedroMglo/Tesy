@@ -1,0 +1,38 @@
+{
+  "C15": "SOURCE_ONLY_NOT_COMPILED_NOT_MEASURED",
+  "C20_p2": "NOT_RUN",
+  "M3": "PARTIAL_PREFIX_MECHANISM_ONLY",
+  "M4": "NOT_RUN",
+  "closed_utc": "2026-09-27T19:25:32.052391+00:00",
+  "default_changed": false,
+  "next_action": "C21 fresh OFF/ON pairs with a new prospective matched cool-start band; do not reuse C20 OFF for gain",
+  "old_fails_preserved": "C9/C10b/C13/C14/C17 CPU95 receipts unchanged",
+  "paired_gain_pct": null,
+  "pairs_complete": 0,
+  "reason": "ON start did not match the warmer OFF baseline within the frozen 900 s admission; ON model not loaded",
+  "runs": [
+    {
+      "arm": "OFF",
+      "cpu_max_c": 95.125,
+      "first_request_s": 80.26254042499932,
+      "measurement_commit": "dae7261be9b7f66fbfd0485e9ea6e130d6745f05",
+      "raw_sha256": "4b64df9e721dfd7e20866656d3ac19163797a87bf9ed79072b596ba2f4db384a",
+      "run_id": "c20-p1-off",
+      "second_request_s": 93.93066102000012,
+      "start_cpu_c": 45.75,
+      "status": "PASS_ARM"
+    },
+    {
+      "arm": "ON",
+      "baseline_cpu_c": 45.75,
+      "idle_duration_s": 900.067359239998,
+      "measurement_commit": "a9f3f2ea9886ab583a6a23126529c79f1fa2107d",
+      "model_runs": 0,
+      "run_id": "c20-p1-on",
+      "start_cpu_c": 41.625,
+      "status": "THERMAL_PREFLIGHT_BLOCKED"
+    }
+  ],
+  "schema": "c20-decision-v1",
+  "status": "THERMAL_PREFLIGHT_BLOCKED"
+}

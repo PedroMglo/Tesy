@@ -1,0 +1,4 @@
+\section{Pergunta de investigação}
+Que arquitetura de inferência local permite executar um MoE muito maior do que a VRAM --- e progressivamente maior do que a RAM --- sob budgets reais de memória, bandwidth, armazenamento e latência, \emph{sem} substituir o routing exato do modelo nem transformar cache/prediction em autoridade semântica?
+
+No recorte C108--C189, esta pergunta decompõe-se em quatro discriminantes: (1) quanto headroom causal existe em residency adicional; (2) se políticas diferenciadas CPU/GPU justificam a complexidade; (3) se mmap/paging do backend pode competir com o streaming já qualificado; e (4) se o melhor perfil pode ser usado por um caminho operacional real, e não apenas por harnesses de campanha.

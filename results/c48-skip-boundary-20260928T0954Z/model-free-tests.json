@@ -1,0 +1,23 @@
+{
+  "build_flags": {
+    "CMAKE_BUILD_TYPE": "Release",
+    "CMAKE_CUDA_ARCHITECTURES": 89,
+    "CMAKE_CUDA_COMPILER": "/usr/local/cuda/bin/nvcc",
+    "CMAKE_CXX_COMPILER": "/usr/bin/g++-15",
+    "CMAKE_CXX_FLAGS": "TESY_C15_NVTX TESY_C48_CPU_SKIP_PARKED",
+    "CMAKE_C_COMPILER": "/usr/bin/gcc-15",
+    "CMAKE_C_FLAGS": "TESY_C15_NVTX TESY_C48_CPU_SKIP_PARKED",
+    "GGML_CUDA": "ON"
+  },
+  "c47_runtime_failure": "ggml_backend_cpu_buffer_type device NULL assertion; C47 preserved as FAIL",
+  "c48_fix": "host-accessible CPU cache detection via ggml_backend_buffer_is_host",
+  "capture_binary_sha256": "99fa92d4ef1c891d4a5067630a0792b1eafdef3e6c8bcb51dd4ccafe4a21e402",
+  "final_source_commit": "0bc5c75c273abaa34e51d0af932a96969665c3a3",
+  "limit": "F32/F16 model-free operator cases do not qualify MXFP4 full-model or same-pin canonical reference",
+  "operator_binary_sha256": "7e5aae078813366b4c42d4450b2623597bf974aa5237ee0253351db30d1044e1",
+  "operator_result": "C48_OPERATOR_PASS F32 F16 parked/active/control",
+  "operator_source_sha256": "53aeeeffac51605c39ef7d4e561bb631da381a45f18c3d6ef20a116c68a9d1df",
+  "schema": "c48-model-free-tests-v1",
+  "server_help_exit_code": 0,
+  "status": "PASS"
+}

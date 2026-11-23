@@ -1,0 +1,43 @@
+{
+  "alternative": "the C97/C98 one-pair gain was caused by order, page-cache, thermal or run variance",
+  "base_harness_sha256": "2a7a38da648418dbd147f3e270ed5cbc594db326c566bcb1c80d0922146e754c",
+  "default_changed": false,
+  "gain_formula": "100*(control-candidate)/control, positive denominator",
+  "input_sha256": "a19fcef2b1cd07451ccf5b965d7591a2b7580a00f143992ff4f7de231a9d3353",
+  "limitations": [
+    "synthetic two-turn history; not M3 diverse or M4 quality",
+    "two screening pairs do not certify p95 or promote a general speedup",
+    "page cache uncontrolled; O_DIRECT configured for expert I/O"
+  ],
+  "objective": "screen C75 wave server on cold 2043-token prefill and exact-prefix actual-history increment",
+  "order": [
+    "c99-p1-control",
+    "c99-p1-candidate",
+    "c99-p2-candidate",
+    "c99-p2-control"
+  ],
+  "pairs": 2,
+  "primary": "cold request prefill_s",
+  "prior_c98_decision_sha256": "76f57700d2a928041ad6c0b52e7a943b921d367a6500743bb55c43f94f077ebb",
+  "protected": [
+    "cold first_final_content_s",
+    "warm first_final_content_s",
+    "cold decode_s",
+    "warm decode_s"
+  ],
+  "resource_cap_bytes": 19327352832,
+  "runner_sha256": "767f4e847d1c2c8ba4fb03c4c6243e8f86df803dd947b3b0f1d14ef808bfc703",
+  "schema": "c99-screen-policy-v1",
+  "scope_memory_swap_max_bytes": 0,
+  "screen_go": "median paired primary gain >=5%, both pairs positive; protected medians >=-5%; all identity/output/resource gates pass",
+  "start": {
+    "maximum_wait_s": 300,
+    "mode": "CAUSAL_AB_COLD_MATCHED",
+    "on_mismatch": "CLOSE_PAIR_NO_MODEL; new warm-regime identity if justified",
+    "sample_interval_s": 1,
+    "within_pair_cpu_c": 3,
+    "within_pair_gpu_c": 3,
+    "within_pair_nvme_c": 2
+  },
+  "status": "FROZEN_BEFORE_MODEL"
+}

@@ -1,0 +1,2 @@
+\section{Metodologia}
+A referência reconstruiu a camada GGUF canónica e aplicou routing e FFN nativos sobre ativações capturadas. A comparação de slices ativos confirmou bytes consumidos nas camadas extremas; os gates posteriores de lifetime e falhas constam do fecho C3. O preload é o mecanismo causal next-wave do backend já existente, ativado por configuração. Não prediz tokens. Este relatório lê publicações compactas congeladas por commit, tamanho, Git blob e SHA-256; não executa o modelo ou raws. \evidence{E-C3-BROAD} \evidence{E-C3-FINAL}

@@ -1,0 +1,38 @@
+{
+  "cap_bytes": 21474836480,
+  "stop_bytes": 20937965568,
+  "evidence_classes": {
+    "historical": "MEDIDO_NO_TARGET published C273 family cgroup peak, not exclusive per-arm",
+    "static": "SOURCE_AUDITED pools/KV and logged reservations; no new experts cache",
+    "projection": "ESTIMADO; peak anchor plus new row retention plus 2GiB uncertainty; no RSS+file or cross-tier sum"
+  },
+  "host": {
+    "historical_family_peak_bytes": 16225808384,
+    "additional_full_rows_bytes": 26543616,
+    "uncertainty_bytes": 2147483648,
+    "projected_charge_bytes": 18399835648,
+    "preventive_headroom_bytes": 2538129920,
+    "pools_log_MiB": 12606.81,
+    "CUDA_Host_model_MiB": 1401.14,
+    "KV_MiB": 400,
+    "CUDA_Host_compute_MiB": 31.6
+  },
+  "GPU": {
+    "historical_total_peak_MiB": 6972,
+    "admission_total_MiB": 7676,
+    "additional_cache_bytes": 0,
+    "metadata_graph_span_already_in_historical_R2": true,
+    "remaining_MiB": 704,
+    "logged_model_MiB": 945.14,
+    "logged_expert_pool_MiB": 5547,
+    "logged_KV_MiB": 176,
+    "logged_compute_MiB": 119.05
+  },
+  "R2_additional": {
+    "activations": "span153 attention/router; FFN32 tiles; exact allocation logged per new arm",
+    "graph_metadata": "reserved span153 in T/E; no measured exclusive metadata attribution yet",
+    "observer": "33 native full rows retained equally in all arms; files/hashes outside window"
+  },
+  "workspace_mount": "persistent project Btrfs/NVMe; inventory generic /tmp field is not build placement",
+  "disk_reservation_bytes": 32212254720
+}

@@ -1,0 +1,111 @@
+{
+  "decision": "GO_SELECTED_OPERATOR_REUSE",
+  "layers": [
+    {
+      "layer": 0,
+      "pairs": [
+        {
+          "A_arm": 1,
+          "B_arm": 2,
+          "A_service_s": 0.825499532,
+          "B_service_s": 0.550366992,
+          "gain_percent": 33.32921816847256,
+          "A_actual_loads": 117,
+          "B_actual_loads": 79,
+          "logical_load_reduction": 38,
+          "A_logical_bytes": 1546646400,
+          "B_logical_bytes": 1044316800,
+          "A_wait_union_s": 0.66653,
+          "B_wait_union_s": 0.391335
+        },
+        {
+          "A_arm": 4,
+          "B_arm": 3,
+          "A_service_s": 0.912153393,
+          "B_service_s": 0.552578932,
+          "gain_percent": 39.42039395560303,
+          "A_actual_loads": 117,
+          "B_actual_loads": 79,
+          "logical_load_reduction": 38,
+          "A_logical_bytes": 1546646400,
+          "B_logical_bytes": 1044316800,
+          "A_wait_union_s": 0.752613,
+          "B_wait_union_s": 0.395795
+        }
+      ],
+      "median_service_gain_percent": 36.37480606203779,
+      "decision": "GO_SELECTED_LAYER_SHARED_LOAD_SERVICE"
+    },
+    {
+      "layer": 12,
+      "pairs": [
+        {
+          "A_arm": 1,
+          "B_arm": 2,
+          "A_service_s": 0.373273814,
+          "B_service_s": 0.349556576,
+          "gain_percent": 6.353844580161193,
+          "A_actual_loads": 67,
+          "B_actual_loads": 64,
+          "logical_load_reduction": 3,
+          "A_logical_bytes": 885686400,
+          "B_logical_bytes": 846028800,
+          "A_wait_union_s": 0.218796,
+          "B_wait_union_s": 0.189563
+        },
+        {
+          "A_arm": 4,
+          "B_arm": 3,
+          "A_service_s": 0.37637539,
+          "B_service_s": 0.34551082,
+          "gain_percent": 8.200475062941809,
+          "A_actual_loads": 67,
+          "B_actual_loads": 64,
+          "logical_load_reduction": 3,
+          "A_logical_bytes": 885686400,
+          "B_logical_bytes": 846028800,
+          "A_wait_union_s": 0.221481,
+          "B_wait_union_s": 0.192653
+        }
+      ],
+      "median_service_gain_percent": 7.277159821551502,
+      "decision": "GO_SELECTED_LAYER_SHARED_LOAD_SERVICE"
+    },
+    {
+      "layer": 24,
+      "pairs": [
+        {
+          "A_arm": 1,
+          "B_arm": 2,
+          "A_service_s": 0.620592879,
+          "B_service_s": 0.485953409,
+          "gain_percent": 21.695297280393067,
+          "A_actual_loads": 88,
+          "B_actual_loads": 68,
+          "logical_load_reduction": 20,
+          "A_logical_bytes": 1163289600,
+          "B_logical_bytes": 898905600,
+          "A_wait_union_s": 0.468879,
+          "B_wait_union_s": 0.333081
+        },
+        {
+          "A_arm": 4,
+          "B_arm": 3,
+          "A_service_s": 0.621117928,
+          "B_service_s": 0.485511516,
+          "gain_percent": 21.83263529949179,
+          "A_actual_loads": 88,
+          "B_actual_loads": 68,
+          "logical_load_reduction": 20,
+          "A_logical_bytes": 1163289600,
+          "B_logical_bytes": 898905600,
+          "A_wait_union_s": 0.465759,
+          "B_wait_union_s": 0.328891
+        }
+      ],
+      "median_service_gain_percent": 21.76396628994243,
+      "decision": "GO_SELECTED_LAYER_SHARED_LOAD_SERVICE"
+    }
+  ],
+  "scope": "Three disjoint captured CPU tiles; direct native load+compute+scatter+coordination. No full153/server timing, physical NVMe traffic or M4 claim. Later integration requires a workload-specific opportunity projection."
+}

@@ -1,0 +1,172 @@
+{
+  "status": "NO_GO_LOGICAL_ROUTE_POLICY_COST",
+  "rows": [
+    {
+      "id": "c286-1-old",
+      "policy": "OLD",
+      "case": "nominal153",
+      "metrics": {
+        "prefix_s": 64.84494262,
+        "prefill153_s": 8.155051385,
+        "decode32_s": 9.601731124,
+        "total_s": 17.756782509
+      },
+      "full_logits_sha256": "8faae7d68a6f9c89d724523c5525afb19c3eeb291456359e5fa2bbde215681c8"
+    },
+    {
+      "id": "c286-2-logical",
+      "policy": "LOGICAL",
+      "case": "nominal153",
+      "metrics": {
+        "prefix_s": 63.726001908,
+        "prefill153_s": 7.495049892,
+        "decode32_s": 11.728252847,
+        "total_s": 19.223302739
+      },
+      "full_logits_sha256": "8faae7d68a6f9c89d724523c5525afb19c3eeb291456359e5fa2bbde215681c8"
+    },
+    {
+      "id": "c286-3-logical",
+      "policy": "LOGICAL",
+      "case": "nominal153",
+      "metrics": {
+        "prefix_s": 63.413671507,
+        "prefill153_s": 7.449588385,
+        "decode32_s": 10.607358034,
+        "total_s": 18.056946419
+      },
+      "full_logits_sha256": "8faae7d68a6f9c89d724523c5525afb19c3eeb291456359e5fa2bbde215681c8"
+    },
+    {
+      "id": "c286-4-old",
+      "policy": "OLD",
+      "case": "nominal153",
+      "metrics": {
+        "prefix_s": 64.162529494,
+        "prefill153_s": 7.997849828,
+        "decode32_s": 9.466615046,
+        "total_s": 17.464464874
+      },
+      "full_logits_sha256": "8faae7d68a6f9c89d724523c5525afb19c3eeb291456359e5fa2bbde215681c8"
+    },
+    {
+      "id": "c286-5-old",
+      "policy": "OLD",
+      "case": "code153",
+      "metrics": {
+        "prefix_s": 59.616908753,
+        "prefill153_s": 12.311658337,
+        "decode32_s": 11.016670161,
+        "total_s": 23.328328498
+      },
+      "full_logits_sha256": "c71b8b0d47baa1e664e75675aaf24b5d7029369d875bc9589cc269092a025be7"
+    },
+    {
+      "id": "c286-6-logical",
+      "policy": "LOGICAL",
+      "case": "code153",
+      "metrics": {
+        "prefix_s": 58.450786994,
+        "prefill153_s": 11.893596178,
+        "decode32_s": 11.017539107,
+        "total_s": 22.911135285
+      },
+      "full_logits_sha256": "c71b8b0d47baa1e664e75675aaf24b5d7029369d875bc9589cc269092a025be7"
+    },
+    {
+      "id": "c286-7-logical",
+      "policy": "LOGICAL",
+      "case": "code153",
+      "metrics": {
+        "prefix_s": 58.197589156,
+        "prefill153_s": 11.845168641,
+        "decode32_s": 11.005792559,
+        "total_s": 22.8509612
+      },
+      "full_logits_sha256": "c71b8b0d47baa1e664e75675aaf24b5d7029369d875bc9589cc269092a025be7"
+    },
+    {
+      "id": "c286-8-old",
+      "policy": "OLD",
+      "case": "code153",
+      "metrics": {
+        "prefix_s": 58.907044345,
+        "prefill153_s": 12.212657825,
+        "decode32_s": 10.933085084,
+        "total_s": 23.145742909
+      },
+      "full_logits_sha256": "c71b8b0d47baa1e664e75675aaf24b5d7029369d875bc9589cc269092a025be7"
+    }
+  ],
+  "cases": {
+    "nominal153": {
+      "pairs": [
+        {
+          "arms": [
+            "c286-1-old",
+            "c286-2-logical"
+          ],
+          "gain_percent": {
+            "prefix_s": 1.7255635779603333,
+            "prefill153_s": 8.093161671721338,
+            "decode32_s": -22.14727423146284,
+            "total_s": -8.258929956802122
+          }
+        },
+        {
+          "arms": [
+            "c286-4-old",
+            "c286-3-logical"
+          ],
+          "gain_percent": {
+            "prefix_s": 1.1671266592911187,
+            "prefill153_s": 6.8551104958306235,
+            "decode32_s": -12.050167694122177,
+            "total_s": -3.3924975616175197
+          }
+        }
+      ],
+      "median_paired_gain_percent": {
+        "prefix_s": 1.4463451186257261,
+        "prefill153_s": 7.474136083775981,
+        "decode32_s": -17.09872096279251,
+        "total_s": -5.825713759209821
+      }
+    },
+    "code153": {
+      "pairs": [
+        {
+          "arms": [
+            "c286-5-old",
+            "c286-6-logical"
+          ],
+          "gain_percent": {
+            "prefix_s": 1.9560252005540602,
+            "prefill153_s": 3.3956608245341493,
+            "decode32_s": -0.007887555743250061,
+            "total_s": 1.7883545022772118
+          }
+        },
+        {
+          "arms": [
+            "c286-8-old",
+            "c286-7-logical"
+          ],
+          "gain_percent": {
+            "prefix_s": 1.2043639209683443,
+            "prefill153_s": 3.0090844209827035,
+            "decode32_s": -0.6650224931149876,
+            "total_s": 1.273589316873366
+          }
+        }
+      ],
+      "median_paired_gain_percent": {
+        "prefix_s": 1.5801945607612022,
+        "prefill153_s": 3.2023726227584266,
+        "decode32_s": -0.33645502442911884,
+        "total_s": 1.530971909575289
+      }
+    }
+  },
+  "scope": "E same numerical profile/own-policy prefix; supplied153+32; contemporary R0 promotion NOT_RUN"
+}

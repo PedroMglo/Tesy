@@ -1,0 +1,7 @@
+# C236 — EAGLE-3 feature index source resolution
+
+SOURCE_AUDITED, no head execution or weights downloaded. NVIDIA Model-Optimizer0.35.0 resolves to commit c359cb774db4daab623cddde6c7e0399a49cf7d2. Both its HF and Megatron hooks collect the decoder-layer output, using zero-based indices. The pinned head selects outputs1/17/32. C75 openai-moe.cpp records the residual entering each layer before that layer normalization; the preceding layer output becomes the next layer input. Thus inputs2/18/33 correspond to the specified outputs. No final model normalization is inserted at these internal boundaries. Converter layer selection needs no guessed offset patch for this36-layer configuration.
+
+Primary [HF hooks](https://github.com/NVIDIA/Model-Optimizer/blob/c359cb774db4daab623cddde6c7e0399a49cf7d2/modelopt/torch/speculative/plugins/transformers.py) and [Megatron hooks](https://github.com/NVIDIA/Model-Optimizer/blob/c359cb774db4daab623cddde6c7e0399a49cf7d2/modelopt/torch/speculative/plugins/megatron_eagle.py); local exact source hashes and files in C236/modelopt-feature-contract.json. This replaces the earlier index-offset inference with a source argument. It does not show that feature extraction is numerically neutral, that conversion preserves values or that the head is performant. Those remain conditional physical gates after A1.
+
+No experimental model output was requested. LOCAL_ONLY.

@@ -1,0 +1,104 @@
+
+
+def audit_blocker(data):
+    a_bytes=data[BLOCKER+'/token-0-stock-logits.f32']
+    b_bytes=data[BLOCKER+'/token-0-candidate-logits.f32']
+    require([sha(a_bytes),sha(b_bytes)] == LOGIT_SHAS, 'logit vector digest')
+    require(len(a_bytes)==len(b_bytes)==201088*4, 'logit size')
+    a=np.frombuffer(a_bytes,dtype='<f4').astype(np.float64)
+    b=np.frombuffer(b_bytes,dtype='<f4').astype(np.float64)
+    require(bool(np.isfinite(a).all() and np.isfinite(b).all()), 'nonfinite logits')
+    delta=b-a; err=np.abs(delta); maxref=float(np.abs(a).max());maxerr=float(err.max())
+    rel=maxerr/maxref;cos=float(np.dot(a,b)/(np.linalg.norm(a)*np.linalg.norm(b)))
+    ta=np.argsort(a)[-10:][::-1];tb=np.argsort(b)[-10:][::-1]
+    margin=float(a[ta[0]]-a[ta[1]])
+    doctor=load(data[BLOCKER+'/doctor-public.json']);host=inspect_doctor(doctor)
+    prov=inspect_provenance(load(data[BLOCKER+'/runtime-provenance.json']),load(data[BLOCKER+'/argv.json']))
+    build=load(data[BLOCKER+'/build-provenance.json'])
+    require(build['status']=='PASS','blocker build status')
+    require(build['tool_sha256']==prov['executable_sha256'],'blocker build/runtime tool')
+    require(build['libggml_cuda_sha256']==prov['cuda_sha256'],'blocker build/runtime CUDA')
+    require(build['llama_base_head']=='4e416ee7308dd6b581796f1a6241276cd5982691','blocker base pin')
+    require(build['model_sha256']==MODEL_SHA and build['model_size_bytes']==12109564352,'blocker model')
+    rows=[load(line) for line in data[BLOCKER+'/resources.jsonl'].splitlines() if line.strip()]
+    resources=inspect_resources(rows,host['gpu']['memory_total_bytes'])
+    log=data[BLOCKER+'/tool.stderr.txt'].decode()
+    source_lines=[line for line in log.splitlines() if line.startswith('vertical')]
+    require('vertical candidate full logits parity failed' in log,'blocker failure log')
+    fail=load(data[BLOCKER+'/failure.json'])
+    require(fail['stage']=='native' and fail['exit_code']==2,'blocker failure status')
+    # Compare with historical printed values only at their printed precision.
+    close(rel,0.00855978666,'historical rel',abs_tol=5e-12)
+    close(cos,0.999976613624,'historical cos',abs_tol=5e-13)
+    return {
+        'audit_status':'PASS_RECOMPUTED_FROZEN_CRITERION_FAILURE',
+        'candidate_correctness_status':'FAIL_FROZEN_NUMERICAL_PARITY',
+        'root':BLOCKER,'measurement_commit':build['tesy_head'],'measurement_tree':build['tesy_tree'],
+        'stock_vector_sha256':sha(a_bytes),'candidate_vector_sha256':sha(b_bytes),
+        'count':len(a),'bytes_per_vector':len(a_bytes),'dtype':'IEEE-754 little-endian F32; metrics recomputed in float64',
+        'all_finite':True,'bitwise_equal':a_bytes==b_bytes,
+        'max_absolute_error':maxerr,'max_absolute_reference':maxref,
+        'relative_max':rel,'cosine':cos,'relative_max_limit':.005,'cosine_min':.9999,
+        'relative_max_gate_pass':bool(rel<=.005),'cosine_gate_pass':bool(cos>=.9999),
+        'absolute_error_budget_for_frozen_relative_gate':.005*maxref,
+        'relative_max_to_frozen_limit_ratio':rel/.005,
+        'max_error_index':int(err.argmax()),
+        'max_error_stock_logit':float(a[err.argmax()]),'max_error_candidate_logit':float(b[err.argmax()]),
+        'unequal_coordinates':int(np.count_nonzero(delta)),
+        'coordinates_exceeding_global_absolute_budget':int(np.count_nonzero(err>.005*maxref)),
+        'argmax_stock':int(ta[0]),'argmax_candidate':int(tb[0]),
+        'stock_top1_top2_margin':margin,'candidate_top1_top2_margin':float(b[tb[0]]-b[tb[1]]),
+        'twice_max_abs_error':2*maxerr,'argmax_preserved_by_margin_bound':bool(margin>2*maxerr),
+        'top10_stock':[{'id':int(i),'stock':float(a[i]),'candidate':float(b[i]),'delta':float(delta[i])} for i in ta],
+        'diagnostic_only':{'mean_delta':float(delta.mean()),'rmse':float(np.sqrt(np.mean(delta*delta))),
+                           'l2_relative_error':float(np.linalg.norm(delta)/np.linalg.norm(a)),
+                           'abs_error_q50_q95_q99':[float(v) for v in np.quantile(err,[.5,.95,.99])]},
+        'resources':resources,'provenance':prov,'host':host,
+        'original_failure_record':fail,'relevant_log_lines':source_lines,
+        'scope_limits':[
+            'No FFN/activation/per-expert/downstream-route raw vectors included; their values are log records only.',
+            'These two final-logit vectors prove criterion failure, not the cause of the perturbation.',
+            'GPU-resident weight readback is not established by the host-source/GGUF comparison in the log.',
+            'Argmax at this checkpoint is known; the complete candidate continuation was stopped and not measured.',
+        ]}
+
+
+def audit_capacity(data):
+    p=load(data[CAPACITY])
+    require(p['installed_model']['encoded_artifact_bytes']==12109564352,'capacity artifact')
+    for scenario in p['nvme_transfer_floors_parameterized_not_tok_s']:
+        for bandwidth, seconds in scenario['floor_seconds_by_sustained_bandwidth'].items():
+            bps=int(bandwidth.split('_')[0])*1_000_000_000
+            close(seconds,scenario['required_bytes']/bps,'capacity transfer arithmetic')
+    return {'status':'PARAMETERIZED_ARITHMETIC_PASS_NOT_HARDWARE_MEASUREMENT',
+            'scenario_count':len(p['nvme_transfer_floors_parameterized_not_tok_s']),
+            'loader_over_ram_validated':p['loader']['validated_over_ram_support'],
+            'full_physical_weight_materialization':p['loader']['full_physical_weight_materialization'],
+            'missing_source_evidence':['C1 RSS measurement and one-layer GPU buffer measurement referenced by capacity report not separately supplied in this bundle.',
+                                       'Larger-model artifacts, revision locks, metadata/source documents and sustained NVMe measurements not supplied.'],
+            'report':p}
+
+
+def main():
+    parser=argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('bundle',type=Path)
+    parser.add_argument('output',type=Path)
+    args=parser.parse_args()
+    require(not args.output.exists(),'refusing to replace output')
+    data,integrity=load_archive(args.bundle)
+    result={'schema':'tesy.external_raw_evidence_audit.v1',
+            'classification':'INDEPENDENT_RECOMPUTATION_OF_PUBLISHED_BYTES_NOT_PHYSICAL_RERUN',
+            'scope_status':'PARTIAL_EXTERNAL_AUDIT_COMPLETED',
+            'integrity':integrity,'stock':audit_stock(data),'blocker':audit_blocker(data),
+            'capacity':audit_capacity(data),
+            'repository_modified':False,'model_executed':False,'source_auditor_executed':False,
+            'note':'No application of new acceptance thresholds or change to prior failed campaign. Each scope has separate limitations.'}
+    args.output.parent.mkdir(parents=True,exist_ok=True)
+    with args.output.open('x',encoding='utf-8') as f:json.dump(result,f,indent=2,ensure_ascii=False,allow_nan=False);f.write('\n')
+    print(json.dumps({'integrity':integrity,'stock_status':result['stock']['status'],
+                      'blocker_status':result['blocker']['candidate_correctness_status'],
+                      'relative_max':result['blocker']['relative_max'],
+                      'stock_resource_samples':result['stock']['resources'],
+                      'output':str(args.output)},indent=2,ensure_ascii=False))
+
+if __name__=='__main__':main()

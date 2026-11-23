@@ -1,0 +1,15 @@
+{
+  "schema": "c25-token-diagnostic-protocol-v1",
+  "status": "FROZEN_BEFORE_MODEL_OUTPUT",
+  "objective": "record official tokenizer IDs for the exact C24 synthetic 2048+128 text pair before its frozen relation gate",
+  "parent_c24_status": "FAIL_RESOURCES_OR_EVIDENCE",
+  "model_outputs_permitted": false,
+  "same_model_backend_and_effective_server_profile_as_c24": true,
+  "fresh_run_id": "c25-token-diagnostic",
+  "root": "results/c25-token-diagnostic-20260927T2152Z",
+  "expected_stop_reason": "RUN_ERROR:GateError:frozen incremental token count/common prefix invalid",
+  "pass_condition": "two official finite integer ID lists with SHA provenance, expected pre-request stop and no generation",
+  "thermal_admission": "300 continuous seconds, CPU/GPU/NVMe start <=50/50/45 C, CPU100/other guards unchanged",
+  "source_of_actual_counts": "raw/c25-token-diagnostic.tokenization.json",
+  "default_changed": false
+}

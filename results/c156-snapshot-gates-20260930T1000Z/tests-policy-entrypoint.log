@@ -1,0 +1,97 @@
+test_endpoint_reclaim_and_oom (test_c147_file_paging.FilePaging.test_endpoint_reclaim_and_oom) ... ok
+test_full_monitor_entrypoint_blocks_bad_scope_cap_high_before_popen (test_c147_file_paging.FilePaging.test_full_monitor_entrypoint_blocks_bad_scope_cap_high_before_popen) ... usage: run_bounded [-h] --run-id RUN_ID --model-id MODEL_ID
+                   --backend {stock,streaming,streaming-reference,streaming-reference-c2,streaming-c6-attn-compat}
+                   [--backend-root BACKEND_ROOT] [--output-root OUTPUT_ROOT]
+                   --variant VARIANT --workload WORKLOAD
+                   --cache-condition CACHE_CONDITION [--timeout-s TIMEOUT_S]
+                   [--max-rss-gib MAX_RSS_GIB]
+                   [--max-cgroup-gib MAX_CGROUP_GIB]
+                   [--min-available-gib MIN_AVAILABLE_GIB]
+                   [--max-gpu-mib MAX_GPU_MIB] [--max-cpu-c MAX_CPU_C]
+                   [--max-gpu-c MAX_GPU_C] [--max-nvme-c MAX_NVME_C]
+                   [--require-telemetry]
+                   [--resource-protocol RESOURCE_PROTOCOL]
+                   [--collect-start-inventory] [--allow-cgroup-max-reclaim]
+                   [--env ENV] [--stdin-file STDIN_FILE]
+                   [--ready-marker READY_MARKER]
+                   ...
+run_bounded: error: prospective cgroup cap/swap differs from single authority
+usage: run_bounded [-h] --run-id RUN_ID --model-id MODEL_ID
+                   --backend {stock,streaming,streaming-reference,streaming-reference-c2,streaming-c6-attn-compat}
+                   [--backend-root BACKEND_ROOT] [--output-root OUTPUT_ROOT]
+                   --variant VARIANT --workload WORKLOAD
+                   --cache-condition CACHE_CONDITION [--timeout-s TIMEOUT_S]
+                   [--max-rss-gib MAX_RSS_GIB]
+                   [--max-cgroup-gib MAX_CGROUP_GIB]
+                   [--min-available-gib MIN_AVAILABLE_GIB]
+                   [--max-gpu-mib MAX_GPU_MIB] [--max-cpu-c MAX_CPU_C]
+                   [--max-gpu-c MAX_GPU_C] [--max-nvme-c MAX_NVME_C]
+                   [--require-telemetry]
+                   [--resource-protocol RESOURCE_PROTOCOL]
+                   [--collect-start-inventory] [--allow-cgroup-max-reclaim]
+                   [--env ENV] [--stdin-file STDIN_FILE]
+                   [--ready-marker READY_MARKER]
+                   ...
+run_bounded: error: FILE_PAGING memory.high differs from single authority
+usage: run_bounded [-h] --run-id RUN_ID --model-id MODEL_ID
+                   --backend {stock,streaming,streaming-reference,streaming-reference-c2,streaming-c6-attn-compat}
+                   [--backend-root BACKEND_ROOT] [--output-root OUTPUT_ROOT]
+                   --variant VARIANT --workload WORKLOAD
+                   --cache-condition CACHE_CONDITION [--timeout-s TIMEOUT_S]
+                   [--max-rss-gib MAX_RSS_GIB]
+                   [--max-cgroup-gib MAX_CGROUP_GIB]
+                   [--min-available-gib MIN_AVAILABLE_GIB]
+                   [--max-gpu-mib MAX_GPU_MIB] [--max-cpu-c MAX_CPU_C]
+                   [--max-gpu-c MAX_GPU_C] [--max-nvme-c MAX_NVME_C]
+                   [--require-telemetry]
+                   [--resource-protocol RESOURCE_PROTOCOL]
+                   [--collect-start-inventory] [--allow-cgroup-max-reclaim]
+                   [--env ENV] [--stdin-file STDIN_FILE]
+                   [--ready-marker READY_MARKER]
+                   ...
+run_bounded: error: prospective cgroup cap/swap differs from single authority
+usage: run_bounded [-h] --run-id RUN_ID --model-id MODEL_ID
+                   --backend {stock,streaming,streaming-reference,streaming-reference-c2,streaming-c6-attn-compat}
+                   [--backend-root BACKEND_ROOT] [--output-root OUTPUT_ROOT]
+                   --variant VARIANT --workload WORKLOAD
+                   --cache-condition CACHE_CONDITION [--timeout-s TIMEOUT_S]
+                   [--max-rss-gib MAX_RSS_GIB]
+                   [--max-cgroup-gib MAX_CGROUP_GIB]
+                   [--min-available-gib MIN_AVAILABLE_GIB]
+                   [--max-gpu-mib MAX_GPU_MIB] [--max-cpu-c MAX_CPU_C]
+                   [--max-gpu-c MAX_GPU_C] [--max-nvme-c MAX_NVME_C]
+                   [--require-telemetry]
+                   [--resource-protocol RESOURCE_PROTOCOL]
+                   [--collect-start-inventory] [--allow-cgroup-max-reclaim]
+                   [--env ENV] [--stdin-file STDIN_FILE]
+                   [--ready-marker READY_MARKER]
+                   ...
+run_bounded: error: frozen campaign scope differs at actual entrypoint
+ok
+test_reclaim_and_peak_allowed_oom_swap_pressure_stop (test_c147_file_paging.FilePaging.test_reclaim_and_peak_allowed_oom_swap_pressure_stop) ... ok
+test_single_authority_mutants (test_c147_file_paging.FilePaging.test_single_authority_mutants) ... ok
+test_stop_checks_actual_process_identity (test_c147_file_paging.FilePaging.test_stop_checks_actual_process_identity) ... ok
+test_streaming_semantics_preserved (test_c147_file_paging.FilePaging.test_streaming_semantics_preserved) ... ok
+test_terminal_smaps_race_is_not_monitor_failure (test_c147_file_paging.FilePaging.test_terminal_smaps_race_is_not_monitor_failure) ... ok
+test_invalid_caps_and_snapshots_never_mutate (test_host_resource_policy.ProspectivePolicyTests.test_invalid_caps_and_snapshots_never_mutate) ... ok
+test_memory_cpu_power_nvme_negatives (test_host_resource_policy.ProspectivePolicyTests.test_memory_cpu_power_nvme_negatives) ... ok
+test_multiple_involved_nvme (test_host_resource_policy.ProspectivePolicyTests.test_multiple_involved_nvme) ... ok
+test_nvidia_unavailable_fallback_and_mutants (test_host_resource_policy.ProspectivePolicyTests.test_nvidia_unavailable_fallback_and_mutants) ... ok
+test_policy_capacity_and_secondary_sentinel (test_host_resource_policy.ProspectivePolicyTests.test_policy_capacity_and_secondary_sentinel) ... ok
+test_real_ada_relative_margin_and_target_separate (test_host_resource_policy.ProspectivePolicyTests.test_real_ada_relative_margin_and_target_separate) ... ok
+test_runtime_memory_and_psi_persistence (test_host_resource_policy.ProspectivePolicyTests.test_runtime_memory_and_psi_persistence) ... ok
+test_runtime_warning_and_exact_boundaries (test_host_resource_policy.ProspectivePolicyTests.test_runtime_warning_and_exact_boundaries) ... ok
+test_v2_replaces_legacy_cap_atomically (test_host_resource_policy.ProspectivePolicyTests.test_v2_replaces_legacy_cap_atomically) ... ok
+test_clock_origin_does_not_change_duration (test_c118_start_inventory.TestStartInventory.test_clock_origin_does_not_change_duration) ... ok
+test_complete_and_mutants (test_c118_start_inventory.TestStartInventory.test_complete_and_mutants) ... ok
+test_prospective_receipt_and_adversarial_rows (test_c118_start_inventory.TestStartInventory.test_prospective_receipt_and_adversarial_rows) ... ok
+test_terminal_sampling_delay_and_second_nvme (test_c118_start_inventory.TestStartInventory.test_terminal_sampling_delay_and_second_nvme) ... ok
+test_four_arm_spawns_and_negative_gates (test_c120_prelaunch_entrypoint.TestPrelaunchEntrypoint.test_four_arm_spawns_and_negative_gates) ... ok
+test_child_launch_monitor_receipt_and_negative_controls (test_c55_runner_entrypoint.ProspectiveRunnerEntryPoint.test_child_launch_monitor_receipt_and_negative_controls) ... {"id": "mock-1", "elapsed_s": 2.200124800001504, "usage": {"prompt_tokens": 1, "completion_tokens": 1}}
+{"run_id": "c55-entry", "completed": 1, "elapsed_s": 2.210861247993307, "stop_reasons": [], "normalized": false}
+ok
+
+----------------------------------------------------------------------
+Ran 22 tests in 2.372s
+
+OK

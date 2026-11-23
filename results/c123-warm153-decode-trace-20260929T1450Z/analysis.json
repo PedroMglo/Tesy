@@ -1,0 +1,247 @@
+{
+  "cache_fixed_stream_completed_lru": {
+    "global": {
+      "1": {
+        "decode_hit_fraction": 0.005301524188204109,
+        "hits": {
+          "decode": 8,
+          "prefill": 1
+        },
+        "load_counts": {
+          "decode": 1509,
+          "prefill": 1497
+        },
+        "logical_bytes_avoided": {
+          "decode": 105753600,
+          "prefill": 13219200
+        },
+        "policy": "timestamp ordered, completed load insertion; fixed observed primary miss stream; zero insertion cost"
+      },
+      "2": {
+        "decode_hit_fraction": 0.013253810470510271,
+        "hits": {
+          "decode": 20,
+          "prefill": 8
+        },
+        "load_counts": {
+          "decode": 1509,
+          "prefill": 1497
+        },
+        "logical_bytes_avoided": {
+          "decode": 264384000,
+          "prefill": 105753600
+        },
+        "policy": "timestamp ordered, completed load insertion; fixed observed primary miss stream; zero insertion cost"
+      },
+      "3": {
+        "decode_hit_fraction": 0.04108681245858184,
+        "hits": {
+          "decode": 62,
+          "prefill": 24
+        },
+        "load_counts": {
+          "decode": 1509,
+          "prefill": 1497
+        },
+        "logical_bytes_avoided": {
+          "decode": 819590400,
+          "prefill": 317260800
+        },
+        "policy": "timestamp ordered, completed load insertion; fixed observed primary miss stream; zero insertion cost"
+      }
+    },
+    "gpu_only": {
+      "1": {
+        "decode_hit_fraction": 0.046948356807511735,
+        "hits": {
+          "decode": 20,
+          "prefill": 3
+        },
+        "load_counts": {
+          "decode": 426,
+          "prefill": 512
+        },
+        "logical_bytes_avoided": {
+          "decode": 264384000,
+          "prefill": 39657600
+        },
+        "policy": "timestamp ordered, completed load insertion; fixed observed primary miss stream; zero insertion cost"
+      },
+      "2": {
+        "decode_hit_fraction": 0.08450704225352113,
+        "hits": {
+          "decode": 36,
+          "prefill": 35
+        },
+        "load_counts": {
+          "decode": 426,
+          "prefill": 512
+        },
+        "logical_bytes_avoided": {
+          "decode": 475891200,
+          "prefill": 462672000
+        },
+        "policy": "timestamp ordered, completed load insertion; fixed observed primary miss stream; zero insertion cost"
+      },
+      "3": {
+        "decode_hit_fraction": 0.15023474178403756,
+        "hits": {
+          "decode": 64,
+          "prefill": 65
+        },
+        "load_counts": {
+          "decode": 426,
+          "prefill": 512
+        },
+        "logical_bytes_avoided": {
+          "decode": 846028800,
+          "prefill": 859248000
+        },
+        "policy": "timestamp ordered, completed load insertion; fixed observed primary miss stream; zero insertion cost"
+      }
+    }
+  },
+  "conditional_bounds": {
+    "decode_saving_required_s": 5.359714666666668,
+    "decode_target_6tok_s": 7.833333333333333,
+    "fraction_of_wait_required_if_rest_fixed": 0.5034536000226442,
+    "observed_wait_union_s": 10.645896
+  },
+  "evidence": "MEDIDO_NO_TARGET",
+  "layer_devices": {
+    "CPU": 25,
+    "CUDA0": 11
+  },
+  "limitations": [
+    "Read bytes are logical expert slab bytes, not physical NVMe controller bytes.",
+    "WAIT is observed readiness blocking, not automatically removable time.",
+    "READ intervals overlap; sum is worker time, union is elapsed coverage.",
+    "Cache simulation fixes the primary miss stream and assumes free insertion; it is not a time prediction.",
+    "Trace-on timing has no same-binary neutral A/B yet."
+  ],
+  "request": "c112-repeat",
+  "schema": "c123-analysis-v1",
+  "server": {
+    "warm_decode_s": 13.193048000000001,
+    "warm_decode_tok_s": 3.562482301284737,
+    "warm_first_final_s": 25.187658472015755,
+    "warm_prefill_s": 12.398667
+  },
+  "server_raw_sha256": "d9d2669019afecbad5349c3cf33913ecb85ba43391ae0ee4a94125bdace5501e",
+  "tokens": {
+    "cached_prompt": 2044,
+    "new_prompt": 153,
+    "output": 47,
+    "traced_decode_evaluations": 46
+  },
+  "trace": {
+    "call_duration_s": {
+      "decode": 13.0464,
+      "prefill": 12.395272
+    },
+    "calls": 48,
+    "events": 72098,
+    "loads": 3006,
+    "spans": {
+      "decode": {
+        "LOAD": {
+          "count": 1509,
+          "sum_s": 17.473253,
+          "union_s": 10.580841
+        },
+        "MUTEX_WAIT": {
+          "count": 1656,
+          "sum_s": 0.000953,
+          "union_s": 0.000953
+        },
+        "QUEUE": {
+          "count": 1509,
+          "sum_s": 0.04746,
+          "union_s": 0.036778
+        },
+        "READ": {
+          "count": 4527,
+          "sum_s": 16.375826,
+          "union_s": 10.013239
+        },
+        "TENSOR_SET": {
+          "count": 4527,
+          "sum_s": 1.094748,
+          "union_s": 1.059806
+        },
+        "WAIT": {
+          "count": 1012,
+          "sum_s": 10.645896,
+          "union_s": 10.645896
+        },
+        "WAIT_CPU": {
+          "count": 712,
+          "sum_s": 7.521017,
+          "union_s": 7.521017
+        },
+        "WAIT_CUDA0": {
+          "count": 300,
+          "sum_s": 3.124879,
+          "union_s": 3.124879
+        },
+        "demand_states": {
+          "0": 1509,
+          "2": 5115
+        },
+        "load_bytes": 19947772800,
+        "logical_read_bytes": 19947772800
+      },
+      "enqueue_without_dequeue_events": 640,
+      "prefill": {
+        "LOAD": {
+          "count": 1497,
+          "sum_s": 32.645962,
+          "union_s": 9.248442
+        },
+        "MUTEX_WAIT": {
+          "count": 36,
+          "sum_s": 2e-05,
+          "union_s": 2e-05
+        },
+        "QUEUE": {
+          "count": 1497,
+          "sum_s": 34.782607,
+          "union_s": 6.214767
+        },
+        "READ": {
+          "count": 4491,
+          "sum_s": 31.47685,
+          "union_s": 9.174257
+        },
+        "TENSOR_SET": {
+          "count": 4491,
+          "sum_s": 1.167271,
+          "union_s": 1.132274
+        },
+        "WAIT": {
+          "count": 293,
+          "sum_s": 8.39798,
+          "union_s": 8.39798
+        },
+        "WAIT_CPU": {
+          "count": 187,
+          "sum_s": 5.327657,
+          "union_s": 5.327657
+        },
+        "WAIT_CUDA0": {
+          "count": 106,
+          "sum_s": 3.070323,
+          "union_s": 3.070323
+        },
+        "demand_states": {
+          "0": 694,
+          "1": 640,
+          "2": 2499
+        },
+        "load_bytes": 19789142400,
+        "logical_read_bytes": 19789142400
+      }
+    }
+  },
+  "trace_sha256": "c47d8fcd3056d41fd448c2a45d619153418dad89567bfa5ab4dd2aa5a8b86f3a"
+}

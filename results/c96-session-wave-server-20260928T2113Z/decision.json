@@ -1,0 +1,38 @@
+{
+  "M3": "PARTIAL",
+  "M4": "NOT_MET",
+  "candidate": "NOT_RUN_MODEL",
+  "candidate_prelaunch_attempt_id": "c96-candidate01",
+  "control": "PASS_BRIDGE_TESTED_SCOPE",
+  "control_maxima": {
+    "cgroup_peak_bytes": 13461721088,
+    "cpu_c": 95.125,
+    "gpu_c": 62.0,
+    "gpu_total_mib": 5752.0,
+    "nvme_c": 54.85,
+    "rss_bytes": 13286309888,
+    "swap_bytes": 0
+  },
+  "control_metrics": {
+    "cached_prompt_tokens": 2044,
+    "cold_prefill_s": 276.723966,
+    "decode_toks_per_s": [
+      3.039028306614749,
+      3.0867579626780097
+    ],
+    "first_final_content_s": 301.40040495399444,
+    "warm_first_final_content_s": 28.998316459998023,
+    "warm_prefill_s": 10.017723,
+    "warm_prompt_tokens": 2081
+  },
+  "control_run_id": "c96-control01",
+  "default_changed": false,
+  "historical_failures_unchanged": [
+    "C48",
+    "C78"
+  ],
+  "next_action": "Reproduce and fix receipt/worktree interaction model-free; new campaign identity and fresh paired bridge.",
+  "reason": "candidate launch rejected frozen-clean-worktree check because C96 control receipt was untracked; no candidate server/model process started",
+  "schema": "c96-decision-v1",
+  "status": "FAIL_HARNESS_PRELAUNCH"
+}

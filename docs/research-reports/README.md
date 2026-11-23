@@ -1,0 +1,111 @@
+# Tesy research reports
+
+Sistema documental model-free: uma classe LuaLaTeX, fontes congeladas, seletores explícitos, testes adversariais e publicação local no-replace. Não altera o runtime de inferência, protocolos, thresholds ou resultados originais.
+
+## Documentos e âmbito
+
+| ID | Conteúdo |
+|---|---|
+| `R01-prior-art` | Revisão bibliográfica de prior art e claim boundary, corte em 30 setembro 2026. DRAFT; nova bibliografia integrada, revisão visual do PDF CI pendente. |
+| `S01-120b-research-synthesis` | Síntese de época C108--C189: residency, mmap, referência nativa, integração real e prior art. DRAFT até revisão visual do PDF. |
+| `S02-development-branch-synthesis` | Matriz científica das 32 branches de desenvolvimento em 30 setembro 2026, cobrindo linhas sem relatório próprio e o avanço 120B C190--C198 após o corte de S01. DRAFT até revisão de claims e PDF. |
+| `C06-attn-dispatch-compat` | Campanha 6: compatibilidade de dispatch CPU e divergência seguinte em GPU Flash. REVIEWED. |
+| `C05-first-divergence` | Campanha 5: primeira divergência causalmente localizada em CPU Flash Attention. REVIEWED. |
+| `C04-prefill-cost` | Campanha 4: relógio de prefill, paridade contemporânea e bloqueio de ubatch64. REVIEWED. |
+| `C02-correctness-usability` | Campanha 2 no snapshot `81531d9dc33caddbbf07928106de47cfe2a6d42a`. Mantém `CORRECTNESS_BLOCKED`. |
+| `C03-boundary-prefill` | Edição revista v1.0.0 de C3 em `a0b673965b6e7c5aac69ae464d8275c176f4b14a`; seis fontes congeladas, auditoria e PDF de seis páginas. |
+| `C01-scale-lab` | Auditoria original em `c67529e290844bb3d9033615072d5878014a46bc`. `SUCCESS` apenas no âmbito histórico. |
+| `R00-foundations` | Recorte do ledger datado de 24 setembro, em main `7a7d3dcbd1ff8e594ac57459c3db06306083c3ca`. Não é retrospectiva exaustiva de todas as branches. |
+| `D00-research-dossier` | Síntese R00/C1/C2, com versões e digests dos relatórios filhos congelados. |
+
+As versões v1.0.0 já publicadas de R00/C01/C02/C03/D00 são imutáveis. C04/C05/C06, R01, S01 e S02 usam uma bibliografia por relatório em `sections/bibliography.bib`, precisamente para não alterar o digest das releases históricas ao acrescentar literatura nova.
+
+O dossier D00 é a entrada histórica para R00/C1/C2; os relatórios de campanha contêm contrato, resultados, falhas e limites. O corte de D00 é 26 setembro 2026. **C3 tem edição própria**: consultar C03, [CURRENT-LAB.md](CURRENT-LAB.md) e a publicação autoritativa em `research/C3-FINAL-20260927.md`. D00 não foi retroativamente reescrito. S02 apresenta a fotografia branch-by-branch das 32 refs de desenvolvimento no cutoff de 30 setembro, incluindo o avanço C190--C198 da linha 120B posterior ao corte de S01. Autoria pessoal/universidade/orientação não foram inventadas: `author` é null.
+
+O contrato de cobertura e a divisão de responsabilidades estão em [REPORTING-PROCESS.md](REPORTING-PROCESS.md). A CI deteta campanhas fechadas sem relatório revisto; C2 e C3 passam esse gate na revisão atual. PDFs gerados ficam fora de Git e são distribuídos como artefactos versionados separados.
+
+## Executar
+
+Requer Python 3.11+, o package fixado em `tools/requirements.txt` e, apenas para PDF, LuaLaTeX, latexmk, biber, Latin Modern e os packages da classe. Não há instalação ou download automático. Dependências documentais não pertencem ao package de inferência. `validation/environment.json` regista o ambiente usado.
+
+A partir desta pasta:
+
+```bash
+python -m unittest discover -s tests -v
+python tools/verify_evidence.py C02-correctness-usability
+
+# Só depois de uma alteração intencional e revista:
+python tools/derive_report_data.py C02-correctness-usability
+python tools/build_report.py C02-correctness-usability --mode draft
+
+# Depois de rever os claims e todas as páginas do draft:
+python tools/build_report.py C02-correctness-usability --mode release --check-reproducible
+```
+
+`verify_evidence.py` deteta derivados desatualizados; não os corrige. `derive_report_data.py` é a operação explícita de regeneração. A derivação substitui cada ficheiro atomicamente, mas não promete uma transação de toda a pasta: um conjunto interrompido/misto é recusado pelo verificador.
+
+Release exige `audit.json` com o digest exato dos inputs **e SHA-256 do PDF efetivamente revisto**. Um PDF diferente é recusado, mesmo que os ficheiros de texto coincidam. A revisão desta entrega é revisão de autoria, não peer review externo nem aprovação científica de um orientador. `scientific_endorsement` permanece false.
+
+As releases ficam em `published/<id>/v<versão>/release/`; drafts usam `draft-<digest>`. Uma versão publicada não é substituída: mudar conteúdo exige nova versão. A publicação usa `renameat2(RENAME_NOREPLACE)` em Linux; se indisponível, falha sem fallback sujeito a races. `_build/` conserva diagnósticos locais. Ambas as pastas estão fora de Git.
+
+## Fontes e autoridade
+
+`sources/catalog.json` associa cada fonte interna a commit, path, Git blob SHA, SHA-256 e tamanho. `sources/objects/` contém snapshots byte-exatos de relatórios e pequenos ficheiros JSON selecionados pelos relatórios, incluindo documentos de branch; não contém pesos de modelos nem bundles grandes de tensores/telemetria raw. As cópias não são uma nova fonte autoritativa: tornam o mesmo snapshot verificável offline sem incorporar a história separada do laboratório em main.
+
+A associação commit/path foi adquirida pelo conector GitHub. Tamanho, Git blob SHA e SHA-256 foram verificados sobre os bytes. Esses hashes não provam, sozinhos, a validade de uma experiência. Verificar o resumo JSON também não recalcula os pesos nem todos os manifests que ele menciona.
+
+Num clone completo com os objetos já disponíveis:
+
+```bash
+python tools/verify_evidence.py C02-correctness-usability \
+  --source-mode git --repo /caminho/Tesy --sources-only
+```
+
+O modo Git não faz fetch, não muda branch e não usa HEAD como fallback. Recusa configurações partial/promisor para evitar aquisição implícita. Para derivar e compilar nesse modo, usar a mesma opção nesses comandos: o modo faz parte do lock. O modo default desta entrega é `snapshot`.
+
+Cada família de afirmações declara as suas fontes internas. Literatura externa usa `biblatex`/`biber` e `\\cite{...}`; não entra no evidence index e nunca é usada como prova de uma métrica Tesy.  C2 usa o gate para desempenho, resumo para estado e agregados, fecho para âmbito/falhas, índice para autoridade e relatório D para latência. O índice aponta analysis-v2 para detalhe de eventos; o ficheiro integral e os raws não foram reanalisados neste pacote. C1 usa a auditoria no commit original. R00 é deliberadamente um recorte do ledger.
+
+## Dados e estados
+
+`campaign.json` é metadata editorial. `evidence-spec.json` declara seletores JSON Pointer, âncoras textuais, unidades, operações, crosschecks, classes e limites. `evidence-lock.json` regista a resolução. `generated/` contém valores, macros, CSV e índice gerados; não editar à mão.
+
+Só há operações `sum`, `ratio` e conversões unitárias enumeradas; não há `eval` de expressões dos dados. Duplicados, extras, seletores ausentes, booleans como números, não finitos, ciclos, aliases de fonte/path, symlinks e unidades incompatíveis são recusados. Valores arredondados de Markdown mantêm a precisão publicada; não se inventam raws de maior precisão.
+
+Classe de evidência, estado científico, disponibilidade dos dados e estado editorial são dimensões distintas. Uma campanha FAIL/BLOCKED pode ter um relatório correto. `PASS` documental nunca muda `CORRECTNESS_BLOCKED` para PASS científico. Claims históricos/retirados usam `\historicalclaim`, não `\claim` atual.
+
+## Nova campanha e correções
+
+```bash
+python tools/new_campaign.py CXX-nome-real \
+  --base-commit <SHA-completo-da-base-real> --date YYYY-MM-DD
+```
+
+O nome tem de ser novo. O gerador cria `DRAFT`/`NOT_RUN`, sem métricas inventadas. Registar explicitamente a entrada em `registry.json`; a separação evita uma atualização global parcial silenciosa. Não se assume que C3 ainda não existe. Congelar pergunta/contrato antes da experiência, depois acrescentar apenas fontes adquiridas e verificadas.
+
+A ordem das doze secções é comum: síntese, pergunta, contexto, contrato, metodologia, resultados, falhas, interpretação, limitações, decisão, próximo gate e apêndices. Figuras são opcionais. A edição entregue é pt-PT; `language` muda hifenização e formatos, não traduz automaticamente a narrativa e todos os rótulos.
+
+Uma alteração material exige novo `CHANGELOG`, versão, derivados, lock e audit. Não corrigir o ficheiro histórico para coincidir com o PDF. O dossier também fixa as versões e digests dos filhos; não aponta implicitamente para “o último”.
+
+## Limites e segurança
+
+Quatro garantias são separadas: integridade documental; regeração dos derivados; build/PDF; reprodução experimental. Nesta entrega a última permanece `NOT_RUN`, e raws `NOT_ACCESSED`. Igualdade de PDFs só é afirmada após dois builds limpos no ambiente registado, não para qualquer plataforma.
+
+Specs e LaTeX são código de autoria confiável a rever. `-no-shell-escape`, paths verificados e cópias isoladas **não são uma sandbox contra LuaTeX hostil**. A validação não prova toda a semântica da prosa nem infere a unidade verdadeira de um número. Revisão humana continua necessária.
+
+O workflow documental em `.github/workflows/research-reports.yml` executa os testes model-free, a verificação de todos os relatórios registados e compila previews PDF byte-reprodutíveis. Cada run conserva um artifact `tesy-reports-preview-…` durante 14 dias; é material de revisão, não uma publicação científica. O build TeX fica separado das dependências do runtime.
+
+O registo `registry.json` alimenta a publicação automática. Em cada PR documental, a CI recompila as versões `REVIEWED` e compara cada PDF com o hash da revisão visual em `audit.json`. Os relatórios `DRAFT` estão disponíveis no artefacto de previews. Depois do merge em `main`, o workflow de publicação recompila as versões elegíveis e cria uma GitHub Release por versão, com a tag `reports-<report-id>-v<version>`, o PDF, `release.json`, `evidence-lock.json` e `SHA256SUMS`. [Workflow de publicação](../../.github/workflows/publish-research-report.yml)
+
+Nas releases geradas com o workflow da `main` consolidada, descarregar os quatro ficheiros para uma pasta e correr `sha256sum --strict --check SHA256SUMS` nessa pasta. Uma alteração à identidade de um relatório publicado produz `RELEASE_VERSION_ALREADY_PUBLISHED` e exige nova versão, derivados e auditoria. As [releases](https://github.com/PedroMglo/Tesy/releases) são a referência citável de cada PDF oficial.
+
+Algumas releases anteriores à consolidação indicam `release-assets/<tag>/` nos nomes em `SHA256SUMS`. O exemplo verifica C06 a partir de uma pasta vazia.
+
+```sh
+tag=reports-C06-attn-dispatch-compat-v1.0.0
+gh release download "$tag" --repo PedroMglo/Tesy --dir "release-assets/$tag"
+sha256sum --strict --check "release-assets/$tag/SHA256SUMS"
+```
+
+Os registos em `validation/` e `IMPLEMENTATION.md` descrevem a entrega original. [CURRENT-LAB.md](CURRENT-LAB.md) documenta a fronteira histórica C3. O [mapa de autoridade da main](../../research/consolidacao-20261123/README.md) identifica os fechos experimentais, a validação da integração e a próxima decisão.
+
+Nos estados apoiados por texto, o teste automatizado é lexical: verifica o rótulo na âncora, não interpreta negações ou toda a semântica. Escolher âncoras positivas estreitas e verificar o contexto na revisão; preferir campos JSON explícitos quando disponíveis.

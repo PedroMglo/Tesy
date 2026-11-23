@@ -1,0 +1,43 @@
+{
+  "id": "c300-native-fixture",
+  "start": {
+    "utc": "2026-10-06T23:11:34.704151+00:00",
+    "monotonic_s": 104513.149722513
+  },
+  "end": {
+    "utc": "2026-10-06T23:12:40.568899+00:00",
+    "monotonic_s": 104579.014484442
+  },
+  "argv": [
+    "/usr/bin/python",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/tools/run_bounded.py",
+    "--run-id",
+    "c300-native-fixture",
+    "--model-id",
+    "model-free",
+    "--backend",
+    "stock",
+    "--backend-root",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/backends/c294-service-window",
+    "--output-root",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c300-prediction-heldout-fixture-20261007/raw",
+    "--variant",
+    "nativeCPU8knownweights+actualcallbackaliases",
+    "--workload",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c300-prediction-heldout-fixture-20261007/protocol.json",
+    "--cache-condition",
+    "No targetweights; actualGGMLnativefixture, retainruntime5s forrealmapping, guards unchanged",
+    "--resource-protocol",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c300-prediction-heldout-fixture-20261007/protocol.json",
+    "--require-telemetry",
+    "--timeout-s",
+    "30",
+    "--collect-start-inventory",
+    "--",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c283-exact-expert-service-epoch-20261006T194311Z/build/prediction-heldout/bin/expert-prediction-holdout",
+    "--self-test"
+  ],
+  "returncode": 0,
+  "stdout": "{\"run_id\": \"c300-native-fixture\", \"elapsed_s\": 5.179, \"returncode\": 0, \"stop_reason\": null, \"maxima\": {\"rss_bytes\": 212529152, \"swap_bytes\": 0, \"cgroup_memory_bytes\": 165228544, \"cgroup_peak_bytes\": 186347520, \"cgroup_file_bytes\": 65536, \"gpu_used_mib\": 23.0, \"gpu_temperature_c\": 38.0, \"cpu_tctl_c\": 42.75, \"nvme_composite_c\": 32.85, \"direct_model_fds\": 0, \"buffered_model_fds\": 0}}\n",
+  "stderr": ""
+}

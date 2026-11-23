@@ -1,0 +1,59 @@
+{
+  "alternative": "assistant-history serialization or server cache behavior loses the prefix or answer, despite synthetic user-only retention",
+  "backend_candidate_commit": "c3759bad92c0e6f71bb936afea9b0a162fb83f76",
+  "backend_tree": "b1e1647729c6e81ae8b2a4fa8119c626e674f6a1",
+  "default_changed": false,
+  "effective_profile": "C35 backend P12 ngl12 ub32 slots32 preload ON, full-SWA, F16 KV, n_ctx8192, exact-prefix cache, medium effort, AC performance",
+  "endpoint_metrics": [
+    "first_text_chunk_s",
+    "first_final_content_chunk_s",
+    "request_wall_s",
+    "decode_tok_s"
+  ],
+  "failure_policy": "first output/cache/identity/resource failure stops; preserve raw; no retry",
+  "hypothesis": "fixed template date and compatible options preserve the first 2K token prefix and allow the second answer to reproduce the first five-digit code",
+  "idle_admission": "300 contiguous seconds, start CPU/GPU/NVMe <=55/55/50 C; C49 <=50 CPU blocked without model",
+  "input_sha256": "483cee2a07c42ccc3c32029871b7a06c5bcc0aeb135655b339b2fb831939e12d",
+  "limits": [
+    "one synthetic two-turn session only",
+    "no causal speedup or sustained 20-request assistant-history claim"
+  ],
+  "max_tokens": 256,
+  "model_sha256": "582bd40f6886200101f4c4ed9f25f3fe80cc14c86e9e2b37746cd8904a0c622d",
+  "model_stat": {
+    "ctime_ns": 1790389637807910988,
+    "dev": 53,
+    "inode": 14833675,
+    "mtime_ns": 1790389637795911032,
+    "size_bytes": 63387346208
+  },
+  "objective": "verify exact-prefix retention and final-content continuity using the actual previous assistant reply in one P12 8K server session",
+  "parent_c37_sha256": "6962713eea9d19e9ef6a66f6ac57094b6bc4fe79f0ac4e484f11ce599b952f84",
+  "parent_c48_sha256": "774a7ccf9afafa37bc6b7432e692919a4950ffe6621f265bcc70494b995fdadb",
+  "parent_c49_sha256": "0b136d2631d0da981abcc8fba3c3b24c42913713e2bea0eb302dc7e55f36e9a2",
+  "parent_c50_sha256": "5eeaefa63a10790a5c6ebeabf178c4a1b1546bc7fade18e7ea4609ece820051e",
+  "primary_gate": "two complete finite API responses, first five ASCII digits, second exact same text, official prompt IDs, old input LCP>=1900 and tail<=32, cache_n in [LCP-32,min(current_prompt_len,LCP+previous_completion_tokens)]",
+  "resource_guards": "E18 zero swap, RSS16GiB, cgroup16.5GiB, GPU6500MiB reserve, MemAvailable6GiB, CPU95 warning/100 stop, GPU80/NVMe70",
+  "run_order": [
+    "c51-turn00",
+    "c51-turn01"
+  ],
+  "runner_sha256": "2817188743a28e445e04585bdf9bb9a218faa4e0e41737de904208fa5757aa45",
+  "schema": "c51-assistant-history-protocol-v1",
+  "server_binary_sha256": "2c91e0572ad71e4977e3e9134c9f8339256e6481a3f316f6fef9493a370d4822",
+  "server_cache_source_sha256": "657c331a707f0faf74615d19387088070c3dbd7559328619c9ef606a4ec8cc55",
+  "server_library_sha256": {
+    "build-c35-gcc15/bin/libggml-base.so.0.15.3": "6666b1fa65172a992429c516864dd1fb44a2ae4370ec2d044ed684d0b33d6f9e",
+    "build-c35-gcc15/bin/libggml-cpu.so.0.15.3": "b2ed71c16ad669536840c63a999305a3c6ae0e2ab278e9a891c1d0fab96b8a2b",
+    "build-c35-gcc15/bin/libggml-cuda.so.0.15.3": "4d4ef9068b1057abf9e4a73a872f48703723d30591ebafb962bfb0612df70dcc",
+    "build-c35-gcc15/bin/libggml.so.0.15.3": "45bd5d9edee4c8a3eeec23166478ef7ec495dc55785e3942aa72afddc0125417",
+    "build-c35-gcc15/bin/libllama-common.so.0.0.2": "e64791fe0c072c3710c2f9ed92f1e3d9487f2c34f626086b196f60077bd1d374",
+    "build-c35-gcc15/bin/libllama-server-impl.so": "3cbba6ad27138ef34adf0a2c8e8f5b204ea7c73111e2bef4acc8288cef5f6e05",
+    "build-c35-gcc15/bin/libllama.so.0.0.2": "4ba0477592acb4a8808c259d836aea42f20aeef88ad7c3b4ea41572dae8418c6",
+    "build-c35-gcc15/bin/libmtmd.so.0.0.2": "48efbf1711ec3b170d8651ab1149f9fe7549972d2e420fa40f2ecae39670a253"
+  },
+  "server_runner_sha256": "5f4a640a1de2c7807d926e9b005cebc09e0e0ed2274ab327c2165bf5c77d5998",
+  "status": "FROZEN_BEFORE_MODEL",
+  "timeout_s": 1500,
+  "workload": "first synthetic ~2K official-token prompt; second +127 beta words, actual first assistant content inserted; no hidden truncation"
+}

@@ -1,0 +1,96 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "schema_version": {
+      "const": "tesy-lock-v1"
+    },
+    "adapter": {
+      "type": "string",
+      "minLength": 1
+    },
+    "inputs_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "report_id": {
+      "type": "string",
+      "pattern": "^[A-Za-z][A-Za-z0-9-]{0,79}$"
+    },
+    "source_mode": {
+      "enum": [
+        "snapshot",
+        "git"
+      ]
+    },
+    "sources": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[A-Za-z][A-Za-z0-9-]{0,79}$"
+          },
+          "commit": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{40}$"
+          },
+          "path": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9_.-]+(?:/[A-Za-z0-9_.-]+)*$"
+          },
+          "sha256": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$"
+          },
+          "git_blob_sha1": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{40}$"
+          },
+          "bytes": {
+            "type": "integer"
+          },
+          "status": {
+            "const": "VERIFIED"
+          }
+        },
+        "required": [
+          "id",
+          "commit",
+          "path",
+          "sha256",
+          "git_blob_sha1",
+          "bytes",
+          "status"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "checks_passed": {
+      "type": "integer"
+    },
+    "integrity": {
+      "const": "PASS"
+    },
+    "experimental_reproduction": {
+      "const": "NOT_RUN"
+    },
+    "raw_data_availability": {
+      "const": "NOT_ACCESSED"
+    }
+  },
+  "required": [
+    "schema_version",
+    "adapter",
+    "inputs_sha256",
+    "report_id",
+    "source_mode",
+    "sources",
+    "checks_passed",
+    "integrity",
+    "experimental_reproduction",
+    "raw_data_availability"
+  ],
+  "additionalProperties": false
+}

@@ -1,0 +1,998 @@
+{
+  "epoch": {
+    "epoch_id": "post-c235-blocks-expert-reuse-v1-20261004T105527Z",
+    "start_utc": "2026-10-04T10:49:00+00:00",
+    "start_monotonic_s": 663.4604664840001,
+    "clock_start_authority": "Conservative 10:49 UTC estimate preceding first observed 10:50:11 UTC read; same-boot monotonic reconciliation, no overlap credit",
+    "boot_id": "3ff183a9-3ec0-4569-a05f-d52e32767525",
+    "base": "8c78f598e446b1b09fb3ba518b77e0d7496bfa47",
+    "branch": "campaign/120b-block-verifier-expert-reuse-20261004T105527Z",
+    "deadline_utc": "2026-10-11T10:49:00+00:00",
+    "wall_limit_s": 432000,
+    "physical_limit_s": 57600,
+    "raw_limit_bytes": 12884901888,
+    "derived_limit_bytes": 21474836480,
+    "closure_reserve_s": 14400,
+    "wall_closure_reserve_s": 43200,
+    "wall_accounting_contract": "Completed append-only active sessions plus conservatively elapsed open session; seven-day UTC deadline independent; reboot needs explicit reconciliation",
+    "raw_roots": [
+      "results/c236-post-c235-blocks-expert-reuse-20261004T105527Z/raw"
+    ],
+    "derived_roots": [
+      "backends/c236-block-verifier-c75",
+      "results/c236-post-c235-blocks-expert-reuse-20261004T105527Z/build"
+    ],
+    "historical_credit_transferred": false,
+    "owner_authorization": "Delivered v1.0 post-C235 block verifier and expert reuse order; one epoch for duplicate delivery; isolated builds, conditional A/B physics, local commits only",
+    "head_weights_download_admitted": false,
+    "wall_accounting": "active-v1"
+  },
+  "closure": {
+    "epoch_id": "post-c235-blocks-expert-reuse-v1-20261004T105527Z",
+    "closed_at": {
+      "utc": "2026-10-04T22:13:42.406425+00:00",
+      "monotonic_s": 41745.866898016
+    },
+    "decision": "ARCHITECTURAL_DISCRIMINANTS_RESOLVED_SCOPED_GAIN_UTILITY_GAPS_REMAIN",
+    "reason": "Both admitted architectural fronts implemented/measured; actual head lacks development margin; reuse has scoped code latency and planning success advantage but misses two-class promotion gate. No confirmatory/Q admission, no fresh mechanism or budget rollover.",
+    "budget": {
+      "utc": "2026-10-04T22:13:42.484333+00:00",
+      "physical_used_s": 16777.722110176997,
+      "wall_used_s": 41142.406431532,
+      "raw_bytes": 2328852706,
+      "physical_remaining_s": 40822.277889823,
+      "wall_remaining_s": 390857.593568468,
+      "raw_remaining_bytes": 10556049182,
+      "closure_reserve_s": 14400,
+      "next_worst_case_s": 0,
+      "admitted": false,
+      "measured_conservatively_elapsed_session_s": 41082.406431532,
+      "final_serialization_wall_charge_ESTIMATED_s": 60.0,
+      "serialization_charge_has_no_invented_monotonic_endpoints": true,
+      "no_overlap_credit_for_estimate": true
+    },
+    "historical_credit_transferred": false,
+    "remaining_balances_closed_not_credit": true,
+    "publication": "LOCAL_ONLY",
+    "analysis_predecessor": "bfe2d9a7b1d8f4e348240d0ea0d8203a9dd11696",
+    "final_commit_hash_policy": "Shown after checkpoint commit, never circularly pinned inside its own files",
+    "tail_charge": "Conservative60s covers final file/Git serialization and final delivery after clock cutoff; not a physical span or artificial timestamp"
+  },
+  "physical_accounting": "Union of actually observed same-boot endpoints plus unknown-endpoint conservative charge, no nested double-count",
+  "rows": [
+    {
+      "boot_id": "3ff183a9-3ec0-4569-a05f-d52e32767525",
+      "elapsed_s": 62.189778399999796,
+      "end": {
+        "monotonic_s": 1431.816039251,
+        "utc": "2026-10-04T11:01:48.355558+00:00"
+      },
+      "evidence_paths": [
+        "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c236-post-c235-blocks-expert-reuse-20261004T105527Z/snapshot.json",
+        "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c236-post-c235-blocks-expert-reuse-20261004T105527Z/resource-policy.json"
+      ],
+      "live": true,
+      "physical_charge_s": 62.189778399999796,
+      "start": {
+        "monotonic_s": 1369.626260851,
+        "utc": "2026-10-04T11:00:46.165787+00:00"
+      },
+      "status": "PASS_INVENTORY",
+      "unit": "c236-initial-inventory",
+      "worst_case_s": null
+    },
+    {
+      "boot_id": "3ff183a9-3ec0-4569-a05f-d52e32767525",
+      "elapsed_s": 0.43737839500022346,
+      "end": {
+        "monotonic_s": 1843.196911957,
+        "utc": "2026-10-04T11:08:39.736427+00:00"
+      },
+      "evidence_paths": [
+        "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c236-post-c235-blocks-expert-reuse-20261004T105527Z/model-free-c75-rebuild.json"
+      ],
+      "live": true,
+      "physical_charge_s": 0.43737839500022346,
+      "start": {
+        "monotonic_s": 1842.759533562,
+        "utc": "2026-10-04T11:08:39.299062+00:00"
+      },
+      "status": "PASS_MODEL_FREE",
+      "unit": "c236-native-synthetic-controls",
+      "worst_case_s": null
+    },
+    {
+      "boot_id": "3ff183a9-3ec0-4569-a05f-d52e32767525",
+      "elapsed_s": 107.55778574400006,
+      "end": {
+        "monotonic_s": 2146.39298495,
+        "utc": "2026-10-04T11:13:42.932507+00:00"
+      },
+      "evidence_paths": [
+        "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c237-c75-rebuild-numeric-bridge-20261004/family-receipt.json"
+      ],
+      "live": true,
+      "physical_charge_s": 107.55778574400006,
+      "start": {
+        "monotonic_s": 2038.835199206,
+        "utc": "2026-10-04T11:11:55.374717+00:00"
+      },
+      "status": "PASS",
+      "unit": "c237-rebuilt-c75-bridge",
+      "worst_case_s": 375
+    },
+    {
+      "boot_id": "3ff183a9-3ec0-4569-a05f-d52e32767525",
+      "elapsed_s": 95.59878991000005,
+      "end": {
+        "monotonic_s": 3951.960862201,
+        "utc": "2026-10-04T11:43:48.500374+00:00"
+      },
+      "evidence_paths": [
+        "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c238-complete-block-causality-20261004/family-receipt.json"
+      ],
+      "live": true,
+      "physical_charge_s": 95.59878991000005,
+      "start": {
+        "monotonic_s": 3856.362072291,
+        "utc": "2026-10-04T11:42:12.901583+00:00"
+      },
+      "status": "FAIL_UNIT",
+      "unit": "c238-fixed-block-causality",
+      "worst_case_s": 1095
+    },
+    {
+      "boot_id": "3ff183a9-3ec0-4569-a05f-d52e32767525",
+      "elapsed_s": 215.9945315240002,
+      "end": {
+        "monotonic_s": 4388.10257164,
+        "utc": "2026-10-04T11:51:04.642088+00:00"
+      },
+      "evidence_paths": [
+        "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c239-complete-block-causality-continuation-20261004/family-receipt.json"
+      ],
+      "live": true,
+      "physical_charge_s": 215.9945315240002,
+      "start": {
+        "monotonic_s": 4172.108040116,
+        "utc": "2026-10-04T11:47:28.647542+00:00"
+      },
+      "status": "PASS",
+      "unit": "c239-fixed-block-causality-continuation",
+      "worst_case_s": 735
+    },
+    {
+      "boot_id": "3ff183a9-3ec0-4569-a05f-d52e32767525",
+      "elapsed_s": 560.0926607030005,
+      "end": {
+        "monotonic_s": 5083.832303246,
+        "utc": "2026-10-04T12:02:40.371818+00:00"
+      },
+      "evidence_paths": [
+        "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c240-new-block-canonical-ffn-20261004/family-receipt.json"
+      ],
+      "live": true,
+      "physical_charge_s": 560.0926607030005,
+      "start": {
+        "monotonic_s": 4523.739642543,
+        "utc": "2026-10-04T11:53:20.279153+00:00"
+      },
+      "status": "PASS",
+      "unit": "c240-new-block-ffn-reference",
+      "worst_case_s": 1155
+    },
+    {
+      "boot_id": "3ff183a9-3ec0-4569-a05f-d52e32767525",
+      "elapsed_s": 3.2071173879994603,
+      "end": {
+        "monotonic_s": 5343.436280225,
+        "utc": "2026-10-04T12:06:59.975788+00:00"
+      },
+      "evidence_paths": [
+        "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c241-block-development-inputs-20261004/tokenizer-attempt.json"
+      ],
+      "live": true,
+      "physical_charge_s": 3.2071173879994603,
+      "start": {
+        "monotonic_s": 5340.229162837,
+        "utc": "2026-10-04T12:06:56.768683+00:00"
+      },
+      "status": "PASS",
+      "unit": "c241-vocab-only-inputs",
+      "worst_case_s": null
+    },
+    {
+      "boot_id": "3ff183a9-3ec0-4569-a05f-d52e32767525",
+      "elapsed_s": 92.20311706800021,
+      "end": {
+        "monotonic_s": 5685.01896323,
+        "utc": "2026-10-04T12:12:41.558479+00:00"
+      },
+      "evidence_paths": [
+        "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c241-block-development-inputs-20261004/family-receipt.json"
+      ],
+      "live": true,
+      "physical_charge_s": 92.20311706800021,
+      "start": {
+        "monotonic_s": 5592.815846162,
+        "utc": "2026-10-04T12:11:09.355364+00:00"
+      },
+      "status": "FAIL_UNIT",
+      "unit": "c241-native-development-control-ids",
+      "worst_case_s": 1095
+    },
+    {
+      "boot_id": "3ff183a9-3ec0-4569-a05f-d52e32767525",
+      "elapsed_s": 443.700678487,
+      "end": {
+        "monotonic_s": 6383.448356061,
+        "utc": "2026-10-04T12:24:19.987871+00:00"
+      },
+      "evidence_paths": [
+        "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c242-native-control-mapping-repair-20261004/family-receipt.json"
+      ],
+      "live": true,
+      "physical_charge_s": 443.700678487,
+      "start": {
+        "monotonic_s": 5939.747677574,
+        "utc": "2026-10-04T12:16:56.287188+00:00"
+      },
+      "status": "PASS",
+      "unit": "c242-native-development-control-ids",
+      "worst_case_s": 1095
+    },
+    {
+      "boot_id": "3ff183a9-3ec0-4569-a05f-d52e32767525",
+      "elapsed_s": 287.94925600699935,
+      "end": {
+        "monotonic_s": 7349.864414049,
+        "utc": "2026-10-04T12:40:26.403929+00:00"
+      },
+      "evidence_paths": [
+        "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c243-production-grid-reference-20261004/family-receipt.json"
+      ],
+      "live": true,
+      "physical_charge_s": 287.94925600699935,
+      "start": {
+        "monotonic_s": 7061.915158042,
+        "utc": "2026-10-04T12:35:38.454668+00:00"
+      },
+      "status": "PASS",
+      "unit": "c243-production-prefix-reference",
+      "worst_case_s": 945
+    },
+    {
+      "boot_id": "3ff183a9-3ec0-4569-a05f-d52e32767525",
+      "elapsed_s": 1273.853455583001,
+      "end": {
+        "monotonic_s": 8785.531711424,
+        "utc": "2026-10-04T13:04:22.071224+00:00"
+      },
+      "evidence_paths": [
+        "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c244-multigrid-continuity-20261004/family-receipt.json"
+      ],
+      "live": true,
+      "physical_charge_s": 1273.853455583001,
+      "start": {
+        "monotonic_s": 7511.678255841,
+        "utc": "2026-10-04T12:43:08.217767+00:00"
+      },
+      "status": "PASS",
+      "unit": "c244-multigrid-continuity",
+      "worst_case_s": 3255
+    },
+    {
+      "boot_id": "3ff183a9-3ec0-4569-a05f-d52e32767525",
+      "elapsed_s": 1580.7524042799996,
+      "end": {
+        "monotonic_s": 10719.736208731,
+        "utc": "2026-10-04T13:36:36.275721+00:00"
+      },
+      "evidence_paths": [
+        "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c245-b2-complete-output-amortization-20261004/family-receipt.json"
+      ],
+      "live": true,
+      "physical_charge_s": 1580.7524042799996,
+      "start": {
+        "monotonic_s": 9138.983804451,
+        "utc": "2026-10-04T13:10:15.523314+00:00"
+      },
+      "status": "PASS",
+      "unit": "c245-b2-amortization",
+      "worst_case_s": 4365
+    },
+    {
+      "boot_id": "3ff183a9-3ec0-4569-a05f-d52e32767525",
+      "elapsed_s": 1585.6950566190008,
+      "end": {
+        "monotonic_s": 12618.787592806,
+        "utc": "2026-10-04T14:08:15.327108+00:00"
+      },
+      "evidence_paths": [
+        "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c246-b4-complete-output-amortization-20261004/family-receipt.json"
+      ],
+      "live": true,
+      "physical_charge_s": 1585.6950566190008,
+      "start": {
+        "monotonic_s": 11033.092536187,
+        "utc": "2026-10-04T13:41:49.632046+00:00"
+      },
+      "status": "PASS",
+      "unit": "c246-b4-amortization",
+      "worst_case_s": 4365
+    },
+    {
+      "boot_id": "3ff183a9-3ec0-4569-a05f-d52e32767525",
+      "elapsed_s": 1565.0476627420012,
+      "end": {
+        "monotonic_s": 14568.011557882,
+        "utc": "2026-10-04T14:40:44.551073+00:00"
+      },
+      "evidence_paths": [
+        "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c247-b8-complete-output-amortization-20261004/family-receipt.json"
+      ],
+      "live": true,
+      "physical_charge_s": 1565.0476627420012,
+      "start": {
+        "monotonic_s": 13002.96389514,
+        "utc": "2026-10-04T14:14:39.503406+00:00"
+      },
+      "status": "PASS",
+      "unit": "c247-b8-amortization",
+      "worst_case_s": 4365
+    },
+    {
+      "boot_id": "3ff183a9-3ec0-4569-a05f-d52e32767525",
+      "elapsed_s": 2.0555992090012296,
+      "end": {
+        "monotonic_s": 14623.628686996,
+        "utc": "2026-10-04T14:41:40.168201+00:00"
+      },
+      "evidence_paths": [
+        "results/c247-b8-complete-output-amortization-20261004/cleanup-observation.json"
+      ],
+      "live": true,
+      "physical_charge_s": 2.0555992090012296,
+      "start": {
+        "monotonic_s": 14621.573087787,
+        "utc": "2026-10-04T14:41:38.121839+00:00"
+      },
+      "status": "CLEANUP_OBSERVED",
+      "unit": "C247-cleanup-observation",
+      "worst_case_s": null
+    },
+    {
+      "boot_id": "3ff183a9-3ec0-4569-a05f-d52e32767525",
+      "elapsed_s": 14.308243626001058,
+      "end": {
+        "monotonic_s": 14899.448770266,
+        "utc": "2026-10-04T14:46:15.988282+00:00"
+      },
+      "evidence_paths": [
+        "results/c249-eagle3-head-acquisition-20261004/download-receipt.json"
+      ],
+      "live": false,
+      "physical_charge_s": 0,
+      "start": {
+        "monotonic_s": 14885.14052664,
+        "utc": "2026-10-04T14:46:01.680047+00:00"
+      },
+      "status": "PINNED_HEAD_SHA256_VERIFIED",
+      "unit": "C249-head-acquisition",
+      "worst_case_s": null
+    },
+    {
+      "boot_id": "3ff183a9-3ec0-4569-a05f-d52e32767525",
+      "elapsed_s": 0.3438817320002272,
+      "end": {
+        "monotonic_s": 15936.58353838,
+        "utc": "2026-10-04T15:03:33.123052+00:00"
+      },
+      "evidence_paths": [
+        "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c249-eagle3-head-acquisition-20261004/family-receipt.json"
+      ],
+      "live": true,
+      "physical_charge_s": 0.3438817320002272,
+      "start": {
+        "monotonic_s": 15936.239656648,
+        "utc": "2026-10-04T15:03:32.779167+00:00"
+      },
+      "status": "FAIL_UNIT",
+      "unit": "c249-pinned-head-conversion",
+      "worst_case_s": 375
+    },
+    {
+      "boot_id": "3ff183a9-3ec0-4569-a05f-d52e32767525",
+      "elapsed_s": 2.682329456998559,
+      "end": {
+        "monotonic_s": 16584.628952974,
+        "utc": "2026-10-04T15:14:21.168467+00:00"
+      },
+      "evidence_paths": [
+        "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c250-head-conversion-lock-repair-20261004/family-receipt.json"
+      ],
+      "live": true,
+      "physical_charge_s": 2.682329456998559,
+      "start": {
+        "monotonic_s": 16581.946623517,
+        "utc": "2026-10-04T15:14:18.486135+00:00"
+      },
+      "status": "FAIL_UNIT",
+      "unit": "c250-pinned-head-conversion",
+      "worst_case_s": 375
+    },
+    {
+      "boot_id": "3ff183a9-3ec0-4569-a05f-d52e32767525",
+      "elapsed_s": 2.9020845699997153,
+      "end": {
+        "monotonic_s": 16700.091723313,
+        "utc": "2026-10-04T15:16:16.631234+00:00"
+      },
+      "evidence_paths": [
+        "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c251-head-conversion-policy-binding-20261004/family-receipt.json"
+      ],
+      "live": true,
+      "physical_charge_s": 2.9020845699997153,
+      "start": {
+        "monotonic_s": 16697.189638743,
+        "utc": "2026-10-04T15:16:13.729149+00:00"
+      },
+      "status": "FAIL_UNIT",
+      "unit": "c251-pinned-head-conversion",
+      "worst_case_s": 375
+    },
+    {
+      "boot_id": "3ff183a9-3ec0-4569-a05f-d52e32767525",
+      "elapsed_s": 85.66193935199772,
+      "end": {
+        "monotonic_s": 16919.909760346,
+        "utc": "2026-10-04T15:19:56.449274+00:00"
+      },
+      "evidence_paths": [
+        "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c252-head-conversion-inventory-schema-20261004/family-receipt.json"
+      ],
+      "live": true,
+      "physical_charge_s": 85.66193935199772,
+      "start": {
+        "monotonic_s": 16834.247820994,
+        "utc": "2026-10-04T15:18:30.787336+00:00"
+      },
+      "status": "FAIL_UNIT",
+      "unit": "c252-pinned-head-conversion",
+      "worst_case_s": 375
+    },
+    {
+      "boot_id": "3ff183a9-3ec0-4569-a05f-d52e32767525",
+      "elapsed_s": 88.87636928400025,
+      "end": {
+        "monotonic_s": 17179.736952506,
+        "utc": "2026-10-04T15:24:16.276467+00:00"
+      },
+      "evidence_paths": [
+        "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c253-head-converted-value-audit-20261004/family-receipt.json"
+      ],
+      "live": true,
+      "physical_charge_s": 88.87636928400025,
+      "start": {
+        "monotonic_s": 17090.860583222,
+        "utc": "2026-10-04T15:22:47.400095+00:00"
+      },
+      "status": "FAIL_UNIT",
+      "unit": "c253-head-value-audit",
+      "worst_case_s": 195
+    },
+    {
+      "boot_id": "3ff183a9-3ec0-4569-a05f-d52e32767525",
+      "elapsed_s": 90.08209296399946,
+      "end": {
+        "monotonic_s": 17419.659359332,
+        "utc": "2026-10-04T15:28:16.198875+00:00"
+      },
+      "evidence_paths": [
+        "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c254-head-conversion-row-oracle-repair-20261004/family-receipt.json"
+      ],
+      "live": true,
+      "physical_charge_s": 90.08209296399946,
+      "start": {
+        "monotonic_s": 17329.577266368,
+        "utc": "2026-10-04T15:26:46.116782+00:00"
+      },
+      "status": "PASS",
+      "unit": "c254-head-value-audit",
+      "worst_case_s": 195
+    },
+    {
+      "boot_id": "3ff183a9-3ec0-4569-a05f-d52e32767525",
+      "elapsed_s": 98.59936363999805,
+      "end": {
+        "monotonic_s": 17647.986930359,
+        "utc": "2026-10-04T15:32:04.526445+00:00"
+      },
+      "evidence_paths": [
+        "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c255-eagle3-selected-native-boundary-20261004/family-receipt.json"
+      ],
+      "live": true,
+      "physical_charge_s": 98.59936363999805,
+      "start": {
+        "monotonic_s": 17549.387566719,
+        "utc": "2026-10-04T15:30:25.927076+00:00"
+      },
+      "status": "FAIL_UNIT",
+      "unit": "c255-head-feature-native-boundary",
+      "worst_case_s": 615
+    },
+    {
+      "boot_id": "3ff183a9-3ec0-4569-a05f-d52e32767525",
+      "elapsed_s": 102.21627417499985,
+      "end": {
+        "monotonic_s": 17994.097949175,
+        "utc": "2026-10-04T15:37:50.637464+00:00"
+      },
+      "evidence_paths": [
+        "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c256-eagle3-draft-kv-boundary-repair-20261004/family-receipt.json"
+      ],
+      "live": true,
+      "physical_charge_s": 102.21627417499985,
+      "start": {
+        "monotonic_s": 17891.881675,
+        "utc": "2026-10-04T15:36:08.421186+00:00"
+      },
+      "status": "PASS",
+      "unit": "c256-head-feature-native-boundary",
+      "worst_case_s": 615
+    },
+    {
+      "boot_id": "3ff183a9-3ec0-4569-a05f-d52e32767525",
+      "elapsed_s": 246.0291599100019,
+      "end": {
+        "monotonic_s": 18754.057086158,
+        "utc": "2026-10-04T15:50:30.596600+00:00"
+      },
+      "evidence_paths": [
+        "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c257-eagle3-multigrid-fidelity-20261004/family-receipt.json"
+      ],
+      "live": true,
+      "physical_charge_s": 246.0291599100019,
+      "start": {
+        "monotonic_s": 18508.027926248,
+        "utc": "2026-10-04T15:46:24.567436+00:00"
+      },
+      "status": "PASS",
+      "unit": "c257-real-head-multigrid-fidelity",
+      "worst_case_s": 1275
+    },
+    {
+      "boot_id": "3ff183a9-3ec0-4569-a05f-d52e32767525",
+      "elapsed_s": 900.8891946629992,
+      "end": {
+        "monotonic_s": 20396.921317894,
+        "utc": "2026-10-04T16:17:53.460833+00:00"
+      },
+      "evidence_paths": [
+        "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c258-eagle3-real-head-development-20261004/family-receipt.json"
+      ],
+      "live": true,
+      "physical_charge_s": 900.8891946629992,
+      "start": {
+        "monotonic_s": 19496.032123231,
+        "utc": "2026-10-04T16:02:52.571634+00:00"
+      },
+      "status": "FAIL_UNIT",
+      "unit": "c258-real-head-native-development",
+      "worst_case_s": 4115
+    },
+    {
+      "boot_id": "3ff183a9-3ec0-4569-a05f-d52e32767525",
+      "elapsed_s": 381.5541878889999,
+      "end": {
+        "monotonic_s": 21048.510317363,
+        "utc": "2026-10-04T16:28:45.049831+00:00"
+      },
+      "evidence_paths": [
+        "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c259-expert-reuse-inventory-repair-20261004/family-receipt.json"
+      ],
+      "live": true,
+      "physical_charge_s": 381.5541878889999,
+      "start": {
+        "monotonic_s": 20666.956129474,
+        "utc": "2026-10-04T16:22:23.495639+00:00"
+      },
+      "status": "PASS",
+      "unit": "c259-selected-reuse-numeric",
+      "worst_case_s": 1275
+    },
+    {
+      "boot_id": "3ff183a9-3ec0-4569-a05f-d52e32767525",
+      "elapsed_s": 749.0629327869974,
+      "end": {
+        "monotonic_s": 21913.491074632,
+        "utc": "2026-10-04T16:43:10.030584+00:00"
+      },
+      "evidence_paths": [
+        "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c260-expert-reuse-native-service-20261004/family-receipt.json"
+      ],
+      "live": true,
+      "physical_charge_s": 749.0629327869974,
+      "start": {
+        "monotonic_s": 21164.428141845,
+        "utc": "2026-10-04T16:30:40.967652+00:00"
+      },
+      "status": "PASS",
+      "unit": "c260-selected-reuse-service",
+      "worst_case_s": 2535
+    },
+    {
+      "boot_id": "3ff183a9-3ec0-4569-a05f-d52e32767525",
+      "elapsed_s": 62.29577818100006,
+      "end": {
+        "monotonic_s": 27787.743054486,
+        "utc": "2026-10-04T18:21:04.282566+00:00"
+      },
+      "evidence_paths": [
+        "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c262-layer-executor-numeric-20261004/snapshot.json",
+        "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c262-layer-executor-numeric-20261004/resource-policy.json"
+      ],
+      "live": true,
+      "physical_charge_s": 62.29577818100006,
+      "start": {
+        "monotonic_s": 27725.447276305,
+        "utc": "2026-10-04T18:20:01.986809+00:00"
+      },
+      "status": "PASS_LIVE_NEW_INVENTORY",
+      "unit": "c262-live-new-inventory",
+      "worst_case_s": 100
+    },
+    {
+      "boot_id": "3ff183a9-3ec0-4569-a05f-d52e32767525",
+      "elapsed_s": 281.34527571799845,
+      "end": {
+        "monotonic_s": 29378.722265086,
+        "utc": "2026-10-04T18:47:35.261779+00:00"
+      },
+      "evidence_paths": [
+        "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c262-layer-executor-numeric-20261004/family-receipt.json"
+      ],
+      "live": true,
+      "physical_charge_s": 281.34527571799845,
+      "start": {
+        "monotonic_s": 29097.376989368,
+        "utc": "2026-10-04T18:42:53.916499+00:00"
+      },
+      "status": "FAIL_UNIT",
+      "unit": "c262-layer-executor-numeric",
+      "worst_case_s": 1115
+    },
+    {
+      "boot_id": "3ff183a9-3ec0-4569-a05f-d52e32767525",
+      "elapsed_s": 181.87347763900107,
+      "end": {
+        "monotonic_s": 29799.985058031,
+        "utc": "2026-10-04T18:54:36.524572+00:00"
+      },
+      "evidence_paths": [
+        "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c263-layer-observer-name-repair-20261004/family-receipt.json"
+      ],
+      "live": true,
+      "physical_charge_s": 181.87347763900107,
+      "start": {
+        "monotonic_s": 29618.111580392,
+        "utc": "2026-10-04T18:51:34.651094+00:00"
+      },
+      "status": "FAIL_UNIT",
+      "unit": "c263-layer-observer-name-repair",
+      "worst_case_s": 755
+    },
+    {
+      "boot_id": "3ff183a9-3ec0-4569-a05f-d52e32767525",
+      "elapsed_s": 159.56729938399803,
+      "end": {
+        "monotonic_s": 30248.34913593,
+        "utc": "2026-10-04T19:02:04.888650+00:00"
+      },
+      "evidence_paths": [
+        "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c264-biased-router-observer-repair-20261004/family-receipt.json"
+      ],
+      "live": true,
+      "physical_charge_s": 159.56729938399803,
+      "start": {
+        "monotonic_s": 30088.781836546,
+        "utc": "2026-10-04T18:59:25.321349+00:00"
+      },
+      "status": "FAIL_UNIT",
+      "unit": "c264-layer-observer-name-repair",
+      "worst_case_s": 755
+    },
+    {
+      "boot_id": "3ff183a9-3ec0-4569-a05f-d52e32767525",
+      "elapsed_s": 354.39859247000277,
+      "end": {
+        "monotonic_s": 30892.605014493,
+        "utc": "2026-10-04T19:12:49.144521+00:00"
+      },
+      "evidence_paths": [
+        "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c265-native-probs-alias-repair-20261004/family-receipt.json"
+      ],
+      "live": true,
+      "physical_charge_s": 354.39859247000277,
+      "start": {
+        "monotonic_s": 30538.206422023,
+        "utc": "2026-10-04T19:06:54.745940+00:00"
+      },
+      "status": "PASS",
+      "unit": "c265-layer-observer-name-repair",
+      "worst_case_s": 755
+    },
+    {
+      "boot_id": "3ff183a9-3ec0-4569-a05f-d52e32767525",
+      "elapsed_s": 189.38406177499928,
+      "end": {
+        "monotonic_s": 31240.309729421,
+        "utc": "2026-10-04T19:18:36.849243+00:00"
+      },
+      "evidence_paths": [
+        "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c266-new-shape-native-canonical-reference-20261004/family-receipt.json"
+      ],
+      "live": true,
+      "physical_charge_s": 189.38406177499928,
+      "start": {
+        "monotonic_s": 31050.925667646,
+        "utc": "2026-10-04T19:15:27.465178+00:00"
+      },
+      "status": "PASS",
+      "unit": "c266-new-shape-native-canonical-reference",
+      "worst_case_s": 555
+    },
+    {
+      "boot_id": "3ff183a9-3ec0-4569-a05f-d52e32767525",
+      "elapsed_s": 172.71551540600194,
+      "end": {
+        "monotonic_s": 31719.546924817,
+        "utc": "2026-10-04T19:26:36.086440+00:00"
+      },
+      "evidence_paths": [
+        "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c267-layer-production-neutrality-20261004/family-receipt.json"
+      ],
+      "live": true,
+      "physical_charge_s": 172.71551540600194,
+      "start": {
+        "monotonic_s": 31546.831409411,
+        "utc": "2026-10-04T19:23:43.370921+00:00"
+      },
+      "status": "PASS",
+      "unit": "c267-layer-production-neutrality",
+      "worst_case_s": 415
+    },
+    {
+      "boot_id": "3ff183a9-3ec0-4569-a05f-d52e32767525",
+      "elapsed_s": 721.3408420279993,
+      "end": {
+        "monotonic_s": 33372.603321179,
+        "utc": "2026-10-04T19:54:09.142836+00:00"
+      },
+      "evidence_paths": [
+        "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c268-controlled-native-prefill-service-20261004/family-receipt.json"
+      ],
+      "live": true,
+      "physical_charge_s": 721.3408420279993,
+      "start": {
+        "monotonic_s": 32651.262479151,
+        "utc": "2026-10-04T19:42:07.801989+00:00"
+      },
+      "status": "PASS",
+      "unit": "c268-controlled-native-prefill-service",
+      "worst_case_s": 1515
+    },
+    {
+      "boot_id": "3ff183a9-3ec0-4569-a05f-d52e32767525",
+      "elapsed_s": 466.9383377480044,
+      "end": {
+        "monotonic_s": 35093.647799395,
+        "utc": "2026-10-04T20:22:50.187315+00:00"
+      },
+      "evidence_paths": [
+        "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c270-last-use-ordered-fidelity-20261004/family-receipt.json"
+      ],
+      "live": true,
+      "physical_charge_s": 466.9383377480044,
+      "start": {
+        "monotonic_s": 34626.709461647,
+        "utc": "2026-10-04T20:15:03.248972+00:00"
+      },
+      "status": "PASS",
+      "unit": "c270-last-use-ordered-fidelity",
+      "worst_case_s": 1265
+    },
+    {
+      "boot_id": "3ff183a9-3ec0-4569-a05f-d52e32767525",
+      "elapsed_s": 729.1349576659995,
+      "end": {
+        "monotonic_s": 35925.757869967,
+        "utc": "2026-10-04T20:36:42.297384+00:00"
+      },
+      "evidence_paths": [
+        "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c271-last-use-controlled-native-service-20261004/family-receipt.json"
+      ],
+      "live": true,
+      "physical_charge_s": 729.1349576659995,
+      "start": {
+        "monotonic_s": 35196.622912301,
+        "utc": "2026-10-04T20:24:33.162430+00:00"
+      },
+      "status": "PASS",
+      "unit": "c271-last-use-controlled-native-service",
+      "worst_case_s": 1515
+    },
+    {
+      "boot_id": "3ff183a9-3ec0-4569-a05f-d52e32767525",
+      "elapsed_s": 3.0922574369978975,
+      "end": {
+        "monotonic_s": 36766.000175151,
+        "utc": "2026-10-04T20:50:42.539684+00:00"
+      },
+      "evidence_paths": [
+        "results/c272-layer-utility-screen-20261004/raw/render-model-free.json"
+      ],
+      "live": true,
+      "physical_charge_s": 3.0922574369978975,
+      "start": {
+        "monotonic_s": 36762.907917714,
+        "utc": "2026-10-04T20:50:39.447438+00:00"
+      },
+      "status": "FAIL_MODEL_FREE",
+      "unit": "c272-vocabulary-only-render-no-forward",
+      "worst_case_s": null
+    },
+    {
+      "boot_id": "3ff183a9-3ec0-4569-a05f-d52e32767525",
+      "elapsed_s": 3.1491710650007008,
+      "end": {
+        "monotonic_s": 37034.620926908,
+        "utc": "2026-10-04T20:55:11.160440+00:00"
+      },
+      "evidence_paths": [
+        "results/c272-layer-utility-screen-20261004/raw/render-date-repair-model-free.json"
+      ],
+      "live": true,
+      "physical_charge_s": 3.1491710650007008,
+      "start": {
+        "monotonic_s": 37031.471755843,
+        "utc": "2026-10-04T20:55:08.011278+00:00"
+      },
+      "status": "PASS",
+      "unit": "c272-vocabulary-only-date-repair-no-forward",
+      "worst_case_s": null
+    },
+    {
+      "boot_id": "3ff183a9-3ec0-4569-a05f-d52e32767525",
+      "elapsed_s": 0.25199873900419334,
+      "end": {
+        "monotonic_s": 37088.695461312,
+        "utc": "2026-10-04T20:56:05.234970+00:00"
+      },
+      "evidence_paths": [
+        "results/c272-layer-utility-screen-20261004/directed-model-free-tests.json"
+      ],
+      "live": false,
+      "physical_charge_s": 0,
+      "start": {
+        "monotonic_s": 37088.443462573,
+        "utc": "2026-10-04T20:56:04.982981+00:00"
+      },
+      "status": "PASS",
+      "unit": "c272-directed-model-free-functional-and-accounting",
+      "worst_case_s": null
+    },
+    {
+      "boot_id": "3ff183a9-3ec0-4569-a05f-d52e32767525",
+      "elapsed_s": 890.5217349030063,
+      "end": {
+        "monotonic_s": 38222.525101147,
+        "utc": "2026-10-04T21:14:59.064610+00:00"
+      },
+      "evidence_paths": [
+        "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c272-layer-utility-screen-20261004/family-receipt.json"
+      ],
+      "live": true,
+      "physical_charge_s": 890.5217349030063,
+      "start": {
+        "monotonic_s": 37332.003366244,
+        "utc": "2026-10-04T21:00:08.542876+00:00"
+      },
+      "status": "FAIL_UNIT",
+      "unit": "c272-two-class-free-native-utility",
+      "worst_case_s": 5415
+    },
+    {
+      "boot_id": "3ff183a9-3ec0-4569-a05f-d52e32767525",
+      "elapsed_s": 1929.6664388149948,
+      "end": {
+        "monotonic_s": 40462.990827359,
+        "utc": "2026-10-04T21:52:19.530351+00:00"
+      },
+      "evidence_paths": [
+        "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c273-layer-utility-ac-restored-20261004/family-receipt.json"
+      ],
+      "live": true,
+      "physical_charge_s": 1929.6664388149948,
+      "start": {
+        "monotonic_s": 38533.324388544,
+        "utc": "2026-10-04T21:20:09.863909+00:00"
+      },
+      "status": "PASS",
+      "unit": "c273-two-class-native-utility-ac-restored",
+      "worst_case_s": 5415
+    },
+    {
+      "boot_id": "3ff183a9-3ec0-4569-a05f-d52e32767525",
+      "charge_authority": "Tool observed duration about2.068s; use5s without end timestamp or overlap credit",
+      "elapsed_s": null,
+      "end": null,
+      "evidence_paths": [
+        "results/c273-layer-utility-ac-restored-20261004/cleanup-observed.json"
+      ],
+      "live": true,
+      "physical_charge_s": 5.0,
+      "start": null,
+      "status": "OBSERVED_ENDPOINT_INCOMPLETE_CONSERVATIVE_CHARGE",
+      "unit": "c273-postanalysis-cleanup-observation-conservative"
+    },
+    {
+      "boot_id": "3ff183a9-3ec0-4569-a05f-d52e32767525",
+      "elapsed_s": 2.0632874599978095,
+      "end": {
+        "monotonic_s": 41317.228745242,
+        "utc": "2026-10-04T22:06:33.768261+00:00"
+      },
+      "evidence_paths": [
+        "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c274-post-c235-architectural-closure-20261004/cleanup.json"
+      ],
+      "live": true,
+      "physical_charge_s": 2.0632874599978095,
+      "start": {
+        "monotonic_s": 41315.165457782,
+        "utc": "2026-10-04T22:06:31.704986+00:00"
+      },
+      "status": "CLEANUP_OBSERVED_PASS",
+      "unit": "c274-final-owned-cleanup-observation",
+      "worst_case_s": null
+    },
+    {
+      "boot_id": "3ff183a9-3ec0-4569-a05f-d52e32767525",
+      "elapsed_s": 428.63815277400136,
+      "end": {
+        "monotonic_s": 41745.866898016,
+        "utc": "2026-10-04T22:13:42.406425+00:00"
+      },
+      "evidence_paths": [
+        "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/research/C274-BLOCKS-EXPERT-REUSE-CLOSURE-20261004.md",
+        "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c274-post-c235-architectural-closure-20261004/decision.json"
+      ],
+      "live": false,
+      "physical_charge_s": 0,
+      "start": {
+        "monotonic_s": 41317.228745242,
+        "utc": "2026-10-04T22:06:33.768261+00:00"
+      },
+      "status": "WALL_BLOCK_OBSERVED_ACTIVITY_PARTITION_UNKNOWN",
+      "unit": "c274-analysis-and-closure-checkpoint",
+      "worst_case_s": null
+    }
+  ],
+  "human_activity_partition": "UNKNOWN where not independently observed; native phase/request/CPU time is not added to physical envelopes",
+  "derived_accounting": {
+    "class": "OBSERVED_STAT_LOGICAL_FILE_SIZES_INODE_DEDUPLICATED",
+    "roots_bytes": {
+      "backends/c236-block-verifier-c75": 1039933988,
+      "backends/c262-layer-expert-reuse": 968678120,
+      "backends/c269-layer-last-use": 346603557,
+      "results/c236-post-c235-blocks-expert-reuse-20261004T105527Z/build": 1727969365
+    },
+    "total_bytes": 4083185030,
+    "limit_bytes": 21474836480,
+    "disk_free_bytes": 400042242048,
+    "required_remaining_raw_plus_margin_bytes": 23622320128,
+    "symlinks_not_counted": true,
+    "no_runtime_or_model_rebuild": true
+  },
+  "new_raw_manifest_file_included_in_raw_budget": true
+}

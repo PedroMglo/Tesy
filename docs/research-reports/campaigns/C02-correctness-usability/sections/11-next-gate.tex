@@ -1,0 +1,13 @@
+\section{Próximo teste discriminante}
+\claim{CL-C2-NEXT}{A prioridade é qualificar prefixes target mais longos numa referência independente do cache testado, preservando GPU8 ou delimitando o âmbito diferencial por layer/kernel. O desenho tem de respeitar 18 GiB/swap zero e o conflito observado entre reclaim file-backed e RSS guard.}
+
+\begin{tabularx}{\linewidth}{@{}p{34mm}Y@{}}
+\toprule \textbf{Passo proposto} & \textbf{Critério de decisão, não resultado obtido}\\ \midrule
+Referência & Independência do mecanismo testado e identidade explícita de modelo, kernel e placement.\\
+Recursos & Admissão no envelope e telemetria requerida; sem ajustar thresholds depois do resultado.\\
+Comparação fixa & Prefixes e contrato numérico definidos antes da execução; FAILs preservados.\\
+Perfil de prefill & Só depois, separar espera/compute/transfer com instrumento adequado.\\
+Uma intervenção & Comparar um placement ou microbatch com a baseline32 sob um novo protocolo.\\
+\bottomrule
+\end{tabularx}
+{\small Formulação editorial dos critérios do próximo teste. Não é uma campanha já executada. \evidence{E-C2-FINAL}}

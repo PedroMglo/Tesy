@@ -1,0 +1,7 @@
+# C7 G2 P12 observer freeze
+
+Objective: test that the new P12 observer leaves five complete same-profile logits vectors bitwise unchanged under the 189+32 call pattern. The alternative is that callback synchronization, altered output masks or an incorrect microbatch selection changes computation or produces incomplete evidence. `results/c7-20260927T1130Z/g2-protocol.json` freezes the source hashes, run order, graph plan, shapes, IDs, resource limits and fail rule before outputs. The original backend stays at `1248fd8...`; C7 capture and reference binaries are new local wrappers.
+
+The source graph places `ggml_get_rows` before the final layer's post-attention normalization when the output mask excludes tokens. Five internal 32-token microbatches and one 29-token microbatch follow from the 189-ID call and ub32. The callback counts only `attn_post_norm` completions per layer, then selects chunks 0, 4 and 5. The final layer's first two selected states are explicit `N/A_MASKED`; they are not numerical equals. The validator requires all 250 numerical core states, exact file payloads and five finite 201088-F32 logits vectors. A same-profile mismatch or missing evidence closes G2 before timing.
+
+Model-free checks: both C7 C++ binaries compiled against the clean original backend with GCC 15.3.1; focused gate suite now 54 PASS, including a prospective cgroup-reservation negative. Physical G2 observer and canonical layer results: NOT_RUN at this freeze. The prior P12 minimum forward measured capacity only and is not a numerical reference.

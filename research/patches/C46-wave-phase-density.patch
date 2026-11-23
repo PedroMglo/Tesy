@@ -1,0 +1,58 @@
+diff --git a/src/llama-moe-stream.cpp b/src/llama-moe-stream.cpp
+index 5faad79..bcff3f3 100644
+--- a/src/llama-moe-stream.cpp
++++ b/src/llama-moe-stream.cpp
+@@ -6,6 +6,7 @@
+ 
+ #include <algorithm>
+ #include <cinttypes>
++#include <cstdio>
+ #include <cstdlib>
+ #include <cstring>
+ #include <stdexcept>
+@@ -839,6 +840,11 @@ void llama_moe_stream_wave_ids(ggml_tensor * dst, int ith, int nth, void * userd
+     }
+     c15_active_pairs.fetch_add(active, std::memory_order_relaxed);
+     c15_all_pairs.fetch_add((uint64_t) n, std::memory_order_relaxed);
++    char marker[128];
++    std::snprintf(marker, sizeof(marker),
++                  "C46_WAVE_LAYER=%d_WAVE=%d_ACTIVE=%" PRIu64 "_OF=%" PRIu64,
++                  sl->il, w, active, (uint64_t) n);
++    nvtxMarkA(marker);
+ #endif
+ }
+ 
+diff --git a/tools/server/server-context.cpp b/tools/server/server-context.cpp
+index bb3b91a..dbfa356 100644
+--- a/tools/server/server-context.cpp
++++ b/tools/server/server-context.cpp
+@@ -26,6 +26,10 @@
+ #include <utility>
+ #include <fstream>
+ 
++#ifdef TESY_C15_NVTX
++#include <nvtx3/nvToolsExt.h>
++#endif
++
+ // fix problem with std::min and std::max
+ #if defined(_WIN32)
+ #define WIN32_LEAN_AND_MEAN
+@@ -3614,7 +3618,18 @@ private:
+             n_empty_consecutive = 0;
+         }
+ 
++#ifdef TESY_C15_NVTX
++        // Diagnostic phase ranges only. With the frozen single-slot request,
++        // DONE_PROMPT still denotes the final prefill batch, before sampling.
++        const bool c46_prefill = slot_batched &&
++            (slot_batched->state == SLOT_STATE_PROCESSING_PROMPT ||
++             slot_batched->state == SLOT_STATE_DONE_PROMPT);
++        nvtxRangePushA(c46_prefill ? "C46_SERVER_PREFILL_DECODE" : "C46_SERVER_GENERATION_DECODE");
++#endif
+         const int ret = llama_decode(ctx_tgt, batch_view);
++#ifdef TESY_C15_NVTX
++        nvtxRangePop();
++#endif
+ 
+         metrics.on_decoded(slots);
+ 

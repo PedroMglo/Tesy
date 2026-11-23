@@ -1,0 +1,43 @@
+{
+  "id": "c316-native-auxiliary-fixture",
+  "start": {
+    "utc": "2026-10-07T02:59:26.476190+00:00",
+    "monotonic_s": 118184.921759892
+  },
+  "end": {
+    "utc": "2026-10-07T03:00:32.175238+00:00",
+    "monotonic_s": 118250.620825053
+  },
+  "argv": [
+    "/usr/bin/python",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/tools/run_bounded.py",
+    "--run-id",
+    "c316-native-auxiliary-fixture",
+    "--model-id",
+    "model-free",
+    "--backend",
+    "stock",
+    "--backend-root",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/backends/c305-cpu-prediction-staging",
+    "--output-root",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c316-learned-staging-selected-fidelity-20261007/raw",
+    "--variant",
+    "Native-learned-auxiliary-synthetic-and-hash-fixture",
+    "--workload",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c316-learned-staging-selected-fidelity-20261007/protocol.json",
+    "--cache-condition",
+    "ActualnativeCPU8 affine/gate fixture, originalweights not loaded, learnedweights hash/size errors/bufferaccounting; no targetforward",
+    "--resource-protocol",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c316-learned-staging-selected-fidelity-20261007/protocol.json",
+    "--require-telemetry",
+    "--timeout-s",
+    "90",
+    "--collect-start-inventory",
+    "--",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c283-exact-expert-service-epoch-20261006T194311Z/build/learned-staging/bin/expert-learned-staging",
+    "--self-test"
+  ],
+  "returncode": 0,
+  "stdout": "{\"run_id\": \"c316-native-auxiliary-fixture\", \"elapsed_s\": 5.099, \"returncode\": 0, \"stop_reason\": null, \"maxima\": {\"rss_bytes\": 212467712, \"swap_bytes\": 0, \"cgroup_memory_bytes\": 166682624, \"cgroup_peak_bytes\": 188006400, \"cgroup_file_bytes\": 65536, \"gpu_used_mib\": 23.0, \"gpu_temperature_c\": 41.0, \"cpu_tctl_c\": 46.125, \"nvme_composite_c\": 34.85, \"direct_model_fds\": 0, \"buffered_model_fds\": 0}}\n",
+  "stderr": ""
+}

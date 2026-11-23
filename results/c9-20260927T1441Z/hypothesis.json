@@ -1,0 +1,12 @@
+{
+  "abandonment_now": "memory/GPU/RSS/thermal/swap/telemetry guard or mapped-library/model identity failure",
+  "evidence_class": "source hypothesis plus existing C8 4K observations, not a measured 8K result",
+  "hypothesis": "8K server context loads under E18 reservation without changing model/backend/routing and retains a single-slot full-SWA KV prefix",
+  "minimal_test_now": "bounded init-only server load and context creation; no forward",
+  "next_if_admitted": "separately freeze one minimal forward under same guards before 512/2048/4096 prefix probes",
+  "objective": "admit original backend P8 native preload-on server with explicit 8K full SWA and exact-prefix cache for a later session test",
+  "profile_delta_from_c8": "server instead of API probe; n_ctx 8192 instead of 4096; full-SWA retained; KV f16, single unified/offloaded slot and cache-prompt explicit; native preload ON unchanged",
+  "risk": "new server numeric profile, workspace still unknown after init; no fidelity or API claim",
+  "schema": "c9-hypothesis-v1",
+  "strongest_alternative": "server/context workspace or allocator reserves exceed E18 even though 4K probe passed; or slot/cache behavior prevents exact-prefix reuse"
+}

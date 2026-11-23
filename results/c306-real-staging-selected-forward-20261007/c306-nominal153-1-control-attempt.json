@@ -1,0 +1,48 @@
+{
+  "id": "c306-nominal153-1-control",
+  "start": {
+    "utc": "2026-10-07T00:29:25.134885+00:00",
+    "monotonic_s": 109183.580457371
+  },
+  "end": {
+    "utc": "2026-10-07T00:31:57.353947+00:00",
+    "monotonic_s": 109335.799531263
+  },
+  "argv": [
+    "/usr/bin/python",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/tools/run_bounded.py",
+    "--run-id",
+    "c306-nominal153-1-control",
+    "--model-id",
+    "gpt-oss-120b-mxfp4-gguf",
+    "--backend",
+    "stock",
+    "--backend-root",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/backends/c305-cpu-prediction-staging",
+    "--output-root",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c306-real-staging-selected-forward-20261007/raw",
+    "--variant",
+    "Original-R0-common-arena-OFF",
+    "--workload",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c306-real-staging-selected-forward-20261007/protocol.json",
+    "--cache-condition",
+    "OwnR0prefix/initialsnapshot sameprofile original3MXFP4slabs/biases; stageinactive throughwarm153, n1decode32only; first8consumers canonical/source/destination bytechecks. Pendingwrongreadcleanup includeddecode; diagnosticnotperformance.",
+    "--resource-protocol",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c306-real-staging-selected-forward-20261007/protocol.json",
+    "--require-telemetry",
+    "--timeout-s",
+    "240",
+    "--collect-start-inventory",
+    "--",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c283-exact-expert-service-epoch-20261006T194311Z/build/staging-canary-client/bin/expert-prediction-staging",
+    "/home/pmglo/models/gpt-oss-120b-gguf/gpt-oss-120b-MXFP4.gguf",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c276-post-c274-r2-causal-qualification-20261005T204839Z/development-inputs.json",
+    "nominal153",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c306-real-staging-selected-forward-20261007/raw/c306-nominal153-1-control.native",
+    "R0",
+    "v1"
+  ],
+  "returncode": 0,
+  "stdout": "{\"run_id\": \"c306-nominal153-1-control\", \"elapsed_s\": 91.595, \"returncode\": 0, \"stop_reason\": null, \"maxima\": {\"rss_bytes\": 16141840384, \"swap_bytes\": 0, \"cgroup_memory_bytes\": 15923843072, \"cgroup_peak_bytes\": 15951507456, \"cgroup_file_bytes\": 1493463040, \"gpu_used_mib\": 6889.0, \"gpu_temperature_c\": 62.0, \"cpu_tctl_c\": 94.75, \"nvme_composite_c\": 49.85, \"direct_model_fds\": 3, \"buffered_model_fds\": 0}}\n",
+  "stderr": ""
+}

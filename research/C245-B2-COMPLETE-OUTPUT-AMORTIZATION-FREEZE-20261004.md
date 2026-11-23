@@ -1,0 +1,17 @@
+# C245 — B2/K1 complete-output amortization, perfect-assist
+
+C244 **MEDIDO_NO_TARGET PASS** all9 selected units: three consecutive fixed grids per class/B,126 partial-prefix queries, clean complete-grid replay after rollback,9 real executor cancellations and subsequent clean bitwise queries. MeasurementHEAD66615a7,1273.853455583s physical. No universal proof, full8K or stochastic sampling inheritance.
+
+This freeze measures A1 at B2/K1, without a head. Twelve fresh processes: AR/block/block/AR for known code, known route and historical nominal153 transcript, pairs1/2 and4/3. Each uses the same frozen C242 native continuation (first32 input positions), official prefix, external prefill plan and fresh worker-drained state. Actual AR shape1 versus B2 shape2;32 complete FFN/vocabulary logits rows and greedy finite checks/materialization included in both. The receipt B field for AR is a contrast-width parameter; calls and native shape are verified separately. No tensor dumps inside timing.
+
+Exact initial per-layer slots/experts/generations/eviction metadata and pending-worker state must match per pair. KV-only restoration is insufficient. R0 next32 argmax IDs must reproduce the native control. All block outputs, routes and any cross-shape argmax divergence stay in the result.
+
+Gate is prospectively >=15% median paired perfect-assist reduction in **both development classes**, each pair positive, with explicit positive median D_budget for plausible L<=B. Anchor is reported separately, never transported between workloads. T_AR is sequential wall/positions, V_B is complete loop wall divided by block calls, L_break_even=(V_B+D+R)/T_AR. Margins vary L1..B with D0/Rideal explicitly hypothetical. This is an economic reason to consider A2, not measured acceptance, committed throughput or product utility. Native R1 prefix/cancellation/reference gates are independently required.
+
+Complete envelope4350s, twelve own60s inventories and240s process deadlines,30s postgates; raw projection256MiB. Original16.75GiB common STREAMING cap/high, swap0, live pressure/thermal/VRAM policies and mapping/identity guards. No retries, head download, arbitrary flags or remote publication. A valid negative closes this candidate's margin in scope; a concrete avoidable cost permits a new prospective repair under the existing authority.
+
+## Source causal support and limits
+
+**SOURCE_AUDITED** exact C75: CPU MMID processes each routed token/pair dot independently; weighted top-k order unchanged; attention masks future positions and fixed B preserves allocation shapes. CUDA dispatch for B2/4 uses native MMVQ, B8 native MMQ; dtype/shapes/devices determine the path. Read-only actual driver attributes confirm SM24/CC8.9. For the unchanged MXFP4 B8 pool40 geometry, MMQ y128, nty=ceil2880/128=23, ntx1, channels40 give920 tiles; efficiency920/(24*39)=98.29% triggers tile-count launch and no split-K fixup. ncols_max=B and allocation channels, not observed future routing values, determine this geometry. Routing changes gather/scatter indices, not the fixed declared arithmetic. Other geometries are not inherited.
+
+This source argument and the selected native suffix/residency/replay tests support an experimental fixed-grid R1 whose reference inputs depend only on the confirmed prefix and deterministic padding. They are not a FORMAL universal numerical proof. Partial-grid recomputation after actual rejection must be charged in a real integration.

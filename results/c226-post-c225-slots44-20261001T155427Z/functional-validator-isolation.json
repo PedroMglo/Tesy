@@ -1,0 +1,30 @@
+{
+  "status": "PASS",
+  "cases": {
+    "c131-code-01": {
+      "gold": {
+        "status": "PASS",
+        "exit_code": 0,
+        "stdout_tail": "TESY_TESTS_PASSED_94027\n",
+        "stderr_tail": ""
+      },
+      "mutant": {
+        "status": "FAIL",
+        "exit_code": 1,
+        "stdout_tail": "",
+        "stderr_tail": "st):\n  File \"/tmp/runner.py\", line 3, in <module>\n    exec('assert rle_pairs([])==[]\\na=[2,2,-1,-1,2];assert rle_pairs(a)==[(2,2),(-1,2),(2,1)];assert a==[2,2,-1,-1,2]\\nassert rle_pairs([5])==[(5,1)]\\nassert rle_pairs([0,0,0])==[(0,3)]',namespace)\n    ~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"<string>\", line 2, in <module>\nAssertionError\n"
+      }
+    },
+    "c131-plan-02": {
+      "gold": {
+        "status": "PASS",
+        "reason": null
+      },
+      "mutant": {
+        "status": "FAIL",
+        "reason": "wrong plan or tie break"
+      }
+    }
+  },
+  "scope": "Same isolated testers/gold/negative control, no model"
+}

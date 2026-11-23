@@ -1,0 +1,10 @@
+\section{Resultados preservados}
+\subsection{Tracing e teste emparelhado}
+\historicalclaim{CL-R00-TRACER}{O tracer MoE no backend pinado produziu \metric{M-R00-RECORDS} registos do GGUF real no âmbito diagnóstico publicado.}
+\historicalclaim{CL-R00-TOKENS}{O teste OFF/ON preservou \metric{M-R00-TOKENS} IDs gerados num prompt determinístico. Não demonstrou logits bitwise nem qualificação de timing.}
+
+\subsection{Mecanismos eliminados no pin}
+\historicalclaim{CL-R00-FIT}{O conflito entre override de tensores e fit foi classificado \path{STATIC_NO_GO_PIN_FIT_CONFLICT}. O OOM histórico não estabelece um bound geral de capacidade.}
+\historicalclaim{CL-R00-LAZY}{Os expert tensors gpt-oss não estavam marcados TENSOR\_READ\_LAZY no pin. Não se justifica tratar lazy-mode nesse código como expert oversubscription já demonstrada.}
+
+São no-go locais ao mecanismo e revisão analisados, não impossibilidade geral de offload MoE.

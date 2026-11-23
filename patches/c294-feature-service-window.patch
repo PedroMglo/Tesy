@@ -1,0 +1,239 @@
+diff --git a/src/c294-service-window.h b/src/c294-service-window.h
+new file mode 100644
+index 00000000..f3bcbbd7
+--- /dev/null
++++ b/src/c294-service-window.h
+@@ -0,0 +1,30 @@
++#pragma once
++#include <atomic>
++#include <cstdint>
++#include <vector>
++#include "ggml.h"
++// Bounded diagnostic events. Serialize only after all workers have drained.
++struct c294_event {
++    int64_t us=0, call=0, route=0, bytes=0;
++    uint64_t gen=0;
++    int kind=0, layer=-1, expert=-1, slot=-1, component=-1, rows=0;
++};
++struct c294_window {
++    static constexpr size_t capacity=131072;
++    std::vector<c294_event> events;
++    std::atomic<size_t> count{0};
++    std::atomic<bool> enabled{false}, overflow{false};
++    std::atomic<int64_t> call{0};
++    int64_t next_route=0; // existing manager mutex
++    c294_window():events(capacity) {}
++    void record(int kind,int layer=-1,int expert=-1,int slot=-1,uint64_t gen=0,
++                int64_t route=0,int component=-1,int64_t bytes=0,int rows=0,int64_t owner=-1) {
++        if (!enabled.load(std::memory_order_relaxed)) return;
++        const size_t i=count.fetch_add(1,std::memory_order_relaxed);
++        if(i>=capacity){overflow.store(true);return;}
++        events[i]={ggml_time_us(),owner<0?call.load():owner,route,bytes,gen,kind,layer,expert,slot,component,rows};
++    }
++};
++// kinds: 1 feature, 2 router, 3 demand-state, 4 enqueue, 5 dequeue,
++// 6/7 read begin/end, 8/9 tensor_set begin/end, 10 commit,
++// 11/12 wait begin/end, 13/14 remap begin/end, 15/16 call begin/end.
+diff --git a/src/llama-moe-stream.cpp b/src/llama-moe-stream.cpp
+index b942e118..3e2cb571 100644
+--- a/src/llama-moe-stream.cpp
++++ b/src/llama-moe-stream.cpp
+@@ -342,6 +342,7 @@ void llama_moe_stream::worker_loop() {
+             continue; // stale or duplicate item
+         }
+         sl.slot_claimed[w.slot] = 1;
++        window.record(5,sl.il,w.expert,w.slot,w.gen,w.trace_route,-1,0,0,w.trace_call);
+ 
+         lk.unlock();
+ 
+@@ -355,10 +356,15 @@ void llama_moe_stream::worker_loop() {
+                     ggml_backend_tensor_set(wt.cache,data+entry.relative[k],(size_t)w.slot*wt.nb_expert,wt.nb_expert);
+                 }
+             } else {
++                int component=0;
+                 for (const auto &wt:sl.weights) {
++                    window.record(6,sl.il,w.expert,w.slot,w.gen,w.trace_route,component,wt.nb_expert,0,w.trace_call);
+                     const uint8_t *data=llama_moe_stream_pread(*files[wt.file_idx],staging,wt.nb_expert,wt.offs+(size_t)w.expert*wt.nb_expert,use_direct_io);
++                    window.record(7,sl.il,w.expert,w.slot,w.gen,w.trace_route,component,wt.nb_expert,0,w.trace_call);
+                     if (!data) {ok=false;break;}
++                    window.record(8,sl.il,w.expert,w.slot,w.gen,w.trace_route,component,wt.nb_expert,0,w.trace_call);
+                     ggml_backend_tensor_set(wt.cache,data,(size_t)w.slot*wt.nb_expert,wt.nb_expert);
++                    window.record(9,sl.il,w.expert,w.slot,w.gen,w.trace_route,component++,wt.nb_expert,0,w.trace_call);
+                 }
+             }
+         } catch (const std::exception &error) {
+@@ -371,6 +377,7 @@ void llama_moe_stream::worker_loop() {
+             if (!shutting_down) load_failed=true; // stale/error fail closed, cancellation never publishes
+         } else {
+             sl.slot_state[w.slot]=LLAMA_MOE_STREAM_SLOT_RESIDENT;
++            window.record(10,sl.il,w.expert,w.slot,w.gen,w.trace_route,-1,0,0,w.trace_call);
+             if(expert_store){stats.n_store_loads++;stats.n_store_read_bytes+=tesy_expert_store::weights;}
+         }
+         cv_done.notify_all();
+@@ -470,7 +477,10 @@ void llama_moe_stream_remap(ggml_tensor * dst, const ggml_tensor * a, int ith, i
+     const int32_t * ids = (const int32_t *) a->data;
+           int32_t * out = (int32_t *) dst->data;
+ 
++    mgr->window.record(13,sl->il);
+     std::unique_lock<std::mutex> lk(mgr->mtx);
++    mgr->active_route=++mgr->window.next_route;
++    mgr->window.record(2,sl->il,-1,-1,0,mgr->active_route,-1,0,(int)a->ne[1]);
+ 
+     if (mgr->load_failed) {
+         GGML_ABORT("MoE expert streaming: expert load failed (I/O error)");
+@@ -518,10 +528,11 @@ void llama_moe_stream_remap(ggml_tensor * dst, const ggml_tensor * a, int ith, i
+     bool waited = false;
+     for (const int32_t e : sl->uniq) {
+         const auto it = sl->expert_slot.find(e);
++        mgr->window.record(3,sl->il,e,it==sl->expert_slot.end()?-1:it->second,it==sl->expert_slot.end()?0:sl->slot_gen[it->second],mgr->active_route,-1,it==sl->expert_slot.end()?0:sl->slot_state[it->second]);
+         if (it != sl->expert_slot.end()) {
+             const int32_t s = it->second;
+             if (sl->slot_state[s] == LLAMA_MOE_STREAM_SLOT_LOADING) {
+-                mgr->q_demand.push_back({ sl, e, s, sl->slot_gen[s] });
++                mgr->enqueue_locked(sl,e,s,sl->slot_gen[s]);
+                 mgr->cv_work.notify_one();
+                 waited = true;
+             }
+@@ -541,7 +552,7 @@ void llama_moe_stream_remap(ggml_tensor * dst, const ggml_tensor * a, int ith, i
+                 mgr->stats.n_miss_cold++;
+             }
+             mgr->reserve_slot_locked(*sl, e, v);
+-            mgr->q_demand.push_back({ sl, e, v, sl->slot_gen[v] });
++            mgr->enqueue_locked(sl,e,v,sl->slot_gen[v]);
+             mgr->cv_work.notify_one();
+             mgr->stats.n_miss++;
+             waited = true;
+@@ -552,6 +563,7 @@ void llama_moe_stream_remap(ggml_tensor * dst, const ggml_tensor * a, int ith, i
+ 
+     if (waited) {
+         const int64_t t0 = ggml_time_us();
++        mgr->window.record(11,sl->il,-1,-1,0,mgr->active_route);
+         mgr->cv_done.wait(lk, [&]{
+             if (mgr->load_failed) {
+                 return true;
+@@ -566,6 +578,7 @@ void llama_moe_stream_remap(ggml_tensor * dst, const ggml_tensor * a, int ith, i
+         if (mgr->load_failed) {
+             GGML_ABORT("MoE expert streaming: expert load failed (I/O error)");
+         }
++        mgr->window.record(12,sl->il,-1,-1,0,mgr->active_route);
+         mgr->stats.t_stall_us += ggml_time_us() - t0;
+     }
+ 
+@@ -574,6 +587,7 @@ void llama_moe_stream_remap(ggml_tensor * dst, const ggml_tensor * a, int ith, i
+         sl->slot_last_use[s] = ++sl->use_counter;
+         out[i] = s;
+     }
++    mgr->window.record(14,sl->il,-1,-1,0,mgr->active_route);
+ }
+ 
+ // stable per-wave userdata; grows lazily and records the per-wave expert capacity (set at build)
+@@ -592,6 +606,8 @@ llama_moe_stream_wave * llama_moe_stream_layer::wave_userdata(int32_t wave, uint
+ // wave 0 of a ubatch: record the distinct touched experts (sl.uniq, first-use order) and split them
+ // into consecutive groups of plan_capacity, one group per wave (sl.expert_wave[e] = e's wave)
+ void llama_moe_stream::plan_waves_locked(llama_moe_stream_layer & sl, const int32_t * ids, int64_t n) {
++    active_route=++window.next_route;sl.trace_route=active_route;
++    window.record(2,sl.il,-1,-1,0,active_route,-1,0,(int)(n/4));
+     stats.n_calls++;
+     start_workers_locked();
+ 
+@@ -664,7 +680,7 @@ void llama_moe_stream::stage_wave_locked(std::unique_lock<std::mutex> & lk, llam
+                 // already in the cache (resident, or still loading from the previous wave's preload)
+                 const int32_t s = it->second;
+                 if (sl.slot_state[s] == LLAMA_MOE_STREAM_SLOT_LOADING) {
+-                    q_demand.push_back({ &sl, e, s, sl.slot_gen[s] }); // promote to demand, wait for it
++                    enqueue_locked(&sl,e,s,sl.slot_gen[s]); // promote to demand, wait for it
+                     cv_work.notify_one();
+                     waited = true;
+                 } else {
+@@ -686,7 +702,7 @@ void llama_moe_stream::stage_wave_locked(std::unique_lock<std::mutex> & lk, llam
+                     stats.n_miss_cold++;
+                 }
+                 reserve_slot_locked(sl, e, v);
+-                q_demand.push_back({ &sl, e, v, sl.slot_gen[v] });
++                enqueue_locked(&sl,e,v,sl.slot_gen[v]);
+                 cv_work.notify_one();
+                 stats.n_miss++;
+                 waited = true;
+@@ -713,7 +729,7 @@ void llama_moe_stream::stage_wave_locked(std::unique_lock<std::mutex> & lk, llam
+             }
+             reserve_slot_locked(sl, e, v);
+             sl.keep[v] = 1;
+-            q_demand.push_back({ &sl, e, v, sl.slot_gen[v] });
++            enqueue_locked(&sl,e,v,sl.slot_gen[v]);
+             cv_work.notify_one();
+             stats.n_preload_issued++;
+         }
+@@ -721,6 +737,7 @@ void llama_moe_stream::stage_wave_locked(std::unique_lock<std::mutex> & lk, llam
+ 
+     if (waited) {
+         const int64_t t0 = ggml_time_us();
++        window.record(11,sl.il,-1,-1,0,active_route);
+         cv_done.wait(lk, [&]{
+             if (load_failed) {
+                 return true;
+@@ -735,6 +752,7 @@ void llama_moe_stream::stage_wave_locked(std::unique_lock<std::mutex> & lk, llam
+         if (load_failed) {
+             GGML_ABORT("MoE expert streaming: expert load failed (I/O error)");
+         }
++        window.record(12,sl.il,-1,-1,0,active_route);
+         stats.t_stall_wave_us += ggml_time_us() - t0;
+     }
+ 
+@@ -813,6 +831,7 @@ void llama_moe_stream_wave_ids(ggml_tensor * dst, int ith, int nth, void * userd
+     const int32_t * ids = (const int32_t *) a->data;
+           int32_t * out = (int32_t *) dst->data;
+ 
++    mgr->window.record(13,sl->il);
+     std::unique_lock<std::mutex> lk(mgr->mtx);
+ 
+     if (mgr->load_failed) {
+@@ -824,6 +843,7 @@ void llama_moe_stream_wave_ids(ggml_tensor * dst, int ith, int nth, void * userd
+     if (w == 0) {
+         mgr->plan_waves_locked(*sl, ids, n);
+     }
++    mgr->active_route=sl->trace_route;
+     GGML_ASSERT(sl->plan_next_wave == w); // waves must run in order (enforced by the graph ordering token)
+ 
+     const uint32_t n_ids = (uint32_t) a->ne[0]; // experts per token (n_expert_used)
+diff --git a/src/llama-moe-stream.h b/src/llama-moe-stream.h
+index 39087a15..9d2da6ce 100644
+--- a/src/llama-moe-stream.h
++++ b/src/llama-moe-stream.h
+@@ -1,6 +1,7 @@
+ #pragma once
+ 
+ #include "llama-mmap.h"
++#include "c294-service-window.h"
+ 
+ #include "ggml-cpp.h"
+ 
+@@ -61,6 +62,7 @@ struct llama_moe_stream_layer {
+     llama_moe_stream * mgr = nullptr;
+ 
+     int32_t  il       = -1;
++    int64_t trace_route=0;
+     uint32_t n_expert = 0;
+     uint32_t n_slots  = 0;
+ 
+@@ -111,6 +113,7 @@ struct llama_moe_stream_work {
+     int32_t  expert = -1;
+     int32_t  slot   = -1;
+     uint64_t gen    = 0; // stale unless it matches slot_gen[slot]
++    int64_t trace_route=0, trace_call=0;
+ };
+ 
+ struct llama_moe_stream {
+@@ -165,6 +168,13 @@ struct llama_moe_stream {
+     bool load_failed     = false;
+ 
+     bool debug = false;
++    c294_window window;
++    int64_t active_route=0; // manager mutex, current authoritative router event
++    void enqueue_locked(llama_moe_stream_layer *sl,int expert,int slot,uint64_t gen) {
++        const auto owner=window.call.load();
++        q_demand.push_back({sl,expert,slot,gen,active_route,owner});
++        window.record(4,sl->il,expert,slot,gen,active_route,-1,0,0,owner);
++    }
+ 
+     struct {
+         int64_t n_store_loads = 0; // completed authoritative expert loads through integral store

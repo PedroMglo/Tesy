@@ -1,0 +1,39 @@
+{
+  "measurement_commit": "838092e6e65397b4ed9b99b6e9fcd559f6022fdb",
+  "start": {
+    "utc": "2026-10-07T03:07:48.309185+00:00",
+    "monotonic_s": 118686.754770142
+  },
+  "end": {
+    "utc": "2026-10-07T03:27:45.276794+00:00",
+    "monotonic_s": 119883.722369681
+  },
+  "argv": [
+    "systemd-run",
+    "--user",
+    "--slice=tesy-post-c154.slice",
+    "--unit=tesy-c317-learned-observer",
+    "--collect",
+    "--pipe",
+    "--wait",
+    "--working-directory=/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc",
+    "-p",
+    "MemoryMax=21474836480",
+    "-p",
+    "MemoryHigh=21474836480",
+    "-p",
+    "MemorySwapMax=0",
+    "-p",
+    "RuntimeMaxSec=2800",
+    "-p",
+    "TimeoutStopSec=10",
+    "--",
+    "/usr/bin/python",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/tools/residency_unit_run.py",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c317-learned-staging-observer-qualification-20261007",
+    "--inside"
+  ],
+  "returncode": 0,
+  "stdout": "",
+  "stderr": "Running as unit: tesy-c317-learned-observer.service\n          Finished with result: success\nMain processes terminated with: code=exited, status=0/SUCCESS\n               Service runtime: 19min 56.850s\n             CPU time consumed: 56min 5.734s\n                   Memory peak: 15.3G (swap: 0B)\n"
+}

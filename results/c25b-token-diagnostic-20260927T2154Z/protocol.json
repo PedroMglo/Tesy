@@ -1,0 +1,13 @@
+{
+  "schema": "c25b-token-diagnostic-protocol-v1",
+  "status": "FROZEN_BEFORE_MODEL_OUTPUT",
+  "objective": "observe C24 official token IDs before the exact relation gate; no generation requests",
+  "new_identity_after_c25_harness_prelaunch_failure": true,
+  "run_id": "c25b-token-diagnostic",
+  "model_outputs_permitted": false,
+  "expected_stop_reason": "RUN_ERROR:GateError:frozen incremental token count/common prefix invalid",
+  "pass_condition": "hashed official ID lists, expected pre-request stop and zero generated requests",
+  "same_c24_model_backend_parameters_input_and_guards": true,
+  "thermal_admission": "300 continuous seconds, start <=50/50/45 C, CPU100 and other guards unchanged",
+  "default_changed": false
+}

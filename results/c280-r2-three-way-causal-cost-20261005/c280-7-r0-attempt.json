@@ -1,0 +1,48 @@
+{
+  "id": "c280-7-r0",
+  "start": {
+    "utc": "2026-10-05T21:27:07.339619+00:00",
+    "monotonic_s": 11845.78519342
+  },
+  "end": {
+    "utc": "2026-10-05T21:29:35.692423+00:00",
+    "monotonic_s": 11994.138015644
+  },
+  "argv": [
+    "/usr/bin/python3",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/tools/run_bounded.py",
+    "--run-id",
+    "c280-7-r0",
+    "--model-id",
+    "gpt-oss-120b-mxfp4-gguf",
+    "--backend",
+    "stock",
+    "--backend-root",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/backends/c269-layer-last-use",
+    "--output-root",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c280-r2-three-way-causal-cost-20261005/raw",
+    "--variant",
+    "C75-private-c269-R0",
+    "--workload",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c280-r2-three-way-causal-cost-20261005/protocol.json",
+    "--cache-condition",
+    "Fresh identical mode0 prefix warmup; complete drained initial state; no intermediate drain",
+    "--resource-protocol",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c280-r2-three-way-causal-cost-20261005/protocol.json",
+    "--require-telemetry",
+    "--timeout-s",
+    "240",
+    "--collect-start-inventory",
+    "--",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c276-post-c274-r2-causal-qualification-20261005T204839Z/build/r2-causal-native",
+    "/home/pmglo/models/gpt-oss-120b-gguf/gpt-oss-120b-MXFP4.gguf",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c276-post-c274-r2-causal-qualification-20261005T204839Z/development-inputs.json",
+    "code153",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c280-r2-three-way-causal-cost-20261005/raw/c280-7-r0.native",
+    "R0",
+    "v1"
+  ],
+  "returncode": 0,
+  "stdout": "{\"run_id\": \"c280-7-r0\", \"elapsed_s\": 87.8, \"returncode\": 0, \"stop_reason\": null, \"maxima\": {\"rss_bytes\": 15935348736, \"swap_bytes\": 0, \"cgroup_memory_bytes\": 15918354432, \"cgroup_peak_bytes\": 16000647168, \"cgroup_file_bytes\": 1708199936, \"gpu_used_mib\": 6878.0, \"gpu_temperature_c\": 62.0, \"cpu_tctl_c\": 94.875, \"nvme_composite_c\": 54.85, \"direct_model_fds\": 2, \"buffered_model_fds\": 0}}\n",
+  "stderr": ""
+}

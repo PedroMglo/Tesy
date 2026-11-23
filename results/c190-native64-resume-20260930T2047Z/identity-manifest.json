@@ -1,0 +1,111 @@
+{
+  "baseline": "C143/C75/P12/slots40/ub32 delivered opt-in",
+  "candidate": "C75/P12/slots40/nativeub64 experimental",
+  "model": "582bd40f6886200101f4c4ed9f25f3fe80cc14c86e9e2b37746cd8904a0c622d",
+  "model_stat": {
+    "dev": 53,
+    "inode": 14833675,
+    "size_bytes": 63387346208,
+    "mtime_ns": 1790389637795911032,
+    "ctime_ns": 1790389637807910988
+  },
+  "backend_root": "/tmp/tesy-c75-backend-20260928",
+  "backend_sha": "27d2e42d8c994507ee6d71acc7c58d3eddd3f7a5",
+  "base_streaming": "1248fd8fa8cfebaece5ea992e4d951c1e18bb9d5",
+  "C35_parent": "c3759bad92c0e6f71bb936afea9b0a162fb83f76",
+  "C75_patch": "commit 27d2e42d8c994507ee6d71acc7c58d3eddd3f7a5\nAuthor:     PedroMglo <pedro.lourenco2001@hotmail.com>\nAuthorDate: Mon Sep 28 19:13:56 2026 +0100\nCommit:     PedroMglo <pedro.lourenco2001@hotmail.com>\nCommitDate: Mon Sep 28 19:13:56 2026 +0100\n\n    C75: port C57 parked MMID skip to C35 session backend\n    \n    Source semantics from b948e2d..aac3bbd; preserve broadcast activation conversion, write parked outputs, gate by TESY_CPU_WAVE_SKIP_PARKED. C48/C61/C66 failures remain historical; no model validation yet.\n\ndiff --git a/ggml/src/ggml-cpu/ggml-cpu.c b/ggml/src/ggml-cpu/ggml-cpu.c\nindex 8a0e5c2..b128bbf 100644\n--- a/ggml/src/ggml-cpu/ggml-cpu.c\n+++ b/ggml/src/ggml-cpu/ggml-cpu.c\n@@ -1622,6 +1622,15 @@ static void ggml_compute_forward_mul_mat_id(\n             for (int id = 0; id < n_ids; ++id) {\n                 const int32_t i02 = *(const int32_t *) ((const char *) ids->data + iid1*ids->nb[1] + id*ids->nb[0]);\n \n+#ifdef TESY_C47_CPU_SKIP_PARKED\n+                if (i02 == -1) {\n+                    // Shared activation conversion above still runs for all\n+                    // rows; an active ID may consume a broadcast row.\n+                    // Write the parked output so the graph keeps its shape.\n+                    memset((char *) dst->data + id*nb1 + iid1*nb2, 0, ne01*sizeof(float));\n+                    continue;\n+                }\n+#endif\n                 assert(i02 >= 0 && i02 < n_as);\n \n                 MMID_MATRIX_ROW(i02, matrix_row_counts[i02]) = (struct mmid_row_mapping) {id, iid1};\ndiff --git a/src/llama-moe-stream.cpp b/src/llama-moe-stream.cpp\nindex ce17396..fbbeafa 100644\n--- a/src/llama-moe-stream.cpp\n+++ b/src/llama-moe-stream.cpp\n@@ -809,6 +809,21 @@ void llama_moe_stream_wave_ids(ggml_tensor * dst, int ith, int nth, void * userd\n     sl->plan_next_wave = w + 1;\n \n     mgr->emit_wave_slots(*sl, ids, out, w, n_ids, a->ne[1]);\n+#ifdef TESY_C47_CPU_SKIP_PARKED\n+    if (std::getenv(\"TESY_CPU_WAVE_SKIP_PARKED\") != nullptr) {\n+        GGML_ASSERT(!sl->weights.empty() && sl->weights[0].cache != nullptr &&\n+                    sl->weights[0].cache->buffer != nullptr);\n+        // The stock CPU buffer type has no backend device; host accessibility\n+        // is the execution property used by the original C57 mechanism.\n+        if (ggml_backend_buffer_is_host(sl->weights[0].cache->buffer)) {\n+            for (int64_t i = 0; i < n; i++) {\n+                if (sl->expert_wave[ids[i]] != (uint8_t) w) {\n+                    out[i] = -1;\n+                }\n+            }\n+        }\n+    }\n+#endif\n }\n \n // multi-pass prefill: 1.0 for pairs whose expert belongs to wave w, 0.0 otherwise; multiplied into\n",
+  "graph_sha256": "eab00ef87d7212708f3ac4ec4f643dfc1c640f9949633827ff5017e7c56c705c",
+  "graph_diff_from_base_bytes": 0,
+  "CMake_cache_sha256": "55343c5cc0d5f1fc61b82d6d4575fee182f986bf632e0d95b3459009c60334b4",
+  "compile_commands_sha256": "c16b21313face1f11ac8cd88b0c9adebf6fd923fb38dc96df1be717bd7ff4fa1",
+  "effective_commands": [
+    {
+      "directory": "/tmp/tesy-c75-backend-20260928/build-c75-cuda",
+      "command": "/usr/bin/gcc-15 -DGGML_BACKEND_BUILD -DGGML_BACKEND_SHARED -DGGML_SCHED_MAX_COPIES=4 -DGGML_SHARED -DGGML_USE_CPU_REPACK -DGGML_USE_LLAMAFILE -DGGML_USE_OPENMP -D_GNU_SOURCE -D_XOPEN_SOURCE=600 -Dggml_cpu_EXPORTS -I/tmp/tesy-c75-backend-20260928/ggml/src/.. -I/tmp/tesy-c75-backend-20260928/ggml/src/. -I/tmp/tesy-c75-backend-20260928/ggml/src/ggml-cpu -I/tmp/tesy-c75-backend-20260928/ggml/src/../include -DTESY_C47_CPU_SKIP_PARKED -O3 -DNDEBUG -std=gnu11 -fPIC -Wshadow -Wstrict-prototypes -Wpointer-arith -Wmissing-prototypes -Werror=implicit-int -Werror=implicit-function-declaration -Wall -Wextra -Wpedantic -Wcast-qual -Wno-unused-function -Wdouble-promotion -march=native -fopenmp -o ggml/src/CMakeFiles/ggml-cpu.dir/ggml-cpu/ggml-cpu.c.o -c /tmp/tesy-c75-backend-20260928/ggml/src/ggml-cpu/ggml-cpu.c",
+      "file": "/tmp/tesy-c75-backend-20260928/ggml/src/ggml-cpu/ggml-cpu.c",
+      "output": "/tmp/tesy-c75-backend-20260928/build-c75-cuda/ggml/src/CMakeFiles/ggml-cpu.dir/ggml-cpu/ggml-cpu.c.o"
+    },
+    {
+      "directory": "/tmp/tesy-c75-backend-20260928/build-c75-cuda",
+      "command": "/usr/local/cuda/bin/nvcc -forward-unknown-to-host-compiler -ccbin=/usr/bin/g++-15 -DGGML_BACKEND_BUILD -DGGML_BACKEND_SHARED -DGGML_CUDA_PEER_MAX_BATCH_SIZE=128 -DGGML_CUDA_USE_GRAPHS -DGGML_SCHED_MAX_COPIES=4 -DGGML_SHARED -D_GNU_SOURCE -D_XOPEN_SOURCE=600 -Dggml_cuda_EXPORTS -I/tmp/tesy-c75-backend-20260928/ggml/src/ggml-cuda/.. -I/tmp/tesy-c75-backend-20260928/ggml/src/../include -isystem /usr/local/cuda/targets/x86_64-linux/include -isystem /usr/local/cuda/targets/x86_64-linux/include/cccl -std=c++17 \"--generate-code=arch=compute_89,code=[compute_89,sm_89]\" -Xcompiler=-fPIC -use_fast_math -extended-lambda -compress-mode=size -Xcompiler \"-Wmissing-declarations -Wmissing-noreturn -Wall -Wextra -Wpedantic -Wcast-qual -Wno-unused-function -Wno-array-bounds -Wextra-semi -Wno-pedantic\" -x cu -c /tmp/tesy-c75-backend-20260928/ggml/src/ggml-cuda/ggml-cuda.cu -o ggml/src/ggml-cuda/CMakeFiles/ggml-cuda.dir/ggml-cuda.cu.o",
+      "file": "/tmp/tesy-c75-backend-20260928/ggml/src/ggml-cuda/ggml-cuda.cu",
+      "output": "/tmp/tesy-c75-backend-20260928/build-c75-cuda/ggml/src/ggml-cuda/CMakeFiles/ggml-cuda.dir/ggml-cuda.cu.o"
+    },
+    {
+      "directory": "/tmp/tesy-c75-backend-20260928/build-c75-cuda",
+      "command": "/usr/local/cuda/bin/nvcc -forward-unknown-to-host-compiler -ccbin=/usr/bin/g++-15 -DGGML_BACKEND_BUILD -DGGML_BACKEND_SHARED -DGGML_CUDA_PEER_MAX_BATCH_SIZE=128 -DGGML_CUDA_USE_GRAPHS -DGGML_SCHED_MAX_COPIES=4 -DGGML_SHARED -D_GNU_SOURCE -D_XOPEN_SOURCE=600 -Dggml_cuda_EXPORTS -I/tmp/tesy-c75-backend-20260928/ggml/src/ggml-cuda/.. -I/tmp/tesy-c75-backend-20260928/ggml/src/../include -isystem /usr/local/cuda/targets/x86_64-linux/include -isystem /usr/local/cuda/targets/x86_64-linux/include/cccl -std=c++17 \"--generate-code=arch=compute_89,code=[compute_89,sm_89]\" -Xcompiler=-fPIC -use_fast_math -extended-lambda -compress-mode=size -Xcompiler \"-Wmissing-declarations -Wmissing-noreturn -Wall -Wextra -Wpedantic -Wcast-qual -Wno-unused-function -Wno-array-bounds -Wextra-semi -Wno-pedantic\" -x cu -c /tmp/tesy-c75-backend-20260928/ggml/src/ggml-cuda/mmq.cu -o ggml/src/ggml-cuda/CMakeFiles/ggml-cuda.dir/mmq.cu.o",
+      "file": "/tmp/tesy-c75-backend-20260928/ggml/src/ggml-cuda/mmq.cu",
+      "output": "/tmp/tesy-c75-backend-20260928/build-c75-cuda/ggml/src/ggml-cuda/CMakeFiles/ggml-cuda.dir/mmq.cu.o"
+    },
+    {
+      "directory": "/tmp/tesy-c75-backend-20260928/build-c75-cuda",
+      "command": "/usr/bin/g++-15 -DGGML_BACKEND_SHARED -DGGML_SHARED -DGGML_USE_CPU -DGGML_USE_CUDA -DLLAMA_BUILD -DLLAMA_SHARED -Dllama_EXPORTS -I/tmp/tesy-c75-backend-20260928/src/. -I/tmp/tesy-c75-backend-20260928/src/../include -I/tmp/tesy-c75-backend-20260928/ggml/src/../include -DTESY_C47_CPU_SKIP_PARKED -O3 -DNDEBUG -fPIC -Wmissing-declarations -Wmissing-noreturn -Wall -Wextra -Wpedantic -Wcast-qual -Wno-unused-function -Wno-array-bounds -Wextra-semi -o src/CMakeFiles/llama.dir/llama-graph.cpp.o -c /tmp/tesy-c75-backend-20260928/src/llama-graph.cpp",
+      "file": "/tmp/tesy-c75-backend-20260928/src/llama-graph.cpp",
+      "output": "/tmp/tesy-c75-backend-20260928/build-c75-cuda/src/CMakeFiles/llama.dir/llama-graph.cpp.o"
+    },
+    {
+      "directory": "/tmp/tesy-c75-backend-20260928/build-c75-cuda",
+      "command": "/usr/bin/g++-15 -DGGML_BACKEND_SHARED -DGGML_SHARED -DGGML_USE_CPU -DGGML_USE_CUDA -DLLAMA_BUILD -DLLAMA_SHARED -Dllama_EXPORTS -I/tmp/tesy-c75-backend-20260928/src/. -I/tmp/tesy-c75-backend-20260928/src/../include -I/tmp/tesy-c75-backend-20260928/ggml/src/../include -DTESY_C47_CPU_SKIP_PARKED -O3 -DNDEBUG -fPIC -Wmissing-declarations -Wmissing-noreturn -Wall -Wextra -Wpedantic -Wcast-qual -Wno-unused-function -Wno-array-bounds -Wextra-semi -o src/CMakeFiles/llama.dir/llama-moe-stream.cpp.o -c /tmp/tesy-c75-backend-20260928/src/llama-moe-stream.cpp",
+      "file": "/tmp/tesy-c75-backend-20260928/src/llama-moe-stream.cpp",
+      "output": "/tmp/tesy-c75-backend-20260928/build-c75-cuda/src/CMakeFiles/llama.dir/llama-moe-stream.cpp.o"
+    }
+  ],
+  "native_probes": {
+    "model_stat": {
+      "dev": 53,
+      "inode": 14833675,
+      "size_bytes": 63387346208,
+      "mtime_ns": 1790389637795911032,
+      "ctime_ns": 1790389637807910988
+    },
+    "model_sha256_previously_verified": "582bd40f6886200101f4c4ed9f25f3fe80cc14c86e9e2b37746cd8904a0c622d",
+    "backend_sha": "27d2e42d8c994507ee6d71acc7c58d3eddd3f7a5",
+    "binaries": {
+      "capture": "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c191-native64-numeric-20260930T2055Z/build/capture",
+      "reference": "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c191-native64-numeric-20260930T2055Z/build/reference"
+    },
+    "binary_sha256": {
+      "capture": "d92e519c12315f140cf88e7934d98582febc903279266d3e980143be7313ef7f",
+      "reference": "7fc8b587a65886ba0b2575615c48f7714d2f4f210611bfe45a7104c1c11e9669"
+    },
+    "library_sha256": {
+      "build-c75-cuda/bin/libllama.so.0.0.3": "d44895329a013d9fe674a31b04d52de5ae9c66efcfe8b5e7fe50d797f4b13a11",
+      "build-c75-cuda/bin/libggml.so.0.15.3": "c8e142ca0fd311d472d17578f58d5a9694d95e256131b13456b8f9d11e867951",
+      "build-c75-cuda/bin/libggml-base.so.0.15.3": "c91a937208a64dd1beabf13de83a5896729f3983b51e8636eaa44b111bb6f229",
+      "build-c75-cuda/bin/libggml-cpu.so.0.15.3": "ec5de96d7cacaf0a96e7d678ec28f337c1082c57ae6fbfbbbbcbaaf945cf5697",
+      "build-c75-cuda/bin/libggml-cuda.so.0.15.3": "b119db0b5abd29cba9101aaba7c2cc0607a521585028a102e459ac7e318d575d"
+    },
+    "numeric_ids_sha256": "8fb3aff447febaeaa5a8bdd0c485fd20d51d39fb6ac3e6ba4849eb4a664dbc23",
+    "generation": {
+      "capture": {
+        "parent": "tools/c127_slots40_boundary_capture.cpp",
+        "parent_sha256": "8ea008162827059d5195a10e3cdbd7488a1b497fddf8dc56373768c74d1c5635",
+        "generated_sha256": "a4753d061cdecdb433f71450522e4b5c98b0f9a4b48c535b386a6f913efdfbaa",
+        "source": "results/c191-native64-numeric-20260930T2055Z/build/capture.cpp",
+        "patch": "results/c191-native64-numeric-20260930T2055Z/build/capture.patch"
+      },
+      "reference": {
+        "parent": "tools/c7_layer_reference.cpp",
+        "parent_sha256": "8e2cea78501bc1889fc99cada9613a60288a71e2014b8d2a201308cceabb21a9",
+        "generated_sha256": "90b5ab5c75a4759f02f2268636b0fe9cf36468347de975eb881dcb48974587c3",
+        "source": "results/c191-native64-numeric-20260930T2055Z/build/reference.cpp",
+        "patch": "results/c191-native64-numeric-20260930T2055Z/build/reference.patch"
+      }
+    }
+  },
+  "server_binary_sha256": "2db3a91973dc00b3ae6f9f43bcaa5135d830b4aeaae923f7612d3232b6624886",
+  "server_libraries_sha256": {
+    "build-c75-cuda/bin/libggml-base.so.0.15.3": "c91a937208a64dd1beabf13de83a5896729f3983b51e8636eaa44b111bb6f229",
+    "build-c75-cuda/bin/libggml-cpu.so.0.15.3": "ec5de96d7cacaf0a96e7d678ec28f337c1082c57ae6fbfbbbbcbaaf945cf5697",
+    "build-c75-cuda/bin/libggml-cuda.so.0.15.3": "b119db0b5abd29cba9101aaba7c2cc0607a521585028a102e459ac7e318d575d",
+    "build-c75-cuda/bin/libggml.so.0.15.3": "c8e142ca0fd311d472d17578f58d5a9694d95e256131b13456b8f9d11e867951",
+    "build-c75-cuda/bin/libllama-common.so.0.0.3": "69f8af6fc47def362e0a372b7276628fccb924cf42feedc60e1147041b2d5256",
+    "build-c75-cuda/bin/libllama-server-impl.so": "8f844115e6e10a166039de052bd735af27d729476ba4e3939bb050547d6456b5",
+    "build-c75-cuda/bin/libllama.so.0.0.3": "d44895329a013d9fe674a31b04d52de5ae9c66efcfe8b5e7fe50d797f4b13a11",
+    "build-c75-cuda/bin/libmtmd.so.0.0.3": "f6d3bee1fa64558a2813bf2532637556430d2db614c7d409d293f562b33144be"
+  },
+  "probe_library_note": "Same five llama/ggml compute libraries in both probes and original server. Server also maps common/server-impl/mtmd; no substitutions.",
+  "compiler": "g++-15 (GCC) 15.3.1 20260722 (Red Hat 15.3.1-1)\nCopyright (C) 2025 Free Software Foundation, Inc.\nThis is free software; see the source for copying conditions.  There is NO\nwarranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n\n",
+  "baseline_rebuild_commands": "Retain original CMakeCache + compile_commands in backend; cmake --build build-c75-cuda. Rebuilt outputs must be rehashed/requalified, never inherit original hash.",
+  "reconstruction_limit": "Original backend/build in /tmp is NOT durable across reboot/cleanup. This manifest and pinned sources are durable; no weights or ELF copied to Git."
+}

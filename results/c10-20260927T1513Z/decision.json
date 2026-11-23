@@ -1,0 +1,25 @@
+{
+  "after_scope_cpu_c": [
+    47.375,
+    47.5
+  ],
+  "budget_charge_s": 2.0,
+  "default_changed": false,
+  "failures_preserved": [
+    "C10 two precondition rejections",
+    "C9 513-ID CPU thermal guard FAIL"
+  ],
+  "gates": {
+    "G0_model_free": "PASS_70_TESTS_AND_ONE_FLAG_DELTA",
+    "G1_init": "PRECONDITION_NOT_MET_NO_MODEL",
+    "G2_forward": "NOT_RUN",
+    "G3_short513": "NOT_RUN",
+    "numeric_reference": "NOT_RUN"
+  },
+  "measurement_commit": "86321d9f7228c528f8ba8cb8e41e2ead2d0400fe",
+  "model_executions": 0,
+  "next_action": "new identity with start temperature policy robust to idle sensor transients, same absolute 95 C guard; first init-only and minimum forward again before 513",
+  "observed": "two administrative scope starts rejected before server.run because CPU start sensor exceeded added 47 C precondition; exact inner temperatures were not recorded",
+  "schema": "c10-preflight-decision-v1",
+  "status": "CONTINUE_NEXT_HYPOTHESIS"
+}

@@ -1,0 +1,13 @@
+# C52 — sustained actual assistant-history session
+
+- Objective: test whether the P12 8K session bridge that passed two turns in C51 retains exact prefixes, answer continuity and resource safety over 20 requests and at least 60 minutes.
+- Base: `9f7df83f1c4fe1264d70c5b6011188ebe939e86f`, branch `campaign/120b-assistant-history-sustained-20260928-1123utc`; the physical measurement will use a later clean protocol commit.
+- Evidence: C51 passed two turns with old prompt LCP 2043 and cache_n 2044, while C37 passed a 20-request, 72-minute synthetic user-only session. These do not establish sustained actual assistant-history behavior.
+- Hypothesis: accumulated actual assistant messages preserve prefix caching and the five-digit answer. Alternative: history growth, template serialization or thermal/resource drift breaks a later turn.
+- Frozen profile: C35 backend and binary, original 120B GGUF, P12 ngl12, ub32, slots32, preload ON, 8K full SWA, F16 KV, medium effort, E18 zero swap, CPU95 warning/100 stop, GPU80/NVMe70, no power changes. The runner verifies hashes and current host before launch.
+- Workload: 20 turns; first 1960 `alpha` words and five-digit request, then 19 user turns adding 127 `beta` words and asking to repeat the previous answer. The actual prior assistant messages accumulate. Template date 2026-09-28, temperature 0, seed 42, cap 256 per turn, 165 seconds idle between requests. No hidden context truncation.
+- Primary gate: 20 complete finite responses, elapsed >=3600 s; all later answers exactly equal the first five-digit answer; 19 adjacent official-token LCP values >=1900 and tail loss <=32; cache_n within the prospective source-based generated-token band and prompt_n+cache_n equals prompt count; no telemetry, OOM, swap or guard failure. Record first/last ten request and decode medians. One run, no retry.
+- Budget: 4800 s server timeout; 900 s maximum idle admission; 300 s cleanup reserve. Previous physical time counts toward the 16 h program cap. One run starts only if this remaining reservation fits.
+- Decision: a PASS qualifies only this synthetic session scope and M3 remains partial until broader usage and latency criteria are met. A FAIL is preserved; no threshold changes or repeated attempts within C52.
+- Tests before model: assistant-history helper tests, strict protocol/input/source hashes, host/scope preflight, idle admission. Timing and sustained outcomes: NOT_RUN at freeze.
+- Next gate after PASS: investigate incremental final-content latency and decode throughput with a separately frozen hypothesis; after FAIL: diagnose the observed failure in a new identity.

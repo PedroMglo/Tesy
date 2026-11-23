@@ -1,0 +1,32 @@
+{
+  "command": [
+    "g++",
+    "-O3",
+    "-std=c++17",
+    "-fopenmp",
+    "-DTESY_C47_CPU_SKIP_PARKED",
+    "-I/tmp/tesy-c75-backend-20260928/include",
+    "-I/tmp/tesy-c75-backend-20260928/src",
+    "-I/tmp/tesy-c75-backend-20260928/ggml/include",
+    "-I/tmp/tesy-c75-backend-20260928/ggml/src",
+    "-I/tmp/tesy-c75-backend-20260928/vendor",
+    "tools/readiness_pilot.cpp",
+    "results/c234-readiness-pilot-or-bound-20261001/build/ggml-cpu-readiness.o",
+    "-L/tmp/tesy-c75-backend-20260928/build-c75-cuda/bin",
+    "-Wl,-rpath,/tmp/tesy-c75-backend-20260928/build-c75-cuda/bin",
+    "-Wl,--export-dynamic",
+    "-lllama",
+    "-lggml",
+    "-lggml-cpu",
+    "-lggml-base",
+    "-ldl",
+    "-o",
+    "results/c234-readiness-pilot-or-bound-20261001/build/readiness_pilot"
+  ],
+  "build_stdout": "raw/pilot-build-2.stdout",
+  "build_stderr": "raw/pilot-build-2.stderr",
+  "compiler": "g++ (GCC) 16.2.1 20260819 (Red Hat 16.2.1-2)",
+  "binary_sha256": "53219e941e0c7fc8ef2232df4c98fe865a28029cecef88884f880e2e86008a84",
+  "private_object_sha256": "3ed14691f88b22ada1a90d9ca46c538e77b57b4f401d2ac2908ea76011aba29a",
+  "shared_runtime_unchanged": true
+}

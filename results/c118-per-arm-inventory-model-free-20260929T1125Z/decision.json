@@ -1,0 +1,15 @@
+{
+  "schema": "c118-model-free-decision-v1",
+  "status": "HARNESS_COMPONENT_READY_MODEL_FREE",
+  "evidence_class": "REPRODUZIDO_MODEL_FREE",
+  "source": "tools/c118_start_inventory.py",
+  "tests": "tools.test_c117_start_inventory tools.test_c118_start_inventory",
+  "tests_passed": 2,
+  "c117_reanalysis": "GateError: C117 missing per-arm 60 s inventory: c117-p1-control",
+  "full_entrypoint_test": "NOT_RUN",
+  "physical_model_run": "NOT_RUN",
+  "old_c117_effective_status": "FAIL_RESOURCES_OR_EVIDENCE",
+  "next_action": "integrate helper into new runner identity; test per-arm call order and negative missing/gap before model; freeze new protocol and run only if a new admitted budget exists",
+  "default_changed": false,
+  "publication": "LOCAL_ONLY"
+}

@@ -3,8 +3,7 @@ name: ci
 on:
   workflow_dispatch:
   pull_request:
-    types:
-      - ready_for_review
+    types: [opened, synchronize, reopened]
 
 permissions:
   contents: read
@@ -14,6 +13,15 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  history:
+    name: Recover all inventoried branch heads
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - run: python3 research/consolidacao-20261123/verify.py
+
   static:
     runs-on: ubuntu-latest
     steps:
@@ -39,6 +47,15 @@ jobs:
               json.loads(path.read_text(encoding="utf-8"))
               print(path)
           PY
+      - name: Reproduce C320 receipts in the shallow checkout
+        run: python research/post-c320/analyse.py > "$RUNNER_TEMP/post-c320.json"
+      - name: Validate operational lab gates with model-free fixtures
+        env:
+          PYTHONPATH: tools
+        run: >-
+          python -m unittest -q test_host_resource_policy test_c143_optin_inventory test_c143_optin_stop
+          test_r2_causal_gate test_expert_staging_gate test_expert_learned_staging_gate
+          test_expert_staging_cost_gate test_expert_staging_product_cost_gate
       - name: CLI model-free smoke
         run: |
           tesy --help
@@ -61,9 +78,9 @@ jobs:
           python -m pip install -U pip
           python -m pip install -e '.[dev]'
       - name: Ruff
-        run: ruff check .
+        run: ruff check benchmarks scripts src tests research --exclude results
       - name: Compile
-        run: python -m compileall -q src tests
+        run: python -m compileall -q src tests tools research/post-c320 research/consolidacao-20261123
       - name: Validate manifests and shell syntax
         run: |
           python -m json.tool configs/backends.lock.json >/dev/null
@@ -81,8 +98,10 @@ jobs:
       - name: Fetch pinned llama.cpp
         run: |
           mkdir -p .deps
-          git clone --filter=blob:none https://github.com/ggml-org/llama.cpp.git .deps/llama.cpp
-          git -C .deps/llama.cpp checkout --detach 4e416ee7308dd6b581796f1a6241276cd5982691
+          git init .deps/llama.cpp
+          git -C .deps/llama.cpp fetch --depth=1 https://github.com/ggml-org/llama.cpp.git 4e416ee7308dd6b581796f1a6241276cd5982691
+          git -C .deps/llama.cpp checkout --detach FETCH_HEAD
+          test "$(git -C .deps/llama.cpp rev-parse HEAD)" = 4e416ee7308dd6b581796f1a6241276cd5982691
           test -z "$(git -C .deps/llama.cpp status --porcelain)"
       - name: Configure tracer
         run: |
@@ -90,7 +109,18 @@ jobs:
             -DLLAMA_CPP_SOURCE_DIR="$PWD/.deps/llama.cpp" \
             -DGGML_CUDA=OFF \
             -DCMAKE_BUILD_TYPE=Release
-      - name: Build tracer
-        run: cmake --build build/native-ci --parallel 2 --target tesy-moe-trace
+      - name: Compile integrated residency, tracer and model-free graph tests
+        run: >-
+          cmake --build build/native-ci --parallel 2 --target tesy-moe-trace tesy-mixed-residency
+          tesy-split-graph-model-free tesy-sum-graph-model-free
+          tesy-static-residency-model-free tesy-down-replay-model-free
       - name: Smoke tracer CLI
         run: build/native-ci/tesy-moe-trace --help
+      - name: Split-graph MF0/MF1/MF2
+        run: build/native-ci/tesy-split-graph-model-free
+      - name: Leaf aggregation topology and execution
+        run: build/native-ci/tesy-sum-graph-model-free
+      - name: Static identity residency route partition
+        run: build/native-ci/tesy-static-residency-model-free
+      - name: Leaf-only down projection replay and slot mapping
+        run: build/native-ci/tesy-down-replay-model-free

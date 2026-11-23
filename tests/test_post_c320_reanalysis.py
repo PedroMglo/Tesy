@@ -90,12 +90,18 @@ def test_second_call_capacity_bound_uses_strict_threshold():
                 "tier": "CPU" if layer < 25 else "CUDA0",
                 "demanded_union": list(range(n)),
                 "union_count": n,
+                "actual_loads": n if layer < 35 else 0,
+                "actual_logical_bytes": 32 * n if layer < 35 else 0,
             }
         )
     result = audit["prefill_union_sizes"](rows)
     assert result["CPU"]["above_40"] == 2
     assert result["CPU"]["second_call_min_ids_where_over_40"] == {1: 41}
     assert result["CUDA0"]["second_call_min_ids_where_over_40"] == {35: 47}
+    assert result["CPU"]["phase_min_primary_admissions"] == 41
+    assert result["CPU"]["second_call_min_primary_admissions"] == 1
+    assert result["CUDA0"]["second_call_min_primary_admissions"] == 7
+    assert result["CUDA0"]["encoded_expert_payload_bytes"] == 32
     rows[1]["demanded_union"][-1] = 0
     with pytest.raises(ValueError, match="union cardinality"):
         audit["prefill_union_sizes"](rows)

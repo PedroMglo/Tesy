@@ -1,0 +1,36 @@
+{
+  "backend_commit": "27d2e42d8c994507ee6d71acc7c58d3eddd3f7a5",
+  "canonical_layer_loads": 36,
+  "claim_limit": "P12 n_ctx4096 preload OFF routed FFN only; independent attention/KV and 8192 session profile NOT_RUN",
+  "default_changed": false,
+  "masked_rows": 2,
+  "measurement_commits": {
+    "remaining": "e7ccb0ede374c15c6caf0e14d9246f5794aff8e4",
+    "witness": "12195f97a802332b59d7a0f88d8008cfe937f608"
+  },
+  "next_action": "Fresh ON repeat on C75 build, then prospective n_ctx8192 preload-ON session gate",
+  "numeric_rows": 250,
+  "preserved_failures": [
+    "C48 FAIL_SAME_PROFILE_FIDELITY",
+    "C61 FAIL_NUMERIC_RUNTIME_ASSERTION",
+    "C66 FAIL_NUMERIC_RUNTIME_ASSERTION"
+  ],
+  "resources": {
+    "cgroup_cap_bytes": 17179869184,
+    "layer_loads": 36,
+    "maxima": {
+      "cgroup_peak_bytes": 4113285120,
+      "cpu_tctl_c": 76.125,
+      "gpu_temperature_c": 49.0,
+      "gpu_used_mib": 1734.0,
+      "nvme_composite_c": 44.85,
+      "rss_bytes": 2506108928,
+      "swap_bytes": 0
+    },
+    "schema": "c77-resource-summary-v1",
+    "sum_bounded_elapsed_s": 65.537,
+    "swap_events_oom": "ZERO_ALL_36"
+  },
+  "schema": "c77-decision-v1",
+  "status": "PASS_FULL_RESIDENT_CANONICAL_FFN_TESTED_SCOPE"
+}

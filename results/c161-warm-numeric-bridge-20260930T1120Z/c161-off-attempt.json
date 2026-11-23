@@ -1,0 +1,45 @@
+{
+  "id": "c161-off",
+  "start": {
+    "utc": "2026-09-30T11:22:08.997011+00:00",
+    "monotonic_s": 261708.47023208
+  },
+  "end": {
+    "utc": "2026-09-30T11:24:37.470874+00:00",
+    "monotonic_s": 261856.944107849
+  },
+  "argv": [
+    "/usr/bin/python3",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/tools/run_bounded.py",
+    "--run-id",
+    "c161-off",
+    "--model-id",
+    "gpt-oss-120b-mxfp4-gguf",
+    "--backend",
+    "stock",
+    "--backend-root",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/backends/c156-qualified-snapshot",
+    "--output-root",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c161-warm-numeric-bridge-20260930T1120Z/raw",
+    "--variant",
+    "C75-P12-slots44-warm-numeric-logger-off",
+    "--workload",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c161-warm-numeric-bridge-20260930T1120Z/protocol.json",
+    "--cache-condition",
+    "off",
+    "--resource-protocol",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c161-warm-numeric-bridge-20260930T1120Z/protocol.json",
+    "--require-telemetry",
+    "--timeout-s",
+    "180",
+    "--collect-start-inventory",
+    "--",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c156-snapshot-gates-20260930T1000Z/build/residency_probe",
+    "/home/pmglo/models/gpt-oss-120b-gguf/gpt-oss-120b-MXFP4.gguf",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c161-warm-numeric-bridge-20260930T1120Z/raw/development.tsv",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c161-warm-numeric-bridge-20260930T1120Z/raw/c161-off.capture"
+  ],
+  "returncode": 0,
+  "stdout": "{\"run_id\": \"c161-off\", \"elapsed_s\": 85.816, \"returncode\": 0, \"stop_reason\": null, \"maxima\": {\"rss_bytes\": 17274937344, \"swap_bytes\": 0, \"cgroup_memory_bytes\": 17199304704, \"cgroup_peak_bytes\": 17247621120, \"cgroup_file_bytes\": 1625546752, \"gpu_used_mib\": 7438.0, \"gpu_temperature_c\": 62.0, \"cpu_tctl_c\": 95.25, \"nvme_composite_c\": 49.85, \"direct_model_fds\": 2, \"buffered_model_fds\": 0}}\n",
+  "stderr": ""
+}

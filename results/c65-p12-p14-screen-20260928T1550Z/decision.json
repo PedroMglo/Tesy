@@ -1,0 +1,12 @@
+{
+  "schema": "c65-freeze-decision-v1",
+  "status": "MODEL_FREE_FREEZE_SUPERSEDED",
+  "reason": "The first freeze rejected an overly strict library set comparison. After correcting it, review found that per-arm receipts would dirty the measurement tree; the runner was corrected before any model run. The frozen runner hash is retained and this campaign identity is not used for inference.",
+  "model_runs": 0,
+  "paired_timing": "NOT_RUN",
+  "resources": "60-second inventory completed; physical inference NOT_RUN",
+  "old_failures_preserved": ["C48 FAIL_SAME_PROFILE_FIDELITY", "C61 FAIL_NUMERIC_RUNTIME_ASSERTION"],
+  "next_action": "create a new C65b campaign identity, fresh inventory and freeze with corrected runner",
+  "default_changed": false,
+  "publication": "local only"
+}

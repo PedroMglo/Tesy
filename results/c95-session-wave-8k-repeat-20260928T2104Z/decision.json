@@ -1,0 +1,23 @@
+{
+  "schema": "c95-decision-v1",
+  "status": "SAME_PROFILE_BITWISE_PASS_FRESH_8K_ON",
+  "measurement_commit": "193185d1e0bb244d39c33a2780216d956406158b",
+  "source_run": "c93-p12-session-wave-on01",
+  "repeat_run": "c95-p12-session-wave-8k-on-repeat01",
+  "profile": "P12 n_ctx8192 preload ON unified KV, C75 backend",
+  "numeric_states": 250,
+  "masked_states": 2,
+  "active_core_stage_comparisons_bitwise_equal": 1500,
+  "full_logit_vectors_bitwise_equal": 5,
+  "parked_sentinels_each": 80800,
+  "mismatches": [],
+  "resources": {"cgroup_cap_bytes": 19327352832, "cgroup_peak_bytes": 15899992064, "gpu_peak_mib": 5786.0, "cpu_max_c": 65.875, "swap_bytes": 0},
+  "claim_limit": "Fresh-process repeat for frozen 8K active boundary and five selected logits only; independent attention/KV, serving cache behavior and stochastic sampling remain untested.",
+  "server_bridge": "NOT_RUN",
+  "M3": "PARTIAL_HISTORICAL_C52B_ON_C35",
+  "M4": "NOT_MET",
+  "preserved_failures": ["C48 fidelity FAIL", "C78 E16 resource FAIL", "C91 launcher FAIL"],
+  "next_action": "Freeze a contemporary C35-vs-C75 8K server session bridge with exact token/prefix accounting and request markers; screen before longer qualification.",
+  "default_changed": false,
+  "publication": "local_only"
+}

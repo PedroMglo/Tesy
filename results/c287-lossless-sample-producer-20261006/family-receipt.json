@@ -1,0 +1,39 @@
+{
+  "measurement_commit": "93eb5f81222ae96e916c871d429d26c860ef91d3",
+  "start": {
+    "utc": "2026-10-06T20:45:34.796124+00:00",
+    "monotonic_s": 95753.241700151
+  },
+  "end": {
+    "utc": "2026-10-06T20:47:39.462721+00:00",
+    "monotonic_s": 95877.908295876
+  },
+  "argv": [
+    "systemd-run",
+    "--user",
+    "--slice=tesy-post-c154.slice",
+    "--unit=tesy-c287-lossless-producer",
+    "--collect",
+    "--pipe",
+    "--wait",
+    "--working-directory=/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc",
+    "-p",
+    "MemoryMax=2147483648",
+    "-p",
+    "MemoryHigh=2147483648",
+    "-p",
+    "MemorySwapMax=0",
+    "-p",
+    "RuntimeMaxSec=375",
+    "-p",
+    "TimeoutStopSec=10",
+    "--",
+    "/usr/bin/python",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/tools/residency_unit_run.py",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c287-lossless-sample-producer-20261006",
+    "--inside"
+  ],
+  "returncode": 0,
+  "stdout": "",
+  "stderr": "Running as unit: tesy-c287-lossless-producer.service\n          Finished with result: success\nMain processes terminated with: code=exited, status=0/SUCCESS\n               Service runtime: 2min 4.594s\n             CPU time consumed: 17.163s\n                   Memory peak: 338.8M (swap: 0B)\n"
+}

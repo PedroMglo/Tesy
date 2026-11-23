@@ -1,0 +1,7 @@
+# C75 — Port C57 wave skip to the session backend
+
+- Objective: test whether the repaired parked-pair CPU MMID mechanism can run on the pinned C35 session backend. Base Tesy `8dc1e88`; backend base `c3759bad92c0e6f71bb936afea9b0a162fb83f76`; isolated source commit `27d2e42d8c994507ee6d71acc7c58d3eddd3f7a5`, tree `45b2b5b97353845d9d982a06f20c4f2f420528e2`. The patch is stored under `research/patches/`.
+- Evidence: SOURCE_AUDITED and REPRODUZIDO_MODEL_FREE. The only source edits are the parked CPU row skip and wave-ID sentinel; the shared activation conversion stays intact. A failed clean `git am` attempt was aborted before this manual port. The candidate server built with CUDA arch 89. The MXFP4/F16/F32 broadcast and FFN controls pass with poisoned scratch against the new libraries; hashes and output are in `results/c75-session-wave-port-20260928T1907Z/model-free-tests.json`.
+- Alternative: C35 graph scheduling, kernel dispatch or session state can differ from the C66 probe despite the operator control. No model, session or performance result has been inferred from this build.
+- Decision: proceed to a new bounded full-model boundary and canonical reference before serving. C48/C61/C66 remain failures; C70–C74 remain valid only for their frozen P12 probe profile.
+- Tests/NOT_RUN: C75 synthetic tests PASS; full 120B boundary, canonical reference, server, exact-prefix latency and quality NOT_RUN. No publication or default change.

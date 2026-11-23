@@ -1,0 +1,39 @@
+{
+  "measurement_commit": "2e210a3ade2f71e62b8d0a60a939093a4fbc827f",
+  "start": {
+    "utc": "2026-10-04T15:30:25.927076+00:00",
+    "monotonic_s": 17549.387566719
+  },
+  "end": {
+    "utc": "2026-10-04T15:32:04.526445+00:00",
+    "monotonic_s": 17647.986930359
+  },
+  "argv": [
+    "systemd-run",
+    "--user",
+    "--slice=tesy-post-c154.slice",
+    "--unit=tesy-c255-head-feature-boundary",
+    "--collect",
+    "--pipe",
+    "--wait",
+    "--working-directory=/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc",
+    "-p",
+    "MemoryMax=17985175552",
+    "-p",
+    "MemoryHigh=17985175552",
+    "-p",
+    "MemorySwapMax=0",
+    "-p",
+    "RuntimeMaxSec=600",
+    "-p",
+    "TimeoutStopSec=10",
+    "--",
+    "/usr/bin/python3",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/tools/residency_unit_run.py",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c255-eagle3-selected-native-boundary-20261004",
+    "--inside"
+  ],
+  "returncode": 1,
+  "stdout": "",
+  "stderr": "Running as unit: tesy-c255-head-feature-boundary.service\n          Finished with result: exit-code\nMain processes terminated with: code=exited, status=1/FAILURE\n               Service runtime: 1min 37.858s\n             CPU time consumed: 1min 57.049s\n                   Memory peak: 15.4G (swap: 0B)\n"
+}

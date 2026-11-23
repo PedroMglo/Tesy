@@ -1,0 +1,46 @@
+[
+  {
+    "argv": [
+      "g++-15",
+      "-std=c++17",
+      "-O3",
+      "-I/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/backends/c165-mmap-diagnostic/include",
+      "-I/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/backends/c165-mmap-diagnostic/ggml/include",
+      "-I/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/backends/c165-mmap-diagnostic/src",
+      "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/tools/reference_output_lifetime_test.cpp",
+      "-L/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/backends/c165-mmap-diagnostic/build-diagnostic/bin",
+      "-Wl,-rpath,/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/backends/c165-mmap-diagnostic/build-diagnostic/bin",
+      "-lllama",
+      "-lggml",
+      "-lggml-base",
+      "-lggml-cpu",
+      "-pthread",
+      "-ldl",
+      "-o",
+      "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c168-reference-lifetime-model-free-20260930T1300Z/build/reference_output_lifetime_test"
+    ],
+    "returncode": 0
+  },
+  {
+    "argv": [
+      "g++-15",
+      "-std=c++17",
+      "-O3",
+      "-I/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/backends/c165-mmap-diagnostic/include",
+      "-I/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/backends/c165-mmap-diagnostic/ggml/include",
+      "-I/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/backends/c165-mmap-diagnostic/src",
+      "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/tools/mmap_phase_reference.cpp",
+      "-L/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/backends/c165-mmap-diagnostic/build-diagnostic/bin",
+      "-Wl,-rpath,/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/backends/c165-mmap-diagnostic/build-diagnostic/bin",
+      "-lllama",
+      "-lggml",
+      "-lggml-base",
+      "-lggml-cpu",
+      "-pthread",
+      "-ldl",
+      "-o",
+      "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c168-reference-lifetime-model-free-20260930T1300Z/build/mmap_phase_reference"
+    ],
+    "returncode": 0
+  }
+]

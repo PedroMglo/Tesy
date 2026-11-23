@@ -1,0 +1,58 @@
+{
+  "admission": "300s contiguous idle at <=1s cadence; CPU/GPU/NVMe start <=50/50/45C; second arm within 5/5/3C of first final idle baseline",
+  "alternative": "C29 cache_n35 arose from another server-held token/KV invalidation and persists with stable date",
+  "backend_candidate_commit": "c3759bad92c0e6f71bb936afea9b0a162fb83f76",
+  "backend_original_commit": "1248fd8fa8cfebaece5ea992e4d951c1e18bb9d5",
+  "backend_patch_sha256": "5c07cffe895840414ef6736d362b49aa0ac0808657d47fccae53cfb037f780be",
+  "campaign_identity": "C35b",
+  "candidate_gate": "first turn exact C27 response; second template IDs same as C29 pre-midnight IDs and cache_n>=common-32; full two-turn completion and resource gates",
+  "control_gate": "first turn exact C27 response; second template IDs differ at index35 and cache_n=35; full two-turn completion and resource gates",
+  "corrected_invocation": "systemd-run --user --scope -p MemoryMax=19327352832 -p MemorySwapMax=0 -- python3 tools/c35b_template_date.py <root> --run <run_id> --measurement-commit <sha>",
+  "created_utc": "2026-09-28T01:21:49.955188+00:00",
+  "dates": {
+    "candidate": [
+      "2026-09-27",
+      "2026-09-27"
+    ],
+    "control": [
+      "2026-09-27",
+      "2026-09-28"
+    ]
+  },
+  "default_changed": false,
+  "evidence_historical": "C29 crossed Europe/Lisbon midnight; embedded GGUF template calls strftime_now at position35; C34b next-day token IDs differ from C18 only at position35; actual C29 second request IDs were not captured",
+  "failure_policy": "no retry, preserve FAIL and stop dependent arm on resource, output or identity failure",
+  "frozen_prompt_counts": [
+    2035,
+    2179
+  ],
+  "frozen_prompt_id_sha256": {
+    "first": "50f5c7f3d32c502fa1d0c9d4b93e97f6eb308ceac07d5c6d455c94fad3208fdf",
+    "second_changed_date_hypothesis": "1d67fe229f6e0db82e4875f55859963179032952f786f444375e19f53401d7ad",
+    "second_same_date": "6d9ebc8fec46c5092dd11dd296db45ad012b049276725888061439887786d200"
+  },
+  "hypothesis": "changing only the rendered date Sep27->Sep28 between turns yields cache_n35; preserving Sep27 for both turns yields cache_n>=2003",
+  "input_sha256": {
+    "assistant-message.json": "71208b83a64d992ae0ad402057dd15ead3ceb20798988c9bdf6902dd04a102e5",
+    "bridge-input.json": "fe146f86559b30e506cb225c6189004aac473f1eb49ac4f56d7f82bde48beebf",
+    "usage-contract.json": "460605f7fc0feef0bf8e01df0d89dc5a712cf965d7e86983a8b92ce8aef7994c"
+  },
+  "limits": "one synthetic two-turn session per arm; no sustained, quality or M3 completion",
+  "model_sha256": "582bd40f6886200101f4c4ed9f25f3fe80cc14c86e9e2b37746cd8904a0c622d",
+  "objective": "test whether dynamic template date caused C29 conversation cache_n35 and whether a fixed per-session date restores exact prefix reuse",
+  "parent_c35_failure_sha256": "0376da39063b7e53183dd848de6fb5b23b87cc603b8bf16c1338e0cea3bb76e0",
+  "profile": "P12 ngl12, ub32, slots32, full-SWA 8K, E18; original weights and routing; backend differs from original only in opt-in template date override",
+  "resource_guards": "E18 18GiB cgroup/zero swap, RSS<=17GiB, GPU total<=7000MiB, MemAvailable>=6GiB, CPU95 warning/CPU100 stop, GPU80/NVMe70 stop",
+  "run_order": [
+    "c35b-date-shift-control",
+    "c35b-date-stable-candidate"
+  ],
+  "schema": "c35-template-date-protocol-v1",
+  "shifted_first_difference_index": 35,
+  "status": "PROSPECTIVE_FROZEN_AFTER_C35_PRELAUNCH_FAILURE",
+  "timeouts_s": {
+    "per_request": 900,
+    "server_process": 1800
+  },
+  "timing_claim": "diagnostic only; no between-arm speedup claim because prompts differ and start temperatures/order may vary"
+}

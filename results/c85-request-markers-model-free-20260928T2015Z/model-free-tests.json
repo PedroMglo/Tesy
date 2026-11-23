@@ -1,0 +1,17 @@
+{
+  "command": "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=tools python3 -m unittest tools.test_c5_compare tools.test_c2_gate tools.test_c3_approval tools.test_c3_terminal_sample tools.test_c55_runner_entrypoint tools.test_c84_trace_validate tools.test_c85_request_markers tools.test_c85_runner_markers",
+  "entrypoint": "one complete request through real c2 runner with tiny child, mocked sensors/API and separate marker receipt; raw marker values exact",
+  "failures": 0,
+  "historical_path": "flag absent in existing protocols; 41 original-focused tests plus C55 entrypoint retained",
+  "negative_controls": [
+    "missing marker contract rejected before launch",
+    "non-bool flag rejected before launch",
+    "unmatched second start is incomplete, not pass",
+    "overlap/duplicate/raw mismatch/bool/1e309 rejected"
+  ],
+  "physical_120b": "NOT_RUN",
+  "schema": "c85-model-free-tests-v1",
+  "source_freeze_commit": "2952b2fbbfff52c0d89b58612db2125d1d9f0f7c",
+  "status": "PASS",
+  "tests_run": 52
+}

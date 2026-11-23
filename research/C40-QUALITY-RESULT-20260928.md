@@ -1,0 +1,10 @@
+# C40 functional qualification checkpoint
+
+- Objective: compare frozen 12 synthetic code, SQL/data and planning tasks for P8, P12 and stock 20B, medium reasoning, cap 3072, context 8192. No task was changed after outputs.
+- Base: C40 protocol at `7372cab03ae8c600921650f18f6c1f0a66c360d6`; P12 measurement tree `7d9fc01cfaab7a1ddd7bb5d8765e738ae918b0ec`. P8 receipt retains its separate measurement commit. Backend is the pinned C35 date-freeze server; model weights and router unchanged.
+- Evidence: C40 P8 12/12, 2621.682 s; C40 P12 12/12, 2492.679 s. C38 stock20 11/12, one `FAIL_TRUNCATED` at the frozen cap. All C40 tasks completed and passed receipt, resource and validator gates. P8/P12 each resolved 0/12 by 30 s, 2/12 by 120 s and 12/12 by 600 s. Median first-final-content 148.26/140.10 s; 7/12 message hashes differ across numerical profiles. The single-run wall-time difference is descriptive.
+- Resources: maxima P8/P12 CPU 89/89 C, GPU 55/56 C, NVMe 56.85/56.85 C, GPU 3938/5752 MiB, zero swap/OOM. C40 process and port closed. C38 stock20 telemetry has its original monitor provenance.
+- Alternatives: P12 could improve some workloads through placement; the 20B may give much faster useful answers when it solves the task. C40 cannot rank these as a general user choice because it has one run/profile, short prompts and a synthetic task set.
+- Decision: `PROFILE_CANDIDATE_TESTED_SCOPE`. The frozen no-loss task gate passed. M3 remains partial and M4 NOT_RUN. Existing C38 telemetry and C39 interruption failures remain unchanged. C15 full-model diagnostic remains NOT_RUN.
+- Tests: C40 server receipts ran normalized C2 evidence, mapped-library, cgroup, sample and CPU telemetry checks and task validators; `tools/c40_close.py` checked receipt/raw hashes, task order and budget. 7936+256 boundary, assistant-history continuity, and sustained functional quality NOT_RUN.
+- Next discriminating gate: new C41 identity for 7936 input IDs plus up to 256 output IDs inside 8K, with a frozen retrieval/continuity validator, E18 guards and no hidden truncation. Then reassess session reuse versus wave critical path. No default change or remote publication.

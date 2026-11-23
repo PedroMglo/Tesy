@@ -1,0 +1,19 @@
+{
+  "status": "FAIL_ENV_SANDBOX_PRESERVED",
+  "evidence": "REPRODUZIDO_MODEL_FREE",
+  "command": [
+    "python",
+    "-m",
+    "unittest",
+    "discover",
+    "-s",
+    "tools",
+    "-p",
+    "test_block_confirmation_grade.py",
+    "-v"
+  ],
+  "observed_tests": 3,
+  "failures": 1,
+  "error": "VALIDATOR_ENV_ERROR: bwrap: loopback: Failed to create NETLINK_ROUTE socket: Operation not permitted",
+  "scope": "Sandbox denies namespace networking setup; no model output or task-quality observation; real isolated executor must pass outside parent sandbox before use"
+}

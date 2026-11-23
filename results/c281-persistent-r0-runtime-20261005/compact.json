@@ -1,0 +1,133 @@
+{
+  "status": "R0_PERSISTENT_LAUNCHER_TWO_REQUEST_PASS",
+  "evidence_class": "MEDIDO_NO_TARGET",
+  "measurement_HEAD": "a316109b31098bee424e960693f0d9e0880f65d1",
+  "unit_envelope_s": 237.1010213819991,
+  "readiness_after_Popen_s": 4.041967860999648,
+  "profile": "R0/C75/P12/40slots/ub32 reconstructed; default API mode0; span/order/GOMP unset",
+  "cap_bytes": 21474836480,
+  "session_date": "2026-10-05",
+  "rows": [
+    {
+      "id": "c112-code",
+      "measurement_valid": true,
+      "outcome": "SUCCESS",
+      "functional_success": true,
+      "final": "48327",
+      "reasoning": "PRESERVED_LOCAL_RAW_NOT_REPUBLISHED",
+      "official_input_n": 2043,
+      "official_ids_i32le_sha256": "0946e5070c4bfcc945d584e0778e33fb544a46bc313201bfc26a5f72f547f7a0",
+      "input_raw_sha256": "2d962b19909b8f47f43852fd0ab10255e6052f43b5f527d6f0f1c1b573f422ad",
+      "cache_n": 0,
+      "prompt_n": 2043,
+      "completion_n_reported": 78,
+      "predicted_n_reported": 78,
+      "counts_convention": "native server usage/timings, not forward calls or reconstructed IDs",
+      "finish_reason": "stop",
+      "output_ids_authority": "NOT_EXPOSED_EMPTY_OR_ABSENT",
+      "prefill_s": 62.591809999999995,
+      "decode_s": 20.476098,
+      "first_reasoning_s": 63.34254934099954,
+      "first_final_s": 82.63576275000014,
+      "completion_request_wall_s": 83.0760034899995,
+      "prefix_gate": "PASS",
+      "content_gate": "PASS",
+      "full_result_raw_sha256": "6e5fd38653ad02eb06593a6b6e1bbbda436220d8f2f2df00c53688efc1c66018"
+    },
+    {
+      "id": "c112-repeat",
+      "measurement_valid": true,
+      "outcome": "SUCCESS",
+      "functional_success": true,
+      "final": "48327",
+      "reasoning": "PRESERVED_LOCAL_RAW_NOT_REPUBLISHED",
+      "official_input_n": 2197,
+      "official_ids_i32le_sha256": "cf7e9b19362c5aeaf5e54e2185048acac09ec55459fb4a6fc262ec434f037425",
+      "input_raw_sha256": "986e254f8424298f6b442a4e7351c982381e31f81423486ed21069bae53b25c7",
+      "cache_n": 2044,
+      "prompt_n": 153,
+      "completion_n_reported": 47,
+      "predicted_n_reported": 47,
+      "counts_convention": "native server usage/timings, not forward calls or reconstructed IDs",
+      "finish_reason": "stop",
+      "output_ids_authority": "NOT_EXPOSED_EMPTY_OR_ABSENT",
+      "prefill_s": 11.133647999999999,
+      "decode_s": 10.229705,
+      "first_reasoning_s": 11.819667581999965,
+      "first_final_s": 21.090540668999893,
+      "completion_request_wall_s": 21.372009826000067,
+      "prefix_gate": "PASS",
+      "content_gate": "PASS",
+      "full_result_raw_sha256": "c3ce079c69918affcef51a67af3296765c2f42ec932ea1c5747b7d52c22c86a5"
+    }
+  ],
+  "resources": {
+    "sample_maxima": {
+      "rss_bytes": 15937142784,
+      "swap_bytes": 0,
+      "cgroup_memory_bytes": 15763701760,
+      "cgroup_peak_bytes": 15784923136,
+      "cgroup_file_bytes": 1539723264,
+      "gpu_used_mib": 6860.0,
+      "gpu_temperature_c": 62.0,
+      "cpu_tctl_c": 95.375,
+      "nvme_composite_c": 52.85,
+      "direct_model_fds": 2,
+      "buffered_model_fds": 0
+    },
+    "cgroup_end_events": {
+      "low": 0,
+      "high": 0,
+      "max": 0,
+      "oom": 0,
+      "oom_kill": 0,
+      "oom_group_kill": 0,
+      "sock_throttled": 0
+    },
+    "PSI_full_avg10_last": 0.0,
+    "cgroup_memory_peak_scope_bytes": 15784923136,
+    "CPU_warning_exceeded_C": true,
+    "CPU_warning_is_not_FAIL": true,
+    "CPU_clocks_energy": "UNKNOWN_NOT_QUALIFIED",
+    "GPU_energy": "UNKNOWN_NOT_QUALIFIED"
+  },
+  "cleanup": {
+    "unit": "tesy-optin-slots40-persistent-20261005T215354Z.service",
+    "active_state": "inactive",
+    "scope": "only own frozen PID/startticks/cgroup through C143.stop"
+  },
+  "bounded_stop_reason": "INTERRUPTED_BY_OWNER",
+  "stop_interpretation": "planned C143.stop after both complete valid responses; no resource stop censored a request",
+  "mapped_numeric_libraries": {
+    "build-c269-cuda/bin/libggml-cuda.so.0.15.3": "ff43655b15df5f3de1d5e00b0da18469a14f118bd644eb4b6d7f1915c85a4493",
+    "build-c269-cuda/bin/libggml-cpu.so.0.15.3": "9aabce5751c5d7ca19b50e4cabb1fcf484c1581d275141dae8aba8ed33060313",
+    "build-c269-cuda/bin/libllama.so.0.0.9884": "347267b2e9cbf920dbf912d6aaf1884e5eff4cccc41c349e93c42bd6403a658f",
+    "build-c269-cuda/bin/libllama-common.so.0.0.9884": "cc5a0f0b264bdd093287cfdb38f3607b8ab98bd35ae21f4550ddc44076c92d27",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c276-post-c274-r2-causal-qualification-20261005T204839Z/build/persistent-server/bin/libllama-server-impl.so": "6e4786b127d8a0f2addd657b9842dade1c3f2b9262d088b84fb526ca04ed9206",
+    "build-c269-cuda/bin/libggml-base.so.0.15.3": "6e27d9ecb86e4747177189d2d2f6390280a2ee1000221ad68a0404023ea72539",
+    "build-c269-cuda/bin/libggml.so.0.15.3": "70f635b8ba22ddd751590ec1fe11c895ef88e2aff0f4a63a3af96314e6a77d65"
+  },
+  "parallel_runtime": {
+    "libraries_sha256": {
+      "/usr/lib64/libgomp.so.1.0.0": "637b2ab4eedf3ce72173a9d34a4c41c480082d68662db3f0ef4998117df8f9b2"
+    },
+    "initial_process_environment": {
+      "values": {},
+      "unset": [
+        "OMP_WAIT_POLICY",
+        "OMP_NUM_THREADS",
+        "OMP_DYNAMIC",
+        "OMP_PROC_BIND",
+        "OMP_PLACES",
+        "GOMP_SPINCOUNT",
+        "GOMP_CPU_AFFINITY",
+        "KMP_BLOCKTIME",
+        "KMP_AFFINITY"
+      ]
+    },
+    "source_note": "ggml init may set KMP_BLOCKTIME=200 after exec; GNU libgomp does not use KMP blocktime. /proc/environ observes initial exec environment."
+  },
+  "raw_root": "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c276-post-c274-r2-causal-qualification-20261005T204839Z/raw/c281-session",
+  "scope": "restored real C143 prepare/start/health/two requests with actual reuse/stop; descriptive, no new quality suite, M4 or R2 performance delivery",
+  "default_or_habitual_service_changed": false
+}

@@ -1,0 +1,75 @@
+{
+  "actual_common_prefix_ids": 2035,
+  "claim_limit": "slots-debug/trace instrumented; no production timing or full M3/M4 claim",
+  "measurement_commit": "10908245c1ca3313d5c8a583532d281ef92119b4",
+  "receipt_sha256": "7a22a2d26043d35e5445937b17049057f43e61b6e40003bedc38f291186075ba",
+  "results": [
+    {
+      "id": "c31-first-turn2048",
+      "message_sha256": "5547eefff07c55ea015d3bae88c1dbd1d08cfe58223484d48891a63b067c2f58",
+      "request_elapsed_s": 288.60834704300214,
+      "stream_metrics": {
+        "done_observed": true,
+        "first_final_content_chunk_s": 288.3748682130026,
+        "first_reasoning_chunk_s": 273.6038909449999,
+        "first_text_chunk_s": 273.6038909449999,
+        "interpretation": "client receipt times of non-whitespace SSE chunks; not token timestamps",
+        "sse_event_count": 45
+      },
+      "timings": {
+        "cache_n": 0,
+        "predicted_ms": 15875.754,
+        "predicted_n": 52,
+        "predicted_per_second": 3.2754349809149224,
+        "predicted_per_token_ms": 305.30296153846155,
+        "prompt_ms": 272724.957,
+        "prompt_n": 2035,
+        "prompt_per_second": 7.461730024216302,
+        "prompt_per_token_ms": 134.0171778869779
+      },
+      "usage": {
+        "completion_tokens": 52,
+        "prompt_tokens": 2035,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "total_tokens": 2087
+      }
+    },
+    {
+      "id": "c31-second-turn128",
+      "message_sha256": "6c9bfcf4aa10205cdfa8994c5bab363553dc5242a55262243127d2de2f15ee48",
+      "request_elapsed_s": 33.18937940400065,
+      "stream_metrics": {
+        "done_observed": true,
+        "first_final_content_chunk_s": 33.02358757700131,
+        "first_reasoning_chunk_s": 24.17525502200442,
+        "first_text_chunk_s": 24.17525502200442,
+        "interpretation": "client receipt times of non-whitespace SSE chunks; not token timestamps",
+        "sse_event_count": 33
+      },
+      "timings": {
+        "cache_n": 2036,
+        "predicted_ms": 9712.879,
+        "predicted_n": 40,
+        "predicted_per_second": 4.118243416807725,
+        "predicted_per_token_ms": 242.821975,
+        "prompt_ms": 23466.836,
+        "prompt_n": 143,
+        "prompt_per_second": 6.0937060283712725,
+        "prompt_per_token_ms": 164.10374825174824
+      },
+      "usage": {
+        "completion_tokens": 40,
+        "prompt_tokens": 2179,
+        "prompt_tokens_details": {
+          "cached_tokens": 2036
+        },
+        "total_tokens": 2219
+      }
+    }
+  ],
+  "run_id": "c31-d2-prefix2048",
+  "schema": "c31-cache-path-diagnostic-v1",
+  "status": "PASS_BRIDGE"
+}

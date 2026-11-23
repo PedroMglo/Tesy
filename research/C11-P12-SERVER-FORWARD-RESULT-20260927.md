@@ -1,0 +1,6 @@
+# C11 P12 minimum forward result
+
+- Objective/base: E18 workspace admission for original-backend P12 ngl12/ub32/preload-on 8K full-SWA server, measurement commit `e5f4529f0a31a138c4cba9eb0d4704a38d6a3ba2`. Init prerequisite passed. Evidence class: one physical synthetic resource diagnostic; raw stays local.
+- Run: `systemd-run --user --scope -p MemoryMax=19327352832 -p MemorySwapMax=0 -- python3 tools/c11_p12_server.py results/c11-20260927T1533Z --run forward --measurement-commit e5f4529f0a31a138c4cba9eb0d4704a38d6a3ba2`. Official tokenizer fixed 78 prompt IDs, cache_n=0; four output tokens completed. Return 0 and 28 valid samples, no guard/event/swap failure.
+- Observed: backend prefill 24.537 s/decode 1.022 s; scope 30.269 s; sampled peak RSS 13.232 GB, cgroup 13.013 GB, GPU total 5704 MiB, CPU 82.375 C, GPU 54 C, NVMe 47.85 C, zero swap. C9/C10b short forwards are separate diagnostics; this one request does not establish relative throughput or quality.
+- Decision: `MINIMUM_FORWARD_ADMITTED_NEW_PROFILE`. Next: one frozen 513-ID cold request under the same E18 guards to distinguish whether moving four layers avoids the P8 thermal failure. Per-layer server placement proof and same-profile numeric reference are still NOT_RUN. Default unchanged.

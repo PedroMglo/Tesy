@@ -41,7 +41,14 @@ def _tracked_source_candidates() -> list[Path]:
 def test_no_unapproved_cross_repo_dependency_reference() -> None:
     failures: list[str] = []
     for path in _tracked_source_candidates():
-        if path == Path(__file__):
+        # The archived trees retain byte-identical copies of this negative test.
+        relative = path.relative_to(ROOT)
+        copied_test = (
+            relative.parts[:2] == ("archive", "prototypes")
+            and relative.parts[3:] == ("tests", "test_repository_boundaries.py")
+            and len(relative.parts) == 5
+        )
+        if path == Path(__file__) or copied_test:
             continue
         try:
             text = path.read_text(encoding="utf-8")

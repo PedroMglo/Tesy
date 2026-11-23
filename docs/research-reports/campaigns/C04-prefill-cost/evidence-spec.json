@@ -1,0 +1,95 @@
+{
+  "authorities": {
+    "correctness": [
+      "E-C4-FINAL"
+    ],
+    "decision": [
+      "E-C4-FINAL"
+    ],
+    "timing": [
+      "E-C4-FINAL"
+    ]
+  },
+  "checks": [],
+  "claims": [
+    {
+      "evidence": [
+        {
+          "quote": "`TIMING_SCOPE_QUALIFIED`: monotonic whole-prompt clock ends after `llama_get_logits` makes output available; dispatch and final pending tail are separate.",
+          "source": "E-C4-FINAL",
+          "type": "text"
+        }
+      ],
+      "evidence_class": "DIAGNOSTICO",
+      "family": "timing",
+      "id": "CL-C4-CLOCK",
+      "limitation": "Não corrige C3 retroativamente.",
+      "source_class": "Fecho de campanha Tesy congelado",
+      "statement": "O relógio termina após disponibilização dos logits.",
+      "status": "CURRENT"
+    },
+    {
+      "evidence": [
+        {
+          "quote": "`CURRENT_PROFILE_PARITY_PASS` for five exact-ID, long-first, **pre-sampler** full-logit vectors in OFF1/OFF2/ON fresh processes; all bitwise equal.",
+          "source": "E-C4-FINAL",
+          "type": "text"
+        }
+      ],
+      "evidence_class": "DIAGNOSTICO",
+      "family": "correctness",
+      "id": "CL-C4-PARITY",
+      "limitation": "Não é sampling parity.",
+      "source_class": "Fecho de campanha Tesy congelado",
+      "statement": "Cinco vetores contemporâneos foram bitwise.",
+      "status": "CURRENT"
+    },
+    {
+      "evidence": [
+        {
+          "quote": "changing only ubatch32→64 changed 201,087/201,088 final logits.",
+          "source": "E-C4-FINAL",
+          "type": "text"
+        }
+      ],
+      "evidence_class": "DIAGNOSTICO",
+      "family": "correctness",
+      "id": "CL-C4-UB64",
+      "limitation": "Timing menor fica diagnóstico.",
+      "source_class": "Fecho de campanha Tesy congelado",
+      "statement": "ub64 falhou o gate numérico.",
+      "status": "CURRENT"
+    },
+    {
+      "evidence": [
+        {
+          "quote": "No new default or confirmed prefill gain.",
+          "source": "E-C4-FINAL",
+          "type": "text"
+        }
+      ],
+      "evidence_class": "DIAGNOSTICO",
+      "family": "decision",
+      "id": "CL-C4-DECISION",
+      "limitation": "Perfil conservador mantém-se.",
+      "source_class": "Fecho de campanha Tesy congelado",
+      "statement": "Sem novo default ou ganho confirmado.",
+      "status": "CURRENT"
+    }
+  ],
+  "datasets": [],
+  "metrics": [],
+  "schema_version": "tesy-evidence-spec-v1",
+  "source_contracts": [
+    {
+      "json_values": [],
+      "path": "research/C4-FINAL-20260927.md",
+      "source": "E-C4-FINAL",
+      "text": [
+        "TIMING_SCOPE_QUALIFIED",
+        "CURRENT_PROFILE_PARITY_PASS",
+        "NON_BITWISE_REQUIRES_SEPARATE_QUALIFICATION"
+      ]
+    }
+  ]
+}

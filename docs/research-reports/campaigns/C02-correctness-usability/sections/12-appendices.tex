@@ -1,0 +1,28 @@
+\clearpage
+\section{Apêndices}
+\subsection{Glossário operacional}
+\begin{tabularx}{\linewidth}{@{}p{32mm}Y@{}}
+\toprule \textbf{Termo} & \textbf{Significado neste relatório}\\ \midrule
+GPU8 & Oito camadas colocadas em GPU; não oito GPUs.\\
+Slot de expert & Posição de residência no pool por camada.\\
+Prefill & Processamento dos tokens de entrada, segundo o temporizador do backend.\\
+Decode & Geração autoregressiva; taxa agregada é tokens/tempo de decode.\\
+First text & Primeira chegada SSE de texto não vazio, incluindo reasoning.\\
+First final & Primeira chegada de conteúdo final, não fim do prefill.\\
+Cgroup peak & Pico contabilizado no grupo; não RSS nem memória total do host.\\
+Bitwise / paridade & Igualdade de bytes e concordância numérica por tolerância são contratos distintos.\\
+\bottomrule
+\end{tabularx}
+\evidence{E-C2-FINAL} \evidence{E-C2-LATENCY}
+
+\subsection{Modelo e revisão documental}
+Revisão publicada do artefacto target:
+\begin{quote}\small\nolinkurl{238abdd290bb874b90a5da1b4549881b7d05c091}\end{quote}
+SHA-256 do artefacto:
+\begin{quote}\small\nolinkurl{582bd40f6886200101f4c4ed9f25f3fe80cc14c86e9e2b37746cd8904a0c622d}\end{quote}
+\claim{CL-C2-IDENTITY}{O snapshot documental é \Code{81531d9dc33c}. O digest no rodapé identifica os inputs do relatório; o lock contém a identidade completa. Não é o SHA da execução nem do binário.}
+
+\subsection{Disponibilidade}
+\claim{CL-C2-RAW}{O pacote contém publicações compactas identificadas por hashes, não pesos, raw prompts, stdout/stderr experimentais, amostras brutas ou logits. A menção histórica a ausência de push descreve o encerramento original; a aquisição posterior do snapshot remoto é uma operação documental distinta.}
+
+Os seletores, fórmulas, valores e limites constam de \path{evidence-spec.json} e \path{generated/values.json}. Os comandos de inferência completos não foram reconstruídos. A regeneração documental usa os scripts em \path{tools/}; os release manifests identificam os PDFs revistos.

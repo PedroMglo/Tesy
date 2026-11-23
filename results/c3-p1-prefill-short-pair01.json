@@ -1,0 +1,64 @@
+{
+  "schema": "c3-prefill-pair-v1",
+  "status": "PASS",
+  "off_run_id": "c3-p1-prefill-short-off01",
+  "trace_run_id": "c3-p1-prefill-short-trace01",
+  "final_logits_bitwise_equal": true,
+  "rows": [
+    {
+      "case": "latency-short",
+      "chunk": 1,
+      "start": 0,
+      "tokens": 113,
+      "off_wall_s": 42.749235,
+      "trace_wall_s": 44.519245,
+      "trace_overhead_pct": 4.140448361239679,
+      "backend_off": {
+        "remap_calls": 141,
+        "hits": 1287,
+        "misses": 4324,
+        "cold": 2685,
+        "load_stall_ms": 26.07,
+        "wave_calls": 1225,
+        "nonempty_waves": 465,
+        "preload_issued": 0,
+        "resident_on_arrival": 1287,
+        "wave_stall_ms": 27029.83
+      },
+      "backend_trace": {
+        "remap_calls": 141,
+        "hits": 1287,
+        "misses": 4324,
+        "cold": 2685,
+        "load_stall_ms": 27.62,
+        "wave_calls": 1225,
+        "nonempty_waves": 465,
+        "preload_issued": 0,
+        "resident_on_arrival": 1287,
+        "wave_stall_ms": 28740.95
+      },
+      "io": {
+        "case": "latency-short",
+        "start": 0,
+        "count": 113,
+        "wall_s": 44.519245,
+        "layers_observed": 36,
+        "read_calls": 12972,
+        "upload_calls": 12972,
+        "read_requested_bytes": 57212432384,
+        "read_returned_bytes": 57212432384,
+        "upload_requested_bytes": 57159820800
+      }
+    }
+  ],
+  "source_sha256": {
+    "results/c3-p1-prefill-short-off01.json": "2474a01db2531cae8b869a6582020eb5ad1ced2e278bc664251aed7c390977f3",
+    "results/c3-p1-prefill-short-trace01.json": "3a52d1ecb7589d6fc9c2dc294186ea01f72d494b6c35043aa7068c70564b66d8",
+    "results/c3-p1-prefill-short-off01.f32": "8ba19722439a08738cc0d4fc4ad8f669bc3fcde227aab503ca210936bb0bb285",
+    "results/c3-p1-prefill-short-trace01.f32": "8ba19722439a08738cc0d4fc4ad8f669bc3fcde227aab503ca210936bb0bb285",
+    "results/c3-p1-prefill-short-off01.chunks.tsv": "2551f697ceee39ba49dc9bbd20d2c126756c3390b43396b4e1468e098ad4eb6e",
+    "results/c3-p1-prefill-short-trace01.chunks.tsv": "d839ce0bc7a66661bf718bf351e802cdffa55917f5f05e318a57bac2f657c913",
+    "results/c3-p1-prefill-short-trace01-account.json": "2c3864ff2564052e022fd5296a442898dccd532e20ceaa18aa99a66be610ffa4"
+  },
+  "analyzer_sha256": "dda3287d3cc4fa1da97f46e0b9f56fbf23dd951fc38e91bdb6f24322e6b93fa4"
+}

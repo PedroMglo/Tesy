@@ -1,0 +1,36 @@
+{
+  "cgroup_end_events": {
+    "high": 0,
+    "low": 0,
+    "max": 0,
+    "oom": 0,
+    "oom_group_kill": 0,
+    "oom_kill": 0,
+    "sock_throttled": 0
+  },
+  "claim": "first two complete outputs are diagnostic only; suite incomplete, P8 quality NOT_QUALIFIED",
+  "completed_before_stop": 2,
+  "elapsed_s": 514.9044603789953,
+  "last_valid_maxima": {
+    "cgroup_peak_bytes": 15025471488,
+    "cpu_c": 88.5,
+    "gpu_c": 55.0,
+    "gpu_total_mib": 3938.0,
+    "nvme_c": 54.85,
+    "rss_bytes": 15179530240,
+    "swap_bytes": 0
+  },
+  "last_valid_sample_s": 513.0457060039989,
+  "measurement_commit": "98932b9c4cf32ce606723db0ad2721f41426c9bb",
+  "raw_sha256": "02895679f4ded1bda5e80f60ae8a73e7cf31b82991242410ddc8d18b722939cc",
+  "receipt_status": "FAIL_RESOURCES_OR_EVIDENCE",
+  "required": 12,
+  "run_id": "c38-p8",
+  "samples_sha256": "9c5860360b248c4e22bf40e7c5f17f721909872c3201dcd13824601d1d436d06",
+  "schema": "c38-p8-failure-summary-v1",
+  "status": "FAIL_TELEMETRY_CPU_EFFECTIVE_FREQ",
+  "stop_reasons": [
+    "MONITOR_ERROR:GateError:CPU effective frequency out of range",
+    "RUN_ERROR:GateError:incomplete stream completion/usage/timings fence"
+  ]
+}

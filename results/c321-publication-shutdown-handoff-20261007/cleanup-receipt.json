@@ -1,0 +1,86 @@
+{
+  "utc": "2026-10-07T06:30:44.578233+00:00",
+  "monotonic": 130863.023819194,
+  "boot_id": "58256af0-3d84-4221-94e5-3cb880a9f851",
+  "classification": "MEDIDO_NO_TARGET (administrative live observation, no model run)",
+  "commands": {
+    "own_scopes": {
+      "argv": [
+        "systemctl",
+        "--user",
+        "show",
+        "tesy-c318-learned-product-cost.service",
+        "tesy-c319-lossless-characterization.service",
+        "-p",
+        "Id",
+        "-p",
+        "ActiveState",
+        "-p",
+        "SubState",
+        "-p",
+        "MainPID"
+      ],
+      "returncode": 0,
+      "stdout": "Id=tesy-c318-learned-product-cost.service\nActiveState=inactive\nSubState=dead\nMainPID=0\n\nId=tesy-c319-lossless-characterization.service\nActiveState=inactive\nSubState=dead\nMainPID=0\n",
+      "stderr": ""
+    },
+    "own_units": {
+      "argv": [
+        "systemctl",
+        "--user",
+        "list-units",
+        "--all",
+        "--no-pager",
+        "tesy-*"
+      ],
+      "returncode": 0,
+      "stdout": "  UNIT                 LOAD   ACTIVE SUB    DESCRIPTION\n  tesy-post-c154.slice loaded active active Slice /tesy/post/c154\n  tesy-post.slice      loaded active active Slice /tesy/post\n\nLegend: LOAD   \u2192 Reflects whether the unit definition was properly loaded.\n        ACTIVE \u2192 The high-level unit activation state, i.e. generalization of SUB.\n        SUB    \u2192 The low-level unit activation state, values depend on unit type.\n\n2 loaded units listed.\nTo show all installed unit files use 'systemctl list-unit-files'.\n",
+      "stderr": ""
+    },
+    "gpu_compute": {
+      "argv": [
+        "nvidia-smi",
+        "--query-compute-apps=pid,process_name,used_memory",
+        "--format=csv,noheader"
+      ],
+      "returncode": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    "gpu": {
+      "argv": [
+        "nvidia-smi",
+        "--query-gpu=uuid,name,memory.used,temperature.gpu",
+        "--format=csv,noheader"
+      ],
+      "returncode": 0,
+      "stdout": "GPU-83d90c55-1d92-75da-fc30-7771a85f2521, NVIDIA GeForce RTX 4060 Laptop GPU, 23 MiB, 45\n",
+      "stderr": ""
+    },
+    "ports": {
+      "argv": [
+        "ss",
+        "-ltnp"
+      ],
+      "returncode": 0,
+      "stdout": "State  Recv-Q Send-Q               Local Address:Port  Peer Address:PortProcess                              \nLISTEN 0      4096                       0.0.0.0:5355       0.0.0.0:*                                        \nLISTEN 0      4096                100.105.242.38:44927      0.0.0.0:*                                        \nLISTEN 0      128                        0.0.0.0:22         0.0.0.0:*                                        \nLISTEN 0      4096                     127.0.0.1:8384       0.0.0.0:*    users:((\"syncthing\",pid=2251,fd=22))\nLISTEN 0      4096                 127.0.0.53%lo:53         0.0.0.0:*                                        \nLISTEN 0      128                      127.0.0.1:38737      0.0.0.0:*    users:((\"codex\",pid=51283,fd=14))   \nLISTEN 0      5                          0.0.0.0:8767       0.0.0.0:*    users:((\"python\",pid=2367,fd=5))    \nLISTEN 0      10                         0.0.0.0:27500      0.0.0.0:*                                        \nLISTEN 0      4096                    127.0.0.54:53         0.0.0.0:*                                        \nLISTEN 0      4096                          [::]:5355          [::]:*                                        \nLISTEN 0      4096                             *:22000            *:*    users:((\"syncthing\",pid=2251,fd=16))\nLISTEN 0      4096   [fd7a:115c:a1e0::1a33:f227]:46223         [::]:*                                        \nLISTEN 0      128                           [::]:22            [::]:*                                        \nLISTEN 0      4096                             *:9090             *:*                                        \nLISTEN 0      4096                             *:11434            *:*                                        \n",
+      "stderr": ""
+    },
+    "habitual_service": {
+      "argv": [
+        "systemctl",
+        "show",
+        "ollama.service",
+        "-p",
+        "ActiveState",
+        "-p",
+        "SubState",
+        "-p",
+        "MainPID"
+      ],
+      "returncode": 0,
+      "stdout": "ActiveState=active\nSubState=running\nMainPID=1410\n",
+      "stderr": ""
+    }
+  }
+}

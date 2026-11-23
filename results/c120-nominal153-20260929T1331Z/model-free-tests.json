@@ -1,0 +1,13 @@
+{
+  "schema": "c120-model-free-tests-v1",
+  "source_commit": "6a961a608ad213b5128e87176c25ed44026d9aea",
+  "command": "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=tools python3 -m unittest tools.test_c84_trace_validate tools.test_c106_l2_trace_screen tools.test_c107_history_prefetch_screen tools.test_c117_start_inventory tools.test_c118_start_inventory tools.test_c120_prelaunch_entrypoint tools.test_c120_screen_gate",
+  "result": "PASS_23_TEST_METHODS",
+  "requirements": [
+    {"requirement": "monotonic origin invariance", "test": "test_clock_origin_does_not_change_duration", "result": "PASS: origins 0, 1, 100000, 123456.789"},
+    {"requirement": "per-arm real Popen boundary", "test": "test_four_arm_spawns_and_negative_gates", "result": "PASS: four valid attempts reach Popen; missing/wrong-arm/bad-cap/stale inventory block Popen at each position"},
+    {"requirement": "protected cold prefill", "test": "test_protected_cold_prefill_blocks_good_primary", "result": "PASS: -6% blocks; -5% boundary admitted"},
+    {"requirement": "live model-free scope and process", "test": "model-free-smoke/result.json", "result": "PASS_MODEL_FREE_ENTRYPOINT; no GGUF opened"}
+  ],
+  "limits": ["Popen boundary test mocks only external process and sensor/clock inputs", "model-free HTTP smoke has zero requests and no model weights", "full four-arm model execution NOT_RUN at freeze"]
+}

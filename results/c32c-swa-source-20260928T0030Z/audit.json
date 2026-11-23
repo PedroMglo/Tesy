@@ -1,0 +1,25 @@
+{
+  "C29_info_lines": "UNAVAILABLE_AT_VERBOSITY_3",
+  "C29_loaded_warning": "using full-size SWA cache",
+  "C29_low_cache_cause": "UNKNOWN_WITHOUT_TOKEN_WINDOW_TRACE",
+  "C31_loaded_info": "8192 SWA KV cells; context checkpoints disabled",
+  "effective_config": {
+    "C29": {
+      "binary": "/home/pmglo/Projects/Tesy/tesy-scale-lab/backends/streaming/build-gcc15/bin/llama-server",
+      "cache_ram_mib": 0,
+      "ctx_checkpoints": 0,
+      "swa_full": true
+    },
+    "C31": {
+      "binary": "/home/pmglo/Projects/Tesy/tesy-scale-lab/backends/streaming/build-gcc15/bin/llama-server",
+      "cache_ram_mib": 0,
+      "ctx_checkpoints": 0,
+      "swa_full": true
+    }
+  },
+  "evidence_class": "MODEL_FREE_SOURCE_AND_EXISTING_RAW",
+  "model_runs": 0,
+  "new_capacity_delta_from_enabling_swa_full": 0,
+  "schema": "c32c-swa-source-audit-v1",
+  "source_semantics": "swa_full selects SWA cache size equal to base and server n_swa=0"
+}

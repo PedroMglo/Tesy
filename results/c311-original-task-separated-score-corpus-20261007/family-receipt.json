@@ -1,0 +1,39 @@
+{
+  "measurement_commit": "25fdd8d6bb06352deabfc5a8a6f69b7797c46b70",
+  "start": {
+    "utc": "2026-10-07T01:50:02.079026+00:00",
+    "monotonic_s": 114020.524604542
+  },
+  "end": {
+    "utc": "2026-10-07T02:39:40.968944+00:00",
+    "monotonic_s": 116999.41451952
+  },
+  "argv": [
+    "systemd-run",
+    "--user",
+    "--slice=tesy-post-c154.slice",
+    "--unit=tesy-c311-original-training-corpus",
+    "--collect",
+    "--pipe",
+    "--wait",
+    "--working-directory=/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc",
+    "-p",
+    "MemoryMax=21474836480",
+    "-p",
+    "MemoryHigh=21474836480",
+    "-p",
+    "MemorySwapMax=0",
+    "-p",
+    "RuntimeMaxSec=5700",
+    "-p",
+    "TimeoutStopSec=10",
+    "--",
+    "/usr/bin/python",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/tools/residency_unit_run.py",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c311-original-task-separated-score-corpus-20261007",
+    "--inside"
+  ],
+  "returncode": 0,
+  "stdout": "",
+  "stderr": "Running as unit: tesy-c311-original-training-corpus.service\n          Finished with result: success\nMain processes terminated with: code=exited, status=0/SUCCESS\n               Service runtime: 49min 38.769s\n             CPU time consumed: 1h 37min 55.414s\n                   Memory peak: 14.9G (swap: 0B)\n"
+}

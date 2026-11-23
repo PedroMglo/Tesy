@@ -1,7 +1,11 @@
 #include "ggml-backend.h"
 #include "ggml-cpu.h"
 #include "ggml.h"
+#include "ggml-impl.h"
 #include "gguf.h"
+#include "llama.h"
+#include "tesy_static_residency.h"
+#include "tesy_sum_graph.h"
 
 #include <algorithm>
 #include <array>
@@ -11,13 +15,24 @@
 #include <cstdint>
 #include <cstdio>
 #include <cstdlib>
+#include <cstring>
+#include <filesystem>
 #include <fstream>
+#include <functional>
+#include <iterator>
 #include <limits>
 #include <memory>
 #include <numeric>
 #include <string>
+#include <thread>
+#include <unordered_set>
 #include <utility>
 #include <vector>
+
+extern "C" void llama_tesy_set_graph_compute_hook(
+    llama_context *, ggml_status (*)(ggml_cgraph *, ggml_backend_sched_t,
+                                     ggml_backend_t, void *), void *)
+    __attribute__((weak));
 
 namespace {
 
@@ -28,6 +43,11 @@ constexpr size_t k_encoded_bytes_per_expert = 13253760;
 constexpr float k_swiglu_alpha = 1.702f;
 constexpr float k_swiglu_limit = 7.0f;
 constexpr float k_mix_weight = 0.25f;
+constexpr llama_token k_live_handoff_decode_token = 2167;
+constexpr std::array<const char *, 8> k_vertical_stage_names{
+    "ffn_moe_up", "ffn_moe_up_biased", "ffn_moe_gate",
+    "ffn_moe_gate_biased", "ffn_moe_swiglu_oai", "ffn_moe_down",
+    "ffn_moe_down_biased", "ffn_moe_weighted"};
 
 struct options {
     std::string model;
@@ -38,6 +58,26 @@ struct options {
     int samples = 21;
     int inner = 5;
     bool async_overlap = false;
+    bool routed_exactness = false;
+    bool live_handoff_exactness = false;
+    bool live_handoff_timing = false;
+    bool live_reinjection_exactness = false;
+    bool split_graph_skip_exactness = false;
+    bool vertical_live_exactness = false;
+    bool vertical_numerical_diagnostic = false;
+    bool vertical_down_matrix = false;
+    std::string matrix_sidecars_dir;
+    int vertical_layers = 24;
+    int vertical_tokens = 4;
+    std::string split_arm;
+    std::string prompt_file;
+    std::string timing_start_gate;
+    std::string routed_input_f32;
+    std::string routed_reference_f32;
+    std::string routed_experts_csv;
+    std::string routed_weights_csv;
+    int routed_gpu_hits = -1;
+    uint32_t live_ctx = 4096;
 };
 
 struct context_buffer {
@@ -107,6 +147,7 @@ struct compute_graph {
     ggml_tensor * ids = nullptr;
     ggml_tensor * mix = nullptr;
     ggml_tensor * output = nullptr;
+    std::array<ggml_tensor *, 8> diagnostic_stages{};
 };
 
 struct tensor_holder {
@@ -137,6 +178,124 @@ struct parity {
     double relative_max = 0.0;
     double cosine = 0.0;
     bool pass = false;
+};
+
+struct routed_exactness_result {
+    int gpu_hits = 0;
+    int cpu_misses = 0;
+    parity serial_vs_stock;
+    parity async_vs_stock;
+    parity async_vs_serial;
+};
+
+enum class live_handoff_arm {
+    stock_reference,
+    handoff,
+};
+
+struct live_handoff_capture {
+    bool enabled = false;
+    live_handoff_arm arm = live_handoff_arm::stock_reference;
+    bool saw_activation = false;
+    bool saw_experts = false;
+    bool saw_weights = false;
+    bool saw_stock_output = false;
+    std::vector<float> activation;
+    std::vector<int32_t> experts;
+    std::vector<float> weights;
+    std::vector<float> stock_output;
+};
+
+struct live_handoff_result {
+    llama_token decode_input_token = -1;
+    int stock_decode_return_code = -1;
+    int handoff_decode_return_code = -1;
+    bool stock_rollback = false;
+    bool handoff_rollback = false;
+    bool activation_bitwise_equal = false;
+    parity activation_parity;
+    std::vector<int> selected_experts;
+    std::vector<float> routing_weights;
+    std::vector<routed_exactness_result> cases;
+};
+
+enum class live_timing_mode {
+    stock,
+    serial,
+    async,
+};
+
+struct live_timing_capture {
+    bool enabled = false;
+    live_timing_mode mode = live_timing_mode::stock;
+    bool capture_stock_output = false;
+    bool saw_activation = false;
+    bool saw_experts = false;
+    bool saw_weights = false;
+    bool saw_stock_output = false;
+    std::vector<float> activation;
+    std::vector<int32_t> experts;
+    std::vector<float> weights;
+    std::vector<float> stock_output;
+    const std::vector<float> * expected_activation = nullptr;
+    const std::vector<int> * expected_experts = nullptr;
+    const std::vector<float> * expected_weights = nullptr;
+    std::chrono::steady_clock::time_point activation_ready;
+    std::chrono::steady_clock::time_point route_ready;
+    std::chrono::steady_clock::time_point stock_output_ready;
+};
+
+struct live_timing_samples {
+    std::vector<double> activation_ms;
+    std::vector<double> route_ms;
+};
+
+struct live_timing_exactness_snapshot {
+    int stock_decode_return_code = -1;
+    int handoff_decode_return_code = -1;
+    bool stock_rollback = false;
+    bool handoff_rollback = false;
+    bool activation_bitwise_equal = false;
+    parity activation_parity;
+    parity activation_vs_reference;
+    parity stock_output_vs_reference;
+    parity serial_vs_stock;
+    parity async_vs_stock;
+    parity async_vs_serial;
+};
+
+struct live_timing_reference {
+    std::vector<float> activation;
+    std::vector<int> selected_experts;
+    std::vector<float> routing_weights;
+    std::vector<float> stock_output;
+};
+
+struct live_routed_executor {
+    int gpu_hits = 0;
+    int cpu_misses = 0;
+    std::unique_ptr<tensor_set> cpu_set;
+    std::unique_ptr<tensor_set> gpu_set;
+    std::unique_ptr<compute_graph> cpu_graph;
+    std::unique_ptr<compute_graph> gpu_graph;
+    std::unique_ptr<sum_graph> aggregate;
+};
+
+struct live_handoff_timing_result {
+    int gpu_hits = 0;
+    int cpu_misses = 0;
+    llama_token decode_input_token = -1;
+    std::vector<int> selected_experts;
+    std::vector<float> routing_weights;
+    live_timing_exactness_snapshot pre_exactness;
+    live_timing_exactness_snapshot post_exactness;
+    live_timing_samples stock;
+    live_timing_samples serial;
+    live_timing_samples async;
+    int completed_stock_trials = 0;
+    int completed_serial_trials = 0;
+    int completed_async_trials = 0;
+    int successful_timing_trial_rollbacks = 0;
 };
 
 struct case_result {
@@ -181,7 +340,18 @@ int parse_positive(const char * value, const char * flag, int minimum = 1) {
         code == 0 ? stdout : stderr,
         "usage: %s --model MODEL.gguf --output RESULT.json "
         "[--layer N] [--threads N] [--samples N] [--warmup N] [--inner N] "
-        "[--async-overlap]\n",
+        "[--async-overlap] [--routed-exactness "
+        "--routed-input-f32 FILE --routed-reference-f32 FILE "
+        "--routed-experts CSV --routed-weights CSV --routed-gpu-hits N] "
+        "[--live-handoff-exactness --prompt-file FILE --ctx N] "
+        "[--live-handoff-timing --prompt-file FILE --ctx N "
+        "--routed-gpu-hits N --warmup 6 --samples 81 --inner 1 "
+        "--timing-start-gate FILE] "
+        "[--live-reinjection-exactness --prompt-file FILE --ctx 4096] "
+        "[--split-graph-skip-exactness --split-arm ARM --prompt-file FILE --ctx 4096] "
+        "[--vertical-live-exactness --vertical-layers 1..24 --vertical-tokens N "
+        "--prompt-file FILE --ctx 4096 [--vertical-numerical-diagnostic] "
+        "[--vertical-down-matrix --matrix-sidecars-dir DIR]]\n",
         argv0);
     std::exit(code);
 }
@@ -212,6 +382,50 @@ options parse_options(int argc, char ** argv) {
             out.inner = parse_positive(value("--inner"), "--inner");
         } else if (arg == "--async-overlap") {
             out.async_overlap = true;
+        } else if (arg == "--routed-exactness") {
+            out.routed_exactness = true;
+        } else if (arg == "--live-handoff-exactness") {
+            out.live_handoff_exactness = true;
+        } else if (arg == "--live-handoff-timing") {
+            out.live_handoff_timing = true;
+        } else if (arg == "--live-reinjection-exactness") {
+            out.live_reinjection_exactness = true;
+        } else if (arg == "--split-graph-skip-exactness") {
+            out.split_graph_skip_exactness = true;
+        } else if (arg == "--vertical-live-exactness") {
+            out.vertical_live_exactness = true;
+        } else if (arg == "--vertical-numerical-diagnostic") {
+            out.vertical_numerical_diagnostic = true;
+        } else if (arg == "--vertical-down-matrix") {
+            out.vertical_down_matrix = true;
+        } else if (arg == "--matrix-sidecars-dir") {
+            out.matrix_sidecars_dir = value("--matrix-sidecars-dir");
+        } else if (arg == "--vertical-layers") {
+            out.vertical_layers = parse_positive(value("--vertical-layers"), "--vertical-layers");
+        } else if (arg == "--vertical-tokens") {
+            out.vertical_tokens = parse_positive(value("--vertical-tokens"), "--vertical-tokens");
+        } else if (arg == "--split-arm") {
+            out.split_arm = value("--split-arm");
+        } else if (arg == "--prompt-file") {
+            out.prompt_file = value("--prompt-file");
+        } else if (arg == "--timing-start-gate") {
+            out.timing_start_gate = value("--timing-start-gate");
+        } else if (arg == "--ctx") {
+            out.live_ctx = static_cast<uint32_t>(
+                parse_positive(value("--ctx"), "--ctx", 16));
+        } else if (arg == "--routed-input-f32") {
+            out.routed_input_f32 = value("--routed-input-f32");
+        } else if (arg == "--routed-reference-f32") {
+            out.routed_reference_f32 = value("--routed-reference-f32");
+        } else if (arg == "--routed-experts") {
+            out.routed_experts_csv = value("--routed-experts");
+        } else if (arg == "--routed-weights") {
+            out.routed_weights_csv = value("--routed-weights");
+        } else if (arg == "--routed-gpu-hits") {
+            out.routed_gpu_hits =
+                parse_positive(
+                    value("--routed-gpu-hits"),
+                    "--routed-gpu-hits");
         } else if (arg == "-h" || arg == "--help") {
             usage(argv[0], 0);
         } else {
@@ -220,6 +434,111 @@ options parse_options(int argc, char ** argv) {
     }
     if (out.model.empty() || out.output.empty()) {
         usage(argv[0], 2);
+    }
+    const int special_modes =
+        static_cast<int>(out.routed_exactness)
+        + static_cast<int>(out.live_handoff_exactness)
+        + static_cast<int>(out.live_handoff_timing)
+        + static_cast<int>(out.live_reinjection_exactness)
+        + static_cast<int>(out.split_graph_skip_exactness)
+        + static_cast<int>(out.vertical_live_exactness);
+    if (special_modes > 1) {
+        fail("routed/live exactness/timing modes are mutually exclusive");
+    }
+    if (out.routed_exactness) {
+        if (!out.async_overlap) {
+            fail("--routed-exactness requires --async-overlap");
+        }
+        if (out.layer != 0) {
+            fail("routed exactness is frozen to layer 0");
+        }
+        if (
+            out.routed_input_f32.empty()
+            || out.routed_reference_f32.empty()
+            || out.routed_experts_csv.empty()
+            || out.routed_weights_csv.empty()
+        ) {
+            fail("routed exactness requires input/reference/experts/weights");
+        }
+        if (out.routed_gpu_hits != 2 && out.routed_gpu_hits != 3) {
+            fail("routed exactness gpu hits must be 2 or 3");
+        }
+    }
+    if (out.live_handoff_exactness) {
+        if (out.layer != 0) {
+            fail("live handoff exactness is frozen to layer 0");
+        }
+        if (out.prompt_file.empty()) {
+            fail("live handoff exactness requires --prompt-file");
+        }
+        if (out.live_ctx != 4096) {
+            fail("live handoff exactness is frozen to --ctx 4096");
+        }
+    }
+    if (out.live_handoff_timing) {
+        if (out.layer != 0) {
+            fail("live handoff timing is frozen to layer 0");
+        }
+        if (out.prompt_file.empty()) {
+            fail("live handoff timing requires --prompt-file");
+        }
+        if (out.live_ctx != 4096) {
+            fail("live handoff timing is frozen to --ctx 4096");
+        }
+        if (out.routed_gpu_hits != 2 && out.routed_gpu_hits != 3) {
+            fail("live handoff timing gpu hits must be 2 or 3");
+        }
+        if (out.warmup != 6 || out.samples != 81 || out.inner != 1) {
+            fail(
+                "live handoff timing requires --warmup 6 "
+                "--samples 81 --inner 1");
+        }
+        if (out.timing_start_gate.empty()) {
+            fail("live handoff timing requires --timing-start-gate");
+        }
+    }
+    if (out.live_reinjection_exactness) {
+        if (out.layer != 0 || out.live_ctx != 4096 || out.prompt_file.empty()) {
+            fail("live reinjection requires layer 0, --ctx 4096 and --prompt-file");
+        }
+        if (out.async_overlap || out.routed_gpu_hits != -1 || !out.timing_start_gate.empty()) {
+            fail("live reinjection forbids async, routed GPU hits and timing gate");
+        }
+    }
+    if (out.split_graph_skip_exactness) {
+        if (out.layer != 0 || out.live_ctx != 4096 || out.prompt_file.empty() ||
+            out.async_overlap || out.routed_gpu_hits != -1 ||
+            !out.timing_start_gate.empty()) {
+            fail("split graph skip requires layer 0, --ctx 4096, prompt and no async/timing");
+        }
+        if (out.split_arm != "stock" && out.split_arm != "null" &&
+            out.split_arm != "segmented" && out.split_arm != "skip-stock" &&
+            out.split_arm != "h2" && out.split_arm != "h3") {
+            fail("invalid --split-arm");
+        }
+    } else if (!out.split_arm.empty()) {
+        fail("--split-arm requires --split-graph-skip-exactness");
+    }
+    if (out.vertical_live_exactness) {
+        if (out.live_ctx != 4096 || out.prompt_file.empty() ||
+            out.vertical_layers > 24 || out.vertical_tokens > 128 ||
+            out.async_overlap || out.routed_gpu_hits != -1 ||
+            !out.timing_start_gate.empty()) {
+            fail("vertical live requires --ctx 4096, prompt, 1..24 layers, "
+                 "1..128 tokens and no async/timing");
+        }
+    }
+    if (out.vertical_numerical_diagnostic &&
+        (!out.vertical_live_exactness || out.vertical_layers != 3 ||
+         out.vertical_tokens != 1)) {
+        fail("vertical numerical diagnostic requires one token and three layers");
+    }
+    if (out.vertical_down_matrix &&
+        (!out.vertical_numerical_diagnostic || out.matrix_sidecars_dir.empty())) {
+        fail("down matrix requires vertical diagnostic and published sidecars");
+    }
+    if (!out.vertical_down_matrix && !out.matrix_sidecars_dir.empty()) {
+        fail("matrix sidecars require down matrix mode");
     }
     return out;
 }
@@ -524,7 +843,8 @@ std::unique_ptr<compute_graph> make_compute_graph(
         tensor_set & tensors,
         ggml_backend_t backend,
         int count,
-        const std::vector<float> & input_values) {
+        const std::vector<float> & input_values,
+        const std::vector<float> * mix_values = nullptr) {
     auto result = std::make_unique<compute_graph>();
     result->storage.ctx = make_context();
     ggml_context * ctx = result->storage.ctx;
@@ -538,19 +858,27 @@ std::unique_ptr<compute_graph> make_compute_graph(
 
     ggml_tensor * up =
         ggml_mul_mat_id(ctx, tensors.up_w, result->input, result->ids);
+    result->diagnostic_stages[0] = up;
     up = ggml_add_id(ctx, up, tensors.up_b, result->ids);
+    result->diagnostic_stages[1] = up;
 
     ggml_tensor * gate =
         ggml_mul_mat_id(ctx, tensors.gate_w, result->input, result->ids);
+    result->diagnostic_stages[2] = gate;
     gate = ggml_add_id(ctx, gate, tensors.gate_b, result->ids);
+    result->diagnostic_stages[3] = gate;
 
     ggml_tensor * act =
         ggml_swiglu_oai(ctx, gate, up, k_swiglu_alpha, k_swiglu_limit);
+    result->diagnostic_stages[4] = act;
 
     ggml_tensor * down =
         ggml_mul_mat_id(ctx, tensors.down_w, act, result->ids);
+    result->diagnostic_stages[5] = down;
     down = ggml_add_id(ctx, down, tensors.down_b, result->ids);
+    result->diagnostic_stages[6] = down;
     down = ggml_mul(ctx, down, result->mix);
+    result->diagnostic_stages[7] = down;
 
     ggml_tensor * sum = nullptr;
     for (int expert = 0; expert < count; ++expert) {
@@ -587,7 +915,20 @@ std::unique_ptr<compute_graph> make_compute_graph(
         0,
         ids.size() * sizeof(int32_t));
 
-    std::vector<float> mix(static_cast<size_t>(count), k_mix_weight);
+    std::vector<float> mix;
+    if (mix_values) {
+        mix = *mix_values;
+        if (mix.size() != static_cast<size_t>(count)) {
+            fail("routing weight count does not match compact expert count");
+        }
+        for (float value : mix) {
+            if (!std::isfinite(value) || value < 0.0f) {
+                fail("routing weights must be finite and non-negative");
+            }
+        }
+    } else {
+        mix.assign(static_cast<size_t>(count), k_mix_weight);
+    }
     ggml_backend_tensor_set(
         result->mix,
         mix.data(),
@@ -626,12 +967,10 @@ std::unique_ptr<sum_graph> make_sum_graph(
     auto result = std::make_unique<sum_graph>();
     result->storage.ctx = make_context(1024u * 1024u);
     ggml_context * ctx = result->storage.ctx;
-    result->gpu_partial =
-        ggml_new_tensor_2d(ctx, GGML_TYPE_F32, k_embd, 1);
-    result->cpu_partial =
-        ggml_new_tensor_2d(ctx, GGML_TYPE_F32, k_embd, 1);
-    result->output =
-        ggml_add(ctx, result->gpu_partial, result->cpu_partial);
+    const auto nodes = tesy_make_leaf_sum_nodes(ctx, k_embd);
+    result->gpu_partial = nodes.gpu_partial;
+    result->cpu_partial = nodes.cpu_partial;
+    result->output = nodes.output;
     result->graph = ggml_new_graph(ctx);
     ggml_build_forward_expand(result->graph, result->output);
     result->storage.buffer =
@@ -678,6 +1017,457 @@ std::vector<float> read_output(
     return values;
 }
 
+std::string read_prompt_file(const std::string & path) {
+    std::ifstream input(path, std::ios::binary);
+    if (!input) {
+        fail("cannot open prompt file: " + path);
+    }
+    return std::string(
+        std::istreambuf_iterator<char>(input),
+        std::istreambuf_iterator<char>());
+}
+
+std::vector<llama_token> tokenize_prompt(
+        const llama_vocab * vocab,
+        const std::string & text) {
+    const int32_t required =
+        -llama_tokenize(
+            vocab,
+            text.c_str(),
+            static_cast<int32_t>(text.size()),
+            nullptr,
+            0,
+            true,
+            true);
+    if (required <= 0) {
+        fail("live handoff tokenization sizing failed");
+    }
+
+    std::vector<llama_token> tokens(static_cast<size_t>(required));
+    const int32_t written =
+        llama_tokenize(
+            vocab,
+            text.c_str(),
+            static_cast<int32_t>(text.size()),
+            tokens.data(),
+            static_cast<int32_t>(tokens.size()),
+            true,
+            true);
+    if (written <= 0 || written > required) {
+        fail("live handoff tokenization failed");
+    }
+    tokens.resize(static_cast<size_t>(written));
+    return tokens;
+}
+
+template <typename T>
+std::vector<T> read_live_tensor(
+        ggml_tensor * tensor,
+        ggml_type expected_type,
+        size_t expected_elements,
+        const char * label) {
+    if (tensor->type != expected_type) {
+        fail(std::string(label) + " has unexpected tensor type");
+    }
+    if (!ggml_is_contiguous(tensor)) {
+        fail(std::string(label) + " must be contiguous");
+    }
+    const size_t elements =
+        static_cast<size_t>(ggml_nelements(tensor));
+    if (elements != expected_elements) {
+        fail(
+            std::string(label) + " element count mismatch: " +
+            std::to_string(elements));
+    }
+    if (ggml_nbytes(tensor) != elements * sizeof(T)) {
+        fail(std::string(label) + " byte count mismatch");
+    }
+
+    std::vector<T> out(elements);
+    ggml_backend_tensor_get(
+        tensor,
+        out.data(),
+        0,
+        out.size() * sizeof(T));
+    return out;
+}
+
+void reset_live_handoff_capture(
+        live_handoff_capture & state,
+        live_handoff_arm arm) {
+    state.enabled = true;
+    state.arm = arm;
+    state.saw_activation = false;
+    state.saw_experts = false;
+    state.saw_weights = false;
+    state.saw_stock_output = false;
+    state.activation.clear();
+    state.experts.clear();
+    state.weights.clear();
+    state.stock_output.clear();
+}
+
+bool live_handoff_callback(
+        ggml_tensor * tensor,
+        bool ask,
+        void * user_data) {
+    auto * state =
+        static_cast<live_handoff_capture *>(user_data);
+    if (!state || !state->enabled) {
+        return false;
+    }
+
+    const bool activation =
+        std::strcmp(tensor->name, "attn_post_norm-0") == 0;
+    const bool experts =
+        std::strcmp(tensor->name, "ffn_moe_topk-0") == 0;
+    const bool weights =
+        std::strcmp(
+            tensor->name,
+            "ffn_moe_weights_softmax-0") == 0;
+    const bool stock_output =
+        std::strcmp(tensor->name, "ffn_moe_out-0") == 0;
+    const bool wanted =
+        activation || experts || weights || stock_output;
+
+    if (ask) {
+        return wanted;
+    }
+    if (!wanted) {
+        return true;
+    }
+
+    if (activation) {
+        if (state->saw_activation) {
+            fail("duplicate live handoff activation");
+        }
+        state->activation =
+            read_live_tensor<float>(
+                tensor,
+                GGML_TYPE_F32,
+                static_cast<size_t>(k_embd),
+                "live handoff attn_post_norm-0");
+        state->saw_activation = true;
+        return true;
+    }
+
+    if (experts) {
+        if (state->saw_experts) {
+            fail("duplicate live handoff top-k");
+        }
+        state->experts =
+            read_live_tensor<int32_t>(
+                tensor,
+                GGML_TYPE_I32,
+                static_cast<size_t>(k_top_k),
+                "live handoff ffn_moe_topk-0");
+        state->saw_experts = true;
+        return true;
+    }
+
+    if (weights) {
+        if (state->saw_weights) {
+            fail("duplicate live handoff routing weights");
+        }
+        state->weights =
+            read_live_tensor<float>(
+                tensor,
+                GGML_TYPE_F32,
+                static_cast<size_t>(k_top_k),
+                "live handoff ffn_moe_weights_softmax-0");
+        for (float value : state->weights) {
+            if (!std::isfinite(value) || value < 0.0f) {
+                fail("live handoff routing weight is invalid");
+            }
+        }
+        state->saw_weights = true;
+        return state->arm != live_handoff_arm::handoff;
+    }
+
+    if (stock_output) {
+        if (state->arm != live_handoff_arm::stock_reference) {
+            fail("live handoff arm reached stock MoE output");
+        }
+        if (state->saw_stock_output) {
+            fail("duplicate live handoff stock output");
+        }
+        state->stock_output =
+            read_live_tensor<float>(
+                tensor,
+                GGML_TYPE_F32,
+                static_cast<size_t>(k_embd),
+                "live handoff ffn_moe_out-0");
+        state->saw_stock_output = true;
+        return false;
+    }
+
+    return true;
+}
+
+void validate_live_handoff_capture(
+        const live_handoff_capture & state,
+        bool require_stock_output,
+        const char * label) {
+    if (
+        !state.saw_activation
+        || !state.saw_experts
+        || !state.saw_weights
+    ) {
+        fail(std::string(label) + " capture is incomplete");
+    }
+    if (state.experts.size() != static_cast<size_t>(k_top_k)) {
+        fail(std::string(label) + " expert count mismatch");
+    }
+
+    const std::vector<int32_t> expected = {
+        1, 13, 17, 21,
+    };
+    if (state.experts != expected) {
+        fail(std::string(label) + " route differs from admitted experts");
+    }
+
+    if (require_stock_output != state.saw_stock_output) {
+        fail(std::string(label) + " stock-output presence mismatch");
+    }
+    for (float value : state.activation) {
+        if (!std::isfinite(value)) {
+            fail(std::string(label) + " activation is non-finite");
+        }
+    }
+    if (require_stock_output) {
+        for (float value : state.stock_output) {
+            if (!std::isfinite(value)) {
+                fail(std::string(label) + " stock output is non-finite");
+            }
+        }
+    }
+}
+
+bool float_vectors_bitwise_equal(
+        const std::vector<float> & a,
+        const std::vector<float> & b);
+
+parity compare_outputs(
+        const std::vector<float> & reference,
+        const std::vector<float> & observed);
+
+void reset_live_timing_capture(
+        live_timing_capture & state,
+        live_timing_mode mode,
+        bool capture_stock_output,
+        const std::vector<float> * expected_activation = nullptr,
+        const std::vector<int> * expected_experts = nullptr,
+        const std::vector<float> * expected_weights = nullptr) {
+    state.enabled = true;
+    state.mode = mode;
+    state.capture_stock_output = capture_stock_output;
+    state.expected_activation = expected_activation;
+    state.expected_experts = expected_experts;
+    state.expected_weights = expected_weights;
+    state.saw_activation = false;
+    state.saw_experts = false;
+    state.saw_weights = false;
+    state.saw_stock_output = false;
+    state.activation.clear();
+    state.experts.clear();
+    state.weights.clear();
+    state.stock_output.clear();
+}
+
+bool live_timing_callback(
+        ggml_tensor * tensor,
+        bool ask,
+        void * user_data) {
+    auto * state =
+        static_cast<live_timing_capture *>(user_data);
+    if (!state || !state->enabled) {
+        return false;
+    }
+
+    const bool activation =
+        std::strcmp(tensor->name, "attn_post_norm-0") == 0;
+    const bool experts =
+        std::strcmp(tensor->name, "ffn_moe_topk-0") == 0;
+    const bool weights =
+        std::strcmp(
+            tensor->name,
+            "ffn_moe_weights_softmax-0") == 0;
+    const bool stock_output =
+        std::strcmp(tensor->name, "ffn_moe_out-0") == 0;
+    const bool wanted =
+        activation || experts || weights || stock_output;
+
+    if (ask) {
+        return wanted;
+    }
+    if (!wanted) {
+        return true;
+    }
+
+    if (activation) {
+        if (state->saw_activation) {
+            fail("duplicate live timing activation");
+        }
+        state->activation =
+            read_live_tensor<float>(
+                tensor,
+                GGML_TYPE_F32,
+                static_cast<size_t>(k_embd),
+                "live timing attn_post_norm-0");
+        state->saw_activation = true;
+        if (state->expected_activation) {
+            const parity check =
+                compare_outputs(
+                    *state->expected_activation,
+                    state->activation);
+            if (!check.pass) {
+                fail("live timing callback activation drifted");
+            }
+        }
+        state->activation_ready =
+            std::chrono::steady_clock::now();
+        return true;
+    }
+
+    if (experts) {
+        if (state->saw_experts) {
+            fail("duplicate live timing top-k");
+        }
+        state->experts =
+            read_live_tensor<int32_t>(
+                tensor,
+                GGML_TYPE_I32,
+                static_cast<size_t>(k_top_k),
+                "live timing ffn_moe_topk-0");
+        state->saw_experts = true;
+        if (state->expected_experts) {
+            if (
+                state->experts.size()
+                != state->expected_experts->size()
+            ) {
+                fail("live timing callback expert count drifted");
+            }
+            for (size_t i = 0; i < state->experts.size(); ++i) {
+                if (
+                    state->experts[i]
+                    != (*state->expected_experts)[i]
+                ) {
+                    fail("live timing callback expert IDs drifted");
+                }
+            }
+        }
+        return true;
+    }
+
+    if (weights) {
+        if (state->saw_weights) {
+            fail("duplicate live timing routing weights");
+        }
+        state->weights =
+            read_live_tensor<float>(
+                tensor,
+                GGML_TYPE_F32,
+                static_cast<size_t>(k_top_k),
+                "live timing ffn_moe_weights_softmax-0");
+        for (float value : state->weights) {
+            if (!std::isfinite(value) || value < 0.0f) {
+                fail("live timing routing weight is invalid");
+            }
+        }
+        state->saw_weights = true;
+        if (
+            state->expected_weights
+            && !float_vectors_bitwise_equal(
+                state->weights,
+                *state->expected_weights)
+        ) {
+            fail("live timing callback routing weights drifted");
+        }
+        state->route_ready =
+            std::chrono::steady_clock::now();
+        return state->mode == live_timing_mode::stock;
+    }
+
+    if (stock_output) {
+        if (state->mode != live_timing_mode::stock) {
+            fail("candidate timing arm reached stock MoE output");
+        }
+        if (state->saw_stock_output) {
+            fail("duplicate live timing stock output");
+        }
+        state->stock_output_ready =
+            std::chrono::steady_clock::now();
+        state->saw_stock_output = true;
+        if (state->capture_stock_output) {
+            state->stock_output =
+                read_live_tensor<float>(
+                    tensor,
+                    GGML_TYPE_F32,
+                    static_cast<size_t>(k_embd),
+                    "live timing ffn_moe_out-0");
+        }
+        return false;
+    }
+
+    return true;
+}
+
+void validate_live_timing_capture(
+        const live_timing_capture & state,
+        live_timing_mode mode,
+        bool require_stock_bytes,
+        const char * label) {
+    if (
+        !state.saw_activation
+        || !state.saw_experts
+        || !state.saw_weights
+    ) {
+        fail(std::string(label) + " live timing capture is incomplete");
+    }
+
+    const std::vector<int32_t> expected = {
+        1, 13, 17, 21,
+    };
+    if (state.experts != expected) {
+        fail(std::string(label) + " live timing route drift");
+    }
+
+    if (mode == live_timing_mode::stock) {
+        if (!state.saw_stock_output) {
+            fail(std::string(label) + " stock output event missing");
+        }
+        if (
+            require_stock_bytes
+            && state.stock_output.size() != static_cast<size_t>(k_embd)
+        ) {
+            fail(std::string(label) + " stock output bytes missing");
+        }
+    } else if (state.saw_stock_output) {
+        fail(std::string(label) + " candidate reached stock output");
+    }
+
+    for (float value : state.activation) {
+        if (!std::isfinite(value)) {
+            fail(std::string(label) + " activation is non-finite");
+        }
+    }
+}
+
+bool float_vectors_bitwise_equal(
+        const std::vector<float> & a,
+        const std::vector<float> & b) {
+    if (a.size() != b.size()) {
+        return false;
+    }
+    if (a.empty()) {
+        return true;
+    }
+    return std::memcmp(
+        a.data(),
+        b.data(),
+        a.size() * sizeof(float)) == 0;
+}
+
 parity compare_outputs(
         const std::vector<float> & reference,
         const std::vector<float> & observed) {
@@ -706,6 +1496,3528 @@ parity compare_outputs(
         dot / std::max(1e-30, std::sqrt(norm_ref * norm_obs));
     out.pass = out.relative_max <= 0.005 && out.cosine >= 0.9999;
     return out;
+}
+
+std::unique_ptr<live_routed_executor> make_live_routed_executor(
+        const options & opt,
+        ggml_backend_t cpu_backend,
+        ggml_backend_t gpu_backend,
+        ggml_backend_buffer_type_t cpu_weight_buft,
+        ggml_backend_buffer_type_t cpu_bias_buft,
+        ggml_backend_buffer_type_t gpu_buft,
+        const std::vector<float> & initial_input,
+        const std::vector<int> & selected_experts,
+        const std::vector<float> & routing_weights) {
+    if (selected_experts.size() != static_cast<size_t>(k_top_k)) {
+        fail("live timing requires exactly four selected experts");
+    }
+    if (routing_weights.size() != static_cast<size_t>(k_top_k)) {
+        fail("live timing requires exactly four routing weights");
+    }
+    const int gpu_hits = opt.routed_gpu_hits;
+    if (gpu_hits != 2 && gpu_hits != 3) {
+        fail("live timing gpu hits must be 2 or 3");
+    }
+    const int cpu_misses = k_top_k - gpu_hits;
+
+    std::vector<int> gpu_ids(
+        selected_experts.begin(),
+        selected_experts.begin() + gpu_hits);
+    std::vector<int> cpu_ids(
+        selected_experts.begin() + gpu_hits,
+        selected_experts.end());
+    std::vector<float> gpu_mix(
+        routing_weights.begin(),
+        routing_weights.begin() + gpu_hits);
+    std::vector<float> cpu_mix(
+        routing_weights.begin() + gpu_hits,
+        routing_weights.end());
+
+    const tensor_bytes cpu_data =
+        load_subset(opt.model, opt.layer, cpu_ids);
+    const tensor_bytes gpu_data =
+        load_subset(opt.model, opt.layer, gpu_ids);
+
+    auto result = std::make_unique<live_routed_executor>();
+    result->gpu_hits = gpu_hits;
+    result->cpu_misses = cpu_misses;
+    result->cpu_set = make_tensor_set(
+        cpu_data,
+        cpu_misses,
+        cpu_weight_buft,
+        cpu_bias_buft);
+    result->gpu_set = make_tensor_set(
+        gpu_data,
+        gpu_hits,
+        gpu_buft,
+        gpu_buft);
+    result->cpu_graph = make_compute_graph(
+        *result->cpu_set,
+        cpu_backend,
+        cpu_misses,
+        initial_input,
+        &cpu_mix);
+    result->gpu_graph = make_compute_graph(
+        *result->gpu_set,
+        gpu_backend,
+        gpu_hits,
+        initial_input,
+        &gpu_mix);
+    result->aggregate = make_sum_graph(gpu_backend);
+    return result;
+}
+
+void set_live_routed_input(
+        live_routed_executor & executor,
+        ggml_backend_t cpu_backend,
+        ggml_backend_t gpu_backend,
+        const std::vector<float> & activation) {
+    if (activation.size() != static_cast<size_t>(k_embd)) {
+        fail("live timing activation size mismatch");
+    }
+
+    ggml_backend_tensor_set(
+        executor.cpu_graph->input,
+        activation.data(),
+        0,
+        activation.size() * sizeof(float));
+    ggml_backend_tensor_set(
+        executor.gpu_graph->input,
+        activation.data(),
+        0,
+        activation.size() * sizeof(float));
+    ggml_backend_synchronize(cpu_backend);
+    ggml_backend_synchronize(gpu_backend);
+}
+
+void execute_live_routed_serial(
+        live_routed_executor & executor,
+        ggml_backend_t cpu_backend,
+        ggml_backend_t gpu_backend,
+        const std::vector<float> & activation) {
+    set_live_routed_input(
+        executor,
+        cpu_backend,
+        gpu_backend,
+        activation);
+
+    compute(cpu_backend, *executor.cpu_graph);
+    compute(gpu_backend, *executor.gpu_graph);
+
+    ggml_backend_tensor_copy(
+        executor.gpu_graph->output,
+        executor.aggregate->gpu_partial);
+    ggml_backend_tensor_copy(
+        executor.cpu_graph->output,
+        executor.aggregate->cpu_partial);
+    ggml_backend_synchronize(cpu_backend);
+    ggml_backend_synchronize(gpu_backend);
+    compute_sum(gpu_backend, *executor.aggregate);
+}
+
+void execute_live_routed_async(
+        live_routed_executor & executor,
+        ggml_backend_t cpu_backend,
+        ggml_backend_t gpu_backend,
+        const std::vector<float> & activation) {
+    set_live_routed_input(
+        executor,
+        cpu_backend,
+        gpu_backend,
+        activation);
+
+    compute_async_start(
+        gpu_backend,
+        *executor.gpu_graph);
+    compute(cpu_backend, *executor.cpu_graph);
+    ggml_backend_synchronize(gpu_backend);
+
+    ggml_backend_tensor_copy(
+        executor.gpu_graph->output,
+        executor.aggregate->gpu_partial);
+    ggml_backend_tensor_copy(
+        executor.cpu_graph->output,
+        executor.aggregate->cpu_partial);
+    ggml_backend_synchronize(cpu_backend);
+    ggml_backend_synchronize(gpu_backend);
+    compute_sum(gpu_backend, *executor.aggregate);
+}
+
+std::vector<float> read_live_routed_output(
+        live_routed_executor & executor,
+        ggml_backend_t gpu_backend) {
+    return read_output(
+        gpu_backend,
+        executor.aggregate->output);
+}
+
+routed_exactness_result run_routed_exactness(
+        const options & opt,
+        ggml_backend_t cpu_backend,
+        ggml_backend_t gpu_backend,
+        ggml_backend_buffer_type_t cpu_weight_buft,
+        ggml_backend_buffer_type_t cpu_bias_buft,
+        ggml_backend_buffer_type_t gpu_buft,
+        const std::vector<float> & input,
+        const std::vector<float> & stock_reference,
+        const std::vector<int> & selected_experts,
+        const std::vector<float> & routing_weights) {
+    if (selected_experts.size() != static_cast<size_t>(k_top_k)) {
+        fail("routed exactness requires exactly four selected experts");
+    }
+    if (routing_weights.size() != static_cast<size_t>(k_top_k)) {
+        fail("routed exactness requires exactly four routing weights");
+    }
+
+    std::vector<int> sorted = selected_experts;
+    std::sort(sorted.begin(), sorted.end());
+    if (std::adjacent_find(sorted.begin(), sorted.end()) != sorted.end()) {
+        fail("routed exactness selected experts must be unique");
+    }
+    for (int expert : selected_experts) {
+        if (expert < 0 || expert >= k_expert_count) {
+            fail("routed exactness expert id outside 0..31");
+        }
+    }
+
+    const int gpu_hits = opt.routed_gpu_hits;
+    const int cpu_misses = k_top_k - gpu_hits;
+
+    std::vector<int> gpu_ids(
+        selected_experts.begin(),
+        selected_experts.begin() + gpu_hits);
+    std::vector<int> cpu_ids(
+        selected_experts.begin() + gpu_hits,
+        selected_experts.end());
+    std::vector<float> gpu_mix(
+        routing_weights.begin(),
+        routing_weights.begin() + gpu_hits);
+    std::vector<float> cpu_mix(
+        routing_weights.begin() + gpu_hits,
+        routing_weights.end());
+
+    const tensor_bytes cpu_data =
+        load_subset(opt.model, opt.layer, cpu_ids);
+    const tensor_bytes gpu_data =
+        load_subset(opt.model, opt.layer, gpu_ids);
+
+    auto cpu_set = make_tensor_set(
+        cpu_data,
+        cpu_misses,
+        cpu_weight_buft,
+        cpu_bias_buft);
+    auto gpu_set = make_tensor_set(
+        gpu_data,
+        gpu_hits,
+        gpu_buft,
+        gpu_buft);
+
+    auto cpu_graph = make_compute_graph(
+        *cpu_set,
+        cpu_backend,
+        cpu_misses,
+        input,
+        &cpu_mix);
+    auto gpu_graph = make_compute_graph(
+        *gpu_set,
+        gpu_backend,
+        gpu_hits,
+        input,
+        &gpu_mix);
+    auto aggregate = make_sum_graph(gpu_backend);
+
+    auto execute_serial = [&]() {
+        ggml_backend_tensor_copy(
+            gpu_graph->input,
+            cpu_graph->input);
+        ggml_backend_synchronize(gpu_backend);
+        ggml_backend_synchronize(cpu_backend);
+
+        compute(cpu_backend, *cpu_graph);
+        compute(gpu_backend, *gpu_graph);
+
+        ggml_backend_tensor_copy(
+            gpu_graph->output, aggregate->gpu_partial);
+        ggml_backend_tensor_copy(
+            cpu_graph->output,
+            aggregate->cpu_partial);
+        ggml_backend_synchronize(cpu_backend);
+        ggml_backend_synchronize(gpu_backend);
+        compute_sum(gpu_backend, *aggregate);
+    };
+
+    auto execute_async = [&]() {
+        ggml_backend_tensor_copy(
+            gpu_graph->input,
+            cpu_graph->input);
+        ggml_backend_synchronize(gpu_backend);
+        ggml_backend_synchronize(cpu_backend);
+
+        compute_async_start(gpu_backend, *gpu_graph);
+        compute(cpu_backend, *cpu_graph);
+        ggml_backend_synchronize(gpu_backend);
+
+        ggml_backend_tensor_copy(
+            gpu_graph->output, aggregate->gpu_partial);
+        ggml_backend_tensor_copy(
+            cpu_graph->output,
+            aggregate->cpu_partial);
+        ggml_backend_synchronize(cpu_backend);
+        ggml_backend_synchronize(gpu_backend);
+        compute_sum(gpu_backend, *aggregate);
+    };
+
+    execute_serial();
+    const std::vector<float> serial_output =
+        read_output(gpu_backend, aggregate->output);
+
+    execute_async();
+    const std::vector<float> async_output =
+        read_output(gpu_backend, aggregate->output);
+
+    routed_exactness_result result;
+    result.gpu_hits = gpu_hits;
+    result.cpu_misses = cpu_misses;
+    result.serial_vs_stock =
+        compare_outputs(stock_reference, serial_output);
+    result.async_vs_stock =
+        compare_outputs(stock_reference, async_output);
+    result.async_vs_serial =
+        compare_outputs(serial_output, async_output);
+
+    if (!result.serial_vs_stock.pass) {
+        fail("routed serial replay failed stock numerical parity");
+    }
+    if (!result.async_vs_stock.pass) {
+        fail("routed async replay failed stock numerical parity");
+    }
+    if (!result.async_vs_serial.pass) {
+        fail("routed async replay failed serial numerical parity");
+    }
+
+    return result;
+}
+
+live_handoff_result run_live_handoff_exactness(
+        const options & opt,
+        ggml_backend_t cpu_backend,
+        ggml_backend_t gpu_backend,
+        ggml_backend_buffer_type_t cpu_weight_buft,
+        ggml_backend_buffer_type_t cpu_bias_buft,
+        ggml_backend_buffer_type_t gpu_buft) {
+    const std::string prompt =
+        read_prompt_file(opt.prompt_file);
+
+    llama_model_params model_params =
+        llama_model_default_params();
+    model_params.n_gpu_layers = 0;
+
+    llama_model * model =
+        llama_model_load_from_file(
+            opt.model.c_str(),
+            model_params);
+    if (!model) {
+        fail("live handoff failed to load stock model");
+    }
+
+    const llama_vocab * vocab =
+        llama_model_get_vocab(model);
+    std::vector<llama_token> prompt_tokens =
+        tokenize_prompt(vocab, prompt);
+
+    const uint64_t minimum_ctx =
+        static_cast<uint64_t>(prompt_tokens.size()) + 8;
+    if (minimum_ctx > opt.live_ctx) {
+        llama_model_free(model);
+        fail("live handoff configured context is too small");
+    }
+
+    live_handoff_capture callback_state;
+
+    llama_context_params ctx_params =
+        llama_context_default_params();
+    ctx_params.n_ctx = opt.live_ctx;
+    ctx_params.n_batch =
+        static_cast<uint32_t>(prompt_tokens.size());
+    ctx_params.n_ubatch =
+        static_cast<uint32_t>(prompt_tokens.size());
+    ctx_params.n_threads = opt.threads;
+    ctx_params.n_threads_batch = opt.threads;
+    ctx_params.no_perf = true;
+    ctx_params.cb_eval = live_handoff_callback;
+    ctx_params.cb_eval_user_data = &callback_state;
+
+    llama_context * ctx =
+        llama_init_from_model(model, ctx_params);
+    if (!ctx) {
+        llama_model_free(model);
+        fail("live handoff failed to create stock context");
+    }
+
+    llama_sampler_chain_params sampler_params =
+        llama_sampler_chain_default_params();
+    sampler_params.no_perf = true;
+    llama_sampler * sampler =
+        llama_sampler_chain_init(sampler_params);
+    llama_sampler_chain_add(
+        sampler,
+        llama_sampler_init_greedy());
+
+    llama_batch prompt_batch =
+        llama_batch_get_one(
+            prompt_tokens.data(),
+            static_cast<int32_t>(prompt_tokens.size()));
+    if (llama_decode(ctx, prompt_batch) != 0) {
+        llama_sampler_free(sampler);
+        llama_free(ctx);
+        llama_model_free(model);
+        fail("live handoff prompt decode failed");
+    }
+
+    llama_token decode_token =
+        llama_sampler_sample(sampler, ctx, -1);
+    if (decode_token != k_live_handoff_decode_token) {
+        llama_sampler_free(sampler);
+        llama_free(ctx);
+        llama_model_free(model);
+        fail("live handoff decode token differs from admitted token");
+    }
+    if (llama_vocab_is_eog(vocab, decode_token)) {
+        llama_sampler_free(sampler);
+        llama_free(ctx);
+        llama_model_free(model);
+        fail("live handoff admitted decode token is EOG");
+    }
+
+    const llama_pos decode_position =
+        static_cast<llama_pos>(prompt_tokens.size());
+
+    reset_live_handoff_capture(
+        callback_state,
+        live_handoff_arm::stock_reference);
+    llama_batch stock_batch =
+        llama_batch_get_one(&decode_token, 1);
+    const int stock_rc =
+        llama_decode(ctx, stock_batch);
+    callback_state.enabled = false;
+    if (stock_rc != 0) {
+        llama_sampler_free(sampler);
+        llama_free(ctx);
+        llama_model_free(model);
+        fail(
+            "live stock-reference early stop must return 0, got " +
+            std::to_string(stock_rc));
+    }
+    validate_live_handoff_capture(
+        callback_state,
+        true,
+        "stock-reference");
+    const live_handoff_capture stock_capture =
+        callback_state;
+
+    const bool stock_rollback =
+        llama_memory_seq_rm(
+            llama_get_memory(ctx),
+            0,
+            decode_position,
+            -1);
+    if (!stock_rollback) {
+        llama_sampler_free(sampler);
+        llama_free(ctx);
+        llama_model_free(model);
+        fail("live stock-reference rollback failed");
+    }
+
+    reset_live_handoff_capture(
+        callback_state,
+        live_handoff_arm::handoff);
+    llama_batch handoff_batch =
+        llama_batch_get_one(&decode_token, 1);
+    const int handoff_rc =
+        llama_decode(ctx, handoff_batch);
+    callback_state.enabled = false;
+    if (handoff_rc != 0) {
+        llama_sampler_free(sampler);
+        llama_free(ctx);
+        llama_model_free(model);
+        fail(
+            "live handoff early stop must return 0, got " +
+            std::to_string(handoff_rc));
+    }
+    validate_live_handoff_capture(
+        callback_state,
+        false,
+        "handoff");
+    const live_handoff_capture handoff_capture =
+        callback_state;
+
+    const bool handoff_rollback =
+        llama_memory_seq_rm(
+            llama_get_memory(ctx),
+            0,
+            decode_position,
+            -1);
+    if (!handoff_rollback) {
+        llama_sampler_free(sampler);
+        llama_free(ctx);
+        llama_model_free(model);
+        fail("live handoff rollback failed");
+    }
+
+    if (stock_capture.experts != handoff_capture.experts) {
+        llama_sampler_free(sampler);
+        llama_free(ctx);
+        llama_model_free(model);
+        fail("live handoff expert IDs differ from stock reference");
+    }
+    if (stock_capture.weights != handoff_capture.weights) {
+        llama_sampler_free(sampler);
+        llama_free(ctx);
+        llama_model_free(model);
+        fail("live handoff routing weights differ from stock reference");
+    }
+
+    const parity activation_parity =
+        compare_outputs(
+            stock_capture.activation,
+            handoff_capture.activation);
+    if (!activation_parity.pass) {
+        llama_sampler_free(sampler);
+        llama_free(ctx);
+        llama_model_free(model);
+        fail("live handoff activation parity failed");
+    }
+
+    std::vector<int> selected_experts;
+    selected_experts.reserve(static_cast<size_t>(k_top_k));
+    for (int32_t expert : handoff_capture.experts) {
+        selected_experts.push_back(static_cast<int>(expert));
+    }
+
+    live_handoff_result result;
+    result.decode_input_token = decode_token;
+    result.stock_decode_return_code = stock_rc;
+    result.handoff_decode_return_code = handoff_rc;
+    result.stock_rollback = stock_rollback;
+    result.handoff_rollback = handoff_rollback;
+    result.activation_bitwise_equal =
+        float_vectors_bitwise_equal(
+            stock_capture.activation,
+            handoff_capture.activation);
+    result.activation_parity = activation_parity;
+    result.selected_experts = selected_experts;
+    result.routing_weights = handoff_capture.weights;
+
+    for (int gpu_hits : {2, 3}) {
+        options routed_opt = opt;
+        routed_opt.routed_gpu_hits = gpu_hits;
+        routed_opt.async_overlap = true;
+        result.cases.push_back(
+            run_routed_exactness(
+                routed_opt,
+                cpu_backend,
+                gpu_backend,
+                cpu_weight_buft,
+                cpu_bias_buft,
+                gpu_buft,
+                handoff_capture.activation,
+                stock_capture.stock_output,
+                selected_experts,
+                handoff_capture.weights));
+    }
+
+    llama_sampler_free(sampler);
+    llama_free(ctx);
+    llama_model_free(model);
+    return result;
+}
+
+live_timing_exactness_snapshot capture_live_timing_pair(
+        llama_context * ctx,
+        llama_token decode_token,
+        llama_pos decode_position,
+        live_timing_capture & callback_state,
+        live_timing_reference & current,
+        const live_timing_reference * frozen_reference) {
+    reset_live_timing_capture(
+        callback_state,
+        live_timing_mode::stock,
+        true);
+    llama_batch stock_batch =
+        llama_batch_get_one(&decode_token, 1);
+    const int stock_rc =
+        llama_decode(ctx, stock_batch);
+    callback_state.enabled = false;
+    if (stock_rc != 0) {
+        fail(
+            "live timing stock-reference early stop must return 0, got " +
+            std::to_string(stock_rc));
+    }
+    validate_live_timing_capture(
+        callback_state,
+        live_timing_mode::stock,
+        true,
+        "timing-stock-reference");
+    const live_timing_capture stock_capture =
+        callback_state;
+
+    const bool stock_rollback =
+        llama_memory_seq_rm(
+            llama_get_memory(ctx),
+            0,
+            decode_position,
+            -1);
+    if (!stock_rollback) {
+        fail("live timing stock-reference rollback failed");
+    }
+
+    reset_live_timing_capture(
+        callback_state,
+        live_timing_mode::serial,
+        false);
+    llama_batch handoff_batch =
+        llama_batch_get_one(&decode_token, 1);
+    const int handoff_rc =
+        llama_decode(ctx, handoff_batch);
+    callback_state.enabled = false;
+    if (handoff_rc != 0) {
+        fail(
+            "live timing handoff early stop must return 0, got " +
+            std::to_string(handoff_rc));
+    }
+    validate_live_timing_capture(
+        callback_state,
+        live_timing_mode::serial,
+        false,
+        "timing-handoff");
+    const live_timing_capture handoff_capture =
+        callback_state;
+
+    const bool handoff_rollback =
+        llama_memory_seq_rm(
+            llama_get_memory(ctx),
+            0,
+            decode_position,
+            -1);
+    if (!handoff_rollback) {
+        fail("live timing handoff rollback failed");
+    }
+
+    if (stock_capture.experts != handoff_capture.experts) {
+        fail("live timing expert IDs differ between exactness arms");
+    }
+    if (!float_vectors_bitwise_equal(
+            stock_capture.weights,
+            handoff_capture.weights)) {
+        fail("live timing routing weights differ between exactness arms");
+    }
+
+    live_timing_reference observed;
+    observed.activation = handoff_capture.activation;
+    observed.stock_output = stock_capture.stock_output;
+    observed.routing_weights = handoff_capture.weights;
+    observed.selected_experts.reserve(static_cast<size_t>(k_top_k));
+    for (int32_t expert : handoff_capture.experts) {
+        observed.selected_experts.push_back(static_cast<int>(expert));
+    }
+
+    if (frozen_reference) {
+        if (observed.selected_experts != frozen_reference->selected_experts) {
+            fail("live timing expert IDs drifted from pre-timing reference");
+        }
+        if (!float_vectors_bitwise_equal(
+                observed.routing_weights,
+                frozen_reference->routing_weights)) {
+            fail("live timing routing weights drifted from pre-timing reference");
+        }
+    }
+
+    live_timing_exactness_snapshot snapshot;
+    snapshot.stock_decode_return_code = stock_rc;
+    snapshot.handoff_decode_return_code = handoff_rc;
+    snapshot.stock_rollback = stock_rollback;
+    snapshot.handoff_rollback = handoff_rollback;
+    snapshot.activation_bitwise_equal =
+        float_vectors_bitwise_equal(
+            stock_capture.activation,
+            handoff_capture.activation);
+    snapshot.activation_parity =
+        compare_outputs(
+            stock_capture.activation,
+            handoff_capture.activation);
+    if (!snapshot.activation_parity.pass) {
+        fail("live timing exactness activation pair parity failed");
+    }
+
+    if (frozen_reference) {
+        snapshot.activation_vs_reference =
+            compare_outputs(
+                frozen_reference->activation,
+                observed.activation);
+        snapshot.stock_output_vs_reference =
+            compare_outputs(
+                frozen_reference->stock_output,
+                observed.stock_output);
+    } else {
+        snapshot.activation_vs_reference =
+            compare_outputs(
+                observed.activation,
+                observed.activation);
+        snapshot.stock_output_vs_reference =
+            compare_outputs(
+                observed.stock_output,
+                observed.stock_output);
+    }
+
+    if (!snapshot.activation_vs_reference.pass) {
+        fail("live timing activation drifted from pre-timing reference");
+    }
+    if (!snapshot.stock_output_vs_reference.pass) {
+        fail("live timing stock output drifted from pre-timing reference");
+    }
+
+    current = std::move(observed);
+    return snapshot;
+}
+
+void complete_live_timing_exactness(
+        live_timing_exactness_snapshot & snapshot,
+        live_routed_executor & executor,
+        ggml_backend_t cpu_backend,
+        ggml_backend_t gpu_backend,
+        const live_timing_reference & current) {
+    execute_live_routed_serial(
+        executor,
+        cpu_backend,
+        gpu_backend,
+        current.activation);
+    const std::vector<float> serial_output =
+        read_live_routed_output(
+            executor,
+            gpu_backend);
+
+    execute_live_routed_async(
+        executor,
+        cpu_backend,
+        gpu_backend,
+        current.activation);
+    const std::vector<float> async_output =
+        read_live_routed_output(
+            executor,
+            gpu_backend);
+
+    snapshot.serial_vs_stock =
+        compare_outputs(
+            current.stock_output,
+            serial_output);
+    snapshot.async_vs_stock =
+        compare_outputs(
+            current.stock_output,
+            async_output);
+    snapshot.async_vs_serial =
+        compare_outputs(
+            serial_output,
+            async_output);
+
+    if (!snapshot.serial_vs_stock.pass) {
+        fail("live timing serial pre/post exactness failed stock parity");
+    }
+    if (!snapshot.async_vs_stock.pass) {
+        fail("live timing async pre/post exactness failed stock parity");
+    }
+    if (!snapshot.async_vs_serial.pass) {
+        fail("live timing async pre/post exactness failed serial parity");
+    }
+}
+
+std::pair<double, double> run_live_timing_trial(
+        llama_context * ctx,
+        llama_token decode_token,
+        llama_pos decode_position,
+        live_timing_capture & callback_state,
+        live_timing_mode mode,
+        live_routed_executor & executor,
+        ggml_backend_t cpu_backend,
+        ggml_backend_t gpu_backend,
+        const live_timing_reference & reference) {
+    reset_live_timing_capture(
+        callback_state,
+        mode,
+        false,
+        &reference.activation,
+        &reference.selected_experts,
+        &reference.routing_weights);
+
+    llama_batch batch =
+        llama_batch_get_one(&decode_token, 1);
+    const int rc =
+        llama_decode(ctx, batch);
+    callback_state.enabled = false;
+    if (rc != 0) {
+        fail(
+            "live timing repeated decode must return 0, got " +
+            std::to_string(rc));
+    }
+
+    std::chrono::steady_clock::time_point endpoint;
+    if (mode == live_timing_mode::stock) {
+        endpoint = callback_state.stock_output_ready;
+    } else if (mode == live_timing_mode::serial) {
+        execute_live_routed_serial(
+            executor,
+            cpu_backend,
+            gpu_backend,
+            callback_state.activation);
+        endpoint =
+            std::chrono::steady_clock::now();
+    } else {
+        execute_live_routed_async(
+            executor,
+            cpu_backend,
+            gpu_backend,
+            callback_state.activation);
+        endpoint =
+            std::chrono::steady_clock::now();
+    }
+
+    const double activation_ms =
+        std::chrono::duration<double, std::milli>(
+            endpoint - callback_state.activation_ready).count();
+    const double route_ms =
+        std::chrono::duration<double, std::milli>(
+            endpoint - callback_state.route_ready).count();
+    if (
+        !std::isfinite(activation_ms)
+        || !std::isfinite(route_ms)
+        || activation_ms <= 0.0
+        || route_ms <= 0.0
+    ) {
+        fail("live timing produced invalid latency");
+    }
+
+    validate_live_timing_capture(
+        callback_state,
+        mode,
+        false,
+        mode == live_timing_mode::stock
+            ? "timing-stock"
+            : (mode == live_timing_mode::serial
+                ? "timing-serial"
+                : "timing-async"));
+
+    if (!llama_memory_seq_rm(
+            llama_get_memory(ctx),
+            0,
+            decode_position,
+            -1)) {
+        fail("live timing repeated-token rollback failed");
+    }
+
+    return {activation_ms, route_ms};
+}
+
+live_handoff_timing_result run_live_handoff_timing(
+        const options & opt,
+        ggml_backend_t cpu_backend,
+        ggml_backend_t gpu_backend,
+        ggml_backend_buffer_type_t cpu_weight_buft,
+        ggml_backend_buffer_type_t cpu_bias_buft,
+        ggml_backend_buffer_type_t gpu_buft) {
+    const std::string prompt =
+        read_prompt_file(opt.prompt_file);
+
+    llama_model_params model_params =
+        llama_model_default_params();
+    model_params.n_gpu_layers = 0;
+
+    llama_model * model =
+        llama_model_load_from_file(
+            opt.model.c_str(),
+            model_params);
+    if (!model) {
+        fail("live timing failed to load stock model");
+    }
+
+    const llama_vocab * vocab =
+        llama_model_get_vocab(model);
+    std::vector<llama_token> prompt_tokens =
+        tokenize_prompt(vocab, prompt);
+
+    const uint64_t minimum_ctx =
+        static_cast<uint64_t>(prompt_tokens.size()) + 8;
+    if (minimum_ctx > opt.live_ctx) {
+        llama_model_free(model);
+        fail("live timing configured context is too small");
+    }
+
+    live_timing_capture callback_state;
+
+    llama_context_params ctx_params =
+        llama_context_default_params();
+    ctx_params.n_ctx = opt.live_ctx;
+    ctx_params.n_batch =
+        static_cast<uint32_t>(prompt_tokens.size());
+    ctx_params.n_ubatch =
+        static_cast<uint32_t>(prompt_tokens.size());
+    ctx_params.n_threads = opt.threads;
+    ctx_params.n_threads_batch = opt.threads;
+    ctx_params.no_perf = true;
+    ctx_params.cb_eval = live_timing_callback;
+    ctx_params.cb_eval_user_data = &callback_state;
+
+    llama_context * ctx =
+        llama_init_from_model(model, ctx_params);
+    if (!ctx) {
+        llama_model_free(model);
+        fail("live timing failed to create stock context");
+    }
+
+    llama_sampler_chain_params sampler_params =
+        llama_sampler_chain_default_params();
+    sampler_params.no_perf = true;
+    llama_sampler * sampler =
+        llama_sampler_chain_init(sampler_params);
+    llama_sampler_chain_add(
+        sampler,
+        llama_sampler_init_greedy());
+
+    llama_batch prompt_batch =
+        llama_batch_get_one(
+            prompt_tokens.data(),
+            static_cast<int32_t>(prompt_tokens.size()));
+    if (llama_decode(ctx, prompt_batch) != 0) {
+        llama_sampler_free(sampler);
+        llama_free(ctx);
+        llama_model_free(model);
+        fail("live timing prompt decode failed");
+    }
+
+    const llama_token decode_token =
+        llama_sampler_sample(sampler, ctx, -1);
+    if (decode_token != k_live_handoff_decode_token) {
+        llama_sampler_free(sampler);
+        llama_free(ctx);
+        llama_model_free(model);
+        fail("live timing decode token differs from admitted token");
+    }
+    if (llama_vocab_is_eog(vocab, decode_token)) {
+        llama_sampler_free(sampler);
+        llama_free(ctx);
+        llama_model_free(model);
+        fail("live timing admitted decode token is EOG");
+    }
+
+    const llama_pos decode_position =
+        static_cast<llama_pos>(prompt_tokens.size());
+
+    live_timing_reference pre_reference;
+    live_timing_exactness_snapshot pre_snapshot =
+        capture_live_timing_pair(
+            ctx,
+            decode_token,
+            decode_position,
+            callback_state,
+            pre_reference,
+            nullptr);
+
+    auto executor =
+        make_live_routed_executor(
+            opt,
+            cpu_backend,
+            gpu_backend,
+            cpu_weight_buft,
+            cpu_bias_buft,
+            gpu_buft,
+            pre_reference.activation,
+            pre_reference.selected_experts,
+            pre_reference.routing_weights);
+
+    complete_live_timing_exactness(
+        pre_snapshot,
+        *executor,
+        cpu_backend,
+        gpu_backend,
+        pre_reference);
+
+    bool gate_open = false;
+    for (int attempt = 0; attempt < 60000; ++attempt) {
+        if (std::filesystem::exists(opt.timing_start_gate)) {
+            gate_open = true;
+            break;
+        }
+        std::this_thread::sleep_for(
+            std::chrono::milliseconds(1));
+    }
+    if (!gate_open) {
+        fail("live handoff timing start gate timed out");
+    }
+
+    live_handoff_timing_result result;
+    result.gpu_hits = opt.routed_gpu_hits;
+    result.cpu_misses = k_top_k - opt.routed_gpu_hits;
+    result.decode_input_token = decode_token;
+    result.selected_experts = pre_reference.selected_experts;
+    result.routing_weights = pre_reference.routing_weights;
+    result.pre_exactness = pre_snapshot;
+    result.stock.activation_ms.reserve(
+        static_cast<size_t>(opt.samples));
+    result.stock.route_ms.reserve(
+        static_cast<size_t>(opt.samples));
+    result.serial.activation_ms.reserve(
+        static_cast<size_t>(opt.samples));
+    result.serial.route_ms.reserve(
+        static_cast<size_t>(opt.samples));
+    result.async.activation_ms.reserve(
+        static_cast<size_t>(opt.samples));
+    result.async.route_ms.reserve(
+        static_cast<size_t>(opt.samples));
+
+    const std::array<std::array<live_timing_mode, 3>, 6> orders = {{
+        {
+            live_timing_mode::stock,
+            live_timing_mode::serial,
+            live_timing_mode::async,
+        },
+        {
+            live_timing_mode::stock,
+            live_timing_mode::async,
+            live_timing_mode::serial,
+        },
+        {
+            live_timing_mode::serial,
+            live_timing_mode::stock,
+            live_timing_mode::async,
+        },
+        {
+            live_timing_mode::serial,
+            live_timing_mode::async,
+            live_timing_mode::stock,
+        },
+        {
+            live_timing_mode::async,
+            live_timing_mode::stock,
+            live_timing_mode::serial,
+        },
+        {
+            live_timing_mode::async,
+            live_timing_mode::serial,
+            live_timing_mode::stock,
+        },
+    }};
+
+    auto run_mode = [&](live_timing_mode mode, bool record) {
+        const auto sample =
+            run_live_timing_trial(
+                ctx,
+                decode_token,
+                decode_position,
+                callback_state,
+                mode,
+                *executor,
+                cpu_backend,
+                gpu_backend,
+                pre_reference);
+
+        live_timing_samples * destination = nullptr;
+        if (mode == live_timing_mode::stock) {
+            destination = &result.stock;
+            result.completed_stock_trials++;
+        } else if (mode == live_timing_mode::serial) {
+            destination = &result.serial;
+            result.completed_serial_trials++;
+        } else {
+            destination = &result.async;
+            result.completed_async_trials++;
+        }
+        result.successful_timing_trial_rollbacks++;
+
+        if (record) {
+            destination->activation_ms.push_back(sample.first);
+            destination->route_ms.push_back(sample.second);
+        }
+    };
+
+    for (int round = 0; round < opt.warmup; ++round) {
+        for (live_timing_mode mode :
+                orders[static_cast<size_t>(round) % orders.size()]) {
+            run_mode(mode, false);
+        }
+    }
+
+    constexpr int measured_full_cycles = 13;
+    constexpr std::array<size_t, 3> measured_tail = {
+        0, 3, 4,
+    };
+    static_assert(
+        measured_full_cycles * 6
+            + static_cast<int>(measured_tail.size())
+            == 81);
+
+    for (int round = 0; round < opt.samples; ++round) {
+        size_t order_index = 0;
+        const int cycle_samples =
+            measured_full_cycles
+            * static_cast<int>(orders.size());
+        if (round < cycle_samples) {
+            order_index =
+                static_cast<size_t>(round) % orders.size();
+        } else {
+            const size_t tail_index =
+                static_cast<size_t>(round - cycle_samples);
+            if (tail_index >= measured_tail.size()) {
+                fail("live timing measured order tail overflow");
+            }
+            order_index = measured_tail[tail_index];
+        }
+
+        for (live_timing_mode mode : orders[order_index]) {
+            run_mode(mode, true);
+        }
+    }
+
+    if (
+        result.stock.activation_ms.size()
+            != static_cast<size_t>(opt.samples)
+        || result.stock.route_ms.size()
+            != static_cast<size_t>(opt.samples)
+        || result.serial.activation_ms.size()
+            != static_cast<size_t>(opt.samples)
+        || result.serial.route_ms.size()
+            != static_cast<size_t>(opt.samples)
+        || result.async.activation_ms.size()
+            != static_cast<size_t>(opt.samples)
+        || result.async.route_ms.size()
+            != static_cast<size_t>(opt.samples)
+    ) {
+        fail("live timing sample count mismatch");
+    }
+
+    live_timing_reference post_reference;
+    live_timing_exactness_snapshot post_snapshot =
+        capture_live_timing_pair(
+            ctx,
+            decode_token,
+            decode_position,
+            callback_state,
+            post_reference,
+            &pre_reference);
+    complete_live_timing_exactness(
+        post_snapshot,
+        *executor,
+        cpu_backend,
+        gpu_backend,
+        post_reference);
+    result.post_exactness = post_snapshot;
+
+    llama_sampler_free(sampler);
+    llama_free(ctx);
+    llama_model_free(model);
+    return result;
+}
+
+enum class reinjection_phase { disabled, capture, committed };
+
+struct reinjection_callback_state {
+    reinjection_phase phase = reinjection_phase::disabled;
+    live_handoff_capture capture;
+    const std::vector<float> * expected_activation = nullptr;
+    const std::vector<int32_t> * expected_experts = nullptr;
+    const std::vector<float> * expected_weights = nullptr;
+    const std::vector<float> * expected_stock_output = nullptr;
+    const std::vector<float> * injection = nullptr;
+    bool saw_activation = false;
+    bool saw_experts = false;
+    bool saw_weights = false;
+    int injection_count = 0;
+    parity pre_overwrite_parity;
+    bool pre_overwrite_bitwise = false;
+    bool injected_bytes_verified = false;
+};
+
+bool reinjection_callback(ggml_tensor * tensor, bool ask, void * user_data) {
+    auto * state = static_cast<reinjection_callback_state *>(user_data);
+    if (!state) {
+        fail("reinjection callback state missing");
+    }
+    if (state->phase == reinjection_phase::disabled) {
+        return ask ? false : true;
+    }
+    if (state->phase == reinjection_phase::capture) {
+        return live_handoff_callback(tensor, ask, &state->capture);
+    }
+
+    const bool activation = std::strcmp(tensor->name, "attn_post_norm-0") == 0;
+    const bool experts = std::strcmp(tensor->name, "ffn_moe_topk-0") == 0;
+    const bool weights = std::strcmp(tensor->name, "ffn_moe_weights_softmax-0") == 0;
+    const bool output = std::strcmp(tensor->name, "ffn_moe_out-0") == 0;
+    if (ask) {
+        return activation || experts || weights || output;
+    }
+    if (activation) {
+        if (state->saw_activation || !state->expected_activation) {
+            fail("reinjection activation missing or duplicated");
+        }
+        const auto observed = read_live_tensor<float>(
+            tensor, GGML_TYPE_F32, static_cast<size_t>(k_embd),
+            "reinjection attn_post_norm-0");
+        if (!compare_outputs(*state->expected_activation, observed).pass) {
+            fail("reinjection live activation differs from frozen reference");
+        }
+        state->saw_activation = true;
+    } else if (experts) {
+        if (state->saw_experts || !state->expected_experts) {
+            fail("reinjection experts missing or duplicated");
+        }
+        const auto observed = read_live_tensor<int32_t>(
+            tensor, GGML_TYPE_I32, static_cast<size_t>(k_top_k),
+            "reinjection ffn_moe_topk-0");
+        if (observed != *state->expected_experts ||
+            observed != std::vector<int32_t>{1, 13, 17, 21}) {
+            fail("reinjection route differs from frozen target route");
+        }
+        state->saw_experts = true;
+    } else if (weights) {
+        if (state->saw_weights || !state->expected_weights) {
+            fail("reinjection weights missing or duplicated");
+        }
+        const auto observed = read_live_tensor<float>(
+            tensor, GGML_TYPE_F32, static_cast<size_t>(k_top_k),
+            "reinjection ffn_moe_weights_softmax-0");
+        if (!float_vectors_bitwise_equal(observed, *state->expected_weights)) {
+            fail("reinjection routing weights differ bitwise");
+        }
+        state->saw_weights = true;
+    } else if (output) {
+        if (!state->saw_activation || !state->saw_experts ||
+            !state->saw_weights || state->injection_count != 0 ||
+            !state->expected_stock_output || !state->injection) {
+            fail("reinjection output reached with incomplete route or duplicate injection");
+        }
+        const auto before = read_live_tensor<float>(
+            tensor, GGML_TYPE_F32, static_cast<size_t>(k_embd),
+            "reinjection ffn_moe_out-0");
+        state->pre_overwrite_parity = compare_outputs(
+            *state->expected_stock_output, before);
+        state->pre_overwrite_bitwise = float_vectors_bitwise_equal(
+            *state->expected_stock_output, before);
+        if (!state->pre_overwrite_parity.pass ||
+            state->injection->size() != static_cast<size_t>(k_embd)) {
+            fail("reinjection pre-overwrite stock output mismatch");
+        }
+        for (float value : *state->injection) {
+            if (!std::isfinite(value)) {
+                fail("reinjection vector contains non-finite value");
+            }
+        }
+        ggml_backend_tensor_set(tensor, state->injection->data(), 0,
+                                state->injection->size() * sizeof(float));
+        const auto after = read_live_tensor<float>(
+            tensor, GGML_TYPE_F32, static_cast<size_t>(k_embd),
+            "reinjection written ffn_moe_out-0");
+        state->injected_bytes_verified = float_vectors_bitwise_equal(
+            after, *state->injection);
+        if (!state->injected_bytes_verified) {
+            fail("reinjection tensor write did not persist");
+        }
+        state->injection_count++;
+    }
+    return true;
+}
+
+struct reinjection_arm_result {
+    std::string name;
+    int gpu_hits = 0;
+    llama_token first_token = -1;
+    llama_token second_token = -1;
+    llama_token third_token = -1;
+    int committed_decode_return_code = -1;
+    int continuation_decode_return_code = -1;
+    bool stock_capture_rollback = false;
+    bool handoff_capture_rollback = false;
+    bool activation_pair_bitwise = false;
+    parity activation_pair_parity;
+    parity ffn_parity;
+    bool ffn_bitwise = false;
+    parity pre_overwrite_parity;
+    bool pre_overwrite_bitwise = false;
+    bool injected_bytes_verified = false;
+    int injection_count = 0;
+    std::vector<int32_t> experts;
+    std::vector<float> weights;
+    std::vector<float> logits_a;
+    std::vector<float> logits_b;
+};
+
+std::vector<float> copy_reinjection_logits(llama_context * ctx, size_t count) {
+    const float * data = llama_get_logits(ctx);
+    if (!data || count == 0) {
+        fail("reinjection decode produced no logits");
+    }
+    std::vector<float> out(data, data + count);
+    for (float value : out) {
+        if (!std::isfinite(value)) {
+            fail("reinjection logits contain non-finite value");
+        }
+    }
+    return out;
+}
+
+reinjection_arm_result run_reinjection_arm(
+        const options & opt, llama_model * model,
+        const std::vector<llama_token> & prompt_tokens,
+        const std::string & name, int gpu_hits,
+        ggml_backend_t cpu_backend, ggml_backend_t gpu_backend,
+        ggml_backend_buffer_type_t cpu_weight_buft,
+        ggml_backend_buffer_type_t cpu_bias_buft,
+        ggml_backend_buffer_type_t gpu_buft,
+        const reinjection_arm_result * stock_authority,
+        bool require_patch_null = false) {
+    const bool baseline = name == "stock" || name == "null";
+    reinjection_callback_state state;
+    llama_context_params params = llama_context_default_params();
+    params.n_ctx = opt.live_ctx;
+    params.n_batch = static_cast<uint32_t>(prompt_tokens.size());
+    params.n_ubatch = static_cast<uint32_t>(prompt_tokens.size());
+    params.n_threads = opt.threads;
+    params.n_threads_batch = opt.threads;
+    params.no_perf = true;
+    if (!baseline) {
+        params.cb_eval = reinjection_callback;
+        params.cb_eval_user_data = &state;
+    }
+    llama_context * ctx = llama_init_from_model(model, params);
+    if (!ctx) {
+        fail("reinjection failed to create fresh stock context");
+    }
+    if (require_patch_null) {
+        if (!llama_tesy_set_graph_compute_hook) {
+            fail("patched-null control lacks Tesy hook symbol");
+        }
+        llama_tesy_set_graph_compute_hook(ctx, nullptr, nullptr);
+    }
+    llama_sampler_chain_params sampler_params = llama_sampler_chain_default_params();
+    sampler_params.no_perf = true;
+    llama_sampler * sampler = llama_sampler_chain_init(sampler_params);
+    llama_sampler_chain_add(sampler, llama_sampler_init_greedy());
+
+    reinjection_arm_result out;
+    out.name = name;
+    out.gpu_hits = gpu_hits;
+    llama_batch prompt_batch = llama_batch_get_one(
+        const_cast<llama_token *>(prompt_tokens.data()),
+        static_cast<int32_t>(prompt_tokens.size()));
+    if (llama_decode(ctx, prompt_batch) != 0) {
+        fail("reinjection prompt decode failed");
+    }
+    out.first_token = llama_sampler_sample(sampler, ctx, -1);
+    if (out.first_token != k_live_handoff_decode_token) {
+        fail("reinjection first greedy token is not 2167");
+    }
+    if (llama_vocab_is_eog(llama_model_get_vocab(model), out.first_token)) {
+        fail("reinjection first token is EOG");
+    }
+
+    std::vector<float> injection;
+    std::unique_ptr<live_routed_executor> executor;
+    live_handoff_capture reference;
+    live_handoff_capture handoff;
+    if (!baseline) {
+        const llama_pos position = static_cast<llama_pos>(prompt_tokens.size());
+        state.phase = reinjection_phase::capture;
+        reset_live_handoff_capture(state.capture, live_handoff_arm::stock_reference);
+        llama_batch capture_batch = llama_batch_get_one(&out.first_token, 1);
+        if (llama_decode(ctx, capture_batch) != 0) {
+            fail("reinjection stock capture decode failed");
+        }
+        validate_live_handoff_capture(state.capture, true, "reinjection stock");
+        reference = state.capture;
+        out.stock_capture_rollback = llama_memory_seq_rm(
+            llama_get_memory(ctx), 0, position, -1);
+        if (!out.stock_capture_rollback) {
+            fail("reinjection stock capture rollback failed");
+        }
+        if (gpu_hits > 0) {
+            reset_live_handoff_capture(state.capture, live_handoff_arm::handoff);
+            llama_batch handoff_batch = llama_batch_get_one(&out.first_token, 1);
+            if (llama_decode(ctx, handoff_batch) != 0) {
+                fail("reinjection handoff capture decode failed");
+            }
+            validate_live_handoff_capture(state.capture, false, "reinjection handoff");
+            handoff = state.capture;
+            out.handoff_capture_rollback = llama_memory_seq_rm(
+                llama_get_memory(ctx), 0, position, -1);
+            if (!out.handoff_capture_rollback) {
+                fail("reinjection handoff capture rollback failed");
+            }
+            if (reference.experts != handoff.experts ||
+                !float_vectors_bitwise_equal(reference.weights, handoff.weights)) {
+                fail("reinjection stock/handoff route drift");
+            }
+            out.activation_pair_parity = compare_outputs(
+                reference.activation, handoff.activation);
+            out.activation_pair_bitwise = float_vectors_bitwise_equal(
+                reference.activation, handoff.activation);
+            if (!out.activation_pair_parity.pass) {
+                fail("reinjection activation pair mismatch");
+            }
+            options routed = opt;
+            routed.routed_gpu_hits = gpu_hits;
+            std::vector<int> selected(reference.experts.begin(), reference.experts.end());
+            executor = make_live_routed_executor(
+                routed, cpu_backend, gpu_backend, cpu_weight_buft, cpu_bias_buft,
+                gpu_buft, handoff.activation, selected, handoff.weights);
+            execute_live_routed_serial(*executor, cpu_backend, gpu_backend,
+                                       handoff.activation);
+            injection = read_live_routed_output(*executor, gpu_backend);
+        } else {
+            injection = reference.stock_output;
+            out.handoff_capture_rollback = true;
+            out.activation_pair_parity = compare_outputs(
+                reference.activation, reference.activation);
+            out.activation_pair_bitwise = true;
+        }
+        out.ffn_parity = compare_outputs(reference.stock_output, injection);
+        out.ffn_bitwise = float_vectors_bitwise_equal(
+            reference.stock_output, injection);
+        if (!out.ffn_parity.pass) {
+            fail("reinjection serial FFN output differs from stock");
+        }
+        out.experts = reference.experts;
+        out.weights = reference.weights;
+        state.expected_activation = gpu_hits > 0 ? &handoff.activation : &reference.activation;
+        state.expected_experts = &reference.experts;
+        state.expected_weights = &reference.weights;
+        state.expected_stock_output = &reference.stock_output;
+        state.injection = &injection;
+        state.phase = reinjection_phase::committed;
+    }
+
+    llama_batch committed_batch = llama_batch_get_one(&out.first_token, 1);
+    out.committed_decode_return_code = llama_decode(ctx, committed_batch);
+    if (out.committed_decode_return_code != 0) {
+        fail("reinjection committed decode failed");
+    }
+    if (!baseline) {
+        state.phase = reinjection_phase::disabled;
+        if (state.injection_count != 1 || !state.saw_activation ||
+            !state.saw_experts || !state.saw_weights ||
+            !state.injected_bytes_verified) {
+            fail("reinjection committed callback incomplete");
+        }
+        out.injection_count = state.injection_count;
+        out.pre_overwrite_parity = state.pre_overwrite_parity;
+        out.pre_overwrite_bitwise = state.pre_overwrite_bitwise;
+        out.injected_bytes_verified = state.injected_bytes_verified;
+    }
+    const size_t n_vocab = static_cast<size_t>(
+        llama_vocab_n_tokens(llama_model_get_vocab(model)));
+    out.logits_a = copy_reinjection_logits(ctx, n_vocab);
+    out.second_token = llama_sampler_sample(sampler, ctx, -1);
+    if (out.second_token != 1309) {
+        fail("reinjection second greedy token is not 1309");
+    }
+    if (stock_authority) {
+        if (out.second_token != stock_authority->second_token ||
+            !compare_outputs(stock_authority->logits_a, out.logits_a).pass) {
+            fail("reinjection checkpoint A logits or token mismatch");
+        }
+    }
+    llama_batch continuation_batch = llama_batch_get_one(&out.second_token, 1);
+    out.continuation_decode_return_code = llama_decode(ctx, continuation_batch);
+    if (out.continuation_decode_return_code != 0) {
+        fail("reinjection committed continuation decode failed");
+    }
+    out.logits_b = copy_reinjection_logits(ctx, n_vocab);
+    out.third_token = llama_sampler_sample(sampler, ctx, -1);
+    if (stock_authority) {
+        if (out.third_token != stock_authority->third_token ||
+            !compare_outputs(stock_authority->logits_b, out.logits_b).pass) {
+            fail("reinjection checkpoint B logits or token mismatch");
+        }
+    }
+    llama_sampler_free(sampler);
+    llama_free(ctx);
+    return out;
+}
+
+void write_reinjection_logits(const std::string & path,
+                              const std::vector<float> & values) {
+    FILE * out = std::fopen(path.c_str(), "wx");
+    if (!out) {
+        fail("failed opening reinjection full logits: " + path);
+    }
+    const bool wrote = std::fwrite(
+        values.data(), sizeof(float), values.size(), out) == values.size();
+    const bool closed = std::fclose(out) == 0;
+    if (!wrote || !closed) {
+        fail("failed writing reinjection full logits: " + path);
+    }
+}
+
+void print_reinjection_parity(FILE * out, const parity & value) {
+    std::fprintf(out,
+        "{\"max_abs\":%.9g,\"max_abs_ref\":%.9g,"
+        "\"relative_max\":%.9g,\"cosine\":%.12f,\"status\":\"%s\"}",
+        value.max_abs, value.max_abs_ref, value.relative_max, value.cosine,
+        value.pass ? "PASS" : "FAIL");
+}
+
+void run_live_reinjection_exactness(
+        const options & opt, ggml_backend_t cpu_backend,
+        ggml_backend_t gpu_backend,
+        ggml_backend_buffer_type_t cpu_weight_buft,
+        ggml_backend_buffer_type_t cpu_bias_buft,
+        ggml_backend_buffer_type_t gpu_buft) {
+    const std::string prompt = read_prompt_file(opt.prompt_file);
+    llama_model_params model_params = llama_model_default_params();
+    model_params.n_gpu_layers = 0;
+    llama_model * model = llama_model_load_from_file(opt.model.c_str(), model_params);
+    if (!model) {
+        fail("reinjection failed to load pinned stock model");
+    }
+    const auto prompt_tokens = tokenize_prompt(llama_model_get_vocab(model), prompt);
+    if (prompt_tokens.size() + 8 > opt.live_ctx) {
+        fail("reinjection configured context too small");
+    }
+    std::vector<reinjection_arm_result> arms;
+    arms.push_back(run_reinjection_arm(
+        opt, model, prompt_tokens, "stock", 0, cpu_backend, gpu_backend,
+        cpu_weight_buft, cpu_bias_buft, gpu_buft, nullptr));
+    arms.push_back(run_reinjection_arm(
+        opt, model, prompt_tokens, "control", 0, cpu_backend, gpu_backend,
+        cpu_weight_buft, cpu_bias_buft, gpu_buft, &arms[0]));
+    arms.push_back(run_reinjection_arm(
+        opt, model, prompt_tokens, "h2", 2, cpu_backend, gpu_backend,
+        cpu_weight_buft, cpu_bias_buft, gpu_buft, &arms[0]));
+    arms.push_back(run_reinjection_arm(
+        opt, model, prompt_tokens, "h3", 3, cpu_backend, gpu_backend,
+        cpu_weight_buft, cpu_bias_buft, gpu_buft, &arms[0]));
+    llama_model_free(model);
+
+    const auto root = std::filesystem::path(opt.output).parent_path();
+    for (const auto & arm : arms) {
+        write_reinjection_logits((root / (arm.name + "-a.f32")).string(), arm.logits_a);
+        write_reinjection_logits((root / (arm.name + "-b.f32")).string(), arm.logits_b);
+    }
+    FILE * out = std::fopen(opt.output.c_str(), "wx");
+    if (!out) {
+        fail("refusing or unable to create reinjection raw output");
+    }
+    std::fprintf(out,
+        "{\"schema\":\"tesy.live_moe_reinjection_continuation_exactness_raw.v1\","
+        "\"classification\":\"MEASURED_LIVE_MOE_REINJECTION_CONTINUATION_EXACTNESS_RAW\","
+        "\"layer\":0,\"ngl\":0,\"first_token\":2167,\"second_token\":1309,"
+        "\"stock_third_token\":%" PRId32 ",\"logits_count\":%zu,"
+        "\"arms\":{", arms[0].third_token, arms[0].logits_a.size());
+    for (size_t i = 0; i < arms.size(); ++i) {
+        const auto & arm = arms[i];
+        if (i != 0) std::fputc(',', out);
+        std::fprintf(out,
+            "\"%s\":{\"gpu_hits\":%d,\"first_token\":%" PRId32
+            ",\"second_token\":%" PRId32 ",\"third_token\":%" PRId32
+            ",\"committed_decode_return_code\":%d,"
+            "\"continuation_decode_return_code\":%d,"
+            "\"stock_capture_rollback\":%s,\"handoff_capture_rollback\":%s,"
+            "\"activation_pair_bitwise\":%s,\"ffn_bitwise\":%s,"
+            "\"pre_overwrite_bitwise\":%s,\"injected_bytes_verified\":%s,"
+            "\"injection_count\":%d,\"selected_experts\":[",
+            arm.name.c_str(), arm.gpu_hits, arm.first_token, arm.second_token,
+            arm.third_token, arm.committed_decode_return_code,
+            arm.continuation_decode_return_code,
+            arm.stock_capture_rollback ? "true" : "false",
+            arm.handoff_capture_rollback ? "true" : "false",
+            arm.activation_pair_bitwise ? "true" : "false",
+            arm.ffn_bitwise ? "true" : "false",
+            arm.pre_overwrite_bitwise ? "true" : "false",
+            arm.injected_bytes_verified ? "true" : "false",
+            arm.injection_count);
+        for (size_t j = 0; j < arm.experts.size(); ++j) {
+            if (j) std::fputc(',', out);
+            std::fprintf(out, "%" PRId32, arm.experts[j]);
+        }
+        std::fputs("],\"routing_weights\":[", out);
+        for (size_t j = 0; j < arm.weights.size(); ++j) {
+            if (j) std::fputc(',', out);
+            std::fprintf(out, "%.9g", arm.weights[j]);
+        }
+        std::fputs("],\"activation_pair_parity\":", out);
+        print_reinjection_parity(out, arm.activation_pair_parity);
+        std::fputs(",\"ffn_parity\":", out);
+        print_reinjection_parity(out, arm.ffn_parity);
+        std::fputs(",\"pre_overwrite_parity\":", out);
+        print_reinjection_parity(out, arm.pre_overwrite_parity);
+        std::fprintf(out,
+            ",\"logits_a_file\":\"%s-a.f32\",\"logits_b_file\":\"%s-b.f32\"}",
+            arm.name.c_str(), arm.name.c_str());
+    }
+    std::fputs("},\"claim_boundary\":\"Post-compute layer-0 tensor overwrite and committed continuation correctness only; stock MoE still computes. No timing, skipping, cache, prefetch or physical traffic claim.\"}\n", out);
+    if (std::fclose(out) != 0) {
+        fail("failed closing reinjection raw output");
+    }
+    std::printf("PASS_LIVE_MOE_REINJECTION_RAW\n");
+}
+
+struct split_graph_hook_state {
+    const live_handoff_capture * reference = nullptr;
+    const std::vector<float> * injection = nullptr;
+    std::string inventory_path;
+    bool skip_middle = false;
+    bool invoked = false;
+    int prefix_compute_count = 0;
+    int middle_compute_count = 0;
+    int suffix_compute_count = 0;
+    int injected_output_count = 0;
+    int total_nodes = 0;
+    int activation_idx = -1;
+    int topk_idx = -1;
+    int weights_idx = -1;
+    int moe_out_idx = -1;
+    int mul_mat_id_count = 0;
+    bool all_nodes_cpu = false;
+    bool middle_contiguous = false;
+    bool downstream_depends_on_moe_out = false;
+    parity stock_output_parity;
+    bool stock_output_bitwise = false;
+    bool injected_bytes_verified = false;
+    std::vector<float> observed_moe_output;
+};
+
+void collect_graph_ancestors(ggml_tensor * node,
+                             std::unordered_set<ggml_tensor *> & seen) {
+    if (!node || !seen.insert(node).second) return;
+    for (ggml_tensor * src : node->src) {
+        collect_graph_ancestors(src, seen);
+    }
+    collect_graph_ancestors(node->view_src, seen);
+}
+
+void write_split_graph_inventory(const split_graph_hook_state & state,
+                                 const ggml_cgraph * graph,
+                                 ggml_backend_sched_t sched) {
+    FILE * out = std::fopen(state.inventory_path.c_str(), "wx");
+    if (!out) fail("cannot create split graph inventory");
+    std::fprintf(out,
+        "{\"schema\":\"tesy.live_moe_split_graph_inventory.v1\","
+        "\"total_nodes\":%d,\"activation_idx\":%d,\"topk_idx\":%d,"
+        "\"weights_idx\":%d,\"moe_out_idx\":%d,"
+        "\"prefix\":[0,%d],\"middle\":[%d,%d],\"suffix\":[%d,%d],"
+        "\"all_nodes_cpu\":%s,\"middle_contiguous\":%s,"
+        "\"downstream_depends_on_moe_out\":%s,\"mul_mat_id_count\":%d,"
+        "\"prefix_compute_count\":%d,\"middle_compute_count\":%d,"
+        "\"suffix_compute_count\":%d,\"injected_output_count\":%d,"
+        "\"skipped_nodes\":[",
+        state.total_nodes, state.activation_idx, state.topk_idx,
+        state.weights_idx, state.moe_out_idx,
+        state.weights_idx + 1, state.weights_idx + 1, state.moe_out_idx + 1,
+        state.moe_out_idx + 1, state.total_nodes,
+        state.all_nodes_cpu ? "true" : "false",
+        state.middle_contiguous ? "true" : "false",
+        state.downstream_depends_on_moe_out ? "true" : "false",
+        state.mul_mat_id_count, state.prefix_compute_count,
+        state.middle_compute_count, state.suffix_compute_count,
+        state.injected_output_count);
+    for (int i = state.weights_idx + 1; i <= state.moe_out_idx; ++i) {
+        const auto * node = graph->nodes[i];
+        if (i > state.weights_idx + 1) std::fputc(',', out);
+        std::fprintf(out,
+            "{\"index\":%d,\"name\":\"%s\",\"op\":\"%s\"}",
+            i, node->name, ggml_op_name(node->op));
+    }
+    const auto * downstream = graph->nodes[state.moe_out_idx + 1];
+    std::fprintf(out,
+        "],\"downstream_first\":{\"name\":\"%s\",\"op\":\"%s\"},"
+        "\"node_backends\":[",
+        downstream->name, ggml_op_name(downstream->op));
+    for (int i = 0; i < graph->n_nodes; ++i) {
+        if (i) std::fputc(',', out);
+        ggml_backend_t assigned = ggml_backend_sched_get_tensor_backend(
+            sched, graph->nodes[i]);
+        if (!assigned) fail("inventory node backend missing");
+        std::fprintf(out, "\"%s\"", ggml_backend_name(assigned));
+    }
+    std::fputs("]}\n", out);
+    if (std::fclose(out) != 0) fail("cannot close split graph inventory");
+}
+
+ggml_status split_graph_compute_hook(ggml_cgraph * graph,
+                                     ggml_backend_sched_t sched,
+                                     ggml_backend_t backend_cpu,
+                                     void * user_data) {
+    auto * state = static_cast<split_graph_hook_state *>(user_data);
+    if (!state || state->invoked || !state->reference || !backend_cpu ||
+        !graph || graph->n_nodes <= 0) {
+        fail("invalid split graph hook invocation");
+    }
+    state->invoked = true;
+    state->total_nodes = graph->n_nodes;
+    auto find_anchor = [&](const char * name) {
+        int index = -1;
+        for (int i = 0; i < graph->n_nodes; ++i) {
+            if (std::strcmp(graph->nodes[i]->name, name) == 0) {
+                if (index != -1) fail(std::string("duplicate graph anchor: ") + name);
+                index = i;
+            }
+        }
+        if (index < 0) fail(std::string("missing graph anchor: ") + name);
+        return index;
+    };
+    state->activation_idx = find_anchor("attn_post_norm-0");
+    state->topk_idx = find_anchor("ffn_moe_topk-0");
+    state->weights_idx = find_anchor("ffn_moe_weights_softmax-0");
+    state->moe_out_idx = find_anchor("ffn_moe_out-0");
+    if (!(state->activation_idx < state->topk_idx &&
+          state->topk_idx < state->weights_idx &&
+          state->weights_idx < state->moe_out_idx &&
+          state->moe_out_idx + 1 < graph->n_nodes)) {
+        fail("split graph anchors not unique and ordered");
+    }
+    state->all_nodes_cpu = true;
+    for (int i = 0; i < graph->n_nodes; ++i) {
+        ggml_tensor * node = graph->nodes[i];
+        if (ggml_backend_sched_get_tensor_backend(sched, node) != backend_cpu ||
+            !node->buffer || !node->data) {
+            state->all_nodes_cpu = false;
+            fail("STATIC_NO_GO_DIRECT_CPU_GRAPH_VIEWS_NOT_SINGLE_BACKEND");
+        }
+    }
+    std::unordered_set<ggml_tensor *> middle_nodes;
+    std::unordered_set<ggml_tensor *> moe_ancestors;
+    collect_graph_ancestors(graph->nodes[state->moe_out_idx], moe_ancestors);
+    for (int i = state->weights_idx + 1; i <= state->moe_out_idx; ++i) {
+        ggml_tensor * node = graph->nodes[i];
+        middle_nodes.insert(node);
+        if (!moe_ancestors.count(node)) {
+            fail("STATIC_NO_GO_SPLIT_MIDDLE_NOT_ANCESTOR_OF_MOE_OUTPUT");
+        }
+        if (node->op == GGML_OP_MUL_MAT_ID) ++state->mul_mat_id_count;
+    }
+    if (state->mul_mat_id_count == 0) {
+        fail("STATIC_NO_GO_SPLIT_MIDDLE_HAS_NO_EXPERT_COMPUTE");
+    }
+    state->middle_contiguous = true;
+    ggml_tensor * moe_out = graph->nodes[state->moe_out_idx];
+    for (int i = state->moe_out_idx + 1; i < graph->n_nodes; ++i) {
+        for (ggml_tensor * src : graph->nodes[i]->src) {
+            if (src == moe_out) state->downstream_depends_on_moe_out = true;
+            if (src != moe_out && middle_nodes.count(src)) {
+                fail("STATIC_NO_GO_SUFFIX_HAS_SIDE_DEPENDENCY_ON_MIDDLE");
+            }
+        }
+    }
+    if (!state->downstream_depends_on_moe_out) {
+        fail("STATIC_NO_GO_SUFFIX_DOES_NOT_CONSUME_MOE_OUTPUT");
+    }
+
+    auto prefix = ggml_graph_view(graph, 0, state->weights_idx + 1);
+    auto middle = ggml_graph_view(graph, state->weights_idx + 1,
+                                  state->moe_out_idx + 1);
+    auto suffix = ggml_graph_view(graph, state->moe_out_idx + 1,
+                                  graph->n_nodes);
+    const auto compute = [&](ggml_cgraph * view, const char * label) {
+        if (ggml_backend_graph_compute(backend_cpu, view) != GGML_STATUS_SUCCESS) {
+            fail(std::string("direct CPU graph view failed: ") + label);
+        }
+    };
+    compute(&prefix, "prefix");
+    ++state->prefix_compute_count;
+    const auto & ref = *state->reference;
+    const auto activation = read_live_tensor<float>(
+        graph->nodes[state->activation_idx], GGML_TYPE_F32,
+        static_cast<size_t>(k_embd), "split activation");
+    const auto experts = read_live_tensor<int32_t>(
+        graph->nodes[state->topk_idx], GGML_TYPE_I32,
+        static_cast<size_t>(k_top_k), "split experts");
+    const auto weights = read_live_tensor<float>(
+        graph->nodes[state->weights_idx], GGML_TYPE_F32,
+        static_cast<size_t>(k_top_k), "split weights");
+    if (!float_vectors_bitwise_equal(activation, ref.activation) ||
+        experts != ref.experts || experts != std::vector<int32_t>{1, 13, 17, 21} ||
+        !float_vectors_bitwise_equal(weights, ref.weights)) {
+        fail("split graph live activation/route differs from frozen reference");
+    }
+    if (state->skip_middle) {
+        if (!state->injection || state->injection->size() != static_cast<size_t>(k_embd)) {
+            fail("split graph injection missing or wrong size");
+        }
+        for (float value : *state->injection) {
+            if (!std::isfinite(value)) fail("split graph injection non-finite");
+        }
+        ggml_backend_tensor_set(moe_out, state->injection->data(), 0,
+                                state->injection->size() * sizeof(float));
+        const auto observed = read_live_tensor<float>(
+            moe_out, GGML_TYPE_F32, static_cast<size_t>(k_embd),
+            "split written moe output");
+        state->injected_bytes_verified = float_vectors_bitwise_equal(
+            observed, *state->injection);
+        if (!state->injected_bytes_verified) fail("split graph injection did not persist");
+        state->observed_moe_output = observed;
+        ++state->injected_output_count;
+    } else {
+        compute(&middle, "middle");
+        ++state->middle_compute_count;
+        const auto observed = read_live_tensor<float>(
+            moe_out, GGML_TYPE_F32, static_cast<size_t>(k_embd),
+            "split computed moe output");
+        state->stock_output_parity = compare_outputs(ref.stock_output, observed);
+        state->stock_output_bitwise = float_vectors_bitwise_equal(
+            ref.stock_output, observed);
+        state->observed_moe_output = observed;
+        if (!state->stock_output_parity.pass) {
+            fail("segmented stock MoE differs from frozen reference");
+        }
+    }
+    compute(&suffix, "suffix");
+    ++state->suffix_compute_count;
+    write_split_graph_inventory(*state, graph, sched);
+    return GGML_STATUS_SUCCESS;
+}
+
+struct split_graph_arm_result {
+    reinjection_arm_result base;
+    split_graph_hook_state hook;
+    std::vector<float> reference_ffn;
+    std::vector<float> candidate_ffn;
+};
+
+split_graph_arm_result run_split_graph_arm(
+        const options & opt, llama_model * model,
+        const std::vector<llama_token> & prompt_tokens,
+        ggml_backend_t cpu_backend, ggml_backend_t gpu_backend,
+        ggml_backend_buffer_type_t cpu_weight_buft,
+        ggml_backend_buffer_type_t cpu_bias_buft,
+        ggml_backend_buffer_type_t gpu_buft) {
+    if (!llama_tesy_set_graph_compute_hook) {
+        fail("split arm requires patched llama hook symbol");
+    }
+    const int gpu_hits = opt.split_arm == "h2" ? 2 :
+                         opt.split_arm == "h3" ? 3 : 0;
+    live_handoff_capture capture;
+    llama_context_params params = llama_context_default_params();
+    params.n_ctx = opt.live_ctx;
+    params.n_batch = static_cast<uint32_t>(prompt_tokens.size());
+    params.n_ubatch = static_cast<uint32_t>(prompt_tokens.size());
+    params.n_threads = opt.threads;
+    params.n_threads_batch = opt.threads;
+    params.no_perf = true;
+    params.cb_eval = live_handoff_callback;
+    params.cb_eval_user_data = &capture;
+    llama_context * ctx = llama_init_from_model(model, params);
+    if (!ctx) fail("split arm context creation failed");
+    llama_sampler_chain_params sampler_params = llama_sampler_chain_default_params();
+    sampler_params.no_perf = true;
+    llama_sampler * sampler = llama_sampler_chain_init(sampler_params);
+    llama_sampler_chain_add(sampler, llama_sampler_init_greedy());
+
+    split_graph_arm_result result;
+    result.base.name = opt.split_arm;
+    result.base.gpu_hits = gpu_hits;
+    llama_batch prompt_batch = llama_batch_get_one(
+        const_cast<llama_token *>(prompt_tokens.data()),
+        static_cast<int32_t>(prompt_tokens.size()));
+    if (llama_decode(ctx, prompt_batch) != 0) fail("split prompt decode failed");
+    result.base.first_token = llama_sampler_sample(sampler, ctx, -1);
+    if (result.base.first_token != 2167) fail("split first greedy token is not 2167");
+
+    const llama_pos position = static_cast<llama_pos>(prompt_tokens.size());
+    reset_live_handoff_capture(capture, live_handoff_arm::stock_reference);
+    llama_batch capture_batch = llama_batch_get_one(&result.base.first_token, 1);
+    if (llama_decode(ctx, capture_batch) != 0) fail("split stock capture failed");
+    validate_live_handoff_capture(capture, true, "split stock reference");
+    const live_handoff_capture reference = capture;
+    result.base.stock_capture_rollback = llama_memory_seq_rm(
+        llama_get_memory(ctx), 0, position, -1);
+    if (!result.base.stock_capture_rollback) fail("split stock capture rollback failed");
+
+    std::vector<float> injection;
+    std::unique_ptr<live_routed_executor> executor;
+    if (gpu_hits > 0) {
+        reset_live_handoff_capture(capture, live_handoff_arm::handoff);
+        llama_batch handoff_batch = llama_batch_get_one(&result.base.first_token, 1);
+        if (llama_decode(ctx, handoff_batch) != 0) fail("split handoff capture failed");
+        validate_live_handoff_capture(capture, false, "split handoff");
+        const live_handoff_capture handoff = capture;
+        result.base.handoff_capture_rollback = llama_memory_seq_rm(
+            llama_get_memory(ctx), 0, position, -1);
+        if (!result.base.handoff_capture_rollback) fail("split handoff rollback failed");
+        if (reference.experts != handoff.experts ||
+            !float_vectors_bitwise_equal(reference.weights, handoff.weights)) {
+            fail("split handoff route drift");
+        }
+        result.base.activation_pair_parity = compare_outputs(
+            reference.activation, handoff.activation);
+        result.base.activation_pair_bitwise = float_vectors_bitwise_equal(
+            reference.activation, handoff.activation);
+        if (!result.base.activation_pair_parity.pass ||
+            !result.base.activation_pair_bitwise) fail("split handoff activation drift");
+        options routed = opt;
+        routed.routed_gpu_hits = gpu_hits;
+        std::vector<int> selected(reference.experts.begin(), reference.experts.end());
+        executor = make_live_routed_executor(
+            routed, cpu_backend, gpu_backend, cpu_weight_buft, cpu_bias_buft,
+            gpu_buft, handoff.activation, selected, handoff.weights);
+        execute_live_routed_serial(*executor, cpu_backend, gpu_backend,
+                                   handoff.activation);
+        injection = read_live_routed_output(*executor, gpu_backend);
+    } else {
+        result.base.handoff_capture_rollback = true;
+        result.base.activation_pair_bitwise = true;
+        result.base.activation_pair_parity = compare_outputs(
+            reference.activation, reference.activation);
+        injection = reference.stock_output;
+    }
+    result.base.experts = reference.experts;
+    result.base.weights = reference.weights;
+    result.base.ffn_parity = compare_outputs(reference.stock_output, injection);
+    result.base.ffn_bitwise = float_vectors_bitwise_equal(
+        reference.stock_output, injection);
+    if (!result.base.ffn_parity.pass) fail("split Tesy FFN parity failed");
+    result.reference_ffn = reference.stock_output;
+    capture.enabled = false;
+
+    result.hook.reference = &reference;
+    result.hook.skip_middle = opt.split_arm != "segmented";
+    result.hook.injection = result.hook.skip_middle ? &injection : nullptr;
+    result.hook.inventory_path =
+        (std::filesystem::path(opt.output).parent_path() / "inventory.json").string();
+    llama_tesy_set_graph_compute_hook(ctx, split_graph_compute_hook, &result.hook);
+    llama_batch committed_batch = llama_batch_get_one(&result.base.first_token, 1);
+    result.base.committed_decode_return_code = llama_decode(ctx, committed_batch);
+    llama_tesy_set_graph_compute_hook(ctx, nullptr, nullptr);
+    if (result.base.committed_decode_return_code != 0 || !result.hook.invoked ||
+        result.hook.prefix_compute_count != 1 ||
+        result.hook.suffix_compute_count != 1 ||
+        result.hook.middle_compute_count != (result.hook.skip_middle ? 0 : 1) ||
+        result.hook.injected_output_count != (result.hook.skip_middle ? 1 : 0)) {
+        fail("split committed decode or view counts failed");
+    }
+    const size_t n_vocab = static_cast<size_t>(
+        llama_vocab_n_tokens(llama_model_get_vocab(model)));
+    result.base.logits_a = copy_reinjection_logits(ctx, n_vocab);
+    result.base.second_token = llama_sampler_sample(sampler, ctx, -1);
+    if (result.base.second_token != 1309) fail("split second token is not 1309");
+    llama_batch continuation_batch = llama_batch_get_one(&result.base.second_token, 1);
+    result.base.continuation_decode_return_code = llama_decode(ctx, continuation_batch);
+    if (result.base.continuation_decode_return_code != 0) {
+        fail("split committed continuation failed");
+    }
+    result.base.logits_b = copy_reinjection_logits(ctx, n_vocab);
+    result.base.third_token = llama_sampler_sample(sampler, ctx, -1);
+    if (result.base.third_token != 316) fail("split third token is not 316");
+    result.candidate_ffn = result.hook.observed_moe_output;
+    result.base.ffn_parity = compare_outputs(
+        reference.stock_output, result.candidate_ffn);
+    result.base.ffn_bitwise = float_vectors_bitwise_equal(
+        reference.stock_output, result.candidate_ffn);
+    if (!result.base.ffn_parity.pass) fail("split final FFN output parity failed");
+    result.hook.reference = nullptr;
+    result.hook.injection = nullptr;
+    llama_sampler_free(sampler);
+    llama_free(ctx);
+    return result;
+}
+
+void run_split_graph_skip_exactness(
+        const options & opt, ggml_backend_t cpu_backend,
+        ggml_backend_t gpu_backend,
+        ggml_backend_buffer_type_t cpu_weight_buft,
+        ggml_backend_buffer_type_t cpu_bias_buft,
+        ggml_backend_buffer_type_t gpu_buft) {
+    const std::string prompt = read_prompt_file(opt.prompt_file);
+    llama_model_params model_params = llama_model_default_params();
+    model_params.n_gpu_layers = 0;
+    llama_model * model = llama_model_load_from_file(opt.model.c_str(), model_params);
+    if (!model) fail("split model load failed");
+    const auto prompt_tokens = tokenize_prompt(llama_model_get_vocab(model), prompt);
+    if (prompt_tokens.size() + 8 > opt.live_ctx) fail("split context too small");
+
+    reinjection_arm_result base;
+    split_graph_hook_state hook;
+    if (opt.split_arm == "stock" || opt.split_arm == "null") {
+        base = run_reinjection_arm(
+            opt, model, prompt_tokens, opt.split_arm, 0,
+            cpu_backend, gpu_backend, cpu_weight_buft, cpu_bias_buft,
+            gpu_buft, nullptr, opt.split_arm == "null");
+    } else {
+        auto split = run_split_graph_arm(
+            opt, model, prompt_tokens, cpu_backend, gpu_backend,
+            cpu_weight_buft, cpu_bias_buft, gpu_buft);
+        const auto root = std::filesystem::path(opt.output).parent_path();
+        write_reinjection_logits((root / "ffn-reference.f32").string(),
+                                 split.reference_ffn);
+        write_reinjection_logits((root / "ffn-candidate.f32").string(),
+                                 split.candidate_ffn);
+        base = std::move(split.base);
+        hook = std::move(split.hook);
+    }
+    llama_model_free(model);
+    if (base.first_token != 2167 || base.second_token != 1309 ||
+        base.third_token != 316 || base.logits_a.size() != 201088 ||
+        base.logits_b.size() != 201088) {
+        fail("split arm frozen token/logits count failed");
+    }
+    const auto root = std::filesystem::path(opt.output).parent_path();
+    write_reinjection_logits((root / "logits-a.f32").string(), base.logits_a);
+    write_reinjection_logits((root / "logits-b.f32").string(), base.logits_b);
+    FILE * out = std::fopen(opt.output.c_str(), "wx");
+    if (!out) fail("cannot create split raw output");
+    std::fprintf(out,
+        "{\"schema\":\"tesy.live_moe_split_graph_skip_exactness_raw.v1\","
+        "\"classification\":\"MEASURED_LIVE_MOE_SPLIT_GRAPH_SKIP_EXACTNESS_RAW\","
+        "\"arm\":\"%s\",\"layer\":0,\"ngl\":0,\"threads\":%d,"
+        "\"first_token\":%" PRId32 ",\"second_token\":%" PRId32
+        ",\"third_token\":%" PRId32 ",\"gpu_hits\":%d,"
+        "\"committed_decode_return_code\":%d,"
+        "\"continuation_decode_return_code\":%d,"
+        "\"stock_capture_rollback\":%s,\"handoff_capture_rollback\":%s,"
+        "\"activation_pair_bitwise\":%s,\"ffn_bitwise\":%s,"
+        "\"prefix_compute_count\":%d,\"middle_compute_count\":%d,"
+        "\"suffix_compute_count\":%d,\"injected_output_count\":%d,"
+        "\"injected_bytes_verified\":%s,\"all_nodes_cpu\":%s,"
+        "\"middle_contiguous\":%s,\"downstream_depends_on_moe_out\":%s,"
+        "\"logits_a_file\":\"logits-a.f32\","
+        "\"logits_b_file\":\"logits-b.f32\","
+        "\"ffn_reference_file\":%s,\"ffn_candidate_file\":%s,"
+        "\"selected_experts\":[",
+        base.name.c_str(), opt.threads, base.first_token, base.second_token,
+        base.third_token, base.gpu_hits, base.committed_decode_return_code,
+        base.continuation_decode_return_code,
+        base.stock_capture_rollback ? "true" : "false",
+        base.handoff_capture_rollback ? "true" : "false",
+        base.activation_pair_bitwise ? "true" : "false",
+        base.ffn_bitwise ? "true" : "false",
+        hook.prefix_compute_count, hook.middle_compute_count,
+        hook.suffix_compute_count, hook.injected_output_count,
+        hook.injected_bytes_verified ? "true" : "false",
+        hook.all_nodes_cpu ? "true" : "false",
+        hook.middle_contiguous ? "true" : "false",
+        hook.downstream_depends_on_moe_out ? "true" : "false",
+        hook.invoked ? "\"ffn-reference.f32\"" : "null",
+        hook.invoked ? "\"ffn-candidate.f32\"" : "null");
+    for (size_t i = 0; i < base.experts.size(); ++i) {
+        if (i) std::fputc(',', out);
+        std::fprintf(out, "%" PRId32, base.experts[i]);
+    }
+    std::fputs("],\"routing_weights\":[", out);
+    for (size_t i = 0; i < base.weights.size(); ++i) {
+        if (i) std::fputc(',', out);
+        std::fprintf(out, "%.9g", base.weights[i]);
+    }
+    std::fputs("],\"ffn_parity\":", out);
+    print_reinjection_parity(out, base.ffn_parity);
+    std::fputs(",\"stock_output_parity\":", out);
+    print_reinjection_parity(out, hook.stock_output_parity);
+    std::fprintf(out,
+        ",\"stock_output_bitwise\":%s,\"inventory_file\":%s,"
+        "\"claim_boundary\":\"Layer-0 CPU graph split/skip correctness only; no timing, cache or prefetch.\"}\n",
+        hook.stock_output_bitwise ? "true" : "false",
+        hook.invoked ? "\"inventory.json\"" : "null");
+    if (std::fclose(out) != 0) fail("cannot close split raw output");
+    std::puts("PASS_SPLIT_GRAPH_RAW");
+}
+
+struct vertical_layer_runtime {
+    tensor_set borrowed_cpu;
+    std::unique_ptr<tensor_set> gpu_resident;
+    std::array<std::unique_ptr<compute_graph>, 5> cpu_graphs;
+    std::array<std::unique_ptr<compute_graph>, 5> gpu_graphs;
+    std::unique_ptr<sum_graph> aggregate;
+    std::array<ggml_tensor *, 6> stock_tensors{};
+    bool initialized = false;
+};
+
+struct vertical_down_replay_graph {
+    context_buffer storage;
+    ggml_tensor * input = nullptr;
+    ggml_tensor * ids = nullptr;
+    ggml_tensor * output = nullptr;
+    ggml_cgraph * graph = nullptr;
+};
+
+std::unique_ptr<vertical_down_replay_graph> vertical_make_down_replay(
+        ggml_tensor * weights, ggml_backend_t backend, int slots) {
+    if (!weights || !weights->buffer || (slots != 1 && slots != 4)) {
+        fail("invalid down replay weight/slot mapping");
+    }
+    auto result = std::make_unique<vertical_down_replay_graph>();
+    result->storage.ctx = make_context();
+    auto * ctx = result->storage.ctx;
+    result->input = ggml_new_tensor_3d(ctx, GGML_TYPE_F32, k_embd, slots, 1);
+    result->ids = ggml_new_tensor_2d(ctx, GGML_TYPE_I32, slots, 1);
+    result->output = ggml_mul_mat_id(ctx, weights, result->input, result->ids);
+    result->graph = ggml_new_graph(ctx);
+    ggml_build_forward_expand(result->graph, result->output);
+    if (result->graph->n_nodes != 1 ||
+        result->graph->nodes[0] != result->output ||
+        result->output->op != GGML_OP_MUL_MAT_ID ||
+        result->output->src[1] != result->input ||
+        result->output->src[2] != result->ids) {
+        fail("down replay graph has unexpected ancestors or operator");
+    }
+    result->storage.buffer = ggml_backend_alloc_ctx_tensors(ctx, backend);
+    if (!result->storage.buffer) fail("cannot allocate down replay graph");
+    return result;
+}
+
+std::vector<float> vertical_compute_down_replay(
+        vertical_down_replay_graph & replay, ggml_backend_t backend,
+        const std::vector<float> & input, const std::vector<int32_t> & ids) {
+    if (ggml_nelements(replay.input) != static_cast<int64_t>(input.size()) ||
+        ggml_nelements(replay.ids) != static_cast<int64_t>(ids.size())) {
+        fail("down replay input/ID count changed");
+    }
+    ggml_backend_tensor_set(replay.input, input.data(), 0,
+                            input.size() * sizeof(float));
+    ggml_backend_tensor_set(replay.ids, ids.data(), 0,
+                            ids.size() * sizeof(int32_t));
+    if (ggml_backend_graph_compute(backend, replay.graph) != GGML_STATUS_SUCCESS) {
+        fail("down replay operator failed");
+    }
+    ggml_backend_synchronize(backend);
+    return read_live_tensor<float>(replay.output, GGML_TYPE_F32,
+                                   input.size(), "down replay output");
+}
+
+std::vector<float> vertical_read_matrix_sidecar(
+        const std::filesystem::path & path) {
+    std::ifstream file(path, std::ios::binary | std::ios::ate);
+    if (!file || file.tellg() !=
+        static_cast<std::streamoff>(k_embd * k_top_k * sizeof(float))) {
+        fail("down matrix sidecar missing or wrong size: " + path.string());
+    }
+    file.seekg(0);
+    std::vector<float> values(static_cast<size_t>(k_embd * k_top_k));
+    file.read(reinterpret_cast<char *>(values.data()),
+              static_cast<std::streamsize>(values.size() * sizeof(float)));
+    if (!file || !std::all_of(values.begin(), values.end(),
+                             [](float x) { return std::isfinite(x); })) {
+        fail("down matrix sidecar truncated or non-finite: " + path.string());
+    }
+    return values;
+}
+
+void vertical_run_down_matrix(
+        vertical_layer_runtime & layer, ggml_backend_t cpu_backend,
+        ggml_backend_t gpu_backend, const std::filesystem::path & sidecars,
+        const std::filesystem::path & output_root,
+        const std::vector<int32_t> & route) {
+    if (route != std::vector<int32_t>({4, 0, 31, 17}) ||
+        !layer.gpu_resident || !layer.borrowed_cpu.down_w ||
+        ggml_nelements(layer.gpu_resident->down_w) !=
+            k_embd * k_embd * k_top_k) {
+        fail("down matrix route/residency/weight mapping changed");
+    }
+    const auto stock_input = vertical_read_matrix_sidecar(
+        sidecars / "layer2-stock-ffn_moe_swiglu_oai.f32");
+    const auto mixed_input = vertical_read_matrix_sidecar(
+        sidecars / "layer2-mixed-ffn_moe_swiglu_oai.f32");
+    const auto stock_down = vertical_read_matrix_sidecar(
+        sidecars / "layer2-stock-ffn_moe_down.f32");
+    const auto mixed_down = vertical_read_matrix_sidecar(
+        sidecars / "layer2-mixed-ffn_moe_down.f32");
+    auto cpu = vertical_make_down_replay(layer.borrowed_cpu.down_w,
+                                         cpu_backend, 4);
+    auto gpu = vertical_make_down_replay(layer.gpu_resident->down_w,
+                                         gpu_backend, 1);
+    auto slot = [](const std::vector<float> & matrix) {
+        return std::vector<float>(matrix.begin() + k_embd,
+                                  matrix.begin() + 2 * k_embd);
+    };
+    auto cpu_mixed = stock_input;
+    std::copy(mixed_input.begin() + k_embd,
+              mixed_input.begin() + 2 * k_embd,
+              cpu_mixed.begin() + k_embd);
+    const std::array<std::pair<std::string, std::vector<float>>, 4> arms{{
+        {"C_xC", stock_input}, {"C_xG", cpu_mixed},
+        {"G_xC", slot(stock_input)}, {"G_xG", slot(mixed_input)},
+    }};
+    std::array<std::vector<float>, 4> first{};
+    std::array<bool, 4> stable{};
+    for (size_t arm = 0; arm < arms.size(); ++arm) {
+        const bool is_cpu = arm < 2;
+        for (int repeat = 1; repeat <= 2; ++repeat) {
+            const auto all = is_cpu
+                ? vertical_compute_down_replay(*cpu, cpu_backend,
+                    arms[arm].second, route)
+                : vertical_compute_down_replay(*gpu, gpu_backend,
+                    arms[arm].second, {0});
+            const auto output = is_cpu ? slot(all) : all;
+            if (repeat == 1) first[arm] = output;
+            else stable[arm] = float_vectors_bitwise_equal(first[arm], output);
+            write_reinjection_logits(
+                (output_root / (arms[arm].first + "-r" +
+                    std::to_string(repeat) + ".f32")).string(), output);
+        }
+    }
+    const bool cpu_diag = float_vectors_bitwise_equal(first[0], slot(stock_down));
+    const bool gpu_diag = float_vectors_bitwise_equal(first[3], slot(mixed_down));
+    FILE * raw = std::fopen((output_root / "down-matrix-raw.json").c_str(), "wx");
+    if (!raw) fail("cannot create down matrix raw");
+    std::fprintf(raw,
+        "{\"schema\":\"tesy.numerical_down_matrix_raw.v1\","
+        "\"route\":[4,0,31,17],\"slot\":1,\"expert\":0,"
+        "\"cpu_ids\":[4,0,31,17],\"gpu_local_ids\":[0],"
+        "\"cpu_slots\":4,\"gpu_slots\":1,\"replay_nodes\":1,"
+        "\"repetitions\":2,\"diagonal_bitwise\":{\"C_xC\":%s,"
+        "\"G_xG\":%s},\"repeat_bitwise\":{\"C_xC\":%s,"
+        "\"C_xG\":%s,\"G_xC\":%s,\"G_xG\":%s}}\n",
+        cpu_diag ? "true" : "false", gpu_diag ? "true" : "false",
+        stable[0] ? "true" : "false", stable[1] ? "true" : "false",
+        stable[2] ? "true" : "false", stable[3] ? "true" : "false");
+    if (std::fclose(raw) != 0) fail("cannot close down matrix raw");
+}
+
+std::array<ggml_tensor *, 6> vertical_stock_tensors(
+        ggml_cgraph * graph, int layer) {
+    const std::array<const char *, 6> suffixes{
+        "ffn_moe_gate-", "ffn_moe_up-", "ffn_moe_down-",
+        "ffn_moe_gate_biased-", "ffn_moe_up_biased-",
+        "ffn_moe_down_biased-"};
+    std::array<ggml_tensor *, 6> result{};
+    for (size_t kind = 0; kind < suffixes.size(); ++kind) {
+        const std::string name = std::string(suffixes[kind]) + std::to_string(layer);
+        ggml_tensor * operation = nullptr;
+        for (int i = 0; i < graph->n_nodes; ++i) {
+            if (name == graph->nodes[i]->name) {
+                if (operation) fail("vertical graph has duplicate expert operation");
+                operation = graph->nodes[i];
+            }
+        }
+        if (!operation || operation->op !=
+            (kind < 3 ? GGML_OP_MUL_MAT_ID : GGML_OP_ADD_ID)) {
+            fail("vertical graph missing expected expert operation: " + name);
+        }
+        result[kind] = operation->src[kind < 3 ? 0 : 1];
+        if (!result[kind] || !result[kind]->buffer) {
+            fail("vertical stock expert tensor is not allocated");
+        }
+    }
+    for (size_t kind = 0; kind < result.size(); ++kind) {
+        auto * tensor = result[kind];
+        const bool weight = kind < 3;
+        if (tensor->type != (weight ? GGML_TYPE_MXFP4 : GGML_TYPE_F32) ||
+            tensor->ne[0] != k_embd ||
+            tensor->ne[1] != (weight ? k_embd : k_expert_count) ||
+            tensor->ne[2] != (weight ? k_expert_count : 1) ||
+            !ggml_is_contiguous(tensor)) {
+            fail("vertical stock expert tensor shape/type mismatch");
+        }
+    }
+    return result;
+}
+
+tensor_bytes vertical_resident_bytes(
+        const std::array<ggml_tensor *, 6> & tensors,
+        const std::vector<int32_t> & resident) {
+    tensor_bytes result;
+    const std::array<std::vector<uint8_t> *, 6> destinations{
+        &result.gate_w, &result.up_w, &result.down_w,
+        &result.gate_b, &result.up_b, &result.down_b};
+    for (size_t kind = 0; kind < tensors.size(); ++kind) {
+        auto * tensor = tensors[kind];
+        const size_t per_expert = ggml_nbytes(tensor) /
+            static_cast<size_t>(k_expert_count);
+        const size_t stride = tensor->nb[kind < 3 ? 2 : 1];
+        if (per_expert == 0 || stride != per_expert ||
+            ggml_nbytes(tensor) != per_expert * k_expert_count) {
+            fail("vertical stock expert tensor is not expert-contiguous");
+        }
+        auto & bytes = *destinations[kind];
+        bytes.resize(per_expert * resident.size());
+        for (size_t slot = 0; slot < resident.size(); ++slot) {
+            ggml_backend_tensor_get(tensor, bytes.data() + slot * per_expert,
+                static_cast<size_t>(resident[slot]) * per_expert, per_expert);
+        }
+    }
+    if (result.total() != resident.size() * k_encoded_bytes_per_expert) {
+        fail("vertical resident extraction encoded byte count mismatch");
+    }
+    return result;
+}
+
+uint64_t vertical_fingerprint64(const std::vector<uint8_t> & bytes) {
+    uint64_t value = UINT64_C(14695981039346656037);
+    for (uint8_t byte : bytes) {
+        value ^= byte;
+        value *= UINT64_C(1099511628211);
+    }
+    return value;
+}
+
+void vertical_verify_resident_readback(
+        const tensor_set & resident, const tensor_bytes & expected,
+        const std::array<ggml_tensor *, 6> & stock,
+        ggml_backend_t gpu_backend) {
+    const std::array<ggml_tensor *, 6> actual{
+        resident.gate_w, resident.up_w, resident.down_w,
+        resident.gate_b, resident.up_b, resident.down_b};
+    const std::array<const std::vector<uint8_t> *, 6> bytes{
+        &expected.gate_w, &expected.up_w, &expected.down_w,
+        &expected.gate_b, &expected.up_b, &expected.down_b};
+    const std::array<const char *, 6> names{
+        "gate_w", "up_w", "down_w", "gate_b", "up_b", "down_b"};
+    ggml_backend_synchronize(gpu_backend);
+    for (size_t kind = 0; kind < actual.size(); ++kind) {
+        const ggml_tensor * tensor = actual[kind];
+        const ggml_tensor * source = stock[kind];
+        if (!tensor || !tensor->buffer ||
+            tensor->type != source->type ||
+            tensor->ne[0] != source->ne[0] ||
+            tensor->ne[1] != (kind < 3 ? source->ne[1] : 4) ||
+            tensor->ne[2] != (kind < 3 ? 4 : 1) ||
+            !ggml_is_contiguous(tensor) ||
+            tensor->nb[kind < 3 ? 2 : 1] !=
+                source->nb[kind < 3 ? 2 : 1] ||
+            ggml_nbytes(tensor) != bytes[kind]->size()) {
+            fail(std::string("vertical GPU resident metadata mismatch: ") +
+                 names[kind]);
+        }
+        std::vector<uint8_t> readback(bytes[kind]->size());
+        ggml_backend_tensor_get(tensor, readback.data(), 0, readback.size());
+        if (readback != *bytes[kind]) {
+            fail(std::string("vertical GPU resident readback mismatch: ") +
+                 names[kind]);
+        }
+        std::fprintf(stderr,
+            "vertical diagnostic device-readback %s type=%s "
+            "shape=%" PRId64 ",%" PRId64 ",%" PRId64 " "
+            "strides=%zu,%zu,%zu bytes=%zu fingerprint64=%016" PRIx64
+            " bytewise=1\n",
+            names[kind], ggml_type_name(tensor->type),
+            tensor->ne[0], tensor->ne[1], tensor->ne[2],
+            tensor->nb[0], tensor->nb[1], tensor->nb[2],
+            readback.size(), vertical_fingerprint64(readback));
+    }
+}
+
+void vertical_verify_graph_inputs(
+        compute_graph & graph, ggml_backend_t backend,
+        const std::vector<float> & activation,
+        const std::vector<int32_t> & ids,
+        const std::vector<float> & weights,
+        const char * label) {
+    ggml_backend_synchronize(backend);
+    if (graph.input->type != GGML_TYPE_F32 ||
+        graph.input->ne[0] != k_embd || graph.input->ne[1] != 1 ||
+        graph.input->ne[2] != 1 || graph.input->ne[3] != 1 ||
+        graph.ids->type != GGML_TYPE_I32 ||
+        graph.ids->ne[0] != static_cast<int64_t>(ids.size()) ||
+        graph.ids->ne[1] != 1 || graph.ids->ne[2] != 1 ||
+        graph.mix->type != GGML_TYPE_F32 || graph.mix->ne[0] != 1 ||
+        graph.mix->ne[1] != static_cast<int64_t>(weights.size()) ||
+        graph.mix->ne[2] != 1 ||
+        !ggml_is_contiguous(graph.input) ||
+        !ggml_is_contiguous(graph.ids) ||
+        !ggml_is_contiguous(graph.mix)) {
+        fail(std::string("vertical compact input metadata differs: ") + label);
+    }
+    const auto actual_activation = read_live_tensor<float>(
+        graph.input, GGML_TYPE_F32, activation.size(), label);
+    const auto actual_ids = read_live_tensor<int32_t>(
+        graph.ids, GGML_TYPE_I32, ids.size(), label);
+    const auto actual_weights = read_live_tensor<float>(
+        graph.mix, GGML_TYPE_F32, weights.size(), label);
+    if (!float_vectors_bitwise_equal(activation, actual_activation) ||
+        actual_ids != ids ||
+        !float_vectors_bitwise_equal(weights, actual_weights)) {
+        fail(std::string("vertical uploaded graph inputs differ: ") + label);
+    }
+    std::fprintf(stderr,
+        "vertical diagnostic %s activation/ids/weights upload bitwise=1 "
+        "activation_type=%s activation_shape=%" PRId64 ",%" PRId64 ",%" PRId64
+        " activation_strides=%zu,%zu,%zu "
+        "ids_type=%s ids_shape=%" PRId64 ",%" PRId64
+        " ids_strides=%zu,%zu "
+        "weights_type=%s weights_shape=%" PRId64 ",%" PRId64 ",%" PRId64
+        " weights_strides=%zu,%zu,%zu\n",
+        label,
+        ggml_type_name(graph.input->type),
+        graph.input->ne[0], graph.input->ne[1], graph.input->ne[2],
+        graph.input->nb[0], graph.input->nb[1], graph.input->nb[2],
+        ggml_type_name(graph.ids->type),
+        graph.ids->ne[0], graph.ids->ne[1],
+        graph.ids->nb[0], graph.ids->nb[1],
+        ggml_type_name(graph.mix->type),
+        graph.mix->ne[0], graph.mix->ne[1], graph.mix->ne[2],
+        graph.mix->nb[0], graph.mix->nb[1], graph.mix->nb[2]);
+}
+
+void vertical_set_graph_inputs(compute_graph & graph,
+                               const std::vector<float> & activation,
+                               const std::vector<int32_t> & ids,
+                               const std::vector<float> & weights) {
+    if (activation.size() != static_cast<size_t>(k_embd) || ids.empty() ||
+        ids.size() != weights.size() ||
+        ggml_nelements(graph.ids) != static_cast<int64_t>(ids.size()) ||
+        ggml_nelements(graph.mix) != static_cast<int64_t>(weights.size())) {
+        fail("vertical graph input shape mismatch");
+    }
+    ggml_backend_tensor_set(graph.input, activation.data(), 0,
+                            activation.size() * sizeof(float));
+    ggml_backend_tensor_set(graph.ids, ids.data(), 0,
+                            ids.size() * sizeof(int32_t));
+    ggml_backend_tensor_set(graph.mix, weights.data(), 0,
+                            weights.size() * sizeof(float));
+}
+
+std::vector<float> vertical_compute_route(
+        vertical_layer_runtime & layer,
+        ggml_backend_t cpu_backend, ggml_backend_t gpu_backend,
+        const std::vector<float> & activation,
+        const tesy_route_partition & route,
+        bool diagnostic = false) {
+    const size_t n_cpu = route.cpu_global_ids.size();
+    const size_t n_gpu = route.gpu_global_ids.size();
+    if (n_cpu + n_gpu != static_cast<size_t>(k_top_k)) {
+        fail("vertical route lost selected experts");
+    }
+    compute_graph * cpu = nullptr;
+    compute_graph * gpu = nullptr;
+    if (n_cpu) {
+        if (!layer.cpu_graphs[n_cpu]) {
+            layer.cpu_graphs[n_cpu] = make_compute_graph(
+                layer.borrowed_cpu, cpu_backend, static_cast<int>(n_cpu),
+                activation);
+        }
+        cpu = layer.cpu_graphs[n_cpu].get();
+        vertical_set_graph_inputs(*cpu, activation, route.cpu_global_ids,
+                                  route.cpu_weights);
+        if (diagnostic) vertical_verify_graph_inputs(
+            *cpu, cpu_backend, activation, route.cpu_global_ids,
+            route.cpu_weights, "CPU compact inputs");
+        compute(cpu_backend, *cpu);
+    }
+    if (n_gpu) {
+        if (!layer.gpu_graphs[n_gpu]) {
+            layer.gpu_graphs[n_gpu] = make_compute_graph(
+                *layer.gpu_resident, gpu_backend, static_cast<int>(n_gpu),
+                activation);
+        }
+        gpu = layer.gpu_graphs[n_gpu].get();
+        vertical_set_graph_inputs(*gpu, activation, route.gpu_local_ids,
+                                  route.gpu_weights);
+        if (diagnostic) vertical_verify_graph_inputs(
+            *gpu, gpu_backend, activation, route.gpu_local_ids,
+            route.gpu_weights, "GPU compact inputs");
+        compute(gpu_backend, *gpu);
+    }
+    if (cpu && gpu) {
+        if (!layer.aggregate) layer.aggregate = make_sum_graph(gpu_backend);
+        ggml_backend_tensor_copy(gpu->output, layer.aggregate->gpu_partial);
+        ggml_backend_tensor_copy(cpu->output, layer.aggregate->cpu_partial);
+        ggml_backend_synchronize(cpu_backend);
+        ggml_backend_synchronize(gpu_backend);
+        compute_sum(gpu_backend, *layer.aggregate);
+        return read_output(gpu_backend, layer.aggregate->output);
+    }
+    if (cpu) return read_output(cpu_backend, cpu->output);
+    if (gpu) return read_output(gpu_backend, gpu->output);
+    fail("vertical route has no executor");
+}
+
+std::array<std::vector<float>, k_vertical_stage_names.size()>
+vertical_recompute_and_capture_stages(
+        compute_graph & graph, ggml_backend_t backend,
+        size_t selected_count, const char * label) {
+    const auto original_output = read_output(backend, graph.output);
+    std::array<std::vector<float>, k_vertical_stage_names.size()> result;
+    std::array<std::pair<int, size_t>, k_vertical_stage_names.size()> ordered{};
+    for (size_t stage = 0; stage < result.size(); ++stage) {
+        int found = -1;
+        for (int i = 0; i < graph.graph->n_nodes; ++i) {
+            if (graph.graph->nodes[i] != graph.diagnostic_stages[stage]) continue;
+            if (found != -1) fail("duplicate compact expert stage node");
+            found = i;
+        }
+        if (found < 0) {
+            fail(std::string("compact expert stage missing: ") + label);
+        }
+        ordered[stage] = {found, stage};
+    }
+    std::sort(ordered.begin(), ordered.end());
+    int cursor = 0;
+    for (const auto & item : ordered) {
+        const int stage_index = item.first;
+        const size_t stage = item.second;
+        if (stage_index < cursor) {
+            fail(std::string("compact expert stage alias changed: ") + label);
+        }
+        std::fprintf(stderr,
+            "vertical diagnostic %s stage=%s node_index=%d\n",
+            label, k_vertical_stage_names[stage], stage_index);
+        auto view = ggml_graph_view(graph.graph, cursor, stage_index + 1);
+        if (ggml_backend_graph_compute(backend, &view) != GGML_STATUS_SUCCESS) {
+            fail(std::string("compact expert stage view failed: ") + label);
+        }
+        ggml_backend_synchronize(backend);
+        result[stage] = read_live_tensor<float>(
+            graph.diagnostic_stages[stage], GGML_TYPE_F32,
+            static_cast<size_t>(k_embd) * selected_count, label);
+        cursor = stage_index + 1;
+    }
+    if (cursor < graph.graph->n_nodes) {
+        auto tail = ggml_graph_view(graph.graph, cursor, graph.graph->n_nodes);
+        if (ggml_backend_graph_compute(backend, &tail) != GGML_STATUS_SUCCESS) {
+            fail(std::string("compact expert diagnostic tail failed: ") + label);
+        }
+    }
+    const auto recomputed_output = read_output(backend, graph.output);
+    if (!float_vectors_bitwise_equal(original_output, recomputed_output)) {
+        fail(std::string("segmented diagnostic changed compact FFN output: ") + label);
+    }
+    std::fprintf(stderr,
+        "vertical diagnostic %s segmented-stage replay bitwise FFN=1; "
+        "replay is diagnostic only\n", label);
+    return result;
+}
+
+std::array<std::vector<float>, k_vertical_stage_names.size()>
+vertical_capture_mixed_stages(
+        vertical_layer_runtime & layer,
+        ggml_backend_t cpu_backend, ggml_backend_t gpu_backend,
+        const tesy_route_partition & route,
+        const std::vector<int32_t> & original_ids,
+        const std::vector<float> & original_weights) {
+    std::array<std::vector<float>, k_vertical_stage_names.size()> result;
+    const size_t n_cpu = route.cpu_global_ids.size();
+    const size_t n_gpu = route.gpu_global_ids.size();
+    if (original_ids.size() != k_top_k ||
+        original_weights.size() != k_top_k || n_cpu + n_gpu != k_top_k) {
+        fail("vertical diagnostic route shape mismatch");
+    }
+    std::array<std::vector<float>, k_vertical_stage_names.size()> cpu_stages;
+    std::array<std::vector<float>, k_vertical_stage_names.size()> gpu_stages;
+    if (n_cpu) {
+        cpu_stages = vertical_recompute_and_capture_stages(
+            *layer.cpu_graphs[n_cpu], cpu_backend, n_cpu, "CPU");
+    }
+    if (n_gpu) {
+        gpu_stages = vertical_recompute_and_capture_stages(
+            *layer.gpu_graphs[n_gpu], gpu_backend, n_gpu, "GPU");
+    }
+    for (size_t stage = 0; stage < result.size(); ++stage) {
+        result[stage].resize(static_cast<size_t>(k_embd * k_top_k));
+        for (size_t slot = 0; slot < original_ids.size(); ++slot) {
+            const int32_t expert = original_ids[slot];
+            const auto gpu_found = std::find(
+                route.gpu_global_ids.begin(), route.gpu_global_ids.end(), expert);
+            const bool gpu = gpu_found != route.gpu_global_ids.end();
+            const auto cpu_found = std::find(
+                route.cpu_global_ids.begin(), route.cpu_global_ids.end(), expert);
+            if (gpu == (cpu_found != route.cpu_global_ids.end())) {
+                fail("vertical diagnostic slot is missing or duplicated");
+            }
+            const size_t local = gpu
+                ? static_cast<size_t>(gpu_found - route.gpu_global_ids.begin())
+                : static_cast<size_t>(cpu_found - route.cpu_global_ids.begin());
+            const auto & values = gpu ? gpu_stages[stage] : cpu_stages[stage];
+            std::memcpy(result[stage].data() + slot * k_embd,
+                        values.data() + local * k_embd,
+                        static_cast<size_t>(k_embd) * sizeof(float));
+            if (stage == 0) {
+                std::fprintf(stderr,
+                    "vertical diagnostic slot=%zu expert=%" PRId32
+                    " backend=%s local=%zu local_id=%" PRId32
+                    " routing_weight=%.9g\n",
+                    slot, expert, gpu ? "GPU" : "CPU", local,
+                    gpu ? route.gpu_local_ids[local] : route.cpu_global_ids[local],
+                    original_weights[slot]);
+            }
+        }
+    }
+    return result;
+}
+
+size_t vertical_gpu_allocation_bytes(const vertical_layer_runtime & layer) {
+    size_t result = 0;
+    auto add = [&](ggml_backend_buffer_t buffer) {
+        if (buffer) result += ggml_backend_buffer_get_size(buffer);
+    };
+    if (layer.gpu_resident) {
+        add(layer.gpu_resident->weights.buffer);
+        add(layer.gpu_resident->biases.buffer);
+    }
+    for (const auto & graph : layer.gpu_graphs) {
+        if (graph) add(graph->storage.buffer);
+    }
+    if (layer.aggregate) add(layer.aggregate->storage.buffer);
+    return result;
+}
+
+struct vertical_event {
+    int token_ordinal = 0;
+    int layer = 0;
+    int gpu_hits = 0;
+    std::vector<int32_t> experts;
+    std::vector<float> weights;
+    int prefix_compute_count = 1;
+    int middle_compute_count = 0;
+    int suffix_compute_count = 1;
+    size_t gpu_allocated_bytes = 0;
+};
+
+struct vertical_reference_event {
+    std::vector<float> activation;
+    std::vector<int32_t> experts;
+    std::vector<float> weights;
+    std::vector<float> output;
+    std::array<std::vector<float>, k_vertical_stage_names.size()> stages;
+};
+
+struct vertical_reference_state {
+    bool enabled = false;
+    bool numerical_diagnostic = false;
+    int token_ordinal = 0;
+    std::vector<std::array<vertical_reference_event, 24>> events;
+};
+
+bool vertical_reference_callback(ggml_tensor * tensor, bool ask,
+                                 void * user_data) {
+    auto * state = static_cast<vertical_reference_state *>(user_data);
+    if (!state) fail("vertical stock reference callback state missing");
+    if (!state->enabled) return ask ? false : true;
+    if (state->numerical_diagnostic) {
+        for (size_t stage = 0; stage < k_vertical_stage_names.size(); ++stage) {
+            const std::string name =
+                std::string(k_vertical_stage_names[stage]) + "-2";
+            if (name != tensor->name) continue;
+            if (ask) return true;
+            auto & captured = state->events.at(
+                static_cast<size_t>(state->token_ordinal))[2].stages[stage];
+            if (!captured.empty()) fail("duplicate stock expert stage capture");
+            captured = read_live_tensor<float>(
+                tensor, GGML_TYPE_F32,
+                static_cast<size_t>(k_embd * k_top_k),
+                "vertical stock expert stage");
+            return true;
+        }
+    }
+    for (int layer = 0; layer < 24; ++layer) {
+        const std::string suffix = std::to_string(layer);
+        const std::array<std::string, 4> names{
+            "attn_post_norm-" + suffix,
+            "ffn_moe_topk-" + suffix,
+            "ffn_moe_weights_softmax-" + suffix,
+            "ffn_moe_out-" + suffix};
+        for (size_t kind = 0; kind < names.size(); ++kind) {
+            if (names[kind] != tensor->name) continue;
+            if (ask) return true;
+            auto & event = state->events.at(
+                static_cast<size_t>(state->token_ordinal))[static_cast<size_t>(layer)];
+            if (kind == 0) {
+                if (!event.activation.empty()) fail("duplicate stock activation capture");
+                event.activation = read_live_tensor<float>(
+                    tensor, GGML_TYPE_F32, static_cast<size_t>(k_embd),
+                    "vertical stock activation");
+            } else if (kind == 1) {
+                if (!event.experts.empty()) fail("duplicate stock route capture");
+                event.experts = read_live_tensor<int32_t>(
+                    tensor, GGML_TYPE_I32, static_cast<size_t>(k_top_k),
+                    "vertical stock expert IDs");
+            } else if (kind == 2) {
+                if (!event.weights.empty()) fail("duplicate stock weights capture");
+                event.weights = read_live_tensor<float>(
+                    tensor, GGML_TYPE_F32, static_cast<size_t>(k_top_k),
+                    "vertical stock routing weights");
+            } else {
+                if (!event.output.empty()) fail("duplicate stock FFN capture");
+                event.output = read_live_tensor<float>(
+                    tensor, GGML_TYPE_F32, static_cast<size_t>(k_embd),
+                    "vertical stock FFN output");
+            }
+            return true;
+        }
+    }
+    return ask ? false : true;
+}
+
+struct vertical_hook_state {
+    ggml_backend_t cpu_backend = nullptr;
+    ggml_backend_t gpu_backend = nullptr;
+    ggml_backend_buffer_type_t gpu_buft = nullptr;
+    int layers_to_replace = 0;
+    int token_ordinal = 0;
+    bool active = false;
+    bool invoked = false;
+    bool numerical_diagnostic = false;
+    bool down_matrix = false;
+    const vertical_reference_state * reference = nullptr;
+    std::string model_path;
+    std::filesystem::path diagnostic_root;
+    std::filesystem::path matrix_sidecars_dir;
+    std::vector<float> layer2_ffn_output;
+    std::array<vertical_layer_runtime, 24> layers;
+    std::vector<vertical_event> events;
+};
+
+int vertical_find_anchor(ggml_cgraph * graph, const std::string & name) {
+    int result = -1;
+    for (int i = 0; i < graph->n_nodes; ++i) {
+        if (name == graph->nodes[i]->name) {
+            if (result != -1) fail("vertical duplicate graph anchor: " + name);
+            result = i;
+        }
+    }
+    if (result < 0) fail("vertical missing graph anchor: " + name);
+    return result;
+}
+
+ggml_status vertical_live_compute_hook(ggml_cgraph * graph,
+                                       ggml_backend_sched_t sched,
+                                       ggml_backend_t backend_cpu,
+                                       void * user_data) {
+    auto * state = static_cast<vertical_hook_state *>(user_data);
+    if (!state || !state->active || state->invoked || !graph ||
+        !sched || !backend_cpu || !state->cpu_backend ||
+        !state->gpu_backend || !state->gpu_buft) {
+        fail("vertical hook state invalid or invoked twice");
+    }
+    state->invoked = true;
+    for (int i = 0; i < graph->n_nodes; ++i) {
+        ggml_tensor * node = graph->nodes[i];
+        if (ggml_backend_sched_get_tensor_backend(sched, node) != backend_cpu ||
+            !node->buffer || !node->data) {
+            fail("VERTICAL_BLOCKER_STOCK_GRAPH_NOT_SINGLE_CPU_BACKEND");
+        }
+    }
+    int cursor = 0;
+    const std::vector<int32_t> resident_ids{0, 1, 2, 3};
+    for (int layer_index = 0; layer_index < state->layers_to_replace; ++layer_index) {
+        auto name = [&](const char * prefix) {
+            return std::string(prefix) + std::to_string(layer_index);
+        };
+        const int activation_index = vertical_find_anchor(
+            graph, name("attn_post_norm-"));
+        const int topk_index = vertical_find_anchor(graph, name("ffn_moe_topk-"));
+        const int weights_index = vertical_find_anchor(
+            graph, name("ffn_moe_weights_softmax-"));
+        const int moe_out_index = vertical_find_anchor(graph, name("ffn_moe_out-"));
+        if (!(cursor <= activation_index && activation_index < topk_index &&
+              topk_index < weights_index && weights_index < moe_out_index &&
+              moe_out_index + 1 < graph->n_nodes)) {
+            fail("VERTICAL_BLOCKER_LAYER_BOUNDARIES_NOT_ORDERED");
+        }
+        std::unordered_set<ggml_tensor *> middle;
+        std::unordered_set<ggml_tensor *> ancestors;
+        collect_graph_ancestors(graph->nodes[moe_out_index], ancestors);
+        int expert_matmuls = 0;
+        for (int i = weights_index + 1; i <= moe_out_index; ++i) {
+            auto * node = graph->nodes[i];
+            if (!ancestors.count(node)) fail("VERTICAL_BLOCKER_MIDDLE_NOT_CONTIGUOUS");
+            middle.insert(node);
+            if (node->op == GGML_OP_MUL_MAT_ID) ++expert_matmuls;
+        }
+        if (expert_matmuls != 3) fail("vertical expert matmul count changed");
+        bool consumed = false;
+        for (int i = moe_out_index + 1; i < graph->n_nodes; ++i) {
+            for (auto * src : graph->nodes[i]->src) {
+                if (src == graph->nodes[moe_out_index]) consumed = true;
+                if (src != graph->nodes[moe_out_index] && middle.count(src)) {
+                    fail("VERTICAL_BLOCKER_SUFFIX_DEPENDS_ON_SKIPPED_MIDDLE");
+                }
+            }
+        }
+        if (!consumed) fail("VERTICAL_BLOCKER_SUFFIX_IGNORES_INJECTED_OUTPUT");
+        auto prefix = ggml_graph_view(graph, cursor, weights_index + 1);
+        if (ggml_backend_graph_compute(backend_cpu, &prefix) != GGML_STATUS_SUCCESS) {
+            fail("vertical CPU prefix graph compute failed");
+        }
+        const auto activation = read_live_tensor<float>(
+            graph->nodes[activation_index], GGML_TYPE_F32,
+            static_cast<size_t>(k_embd), "vertical activation");
+        const auto experts = read_live_tensor<int32_t>(
+            graph->nodes[topk_index], GGML_TYPE_I32,
+            static_cast<size_t>(k_top_k), "vertical expert IDs");
+        const auto weights = read_live_tensor<float>(
+            graph->nodes[weights_index], GGML_TYPE_F32,
+            static_cast<size_t>(k_top_k), "vertical routing weights");
+        if (state->reference) {
+            const auto & ref = state->reference->events.at(
+                static_cast<size_t>(state->token_ordinal))[
+                static_cast<size_t>(layer_index)];
+            if (experts != ref.experts ||
+                !float_vectors_bitwise_equal(weights, ref.weights)) {
+                fail("vertical live route drift vs separate stock reference at layer " +
+                     std::to_string(layer_index));
+            }
+            if (!compare_outputs(ref.activation, activation).pass) {
+                fail("vertical activation drift vs separate stock reference at layer " +
+                     std::to_string(layer_index));
+            }
+        }
+        const auto partition = tesy_partition_route(
+            experts, weights, resident_ids, static_cast<int32_t>(k_expert_count));
+        auto & layer = state->layers[static_cast<size_t>(layer_index)];
+        const auto stock_tensors = vertical_stock_tensors(graph, layer_index);
+        if (!layer.initialized) {
+            layer.stock_tensors = stock_tensors;
+            layer.borrowed_cpu.gate_w = stock_tensors[0];
+            layer.borrowed_cpu.up_w = stock_tensors[1];
+            layer.borrowed_cpu.down_w = stock_tensors[2];
+            layer.borrowed_cpu.gate_b = stock_tensors[3];
+            layer.borrowed_cpu.up_b = stock_tensors[4];
+            layer.borrowed_cpu.down_b = stock_tensors[5];
+            const tensor_bytes bytes = vertical_resident_bytes(
+                stock_tensors, resident_ids);
+            if (state->reference && layer_index == 2) {
+                const tensor_bytes file_bytes = load_subset(
+                    state->model_path, layer_index, {0, 1, 2, 3});
+                const std::array<std::pair<const std::vector<uint8_t> *,
+                                           const std::vector<uint8_t> *>, 6> rows{{
+                    {&bytes.gate_w, &file_bytes.gate_w},
+                    {&bytes.up_w, &file_bytes.up_w},
+                    {&bytes.down_w, &file_bytes.down_w},
+                    {&bytes.gate_b, &file_bytes.gate_b},
+                    {&bytes.up_b, &file_bytes.up_b},
+                    {&bytes.down_b, &file_bytes.down_b}}};
+                for (const auto & row : rows) {
+                    if (*row.first != *row.second) {
+                        fail("vertical diagnostic stock tensor bytes differ from GGUF");
+                    }
+                }
+                std::fprintf(stderr,
+                    "vertical diagnostic layer=2 resident stock tensor bytes "
+                    "match GGUF for IDs 0,1,2,3\n");
+            }
+            layer.gpu_resident = make_tensor_set(
+                bytes, static_cast<int>(resident_ids.size()),
+                state->gpu_buft, state->gpu_buft);
+            if (state->numerical_diagnostic && layer_index == 2) {
+                vertical_verify_resident_readback(
+                    *layer.gpu_resident, bytes, stock_tensors,
+                    state->gpu_backend);
+            }
+            layer.initialized = true;
+        } else if (layer.stock_tensors != stock_tensors) {
+            fail("vertical stock weight tensor identity changed across decodes");
+        }
+        const auto output = vertical_compute_route(
+            layer, state->cpu_backend, state->gpu_backend,
+            activation, partition,
+            state->numerical_diagnostic && layer_index == 2);
+        if (state->numerical_diagnostic && layer_index == 2) {
+            if (!float_vectors_bitwise_equal(
+                    activation,
+                    state->reference->events.at(
+                        static_cast<size_t>(state->token_ordinal))[2].activation)) {
+                fail("vertical diagnostic layer-2 activation is not bitwise stock");
+            }
+            const auto stages = vertical_capture_mixed_stages(
+                layer, state->cpu_backend, state->gpu_backend,
+                partition, experts, weights);
+            if (state->down_matrix) {
+                vertical_run_down_matrix(
+                    layer, state->cpu_backend, state->gpu_backend,
+                    state->matrix_sidecars_dir, state->diagnostic_root,
+                    experts);
+            }
+            for (size_t stage = 0; stage < stages.size(); ++stage) {
+                write_reinjection_logits(
+                    (state->diagnostic_root /
+                     (std::string("layer2-mixed-") +
+                      k_vertical_stage_names[stage] + ".f32")).string(),
+                    stages[stage]);
+            }
+            state->layer2_ffn_output = output;
+            write_reinjection_logits(
+                (state->diagnostic_root / "layer2-mixed-ffn.f32").string(),
+                output);
+        }
+        if (state->reference) {
+            const auto & ref = state->reference->events.at(
+                static_cast<size_t>(state->token_ordinal))[
+                static_cast<size_t>(layer_index)];
+            if (layer_index == 2) {
+                if (!layer.cpu_graphs[4]) {
+                    layer.cpu_graphs[4] = make_compute_graph(
+                        layer.borrowed_cpu, state->cpu_backend, 4,
+                        activation);
+                }
+                auto & shadow = *layer.cpu_graphs[4];
+                vertical_set_graph_inputs(shadow, activation, experts, weights);
+                compute(state->cpu_backend, shadow);
+                const auto cpu_output = read_output(
+                    state->cpu_backend, shadow.output);
+                const parity cpu_parity = compare_outputs(ref.output, cpu_output);
+                std::fprintf(stderr,
+                    "vertical diagnostic layer=2 all-CPU shadow rel=%.9g "
+                    "cosine=%.12f bitwise=%d; not used for injection\n",
+                    cpu_parity.relative_max, cpu_parity.cosine,
+                    float_vectors_bitwise_equal(ref.output, cpu_output) ? 1 : 0);
+            }
+            const parity p = compare_outputs(ref.output, output);
+            std::fprintf(stderr,
+                "vertical FFN parity token=%d layer=%d h=%zu "
+                "rel=%.9g cosine=%.12f bitwise=%d\n",
+                state->token_ordinal, layer_index,
+                partition.gpu_global_ids.size(), p.relative_max,
+                p.cosine, float_vectors_bitwise_equal(ref.output, output) ? 1 : 0);
+            if (!p.pass) {
+                std::fprintf(stderr,
+                    "vertical FFN failure token=%d layer=%d h=%zu "
+                    "rel=%.9g cosine=%.12f max_abs=%.9g max_ref=%.9g\n",
+                    state->token_ordinal, layer_index,
+                    partition.gpu_global_ids.size(), p.relative_max,
+                    p.cosine, p.max_abs, p.max_abs_ref);
+                fail("vertical live FFN differs from separate stock reference");
+            }
+        }
+        for (float value : output) {
+            if (!std::isfinite(value)) fail("vertical FFN output is non-finite");
+        }
+        ggml_tensor * moe_out = graph->nodes[moe_out_index];
+        if (moe_out->type != GGML_TYPE_F32 ||
+            !ggml_is_contiguous(moe_out) ||
+            ggml_nelements(moe_out) != k_embd) {
+            fail("vertical MoE output tensor metadata changed");
+        }
+        ggml_backend_tensor_set(moe_out, output.data(), 0,
+                                output.size() * sizeof(float));
+        const auto observed = read_live_tensor<float>(
+            moe_out, GGML_TYPE_F32, static_cast<size_t>(k_embd),
+            "vertical injected output");
+        if (!float_vectors_bitwise_equal(output, observed)) {
+            fail("vertical injection bytes did not persist");
+        }
+        size_t allocated = 0;
+        for (const auto & item : state->layers) {
+            allocated += vertical_gpu_allocation_bytes(item);
+        }
+        size_t free_vram = 0;
+        size_t total_vram = 0;
+        ggml_backend_dev_memory(ggml_backend_get_device(state->gpu_backend),
+                                &free_vram, &total_vram);
+        if (allocated > 5ull * 1024 * 1024 * 1024 ||
+            free_vram < 1024ull * 1024 * 1024 ||
+            total_vram < 7ull * 1024 * 1024 * 1024) {
+            fail("vertical GPU resident buffer or free VRAM guard failed");
+        }
+        state->events.push_back({
+            state->token_ordinal, layer_index,
+            static_cast<int>(partition.gpu_global_ids.size()),
+            experts, weights, 1, 0, 1, allocated});
+        cursor = moe_out_index + 1;
+    }
+    auto suffix = ggml_graph_view(graph, cursor, graph->n_nodes);
+    if (ggml_backend_graph_compute(backend_cpu, &suffix) != GGML_STATUS_SUCCESS) {
+        fail("vertical CPU suffix graph compute failed");
+    }
+    return GGML_STATUS_SUCCESS;
+}
+
+llama_context * vertical_make_context(llama_model * model,
+                                      size_t prompt_count,
+                                      const options & opt,
+                                      vertical_reference_state * reference = nullptr,
+                                      ggml_backend_sched_eval_callback callback = nullptr,
+                                      void * callback_data = nullptr) {
+    if (reference && callback) fail("vertical context has conflicting callbacks");
+    llama_context_params params = llama_context_default_params();
+    params.n_ctx = opt.live_ctx;
+    params.n_batch = static_cast<uint32_t>(prompt_count);
+    params.n_ubatch = static_cast<uint32_t>(prompt_count);
+    params.n_threads = opt.threads;
+    params.n_threads_batch = opt.threads;
+    params.no_perf = true;
+    if (reference) {
+        params.cb_eval = vertical_reference_callback;
+        params.cb_eval_user_data = reference;
+    } else if (callback) {
+        params.cb_eval = callback;
+        params.cb_eval_user_data = callback_data;
+    }
+    llama_context * ctx = llama_init_from_model(model, params);
+    if (!ctx) fail("vertical context creation failed");
+    return ctx;
+}
+
+llama_sampler * vertical_make_greedy_sampler() {
+    llama_sampler_chain_params params = llama_sampler_chain_default_params();
+    params.no_perf = true;
+    llama_sampler * sampler = llama_sampler_chain_init(params);
+    llama_sampler_chain_add(sampler, llama_sampler_init_greedy());
+    return sampler;
+}
+
+struct vertical_probe_sample {
+    std::string name;
+    std::vector<float> floats;
+    std::vector<int32_t> ids;
+};
+
+struct vertical_probe_state {
+    bool active = false;
+    const vertical_reference_event * expected = nullptr;
+    const std::vector<float> * injection = nullptr;
+    int ffn_observations = 0;
+    int injection_count = 0;
+    bool saw_activation = false;
+    bool saw_ids = false;
+    bool saw_weights = false;
+    bool pre_ffn_bitwise = false;
+    std::vector<vertical_probe_sample> downstream;
+};
+
+bool vertical_probe_callback(ggml_tensor * tensor, bool ask,
+                             void * user_data) {
+    auto * state = static_cast<vertical_probe_state *>(user_data);
+    if (!state || !state->expected) fail("vertical probe callback state missing");
+    if (!state->active) return ask ? false : true;
+    const std::string name = tensor->name;
+    auto capture_float = [&](size_t count, const char * label) {
+        if (ask) return std::vector<float>{};
+        return read_live_tensor<float>(tensor, GGML_TYPE_F32, count, label);
+    };
+    if (name == "attn_post_norm-2") {
+        if (ask) return true;
+        if (state->saw_activation || !float_vectors_bitwise_equal(
+                capture_float(static_cast<size_t>(k_embd), "probe activation"),
+                state->expected->activation)) {
+            fail("vertical suffix probe activation differs from frozen stock");
+        }
+        state->saw_activation = true;
+        return true;
+    }
+    if (name == "ffn_moe_topk-2") {
+        if (ask) return true;
+        if (state->saw_ids || read_live_tensor<int32_t>(
+                tensor, GGML_TYPE_I32, static_cast<size_t>(k_top_k),
+                "probe route") != state->expected->experts) {
+            fail("vertical suffix probe route differs from frozen stock");
+        }
+        state->saw_ids = true;
+        return true;
+    }
+    if (name == "ffn_moe_weights_softmax-2") {
+        if (ask) return true;
+        if (state->saw_weights || !float_vectors_bitwise_equal(
+                capture_float(static_cast<size_t>(k_top_k), "probe weights"),
+                state->expected->weights)) {
+            fail("vertical suffix probe weights differ from frozen stock");
+        }
+        state->saw_weights = true;
+        return true;
+    }
+    if (name == "ffn_moe_out-2") {
+        if (ask) return true;
+        if (++state->ffn_observations != 1 ||
+            !state->saw_activation || !state->saw_ids || !state->saw_weights) {
+            fail("vertical suffix probe FFN observation count/order invalid");
+        }
+        const auto before = capture_float(
+            static_cast<size_t>(k_embd), "probe stock FFN");
+        state->pre_ffn_bitwise = float_vectors_bitwise_equal(
+            before, state->expected->output);
+        if (!state->pre_ffn_bitwise) {
+            fail("vertical suffix probe pre-overwrite stock FFN differs");
+        }
+        if (state->injection) {
+            if (state->injection->size() != static_cast<size_t>(k_embd)) {
+                fail("vertical suffix probe injection length invalid");
+            }
+            for (float value : *state->injection) {
+                if (!std::isfinite(value)) fail("non-finite suffix probe injection");
+            }
+            ggml_backend_tensor_set(
+                tensor, state->injection->data(), 0,
+                state->injection->size() * sizeof(float));
+            const auto after = capture_float(
+                static_cast<size_t>(k_embd), "probe injected FFN");
+            if (!float_vectors_bitwise_equal(after, *state->injection)) {
+                fail("vertical suffix probe injection readback differs");
+            }
+            ++state->injection_count;
+        }
+        return true;
+    }
+    size_t count = 0;
+    bool ids = false;
+    if (name == "l_out-2") {
+        count = static_cast<size_t>(k_embd);
+    } else {
+        for (int layer = 3; layer < 24; ++layer) {
+            const std::string suffix = "-" + std::to_string(layer);
+            if (name == "ffn_inp" + suffix ||
+                name == "attn_post_norm" + suffix ||
+                name == "l_out" + suffix) {
+                count = static_cast<size_t>(k_embd);
+                break;
+            }
+            if (name == "ffn_moe_logits" + suffix) {
+                count = static_cast<size_t>(k_expert_count);
+                break;
+            }
+            if (name == "ffn_moe_weights_softmax" + suffix ||
+                name == "ffn_moe_topk" + suffix) {
+                count = static_cast<size_t>(k_top_k);
+                ids = name == "ffn_moe_topk" + suffix;
+                break;
+            }
+        }
+    }
+    if (count == 0) return ask ? false : true;
+    if (ask) return true;
+    for (const auto & sample : state->downstream) {
+        if (sample.name == name) fail("duplicate suffix probe node");
+    }
+    vertical_probe_sample sample;
+    sample.name = name;
+    if (ids) {
+        sample.ids = read_live_tensor<int32_t>(
+            tensor, GGML_TYPE_I32, count, "probe downstream topk");
+    } else {
+        sample.floats = capture_float(count, "probe downstream F32");
+    }
+    state->downstream.push_back(std::move(sample));
+    return true;
+}
+
+struct vertical_probe_arm {
+    llama_token first_token = -1;
+    llama_token second_token = -1;
+    std::vector<float> logits;
+    vertical_probe_state state;
+};
+
+vertical_probe_arm vertical_run_probe_arm(
+        llama_model * model, const std::vector<llama_token> & prompt_tokens,
+        const options & opt, llama_token expected_first_token,
+        const vertical_reference_event & event,
+        const std::vector<float> * injection,
+        const std::filesystem::path & root,
+        const std::string & arm_name) {
+    vertical_probe_arm arm;
+    arm.state.expected = &event;
+    arm.state.injection = injection;
+    llama_context * ctx = vertical_make_context(
+        model, prompt_tokens.size(), opt, nullptr,
+        vertical_probe_callback, &arm.state);
+    llama_sampler * sampler = vertical_make_greedy_sampler();
+    llama_batch prompt_batch = llama_batch_get_one(
+        const_cast<llama_token *>(prompt_tokens.data()),
+        static_cast<int32_t>(prompt_tokens.size()));
+    if (llama_decode(ctx, prompt_batch) != 0) fail("suffix probe prefill failed");
+    arm.first_token = llama_sampler_sample(sampler, ctx, -1);
+    if (arm.first_token != expected_first_token) {
+        fail("suffix probe first token differs from stock authority");
+    }
+    arm.state.active = true;
+    llama_batch batch = llama_batch_get_one(&arm.first_token, 1);
+    if (llama_decode(ctx, batch) != 0 || arm.state.ffn_observations != 1 ||
+        arm.state.injection_count != (injection ? 1 : 0)) {
+        fail("suffix probe committed decode/callback incomplete");
+    }
+    arm.state.active = false;
+    arm.logits = copy_reinjection_logits(
+        ctx, static_cast<size_t>(llama_vocab_n_tokens(llama_model_get_vocab(model))));
+    arm.second_token = llama_sampler_sample(sampler, ctx, -1);
+    write_reinjection_logits(
+        (root / (arm_name + "-logits.f32")).string(), arm.logits);
+    llama_sampler_free(sampler);
+    llama_free(ctx);
+    return arm;
+}
+
+void vertical_report_suffix_probe(
+        llama_model * model, const std::vector<llama_token> & prompt_tokens,
+        const options & opt, llama_token first_token,
+        const std::vector<float> & stock_logits,
+        const std::vector<float> & original_candidate_logits,
+        const vertical_reference_event & event,
+        const std::vector<float> & mixed_ffn,
+        const std::filesystem::path & root) {
+    const auto observed = vertical_run_probe_arm(
+        model, prompt_tokens, opt, first_token, event, nullptr,
+        root, "probe-stock-observed");
+    const auto control = vertical_run_probe_arm(
+        model, prompt_tokens, opt, first_token, event, &event.output,
+        root, "probe-stock-reinjected");
+    const auto intervention = vertical_run_probe_arm(
+        model, prompt_tokens, opt, first_token, event, &mixed_ffn,
+        root, "probe-mixed-reinjected");
+    const parity observed_vs_stock = compare_outputs(stock_logits, observed.logits);
+    const parity control_vs_observed = compare_outputs(
+        observed.logits, control.logits);
+    const parity control_vs_stock = compare_outputs(stock_logits, control.logits);
+    const parity intervention_vs_stock = compare_outputs(
+        stock_logits, intervention.logits);
+    const parity intervention_vs_original = compare_outputs(
+        original_candidate_logits, intervention.logits);
+    const auto & stock_nodes = observed.state.downstream;
+    const auto & control_nodes = control.state.downstream;
+    const auto & mixed_nodes = intervention.state.downstream;
+    if (!observed_vs_stock.pass || !control_vs_observed.pass ||
+        !control_vs_stock.pass || stock_nodes.size() != mixed_nodes.size() ||
+        stock_nodes.size() != control_nodes.size()) {
+        fail("suffix probe instrumentation control differs from stock");
+    }
+    std::string first_float;
+    std::string first_route_scores;
+    std::string first_topk;
+    std::string first_weights;
+    for (size_t i = 0; i < stock_nodes.size(); ++i) {
+        const auto & stock = stock_nodes[i];
+        const auto & same = control_nodes[i];
+        const auto & mixed = mixed_nodes[i];
+        if (stock.name != same.name || stock.name != mixed.name ||
+            stock.floats.size() != mixed.floats.size() ||
+            stock.ids.size() != mixed.ids.size() ||
+            !float_vectors_bitwise_equal(stock.floats, same.floats) ||
+            stock.ids != same.ids) {
+            fail("suffix probe graph node inventory differs");
+        }
+        if (!stock.ids.empty()) {
+            if (first_topk.empty() && stock.ids != mixed.ids) {
+                first_topk = stock.name;
+                std::fprintf(stderr, "vertical suffix first topk difference: %s\n",
+                             first_topk.c_str());
+            }
+        } else if (!float_vectors_bitwise_equal(stock.floats, mixed.floats)) {
+            const parity p = compare_outputs(stock.floats, mixed.floats);
+            if (first_float.empty()) {
+                first_float = stock.name;
+                std::fprintf(stderr,
+                    "vertical suffix first F32 difference: %s rel=%.9g max_abs=%.9g\n",
+                    first_float.c_str(), p.relative_max, p.max_abs);
+            }
+            if (first_route_scores.empty() &&
+                stock.name.rfind("ffn_moe_logits-", 0) == 0) {
+                first_route_scores = stock.name;
+                std::vector<float> scores = stock.floats;
+                std::sort(scores.begin(), scores.end(), std::greater<float>());
+                std::fprintf(stderr,
+                    "vertical suffix first router-score difference: %s "
+                    "rel=%.9g top4_top5_margin=%.9g\n",
+                    first_route_scores.c_str(), p.relative_max,
+                    static_cast<double>(scores[3]) - scores[4]);
+            }
+            if (first_weights.empty() &&
+                stock.name.rfind("ffn_moe_weights_softmax-", 0) == 0) {
+                first_weights = stock.name;
+                std::fprintf(stderr,
+                    "vertical suffix first routing-weight difference: %s rel=%.9g\n",
+                    first_weights.c_str(), p.relative_max);
+            }
+        }
+    }
+    FILE * out = std::fopen((root / "suffix-probe.json").c_str(), "wx");
+    if (!out) fail("cannot create suffix probe summary");
+    std::fputs("{\"schema\":\"tesy.vertical_numerical_suffix_probe.v1\","
+               "\"classification\":\"DIAGNOSTIC_NOT_ACCEPTANCE\","
+               "\"observed_vs_stock\":", out);
+    print_reinjection_parity(out, observed_vs_stock);
+    std::fputs(",\"control_vs_observed\":", out);
+    print_reinjection_parity(out, control_vs_observed);
+    std::fputs(",\"control_vs_stock\":", out);
+    print_reinjection_parity(out, control_vs_stock);
+    std::fputs(",\"intervention_vs_stock\":", out);
+    print_reinjection_parity(out, intervention_vs_stock);
+    std::fputs(",\"intervention_vs_original_candidate\":", out);
+    print_reinjection_parity(out, intervention_vs_original);
+    std::fprintf(out,
+        ",\"tokens\":{\"stock_observed\":[%" PRId32 ",%" PRId32 "],"
+        "\"stock_reinjected\":[%" PRId32 ",%" PRId32 "],"
+        "\"mixed_reinjected\":[%" PRId32 ",%" PRId32 "]},"
+        "\"injection_counts\":{\"stock_observed\":%d,"
+        "\"stock_reinjected\":%d,\"mixed_reinjected\":%d},"
+        "\"downstream_node_count\":%zu,"
+        "\"first_f32_difference\":\"%s\","
+        "\"first_router_score_difference\":\"%s\","
+        "\"first_topk_difference\":\"%s\","
+        "\"first_routing_weight_difference\":\"%s\"}\n",
+        observed.first_token, observed.second_token,
+        control.first_token, control.second_token,
+        intervention.first_token, intervention.second_token,
+        observed.state.injection_count, control.state.injection_count,
+        intervention.state.injection_count, stock_nodes.size(),
+        first_float.c_str(), first_route_scores.c_str(),
+        first_topk.c_str(), first_weights.c_str());
+    if (std::fclose(out) != 0) fail("cannot close suffix probe summary");
+    std::fprintf(stderr,
+        "vertical suffix probe rel stock-observed=%.9g "
+        "control-stock=%.9g mixed-stock=%.9g mixed-original=%.9g\n",
+        observed_vs_stock.relative_max, control_vs_stock.relative_max,
+        intervention_vs_stock.relative_max,
+        intervention_vs_original.relative_max);
+}
+
+void run_vertical_live_exactness(
+        const options & opt, ggml_backend_t cpu_backend,
+        ggml_backend_t gpu_backend,
+        ggml_backend_buffer_type_t gpu_buft) {
+    if (!llama_tesy_set_graph_compute_hook) {
+        fail("vertical live requires patched llama compute hook");
+    }
+    const std::string prompt = read_prompt_file(opt.prompt_file);
+    llama_model_params model_params = llama_model_default_params();
+    model_params.n_gpu_layers = 0;
+    llama_model * model = llama_model_load_from_file(
+        opt.model.c_str(), model_params);
+    if (!model) fail("vertical model load failed");
+    const llama_vocab * vocab = llama_model_get_vocab(model);
+    const auto prompt_tokens = tokenize_prompt(vocab, prompt);
+    if (prompt_tokens.size() + static_cast<size_t>(opt.vertical_tokens) + 1 >
+        opt.live_ctx) {
+        fail("vertical prompt and generation exceed context");
+    }
+    const size_t n_vocab = static_cast<size_t>(llama_vocab_n_tokens(vocab));
+    if (n_vocab != 201088) fail("vertical vocabulary identity changed");
+
+    std::vector<llama_token> stock_tokens;
+    std::vector<std::vector<float>> stock_logits;
+    {
+        llama_context * ctx = vertical_make_context(model, prompt_tokens.size(), opt);
+        llama_sampler * sampler = vertical_make_greedy_sampler();
+        llama_batch prompt_batch = llama_batch_get_one(
+            const_cast<llama_token *>(prompt_tokens.data()),
+            static_cast<int32_t>(prompt_tokens.size()));
+        if (llama_decode(ctx, prompt_batch) != 0) fail("vertical stock prefill failed");
+        stock_tokens.push_back(llama_sampler_sample(sampler, ctx, -1));
+        for (int ordinal = 0; ordinal < opt.vertical_tokens; ++ordinal) {
+            if (llama_vocab_is_eog(vocab, stock_tokens.back())) break;
+            llama_token input = stock_tokens.back();
+            llama_batch batch = llama_batch_get_one(&input, 1);
+            if (llama_decode(ctx, batch) != 0) fail("vertical stock committed decode failed");
+            stock_logits.push_back(copy_reinjection_logits(ctx, n_vocab));
+            stock_tokens.push_back(llama_sampler_sample(sampler, ctx, -1));
+        }
+        llama_sampler_free(sampler);
+        llama_free(ctx);
+    }
+    if (stock_logits.empty()) fail("vertical stock produced no continuation");
+
+    vertical_reference_state reference;
+    reference.numerical_diagnostic = opt.vertical_numerical_diagnostic;
+    reference.events.resize(stock_logits.size());
+    {
+        llama_context * ctx = vertical_make_context(
+            model, prompt_tokens.size(), opt, &reference);
+        llama_batch prompt_batch = llama_batch_get_one(
+            const_cast<llama_token *>(prompt_tokens.data()),
+            static_cast<int32_t>(prompt_tokens.size()));
+        if (llama_decode(ctx, prompt_batch) != 0) {
+            fail("vertical instrumented stock prefill failed");
+        }
+        for (size_t ordinal = 0; ordinal < stock_logits.size(); ++ordinal) {
+            reference.token_ordinal = static_cast<int>(ordinal);
+            reference.enabled = true;
+            llama_token input = stock_tokens[ordinal];
+            llama_batch batch = llama_batch_get_one(&input, 1);
+            if (llama_decode(ctx, batch) != 0) {
+                fail("vertical instrumented stock decode failed");
+            }
+            reference.enabled = false;
+            const auto logits = copy_reinjection_logits(ctx, n_vocab);
+            if (!compare_outputs(stock_logits[ordinal], logits).pass) {
+                fail("vertical instrumented stock differs from uninterrupted stock");
+            }
+            for (int layer = 0; layer < 24; ++layer) {
+                const auto & event = reference.events[ordinal][
+                    static_cast<size_t>(layer)];
+                if (event.activation.size() != static_cast<size_t>(k_embd) ||
+                    event.experts.size() != static_cast<size_t>(k_top_k) ||
+                    event.weights.size() != static_cast<size_t>(k_top_k) ||
+                    event.output.size() != static_cast<size_t>(k_embd)) {
+                    fail("vertical stock layer reference incomplete");
+                }
+            }
+        }
+        llama_free(ctx);
+    }
+
+    const auto diagnostic_root =
+        std::filesystem::path(opt.output).parent_path();
+    if (opt.vertical_numerical_diagnostic) {
+        const auto & event = reference.events[0][2];
+        for (size_t stage = 0; stage < event.stages.size(); ++stage) {
+            if (event.stages[stage].size() !=
+                static_cast<size_t>(k_embd * k_top_k)) {
+                fail(std::string("vertical diagnostic stock stage missing: ") +
+                     k_vertical_stage_names[stage]);
+            }
+            write_reinjection_logits(
+                (diagnostic_root /
+                 (std::string("layer2-stock-") +
+                  k_vertical_stage_names[stage] + ".f32")).string(),
+                event.stages[stage]);
+        }
+        write_reinjection_logits(
+            (diagnostic_root / "layer2-stock-ffn.f32").string(),
+            event.output);
+    }
+
+    vertical_hook_state state;
+    state.cpu_backend = cpu_backend;
+    state.gpu_backend = gpu_backend;
+    state.gpu_buft = gpu_buft;
+    state.layers_to_replace = opt.vertical_layers;
+    state.reference = &reference;
+    state.model_path = opt.model;
+    state.numerical_diagnostic = opt.vertical_numerical_diagnostic;
+    state.down_matrix = opt.vertical_down_matrix;
+    state.diagnostic_root = diagnostic_root;
+    state.matrix_sidecars_dir = opt.matrix_sidecars_dir;
+    std::vector<llama_token> candidate_tokens;
+    std::vector<parity> logits_parity;
+    bool matrix_complete = false;
+    {
+        llama_context * ctx = vertical_make_context(model, prompt_tokens.size(), opt);
+        llama_sampler * sampler = vertical_make_greedy_sampler();
+        llama_batch prompt_batch = llama_batch_get_one(
+            const_cast<llama_token *>(prompt_tokens.data()),
+            static_cast<int32_t>(prompt_tokens.size()));
+        if (llama_decode(ctx, prompt_batch) != 0) fail("vertical candidate prefill failed");
+        candidate_tokens.push_back(llama_sampler_sample(sampler, ctx, -1));
+        if (candidate_tokens.back() != stock_tokens.front()) {
+            fail("vertical candidate prefill greedy token diverged");
+        }
+        for (size_t ordinal = 0; ordinal < stock_logits.size(); ++ordinal) {
+            state.token_ordinal = static_cast<int>(ordinal);
+            state.active = true;
+            state.invoked = false;
+            llama_tesy_set_graph_compute_hook(ctx, vertical_live_compute_hook, &state);
+            llama_token input = candidate_tokens.back();
+            llama_batch batch = llama_batch_get_one(&input, 1);
+            const int code = llama_decode(ctx, batch);
+            llama_tesy_set_graph_compute_hook(ctx, nullptr, nullptr);
+            state.active = false;
+            if (code != 0 || !state.invoked) {
+                fail("vertical candidate committed decode or hook failed");
+            }
+            const auto candidate_logits = copy_reinjection_logits(ctx, n_vocab);
+            const parity p = compare_outputs(stock_logits[ordinal], candidate_logits);
+            logits_parity.push_back(p);
+            const auto root = std::filesystem::path(opt.output).parent_path();
+            const std::string stem = "token-" + std::to_string(ordinal);
+            write_reinjection_logits((root / (stem + "-stock-logits.f32")).string(),
+                                     stock_logits[ordinal]);
+            write_reinjection_logits((root / (stem + "-candidate-logits.f32")).string(),
+                                     candidate_logits);
+            if (!p.pass) {
+                std::fprintf(stderr,
+                    "vertical logits failure token=%zu rel=%.9g cosine=%.12f "
+                    "max_abs=%.9g max_ref=%.9g events=%zu\n",
+                    ordinal, p.relative_max, p.cosine, p.max_abs,
+                    p.max_abs_ref, state.events.size());
+                for (size_t i = 0; i < state.events.size(); ++i) {
+                    const auto & event = state.events[i];
+                    if (event.token_ordinal == static_cast<int>(ordinal)) {
+                        std::fprintf(stderr,
+                            "vertical event layer=%d h=%d ids=%d,%d,%d,%d\n",
+                            event.layer, event.gpu_hits,
+                            event.experts[0], event.experts[1],
+                            event.experts[2], event.experts[3]);
+                    }
+                }
+                if (opt.vertical_numerical_diagnostic &&
+                    !opt.vertical_down_matrix && ordinal == 0) {
+                    if (state.layer2_ffn_output.size() !=
+                        static_cast<size_t>(k_embd)) {
+                        fail("vertical diagnostic mixed FFN capture missing");
+                    }
+                    vertical_report_suffix_probe(
+                        model, prompt_tokens, opt, stock_tokens[0],
+                        stock_logits[0], candidate_logits,
+                        reference.events[0][2], state.layer2_ffn_output,
+                        root);
+                }
+                if (opt.vertical_down_matrix && ordinal == 0) {
+                    if (!std::filesystem::exists(root / "down-matrix-raw.json")) {
+                        fail("down matrix did not complete before logit divergence");
+                    }
+                    matrix_complete = true;
+                    break;
+                }
+                fail("vertical candidate full logits parity failed");
+            }
+            candidate_tokens.push_back(llama_sampler_sample(sampler, ctx, -1));
+            if (candidate_tokens.back() != stock_tokens[ordinal + 1]) {
+                fail("vertical candidate committed greedy continuation diverged");
+            }
+        }
+        llama_sampler_free(sampler);
+        llama_free(ctx);
+    }
+    llama_model_free(model);
+    if (matrix_complete) {
+        FILE * out = std::fopen(opt.output.c_str(), "wx");
+        if (!out) fail("cannot create down matrix diagnostic output");
+        std::fprintf(out,
+            "{\"schema\":\"tesy.numerical_characterization_a_raw.v1\","
+            "\"execution_status\":\"PASS\","
+            "\"diagnostic_result\":\"DOWN_MATRIX_CAPTURED\","
+            "\"comparison_under_existing_contract\":\"TESY_N2_STILL_FAIL\","
+            "\"historical_route\":[4,0,31,17],"
+            "\"full_logit_relative_max\":%.17g,"
+            "\"down_matrix_file\":\"down-matrix-raw.json\"}\n",
+            logits_parity.front().relative_max);
+        if (std::fclose(out) != 0) fail("cannot close down matrix diagnostic output");
+        return;
+    }
+    if (state.events.size() != stock_logits.size() *
+        static_cast<size_t>(opt.vertical_layers)) {
+        fail("vertical event/layer coverage incomplete");
+    }
+    FILE * out = std::fopen(opt.output.c_str(), "wx");
+    if (!out) fail("cannot create vertical live raw output");
+    std::fprintf(out,
+        "{\"schema\":\"tesy.vertical_live_exactness_raw.v1\","
+        "\"classification\":\"MEASURED_VERTICAL_LIVE_CORRECTNESS\","
+        "\"layers_replaced\":%d,\"prompt_tokens\":%zu,"
+        "\"committed_decodes\":%zu,\"stock_tokens\":[",
+        opt.vertical_layers, prompt_tokens.size(), stock_logits.size());
+    for (size_t i = 0; i < stock_tokens.size(); ++i) {
+        if (i) std::fputc(',', out);
+        std::fprintf(out, "%" PRId32, stock_tokens[i]);
+    }
+    std::fputs("],\"candidate_tokens\":[", out);
+    for (size_t i = 0; i < candidate_tokens.size(); ++i) {
+        if (i) std::fputc(',', out);
+        std::fprintf(out, "%" PRId32, candidate_tokens[i]);
+    }
+    std::fputs("],\"logits_parity\":[", out);
+    for (size_t i = 0; i < logits_parity.size(); ++i) {
+        if (i) std::fputc(',', out);
+        print_reinjection_parity(out, logits_parity[i]);
+    }
+    std::fputs("],\"events\":[", out);
+    for (size_t i = 0; i < state.events.size(); ++i) {
+        if (i) std::fputc(',', out);
+        const auto & event = state.events[i];
+        std::fprintf(out,
+            "{\"token_ordinal\":%d,\"layer\":%d,\"gpu_hits\":%d,"
+            "\"prefix_compute_count\":%d,\"middle_compute_count\":%d,"
+            "\"suffix_compute_count\":%d,\"gpu_allocated_bytes\":%zu,"
+            "\"experts\":[",
+            event.token_ordinal, event.layer, event.gpu_hits,
+            event.prefix_compute_count, event.middle_compute_count,
+            event.suffix_compute_count, event.gpu_allocated_bytes);
+        for (size_t j = 0; j < event.experts.size(); ++j) {
+            if (j) std::fputc(',', out);
+            std::fprintf(out, "%" PRId32, event.experts[j]);
+        }
+        std::fputs("],\"weights\":[", out);
+        for (size_t j = 0; j < event.weights.size(); ++j) {
+            if (j) std::fputc(',', out);
+            std::fprintf(out, "%.9g", event.weights[j]);
+        }
+        std::fputs("]}", out);
+    }
+    std::fputs("],\"claim_boundary\":\"Instrumented correctness only; no timing or performance claim.\"}\n", out);
+    if (std::fclose(out) != 0) fail("cannot close vertical live raw output");
+    std::puts("VERTICAL_LIVE_CORRECTNESS_RAW_PASS");
+}
+
+void print_parity(FILE * out, const parity & value) {
+    std::fprintf(
+        out,
+        "{\"max_abs\":%.9g,\"max_abs_ref\":%.9g,"
+        "\"relative_max\":%.9g,\"cosine\":%.12f,"
+        "\"status\":\"%s\"}",
+        value.max_abs,
+        value.max_abs_ref,
+        value.relative_max,
+        value.cosine,
+        value.pass ? "PASS" : "FAIL");
 }
 
 template <class Fn>
@@ -808,6 +5120,112 @@ std::pair<stats, stats> measure_paired(
         summarize_samples(serial_ms),
         summarize_samples(async_ms),
     };
+}
+
+std::vector<float> read_exact_f32_file(
+        const std::string & path,
+        size_t expected_count) {
+    std::ifstream file(path, std::ios::binary);
+    if (!file) {
+        fail("cannot open F32 file: " + path);
+    }
+    file.seekg(0, std::ios::end);
+    const std::streamoff bytes = file.tellg();
+    const std::streamoff expected =
+        static_cast<std::streamoff>(expected_count * sizeof(float));
+    if (bytes != expected) {
+        fail(
+            "unexpected F32 file size for " + path + ": " +
+            std::to_string(bytes));
+    }
+    file.seekg(0, std::ios::beg);
+    std::vector<float> values(expected_count);
+    file.read(
+        reinterpret_cast<char *>(values.data()),
+        static_cast<std::streamsize>(expected));
+    if (!file.good() && !file.eof()) {
+        fail("failed reading F32 file: " + path);
+    }
+    for (float value : values) {
+        if (!std::isfinite(value)) {
+            fail("non-finite value in F32 file: " + path);
+        }
+    }
+    return values;
+}
+
+std::vector<int> parse_int_csv(
+        const std::string & text,
+        const char * label) {
+    std::vector<int> values;
+    size_t start = 0;
+    while (start <= text.size()) {
+        const size_t end = text.find(',', start);
+        const std::string item =
+            text.substr(
+                start,
+                end == std::string::npos
+                    ? std::string::npos
+                    : end - start);
+        if (item.empty()) {
+            fail(std::string(label) + " contains empty item");
+        }
+        char * tail = nullptr;
+        errno = 0;
+        const long parsed = std::strtol(item.c_str(), &tail, 10);
+        if (
+            errno != 0
+            || !tail
+            || *tail != '\0'
+            || parsed < 0
+            || parsed > std::numeric_limits<int>::max()
+        ) {
+            fail(std::string("invalid ") + label + " item: " + item);
+        }
+        values.push_back(static_cast<int>(parsed));
+        if (end == std::string::npos) {
+            break;
+        }
+        start = end + 1;
+    }
+    return values;
+}
+
+std::vector<float> parse_float_csv(
+        const std::string & text,
+        const char * label) {
+    std::vector<float> values;
+    size_t start = 0;
+    while (start <= text.size()) {
+        const size_t end = text.find(',', start);
+        const std::string item =
+            text.substr(
+                start,
+                end == std::string::npos
+                    ? std::string::npos
+                    : end - start);
+        if (item.empty()) {
+            fail(std::string(label) + " contains empty item");
+        }
+        char * tail = nullptr;
+        errno = 0;
+        const float parsed = std::strtof(item.c_str(), &tail);
+        if (
+            errno != 0
+            || !tail
+            || *tail != '\0'
+            || !std::isfinite(parsed)
+            || parsed < 0.0f
+        ) {
+            fail(std::string("invalid ") + label + " item: " + item);
+        }
+        values.push_back(parsed);
+        if (end == std::string::npos) {
+            break;
+        }
+        start = end + 1;
+    }
+    return values;
 }
 
 std::vector<float> deterministic_input() {
@@ -943,6 +5361,8 @@ case_result run_case(
         ggml_backend_synchronize(gpu_backend);
 
         ggml_backend_tensor_copy(
+            gpu_graph->output, aggregate->gpu_partial);
+        ggml_backend_tensor_copy(
             cpu_graph->output, aggregate->cpu_partial);
         ggml_backend_synchronize(cpu_backend);
         ggml_backend_synchronize(gpu_backend);
@@ -1060,6 +5480,8 @@ case_result run_case(
             gpu_graph->output, aggregate->gpu_partial);
         ggml_backend_synchronize(gpu_backend);
 
+        ggml_backend_tensor_copy(
+            gpu_graph->output, aggregate->gpu_partial);
         result.cpu_partial_h2d =
             measure(
                 [&]() {
@@ -1080,7 +5502,11 @@ case_result run_case(
 
         result.gpu_aggregation =
             measure(
-                [&]() { compute_sum(gpu_backend, *aggregate); },
+                [&]() {
+                    ggml_backend_tensor_copy(
+                        gpu_graph->output, aggregate->gpu_partial);
+                    compute_sum(gpu_backend, *aggregate);
+                },
                 opt.warmup,
                 opt.samples,
                 opt.inner);
@@ -1215,6 +5641,56 @@ void print_case(FILE * out, const case_result & row) {
         row.output_parity.pass ? "PASS" : "FAIL");
 }
 
+void print_live_timing_samples(
+        FILE * out,
+        const live_timing_samples & samples) {
+    std::fputs("{\"activation_ready_ms\":[", out);
+    for (size_t i = 0; i < samples.activation_ms.size(); ++i) {
+        if (i != 0) {
+            std::fputc(',', out);
+        }
+        std::fprintf(out, "%.9f", samples.activation_ms[i]);
+    }
+    std::fputs("],\"route_ready_ms\":[", out);
+    for (size_t i = 0; i < samples.route_ms.size(); ++i) {
+        if (i != 0) {
+            std::fputc(',', out);
+        }
+        std::fprintf(out, "%.9f", samples.route_ms[i]);
+    }
+    std::fputs("]}", out);
+}
+
+void print_live_timing_exactness(
+        FILE * out,
+        const live_timing_exactness_snapshot & value) {
+    std::fprintf(
+        out,
+        "{\"stock_decode_return_code\":%d,"
+        "\"handoff_decode_return_code\":%d,"
+        "\"stock_rollback\":%s,"
+        "\"handoff_rollback\":%s,"
+        "\"activation_bitwise_equal\":%s,"
+        "\"activation_parity\":",
+        value.stock_decode_return_code,
+        value.handoff_decode_return_code,
+        value.stock_rollback ? "true" : "false",
+        value.handoff_rollback ? "true" : "false",
+        value.activation_bitwise_equal ? "true" : "false");
+    print_parity(out, value.activation_parity);
+    std::fputs(",\"activation_vs_reference\":", out);
+    print_parity(out, value.activation_vs_reference);
+    std::fputs(",\"stock_output_vs_reference\":", out);
+    print_parity(out, value.stock_output_vs_reference);
+    std::fputs(",\"serial_vs_stock\":", out);
+    print_parity(out, value.serial_vs_stock);
+    std::fputs(",\"async_vs_stock\":", out);
+    print_parity(out, value.async_vs_stock);
+    std::fputs(",\"async_vs_serial\":", out);
+    print_parity(out, value.async_vs_serial);
+    std::fputc('}', out);
+}
+
 }  // namespace
 
 int main(int argc, char ** argv) {
@@ -1242,7 +5718,10 @@ int main(int argc, char ** argv) {
     ggml_backend_dev_props gpu_props = {};
     ggml_backend_dev_get_props(cpu_dev, &cpu_props);
     ggml_backend_dev_get_props(gpu_dev, &gpu_props);
-    if (opt.async_overlap && !gpu_props.caps.async) {
+    if (
+        (opt.async_overlap || opt.live_handoff_timing)
+        && !gpu_props.caps.async
+    ) {
         fail("GPU backend does not advertise async capability");
     }
 
@@ -1256,10 +5735,361 @@ int main(int argc, char ** argv) {
         fail("missing required backend buffer type");
     }
 
+    if (opt.live_reinjection_exactness) {
+        run_live_reinjection_exactness(
+            opt, cpu.backend, gpu.backend,
+            cpu_weight_buft, cpu_bias_buft, gpu_buft);
+        return 0;
+    }
+    if (opt.split_graph_skip_exactness) {
+        run_split_graph_skip_exactness(
+            opt, cpu.backend, gpu.backend,
+            cpu_weight_buft, cpu_bias_buft, gpu_buft);
+        return 0;
+    }
+    if (opt.vertical_live_exactness) {
+        run_vertical_live_exactness(opt, cpu.backend, gpu.backend, gpu_buft);
+        return 0;
+    }
+
     const std::string cpu_weight_buft_name =
         ggml_backend_buft_name(cpu_weight_buft);
     const std::string cpu_bias_buft_name =
         ggml_backend_buft_name(cpu_bias_buft);
+
+    if (opt.live_handoff_timing) {
+        const live_handoff_timing_result result =
+            run_live_handoff_timing(
+                opt,
+                cpu.backend,
+                gpu.backend,
+                cpu_weight_buft,
+                cpu_bias_buft,
+                gpu_buft);
+
+        FILE * out = std::fopen(opt.output.c_str(), "wx");
+        if (!out) {
+            fail(
+                "refusing or unable to create output: " +
+                opt.output);
+        }
+
+        std::fprintf(
+            out,
+            "{\"schema\":\"tesy.live_moe_handoff_timing_raw.v1\","
+            "\"classification\":"
+            "\"MEASURED_LIVE_MOE_HANDOFF_TIMING_RAW\","
+            "\"layer\":0,\"ngl\":0,"
+            "\"gpu_hits\":%d,\"cpu_misses\":%d,"
+            "\"threads\":%d,"
+            "\"warmup_triplets\":%d,"
+            "\"sample_triplets\":%d,"
+            "\"inner\":%d,"
+            "\"resident_experts\":true,"
+            "\"provenance_gate\":"
+            "\"FILE_EXISTENCE_BEFORE_WARMUP\","
+            "\"input_semantics\":"
+            "\"HOST_CAPTURE_TO_CPU_AND_GPU_COMPACT_INPUTS\","
+            "\"decode_input_token\":%" PRId32 ","
+            "\"activation_tensor\":\"attn_post_norm-0\","
+            "\"topk_tensor\":\"ffn_moe_topk-0\","
+            "\"routing_weight_tensor\":"
+            "\"ffn_moe_weights_softmax-0\","
+            "\"stock_output_tensor\":\"ffn_moe_out-0\","
+            "\"selected_experts\":[",
+            result.gpu_hits,
+            result.cpu_misses,
+            opt.threads,
+            opt.warmup,
+            opt.samples,
+            opt.inner,
+            result.decode_input_token);
+
+        for (size_t i = 0; i < result.selected_experts.size(); ++i) {
+            if (i != 0) {
+                std::fputc(',', out);
+            }
+            std::fprintf(out, "%d", result.selected_experts[i]);
+        }
+
+        std::fputs("],\"routing_weights\":[", out);
+        for (size_t i = 0; i < result.routing_weights.size(); ++i) {
+            if (i != 0) {
+                std::fputc(',', out);
+            }
+            std::fprintf(out, "%.9g", result.routing_weights[i]);
+        }
+
+        std::fprintf(
+            out,
+            "],\"completed_trials\":{"
+            "\"stock\":%d,\"serial\":%d,\"async\":%d},"
+            "\"successful_timing_trial_rollbacks\":%d,"
+            "\"triplet_order_cycle\":["
+            "[\"stock\",\"serial\",\"async\"],"
+            "[\"stock\",\"async\",\"serial\"],"
+            "[\"serial\",\"stock\",\"async\"],"
+            "[\"serial\",\"async\",\"stock\"],"
+            "[\"async\",\"stock\",\"serial\"],"
+            "[\"async\",\"serial\",\"stock\"]],"
+            "\"measured_order_full_cycles\":13,"
+            "\"measured_order_tail_indices\":[0,3,4],"
+            "\"measured_ordinal_counts\":{"
+            "\"stock\":[27,27,27],"
+            "\"serial\":[27,27,27],"
+            "\"async\":[27,27,27]},"
+            "\"pre_exactness\":",
+            result.completed_stock_trials,
+            result.completed_serial_trials,
+            result.completed_async_trials,
+            result.successful_timing_trial_rollbacks);
+
+        print_live_timing_exactness(
+            out,
+            result.pre_exactness);
+        std::fputs(",\"post_exactness\":", out);
+        print_live_timing_exactness(
+            out,
+            result.post_exactness);
+
+        std::fputs(",\"modes\":{\"stock\":", out);
+        print_live_timing_samples(out, result.stock);
+        std::fputs(",\"serial\":", out);
+        print_live_timing_samples(out, result.serial);
+        std::fputs(",\"async\":", out);
+        print_live_timing_samples(out, result.async);
+
+        std::fputs(
+            "},\"parity_thresholds\":{"
+            "\"relative_max_max\":0.005,"
+            "\"cosine_min\":0.9999},"
+            "\"claim_boundary\":"
+            "\"Resident-expert steady-state timing for one repeated live "
+            "stock layer-0 route. Stock ends at callback-observed "
+            "ffn_moe_out-0 and is therefore an instrumented comparator. "
+            "Serial and async candidates include stock scheduler early-stop "
+            "return, "
+            "host activation updates into resident CPU/GPU compact inputs, "
+            "Tesy expert execution, CPU-partial transfer and final GPU "
+            "aggregation. Expert loading, cache misses, weight transfer, "
+            "output reinjection, committed-token continuation, prefetch and "
+            "physical traffic are excluded. Raw samples are authoritative; "
+            "statistics and decision are recomputed independently.\"}\n",
+            out);
+
+        if (std::fclose(out) != 0) {
+            fail("failed closing live handoff timing output");
+        }
+
+        std::printf("PASS_LIVE_MOE_HANDOFF_TIMING_RAW\n");
+        std::printf("gpu_hits: %d\n", result.gpu_hits);
+        std::printf("output: %s\n", opt.output.c_str());
+        return 0;
+    }
+
+    if (opt.live_handoff_exactness) {
+        const live_handoff_result result =
+            run_live_handoff_exactness(
+                opt,
+                cpu.backend,
+                gpu.backend,
+                cpu_weight_buft,
+                cpu_bias_buft,
+                gpu_buft);
+
+        FILE * out = std::fopen(opt.output.c_str(), "wx");
+        if (!out) {
+            fail(
+                "refusing or unable to create output: " +
+                opt.output);
+        }
+
+        std::fprintf(
+            out,
+            "{\"schema\":\"tesy.live_moe_handoff_exactness.v1\","
+            "\"classification\":"
+            "\"MEASURED_LIVE_MOE_HANDOFF_EXACTNESS\","
+            "\"layer\":0,\"ngl\":0,"
+            "\"decode_input_token\":%" PRId32 ","
+            "\"stock_decode_return_code\":%d,"
+            "\"handoff_decode_return_code\":%d,"
+            "\"stock_rollback\":%s,"
+            "\"handoff_rollback\":%s,"
+            "\"activation_tensor\":\"attn_post_norm-0\","
+            "\"topk_tensor\":\"ffn_moe_topk-0\","
+            "\"routing_weight_tensor\":"
+            "\"ffn_moe_weights_softmax-0\","
+            "\"stock_output_tensor\":\"ffn_moe_out-0\","
+            "\"activation_bitwise_equal\":%s,"
+            "\"activation_parity\":",
+            result.decode_input_token,
+            result.stock_decode_return_code,
+            result.handoff_decode_return_code,
+            result.stock_rollback ? "true" : "false",
+            result.handoff_rollback ? "true" : "false",
+            result.activation_bitwise_equal ? "true" : "false");
+
+        print_parity(out, result.activation_parity);
+
+        std::fputs(",\"selected_experts\":[", out);
+        for (size_t i = 0; i < result.selected_experts.size(); ++i) {
+            if (i != 0) {
+                std::fputc(',', out);
+            }
+            std::fprintf(out, "%d", result.selected_experts[i]);
+        }
+
+        std::fputs("],\"routing_weights\":[", out);
+        for (size_t i = 0; i < result.routing_weights.size(); ++i) {
+            if (i != 0) {
+                std::fputc(',', out);
+            }
+            std::fprintf(out, "%.9g", result.routing_weights[i]);
+        }
+
+        std::fputs("],\"cases\":[", out);
+        for (size_t i = 0; i < result.cases.size(); ++i) {
+            if (i != 0) {
+                std::fputc(',', out);
+            }
+            const routed_exactness_result & row =
+                result.cases[i];
+            std::fprintf(
+                out,
+                "{\"gpu_hits\":%d,\"cpu_misses\":%d,"
+                "\"serial_vs_stock\":",
+                row.gpu_hits,
+                row.cpu_misses);
+            print_parity(out, row.serial_vs_stock);
+            std::fputs(",\"async_vs_stock\":", out);
+            print_parity(out, row.async_vs_stock);
+            std::fputs(",\"async_vs_serial\":", out);
+            print_parity(out, row.async_vs_serial);
+            std::fputc('}', out);
+        }
+
+        std::fputs(
+            "],\"parity_thresholds\":{"
+            "\"relative_max_max\":0.005,"
+            "\"cosine_min\":0.9999},"
+            "\"decision\":\"LIVE_MOE_HANDOFF_EXACTNESS_GO\","
+            "\"claim_boundary\":"
+            "\"Correctness-only in-process handoff for one repeated stock "
+            "layer-0 route. The stock-reference arm supplies authoritative "
+            "activation, top-k, final routing weights and ffn_moe_out. "
+            "After explicit KV rollback, the handoff arm early-stops at the "
+            "same final routing weights and Tesy executes controlled h=2/h=3 "
+            "serial and async compact FFNs using that live activation. "
+            "No timing, output reinjection, committed-token continuation, "
+            "cache policy, prefetch or physical traffic claim follows.\"}\n",
+            out);
+
+        if (std::fclose(out) != 0) {
+            fail("failed closing live handoff exactness output");
+        }
+
+        std::printf("PASS_LIVE_MOE_HANDOFF_EXACTNESS\n");
+        std::printf("decision: LIVE_MOE_HANDOFF_EXACTNESS_GO\n");
+        std::printf("output: %s\n", opt.output.c_str());
+        return 0;
+    }
+
+    if (opt.routed_exactness) {
+        const std::vector<float> input =
+            read_exact_f32_file(
+                opt.routed_input_f32,
+                static_cast<size_t>(k_embd));
+        const std::vector<float> stock_reference =
+            read_exact_f32_file(
+                opt.routed_reference_f32,
+                static_cast<size_t>(k_embd));
+        const std::vector<int> selected_experts =
+            parse_int_csv(
+                opt.routed_experts_csv,
+                "routed experts");
+        const std::vector<float> routing_weights =
+            parse_float_csv(
+                opt.routed_weights_csv,
+                "routed weights");
+
+        const routed_exactness_result result =
+            run_routed_exactness(
+                opt,
+                cpu.backend,
+                gpu.backend,
+                cpu_weight_buft,
+                cpu_bias_buft,
+                gpu_buft,
+                input,
+                stock_reference,
+                selected_experts,
+                routing_weights);
+
+        FILE * out = std::fopen(opt.output.c_str(), "wx");
+        if (!out) {
+            fail(
+                "refusing or unable to create output: " +
+                opt.output);
+        }
+
+        std::fprintf(
+            out,
+            "{\"schema\":\"tesy.routed_layer_exactness_raw.v1\","
+            "\"classification\":"
+            "\"MEASURED_ROUTED_LAYER_REPLAY_EXACTNESS\","
+            "\"layer\":0,\"gpu_hits\":%d,\"cpu_misses\":%d,"
+            "\"controlled_partition\":"
+            "\"TOPK_SLOT_PREFIX_GPU_REMAINDER_CPU\","
+            "\"cpu_weight_buffer_type\":\"%s\","
+            "\"cpu_bias_buffer_type\":\"%s\","
+            "\"selected_experts\":[",
+            result.gpu_hits,
+            result.cpu_misses,
+            cpu_weight_buft_name.c_str(),
+            cpu_bias_buft_name.c_str());
+
+        for (size_t i = 0; i < selected_experts.size(); ++i) {
+            if (i != 0) {
+                std::fputc(',', out);
+            }
+            std::fprintf(out, "%d", selected_experts[i]);
+        }
+
+        std::fputs("],\"routing_weights\":[", out);
+        for (size_t i = 0; i < routing_weights.size(); ++i) {
+            if (i != 0) {
+                std::fputc(',', out);
+            }
+            std::fprintf(out, "%.9g", routing_weights[i]);
+        }
+
+        std::fputs("],\"serial_vs_stock\":", out);
+        print_parity(out, result.serial_vs_stock);
+        std::fputs(",\"async_vs_stock\":", out);
+        print_parity(out, result.async_vs_stock);
+        std::fputs(",\"async_vs_serial\":", out);
+        print_parity(out, result.async_vs_serial);
+        std::fputs(
+            ",\"parity_thresholds\":{"
+            "\"relative_max_max\":0.005,"
+            "\"cosine_min\":0.9999},"
+            "\"claim_boundary\":"
+            "\"Correctness-only replay of one stock llama.cpp layer-0 "
+            "decode MoE event using the captured exact activation, router "
+            "top-k and final routing weights. GPU/CPU residence is a "
+            "controlled slot-prefix partition with no dynamic placement "
+            "policy. No timing, full-model performance, or physical "
+            "traffic claim follows.\"}\n",
+            out);
+
+        if (std::fclose(out) != 0) {
+            fail("failed closing routed exactness output");
+        }
+
+        std::printf("PASS_ROUTED_LAYER_EXACTNESS_RAW\n");
+        std::printf("output: %s\n", opt.output.c_str());
+        return 0;
+    }
 
     const std::vector<float> input = deterministic_input();
     const std::vector<float> reference =

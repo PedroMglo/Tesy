@@ -1,0 +1,95 @@
+{
+  "C48": "FAIL_SAME_PROFILE_FIDELITY_UNCHANGED",
+  "C61": "FAIL_NUMERIC_RUNTIME_ASSERTION_UNCHANGED",
+  "arms": [
+    {
+      "elapsed_s": 69.772,
+      "invalid_id": null,
+      "kind": "plain",
+      "maxima": {
+        "buffered_model_fds": 0,
+        "cgroup_file_bytes": 1821458432,
+        "cgroup_memory_bytes": 13142183936,
+        "cgroup_peak_bytes": 13163675648,
+        "cpu_tctl_c": 88.375,
+        "direct_model_fds": 2,
+        "gpu_temperature_c": 57.0,
+        "gpu_used_mib": 5688.0,
+        "nvme_composite_c": 48.85,
+        "rss_bytes": 13107929088,
+        "swap_bytes": 0
+      },
+      "measurement_commit": "9f8a7bf23939641b7b5c1d9995e3caf1517dc7ac",
+      "raw_manifest_sha256": "f1ac5852e1c39f6f741b6fda94449aa22de530a7838f6f27cc7061c4075deab9",
+      "returncode": 0,
+      "run_id": "c66-p12-plain01",
+      "schema": "c66-arm-receipt-v1",
+      "scope_returncode": 0,
+      "scope_stderr_tail": "Running as unit: run-p708205-i754130.scope; invocation ID: ab012a3da9e744da9a081a74038664c0\n",
+      "source": {
+        "manifest_sha256": "f1ac5852e1c39f6f741b6fda94449aa22de530a7838f6f27cc7061c4075deab9",
+        "maxima": {
+          "buffered_model_fds": 0,
+          "cgroup_file_bytes": 1821458432,
+          "cgroup_memory_bytes": 13142183936,
+          "cgroup_peak_bytes": 13163675648,
+          "cpu_tctl_c": 88.375,
+          "direct_model_fds": 2,
+          "gpu_temperature_c": 57.0,
+          "gpu_used_mib": 5688.0,
+          "nvme_composite_c": 48.85,
+          "rss_bytes": 13107929088,
+          "swap_bytes": 0
+        },
+        "output_sha256": {
+          "all_rows_sha256": "85f3730442f40ecc5c6dac7b84c4d6029a1cc37bdb32e0707ec531d188eb800e",
+          "rows_sha256": "ab364425a589d4e2a3ec21aed9c96baaefcda4703a256ff38edb7dbac5cb3944"
+        }
+      },
+      "status": "PASS_DIAGNOSTIC_ARM",
+      "stop_reason": null
+    },
+    {
+      "elapsed_s": 16.571,
+      "invalid_id": {
+        "id": -1043122089,
+        "index": 0,
+        "layer": 25,
+        "n": 128,
+        "n_expert": 128,
+        "ne0": 4,
+        "ne1": 32,
+        "wave": 0
+      },
+      "kind": "capture",
+      "maxima": {
+        "buffered_model_fds": 1,
+        "cgroup_file_bytes": 2915086336,
+        "cgroup_memory_bytes": 3916943360,
+        "cgroup_peak_bytes": 4012933120,
+        "cpu_tctl_c": 78.0,
+        "direct_model_fds": 2,
+        "gpu_temperature_c": 52.0,
+        "gpu_used_mib": 5624.0,
+        "nvme_composite_c": 48.85,
+        "rss_bytes": 2817871872,
+        "swap_bytes": 0
+      },
+      "measurement_commit": "9f8a7bf23939641b7b5c1d9995e3caf1517dc7ac",
+      "raw_manifest_sha256": "86657722e56bf083fa9f364bac9b0a455fb3280c2d8afeb5c3b002d5dd344ead",
+      "reason": "routed ID outside authoritative expert range; no recovery",
+      "returncode": -6,
+      "run_id": "c66-p12-capture01",
+      "schema": "c66-arm-receipt-v1",
+      "scope_returncode": 1,
+      "scope_stderr_tail": "Running as unit: run-p709475-i722652.scope; invocation ID: d50be50567fb483392594e89301f81d7\n",
+      "status": "FAIL_NUMERIC_RUNTIME_ASSERTION",
+      "stop_reason": "REQUIRED_PROCESS_TELEMETRY_MISSING"
+    }
+  ],
+  "logit_mismatch_phases": [],
+  "measurement_commit": "9f8a7bf23939641b7b5c1d9995e3caf1517dc7ac",
+  "schema": "c66-diagnostic-summary-v1",
+  "status": "FAIL_NUMERIC_RUNTIME_ASSERTION",
+  "timing": "NOT_RUN"
+}

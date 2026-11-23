@@ -1,0 +1,29 @@
+# Caracterização numérica A+B — protocolo prospectivo
+
+Estado: `FROZEN_NOT_RUN`. Evidência: diagnóstico, não uma requalificação do candidato Tesy. Base #34 `f4d0a1a73e437493c77bcef21435631cf792f453`, tree `8556214beca0671dddd611beedeb8aa3203822ca`. A auditoria C3 separada está em `audit/c3-raw-evidence-external-20260925` (`5a2ac8fba98d4fe0d32fc43b33b778bc59560ce0`); não faz parte deste measurement.
+
+## Identidades e condições comuns
+
+llama.cpp stock `4e416ee7308dd6b581796f1a6241276cd5982691`; modelo `gpt-oss-20b-mxfp4.gguf`, 12 109 564 352 bytes, SHA-256 `52f57ab7d3df3ba9173827c1c6832e73375553a846f3e32b49f1ae2daad688d4`. Contexto 4096; 12 threads de decode e batch; `n_batch=n_ubatch=prompt_token_count`, `no_perf=true`; tokenização raw `llama_tokenize(add_special=true, parse_special=true)`, sem chat template; greedy stock. O N2 foi executado com `--vertical-layers 3 --vertical-tokens 1`, residência `{0,1,2,3}`, e prompt `benchmarks/prompts/vertical-short-summary.txt` SHA-256 `99b2641845df47370c29f1661ccb7493bb51ce11dd26a0f3afabb5c49cf18710`. O primeiro token CPU é obrigatoriamente `32` no caso histórico.
+
+Antes de cada run model-bearing: branch/commit/tree limpos, pin e worktree llama limpos, hash/tamanho do modelo e prompts, host físico de referência, GPU sem compute concorrente, RAM livre ≥18 GiB, VRAM livre ≥6 GiB, binário/bibliotecas/argv identificados, telemetria completa durante o processo, swap de processo 0, MemAvailable mínimo ≥2 GiB, VRAM headroom mínimo ≥1 GiB. Falta de dados, identidade errada, non-finite, OOM ou violação de recurso termina a root. Roots falhadas não são reutilizadas. Execuções A e B são sequenciais. Não há timings Tesy nem alteração de contrato.
+
+## A — down projection cruzada, pré-bias
+
+O evento N2 é layer 2, route `[4,0,31,17]`, slot 1→expert global 0→GPU local 0. Os quatro sidecars N2 `layer2-{stock,mixed}-ffn_moe_{swiglu_oai,down}.f32` têm 46 080 bytes cada: F32 little-endian, shape `[slot=4, element=2880]`, slot contíguo. O manifesto N2 fixa os seus SHA-256; o runner verifica os quatro antes de usar. `x_C` é o slot 1 do SwiGLU stock; `x_G` o slot 1 mixed. CPU usa o tensor stock MXFP4 de 32 experts e quatro slots na ordem/IDs `[4,0,31,17]`; os outros três inputs permanecem stock. GPU usa os quatro pesos residentes `{0,1,2,3}`, um slot, local ID 0, com o mesmo layout e dispatch do N2. O graph de replay contém apenas inputs F32/IDs como leaves e `ggml_mul_mat_id(down_w, input, ids)`; não calcula SwiGLU, bias, routing multiply nem redução. O endpoint é o `ffn_moe_down` antes do bias.
+
+Quatro combinações fixas, duas execuções de cada: `C(x_C)`, `C(x_G)`, `G(x_C)`, `G(x_G)`. Cada par de repetições tem de ser bitwise igual. Antes de interpretar os cruzamentos, `C(x_C)` deve igualar bitwise o slot 1 do sidecar stock down e `G(x_G)` o slot 1 do sidecar mixed down. Caso contrário, A é `INCONCLUSIVE_REPLAY_NOT_IDENTICAL`; não se atribui a diferença N2 aos cruzamentos. Se a reprodução exigir outro operador, kernel ou flags, A permanece inconclusiva. Publicar os quatro outputs F32 (e os repetidos/hashes), shapes, source/build/runtime provenance e telemetria.
+
+Python calcula, em float64 para subtracções, `C(x_G)-C(x_C)`, `G(x_G)-G(x_C)`, `G(x_C)-C(x_C)`, `G(x_G)-C(x_G)` e `G(x_G)-C(x_C)`, com max abs, relative max `max_abs/max(1,max_abs_ref)`, cosine e bitwise. Verifica os resíduos das duas decomposições vectoriais do último contraste. Não soma máximos relativos e não infere o detalhe de quantização/acumulação sem observação directa.
+
+## B — stock CPU/GPU sob prefixos idênticos
+
+Ambos os braços usam o **mesmo build stock sem patch Tesy**, diferindo apenas `n_gpu_layers`: B0=0, B12=12. Dois prompts pré-escolhidos: o histórico acima e `benchmarks/prompts/vertical-eval-code-short.txt`, SHA-256 `6cab5251b0045b55cbf0dc7212a1c5f799e7777ca6712731933fce9cf7650327`. O segundo já foi usado no C3 e não é descrito como holdout. Guardar IDs completos da tokenização antes de comparar.
+
+Em cada contexto: prefill e logits completos P; obter o primeiro greedy CPU de uma referência B0; em todos os braços decodificar **esse mesmo token** e guardar logits completos D. No histórico esse token tem de ser 32 e B0-D deve reproduzir o vector stock histórico N1/N2 (SHA-256 `52c37d27a8249466a8507211267e5c33fa144eaab060c16bae299bb6d7df7b46`); se não, explicar a diferença de configuração antes de usar B para interpretar N2. Guardar os greedies de ambos os braços em P e D, sem alterar o input comum se divergirem.
+
+Exactamente 8 fresh processes/contexts: dois prompts × B0/B12 × duas repetições. Ordem por prompt: repetição 1 B0→B12; repetição 2 B12→B0. A primeira referência CPU define o token comum. Primeiro comparar repetibilidade bitwise dentro de cada colocação/checkpoint; se faltar, publicar amplitude, limitar a atribuição. Depois comparar B12 vs B0 por P e D com os mesmos IDs de prompt e input D. Registar colocação efectiva do backend (logs/metadados), sem presumir que a layer 2 vai à GPU. Se observá-la exigir instrumentação mutante, executar separadamente e não a confundir com o run de logits.
+
+Para cada comparação: logits F32 completos, count, finite, argmax, margem top-1/top-2, max_abs, max_abs_ref, relative_max `max_abs/max(1,max_abs_ref)`, cosine e bitwise. Contrato existente: relative max ≤0.005 e cosine ≥0.9999; argmax é publicado. Um contraste stock que exceda o contrato implica `NUMERICAL_CONTRACT_REVIEW_REQUIRED`; passar vale só nos casos observados. Identidade/proveniência insuficiente ou não reprodução histórica implica `INCONCLUSIVE` relevante. B nunca muda o FAIL Tesy N2.
+
+Não se mede performance. `execution_status`, `diagnostic_result` e `comparison_under_existing_contract` são campos separados. A publicação final inclui evidence manifest com hashes/tamanhos/caminhos, outputs A, logits B, tokens, análises, provenance, telemetria, falhas e limitações. `pending_external_audit=true`.

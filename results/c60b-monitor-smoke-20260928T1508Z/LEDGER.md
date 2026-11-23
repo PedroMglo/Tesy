@@ -1,0 +1,1 @@
+C60b: corrected prospective run_bounded in new real E18 zero-swap model-free scope. Five linked libraries mapped as expected; eight samples, max gap 0.664 s, endpoints valid, returncode 0. C60 original FAIL preserved. 120B NOT_RUN.

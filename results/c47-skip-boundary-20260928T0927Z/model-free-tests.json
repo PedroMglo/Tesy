@@ -1,0 +1,23 @@
+{
+  "build_flags": {
+    "CMAKE_BUILD_TYPE": "Release",
+    "CMAKE_CUDA_ARCHITECTURES": 89,
+    "CMAKE_CUDA_COMPILER": "/usr/local/cuda/bin/nvcc",
+    "CMAKE_CXX_COMPILER": "/usr/bin/g++-15",
+    "CMAKE_CXX_FLAGS": "TESY_C15_NVTX TESY_C47_CPU_SKIP_PARKED",
+    "CMAKE_C_COMPILER": "/usr/bin/gcc-15",
+    "CMAKE_C_FLAGS": "TESY_C15_NVTX TESY_C47_CPU_SKIP_PARKED",
+    "GGML_CUDA": "ON"
+  },
+  "capture_binary_sha256": "b6136dd2129a93a0cdb7e9221ff0c07bdbab85a31fe206c9ca697b3f26731a79",
+  "final_source_commit": "6a2c6c1f0c1032b5567d2a8463eb9bce85df94e8",
+  "initial_build_failure": "first source commit inserted conversion guard in generic MUL_MAT; preserved as b948e2d and corrected before model",
+  "limit": "F32/F16 model-free operator cases do not qualify MXFP4 full-model or same-pin canonical reference",
+  "operator_binary_sha256": "3e80a4f6b497e28841fb751fb84a6e4837a879499ec32efbbadfd62356945d4e",
+  "operator_result": "C47_OPERATOR_PASS F32 F16 parked/active/control",
+  "operator_source_sha256": "a503c05c6d9830e37af63b9f7ff0a53dd8442bfc1af7cfb349656905076c486e",
+  "schema": "c47-model-free-tests-v1",
+  "second_build_failure": "incomplete ggml_backend_buffer type dereference; corrected using public buffer API before model",
+  "server_help_exit_code": 0,
+  "status": "PASS"
+}

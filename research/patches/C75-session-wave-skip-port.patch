@@ -1,0 +1,60 @@
+From 27d2e42d8c994507ee6d71acc7c58d3eddd3f7a5 Mon Sep 17 00:00:00 2001
+From: PedroMglo <pedro.lourenco2001@hotmail.com>
+Date: Mon, 28 Sep 2026 19:13:56 +0100
+Subject: [PATCH] C75: port C57 parked MMID skip to C35 session backend
+
+Source semantics from b948e2d..aac3bbd; preserve broadcast activation conversion, write parked outputs, gate by TESY_CPU_WAVE_SKIP_PARKED. C48/C61/C66 failures remain historical; no model validation yet.
+---
+ ggml/src/ggml-cpu/ggml-cpu.c |  9 +++++++++
+ src/llama-moe-stream.cpp     | 15 +++++++++++++++
+ 2 files changed, 24 insertions(+)
+
+diff --git a/ggml/src/ggml-cpu/ggml-cpu.c b/ggml/src/ggml-cpu/ggml-cpu.c
+index 8a0e5c2..b128bbf 100644
+--- a/ggml/src/ggml-cpu/ggml-cpu.c
++++ b/ggml/src/ggml-cpu/ggml-cpu.c
+@@ -1622,6 +1622,15 @@ static void ggml_compute_forward_mul_mat_id(
+             for (int id = 0; id < n_ids; ++id) {
+                 const int32_t i02 = *(const int32_t *) ((const char *) ids->data + iid1*ids->nb[1] + id*ids->nb[0]);
+ 
++#ifdef TESY_C47_CPU_SKIP_PARKED
++                if (i02 == -1) {
++                    // Shared activation conversion above still runs for all
++                    // rows; an active ID may consume a broadcast row.
++                    // Write the parked output so the graph keeps its shape.
++                    memset((char *) dst->data + id*nb1 + iid1*nb2, 0, ne01*sizeof(float));
++                    continue;
++                }
++#endif
+                 assert(i02 >= 0 && i02 < n_as);
+ 
+                 MMID_MATRIX_ROW(i02, matrix_row_counts[i02]) = (struct mmid_row_mapping) {id, iid1};
+diff --git a/src/llama-moe-stream.cpp b/src/llama-moe-stream.cpp
+index ce17396..fbbeafa 100644
+--- a/src/llama-moe-stream.cpp
++++ b/src/llama-moe-stream.cpp
+@@ -809,6 +809,21 @@ void llama_moe_stream_wave_ids(ggml_tensor * dst, int ith, int nth, void * userd
+     sl->plan_next_wave = w + 1;
+ 
+     mgr->emit_wave_slots(*sl, ids, out, w, n_ids, a->ne[1]);
++#ifdef TESY_C47_CPU_SKIP_PARKED
++    if (std::getenv("TESY_CPU_WAVE_SKIP_PARKED") != nullptr) {
++        GGML_ASSERT(!sl->weights.empty() && sl->weights[0].cache != nullptr &&
++                    sl->weights[0].cache->buffer != nullptr);
++        // The stock CPU buffer type has no backend device; host accessibility
++        // is the execution property used by the original C57 mechanism.
++        if (ggml_backend_buffer_is_host(sl->weights[0].cache->buffer)) {
++            for (int64_t i = 0; i < n; i++) {
++                if (sl->expert_wave[ids[i]] != (uint8_t) w) {
++                    out[i] = -1;
++                }
++            }
++        }
++    }
++#endif
+ }
+ 
+ // multi-pass prefill: 1.0 for pairs whose expert belongs to wave w, 0.0 otherwise; multiplied into
+-- 
+2.55.0
+

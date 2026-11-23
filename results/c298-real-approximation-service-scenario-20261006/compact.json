@@ -1,0 +1,91 @@
+{
+  "status": "GO_TASK_DISJOINT_UNTRAINED_ESTIMATOR_HELDOUT_CAPTURE_ONLY",
+  "classification": "ESTIMADO_CONDITIONAL_DEVELOPMENT_SERVICE_SCENARIO",
+  "cases": {
+    "nominal153": {
+      "miss_recall": 0.750402576489533,
+      "issued_precision": 0.5463071512309496,
+      "predictor_s": 0.035817570000000014,
+      "sensitivity": [
+        {
+          "scale": 0.8,
+          "decode_us": 7321523.226000004,
+          "predictor_complete_us": 35817.57,
+          "staging_peak_bytes": 105753600,
+          "read_completed": 821,
+          "expired_read_completed": 355,
+          "queued_expirations_avoid_read": 32,
+          "scope": "Development-only fixed observed missing-generation stream and compute, original OFF trace; actual predictor timings; false reads use target-layer measured median with service sensitivity. No speculation gain measured; primary cache held fixed; stage lookup/mutex service overhead not yet measured.",
+          "gain_percent": 16.01263382099413
+        },
+        {
+          "scale": 1.0,
+          "decode_us": 8820721.844999999,
+          "predictor_complete_us": 35817.57,
+          "staging_peak_bytes": 105753600,
+          "read_completed": 818,
+          "expired_read_completed": 352,
+          "queued_expirations_avoid_read": 35,
+          "scope": "Development-only fixed observed missing-generation stream and compute, original OFF trace; actual predictor timings; false reads use target-layer measured median with service sensitivity. No speculation gain measured; primary cache held fixed; stage lookup/mutex service overhead not yet measured.",
+          "gain_percent": 15.587341577727228
+        },
+        {
+          "scale": 1.2,
+          "decode_us": 10340981.775999997,
+          "predictor_complete_us": 35817.57,
+          "staging_peak_bytes": 105753600,
+          "read_completed": 813,
+          "expired_read_completed": 347,
+          "queued_expirations_avoid_read": 40,
+          "scope": "Development-only fixed observed missing-generation stream and compute, original OFF trace; actual predictor timings; false reads use target-layer measured median with service sensitivity. No speculation gain measured; primary cache held fixed; stage lookup/mutex service overhead not yet measured.",
+          "gain_percent": 15.110100562980145
+        }
+      ]
+    },
+    "code153": {
+      "miss_recall": 0.7205882352941176,
+      "issued_precision": 0.5384615384615384,
+      "predictor_s": 0.03735068999999994,
+      "sensitivity": [
+        {
+          "scale": 0.8,
+          "decode_us": 7728216.425999994,
+          "predictor_complete_us": 37350.69,
+          "staging_peak_bytes": 105753600,
+          "read_completed": 1003,
+          "expired_read_completed": 415,
+          "queued_expirations_avoid_read": 89,
+          "scope": "Development-only fixed observed missing-generation stream and compute, original OFF trace; actual predictor timings; false reads use target-layer measured median with service sensitivity. No speculation gain measured; primary cache held fixed; stage lookup/mutex service overhead not yet measured.",
+          "gain_percent": 15.376525961159182
+        },
+        {
+          "scale": 1.0,
+          "decode_us": 9318490.921999993,
+          "predictor_complete_us": 37350.69,
+          "staging_peak_bytes": 105753600,
+          "read_completed": 993,
+          "expired_read_completed": 405,
+          "queued_expirations_avoid_read": 99,
+          "scope": "Development-only fixed observed missing-generation stream and compute, original OFF trace; actual predictor timings; false reads use target-layer measured median with service sensitivity. No speculation gain measured; primary cache held fixed; stage lookup/mutex service overhead not yet measured.",
+          "gain_percent": 14.940470393303446
+        },
+        {
+          "scale": 1.2,
+          "decode_us": 10909961.953999987,
+          "predictor_complete_us": 37350.69,
+          "staging_peak_bytes": 105753600,
+          "read_completed": 982,
+          "expired_read_completed": 394,
+          "queued_expirations_avoid_read": 110,
+          "scope": "Development-only fixed observed missing-generation stream and compute, original OFF trace; actual predictor timings; false reads use target-layer measured median with service sensitivity. No speculation gain measured; primary cache held fixed; stage lookup/mutex service overhead not yet measured.",
+          "gain_percent": 14.619457249570663
+        }
+      ]
+    }
+  },
+  "scope": "2developmenttasks, oneOFF/ON characterization each, fixed observed original services and demand stream; no actual anticipatedreads, no utility or promotion",
+  "next_gate": "Task-disjointheldout withactual predictor andmeasuredcompletecosts>=10%netdecode, other>=-5 andobservedresources/bandwidth; lookup/coordination overhead remains unmeasured andcanarymust resolve",
+  "repairs": "Analyzer import/signaturefailures preserved, immutableC299rawreanalyzed; no physicalreplay; reservation3spec/1demand contractfix before result, prior idealoracleC295 unchanged",
+  "effective_source_sha256": "4bbb7113ceec45a6a10602e08f3db762414b763068f33cfb9695e330d160b240",
+  "physical_s": 0
+}

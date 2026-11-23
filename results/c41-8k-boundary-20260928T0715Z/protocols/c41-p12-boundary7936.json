@@ -1,0 +1,76 @@
+{
+  "c18": {
+    "monitor_sha256": "0f7db04350f6a23b96ac0d3062a884c52cdab05a7bd74733c72ea47450f604d1",
+    "thermal_monitor": "CPU95 warning, CPU100/explicit cooling/clock collapse stop"
+  },
+  "c41": {
+    "admission_runner_sha256": "eebb2642ce2c270367854c5575c1ebc5b3fc013af24923d1f9da4ddca3d0b8dc",
+    "arm": "p12",
+    "backend_dirty": "",
+    "backend_tree": "b1e1647729c6e81ae8b2a4fa8119c626e674f6a1",
+    "claim": "one synthetic 8K retrieval boundary with complete output and resource evidence; no full M3/M4 or quality generalization",
+    "expected_official_prompt_tokens": 7936,
+    "grader_sha256": "4e2b44f18851171aa924f594a9dbfe6de11bf446e6137744311643bf34b8d624",
+    "mode": "one-8k-boundary-retrieval",
+    "model_free_validator_status": "PASS_12_GOLD_AND_12_MUTANT",
+    "model_stat": {
+      "ctime_ns": 1790389637807910988,
+      "dev": 53,
+      "inode": 14833675,
+      "mtime_ns": 1790389637795911032,
+      "size_bytes": 63387346208
+    },
+    "monitor_scope": "systemd user scope E18, zero swap",
+    "n_gpu_layers": 12,
+    "parent_c40_decision_sha256": "fdd467a37782db5acd41ceb3b49224bfe4d4f1064a6360f0e0d457052219cb87",
+    "prompt_sha256": "e7f5a25e565791094da160e159c4958c800274c502de149033522cd83e1a70fe",
+    "runner_sha256": "4c16d2a98ecdfc66bf34b0271a5d0e81f93fe62f8d7e96e60511e22535b26de5",
+    "server_runner_sha256": "0f7db04350f6a23b96ac0d3062a884c52cdab05a7bd74733c72ea47450f604d1",
+    "workload_sha256": "682fee2bd9aca770e43196f70daea785f38c75e9f638f851e241f1c979b9b7bc"
+  },
+  "campaign_id": "tesy-c41-8k-boundary-20260928",
+  "expected_request_ids": [
+    "c41-p12-boundary7936"
+  ],
+  "identity": {
+    "backend_sha": "c3759bad92c0e6f71bb936afea9b0a162fb83f76",
+    "binary_sha256": "2c91e0572ad71e4977e3e9134c9f8339256e6481a3f316f6fef9493a370d4822",
+    "config_sha256": "293d1000d9dd820222273b46a3442a0fd9323843a185f75e8da81f7899d15630",
+    "input_sha256": {
+      "c40-decision.json": "fdd467a37782db5acd41ceb3b49224bfe4d4f1064a6360f0e0d457052219cb87",
+      "input.json": "8e43fb991b302e64e0d467e550aaef4535d9bea08c732b3cd39a4e8f2ead7994",
+      "protocol.json": "41201d268e48a7df9909523e7edc8a885369aed506f71f38fd797e75fbaa021b"
+    },
+    "library_sha256": {
+      "build-c35-gcc15/bin/libggml-base.so.0.15.3": "6666b1fa65172a992429c516864dd1fb44a2ae4370ec2d044ed684d0b33d6f9e",
+      "build-c35-gcc15/bin/libggml-cpu.so.0.15.3": "b2ed71c16ad669536840c63a999305a3c6ae0e2ab278e9a891c1d0fab96b8a2b",
+      "build-c35-gcc15/bin/libggml-cuda.so.0.15.3": "4d4ef9068b1057abf9e4a73a872f48703723d30591ebafb962bfb0612df70dcc",
+      "build-c35-gcc15/bin/libggml.so.0.15.3": "45bd5d9edee4c8a3eeec23166478ef7ec495dc55785e3942aa72afddc0125417",
+      "build-c35-gcc15/bin/libllama-common.so.0.0.2": "e64791fe0c072c3710c2f9ed92f1e3d9487f2c34f626086b196f60077bd1d374",
+      "build-c35-gcc15/bin/libllama-server-impl.so": "3cbba6ad27138ef34adf0a2c8e8f5b204ea7c73111e2bef4acc8288cef5f6e05",
+      "build-c35-gcc15/bin/libllama.so.0.0.2": "4ba0477592acb4a8808c259d836aea42f20aeef88ad7c3b4ea41572dae8418c6",
+      "build-c35-gcc15/bin/libmtmd.so.0.0.2": "48efbf1711ec3b170d8651ab1149f9fe7549972d2e420fa40f2ecae39670a253"
+    },
+    "model_id": "target120b",
+    "model_sha256": "582bd40f6886200101f4c4ed9f25f3fe80cc14c86e9e2b37746cd8904a0c622d",
+    "workload_sha256": "8e43fb991b302e64e0d467e550aaef4535d9bea08c732b3cd39a4e8f2ead7994"
+  },
+  "limits": {
+    "boundary_s": 2,
+    "cpu_max_c": 100,
+    "gpu_max_c": 80,
+    "gpu_max_mib": 6500,
+    "max_gap_s": 3,
+    "memory_max_bytes": 17716740096,
+    "min_active_s": 0,
+    "min_decode_s": 0,
+    "min_decode_tok_s": 0,
+    "min_elapsed_s": 0,
+    "min_last_half_tok_s": 0,
+    "min_mem_available_bytes": 6442450944,
+    "nvme_max_c": 70,
+    "rss_max_bytes": 17179869184
+  },
+  "protocol_id": "c41-p12-boundary7936-v1",
+  "schema_version": "c2-protocol-v1"
+}

@@ -1,0 +1,7 @@
+# C164 heldout residency gate
+
+Both frozen holdout captures validate. Autonomous decode replay matches1692remaps/6768demands per case and every final state vector/counter/queue/owned task. SQL1235misses/821barriers; energy1483misses/993barriers. Counterfactual CPU52/GPU44 is rejected by prospectively frozen gate: conditioned decode credit SQL7.1474%, energy7.1089%, below8% in both. No retuning, capacity patch, numeric/timing screen or promotion performed. Development9.233% did not generalize to these two cases.
+
+This rejects this investment under the defined fixed-route/44seed/extra-empty-CPU-slots/original-service scenario. It is not an optimistic bound eliminating warm52, equal-memory quotas, static/adaptive residency generally, Tesy or MoE. Future52prefill state/geometry/services were not identifiable from44 and were not fabricated. Prefill/waves replay and a C142server bridge remain NOT_RUN. Perlayer/call waits and READ/SET/LOAD unions are published separately with window intersections; they must not be summed as independent walltime.
+
+Next authorized branch: a bounded upstream mmap phase/observer diagnostic. The old140s timeout does not distinguish model forward from canonical verification/readback/capture. Pin8019 plus existing no-prefetch loader patch remains the target; no weights conversion or alternate backend grid. Slot40/44 previous qualified scopes preserved, M3partial/M4NOT_MET. Local only.

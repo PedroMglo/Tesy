@@ -1,0 +1,20 @@
+{
+  "pin": "8019dc563b1ecbae6b161a70c3a1359f1b206c1e",
+  "C144_nine_file_hash_checks": {
+    "common/arg.cpp": true,
+    "common/chat.cpp": true,
+    "ggml/src/ggml-cpu/arch/x86/quants.c": true,
+    "ggml/src/ggml-cpu/ggml-cpu.c": true,
+    "ggml/src/ggml-cuda/mmq-config-ampere.cuh": true,
+    "src/llama-model-loader.cpp": true,
+    "src/llama-model.cpp": true,
+    "src/models/openai-moe.cpp": true,
+    "tools/server/server-context.cpp": true
+  },
+  "source_root": "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/backends/c148-upstream-mmap",
+  "patch_sha256": "bc57a67d571c83ccf3c4a4268b5cb0d6bc071ea3daf78c6f4ac99ad9bb3333bb",
+  "delta": "only include cstdlib and environment presence controls init_mappings prefetch argument",
+  "semantics": "unset default true; present false. prefetch_size0 disables MAP_POPULATE and WILLNEED. Does not change router/tensors/graph/KV",
+  "host_register": "GGML_CUDA_REGISTER_HOST must be absent; presence checked CUDA source lines4922/4945",
+  "build_status": "PREPARED_NOT_BUILT"
+}

@@ -1,0 +1,264 @@
+{
+  "run_id": "task20b-stock-tune01",
+  "started_utc": "2026-09-26T11:39:49.551375+00:00",
+  "model": "stock20b",
+  "artifact": "/home/pmglo/.local/share/tesy/models/gpt-oss-20b/gpt-oss-20b-mxfp4.gguf",
+  "artifact_revision": "a7443ebb00ba299cbbbf7e9b69487670447ae8c0",
+  "artifact_sha256_previously_verified": "52f57ab7d3df3ba9173827c1c6832e73375553a846f3e32b49f1ae2daad688d4",
+  "artifact_size_bytes": 12109564352,
+  "backend": "stock",
+  "backend_sha": "4b1a27fa0eb875bbca4f6cfe936e3d65adc685c0",
+  "binary_sha256": "74f0c9015aea0ba44159c616800d4d09b62ff61a9726b786579c05b0219d8efa",
+  "backend_libraries_sha256": {
+    "build-gcc15/bin/libllama-server-impl.so": "650912e7a4a8b5d5dd9fe9ac821b8cc51298219a21dd2b049d3e067ea120ca6c",
+    "build-gcc15/bin/libllama-common.so.0.5.0": "bf3ae6cdf9d2a639d4316c1c1835e94b86ebc89a5b7d645dafcdcbfbf76659df",
+    "build-gcc15/bin/libmtmd.so.0.5.0": "e91440344ca2d98a39e12603f7369a67cb8723f149ce247f22cbcb15779bfd2c",
+    "build-gcc15/bin/libllama.so.0.5.0": "f396b03cf69740dcde9d76b355ca39786406091b8fde1c669d2d2fdec2b0002b",
+    "build-gcc15/bin/libggml.so.0.25.3": "1594c6f8cff69f406587a3d815172560f0bcea5cdb5699d294ee84e1cbcc05b6",
+    "build-gcc15/bin/libggml-cpu.so.0.25.3": "0c3a606103a100bd42ce42e3679256cd366eeb72863cf8b61eb2b615d34196f7",
+    "build-gcc15/bin/libggml-cuda.so.0.25.3": "a9b0a6c60fba088b89bdbc3970a33ed4ebe263698699d571283486b0b5a72410",
+    "build-gcc15/bin/libggml-base.so.0.25.3": "16a2f9e854b7398e3d6ea792b2f4854a2050c0c87202a779475c8c1de004192b"
+  },
+  "server_command": [
+    "/home/pmglo/Projects/Tesy/tesy-scale-lab/backends/stock/build-gcc15/bin/llama-server",
+    "-m",
+    "/home/pmglo/.local/share/tesy/models/gpt-oss-20b/gpt-oss-20b-mxfp4.gguf",
+    "--host",
+    "127.0.0.1",
+    "--port",
+    "18367",
+    "-ngl",
+    "14",
+    "-c",
+    "4096",
+    "-np",
+    "1",
+    "-b",
+    "256",
+    "-ub",
+    "32",
+    "-t",
+    "8",
+    "-tb",
+    "8",
+    "--no-warmup",
+    "--no-cache-prompt",
+    "--reasoning-effort",
+    "medium",
+    "-lv",
+    "3",
+    "--load-mode",
+    "dio",
+    "--lazy-mode",
+    "off"
+  ],
+  "explicit_env": {},
+  "workload": "workloads/task_eval.jsonl",
+  "workload_sha256": "87ad7c4f1ccc60e3cbd4f1507a01172007e6a802e68bc7057b0fba5ee039f471",
+  "split": "tune",
+  "task_ids": [
+    "tune-code-01",
+    "tune-quant-01"
+  ],
+  "request_policy": {
+    "temperature": 0,
+    "seed": 42,
+    "max_tokens": 512,
+    "reasoning_effort": "medium",
+    "attempts": 1,
+    "prompt_cache": false,
+    "per_request_timeout_s": 360
+  },
+  "cgroup_start": {
+    "path": "/user.slice/user-1000.slice/user@1000.service/app.slice/run-p173536-i134629.scope",
+    "memory_max": 19327352832,
+    "swap_max": 0,
+    "memory_current": 15073280,
+    "swap_current": 0,
+    "memory_stat": {
+      "anon": 13848576,
+      "file": 212992,
+      "kernel": 192512,
+      "shmem": 0,
+      "file_mapped": 143360
+    },
+    "events": {
+      "low": 0,
+      "high": 0,
+      "max": 0,
+      "oom": 0,
+      "oom_kill": 0,
+      "oom_group_kill": 0,
+      "sock_throttled": 0
+    }
+  },
+  "limits": {
+    "memory_max_bytes": 19327352832,
+    "swap_max_bytes": 0,
+    "rss_gib": 17,
+    "gpu_used_mib": 7000,
+    "min_mem_available_gib": 6,
+    "total_timeout_s": 3600
+  },
+  "samples_path": "/home/pmglo/Projects/Tesy/tesy-scale-lab/results/task20b-stock-tune01.samples.jsonl",
+  "publication": "local only; stdout/stderr/samples untracked",
+  "results": [
+    {
+      "task_id": "tune-code-01",
+      "category": "code",
+      "elapsed_s": 4.219,
+      "finish_reason": "stop",
+      "usage": {
+        "completion_tokens": 156,
+        "prompt_tokens": 104,
+        "total_tokens": 260,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        }
+      },
+      "timings": {
+        "cache_n": 0,
+        "prompt_n": 104,
+        "prompt_ms": 1039.493,
+        "prompt_per_token_ms": 9.995125,
+        "prompt_per_second": 100.0487737772164,
+        "predicted_n": 156,
+        "predicted_ms": 3175.726,
+        "predicted_per_token_ms": 20.48855483870968,
+        "predicted_per_second": 48.80773719143276
+      },
+      "message": {
+        "role": "assistant",
+        "content": "def is_palindrome(s):\n    cleaned = ''.join(ch.lower() for ch in s if ch.isalnum())\n    return cleaned == cleaned[::-1]",
+        "reasoning_content": "We need to write a Python 3 function is_palindrome(s) that ignores case and non-alphanumeric characters. Return only code. So just provide the function definition. Should handle string input. Use str.isalnum to filter. Convert to lower. Then check equality with reverse. Provide code only. Probably include import re? But can just use comprehension. Provide function. Let's produce:\n\ndef is_palindrome(s):\n    cleaned = ''.join(ch.lower() for ch in s if ch.isalnum())\n    return cleaned == cleaned[::-1]\n\nReturn only code."
+      }
+    },
+    {
+      "task_id": "tune-quant-01",
+      "category": "quantitative",
+      "elapsed_s": 3.684,
+      "finish_reason": "stop",
+      "usage": {
+        "completion_tokens": 123,
+        "prompt_tokens": 111,
+        "total_tokens": 234,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        }
+      },
+      "timings": {
+        "cache_n": 0,
+        "prompt_n": 111,
+        "prompt_ms": 1163.295,
+        "prompt_per_token_ms": 10.480135135135136,
+        "prompt_per_second": 95.41861694583058,
+        "predicted_n": 123,
+        "predicted_ms": 2512.666,
+        "predicted_per_token_ms": 20.595622950819674,
+        "predicted_per_second": 48.55400598408224
+      },
+      "message": {
+        "role": "assistant",
+        "content": "The probability of drawing two red balls without replacement is  \n\n\\[\nP(\\text{both red})=\\frac{3}{5}\\times\\frac{2}{4}=\\frac{6}{20}=\\boxed{\\frac{3}{10}}.\n\\]",
+        "reasoning_content": "We need probability of drawing two red balls from 3 red, 2 blue, total 5. Without replacement. Probability = (3/5)*(2/4)= (3*2)/(5*4)=6/20=3/10. Reduced fraction 3/10."
+      }
+    }
+  ],
+  "ready_elapsed_s": 6.793,
+  "server_model_id": "/home/pmglo/.local/share/tesy/models/gpt-oss-20b/gpt-oss-20b-mxfp4.gguf",
+  "first_text_smoke": {
+    "first_text_chunk_s": 0.986,
+    "first_reasoning_chunk_s": 0.986,
+    "first_final_chunk_s": 1.58,
+    "stream_elapsed_s": 1.6,
+    "text_chunk_count": 24,
+    "interpretation": "client first received text; chunks are not token intervals"
+  },
+  "ended_utc": "2026-09-26T11:40:06.414399+00:00",
+  "elapsed_s": 16.863,
+  "stop_reasons": [],
+  "returncode": 0,
+  "maxima": {
+    "rss_bytes": 6468247552,
+    "cgroup_memory_bytes": 9107779584,
+    "swap_bytes": 0,
+    "gpu_used_mib": 6578.0,
+    "gpu_temperature_c": 62.0,
+    "cpu_tctl_c": 81.0,
+    "nvme_composite_c": 48.85
+  },
+  "last_sample": {
+    "elapsed_s": 16.089,
+    "proc": {
+      "VmHWM": 6748233728,
+      "VmRSS": 6468247552,
+      "VmSwap": 0,
+      "rchar": 12124582695,
+      "syscr": 7124,
+      "read_bytes": 9665273856
+    },
+    "cgroup": {
+      "path": "/user.slice/user-1000.slice/user@1000.service/app.slice/run-p173536-i134629.scope",
+      "memory_max": 19327352832,
+      "swap_max": 0,
+      "memory_current": 9106624512,
+      "swap_current": 0,
+      "memory_stat": {
+        "anon": 577642496,
+        "file": 8494071808,
+        "kernel": 32641024,
+        "shmem": 5611716608,
+        "file_mapped": 5620465664
+      },
+      "events": {
+        "low": 0,
+        "high": 0,
+        "max": 0,
+        "oom": 0,
+        "oom_kill": 0,
+        "oom_group_kill": 0,
+        "sock_throttled": 0
+      }
+    },
+    "gpu": {
+      "used_mib": 6578.0,
+      "temperature_c": 62.0,
+      "power_w": 44.21
+    },
+    "thermal": {
+      "cpu_tctl_c": 81.0,
+      "nvme_composite_c": 42.85
+    },
+    "mem_available_bytes": 21620555776,
+    "model_fds": {
+      "open": 0,
+      "direct": 0,
+      "buffered": 0
+    }
+  },
+  "cgroup_end": {
+    "path": "/user.slice/user-1000.slice/user@1000.service/app.slice/run-p173536-i134629.scope",
+    "memory_max": 19327352832,
+    "swap_max": 0,
+    "memory_current": 2902474752,
+    "swap_current": 0,
+    "memory_stat": {
+      "anon": 14467072,
+      "file": 2882359296,
+      "kernel": 2523136,
+      "shmem": 0,
+      "file_mapped": 229376
+    },
+    "events": {
+      "low": 0,
+      "high": 0,
+      "max": 0,
+      "oom": 0,
+      "oom_kill": 0,
+      "oom_group_kill": 0,
+      "sock_throttled": 0
+    }
+  },
+  "stdout_path": "/home/pmglo/Projects/Tesy/tesy-scale-lab/results/task20b-stock-tune01.stdout",
+  "stderr_path": "/home/pmglo/Projects/Tesy/tesy-scale-lab/results/task20b-stock-tune01.stderr"
+}

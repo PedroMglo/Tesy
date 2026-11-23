@@ -1,0 +1,32 @@
+{
+  "checks": [
+    {
+      "command": [
+        "/tmp/c57_broadcast_old",
+        "--expect-bug"
+      ],
+      "executable_sha256": "688ab29f700e186d76cfbf6ccc20201a94d96442eaabf9f24af77a5d2ccf9037",
+      "returncode": 0,
+      "stderr": "",
+      "stdout": "C57_OPERATOR type=mxfp4 ne11=1 poison=0 pattern=0 active_equal=0 active_nonfinite=0\nC57_OPERATOR type=mxfp4 ne11=1 poison=127 pattern=0 active_equal=0 active_nonfinite=1\nC57_OPERATOR type=mxfp4 ne11=4 poison=0 pattern=0 active_equal=1 active_nonfinite=0\nC57_OPERATOR type=mxfp4 ne11=1 poison=0 pattern=1 active_equal=1 active_nonfinite=0\nC57_OPERATOR type=mxfp4 ne11=1 poison=127 pattern=1 active_equal=1 active_nonfinite=0\nC57_OPERATOR type=mxfp4 ne11=1 poison=0 pattern=2 active_equal=1 active_nonfinite=0\nC57_OPERATOR type=mxfp4 ne11=1 poison=127 pattern=2 active_equal=1 active_nonfinite=0\nC57_OPERATOR type=mxfp4 ne11=1 poison=0 pattern=3 active_equal=1 active_nonfinite=0\nC57_OPERATOR type=mxfp4 ne11=1 poison=127 pattern=3 active_equal=1 active_nonfinite=0\nC57_OPERATOR type=f16 ne11=1 poison=0 pattern=0 active_equal=0 active_nonfinite=0\nC57_OPERATOR type=f16 ne11=1 poison=127 pattern=0 active_equal=0 active_nonfinite=1\nC57_OPERATOR type=f16 ne11=4 poison=0 pattern=0 active_equal=1 active_nonfinite=0\nC57_OPERATOR type=f16 ne11=1 poison=0 pattern=1 active_equal=1 active_nonfinite=0\nC57_OPERATOR type=f16 ne11=1 poison=127 pattern=1 active_equal=1 active_nonfinite=0\nC57_OPERATOR type=f16 ne11=1 poison=0 pattern=2 active_equal=1 active_nonfinite=0\nC57_OPERATOR type=f16 ne11=1 poison=127 pattern=2 active_equal=1 active_nonfinite=0\nC57_OPERATOR type=f16 ne11=1 poison=0 pattern=3 active_equal=1 active_nonfinite=0\nC57_OPERATOR type=f16 ne11=1 poison=127 pattern=3 active_equal=1 active_nonfinite=0\nC57_OPERATOR type=f32 ne11=1 poison=0 pattern=0 active_equal=1 active_nonfinite=0\nC57_OPERATOR type=f32 ne11=1 poison=127 pattern=0 active_equal=1 active_nonfinite=0\nC57_OPERATOR type=f32 ne11=4 poison=0 pattern=0 active_equal=1 active_nonfinite=0\nC57_OPERATOR type=f32 ne11=1 poison=0 pattern=1 active_equal=1 active_nonfinite=0\nC57_OPERATOR type=f32 ne11=1 poison=127 pattern=1 active_equal=1 active_nonfinite=0\nC57_OPERATOR type=f32 ne11=1 poison=0 pattern=2 active_equal=1 active_nonfinite=0\nC57_OPERATOR type=f32 ne11=1 poison=127 pattern=2 active_equal=1 active_nonfinite=0\nC57_OPERATOR type=f32 ne11=1 poison=0 pattern=3 active_equal=1 active_nonfinite=0\nC57_OPERATOR type=f32 ne11=1 poison=127 pattern=3 active_equal=1 active_nonfinite=0\nC57_BROADCAST_BUG_REPRODUCED_MODEL_FREE\n"
+    },
+    {
+      "command": [
+        "/tmp/c57_broadcast_fixed",
+        "--expect-fixed"
+      ],
+      "executable_sha256": "03855429458c443a0359b3f19b7ae7852a044c2a5e9c6513a68ea2f1316a306a",
+      "returncode": 0,
+      "stderr": "",
+      "stdout": "C57_OPERATOR type=mxfp4 ne11=1 poison=0 pattern=0 active_equal=1 active_nonfinite=0\nC57_OPERATOR type=mxfp4 ne11=1 poison=127 pattern=0 active_equal=1 active_nonfinite=0\nC57_OPERATOR type=mxfp4 ne11=4 poison=0 pattern=0 active_equal=1 active_nonfinite=0\nC57_OPERATOR type=mxfp4 ne11=1 poison=0 pattern=1 active_equal=1 active_nonfinite=0\nC57_OPERATOR type=mxfp4 ne11=1 poison=127 pattern=1 active_equal=1 active_nonfinite=0\nC57_OPERATOR type=mxfp4 ne11=1 poison=0 pattern=2 active_equal=1 active_nonfinite=0\nC57_OPERATOR type=mxfp4 ne11=1 poison=127 pattern=2 active_equal=1 active_nonfinite=0\nC57_OPERATOR type=mxfp4 ne11=1 poison=0 pattern=3 active_equal=1 active_nonfinite=0\nC57_OPERATOR type=mxfp4 ne11=1 poison=127 pattern=3 active_equal=1 active_nonfinite=0\nC57_OPERATOR type=f16 ne11=1 poison=0 pattern=0 active_equal=1 active_nonfinite=0\nC57_OPERATOR type=f16 ne11=1 poison=127 pattern=0 active_equal=1 active_nonfinite=0\nC57_OPERATOR type=f16 ne11=4 poison=0 pattern=0 active_equal=1 active_nonfinite=0\nC57_OPERATOR type=f16 ne11=1 poison=0 pattern=1 active_equal=1 active_nonfinite=0\nC57_OPERATOR type=f16 ne11=1 poison=127 pattern=1 active_equal=1 active_nonfinite=0\nC57_OPERATOR type=f16 ne11=1 poison=0 pattern=2 active_equal=1 active_nonfinite=0\nC57_OPERATOR type=f16 ne11=1 poison=127 pattern=2 active_equal=1 active_nonfinite=0\nC57_OPERATOR type=f16 ne11=1 poison=0 pattern=3 active_equal=1 active_nonfinite=0\nC57_OPERATOR type=f16 ne11=1 poison=127 pattern=3 active_equal=1 active_nonfinite=0\nC57_OPERATOR type=f32 ne11=1 poison=0 pattern=0 active_equal=1 active_nonfinite=0\nC57_OPERATOR type=f32 ne11=1 poison=127 pattern=0 active_equal=1 active_nonfinite=0\nC57_OPERATOR type=f32 ne11=4 poison=0 pattern=0 active_equal=1 active_nonfinite=0\nC57_OPERATOR type=f32 ne11=1 poison=0 pattern=1 active_equal=1 active_nonfinite=0\nC57_OPERATOR type=f32 ne11=1 poison=127 pattern=1 active_equal=1 active_nonfinite=0\nC57_OPERATOR type=f32 ne11=1 poison=0 pattern=2 active_equal=1 active_nonfinite=0\nC57_OPERATOR type=f32 ne11=1 poison=127 pattern=2 active_equal=1 active_nonfinite=0\nC57_OPERATOR type=f32 ne11=1 poison=0 pattern=3 active_equal=1 active_nonfinite=0\nC57_OPERATOR type=f32 ne11=1 poison=127 pattern=3 active_equal=1 active_nonfinite=0\nC57_BROADCAST_REPAIR_PASS_MODEL_FREE\n"
+    }
+  ],
+  "claim_limit": "operator graph only; full-model fidelity and timing NOT_RUN",
+  "model_loaded": false,
+  "old_backend_commit": "0bc5c75c273abaa34e51d0af932a96969665c3a3",
+  "repaired_backend_commit": "aac3bbde35575044d290798a120cde038f85b670",
+  "schema": "c57-model-free-check-v1",
+  "status": "REPRODUZIDO_MODEL_FREE",
+  "test_source_sha256": "7f79e0cbc86327bd6babe21d6759582ee51328fe8c9b553501873f587365bc89",
+  "utc": "2026-09-28T14:36:38.625236+00:00"
+}

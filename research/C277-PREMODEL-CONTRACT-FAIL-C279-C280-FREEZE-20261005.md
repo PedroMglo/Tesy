@@ -1,0 +1,7 @@
+# C277 — premodel contract FAIL; C279/C280 prospective correction
+
+C277 failed before inventory collection/model Popen: `inventory_before_spawn` requires `start_inventory` schema c120-start-inventory-v1, duration60, max_age3 and policy SHA. The new adapter omitted that contract when selecting fields from C271. `resources.start.mode=CAUSAL_AB_START` is valid and was not the cause. No model weights/forward/output/timing observed. Family envelope2.287134209s is charged and immutable; first attempt/raw evidence retained. C278 is NOT_RUN_PREMODEL_CONTRACT_REPAIR, no physical attempt.
+
+REPRODUZIDO_MODEL_FREE: exact omission reproduces at the real consumer before collect; regression added. Real entrypoint inventory, guard freshness, policy/cap and c118 tests pass. No backend, reader, numeric, resource or timing change. Corrected protocols C279/C280 supply existing start_inventory contract and new roots/IDs, preserving all workload/deadlines/cap/guards/gates. T/E reserve/mode and causal start mode unchanged. Repair has 180s conservative estimated preparation charge inside active wall, no extra budget. The N-family and full two-case cost family remain admitted with confirmation/closure reserves. Numeric client/qualified library hashes unchanged.
+
+Next: C279 full33 T/E fidelity, then C280 complete R0/T/E cost family. No retry of valid negative performance; this correction addresses a reproducible premodel mechanical omission.

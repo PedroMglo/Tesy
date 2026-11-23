@@ -1,0 +1,30 @@
+{
+  "checks": [
+    {
+      "argv": [
+        "/tmp/c57_ffn_old",
+        "--expect-bug"
+      ],
+      "binary_sha256": "857781f30fd44a85803da14dae184d17a4cd345bbbe787117f84a9aececcf481",
+      "returncode": 0,
+      "stderr": "",
+      "stdout": "C57_FFN type=mxfp4 poison=0 equal=0 finite=1 first=0.0714298 control=0.78087\nC57_FFN type=mxfp4 poison=127 equal=0 finite=0 first=nan control=0.78087\nC57_FFN type=f16 poison=0 equal=0 finite=1 first=0.0735123 control=0.901508\nC57_FFN type=f16 poison=127 equal=0 finite=0 first=nan control=0.901508\nC57_FFN type=f32 poison=0 equal=1 finite=1 first=0.901947 control=0.901947\nC57_FFN type=f32 poison=127 equal=1 finite=1 first=0.901947 control=0.901947\nC57_FFN_BUG_REPRODUCED_MODEL_FREE\n"
+    },
+    {
+      "argv": [
+        "/tmp/c57_ffn_fixed",
+        "--expect-fixed"
+      ],
+      "binary_sha256": "b457b9a78741061c03a6ad3f812b831f1a1d7aef24ce5bd1705f4955540b5af2",
+      "returncode": 0,
+      "stderr": "",
+      "stdout": "C57_FFN type=mxfp4 poison=0 equal=1 finite=1 first=0.78087 control=0.78087\nC57_FFN type=mxfp4 poison=127 equal=1 finite=1 first=0.78087 control=0.78087\nC57_FFN type=f16 poison=0 equal=1 finite=1 first=0.901508 control=0.901508\nC57_FFN type=f16 poison=127 equal=1 finite=1 first=0.901508 control=0.901508\nC57_FFN type=f32 poison=0 equal=1 finite=1 first=0.901947 control=0.901947\nC57_FFN type=f32 poison=127 equal=1 finite=1 first=0.901947 control=0.901947\nC57_FFN_REPAIR_PASS_MODEL_FREE\n"
+    }
+  ],
+  "full_model_fidelity": "NOT_RUN",
+  "measurement_source_commit": "800c5f2f4032c193ade3dba76600d812968b1577",
+  "model_loaded": false,
+  "old_C48_status": "FAIL_SAME_PROFILE_FIDELITY_UNCHANGED",
+  "schema": "c57b-model-free-tests-v1",
+  "status": "REPRODUZIDO_MODEL_FREE"
+}

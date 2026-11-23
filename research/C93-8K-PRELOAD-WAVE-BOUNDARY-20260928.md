@@ -1,0 +1,7 @@
+# C93: 8K preload-ON wave-skip boundary
+
+- **Objective/base:** qualify C75 parked-pair wave skip in the C35-style 8K P12 preload-ON unified-KV profile. Source `29404e8356390ac991150f5050b2bbb9133c17f0`, model-free stat repair `f7e10acb6af25fea6f2f4d97907e5bec98ab2897`, measurement `a891cfb2183e3c1a6c3fe4c9bdf43edc2f9eb9da`. C80 capture binary/source hashes and C90 resource snapshot frozen.
+- **Evidence:** OFF and ON completed under E18 with zero workload swap/stop. Both had 250 numeric states, two masked positions, five full finite logit vectors, complete 8K schema and 996 byte/lifetime witnesses. Same-profile comparison found zero mismatch across 1500 active core stages, wave masks and all five full logits; ON counted 80,800 parked sentinels. **MEDIDO_NO_TARGET**, exact within this capture.
+- **Resources:** OFF/ON cgroup peaks 15,509,643,264/13,562,593,280 B; GPU 5786 MiB both, CPU maxima 91/69.375 °C. No resource stop. The capture's 62.068/44.865 s include observer overhead and uncontrolled page cache; they do not rank production performance.
+- **Alternative/limit:** canonical resident 8K FFN reference and fresh ON repetition remain **NOT_RUN**; independent attention/KV, server prefix reuse, quality and M4 are untested here. C76b 4K result cannot substitute for this profile's reference.
+- **Decision:** preserve C93 observed same-profile PASS and all earlier FAILs. Next discriminating gate is same-build resident canonical FFN on C93 activations, then a fresh ON repeat before server timing.

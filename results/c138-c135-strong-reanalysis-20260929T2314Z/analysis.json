@@ -1,0 +1,7840 @@
+{
+  "authority": "MEDIDO_NO_TARGET for trace; SOURCE_AUDITED for backend; ESTIMADO conditional simulations",
+  "conditional_cold_simulations": {
+    "cpu44_gpu40": {
+      "expert_copy_bytes_cpu": 14541120000,
+      "expert_copy_bytes_gpu": 5816448000,
+      "policies": {
+        "lru": {
+          "loads_by_tier": {
+            "CPU": 1405,
+            "CUDA0": 577
+          },
+          "total_loads": 1982
+        },
+        "offline_min_load_count": {
+          "loads_by_tier": {
+            "CPU": 1296,
+            "CUDA0": 538
+          },
+          "total_loads": 1834
+        }
+      },
+      "quota_cpu": 44,
+      "quota_gpu": 40
+    },
+    "cpu46_gpu40": {
+      "expert_copy_bytes_cpu": 15202080000,
+      "expert_copy_bytes_gpu": 5816448000,
+      "policies": {
+        "lru": {
+          "loads_by_tier": {
+            "CPU": 1375,
+            "CUDA0": 577
+          },
+          "total_loads": 1952
+        },
+        "offline_min_load_count": {
+          "loads_by_tier": {
+            "CPU": 1296,
+            "CUDA0": 538
+          },
+          "total_loads": 1834
+        }
+      },
+      "quota_cpu": 46,
+      "quota_gpu": 40
+    },
+    "uniform40": {
+      "expert_copy_bytes_cpu": 13219200000,
+      "expert_copy_bytes_gpu": 5816448000,
+      "policies": {
+        "lru": {
+          "loads_by_tier": {
+            "CPU": 1451,
+            "CUDA0": 577
+          },
+          "total_loads": 2028
+        },
+        "offline_min_load_count": {
+          "loads_by_tier": {
+            "CPU": 1297,
+            "CUDA0": 538
+          },
+          "total_loads": 1835
+        }
+      },
+      "quota_cpu": 40,
+      "quota_gpu": 40
+    },
+    "uniform44": {
+      "expert_copy_bytes_cpu": 14541120000,
+      "expert_copy_bytes_gpu": 6398092800,
+      "policies": {
+        "lru": {
+          "loads_by_tier": {
+            "CPU": 1405,
+            "CUDA0": 561
+          },
+          "total_loads": 1966
+        },
+        "offline_min_load_count": {
+          "loads_by_tier": {
+            "CPU": 1296,
+            "CUDA0": 538
+          },
+          "total_loads": 1834
+        }
+      },
+      "quota_cpu": 44,
+      "quota_gpu": 44
+    }
+  },
+  "decode_loads_by_tier": {
+    "CPU": 775,
+    "CUDA0": 302
+  },
+  "decode_routing": {
+    "calls": 46,
+    "demands": 6624,
+    "layers": 36,
+    "sha256": "eb332588da65f4c8267b3255ead4218cc92064db75660738a028bdf5dc2b2c90"
+  },
+  "intra_call_evictions_of_later_demand": [
+    {
+      "call": 2,
+      "evict_seq": 1421,
+      "later_demand_seq": 8317,
+      "later_state": 2,
+      "layer": 0,
+      "victim": 98,
+      "wait_barriers_in_group": 6
+    },
+    {
+      "call": 2,
+      "evict_seq": 1429,
+      "later_demand_seq": 8318,
+      "later_state": 2,
+      "layer": 0,
+      "victim": 57,
+      "wait_barriers_in_group": 6
+    },
+    {
+      "call": 2,
+      "evict_seq": 8320,
+      "later_demand_seq": 9717,
+      "later_state": 2,
+      "layer": 0,
+      "victim": 49,
+      "wait_barriers_in_group": 6
+    },
+    {
+      "call": 2,
+      "evict_seq": 17298,
+      "later_demand_seq": 17480,
+      "later_state": 2,
+      "layer": 0,
+      "victim": 126,
+      "wait_barriers_in_group": 6
+    },
+    {
+      "call": 2,
+      "evict_seq": 17302,
+      "later_demand_seq": 17481,
+      "later_state": 1,
+      "layer": 0,
+      "victim": 120,
+      "wait_barriers_in_group": 6
+    },
+    {
+      "call": 2,
+      "evict_seq": 17306,
+      "later_demand_seq": 17484,
+      "later_state": 1,
+      "layer": 0,
+      "victim": 68,
+      "wait_barriers_in_group": 6
+    },
+    {
+      "call": 2,
+      "evict_seq": 17310,
+      "later_demand_seq": 17487,
+      "later_state": 1,
+      "layer": 0,
+      "victim": 37,
+      "wait_barriers_in_group": 6
+    },
+    {
+      "call": 2,
+      "evict_seq": 17314,
+      "later_demand_seq": 17489,
+      "later_state": 1,
+      "layer": 0,
+      "victim": 2,
+      "wait_barriers_in_group": 6
+    },
+    {
+      "call": 2,
+      "evict_seq": 17318,
+      "later_demand_seq": 17491,
+      "later_state": 1,
+      "layer": 0,
+      "victim": 102,
+      "wait_barriers_in_group": 6
+    },
+    {
+      "call": 2,
+      "evict_seq": 17322,
+      "later_demand_seq": 17494,
+      "later_state": 1,
+      "layer": 0,
+      "victim": 70,
+      "wait_barriers_in_group": 6
+    },
+    {
+      "call": 2,
+      "evict_seq": 17326,
+      "later_demand_seq": 17497,
+      "later_state": 1,
+      "layer": 0,
+      "victim": 43,
+      "wait_barriers_in_group": 6
+    },
+    {
+      "call": 2,
+      "evict_seq": 17330,
+      "later_demand_seq": 17499,
+      "later_state": 1,
+      "layer": 0,
+      "victim": 9,
+      "wait_barriers_in_group": 6
+    },
+    {
+      "call": 2,
+      "evict_seq": 17334,
+      "later_demand_seq": 17501,
+      "later_state": 1,
+      "layer": 0,
+      "victim": 86,
+      "wait_barriers_in_group": 6
+    },
+    {
+      "call": 2,
+      "evict_seq": 17338,
+      "later_demand_seq": 17503,
+      "later_state": 1,
+      "layer": 0,
+      "victim": 53,
+      "wait_barriers_in_group": 6
+    },
+    {
+      "call": 2,
+      "evict_seq": 17342,
+      "later_demand_seq": 17505,
+      "later_state": 1,
+      "layer": 0,
+      "victim": 106,
+      "wait_barriers_in_group": 6
+    },
+    {
+      "call": 2,
+      "evict_seq": 17346,
+      "later_demand_seq": 17507,
+      "later_state": 1,
+      "layer": 0,
+      "victim": 101,
+      "wait_barriers_in_group": 6
+    },
+    {
+      "call": 2,
+      "evict_seq": 17350,
+      "later_demand_seq": 17509,
+      "later_state": 1,
+      "layer": 0,
+      "victim": 4,
+      "wait_barriers_in_group": 6
+    },
+    {
+      "call": 2,
+      "evict_seq": 17511,
+      "later_demand_seq": 17798,
+      "later_state": 2,
+      "layer": 0,
+      "victim": 116,
+      "wait_barriers_in_group": 6
+    },
+    {
+      "call": 2,
+      "evict_seq": 17515,
+      "later_demand_seq": 17800,
+      "later_state": 2,
+      "layer": 0,
+      "victim": 39,
+      "wait_barriers_in_group": 6
+    },
+    {
+      "call": 2,
+      "evict_seq": 17519,
+      "later_demand_seq": 17801,
+      "later_state": 1,
+      "layer": 0,
+      "victim": 93,
+      "wait_barriers_in_group": 6
+    },
+    {
+      "call": 2,
+      "evict_seq": 17523,
+      "later_demand_seq": 17803,
+      "later_state": 1,
+      "layer": 0,
+      "victim": 109,
+      "wait_barriers_in_group": 6
+    },
+    {
+      "call": 2,
+      "evict_seq": 17527,
+      "later_demand_seq": 17805,
+      "later_state": 1,
+      "layer": 0,
+      "victim": 50,
+      "wait_barriers_in_group": 6
+    },
+    {
+      "call": 2,
+      "evict_seq": 17531,
+      "later_demand_seq": 17807,
+      "later_state": 1,
+      "layer": 0,
+      "victim": 89,
+      "wait_barriers_in_group": 6
+    },
+    {
+      "call": 2,
+      "evict_seq": 17535,
+      "later_demand_seq": 17809,
+      "later_state": 1,
+      "layer": 0,
+      "victim": 110,
+      "wait_barriers_in_group": 6
+    },
+    {
+      "call": 2,
+      "evict_seq": 17539,
+      "later_demand_seq": 17811,
+      "later_state": 1,
+      "layer": 0,
+      "victim": 79,
+      "wait_barriers_in_group": 6
+    },
+    {
+      "call": 2,
+      "evict_seq": 17543,
+      "later_demand_seq": 17813,
+      "later_state": 1,
+      "layer": 0,
+      "victim": 27,
+      "wait_barriers_in_group": 6
+    },
+    {
+      "call": 2,
+      "evict_seq": 17547,
+      "later_demand_seq": 17815,
+      "later_state": 1,
+      "layer": 0,
+      "victim": 96,
+      "wait_barriers_in_group": 6
+    },
+    {
+      "call": 2,
+      "evict_seq": 17551,
+      "later_demand_seq": 17817,
+      "later_state": 1,
+      "layer": 0,
+      "victim": 94,
+      "wait_barriers_in_group": 6
+    },
+    {
+      "call": 2,
+      "evict_seq": 17555,
+      "later_demand_seq": 17819,
+      "later_state": 1,
+      "layer": 0,
+      "victim": 11,
+      "wait_barriers_in_group": 6
+    },
+    {
+      "call": 2,
+      "evict_seq": 17559,
+      "later_demand_seq": 17821,
+      "later_state": 1,
+      "layer": 0,
+      "victim": 58,
+      "wait_barriers_in_group": 6
+    },
+    {
+      "call": 2,
+      "evict_seq": 17563,
+      "later_demand_seq": 17825,
+      "later_state": 1,
+      "layer": 0,
+      "victim": 84,
+      "wait_barriers_in_group": 6
+    },
+    {
+      "call": 2,
+      "evict_seq": 17567,
+      "later_demand_seq": 17827,
+      "later_state": 1,
+      "layer": 0,
+      "victim": 63,
+      "wait_barriers_in_group": 6
+    },
+    {
+      "call": 2,
+      "evict_seq": 17829,
+      "later_demand_seq": 18027,
+      "later_state": 1,
+      "layer": 0,
+      "victim": 108,
+      "wait_barriers_in_group": 6
+    },
+    {
+      "call": 2,
+      "evict_seq": 1547,
+      "later_demand_seq": 8341,
+      "later_state": 2,
+      "layer": 1,
+      "victim": 3,
+      "wait_barriers_in_group": 4
+    },
+    {
+      "call": 2,
+      "evict_seq": 1555,
+      "later_demand_seq": 8340,
+      "later_state": 2,
+      "layer": 1,
+      "victim": 10,
+      "wait_barriers_in_group": 4
+    },
+    {
+      "call": 2,
+      "evict_seq": 1560,
+      "later_demand_seq": 18417,
+      "later_state": 1,
+      "layer": 1,
+      "victim": 48,
+      "wait_barriers_in_group": 4
+    },
+    {
+      "call": 2,
+      "evict_seq": 1568,
+      "later_demand_seq": 8342,
+      "later_state": 2,
+      "layer": 1,
+      "victim": 44,
+      "wait_barriers_in_group": 4
+    },
+    {
+      "call": 2,
+      "evict_seq": 1573,
+      "later_demand_seq": 8343,
+      "later_state": 2,
+      "layer": 1,
+      "victim": 98,
+      "wait_barriers_in_group": 4
+    },
+    {
+      "call": 2,
+      "evict_seq": 18078,
+      "later_demand_seq": 18226,
+      "later_state": 2,
+      "layer": 1,
+      "victim": 13,
+      "wait_barriers_in_group": 4
+    },
+    {
+      "call": 2,
+      "evict_seq": 18082,
+      "later_demand_seq": 18229,
+      "later_state": 1,
+      "layer": 1,
+      "victim": 37,
+      "wait_barriers_in_group": 4
+    },
+    {
+      "call": 2,
+      "evict_seq": 18086,
+      "later_demand_seq": 18231,
+      "later_state": 2,
+      "layer": 1,
+      "victim": 33,
+      "wait_barriers_in_group": 4
+    },
+    {
+      "call": 2,
+      "evict_seq": 18090,
+      "later_demand_seq": 18235,
+      "later_state": 1,
+      "layer": 1,
+      "victim": 96,
+      "wait_barriers_in_group": 4
+    },
+    {
+      "call": 2,
+      "evict_seq": 18094,
+      "later_demand_seq": 18237,
+      "later_state": 1,
+      "layer": 1,
+      "victim": 78,
+      "wait_barriers_in_group": 4
+    },
+    {
+      "call": 2,
+      "evict_seq": 18098,
+      "later_demand_seq": 18239,
+      "later_state": 1,
+      "layer": 1,
+      "victim": 72,
+      "wait_barriers_in_group": 4
+    },
+    {
+      "call": 2,
+      "evict_seq": 18102,
+      "later_demand_seq": 18243,
+      "later_state": 1,
+      "layer": 1,
+      "victim": 56,
+      "wait_barriers_in_group": 4
+    },
+    {
+      "call": 2,
+      "evict_seq": 18106,
+      "later_demand_seq": 18245,
+      "later_state": 1,
+      "layer": 1,
+      "victim": 73,
+      "wait_barriers_in_group": 4
+    },
+    {
+      "call": 2,
+      "evict_seq": 18110,
+      "later_demand_seq": 18248,
+      "later_state": 1,
+      "layer": 1,
+      "victim": 80,
+      "wait_barriers_in_group": 4
+    },
+    {
+      "call": 2,
+      "evict_seq": 18250,
+      "later_demand_seq": 18415,
+      "later_state": 2,
+      "layer": 1,
+      "victim": 94,
+      "wait_barriers_in_group": 4
+    },
+    {
+      "call": 2,
+      "evict_seq": 18254,
+      "later_demand_seq": 18416,
+      "later_state": 2,
+      "layer": 1,
+      "victim": 46,
+      "wait_barriers_in_group": 4
+    },
+    {
+      "call": 2,
+      "evict_seq": 18258,
+      "later_demand_seq": 18417,
+      "later_state": 1,
+      "layer": 1,
+      "victim": 48,
+      "wait_barriers_in_group": 4
+    },
+    {
+      "call": 2,
+      "evict_seq": 18262,
+      "later_demand_seq": 18419,
+      "later_state": 1,
+      "layer": 1,
+      "victim": 64,
+      "wait_barriers_in_group": 4
+    },
+    {
+      "call": 2,
+      "evict_seq": 18266,
+      "later_demand_seq": 18422,
+      "later_state": 1,
+      "layer": 1,
+      "victim": 27,
+      "wait_barriers_in_group": 4
+    },
+    {
+      "call": 2,
+      "evict_seq": 18270,
+      "later_demand_seq": 18424,
+      "later_state": 1,
+      "layer": 1,
+      "victim": 30,
+      "wait_barriers_in_group": 4
+    },
+    {
+      "call": 2,
+      "evict_seq": 18274,
+      "later_demand_seq": 18426,
+      "later_state": 1,
+      "layer": 1,
+      "victim": 23,
+      "wait_barriers_in_group": 4
+    },
+    {
+      "call": 2,
+      "evict_seq": 1697,
+      "later_demand_seq": 8344,
+      "later_state": 2,
+      "layer": 2,
+      "victim": 91,
+      "wait_barriers_in_group": 5
+    },
+    {
+      "call": 2,
+      "evict_seq": 1710,
+      "later_demand_seq": 8348,
+      "later_state": 2,
+      "layer": 2,
+      "victim": 26,
+      "wait_barriers_in_group": 5
+    },
+    {
+      "call": 2,
+      "evict_seq": 1714,
+      "later_demand_seq": 8347,
+      "later_state": 2,
+      "layer": 2,
+      "victim": 43,
+      "wait_barriers_in_group": 5
+    },
+    {
+      "call": 2,
+      "evict_seq": 8350,
+      "later_demand_seq": 9727,
+      "later_state": 2,
+      "layer": 2,
+      "victim": 57,
+      "wait_barriers_in_group": 5
+    },
+    {
+      "call": 2,
+      "evict_seq": 18528,
+      "later_demand_seq": 18630,
+      "later_state": 2,
+      "layer": 2,
+      "victim": 111,
+      "wait_barriers_in_group": 5
+    },
+    {
+      "call": 2,
+      "evict_seq": 18532,
+      "later_demand_seq": 18632,
+      "later_state": 1,
+      "layer": 2,
+      "victim": 117,
+      "wait_barriers_in_group": 5
+    },
+    {
+      "call": 2,
+      "evict_seq": 18536,
+      "later_demand_seq": 18635,
+      "later_state": 1,
+      "layer": 2,
+      "victim": 90,
+      "wait_barriers_in_group": 5
+    },
+    {
+      "call": 2,
+      "evict_seq": 18540,
+      "later_demand_seq": 18637,
+      "later_state": 1,
+      "layer": 2,
+      "victim": 69,
+      "wait_barriers_in_group": 5
+    },
+    {
+      "call": 2,
+      "evict_seq": 18544,
+      "later_demand_seq": 18641,
+      "later_state": 1,
+      "layer": 2,
+      "victim": 2,
+      "wait_barriers_in_group": 5
+    },
+    {
+      "call": 2,
+      "evict_seq": 18548,
+      "later_demand_seq": 18643,
+      "later_state": 1,
+      "layer": 2,
+      "victim": 74,
+      "wait_barriers_in_group": 5
+    },
+    {
+      "call": 2,
+      "evict_seq": 18552,
+      "later_demand_seq": 18645,
+      "later_state": 1,
+      "layer": 2,
+      "victim": 89,
+      "wait_barriers_in_group": 5
+    },
+    {
+      "call": 2,
+      "evict_seq": 18556,
+      "later_demand_seq": 18647,
+      "later_state": 1,
+      "layer": 2,
+      "victim": 49,
+      "wait_barriers_in_group": 5
+    },
+    {
+      "call": 2,
+      "evict_seq": 18560,
+      "later_demand_seq": 18651,
+      "later_state": 1,
+      "layer": 2,
+      "victim": 54,
+      "wait_barriers_in_group": 5
+    },
+    {
+      "call": 2,
+      "evict_seq": 18656,
+      "later_demand_seq": 18779,
+      "later_state": 1,
+      "layer": 2,
+      "victim": 38,
+      "wait_barriers_in_group": 5
+    },
+    {
+      "call": 2,
+      "evict_seq": 1813,
+      "later_demand_seq": 19174,
+      "later_state": 1,
+      "layer": 3,
+      "victim": 116,
+      "wait_barriers_in_group": 5
+    },
+    {
+      "call": 2,
+      "evict_seq": 1822,
+      "later_demand_seq": 8373,
+      "later_state": 2,
+      "layer": 3,
+      "victim": 5,
+      "wait_barriers_in_group": 5
+    },
+    {
+      "call": 2,
+      "evict_seq": 1827,
+      "later_demand_seq": 8370,
+      "later_state": 2,
+      "layer": 3,
+      "victim": 82,
+      "wait_barriers_in_group": 5
+    },
+    {
+      "call": 2,
+      "evict_seq": 9733,
+      "later_demand_seq": 14409,
+      "later_state": 2,
+      "layer": 3,
+      "victim": 12,
+      "wait_barriers_in_group": 5
+    },
+    {
+      "call": 2,
+      "evict_seq": 18839,
+      "later_demand_seq": 18997,
+      "later_state": 1,
+      "layer": 3,
+      "victim": 0,
+      "wait_barriers_in_group": 5
+    },
+    {
+      "call": 2,
+      "evict_seq": 18843,
+      "later_demand_seq": 18999,
+      "later_state": 1,
+      "layer": 3,
+      "victim": 119,
+      "wait_barriers_in_group": 5
+    },
+    {
+      "call": 2,
+      "evict_seq": 18847,
+      "later_demand_seq": 19001,
+      "later_state": 1,
+      "layer": 3,
+      "victim": 35,
+      "wait_barriers_in_group": 5
+    },
+    {
+      "call": 2,
+      "evict_seq": 18851,
+      "later_demand_seq": 19004,
+      "later_state": 1,
+      "layer": 3,
+      "victim": 16,
+      "wait_barriers_in_group": 5
+    },
+    {
+      "call": 2,
+      "evict_seq": 18855,
+      "later_demand_seq": 19006,
+      "later_state": 1,
+      "layer": 3,
+      "victim": 45,
+      "wait_barriers_in_group": 5
+    },
+    {
+      "call": 2,
+      "evict_seq": 18859,
+      "later_demand_seq": 19009,
+      "later_state": 1,
+      "layer": 3,
+      "victim": 13,
+      "wait_barriers_in_group": 5
+    },
+    {
+      "call": 2,
+      "evict_seq": 18863,
+      "later_demand_seq": 19015,
+      "later_state": 1,
+      "layer": 3,
+      "victim": 121,
+      "wait_barriers_in_group": 5
+    },
+    {
+      "call": 2,
+      "evict_seq": 18867,
+      "later_demand_seq": 19017,
+      "later_state": 1,
+      "layer": 3,
+      "victim": 34,
+      "wait_barriers_in_group": 5
+    },
+    {
+      "call": 2,
+      "evict_seq": 19023,
+      "later_demand_seq": 19166,
+      "later_state": 1,
+      "layer": 3,
+      "victim": 98,
+      "wait_barriers_in_group": 5
+    },
+    {
+      "call": 2,
+      "evict_seq": 19027,
+      "later_demand_seq": 19168,
+      "later_state": 1,
+      "layer": 3,
+      "victim": 61,
+      "wait_barriers_in_group": 5
+    },
+    {
+      "call": 2,
+      "evict_seq": 19031,
+      "later_demand_seq": 19172,
+      "later_state": 1,
+      "layer": 3,
+      "victim": 30,
+      "wait_barriers_in_group": 5
+    },
+    {
+      "call": 2,
+      "evict_seq": 19035,
+      "later_demand_seq": 19174,
+      "later_state": 1,
+      "layer": 3,
+      "victim": 116,
+      "wait_barriers_in_group": 5
+    },
+    {
+      "call": 2,
+      "evict_seq": 19039,
+      "later_demand_seq": 19176,
+      "later_state": 1,
+      "layer": 3,
+      "victim": 4,
+      "wait_barriers_in_group": 5
+    },
+    {
+      "call": 2,
+      "evict_seq": 1890,
+      "later_demand_seq": 8376,
+      "later_state": 2,
+      "layer": 4,
+      "victim": 89,
+      "wait_barriers_in_group": 4
+    },
+    {
+      "call": 2,
+      "evict_seq": 19287,
+      "later_demand_seq": 19445,
+      "later_state": 2,
+      "layer": 4,
+      "victim": 42,
+      "wait_barriers_in_group": 4
+    },
+    {
+      "call": 2,
+      "evict_seq": 19291,
+      "later_demand_seq": 19452,
+      "later_state": 2,
+      "layer": 4,
+      "victim": 17,
+      "wait_barriers_in_group": 4
+    },
+    {
+      "call": 2,
+      "evict_seq": 19295,
+      "later_demand_seq": 19453,
+      "later_state": 1,
+      "layer": 4,
+      "victim": 125,
+      "wait_barriers_in_group": 4
+    },
+    {
+      "call": 2,
+      "evict_seq": 19299,
+      "later_demand_seq": 19455,
+      "later_state": 1,
+      "layer": 4,
+      "victim": 21,
+      "wait_barriers_in_group": 4
+    },
+    {
+      "call": 2,
+      "evict_seq": 19303,
+      "later_demand_seq": 19459,
+      "later_state": 1,
+      "layer": 4,
+      "victim": 120,
+      "wait_barriers_in_group": 4
+    },
+    {
+      "call": 2,
+      "evict_seq": 19307,
+      "later_demand_seq": 19461,
+      "later_state": 1,
+      "layer": 4,
+      "victim": 37,
+      "wait_barriers_in_group": 4
+    },
+    {
+      "call": 2,
+      "evict_seq": 19311,
+      "later_demand_seq": 19465,
+      "later_state": 1,
+      "layer": 4,
+      "victim": 38,
+      "wait_barriers_in_group": 4
+    },
+    {
+      "call": 2,
+      "evict_seq": 19315,
+      "later_demand_seq": 19467,
+      "later_state": 1,
+      "layer": 4,
+      "victim": 104,
+      "wait_barriers_in_group": 4
+    },
+    {
+      "call": 2,
+      "evict_seq": 19469,
+      "later_demand_seq": 19593,
+      "later_state": 2,
+      "layer": 4,
+      "victim": 73,
+      "wait_barriers_in_group": 4
+    },
+    {
+      "call": 2,
+      "evict_seq": 19473,
+      "later_demand_seq": 19594,
+      "later_state": 1,
+      "layer": 4,
+      "victim": 25,
+      "wait_barriers_in_group": 4
+    },
+    {
+      "call": 2,
+      "evict_seq": 19477,
+      "later_demand_seq": 19596,
+      "later_state": 1,
+      "layer": 4,
+      "victim": 8,
+      "wait_barriers_in_group": 4
+    },
+    {
+      "call": 2,
+      "evict_seq": 19481,
+      "later_demand_seq": 19598,
+      "later_state": 1,
+      "layer": 4,
+      "victim": 68,
+      "wait_barriers_in_group": 4
+    },
+    {
+      "call": 2,
+      "evict_seq": 1952,
+      "later_demand_seq": 8382,
+      "later_state": 2,
+      "layer": 5,
+      "victim": 67,
+      "wait_barriers_in_group": 4
+    },
+    {
+      "call": 2,
+      "evict_seq": 1956,
+      "later_demand_seq": 8379,
+      "later_state": 2,
+      "layer": 5,
+      "victim": 69,
+      "wait_barriers_in_group": 4
+    },
+    {
+      "call": 2,
+      "evict_seq": 1960,
+      "later_demand_seq": 8381,
+      "later_state": 2,
+      "layer": 5,
+      "victim": 125,
+      "wait_barriers_in_group": 4
+    },
+    {
+      "call": 2,
+      "evict_seq": 19671,
+      "later_demand_seq": 19778,
+      "later_state": 2,
+      "layer": 5,
+      "victim": 108,
+      "wait_barriers_in_group": 4
+    },
+    {
+      "call": 2,
+      "evict_seq": 19675,
+      "later_demand_seq": 19779,
+      "later_state": 1,
+      "layer": 5,
+      "victim": 20,
+      "wait_barriers_in_group": 4
+    },
+    {
+      "call": 2,
+      "evict_seq": 19679,
+      "later_demand_seq": 19781,
+      "later_state": 1,
+      "layer": 5,
+      "victim": 9,
+      "wait_barriers_in_group": 4
+    },
+    {
+      "call": 2,
+      "evict_seq": 19683,
+      "later_demand_seq": 19784,
+      "later_state": 1,
+      "layer": 5,
+      "victim": 112,
+      "wait_barriers_in_group": 4
+    },
+    {
+      "call": 2,
+      "evict_seq": 19687,
+      "later_demand_seq": 19786,
+      "later_state": 1,
+      "layer": 5,
+      "victim": 77,
+      "wait_barriers_in_group": 4
+    },
+    {
+      "call": 2,
+      "evict_seq": 19691,
+      "later_demand_seq": 19788,
+      "later_state": 1,
+      "layer": 5,
+      "victim": 74,
+      "wait_barriers_in_group": 4
+    },
+    {
+      "call": 2,
+      "evict_seq": 19695,
+      "later_demand_seq": 19790,
+      "later_state": 1,
+      "layer": 5,
+      "victim": 49,
+      "wait_barriers_in_group": 4
+    },
+    {
+      "call": 2,
+      "evict_seq": 19699,
+      "later_demand_seq": 19795,
+      "later_state": 1,
+      "layer": 5,
+      "victim": 81,
+      "wait_barriers_in_group": 4
+    },
+    {
+      "call": 2,
+      "evict_seq": 19703,
+      "later_demand_seq": 19798,
+      "later_state": 1,
+      "layer": 5,
+      "victim": 53,
+      "wait_barriers_in_group": 4
+    },
+    {
+      "call": 2,
+      "evict_seq": 19707,
+      "later_demand_seq": 19800,
+      "later_state": 1,
+      "layer": 5,
+      "victim": 70,
+      "wait_barriers_in_group": 4
+    },
+    {
+      "call": 2,
+      "evict_seq": 19804,
+      "later_demand_seq": 19980,
+      "later_state": 2,
+      "layer": 5,
+      "victim": 90,
+      "wait_barriers_in_group": 4
+    },
+    {
+      "call": 2,
+      "evict_seq": 19808,
+      "later_demand_seq": 19982,
+      "later_state": 2,
+      "layer": 5,
+      "victim": 105,
+      "wait_barriers_in_group": 4
+    },
+    {
+      "call": 2,
+      "evict_seq": 19812,
+      "later_demand_seq": 19983,
+      "later_state": 1,
+      "layer": 5,
+      "victim": 36,
+      "wait_barriers_in_group": 4
+    },
+    {
+      "call": 2,
+      "evict_seq": 2080,
+      "later_demand_seq": 20027,
+      "later_state": 0,
+      "layer": 6,
+      "victim": 34,
+      "wait_barriers_in_group": 4
+    },
+    {
+      "call": 2,
+      "evict_seq": 2085,
+      "later_demand_seq": 8384,
+      "later_state": 2,
+      "layer": 6,
+      "victim": 8,
+      "wait_barriers_in_group": 4
+    },
+    {
+      "call": 2,
+      "evict_seq": 8388,
+      "later_demand_seq": 9763,
+      "later_state": 2,
+      "layer": 6,
+      "victim": 39,
+      "wait_barriers_in_group": 4
+    },
+    {
+      "call": 2,
+      "evict_seq": 20031,
+      "later_demand_seq": 20121,
+      "later_state": 1,
+      "layer": 6,
+      "victim": 42,
+      "wait_barriers_in_group": 4
+    },
+    {
+      "call": 2,
+      "evict_seq": 20035,
+      "later_demand_seq": 20123,
+      "later_state": 1,
+      "layer": 6,
+      "victim": 107,
+      "wait_barriers_in_group": 4
+    },
+    {
+      "call": 2,
+      "evict_seq": 20039,
+      "later_demand_seq": 20125,
+      "later_state": 1,
+      "layer": 6,
+      "victim": 74,
+      "wait_barriers_in_group": 4
+    },
+    {
+      "call": 2,
+      "evict_seq": 20043,
+      "later_demand_seq": 20127,
+      "later_state": 1,
+      "layer": 6,
+      "victim": 95,
+      "wait_barriers_in_group": 4
+    },
+    {
+      "call": 2,
+      "evict_seq": 20047,
+      "later_demand_seq": 20129,
+      "later_state": 1,
+      "layer": 6,
+      "victim": 4,
+      "wait_barriers_in_group": 4
+    },
+    {
+      "call": 2,
+      "evict_seq": 20051,
+      "later_demand_seq": 20136,
+      "later_state": 1,
+      "layer": 6,
+      "victim": 119,
+      "wait_barriers_in_group": 4
+    },
+    {
+      "call": 2,
+      "evict_seq": 2160,
+      "later_demand_seq": 8411,
+      "later_state": 2,
+      "layer": 7,
+      "victim": 31,
+      "wait_barriers_in_group": 5
+    },
+    {
+      "call": 2,
+      "evict_seq": 8413,
+      "later_demand_seq": 9768,
+      "later_state": 2,
+      "layer": 7,
+      "victim": 112,
+      "wait_barriers_in_group": 5
+    },
+    {
+      "call": 2,
+      "evict_seq": 20264,
+      "later_demand_seq": 20431,
+      "later_state": 2,
+      "layer": 7,
+      "victim": 122,
+      "wait_barriers_in_group": 5
+    },
+    {
+      "call": 2,
+      "evict_seq": 20268,
+      "later_demand_seq": 20432,
+      "later_state": 2,
+      "layer": 7,
+      "victim": 93,
+      "wait_barriers_in_group": 5
+    },
+    {
+      "call": 2,
+      "evict_seq": 20272,
+      "later_demand_seq": 20434,
+      "later_state": 2,
+      "layer": 7,
+      "victim": 99,
+      "wait_barriers_in_group": 5
+    },
+    {
+      "call": 2,
+      "evict_seq": 20276,
+      "later_demand_seq": 20435,
+      "later_state": 1,
+      "layer": 7,
+      "victim": 64,
+      "wait_barriers_in_group": 5
+    },
+    {
+      "call": 2,
+      "evict_seq": 20280,
+      "later_demand_seq": 20437,
+      "later_state": 1,
+      "layer": 7,
+      "victim": 53,
+      "wait_barriers_in_group": 5
+    },
+    {
+      "call": 2,
+      "evict_seq": 20284,
+      "later_demand_seq": 20443,
+      "later_state": 1,
+      "layer": 7,
+      "victim": 117,
+      "wait_barriers_in_group": 5
+    },
+    {
+      "call": 2,
+      "evict_seq": 20288,
+      "later_demand_seq": 20445,
+      "later_state": 1,
+      "layer": 7,
+      "victim": 50,
+      "wait_barriers_in_group": 5
+    },
+    {
+      "call": 2,
+      "evict_seq": 20292,
+      "later_demand_seq": 20447,
+      "later_state": 1,
+      "layer": 7,
+      "victim": 25,
+      "wait_barriers_in_group": 5
+    },
+    {
+      "call": 2,
+      "evict_seq": 20296,
+      "later_demand_seq": 20450,
+      "later_state": 1,
+      "layer": 7,
+      "victim": 111,
+      "wait_barriers_in_group": 5
+    },
+    {
+      "call": 2,
+      "evict_seq": 20300,
+      "later_demand_seq": 20453,
+      "later_state": 1,
+      "layer": 7,
+      "victim": 84,
+      "wait_barriers_in_group": 5
+    },
+    {
+      "call": 2,
+      "evict_seq": 20455,
+      "later_demand_seq": 20582,
+      "later_state": 2,
+      "layer": 7,
+      "victim": 11,
+      "wait_barriers_in_group": 5
+    },
+    {
+      "call": 2,
+      "evict_seq": 20459,
+      "later_demand_seq": 20584,
+      "later_state": 1,
+      "layer": 7,
+      "victim": 106,
+      "wait_barriers_in_group": 5
+    },
+    {
+      "call": 2,
+      "evict_seq": 2243,
+      "later_demand_seq": 8436,
+      "later_state": 2,
+      "layer": 8,
+      "victim": 24,
+      "wait_barriers_in_group": 6
+    },
+    {
+      "call": 2,
+      "evict_seq": 8438,
+      "later_demand_seq": 9773,
+      "later_state": 2,
+      "layer": 8,
+      "victim": 110,
+      "wait_barriers_in_group": 6
+    },
+    {
+      "call": 2,
+      "evict_seq": 8442,
+      "later_demand_seq": 9774,
+      "later_state": 2,
+      "layer": 8,
+      "victim": 2,
+      "wait_barriers_in_group": 6
+    },
+    {
+      "call": 2,
+      "evict_seq": 14434,
+      "later_demand_seq": 20605,
+      "later_state": 2,
+      "layer": 8,
+      "victim": 24,
+      "wait_barriers_in_group": 6
+    },
+    {
+      "call": 2,
+      "evict_seq": 20626,
+      "later_demand_seq": 20711,
+      "later_state": 2,
+      "layer": 8,
+      "victim": 12,
+      "wait_barriers_in_group": 6
+    },
+    {
+      "call": 2,
+      "evict_seq": 20630,
+      "later_demand_seq": 20712,
+      "later_state": 2,
+      "layer": 8,
+      "victim": 102,
+      "wait_barriers_in_group": 6
+    },
+    {
+      "call": 2,
+      "evict_seq": 20634,
+      "later_demand_seq": 20713,
+      "later_state": 1,
+      "layer": 8,
+      "victim": 71,
+      "wait_barriers_in_group": 6
+    },
+    {
+      "call": 2,
+      "evict_seq": 20638,
+      "later_demand_seq": 20715,
+      "later_state": 1,
+      "layer": 8,
+      "victim": 59,
+      "wait_barriers_in_group": 6
+    },
+    {
+      "call": 2,
+      "evict_seq": 20642,
+      "later_demand_seq": 20719,
+      "later_state": 1,
+      "layer": 8,
+      "victim": 77,
+      "wait_barriers_in_group": 6
+    },
+    {
+      "call": 2,
+      "evict_seq": 2299,
+      "later_demand_seq": 8481,
+      "later_state": 2,
+      "layer": 9,
+      "victim": 42,
+      "wait_barriers_in_group": 4
+    },
+    {
+      "call": 2,
+      "evict_seq": 2312,
+      "later_demand_seq": 8478,
+      "later_state": 2,
+      "layer": 9,
+      "victim": 86,
+      "wait_barriers_in_group": 4
+    },
+    {
+      "call": 2,
+      "evict_seq": 2317,
+      "later_demand_seq": 8480,
+      "later_state": 2,
+      "layer": 9,
+      "victim": 92,
+      "wait_barriers_in_group": 4
+    },
+    {
+      "call": 2,
+      "evict_seq": 8483,
+      "later_demand_seq": 9803,
+      "later_state": 2,
+      "layer": 9,
+      "victim": 87,
+      "wait_barriers_in_group": 4
+    },
+    {
+      "call": 2,
+      "evict_seq": 20796,
+      "later_demand_seq": 20882,
+      "later_state": 2,
+      "layer": 9,
+      "victim": 11,
+      "wait_barriers_in_group": 4
+    },
+    {
+      "call": 2,
+      "evict_seq": 20800,
+      "later_demand_seq": 20885,
+      "later_state": 2,
+      "layer": 9,
+      "victim": 28,
+      "wait_barriers_in_group": 4
+    },
+    {
+      "call": 2,
+      "evict_seq": 20804,
+      "later_demand_seq": 20887,
+      "later_state": 1,
+      "layer": 9,
+      "victim": 12,
+      "wait_barriers_in_group": 4
+    },
+    {
+      "call": 2,
+      "evict_seq": 20808,
+      "later_demand_seq": 20889,
+      "later_state": 1,
+      "layer": 9,
+      "victim": 10,
+      "wait_barriers_in_group": 4
+    },
+    {
+      "call": 2,
+      "evict_seq": 20812,
+      "later_demand_seq": 20894,
+      "later_state": 1,
+      "layer": 9,
+      "victim": 5,
+      "wait_barriers_in_group": 4
+    },
+    {
+      "call": 2,
+      "evict_seq": 2399,
+      "later_demand_seq": 8507,
+      "later_state": 2,
+      "layer": 10,
+      "victim": 81,
+      "wait_barriers_in_group": 5
+    },
+    {
+      "call": 2,
+      "evict_seq": 2403,
+      "later_demand_seq": 8505,
+      "later_state": 2,
+      "layer": 10,
+      "victim": 44,
+      "wait_barriers_in_group": 5
+    },
+    {
+      "call": 2,
+      "evict_seq": 2408,
+      "later_demand_seq": 8511,
+      "later_state": 2,
+      "layer": 10,
+      "victim": 0,
+      "wait_barriers_in_group": 5
+    },
+    {
+      "call": 2,
+      "evict_seq": 8513,
+      "later_demand_seq": 9807,
+      "later_state": 2,
+      "layer": 10,
+      "victim": 109,
+      "wait_barriers_in_group": 5
+    },
+    {
+      "call": 2,
+      "evict_seq": 8517,
+      "later_demand_seq": 9812,
+      "later_state": 2,
+      "layer": 10,
+      "victim": 41,
+      "wait_barriers_in_group": 5
+    },
+    {
+      "call": 2,
+      "evict_seq": 9809,
+      "later_demand_seq": 14467,
+      "later_state": 2,
+      "layer": 10,
+      "victim": 121,
+      "wait_barriers_in_group": 5
+    },
+    {
+      "call": 2,
+      "evict_seq": 20963,
+      "later_demand_seq": 21042,
+      "later_state": 2,
+      "layer": 10,
+      "victim": 19,
+      "wait_barriers_in_group": 5
+    },
+    {
+      "call": 2,
+      "evict_seq": 20967,
+      "later_demand_seq": 21044,
+      "later_state": 2,
+      "layer": 10,
+      "victim": 32,
+      "wait_barriers_in_group": 5
+    },
+    {
+      "call": 2,
+      "evict_seq": 20971,
+      "later_demand_seq": 21047,
+      "later_state": 2,
+      "layer": 10,
+      "victim": 119,
+      "wait_barriers_in_group": 5
+    },
+    {
+      "call": 2,
+      "evict_seq": 20975,
+      "later_demand_seq": 21048,
+      "later_state": 1,
+      "layer": 10,
+      "victim": 110,
+      "wait_barriers_in_group": 5
+    },
+    {
+      "call": 2,
+      "evict_seq": 2479,
+      "later_demand_seq": 21086,
+      "later_state": 0,
+      "layer": 11,
+      "victim": 118,
+      "wait_barriers_in_group": 6
+    },
+    {
+      "call": 2,
+      "evict_seq": 2492,
+      "later_demand_seq": 14486,
+      "later_state": 0,
+      "layer": 11,
+      "victim": 72,
+      "wait_barriers_in_group": 6
+    },
+    {
+      "call": 2,
+      "evict_seq": 2496,
+      "later_demand_seq": 8578,
+      "later_state": 2,
+      "layer": 11,
+      "victim": 91,
+      "wait_barriers_in_group": 6
+    },
+    {
+      "call": 2,
+      "evict_seq": 8580,
+      "later_demand_seq": 9858,
+      "later_state": 0,
+      "layer": 11,
+      "victim": 24,
+      "wait_barriers_in_group": 6
+    },
+    {
+      "call": 2,
+      "evict_seq": 8585,
+      "later_demand_seq": 9850,
+      "later_state": 2,
+      "layer": 11,
+      "victim": 53,
+      "wait_barriers_in_group": 6
+    },
+    {
+      "call": 2,
+      "evict_seq": 9844,
+      "later_demand_seq": 21165,
+      "later_state": 2,
+      "layer": 11,
+      "victim": 108,
+      "wait_barriers_in_group": 6
+    },
+    {
+      "call": 2,
+      "evict_seq": 9854,
+      "later_demand_seq": 14484,
+      "later_state": 2,
+      "layer": 11,
+      "victim": 32,
+      "wait_barriers_in_group": 6
+    },
+    {
+      "call": 2,
+      "evict_seq": 9859,
+      "later_demand_seq": 21070,
+      "later_state": 2,
+      "layer": 11,
+      "victim": 24,
+      "wait_barriers_in_group": 6
+    },
+    {
+      "call": 2,
+      "evict_seq": 21090,
+      "later_demand_seq": 21166,
+      "later_state": 2,
+      "layer": 11,
+      "victim": 52,
+      "wait_barriers_in_group": 6
+    },
+    {
+      "call": 2,
+      "evict_seq": 21094,
+      "later_demand_seq": 21167,
+      "later_state": 2,
+      "layer": 11,
+      "victim": 38,
+      "wait_barriers_in_group": 6
+    },
+    {
+      "call": 2,
+      "evict_seq": 21098,
+      "later_demand_seq": 21168,
+      "later_state": 1,
+      "layer": 11,
+      "victim": 97,
+      "wait_barriers_in_group": 6
+    },
+    {
+      "call": 2,
+      "evict_seq": 2548,
+      "later_demand_seq": 9933,
+      "later_state": 0,
+      "layer": 12,
+      "victim": 61,
+      "wait_barriers_in_group": 6
+    },
+    {
+      "call": 2,
+      "evict_seq": 2561,
+      "later_demand_seq": 8621,
+      "later_state": 2,
+      "layer": 12,
+      "victim": 121,
+      "wait_barriers_in_group": 6
+    },
+    {
+      "call": 2,
+      "evict_seq": 2565,
+      "later_demand_seq": 21206,
+      "later_state": 0,
+      "layer": 12,
+      "victim": 123,
+      "wait_barriers_in_group": 6
+    },
+    {
+      "call": 2,
+      "evict_seq": 2569,
+      "later_demand_seq": 21330,
+      "later_state": 1,
+      "layer": 12,
+      "victim": 79,
+      "wait_barriers_in_group": 6
+    },
+    {
+      "call": 2,
+      "evict_seq": 2575,
+      "later_demand_seq": 8623,
+      "later_state": 2,
+      "layer": 12,
+      "victim": 44,
+      "wait_barriers_in_group": 6
+    },
+    {
+      "call": 2,
+      "evict_seq": 2579,
+      "later_demand_seq": 8633,
+      "later_state": 2,
+      "layer": 12,
+      "victim": 58,
+      "wait_barriers_in_group": 6
+    },
+    {
+      "call": 2,
+      "evict_seq": 2582,
+      "later_demand_seq": 2694,
+      "later_state": 2,
+      "layer": 12,
+      "victim": 49,
+      "wait_barriers_in_group": 6
+    },
+    {
+      "call": 2,
+      "evict_seq": 8625,
+      "later_demand_seq": 14555,
+      "later_state": 0,
+      "layer": 12,
+      "victim": 24,
+      "wait_barriers_in_group": 6
+    },
+    {
+      "call": 2,
+      "evict_seq": 8647,
+      "later_demand_seq": 21334,
+      "later_state": 2,
+      "layer": 12,
+      "victim": 93,
+      "wait_barriers_in_group": 6
+    },
+    {
+      "call": 2,
+      "evict_seq": 9934,
+      "later_demand_seq": 21212,
+      "later_state": 0,
+      "layer": 12,
+      "victim": 61,
+      "wait_barriers_in_group": 6
+    },
+    {
+      "call": 2,
+      "evict_seq": 9942,
+      "later_demand_seq": 14549,
+      "later_state": 2,
+      "layer": 12,
+      "victim": 8,
+      "wait_barriers_in_group": 6
+    },
+    {
+      "call": 2,
+      "evict_seq": 9947,
+      "later_demand_seq": 14544,
+      "later_state": 2,
+      "layer": 12,
+      "victim": 107,
+      "wait_barriers_in_group": 6
+    },
+    {
+      "call": 2,
+      "evict_seq": 9956,
+      "later_demand_seq": 14542,
+      "later_state": 2,
+      "layer": 12,
+      "victim": 38,
+      "wait_barriers_in_group": 6
+    },
+    {
+      "call": 2,
+      "evict_seq": 21219,
+      "later_demand_seq": 21313,
+      "later_state": 1,
+      "layer": 12,
+      "victim": 45,
+      "wait_barriers_in_group": 6
+    },
+    {
+      "call": 2,
+      "evict_seq": 21223,
+      "later_demand_seq": 21318,
+      "later_state": 1,
+      "layer": 12,
+      "victim": 20,
+      "wait_barriers_in_group": 6
+    },
+    {
+      "call": 2,
+      "evict_seq": 21227,
+      "later_demand_seq": 21320,
+      "later_state": 1,
+      "layer": 12,
+      "victim": 112,
+      "wait_barriers_in_group": 6
+    },
+    {
+      "call": 2,
+      "evict_seq": 21231,
+      "later_demand_seq": 21322,
+      "later_state": 1,
+      "layer": 12,
+      "victim": 72,
+      "wait_barriers_in_group": 6
+    },
+    {
+      "call": 2,
+      "evict_seq": 21235,
+      "later_demand_seq": 21325,
+      "later_state": 1,
+      "layer": 12,
+      "victim": 69,
+      "wait_barriers_in_group": 6
+    },
+    {
+      "call": 2,
+      "evict_seq": 21239,
+      "later_demand_seq": 21328,
+      "later_state": 1,
+      "layer": 12,
+      "victim": 53,
+      "wait_barriers_in_group": 6
+    },
+    {
+      "call": 2,
+      "evict_seq": 21243,
+      "later_demand_seq": 21330,
+      "later_state": 1,
+      "layer": 12,
+      "victim": 79,
+      "wait_barriers_in_group": 6
+    },
+    {
+      "call": 2,
+      "evict_seq": 2700,
+      "later_demand_seq": 21445,
+      "later_state": 0,
+      "layer": 13,
+      "victim": 6,
+      "wait_barriers_in_group": 6
+    },
+    {
+      "call": 2,
+      "evict_seq": 2704,
+      "later_demand_seq": 8766,
+      "later_state": 2,
+      "layer": 13,
+      "victim": 2,
+      "wait_barriers_in_group": 6
+    },
+    {
+      "call": 2,
+      "evict_seq": 2714,
+      "later_demand_seq": 8761,
+      "later_state": 2,
+      "layer": 13,
+      "victim": 25,
+      "wait_barriers_in_group": 6
+    },
+    {
+      "call": 2,
+      "evict_seq": 2719,
+      "later_demand_seq": 8762,
+      "later_state": 2,
+      "layer": 13,
+      "victim": 24,
+      "wait_barriers_in_group": 6
+    },
+    {
+      "call": 2,
+      "evict_seq": 2723,
+      "later_demand_seq": 8767,
+      "later_state": 2,
+      "layer": 13,
+      "victim": 59,
+      "wait_barriers_in_group": 6
+    },
+    {
+      "call": 2,
+      "evict_seq": 2731,
+      "later_demand_seq": 2842,
+      "later_state": 2,
+      "layer": 13,
+      "victim": 90,
+      "wait_barriers_in_group": 6
+    },
+    {
+      "call": 2,
+      "evict_seq": 8771,
+      "later_demand_seq": 10075,
+      "later_state": 2,
+      "layer": 13,
+      "victim": 109,
+      "wait_barriers_in_group": 6
+    },
+    {
+      "call": 2,
+      "evict_seq": 8786,
+      "later_demand_seq": 10087,
+      "later_state": 2,
+      "layer": 13,
+      "victim": 4,
+      "wait_barriers_in_group": 6
+    },
+    {
+      "call": 2,
+      "evict_seq": 10089,
+      "later_demand_seq": 10126,
+      "later_state": 2,
+      "layer": 13,
+      "victim": 45,
+      "wait_barriers_in_group": 6
+    },
+    {
+      "call": 2,
+      "evict_seq": 14589,
+      "later_demand_seq": 21618,
+      "later_state": 2,
+      "layer": 13,
+      "victim": 28,
+      "wait_barriers_in_group": 6
+    },
+    {
+      "call": 2,
+      "evict_seq": 14598,
+      "later_demand_seq": 21442,
+      "later_state": 2,
+      "layer": 13,
+      "victim": 2,
+      "wait_barriers_in_group": 6
+    },
+    {
+      "call": 2,
+      "evict_seq": 21475,
+      "later_demand_seq": 21611,
+      "later_state": 2,
+      "layer": 13,
+      "victim": 77,
+      "wait_barriers_in_group": 6
+    },
+    {
+      "call": 2,
+      "evict_seq": 21479,
+      "later_demand_seq": 21612,
+      "later_state": 2,
+      "layer": 13,
+      "victim": 114,
+      "wait_barriers_in_group": 6
+    },
+    {
+      "call": 2,
+      "evict_seq": 21483,
+      "later_demand_seq": 21615,
+      "later_state": 1,
+      "layer": 13,
+      "victim": 126,
+      "wait_barriers_in_group": 6
+    },
+    {
+      "call": 2,
+      "evict_seq": 2844,
+      "later_demand_seq": 8865,
+      "later_state": 2,
+      "layer": 14,
+      "victim": 19,
+      "wait_barriers_in_group": 7
+    },
+    {
+      "call": 2,
+      "evict_seq": 2849,
+      "later_demand_seq": 8851,
+      "later_state": 2,
+      "layer": 14,
+      "victim": 112,
+      "wait_barriers_in_group": 7
+    },
+    {
+      "call": 2,
+      "evict_seq": 2856,
+      "later_demand_seq": 10163,
+      "later_state": 0,
+      "layer": 14,
+      "victim": 45,
+      "wait_barriers_in_group": 7
+    },
+    {
+      "call": 2,
+      "evict_seq": 2863,
+      "later_demand_seq": 21650,
+      "later_state": 0,
+      "layer": 14,
+      "victim": 1,
+      "wait_barriers_in_group": 7
+    },
+    {
+      "call": 2,
+      "evict_seq": 2868,
+      "later_demand_seq": 14659,
+      "later_state": 0,
+      "layer": 14,
+      "victim": 25,
+      "wait_barriers_in_group": 7
+    },
+    {
+      "call": 2,
+      "evict_seq": 2873,
+      "later_demand_seq": 8855,
+      "later_state": 2,
+      "layer": 14,
+      "victim": 119,
+      "wait_barriers_in_group": 7
+    },
+    {
+      "call": 2,
+      "evict_seq": 2877,
+      "later_demand_seq": 8860,
+      "later_state": 2,
+      "layer": 14,
+      "victim": 0,
+      "wait_barriers_in_group": 7
+    },
+    {
+      "call": 2,
+      "evict_seq": 2881,
+      "later_demand_seq": 8856,
+      "later_state": 2,
+      "layer": 14,
+      "victim": 11,
+      "wait_barriers_in_group": 7
+    },
+    {
+      "call": 2,
+      "evict_seq": 2885,
+      "later_demand_seq": 8864,
+      "later_state": 2,
+      "layer": 14,
+      "victim": 18,
+      "wait_barriers_in_group": 7
+    },
+    {
+      "call": 2,
+      "evict_seq": 2888,
+      "later_demand_seq": 3122,
+      "later_state": 2,
+      "layer": 14,
+      "victim": 57,
+      "wait_barriers_in_group": 7
+    },
+    {
+      "call": 2,
+      "evict_seq": 2892,
+      "later_demand_seq": 3123,
+      "later_state": 2,
+      "layer": 14,
+      "victim": 104,
+      "wait_barriers_in_group": 7
+    },
+    {
+      "call": 2,
+      "evict_seq": 2896,
+      "later_demand_seq": 3124,
+      "later_state": 2,
+      "layer": 14,
+      "victim": 27,
+      "wait_barriers_in_group": 7
+    },
+    {
+      "call": 2,
+      "evict_seq": 2900,
+      "later_demand_seq": 3125,
+      "later_state": 1,
+      "layer": 14,
+      "victim": 12,
+      "wait_barriers_in_group": 7
+    },
+    {
+      "call": 2,
+      "evict_seq": 2904,
+      "later_demand_seq": 3127,
+      "later_state": 1,
+      "layer": 14,
+      "victim": 66,
+      "wait_barriers_in_group": 7
+    },
+    {
+      "call": 2,
+      "evict_seq": 2908,
+      "later_demand_seq": 3129,
+      "later_state": 1,
+      "layer": 14,
+      "victim": 43,
+      "wait_barriers_in_group": 7
+    },
+    {
+      "call": 2,
+      "evict_seq": 2912,
+      "later_demand_seq": 3131,
+      "later_state": 1,
+      "layer": 14,
+      "victim": 118,
+      "wait_barriers_in_group": 7
+    },
+    {
+      "call": 2,
+      "evict_seq": 2916,
+      "later_demand_seq": 3133,
+      "later_state": 1,
+      "layer": 14,
+      "victim": 67,
+      "wait_barriers_in_group": 7
+    },
+    {
+      "call": 2,
+      "evict_seq": 2920,
+      "later_demand_seq": 3135,
+      "later_state": 1,
+      "layer": 14,
+      "victim": 75,
+      "wait_barriers_in_group": 7
+    },
+    {
+      "call": 2,
+      "evict_seq": 2924,
+      "later_demand_seq": 3137,
+      "later_state": 1,
+      "layer": 14,
+      "victim": 77,
+      "wait_barriers_in_group": 7
+    },
+    {
+      "call": 2,
+      "evict_seq": 2928,
+      "later_demand_seq": 3140,
+      "later_state": 1,
+      "layer": 14,
+      "victim": 36,
+      "wait_barriers_in_group": 7
+    },
+    {
+      "call": 2,
+      "evict_seq": 2932,
+      "later_demand_seq": 3142,
+      "later_state": 1,
+      "layer": 14,
+      "victim": 44,
+      "wait_barriers_in_group": 7
+    },
+    {
+      "call": 2,
+      "evict_seq": 8869,
+      "later_demand_seq": 10137,
+      "later_state": 2,
+      "layer": 14,
+      "victim": 99,
+      "wait_barriers_in_group": 7
+    },
+    {
+      "call": 2,
+      "evict_seq": 10133,
+      "later_demand_seq": 14676,
+      "later_state": 0,
+      "layer": 14,
+      "victim": 92,
+      "wait_barriers_in_group": 7
+    },
+    {
+      "call": 2,
+      "evict_seq": 10143,
+      "later_demand_seq": 14653,
+      "later_state": 2,
+      "layer": 14,
+      "victim": 31,
+      "wait_barriers_in_group": 7
+    },
+    {
+      "call": 2,
+      "evict_seq": 10147,
+      "later_demand_seq": 14652,
+      "later_state": 2,
+      "layer": 14,
+      "victim": 101,
+      "wait_barriers_in_group": 7
+    },
+    {
+      "call": 2,
+      "evict_seq": 10151,
+      "later_demand_seq": 14655,
+      "later_state": 2,
+      "layer": 14,
+      "victim": 69,
+      "wait_barriers_in_group": 7
+    },
+    {
+      "call": 2,
+      "evict_seq": 10160,
+      "later_demand_seq": 14654,
+      "later_state": 2,
+      "layer": 14,
+      "victim": 28,
+      "wait_barriers_in_group": 7
+    },
+    {
+      "call": 2,
+      "evict_seq": 10164,
+      "later_demand_seq": 14680,
+      "later_state": 0,
+      "layer": 14,
+      "victim": 45,
+      "wait_barriers_in_group": 7
+    },
+    {
+      "call": 2,
+      "evict_seq": 10167,
+      "later_demand_seq": 10293,
+      "later_state": 2,
+      "layer": 14,
+      "victim": 3,
+      "wait_barriers_in_group": 7
+    },
+    {
+      "call": 2,
+      "evict_seq": 14660,
+      "later_demand_seq": 21794,
+      "later_state": 2,
+      "layer": 14,
+      "victim": 25,
+      "wait_barriers_in_group": 7
+    },
+    {
+      "call": 2,
+      "evict_seq": 14673,
+      "later_demand_seq": 21646,
+      "later_state": 2,
+      "layer": 14,
+      "victim": 18,
+      "wait_barriers_in_group": 7
+    },
+    {
+      "call": 2,
+      "evict_seq": 14681,
+      "later_demand_seq": 21793,
+      "later_state": 2,
+      "layer": 14,
+      "victim": 45,
+      "wait_barriers_in_group": 7
+    },
+    {
+      "call": 2,
+      "evict_seq": 14684,
+      "later_demand_seq": 14819,
+      "later_state": 2,
+      "layer": 14,
+      "victim": 59,
+      "wait_barriers_in_group": 7
+    },
+    {
+      "call": 2,
+      "evict_seq": 14688,
+      "later_demand_seq": 14820,
+      "later_state": 2,
+      "layer": 14,
+      "victim": 75,
+      "wait_barriers_in_group": 7
+    },
+    {
+      "call": 2,
+      "evict_seq": 21668,
+      "later_demand_seq": 21774,
+      "later_state": 1,
+      "layer": 14,
+      "victim": 103,
+      "wait_barriers_in_group": 7
+    },
+    {
+      "call": 2,
+      "evict_seq": 21672,
+      "later_demand_seq": 21777,
+      "later_state": 1,
+      "layer": 14,
+      "victim": 121,
+      "wait_barriers_in_group": 7
+    },
+    {
+      "call": 2,
+      "evict_seq": 21676,
+      "later_demand_seq": 21779,
+      "later_state": 1,
+      "layer": 14,
+      "victim": 123,
+      "wait_barriers_in_group": 7
+    },
+    {
+      "call": 2,
+      "evict_seq": 21680,
+      "later_demand_seq": 21783,
+      "later_state": 1,
+      "layer": 14,
+      "victim": 9,
+      "wait_barriers_in_group": 7
+    },
+    {
+      "call": 2,
+      "evict_seq": 21684,
+      "later_demand_seq": 21785,
+      "later_state": 1,
+      "layer": 14,
+      "victim": 104,
+      "wait_barriers_in_group": 7
+    },
+    {
+      "call": 2,
+      "evict_seq": 21688,
+      "later_demand_seq": 21787,
+      "later_state": 1,
+      "layer": 14,
+      "victim": 2,
+      "wait_barriers_in_group": 7
+    },
+    {
+      "call": 2,
+      "evict_seq": 21692,
+      "later_demand_seq": 21789,
+      "later_state": 1,
+      "layer": 14,
+      "victim": 94,
+      "wait_barriers_in_group": 7
+    },
+    {
+      "call": 2,
+      "evict_seq": 21696,
+      "later_demand_seq": 21791,
+      "later_state": 1,
+      "layer": 14,
+      "victim": 29,
+      "wait_barriers_in_group": 7
+    },
+    {
+      "call": 2,
+      "evict_seq": 21700,
+      "later_demand_seq": 21796,
+      "later_state": 1,
+      "layer": 14,
+      "victim": 107,
+      "wait_barriers_in_group": 7
+    },
+    {
+      "call": 2,
+      "evict_seq": 21704,
+      "later_demand_seq": 21798,
+      "later_state": 1,
+      "layer": 14,
+      "victim": 54,
+      "wait_barriers_in_group": 7
+    },
+    {
+      "call": 2,
+      "evict_seq": 3287,
+      "later_demand_seq": 10410,
+      "later_state": 2,
+      "layer": 15,
+      "victim": 0,
+      "wait_barriers_in_group": 9
+    },
+    {
+      "call": 2,
+      "evict_seq": 3292,
+      "later_demand_seq": 21963,
+      "later_state": 0,
+      "layer": 15,
+      "victim": 68,
+      "wait_barriers_in_group": 9
+    },
+    {
+      "call": 2,
+      "evict_seq": 3296,
+      "later_demand_seq": 14832,
+      "later_state": 0,
+      "layer": 15,
+      "victim": 57,
+      "wait_barriers_in_group": 9
+    },
+    {
+      "call": 2,
+      "evict_seq": 3301,
+      "later_demand_seq": 8908,
+      "later_state": 2,
+      "layer": 15,
+      "victim": 42,
+      "wait_barriers_in_group": 9
+    },
+    {
+      "call": 2,
+      "evict_seq": 3305,
+      "later_demand_seq": 8896,
+      "later_state": 2,
+      "layer": 15,
+      "victim": 41,
+      "wait_barriers_in_group": 9
+    },
+    {
+      "call": 2,
+      "evict_seq": 3309,
+      "later_demand_seq": 8891,
+      "later_state": 2,
+      "layer": 15,
+      "victim": 10,
+      "wait_barriers_in_group": 9
+    },
+    {
+      "call": 2,
+      "evict_seq": 3317,
+      "later_demand_seq": 8898,
+      "later_state": 2,
+      "layer": 15,
+      "victim": 15,
+      "wait_barriers_in_group": 9
+    },
+    {
+      "call": 2,
+      "evict_seq": 3325,
+      "later_demand_seq": 8892,
+      "later_state": 2,
+      "layer": 15,
+      "victim": 28,
+      "wait_barriers_in_group": 9
+    },
+    {
+      "call": 2,
+      "evict_seq": 3328,
+      "later_demand_seq": 3534,
+      "later_state": 2,
+      "layer": 15,
+      "victim": 21,
+      "wait_barriers_in_group": 9
+    },
+    {
+      "call": 2,
+      "evict_seq": 3332,
+      "later_demand_seq": 3535,
+      "later_state": 1,
+      "layer": 15,
+      "victim": 87,
+      "wait_barriers_in_group": 9
+    },
+    {
+      "call": 2,
+      "evict_seq": 3336,
+      "later_demand_seq": 3537,
+      "later_state": 1,
+      "layer": 15,
+      "victim": 39,
+      "wait_barriers_in_group": 9
+    },
+    {
+      "call": 2,
+      "evict_seq": 3340,
+      "later_demand_seq": 3539,
+      "later_state": 1,
+      "layer": 15,
+      "victim": 44,
+      "wait_barriers_in_group": 9
+    },
+    {
+      "call": 2,
+      "evict_seq": 3344,
+      "later_demand_seq": 3542,
+      "later_state": 1,
+      "layer": 15,
+      "victim": 112,
+      "wait_barriers_in_group": 9
+    },
+    {
+      "call": 2,
+      "evict_seq": 8901,
+      "later_demand_seq": 10298,
+      "later_state": 2,
+      "layer": 15,
+      "victim": 51,
+      "wait_barriers_in_group": 9
+    },
+    {
+      "call": 2,
+      "evict_seq": 8905,
+      "later_demand_seq": 10408,
+      "later_state": 2,
+      "layer": 15,
+      "victim": 117,
+      "wait_barriers_in_group": 9
+    },
+    {
+      "call": 2,
+      "evict_seq": 10311,
+      "later_demand_seq": 14825,
+      "later_state": 2,
+      "layer": 15,
+      "victim": 55,
+      "wait_barriers_in_group": 9
+    },
+    {
+      "call": 2,
+      "evict_seq": 10316,
+      "later_demand_seq": 14826,
+      "later_state": 2,
+      "layer": 15,
+      "victim": 95,
+      "wait_barriers_in_group": 9
+    },
+    {
+      "call": 2,
+      "evict_seq": 10322,
+      "later_demand_seq": 10410,
+      "later_state": 2,
+      "layer": 15,
+      "victim": 0,
+      "wait_barriers_in_group": 9
+    },
+    {
+      "call": 2,
+      "evict_seq": 10326,
+      "later_demand_seq": 10411,
+      "later_state": 1,
+      "layer": 15,
+      "victim": 69,
+      "wait_barriers_in_group": 9
+    },
+    {
+      "call": 2,
+      "evict_seq": 10330,
+      "later_demand_seq": 10413,
+      "later_state": 1,
+      "layer": 15,
+      "victim": 14,
+      "wait_barriers_in_group": 9
+    },
+    {
+      "call": 2,
+      "evict_seq": 10334,
+      "later_demand_seq": 10415,
+      "later_state": 1,
+      "layer": 15,
+      "victim": 64,
+      "wait_barriers_in_group": 9
+    },
+    {
+      "call": 2,
+      "evict_seq": 10338,
+      "later_demand_seq": 10417,
+      "later_state": 1,
+      "layer": 15,
+      "victim": 66,
+      "wait_barriers_in_group": 9
+    },
+    {
+      "call": 2,
+      "evict_seq": 14842,
+      "later_demand_seq": 14917,
+      "later_state": 2,
+      "layer": 15,
+      "victim": 45,
+      "wait_barriers_in_group": 9
+    },
+    {
+      "call": 2,
+      "evict_seq": 14846,
+      "later_demand_seq": 14918,
+      "later_state": 2,
+      "layer": 15,
+      "victim": 93,
+      "wait_barriers_in_group": 9
+    },
+    {
+      "call": 2,
+      "evict_seq": 14850,
+      "later_demand_seq": 14919,
+      "later_state": 2,
+      "layer": 15,
+      "victim": 21,
+      "wait_barriers_in_group": 9
+    },
+    {
+      "call": 2,
+      "evict_seq": 21994,
+      "later_demand_seq": 22156,
+      "later_state": 1,
+      "layer": 15,
+      "victim": 1,
+      "wait_barriers_in_group": 9
+    },
+    {
+      "call": 2,
+      "evict_seq": 21998,
+      "later_demand_seq": 22158,
+      "later_state": 1,
+      "layer": 15,
+      "victim": 127,
+      "wait_barriers_in_group": 9
+    },
+    {
+      "call": 2,
+      "evict_seq": 22002,
+      "later_demand_seq": 22163,
+      "later_state": 1,
+      "layer": 15,
+      "victim": 98,
+      "wait_barriers_in_group": 9
+    },
+    {
+      "call": 2,
+      "evict_seq": 22006,
+      "later_demand_seq": 22165,
+      "later_state": 1,
+      "layer": 15,
+      "victim": 52,
+      "wait_barriers_in_group": 9
+    },
+    {
+      "call": 2,
+      "evict_seq": 22010,
+      "later_demand_seq": 22170,
+      "later_state": 1,
+      "layer": 15,
+      "victim": 34,
+      "wait_barriers_in_group": 9
+    },
+    {
+      "call": 2,
+      "evict_seq": 22014,
+      "later_demand_seq": 22174,
+      "later_state": 1,
+      "layer": 15,
+      "victim": 82,
+      "wait_barriers_in_group": 9
+    },
+    {
+      "call": 2,
+      "evict_seq": 22018,
+      "later_demand_seq": 22176,
+      "later_state": 1,
+      "layer": 15,
+      "victim": 40,
+      "wait_barriers_in_group": 9
+    },
+    {
+      "call": 2,
+      "evict_seq": 22022,
+      "later_demand_seq": 22178,
+      "later_state": 1,
+      "layer": 15,
+      "victim": 22,
+      "wait_barriers_in_group": 9
+    },
+    {
+      "call": 2,
+      "evict_seq": 22026,
+      "later_demand_seq": 22180,
+      "later_state": 1,
+      "layer": 15,
+      "victim": 2,
+      "wait_barriers_in_group": 9
+    },
+    {
+      "call": 2,
+      "evict_seq": 22183,
+      "later_demand_seq": 22345,
+      "later_state": 2,
+      "layer": 15,
+      "victim": 76,
+      "wait_barriers_in_group": 9
+    },
+    {
+      "call": 2,
+      "evict_seq": 22187,
+      "later_demand_seq": 22347,
+      "later_state": 1,
+      "layer": 15,
+      "victim": 15,
+      "wait_barriers_in_group": 9
+    },
+    {
+      "call": 2,
+      "evict_seq": 22191,
+      "later_demand_seq": 22349,
+      "later_state": 1,
+      "layer": 15,
+      "victim": 103,
+      "wait_barriers_in_group": 9
+    },
+    {
+      "call": 2,
+      "evict_seq": 3611,
+      "later_demand_seq": 10499,
+      "later_state": 0,
+      "layer": 16,
+      "victim": 13,
+      "wait_barriers_in_group": 6
+    },
+    {
+      "call": 2,
+      "evict_seq": 3616,
+      "later_demand_seq": 8971,
+      "later_state": 0,
+      "layer": 16,
+      "victim": 48,
+      "wait_barriers_in_group": 6
+    },
+    {
+      "call": 2,
+      "evict_seq": 3620,
+      "later_demand_seq": 8962,
+      "later_state": 2,
+      "layer": 16,
+      "victim": 84,
+      "wait_barriers_in_group": 6
+    },
+    {
+      "call": 2,
+      "evict_seq": 3624,
+      "later_demand_seq": 8960,
+      "later_state": 2,
+      "layer": 16,
+      "victim": 80,
+      "wait_barriers_in_group": 6
+    },
+    {
+      "call": 2,
+      "evict_seq": 3628,
+      "later_demand_seq": 8965,
+      "later_state": 2,
+      "layer": 16,
+      "victim": 51,
+      "wait_barriers_in_group": 6
+    },
+    {
+      "call": 2,
+      "evict_seq": 3632,
+      "later_demand_seq": 8980,
+      "later_state": 0,
+      "layer": 16,
+      "victim": 76,
+      "wait_barriers_in_group": 6
+    },
+    {
+      "call": 2,
+      "evict_seq": 3636,
+      "later_demand_seq": 8964,
+      "later_state": 2,
+      "layer": 16,
+      "victim": 52,
+      "wait_barriers_in_group": 6
+    },
+    {
+      "call": 2,
+      "evict_seq": 8968,
+      "later_demand_seq": 10718,
+      "later_state": 2,
+      "layer": 16,
+      "victim": 28,
+      "wait_barriers_in_group": 6
+    },
+    {
+      "call": 2,
+      "evict_seq": 8972,
+      "later_demand_seq": 10717,
+      "later_state": 2,
+      "layer": 16,
+      "victim": 48,
+      "wait_barriers_in_group": 6
+    },
+    {
+      "call": 2,
+      "evict_seq": 8976,
+      "later_demand_seq": 14942,
+      "later_state": 0,
+      "layer": 16,
+      "victim": 108,
+      "wait_barriers_in_group": 6
+    },
+    {
+      "call": 2,
+      "evict_seq": 8981,
+      "later_demand_seq": 10514,
+      "later_state": 0,
+      "layer": 16,
+      "victim": 76,
+      "wait_barriers_in_group": 6
+    },
+    {
+      "call": 2,
+      "evict_seq": 10484,
+      "later_demand_seq": 14933,
+      "later_state": 0,
+      "layer": 16,
+      "victim": 53,
+      "wait_barriers_in_group": 6
+    },
+    {
+      "call": 2,
+      "evict_seq": 10488,
+      "later_demand_seq": 14924,
+      "later_state": 2,
+      "layer": 16,
+      "victim": 124,
+      "wait_barriers_in_group": 6
+    },
+    {
+      "call": 2,
+      "evict_seq": 10492,
+      "later_demand_seq": 14926,
+      "later_state": 2,
+      "layer": 16,
+      "victim": 112,
+      "wait_barriers_in_group": 6
+    },
+    {
+      "call": 2,
+      "evict_seq": 10515,
+      "later_demand_seq": 14922,
+      "later_state": 2,
+      "layer": 16,
+      "victim": 76,
+      "wait_barriers_in_group": 6
+    },
+    {
+      "call": 2,
+      "evict_seq": 10522,
+      "later_demand_seq": 10716,
+      "later_state": 2,
+      "layer": 16,
+      "victim": 32,
+      "wait_barriers_in_group": 6
+    },
+    {
+      "call": 2,
+      "evict_seq": 10526,
+      "later_demand_seq": 10719,
+      "later_state": 2,
+      "layer": 16,
+      "victim": 127,
+      "wait_barriers_in_group": 6
+    },
+    {
+      "call": 2,
+      "evict_seq": 10530,
+      "later_demand_seq": 10720,
+      "later_state": 2,
+      "layer": 16,
+      "victim": 107,
+      "wait_barriers_in_group": 6
+    },
+    {
+      "call": 2,
+      "evict_seq": 14939,
+      "later_demand_seq": 22396,
+      "later_state": 2,
+      "layer": 16,
+      "victim": 81,
+      "wait_barriers_in_group": 6
+    },
+    {
+      "call": 2,
+      "evict_seq": 14950,
+      "later_demand_seq": 15031,
+      "later_state": 2,
+      "layer": 16,
+      "victim": 18,
+      "wait_barriers_in_group": 6
+    },
+    {
+      "call": 2,
+      "evict_seq": 22408,
+      "later_demand_seq": 22494,
+      "later_state": 2,
+      "layer": 16,
+      "victim": 19,
+      "wait_barriers_in_group": 6
+    },
+    {
+      "call": 2,
+      "evict_seq": 22412,
+      "later_demand_seq": 22495,
+      "later_state": 1,
+      "layer": 16,
+      "victim": 30,
+      "wait_barriers_in_group": 6
+    },
+    {
+      "call": 2,
+      "evict_seq": 22416,
+      "later_demand_seq": 22498,
+      "later_state": 1,
+      "layer": 16,
+      "victim": 77,
+      "wait_barriers_in_group": 6
+    },
+    {
+      "call": 2,
+      "evict_seq": 22420,
+      "later_demand_seq": 22500,
+      "later_state": 1,
+      "layer": 16,
+      "victim": 69,
+      "wait_barriers_in_group": 6
+    },
+    {
+      "call": 2,
+      "evict_seq": 22424,
+      "later_demand_seq": 22504,
+      "later_state": 1,
+      "layer": 16,
+      "victim": 4,
+      "wait_barriers_in_group": 6
+    },
+    {
+      "call": 2,
+      "evict_seq": 3758,
+      "later_demand_seq": 10752,
+      "later_state": 0,
+      "layer": 17,
+      "victim": 104,
+      "wait_barriers_in_group": 7
+    },
+    {
+      "call": 2,
+      "evict_seq": 3762,
+      "later_demand_seq": 9060,
+      "later_state": 2,
+      "layer": 17,
+      "victim": 33,
+      "wait_barriers_in_group": 7
+    },
+    {
+      "call": 2,
+      "evict_seq": 3766,
+      "later_demand_seq": 10736,
+      "later_state": 0,
+      "layer": 17,
+      "victim": 91,
+      "wait_barriers_in_group": 7
+    },
+    {
+      "call": 2,
+      "evict_seq": 3774,
+      "later_demand_seq": 9051,
+      "later_state": 2,
+      "layer": 17,
+      "victim": 114,
+      "wait_barriers_in_group": 7
+    },
+    {
+      "call": 2,
+      "evict_seq": 3778,
+      "later_demand_seq": 9054,
+      "later_state": 2,
+      "layer": 17,
+      "victim": 124,
+      "wait_barriers_in_group": 7
+    },
+    {
+      "call": 2,
+      "evict_seq": 3782,
+      "later_demand_seq": 9048,
+      "later_state": 2,
+      "layer": 17,
+      "victim": 41,
+      "wait_barriers_in_group": 7
+    },
+    {
+      "call": 2,
+      "evict_seq": 3785,
+      "later_demand_seq": 3940,
+      "later_state": 2,
+      "layer": 17,
+      "victim": 39,
+      "wait_barriers_in_group": 7
+    },
+    {
+      "call": 2,
+      "evict_seq": 3789,
+      "later_demand_seq": 3941,
+      "later_state": 2,
+      "layer": 17,
+      "victim": 107,
+      "wait_barriers_in_group": 7
+    },
+    {
+      "call": 2,
+      "evict_seq": 3793,
+      "later_demand_seq": 3942,
+      "later_state": 1,
+      "layer": 17,
+      "victim": 68,
+      "wait_barriers_in_group": 7
+    },
+    {
+      "call": 2,
+      "evict_seq": 3797,
+      "later_demand_seq": 3944,
+      "later_state": 1,
+      "layer": 17,
+      "victim": 5,
+      "wait_barriers_in_group": 7
+    },
+    {
+      "call": 2,
+      "evict_seq": 10727,
+      "later_demand_seq": 15045,
+      "later_state": 2,
+      "layer": 17,
+      "victim": 3,
+      "wait_barriers_in_group": 7
+    },
+    {
+      "call": 2,
+      "evict_seq": 10742,
+      "later_demand_seq": 15036,
+      "later_state": 2,
+      "layer": 17,
+      "victim": 7,
+      "wait_barriers_in_group": 7
+    },
+    {
+      "call": 2,
+      "evict_seq": 10753,
+      "later_demand_seq": 15048,
+      "later_state": 2,
+      "layer": 17,
+      "victim": 104,
+      "wait_barriers_in_group": 7
+    },
+    {
+      "call": 2,
+      "evict_seq": 10757,
+      "later_demand_seq": 10873,
+      "later_state": 2,
+      "layer": 17,
+      "victim": 121,
+      "wait_barriers_in_group": 7
+    },
+    {
+      "call": 2,
+      "evict_seq": 22609,
+      "later_demand_seq": 22832,
+      "later_state": 2,
+      "layer": 17,
+      "victim": 118,
+      "wait_barriers_in_group": 7
+    },
+    {
+      "call": 2,
+      "evict_seq": 22613,
+      "later_demand_seq": 22833,
+      "later_state": 2,
+      "layer": 17,
+      "victim": 14,
+      "wait_barriers_in_group": 7
+    },
+    {
+      "call": 2,
+      "evict_seq": 22617,
+      "later_demand_seq": 22835,
+      "later_state": 2,
+      "layer": 17,
+      "victim": 69,
+      "wait_barriers_in_group": 7
+    },
+    {
+      "call": 2,
+      "evict_seq": 22621,
+      "later_demand_seq": 22836,
+      "later_state": 1,
+      "layer": 17,
+      "victim": 0,
+      "wait_barriers_in_group": 7
+    },
+    {
+      "call": 2,
+      "evict_seq": 22625,
+      "later_demand_seq": 22838,
+      "later_state": 1,
+      "layer": 17,
+      "victim": 94,
+      "wait_barriers_in_group": 7
+    },
+    {
+      "call": 2,
+      "evict_seq": 22629,
+      "later_demand_seq": 22840,
+      "later_state": 1,
+      "layer": 17,
+      "victim": 59,
+      "wait_barriers_in_group": 7
+    },
+    {
+      "call": 2,
+      "evict_seq": 22633,
+      "later_demand_seq": 22843,
+      "later_state": 1,
+      "layer": 17,
+      "victim": 87,
+      "wait_barriers_in_group": 7
+    },
+    {
+      "call": 2,
+      "evict_seq": 22637,
+      "later_demand_seq": 22846,
+      "later_state": 1,
+      "layer": 17,
+      "victim": 42,
+      "wait_barriers_in_group": 7
+    },
+    {
+      "call": 2,
+      "evict_seq": 22641,
+      "later_demand_seq": 22849,
+      "later_state": 1,
+      "layer": 17,
+      "victim": 78,
+      "wait_barriers_in_group": 7
+    },
+    {
+      "call": 2,
+      "evict_seq": 3981,
+      "later_demand_seq": 22960,
+      "later_state": 0,
+      "layer": 18,
+      "victim": 82,
+      "wait_barriers_in_group": 6
+    },
+    {
+      "call": 2,
+      "evict_seq": 3985,
+      "later_demand_seq": 22952,
+      "later_state": 0,
+      "layer": 18,
+      "victim": 15,
+      "wait_barriers_in_group": 6
+    },
+    {
+      "call": 2,
+      "evict_seq": 3991,
+      "later_demand_seq": 23152,
+      "later_state": 1,
+      "layer": 18,
+      "victim": 21,
+      "wait_barriers_in_group": 6
+    },
+    {
+      "call": 2,
+      "evict_seq": 3996,
+      "later_demand_seq": 9081,
+      "later_state": 2,
+      "layer": 18,
+      "victim": 41,
+      "wait_barriers_in_group": 6
+    },
+    {
+      "call": 2,
+      "evict_seq": 4000,
+      "later_demand_seq": 9082,
+      "later_state": 2,
+      "layer": 18,
+      "victim": 115,
+      "wait_barriers_in_group": 6
+    },
+    {
+      "call": 2,
+      "evict_seq": 4004,
+      "later_demand_seq": 9078,
+      "later_state": 2,
+      "layer": 18,
+      "victim": 101,
+      "wait_barriers_in_group": 6
+    },
+    {
+      "call": 2,
+      "evict_seq": 4008,
+      "later_demand_seq": 9083,
+      "later_state": 2,
+      "layer": 18,
+      "victim": 19,
+      "wait_barriers_in_group": 6
+    },
+    {
+      "call": 2,
+      "evict_seq": 4012,
+      "later_demand_seq": 15100,
+      "later_state": 0,
+      "layer": 18,
+      "victim": 110,
+      "wait_barriers_in_group": 6
+    },
+    {
+      "call": 2,
+      "evict_seq": 9085,
+      "later_demand_seq": 10883,
+      "later_state": 2,
+      "layer": 18,
+      "victim": 79,
+      "wait_barriers_in_group": 6
+    },
+    {
+      "call": 2,
+      "evict_seq": 10880,
+      "later_demand_seq": 15078,
+      "later_state": 2,
+      "layer": 18,
+      "victim": 44,
+      "wait_barriers_in_group": 6
+    },
+    {
+      "call": 2,
+      "evict_seq": 10890,
+      "later_demand_seq": 15079,
+      "later_state": 2,
+      "layer": 18,
+      "victim": 127,
+      "wait_barriers_in_group": 6
+    },
+    {
+      "call": 2,
+      "evict_seq": 10895,
+      "later_demand_seq": 22966,
+      "later_state": 0,
+      "layer": 18,
+      "victim": 126,
+      "wait_barriers_in_group": 6
+    },
+    {
+      "call": 2,
+      "evict_seq": 10903,
+      "later_demand_seq": 15080,
+      "later_state": 2,
+      "layer": 18,
+      "victim": 27,
+      "wait_barriers_in_group": 6
+    },
+    {
+      "call": 2,
+      "evict_seq": 15097,
+      "later_demand_seq": 23145,
+      "later_state": 2,
+      "layer": 18,
+      "victim": 121,
+      "wait_barriers_in_group": 6
+    },
+    {
+      "call": 2,
+      "evict_seq": 15101,
+      "later_demand_seq": 23135,
+      "later_state": 2,
+      "layer": 18,
+      "victim": 110,
+      "wait_barriers_in_group": 6
+    },
+    {
+      "call": 2,
+      "evict_seq": 22980,
+      "later_demand_seq": 23134,
+      "later_state": 2,
+      "layer": 18,
+      "victim": 98,
+      "wait_barriers_in_group": 6
+    },
+    {
+      "call": 2,
+      "evict_seq": 22984,
+      "later_demand_seq": 23136,
+      "later_state": 1,
+      "layer": 18,
+      "victim": 42,
+      "wait_barriers_in_group": 6
+    },
+    {
+      "call": 2,
+      "evict_seq": 22988,
+      "later_demand_seq": 23140,
+      "later_state": 1,
+      "layer": 18,
+      "victim": 118,
+      "wait_barriers_in_group": 6
+    },
+    {
+      "call": 2,
+      "evict_seq": 22992,
+      "later_demand_seq": 23142,
+      "later_state": 1,
+      "layer": 18,
+      "victim": 36,
+      "wait_barriers_in_group": 6
+    },
+    {
+      "call": 2,
+      "evict_seq": 22996,
+      "later_demand_seq": 23146,
+      "later_state": 1,
+      "layer": 18,
+      "victim": 60,
+      "wait_barriers_in_group": 6
+    },
+    {
+      "call": 2,
+      "evict_seq": 23000,
+      "later_demand_seq": 23149,
+      "later_state": 1,
+      "layer": 18,
+      "victim": 63,
+      "wait_barriers_in_group": 6
+    },
+    {
+      "call": 2,
+      "evict_seq": 23004,
+      "later_demand_seq": 23152,
+      "later_state": 1,
+      "layer": 18,
+      "victim": 21,
+      "wait_barriers_in_group": 6
+    },
+    {
+      "call": 2,
+      "evict_seq": 4141,
+      "later_demand_seq": 9112,
+      "later_state": 2,
+      "layer": 19,
+      "victim": 109,
+      "wait_barriers_in_group": 5
+    },
+    {
+      "call": 2,
+      "evict_seq": 4146,
+      "later_demand_seq": 9115,
+      "later_state": 2,
+      "layer": 19,
+      "victim": 18,
+      "wait_barriers_in_group": 5
+    },
+    {
+      "call": 2,
+      "evict_seq": 4153,
+      "later_demand_seq": 23249,
+      "later_state": 0,
+      "layer": 19,
+      "victim": 97,
+      "wait_barriers_in_group": 5
+    },
+    {
+      "call": 2,
+      "evict_seq": 4157,
+      "later_demand_seq": 11097,
+      "later_state": 0,
+      "layer": 19,
+      "victim": 118,
+      "wait_barriers_in_group": 5
+    },
+    {
+      "call": 2,
+      "evict_seq": 4163,
+      "later_demand_seq": 9108,
+      "later_state": 2,
+      "layer": 19,
+      "victim": 13,
+      "wait_barriers_in_group": 5
+    },
+    {
+      "call": 2,
+      "evict_seq": 4168,
+      "later_demand_seq": 9113,
+      "later_state": 2,
+      "layer": 19,
+      "victim": 29,
+      "wait_barriers_in_group": 5
+    },
+    {
+      "call": 2,
+      "evict_seq": 4173,
+      "later_demand_seq": 9114,
+      "later_state": 2,
+      "layer": 19,
+      "victim": 81,
+      "wait_barriers_in_group": 5
+    },
+    {
+      "call": 2,
+      "evict_seq": 11068,
+      "later_demand_seq": 15186,
+      "later_state": 2,
+      "layer": 19,
+      "victim": 6,
+      "wait_barriers_in_group": 5
+    },
+    {
+      "call": 2,
+      "evict_seq": 11072,
+      "later_demand_seq": 15187,
+      "later_state": 2,
+      "layer": 19,
+      "victim": 95,
+      "wait_barriers_in_group": 5
+    },
+    {
+      "call": 2,
+      "evict_seq": 11076,
+      "later_demand_seq": 15191,
+      "later_state": 2,
+      "layer": 19,
+      "victim": 63,
+      "wait_barriers_in_group": 5
+    },
+    {
+      "call": 2,
+      "evict_seq": 11086,
+      "later_demand_seq": 23247,
+      "later_state": 2,
+      "layer": 19,
+      "victim": 31,
+      "wait_barriers_in_group": 5
+    },
+    {
+      "call": 2,
+      "evict_seq": 11094,
+      "later_demand_seq": 15199,
+      "later_state": 2,
+      "layer": 19,
+      "victim": 12,
+      "wait_barriers_in_group": 5
+    },
+    {
+      "call": 2,
+      "evict_seq": 11101,
+      "later_demand_seq": 11257,
+      "later_state": 2,
+      "layer": 19,
+      "victim": 42,
+      "wait_barriers_in_group": 5
+    },
+    {
+      "call": 2,
+      "evict_seq": 23273,
+      "later_demand_seq": 23373,
+      "later_state": 1,
+      "layer": 19,
+      "victim": 1,
+      "wait_barriers_in_group": 5
+    },
+    {
+      "call": 2,
+      "evict_seq": 23277,
+      "later_demand_seq": 23375,
+      "later_state": 1,
+      "layer": 19,
+      "victim": 41,
+      "wait_barriers_in_group": 5
+    },
+    {
+      "call": 2,
+      "evict_seq": 23281,
+      "later_demand_seq": 23377,
+      "later_state": 1,
+      "layer": 19,
+      "victim": 7,
+      "wait_barriers_in_group": 5
+    },
+    {
+      "call": 2,
+      "evict_seq": 23285,
+      "later_demand_seq": 23379,
+      "later_state": 1,
+      "layer": 19,
+      "victim": 93,
+      "wait_barriers_in_group": 5
+    },
+    {
+      "call": 2,
+      "evict_seq": 23289,
+      "later_demand_seq": 23381,
+      "later_state": 1,
+      "layer": 19,
+      "victim": 39,
+      "wait_barriers_in_group": 5
+    },
+    {
+      "call": 2,
+      "evict_seq": 23293,
+      "later_demand_seq": 23383,
+      "later_state": 1,
+      "layer": 19,
+      "victim": 110,
+      "wait_barriers_in_group": 5
+    },
+    {
+      "call": 2,
+      "evict_seq": 23297,
+      "later_demand_seq": 23385,
+      "later_state": 1,
+      "layer": 19,
+      "victim": 17,
+      "wait_barriers_in_group": 5
+    },
+    {
+      "call": 2,
+      "evict_seq": 23301,
+      "later_demand_seq": 23393,
+      "later_state": 1,
+      "layer": 19,
+      "victim": 2,
+      "wait_barriers_in_group": 5
+    },
+    {
+      "call": 2,
+      "evict_seq": 4287,
+      "later_demand_seq": 23711,
+      "later_state": 1,
+      "layer": 20,
+      "victim": 59,
+      "wait_barriers_in_group": 5
+    },
+    {
+      "call": 2,
+      "evict_seq": 4291,
+      "later_demand_seq": 11267,
+      "later_state": 2,
+      "layer": 20,
+      "victim": 11,
+      "wait_barriers_in_group": 5
+    },
+    {
+      "call": 2,
+      "evict_seq": 4296,
+      "later_demand_seq": 11281,
+      "later_state": 2,
+      "layer": 20,
+      "victim": 35,
+      "wait_barriers_in_group": 5
+    },
+    {
+      "call": 2,
+      "evict_seq": 4305,
+      "later_demand_seq": 9116,
+      "later_state": 2,
+      "layer": 20,
+      "victim": 22,
+      "wait_barriers_in_group": 5
+    },
+    {
+      "call": 2,
+      "evict_seq": 4309,
+      "later_demand_seq": 23522,
+      "later_state": 0,
+      "layer": 20,
+      "victim": 1,
+      "wait_barriers_in_group": 5
+    },
+    {
+      "call": 2,
+      "evict_seq": 4313,
+      "later_demand_seq": 9121,
+      "later_state": 2,
+      "layer": 20,
+      "victim": 92,
+      "wait_barriers_in_group": 5
+    },
+    {
+      "call": 2,
+      "evict_seq": 4322,
+      "later_demand_seq": 9117,
+      "later_state": 2,
+      "layer": 20,
+      "victim": 100,
+      "wait_barriers_in_group": 5
+    },
+    {
+      "call": 2,
+      "evict_seq": 4327,
+      "later_demand_seq": 9122,
+      "later_state": 2,
+      "layer": 20,
+      "victim": 16,
+      "wait_barriers_in_group": 5
+    },
+    {
+      "call": 2,
+      "evict_seq": 4331,
+      "later_demand_seq": 9118,
+      "later_state": 2,
+      "layer": 20,
+      "victim": 78,
+      "wait_barriers_in_group": 5
+    },
+    {
+      "call": 2,
+      "evict_seq": 11264,
+      "later_demand_seq": 15221,
+      "later_state": 2,
+      "layer": 20,
+      "victim": 67,
+      "wait_barriers_in_group": 5
+    },
+    {
+      "call": 2,
+      "evict_seq": 11270,
+      "later_demand_seq": 15224,
+      "later_state": 2,
+      "layer": 20,
+      "victim": 68,
+      "wait_barriers_in_group": 5
+    },
+    {
+      "call": 2,
+      "evict_seq": 11274,
+      "later_demand_seq": 15235,
+      "later_state": 0,
+      "layer": 20,
+      "victim": 42,
+      "wait_barriers_in_group": 5
+    },
+    {
+      "call": 2,
+      "evict_seq": 11283,
+      "later_demand_seq": 23541,
+      "later_state": 0,
+      "layer": 20,
+      "victim": 27,
+      "wait_barriers_in_group": 5
+    },
+    {
+      "call": 2,
+      "evict_seq": 11287,
+      "later_demand_seq": 15239,
+      "later_state": 2,
+      "layer": 20,
+      "victim": 16,
+      "wait_barriers_in_group": 5
+    },
+    {
+      "call": 2,
+      "evict_seq": 15227,
+      "later_demand_seq": 23526,
+      "later_state": 2,
+      "layer": 20,
+      "victim": 51,
+      "wait_barriers_in_group": 5
+    },
+    {
+      "call": 2,
+      "evict_seq": 15232,
+      "later_demand_seq": 23520,
+      "later_state": 2,
+      "layer": 20,
+      "victim": 40,
+      "wait_barriers_in_group": 5
+    },
+    {
+      "call": 2,
+      "evict_seq": 15241,
+      "later_demand_seq": 23515,
+      "later_state": 2,
+      "layer": 20,
+      "victim": 100,
+      "wait_barriers_in_group": 5
+    },
+    {
+      "call": 2,
+      "evict_seq": 23549,
+      "later_demand_seq": 23694,
+      "later_state": 2,
+      "layer": 20,
+      "victim": 119,
+      "wait_barriers_in_group": 5
+    },
+    {
+      "call": 2,
+      "evict_seq": 23553,
+      "later_demand_seq": 23697,
+      "later_state": 2,
+      "layer": 20,
+      "victim": 64,
+      "wait_barriers_in_group": 5
+    },
+    {
+      "call": 2,
+      "evict_seq": 23557,
+      "later_demand_seq": 23699,
+      "later_state": 1,
+      "layer": 20,
+      "victim": 82,
+      "wait_barriers_in_group": 5
+    },
+    {
+      "call": 2,
+      "evict_seq": 23561,
+      "later_demand_seq": 23704,
+      "later_state": 1,
+      "layer": 20,
+      "victim": 12,
+      "wait_barriers_in_group": 5
+    },
+    {
+      "call": 2,
+      "evict_seq": 23565,
+      "later_demand_seq": 23711,
+      "later_state": 1,
+      "layer": 20,
+      "victim": 59,
+      "wait_barriers_in_group": 5
+    },
+    {
+      "call": 2,
+      "evict_seq": 4508,
+      "later_demand_seq": 9125,
+      "later_state": 2,
+      "layer": 21,
+      "victim": 11,
+      "wait_barriers_in_group": 5
+    },
+    {
+      "call": 2,
+      "evict_seq": 4515,
+      "later_demand_seq": 11439,
+      "later_state": 0,
+      "layer": 21,
+      "victim": 91,
+      "wait_barriers_in_group": 5
+    },
+    {
+      "call": 2,
+      "evict_seq": 4519,
+      "later_demand_seq": 23769,
+      "later_state": 0,
+      "layer": 21,
+      "victim": 38,
+      "wait_barriers_in_group": 5
+    },
+    {
+      "call": 2,
+      "evict_seq": 4531,
+      "later_demand_seq": 9129,
+      "later_state": 2,
+      "layer": 21,
+      "victim": 119,
+      "wait_barriers_in_group": 5
+    },
+    {
+      "call": 2,
+      "evict_seq": 4535,
+      "later_demand_seq": 9124,
+      "later_state": 2,
+      "layer": 21,
+      "victim": 54,
+      "wait_barriers_in_group": 5
+    },
+    {
+      "call": 2,
+      "evict_seq": 4539,
+      "later_demand_seq": 9128,
+      "later_state": 2,
+      "layer": 21,
+      "victim": 86,
+      "wait_barriers_in_group": 5
+    },
+    {
+      "call": 2,
+      "evict_seq": 4543,
+      "later_demand_seq": 9126,
+      "later_state": 2,
+      "layer": 21,
+      "victim": 107,
+      "wait_barriers_in_group": 5
+    },
+    {
+      "call": 2,
+      "evict_seq": 4546,
+      "later_demand_seq": 4740,
+      "later_state": 2,
+      "layer": 21,
+      "victim": 69,
+      "wait_barriers_in_group": 5
+    },
+    {
+      "call": 2,
+      "evict_seq": 4550,
+      "later_demand_seq": 4742,
+      "later_state": 2,
+      "layer": 21,
+      "victim": 63,
+      "wait_barriers_in_group": 5
+    },
+    {
+      "call": 2,
+      "evict_seq": 4554,
+      "later_demand_seq": 4743,
+      "later_state": 2,
+      "layer": 21,
+      "victim": 70,
+      "wait_barriers_in_group": 5
+    },
+    {
+      "call": 2,
+      "evict_seq": 11406,
+      "later_demand_seq": 15334,
+      "later_state": 2,
+      "layer": 21,
+      "victim": 103,
+      "wait_barriers_in_group": 5
+    },
+    {
+      "call": 2,
+      "evict_seq": 11411,
+      "later_demand_seq": 15333,
+      "later_state": 2,
+      "layer": 21,
+      "victim": 90,
+      "wait_barriers_in_group": 5
+    },
+    {
+      "call": 2,
+      "evict_seq": 11415,
+      "later_demand_seq": 23797,
+      "later_state": 0,
+      "layer": 21,
+      "victim": 81,
+      "wait_barriers_in_group": 5
+    },
+    {
+      "call": 2,
+      "evict_seq": 11422,
+      "later_demand_seq": 15337,
+      "later_state": 2,
+      "layer": 21,
+      "victim": 53,
+      "wait_barriers_in_group": 5
+    },
+    {
+      "call": 2,
+      "evict_seq": 11426,
+      "later_demand_seq": 15331,
+      "later_state": 2,
+      "layer": 21,
+      "victim": 51,
+      "wait_barriers_in_group": 5
+    },
+    {
+      "call": 2,
+      "evict_seq": 11430,
+      "later_demand_seq": 15329,
+      "later_state": 2,
+      "layer": 21,
+      "victim": 50,
+      "wait_barriers_in_group": 5
+    },
+    {
+      "call": 2,
+      "evict_seq": 11440,
+      "later_demand_seq": 15338,
+      "later_state": 2,
+      "layer": 21,
+      "victim": 91,
+      "wait_barriers_in_group": 5
+    },
+    {
+      "call": 2,
+      "evict_seq": 11443,
+      "later_demand_seq": 11584,
+      "later_state": 2,
+      "layer": 21,
+      "victim": 106,
+      "wait_barriers_in_group": 5
+    },
+    {
+      "call": 2,
+      "evict_seq": 23805,
+      "later_demand_seq": 24005,
+      "later_state": 2,
+      "layer": 21,
+      "victim": 43,
+      "wait_barriers_in_group": 5
+    },
+    {
+      "call": 2,
+      "evict_seq": 23809,
+      "later_demand_seq": 24009,
+      "later_state": 2,
+      "layer": 21,
+      "victim": 55,
+      "wait_barriers_in_group": 5
+    },
+    {
+      "call": 2,
+      "evict_seq": 23813,
+      "later_demand_seq": 24010,
+      "later_state": 1,
+      "layer": 21,
+      "victim": 82,
+      "wait_barriers_in_group": 5
+    },
+    {
+      "call": 2,
+      "evict_seq": 23817,
+      "later_demand_seq": 24018,
+      "later_state": 1,
+      "layer": 21,
+      "victim": 52,
+      "wait_barriers_in_group": 5
+    },
+    {
+      "call": 2,
+      "evict_seq": 4748,
+      "later_demand_seq": 15369,
+      "later_state": 0,
+      "layer": 22,
+      "victim": 91,
+      "wait_barriers_in_group": 5
+    },
+    {
+      "call": 2,
+      "evict_seq": 4755,
+      "later_demand_seq": 15508,
+      "later_state": 2,
+      "layer": 22,
+      "victim": 14,
+      "wait_barriers_in_group": 5
+    },
+    {
+      "call": 2,
+      "evict_seq": 4759,
+      "later_demand_seq": 24063,
+      "later_state": 0,
+      "layer": 22,
+      "victim": 116,
+      "wait_barriers_in_group": 5
+    },
+    {
+      "call": 2,
+      "evict_seq": 4765,
+      "later_demand_seq": 9175,
+      "later_state": 2,
+      "layer": 22,
+      "victim": 108,
+      "wait_barriers_in_group": 5
+    },
+    {
+      "call": 2,
+      "evict_seq": 4770,
+      "later_demand_seq": 9178,
+      "later_state": 2,
+      "layer": 22,
+      "victim": 84,
+      "wait_barriers_in_group": 5
+    },
+    {
+      "call": 2,
+      "evict_seq": 4774,
+      "later_demand_seq": 11607,
+      "later_state": 0,
+      "layer": 22,
+      "victim": 115,
+      "wait_barriers_in_group": 5
+    },
+    {
+      "call": 2,
+      "evict_seq": 4778,
+      "later_demand_seq": 9179,
+      "later_state": 2,
+      "layer": 22,
+      "victim": 29,
+      "wait_barriers_in_group": 5
+    },
+    {
+      "call": 2,
+      "evict_seq": 4782,
+      "later_demand_seq": 9176,
+      "later_state": 2,
+      "layer": 22,
+      "victim": 96,
+      "wait_barriers_in_group": 5
+    },
+    {
+      "call": 2,
+      "evict_seq": 4786,
+      "later_demand_seq": 9174,
+      "later_state": 2,
+      "layer": 22,
+      "victim": 90,
+      "wait_barriers_in_group": 5
+    },
+    {
+      "call": 2,
+      "evict_seq": 4789,
+      "later_demand_seq": 4964,
+      "later_state": 2,
+      "layer": 22,
+      "victim": 79,
+      "wait_barriers_in_group": 5
+    },
+    {
+      "call": 2,
+      "evict_seq": 4793,
+      "later_demand_seq": 4965,
+      "later_state": 2,
+      "layer": 22,
+      "victim": 70,
+      "wait_barriers_in_group": 5
+    },
+    {
+      "call": 2,
+      "evict_seq": 9181,
+      "later_demand_seq": 11595,
+      "later_state": 2,
+      "layer": 22,
+      "victim": 61,
+      "wait_barriers_in_group": 5
+    },
+    {
+      "call": 2,
+      "evict_seq": 11592,
+      "later_demand_seq": 15346,
+      "later_state": 2,
+      "layer": 22,
+      "victim": 114,
+      "wait_barriers_in_group": 5
+    },
+    {
+      "call": 2,
+      "evict_seq": 11597,
+      "later_demand_seq": 15505,
+      "later_state": 2,
+      "layer": 22,
+      "victim": 20,
+      "wait_barriers_in_group": 5
+    },
+    {
+      "call": 2,
+      "evict_seq": 11616,
+      "later_demand_seq": 15343,
+      "later_state": 2,
+      "layer": 22,
+      "victim": 84,
+      "wait_barriers_in_group": 5
+    },
+    {
+      "call": 2,
+      "evict_seq": 11628,
+      "later_demand_seq": 11788,
+      "later_state": 2,
+      "layer": 22,
+      "victim": 80,
+      "wait_barriers_in_group": 5
+    },
+    {
+      "call": 2,
+      "evict_seq": 11632,
+      "later_demand_seq": 11789,
+      "later_state": 2,
+      "layer": 22,
+      "victim": 48,
+      "wait_barriers_in_group": 5
+    },
+    {
+      "call": 2,
+      "evict_seq": 15348,
+      "later_demand_seq": 24081,
+      "later_state": 0,
+      "layer": 22,
+      "victim": 5,
+      "wait_barriers_in_group": 5
+    },
+    {
+      "call": 2,
+      "evict_seq": 15353,
+      "later_demand_seq": 24051,
+      "later_state": 2,
+      "layer": 22,
+      "victim": 53,
+      "wait_barriers_in_group": 5
+    },
+    {
+      "call": 2,
+      "evict_seq": 15366,
+      "later_demand_seq": 24054,
+      "later_state": 2,
+      "layer": 22,
+      "victim": 79,
+      "wait_barriers_in_group": 5
+    },
+    {
+      "call": 2,
+      "evict_seq": 15370,
+      "later_demand_seq": 24217,
+      "later_state": 2,
+      "layer": 22,
+      "victim": 91,
+      "wait_barriers_in_group": 5
+    },
+    {
+      "call": 2,
+      "evict_seq": 15379,
+      "later_demand_seq": 15508,
+      "later_state": 2,
+      "layer": 22,
+      "victim": 14,
+      "wait_barriers_in_group": 5
+    },
+    {
+      "call": 2,
+      "evict_seq": 24089,
+      "later_demand_seq": 24218,
+      "later_state": 2,
+      "layer": 22,
+      "victim": 95,
+      "wait_barriers_in_group": 5
+    },
+    {
+      "call": 2,
+      "evict_seq": 4970,
+      "later_demand_seq": 24363,
+      "later_state": 1,
+      "layer": 23,
+      "victim": 58,
+      "wait_barriers_in_group": 7
+    },
+    {
+      "call": 2,
+      "evict_seq": 4979,
+      "later_demand_seq": 9206,
+      "later_state": 2,
+      "layer": 23,
+      "victim": 25,
+      "wait_barriers_in_group": 7
+    },
+    {
+      "call": 2,
+      "evict_seq": 4983,
+      "later_demand_seq": 24349,
+      "later_state": 1,
+      "layer": 23,
+      "victim": 108,
+      "wait_barriers_in_group": 7
+    },
+    {
+      "call": 2,
+      "evict_seq": 5000,
+      "later_demand_seq": 9204,
+      "later_state": 2,
+      "layer": 23,
+      "victim": 110,
+      "wait_barriers_in_group": 7
+    },
+    {
+      "call": 2,
+      "evict_seq": 5004,
+      "later_demand_seq": 9212,
+      "later_state": 2,
+      "layer": 23,
+      "victim": 3,
+      "wait_barriers_in_group": 7
+    },
+    {
+      "call": 2,
+      "evict_seq": 5008,
+      "later_demand_seq": 9201,
+      "later_state": 2,
+      "layer": 23,
+      "victim": 76,
+      "wait_barriers_in_group": 7
+    },
+    {
+      "call": 2,
+      "evict_seq": 5011,
+      "later_demand_seq": 5205,
+      "later_state": 2,
+      "layer": 23,
+      "victim": 35,
+      "wait_barriers_in_group": 7
+    },
+    {
+      "call": 2,
+      "evict_seq": 5015,
+      "later_demand_seq": 5206,
+      "later_state": 2,
+      "layer": 23,
+      "victim": 10,
+      "wait_barriers_in_group": 7
+    },
+    {
+      "call": 2,
+      "evict_seq": 5019,
+      "later_demand_seq": 5207,
+      "later_state": 2,
+      "layer": 23,
+      "victim": 6,
+      "wait_barriers_in_group": 7
+    },
+    {
+      "call": 2,
+      "evict_seq": 9208,
+      "later_demand_seq": 11982,
+      "later_state": 2,
+      "layer": 23,
+      "victim": 52,
+      "wait_barriers_in_group": 7
+    },
+    {
+      "call": 2,
+      "evict_seq": 11800,
+      "later_demand_seq": 15516,
+      "later_state": 2,
+      "layer": 23,
+      "victim": 11,
+      "wait_barriers_in_group": 7
+    },
+    {
+      "call": 2,
+      "evict_seq": 11804,
+      "later_demand_seq": 15535,
+      "later_state": 0,
+      "layer": 23,
+      "victim": 26,
+      "wait_barriers_in_group": 7
+    },
+    {
+      "call": 2,
+      "evict_seq": 11808,
+      "later_demand_seq": 15531,
+      "later_state": 0,
+      "layer": 23,
+      "victim": 63,
+      "wait_barriers_in_group": 7
+    },
+    {
+      "call": 2,
+      "evict_seq": 11820,
+      "later_demand_seq": 15693,
+      "later_state": 2,
+      "layer": 23,
+      "victim": 6,
+      "wait_barriers_in_group": 7
+    },
+    {
+      "call": 2,
+      "evict_seq": 11825,
+      "later_demand_seq": 15530,
+      "later_state": 2,
+      "layer": 23,
+      "victim": 75,
+      "wait_barriers_in_group": 7
+    },
+    {
+      "call": 2,
+      "evict_seq": 11829,
+      "later_demand_seq": 15526,
+      "later_state": 0,
+      "layer": 23,
+      "victim": 55,
+      "wait_barriers_in_group": 7
+    },
+    {
+      "call": 2,
+      "evict_seq": 11832,
+      "later_demand_seq": 11974,
+      "later_state": 1,
+      "layer": 23,
+      "victim": 117,
+      "wait_barriers_in_group": 7
+    },
+    {
+      "call": 2,
+      "evict_seq": 11836,
+      "later_demand_seq": 11977,
+      "later_state": 1,
+      "layer": 23,
+      "victim": 123,
+      "wait_barriers_in_group": 7
+    },
+    {
+      "call": 2,
+      "evict_seq": 11840,
+      "later_demand_seq": 11979,
+      "later_state": 1,
+      "layer": 23,
+      "victim": 27,
+      "wait_barriers_in_group": 7
+    },
+    {
+      "call": 2,
+      "evict_seq": 11844,
+      "later_demand_seq": 11984,
+      "later_state": 1,
+      "layer": 23,
+      "victim": 50,
+      "wait_barriers_in_group": 7
+    },
+    {
+      "call": 2,
+      "evict_seq": 15536,
+      "later_demand_seq": 24244,
+      "later_state": 2,
+      "layer": 23,
+      "victim": 26,
+      "wait_barriers_in_group": 7
+    },
+    {
+      "call": 2,
+      "evict_seq": 15540,
+      "later_demand_seq": 24249,
+      "later_state": 2,
+      "layer": 23,
+      "victim": 25,
+      "wait_barriers_in_group": 7
+    },
+    {
+      "call": 2,
+      "evict_seq": 15544,
+      "later_demand_seq": 24224,
+      "later_state": 2,
+      "layer": 23,
+      "victim": 35,
+      "wait_barriers_in_group": 7
+    },
+    {
+      "call": 2,
+      "evict_seq": 15548,
+      "later_demand_seq": 24238,
+      "later_state": 2,
+      "layer": 23,
+      "victim": 43,
+      "wait_barriers_in_group": 7
+    },
+    {
+      "call": 2,
+      "evict_seq": 15551,
+      "later_demand_seq": 15692,
+      "later_state": 2,
+      "layer": 23,
+      "victim": 102,
+      "wait_barriers_in_group": 7
+    },
+    {
+      "call": 2,
+      "evict_seq": 24251,
+      "later_demand_seq": 24345,
+      "later_state": 1,
+      "layer": 23,
+      "victim": 68,
+      "wait_barriers_in_group": 7
+    },
+    {
+      "call": 2,
+      "evict_seq": 24255,
+      "later_demand_seq": 24347,
+      "later_state": 1,
+      "layer": 23,
+      "victim": 126,
+      "wait_barriers_in_group": 7
+    },
+    {
+      "call": 2,
+      "evict_seq": 24259,
+      "later_demand_seq": 24349,
+      "later_state": 1,
+      "layer": 23,
+      "victim": 108,
+      "wait_barriers_in_group": 7
+    },
+    {
+      "call": 2,
+      "evict_seq": 24263,
+      "later_demand_seq": 24355,
+      "later_state": 1,
+      "layer": 23,
+      "victim": 83,
+      "wait_barriers_in_group": 7
+    },
+    {
+      "call": 2,
+      "evict_seq": 24267,
+      "later_demand_seq": 24359,
+      "later_state": 1,
+      "layer": 23,
+      "victim": 87,
+      "wait_barriers_in_group": 7
+    },
+    {
+      "call": 2,
+      "evict_seq": 24271,
+      "later_demand_seq": 24363,
+      "later_state": 1,
+      "layer": 23,
+      "victim": 58,
+      "wait_barriers_in_group": 7
+    },
+    {
+      "call": 2,
+      "evict_seq": 24275,
+      "later_demand_seq": 24366,
+      "later_state": 1,
+      "layer": 23,
+      "victim": 105,
+      "wait_barriers_in_group": 7
+    },
+    {
+      "call": 2,
+      "evict_seq": 5224,
+      "later_demand_seq": 12186,
+      "later_state": 2,
+      "layer": 24,
+      "victim": 25,
+      "wait_barriers_in_group": 7
+    },
+    {
+      "call": 2,
+      "evict_seq": 5228,
+      "later_demand_seq": 12067,
+      "later_state": 0,
+      "layer": 24,
+      "victim": 70,
+      "wait_barriers_in_group": 7
+    },
+    {
+      "call": 2,
+      "evict_seq": 5232,
+      "later_demand_seq": 24745,
+      "later_state": 1,
+      "layer": 24,
+      "victim": 73,
+      "wait_barriers_in_group": 7
+    },
+    {
+      "call": 2,
+      "evict_seq": 5236,
+      "later_demand_seq": 12051,
+      "later_state": 2,
+      "layer": 24,
+      "victim": 118,
+      "wait_barriers_in_group": 7
+    },
+    {
+      "call": 2,
+      "evict_seq": 5243,
+      "later_demand_seq": 9240,
+      "later_state": 2,
+      "layer": 24,
+      "victim": 24,
+      "wait_barriers_in_group": 7
+    },
+    {
+      "call": 2,
+      "evict_seq": 5247,
+      "later_demand_seq": 9233,
+      "later_state": 2,
+      "layer": 24,
+      "victim": 121,
+      "wait_barriers_in_group": 7
+    },
+    {
+      "call": 2,
+      "evict_seq": 5251,
+      "later_demand_seq": 9234,
+      "later_state": 2,
+      "layer": 24,
+      "victim": 36,
+      "wait_barriers_in_group": 7
+    },
+    {
+      "call": 2,
+      "evict_seq": 5254,
+      "later_demand_seq": 5396,
+      "later_state": 1,
+      "layer": 24,
+      "victim": 90,
+      "wait_barriers_in_group": 7
+    },
+    {
+      "call": 2,
+      "evict_seq": 5258,
+      "later_demand_seq": 5398,
+      "later_state": 1,
+      "layer": 24,
+      "victim": 62,
+      "wait_barriers_in_group": 7
+    },
+    {
+      "call": 2,
+      "evict_seq": 5262,
+      "later_demand_seq": 5400,
+      "later_state": 1,
+      "layer": 24,
+      "victim": 13,
+      "wait_barriers_in_group": 7
+    },
+    {
+      "call": 2,
+      "evict_seq": 5266,
+      "later_demand_seq": 5402,
+      "later_state": 1,
+      "layer": 24,
+      "victim": 14,
+      "wait_barriers_in_group": 7
+    },
+    {
+      "call": 2,
+      "evict_seq": 12053,
+      "later_demand_seq": 15881,
+      "later_state": 2,
+      "layer": 24,
+      "victim": 54,
+      "wait_barriers_in_group": 7
+    },
+    {
+      "call": 2,
+      "evict_seq": 12057,
+      "later_demand_seq": 24500,
+      "later_state": 0,
+      "layer": 24,
+      "victim": 112,
+      "wait_barriers_in_group": 7
+    },
+    {
+      "call": 2,
+      "evict_seq": 12068,
+      "later_demand_seq": 24743,
+      "later_state": 1,
+      "layer": 24,
+      "victim": 70,
+      "wait_barriers_in_group": 7
+    },
+    {
+      "call": 2,
+      "evict_seq": 12073,
+      "later_demand_seq": 24512,
+      "later_state": 0,
+      "layer": 24,
+      "victim": 52,
+      "wait_barriers_in_group": 7
+    },
+    {
+      "call": 2,
+      "evict_seq": 12076,
+      "later_demand_seq": 12174,
+      "later_state": 1,
+      "layer": 24,
+      "victim": 39,
+      "wait_barriers_in_group": 7
+    },
+    {
+      "call": 2,
+      "evict_seq": 12080,
+      "later_demand_seq": 12176,
+      "later_state": 1,
+      "layer": 24,
+      "victim": 57,
+      "wait_barriers_in_group": 7
+    },
+    {
+      "call": 2,
+      "evict_seq": 12084,
+      "later_demand_seq": 12178,
+      "later_state": 1,
+      "layer": 24,
+      "victim": 103,
+      "wait_barriers_in_group": 7
+    },
+    {
+      "call": 2,
+      "evict_seq": 12088,
+      "later_demand_seq": 12180,
+      "later_state": 1,
+      "layer": 24,
+      "victim": 23,
+      "wait_barriers_in_group": 7
+    },
+    {
+      "call": 2,
+      "evict_seq": 12092,
+      "later_demand_seq": 12182,
+      "later_state": 1,
+      "layer": 24,
+      "victim": 93,
+      "wait_barriers_in_group": 7
+    },
+    {
+      "call": 2,
+      "evict_seq": 12096,
+      "later_demand_seq": 12184,
+      "later_state": 1,
+      "layer": 24,
+      "victim": 3,
+      "wait_barriers_in_group": 7
+    },
+    {
+      "call": 2,
+      "evict_seq": 12100,
+      "later_demand_seq": 12189,
+      "later_state": 1,
+      "layer": 24,
+      "victim": 106,
+      "wait_barriers_in_group": 7
+    },
+    {
+      "call": 2,
+      "evict_seq": 12104,
+      "later_demand_seq": 12191,
+      "later_state": 1,
+      "layer": 24,
+      "victim": 30,
+      "wait_barriers_in_group": 7
+    },
+    {
+      "call": 2,
+      "evict_seq": 15719,
+      "later_demand_seq": 24741,
+      "later_state": 2,
+      "layer": 24,
+      "victim": 32,
+      "wait_barriers_in_group": 7
+    },
+    {
+      "call": 2,
+      "evict_seq": 15723,
+      "later_demand_seq": 24755,
+      "later_state": 2,
+      "layer": 24,
+      "victim": 64,
+      "wait_barriers_in_group": 7
+    },
+    {
+      "call": 2,
+      "evict_seq": 15727,
+      "later_demand_seq": 24739,
+      "later_state": 2,
+      "layer": 24,
+      "victim": 72,
+      "wait_barriers_in_group": 7
+    },
+    {
+      "call": 2,
+      "evict_seq": 15731,
+      "later_demand_seq": 24869,
+      "later_state": 2,
+      "layer": 24,
+      "victim": 79,
+      "wait_barriers_in_group": 7
+    },
+    {
+      "call": 2,
+      "evict_seq": 15738,
+      "later_demand_seq": 15882,
+      "later_state": 2,
+      "layer": 24,
+      "victim": 76,
+      "wait_barriers_in_group": 7
+    },
+    {
+      "call": 2,
+      "evict_seq": 24516,
+      "later_demand_seq": 24738,
+      "later_state": 2,
+      "layer": 24,
+      "victim": 42,
+      "wait_barriers_in_group": 7
+    },
+    {
+      "call": 2,
+      "evict_seq": 24520,
+      "later_demand_seq": 24740,
+      "later_state": 2,
+      "layer": 24,
+      "victim": 100,
+      "wait_barriers_in_group": 7
+    },
+    {
+      "call": 2,
+      "evict_seq": 24524,
+      "later_demand_seq": 24742,
+      "later_state": 2,
+      "layer": 24,
+      "victim": 74,
+      "wait_barriers_in_group": 7
+    },
+    {
+      "call": 2,
+      "evict_seq": 24528,
+      "later_demand_seq": 24743,
+      "later_state": 1,
+      "layer": 24,
+      "victim": 70,
+      "wait_barriers_in_group": 7
+    },
+    {
+      "call": 2,
+      "evict_seq": 24532,
+      "later_demand_seq": 24745,
+      "later_state": 1,
+      "layer": 24,
+      "victim": 73,
+      "wait_barriers_in_group": 7
+    },
+    {
+      "call": 2,
+      "evict_seq": 24536,
+      "later_demand_seq": 24748,
+      "later_state": 1,
+      "layer": 24,
+      "victim": 34,
+      "wait_barriers_in_group": 7
+    },
+    {
+      "call": 2,
+      "evict_seq": 24540,
+      "later_demand_seq": 24750,
+      "later_state": 1,
+      "layer": 24,
+      "victim": 38,
+      "wait_barriers_in_group": 7
+    },
+    {
+      "call": 2,
+      "evict_seq": 24544,
+      "later_demand_seq": 24757,
+      "later_state": 1,
+      "layer": 24,
+      "victim": 51,
+      "wait_barriers_in_group": 7
+    },
+    {
+      "call": 2,
+      "evict_seq": 24548,
+      "later_demand_seq": 24759,
+      "later_state": 1,
+      "layer": 24,
+      "victim": 84,
+      "wait_barriers_in_group": 7
+    },
+    {
+      "call": 2,
+      "evict_seq": 24762,
+      "later_demand_seq": 24869,
+      "later_state": 2,
+      "layer": 24,
+      "victim": 79,
+      "wait_barriers_in_group": 7
+    },
+    {
+      "call": 2,
+      "evict_seq": 5472,
+      "later_demand_seq": 9247,
+      "later_state": 2,
+      "layer": 25,
+      "victim": 93,
+      "wait_barriers_in_group": 9
+    },
+    {
+      "call": 2,
+      "evict_seq": 5477,
+      "later_demand_seq": 9246,
+      "later_state": 2,
+      "layer": 25,
+      "victim": 71,
+      "wait_barriers_in_group": 9
+    },
+    {
+      "call": 2,
+      "evict_seq": 5481,
+      "later_demand_seq": 12329,
+      "later_state": 0,
+      "layer": 25,
+      "victim": 48,
+      "wait_barriers_in_group": 9
+    },
+    {
+      "call": 2,
+      "evict_seq": 5485,
+      "later_demand_seq": 25035,
+      "later_state": 1,
+      "layer": 25,
+      "victim": 124,
+      "wait_barriers_in_group": 9
+    },
+    {
+      "call": 2,
+      "evict_seq": 5489,
+      "later_demand_seq": 9244,
+      "later_state": 2,
+      "layer": 25,
+      "victim": 86,
+      "wait_barriers_in_group": 9
+    },
+    {
+      "call": 2,
+      "evict_seq": 5493,
+      "later_demand_seq": 9245,
+      "later_state": 2,
+      "layer": 25,
+      "victim": 75,
+      "wait_barriers_in_group": 9
+    },
+    {
+      "call": 2,
+      "evict_seq": 5501,
+      "later_demand_seq": 9248,
+      "later_state": 2,
+      "layer": 25,
+      "victim": 100,
+      "wait_barriers_in_group": 9
+    },
+    {
+      "call": 2,
+      "evict_seq": 5504,
+      "later_demand_seq": 5643,
+      "later_state": 1,
+      "layer": 25,
+      "victim": 30,
+      "wait_barriers_in_group": 9
+    },
+    {
+      "call": 2,
+      "evict_seq": 5508,
+      "later_demand_seq": 5645,
+      "later_state": 1,
+      "layer": 25,
+      "victim": 96,
+      "wait_barriers_in_group": 9
+    },
+    {
+      "call": 2,
+      "evict_seq": 5512,
+      "later_demand_seq": 5647,
+      "later_state": 1,
+      "layer": 25,
+      "victim": 69,
+      "wait_barriers_in_group": 9
+    },
+    {
+      "call": 2,
+      "evict_seq": 9250,
+      "later_demand_seq": 25037,
+      "later_state": 1,
+      "layer": 25,
+      "victim": 120,
+      "wait_barriers_in_group": 9
+    },
+    {
+      "call": 2,
+      "evict_seq": 9254,
+      "later_demand_seq": 16046,
+      "later_state": 2,
+      "layer": 25,
+      "victim": 103,
+      "wait_barriers_in_group": 9
+    },
+    {
+      "call": 2,
+      "evict_seq": 9258,
+      "later_demand_seq": 12333,
+      "later_state": 2,
+      "layer": 25,
+      "victim": 73,
+      "wait_barriers_in_group": 9
+    },
+    {
+      "call": 2,
+      "evict_seq": 12319,
+      "later_demand_seq": 15892,
+      "later_state": 2,
+      "layer": 25,
+      "victim": 15,
+      "wait_barriers_in_group": 9
+    },
+    {
+      "call": 2,
+      "evict_seq": 12326,
+      "later_demand_seq": 15914,
+      "later_state": 0,
+      "layer": 25,
+      "victim": 54,
+      "wait_barriers_in_group": 9
+    },
+    {
+      "call": 2,
+      "evict_seq": 12340,
+      "later_demand_seq": 15918,
+      "later_state": 0,
+      "layer": 25,
+      "victim": 72,
+      "wait_barriers_in_group": 9
+    },
+    {
+      "call": 2,
+      "evict_seq": 12347,
+      "later_demand_seq": 12444,
+      "later_state": 1,
+      "layer": 25,
+      "victim": 41,
+      "wait_barriers_in_group": 9
+    },
+    {
+      "call": 2,
+      "evict_seq": 15898,
+      "later_demand_seq": 24886,
+      "later_state": 2,
+      "layer": 25,
+      "victim": 3,
+      "wait_barriers_in_group": 9
+    },
+    {
+      "call": 2,
+      "evict_seq": 15903,
+      "later_demand_seq": 25034,
+      "later_state": 2,
+      "layer": 25,
+      "victim": 111,
+      "wait_barriers_in_group": 9
+    },
+    {
+      "call": 2,
+      "evict_seq": 15923,
+      "later_demand_seq": 16046,
+      "later_state": 2,
+      "layer": 25,
+      "victim": 103,
+      "wait_barriers_in_group": 9
+    },
+    {
+      "call": 2,
+      "evict_seq": 15927,
+      "later_demand_seq": 16050,
+      "later_state": 1,
+      "layer": 25,
+      "victim": 5,
+      "wait_barriers_in_group": 9
+    },
+    {
+      "call": 2,
+      "evict_seq": 15931,
+      "later_demand_seq": 16052,
+      "later_state": 1,
+      "layer": 25,
+      "victim": 96,
+      "wait_barriers_in_group": 9
+    },
+    {
+      "call": 2,
+      "evict_seq": 24906,
+      "later_demand_seq": 25028,
+      "later_state": 1,
+      "layer": 25,
+      "victim": 33,
+      "wait_barriers_in_group": 9
+    },
+    {
+      "call": 2,
+      "evict_seq": 24910,
+      "later_demand_seq": 25031,
+      "later_state": 1,
+      "layer": 25,
+      "victim": 4,
+      "wait_barriers_in_group": 9
+    },
+    {
+      "call": 2,
+      "evict_seq": 24914,
+      "later_demand_seq": 25035,
+      "later_state": 1,
+      "layer": 25,
+      "victim": 124,
+      "wait_barriers_in_group": 9
+    },
+    {
+      "call": 2,
+      "evict_seq": 24918,
+      "later_demand_seq": 25037,
+      "later_state": 1,
+      "layer": 25,
+      "victim": 120,
+      "wait_barriers_in_group": 9
+    },
+    {
+      "call": 2,
+      "evict_seq": 24922,
+      "later_demand_seq": 25042,
+      "later_state": 1,
+      "layer": 25,
+      "victim": 102,
+      "wait_barriers_in_group": 9
+    },
+    {
+      "call": 2,
+      "evict_seq": 24926,
+      "later_demand_seq": 25044,
+      "later_state": 1,
+      "layer": 25,
+      "victim": 80,
+      "wait_barriers_in_group": 9
+    },
+    {
+      "call": 2,
+      "evict_seq": 5697,
+      "later_demand_seq": 12590,
+      "later_state": 1,
+      "layer": 26,
+      "victim": 38,
+      "wait_barriers_in_group": 10
+    },
+    {
+      "call": 2,
+      "evict_seq": 5703,
+      "later_demand_seq": 9312,
+      "later_state": 2,
+      "layer": 26,
+      "victim": 57,
+      "wait_barriers_in_group": 10
+    },
+    {
+      "call": 2,
+      "evict_seq": 5707,
+      "later_demand_seq": 12491,
+      "later_state": 0,
+      "layer": 26,
+      "victim": 26,
+      "wait_barriers_in_group": 10
+    },
+    {
+      "call": 2,
+      "evict_seq": 5713,
+      "later_demand_seq": 12614,
+      "later_state": 2,
+      "layer": 26,
+      "victim": 5,
+      "wait_barriers_in_group": 10
+    },
+    {
+      "call": 2,
+      "evict_seq": 5723,
+      "later_demand_seq": 12598,
+      "later_state": 2,
+      "layer": 26,
+      "victim": 13,
+      "wait_barriers_in_group": 10
+    },
+    {
+      "call": 2,
+      "evict_seq": 5727,
+      "later_demand_seq": 9313,
+      "later_state": 2,
+      "layer": 26,
+      "victim": 34,
+      "wait_barriers_in_group": 10
+    },
+    {
+      "call": 2,
+      "evict_seq": 5731,
+      "later_demand_seq": 9319,
+      "later_state": 2,
+      "layer": 26,
+      "victim": 96,
+      "wait_barriers_in_group": 10
+    },
+    {
+      "call": 2,
+      "evict_seq": 5735,
+      "later_demand_seq": 12603,
+      "later_state": 2,
+      "layer": 26,
+      "victim": 43,
+      "wait_barriers_in_group": 10
+    },
+    {
+      "call": 2,
+      "evict_seq": 5738,
+      "later_demand_seq": 5905,
+      "later_state": 1,
+      "layer": 26,
+      "victim": 59,
+      "wait_barriers_in_group": 10
+    },
+    {
+      "call": 2,
+      "evict_seq": 5742,
+      "later_demand_seq": 5907,
+      "later_state": 1,
+      "layer": 26,
+      "victim": 12,
+      "wait_barriers_in_group": 10
+    },
+    {
+      "call": 2,
+      "evict_seq": 5746,
+      "later_demand_seq": 5909,
+      "later_state": 1,
+      "layer": 26,
+      "victim": 112,
+      "wait_barriers_in_group": 10
+    },
+    {
+      "call": 2,
+      "evict_seq": 5750,
+      "later_demand_seq": 5911,
+      "later_state": 1,
+      "layer": 26,
+      "victim": 102,
+      "wait_barriers_in_group": 10
+    },
+    {
+      "call": 2,
+      "evict_seq": 5754,
+      "later_demand_seq": 5913,
+      "later_state": 1,
+      "layer": 26,
+      "victim": 127,
+      "wait_barriers_in_group": 10
+    },
+    {
+      "call": 2,
+      "evict_seq": 5758,
+      "later_demand_seq": 5915,
+      "later_state": 1,
+      "layer": 26,
+      "victim": 45,
+      "wait_barriers_in_group": 10
+    },
+    {
+      "call": 2,
+      "evict_seq": 9321,
+      "later_demand_seq": 12480,
+      "later_state": 2,
+      "layer": 26,
+      "victim": 24,
+      "wait_barriers_in_group": 10
+    },
+    {
+      "call": 2,
+      "evict_seq": 12474,
+      "later_demand_seq": 16101,
+      "later_state": 0,
+      "layer": 26,
+      "victim": 125,
+      "wait_barriers_in_group": 10
+    },
+    {
+      "call": 2,
+      "evict_seq": 12488,
+      "later_demand_seq": 16225,
+      "later_state": 2,
+      "layer": 26,
+      "victim": 12,
+      "wait_barriers_in_group": 10
+    },
+    {
+      "call": 2,
+      "evict_seq": 12496,
+      "later_demand_seq": 12590,
+      "later_state": 1,
+      "layer": 26,
+      "victim": 38,
+      "wait_barriers_in_group": 10
+    },
+    {
+      "call": 2,
+      "evict_seq": 12500,
+      "later_demand_seq": 12594,
+      "later_state": 1,
+      "layer": 26,
+      "victim": 114,
+      "wait_barriers_in_group": 10
+    },
+    {
+      "call": 2,
+      "evict_seq": 12504,
+      "later_demand_seq": 12600,
+      "later_state": 1,
+      "layer": 26,
+      "victim": 65,
+      "wait_barriers_in_group": 10
+    },
+    {
+      "call": 2,
+      "evict_seq": 12508,
+      "later_demand_seq": 12604,
+      "later_state": 1,
+      "layer": 26,
+      "victim": 113,
+      "wait_barriers_in_group": 10
+    },
+    {
+      "call": 2,
+      "evict_seq": 12512,
+      "later_demand_seq": 12607,
+      "later_state": 1,
+      "layer": 26,
+      "victim": 19,
+      "wait_barriers_in_group": 10
+    },
+    {
+      "call": 2,
+      "evict_seq": 12516,
+      "later_demand_seq": 12609,
+      "later_state": 1,
+      "layer": 26,
+      "victim": 47,
+      "wait_barriers_in_group": 10
+    },
+    {
+      "call": 2,
+      "evict_seq": 12520,
+      "later_demand_seq": 12611,
+      "later_state": 1,
+      "layer": 26,
+      "victim": 7,
+      "wait_barriers_in_group": 10
+    },
+    {
+      "call": 2,
+      "evict_seq": 12615,
+      "later_demand_seq": 12723,
+      "later_state": 1,
+      "layer": 26,
+      "victim": 127,
+      "wait_barriers_in_group": 10
+    },
+    {
+      "call": 2,
+      "evict_seq": 16102,
+      "later_demand_seq": 25142,
+      "later_state": 2,
+      "layer": 26,
+      "victim": 125,
+      "wait_barriers_in_group": 10
+    },
+    {
+      "call": 2,
+      "evict_seq": 16108,
+      "later_demand_seq": 25243,
+      "later_state": 2,
+      "layer": 26,
+      "victim": 45,
+      "wait_barriers_in_group": 10
+    },
+    {
+      "call": 2,
+      "evict_seq": 16120,
+      "later_demand_seq": 16218,
+      "later_state": 1,
+      "layer": 26,
+      "victim": 77,
+      "wait_barriers_in_group": 10
+    },
+    {
+      "call": 2,
+      "evict_seq": 25158,
+      "later_demand_seq": 25230,
+      "later_state": 1,
+      "layer": 26,
+      "victim": 109,
+      "wait_barriers_in_group": 10
+    },
+    {
+      "call": 2,
+      "evict_seq": 25162,
+      "later_demand_seq": 25232,
+      "later_state": 1,
+      "layer": 26,
+      "victim": 41,
+      "wait_barriers_in_group": 10
+    },
+    {
+      "call": 2,
+      "evict_seq": 25166,
+      "later_demand_seq": 25234,
+      "later_state": 1,
+      "layer": 26,
+      "victim": 80,
+      "wait_barriers_in_group": 10
+    },
+    {
+      "call": 2,
+      "evict_seq": 25170,
+      "later_demand_seq": 25236,
+      "later_state": 1,
+      "layer": 26,
+      "victim": 66,
+      "wait_barriers_in_group": 10
+    },
+    {
+      "call": 2,
+      "evict_seq": 25174,
+      "later_demand_seq": 25238,
+      "later_state": 1,
+      "layer": 26,
+      "victim": 81,
+      "wait_barriers_in_group": 10
+    },
+    {
+      "call": 2,
+      "evict_seq": 25178,
+      "later_demand_seq": 25240,
+      "later_state": 1,
+      "layer": 26,
+      "victim": 61,
+      "wait_barriers_in_group": 10
+    },
+    {
+      "call": 2,
+      "evict_seq": 25182,
+      "later_demand_seq": 25244,
+      "later_state": 1,
+      "layer": 26,
+      "victim": 22,
+      "wait_barriers_in_group": 10
+    },
+    {
+      "call": 2,
+      "evict_seq": 25186,
+      "later_demand_seq": 25246,
+      "later_state": 1,
+      "layer": 26,
+      "victim": 21,
+      "wait_barriers_in_group": 10
+    },
+    {
+      "call": 2,
+      "evict_seq": 25190,
+      "later_demand_seq": 25250,
+      "later_state": 1,
+      "layer": 26,
+      "victim": 79,
+      "wait_barriers_in_group": 10
+    },
+    {
+      "call": 2,
+      "evict_seq": 6016,
+      "later_demand_seq": 12948,
+      "later_state": 1,
+      "layer": 27,
+      "victim": 4,
+      "wait_barriers_in_group": 9
+    },
+    {
+      "call": 2,
+      "evict_seq": 6025,
+      "later_demand_seq": 9349,
+      "later_state": 2,
+      "layer": 27,
+      "victim": 67,
+      "wait_barriers_in_group": 9
+    },
+    {
+      "call": 2,
+      "evict_seq": 6029,
+      "later_demand_seq": 9352,
+      "later_state": 2,
+      "layer": 27,
+      "victim": 104,
+      "wait_barriers_in_group": 9
+    },
+    {
+      "call": 2,
+      "evict_seq": 6033,
+      "later_demand_seq": 9343,
+      "later_state": 2,
+      "layer": 27,
+      "victim": 13,
+      "wait_barriers_in_group": 9
+    },
+    {
+      "call": 2,
+      "evict_seq": 6037,
+      "later_demand_seq": 9350,
+      "later_state": 2,
+      "layer": 27,
+      "victim": 60,
+      "wait_barriers_in_group": 9
+    },
+    {
+      "call": 2,
+      "evict_seq": 6041,
+      "later_demand_seq": 9353,
+      "later_state": 2,
+      "layer": 27,
+      "victim": 124,
+      "wait_barriers_in_group": 9
+    },
+    {
+      "call": 2,
+      "evict_seq": 6044,
+      "later_demand_seq": 6175,
+      "later_state": 2,
+      "layer": 27,
+      "victim": 19,
+      "wait_barriers_in_group": 9
+    },
+    {
+      "call": 2,
+      "evict_seq": 6048,
+      "later_demand_seq": 6176,
+      "later_state": 1,
+      "layer": 27,
+      "victim": 96,
+      "wait_barriers_in_group": 9
+    },
+    {
+      "call": 2,
+      "evict_seq": 9355,
+      "later_demand_seq": 16346,
+      "later_state": 2,
+      "layer": 27,
+      "victim": 120,
+      "wait_barriers_in_group": 9
+    },
+    {
+      "call": 2,
+      "evict_seq": 12757,
+      "later_demand_seq": 16342,
+      "later_state": 2,
+      "layer": 27,
+      "victim": 41,
+      "wait_barriers_in_group": 9
+    },
+    {
+      "call": 2,
+      "evict_seq": 12766,
+      "later_demand_seq": 16351,
+      "later_state": 2,
+      "layer": 27,
+      "victim": 20,
+      "wait_barriers_in_group": 9
+    },
+    {
+      "call": 2,
+      "evict_seq": 12770,
+      "later_demand_seq": 16264,
+      "later_state": 2,
+      "layer": 27,
+      "victim": 104,
+      "wait_barriers_in_group": 9
+    },
+    {
+      "call": 2,
+      "evict_seq": 12776,
+      "later_demand_seq": 16265,
+      "later_state": 2,
+      "layer": 27,
+      "victim": 93,
+      "wait_barriers_in_group": 9
+    },
+    {
+      "call": 2,
+      "evict_seq": 12780,
+      "later_demand_seq": 12935,
+      "later_state": 1,
+      "layer": 27,
+      "victim": 39,
+      "wait_barriers_in_group": 9
+    },
+    {
+      "call": 2,
+      "evict_seq": 12784,
+      "later_demand_seq": 12937,
+      "later_state": 1,
+      "layer": 27,
+      "victim": 28,
+      "wait_barriers_in_group": 9
+    },
+    {
+      "call": 2,
+      "evict_seq": 12788,
+      "later_demand_seq": 12940,
+      "later_state": 1,
+      "layer": 27,
+      "victim": 0,
+      "wait_barriers_in_group": 9
+    },
+    {
+      "call": 2,
+      "evict_seq": 12792,
+      "later_demand_seq": 12943,
+      "later_state": 1,
+      "layer": 27,
+      "victim": 79,
+      "wait_barriers_in_group": 9
+    },
+    {
+      "call": 2,
+      "evict_seq": 12796,
+      "later_demand_seq": 12945,
+      "later_state": 1,
+      "layer": 27,
+      "victim": 80,
+      "wait_barriers_in_group": 9
+    },
+    {
+      "call": 2,
+      "evict_seq": 12800,
+      "later_demand_seq": 12948,
+      "later_state": 1,
+      "layer": 27,
+      "victim": 4,
+      "wait_barriers_in_group": 9
+    },
+    {
+      "call": 2,
+      "evict_seq": 12804,
+      "later_demand_seq": 12950,
+      "later_state": 1,
+      "layer": 27,
+      "victim": 92,
+      "wait_barriers_in_group": 9
+    },
+    {
+      "call": 2,
+      "evict_seq": 12808,
+      "later_demand_seq": 12952,
+      "later_state": 1,
+      "layer": 27,
+      "victim": 94,
+      "wait_barriers_in_group": 9
+    },
+    {
+      "call": 2,
+      "evict_seq": 12812,
+      "later_demand_seq": 12954,
+      "later_state": 1,
+      "layer": 27,
+      "victim": 127,
+      "wait_barriers_in_group": 9
+    },
+    {
+      "call": 2,
+      "evict_seq": 12816,
+      "later_demand_seq": 12956,
+      "later_state": 1,
+      "layer": 27,
+      "victim": 82,
+      "wait_barriers_in_group": 9
+    },
+    {
+      "call": 2,
+      "evict_seq": 12820,
+      "later_demand_seq": 12958,
+      "later_state": 1,
+      "layer": 27,
+      "victim": 69,
+      "wait_barriers_in_group": 9
+    },
+    {
+      "call": 2,
+      "evict_seq": 16250,
+      "later_demand_seq": 25389,
+      "later_state": 2,
+      "layer": 27,
+      "victim": 42,
+      "wait_barriers_in_group": 9
+    },
+    {
+      "call": 2,
+      "evict_seq": 16266,
+      "later_demand_seq": 16341,
+      "later_state": 2,
+      "layer": 27,
+      "victim": 63,
+      "wait_barriers_in_group": 9
+    },
+    {
+      "call": 2,
+      "evict_seq": 16270,
+      "later_demand_seq": 16346,
+      "later_state": 2,
+      "layer": 27,
+      "victim": 120,
+      "wait_barriers_in_group": 9
+    },
+    {
+      "call": 2,
+      "evict_seq": 16274,
+      "later_demand_seq": 16349,
+      "later_state": 1,
+      "layer": 27,
+      "victim": 124,
+      "wait_barriers_in_group": 9
+    },
+    {
+      "call": 2,
+      "evict_seq": 25412,
+      "later_demand_seq": 25500,
+      "later_state": 1,
+      "layer": 27,
+      "victim": 102,
+      "wait_barriers_in_group": 9
+    },
+    {
+      "call": 2,
+      "evict_seq": 25416,
+      "later_demand_seq": 25502,
+      "later_state": 1,
+      "layer": 27,
+      "victim": 55,
+      "wait_barriers_in_group": 9
+    },
+    {
+      "call": 2,
+      "evict_seq": 25420,
+      "later_demand_seq": 25504,
+      "later_state": 1,
+      "layer": 27,
+      "victim": 59,
+      "wait_barriers_in_group": 9
+    },
+    {
+      "call": 2,
+      "evict_seq": 25424,
+      "later_demand_seq": 25506,
+      "later_state": 1,
+      "layer": 27,
+      "victim": 116,
+      "wait_barriers_in_group": 9
+    },
+    {
+      "call": 2,
+      "evict_seq": 25428,
+      "later_demand_seq": 25508,
+      "later_state": 1,
+      "layer": 27,
+      "victim": 97,
+      "wait_barriers_in_group": 9
+    },
+    {
+      "call": 2,
+      "evict_seq": 25432,
+      "later_demand_seq": 25510,
+      "later_state": 1,
+      "layer": 27,
+      "victim": 61,
+      "wait_barriers_in_group": 9
+    },
+    {
+      "call": 2,
+      "evict_seq": 25436,
+      "later_demand_seq": 25515,
+      "later_state": 1,
+      "layer": 27,
+      "victim": 125,
+      "wait_barriers_in_group": 9
+    },
+    {
+      "call": 2,
+      "evict_seq": 25440,
+      "later_demand_seq": 25519,
+      "later_state": 1,
+      "layer": 27,
+      "victim": 91,
+      "wait_barriers_in_group": 9
+    },
+    {
+      "call": 2,
+      "evict_seq": 25444,
+      "later_demand_seq": 25522,
+      "later_state": 1,
+      "layer": 27,
+      "victim": 85,
+      "wait_barriers_in_group": 9
+    },
+    {
+      "call": 2,
+      "evict_seq": 6199,
+      "later_demand_seq": 16377,
+      "later_state": 0,
+      "layer": 28,
+      "victim": 51,
+      "wait_barriers_in_group": 9
+    },
+    {
+      "call": 2,
+      "evict_seq": 6205,
+      "later_demand_seq": 13283,
+      "later_state": 2,
+      "layer": 28,
+      "victim": 1,
+      "wait_barriers_in_group": 9
+    },
+    {
+      "call": 2,
+      "evict_seq": 6218,
+      "later_demand_seq": 9425,
+      "later_state": 2,
+      "layer": 28,
+      "victim": 47,
+      "wait_barriers_in_group": 9
+    },
+    {
+      "call": 2,
+      "evict_seq": 6222,
+      "later_demand_seq": 13137,
+      "later_state": 2,
+      "layer": 28,
+      "victim": 11,
+      "wait_barriers_in_group": 9
+    },
+    {
+      "call": 2,
+      "evict_seq": 6226,
+      "later_demand_seq": 9413,
+      "later_state": 2,
+      "layer": 28,
+      "victim": 54,
+      "wait_barriers_in_group": 9
+    },
+    {
+      "call": 2,
+      "evict_seq": 6230,
+      "later_demand_seq": 9412,
+      "later_state": 2,
+      "layer": 28,
+      "victim": 96,
+      "wait_barriers_in_group": 9
+    },
+    {
+      "call": 2,
+      "evict_seq": 6234,
+      "later_demand_seq": 9410,
+      "later_state": 2,
+      "layer": 28,
+      "victim": 88,
+      "wait_barriers_in_group": 9
+    },
+    {
+      "call": 2,
+      "evict_seq": 6238,
+      "later_demand_seq": 9424,
+      "later_state": 2,
+      "layer": 28,
+      "victim": 22,
+      "wait_barriers_in_group": 9
+    },
+    {
+      "call": 2,
+      "evict_seq": 6242,
+      "later_demand_seq": 9416,
+      "later_state": 2,
+      "layer": 28,
+      "victim": 123,
+      "wait_barriers_in_group": 9
+    },
+    {
+      "call": 2,
+      "evict_seq": 6245,
+      "later_demand_seq": 6455,
+      "later_state": 2,
+      "layer": 28,
+      "victim": 29,
+      "wait_barriers_in_group": 9
+    },
+    {
+      "call": 2,
+      "evict_seq": 6249,
+      "later_demand_seq": 6456,
+      "later_state": 1,
+      "layer": 28,
+      "victim": 121,
+      "wait_barriers_in_group": 9
+    },
+    {
+      "call": 2,
+      "evict_seq": 6253,
+      "later_demand_seq": 6458,
+      "later_state": 1,
+      "layer": 28,
+      "victim": 111,
+      "wait_barriers_in_group": 9
+    },
+    {
+      "call": 2,
+      "evict_seq": 6257,
+      "later_demand_seq": 6460,
+      "later_state": 1,
+      "layer": 28,
+      "victim": 50,
+      "wait_barriers_in_group": 9
+    },
+    {
+      "call": 2,
+      "evict_seq": 6261,
+      "later_demand_seq": 6462,
+      "later_state": 1,
+      "layer": 28,
+      "victim": 70,
+      "wait_barriers_in_group": 9
+    },
+    {
+      "call": 2,
+      "evict_seq": 6265,
+      "later_demand_seq": 6466,
+      "later_state": 1,
+      "layer": 28,
+      "victim": 9,
+      "wait_barriers_in_group": 9
+    },
+    {
+      "call": 2,
+      "evict_seq": 9420,
+      "later_demand_seq": 13127,
+      "later_state": 2,
+      "layer": 28,
+      "victim": 75,
+      "wait_barriers_in_group": 9
+    },
+    {
+      "call": 2,
+      "evict_seq": 9428,
+      "later_demand_seq": 13130,
+      "later_state": 2,
+      "layer": 28,
+      "victim": 94,
+      "wait_barriers_in_group": 9
+    },
+    {
+      "call": 2,
+      "evict_seq": 13133,
+      "later_demand_seq": 16397,
+      "later_state": 0,
+      "layer": 28,
+      "victim": 55,
+      "wait_barriers_in_group": 9
+    },
+    {
+      "call": 2,
+      "evict_seq": 13140,
+      "later_demand_seq": 25673,
+      "later_state": 0,
+      "layer": 28,
+      "victim": 13,
+      "wait_barriers_in_group": 9
+    },
+    {
+      "call": 2,
+      "evict_seq": 13144,
+      "later_demand_seq": 16558,
+      "later_state": 2,
+      "layer": 28,
+      "victim": 108,
+      "wait_barriers_in_group": 9
+    },
+    {
+      "call": 2,
+      "evict_seq": 13148,
+      "later_demand_seq": 16556,
+      "later_state": 2,
+      "layer": 28,
+      "victim": 84,
+      "wait_barriers_in_group": 9
+    },
+    {
+      "call": 2,
+      "evict_seq": 13153,
+      "later_demand_seq": 25749,
+      "later_state": 1,
+      "layer": 28,
+      "victim": 99,
+      "wait_barriers_in_group": 9
+    },
+    {
+      "call": 2,
+      "evict_seq": 13157,
+      "later_demand_seq": 13268,
+      "later_state": 1,
+      "layer": 28,
+      "victim": 82,
+      "wait_barriers_in_group": 9
+    },
+    {
+      "call": 2,
+      "evict_seq": 13161,
+      "later_demand_seq": 13270,
+      "later_state": 1,
+      "layer": 28,
+      "victim": 66,
+      "wait_barriers_in_group": 9
+    },
+    {
+      "call": 2,
+      "evict_seq": 13165,
+      "later_demand_seq": 13272,
+      "later_state": 1,
+      "layer": 28,
+      "victim": 118,
+      "wait_barriers_in_group": 9
+    },
+    {
+      "call": 2,
+      "evict_seq": 13169,
+      "later_demand_seq": 13274,
+      "later_state": 1,
+      "layer": 28,
+      "victim": 33,
+      "wait_barriers_in_group": 9
+    },
+    {
+      "call": 2,
+      "evict_seq": 13173,
+      "later_demand_seq": 13279,
+      "later_state": 1,
+      "layer": 28,
+      "victim": 71,
+      "wait_barriers_in_group": 9
+    },
+    {
+      "call": 2,
+      "evict_seq": 13177,
+      "later_demand_seq": 13281,
+      "later_state": 1,
+      "layer": 28,
+      "victim": 110,
+      "wait_barriers_in_group": 9
+    },
+    {
+      "call": 2,
+      "evict_seq": 13181,
+      "later_demand_seq": 13284,
+      "later_state": 1,
+      "layer": 28,
+      "victim": 0,
+      "wait_barriers_in_group": 9
+    },
+    {
+      "call": 2,
+      "evict_seq": 16373,
+      "later_demand_seq": 25745,
+      "later_state": 2,
+      "layer": 28,
+      "victim": 112,
+      "wait_barriers_in_group": 9
+    },
+    {
+      "call": 2,
+      "evict_seq": 16398,
+      "later_demand_seq": 25667,
+      "later_state": 2,
+      "layer": 28,
+      "victim": 55,
+      "wait_barriers_in_group": 9
+    },
+    {
+      "call": 2,
+      "evict_seq": 16402,
+      "later_demand_seq": 25680,
+      "later_state": 2,
+      "layer": 28,
+      "victim": 100,
+      "wait_barriers_in_group": 9
+    },
+    {
+      "call": 2,
+      "evict_seq": 16406,
+      "later_demand_seq": 25666,
+      "later_state": 2,
+      "layer": 28,
+      "victim": 122,
+      "wait_barriers_in_group": 9
+    },
+    {
+      "call": 2,
+      "evict_seq": 16410,
+      "later_demand_seq": 25679,
+      "later_state": 2,
+      "layer": 28,
+      "victim": 34,
+      "wait_barriers_in_group": 9
+    },
+    {
+      "call": 2,
+      "evict_seq": 16413,
+      "later_demand_seq": 16568,
+      "later_state": 1,
+      "layer": 28,
+      "victim": 70,
+      "wait_barriers_in_group": 9
+    },
+    {
+      "call": 2,
+      "evict_seq": 25681,
+      "later_demand_seq": 25743,
+      "later_state": 1,
+      "layer": 28,
+      "victim": 50,
+      "wait_barriers_in_group": 9
+    },
+    {
+      "call": 2,
+      "evict_seq": 25685,
+      "later_demand_seq": 25747,
+      "later_state": 1,
+      "layer": 28,
+      "victim": 6,
+      "wait_barriers_in_group": 9
+    },
+    {
+      "call": 2,
+      "evict_seq": 25689,
+      "later_demand_seq": 25749,
+      "later_state": 1,
+      "layer": 28,
+      "victim": 99,
+      "wait_barriers_in_group": 9
+    },
+    {
+      "call": 2,
+      "evict_seq": 25693,
+      "later_demand_seq": 25751,
+      "later_state": 1,
+      "layer": 28,
+      "victim": 81,
+      "wait_barriers_in_group": 9
+    },
+    {
+      "call": 2,
+      "evict_seq": 25697,
+      "later_demand_seq": 25756,
+      "later_state": 1,
+      "layer": 28,
+      "victim": 17,
+      "wait_barriers_in_group": 9
+    },
+    {
+      "call": 2,
+      "evict_seq": 25701,
+      "later_demand_seq": 25758,
+      "later_state": 1,
+      "layer": 28,
+      "victim": 74,
+      "wait_barriers_in_group": 9
+    },
+    {
+      "call": 2,
+      "evict_seq": 6550,
+      "later_demand_seq": 25853,
+      "later_state": 0,
+      "layer": 29,
+      "victim": 21,
+      "wait_barriers_in_group": 9
+    },
+    {
+      "call": 2,
+      "evict_seq": 6556,
+      "later_demand_seq": 13403,
+      "later_state": 0,
+      "layer": 29,
+      "victim": 125,
+      "wait_barriers_in_group": 9
+    },
+    {
+      "call": 2,
+      "evict_seq": 6564,
+      "later_demand_seq": 9465,
+      "later_state": 2,
+      "layer": 29,
+      "victim": 54,
+      "wait_barriers_in_group": 9
+    },
+    {
+      "call": 2,
+      "evict_seq": 6569,
+      "later_demand_seq": 9466,
+      "later_state": 2,
+      "layer": 29,
+      "victim": 114,
+      "wait_barriers_in_group": 9
+    },
+    {
+      "call": 2,
+      "evict_seq": 6573,
+      "later_demand_seq": 13410,
+      "later_state": 0,
+      "layer": 29,
+      "victim": 81,
+      "wait_barriers_in_group": 9
+    },
+    {
+      "call": 2,
+      "evict_seq": 6580,
+      "later_demand_seq": 6707,
+      "later_state": 1,
+      "layer": 29,
+      "victim": 103,
+      "wait_barriers_in_group": 9
+    },
+    {
+      "call": 2,
+      "evict_seq": 6584,
+      "later_demand_seq": 6710,
+      "later_state": 1,
+      "layer": 29,
+      "victim": 108,
+      "wait_barriers_in_group": 9
+    },
+    {
+      "call": 2,
+      "evict_seq": 6588,
+      "later_demand_seq": 6712,
+      "later_state": 1,
+      "layer": 29,
+      "victim": 0,
+      "wait_barriers_in_group": 9
+    },
+    {
+      "call": 2,
+      "evict_seq": 6592,
+      "later_demand_seq": 6714,
+      "later_state": 1,
+      "layer": 29,
+      "victim": 2,
+      "wait_barriers_in_group": 9
+    },
+    {
+      "call": 2,
+      "evict_seq": 9470,
+      "later_demand_seq": 16685,
+      "later_state": 2,
+      "layer": 29,
+      "victim": 27,
+      "wait_barriers_in_group": 9
+    },
+    {
+      "call": 2,
+      "evict_seq": 13398,
+      "later_demand_seq": 26018,
+      "later_state": 1,
+      "layer": 29,
+      "victim": 15,
+      "wait_barriers_in_group": 9
+    },
+    {
+      "call": 2,
+      "evict_seq": 13404,
+      "later_demand_seq": 26036,
+      "later_state": 1,
+      "layer": 29,
+      "victim": 125,
+      "wait_barriers_in_group": 9
+    },
+    {
+      "call": 2,
+      "evict_seq": 13411,
+      "later_demand_seq": 26016,
+      "later_state": 1,
+      "layer": 29,
+      "victim": 81,
+      "wait_barriers_in_group": 9
+    },
+    {
+      "call": 2,
+      "evict_seq": 13415,
+      "later_demand_seq": 25875,
+      "later_state": 0,
+      "layer": 29,
+      "victim": 7,
+      "wait_barriers_in_group": 9
+    },
+    {
+      "call": 2,
+      "evict_seq": 13419,
+      "later_demand_seq": 16609,
+      "later_state": 2,
+      "layer": 29,
+      "victim": 9,
+      "wait_barriers_in_group": 9
+    },
+    {
+      "call": 2,
+      "evict_seq": 13422,
+      "later_demand_seq": 13519,
+      "later_state": 1,
+      "layer": 29,
+      "victim": 107,
+      "wait_barriers_in_group": 9
+    },
+    {
+      "call": 2,
+      "evict_seq": 13426,
+      "later_demand_seq": 13521,
+      "later_state": 1,
+      "layer": 29,
+      "victim": 90,
+      "wait_barriers_in_group": 9
+    },
+    {
+      "call": 2,
+      "evict_seq": 13430,
+      "later_demand_seq": 13523,
+      "later_state": 1,
+      "layer": 29,
+      "victim": 104,
+      "wait_barriers_in_group": 9
+    },
+    {
+      "call": 2,
+      "evict_seq": 13434,
+      "later_demand_seq": 13528,
+      "later_state": 1,
+      "layer": 29,
+      "victim": 25,
+      "wait_barriers_in_group": 9
+    },
+    {
+      "call": 2,
+      "evict_seq": 16599,
+      "later_demand_seq": 26024,
+      "later_state": 2,
+      "layer": 29,
+      "victim": 62,
+      "wait_barriers_in_group": 9
+    },
+    {
+      "call": 2,
+      "evict_seq": 16604,
+      "later_demand_seq": 25879,
+      "later_state": 0,
+      "layer": 29,
+      "victim": 39,
+      "wait_barriers_in_group": 9
+    },
+    {
+      "call": 2,
+      "evict_seq": 16613,
+      "later_demand_seq": 16685,
+      "later_state": 2,
+      "layer": 29,
+      "victim": 27,
+      "wait_barriers_in_group": 9
+    },
+    {
+      "call": 2,
+      "evict_seq": 16617,
+      "later_demand_seq": 16686,
+      "later_state": 1,
+      "layer": 29,
+      "victim": 88,
+      "wait_barriers_in_group": 9
+    },
+    {
+      "call": 2,
+      "evict_seq": 25884,
+      "later_demand_seq": 26016,
+      "later_state": 1,
+      "layer": 29,
+      "victim": 81,
+      "wait_barriers_in_group": 9
+    },
+    {
+      "call": 2,
+      "evict_seq": 25888,
+      "later_demand_seq": 26018,
+      "later_state": 1,
+      "layer": 29,
+      "victim": 15,
+      "wait_barriers_in_group": 9
+    },
+    {
+      "call": 2,
+      "evict_seq": 25892,
+      "later_demand_seq": 26020,
+      "later_state": 1,
+      "layer": 29,
+      "victim": 91,
+      "wait_barriers_in_group": 9
+    },
+    {
+      "call": 2,
+      "evict_seq": 25896,
+      "later_demand_seq": 26022,
+      "later_state": 1,
+      "layer": 29,
+      "victim": 0,
+      "wait_barriers_in_group": 9
+    },
+    {
+      "call": 2,
+      "evict_seq": 25900,
+      "later_demand_seq": 26027,
+      "later_state": 1,
+      "layer": 29,
+      "victim": 93,
+      "wait_barriers_in_group": 9
+    },
+    {
+      "call": 2,
+      "evict_seq": 25904,
+      "later_demand_seq": 26029,
+      "later_state": 1,
+      "layer": 29,
+      "victim": 94,
+      "wait_barriers_in_group": 9
+    },
+    {
+      "call": 2,
+      "evict_seq": 25908,
+      "later_demand_seq": 26031,
+      "later_state": 1,
+      "layer": 29,
+      "victim": 42,
+      "wait_barriers_in_group": 9
+    },
+    {
+      "call": 2,
+      "evict_seq": 25912,
+      "later_demand_seq": 26033,
+      "later_state": 1,
+      "layer": 29,
+      "victim": 97,
+      "wait_barriers_in_group": 9
+    },
+    {
+      "call": 2,
+      "evict_seq": 25916,
+      "later_demand_seq": 26036,
+      "later_state": 1,
+      "layer": 29,
+      "victim": 125,
+      "wait_barriers_in_group": 9
+    },
+    {
+      "call": 2,
+      "evict_seq": 6779,
+      "later_demand_seq": 26287,
+      "later_state": 1,
+      "layer": 30,
+      "victim": 1,
+      "wait_barriers_in_group": 7
+    },
+    {
+      "call": 2,
+      "evict_seq": 6790,
+      "later_demand_seq": 13681,
+      "later_state": 2,
+      "layer": 30,
+      "victim": 6,
+      "wait_barriers_in_group": 7
+    },
+    {
+      "call": 2,
+      "evict_seq": 6799,
+      "later_demand_seq": 13592,
+      "later_state": 2,
+      "layer": 30,
+      "victim": 50,
+      "wait_barriers_in_group": 7
+    },
+    {
+      "call": 2,
+      "evict_seq": 6803,
+      "later_demand_seq": 9520,
+      "later_state": 2,
+      "layer": 30,
+      "victim": 98,
+      "wait_barriers_in_group": 7
+    },
+    {
+      "call": 2,
+      "evict_seq": 6807,
+      "later_demand_seq": 9511,
+      "later_state": 2,
+      "layer": 30,
+      "victim": 48,
+      "wait_barriers_in_group": 7
+    },
+    {
+      "call": 2,
+      "evict_seq": 6811,
+      "later_demand_seq": 16762,
+      "later_state": 2,
+      "layer": 30,
+      "victim": 121,
+      "wait_barriers_in_group": 7
+    },
+    {
+      "call": 2,
+      "evict_seq": 6819,
+      "later_demand_seq": 9527,
+      "later_state": 2,
+      "layer": 30,
+      "victim": 45,
+      "wait_barriers_in_group": 7
+    },
+    {
+      "call": 2,
+      "evict_seq": 6823,
+      "later_demand_seq": 26186,
+      "later_state": 0,
+      "layer": 30,
+      "victim": 36,
+      "wait_barriers_in_group": 7
+    },
+    {
+      "call": 2,
+      "evict_seq": 6826,
+      "later_demand_seq": 7025,
+      "later_state": 1,
+      "layer": 30,
+      "victim": 127,
+      "wait_barriers_in_group": 7
+    },
+    {
+      "call": 2,
+      "evict_seq": 6830,
+      "later_demand_seq": 7027,
+      "later_state": 1,
+      "layer": 30,
+      "victim": 114,
+      "wait_barriers_in_group": 7
+    },
+    {
+      "call": 2,
+      "evict_seq": 6834,
+      "later_demand_seq": 7029,
+      "later_state": 1,
+      "layer": 30,
+      "victim": 82,
+      "wait_barriers_in_group": 7
+    },
+    {
+      "call": 2,
+      "evict_seq": 6838,
+      "later_demand_seq": 7032,
+      "later_state": 1,
+      "layer": 30,
+      "victim": 34,
+      "wait_barriers_in_group": 7
+    },
+    {
+      "call": 2,
+      "evict_seq": 6842,
+      "later_demand_seq": 7034,
+      "later_state": 1,
+      "layer": 30,
+      "victim": 15,
+      "wait_barriers_in_group": 7
+    },
+    {
+      "call": 2,
+      "evict_seq": 6846,
+      "later_demand_seq": 7036,
+      "later_state": 1,
+      "layer": 30,
+      "victim": 28,
+      "wait_barriers_in_group": 7
+    },
+    {
+      "call": 2,
+      "evict_seq": 6850,
+      "later_demand_seq": 7039,
+      "later_state": 1,
+      "layer": 30,
+      "victim": 52,
+      "wait_barriers_in_group": 7
+    },
+    {
+      "call": 2,
+      "evict_seq": 9523,
+      "later_demand_seq": 26278,
+      "later_state": 2,
+      "layer": 30,
+      "victim": 53,
+      "wait_barriers_in_group": 7
+    },
+    {
+      "call": 2,
+      "evict_seq": 13596,
+      "later_demand_seq": 16716,
+      "later_state": 2,
+      "layer": 30,
+      "victim": 111,
+      "wait_barriers_in_group": 7
+    },
+    {
+      "call": 2,
+      "evict_seq": 13612,
+      "later_demand_seq": 16761,
+      "later_state": 2,
+      "layer": 30,
+      "victim": 9,
+      "wait_barriers_in_group": 7
+    },
+    {
+      "call": 2,
+      "evict_seq": 13615,
+      "later_demand_seq": 13682,
+      "later_state": 2,
+      "layer": 30,
+      "victim": 69,
+      "wait_barriers_in_group": 7
+    },
+    {
+      "call": 2,
+      "evict_seq": 16725,
+      "later_demand_seq": 16762,
+      "later_state": 2,
+      "layer": 30,
+      "victim": 121,
+      "wait_barriers_in_group": 7
+    },
+    {
+      "call": 2,
+      "evict_seq": 26201,
+      "later_demand_seq": 26281,
+      "later_state": 2,
+      "layer": 30,
+      "victim": 89,
+      "wait_barriers_in_group": 7
+    },
+    {
+      "call": 2,
+      "evict_seq": 26205,
+      "later_demand_seq": 26285,
+      "later_state": 1,
+      "layer": 30,
+      "victim": 40,
+      "wait_barriers_in_group": 7
+    },
+    {
+      "call": 2,
+      "evict_seq": 26209,
+      "later_demand_seq": 26287,
+      "later_state": 1,
+      "layer": 30,
+      "victim": 1,
+      "wait_barriers_in_group": 7
+    },
+    {
+      "call": 2,
+      "evict_seq": 7148,
+      "later_demand_seq": 26537,
+      "later_state": 1,
+      "layer": 31,
+      "victim": 113,
+      "wait_barriers_in_group": 9
+    },
+    {
+      "call": 2,
+      "evict_seq": 7164,
+      "later_demand_seq": 13710,
+      "later_state": 2,
+      "layer": 31,
+      "victim": 66,
+      "wait_barriers_in_group": 9
+    },
+    {
+      "call": 2,
+      "evict_seq": 7168,
+      "later_demand_seq": 9560,
+      "later_state": 2,
+      "layer": 31,
+      "victim": 46,
+      "wait_barriers_in_group": 9
+    },
+    {
+      "call": 2,
+      "evict_seq": 7173,
+      "later_demand_seq": 13690,
+      "later_state": 2,
+      "layer": 31,
+      "victim": 117,
+      "wait_barriers_in_group": 9
+    },
+    {
+      "call": 2,
+      "evict_seq": 7177,
+      "later_demand_seq": 9581,
+      "later_state": 2,
+      "layer": 31,
+      "victim": 51,
+      "wait_barriers_in_group": 9
+    },
+    {
+      "call": 2,
+      "evict_seq": 7181,
+      "later_demand_seq": 9583,
+      "later_state": 0,
+      "layer": 31,
+      "victim": 84,
+      "wait_barriers_in_group": 9
+    },
+    {
+      "call": 2,
+      "evict_seq": 7185,
+      "later_demand_seq": 9571,
+      "later_state": 0,
+      "layer": 31,
+      "victim": 116,
+      "wait_barriers_in_group": 9
+    },
+    {
+      "call": 2,
+      "evict_seq": 7189,
+      "later_demand_seq": 9563,
+      "later_state": 2,
+      "layer": 31,
+      "victim": 127,
+      "wait_barriers_in_group": 9
+    },
+    {
+      "call": 2,
+      "evict_seq": 7192,
+      "later_demand_seq": 7392,
+      "later_state": 1,
+      "layer": 31,
+      "victim": 70,
+      "wait_barriers_in_group": 9
+    },
+    {
+      "call": 2,
+      "evict_seq": 7196,
+      "later_demand_seq": 7394,
+      "later_state": 1,
+      "layer": 31,
+      "victim": 63,
+      "wait_barriers_in_group": 9
+    },
+    {
+      "call": 2,
+      "evict_seq": 7200,
+      "later_demand_seq": 7396,
+      "later_state": 1,
+      "layer": 31,
+      "victim": 112,
+      "wait_barriers_in_group": 9
+    },
+    {
+      "call": 2,
+      "evict_seq": 7204,
+      "later_demand_seq": 7398,
+      "later_state": 1,
+      "layer": 31,
+      "victim": 67,
+      "wait_barriers_in_group": 9
+    },
+    {
+      "call": 2,
+      "evict_seq": 7208,
+      "later_demand_seq": 7400,
+      "later_state": 1,
+      "layer": 31,
+      "victim": 18,
+      "wait_barriers_in_group": 9
+    },
+    {
+      "call": 2,
+      "evict_seq": 7212,
+      "later_demand_seq": 7402,
+      "later_state": 1,
+      "layer": 31,
+      "victim": 92,
+      "wait_barriers_in_group": 9
+    },
+    {
+      "call": 2,
+      "evict_seq": 7216,
+      "later_demand_seq": 7404,
+      "later_state": 1,
+      "layer": 31,
+      "victim": 23,
+      "wait_barriers_in_group": 9
+    },
+    {
+      "call": 2,
+      "evict_seq": 7220,
+      "later_demand_seq": 7406,
+      "later_state": 1,
+      "layer": 31,
+      "victim": 36,
+      "wait_barriers_in_group": 9
+    },
+    {
+      "call": 2,
+      "evict_seq": 7224,
+      "later_demand_seq": 7408,
+      "later_state": 1,
+      "layer": 31,
+      "victim": 3,
+      "wait_barriers_in_group": 9
+    },
+    {
+      "call": 2,
+      "evict_seq": 7228,
+      "later_demand_seq": 7411,
+      "later_state": 1,
+      "layer": 31,
+      "victim": 35,
+      "wait_barriers_in_group": 9
+    },
+    {
+      "call": 2,
+      "evict_seq": 7232,
+      "later_demand_seq": 7413,
+      "later_state": 1,
+      "layer": 31,
+      "victim": 65,
+      "wait_barriers_in_group": 9
+    },
+    {
+      "call": 2,
+      "evict_seq": 9567,
+      "later_demand_seq": 13706,
+      "later_state": 0,
+      "layer": 31,
+      "victim": 26,
+      "wait_barriers_in_group": 9
+    },
+    {
+      "call": 2,
+      "evict_seq": 9572,
+      "later_demand_seq": 13705,
+      "later_state": 2,
+      "layer": 31,
+      "victim": 116,
+      "wait_barriers_in_group": 9
+    },
+    {
+      "call": 2,
+      "evict_seq": 9578,
+      "later_demand_seq": 13686,
+      "later_state": 2,
+      "layer": 31,
+      "victim": 40,
+      "wait_barriers_in_group": 9
+    },
+    {
+      "call": 2,
+      "evict_seq": 9584,
+      "later_demand_seq": 13688,
+      "later_state": 2,
+      "layer": 31,
+      "victim": 84,
+      "wait_barriers_in_group": 9
+    },
+    {
+      "call": 2,
+      "evict_seq": 13696,
+      "later_demand_seq": 16785,
+      "later_state": 2,
+      "layer": 31,
+      "victim": 74,
+      "wait_barriers_in_group": 9
+    },
+    {
+      "call": 2,
+      "evict_seq": 13701,
+      "later_demand_seq": 16787,
+      "later_state": 0,
+      "layer": 31,
+      "victim": 102,
+      "wait_barriers_in_group": 9
+    },
+    {
+      "call": 2,
+      "evict_seq": 13707,
+      "later_demand_seq": 16768,
+      "later_state": 2,
+      "layer": 31,
+      "victim": 26,
+      "wait_barriers_in_group": 9
+    },
+    {
+      "call": 2,
+      "evict_seq": 13717,
+      "later_demand_seq": 16958,
+      "later_state": 2,
+      "layer": 31,
+      "victim": 63,
+      "wait_barriers_in_group": 9
+    },
+    {
+      "call": 2,
+      "evict_seq": 13720,
+      "later_demand_seq": 13833,
+      "later_state": 1,
+      "layer": 31,
+      "victim": 64,
+      "wait_barriers_in_group": 9
+    },
+    {
+      "call": 2,
+      "evict_seq": 13724,
+      "later_demand_seq": 13836,
+      "later_state": 1,
+      "layer": 31,
+      "victim": 54,
+      "wait_barriers_in_group": 9
+    },
+    {
+      "call": 2,
+      "evict_seq": 13728,
+      "later_demand_seq": 13839,
+      "later_state": 1,
+      "layer": 31,
+      "victim": 7,
+      "wait_barriers_in_group": 9
+    },
+    {
+      "call": 2,
+      "evict_seq": 13732,
+      "later_demand_seq": 13841,
+      "later_state": 1,
+      "layer": 31,
+      "victim": 15,
+      "wait_barriers_in_group": 9
+    },
+    {
+      "call": 2,
+      "evict_seq": 16770,
+      "later_demand_seq": 26522,
+      "later_state": 2,
+      "layer": 31,
+      "victim": 126,
+      "wait_barriers_in_group": 9
+    },
+    {
+      "call": 2,
+      "evict_seq": 16774,
+      "later_demand_seq": 26523,
+      "later_state": 2,
+      "layer": 31,
+      "victim": 42,
+      "wait_barriers_in_group": 9
+    },
+    {
+      "call": 2,
+      "evict_seq": 16782,
+      "later_demand_seq": 26524,
+      "later_state": 2,
+      "layer": 31,
+      "victim": 75,
+      "wait_barriers_in_group": 9
+    },
+    {
+      "call": 2,
+      "evict_seq": 16794,
+      "later_demand_seq": 26525,
+      "later_state": 2,
+      "layer": 31,
+      "victim": 23,
+      "wait_barriers_in_group": 9
+    },
+    {
+      "call": 2,
+      "evict_seq": 16798,
+      "later_demand_seq": 26321,
+      "later_state": 2,
+      "layer": 31,
+      "victim": 127,
+      "wait_barriers_in_group": 9
+    },
+    {
+      "call": 2,
+      "evict_seq": 16810,
+      "later_demand_seq": 16961,
+      "later_state": 1,
+      "layer": 31,
+      "victim": 110,
+      "wait_barriers_in_group": 9
+    },
+    {
+      "call": 2,
+      "evict_seq": 16814,
+      "later_demand_seq": 16963,
+      "later_state": 1,
+      "layer": 31,
+      "victim": 41,
+      "wait_barriers_in_group": 9
+    },
+    {
+      "call": 2,
+      "evict_seq": 26361,
+      "later_demand_seq": 26515,
+      "later_state": 1,
+      "layer": 31,
+      "victim": 79,
+      "wait_barriers_in_group": 9
+    },
+    {
+      "call": 2,
+      "evict_seq": 26365,
+      "later_demand_seq": 26518,
+      "later_state": 1,
+      "layer": 31,
+      "victim": 97,
+      "wait_barriers_in_group": 9
+    },
+    {
+      "call": 2,
+      "evict_seq": 26369,
+      "later_demand_seq": 26520,
+      "later_state": 1,
+      "layer": 31,
+      "victim": 114,
+      "wait_barriers_in_group": 9
+    },
+    {
+      "call": 2,
+      "evict_seq": 26373,
+      "later_demand_seq": 26526,
+      "later_state": 1,
+      "layer": 31,
+      "victim": 92,
+      "wait_barriers_in_group": 9
+    },
+    {
+      "call": 2,
+      "evict_seq": 26377,
+      "later_demand_seq": 26528,
+      "later_state": 1,
+      "layer": 31,
+      "victim": 3,
+      "wait_barriers_in_group": 9
+    },
+    {
+      "call": 2,
+      "evict_seq": 26381,
+      "later_demand_seq": 26532,
+      "later_state": 1,
+      "layer": 31,
+      "victim": 53,
+      "wait_barriers_in_group": 9
+    },
+    {
+      "call": 2,
+      "evict_seq": 26385,
+      "later_demand_seq": 26537,
+      "later_state": 1,
+      "layer": 31,
+      "victim": 113,
+      "wait_barriers_in_group": 9
+    },
+    {
+      "call": 2,
+      "evict_seq": 7586,
+      "later_demand_seq": 14100,
+      "later_state": 1,
+      "layer": 32,
+      "victim": 34,
+      "wait_barriers_in_group": 8
+    },
+    {
+      "call": 2,
+      "evict_seq": 7590,
+      "later_demand_seq": 9649,
+      "later_state": 2,
+      "layer": 32,
+      "victim": 21,
+      "wait_barriers_in_group": 8
+    },
+    {
+      "call": 2,
+      "evict_seq": 7594,
+      "later_demand_seq": 17025,
+      "later_state": 0,
+      "layer": 32,
+      "victim": 122,
+      "wait_barriers_in_group": 8
+    },
+    {
+      "call": 2,
+      "evict_seq": 7598,
+      "later_demand_seq": 9666,
+      "later_state": 2,
+      "layer": 32,
+      "victim": 106,
+      "wait_barriers_in_group": 8
+    },
+    {
+      "call": 2,
+      "evict_seq": 7602,
+      "later_demand_seq": 9650,
+      "later_state": 2,
+      "layer": 32,
+      "victim": 121,
+      "wait_barriers_in_group": 8
+    },
+    {
+      "call": 2,
+      "evict_seq": 7606,
+      "later_demand_seq": 9652,
+      "later_state": 2,
+      "layer": 32,
+      "victim": 53,
+      "wait_barriers_in_group": 8
+    },
+    {
+      "call": 2,
+      "evict_seq": 7610,
+      "later_demand_seq": 9654,
+      "later_state": 2,
+      "layer": 32,
+      "victim": 15,
+      "wait_barriers_in_group": 8
+    },
+    {
+      "call": 2,
+      "evict_seq": 7614,
+      "later_demand_seq": 9653,
+      "later_state": 2,
+      "layer": 32,
+      "victim": 113,
+      "wait_barriers_in_group": 8
+    },
+    {
+      "call": 2,
+      "evict_seq": 7618,
+      "later_demand_seq": 9665,
+      "later_state": 2,
+      "layer": 32,
+      "victim": 96,
+      "wait_barriers_in_group": 8
+    },
+    {
+      "call": 2,
+      "evict_seq": 7622,
+      "later_demand_seq": 9659,
+      "later_state": 2,
+      "layer": 32,
+      "victim": 116,
+      "wait_barriers_in_group": 8
+    },
+    {
+      "call": 2,
+      "evict_seq": 7626,
+      "later_demand_seq": 14102,
+      "later_state": 2,
+      "layer": 32,
+      "victim": 12,
+      "wait_barriers_in_group": 8
+    },
+    {
+      "call": 2,
+      "evict_seq": 7629,
+      "later_demand_seq": 7835,
+      "later_state": 2,
+      "layer": 32,
+      "victim": 0,
+      "wait_barriers_in_group": 8
+    },
+    {
+      "call": 2,
+      "evict_seq": 7633,
+      "later_demand_seq": 7837,
+      "later_state": 1,
+      "layer": 32,
+      "victim": 79,
+      "wait_barriers_in_group": 8
+    },
+    {
+      "call": 2,
+      "evict_seq": 7637,
+      "later_demand_seq": 7839,
+      "later_state": 1,
+      "layer": 32,
+      "victim": 2,
+      "wait_barriers_in_group": 8
+    },
+    {
+      "call": 2,
+      "evict_seq": 7641,
+      "later_demand_seq": 7841,
+      "later_state": 1,
+      "layer": 32,
+      "victim": 102,
+      "wait_barriers_in_group": 8
+    },
+    {
+      "call": 2,
+      "evict_seq": 7645,
+      "later_demand_seq": 7843,
+      "later_state": 1,
+      "layer": 32,
+      "victim": 88,
+      "wait_barriers_in_group": 8
+    },
+    {
+      "call": 2,
+      "evict_seq": 9656,
+      "later_demand_seq": 13906,
+      "later_state": 2,
+      "layer": 32,
+      "victim": 45,
+      "wait_barriers_in_group": 8
+    },
+    {
+      "call": 2,
+      "evict_seq": 9661,
+      "later_demand_seq": 26794,
+      "later_state": 2,
+      "layer": 32,
+      "victim": 124,
+      "wait_barriers_in_group": 8
+    },
+    {
+      "call": 2,
+      "evict_seq": 13910,
+      "later_demand_seq": 17014,
+      "later_state": 2,
+      "layer": 32,
+      "victim": 29,
+      "wait_barriers_in_group": 8
+    },
+    {
+      "call": 2,
+      "evict_seq": 13915,
+      "later_demand_seq": 17124,
+      "later_state": 2,
+      "layer": 32,
+      "victim": 17,
+      "wait_barriers_in_group": 8
+    },
+    {
+      "call": 2,
+      "evict_seq": 13923,
+      "later_demand_seq": 26795,
+      "later_state": 1,
+      "layer": 32,
+      "victim": 15,
+      "wait_barriers_in_group": 8
+    },
+    {
+      "call": 2,
+      "evict_seq": 13927,
+      "later_demand_seq": 26800,
+      "later_state": 1,
+      "layer": 32,
+      "victim": 86,
+      "wait_barriers_in_group": 8
+    },
+    {
+      "call": 2,
+      "evict_seq": 13931,
+      "later_demand_seq": 16998,
+      "later_state": 2,
+      "layer": 32,
+      "victim": 95,
+      "wait_barriers_in_group": 8
+    },
+    {
+      "call": 2,
+      "evict_seq": 13939,
+      "later_demand_seq": 17030,
+      "later_state": 2,
+      "layer": 32,
+      "victim": 68,
+      "wait_barriers_in_group": 8
+    },
+    {
+      "call": 2,
+      "evict_seq": 13943,
+      "later_demand_seq": 17123,
+      "later_state": 2,
+      "layer": 32,
+      "victim": 44,
+      "wait_barriers_in_group": 8
+    },
+    {
+      "call": 2,
+      "evict_seq": 13946,
+      "later_demand_seq": 14100,
+      "later_state": 1,
+      "layer": 32,
+      "victim": 34,
+      "wait_barriers_in_group": 8
+    },
+    {
+      "call": 2,
+      "evict_seq": 13950,
+      "later_demand_seq": 14104,
+      "later_state": 1,
+      "layer": 32,
+      "victim": 94,
+      "wait_barriers_in_group": 8
+    },
+    {
+      "call": 2,
+      "evict_seq": 13954,
+      "later_demand_seq": 14106,
+      "later_state": 1,
+      "layer": 32,
+      "victim": 63,
+      "wait_barriers_in_group": 8
+    },
+    {
+      "call": 2,
+      "evict_seq": 17000,
+      "later_demand_seq": 26798,
+      "later_state": 2,
+      "layer": 32,
+      "victim": 31,
+      "wait_barriers_in_group": 8
+    },
+    {
+      "call": 2,
+      "evict_seq": 17022,
+      "later_demand_seq": 26659,
+      "later_state": 0,
+      "layer": 32,
+      "victim": 56,
+      "wait_barriers_in_group": 8
+    },
+    {
+      "call": 2,
+      "evict_seq": 17026,
+      "later_demand_seq": 26668,
+      "later_state": 2,
+      "layer": 32,
+      "victim": 122,
+      "wait_barriers_in_group": 8
+    },
+    {
+      "call": 2,
+      "evict_seq": 26676,
+      "later_demand_seq": 26794,
+      "later_state": 2,
+      "layer": 32,
+      "victim": 124,
+      "wait_barriers_in_group": 8
+    },
+    {
+      "call": 2,
+      "evict_seq": 26680,
+      "later_demand_seq": 26795,
+      "later_state": 1,
+      "layer": 32,
+      "victim": 15,
+      "wait_barriers_in_group": 8
+    },
+    {
+      "call": 2,
+      "evict_seq": 26684,
+      "later_demand_seq": 26800,
+      "later_state": 1,
+      "layer": 32,
+      "victim": 86,
+      "wait_barriers_in_group": 8
+    },
+    {
+      "call": 2,
+      "evict_seq": 26688,
+      "later_demand_seq": 26805,
+      "later_state": 1,
+      "layer": 32,
+      "victim": 22,
+      "wait_barriers_in_group": 8
+    },
+    {
+      "call": 2,
+      "evict_seq": 26692,
+      "later_demand_seq": 26808,
+      "later_state": 1,
+      "layer": 32,
+      "victim": 23,
+      "wait_barriers_in_group": 8
+    },
+    {
+      "call": 2,
+      "evict_seq": 7910,
+      "later_demand_seq": 26973,
+      "later_state": 1,
+      "layer": 33,
+      "victim": 116,
+      "wait_barriers_in_group": 8
+    },
+    {
+      "call": 2,
+      "evict_seq": 7920,
+      "later_demand_seq": 9705,
+      "later_state": 2,
+      "layer": 33,
+      "victim": 40,
+      "wait_barriers_in_group": 8
+    },
+    {
+      "call": 2,
+      "evict_seq": 7924,
+      "later_demand_seq": 9702,
+      "later_state": 2,
+      "layer": 33,
+      "victim": 66,
+      "wait_barriers_in_group": 8
+    },
+    {
+      "call": 2,
+      "evict_seq": 7928,
+      "later_demand_seq": 9708,
+      "later_state": 2,
+      "layer": 33,
+      "victim": 65,
+      "wait_barriers_in_group": 8
+    },
+    {
+      "call": 2,
+      "evict_seq": 7933,
+      "later_demand_seq": 9701,
+      "later_state": 2,
+      "layer": 33,
+      "victim": 126,
+      "wait_barriers_in_group": 8
+    },
+    {
+      "call": 2,
+      "evict_seq": 7937,
+      "later_demand_seq": 26885,
+      "later_state": 0,
+      "layer": 33,
+      "victim": 27,
+      "wait_barriers_in_group": 8
+    },
+    {
+      "call": 2,
+      "evict_seq": 7941,
+      "later_demand_seq": 9699,
+      "later_state": 2,
+      "layer": 33,
+      "victim": 105,
+      "wait_barriers_in_group": 8
+    },
+    {
+      "call": 2,
+      "evict_seq": 7945,
+      "later_demand_seq": 9707,
+      "later_state": 2,
+      "layer": 33,
+      "victim": 5,
+      "wait_barriers_in_group": 8
+    },
+    {
+      "call": 2,
+      "evict_seq": 7948,
+      "later_demand_seq": 8105,
+      "later_state": 1,
+      "layer": 33,
+      "victim": 6,
+      "wait_barriers_in_group": 8
+    },
+    {
+      "call": 2,
+      "evict_seq": 7952,
+      "later_demand_seq": 8107,
+      "later_state": 1,
+      "layer": 33,
+      "victim": 67,
+      "wait_barriers_in_group": 8
+    },
+    {
+      "call": 2,
+      "evict_seq": 7956,
+      "later_demand_seq": 8109,
+      "later_state": 1,
+      "layer": 33,
+      "victim": 55,
+      "wait_barriers_in_group": 8
+    },
+    {
+      "call": 2,
+      "evict_seq": 7960,
+      "later_demand_seq": 8111,
+      "later_state": 1,
+      "layer": 33,
+      "victim": 117,
+      "wait_barriers_in_group": 8
+    },
+    {
+      "call": 2,
+      "evict_seq": 14170,
+      "later_demand_seq": 17138,
+      "later_state": 2,
+      "layer": 33,
+      "victim": 75,
+      "wait_barriers_in_group": 8
+    },
+    {
+      "call": 2,
+      "evict_seq": 14174,
+      "later_demand_seq": 17143,
+      "later_state": 2,
+      "layer": 33,
+      "victim": 82,
+      "wait_barriers_in_group": 8
+    },
+    {
+      "call": 2,
+      "evict_seq": 14183,
+      "later_demand_seq": 17136,
+      "later_state": 2,
+      "layer": 33,
+      "victim": 80,
+      "wait_barriers_in_group": 8
+    },
+    {
+      "call": 2,
+      "evict_seq": 14187,
+      "later_demand_seq": 17139,
+      "later_state": 2,
+      "layer": 33,
+      "victim": 5,
+      "wait_barriers_in_group": 8
+    },
+    {
+      "call": 2,
+      "evict_seq": 14194,
+      "later_demand_seq": 14325,
+      "later_state": 2,
+      "layer": 33,
+      "victim": 35,
+      "wait_barriers_in_group": 8
+    },
+    {
+      "call": 2,
+      "evict_seq": 14198,
+      "later_demand_seq": 14327,
+      "later_state": 1,
+      "layer": 33,
+      "victim": 97,
+      "wait_barriers_in_group": 8
+    },
+    {
+      "call": 2,
+      "evict_seq": 17155,
+      "later_demand_seq": 17192,
+      "later_state": 1,
+      "layer": 33,
+      "victim": 55,
+      "wait_barriers_in_group": 8
+    },
+    {
+      "call": 2,
+      "evict_seq": 26898,
+      "later_demand_seq": 26971,
+      "later_state": 1,
+      "layer": 33,
+      "victim": 56,
+      "wait_barriers_in_group": 8
+    },
+    {
+      "call": 2,
+      "evict_seq": 26902,
+      "later_demand_seq": 26973,
+      "later_state": 1,
+      "layer": 33,
+      "victim": 116,
+      "wait_barriers_in_group": 8
+    },
+    {
+      "call": 2,
+      "evict_seq": 8175,
+      "later_demand_seq": 17216,
+      "later_state": 0,
+      "layer": 34,
+      "victim": 122,
+      "wait_barriers_in_group": 5
+    },
+    {
+      "call": 2,
+      "evict_seq": 8183,
+      "later_demand_seq": 27023,
+      "later_state": 0,
+      "layer": 34,
+      "victim": 7,
+      "wait_barriers_in_group": 5
+    },
+    {
+      "call": 2,
+      "evict_seq": 8187,
+      "later_demand_seq": 14349,
+      "later_state": 2,
+      "layer": 34,
+      "victim": 125,
+      "wait_barriers_in_group": 5
+    },
+    {
+      "call": 2,
+      "evict_seq": 8191,
+      "later_demand_seq": 9714,
+      "later_state": 2,
+      "layer": 34,
+      "victim": 22,
+      "wait_barriers_in_group": 5
+    },
+    {
+      "call": 2,
+      "evict_seq": 8196,
+      "later_demand_seq": 9710,
+      "later_state": 2,
+      "layer": 34,
+      "victim": 76,
+      "wait_barriers_in_group": 5
+    },
+    {
+      "call": 2,
+      "evict_seq": 8201,
+      "later_demand_seq": 9709,
+      "later_state": 2,
+      "layer": 34,
+      "victim": 14,
+      "wait_barriers_in_group": 5
+    },
+    {
+      "call": 2,
+      "evict_seq": 8205,
+      "later_demand_seq": 27015,
+      "later_state": 0,
+      "layer": 34,
+      "victim": 124,
+      "wait_barriers_in_group": 5
+    },
+    {
+      "call": 2,
+      "evict_seq": 14353,
+      "later_demand_seq": 17221,
+      "later_state": 2,
+      "layer": 34,
+      "victim": 64,
+      "wait_barriers_in_group": 5
+    },
+    {
+      "call": 2,
+      "evict_seq": 27051,
+      "later_demand_seq": 27182,
+      "later_state": 1,
+      "layer": 34,
+      "victim": 26,
+      "wait_barriers_in_group": 5
+    }
+  ],
+  "limits": [
+    "LOAD_END precedes RESIDENT commit. WAIT cannot be assigned in full to every concurrent load.",
+    "No optimistic warm benefit bound is established; conditional cold simulations cannot veto physical uniform44.",
+    "No new inferencing or trace required for these repairs."
+  ],
+  "original_analysis": {
+    "conditional_target": {
+      "fraction_of_trace_on_wait_if_trace_on_rest_fixed": 0.38153992937483117,
+      "six_tok_s_decode_s_for_47_tokens": 7.833333333333333,
+      "trace_off_decode_saving_needed_s": 2.3729916666666684,
+      "trace_on_decode_saving_needed_s": 3.339679666666668
+    },
+    "evidence": "MEDIDO_NO_TARGET",
+    "fixed_stream_completed_lru": {
+      "global": {
+        "1": {
+          "decode_hit_fraction": 0.0018570102135561746,
+          "hits": {
+            "decode": 2,
+            "prefill": 2
+          },
+          "load_counts": {
+            "decode": 1077,
+            "prefill": 1222
+          },
+          "logical_bytes_avoided": {
+            "decode": 26438400,
+            "prefill": 26438400
+          },
+          "policy": "timestamp ordered, completed load insertion; fixed observed primary miss stream; zero insertion cost"
+        },
+        "2": {
+          "decode_hit_fraction": 0.012999071494893221,
+          "hits": {
+            "decode": 14,
+            "prefill": 13
+          },
+          "load_counts": {
+            "decode": 1077,
+            "prefill": 1222
+          },
+          "logical_bytes_avoided": {
+            "decode": 185068800,
+            "prefill": 171849600
+          },
+          "policy": "timestamp ordered, completed load insertion; fixed observed primary miss stream; zero insertion cost"
+        },
+        "3": {
+          "decode_hit_fraction": 0.03714020427112349,
+          "hits": {
+            "decode": 40,
+            "prefill": 18
+          },
+          "load_counts": {
+            "decode": 1077,
+            "prefill": 1222
+          },
+          "logical_bytes_avoided": {
+            "decode": 528768000,
+            "prefill": 237945600
+          },
+          "policy": "timestamp ordered, completed load insertion; fixed observed primary miss stream; zero insertion cost"
+        }
+      },
+      "gpu_only": {
+        "1": {
+          "decode_hit_fraction": 0.019867549668874173,
+          "hits": {
+            "decode": 6,
+            "prefill": 6
+          },
+          "load_counts": {
+            "decode": 302,
+            "prefill": 424
+          },
+          "logical_bytes_avoided": {
+            "decode": 79315200,
+            "prefill": 79315200
+          },
+          "policy": "timestamp ordered, completed load insertion; fixed observed primary miss stream; zero insertion cost"
+        },
+        "2": {
+          "decode_hit_fraction": 0.059602649006622516,
+          "hits": {
+            "decode": 18,
+            "prefill": 40
+          },
+          "load_counts": {
+            "decode": 302,
+            "prefill": 424
+          },
+          "logical_bytes_avoided": {
+            "decode": 237945600,
+            "prefill": 528768000
+          },
+          "policy": "timestamp ordered, completed load insertion; fixed observed primary miss stream; zero insertion cost"
+        },
+        "3": {
+          "decode_hit_fraction": 0.10927152317880795,
+          "hits": {
+            "decode": 33,
+            "prefill": 56
+          },
+          "load_counts": {
+            "decode": 302,
+            "prefill": 424
+          },
+          "logical_bytes_avoided": {
+            "decode": 436233600,
+            "prefill": 740275200
+          },
+          "policy": "timestamp ordered, completed load insertion; fixed observed primary miss stream; zero insertion cost"
+        }
+      }
+    },
+    "inputs_and_outputs_equal_to_all_c129_candidate_arms": true,
+    "limitations": [
+      "Single ordered trace-on/trace-off pair; environmental order remains a confounder.",
+      "Trace-on is slower; its interval fractions are diagnostic, not a calibrated production time breakdown.",
+      "WAIT is observed readiness blocking, not automatically removable time.",
+      "READ bytes are logical expert slabs, not NVMe controller traffic.",
+      "LRU fixes primary misses and assumes free insertion; no causal speed claim.",
+      "Compute and attention/KV are not independently decomposed in this trace."
+    ],
+    "raw_sha256": {
+      "c135_server": "b9892c1255ea6c3d1a0187d1288cc8da936b326c961e6228b3ef6678b55355fd",
+      "c135_trace": "91610b12291d5a42a12bba09f5d4ff188d25ee0001ab89e894bdd508005e82fb",
+      "c136_server": "cce9c1e547c88c85f6e0b41730cbdfdc1c8afea2c082e7b47f77d856de23f435"
+    },
+    "receipt_sha256": {
+      "c135": "1a096a2f2d0be1b3c18f0490f5d667fb5dee4035275a28390b1dab5f2cb6dd43",
+      "c136": "e22a4fd8070b3f987ab06c054b08e18270e287af4c716e8ad63634858d835c1e"
+    },
+    "run_elapsed_s": {
+      "off": 172.661307,
+      "on": 172.258467
+    },
+    "schema": "c135-c136-analysis-v1",
+    "server": {
+      "trace_off": {
+        "warm_decode_s": 10.206325000000001,
+        "warm_decode_tok_s": 4.604987593477573,
+        "warm_first_final_s": 20.87149629299529,
+        "warm_output_tokens": 47,
+        "warm_prefill_s": 10.906051999999999
+      },
+      "trace_on": {
+        "warm_decode_s": 11.173013000000001,
+        "warm_decode_tok_s": 4.206564513976668,
+        "warm_first_final_s": 22.619140231981874,
+        "warm_output_tokens": 47,
+        "warm_prefill_s": 11.706565000000001
+      },
+      "trace_on_minus_off_decode_s": 0.9666879999999995,
+      "trace_on_minus_off_first_final_s": 1.7476439389865845
+    },
+    "trace": {
+      "decode_call_duration_s": 11.021767,
+      "events": 58181,
+      "layer_devices": {
+        "CPU": 25,
+        "CUDA0": 11
+      },
+      "loads": 2299,
+      "prefill_call_duration_s": 11.702723,
+      "spans": {
+        "decode": {
+          "LOAD": {
+            "count": 1077,
+            "sum_s": 13.324844,
+            "union_s": 8.717757
+          },
+          "MUTEX_WAIT": {
+            "count": 1656,
+            "sum_s": 0.000946,
+            "union_s": 0.000946
+          },
+          "QUEUE": {
+            "count": 1077,
+            "sum_s": 0.023127,
+            "union_s": 0.018832
+          },
+          "READ": {
+            "count": 3231,
+            "sum_s": 12.530585,
+            "union_s": 8.252098
+          },
+          "TENSOR_SET": {
+            "count": 3231,
+            "sum_s": 0.792409,
+            "union_s": 0.772158
+          },
+          "WAIT": {
+            "count": 780,
+            "sum_s": 8.753159,
+            "union_s": 8.753159
+          },
+          "WAIT_CPU": {
+            "count": 547,
+            "sum_s": 6.318393,
+            "union_s": 6.318393
+          },
+          "WAIT_CUDA0": {
+            "count": 233,
+            "sum_s": 2.434766,
+            "union_s": 2.434766
+          },
+          "demand_states": {
+            "0": 1077,
+            "2": 5547
+          },
+          "load_bytes": 14237078400,
+          "logical_read_bytes": 14237078400
+        },
+        "enqueue_without_dequeue_events": 356,
+        "prefill": {
+          "LOAD": {
+            "count": 1222,
+            "sum_s": 29.220273,
+            "union_s": 8.450859
+          },
+          "MUTEX_WAIT": {
+            "count": 36,
+            "sum_s": 4.5e-05,
+            "union_s": 4.5e-05
+          },
+          "QUEUE": {
+            "count": 1222,
+            "sum_s": 29.204783,
+            "union_s": 5.236026
+          },
+          "READ": {
+            "count": 3666,
+            "sum_s": 28.211922,
+            "union_s": 8.373041
+          },
+          "TENSOR_SET": {
+            "count": 3666,
+            "sum_s": 1.006665,
+            "union_s": 0.973727
+          },
+          "WAIT": {
+            "count": 249,
+            "sum_s": 7.901561,
+            "union_s": 7.901561
+          },
+          "WAIT_CPU": {
+            "count": 160,
+            "sum_s": 5.061395,
+            "union_s": 5.061395
+          },
+          "WAIT_CUDA0": {
+            "count": 89,
+            "sum_s": 2.840166,
+            "union_s": 2.840166
+          },
+          "demand_states": {
+            "0": 774,
+            "1": 356,
+            "2": 2703
+          },
+          "load_bytes": 16153862400,
+          "logical_read_bytes": 16153862400
+        }
+      }
+    }
+  },
+  "replay_missing": [
+    "initial slot/expert/generation map",
+    "initial hotness and use counters",
+    "global decay position",
+    "full first-request prefill routing/multiplicities",
+    "exact RESIDENT commit timestamps"
+  ],
+  "replay_status": "SOURCE_FAITHFUL_PRIMARY_REPLAY_NOT_IDENTIFIABLE_FROM_C135",
+  "schema": "c138-c135-reanalysis-v1",
+  "simulation_contract": "Empty initial cache, sequential fixed authoritative decode routing, per-layer capacity; LRU and oracle min load count only. Not backend replay, warm bound, latency oracle or equal-memory L2 comparison.",
+  "strong_trace_validation": {
+    "all_published_raw_manifests_hash_checked": true,
+    "events": 58181,
+    "status": "PASS",
+    "worker_tails": []
+  }
+}

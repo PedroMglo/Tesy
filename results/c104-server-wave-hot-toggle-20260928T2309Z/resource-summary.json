@@ -1,0 +1,168 @@
+{
+  "matched_start_wait_total_s": 137.9780628180015,
+  "model_process_elapsed_total_s": 923.6981935609947,
+  "runs": {
+    "c104-p1-off": {
+      "elapsed_s": 336.6520382500021,
+      "matched_start": {
+        "anchor": {
+          "admission_reasons": [],
+          "gpu": {
+            "bdf": "00000000:C4:00.0",
+            "power_w": 11.53,
+            "temperature_c": 43.0,
+            "used_mib": 12.0,
+            "uuid": "GPU-83d90c55-1d92-75da-fc30-7771a85f2521"
+          },
+          "host_psi_full_avg10": 0.0,
+          "mem_available_bytes": 24870043648,
+          "power": {
+            "online_sources": [
+              "AC0"
+            ],
+            "profile": "performance",
+            "source": "AC"
+          },
+          "thermal": {
+            "cpu_tctl_c": 46.0,
+            "nvme_composite_by_sensor": {
+              "nvme-pci-c100": 35.85
+            }
+          }
+        },
+        "duration_s": 137.8283775190066,
+        "matched": {
+          "gpu": {
+            "bdf": "00000000:C4:00.0",
+            "power_w": 4.16,
+            "temperature_c": 43.0,
+            "used_mib": 12.0,
+            "uuid": "GPU-83d90c55-1d92-75da-fc30-7771a85f2521"
+          },
+          "power": {
+            "online_sources": [
+              "AC0"
+            ],
+            "profile": "performance",
+            "source": "AC"
+          },
+          "thermal": {
+            "cpu_tctl_c": 46.625,
+            "nvme_composite_by_sensor": {
+              "nvme-pci-c100": 37.85
+            }
+          }
+        },
+        "series_sha256": "fc1e7b1a763da6a26fd8cfbf7dce83e72a7ae082d0de6802025d79968ed41c3c",
+        "status": "PASS_MATCHED_START"
+      },
+      "maxima": {
+        "cgroup_peak_bytes": 13069672448,
+        "cpu_c": 95.125,
+        "gpu_c": 63.0,
+        "gpu_total_mib": 5758.0,
+        "nvme_c": 56.85,
+        "rss_bytes": 13296627712,
+        "swap_bytes": 0
+      }
+    },
+    "c104-p1-on": {
+      "elapsed_s": 123.0522257979901,
+      "matched_start": {
+        "duration_s": 0,
+        "status": "FIRST_ARM_ANCHOR_FROM_RUNNER_PREFLIGHT"
+      },
+      "maxima": {
+        "cgroup_peak_bytes": 13067776000,
+        "cpu_c": 95.0,
+        "gpu_c": 62.0,
+        "gpu_total_mib": 5758.0,
+        "nvme_c": 52.85,
+        "rss_bytes": 13296164864,
+        "swap_bytes": 0
+      }
+    },
+    "c104-p2-off": {
+      "elapsed_s": 338.70426918400335,
+      "matched_start": {
+        "duration_s": 0,
+        "status": "FIRST_ARM_ANCHOR_FROM_RUNNER_PREFLIGHT"
+      },
+      "maxima": {
+        "cgroup_peak_bytes": 13069578240,
+        "cpu_c": 95.125,
+        "gpu_c": 63.0,
+        "gpu_total_mib": 5758.0,
+        "nvme_c": 57.85,
+        "rss_bytes": 13297299456,
+        "swap_bytes": 0
+      }
+    },
+    "c104-p2-on": {
+      "elapsed_s": 125.28966032899916,
+      "matched_start": {
+        "anchor": {
+          "admission_reasons": [],
+          "gpu": {
+            "bdf": "00000000:C4:00.0",
+            "power_w": 10.91,
+            "temperature_c": 49.0,
+            "used_mib": 12.0,
+            "uuid": "GPU-83d90c55-1d92-75da-fc30-7771a85f2521"
+          },
+          "host_psi_full_avg10": 0.0,
+          "mem_available_bytes": 24870141952,
+          "power": {
+            "online_sources": [
+              "AC0"
+            ],
+            "profile": "performance",
+            "source": "AC"
+          },
+          "thermal": {
+            "cpu_tctl_c": 55.375,
+            "nvme_composite_by_sensor": {
+              "nvme-pci-c100": 49.85
+            }
+          }
+        },
+        "duration_s": 0.14968529899488203,
+        "matched": {
+          "gpu": {
+            "bdf": "00000000:C4:00.0",
+            "power_w": 4.31,
+            "temperature_c": 49.0,
+            "used_mib": 12.0,
+            "uuid": "GPU-83d90c55-1d92-75da-fc30-7771a85f2521"
+          },
+          "power": {
+            "online_sources": [
+              "AC0"
+            ],
+            "profile": "performance",
+            "source": "AC"
+          },
+          "thermal": {
+            "cpu_tctl_c": 54.875,
+            "nvme_composite_by_sensor": {
+              "nvme-pci-c100": 50.85
+            }
+          }
+        },
+        "series_sha256": "d173dc674f047e9ab7584d895a2cbbb3f89998096d25c4dd87c56a1c349479a3",
+        "status": "PASS_MATCHED_START"
+      },
+      "maxima": {
+        "cgroup_peak_bytes": 13067694080,
+        "cpu_c": 95.0,
+        "gpu_c": 62.0,
+        "gpu_total_mib": 5758.0,
+        "nvme_c": 57.85,
+        "rss_bytes": 13296132096,
+        "swap_bytes": 0
+      }
+    }
+  },
+  "schema": "c104-resources-v1",
+  "status": "PASS_ALL_FOUR_ARMS"
+}

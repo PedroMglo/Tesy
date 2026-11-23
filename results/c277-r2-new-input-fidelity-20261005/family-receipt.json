@@ -1,0 +1,39 @@
+{
+  "measurement_commit": "f64ad64383da0b48be58759fc8242002e93d0deb",
+  "start": {
+    "utc": "2026-10-05T21:04:24.814368+00:00",
+    "monotonic_s": 10483.25994689
+  },
+  "end": {
+    "utc": "2026-10-05T21:04:27.101502+00:00",
+    "monotonic_s": 10485.547081099
+  },
+  "argv": [
+    "systemd-run",
+    "--user",
+    "--slice=tesy-post-c154.slice",
+    "--unit=tesy-c277-r2-causal",
+    "--collect",
+    "--pipe",
+    "--wait",
+    "--working-directory=/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc",
+    "-p",
+    "MemoryMax=21474836480",
+    "-p",
+    "MemoryHigh=21474836480",
+    "-p",
+    "MemorySwapMax=0",
+    "-p",
+    "RuntimeMaxSec=800",
+    "-p",
+    "TimeoutStopSec=10",
+    "--",
+    "/usr/bin/python3",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/tools/residency_unit_run.py",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c277-r2-new-input-fidelity-20261005",
+    "--inside"
+  ],
+  "returncode": 1,
+  "stdout": "",
+  "stderr": "Running as unit: tesy-c277-r2-causal.service\n          Finished with result: exit-code\nMain processes terminated with: code=exited, status=1/FAILURE\n               Service runtime: 2.224s\n             CPU time consumed: 1.936s\n                   Memory peak: 45.6M (swap: 0B)\n"
+}

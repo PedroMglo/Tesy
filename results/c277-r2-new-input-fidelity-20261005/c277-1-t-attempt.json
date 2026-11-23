@@ -1,0 +1,48 @@
+{
+  "id": "c277-1-t",
+  "start": {
+    "utc": "2026-10-05T21:04:24.930922+00:00",
+    "monotonic_s": 10483.376497497
+  },
+  "end": {
+    "utc": "2026-10-05T21:04:27.087593+00:00",
+    "monotonic_s": 10485.533170196
+  },
+  "argv": [
+    "/usr/bin/python3",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/tools/run_bounded.py",
+    "--run-id",
+    "c277-1-t",
+    "--model-id",
+    "gpt-oss-120b-mxfp4-gguf",
+    "--backend",
+    "stock",
+    "--backend-root",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/backends/c269-layer-last-use",
+    "--output-root",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c277-r2-new-input-fidelity-20261005/raw",
+    "--variant",
+    "C75-private-c269-T",
+    "--workload",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c277-r2-new-input-fidelity-20261005/protocol.json",
+    "--cache-condition",
+    "Fresh identical mode0 prefix warmup; complete drained initial state; no intermediate drain",
+    "--resource-protocol",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c277-r2-new-input-fidelity-20261005/protocol.json",
+    "--require-telemetry",
+    "--timeout-s",
+    "240",
+    "--collect-start-inventory",
+    "--",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c276-post-c274-r2-causal-qualification-20261005T204839Z/build/r2-causal-native",
+    "/home/pmglo/models/gpt-oss-120b-gguf/gpt-oss-120b-MXFP4.gguf",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c276-post-c274-r2-causal-qualification-20261005T204839Z/development-inputs.json",
+    "code153",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c277-r2-new-input-fidelity-20261005/raw/c277-1-t.native",
+    "T",
+    "v1"
+  ],
+  "returncode": 1,
+  "stdout": "",
+  "stderr": "Traceback (most recent call last):\n  File \"/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/tools/run_bounded.py\", line 740, in <module>\n    sys.exit(main())\n             ~~~~^^\n  File \"/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/tools/run_bounded.py\", line 476, in main\n    start_inventory = inventory_before_spawn(out.parent,a.run_id,resource_protocol)\n  File \"/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/tools/run_bounded.py\", line 291, in inventory_before_spawn\n    raise RuntimeError('opt-in frozen inventory contract invalid')\nRuntimeError: opt-in frozen inventory contract invalid\n"
+}

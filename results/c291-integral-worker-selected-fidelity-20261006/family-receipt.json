@@ -1,0 +1,39 @@
+{
+  "measurement_commit": "9db468c0c46782c6f68029fbc59c9e890d5a8458",
+  "start": {
+    "utc": "2026-10-06T21:20:31.012093+00:00",
+    "monotonic_s": 97849.457677364
+  },
+  "end": {
+    "utc": "2026-10-06T21:20:31.429334+00:00",
+    "monotonic_s": 97849.874915089
+  },
+  "argv": [
+    "systemd-run",
+    "--user",
+    "--slice=tesy-post-c154.slice",
+    "--unit=tesy-c291-expert-store-selected",
+    "--collect",
+    "--pipe",
+    "--wait",
+    "--working-directory=/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc",
+    "-p",
+    "MemoryMax=21474836480",
+    "-p",
+    "MemoryHigh=21474836480",
+    "-p",
+    "MemorySwapMax=0",
+    "-p",
+    "RuntimeMaxSec=800",
+    "-p",
+    "TimeoutStopSec=10",
+    "--",
+    "/usr/bin/python",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/tools/residency_unit_run.py",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c291-integral-worker-selected-fidelity-20261006",
+    "--inside"
+  ],
+  "returncode": 1,
+  "stdout": "",
+  "stderr": "Running as unit: tesy-c291-expert-store-selected.service\n          Finished with result: exit-code\nMain processes terminated with: code=exited, status=1/FAILURE\n               Service runtime: 341ms\n             CPU time consumed: 264ms\n                   Memory peak: 45.2M (swap: 0B)\n"
+}

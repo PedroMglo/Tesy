@@ -1,0 +1,8 @@
+{
+  "command": "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=tools python3 -m unittest tools.test_c5_compare tools.test_c2_gate tools.test_c3_approval tools.test_c3_terminal_sample tools.test_c7_gate_repair tools.test_c7_timing_gate tools.test_c8_capture_seal tools.test_c8_boundary_gate tools.test_c8_timing_gate tools.test_c8_budget_accounting tools.test_c9_server_admission tools.test_c9_prefix_normalize",
+  "evidence_class": "model-free",
+  "fail": 0,
+  "pass": 70,
+  "schema": "c12-p16s24-model-free-tests-v1",
+  "static_check": "C12 all modes argv equals C9 except -ngl 8->16 and --moe-stream-cache 32s->24s; ub32, threads8, backend, model and guards unchanged"
+}

@@ -1,0 +1,108 @@
+{
+  "status": "NO_GO_FIXED_ZSTD_CODEC_INTEGRATION_IN_SAMPLED_SERVICE_SCENARIO",
+  "measurement_valid": true,
+  "classification": "MEDIDO_NO_TARGET ratio/reconstruction; ESTIMADO investment envelope",
+  "measurement_commit": "737cd3c0b531c242061aaaf26e9f4c81b6f1cb16",
+  "physical_envelope_s": 72.88331588200526,
+  "canonical_component_checks": 384,
+  "canonical_logical_bytes": 848240640,
+  "analysis": {
+    "status": "PASS_FIXED_CANONICAL_CODEC_CHARACTERIZATION",
+    "classification": "MEDIDO_NO_TARGET",
+    "groups": {
+      "CPU/weight": {
+        "components": 96,
+        "logical_bytes": 423014400,
+        "encoded_bytes": 403975810,
+        "aligned_encoded_bytes": 404164608,
+        "saved_logical_percent": 4.500695484598161,
+        "saved_aligned_percent": 4.456063907044294,
+        "decompress_ready_s_per_component_median": 0.002318928,
+        "ratio_min": 0.9109658678286129,
+        "ratio_max": 0.9658097312999274
+      },
+      "CPU/bias": {
+        "components": 96,
+        "logical_bytes": 1105920,
+        "encoded_bytes": 495568,
+        "aligned_encoded_bytes": 753664,
+        "saved_logical_percent": 55.18952546296296,
+        "saved_aligned_percent": 31.851851851851855,
+        "decompress_ready_s_per_component_median": 9.34275e-06,
+        "ratio_min": 0.35555555555555557,
+        "ratio_max": 0.7111111111111111
+      },
+      "GPU/weight": {
+        "components": 96,
+        "logical_bytes": 423014400,
+        "encoded_bytes": 404531341,
+        "aligned_encoded_bytes": 404729856,
+        "saved_logical_percent": 4.36936874962176,
+        "saved_aligned_percent": 4.322440087145973,
+        "decompress_ready_s_per_component_median": 0.0023025949999999997,
+        "ratio_min": 0.933275236020334,
+        "ratio_max": 0.9639506172839506
+      },
+      "GPU/bias": {
+        "components": 96,
+        "logical_bytes": 1105920,
+        "encoded_bytes": 503107,
+        "aligned_encoded_bytes": 786432,
+        "saved_logical_percent": 54.50783058449073,
+        "saved_aligned_percent": 28.888888888888886,
+        "decompress_ready_s_per_component_median": 9.31525e-06,
+        "ratio_min": 0.7111111111111111,
+        "ratio_max": 0.7111111111111111
+      }
+    },
+    "best_sample_weight_aligned_ratio": 0.9109658678286129,
+    "conditional_zero_reconstruction_all_work_byte_service_upper_percent": 8.903413217138711,
+    "integration_investment_threshold_percent": 20,
+    "scope": "Best sampled weight ratio hypothetically applies to every mandatory read, zero reconstruction/copy/CPU contention overhead; all work assumed byte-proportional. This generous conditional scenario is not a universal physical bound or measured target speedup. Biases are already resident and earn no per-expert I/O benefit.",
+    "unmeasured": "Compressed-store read service, target contention, unsampled expert ratios and integration. Actual reconstruction/copy cost reported independently; no codec runtime admitted without >=20% complete-path foundation."
+  },
+  "diagnostic_split_streams": {
+    "CPU": {
+      "diagnostic_separate_stream_saved_percent": 8.082371663943356,
+      "best_component_ratio_without_alignment_or_reconstruction": 0.8755907316630356,
+      "conditional_best_all_work_zero_cost_upper_percent": 12.440926833696441,
+      "scope": "Diagnostic separate existingZstdframes, not whole-componentruntime or measuredlatency; even unalignedzeroreconstruction grant staysbelow20%.",
+      "nibble_histograms_validated": true
+    },
+    "GPU": {
+      "diagnostic_separate_stream_saved_percent": 7.82169235846345,
+      "best_component_ratio_without_alignment_or_reconstruction": 0.9025131626724764,
+      "conditional_best_all_work_zero_cost_upper_percent": 9.748683732752362,
+      "scope": "Diagnostic separate existingZstdframes, not whole-componentruntime or measuredlatency; even unalignedzeroreconstruction grant staysbelow20%.",
+      "nibble_histograms_validated": true
+    }
+  },
+  "resources": {
+    "rss_bytes": 39743488,
+    "swap_bytes": 0,
+    "cgroup_memory_bytes": 90099712,
+    "cgroup_peak_bytes": 112300032,
+    "cgroup_file_bytes": 26202112,
+    "gpu_used_mib": 23.0,
+    "gpu_temperature_c": 44.0,
+    "cpu_tctl_c": 63.125,
+    "nvme_composite_c": 38.85,
+    "direct_model_fds": 1,
+    "buffered_model_fds": 0
+  },
+  "stop_reason": null,
+  "exact_source_fd_identity": {
+    "dev": 53,
+    "inode": 14833675,
+    "size_bytes": 63387346208,
+    "mtime_ns": 1790389637795911032,
+    "ctime_ns": 1790389637807910988
+  },
+  "mapped_codec_libraries_sha256": {
+    "/usr/lib64/libcrypto.so.3.5.9": "695648ac8dc5e6a2b70e5e72399940de0f84bf24fddb7dd18949ba40bc575c72",
+    "/usr/lib64/libzstd.so.1.5.7": "70ec54d150f4052f28fb1e8f8a1c6ca35e1a499e4744c6f6d9d783537618f80b"
+  },
+  "scope": "This simpleexistingcodec and sampled/fixed-serviceconditions only. Unsampled experts, othercodec/hardware/storage regimes UNKNOWN. No universalcompression/runtimeimpossibility claim.",
+  "new_runtime_codec_or_store": "NOT_RUN_INSUFFICIENT_INVESTMENT_FOUNDATION",
+  "raw_bytes": 1139073
+}

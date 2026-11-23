@@ -1,0 +1,94 @@
+{
+  "authorities": {
+    "correctness": [
+      "E-C6-FINAL"
+    ],
+    "decision": [
+      "E-C6-FINAL"
+    ],
+    "diagnosis": [
+      "E-C6-FINAL"
+    ]
+  },
+  "checks": [],
+  "claims": [
+    {
+      "evidence": [
+        {
+          "quote": "removed the C5 layer0 CPU Flash difference on the physical target.",
+          "source": "E-C6-FINAL",
+          "type": "text"
+        }
+      ],
+      "evidence_class": "DIAGNOSTICO",
+      "family": "correctness",
+      "id": "CL-C6-CPU",
+      "limitation": "Não implica full parity.",
+      "source_class": "Fecho de campanha Tesy congelado",
+      "statement": "Patch CPU removeu divergência layer0.",
+      "status": "CURRENT"
+    },
+    {
+      "evidence": [
+        {
+          "quote": "C/A+ still differs in **201087/201088** F32 logits, maximum absolute delta **0.2306489944**, RMSE **0.0448836917**.",
+          "source": "E-C6-FINAL",
+          "type": "text"
+        }
+      ],
+      "evidence_class": "DIAGNOSTICO",
+      "family": "correctness",
+      "id": "CL-C6-FULL",
+      "limitation": "Delta menor continua mismatch.",
+      "source_class": "Fecho de campanha Tesy congelado",
+      "statement": "Full-model parity falhou.",
+      "status": "CURRENT"
+    },
+    {
+      "evidence": [
+        {
+          "quote": "The **first different observed operation is GPU29 Flash Attention at token48/feature64**",
+          "source": "E-C6-FINAL",
+          "type": "text"
+        }
+      ],
+      "evidence_class": "DIAGNOSTICO",
+      "family": "diagnosis",
+      "id": "CL-C6-GPU",
+      "limitation": "Não é perfil de cada instrução.",
+      "source_class": "Fecho de campanha Tesy congelado",
+      "statement": "Divergência seguinte em GPU29 Flash Attention.",
+      "status": "CURRENT"
+    },
+    {
+      "evidence": [
+        {
+          "quote": "Conservative ub32, no preload remains unchanged.",
+          "source": "E-C6-FINAL",
+          "type": "text"
+        }
+      ],
+      "evidence_class": "DIAGNOSTICO",
+      "family": "decision",
+      "id": "CL-C6-DECISION",
+      "limitation": "Sem segunda patch/promoção.",
+      "source_class": "Fecho de campanha Tesy congelado",
+      "statement": "Default conservador mantém-se.",
+      "status": "CURRENT"
+    }
+  ],
+  "datasets": [],
+  "metrics": [],
+  "schema_version": "tesy-evidence-spec-v1",
+  "source_contracts": [
+    {
+      "json_values": [],
+      "path": "research/C6-FINAL-20260927.md",
+      "source": "E-C6-FINAL",
+      "text": [
+        "COMPAT_NOT_RECOVERED_NEXT_DIVERGENCE",
+        "FULL_MODEL_COMPAT_SHORT_PASS"
+      ]
+    }
+  ]
+}

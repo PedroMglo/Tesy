@@ -1,0 +1,169 @@
+{
+  "actual_common_prefix_ids": 510,
+  "arm": "off",
+  "completed_utc": "2026-09-27T21:10:00.041752+00:00",
+  "cpu_diagnostics": {
+    "clock_source": "cpuinfo_avg_freq per cpufreq policy",
+    "cpu_effective_clock_max_mhz": 3306.2905,
+    "cpu_effective_clock_median_mhz": 3129.5275,
+    "cpu_effective_clock_min_mhz": 605.264,
+    "cpu_max_c": 95.125,
+    "cpu_package_power_max_w": 69.04290993764674,
+    "cpu_package_power_median_w": 61.44664146652467,
+    "cpu_policy_count": 24,
+    "cpu_warning_observed": true,
+    "cpu_warning_sample_count": 28,
+    "explicit_thermal_flag_source": "ACPI Processor cooling cur_state; AMD hardware flag unavailable",
+    "gpu_power_max_w": 21.43,
+    "power_source": "package-0 RAPL energy counter; interval power estimate",
+    "processor_cooling_max_state": 0,
+    "sample_count": 169
+  },
+  "elapsed_s": 180.32731505400443,
+  "idle": {
+    "baseline": {
+      "cpu_c": 45.875,
+      "gpu_c": 43.0,
+      "nvme_c": 37.85
+    },
+    "cadence_breaks": [],
+    "duration_s": 303.05823619500006,
+    "end": {
+      "cpu_c": 45.125,
+      "cpu_fan_rpm": 2600.0,
+      "elapsed_s": 303.05823619500006,
+      "gpu": {
+        "driver": "615.71.09",
+        "temperature_c": 42.0,
+        "used_mib": 12.0
+      },
+      "gpu_fan_rpm": 2400.0,
+      "mem_available_bytes": 27230597120,
+      "nvme_c": 37.85,
+      "run_id": "c23-p2-off",
+      "utc": "2026-09-27T21:06:59.508012+00:00"
+    },
+    "last60_trend_c": {
+      "cpu_c": -0.625,
+      "gpu_c": -1.0,
+      "nvme_c": -0.10000000000000142
+    },
+    "match_tolerance_c": [
+      5,
+      5,
+      3
+    ],
+    "max_gap_overall_s": 0.9177614889995311,
+    "max_gap_qualifying_s": 0.9177614889995311,
+    "max_start_c": [
+      50,
+      50,
+      45
+    ],
+    "qualifying_duration_s": 300.00700780600164,
+    "qualifying_start_s": 3.0512283889984246,
+    "sample_count": 607,
+    "series_sha256": "47b1dd42cc7beabb9e94cee4ffb57dc30da0fb8a447ce3c14dc012ea0da8a928",
+    "start": {
+      "cpu_c": 51.375,
+      "cpu_fan_rpm": 2700.0,
+      "elapsed_s": 0.03125793499930296,
+      "gpu": {
+        "driver": "615.71.09",
+        "temperature_c": 47.0,
+        "used_mib": 12.0
+      },
+      "gpu_fan_rpm": 2500.0,
+      "mem_available_bytes": 27281666048,
+      "nvme_c": 45.85,
+      "run_id": "c23-p2-off",
+      "utc": "2026-09-27T21:01:56.481037+00:00"
+    },
+    "status": "PASS"
+  },
+  "maxima": {
+    "cgroup_peak_bytes": 13070864384,
+    "cpu_c": 95.125,
+    "gpu_c": 60.0,
+    "gpu_total_mib": 5752.0,
+    "nvme_c": 50.85,
+    "rss_bytes": 13290930176,
+    "swap_bytes": 0
+  },
+  "measurement_commit": "d6803c28fba264aa706790c8107cd5b9a75c3d01",
+  "order": 2,
+  "phase": "P2",
+  "protocol_sha256": "2e1f1c2784e83434a2a9554fda4886b66f7c9a1c13e63cb95caaa24694b43ab6",
+  "raw_sha256": "511958e9aba198e017b815efd2dd139fdba1ad90d3de8e95487596fed54a71e4",
+  "reason": null,
+  "results": [
+    {
+      "id": "c13-prefix512",
+      "message_sha256": "1b4631ffc9fd59b6b233f7e3102af60328dd5bafb0e6b0c4904b147cba7f740a",
+      "timings": {
+        "cache_n": 0,
+        "predicted_ms": 880.6,
+        "predicted_n": 4,
+        "predicted_per_second": 4.542357483533954,
+        "predicted_per_token_ms": 220.15,
+        "prompt_ms": 80018.462,
+        "prompt_n": 513,
+        "prompt_per_second": 6.411020496744864,
+        "prompt_per_token_ms": 155.9814074074074
+      },
+      "usage": {
+        "completion_tokens": 4,
+        "prompt_tokens": 513,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "total_tokens": 517
+      }
+    },
+    {
+      "id": "c13-increment128",
+      "message_sha256": "1b4631ffc9fd59b6b233f7e3102af60328dd5bafb0e6b0c4904b147cba7f740a",
+      "timings": {
+        "cache_n": 0,
+        "predicted_ms": 466.285,
+        "predicted_n": 4,
+        "predicted_per_second": 8.57844451354858,
+        "predicted_per_token_ms": 116.57125,
+        "prompt_ms": 94213.385,
+        "prompt_n": 641,
+        "prompt_per_second": 6.803704165814656,
+        "prompt_per_token_ms": 146.97875975039
+      },
+      "usage": {
+        "completion_tokens": 4,
+        "prompt_tokens": 641,
+        "prompt_tokens_details": {
+          "cached_tokens": 0
+        },
+        "total_tokens": 645
+      }
+    }
+  ],
+  "run_id": "c23-p2-off",
+  "schema": "c23-p12-prefix-paired-screen-v1",
+  "server_gate": {
+    "active_s": 175.58840829900146,
+    "cgroup_peak_bytes": 13070864384,
+    "completed_requests": 2,
+    "decode_s": 1.3468900000000001,
+    "decode_tok_s": 5.939609025235913,
+    "decode_tokens": 8,
+    "last_half_decode_tok_s": 8.578352527397113,
+    "run_id": "c23-p2-off",
+    "sample_count": 169,
+    "schema_version": "c2-gate-result-v1",
+    "status": "PASS"
+  },
+  "server_returncode": 0,
+  "status": "PASS_ARM",
+  "stop_reasons": [],
+  "token_id_sha256": {
+    "c13-increment128": "ec5e7502f9be6737328f72d656a93ff1b52aea177b454b82cc1f4265877ff456",
+    "c13-prefix512": "e19cb14e4c38e8f1b153a58c1d3450ded2b402d82f5798961a1246285099d316"
+  }
+}

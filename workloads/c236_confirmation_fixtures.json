@@ -1,0 +1,300 @@
+{
+  "schema": "c236-confirmation-functional-fixtures-v1",
+  "task_source": "results/c241-block-development-inputs-20261004/workload-portfolio.json",
+  "model_outputs": "NOT_RUN_UNOBSERVED",
+  "job_cases": [
+    {
+      "events": [],
+      "expected": []
+    },
+    {
+      "events": [
+        {
+          "job": "j",
+          "team": "B",
+          "seq": 1,
+          "state": "active",
+          "minutes": 5
+        }
+      ],
+      "expected": [
+        [
+          "B",
+          1,
+          5
+        ]
+      ]
+    },
+    {
+      "events": [
+        {
+          "job": "j",
+          "team": "A",
+          "seq": 4,
+          "state": "cancel",
+          "minutes": 7
+        },
+        {
+          "job": "j",
+          "team": "B",
+          "seq": 3,
+          "state": "active",
+          "minutes": 100
+        }
+      ],
+      "expected": []
+    },
+    {
+      "events": [
+        {
+          "job": "j",
+          "team": "Z",
+          "seq": 2,
+          "state": "active",
+          "minutes": 7
+        },
+        {
+          "job": "j",
+          "team": "A",
+          "seq": 2,
+          "state": "active",
+          "minutes": null
+        }
+      ],
+      "expected": [
+        [
+          "A",
+          1,
+          0
+        ]
+      ]
+    },
+    {
+      "events": [
+        {
+          "job": "j1",
+          "team": "A",
+          "seq": 2,
+          "state": "active",
+          "minutes": 3
+        },
+        {
+          "job": "j2",
+          "team": "A",
+          "seq": 1,
+          "state": "active",
+          "minutes": null
+        },
+        {
+          "job": "j3",
+          "team": "B",
+          "seq": 5,
+          "state": "active",
+          "minutes": 0
+        }
+      ],
+      "expected": [
+        [
+          "A",
+          2,
+          3
+        ],
+        [
+          "B",
+          1,
+          0
+        ]
+      ]
+    },
+    {
+      "events": [
+        {
+          "job": "j",
+          "team": "A",
+          "seq": 1,
+          "state": "active",
+          "minutes": 10
+        },
+        {
+          "job": "j",
+          "team": "A",
+          "seq": 3,
+          "state": "cancel",
+          "minutes": 0
+        },
+        {
+          "job": "j",
+          "team": "B",
+          "seq": 4,
+          "state": "active",
+          "minutes": 2
+        }
+      ],
+      "expected": [
+        [
+          "B",
+          1,
+          2
+        ]
+      ]
+    },
+    {
+      "events": [
+        {
+          "job": "j1",
+          "team": "A",
+          "seq": 2,
+          "state": "active",
+          "minutes": 4
+        },
+        {
+          "job": "j1",
+          "team": "A",
+          "seq": 2,
+          "state": "cancel",
+          "minutes": 4
+        },
+        {
+          "job": "j2",
+          "team": "Z",
+          "seq": 0,
+          "state": "active",
+          "minutes": 0
+        }
+      ],
+      "expected": [
+        [
+          "Z",
+          1,
+          0
+        ]
+      ]
+    },
+    {
+      "events": [
+        {
+          "job": "j",
+          "team": "A",
+          "seq": 1,
+          "state": "active",
+          "minutes": 2
+        },
+        {
+          "job": "j",
+          "team": "A",
+          "seq": 1,
+          "state": "active",
+          "minutes": 2
+        }
+      ],
+      "expected": [
+        [
+          "A",
+          1,
+          2
+        ]
+      ]
+    },
+    {
+      "events": [
+        {
+          "job": "",
+          "team": "",
+          "seq": -1,
+          "state": "active",
+          "minutes": 1
+        },
+        {
+          "job": "",
+          "team": "",
+          "seq": 0,
+          "state": "active",
+          "minutes": null
+        }
+      ],
+      "expected": [
+        [
+          "",
+          1,
+          0
+        ]
+      ]
+    }
+  ],
+  "bin_data": {
+    "capacities": {
+      "A": 9,
+      "B": 7,
+      "C": 5
+    },
+    "items": [
+      [
+        "u1",
+        2,
+        4
+      ],
+      [
+        "u2",
+        3,
+        6
+      ],
+      [
+        "u3",
+        2,
+        3
+      ],
+      [
+        "u4",
+        1,
+        5
+      ],
+      [
+        "u5",
+        2,
+        2
+      ],
+      [
+        "u6",
+        1,
+        4
+      ]
+    ]
+  },
+  "bin_expected": {
+    "assignments": [
+      {
+        "id": "u1",
+        "bin": "C"
+      },
+      {
+        "id": "u2",
+        "bin": "B"
+      },
+      {
+        "id": "u3",
+        "bin": "A"
+      },
+      {
+        "id": "u5",
+        "bin": "A"
+      },
+      {
+        "id": "u6",
+        "bin": "A"
+      }
+    ],
+    "remaining": {
+      "A": 0,
+      "B": 1,
+      "C": 1
+    },
+    "waiting": [
+      "u4"
+    ]
+  },
+  "envelope": {
+    "code": "One pure function, optionally one Python fenced block; existing no-network read-only bubblewrap tester,2s CPU/512MiB/5s transport bound; no generated host execution",
+    "JSON": "Strict whole JSON object, no fence or prose, duplicate keys rejected, exact integer fields (not booleans), exact keys and ordering",
+    "natural_finish": "stop only; cap/deadline outcomes retained as failures, never reasoning as final"
+  }
+}

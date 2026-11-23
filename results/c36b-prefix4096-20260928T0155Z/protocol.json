@@ -1,0 +1,36 @@
+{
+  "admission": "300s contiguous idle, starts <=50/50/45C; E18 scope required",
+  "alternative": "larger prefix causes KV/cache invalidation, context or resource failure despite C35b 2035-prefix PASS",
+  "backend_candidate_commit": "c3759bad92c0e6f71bb936afea9b0a162fb83f76",
+  "backend_commit": "c3759bad92c0e6f71bb936afea9b0a162fb83f76",
+  "cache_gate": "first cache_n0; second common-32 <= cache_n <= common",
+  "campaign_identity": "C36b",
+  "created_utc": "2026-09-28T01:54:40.998075+00:00",
+  "default_changed": false,
+  "failure_policy": "no retry; resource, evidence or output failure ends C36",
+  "frozen_template_date": "2026-09-28",
+  "hypothesis": "with same date and compatible options, the server reuses at least common-32 tokens; second request completes and remains under resource guards",
+  "input_sha256": {
+    "bridge-input.json": "ab2c9b523b195eb3f7bf66e598ad154e93cc2acc314aa81482c85b524fadc609",
+    "usage-contract.json": "88e64767804e7a65a7ffaf5d479941690dba4dc15187f77572eb920eb57109f3"
+  },
+  "model_sha256": "582bd40f6886200101f4c4ed9f25f3fe80cc14c86e9e2b37746cd8904a0c622d",
+  "objective": "test exact-prefix reuse at about 4096 prompt IDs with a 128-token increment under the fixed session-date profile",
+  "parent_c35b_decision_sha256": "17dde2e62d32fabcb71e9715da699991156cd40268745a927a524241cc0e8f72",
+  "parent_c36_failure_sha256": "5522afd946c19a8f8e9f68999d83ea077292112a3cda284afd68a8e81f49eb26",
+  "profile": "P12 ngl12, ub32, slots32, full-SWA 8K, E18, zero swap, embedded GGUF template with C35 opt-in fixed date",
+  "request_order": [
+    "c36b-prefix4096",
+    "c36b-increment128"
+  ],
+  "resource_guards": "E18 cap18GiB, RSS<=16GiB reservation, cgroup<=16.5GiB, GPU<=6500MiB reservation/7000MiB absolute, MemAvailable>=6GiB, CPU95 warning/100 stop, GPU80/NVMe70 stop",
+  "schema": "c36-prefix4096-protocol-v1",
+  "status": "PROSPECTIVE_FROZEN_AFTER_C36_PREFLIGHT_FAILURE",
+  "time_claim": "one diagnostic server bridge, no paired speedup or M3 completion",
+  "timeouts_s": {
+    "per_request": 900,
+    "process": 2000
+  },
+  "token_id_gate": "official /apply-template and /tokenize counts/ranges, delta128, ordered common>=3900, API counts equal official",
+  "workload": "synthetic same-user-prompt extension, not a true generated-assistant conversation"
+}

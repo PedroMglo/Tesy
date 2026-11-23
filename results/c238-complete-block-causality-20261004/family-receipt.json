@@ -1,0 +1,39 @@
+{
+  "measurement_commit": "6d25838e81d57e9691dc787ab968d7868cf5efd2",
+  "start": {
+    "utc": "2026-10-04T11:42:12.901583+00:00",
+    "monotonic_s": 3856.362072291
+  },
+  "end": {
+    "utc": "2026-10-04T11:43:48.500374+00:00",
+    "monotonic_s": 3951.960862201
+  },
+  "argv": [
+    "systemd-run",
+    "--user",
+    "--slice=tesy-post-c154.slice",
+    "--unit=tesy-c238-fixed-block-causality",
+    "--collect",
+    "--pipe",
+    "--wait",
+    "--working-directory=/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc",
+    "-p",
+    "MemoryMax=17985175552",
+    "-p",
+    "MemoryHigh=17985175552",
+    "-p",
+    "MemorySwapMax=0",
+    "-p",
+    "RuntimeMaxSec=1080",
+    "-p",
+    "TimeoutStopSec=10",
+    "--",
+    "/usr/bin/python3",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/tools/residency_unit_run.py",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c238-complete-block-causality-20261004",
+    "--inside"
+  ],
+  "returncode": 1,
+  "stdout": "",
+  "stderr": "Running as unit: tesy-c238-fixed-block-causality.service\n          Finished with result: exit-code\nMain processes terminated with: code=exited, status=1/FAILURE\n               Service runtime: 1min 35.432s\n             CPU time consumed: 1min 53.791s\n                   Memory peak: 15.2G (swap: 0B)\n"
+}

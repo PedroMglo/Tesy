@@ -1,0 +1,11 @@
+# C258 — actual-head integrated decode development freeze
+
+Authority: same open post-c235-blocks-expert-reuse-v1 epoch. This is a necessary cost/acceptance discriminator after selected C257 fidelity, not a new epoch or a 2K functional screen.
+
+Two original development prefixes (135 native RLE code IDs and 184 route IDs), each with fresh AR/head/head/AR processes. Target C75/P12/slots40/ub32, original model and libraries, medium contract and ctx8192; no GOMP setting. Candidate uses the already qualified fixed B8/K7 grid and one pinned EAGLE3 head (head ngl1: CPU repeating layer, GPU output/fc, target output/embedding pointers shared). Both arms have cap 17985175552 B, high equal max, swap0 and identical guards. Own 60-second inventory per process and freshness/continuous monitoring remain mandatory.
+
+Exactly 32 newly confirmed decode tokens, excluding the already known prefill anchor. R0 is the genuine n1 path without head/features; R1 includes head prefill/features, all draft proposals, full-row materialization, reprocessing and rejection/replay costs. Native output IDs are recorded; neither retokenization nor forced proposals occur. All authoritative outputs are verified before counting. Paired initial complete expert state must match; KV alone is insufficient. Selected R1 fidelity is reused, not inferred from timing.
+
+Prospective development gate: both classes have paired median integrated decode wall reduction >=8%, each of two gains >0, and median prefill gain >=-5%. Compute each ratio per pair before median. Early EOS/count mismatch is preserved as inconclusive for the 32-token contrast; no missing output gets zero or favorable exclusion. This gate precedes, and does not replace, the owner's meaningful 2K functional screen and new-task confirmation gates.
+
+Family maximum 4100 s physical, each process 360 s plus own inventory and bounded post-validation/cleanup, raw projection 64 MiB. Existing ledger admission including the 4-hour physical reserve passed. Frozen protocol pins source/binary/head/input/library/resource hashes. Binary/source are unchanged from C257. Eight directed model-free tests passed, including real native no-weights self-test, missing/NaN/cardinality/counterproofs, full initial residency mismatch and hidden-forward rejection. No publication authorized.

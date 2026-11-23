@@ -1,0 +1,20 @@
+{
+  "schema": "c31-cache-miss-reproduction-protocol-v1",
+  "status": "FROZEN_BEFORE_MODEL_OUTPUT",
+  "objective": "bounded fresh-process reproduction of C29's low-cache two-turn event with source slot debug logs",
+  "parent_C29": "FAIL_CONVERSATION_CACHE_REPETITION_35_OF_2035",
+  "parent_C30": "INCOMPLETE_DIAGNOSTIC_TWO_CACHE_HITS_MISS_CAUSE_UNKNOWN",
+  "profile_and_workload": "same original model/backend/binary P12 8K two-turn synthetic conversation, E18 zero swap, CPU100 and unchanged guards",
+  "diagnostic_deltas": {"LLAMA_SERVER_SLOTS_DEBUG": "1", "server_log_verbosity": 4},
+  "runs": ["c31-d1-prefix2048", "c31-d2-prefix2048", "c31-d3-prefix2048"],
+  "max_fresh_process_runs": 3,
+  "order_rule": "sequential; each later run only if all earlier cache gates pass; first actionable miss stops the unit",
+  "no_retries_after_three_hits": true,
+  "claim": "diagnose actual token LCP versus SWA/checkpoint fallback; no instrumented timing promotion or miss-rate estimate",
+  "thermal_admission_each_run": "300 continuous seconds, start <=50/50/45 C; CPU100 and other guards unchanged",
+  "server_timeout_s_each": 1800,
+  "raw_policy": "source logs local and hashed, compact branch facts committed",
+  "if_no_miss": "INCOMPLETE_DIAGNOSTIC; pivot away from repeated full-model profiling",
+  "c15": "SOURCE_ONLY_NOT_COMPILED_NOT_MEASURED",
+  "default_changed": false
+}

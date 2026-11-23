@@ -1,0 +1,35 @@
+{
+  "start": {
+    "utc": "2026-10-05T21:48:19.620320+00:00",
+    "monotonic_s": 13118.065892264
+  },
+  "end": {
+    "utc": "2026-10-05T21:48:52.120981+00:00",
+    "monotonic_s": 13150.56657087
+  },
+  "argv": [
+    "systemd-run",
+    "--user",
+    "--scope",
+    "--unit=tesy-c281-server-build",
+    "-p",
+    "MemoryMax=8G",
+    "-p",
+    "MemoryHigh=8G",
+    "-p",
+    "MemorySwapMax=0",
+    "--",
+    "timeout",
+    "1800",
+    "cmake",
+    "--build",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c276-post-c274-r2-causal-qualification-20261005T204839Z/build/persistent-server",
+    "--target",
+    "llama-server",
+    "-j4"
+  ],
+  "returncode": 0,
+  "kind": "server-only build; imported numerical libraries unchanged",
+  "cap_bytes": 8589934592,
+  "physical_charge": "conservative complete build envelope"
+}

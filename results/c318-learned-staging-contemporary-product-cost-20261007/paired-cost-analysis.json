@@ -1,0 +1,187 @@
+{
+  "status": "NO_GO_REAL_STAGING_INTEGRATED_COST",
+  "global_qualified_cases": [],
+  "phase_survivor": [],
+  "cases": {
+    "nominal153": {
+      "pairs": [
+        {
+          "control_arm": 1,
+          "candidate_arm": 2,
+          "gain_percent": {
+            "prefix_s": -2.1051583921759542,
+            "prefill153_s": -0.6660098361806984,
+            "decode32_s": -2.731005970709105,
+            "total_s": -1.6855208007054907
+          },
+          "primary_generations_control": {
+            "CPU": 1486,
+            "GPU": 638
+          },
+          "primary_generations_candidate": {
+            "CPU": 1486,
+            "GPU": 638
+          },
+          "stage_stats_candidate": {
+            "issued": 745,
+            "deduplicated": 0,
+            "no_capacity": 3,
+            "reads": 733,
+            "completed_reads": 733,
+            "logical_read_weight_bytes": 9689673600,
+            "expired_queued": 6,
+            "expired_ready": 143,
+            "expired_running": 122,
+            "consumed": 468,
+            "waits": 228,
+            "errors": 0,
+            "peak_running_spec": 3,
+            "validation_claims": 0,
+            "validation_components": 0
+          },
+          "scope": "Logicalprimarygenerations/providedwork, not physicaltraffic/confirmedoutput count."
+        },
+        {
+          "control_arm": 4,
+          "candidate_arm": 3,
+          "gain_percent": {
+            "prefix_s": -0.1618410956098404,
+            "prefill153_s": -0.4803080555221142,
+            "decode32_s": -3.620666095123452,
+            "total_s": -2.028571998061805
+          },
+          "primary_generations_control": {
+            "CPU": 1486,
+            "GPU": 638
+          },
+          "primary_generations_candidate": {
+            "CPU": 1486,
+            "GPU": 638
+          },
+          "stage_stats_candidate": {
+            "issued": 746,
+            "deduplicated": 0,
+            "no_capacity": 2,
+            "reads": 734,
+            "completed_reads": 734,
+            "logical_read_weight_bytes": 9702892800,
+            "expired_queued": 6,
+            "expired_ready": 141,
+            "expired_running": 124,
+            "consumed": 469,
+            "waits": 227,
+            "errors": 0,
+            "peak_running_spec": 3,
+            "validation_claims": 0,
+            "validation_components": 0
+          },
+          "scope": "Logicalprimarygenerations/providedwork, not physicaltraffic/confirmedoutput count."
+        }
+      ],
+      "median_paired_gain_percent": {
+        "prefix_s": -1.1334997438928973,
+        "prefill153_s": -0.5731589458514064,
+        "decode32_s": -3.1758360329162785,
+        "total_s": -1.857046399383648
+      }
+    },
+    "code153": {
+      "pairs": [
+        {
+          "control_arm": 1,
+          "candidate_arm": 2,
+          "gain_percent": {
+            "prefix_s": 0.33802372796942487,
+            "prefill153_s": 0.3874795735439835,
+            "decode32_s": -3.9101397147087513,
+            "total_s": -1.3731627560808424
+          },
+          "primary_generations_control": {
+            "CPU": 2595,
+            "GPU": 819
+          },
+          "primary_generations_candidate": {
+            "CPU": 2595,
+            "GPU": 819
+          },
+          "stage_stats_candidate": {
+            "issued": 940,
+            "deduplicated": 0,
+            "no_capacity": 3,
+            "reads": 921,
+            "completed_reads": 921,
+            "logical_read_weight_bytes": 12174883200,
+            "expired_queued": 10,
+            "expired_ready": 140,
+            "expired_running": 178,
+            "consumed": 603,
+            "waits": 278,
+            "errors": 0,
+            "peak_running_spec": 3,
+            "validation_claims": 0,
+            "validation_components": 0
+          },
+          "scope": "Logicalprimarygenerations/providedwork, not physicaltraffic/confirmedoutput count."
+        },
+        {
+          "control_arm": 4,
+          "candidate_arm": 3,
+          "gain_percent": {
+            "prefix_s": 0.4872363631841272,
+            "prefill153_s": -9.04860599891605,
+            "decode32_s": -3.4604765741317767,
+            "total_s": -6.656801299318652
+          },
+          "primary_generations_control": {
+            "CPU": 2595,
+            "GPU": 819
+          },
+          "primary_generations_candidate": {
+            "CPU": 2595,
+            "GPU": 819
+          },
+          "stage_stats_candidate": {
+            "issued": 940,
+            "deduplicated": 0,
+            "no_capacity": 3,
+            "reads": 921,
+            "completed_reads": 921,
+            "logical_read_weight_bytes": 12174883200,
+            "expired_queued": 10,
+            "expired_ready": 147,
+            "expired_running": 171,
+            "consumed": 603,
+            "waits": 290,
+            "errors": 0,
+            "peak_running_spec": 3,
+            "validation_claims": 0,
+            "validation_components": 0
+          },
+          "scope": "Logicalprimarygenerations/providedwork, not physicaltraffic/confirmedoutput count."
+        }
+      ],
+      "median_paired_gain_percent": {
+        "prefix_s": 0.41263004557677607,
+        "prefill153_s": -4.330563212686034,
+        "decode32_s": -3.685308144420264,
+        "total_s": -4.014982027699747
+      }
+    }
+  },
+  "scope": "Real4worker originalbyte forecast/predictor/read/copy/cancellationcleanup included. Same supplied153+32/nativeR0full33reference. No newnaturalresponse, usefulgain/preset/M4 or physicalNVMe/energy claim. No replacement/retry because variance.",
+  "full33_logits_sha256": {
+    "nominal153": [
+      "cb89a303f2c811d3cb75cf6df457a7bf8dcfb6279b729b326baec519748239a2",
+      "cb89a303f2c811d3cb75cf6df457a7bf8dcfb6279b729b326baec519748239a2",
+      "cb89a303f2c811d3cb75cf6df457a7bf8dcfb6279b729b326baec519748239a2",
+      "cb89a303f2c811d3cb75cf6df457a7bf8dcfb6279b729b326baec519748239a2"
+    ],
+    "code153": [
+      "6e5223faff42fdb9ff60a1b07ece78dae5b9e191f52c66cc98bcdf008b5e6115",
+      "6e5223faff42fdb9ff60a1b07ece78dae5b9e191f52c66cc98bcdf008b5e6115",
+      "6e5223faff42fdb9ff60a1b07ece78dae5b9e191f52c66cc98bcdf008b5e6115",
+      "6e5223faff42fdb9ff60a1b07ece78dae5b9e191f52c66cc98bcdf008b5e6115"
+    ]
+  },
+  "auxiliary_root": "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c314-affine-fit-inventory-contract-repair-20261007/raw/weights-v1"
+}

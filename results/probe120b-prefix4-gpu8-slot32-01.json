@@ -1,0 +1,155 @@
+{
+  "run_id": "probe120b-prefix4-gpu8-slot32-01",
+  "started_utc": "2026-09-26T12:39:32.599508+00:00",
+  "model_id": "gpt-oss-120b-mxfp4-gguf",
+  "model_path": "/home/pmglo/models/gpt-oss-120b-gguf/gpt-oss-120b-MXFP4.gguf",
+  "backend": "streaming",
+  "backend_sha": "1248fd8fa8cfebaece5ea992e4d951c1e18bb9d5",
+  "binary_sha256": "08e94f973714b41bda0db2ea6450222328faf037d30c18b95d4081a6155454fe",
+  "backend_libraries_sha256": {
+    "build-gcc15/bin/libllama.so.0.0.1": "31b56002c36c159f71eba54c0d8e625ae140d34b2b1a503f3dc4db47237719cc",
+    "build-gcc15/bin/libggml.so.0.15.3": "97a33247336b56aaabe1a8bee4da6cd05e73e8b4327afd2cef67c5526df8ab71",
+    "build-gcc15/bin/libggml-cpu.so.0.15.3": "b57845ea9f9ce9455d78e6fe290c09b50b9414db9280409b9e5cc143d1b13b61",
+    "build-gcc15/bin/libggml-cuda.so.0.15.3": "5b363c951b87164e94d5b6af35a82c875634aadcb29c9278245cd7516f44cc7e",
+    "build-gcc15/bin/libggml-base.so.0.15.3": "4c322a199c86b801389ed4bda94074083624e0a6460e25681be4b626cc72873d"
+  },
+  "variant": "gpu8-stream32-direct-prefix4-ub32",
+  "workload": "fixed-harmony-prefix4",
+  "cache_condition": "new-process-direct-experts-existing-system-cache",
+  "command": [
+    "tools/logits_probe_streaming_cuda_slot24",
+    "/home/pmglo/models/gpt-oss-120b-gguf/gpt-oss-120b-MXFP4.gguf",
+    "stream",
+    "8",
+    "results/probe120b-prefix4-gpu8-slot32-01.f32",
+    "no-repack",
+    "32",
+    "direct-loader"
+  ],
+  "explicit_env": {
+    "TESY_LOGITS_PREFIX_TOKENS": "4",
+    "TESY_LOGITS_STREAM_SLOTS": "32",
+    "LLAMA_MOE_STREAM_NO_PRELOAD": "1"
+  },
+  "stdin_file": null,
+  "stdin_sha256": null,
+  "limits": {
+    "timeout_s": 600,
+    "max_rss_gib": 17.0,
+    "min_available_gib": 6.0,
+    "max_gpu_mib": 7000.0
+  },
+  "cgroup_start": {
+    "path": "/user.slice/user-1000.slice/user@1000.service/app.slice/run-p192755-i210002.scope",
+    "memory_max": 19327352832,
+    "swap_max": 0,
+    "memory_current": 56516608,
+    "swap_current": 0,
+    "memory_stat": {
+      "anon": 10739712,
+      "file": 43241472,
+      "kernel": 245760,
+      "shmem": 0,
+      "file_mapped": 0
+    },
+    "events": {
+      "low": 0,
+      "high": 0,
+      "max": 0,
+      "oom": 0,
+      "oom_kill": 0,
+      "oom_group_kill": 0,
+      "sock_throttled": 0
+    }
+  },
+  "publication": "local only; stdout/stderr are untracked",
+  "samples_path": "/home/pmglo/Projects/Tesy/tesy-scale-lab/results/probe120b-prefix4-gpu8-slot32-01.samples.jsonl",
+  "cgroup_limit_enforced": true,
+  "ended_utc": "2026-09-26T12:39:41.041613+00:00",
+  "elapsed_s": 8.442,
+  "returncode": 0,
+  "stop_reason": null,
+  "maxima": {
+    "rss_bytes": 6516518912,
+    "swap_bytes": 0,
+    "cgroup_memory_bytes": 6816133120,
+    "cgroup_file_bytes": 2152366080,
+    "gpu_used_mib": 3838.0,
+    "gpu_temperature_c": 44.0,
+    "cpu_tctl_c": 53.625,
+    "nvme_composite_c": 41.85,
+    "direct_model_fds": 2,
+    "buffered_model_fds": 1
+  },
+  "last_sample": {
+    "elapsed_s": 7.442,
+    "proc": {
+      "rchar": 7649177067,
+      "syscr": 5089,
+      "read_bytes": 7851675648
+    },
+    "mem_available_bytes": 27909832704,
+    "gpu": {
+      "used_mib": 13.0,
+      "temperature_c": 44.0,
+      "power_w": 11.18
+    },
+    "thermal": {
+      "cpu_tctl_c": 53.625,
+      "nvme_composite_c": 39.85
+    },
+    "cgroup": {
+      "path": "/user.slice/user-1000.slice/user@1000.service/app.slice/run-p192755-i210002.scope",
+      "memory_max": 19327352832,
+      "swap_max": 0,
+      "memory_current": 497418240,
+      "swap_current": 0,
+      "memory_stat": {
+        "anon": 10788864,
+        "file": 481669120,
+        "kernel": 819200,
+        "shmem": 0,
+        "file_mapped": 0
+      },
+      "events": {
+        "low": 0,
+        "high": 0,
+        "max": 0,
+        "oom": 0,
+        "oom_kill": 0,
+        "oom_group_kill": 0,
+        "sock_throttled": 0
+      }
+    },
+    "model_fds": {
+      "open": 0,
+      "direct": 0,
+      "buffered": 0
+    }
+  },
+  "stdout_path": "/home/pmglo/Projects/Tesy/tesy-scale-lab/results/probe120b-prefix4-gpu8-slot32-01.stdout",
+  "stderr_path": "/home/pmglo/Projects/Tesy/tesy-scale-lab/results/probe120b-prefix4-gpu8-slot32-01.stderr",
+  "cgroup_end": {
+    "path": "/user.slice/user-1000.slice/user@1000.service/app.slice/run-p192755-i210002.scope",
+    "memory_max": 19327352832,
+    "swap_max": 0,
+    "memory_current": 496676864,
+    "swap_current": 0,
+    "memory_stat": {
+      "anon": 10788864,
+      "file": 481669120,
+      "kernel": 819200,
+      "shmem": 0,
+      "file_mapped": 0
+    },
+    "events": {
+      "low": 0,
+      "high": 0,
+      "max": 0,
+      "oom": 0,
+      "oom_kill": 0,
+      "oom_group_kill": 0,
+      "sock_throttled": 0
+    }
+  }
+}

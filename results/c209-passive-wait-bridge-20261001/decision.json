@@ -1,0 +1,54 @@
+{
+  "status": "FAIL_NUMERIC_OR_RESOURCE",
+  "reason": "ValueError: monitor/runtime failure {'run_id': 'c209-A', 'start': {'utc': '2026-10-01T00:32:04.691279+00:00', 'monotonic_s': 309104.164505283}, 'end': {'utc': '2026-10-01T00:33:33.673432+00:00', 'monotonic_s': 309193.146657475}, 'rc': 1, 'stderr': '', 'parallel_runtime': [{'libraries_sha256': {'/usr/lib64/libgomp.so.1.0.0': '637b2ab4eedf3ce72173a9d34a4c41c480082d68662db3f0ef4998117df8f9b2'}, 'initial_process_environment': {'values': {}, 'unset': ['OMP_WAIT_POLICY', 'OMP_NUM_THREADS', 'OMP_DYNAMIC', 'OMP_PROC_BIND', 'OMP_PLACES', 'GOMP_SPINCOUNT', 'GOMP_CPU_AFFINITY', 'KMP_BLOCKTIME', 'KMP_AFFINITY']}, 'source_note': 'ggml init may set KMP_BLOCKTIME=200 after exec; GNU libgomp does not use KMP blocktime. /proc/environ observes initial exec environment.'}], 'runtime_errors': []}",
+  "records": [
+    {
+      "run_id": "c209-A",
+      "start": {
+        "utc": "2026-10-01T00:32:04.691279+00:00",
+        "monotonic_s": 309104.164505283
+      },
+      "end": {
+        "utc": "2026-10-01T00:33:33.673432+00:00",
+        "monotonic_s": 309193.146657475
+      },
+      "rc": 1,
+      "stderr": "",
+      "parallel_runtime": [
+        {
+          "libraries_sha256": {
+            "/usr/lib64/libgomp.so.1.0.0": "637b2ab4eedf3ce72173a9d34a4c41c480082d68662db3f0ef4998117df8f9b2"
+          },
+          "initial_process_environment": {
+            "values": {},
+            "unset": [
+              "OMP_WAIT_POLICY",
+              "OMP_NUM_THREADS",
+              "OMP_DYNAMIC",
+              "OMP_PROC_BIND",
+              "OMP_PLACES",
+              "GOMP_SPINCOUNT",
+              "GOMP_CPU_AFFINITY",
+              "KMP_BLOCKTIME",
+              "KMP_AFFINITY"
+            ]
+          },
+          "source_note": "ggml init may set KMP_BLOCKTIME=200 after exec; GNU libgomp does not use KMP blocktime. /proc/environ observes initial exec environment."
+        }
+      ],
+      "runtime_errors": []
+    }
+  ],
+  "measurement_head": "53d4ca11cd4677c4107ab8726854beac4061990c",
+  "start": {
+    "utc": "2026-10-01T00:32:04.639543+00:00",
+    "monotonic_s": 309104.112763903
+  },
+  "end": {
+    "utc": "2026-10-01T00:33:33.673702+00:00",
+    "monotonic_s": 309193.146916363
+  },
+  "canonical_reference": "C127 unchanged shapes/device/libraries reused; no36-reference repeat",
+  "claim": "Selected189+32 same-profile bitwise, not production timing",
+  "publication": "LOCAL_ONLY"
+}

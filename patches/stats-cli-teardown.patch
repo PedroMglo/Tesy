@@ -1,0 +1,28 @@
+diff --git a/src/llama-moe-stream.cpp b/src/llama-moe-stream.cpp
+index b33f5c9..ce17396 100644
+--- a/src/llama-moe-stream.cpp
++++ b/src/llama-moe-stream.cpp
+@@ -159,9 +159,6 @@ llama_moe_stream::~llama_moe_stream() {
+     for (auto & w : workers) {
+         w.join();
+     }
+-    if (std::getenv("TESY_MOE_STATS_AT_EXIT")) {
+-        print_stats();
+-    }
+ }
+ 
+ ggml_tensor * llama_moe_stream::create_cache_tensor(
+diff --git a/tools/cli/cli.cpp b/tools/cli/cli.cpp
+index d974a40..98d6947 100644
+--- a/tools/cli/cli.cpp
++++ b/tools/cli/cli.cpp
+@@ -677,6 +677,9 @@ int llama_cli(int argc, char ** argv) {
+ 
+     // bump the log level to display timings
+     common_log_set_verbosity_thold(LOG_LEVEL_INFO);
++    if (std::getenv("TESY_MOE_STATS_AT_EXIT")) {
++        llama_moe_stream_print_stats(llama_get_model(ctx_cli.ctx_server.get_llama_context()));
++    }
+     common_memory_breakdown_print(ctx_cli.ctx_server.get_llama_context());
+ 
+     return 0;

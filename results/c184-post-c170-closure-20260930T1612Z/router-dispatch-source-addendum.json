@@ -1,0 +1,26 @@
+{
+  "schema": "c184-native-router-dispatch-v1",
+  "source_pin": "8019dc563b1ecbae6b161a70c3a1359f1b206c1e",
+  "architecture": 89,
+  "cases": [
+    {
+      "tokens": 1,
+      "backend": "CUDA0",
+      "dtype": "F32",
+      "dispatch": "ggml_cuda_mul_mat_vec_f",
+      "accumulation": "pinned MMVF F32",
+      "proof": "F32 contiguous2880x128, ne11<=3, aligned strides; mmvf.cu792+"
+    },
+    {
+      "tokens": 32,
+      "backend": "CUDA0",
+      "dtype": "F32",
+      "dispatch": "ggml_cuda_mul_mat_cublas_impl<GGML_TYPE_F32>",
+      "accumulation": "CUBLAS_COMPUTE_32F, internal vendor reduction order UNKNOWN",
+      "proof": "MMVF requires<=3; MMF rejects ncols>16; quantized paths inapplicable F32; ggml-cuda.cu1822-1872,1617-1667; mmf.cu133-209"
+    }
+  ],
+  "environment": "GGML_CUDA_CUBLAS_COMPUTE_TYPE absent; no implicit precision override",
+  "scope": "C166 observed router checkpoints forbid cross-checkpoint matmul/bias fusion; source-derived dispatchfamily, no claim of vendor microkernel internals",
+  "correction": "C172 prose left the32-token router dispatch as conditional; this source addendum resolves its predicate without rewriting historical metadata or running model again"
+}

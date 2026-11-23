@@ -10,7 +10,10 @@ from pathlib import Path
 from statistics import mean
 
 REPO = Path(__file__).resolve().parents[2]
-SOURCE = "623a5b97b6e14a39bc671f6d81e7a993a3efe7cb"
+with Path(__file__).with_name("source-blobs.json").open(encoding="utf-8") as source_file:
+    _source = json.load(source_file)
+SOURCE = _source["source_commit"]
+SOURCE_BLOBS = _source["blobs"]
 C317 = "results/c317-learned-staging-observer-qualification-20261007"
 C318 = "results/c318-learned-staging-contemporary-product-cost-20261007"
 CASES = ("nominal153", "code153")
@@ -18,8 +21,11 @@ FIELDS = "kind us call route layer expert slot gen component bytes rows".split()
 
 
 def archived(path):
+    # Every pinned blob is present at a tracked path in the consolidated tree.
+    # This also works in a depth-one clone without the historical branch refs.
+    oid = SOURCE_BLOBS[path]
     data = subprocess.check_output(
-        ["git", "--no-replace-objects", "-C", str(REPO), "show", f"{SOURCE}:{path}"]
+        ["git", "--no-replace-objects", "-C", str(REPO), "cat-file", "blob", oid]
     )
     return json.loads(data)
 
@@ -60,10 +66,30 @@ def historical_cost(case, published):
             gain = 100 * (a[metric] - b[metric]) / a[metric]
             if not math.isclose(gain, original["gain_percent"][metric], abs_tol=1e-8):
                 raise ValueError("published pair disagrees with recomputed gain")
+    # At each gate boundary the same fractional saving is applied to both B arms.
+    # The local sign rules are strict. Values below are infima, not promotions.
+    total_tie = decode_discount(pairs, "total_s", 0)
+    total_gate = max(
+        decode_discount(pairs, "total_s", 0.08),
+        *((b["total_s"] - a["total_s"]) / b["decode32_s"] for a, b in pairs),
+    )
+    decode_gate = max(
+        decode_discount(pairs, "decode32_s", 0.15),
+        total_tie,
+        *(1 - a["decode32_s"] / b["decode32_s"] for a, b in pairs),
+    )
     return {
         "total_median_tie_pct_of_candidate_decode": 100 * decode_discount(pairs, "total_s", 0),
         "total_median_8pct_of_candidate_decode": 100 * decode_discount(pairs, "total_s", 0.08),
         "decode_median_15pct_of_candidate_decode": 100 * decode_discount(pairs, "decode32_s", 0.15),
+        "conditional_local_gate_infima_pct": {
+            "total_route": 100 * total_gate, "decode_route": 100 * decode_gate,
+        },
+        "decode_seconds_to_remove_AB_BA_at_cheapest_gate": [
+            b["decode32_s"] * min(total_gate, decode_gate) for _, b in pairs
+        ],
+        "other_case_protection_if_this_case_is_unchanged":
+            published["median_paired_gain_percent"]["total_s"] >= -5,
         "arm_metrics_s_ABBA": arms,
     }
 
@@ -191,15 +217,33 @@ def prefill_union_sizes(layers):
     if sorted(layer["layer"] for layer in layers) != list(range(36)):
         raise ValueError("C261 layer inventory is incomplete")
     counts = {"CPU": {}, "CUDA0": {}}
+    payloads = set()
     for layer in layers:
         experts = layer["demanded_union"]
         if len(experts) != len(set(experts)) or len(experts) != layer["union_count"]:
             raise ValueError("union cardinality disagrees with logical IDs")
+        loads = layer["actual_loads"]
+        encoded = layer["actual_logical_bytes"]
+        if loads > 0:
+            payload, remainder = divmod(encoded, loads)
+            if remainder or payload <= 0:
+                raise ValueError("non-integral expert payload")
+            payloads.add(payload)
+        elif loads != 0 or encoded != 0:
+            raise ValueError("invalid idle-layer service count")
         counts[layer["tier"]][layer["layer"]] = len(experts)
+    if len(payloads) != 1:
+        raise ValueError("C261 requires a common encoded expert payload")
+    payload = payloads.pop()
     return {
         tier: {
             "layers": len(sizes),
             "above_40": sum(n > 40 for n in sizes.values()),
+            "phase_min_primary_admissions": sum(max(0, n - 40) for n in sizes.values()),
+            "second_call_min_primary_admissions": sum(
+                max(0, n - first_call_max_ids - 40) for n in sizes.values()
+            ),
+            "encoded_expert_payload_bytes": payload,
             "min": min(sizes.values()),
             "max": max(sizes.values()),
             "second_call_min_ids_where_over_40": {

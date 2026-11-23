@@ -1,0 +1,9 @@
+# C113 — scoped correction of the nominal server bridge
+
+C112 stopped before loading the model because the Python runner was invoked outside E18. Its `FAIL_LAUNCH_SCOPE_PREMODEL` receipt remains unchanged. C113 is a new identity with the same synthetic two-request C35/C75 ON comparison, task text, model, P12/8K profile, arm order, metrics, output/cache gates and v2 guards. The only operational repair is an explicit `systemd-run --user --scope -p MemoryMax=19327352832 -p MemorySwapMax=0 --` prefix for **every** runner invocation. `c2_server_run` still validates actual cgroup membership and caps before launching the server.
+
+Model-free proof: a small real subprocess in the scope reported `memory.max=19327352832`, `memory.swap.max=0`, swap.current0, no OOM; its receipt is frozen in `scope-test.json`. An unscoped call to C113 rejects at the scope gate; a scoped call with a deliberately wrong measurement SHA passes the scope gate and rejects at the identity gate, both before any model. Five relevant tests pass. Fresh 60 s host inventory admits E18.
+
+Screen: two pairs control→candidate; candidate→control, operational matched starts within 3/3/2 °C and at most300 s per pair. Primary second-turn first final content; protect decode, cold metrics, exact five-digit answer, actual assistant history, official token counts/cache and resources. Gain `100*(control-candidate)/control`. Median primary ≥5%, both positive and decode protection ≥−5% is only a screen signal, not confirmation or M4.
+
+The existing Sep28 epoch remains in force. At freeze 6049 s wall and conservatively ≥7822 s physical remained; 3720 s worst case including four 600 s arms, matching, inventories and 600 s closure fits. Recheck before each arm. A failure closes C113 and preserves raw/receipts. No remote publication or default change.

@@ -1,0 +1,250 @@
+diff --git a/src/c291-direct-reader.h b/src/c291-direct-reader.h
+new file mode 100644
+index 00000000..f315c543
+--- /dev/null
++++ b/src/c291-direct-reader.h
+@@ -0,0 +1,79 @@
++#pragma once
++// Canonical witness only: fail-closed positional O_DIRECT, no buffered fallback.
++#include <sys/stat.h>
++#include <sys/vfs.h>
++#include <sys/ioctl.h>
++#include <linux/btrfs.h>
++#include <linux/magic.h>
++#include <fcntl.h>
++#include <unistd.h>
++#include <cerrno>
++#include <cstdint>
++#include <cstdlib>
++#include <cstring>
++#include <limits>
++#include <stdexcept>
++#include <string>
++
++namespace tesy_witness {
++class direct_reader {
++    int fd_=-1;
++    uint64_t size_=0;
++    size_t mem_align_=0, off_align_=0;
++public:
++    using read_fn=ssize_t(*)(int,void*,size_t,off_t);
++    direct_reader()=default;
++    direct_reader(const direct_reader&)=delete;
++    direct_reader& operator=(const direct_reader&)=delete;
++    ~direct_reader(){if(fd_>=0)::close(fd_);}
++    void open_file(const char* path) {
++        if(fd_>=0)throw std::runtime_error("reader already open");
++        fd_=::open(path,O_RDONLY|O_CLOEXEC|O_DIRECT);
++        if(fd_<0)throw std::runtime_error("canonical O_DIRECT open failed");
++        struct stat st{};struct statx sx{};
++        if(fstat(fd_,&st)||!S_ISREG(st.st_mode)||st.st_size<=0)
++            throw std::runtime_error("canonical file invalid");
++        size_=static_cast<uint64_t>(st.st_size);
++        if(!statx(fd_,"",AT_EMPTY_PATH,STATX_DIOALIGN,&sx) &&
++           (sx.stx_mask&STATX_DIOALIGN)&&sx.stx_dio_mem_align&&sx.stx_dio_offset_align) {
++            mem_align_=sx.stx_dio_mem_align;off_align_=sx.stx_dio_offset_align;
++        } else {
++            // No generic guessed alignment: qualified Btrfs sectorsize from this inode's filesystem.
++            struct statfs fs{};btrfs_ioctl_fs_info_args info{};
++            if(fstatfs(fd_,&fs)||static_cast<unsigned long>(fs.f_type)!=BTRFS_SUPER_MAGIC||
++               ioctl(fd_,BTRFS_IOC_FS_INFO,&info)||!info.sectorsize)
++                throw std::runtime_error("DIO alignment unknown; no qualified filesystem fallback");
++            mem_align_=off_align_=info.sectorsize;
++        }
++        if((mem_align_&(mem_align_-1))||mem_align_<sizeof(void*) || mem_align_>1024*1024 || off_align_>1024*1024 ||
++           !(fcntl(fd_,F_GETFL)&O_DIRECT))throw std::runtime_error("DIO requirements invalid");
++    }
++    uint64_t file_size()const{return size_;}
++    size_t memory_alignment()const{return mem_align_;}
++    size_t offset_alignment()const{return off_align_;}
++    int descriptor()const{return fd_;}
++    void validate_range(uint64_t offset,uint64_t length)const {
++        if(!length||offset>size_||length>size_-offset||
++           offset>static_cast<uint64_t>(std::numeric_limits<off_t>::max()) ||
++           length>static_cast<uint64_t>(std::numeric_limits<off_t>::max())-offset)
++            throw std::runtime_error("canonical logical range/overflow");
++    }
++    void read(void* dst,size_t length,uint64_t offset,read_fn fn=::pread)const {
++        validate_range(offset,length);
++        if(!dst||fd_<0||!off_align_)throw std::runtime_error("reader not ready");
++        const uint64_t begin=offset-offset%off_align_, end=offset+length;
++        if(end>std::numeric_limits<uint64_t>::max()-(off_align_-1))throw std::runtime_error("DIO rounding overflow");
++        const uint64_t rounded=(end+off_align_-1)/off_align_*off_align_, amount=rounded-begin;
++        if(amount>8*1024*1024 || amount+2*length>16*1024*1024 || rounded>static_cast<uint64_t>(std::numeric_limits<off_t>::max()))
++            throw std::runtime_error("DIO scratch/off_t bound");
++        void* raw=nullptr;
++        if(posix_memalign(&raw,mem_align_,static_cast<size_t>(amount)))throw std::runtime_error("DIO aligned allocation failed");
++        struct free_guard{void* p;~free_guard(){std::free(p);}}guard{raw};
++        ssize_t n;
++        do {n=fn(fd_,raw,static_cast<size_t>(amount),static_cast<off_t>(begin));}while(n<0&&errno==EINTR);
++        // One bounded aligned call. A short physical window is legal only if it covers all logical bytes.
++        if(n<0||static_cast<uint64_t>(n)<end-begin)throw std::runtime_error("DIO error/short canonical interval; no fallback");
++        std::memcpy(dst,static_cast<uint8_t*>(raw)+(offset-begin),length);
++    }
++};
++}
+diff --git a/src/c291-expert-store.h b/src/c291-expert-store.h
+new file mode 100644
+index 00000000..1bbcb11b
+--- /dev/null
++++ b/src/c291-expert-store.h
+@@ -0,0 +1,52 @@
++#pragma once
++// Private byte-fetch boundary. No routing, graph, cache-policy or numeric changes.
++#include "c291-direct-reader.h"
++#include "../vendor/nlohmann/json.hpp"
++#include <array>
++#include <fstream>
++#include <sys/stat.h>
++#include <stdexcept>
++
++struct tesy_expert_store {
++    using json=nlohmann::json;
++    static constexpr size_t slab=4406400, weights=3*slab, staging_bytes=16*1024*1024;
++    struct record {uint64_t offset=0;std::array<size_t,3> relative{};};
++    std::array<std::array<record,128>,36> entries{};
++    tesy_witness::direct_reader data;
++    json original_identity,pack_identity;
++    std::string original_path;
++    static void require(bool value,const char *reason){if(!value)throw std::runtime_error(reason);}
++    static json identity(const char *path){struct stat st{};require(stat(path,&st)==0,"store identity unavailable");return {{"dev",st.st_dev},{"inode",st.st_ino},{"size_bytes",st.st_size},{"mtime_ns",uint64_t(st.st_mtim.tv_sec)*1000000000+st.st_mtim.tv_nsec},{"ctime_ns",uint64_t(st.st_ctim.tv_sec)*1000000000+st.st_ctim.tv_nsec}};}
++    static json metadata(const std::string &path){struct stat st{};require(stat(path.c_str(),&st)==0 && S_ISREG(st.st_mode) && st.st_size>0 && st.st_size<=16*1024*1024 && !(st.st_mode&0222),"store metadata must be readonly/bounded");std::ifstream f(path);json out;f>>out;require(bool(f),"store metadata read failed");return out;}
++    #ifdef TESY_STORE_TESTING
++    tesy_expert_store()=default; // synthetic reader fixture only, absent from production build
++    #endif
++    tesy_expert_store(const char *manifest,const std::string &original,const std::vector<std::unique_ptr<llama_moe_stream_layer>>& layers):original_path(original){
++        const auto m=metadata(manifest);require(m.at("schema")=="tesy-integral-expert-store-runtime-v1" && m.at("canonical_model_sha256")=="582bd40f6886200101f4c4ed9f25f3fe80cc14c86e9e2b37746cd8904a0c622d","store model/manifest identity");
++        const std::string index_path=m.at("index_path");require(identity(index_path.c_str())==m.at("index_stat"),"store index stat changed");const auto index=metadata(index_path);require(identity(index_path.c_str())==m.at("index_stat"),"store index changed during parse");
++        require(index.at("store_scope")=="INTEGRAL_GPT_OSS120B_36x128" && index.at("experts").size()==4608 && layers.size()==36,"integral store layer/expert scope");
++        original_identity=identity(original.c_str());require(original_identity==m.at("model_stat") && original_identity==index.at("model_stat"),"store canonical model stat changed");
++        const std::string path=index.at("pack_path");pack_identity=identity(path.c_str());require(pack_identity==m.at("pack_stat") && index.at("pack_sha256_write_stream")==m.at("pack_sha256_write_stream"),"store pack stat/provenance changed");
++        struct stat st{};require(stat(path.c_str(),&st)==0 && !(st.st_mode&0222),"store payload must be readonly");data.open_file(path.c_str());
++        require(data.memory_alignment()<=4096 && data.offset_alignment()<=4096 && 4096%data.memory_alignment()==0 && 4096%data.offset_alignment()==0,"store DIO requirement exceeds qualified worker alignment");
++        const uint64_t stride=index.at("stride");require(stride>=weights && stride%data.offset_alignment()==0 && stride*4608==data.file_size() && data.file_size()<=80ull*1024*1024*1024,"integral store size/alignment");
++        for(size_t l=0;l<36;l++){
++            require(layers[l] && layers[l]->n_expert==128 && layers[l]->n_slots==40 && layers[l]->weights.size()==3,"unsupported store primary pools");
++            const auto &sl=*layers[l];
++            for(size_t e=0;e<128;e++){
++                const auto &row=index.at("experts").at(l*128+e);require(row.at("layer")==l && row.at("expert")==e && row.at("components").size()==6 && row.at("pack_offset")==stride*(l*128+e),"store expert mapping changed");
++                auto &entry=entries[l][e];entry.offset=row.at("pack_offset");data.validate_range(entry.offset,weights);
++                for(size_t k=0;k<3;k++){
++                    const auto &wt=sl.weights[k];const auto &c=row.at("components").at(k);std::string name=ggml_get_name(wt.cache);const std::string suffix=".stream_cache";
++                    require(name.size()>suffix.size() && name.substr(name.size()-suffix.size())==suffix,"store cache tensor name");name.resize(name.size()-suffix.size());
++                    require(wt.file_idx==0 && wt.nb_expert==slab && wt.cache->type==GGML_TYPE_MXFP4 && wt.cache->ne[0]==2880 && wt.cache->ne[1]==2880 && wt.cache->nb[2]==slab && c.at("name")==name && c.at("type")=="mxfp4" && c.at("size_bytes")==slab && c.at("source_offset")==wt.offs+e*slab && c.at("packed_relative_offset")==k*slab,"store component/native tensor mapping changed");entry.relative[k]=c.at("packed_relative_offset");
++                }
++            }
++        }
++    }
++    const uint8_t *read(size_t layer,size_t expert,uint8_t *staging,tesy_witness::direct_reader::read_fn fn=::pread)const{
++        require(layer<36 && expert<128 && staging,"store request identity");const auto &r=entries[layer][expert];data.validate_range(r.offset,weights);const uint64_t a=data.offset_alignment();require(r.offset%a==0,"store expert alignment");const size_t amount=(weights+a-1)/a*a;require(amount<=staging_bytes,"store staging bound");ssize_t n;do{n=fn(data.descriptor(),staging,amount,off_t(r.offset));}while(n<0&&errno==EINTR);require(n>=0 && size_t(n)>=weights,"store read failed/short; no buffered fallback");return staging;
++    }
++};
++// A queued work identity must still own its reservation when publication occurs.
++inline bool tesy_store_completion_valid(bool cancelled,bool ok,uint64_t expected_generation,uint64_t actual_generation,int expected_expert,int actual_expert,int state,bool claimed){return !cancelled && ok && expected_generation==actual_generation && expected_expert==actual_expert && state==LLAMA_MOE_STREAM_SLOT_LOADING && claimed;}
+diff --git a/src/llama-moe-stream.cpp b/src/llama-moe-stream.cpp
+index 27c7ca0a..b942e118 100644
+--- a/src/llama-moe-stream.cpp
++++ b/src/llama-moe-stream.cpp
+@@ -1,5 +1,6 @@
+ #include "llama-moe-stream.h"
+ #include "c269-last-use-order.h"
++#include "c291-expert-store.h"
+ 
+ #include "llama-impl.h"
+ 
+@@ -296,6 +297,10 @@ void llama_moe_stream::open_files(const std::vector<std::string> & paths) {
+         n_streamed += sl != nullptr;
+     }
+     hot_decay_interval = MOE_STREAM_HOT_DECAY_TOKENS * n_streamed;
++    if (const char *manifest=std::getenv("TESY_EXPERT_STORE_MANIFEST")) {
++        if (!use_direct_io || paths.size()!=1) throw std::runtime_error("expert store requires original single-file direct streaming");
++        expert_store=std::make_unique<tesy_expert_store>(manifest,paths[0],layers);
++    }
+ }
+ 
+ // spawn the I/O thread pool on first use (from the remap callback, under mtx)
+@@ -315,8 +320,9 @@ void llama_moe_stream::start_workers_locked() {
+ void llama_moe_stream::worker_loop() {
+     // page-aligned staging (Metal private buffers require page-aligned source + page-multiple
+     // length; O_DIRECT needs the extra head/tail slack for its aligned reads)
+-    uint8_t * staging = (uint8_t *) moe_aligned_alloc(max_nb_expert + 2*MOE_STREAM_DIRECT_ALIGN);
++    uint8_t * staging = (uint8_t *) moe_aligned_alloc(tesy_expert_store::staging_bytes);
+     GGML_ASSERT(staging != nullptr);
++    std::memset(staging,0,tesy_expert_store::staging_bytes); // equal bounded staging preparation in both arms
+ 
+     std::unique_lock<std::mutex> lk(mtx);
+     while (true) {
+@@ -340,22 +346,32 @@ void llama_moe_stream::worker_loop() {
+         lk.unlock();
+ 
+         bool ok = true;
+-        for (const auto & wt : sl.weights) {
+-            const uint8_t * data = llama_moe_stream_pread(*files[wt.file_idx], staging, wt.nb_expert, wt.offs + (size_t) w.expert*wt.nb_expert, use_direct_io);
+-            if (data == nullptr) {
+-                ok = false;
+-                break;
++        try {
++            if (expert_store) {
++                const uint8_t *data=expert_store->read(sl.il,w.expert,staging);
++                const auto &entry=expert_store->entries[sl.il][w.expert];
++                for (size_t k=0;k<sl.weights.size();k++) {
++                    const auto &wt=sl.weights[k];
++                    ggml_backend_tensor_set(wt.cache,data+entry.relative[k],(size_t)w.slot*wt.nb_expert,wt.nb_expert);
++                }
++            } else {
++                for (const auto &wt:sl.weights) {
++                    const uint8_t *data=llama_moe_stream_pread(*files[wt.file_idx],staging,wt.nb_expert,wt.offs+(size_t)w.expert*wt.nb_expert,use_direct_io);
++                    if (!data) {ok=false;break;}
++                    ggml_backend_tensor_set(wt.cache,data,(size_t)w.slot*wt.nb_expert,wt.nb_expert);
++                }
+             }
+-            ggml_backend_tensor_set(wt.cache, data, (size_t) w.slot*wt.nb_expert, wt.nb_expert);
++        } catch (const std::exception &error) {
++            LLAMA_LOG_ERROR("expert store/worker byte delivery failed: %s\n",error.what());ok=false;
+         }
+-
+         lk.lock();
+-
+-        sl.slot_claimed[w.slot] = 0;
+-        if (!ok) {
+-            load_failed = true;
++        const bool valid=tesy_store_completion_valid(shutting_down,ok,w.gen,sl.slot_gen[w.slot],w.expert,sl.slot_expert[w.slot],sl.slot_state[w.slot],sl.slot_claimed[w.slot]);
++        if (w.gen==sl.slot_gen[w.slot] && w.expert==sl.slot_expert[w.slot]) sl.slot_claimed[w.slot]=0;
++        if (!valid) {
++            if (!shutting_down) load_failed=true; // stale/error fail closed, cancellation never publishes
+         } else {
+-            sl.slot_state[w.slot] = LLAMA_MOE_STREAM_SLOT_RESIDENT;
++            sl.slot_state[w.slot]=LLAMA_MOE_STREAM_SLOT_RESIDENT;
++            if(expert_store){stats.n_store_loads++;stats.n_store_read_bytes+=tesy_expert_store::weights;}
+         }
+         cv_done.notify_all();
+     }
+diff --git a/src/llama-moe-stream.h b/src/llama-moe-stream.h
+index 95032fa3..39087a15 100644
+--- a/src/llama-moe-stream.h
++++ b/src/llama-moe-stream.h
+@@ -31,6 +31,7 @@
+ // one context can evict slots referenced by the other's in-flight graph.
+ 
+ struct llama_moe_stream;
++struct tesy_expert_store;
+ 
+ enum llama_moe_stream_slot_state : uint8_t {
+     LLAMA_MOE_STREAM_SLOT_EMPTY    = 0,
+@@ -142,6 +143,7 @@ struct llama_moe_stream {
+ 
+     bool use_direct_io = false; // O_DIRECT streaming reads (LLAMA_MOE_STREAM_DIRECT), no page cache
+ 
++    std::unique_ptr<tesy_expert_store> expert_store; // opt-in immutable byte source, no additional primary experts
+     llama_files files; // privately reopened GGUF files, same indices as the loader's
+ 
+     size_t  max_nb_expert      = 0;
+@@ -165,6 +167,8 @@ struct llama_moe_stream {
+     bool debug = false;
+ 
+     struct {
++        int64_t n_store_loads = 0; // completed authoritative expert loads through integral store
++        int64_t n_store_read_bytes = 0; // logical requested weight bytes, not physical NVMe
+         int64_t n_calls     = 0; // remap invocations
+         int64_t n_hit       = 0; // touched experts already resident or loading
+         int64_t n_miss      = 0; // demand loads issued

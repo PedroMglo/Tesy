@@ -1,0 +1,96 @@
+{
+  "paired_overhead_percent": {
+    "prefix-warmup": [
+      -1.0709958208226178,
+      3.0537788321211403
+    ],
+    "warm-prefill": [
+      0.05201608403981028,
+      0.13512256584409194
+    ],
+    "decode": [
+      -0.5654133647053281,
+      0.7455912874598167
+    ]
+  },
+  "median_overhead_percent": {
+    "prefix-warmup": 0.9913915056492613,
+    "warm-prefill": 0.09356932494195111,
+    "decode": 0.09008896137724431
+  },
+  "status": "TEMPORAL_OVERHEAD_GATE_PASS",
+  "threshold_percent": 5,
+  "scope": "Fenced direct C API prefix/warm-prefill/decode; no witness observer, no output/SSE/first-final claim. Passing threshold alone does not establish causal scheduling neutrality.",
+  "arms": [
+    {
+      "id": "c163-off-1",
+      "label": "off",
+      "phase_s": {
+        "prefix-warmup": 62.715931,
+        "warm-prefill": 9.060659,
+        "decode": 11.345151
+      },
+      "logits_sha256": "f3ccaf00ff38b68cbf10b7f90b0eed7036720c23495021a4f302c42b2ea3cc38"
+    },
+    {
+      "id": "c163-on-1",
+      "label": "on",
+      "phase_s": {
+        "prefix-warmup": 62.044246,
+        "warm-prefill": 9.065372,
+        "decode": 11.281004
+      },
+      "logits_sha256": "f3ccaf00ff38b68cbf10b7f90b0eed7036720c23495021a4f302c42b2ea3cc38"
+    },
+    {
+      "id": "c163-on-2",
+      "label": "on",
+      "phase_s": {
+        "prefix-warmup": 63.678788,
+        "warm-prefill": 9.064754,
+        "decode": 11.33239
+      },
+      "logits_sha256": "f3ccaf00ff38b68cbf10b7f90b0eed7036720c23495021a4f302c42b2ea3cc38"
+    },
+    {
+      "id": "c163-off-2",
+      "label": "off",
+      "phase_s": {
+        "prefix-warmup": 61.791803,
+        "warm-prefill": 9.052522,
+        "decode": 11.248522
+      },
+      "logits_sha256": "f3ccaf00ff38b68cbf10b7f90b0eed7036720c23495021a4f302c42b2ea3cc38"
+    }
+  ],
+  "captures": [
+    {
+      "id": "c163-on-1",
+      "status": "LOGICAL_CAPTURE_VALIDATED",
+      "original_trace_sha256": "2afb484244b5669a99d68c38382e85f515ab32e8002fca0fc23d7d38ad603a20",
+      "validated_window_sha256": "c3f87e903364ae0745cfb60b02e36f754fb819f56a2d4b65a830a0b64f7783aa",
+      "logical_window_start_seq": 0,
+      "events": 67026,
+      "loads": 2144,
+      "decode_demands": 6768,
+      "snapshot_bytes": 881372,
+      "snapshot_lock_copy_and_write_us": 10319,
+      "scope": "57-call direct C API schedule; accepted journal calls9..57 seeded by actual before-warm snapshot. Prefix logs bounded/discarded before publication; original raw and any pre-cut tail preserved. 47 teacher-forced forwards, not C142 46 decode evaluations or server warm state"
+    },
+    {
+      "id": "c163-on-2",
+      "status": "LOGICAL_CAPTURE_VALIDATED",
+      "original_trace_sha256": "a846c35404b49e1ede4cd8729876f7494b55f3a1c77379cbdf71ef5aa988a804",
+      "validated_window_sha256": "767708876ec6e2285fe1474b30ae2e08ce0b2314449cfee3925f9e829a534604",
+      "logical_window_start_seq": 0,
+      "events": 67024,
+      "loads": 2144,
+      "decode_demands": 6768,
+      "snapshot_bytes": 881372,
+      "snapshot_lock_copy_and_write_us": 6881,
+      "scope": "57-call direct C API schedule; accepted journal calls9..57 seeded by actual before-warm snapshot. Prefix logs bounded/discarded before publication; original raw and any pre-cut tail preserved. 47 teacher-forced forwards, not C142 46 decode evaluations or server warm state"
+    }
+  ],
+  "numeric": "ALL_57_FULL_LOGIT_ROWS_BITWISE_PER_PAIR",
+  "next_action": "Logical replay and two frozen holdout captures; production temporal projection conditional on scheduling evidence"
+}

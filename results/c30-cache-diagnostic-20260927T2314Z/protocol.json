@@ -1,0 +1,22 @@
+{
+  "schema": "c30-cache-path-diagnostic-protocol-v1",
+  "status": "FROZEN_BEFORE_MODEL_OUTPUT",
+  "objective": "distinguish effective token LCP mismatch from SWA/checkpoint invalidation in the two-turn cache miss",
+  "parent_c29_status": "FAIL_RESOURCES_OR_EVIDENCE",
+  "model_backend_binary_and_workload": "same original P12 8K two-turn configuration as C29",
+  "diagnostic_deltas": {
+    "LLAMA_SERVER_SLOTS_DEBUG": "1",
+    "server_log_verbosity": 4
+  },
+  "runs": ["c30-d1-prefix2048", "c30-d2-prefix2048"],
+  "run_order": "d1 then d2; d2 only if d1 cache gate passes and miss cause remains unobserved",
+  "max_fresh_process_runs": 2,
+  "log_classification": "slots-debug old/new token boundary around n_past versus trace forcing full prompt reprocessing due to absent SWA/checkpoint data",
+  "output_policy": "raw stderr local, compact branch and token-ID facts in Git; never use instrumented timings for speed claim",
+  "thermal_admission_each_run": "300 continuous seconds, start <=50/50/45 C; CPU100 and other guards unchanged",
+  "memory_envelope": "E18 zero swap, GPU total <=7000 MiB, MemAvailable >=6 GiB",
+  "total_server_timeout_s_each": 1800,
+  "first_qualified_failure_stops_second": true,
+  "c15": "SOURCE_ONLY_NOT_COMPILED_NOT_MEASURED",
+  "default_changed": false
+}

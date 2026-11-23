@@ -1,0 +1,52 @@
+{
+  "budget_consumed_at_checkpoint": {
+    "physical_execution_s": 1412.49,
+    "physical_limit_s": 57600,
+    "raw_bytes": 477659355,
+    "raw_limit_bytes": 42949672960
+  },
+  "claim_limits": [
+    "cross-profile logits differ; no distribution or quality equivalence claim",
+    "teacher-forced probe is not API TTFT or useful answer time",
+    "n=2 screening pairs do not certify variance or tail latency",
+    "historical C6 evidence not retroactively repaired"
+  ],
+  "created_utc": "2026-09-27T12:58:04.364692+00:00",
+  "default_changed": false,
+  "failures_preserved": [
+    "C7 initial G2 capture-stage schema failure in results/c7-20260927T1130Z/g2-attempt01.json",
+    "C6 historical resource/library/negative receipt claims remain INCOMPLETE_EVIDENCE"
+  ],
+  "gates": {
+    "G0": "PASS_PROSPECTIVE_GATES_HISTORICAL_PARTIAL",
+    "G1": "PASS_P8_P12_ADMISSION_E18",
+    "G2": "PASS_P12_OBSERVER_AND_36_CANONICAL_LAYERS_WITH_DOCUMENTED_LIMITS",
+    "G3": "SHORT_FAVORABLE",
+    "G4": "NO_GO_SCREEN496",
+    "G5": "NOT_RUN_SCREEN_POLICY",
+    "context_8k": "NOT_RUN",
+    "functional": "NOT_RUN",
+    "session": "NOT_RUN"
+  },
+  "measurement_commits": {
+    "bridge": "5e01697b2c7cb1602c07790bb3525866d397daa4",
+    "screen113": "ed2510128357a99301bd7907c28661ed2af879f4",
+    "screen496": "b30a39db9cdd99ab0da3f0e224726643fc0983b1"
+  },
+  "next_action": "Source/capacity feasibility for independent P8 native ub64 numerical profile, then bounded admission and same-profile fidelity if favorable. Do not repeat P12 allocation opportunistically.",
+  "profile": "P12 native ngl12 ub32 slots32 E18",
+  "reasons": [
+    "G4 median paired T_work gain 4.9373% below prospectively frozen 5% screen threshold",
+    "G4 long-specialized trigger failed by prefill gain increase 1.4178pp versus 2pp required"
+  ],
+  "reference_coverage": {
+    "independent_attention_kv": false,
+    "masked_states": 2,
+    "numeric_states": 250,
+    "p12_layers": 36,
+    "p8_bridge": "bitwise original C4 versus C7 full prefill logits"
+  },
+  "remote_published": false,
+  "schema": "c7c-decision-v1",
+  "status": "CONTINUE_NEXT_HYPOTHESIS"
+}

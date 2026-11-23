@@ -1,0 +1,47 @@
+{
+  "binary_sha256": "a78aaf977d68767eed620f71c5843d1c49ab67a39a1dac1ccce0ac57b1fec32e",
+  "build_flags": {
+    "CMAKE_BUILD_TYPE": "Release",
+    "CMAKE_CUDA_ARCHITECTURES": "89",
+    "CMAKE_CUDA_COMPILER": "/usr/local/cuda/bin/nvcc",
+    "CMAKE_CUDA_HOST_COMPILER": "/usr/bin/g++-15",
+    "CMAKE_CXX_COMPILER": "/usr/bin/g++-15",
+    "CMAKE_CXX_FLAGS": "-DTESY_C15_NVTX -I/usr/local/cuda/targets/x86_64-linux/include",
+    "CMAKE_C_COMPILER": "/usr/bin/gcc-15",
+    "CMAKE_C_FLAGS": "-DTESY_C15_NVTX -I/usr/local/cuda/targets/x86_64-linux/include",
+    "GGML_CUDA": "ON",
+    "GGML_NATIVE": "ON",
+    "LLAMA_BUILD_SERVER": "ON"
+  },
+  "help_exit_code": 0,
+  "library_sha256": {
+    "build-c46-nvtx/bin/libggml-base.so.0.15.3": "6a7b67cb42062ffd9a338ce4e2f5c3b161471b4e28b3000eee7650af4154f088",
+    "build-c46-nvtx/bin/libggml-cpu.so.0.15.3": "e6ae22e9ac2ee8d5dad4fb6ec4f1458f8fb5fe145d1cf39d853ec5c80e4dde18",
+    "build-c46-nvtx/bin/libggml-cuda.so.0.15.3": "a6fb36c376f1c83b49a6545a93afb4914ac14a22a8ed795ff65adc6cde101f5d",
+    "build-c46-nvtx/bin/libggml.so.0.15.3": "86a5f3b5f51394892d16c51c09bebb9c38ae55d3ebefcb6ccc99854c32526f1e",
+    "build-c46-nvtx/bin/libllama-common.so.0.0.3": "ebd82ebffea20898d1fa0871512c5f96cf0a3a497b0ad3822ed4707a822899f6",
+    "build-c46-nvtx/bin/libllama-server-impl.so": "ddeb634f2aa06945c278720defbe7c581f7a451a0c58461049345db62984259e",
+    "build-c46-nvtx/bin/libllama.so.0.0.3": "5894bb91d10eff6079e2d53f06c1646d98dbe567aea894054b60c68cde2cba00",
+    "build-c46-nvtx/bin/libmtmd.so.0.0.3": "a27576f5eacb9c19ded88876a219d0f311237dad3d881d0af4a9ddb4f8e22c64"
+  },
+  "limits": [
+    "smoke is model-free; actual phase and wave marker coverage remains unmeasured",
+    "diagnostic backend only; no full-logit fidelity claim"
+  ],
+  "schema": "c46-model-free-tests-v1",
+  "smoke_events": [
+    {
+      "event_type": 59,
+      "text": "C46_SERVER_PREFILL_DECODE"
+    },
+    {
+      "event_type": 34,
+      "text": "C46_WAVE_LAYER=0_WAVE=0_ACTIVE=1_OF=32"
+    }
+  ],
+  "smoke_report_sha256": "969d5f3266bd6ee1158790e3ea1b1e2b94e2e120cd6d5886c3a3300c9da5643d",
+  "smoke_sqlite_sha256": "de7e63de957ddaa4a5fcf4ee69bbf7bb799c1a5a3f1675d75c98d01cf1530929",
+  "source_clean": true,
+  "source_commit": "005e8ff8dd264a2fdecd6dd99e42580d8d2674dc",
+  "status": "PASS"
+}

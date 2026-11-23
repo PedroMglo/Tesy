@@ -1,0 +1,19 @@
+{
+  "run_id": "fault20b-direct-read01",
+  "source_manifest": "results/fault20b-direct-read01.json",
+  "source_code": "tools/fault_pread.c",
+  "fault_library_sha256": "37c0966064f4e0fbabe4932174e1a7ddc8e550a7334a66ea7466404c4a3cdc97",
+  "stdout_sha256": "f56af94dcd4f7fd6ae1538a9b0275005e08a3c1d34d10ed166f29b2087fc5ce3",
+  "stderr_sha256": "db4a8057db90e6d41d4b79974bf9cd56afeb7a063feb831ae6b5ddf47ad90e48",
+  "marker_count_stderr": 1,
+  "backend_abort_message_present": true,
+  "returncode": -6,
+  "elapsed_s": 5.239,
+  "stop_reason": null,
+  "swap_peak_bytes": 0,
+  "cgroup_max_event_delta": 0,
+  "oom_event_delta": 0,
+  "assessment": "PASS_FAIL_CLOSED",
+  "limits": "single injected EIO during model/warmup path on 20B; does not validate arbitrary partial reads or 120B decode faults",
+  "visible_generation_evidence": "stdout contains loading/backtrace, no identified generated answer; abort backtrace is in model load path"
+}

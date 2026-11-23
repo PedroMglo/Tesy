@@ -1,0 +1,46 @@
+{
+  "builds": {
+    "c122_failed": {
+      "cache_sha256": "8912aa7528748e0bb6605459cea586ed7c7985bbb46a354643d7532b5919bdab",
+      "flags": {
+        "CMAKE_CUDA_ARCHITECTURES": "89",
+        "CMAKE_CUDA_COMPILER": "/usr/local/cuda/bin/nvcc",
+        "CMAKE_CUDA_HOST_COMPILER": "/usr/bin/g++-15",
+        "CMAKE_CXX_COMPILER": "/usr/bin/g++-15",
+        "CMAKE_CXX_FLAGS": "-DTESY_C47_CPU_SKIP_PARKED -DTESY_C84_EXPERT_TRACE",
+        "CMAKE_C_COMPILER": "/usr/bin/gcc-15",
+        "CMAKE_C_FLAGS": ""
+      }
+    },
+    "c123": {
+      "cache_sha256": "51efcb9ff5fbd9ca114d05e096bee8ca6f56a58d4471ae8ea2e551c377e1c35b",
+      "flags": {
+        "CMAKE_CUDA_ARCHITECTURES": "89",
+        "CMAKE_CUDA_COMPILER": "/usr/local/cuda/bin/nvcc",
+        "CMAKE_CUDA_HOST_COMPILER": "/usr/bin/g++-15",
+        "CMAKE_CXX_COMPILER": "/usr/bin/g++-15",
+        "CMAKE_CXX_FLAGS": "-DTESY_C47_CPU_SKIP_PARKED -DTESY_C84_EXPERT_TRACE",
+        "CMAKE_C_COMPILER": "/usr/bin/gcc-15",
+        "CMAKE_C_FLAGS": "-DTESY_C47_CPU_SKIP_PARKED"
+      }
+    },
+    "c84": {
+      "cache_sha256": "befe708de5405498ecf5d7ef50fb8d5749fd413e08270aea6c9bac67dafb250d",
+      "flags": {
+        "CMAKE_CUDA_ARCHITECTURES": "89",
+        "CMAKE_CUDA_COMPILER": "/usr/local/cuda/bin/nvcc",
+        "CMAKE_CUDA_HOST_COMPILER": "/usr/bin/g++-15",
+        "CMAKE_CXX_COMPILER": "g++-15",
+        "CMAKE_CXX_FLAGS": "-DTESY_C47_CPU_SKIP_PARKED -DTESY_C84_EXPERT_TRACE",
+        "CMAKE_C_COMPILER": "gcc-15",
+        "CMAKE_C_FLAGS": "-DTESY_C47_CPU_SKIP_PARKED"
+      }
+    }
+  },
+  "comparison": {
+    "c122_failed_C_flags_different": true,
+    "c84_c123_CXX_flags_equal": true,
+    "c84_c123_C_flags_equal": true
+  },
+  "schema": "c123-build-flag-audit-v1"
+}

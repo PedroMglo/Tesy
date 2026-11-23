@@ -1,0 +1,39 @@
+{
+  "measurement_commit": "d9a4ca1ce4d72a977255290cbaf171885fd5bc08",
+  "start": {
+    "utc": "2026-09-30T11:55:01.361341+00:00",
+    "monotonic_s": 263680.834572118
+  },
+  "end": {
+    "utc": "2026-09-30T12:00:29.703860+00:00",
+    "monotonic_s": 264009.177094598
+  },
+  "argv": [
+    "systemd-run",
+    "--user",
+    "--slice=tesy-post-c154.slice",
+    "--unit=c164-frozen-residency-holdouts",
+    "--collect",
+    "--pipe",
+    "--wait",
+    "--working-directory=/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc",
+    "-p",
+    "MemoryMax=21474836480",
+    "-p",
+    "MemoryHigh=21474836480",
+    "-p",
+    "MemorySwapMax=0",
+    "-p",
+    "RuntimeMaxSec=650",
+    "-p",
+    "TimeoutStopSec=10",
+    "--",
+    "/usr/bin/python3",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/tools/residency_unit_run.py",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c164-frozen-residency-holdouts-20260930T1155Z",
+    "--inside"
+  ],
+  "returncode": 0,
+  "stdout": "",
+  "stderr": "Running as unit: c164-frozen-residency-holdouts.service\n          Finished with result: success\nMain processes terminated with: code=exited, status=0/SUCCESS\n               Service runtime: 5min 28.159s\n             CPU time consumed: 15min 13.365s\n                   Memory peak: 16G (swap: 0B)\n"
+}

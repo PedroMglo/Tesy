@@ -1,0 +1,22 @@
+{
+  "schema": "c91-harness-diagnosis-v1",
+  "original_decision_sha256": "8d208891f1178661af707ba0aa72c0522eef82448e02c696a5b615694a343ba9",
+  "original_status_preserved": "FAIL_RESOURCES_OR_EVIDENCE",
+  "attribution": "RUNNER_INVOKED_OUTSIDE_REQUIRED_SYSTEMD_SCOPE",
+  "evidence_class": "REPRODUZIDO_MODEL_FREE",
+  "direct_cgroup_state": {
+    "memory_max": null,
+    "swap_max": null
+  },
+  "scoped_model_free_test": {
+    "command": "systemd-run --user --scope -p MemoryMax=19327352832 -p MemorySwapMax=0 -- python3 -c '<cgroup_state assertion>'",
+    "scope_path": "/user.slice/user-1000.slice/user@1000.service/app.slice/run-p835248-i824777.scope",
+    "memory_max_bytes": 19327352832,
+    "swap_max_bytes": 0,
+    "result": "PASS"
+  },
+  "raw_files": 0,
+  "model_loaded": false,
+  "numeric_or_thermal_result": "NOT_RUN",
+  "next_action": "Freeze a new identity with the same canary contract and an explicit outer systemd scope command; check launcher model-free before load."
+}

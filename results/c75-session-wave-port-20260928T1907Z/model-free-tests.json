@@ -1,0 +1,43 @@
+{
+  "backend_path": "/tmp/tesy-c75-backend-20260928",
+  "build_products_sha256": {
+    "/tmp/c75_broadcast_operator": "e167674910bd00c5910ffb28ad01b4c95524c65a3e96ac35c835d6c86cc4f017",
+    "/tmp/c75_ffn_operator": "c54df85fb92b63a25c86554861776e0e2c0ee26b23257bbd7c8d798feb26fb90",
+    "/tmp/tesy-c75-backend-20260928/build-c75-cuda/bin/libggml-base.so.0.15.3": "c91a937208a64dd1beabf13de83a5896729f3983b51e8636eaa44b111bb6f229",
+    "/tmp/tesy-c75-backend-20260928/build-c75-cuda/bin/libggml-cpu.so.0.15.3": "ec5de96d7cacaf0a96e7d678ec28f337c1082c57ae6fbfbbbbcbaaf945cf5697",
+    "/tmp/tesy-c75-backend-20260928/build-c75-cuda/bin/libggml-cuda.so.0.15.3": "b119db0b5abd29cba9101aaba7c2cc0607a521585028a102e459ac7e318d575d",
+    "/tmp/tesy-c75-backend-20260928/build-c75-cuda/bin/libllama.so.0.0.3": "d44895329a013d9fe674a31b04d52de5ae9c66efcfe8b5e7fe50d797f4b13a11",
+    "/tmp/tesy-c75-backend-20260928/build-c75-cuda/bin/llama-server": "2db3a91973dc00b3ae6f9f43bcaa5135d830b4aeaae923f7612d3232b6624886"
+  },
+  "checks": {
+    "broadcast": {
+      "argv": [
+        "/tmp/c75_broadcast_operator",
+        "--expect-fixed"
+      ],
+      "returncode": 0,
+      "stderr": "",
+      "stdout": "C57_OPERATOR type=mxfp4 ne11=1 poison=0 pattern=0 active_equal=1 active_nonfinite=0\nC57_OPERATOR type=mxfp4 ne11=1 poison=127 pattern=0 active_equal=1 active_nonfinite=0\nC57_OPERATOR type=mxfp4 ne11=4 poison=0 pattern=0 active_equal=1 active_nonfinite=0\nC57_OPERATOR type=mxfp4 ne11=1 poison=0 pattern=1 active_equal=1 active_nonfinite=0\nC57_OPERATOR type=mxfp4 ne11=1 poison=127 pattern=1 active_equal=1 active_nonfinite=0\nC57_OPERATOR type=mxfp4 ne11=1 poison=0 pattern=2 active_equal=1 active_nonfinite=0\nC57_OPERATOR type=mxfp4 ne11=1 poison=127 pattern=2 active_equal=1 active_nonfinite=0\nC57_OPERATOR type=mxfp4 ne11=1 poison=0 pattern=3 active_equal=1 active_nonfinite=0\nC57_OPERATOR type=mxfp4 ne11=1 poison=127 pattern=3 active_equal=1 active_nonfinite=0\nC57_OPERATOR type=f16 ne11=1 poison=0 pattern=0 active_equal=1 active_nonfinite=0\nC57_OPERATOR type=f16 ne11=1 poison=127 pattern=0 active_equal=1 active_nonfinite=0\nC57_OPERATOR type=f16 ne11=4 poison=0 pattern=0 active_equal=1 active_nonfinite=0\nC57_OPERATOR type=f16 ne11=1 poison=0 pattern=1 active_equal=1 active_nonfinite=0\nC57_OPERATOR type=f16 ne11=1 poison=127 pattern=1 active_equal=1 active_nonfinite=0\nC57_OPERATOR type=f16 ne11=1 poison=0 pattern=2 active_equal=1 active_nonfinite=0\nC57_OPERATOR type=f16 ne11=1 poison=127 pattern=2 active_equal=1 active_nonfinite=0\nC57_OPERATOR type=f16 ne11=1 poison=0 pattern=3 active_equal=1 active_nonfinite=0\nC57_OPERATOR type=f16 ne11=1 poison=127 pattern=3 active_equal=1 active_nonfinite=0\nC57_OPERATOR type=f32 ne11=1 poison=0 pattern=0 active_equal=1 active_nonfinite=0\nC57_OPERATOR type=f32 ne11=1 poison=127 pattern=0 active_equal=1 active_nonfinite=0\nC57_OPERATOR type=f32 ne11=4 poison=0 pattern=0 active_equal=1 active_nonfinite=0\nC57_OPERATOR type=f32 ne11=1 poison=0 pattern=1 active_equal=1 active_nonfinite=0\nC57_OPERATOR type=f32 ne11=1 poison=127 pattern=1 active_equal=1 active_nonfinite=0\nC57_OPERATOR type=f32 ne11=1 poison=0 pattern=2 active_equal=1 active_nonfinite=0\nC57_OPERATOR type=f32 ne11=1 poison=127 pattern=2 active_equal=1 active_nonfinite=0\nC57_OPERATOR type=f32 ne11=1 poison=0 pattern=3 active_equal=1 active_nonfinite=0\nC57_OPERATOR type=f32 ne11=1 poison=127 pattern=3 active_equal=1 active_nonfinite=0\nC57_BROADCAST_REPAIR_PASS_MODEL_FREE\n"
+    },
+    "ffn": {
+      "argv": [
+        "/tmp/c75_ffn_operator",
+        "--expect-fixed"
+      ],
+      "returncode": 0,
+      "stderr": "",
+      "stdout": "C57_FFN type=mxfp4 poison=0 equal=1 finite=1 first=0.78087 control=0.78087\nC57_FFN type=mxfp4 poison=127 equal=1 finite=1 first=0.78087 control=0.78087\nC57_FFN type=f16 poison=0 equal=1 finite=1 first=0.901508 control=0.901508\nC57_FFN type=f16 poison=127 equal=1 finite=1 first=0.901508 control=0.901508\nC57_FFN type=f32 poison=0 equal=1 finite=1 first=0.901947 control=0.901947\nC57_FFN type=f32 poison=127 equal=1 finite=1 first=0.901947 control=0.901947\nC57_FFN_REPAIR_PASS_MODEL_FREE\n"
+    }
+  },
+  "claim": "MXFP4/F16/F32 synthetic broadcast and FFN only; no 120B or session fidelity claim",
+  "patch_sha256": "fe9c91dcf9d0cb6e8891e605abedecf6f9a2d7b91baf72053ad0af3525814658",
+  "schema": "c75-model-free-v1",
+  "source_base": "c3759bad92c0e6f71bb936afea9b0a162fb83f76",
+  "source_commit": "27d2e42d8c994507ee6d71acc7c58d3eddd3f7a5",
+  "source_tree": "45b2b5b97353845d9d982a06f20c4f2f420528e2",
+  "status": "PASS_MODEL_FREE",
+  "test_source_sha256": {
+    "broadcast": "7f79e0cbc86327bd6babe21d6759582ee51328fe8c9b553501873f587365bc89",
+    "ffn": "f919e6a6c691b4ce48d942430ffa123b15f5bc317f63b843f366065db102aa84"
+  }
+}

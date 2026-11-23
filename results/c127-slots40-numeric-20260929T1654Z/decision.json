@@ -1,0 +1,66 @@
+{
+  "M4": "NOT_DEMONSTRATED",
+  "boundary_sha256": "0ea3511bf1c71d0dd6340190e1edb6b78d6f0ef9dc12c79bab58bb4adf201348",
+  "captures": {
+    "off": {
+      "elapsed_s": 49.804,
+      "manifest_sha256": "2358395471a9917d2bf8169623ca70718004ad4dfd725024167f603791519b7c",
+      "maxima": {
+        "buffered_model_fds": 1,
+        "cgroup_file_bytes": 3159064576,
+        "cgroup_memory_bytes": 17140707328,
+        "cgroup_peak_bytes": 17162174464,
+        "cpu_tctl_c": 92.5,
+        "direct_model_fds": 2,
+        "gpu_temperature_c": 58.0,
+        "gpu_used_mib": 6894.0,
+        "nvme_composite_c": 45.85,
+        "rss_bytes": 15941328896,
+        "swap_bytes": 0
+      },
+      "receipt_sha256": "63b17ddd3d15a7e3571ea06402fe7a22e669b35be9b15572169294da62a085d6",
+      "tree": {
+        "files": 3266,
+        "sha256_name_size_content_v1": "fbc996582a247517b1de236c12d64f8db86b4749e869738e637ccf9dad1df6c3",
+        "total_bytes": 88704231
+      }
+    },
+    "on": {
+      "elapsed_s": 35.228,
+      "manifest_sha256": "1befcbf6ec646e40b054f579771db4fe6c7df9f838b7deb49c9232a302a2de65",
+      "maxima": {
+        "buffered_model_fds": 1,
+        "cgroup_file_bytes": 2581245952,
+        "cgroup_memory_bytes": 16106450944,
+        "cgroup_peak_bytes": 16126992384,
+        "cpu_tctl_c": 68.875,
+        "direct_model_fds": 2,
+        "gpu_temperature_c": 53.0,
+        "gpu_used_mib": 6900.0,
+        "nvme_composite_c": 50.85,
+        "rss_bytes": 15944781824,
+        "swap_bytes": 0
+      },
+      "receipt_sha256": "ad13d5325dba6c943c90aaeb19ca35bf832f146bf23e2c63e73d597d35606e41",
+      "tree": {
+        "files": 3266,
+        "sha256_name_size_content_v1": "3b1c13734120f430d779960e3e8123eb58ffeee1947a1844636743b1e3aa1f03",
+        "total_bytes": 88704231
+      }
+    }
+  },
+  "claim": "189+32 active boundary, five full logits, 36 resident FFN references under P12 slots40 E18",
+  "default_changed": false,
+  "limitations": [
+    "slots40 is a new numeric profile with changed wave geometry",
+    "full 8K/KV/attention independent validation NOT_RUN",
+    "numeric admission is not a throughput claim"
+  ],
+  "next_action": "fresh two-pair C75 slots32/slots40 nominal153 operational screen under E18; do not infer speed from this probe",
+  "publication": "LOCAL_ONLY",
+  "reference_layers": 36,
+  "reference_process_elapsed_s": 70.421,
+  "reference_sha256": "e74652a5a7fd241fd600e4009f9387685765b3aa96b84e3ed8b5c07ffba4c070",
+  "schema": "c127-decision-v1",
+  "status": "PASS_SLOTS40_NUMERIC_AND_SHORT_FORWARD_ADMISSION"
+}

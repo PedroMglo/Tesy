@@ -1,0 +1,39 @@
+{
+  "measurement_commit": "1ce78ef6e5c337e8f81ca04e86854cbbcd5c4966",
+  "start": {
+    "utc": "2026-10-04T14:14:39.503406+00:00",
+    "monotonic_s": 13002.96389514
+  },
+  "end": {
+    "utc": "2026-10-04T14:40:44.551073+00:00",
+    "monotonic_s": 14568.011557882
+  },
+  "argv": [
+    "systemd-run",
+    "--user",
+    "--slice=tesy-post-c154.slice",
+    "--unit=tesy-c247-b8-amortization",
+    "--collect",
+    "--pipe",
+    "--wait",
+    "--working-directory=/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc",
+    "-p",
+    "MemoryMax=17985175552",
+    "-p",
+    "MemoryHigh=17985175552",
+    "-p",
+    "MemorySwapMax=0",
+    "-p",
+    "RuntimeMaxSec=4350",
+    "-p",
+    "TimeoutStopSec=10",
+    "--",
+    "/usr/bin/python",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/tools/residency_unit_run.py",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c247-b8-complete-output-amortization-20261004",
+    "--inside"
+  ],
+  "returncode": 0,
+  "stdout": "",
+  "stderr": "Running as unit: tesy-c247-b8-amortization.service\n          Finished with result: success\nMain processes terminated with: code=exited, status=0/SUCCESS\n               Service runtime: 26min 4.790s\n             CPU time consumed: 1h 7min 52.875s\n                   Memory peak: 14.6G (swap: 0B)\n"
+}
