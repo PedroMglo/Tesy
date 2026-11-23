@@ -1,0 +1,75 @@
+{
+  "base_commit": "fcdad67",
+  "c20_off_time_reused_for_gain": false,
+  "c21_times_reused_for_gain": false,
+  "claims": "synthetic exact-prefix latency evidence only; no full M3, sustained, quality or full-logit claim",
+  "confirmation_if_screen_passes": {
+    "all_resources_and_outputs_valid": true,
+    "all_second_gains_positive": true,
+    "median_first_cold_gain_pct_min": -5,
+    "median_second_gain_pct_min": 20,
+    "new_pairs": 3,
+    "order": [
+      "OFF,ON",
+      "ON,OFF",
+      "OFF,ON"
+    ]
+  },
+  "cpu_policy": "warning >=95 C; stop >=100 C/ACPI Processor cooling/clock collapse; GPU80/NVMe70/E18 unchanged",
+  "default_changed": false,
+  "idle_policy": {
+    "all_window_max_c": {
+      "cpu": 50,
+      "gpu": 50,
+      "nvme": 45
+    },
+    "baseline_match_tolerance_c": {
+      "cpu": 5,
+      "gpu": 5,
+      "nvme": 3
+    },
+    "cadence_max_s": 1,
+    "minimum_continuous_s": 300,
+    "rationale": "C20 strict \u00b12/3/3 C blocked a safer, cooler ON start; \u00b15/5/3 preserves similar conditions without demanding reheating",
+    "start_reference": "first OFF arm; all later arms matched to it",
+    "timeout_s": 900
+  },
+  "metric": "completion-fenced elapsed seconds for second 641-ID prompt plus <=4 completion tokens",
+  "only_variable": "cache_prompt OFF/ON on second 641-ID request; first 513-ID request cache_prompt true in both arms",
+  "order": [
+    "OFF",
+    "ON",
+    "ON",
+    "OFF"
+  ],
+  "output_root_policy": "raw/ directory created at freeze, checked before idle and again by server; C21 prelaunch FAIL preserved",
+  "paired_gain_formula": "100*(OFF-ON)/OFF for each pair",
+  "parent_C19_decision_sha256": "d05032e4b50ce873638323c82db28bff8f59356231a66798d4121ea470e37580",
+  "parent_C20_decision_sha256": "3ee5bd0ae0c94b0471903e28ebeea084e911c101fa2ec4858746505fdfdc2f75",
+  "parent_C21_decision_sha256": "cebe46c8bddc78ba7f931f279d2a15870a77f52b6e6bd5bcc6181b92d5c98599",
+  "per_run_protocol_sha256": {
+    "c22-p1-off": "ffc9f23ba729f8d31e024ac0ddef352dd5ff4f810beeb59874d0c3ed64151b0d",
+    "c22-p1-on": "c8631b2e128d3d6e0e73ce8022b526a1c02eae99df92357f0fb272338559b806",
+    "c22-p2-off": "01b377cd87d6aa6569ddcaabfd38d609f37ce13f10bcce927459a5bde75112a1",
+    "c22-p2-on": "d30da787495eab5b0d7d0a946322116a407b9e1dfc9b5f83e2d1955f5d0ecb0d"
+  },
+  "profile": "P12 ngl12 ub32 slots32 preload ON 8K full-SWA original backend E18 zero swap",
+  "runs": [
+    "c22-p1-off",
+    "c22-p1-on",
+    "c22-p2-on",
+    "c22-p2-off"
+  ],
+  "schema": "c22-prefix-pairs-protocol-v1",
+  "screen_policy": {
+    "cache_off_exact_ids": 0,
+    "cache_on_min_ids": 450,
+    "each_second_gain_pct_min_exclusive": 0,
+    "median_first_cold_gain_pct_min": -5,
+    "median_second_gain_pct_min": 20,
+    "resources_required": true,
+    "same_returned_messages_required": true
+  },
+  "status": "FROZEN_BEFORE_OUTPUTS",
+  "workload_sha256": "c143814cbfa3f16943aeb6adc0633989a99ac2284332449f678eb314411d2170"
+}

@@ -1,0 +1,43 @@
+{
+  "id": "c178-live-dummy",
+  "start": {
+    "utc": "2026-09-30T15:24:59.460919+00:00",
+    "monotonic_s": 276278.934140953
+  },
+  "end": {
+    "utc": "2026-09-30T15:26:00.742826+00:00",
+    "monotonic_s": 276340.216062391
+  },
+  "argv": [
+    "/usr/bin/python3",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/tools/run_bounded.py",
+    "--run-id",
+    "c178-live-dummy",
+    "--model-id",
+    "model-free",
+    "--backend",
+    "stock",
+    "--backend-root",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/backends/c165-mmap-diagnostic",
+    "--output-root",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c178-layer24-reference-entrypoint-20260930T1526Z/raw",
+    "--variant",
+    "real-entrypoint-dummy",
+    "--workload",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c178-layer24-reference-entrypoint-20260930T1526Z/protocol.json",
+    "--cache-condition",
+    "no-model-smoke-before-reference",
+    "--resource-protocol",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c178-layer24-reference-entrypoint-20260930T1526Z/protocol.json",
+    "--require-telemetry",
+    "--timeout-s",
+    "3",
+    "--collect-start-inventory",
+    "--",
+    "/bin/sleep",
+    "0.2"
+  ],
+  "returncode": 1,
+  "stdout": "{\"run_id\": \"c178-live-dummy\", \"elapsed_s\": 0.669, \"returncode\": 0, \"stop_reason\": \"MAPPED_LIBRARY_IDENTITY_MISMATCH\", \"maxima\": {\"rss_bytes\": 2416640, \"swap_bytes\": 0, \"cgroup_memory_bytes\": 33136640, \"cgroup_peak_bytes\": 54652928, \"cgroup_file_bytes\": 40960, \"gpu_used_mib\": 12.0, \"gpu_temperature_c\": 43.0, \"cpu_tctl_c\": 48.125, \"nvme_composite_c\": 37.85, \"direct_model_fds\": 0, \"buffered_model_fds\": 0}}\n",
+  "stderr": ""
+}

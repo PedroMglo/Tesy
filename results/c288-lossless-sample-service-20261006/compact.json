@@ -1,0 +1,47 @@
+{
+  "status": "BLOCKED_OBSERVER_RESOURCE_NOT_PERFORMANCE_NO_GO",
+  "arms": [
+    {
+      "id": "c288-1-a",
+      "arm": "A",
+      "status": "FAIL_RESOURCE_CGROUP_EVENT",
+      "service_s": null,
+      "reason": "Observer/service-family file charge exceeded common2GiB cap; no complete service result"
+    },
+    {
+      "id": "c288-2-b",
+      "arm": "B",
+      "status": "NOT_RUN_DEPENDENT_RESOURCE_STOP",
+      "service_s": null,
+      "reason": "Observer/service-family file charge exceeded common2GiB cap; no complete service result"
+    },
+    {
+      "id": "c288-3-b",
+      "arm": "B",
+      "status": "NOT_RUN_DEPENDENT_RESOURCE_STOP",
+      "service_s": null,
+      "reason": "Observer/service-family file charge exceeded common2GiB cap; no complete service result"
+    },
+    {
+      "id": "c288-4-a",
+      "arm": "A",
+      "status": "NOT_RUN_DEPENDENT_RESOURCE_STOP",
+      "service_s": null,
+      "reason": "Observer/service-family file charge exceeded common2GiB cap; no complete service result"
+    }
+  ],
+  "maxima": {
+    "rss_bytes": 210464768,
+    "swap_bytes": 0,
+    "cgroup_memory_bytes": 2147160064,
+    "cgroup_peak_bytes": 2147483648,
+    "cgroup_file_bytes": 1978355712,
+    "gpu_used_mib": 23.0,
+    "gpu_temperature_c": 44.0,
+    "cpu_tctl_c": 54.25,
+    "nvme_composite_c": 40.85,
+    "direct_model_fds": 1,
+    "buffered_model_fds": 0
+  },
+  "repair": "New common6GiB-family only after fresh admission; unchanged timing workload/source/libraries/layout. Resource repair, not B material design revision"
+}

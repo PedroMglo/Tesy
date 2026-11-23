@@ -1,0 +1,28 @@
+{
+  "schema": "c15-source-checkpoint-v1",
+  "status": "SOURCE_ONLY_UNBUILT_PAUSED_FOR_REVIEW",
+  "evidence_class": "SOURCE_ONLY",
+  "objective": "Instrument exclusive CPU streamed-expert matmul intervals and expert read/upload intervals to test whether wave work is on the prefill critical path",
+  "outer_base_commit": "ca59d60bde66968eed032e4b8469a41caa3374ab",
+  "outer_base_tree": "56ea89113240e83b56ae67883a97c49087a174ff",
+  "backend_base_commit": "1248fd8fa8cfebaece5ea992e4d951c1e18bb9d5",
+  "backend_diagnostic_branch": "campaign/c15-wave-critical-diagnostic-20260927-1607utc",
+  "backend_diagnostic_commit": "1691fb65a00c963ec3aa64a5b66a1b951de52d15",
+  "backend_diagnostic_tree": "44221c494f85ec8f77374e189a67e11497c6dadd",
+  "review_patch": "research/patches/C15-wave-intervals-source-only.patch",
+  "review_patch_sha256": "fca4c9b7a41003f7abcc2ac4b7301be6a75bd06537da48dd612b649f4185df8f",
+  "checks": {
+    "git_diff_check": "PASS",
+    "git_apply_check_on_clean_original_backend": "PASS",
+    "patched_backend_build": "NOT_RUN",
+    "model_free_test": "NOT_RUN",
+    "model_execution": "NOT_RUN",
+    "profiling": "NOT_RUN",
+    "numeric_fidelity": "NOT_RUN"
+  },
+  "physical_execution_added_s": 0,
+  "program_physical_to_date_s": 5717.739990403999,
+  "default_changed": false,
+  "decision": "PAUSE_FOR_USER_REVIEW_AND_COOLING_CHANGE",
+  "next_gate": "After the cooling change, inventory the physical host and thermal baseline, freeze a new campaign identity and contemporary controls, then repeat the thermally blocked 513-ID cold request under unchanged guards; build/model-free check this diagnostic patch separately before any profiling."
+}

@@ -1,0 +1,66 @@
+{
+  "schema": "native64-natural-family-v1",
+  "epoch": "results/c190-native64-resume-20260930T2047Z",
+  "confirmation": false,
+  "order": [
+    [
+      "c193-1-A32",
+      "A32"
+    ],
+    [
+      "c193-2-B64",
+      "B64"
+    ],
+    [
+      "c193-3-B64",
+      "B64"
+    ],
+    [
+      "c193-4-A32",
+      "A32"
+    ]
+  ],
+  "maximum_live_s": 1200,
+  "arm_maximum_s": 300,
+  "unit_runtime_max_s": 295,
+  "unit_stop_grace_s": 3,
+  "server_timeout_s": 230,
+  "readiness_s": 30,
+  "request_deadlines_s": [
+    180,
+    90,
+    120
+  ],
+  "claim": "natural utility; histories and output work may differ; W is fixed-input protection",
+  "primary": "T2 first final >=15% median and all gains positive",
+  "sql_primary": ">=0% median",
+  "protections": "all frozen natural metrics median >=-5%; correctness/resources/prefix/nominal153 PASS",
+  "no_retry": true,
+  "publication": "LOCAL_ONLY",
+  "source_sha256": {
+    "tools/native64_natural.py": "1f882944d9b0f78a40ee762bbf4b777b74d3f5b7a717c45b90f68e5ebee13d42",
+    "tools/native64_sql.py": "a7fb8559d3240838fc54e4f6a3d950388b02032d5d8b091b3ca116d987ed8f3d",
+    "tools/native64_evaluate.py": "68bbbcd87743c810f60e67bba0d415be2eb92186e6653a4f76a7e4f9ccf2f42e",
+    "tools/c2_server_run.py": "3262d17de6fb373b3a03e8bf23aa4d285403809c1070f52d494a2f8bf850099a",
+    "tools/request_evidence.py": "d9870a4c1d8c2e3f5dcfbb33c17216ee038555cbb0c6adebad40acf4255eff79",
+    "tools/c118_start_inventory.py": "2cc7485b0badf233eeb72043be7dd170b7d6d30c28e29db47c704d3ab936b329",
+    "tools/host_resource_policy.py": "5a3099cef6ac9dac6c5b33a6ce121698bbb249f099fab4cb1fa0d9e1a7f49a79",
+    "tools/c112_nominal_session_base.py": "b0b2393b8caf9f96630ce0c3b4189c4b919747a6d7e21ffecdd6ee90ba6a3c8e",
+    "tools/epoch_accounting.py": "d710542d5134b0b4ee1703fc338cf05ee44e0df3c894da1282bea0f43b77b2c2",
+    "tools/c9_server_admission.py": "30534cfd98d83ff5755115045ae9bd96695e4951ec610bf35a50f142c171bfbc",
+    "tools/c85_request_markers.py": "fbe3d9028d4ae8896f366644fba9c963a1637279b5be6f42afa42dec6e517051"
+  },
+  "workload_sha256": "66fb64bd53ed0077c399faef10d37c888bb96ac79a2ed17e845fde226bc41087",
+  "budget_admission": {
+    "utc": "2026-09-30T21:32:39.628336+00:00",
+    "physical_used_s": 963.2698094799416,
+    "wall_used_s": 2687.876326972968,
+    "raw_bytes": 360574556,
+    "physical_remaining_s": 3536.7301905200584,
+    "wall_remaining_s": 8112.123673027032,
+    "raw_remaining_bytes": 713167268,
+    "closure_reserve_s": 150,
+    "next_worst_case_s": 1200,
+    "admitted": true
+  }
+}

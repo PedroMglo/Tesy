@@ -1,0 +1,347 @@
+{
+  "status": "PASS_NATIVE_APPROXIMATION_CAPTURE_NOT_PREFETCH_GAIN",
+  "physical_envelope_s": 662.0359269369947,
+  "analyses": [
+    {
+      "id": "c299-code153-1-observe-analysis.json",
+      "status": "PASS_ORIGINAL_ESTIMATOR_OFF",
+      "full33_logits_sha256": "6e5223faff42fdb9ff60a1b07ece78dae5b9e191f52c66cc98bcdf008b5e6115",
+      "case": "code153",
+      "native_timings": {
+        "prefix_s": 58.871243015,
+        "prefill153_s": 15.785188475,
+        "decode32_s": 10.994370946,
+        "total_s": 26.779559421
+      }
+    },
+    {
+      "id": "c299-code153-2-estimate-analysis.json",
+      "status": "PASS_ORIGINAL_MOVEMENT_ESTIMATOR_CAPTURE",
+      "case": "code153",
+      "full33_logits_sha256": "6e5223faff42fdb9ff60a1b07ece78dae5b9e191f52c66cc98bcdf008b5e6115",
+      "missing_demands": 816,
+      "predicted_missing_hits": 588,
+      "miss_recall": 0.7205882352941176,
+      "issued_speculative_reads_if_enabled": 1092,
+      "correct_issued": 588,
+      "issued_precision": 0.5384615384615384,
+      "predicted_resident_actual_hits_diagnostic": 1456,
+      "predicted_wasted_logical_bytes_if_enabled": 6662476800,
+      "predictor_complete_seconds": 0.03735068999999994,
+      "native_timings": {
+        "prefix_s": 58.922504069,
+        "prefill153_s": 15.846942416,
+        "decode32_s": 10.984770776,
+        "total_s": 26.831713192
+      },
+      "scope": "Development only; no bytes prefetched or runtime gain claimed; captured original norm/gate/bias + current features, not trained. Actual router remains authority."
+    },
+    {
+      "id": "c299-nominal153-1-observe-analysis.json",
+      "status": "PASS_ORIGINAL_ESTIMATOR_OFF",
+      "full33_logits_sha256": "cb89a303f2c811d3cb75cf6df457a7bf8dcfb6279b729b326baec519748239a2",
+      "case": "nominal153",
+      "native_timings": {
+        "prefix_s": 65.110082272,
+        "prefill153_s": 10.451599039,
+        "decode32_s": 10.477983915,
+        "total_s": 20.929582954
+      }
+    },
+    {
+      "id": "c299-nominal153-2-estimate-analysis.json",
+      "status": "PASS_ORIGINAL_MOVEMENT_ESTIMATOR_CAPTURE",
+      "case": "nominal153",
+      "full33_logits_sha256": "cb89a303f2c811d3cb75cf6df457a7bf8dcfb6279b729b326baec519748239a2",
+      "missing_demands": 621,
+      "predicted_missing_hits": 466,
+      "miss_recall": 0.750402576489533,
+      "issued_speculative_reads_if_enabled": 853,
+      "correct_issued": 466,
+      "issued_precision": 0.5463071512309496,
+      "predicted_resident_actual_hits_diagnostic": 1631,
+      "predicted_wasted_logical_bytes_if_enabled": 5115830400,
+      "predictor_complete_seconds": 0.035817570000000014,
+      "native_timings": {
+        "prefix_s": 64.438983106,
+        "prefill153_s": 9.723568298,
+        "decode32_s": 9.476923631,
+        "total_s": 19.200491929
+      },
+      "scope": "Development only; no bytes prefetched or runtime gain claimed; captured original norm/gate/bias + current features, not trained. Actual router remains authority."
+    }
+  ],
+  "resources": [
+    {
+      "id": "c299-code153-1-observe",
+      "returncode": 0,
+      "stop_reason": null,
+      "elapsed_s": 88.582,
+      "maxima": {
+        "rss_bytes": 16003551232,
+        "swap_bytes": 0,
+        "cgroup_memory_bytes": 15890874368,
+        "cgroup_peak_bytes": 15911661568,
+        "cgroup_file_bytes": 1596465152,
+        "gpu_used_mib": 6889.0,
+        "gpu_temperature_c": 62.0,
+        "cpu_tctl_c": 94.125,
+        "nvme_composite_c": 53.85,
+        "direct_model_fds": 2,
+        "buffered_model_fds": 0
+      },
+      "cgroup_end": {
+        "memory_peak": 15936159744,
+        "swap_current": 0,
+        "events": {
+          "low": 0,
+          "high": 0,
+          "max": 0,
+          "oom": 0,
+          "oom_kill": 0,
+          "oom_group_kill": 0,
+          "sock_throttled": 0
+        }
+      },
+      "mapped_libraries_match_ldd": true,
+      "parallel_runtime": {
+        "libraries_sha256": {
+          "/usr/lib64/libgomp.so.1.0.0": "637b2ab4eedf3ce72173a9d34a4c41c480082d68662db3f0ef4998117df8f9b2"
+        },
+        "initial_process_environment": {
+          "values": {},
+          "unset": [
+            "OMP_WAIT_POLICY",
+            "OMP_NUM_THREADS",
+            "OMP_DYNAMIC",
+            "OMP_PROC_BIND",
+            "OMP_PLACES",
+            "GOMP_SPINCOUNT",
+            "GOMP_CPU_AFFINITY",
+            "KMP_BLOCKTIME",
+            "KMP_AFFINITY"
+          ]
+        },
+        "source_note": "ggml init may set KMP_BLOCKTIME=200 after exec; GNU libgomp does not use KMP blocktime. /proc/environ observes initial exec environment."
+      }
+    },
+    {
+      "id": "c299-code153-2-estimate",
+      "returncode": 0,
+      "stop_reason": null,
+      "elapsed_s": 88.461,
+      "maxima": {
+        "rss_bytes": 16003969024,
+        "swap_bytes": 0,
+        "cgroup_memory_bytes": 15922356224,
+        "cgroup_peak_bytes": 15996919808,
+        "cgroup_file_bytes": 1691201536,
+        "gpu_used_mib": 6889.0,
+        "gpu_temperature_c": 61.0,
+        "cpu_tctl_c": 93.875,
+        "nvme_composite_c": 53.85,
+        "direct_model_fds": 2,
+        "buffered_model_fds": 0
+      },
+      "cgroup_end": {
+        "memory_peak": 15996919808,
+        "swap_current": 0,
+        "events": {
+          "low": 0,
+          "high": 0,
+          "max": 0,
+          "oom": 0,
+          "oom_kill": 0,
+          "oom_group_kill": 0,
+          "sock_throttled": 0
+        }
+      },
+      "mapped_libraries_match_ldd": true,
+      "parallel_runtime": {
+        "libraries_sha256": {
+          "/usr/lib64/libgomp.so.1.0.0": "637b2ab4eedf3ce72173a9d34a4c41c480082d68662db3f0ef4998117df8f9b2"
+        },
+        "initial_process_environment": {
+          "values": {},
+          "unset": [
+            "OMP_WAIT_POLICY",
+            "OMP_NUM_THREADS",
+            "OMP_DYNAMIC",
+            "OMP_PROC_BIND",
+            "OMP_PLACES",
+            "GOMP_SPINCOUNT",
+            "GOMP_CPU_AFFINITY",
+            "KMP_BLOCKTIME",
+            "KMP_AFFINITY"
+          ]
+        },
+        "source_note": "ggml init may set KMP_BLOCKTIME=200 after exec; GNU libgomp does not use KMP blocktime. /proc/environ observes initial exec environment."
+      }
+    },
+    {
+      "id": "c299-native-auxiliary-synthetic",
+      "returncode": 0,
+      "stop_reason": null,
+      "elapsed_s": 5.423,
+      "maxima": {
+        "rss_bytes": 208703488,
+        "swap_bytes": 0,
+        "cgroup_memory_bytes": 165920768,
+        "cgroup_peak_bytes": 186949632,
+        "cgroup_file_bytes": 65536,
+        "gpu_used_mib": 23.0,
+        "gpu_temperature_c": 43.0,
+        "cpu_tctl_c": 49.375,
+        "nvme_composite_c": 36.85,
+        "direct_model_fds": 0,
+        "buffered_model_fds": 0
+      },
+      "cgroup_end": {
+        "memory_peak": 186949632,
+        "swap_current": 0,
+        "events": {
+          "low": 0,
+          "high": 0,
+          "max": 0,
+          "oom": 0,
+          "oom_kill": 0,
+          "oom_group_kill": 0,
+          "sock_throttled": 0
+        }
+      },
+      "mapped_libraries_match_ldd": true,
+      "parallel_runtime": {
+        "libraries_sha256": {
+          "/usr/lib64/libgomp.so.1.0.0": "637b2ab4eedf3ce72173a9d34a4c41c480082d68662db3f0ef4998117df8f9b2"
+        },
+        "initial_process_environment": {
+          "values": {},
+          "unset": [
+            "OMP_WAIT_POLICY",
+            "OMP_NUM_THREADS",
+            "OMP_DYNAMIC",
+            "OMP_PROC_BIND",
+            "OMP_PLACES",
+            "GOMP_SPINCOUNT",
+            "GOMP_CPU_AFFINITY",
+            "KMP_BLOCKTIME",
+            "KMP_AFFINITY"
+          ]
+        },
+        "source_note": "ggml init may set KMP_BLOCKTIME=200 after exec; GNU libgomp does not use KMP blocktime. /proc/environ observes initial exec environment."
+      }
+    },
+    {
+      "id": "c299-nominal153-1-observe",
+      "returncode": 0,
+      "stop_reason": null,
+      "elapsed_s": 88.77,
+      "maxima": {
+        "rss_bytes": 16003948544,
+        "swap_bytes": 0,
+        "cgroup_memory_bytes": 15784792064,
+        "cgroup_peak_bytes": 15814250496,
+        "cgroup_file_bytes": 1510178816,
+        "gpu_used_mib": 6889.0,
+        "gpu_temperature_c": 61.0,
+        "cpu_tctl_c": 93.875,
+        "nvme_composite_c": 50.85,
+        "direct_model_fds": 2,
+        "buffered_model_fds": 0
+      },
+      "cgroup_end": {
+        "memory_peak": 15814250496,
+        "swap_current": 0,
+        "events": {
+          "low": 0,
+          "high": 0,
+          "max": 0,
+          "oom": 0,
+          "oom_kill": 0,
+          "oom_group_kill": 0,
+          "sock_throttled": 0
+        }
+      },
+      "mapped_libraries_match_ldd": true,
+      "parallel_runtime": {
+        "libraries_sha256": {
+          "/usr/lib64/libgomp.so.1.0.0": "637b2ab4eedf3ce72173a9d34a4c41c480082d68662db3f0ef4998117df8f9b2"
+        },
+        "initial_process_environment": {
+          "values": {},
+          "unset": [
+            "OMP_WAIT_POLICY",
+            "OMP_NUM_THREADS",
+            "OMP_DYNAMIC",
+            "OMP_PROC_BIND",
+            "OMP_PLACES",
+            "GOMP_SPINCOUNT",
+            "GOMP_CPU_AFFINITY",
+            "KMP_BLOCKTIME",
+            "KMP_AFFINITY"
+          ]
+        },
+        "source_note": "ggml init may set KMP_BLOCKTIME=200 after exec; GNU libgomp does not use KMP blocktime. /proc/environ observes initial exec environment."
+      }
+    },
+    {
+      "id": "c299-nominal153-2-estimate",
+      "returncode": 0,
+      "stop_reason": null,
+      "elapsed_s": 86.508,
+      "maxima": {
+        "rss_bytes": 16004464640,
+        "swap_bytes": 0,
+        "cgroup_memory_bytes": 15816425472,
+        "cgroup_peak_bytes": 15890784256,
+        "cgroup_file_bytes": 1584275456,
+        "gpu_used_mib": 6889.0,
+        "gpu_temperature_c": 61.0,
+        "cpu_tctl_c": 93.875,
+        "nvme_composite_c": 51.85,
+        "direct_model_fds": 2,
+        "buffered_model_fds": 0
+      },
+      "cgroup_end": {
+        "memory_peak": 15890784256,
+        "swap_current": 0,
+        "events": {
+          "low": 0,
+          "high": 0,
+          "max": 0,
+          "oom": 0,
+          "oom_kill": 0,
+          "oom_group_kill": 0,
+          "sock_throttled": 0
+        }
+      },
+      "mapped_libraries_match_ldd": true,
+      "parallel_runtime": {
+        "libraries_sha256": {
+          "/usr/lib64/libgomp.so.1.0.0": "637b2ab4eedf3ce72173a9d34a4c41c480082d68662db3f0ef4998117df8f9b2"
+        },
+        "initial_process_environment": {
+          "values": {},
+          "unset": [
+            "OMP_WAIT_POLICY",
+            "OMP_NUM_THREADS",
+            "OMP_DYNAMIC",
+            "OMP_PROC_BIND",
+            "OMP_PLACES",
+            "GOMP_SPINCOUNT",
+            "GOMP_CPU_AFFINITY",
+            "KMP_BLOCKTIME",
+            "KMP_AFFINITY"
+          ]
+        },
+        "source_note": "ggml init may set KMP_BLOCKTIME=200 after exec; GNU libgomp does not use KMP blocktime. /proc/environ observes initial exec environment."
+      }
+    }
+  ],
+  "claim": "MEDIDO_NO_TARGET auxiliary costs/miss recall/precision + bitwise selected33R0; no actual stagedreads, runtime improvement orheldout claim",
+  "earlier_failures": [
+    "C296shortfixture",
+    "C297obsoletealias"
+  ],
+  "complete_labels": "CPU2-24 x32 native authoritativebiasedscores, all736records perON; top4 labels verifiedC298"
+}

@@ -1,0 +1,24 @@
+{
+  "schema": "tesy-operator-model-free-v1",
+  "timeout_s": 30,
+  "shapes": [
+    1,
+    32
+  ],
+  "gates": [
+    "MXFP4_CPU_ones_dot32_bitwise",
+    "F16_CPU_ones_dot32_bitwise",
+    "GPU fused reduction bitwise against independent std::fma",
+    "negative CPU separate reduction differs",
+    "finite"
+  ],
+  "reference_map_sha256": "df510a9eb360dedf7674b20cff94a034852a86753351a217281b148142b3f1e5",
+  "reference_binary_sha256": "868f06afb967e0346150d1bbb2d1f7fdf499f102224cf3975353de8d3c3c2ae5",
+  "fixture_binary_sha256": "2b4ae532f01da116f36c5ac4a4e6b2ac42bf202dcc2051cb500b5ebd572f5538",
+  "previous_failures_preserved": [
+    "C167",
+    "C168",
+    "C169"
+  ],
+  "numeric_contract": "No tolerance; bitwise prospective matched arithmetic for captured layer24 and remaining GPU FFNs"
+}

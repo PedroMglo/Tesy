@@ -1,0 +1,39 @@
+{
+  "measurement_commit": "e8e814a8db4298aeea207c7436350b99371ad7a4",
+  "start": {
+    "utc": "2026-10-07T02:43:46.802160+00:00",
+    "monotonic_s": 117245.247744836
+  },
+  "end": {
+    "utc": "2026-10-07T02:43:47.188693+00:00",
+    "monotonic_s": 117245.634273858
+  },
+  "argv": [
+    "systemd-run",
+    "--user",
+    "--slice=tesy-post-c154.slice",
+    "--unit=tesy-c313-auxiliary-cpu-fit",
+    "--collect",
+    "--pipe",
+    "--wait",
+    "--working-directory=/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc",
+    "-p",
+    "MemoryMax=4294967296",
+    "-p",
+    "MemoryHigh=4294967296",
+    "-p",
+    "MemorySwapMax=0",
+    "-p",
+    "RuntimeMaxSec=200",
+    "-p",
+    "TimeoutStopSec=10",
+    "--",
+    "/usr/bin/python",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/tools/residency_unit_run.py",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c313-affine-fit-checkpoint-repair-20261007",
+    "--inside"
+  ],
+  "returncode": 1,
+  "stdout": "",
+  "stderr": "Running as unit: tesy-c313-auxiliary-cpu-fit.service\n          Finished with result: exit-code\nMain processes terminated with: code=exited, status=1/FAILURE\n               Service runtime: 286ms\n             CPU time consumed: 229ms\n                   Memory peak: 46.1M (swap: 0B)\n"
+}

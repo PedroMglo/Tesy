@@ -1,0 +1,59 @@
+diff --git a/src/c269-last-use-order.h b/src/c269-last-use-order.h
+new file mode 100644
+index 00000000..ea3ed0bc
+--- /dev/null
++++ b/src/c269-last-use-order.h
+@@ -0,0 +1,30 @@
++#pragma once
++#include <algorithm>
++#include <array>
++#include <cstdint>
++#include <limits>
++#include <vector>
++
++// Order only experts already selected in this layer. Later tiles' experts are
++// consumed later and remain eligible for the final resident set. No prediction.
++inline bool c269_last_use_order(std::vector<int32_t> & experts,const int32_t * ids,
++        int64_t n,uint32_t n_expert,uint32_t n_ids,uint32_t tile) {
++    if (!ids || n<=0 || n>153*4 || n_expert!=128 || n_ids!=4 || tile!=32 || n%n_ids) return false;
++    std::array<int64_t,128> last,first;
++    last.fill(-1);first.fill(std::numeric_limits<int64_t>::max());
++    for(int64_t i=0;i<n;++i) {
++        const auto e=ids[i];if(e<0||e>=128)return false;
++        const auto t=i/(n_ids*tile);
++        if(last[e]!=t){last[e]=t;first[e]=i;}
++    }
++    std::array<bool,128> seen{};
++    for(const auto e:experts) {
++        if(e<0||e>=128||last[e]<0||seen[e])return false;
++        seen[e]=true;
++    }
++    for(int e=0;e<128;++e)if((last[e]>=0)!=seen[e])return false;
++    std::sort(experts.begin(),experts.end(),[&](int32_t a,int32_t b){
++        return last[a]!=last[b]?last[a]<last[b]:first[a]<first[b];
++    });
++    return true;
++}
+diff --git a/src/llama-moe-stream.cpp b/src/llama-moe-stream.cpp
+index fbbeafaa..27c7ca0a 100644
+--- a/src/llama-moe-stream.cpp
++++ b/src/llama-moe-stream.cpp
+@@ -1,4 +1,5 @@
+ #include "llama-moe-stream.h"
++#include "c269-last-use-order.h"
+ 
+ #include "llama-impl.h"
+ 
+@@ -589,6 +590,12 @@ void llama_moe_stream::plan_waves_locked(llama_moe_stream_layer & sl, const int3
+         }
+     }
+ 
++    if (const char * order = std::getenv("TESY_C269_LAST_USE_ORDER")) {
++        GGML_ASSERT(std::strcmp(order,"1")==0);
++        if (n>32*4) {
++            GGML_ASSERT(sl.n_slots==40 && c269_last_use_order(sl.uniq,ids,n,sl.n_expert,4,32));
++        }
++    }
+     GGML_ASSERT(sl.plan_capacity > 0);
+     sl.expert_wave.assign(sl.n_expert, 0xff);
+     for (size_t i = 0; i < sl.uniq.size(); i++) {

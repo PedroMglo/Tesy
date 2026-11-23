@@ -1,0 +1,231 @@
+{
+  "status": "PASS_NATURAL_ARM",
+  "reason": null,
+  "run_id": "c196-3-B64",
+  "start": {
+    "utc": "2026-09-30T22:49:34.744055+00:00",
+    "monotonic_s": 302954.21727549
+  },
+  "end": {
+    "utc": "2026-09-30T22:53:40.868060+00:00",
+    "monotonic_s": 303200.341273617
+  },
+  "measurement_head": "c8767c81d036719d8a8c41abd5e840d07b117bda",
+  "row": {
+    "run_id": "c196-3-B64",
+    "profile": "B64",
+    "complete": true,
+    "natural": true,
+    "identity": true,
+    "resources": true,
+    "deadline": true,
+    "samples": true,
+    "functional": true,
+    "prefix": true,
+    "nominal153": true,
+    "common_prefix_T2": 2043,
+    "requests": [
+      {
+        "request_id": "c112-code",
+        "official_ids": 2043,
+        "input_ids_sha256": "0cbd8fd4398acf250db4c9be666f841ba4ecf27b392133f0389b434405245db3",
+        "output_ids": "NOT_EXPOSED",
+        "output_tokens": 78,
+        "finish_reason": "stop",
+        "native_timings": {
+          "cache_n": 0,
+          "prompt_n": 2043,
+          "prompt_ms": 56784.943,
+          "prompt_per_token_ms": 27.794881546744982,
+          "prompt_per_second": 35.97784715571521,
+          "predicted_n": 78,
+          "predicted_ms": 20332.737,
+          "predicted_per_token_ms": 260.6761153846154,
+          "predicted_per_second": 3.8361780806981374
+        },
+        "stream_metrics": {
+          "first_text_chunk_s": 57.55529611901147,
+          "first_reasoning_chunk_s": 57.55529611901147,
+          "first_final_content_chunk_s": 76.68400646699592,
+          "sse_event_count": 71,
+          "done_observed": true,
+          "interpretation": "client receipt times of non-whitespace SSE chunks; not token timestamps"
+        },
+        "request_wall_s": 77.13599589996738,
+        "final_content_sha256": "50cf498f8ab3e3bdb16ffccb430b33b41c3207bedf880a5434b397d7b8b629f3",
+        "functional_validation": {
+          "PASS": true,
+          "scope": "five-digit code"
+        }
+      },
+      {
+        "request_id": "c112-repeat",
+        "official_ids": 2197,
+        "input_ids_sha256": "0152a556f42dda80f7b7405ebd6af0ebcf1f41429aa44ca9543a4e31ce386f43",
+        "output_ids": "NOT_EXPOSED",
+        "output_tokens": 37,
+        "finish_reason": "stop",
+        "native_timings": {
+          "cache_n": 2044,
+          "prompt_n": 153,
+          "prompt_ms": 10364.158,
+          "prompt_per_token_ms": 67.73959477124183,
+          "prompt_per_second": 14.762414853189233,
+          "predicted_n": 37,
+          "predicted_ms": 8128.663,
+          "predicted_per_token_ms": 219.69359459459457,
+          "predicted_per_second": 4.551794065026439
+        },
+        "stream_metrics": {
+          "first_text_chunk_s": 11.215799058030825,
+          "first_reasoning_chunk_s": 11.215799058030825,
+          "first_final_content_chunk_s": 18.120660674991086,
+          "sse_event_count": 30,
+          "done_observed": true,
+          "interpretation": "client receipt times of non-whitespace SSE chunks; not token timestamps"
+        },
+        "request_wall_s": 18.509725515032187,
+        "final_content_sha256": "50cf498f8ab3e3bdb16ffccb430b33b41c3207bedf880a5434b397d7b8b629f3",
+        "functional_validation": {
+          "PASS": true,
+          "scope": "exact actual prior final answer"
+        }
+      },
+      {
+        "request_id": "native64-sql",
+        "official_ids": 2292,
+        "input_ids_sha256": "3e6e5dbee6d35b81517a402e2ed1071eb140903709d2b5cf192fd9d1695e3fec",
+        "output_ids": "NOT_EXPOSED",
+        "output_tokens": 276,
+        "finish_reason": "stop",
+        "native_timings": {
+          "cache_n": 2198,
+          "prompt_n": 94,
+          "prompt_ms": 13482.76,
+          "prompt_per_token_ms": 143.4336170212766,
+          "prompt_per_second": 6.971866294438231,
+          "predicted_n": 276,
+          "predicted_ms": 71482.647,
+          "predicted_per_token_ms": 258.9950978260869,
+          "predicted_per_second": 3.8610769408133416
+        },
+        "stream_metrics": {
+          "first_text_chunk_s": 14.268929974001367,
+          "first_reasoning_chunk_s": 14.268929974001367,
+          "first_final_content_chunk_s": 69.27066579699749,
+          "sse_event_count": 269,
+          "done_observed": true,
+          "interpretation": "client receipt times of non-whitespace SSE chunks; not token timestamps"
+        },
+        "request_wall_s": 84.9821603600285,
+        "final_content_sha256": "47eeddcea18c8c66dfe471b738b1f0c1c6219d3ee0a47293bf127fe475c11875",
+        "functional_validation": {
+          "PASS": true,
+          "query": "SELECT cliente,\n       SUM(COALESCE(valor, 0)) AS total_valor\nFROM (\n    SELECT *,\n           ROW_NUMBER() OVER (PARTITION BY event_id\n                              ORDER BY atualizado DESC, ingest_id DESC) AS rn\n    FROM eventos\n) AS sub\nWHERE rn = 1\nGROUP BY cliente\nORDER BY cliente ASC;",
+          "fixtures": [
+            {
+              "rows": 0,
+              "expected": [],
+              "actual": [],
+              "instruction_bound": 100000
+            },
+            {
+              "rows": 4,
+              "expected": [
+                [
+                  "ana",
+                  7
+                ],
+                [
+                  "bia",
+                  8
+                ]
+              ],
+              "actual": [
+                [
+                  "ana",
+                  7
+                ],
+                [
+                  "bia",
+                  8
+                ]
+              ],
+              "instruction_bound": 100000
+            },
+            {
+              "rows": 6,
+              "expected": [
+                [
+                  "ana",
+                  8
+                ],
+                [
+                  "bia",
+                  -2
+                ]
+              ],
+              "actual": [
+                [
+                  "ana",
+                  8
+                ],
+                [
+                  "bia",
+                  -2
+                ]
+              ],
+              "instruction_bound": 100000
+            },
+            {
+              "rows": 4,
+              "expected": [
+                [
+                  "a",
+                  10
+                ],
+                [
+                  "z",
+                  0
+                ]
+              ],
+              "actual": [
+                [
+                  "a",
+                  10
+                ],
+                [
+                  "z",
+                  0
+                ]
+              ],
+              "instruction_bound": 100000
+            }
+          ],
+          "validator_s": 0.0012370909680612385,
+          "validated_monotonic_s": 303199.706941148
+        }
+      }
+    ],
+    "maxima": {
+      "rss_bytes": 15955881984,
+      "cgroup_peak_bytes": 15742156800,
+      "gpu_total_mib": 6874.0,
+      "cpu_c": 95.125,
+      "gpu_c": 62.0,
+      "nvme_c": 56.85,
+      "swap_bytes": 0
+    },
+    "T2_first_final_s": 18.120660674991086,
+    "SQL_validated_s": 84.98480938997818,
+    "cold_prefill_s": 56.784943,
+    "cold_first_final_s": 76.68400646699592,
+    "T2_completion_s": 18.509725515032187,
+    "T3_first_final_s": 69.27066579699749,
+    "incremental_prefill_s": 10.364158,
+    "decode_seconds_per_reported_output": 0.2196935945945946,
+    "decode_convention": "C75 n_decoded/t_token_generation as predicted_n/predicted_ms; natural descriptive, not equal compute",
+    "raw_sha256": "bc0a7c26059028e44a768dce0eeb676e1e8caa5d42ca482b033bbe258979ddb1"
+  },
+  "no_retry": true
+}

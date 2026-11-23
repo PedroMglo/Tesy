@@ -1,0 +1,52 @@
+{
+  "ambient_temperature": "UNKNOWN",
+  "base_control": "C9 P8 ub32 preload ON; C11 P12 ub32 preload ON",
+  "checkpoint_commit": "d3beba892d85256c492ee2bf239cea37712646cf",
+  "cooling_condition": "changed_physical_placement (owner report)",
+  "gain_formula": "100*(P8-P12)/P8 with positive P8 denominator, independently for each new pair",
+  "idle_cadence_rule": "one consecutive >=300 s window, every gap <=1 s; any earlier gap remains recorded",
+  "idle_cpu_limit_c": 55,
+  "idle_max_s": 900,
+  "idle_min_s": 300,
+  "idle_sample_interval_target_s": 0.5,
+  "numeric_limit": "8K server full-logit reference NOT_RUN",
+  "pair_order": [
+    "P8",
+    "P12",
+    "P12",
+    "P8"
+  ],
+  "per_run_protocol_sha256": {
+    "c17-t0-p12-init": "c42e4b5482e7cc0f5a86149a3e5aeb0b4fbcfd6ae3ab486881a08d05a6eeac58",
+    "c17-t0-p8-init": "9c9ab1cff153e26d56d829435f210a8341fe6c7d57416f5eafcd29e150567c8b",
+    "c17-t1-p12-smoke78": "634712d40ee182d8ea550ed9698de5fc029d350a62b760ba34f45299794f6559",
+    "c17-t1-p8-smoke78": "4dbb6b99df4e4b659cda369df4a16c54bb4c843da2b0fafe7c356ae212d17263",
+    "c17-t2-p12-cold513": "c6aedfc09b6227f44947527aae6d59db3c8c230268908443d25555c2b41e06fb",
+    "c17-t2-p8-cold513": "5a84b28e791df958ff8528031a7a558042aeca2ba3bed388b546eaaca1621f8f",
+    "c17-t3-p12-cold513": "40857eb24d88bd9a6a9e3c17e8d9fb29c64ad3dc86f255378276def999c57876",
+    "c17-t3-p8-cold513": "25172b71ead53cc04ab35ad5e18fdaad356e77aee75aa4545dbc8802caa7a772"
+  },
+  "performance_policy": "descriptive thermal recovery; no server speed threshold existed in C9/C11 and no timing promotion is inferred",
+  "phase_order": [
+    "T0",
+    "T1",
+    "T2",
+    "T3"
+  ],
+  "primary_pair_metric": "completion-fenced API request elapsed seconds for the single 513+4 request",
+  "prior_c16_idle_consumed_s": 394.4515725659985,
+  "profile_changes": [
+    "-ngl 8 vs 12 only"
+  ],
+  "schema": "c17-thermal-recovery-protocol-v1",
+  "secondary_pair_metrics": [
+    "backend prefill seconds",
+    "backend four-token decode seconds"
+  ],
+  "server_backend": "1248fd8fa8cfebaece5ea992e4d951c1e18bb9d5",
+  "stop_policy": "no hidden retry; preserve all guard/evidence failures",
+  "token_ids_sha256": {
+    "cold513": "e19cb14e4c38e8f1b153a58c1d3450ded2b402d82f5798961a1246285099d316",
+    "smoke78": "62a2b46ce58d071394cec42017803545b41f5b4c46e97ec754edbd31e97999ac"
+  }
+}

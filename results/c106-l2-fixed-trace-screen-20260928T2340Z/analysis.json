@@ -1,0 +1,342 @@
+{
+  "baseline": "C84 primary 32 slots per layer; counted DEMAND state=0 as absent-primary demand, state=1 resident, state=2 loading",
+  "budgets_bytes": [
+    1073741824,
+    2147483648,
+    3221225472
+  ],
+  "default_changed": false,
+  "evidence_class": "INFERIDO_FROM_MEASURED_TRACE",
+  "expert_bytes": 13219200,
+  "investment_rule": "Need >=20% demand logical-byte savings in workload target plus exposed wait consistent with >=8% end-to-end gain and equal-memory accounting before prototype",
+  "limitations": [
+    "fixed routed-event sequence with no feedback from L2",
+    "logical expert bytes, not physical NVMe traffic or wall-time speedup",
+    "copy/H2D costs, RAM ownership/staging, page cache and equal-memory pool alternative excluded",
+    "189+32 numeric workload only; warm 153-ID session representativeness NOT_RUN",
+    "wait union is diagnostic interval, not proven removable critical-path time"
+  ],
+  "modes": {
+    "on_evict_lru": "insert evicted primary expert; transfer/copy from CPU/GPU to encoded RAM assumed free, optimistic",
+    "on_load_lru": "insert every completed expert load; encoded RAM copy assumed free and retained while primary may still hold it"
+  },
+  "scenarios": [
+    {
+      "budget_bytes": 1073741824,
+      "expert_slots": 81,
+      "mode": "on_load_lru",
+      "phase_destination": {
+        "decode": {
+          "CPU": {
+            "demanded_logical_bytes": 12915158400,
+            "hits_primary": 0,
+            "inflight_primary": 2223,
+            "misses": 977,
+            "saved": 0,
+            "saved_fraction": 0.0,
+            "saved_logical_bytes": 0
+          },
+          "GPU": {
+            "demanded_logical_bytes": 3807129600,
+            "hits_primary": 0,
+            "inflight_primary": 1124,
+            "misses": 288,
+            "saved": 0,
+            "saved_fraction": 0.0,
+            "saved_logical_bytes": 0
+          }
+        },
+        "prefill": {
+          "CPU": {
+            "demanded_logical_bytes": 11646115200,
+            "hits_primary": 2151,
+            "inflight_primary": 2951,
+            "misses": 881,
+            "saved": 0,
+            "saved_fraction": 0.0,
+            "saved_logical_bytes": 0
+          },
+          "GPU": {
+            "demanded_logical_bytes": 4679596800,
+            "hits_primary": 796,
+            "inflight_primary": 1010,
+            "misses": 354,
+            "saved": 0,
+            "saved_fraction": 0.0,
+            "saved_logical_bytes": 0
+          }
+        }
+      },
+      "total_demand_misses": 2500,
+      "total_saved_demand_misses": 0,
+      "total_saved_fraction": 0.0
+    },
+    {
+      "budget_bytes": 1073741824,
+      "expert_slots": 81,
+      "mode": "on_evict_lru",
+      "phase_destination": {
+        "decode": {
+          "CPU": {
+            "demanded_logical_bytes": 12915158400,
+            "hits_primary": 0,
+            "inflight_primary": 2223,
+            "misses": 977,
+            "saved": 54,
+            "saved_fraction": 0.05527123848515865,
+            "saved_logical_bytes": 713836800
+          },
+          "GPU": {
+            "demanded_logical_bytes": 3807129600,
+            "hits_primary": 0,
+            "inflight_primary": 1124,
+            "misses": 288,
+            "saved": 3,
+            "saved_fraction": 0.010416666666666666,
+            "saved_logical_bytes": 39657600
+          }
+        },
+        "prefill": {
+          "CPU": {
+            "demanded_logical_bytes": 11646115200,
+            "hits_primary": 2151,
+            "inflight_primary": 2951,
+            "misses": 881,
+            "saved": 117,
+            "saved_fraction": 0.13280363223609534,
+            "saved_logical_bytes": 1546646400
+          },
+          "GPU": {
+            "demanded_logical_bytes": 4679596800,
+            "hits_primary": 796,
+            "inflight_primary": 1010,
+            "misses": 354,
+            "saved": 47,
+            "saved_fraction": 0.1327683615819209,
+            "saved_logical_bytes": 621302400
+          }
+        }
+      },
+      "total_demand_misses": 2500,
+      "total_saved_demand_misses": 221,
+      "total_saved_fraction": 0.0884
+    },
+    {
+      "budget_bytes": 2147483648,
+      "expert_slots": 162,
+      "mode": "on_load_lru",
+      "phase_destination": {
+        "decode": {
+          "CPU": {
+            "demanded_logical_bytes": 12915158400,
+            "hits_primary": 0,
+            "inflight_primary": 2223,
+            "misses": 977,
+            "saved": 1,
+            "saved_fraction": 0.0010235414534288639,
+            "saved_logical_bytes": 13219200
+          },
+          "GPU": {
+            "demanded_logical_bytes": 3807129600,
+            "hits_primary": 0,
+            "inflight_primary": 1124,
+            "misses": 288,
+            "saved": 0,
+            "saved_fraction": 0.0,
+            "saved_logical_bytes": 0
+          }
+        },
+        "prefill": {
+          "CPU": {
+            "demanded_logical_bytes": 11646115200,
+            "hits_primary": 2151,
+            "inflight_primary": 2951,
+            "misses": 881,
+            "saved": 0,
+            "saved_fraction": 0.0,
+            "saved_logical_bytes": 0
+          },
+          "GPU": {
+            "demanded_logical_bytes": 4679596800,
+            "hits_primary": 796,
+            "inflight_primary": 1010,
+            "misses": 354,
+            "saved": 0,
+            "saved_fraction": 0.0,
+            "saved_logical_bytes": 0
+          }
+        }
+      },
+      "total_demand_misses": 2500,
+      "total_saved_demand_misses": 1,
+      "total_saved_fraction": 0.0004
+    },
+    {
+      "budget_bytes": 2147483648,
+      "expert_slots": 162,
+      "mode": "on_evict_lru",
+      "phase_destination": {
+        "decode": {
+          "CPU": {
+            "demanded_logical_bytes": 12915158400,
+            "hits_primary": 0,
+            "inflight_primary": 2223,
+            "misses": 977,
+            "saved": 117,
+            "saved_fraction": 0.11975435005117707,
+            "saved_logical_bytes": 1546646400
+          },
+          "GPU": {
+            "demanded_logical_bytes": 3807129600,
+            "hits_primary": 0,
+            "inflight_primary": 1124,
+            "misses": 288,
+            "saved": 4,
+            "saved_fraction": 0.013888888888888888,
+            "saved_logical_bytes": 52876800
+          }
+        },
+        "prefill": {
+          "CPU": {
+            "demanded_logical_bytes": 11646115200,
+            "hits_primary": 2151,
+            "inflight_primary": 2951,
+            "misses": 881,
+            "saved": 117,
+            "saved_fraction": 0.13280363223609534,
+            "saved_logical_bytes": 1546646400
+          },
+          "GPU": {
+            "demanded_logical_bytes": 4679596800,
+            "hits_primary": 796,
+            "inflight_primary": 1010,
+            "misses": 354,
+            "saved": 47,
+            "saved_fraction": 0.1327683615819209,
+            "saved_logical_bytes": 621302400
+          }
+        }
+      },
+      "total_demand_misses": 2500,
+      "total_saved_demand_misses": 285,
+      "total_saved_fraction": 0.114
+    },
+    {
+      "budget_bytes": 3221225472,
+      "expert_slots": 243,
+      "mode": "on_load_lru",
+      "phase_destination": {
+        "decode": {
+          "CPU": {
+            "demanded_logical_bytes": 12915158400,
+            "hits_primary": 0,
+            "inflight_primary": 2223,
+            "misses": 977,
+            "saved": 2,
+            "saved_fraction": 0.0020470829068577278,
+            "saved_logical_bytes": 26438400
+          },
+          "GPU": {
+            "demanded_logical_bytes": 3807129600,
+            "hits_primary": 0,
+            "inflight_primary": 1124,
+            "misses": 288,
+            "saved": 0,
+            "saved_fraction": 0.0,
+            "saved_logical_bytes": 0
+          }
+        },
+        "prefill": {
+          "CPU": {
+            "demanded_logical_bytes": 11646115200,
+            "hits_primary": 2151,
+            "inflight_primary": 2951,
+            "misses": 881,
+            "saved": 0,
+            "saved_fraction": 0.0,
+            "saved_logical_bytes": 0
+          },
+          "GPU": {
+            "demanded_logical_bytes": 4679596800,
+            "hits_primary": 796,
+            "inflight_primary": 1010,
+            "misses": 354,
+            "saved": 0,
+            "saved_fraction": 0.0,
+            "saved_logical_bytes": 0
+          }
+        }
+      },
+      "total_demand_misses": 2500,
+      "total_saved_demand_misses": 2,
+      "total_saved_fraction": 0.0008
+    },
+    {
+      "budget_bytes": 3221225472,
+      "expert_slots": 243,
+      "mode": "on_evict_lru",
+      "phase_destination": {
+        "decode": {
+          "CPU": {
+            "demanded_logical_bytes": 12915158400,
+            "hits_primary": 0,
+            "inflight_primary": 2223,
+            "misses": 977,
+            "saved": 161,
+            "saved_fraction": 0.1647901740020471,
+            "saved_logical_bytes": 2128291200
+          },
+          "GPU": {
+            "demanded_logical_bytes": 3807129600,
+            "hits_primary": 0,
+            "inflight_primary": 1124,
+            "misses": 288,
+            "saved": 9,
+            "saved_fraction": 0.03125,
+            "saved_logical_bytes": 118972800
+          }
+        },
+        "prefill": {
+          "CPU": {
+            "demanded_logical_bytes": 11646115200,
+            "hits_primary": 2151,
+            "inflight_primary": 2951,
+            "misses": 881,
+            "saved": 117,
+            "saved_fraction": 0.13280363223609534,
+            "saved_logical_bytes": 1546646400
+          },
+          "GPU": {
+            "demanded_logical_bytes": 4679596800,
+            "hits_primary": 796,
+            "inflight_primary": 1010,
+            "misses": 354,
+            "saved": 47,
+            "saved_fraction": 0.1327683615819209,
+            "saved_logical_bytes": 621302400
+          }
+        }
+      },
+      "total_demand_misses": 2500,
+      "total_saved_demand_misses": 334,
+      "total_saved_fraction": 0.1336
+    }
+  ],
+  "schema": "c106-fixed-trace-l2-v1",
+  "source_decision_sha256": "40435abc0d827f4ae42a47295f87e304a673fb8b05b3833b33b45cda10189bd5",
+  "status": "MODEL_FREE_FIXED_TRACE_SCREEN",
+  "trace_events": 41842,
+  "trace_sha256": "bb3ae9352749283f76ce12b65ea76801916396f87849d609169215fefdf4e40d",
+  "wait_intervals": {
+    "decode": {
+      "sum_s": 8.654444,
+      "union_s": 8.654444,
+      "wait_intervals": 745
+    },
+    "prefill": {
+      "sum_s": 25.788971,
+      "union_s": 25.788971,
+      "wait_intervals": 612
+    }
+  }
+}

@@ -1,0 +1,33 @@
+{
+  "schema": "c6-d1-local-v1",
+  "status": "DISPATCH_PATCH_QUALIFIED_LOCAL",
+  "patch_sha": "c4104706a123ea92fb47bfab9a1f95a4e6cf106d",
+  "replay_binary_sha256": "4fc543a036ee833572c28f122a9430f92230b6c098c75fadbca1fb647b187b01",
+  "replays_sha256": {
+    "a32_off": "c4383d78d9df915368d23f92c6efad750c50b6f961964adb5d52beb43c13037d",
+    "a32_on": "c4383d78d9df915368d23f92c6efad750c50b6f961964adb5d52beb43c13037d",
+    "b32_on": "c4383d78d9df915368d23f92c6efad750c50b6f961964adb5d52beb43c13037d",
+    "b64_off": "dbbf34cf88ffe4e6647fa8a0a92615803ef0931671336881f7b08944698dcea0",
+    "b64_on": "047a6954036ba3377ef12937b7584ea1ca9e4ae9e3fc81cc62a7da5c7285f6ec"
+  },
+  "first32_b64_on_equals_a32": true,
+  "fixture_bitwise_equal_on_off": {
+    "nq1-nkv256-f16": true,
+    "nq1-nkv512-f16": true,
+    "nq31-nkv256-f16": true,
+    "nq32-nkv256-f16": true,
+    "nq63-nkv256-f16": true,
+    "nq64-nkv256-f16": false,
+    "nq64-nkv256-f32": true,
+    "nq65-nkv256-f16": false
+  },
+  "negative_cases": [
+    "mode=0 abort before output",
+    "source missing",
+    "source truncated",
+    "source nonfinite",
+    "output no-replace",
+    "workspace absent abort before output"
+  ],
+  "scope": "native CPU Flash; captured layer0 inputs plus model-free dispatch fixtures"
+}

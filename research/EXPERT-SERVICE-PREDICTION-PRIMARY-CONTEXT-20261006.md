@@ -1,0 +1,7 @@
+# Primary context for the conditional activation module
+
+SOURCE_AUDITED research context (external paper, not target measurement): [Pre-Attention Expert Prediction](https://arxiv.org/html/2511.10676v1) motivates same-layer activation features and lightweight learned ranking approximations; it also discusses weaker cross-layer prediction and the cost of predictors. Its evaluated models/devices and reported accuracy are not GPT-OSS120B on this laptop. Its chosen network sizes/accuracy are not imported as our parameters or economic gate.
+
+[ProMoE](https://arxiv.org/html/2410.22134v2) is relevant primary context for proactive exact-byte service. Its serving results do not establish our available lead, storage bandwidth, residency or CPU contention. Both pages were read via primary arXiv sources in this active session. BROAD_NOVELTY_NO_GO / ENGINEERING_AND_MEASUREMENT_GO remains.
+
+Local decision is independent of their reported speed: C294 observes actual feature-ready/read/set/commit; C295 first tests the two frozen windows with four workers, bounded RAM staging and causal releases. If only the two-layer window has economic margin, the first movement-only estimator applies the existing destination norm/gate/bias to the earlier raw residual. Original routing remains authoritative. Any auxiliary learned improvement must obey this order's task-separated data, fixed small architecture and heldout net-service gate; high recall of resident experts is insufficient.

@@ -1,0 +1,82 @@
+{
+  "control_peak_mib": 5752.0,
+  "decision": "P14 may proceed to bounded init and short forward after own numeric profile freeze; P16 is not admitted by this static bound alone",
+  "dense_per_layer_bytes": 34155008,
+  "evidence_class": "TENSOR_ACCOUNTING_PLUS_MEASURED_P12_PEAK",
+  "gpu_total_stop_mib": 7676.0,
+  "inventory_sha256": "2c8ca725f50000bf3177712cfa30d29a809f77f25826b425ea67d8fcbffd6d82",
+  "model_loaded": false,
+  "pool_per_layer_bytes": 423014400,
+  "profiles": {
+    "P12": {
+      "cpu_expert_pools_bytes": 10575360000,
+      "cpu_layer_range": [
+        0,
+        24
+      ],
+      "cpu_layers": 25,
+      "delta_gpu_pool_and_dense_bytes_from_P12": 0,
+      "gpu_expert_pools_bytes": 4653158400,
+      "gpu_layer_range": [
+        25,
+        35
+      ],
+      "gpu_layers": 11,
+      "gpu_nonstream_layer_gguf_bytes": 375705088,
+      "ngl": 12,
+      "observed_P12_peak_plus_known_delta_mib_before_new_workspace": 5752.0,
+      "remaining_mib_before_new_workspace": 1924.0,
+      "slots": 32,
+      "static_admission": "CONTROL"
+    },
+    "P14": {
+      "cpu_expert_pools_bytes": 9729331200,
+      "cpu_layer_range": [
+        0,
+        22
+      ],
+      "cpu_layers": 23,
+      "delta_gpu_pool_and_dense_bytes_from_P12": 914338816,
+      "gpu_expert_pools_bytes": 5499187200,
+      "gpu_layer_range": [
+        23,
+        35
+      ],
+      "gpu_layers": 13,
+      "gpu_nonstream_layer_gguf_bytes": 444015104,
+      "ngl": 14,
+      "observed_P12_peak_plus_known_delta_mib_before_new_workspace": 6623.9814453125,
+      "remaining_mib_before_new_workspace": 1052.0185546875,
+      "slots": 32,
+      "static_admission": "BOUNDED_FORWARD_REQUIRED"
+    },
+    "P16": {
+      "cpu_expert_pools_bytes": 8883302400,
+      "cpu_layer_range": [
+        0,
+        20
+      ],
+      "cpu_layers": 21,
+      "delta_gpu_pool_and_dense_bytes_from_P12": 1828677632,
+      "gpu_expert_pools_bytes": 6345216000,
+      "gpu_layer_range": [
+        21,
+        35
+      ],
+      "gpu_layers": 15,
+      "gpu_nonstream_layer_gguf_bytes": 512325120,
+      "ngl": 16,
+      "observed_P12_peak_plus_known_delta_mib_before_new_workspace": 7495.962890625,
+      "remaining_mib_before_new_workspace": 180.037109375,
+      "slots": 32,
+      "static_admission": "BOUNDED_FORWARD_REQUIRED"
+    }
+  },
+  "schema": "c59-placement-accounting-v1",
+  "unknown": [
+    "new CUDA graph/workspace/allocator reserve",
+    "routing and arithmetic under P14/P16",
+    "latency and thermal behavior",
+    "CPU/GPU cgroup charge shifts"
+  ]
+}

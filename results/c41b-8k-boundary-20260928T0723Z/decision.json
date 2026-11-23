@@ -1,0 +1,41 @@
+{
+  "C15_model": "NOT_RUN",
+  "M3": "PARTIAL",
+  "M4": "NOT_RUN",
+  "closed_utc": "2026-09-28T07:39:52.568713+00:00",
+  "default_changed": false,
+  "elapsed_s": 784.7849397280079,
+  "failure": "monitor rejected impossible policy19 frequency 21786195 kHz before response",
+  "last_valid_maxima": {
+    "cgroup_peak_bytes": 13069123584,
+    "cpu_c": 95.125,
+    "gpu_c": 63.0,
+    "gpu_total_mib": 5746.0,
+    "nvme_c": 45.85,
+    "oom_events": 0,
+    "processor_cooling_max_state": 0,
+    "rss_bytes": 13274820608,
+    "swap_bytes": 0
+  },
+  "last_valid_sample_elapsed_s": 778.199925398003,
+  "measurement_commit": "cc226d1a0a030227aba817f062023811aaec940d",
+  "next_action": "C41c new identity after bounded one-reread high-frequency telemetry repair and model-free mutants; same workload/guards; fresh preflight",
+  "official_prompt_tokens": 7936,
+  "old_failures_preserved": [
+    "C41 prelaunch failure",
+    "C38 P8 telemetry failure",
+    "C39 P8 orchestrator interruption",
+    "C9-C17 CPU95 protocol thermal failures"
+  ],
+  "physical_budget_charge_s": 1087.8502792400104,
+  "prompt_completion": "INCOMPLETE",
+  "raw_sha256": "b2af4c50aa01e43dfaf822cc953b95b1bb422b0785b719adddfe60a301f69b1a",
+  "response": "NOT_RUN_TO_COMPLETION",
+  "run_id": "c41b-p12-boundary7936",
+  "schema": "c41b-decision-v1",
+  "status": "FAIL_RESOURCES_OR_EVIDENCE",
+  "stop_reasons": [
+    "MONITOR_ERROR:GateError:CPU effective frequency out of range policy19: first=21786195",
+    "RUN_ERROR:GateError:incomplete stream completion/usage/timings fence"
+  ]
+}

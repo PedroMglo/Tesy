@@ -1,0 +1,135 @@
+{
+  "run_id": "cand20b-gpu8-prefix-stream-direct01",
+  "started_utc": "2026-09-26T00:11:11.600461+00:00",
+  "model_id": "gpt-oss-20b-mxfp4-gguf",
+  "backend": "streaming",
+  "backend_sha": "1248fd8fa8cfebaece5ea992e4d951c1e18bb9d5",
+  "binary_sha256": "e1dfe79e437716b128105bef2cce8d3666320bd48c50be48675723002a2701e7",
+  "variant": "gpu8-stream16-no-repack-ub32-directloader",
+  "workload": "harmony-prefix-7plus5",
+  "cache_condition": "warm-after-prior-runs-loader-direct",
+  "command": [
+    "tools/logits_probe_streaming_cuda",
+    "/home/pmglo/.local/share/tesy/models/gpt-oss-20b/gpt-oss-20b-mxfp4.gguf",
+    "stream",
+    "8",
+    "results/cand20b-gpu8-prefix-stream-direct01.f32",
+    "no-repack",
+    "32",
+    "direct-loader"
+  ],
+  "explicit_env": {
+    "LLAMA_MOE_STREAM_NO_PRELOAD": "1"
+  },
+  "stdin_file": null,
+  "stdin_sha256": null,
+  "limits": {
+    "timeout_s": 180,
+    "max_rss_gib": 11.5,
+    "min_available_gib": 6.0,
+    "max_gpu_mib": 7000.0
+  },
+  "cgroup_start": {
+    "path": "/user.slice/user-1000.slice/user@1000.service/app.slice/run-p80758-i36342.scope",
+    "memory_max": 12884901888,
+    "swap_max": 0,
+    "memory_current": 11845632,
+    "swap_current": 0,
+    "memory_stat": {
+      "anon": 10547200,
+      "file": 147456,
+      "kernel": 270336,
+      "shmem": 0,
+      "file_mapped": 0
+    },
+    "events": {
+      "low": 0,
+      "high": 0,
+      "max": 0,
+      "oom": 0,
+      "oom_kill": 0,
+      "oom_group_kill": 0,
+      "sock_throttled": 0
+    }
+  },
+  "publication": "local only; stdout/stderr are untracked",
+  "samples_path": "/home/pmglo/Projects/Tesy/tesy-scale-lab/results/cand20b-gpu8-prefix-stream-direct01.samples.jsonl",
+  "cgroup_limit_enforced": true,
+  "ended_utc": "2026-09-26T00:11:16.702018+00:00",
+  "elapsed_s": 5.102,
+  "returncode": 0,
+  "stop_reason": null,
+  "maxima": {
+    "rss_bytes": 5491208192,
+    "swap_bytes": 0,
+    "cgroup_memory_bytes": 5257035776,
+    "cgroup_file_bytes": 1397805056,
+    "gpu_used_mib": 2427.0,
+    "gpu_temperature_c": 50.0
+  },
+  "last_sample": {
+    "elapsed_s": 4.101,
+    "proc": {
+      "VmHWM": 5491208192,
+      "VmRSS": 5491208192,
+      "VmSwap": 0,
+      "rchar": 6219430105,
+      "syscr": 4701,
+      "read_bytes": 5577400320
+    },
+    "mem_available_bytes": 21472243712,
+    "gpu": {
+      "used_mib": 2427.0,
+      "temperature_c": 50.0,
+      "power_w": 11.39
+    },
+    "cgroup": {
+      "path": "/user.slice/user-1000.slice/user@1000.service/app.slice/run-p80758-i36342.scope",
+      "memory_max": 12884901888,
+      "swap_max": 0,
+      "memory_current": 5257035776,
+      "swap_current": 0,
+      "memory_stat": {
+        "anon": 4091338752,
+        "file": 1145786368,
+        "kernel": 17403904,
+        "shmem": 1141395456,
+        "file_mapped": 1143885824
+      },
+      "events": {
+        "low": 0,
+        "high": 0,
+        "max": 0,
+        "oom": 0,
+        "oom_kill": 0,
+        "oom_group_kill": 0,
+        "sock_throttled": 0
+      }
+    }
+  },
+  "stdout_path": "/home/pmglo/Projects/Tesy/tesy-scale-lab/results/cand20b-gpu8-prefix-stream-direct01.stdout",
+  "stderr_path": "/home/pmglo/Projects/Tesy/tesy-scale-lab/results/cand20b-gpu8-prefix-stream-direct01.stderr",
+  "cgroup_end": {
+    "path": "/user.slice/user-1000.slice/user@1000.service/app.slice/run-p80758-i36342.scope",
+    "memory_max": 12884901888,
+    "swap_max": 0,
+    "memory_current": 19468288,
+    "swap_current": 0,
+    "memory_stat": {
+      "anon": 10579968,
+      "file": 5201920,
+      "kernel": 237568,
+      "shmem": 0,
+      "file_mapped": 0
+    },
+    "events": {
+      "low": 0,
+      "high": 0,
+      "max": 0,
+      "oom": 0,
+      "oom_kill": 0,
+      "oom_group_kill": 0,
+      "sock_throttled": 0
+    }
+  }
+}

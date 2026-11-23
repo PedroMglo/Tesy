@@ -1,0 +1,101 @@
+{
+  "backends": {
+    "C123trace": {
+      "binary": "/home/pmglo/Projects/Tesy/tesy-scale-lab/backends/streaming-c122-trace/build-c123-cuda/bin/llama-server",
+      "binary_sha256": "a31bcc8c6c1a8ddd4563686208e2c6cf3492d994cd9d607c80b564a9847335d0",
+      "dirty": "",
+      "flags": [
+        "CMAKE_CUDA_COMPILER:STRING=/usr/local/cuda/bin/nvcc",
+        "CMAKE_CXX_COMPILER:STRING=/usr/bin/g++-15",
+        "CMAKE_CXX_FLAGS:STRING=-DTESY_C47_CPU_SKIP_PARKED -DTESY_C84_EXPERT_TRACE",
+        "CMAKE_C_COMPILER:STRING=/usr/bin/gcc-15",
+        "CMAKE_C_FLAGS:STRING=-DTESY_C47_CPU_SKIP_PARKED"
+      ],
+      "link_time_libraries": {
+        "build-c123-cuda/bin/libggml-base.so.0.15.3": "6ed6609cc6862c3d971cef8bacde6f0c0dd6275a4bb3a263a28bac5063826195",
+        "build-c123-cuda/bin/libggml-cpu.so.0.15.3": "29ae0cf04ee2306021644935cdb04a1faf54a161db4a744ebd45da0dccaec161",
+        "build-c123-cuda/bin/libggml-cuda.so.0.15.3": "03b5415261b82834ec52383c33b3fa44ed0935f605a76f7024eb872bfb9343ae",
+        "build-c123-cuda/bin/libggml.so.0.15.3": "337038868d21e2588a32bfbd4f5ba1051a1dff24aec4e738b8a7a5e549904ce7",
+        "build-c123-cuda/bin/libllama-common.so.0.0.5": "7fde4920bd61c7ff7282b13efaa58ee630b85ade775e4ef73a7ebf98dde37ffa",
+        "build-c123-cuda/bin/libllama-server-impl.so": "aa0a93d439c4d08e0ef09a0975d211106f95dcf06ca9b21bd3709354b3acca31",
+        "build-c123-cuda/bin/libllama.so.0.0.5": "9048f0274195662f2833c4178dc9ffa8b5a6dd03fa05cd687d4fda8951314907",
+        "build-c123-cuda/bin/libmtmd.so.0.0.5": "1cce7c4a8a9c6e3e065964f847ca4c72b7259858fdd7ac44eed8126dddccce3d"
+      },
+      "loaded_libraries_authority": "actual per-arm process mappings retained in C141/C142 raw; no model loaded for this end snapshot",
+      "path": "/home/pmglo/Projects/Tesy/tesy-scale-lab/backends/streaming-c122-trace",
+      "source_sha": "ba058e62c33f6e1c6d8581c4685d9abb64542027",
+      "tree_sha": "7f1f13ab8fe5db05a595de0c73eb68763bbcdaff"
+    },
+    "C35": {
+      "binary": "/tmp/tesy-c35-backend-20260928/build-c35-gcc15/bin/llama-server",
+      "binary_sha256": "2c91e0572ad71e4977e3e9134c9f8339256e6481a3f316f6fef9493a370d4822",
+      "dirty": "",
+      "flags": [
+        "CMAKE_CUDA_COMPILER:STRING=/usr/local/cuda/bin/nvcc",
+        "CMAKE_CXX_COMPILER:STRING=/usr/bin/g++-15",
+        "CMAKE_CXX_FLAGS:STRING=",
+        "CMAKE_C_COMPILER:STRING=/usr/bin/gcc-15",
+        "CMAKE_C_FLAGS:STRING="
+      ],
+      "link_time_libraries": {
+        "build-c35-gcc15/bin/libggml-base.so.0.15.3": "6666b1fa65172a992429c516864dd1fb44a2ae4370ec2d044ed684d0b33d6f9e",
+        "build-c35-gcc15/bin/libggml-cpu.so.0.15.3": "b2ed71c16ad669536840c63a999305a3c6ae0e2ab278e9a891c1d0fab96b8a2b",
+        "build-c35-gcc15/bin/libggml-cuda.so.0.15.3": "4d4ef9068b1057abf9e4a73a872f48703723d30591ebafb962bfb0612df70dcc",
+        "build-c35-gcc15/bin/libggml.so.0.15.3": "45bd5d9edee4c8a3eeec23166478ef7ec495dc55785e3942aa72afddc0125417",
+        "build-c35-gcc15/bin/libllama-common.so.0.0.2": "e64791fe0c072c3710c2f9ed92f1e3d9487f2c34f626086b196f60077bd1d374",
+        "build-c35-gcc15/bin/libllama-server-impl.so": "3cbba6ad27138ef34adf0a2c8e8f5b204ea7c73111e2bef4acc8288cef5f6e05",
+        "build-c35-gcc15/bin/libllama.so.0.0.2": "4ba0477592acb4a8808c259d836aea42f20aeef88ad7c3b4ea41572dae8418c6",
+        "build-c35-gcc15/bin/libmtmd.so.0.0.2": "48efbf1711ec3b170d8651ab1149f9fe7549972d2e420fa40f2ecae39670a253"
+      },
+      "loaded_libraries_authority": "actual per-arm process mappings retained in C141/C142 raw; no model loaded for this end snapshot",
+      "path": "/tmp/tesy-c35-backend-20260928",
+      "source_sha": "c3759bad92c0e6f71bb936afea9b0a162fb83f76",
+      "tree_sha": "b1e1647729c6e81ae8b2a4fa8119c626e674f6a1"
+    },
+    "C75": {
+      "binary": "/tmp/tesy-c75-backend-20260928/build-c75-cuda/bin/llama-server",
+      "binary_sha256": "2db3a91973dc00b3ae6f9f43bcaa5135d830b4aeaae923f7612d3232b6624886",
+      "dirty": "",
+      "flags": [
+        "CMAKE_CUDA_COMPILER:STRING=/usr/local/cuda/bin/nvcc",
+        "CMAKE_CXX_COMPILER:UNINITIALIZED=g++-15",
+        "CMAKE_CXX_FLAGS:STRING=-DTESY_C47_CPU_SKIP_PARKED",
+        "CMAKE_C_COMPILER:UNINITIALIZED=gcc-15",
+        "CMAKE_C_FLAGS:STRING=-DTESY_C47_CPU_SKIP_PARKED"
+      ],
+      "link_time_libraries": {
+        "build-c75-cuda/bin/libggml-base.so.0.15.3": "c91a937208a64dd1beabf13de83a5896729f3983b51e8636eaa44b111bb6f229",
+        "build-c75-cuda/bin/libggml-cpu.so.0.15.3": "ec5de96d7cacaf0a96e7d678ec28f337c1082c57ae6fbfbbbbcbaaf945cf5697",
+        "build-c75-cuda/bin/libggml-cuda.so.0.15.3": "b119db0b5abd29cba9101aaba7c2cc0607a521585028a102e459ac7e318d575d",
+        "build-c75-cuda/bin/libggml.so.0.15.3": "c8e142ca0fd311d472d17578f58d5a9694d95e256131b13456b8f9d11e867951",
+        "build-c75-cuda/bin/libllama-common.so.0.0.3": "69f8af6fc47def362e0a372b7276628fccb924cf42feedc60e1147041b2d5256",
+        "build-c75-cuda/bin/libllama-server-impl.so": "8f844115e6e10a166039de052bd735af27d729476ba4e3939bb050547d6456b5",
+        "build-c75-cuda/bin/libllama.so.0.0.3": "d44895329a013d9fe674a31b04d52de5ae9c66efcfe8b5e7fe50d797f4b13a11",
+        "build-c75-cuda/bin/libmtmd.so.0.0.3": "f6d3bee1fa64558a2813bf2532637556430d2db614c7d409d293f562b33144be"
+      },
+      "loaded_libraries_authority": "actual per-arm process mappings retained in C141/C142 raw; no model loaded for this end snapshot",
+      "path": "/tmp/tesy-c75-backend-20260928",
+      "source_sha": "27d2e42d8c994507ee6d71acc7c58d3eddd3f7a5",
+      "tree_sha": "45b2b5b97353845d9d982a06f20c4f2f420528e2"
+    }
+  },
+  "branch": "campaign/120b-capacity-and-mechanisms-20260928-1403utc",
+  "evidence": "MEDIDO_NO_TARGET end snapshot, not retrospective initial snapshot",
+  "git_status_before_closure": "?? results/c145-post-c137-closure-20260930T0019Z/",
+  "gpu": "GPU-83d90c55-1d92-75da-fc30-7771a85f2521, 8188, 12, 44, 615.71.09",
+  "head_before_closure": "cc60a30c8fb60dbb8d159ff6e7ff64b0770a69b3",
+  "memory": "MemTotal:       31932400 kB\nMemFree:        16333708 kB\nMemAvailable:   25570496 kB\nBuffers:             616 kB\nCached:          8962456 kB\nSwapCached:         1416 kB\nActive:          1580676 kB\nInactive:        8300856 kB\nActive(anon):     710036 kB\nInactive(anon):   394700 kB\nActive(file):     870640 kB\nInactive(file):  7906156 kB\nUnevictable:         284 kB\nMlocked:             284 kB\nSwapTotal:      15965692 kB\nSwapFree:        8356880 kB\nZswap:                 0 kB\nZswapped:              0 kB\nDirty:              1864 kB\nWriteback:             0 kB\nAnonPages:        917308 kB\nMapped:           502216 kB\nShmem:            186108 kB\nKReclaimable:     923448 kB\nSlab:            1383988 kB\nSReclaimable:     587308 kB\nSUnreclaim:       796680 kB\nKernelStack:       24528 kB\nPageTables:        90180 kB\nSecPageTables:      6876 kB\nNFS_Unstable:          0 kB\nBounce:                0 kB\nWritebackTmp:          0 kB\nCommitLimit:    31931892 kB\nCommitted_AS:   18677512 kB\nVmallocTotal:   34359738367 kB\nVmallocUsed:      225712 kB\nVmallocChunk:          0 kB\nPercpu:            39072 kB\nHardwareCorrupted:     0 kB\nAnonHugePages:         0 kB\nShmemHugePages:        0 kB\nShmemPmdMapped:        0 kB\nFileHugePages:         0 kB\nFilePmdMapped:         0 kB\nCmaTotal:              0 kB\nCmaFree:               0 kB\nUnaccepted:            0 kB\nBalloon:               0 kB\nGPUActive:        544404 kB\nGPUReclaim:        44800 kB\nHugePages_Total:       0\nHugePages_Free:        0\nHugePages_Rsvd:        0\nHugePages_Surp:        0\nHugepagesize:       2048 kB\nHugetlb:               0 kB\nDirectMap4k:    17101040 kB\nDirectMap2M:    15529984 kB\nDirectMap1G:     1048576 kB\n",
+  "model_processes": [],
+  "own_scopes": "UNIT LOAD ACTIVE SUB DESCRIPTION\n\n0 loaded units listed. Pass --all to see loaded but inactive units, too.\nTo show all installed unit files use 'systemctl list-unit-files'.",
+  "ports": "State  Recv-Q Send-Q               Local Address:Port  Peer Address:PortProcess                              \nLISTEN 0      4096                       0.0.0.0:5355       0.0.0.0:*                                        \nLISTEN 0      128                      127.0.0.1:35609      0.0.0.0:*    users:((\"codex\",pid=38090,fd=38))   \nLISTEN 0      128                        0.0.0.0:22         0.0.0.0:*                                        \nLISTEN 0      4096                100.105.242.38:44927      0.0.0.0:*                                        \nLISTEN 0      4096                     127.0.0.1:8384       0.0.0.0:*    users:((\"syncthing\",pid=1829,fd=22))\nLISTEN 0      5                          0.0.0.0:8767       0.0.0.0:*    users:((\"python\",pid=1986,fd=5))    \nLISTEN 0      4096                 127.0.0.53%lo:53         0.0.0.0:*                                        \nLISTEN 0      4096                    127.0.0.54:53         0.0.0.0:*                                        \nLISTEN 0      10                         0.0.0.0:27500      0.0.0.0:*                                        \nLISTEN 0      4096                          [::]:5355          [::]:*                                        \nLISTEN 0      4096   [fd7a:115c:a1e0::1a33:f227]:46223         [::]:*                                        \nLISTEN 0      4096                             *:22000            *:*    users:((\"syncthing\",pid=1829,fd=18))\nLISTEN 0      128                           [::]:22            [::]:*                                        \nLISTEN 0      4096                             *:9090             *:*                                        \nLISTEN 0      4096                             *:11434            *:*",
+  "pressure": "some avg10=0.00 avg60=0.00 avg300=0.00 total=19105017\nfull avg10=0.00 avg60=0.00 avg300=0.00 total=19019675\n",
+  "publication": "LOCAL_ONLY; remote writes not performed",
+  "remote_branch_sha": "9f335df9dc04184242a0a6c52dfca4784912a5fa",
+  "remote_main_sha": "7a7d3dcbd1ff8e594ac57459c3db06306083c3ca",
+  "remotes": "origin\thttps://github.com/PedroMglo/Tesy.git (fetch)\norigin\thttps://github.com/PedroMglo/Tesy.git (push)",
+  "schema": "c145-end-inventory-v1",
+  "service_default_changed": false,
+  "tree_before_closure": "cef225dd8d2b28c530c8415e90e494a15d1b68a2",
+  "utc": "2026-09-30T00:20:50.290670+00:00",
+  "worktrees": "worktree /home/pmglo/Projects/Tesy/tesy-scale-lab\nHEAD 0047a050803c29ea928022e7d3e8ba035fedb866\nbranch refs/heads/campaign/c6-attn-dispatch-compat-20260927-0301utc\n\nworktree /home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc\nHEAD cc60a30c8fb60dbb8d159ff6e7ff64b0770a69b3\nbranch refs/heads/campaign/120b-capacity-and-mechanisms-20260928-1403utc"
+}

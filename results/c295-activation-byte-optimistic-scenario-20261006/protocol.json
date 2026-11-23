@@ -1,0 +1,20 @@
+{
+ "schema":"c295-scoped-optimistic-activation-byte-scenario-v1",
+ "publication":"LOCAL_ONLY",
+ "input_family":"c294-feature-ready-service-window-20261006",
+ "cases":["nominal153","code153"],
+ "points":["CPU same-layer attn_norm","CPU attn_norm two layers earlier, same token, destinations2-24"],
+ "arena_bytes":134217728,
+ "workers":4,
+ "predictor_cost_us":0,
+ "false_positives":0,
+ "service_sensitivity":[0.8,1.0,1.2],
+ "service":"Observed original3component read durations and nativecopy/publication durations per(slot,expert,generation). Read ahead to separate RAMstaging; actual nativecopy only after authority. Wholeexpertservice nonpreemptible; demand priority; staging including running/READY<=arena.",
+ "dependency":"All36 layers/32calls recompute feature release after previous readiness wait accelerates; actual nonwait/attention/compute retained. No future token oracle. GPU demand service retained, CPU forecastonly. Initial LOADing/pending warm state explicit, never empty/zero.",
+ "scope":"Fixed observed demandedgeneration stream/residency and original arithmetic. No benefit from altered cache/victims granted; no new primary policy replay. Existing journal/union/strictinput validators reused. Observed services are a conditional assumption, not physicalroofline.",
+ "gate":">=20% netdecode opportunity BOTH cases at frozenpoint or >=20%requestscope withotherprotection admits features. No usefulrequest claim from teacherforced cost. Require sourcecausality/resources/evidence; replaybaseline within5% observeddecode for quantitativeadmission; otherwiseINCONCLUSIVE and fix missed causalwork before claiming any benefit. Sensitivity crossing permits one bounded oracle servicecanary, never realized predictor.",
+ "missing":"Missing mandatoryevidence invalidates only dependent bound; repair analyzer/reuse raw, do not rerun valid families. No training or staging runtime yet.",
+ "tests":"Nonpreemption,4workers/demandpriority,finitebounded staging includes running/ready,late demand/fullcopy beforeDONE; actual Service tests passed.",
+ "physical_s":0,
+ "source_version":"expert_prediction_scenario.py + strict expert_service_window_gate.py + c122_trace_validate.union_us"
+}

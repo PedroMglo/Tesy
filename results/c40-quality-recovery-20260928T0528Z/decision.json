@@ -1,0 +1,36 @@
+{
+  "C15_model": "NOT_RUN",
+  "M3": "PARTIAL_C37_SYNTHETIC_SESSION",
+  "M4": "NOT_RUN",
+  "P12": "PASS_12_OF_12",
+  "P8": "PASS_12_OF_12",
+  "claims": [
+    "P12 and P8 each solved the same 12 synthetic tasks under the frozen cap",
+    "P12 did not lose a task solved by P8 in this suite",
+    "one-arm elapsed times are descriptive only"
+  ],
+  "closed_utc": "2026-09-28T07:12:43.372523+00:00",
+  "default_changed": false,
+  "measurement_commits": {
+    "p12": "7d9fc01cfaab7a1ddd7bb5d8765e738ae918b0ec",
+    "p8": "7372cab03ae8c600921650f18f6c1f0a66c360d6"
+  },
+  "next_action": "C41 prospective 7936-input+256-output 8K boundary and retrieval/continuity gate under E18; then choose session or wave bottleneck test",
+  "no_loss_vs_p8": true,
+  "not_run": [
+    "7936+256 8K context boundary",
+    "true assistant-history continuity",
+    "M4 candidate thresholds",
+    "C15 full-model critical-path diagnostic"
+  ],
+  "old_failures_preserved": [
+    "C38 P8 FAIL_TELEMETRY",
+    "C39 P8 FAIL_ORCHESTRATOR_INTERRUPTION",
+    "six C9-C17 CPU95 FAIL_PROTOCOL_THERMAL_GUARD"
+  ],
+  "physical_budget_consumed_s": 43504.96967772498,
+  "physical_budget_remaining_s": 14095.030322275023,
+  "schema": "c40-decision-v1",
+  "status": "PROFILE_CANDIDATE_TESTED_SCOPE",
+  "stock20": "PASS_11_OF_12"
+}

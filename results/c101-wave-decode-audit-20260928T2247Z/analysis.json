@@ -1,0 +1,182 @@
+{
+  "build_relevant_delta": {
+    "CMAKE_CXX_FLAGS": {
+      "candidate": "-DTESY_C47_CPU_SKIP_PARKED",
+      "control": ""
+    },
+    "CMAKE_C_FLAGS": {
+      "candidate": "-DTESY_C47_CPU_SKIP_PARKED",
+      "control": ""
+    },
+    "LLAMA_BUILD_TESTS": {
+      "candidate": "ON",
+      "control": "OFF"
+    }
+  },
+  "c100_decision_sha256": "c4fdb9019cbc901f5094f58d829bbbb8a0c9de2dfb15d2aa51d5a8d08c1d0020",
+  "c100_manifest_sha256": "8ba4f5b5e34e86b937ccedd1e38223fb5a93421e2c1c624ec5180562be5a80cf",
+  "default_changed": false,
+  "evidence_class": [
+    "SOURCE_AUDITED",
+    "MEDIDO_NO_TARGET_C100_RAW_REUSE"
+  ],
+  "inference": "C100 cannot attribute decode regression to wave skip versus candidate build or uncontrolled runtime state; C100 did not capture CPU clocks or per-request wave counts.",
+  "next_discriminant": "two new alternating C75 OFF/ON server pairs on the identical two-request input, same binary/libraries; freeze diagnostic rule and matched starts before model",
+  "per_request": [
+    {
+      "arm": "control",
+      "cpu_clock_samples": "NOT_CAPTURED_C100",
+      "decode_s": 24.766285,
+      "decode_tokens_per_s": 3.1090654088814698,
+      "pair": 1,
+      "request": "c97-code",
+      "run_id": "c100-p1-control",
+      "sampled_cpu_c_max": 95.125,
+      "sampled_gpu_c_max": 63.0,
+      "wave_counts": "NOT_CAPTURED_C100"
+    },
+    {
+      "arm": "control",
+      "cpu_clock_samples": "NOT_CAPTURED_C100",
+      "decode_s": 20.505125,
+      "decode_tokens_per_s": 2.926097743856719,
+      "pair": 1,
+      "request": "c97-correction",
+      "run_id": "c100-p1-control",
+      "sampled_cpu_c_max": 86.0,
+      "sampled_gpu_c_max": 55.0,
+      "wave_counts": "NOT_CAPTURED_C100"
+    },
+    {
+      "arm": "candidate",
+      "cpu_clock_samples": "NOT_CAPTURED_C100",
+      "decode_s": 25.671058000000002,
+      "decode_tokens_per_s": 2.9994868150740026,
+      "pair": 1,
+      "request": "c97-code",
+      "run_id": "c100-p1-candidate",
+      "sampled_cpu_c_max": 95.0,
+      "sampled_gpu_c_max": 61.0,
+      "wave_counts": "NOT_CAPTURED_C100"
+    },
+    {
+      "arm": "candidate",
+      "cpu_clock_samples": "NOT_CAPTURED_C100",
+      "decode_s": 20.435769,
+      "decode_tokens_per_s": 2.9360284900460556,
+      "pair": 1,
+      "request": "c97-correction",
+      "run_id": "c100-p1-candidate",
+      "sampled_cpu_c_max": 64.75,
+      "sampled_gpu_c_max": 53.0,
+      "wave_counts": "NOT_CAPTURED_C100"
+    },
+    {
+      "arm": "control",
+      "cpu_clock_samples": "NOT_CAPTURED_C100",
+      "decode_s": 24.650517,
+      "decode_tokens_per_s": 3.1236667368883175,
+      "pair": 2,
+      "request": "c97-code",
+      "run_id": "c100-p2-control",
+      "sampled_cpu_c_max": 95.125,
+      "sampled_gpu_c_max": 64.0,
+      "wave_counts": "NOT_CAPTURED_C100"
+    },
+    {
+      "arm": "control",
+      "cpu_clock_samples": "NOT_CAPTURED_C100",
+      "decode_s": 18.868406,
+      "decode_tokens_per_s": 3.1799188548306625,
+      "pair": 2,
+      "request": "c97-correction",
+      "run_id": "c100-p2-control",
+      "sampled_cpu_c_max": 86.625,
+      "sampled_gpu_c_max": 56.0,
+      "wave_counts": "NOT_CAPTURED_C100"
+    },
+    {
+      "arm": "candidate",
+      "cpu_clock_samples": "NOT_CAPTURED_C100",
+      "decode_s": 26.958527999999998,
+      "decode_tokens_per_s": 2.8562390350096267,
+      "pair": 2,
+      "request": "c97-code",
+      "run_id": "c100-p2-candidate",
+      "sampled_cpu_c_max": 95.0,
+      "sampled_gpu_c_max": 62.0,
+      "wave_counts": "NOT_CAPTURED_C100"
+    },
+    {
+      "arm": "candidate",
+      "cpu_clock_samples": "NOT_CAPTURED_C100",
+      "decode_s": 20.607686,
+      "decode_tokens_per_s": 2.9115350457106146,
+      "pair": 2,
+      "request": "c97-correction",
+      "run_id": "c100-p2-candidate",
+      "sampled_cpu_c_max": 65.125,
+      "sampled_gpu_c_max": 54.0,
+      "wave_counts": "NOT_CAPTURED_C100"
+    },
+    {
+      "arm": "control",
+      "cpu_clock_samples": "NOT_CAPTURED_C100",
+      "decode_s": 24.361493,
+      "decode_tokens_per_s": 3.1607258225101393,
+      "pair": 3,
+      "request": "c97-code",
+      "run_id": "c100-p3-control",
+      "sampled_cpu_c_max": 95.125,
+      "sampled_gpu_c_max": 64.0,
+      "wave_counts": "NOT_CAPTURED_C100"
+    },
+    {
+      "arm": "control",
+      "cpu_clock_samples": "NOT_CAPTURED_C100",
+      "decode_s": 18.705881,
+      "decode_tokens_per_s": 3.2075474018037426,
+      "pair": 3,
+      "request": "c97-correction",
+      "run_id": "c100-p3-control",
+      "sampled_cpu_c_max": 86.25,
+      "sampled_gpu_c_max": 56.0,
+      "wave_counts": "NOT_CAPTURED_C100"
+    },
+    {
+      "arm": "candidate",
+      "cpu_clock_samples": "NOT_CAPTURED_C100",
+      "decode_s": 26.924112,
+      "decode_tokens_per_s": 2.859890049484269,
+      "pair": 3,
+      "request": "c97-code",
+      "run_id": "c100-p3-candidate",
+      "sampled_cpu_c_max": 95.125,
+      "sampled_gpu_c_max": 62.0,
+      "wave_counts": "NOT_CAPTURED_C100"
+    },
+    {
+      "arm": "candidate",
+      "cpu_clock_samples": "NOT_CAPTURED_C100",
+      "decode_s": 19.865827,
+      "decode_tokens_per_s": 3.0202618798603247,
+      "pair": 3,
+      "request": "c97-correction",
+      "run_id": "c100-p3-candidate",
+      "sampled_cpu_c_max": 65.375,
+      "sampled_gpu_c_max": 54.0,
+      "wave_counts": "NOT_CAPTURED_C100"
+    }
+  ],
+  "schema": "c101-wave-decode-audit-v1",
+  "source": {
+    "candidate_commit": "27d2e42d8c994507ee6d71acc7c58d3eddd3f7a5",
+    "candidate_tree": "45b2b5b97353845d9d982a06f20c4f2f420528e2",
+    "control_commit": "c3759bad92c0e6f71bb936afea9b0a162fb83f76",
+    "control_tree": "b1e1647729c6e81ae8b2a4fa8119c626e674f6a1",
+    "diff_sha256": "babd71a1ecc5e1ca52016c87a61764bd91bcc245977f53086fb471a9fcf94f4d",
+    "files_changed": 2,
+    "mechanism": "host CPU wave IDs set to -1 for parked pairs when env enabled; CPU MMID writes zero for -1; shared activation conversion remains"
+  },
+  "status": "SOURCE_AND_EXISTING_RAW_AUDITED"
+}

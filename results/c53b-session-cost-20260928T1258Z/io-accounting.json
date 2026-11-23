@@ -1,0 +1,535 @@
+{
+  "complete_incremental_io_windows": 18,
+  "evidence_class": "DIAGNOSTIC_PROC_IO_ACCOUNTING",
+  "incremental_decode_median_s": 16.288413000000002,
+  "incremental_decode_read_bytes_median": 23215801142.448914,
+  "incremental_decode_read_rate_median_gib_s": 1.3488616916181206,
+  "incremental_prefill_median_s": 25.924975,
+  "incremental_prefill_read_bytes_median": 16659425035.594116,
+  "incremental_prefill_read_rate_median_gib_s": 0.6033319737638387,
+  "incremental_prompt_new_ids": [
+    153
+  ],
+  "incremental_request_count": 19,
+  "incremental_request_read_bytes_median": 39955726499.971405,
+  "limits": [
+    "/proc/PID/io read_bytes and rchar are process accounting, not independent physical NVMe counters",
+    "linear interpolation at <=3 s samples is diagnostic; final clipped window excluded from I/O medians",
+    "phase boundary approximated by request start plus server prompt_ms",
+    "accounted bytes do not identify experts, destinations, overlap or exclusive critical-path wait",
+    "C46 cold513 wave intervals are a different workload and cannot be applied numerically to this warm 153-ID session"
+  ],
+  "parent_decision_sha256": "90049fa07f59b81b3c78a020c6d15d072a3e06f44db32547fe82328d756192a5",
+  "parent_manifest_sha256": "9b74df9783079eccdf39725168a71ae424aeea3cec675b12478810a48133e6ef",
+  "parent_raw_sha256": {
+    "c52b-p12-assistant-history01.json": "be2bf54e1fda221f2338fe12f7e29821cb991111aa21b9d17b60a05dd6db9ddb",
+    "c52b-p12-assistant-history01.samples.jsonl": "afbf404c03b7bcbcf3cf9fb7a29a29674be80a84225db048b9e6c91071ff6ea8"
+  },
+  "parent_run_id": "c52b-p12-assistant-history01",
+  "request_count": 20,
+  "rows": [
+    {
+      "cached_ids": 0,
+      "decode_s": 24.956970000000002,
+      "index": 0,
+      "prefill_s": 274.786426,
+      "prompt_ids": 2043,
+      "rchar": {
+        "decode": 38221297275.23176,
+        "prefill": 51921032761.92617,
+        "request": 90142330037.15793
+      },
+      "read_bytes": {
+        "decode": 38207513818.14753,
+        "prefill": 51935720093.12371,
+        "request": 90143233911.27124
+      },
+      "request_id": "c52b-turn00",
+      "request_wall_s": 299.75208610401023,
+      "syscr": {
+        "decode": 8665.999812441143,
+        "prefill": 11793.231194116077,
+        "request": 20459.23100655722
+      },
+      "terminal_endpoint_clipped": false
+    },
+    {
+      "cached_ids": 2044,
+      "decode_s": 13.792593,
+      "index": 1,
+      "prefill_s": 26.078914,
+      "prompt_ids": 2197,
+      "rchar": {
+        "decode": 20592657176.27539,
+        "prefill": 19218637727.63141,
+        "request": 39811294903.9068
+      },
+      "read_bytes": {
+        "decode": 20580153501.830963,
+        "prefill": 19230920748.56906,
+        "request": 39811074250.400024
+      },
+      "request_id": "c52b-turn01",
+      "request_wall_s": 39.88130201000604,
+      "syscr": {
+        "decode": 4669.019773028496,
+        "prefill": 4357.499982978723,
+        "request": 9026.51975600722
+      },
+      "terminal_endpoint_clipped": false
+    },
+    {
+      "cached_ids": 2198,
+      "decode_s": 13.170791,
+      "index": 2,
+      "prefill_s": 25.641359,
+      "prompt_ids": 2351,
+      "rchar": {
+        "decode": 19717292831.086243,
+        "prefill": 16725563936.008224,
+        "request": 36442856767.09447
+      },
+      "read_bytes": {
+        "decode": 19711168033.00406,
+        "prefill": 16732426360.146255,
+        "request": 36443594393.150314
+      },
+      "request_id": "c52b-turn02",
+      "request_wall_s": 38.822822656991775,
+      "syscr": {
+        "decode": 4470.5342667637815,
+        "prefill": 3792.3167666118316,
+        "request": 8262.851033375613
+      },
+      "terminal_endpoint_clipped": false
+    },
+    {
+      "cached_ids": 2352,
+      "decode_s": 15.134367000000001,
+      "index": 3,
+      "prefill_s": 25.215014,
+      "prompt_ids": 2505,
+      "rchar": {
+        "decode": 22846538261.22574,
+        "prefill": 16515054731.023254,
+        "request": 39361592992.24899
+      },
+      "read_bytes": {
+        "decode": 22839881704.589905,
+        "prefill": 16518263841.123718,
+        "request": 39358145545.71362
+      },
+      "request_id": "c52b-turn03",
+      "request_wall_s": 40.35992095900292,
+      "syscr": {
+        "decode": 5180.0446906450525,
+        "prefill": 3744.513929812754,
+        "request": 8924.558620457807
+      },
+      "terminal_endpoint_clipped": false
+    },
+    {
+      "cached_ids": 2506,
+      "decode_s": 14.750556000000001,
+      "index": 4,
+      "prefill_s": 25.089178,
+      "prompt_ids": 2659,
+      "rchar": {
+        "decode": 21841276851.648865,
+        "prefill": 16066222842.225616,
+        "request": 37907499693.87448
+      },
+      "read_bytes": {
+        "decode": 21831662721.327515,
+        "prefill": 16078550127.055054,
+        "request": 37910212848.38257
+      },
+      "request_id": "c52b-turn04",
+      "request_wall_s": 39.85178141099459,
+      "syscr": {
+        "decode": 4952.084001778312,
+        "prefill": 3642.760140940998,
+        "request": 8594.84414271931
+      },
+      "terminal_endpoint_clipped": false
+    },
+    {
+      "cached_ids": 2660,
+      "decode_s": 15.368979999999999,
+      "index": 5,
+      "prefill_s": 26.12749,
+      "prompt_ids": 2813,
+      "rchar": {
+        "decode": 21327546758.735535,
+        "prefill": 16516059777.183685,
+        "request": 37843606535.91922
+      },
+      "read_bytes": {
+        "decode": 21314645453.251373,
+        "prefill": 16524335428.18399,
+        "request": 37838980881.43536
+      },
+      "request_id": "c52b-turn05",
+      "request_wall_s": 41.50866801198572,
+      "syscr": {
+        "decode": 4835.633960151652,
+        "prefill": 3744.766237765267,
+        "request": 8580.400197916919
+      },
+      "terminal_endpoint_clipped": false
+    },
+    {
+      "cached_ids": 2814,
+      "decode_s": 16.534899000000003,
+      "index": 6,
+      "prefill_s": 25.443114,
+      "prompt_ids": 2967,
+      "rchar": {
+        "decode": 24547608462.570984,
+        "prefill": 16623892932.251831,
+        "request": 41171501394.822815
+      },
+      "read_bytes": {
+        "decode": 24535803680.578186,
+        "prefill": 16635697714.244629,
+        "request": 41171501394.822815
+      },
+      "request_id": "c52b-turn06",
+      "request_wall_s": 41.99065367798903,
+      "syscr": {
+        "decode": 5565.707891620637,
+        "prefill": 3769.1744472939754,
+        "request": 9334.882338914613
+      },
+      "terminal_endpoint_clipped": false
+    },
+    {
+      "cached_ids": 2968,
+      "decode_s": 16.288413000000002,
+      "index": 7,
+      "prefill_s": 25.505001,
+      "prompt_ids": 3121,
+      "rchar": {
+        "decode": 23656169687.284546,
+        "prefill": 16450414418.664185,
+        "request": 40106584105.94873
+      },
+      "read_bytes": {
+        "decode": 23641986950.28174,
+        "prefill": 16458391799.261047,
+        "request": 40100378749.542786
+      },
+      "request_id": "c52b-turn07",
+      "request_wall_s": 41.806975553990924,
+      "syscr": {
+        "decode": 5363.564187325144,
+        "prefill": 3729.872603822485,
+        "request": 9093.43679114763
+      },
+      "terminal_endpoint_clipped": false
+    },
+    {
+      "cached_ids": 3122,
+      "decode_s": 18.142098,
+      "index": 8,
+      "prefill_s": 25.839648,
+      "prompt_ids": 3275,
+      "rchar": {
+        "decode": 24037107458.420776,
+        "prefill": 16381972412.581787,
+        "request": 40419079871.00256
+      },
+      "read_bytes": {
+        "decode": 24032179052.614624,
+        "prefill": 16382073263.518372,
+        "request": 40414252316.132996
+      },
+      "request_id": "c52b-turn08",
+      "request_wall_s": 43.99254457699135,
+      "syscr": {
+        "decode": 5449.950214484794,
+        "prefill": 3714.348111781481,
+        "request": 9164.298326266275
+      },
+      "terminal_endpoint_clipped": false
+    },
+    {
+      "cached_ids": 3276,
+      "decode_s": 16.543343,
+      "index": 9,
+      "prefill_s": 25.660774,
+      "prompt_ids": 3429,
+      "rchar": {
+        "decode": 23993731233.020935,
+        "prefill": 16612357381.25946,
+        "request": 40606088614.280396
+      },
+      "read_bytes": {
+        "decode": 23979993894.80719,
+        "prefill": 16623745608.498352,
+        "request": 40603739503.30554
+      },
+      "request_id": "c52b-turn09",
+      "request_wall_s": 42.21927015100664,
+      "syscr": {
+        "decode": 5440.153259935265,
+        "prefill": 3766.5760730111797,
+        "request": 9206.729332946445
+      },
+      "terminal_endpoint_clipped": false
+    },
+    {
+      "cached_ids": 3430,
+      "decode_s": 14.656801999999999,
+      "index": 10,
+      "prefill_s": 25.711967,
+      "prompt_ids": 3583,
+      "rchar": {
+        "decode": 21496231180.191772,
+        "prefill": 16703571142.912659,
+        "request": 38199802323.10443
+      },
+      "read_bytes": {
+        "decode": 21488776104.86267,
+        "prefill": 16714565074.095764,
+        "request": 38203341178.958435
+      },
+      "request_id": "c52b-turn10",
+      "request_wall_s": 40.38014212199778,
+      "syscr": {
+        "decode": 4873.891899469469,
+        "prefill": 3787.2854173528613,
+        "request": 8661.17731682233
+      },
+      "terminal_endpoint_clipped": false
+    },
+    {
+      "cached_ids": 3584,
+      "decode_s": 14.758044,
+      "index": 11,
+      "prefill_s": 26.040362000000002,
+      "prompt_ids": 3737,
+      "rchar": {
+        "decode": 21210983858.27295,
+        "prefill": 16539513173.529175,
+        "request": 37750497031.802124
+      },
+      "read_bytes": {
+        "decode": 21203047656.208435,
+        "prefill": 16544597147.052246,
+        "request": 37747644803.26068
+      },
+      "request_id": "c52b-turn11",
+      "request_wall_s": 40.81054221899831,
+      "syscr": {
+        "decode": 4809.231237249653,
+        "prefill": 3750.0432990182017,
+        "request": 8559.274536267854
+      },
+      "terminal_endpoint_clipped": false
+    },
+    {
+      "cached_ids": 3738,
+      "decode_s": 14.815958,
+      "index": 12,
+      "prefill_s": 25.924975,
+      "prompt_ids": 3891,
+      "rchar": {
+        "decode": 21442813931.201538,
+        "prefill": 17266149789.33313,
+        "request": 38708963720.53467
+      },
+      "read_bytes": {
+        "decode": 21440663913.43286,
+        "prefill": 17258876135.98108,
+        "request": 38699540049.41394
+      },
+      "request_id": "c52b-turn12",
+      "request_wall_s": 40.7537335800007,
+      "syscr": {
+        "decode": 4861.793527067915,
+        "prefill": 3914.8116207687563,
+        "request": 8776.605147836672
+      },
+      "terminal_endpoint_clipped": false
+    },
+    {
+      "cached_ids": 3892,
+      "decode_s": 16.721786,
+      "index": 13,
+      "prefill_s": 25.935024000000002,
+      "prompt_ids": 4045,
+      "rchar": {
+        "decode": 24282230896.96118,
+        "prefill": 16792532102.203125,
+        "request": 41074762999.16431
+      },
+      "read_bytes": {
+        "decode": 24269520100.054443,
+        "prefill": 16801186182.91394,
+        "request": 41070706282.96838
+      },
+      "request_id": "c52b-turn13",
+      "request_wall_s": 42.67492473201128,
+      "syscr": {
+        "decode": 5505.548688361363,
+        "prefill": 3807.429113798251,
+        "request": 9312.977802159614
+      },
+      "terminal_endpoint_clipped": false
+    },
+    {
+      "cached_ids": 4046,
+      "decode_s": 16.609084,
+      "index": 14,
+      "prefill_s": 26.08325,
+      "prompt_ids": 4199,
+      "rchar": {
+        "decode": 23899865020.922485,
+        "prefill": 16687289174.811646,
+        "request": 40587154195.73413
+      },
+      "read_bytes": {
+        "decode": 23884091291.613037,
+        "prefill": 16695823378.844238,
+        "request": 40579914670.457275
+      },
+      "request_id": "c52b-turn14",
+      "request_wall_s": 42.70968620201165,
+      "syscr": {
+        "decode": 5418.8741492728,
+        "prefill": 3783.585844536341,
+        "request": 9202.459993809141
+      },
+      "terminal_endpoint_clipped": false
+    },
+    {
+      "cached_ids": 4200,
+      "decode_s": 17.766095,
+      "index": 15,
+      "prefill_s": 26.222566999999998,
+      "prompt_ids": 4353,
+      "rchar": {
+        "decode": 23614042470.666748,
+        "prefill": 17349907055.430542,
+        "request": 40963949526.09729
+      },
+      "read_bytes": {
+        "decode": 23604836763.220825,
+        "prefill": 17363990897.649902,
+        "request": 40968827660.87073
+      },
+      "request_id": "c52b-turn15",
+      "request_wall_s": 44.00247662900074,
+      "syscr": {
+        "decode": 5354.064714141219,
+        "prefill": 3933.8018178271595,
+        "request": 9287.866531968379
+      },
+      "terminal_endpoint_clipped": false
+    },
+    {
+      "cached_ids": 4354,
+      "decode_s": 16.262620000000002,
+      "index": 16,
+      "prefill_s": 26.731018,
+      "prompt_ids": 4507,
+      "rchar": {
+        "decode": 23279440510.37085,
+        "prefill": 17508790569.540283,
+        "request": 40788231079.91113
+      },
+      "read_bytes": {
+        "decode": 23282231191.510376,
+        "prefill": 17510807308.115845,
+        "request": 40793038499.62622
+      },
+      "request_id": "c52b-turn16",
+      "request_wall_s": 43.01364027700038,
+      "syscr": {
+        "decode": 5278.203508036473,
+        "prefill": 3969.837447935308,
+        "request": 9248.040955971781
+      },
+      "terminal_endpoint_clipped": false
+    },
+    {
+      "cached_ids": 4508,
+      "decode_s": 16.424673,
+      "index": 17,
+      "prefill_s": 25.998201,
+      "prompt_ids": 4661,
+      "rchar": {
+        "decode": 23142935271.238647,
+        "prefill": 16262100440.602173,
+        "request": 39405035711.84082
+      },
+      "read_bytes": {
+        "decode": 23149371093.38745,
+        "prefill": 16254204686.698608,
+        "request": 39403575780.08606
+      },
+      "request_id": "c52b-turn17",
+      "request_wall_s": 42.43719734399929,
+      "syscr": {
+        "decode": 5247.257011546986,
+        "prefill": 3687.1571231215785,
+        "request": 8934.414134668565
+      },
+      "terminal_endpoint_clipped": false
+    },
+    {
+      "cached_ids": 4662,
+      "decode_s": 16.705876,
+      "index": 18,
+      "prefill_s": 26.135738,
+      "prompt_ids": 4815,
+      "rchar": {
+        "decode": 23818282589.563232,
+        "prefill": 16674990472.120605,
+        "request": 40493273061.68384
+      },
+      "read_bytes": {
+        "decode": 23806245992.27417,
+        "prefill": 16683152356.943604,
+        "request": 40489398349.21777
+      },
+      "request_id": "c52b-turn18",
+      "request_wall_s": 42.8570891230047,
+      "syscr": {
+        "decode": 5400.363756688894,
+        "prefill": 3780.7928356470657,
+        "request": 9181.15659233596
+      },
+      "terminal_endpoint_clipped": false
+    },
+    {
+      "cached_ids": 4816,
+      "decode_s": 16.699393,
+      "index": 19,
+      "prefill_s": 25.767843,
+      "prompt_ids": 4969,
+      "rchar": {
+        "decode": 23564073160.204834,
+        "prefill": 15649314064.225098,
+        "request": 39213387224.42993
+      },
+      "read_bytes": {
+        "decode": 23559965509.421265,
+        "prefill": 15651368864.40564,
+        "request": 39211334373.826904
+      },
+      "request_id": "c52b-turn19",
+      "request_wall_s": 42.49010579199239,
+      "syscr": {
+        "decode": 5342.7475177828455,
+        "prefill": 3548.2043650045234,
+        "request": 8890.951882787369
+      },
+      "terminal_endpoint_clipped": true
+    }
+  ],
+  "schema": "c53b-session-io-accounting-v1",
+  "terminal_counter_policy": "last sampled cumulative counter is a lower bound; no extrapolation",
+  "terminal_endpoint_gap_s": 0.43550666800001636
+}

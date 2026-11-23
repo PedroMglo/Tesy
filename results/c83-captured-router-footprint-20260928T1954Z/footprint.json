@@ -1,0 +1,84 @@
+{
+  "captured_numeric_router_states": 250,
+  "checkpoint_overlap": {
+    "decode0_to_decode1": {
+      "common_keys": 74,
+      "later_keys_not_in_earlier": 70,
+      "sample_gap_decode_steps": 1
+    },
+    "decode1_to_decode7": {
+      "common_keys": 5,
+      "later_keys_not_in_earlier": 139,
+      "sample_gap_decode_steps": 6
+    },
+    "decode7_to_decode31": {
+      "common_keys": 8,
+      "later_keys_not_in_earlier": 136,
+      "sample_gap_decode_steps": 24
+    }
+  },
+  "decode_checkpoint_union": {
+    "distinct_layer_experts": 394,
+    "distinct_payload_mib": 4967.083740234375
+  },
+  "evidence_class": "INFERIDO_FROM_HASH_VERIFIED_CAPTURE",
+  "expert_payload_bytes": 13219200,
+  "limitations": [
+    "Only four decode checkpoints, not a continuous decode trace; intervening tokens and evictions unknown.",
+    "Distinct payload capacity is not the required cache size or a simulated hit rate.",
+    "Existing per-layer streamed slots already retain some experts; overlap is not incremental L2 benefit.",
+    "No NVMe physical traffic, exposed wait or causal latency saving is measured.",
+    "The n_ctx4096 preload-OFF probe is not the n_ctx8192 preload-ON server session."
+  ],
+  "parent_status": "SAME_PROFILE_BITWISE_PASS_FULL_BOUNDARY",
+  "schema": "c83-captured-router-footprint-v1",
+  "source_sha256": {
+    "boundary_summary": "2d7be1b515a0706159ee971c27f032fe1e3bd52316aad1bfa7615bd116ccf591",
+    "index": "c5bb2d647b1e11bceca92ab0868d4e19bbc56b39dda9add326bd1bb2fbb86a64",
+    "manifest": "c2e78a7af849a7c70ddb22dd46c57f0a6f7d1b21b1bed01484cdc17771176d8a"
+  },
+  "states": {
+    "decode0": {
+      "distinct_layer_experts": 144,
+      "distinct_payload_bytes": 1903564800,
+      "distinct_payload_mib": 1815.380859375,
+      "selected_pairs": 144
+    },
+    "decode1": {
+      "distinct_layer_experts": 144,
+      "distinct_payload_bytes": 1903564800,
+      "distinct_payload_mib": 1815.380859375,
+      "selected_pairs": 144
+    },
+    "decode31": {
+      "distinct_layer_experts": 144,
+      "distinct_payload_bytes": 1903564800,
+      "distinct_payload_mib": 1815.380859375,
+      "selected_pairs": 144
+    },
+    "decode7": {
+      "distinct_layer_experts": 144,
+      "distinct_payload_bytes": 1903564800,
+      "distinct_payload_mib": 1815.380859375,
+      "selected_pairs": 144
+    },
+    "prefill0": {
+      "distinct_layer_experts": 1571,
+      "distinct_payload_bytes": 20767363200,
+      "distinct_payload_mib": 19805.300903320312,
+      "selected_pairs": 4480
+    },
+    "prefill128": {
+      "distinct_layer_experts": 1270,
+      "distinct_payload_bytes": 16788384000,
+      "distinct_payload_mib": 16010.650634765625,
+      "selected_pairs": 4480
+    },
+    "prefill_final": {
+      "distinct_layer_experts": 1453,
+      "distinct_payload_bytes": 19207497600,
+      "distinct_payload_mib": 18317.697143554688,
+      "selected_pairs": 4064
+    }
+  }
+}

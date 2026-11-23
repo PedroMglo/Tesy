@@ -1,0 +1,70 @@
+{
+  "c18": {
+    "monitor_sha256": "693f636583c4c72f3e1207ea6f7ae1ffd1c484720c98a35127dc3a6c635ff35d",
+    "thermal_monitor": "CPU95 warning, CPU100/explicit cooling/clock collapse stop"
+  },
+  "c54": {
+    "admission_runner_sha256": "eebb2642ce2c270367854c5575c1ebc5b3fc013af24923d1f9da4ddca3d0b8dc",
+    "backend_dirty": "",
+    "backend_tree": "b5c2ff3e68001955ad60652539fe355b7d8553ae",
+    "claim": "load/context admission only; no forward workspace or API claim",
+    "mode": "warm-prefix-phase-diagnostic",
+    "model_stat": {
+      "ctime_ns": 1790389637807910988,
+      "dev": 53,
+      "inode": 14833675,
+      "mtime_ns": 1790389637795911032,
+      "size_bytes": 63387346208
+    },
+    "monitor_scope": "systemd user scope E18, zero swap",
+    "n_gpu_layers": 12,
+    "runner_sha256": "665fbb77d7f3839be941bedc91ca6befe3804fda57b8f26b725911790c787659",
+    "server_runner_sha256": "693f636583c4c72f3e1207ea6f7ae1ffd1c484720c98a35127dc3a6c635ff35d",
+    "timing_promotable": false
+  },
+  "campaign_id": "tesy-c54-assistant-history-20260928",
+  "expected_request_ids": [
+    "c54-turn00",
+    "c54-turn01"
+  ],
+  "identity": {
+    "backend_sha": "2e558cb79f9184e1c87f7bc842c03fe66f7f580e",
+    "binary_sha256": "dee1f13a234521dccf181e9b80a0a3ce6f5dd3019bb9b3f6cd03c7121f6f2fe9",
+    "config_sha256": "310f2680bb775122994f314c2695102fa4b885c2044b34b5ada07c5b7a49aa56",
+    "input_sha256": {
+      "protocol.json": "c958c5a16c64c2a6a9f16670433a6994c5d9bb896f908675b5ba48ba88762196",
+      "session-input.json": "2466b041cbdd7dfecee2806e332b2d473ab42828e415e73438bfebeee94e72b9"
+    },
+    "library_sha256": {
+      "build-c54-nvtx/bin/libggml-base.so.0.15.3": "b95678606baa39e4aff04b35ba929721d03e95f8e4eef00f8cca0fa17ab50921",
+      "build-c54-nvtx/bin/libggml-cpu.so.0.15.3": "fcb94b36a1c14ffcf6151530530cd7a6dffaba2394007f44e6a4c263930ca11b",
+      "build-c54-nvtx/bin/libggml-cuda.so.0.15.3": "14f5e7d9aa7ccdd69890a05812f44dec4cf90509bef62b2dbcf696b264b46c00",
+      "build-c54-nvtx/bin/libggml.so.0.15.3": "b1ca39fc4959cee8ee282499a48575b33ab8b1af0fd6f7e58bf5667f1784a626",
+      "build-c54-nvtx/bin/libllama-common.so.0.0.0": "7b31a2585c64a844f7716b70fb63a31834c09d52a99e7ad94f581d054f512537",
+      "build-c54-nvtx/bin/libllama-server-impl.so": "2613ea6ad657a678c13e4f670b84c5532de8b58681156ecec87bfa701348c485",
+      "build-c54-nvtx/bin/libllama.so.0.0.0": "32b86b688c6322a6de5ef75e8dcb1753051073d584a1f472345435b48bbb5c29",
+      "build-c54-nvtx/bin/libmtmd.so.0.0.0": "1540d0daf5e300a04faced501fbf089a6bf8a5eff7f3bdb6c887dfecfdadcd3f"
+    },
+    "model_id": "target120b",
+    "model_sha256": "582bd40f6886200101f4c4ed9f25f3fe80cc14c86e9e2b37746cd8904a0c622d",
+    "workload_sha256": "2466b041cbdd7dfecee2806e332b2d473ab42828e415e73438bfebeee94e72b9"
+  },
+  "limits": {
+    "boundary_s": 2,
+    "cpu_max_c": 100,
+    "gpu_max_c": 80,
+    "gpu_max_mib": 6500,
+    "max_gap_s": 3,
+    "memory_max_bytes": 17716740096,
+    "min_active_s": 0,
+    "min_decode_s": 0,
+    "min_decode_tok_s": 0,
+    "min_elapsed_s": 0,
+    "min_last_half_tok_s": 0,
+    "min_mem_available_bytes": 6442450944,
+    "nvme_max_c": 70,
+    "rss_max_bytes": 17179869184
+  },
+  "protocol_id": "c54-p12-assistant-history01-v1",
+  "schema_version": "c2-protocol-v1"
+}

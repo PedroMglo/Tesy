@@ -1,0 +1,18 @@
+{
+  "cause_class": "HYPOTHESIS_C_COMPILER_FLAG_MISMATCH",
+  "cgroup_oom_events": 0,
+  "evidence": {
+    "backtrace_top": "ggml_graph_compute_thread in libggml-cpu.so.0",
+    "c122_cmake_CMAKE_C_FLAGS": "",
+    "c84_cmake_CMAKE_C_FLAGS": "-DTESY_C47_CPU_SKIP_PARKED"
+  },
+  "model_ready_observed": true,
+  "next_discriminant": "C123 new build with matched C and C++ flags, then same-profile numeric canary; preserve this FAIL",
+  "numeric_canary_receipt_sha256": "b0edf47490b35089793e13ff4b5888a47c0d4f718a5f089be7856a10462aeef1",
+  "raw_manifest_sha256": "0bc903d4bdd6a5400b6926c9da6323139d988b820e0c9dd8da290deded073c34",
+  "resource_stop_observed": false,
+  "returncode": -11,
+  "schema": "c122-effective-decision-v1",
+  "status": "FAIL_CANARY_SEGFAULT_BUILD_PROFILE_UNRESOLVED",
+  "trace_server_run": "NOT_RUN"
+}

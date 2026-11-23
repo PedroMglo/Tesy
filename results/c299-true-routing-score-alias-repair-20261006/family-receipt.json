@@ -1,0 +1,39 @@
+{
+  "measurement_commit": "22f1106c6601d9ee4537eda60e0cf308f1101ba5",
+  "start": {
+    "utc": "2026-10-06T22:42:36.674023+00:00",
+    "monotonic_s": 102775.119607121
+  },
+  "end": {
+    "utc": "2026-10-06T22:53:38.709946+00:00",
+    "monotonic_s": 103437.155534058
+  },
+  "argv": [
+    "systemd-run",
+    "--user",
+    "--slice=tesy-post-c154.slice",
+    "--unit=tesy-c299-true-routing-score-alias",
+    "--collect",
+    "--pipe",
+    "--wait",
+    "--working-directory=/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc",
+    "-p",
+    "MemoryMax=21474836480",
+    "-p",
+    "MemoryHigh=21474836480",
+    "-p",
+    "MemorySwapMax=0",
+    "-p",
+    "RuntimeMaxSec=1320",
+    "-p",
+    "TimeoutStopSec=10",
+    "--",
+    "/usr/bin/python",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/tools/residency_unit_run.py",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c299-true-routing-score-alias-repair-20261006",
+    "--inside"
+  ],
+  "returncode": 0,
+  "stdout": "",
+  "stderr": "Running as unit: tesy-c299-true-routing-score-alias.service\n          Finished with result: success\nMain processes terminated with: code=exited, status=0/SUCCESS\n               Service runtime: 11min 1.914s\n             CPU time consumed: 28min 39.375s\n                   Memory peak: 14.8G (swap: 0B)\n"
+}

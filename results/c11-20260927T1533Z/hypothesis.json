@@ -1,0 +1,15 @@
+{
+  "alternative": "remaining CPU25 layers or other source hotspot may still thermally saturate; GPU/workspace may also exceed E18 reservation",
+  "cause_response": "C9 ub32 and C10b ub64 P8 server both hit CPU95.125 during the 513-ID cold prefill; C11 moves layers25-28 from CPU to CUDA instead of repeating P8",
+  "expected_benefit": "HYPOTHESIS: lower CPU critical work/heat during cold prefill; no speedup predicted from capacity accounting alone",
+  "numeric_risk": "P12 is a separate native numeric profile; C7 P12 4K probe reference is not an 8K server reference, and preload combination requires its own qualification before timing/quality promotion",
+  "objective": "test whether moving 4 streamed layers from CPU to CUDA with native preload ON admits the 513-ID 8K full-SWA server request below CPU95 guard",
+  "order": [
+    "init-only",
+    "minimum forward",
+    "513-ID cold diagnostic"
+  ],
+  "profile_delta_from_C9": "only n_gpu_layers 8->12; ub32, original backend, preload ON, 8K full SWA, E18 unchanged",
+  "schema": "c11-p12-server-hypothesis-v1",
+  "stop": "one unit per identity; any thermal/resource/evidence failure ends unit; no automatic retry"
+}

@@ -1,0 +1,135 @@
+{
+  "alternative": "longer prompt changes expert reuse, I/O contention or thermal regime enough to erase the medium gain",
+  "analyzer_sha256": "68e634629c93d15c1cfe8e7f18986f7454f136dee940d0f2e9d70d0aeaeb3884",
+  "backend_commit": "1248fd8fa8cfebaece5ea992e4d951c1e18bb9d5",
+  "binary_sha256": "4c0dc056cec3edcf5b05cd6b34208a9fe9a18bb92cf74d5e33f2f2553ccc5a43",
+  "binary_source_sha256": "cdb95c9df8dcc2b6749d787c80d419e37bfcc6eeacfbbf246cfc26e9627f070c",
+  "boundary_summary_sha256": "cdecc7316aec272166baaec54101e8b0fdec50cc6e7569c4c8f1891818d26e8d",
+  "capture_seal_sha256": "b9485120347d186d7423a0f10ddf93242d9c95d10b951ab36966298fa6756cdd",
+  "check_go": {
+    "all_work_pairs_nonnegative": true,
+    "median_prefill_gain_pct_min": 10,
+    "median_tpot_gain_pct_min": -5,
+    "median_work_gain_pct_min": 8,
+    "resources_valid": true,
+    "same_profile_all_33_bitwise": true
+  },
+  "condition": "AC online; fresh expert pools; page cache uncontrolled; O_DIRECT observed; no concurrent own full model; prestart CPU<=75/GPU<=60/NVMe<=60 C; fixed 10s settle",
+  "confirm496_result_sha256": "12eb500c29e4abf0f8536bd644097c7414dffe884e247c85f91ebdbde15aaa38",
+  "confirm496_status": "CONFIRM496_GO",
+  "created_utc": "2026-09-27T14:05:56.709017+00:00",
+  "effective_options": {
+    "flash_attention": "enabled",
+    "io_threads": 4,
+    "kv_clear_before_case": true,
+    "kv_k": "f16",
+    "kv_unified": false,
+    "kv_v": "f16",
+    "moe_stream": true,
+    "moe_stream_direct": true,
+    "n_batch": 256,
+    "n_ctx": 4096,
+    "n_seq_max": 1,
+    "n_threads": 8,
+    "n_threads_batch": 8,
+    "n_ubatch": 32,
+    "ngl": 8,
+    "no_prefix_reuse": true,
+    "offload_kqv": true,
+    "op_offload": false,
+    "placement_expected": "CPU0-28,CUDA29-35,CUDA output",
+    "preload_off_env": {
+      "LLAMA_MOE_STREAM_NO_PRELOAD": "1"
+    },
+    "preload_on_env": {},
+    "slots": 32,
+    "swa_full": true,
+    "use_direct_io": true,
+    "use_extra_bufts": false,
+    "use_mmap": false
+  },
+  "hypothesis": "native next-wave preload medium gain persists on a longer 1522-ID prompt without material decode regression",
+  "input": {
+    "cache_condition": "fresh expert pools, page cache uncontrolled, O_DIRECT observed",
+    "case": "latency-long",
+    "external_prefill_chunks": "256,256,256,256,256,242 with ubatch32 internal",
+    "output_mask": "final prompt token and every forced step, 33 full 201088 F32 logits",
+    "prompt_ids": 1522,
+    "teacher_forced_steps": 32
+  },
+  "mapped_backend_libraries_sha256": {
+    "build-gcc15/bin/libggml-base.so.0.15.3": "4c322a199c86b801389ed4bda94074083624e0a6460e25681be4b626cc72873d",
+    "build-gcc15/bin/libggml-cpu.so.0.15.3": "b57845ea9f9ce9455d78e6fe290c09b50b9414db9280409b9e5cc143d1b13b61",
+    "build-gcc15/bin/libggml-cuda.so.0.15.3": "5b363c951b87164e94d5b6af35a82c875634aadcb29c9278245cd7516f44cc7e",
+    "build-gcc15/bin/libggml.so.0.15.3": "97a33247336b56aaabe1a8bee4da6cd05e73e8b4327afd2cef67c5526df8ab71",
+    "build-gcc15/bin/libllama.so.0.0.1": "31b56002c36c159f71eba54c0d8e625ae140d34b2b1a503f3dc4db47237719cc"
+  },
+  "metric": {
+    "aggregate": "median of paired gains, not ratio of medians",
+    "gain_formula": "100*(OFF-ON)/OFF for each pair and metric; positive denominator",
+    "primary": "completed prefill and T_work=prefill+32 teacher-forced steps",
+    "secondary": "TPOT aggregate/per-step, cold end-to-end"
+  },
+  "model_sha256": "582bd40f6886200101f4c4ed9f25f3fe80cc14c86e9e2b37746cd8904a0c622d",
+  "model_stat": {
+    "ctime_ns": 1790389637807910988,
+    "dev": 53,
+    "inode": 14833675,
+    "mtime_ns": 1790389637795911032,
+    "size_bytes": 63387346208
+  },
+  "new_pairs": 2,
+  "no_opportunistic_repetition": true,
+  "numeric_ids_sha256": "8fb3aff447febaeaa5a8bdd0c485fd20d51d39fb6ac3e6ba4849eb4a664dbc23",
+  "on_fail": "preserve confirmed 496 scope, no general long claim",
+  "on_pass": "proceed to separately frozen serving/session/functional qualification, no default switch",
+  "order": [
+    [
+      "off",
+      "on"
+    ],
+    [
+      "on",
+      "off"
+    ]
+  ],
+  "parent_confirmation_protocol_sha256": "e822f24400bfd77607b10f6c15fbfd498efd00355ff3b3570227ed039de8e155",
+  "publication": "local only; default_changed=false",
+  "reference_complete_sha256": "6407e2f8cf20384b8ac88b7be33601d12d0ba38479c402359a07f7106801e8d9",
+  "resource": {
+    "cool_start_c": {
+      "cpu": 75,
+      "gpu": 60,
+      "nvme": 60
+    },
+    "long_timeout_s": 1200,
+    "max_cgroup_gib": 16.5,
+    "max_gpu_total_mib": 6500,
+    "max_rss_gib": 16,
+    "medium_timeout_s": 600,
+    "min_mem_available_gib": 6,
+    "numeric_timeout_s": 300,
+    "reference_layer_timeout_s": 180,
+    "scope_memory_max_bytes": 19327352832,
+    "scope_swap_max_bytes": 0,
+    "short_timeout_s": 300,
+    "temperature_c": {
+      "cpu": 95,
+      "gpu": 80,
+      "nvme": 70
+    }
+  },
+  "result_scope": "length-dependence check only; two pairs do not independently confirm a specialized long profile",
+  "runner_sha256": "98aa8df8ab90e49babb87df1dff5d5d18109503d218d47017670a7856e110635",
+  "same_profile_numeric_control": "first new OFF full 33-row payload; all subsequent OFF/ON arms must be bitwise equal",
+  "schema": "c8-p8-preload-long1522-check-protocol-v1",
+  "stop": "first same-profile mismatch, missing raw/hash/mapping/telemetry, nonfinite, OOM, retry, swap or guard; preserve raw, no automatic model retry",
+  "stop_after_two_pairs": true,
+  "timeout_per_arm_s": 1200,
+  "timing_ids_sha256": "368c48ac1e93d68ec1746bb3d5f7e63118f35d7903c58f88dbe5c983b69190fb",
+  "variable": {
+    "OFF": "LLAMA_MOE_STREAM_NO_PRELOAD=1",
+    "ON": "LLAMA_MOE_STREAM_NO_PRELOAD absent",
+    "other_changes": "none"
+  }
+}

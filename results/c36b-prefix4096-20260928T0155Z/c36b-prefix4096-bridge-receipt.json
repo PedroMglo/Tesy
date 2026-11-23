@@ -1,0 +1,81 @@
+{
+  "actual_common_prefix_ids": null,
+  "arm": "on",
+  "completed_utc": "2026-09-28T02:00:34.938104+00:00",
+  "cpu_diagnostics": null,
+  "elapsed_s": 4.757983493997017,
+  "idle": {
+    "baseline": null,
+    "cadence_breaks": [],
+    "duration_s": 300.07538935699995,
+    "end": {
+      "cpu_c": 45.875,
+      "cpu_fan_rpm": 2500.0,
+      "elapsed_s": 300.07538935699995,
+      "gpu": {
+        "driver": "615.71.09",
+        "temperature_c": 43.0,
+        "used_mib": 12.0
+      },
+      "gpu_fan_rpm": 0.0,
+      "mem_available_bytes": 25481162752,
+      "nvme_c": 34.85,
+      "run_id": "c36b-prefix4096-bridge",
+      "utc": "2026-09-28T02:00:29.972223+00:00"
+    },
+    "last60_trend_c": {
+      "cpu_c": -2.1125000000000043,
+      "gpu_c": -2.0,
+      "nvme_c": 0.0
+    },
+    "match_tolerance_c": [
+      5,
+      5,
+      3
+    ],
+    "max_gap_overall_s": 0.7820013189993915,
+    "max_gap_qualifying_s": 0.7820013189993915,
+    "max_start_c": [
+      50,
+      50,
+      45
+    ],
+    "qualifying_duration_s": 300.0151441210037,
+    "qualifying_start_s": 0.060245235996262636,
+    "sample_count": 601,
+    "series_sha256": "8ebdf402a99d7217450182a50e5286d01689a48f77213e2c62899b35a721cec1",
+    "start": {
+      "cpu_c": 46.125,
+      "cpu_fan_rpm": 0.0,
+      "elapsed_s": 0.060245235996262636,
+      "gpu": {
+        "driver": "615.71.09",
+        "temperature_c": 42.0,
+        "used_mib": 12.0
+      },
+      "gpu_fan_rpm": 0.0,
+      "mem_available_bytes": 25621585920,
+      "nvme_c": 33.85,
+      "run_id": "c36b-prefix4096-bridge",
+      "utc": "2026-09-28T01:55:29.957081+00:00"
+    },
+    "status": "PASS"
+  },
+  "maxima": null,
+  "measurement_commit": "4e7aa3e57766e0532f36a91dbba94ecf72967266",
+  "order": 1,
+  "phase": "G1",
+  "protocol_sha256": "2f53099d82174f8fb41758f42e2d40347a20ad12aa242e1bdf3a9608a88290a4",
+  "raw_sha256": "ca404c9da814ca4ba8129a68b570932a1130ac7a22aec08714e9e803a077cef8",
+  "reason": "GateError: server monitor/normalization failed: ['RUN_ERROR:GateError:frozen incremental token count/common prefix invalid']",
+  "results": [],
+  "run_id": "c36b-prefix4096-bridge",
+  "schema": "c24-p12-streaming-session-bridge-v1",
+  "server_gate": null,
+  "server_returncode": 1,
+  "status": "FAIL_RESOURCES_OR_EVIDENCE",
+  "stop_reasons": [
+    "RUN_ERROR:GateError:frozen incremental token count/common prefix invalid"
+  ],
+  "token_id_sha256": null
+}

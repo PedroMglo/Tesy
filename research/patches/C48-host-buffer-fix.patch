@@ -1,0 +1,17 @@
+diff --git a/src/llama-moe-stream.cpp b/src/llama-moe-stream.cpp
+index 0802cad..6bbff9a 100644
+--- a/src/llama-moe-stream.cpp
++++ b/src/llama-moe-stream.cpp
+@@ -837,9 +837,9 @@ void llama_moe_stream_wave_ids(ggml_tensor * dst, int ith, int nth, void * userd
+     if (std::getenv("TESY_CPU_WAVE_SKIP_PARKED") != nullptr) {
+         GGML_ASSERT(!sl->weights.empty() && sl->weights[0].cache != nullptr &&
+                     sl->weights[0].cache->buffer != nullptr);
+-        const auto buft = ggml_backend_buffer_get_type(sl->weights[0].cache->buffer);
+-        const auto dev  = ggml_backend_buft_get_device(buft);
+-        if (ggml_backend_dev_type(dev) == GGML_BACKEND_DEVICE_TYPE_CPU) {
++        // The stock CPU buffer type has no ggml_backend_dev_t (NULL by design).
++        // Host accessibility is the execution property needed by this CPU path.
++        if (ggml_backend_buffer_is_host(sl->weights[0].cache->buffer)) {
+             // The CPU MMID kernel writes exact +0 to parked outputs. The
+             // original ids, router weights, and final wave mask are unchanged.
+             for (int64_t i = 0; i < n; i++) {

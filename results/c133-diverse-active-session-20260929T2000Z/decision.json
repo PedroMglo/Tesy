@@ -1,0 +1,40 @@
+{
+  "M3": "MECHANICS_EXTENDED_DIVERSE_FUNCTIONAL_GATE_FAILED",
+  "M4": "NOT_MET_BY_PRIOR_NOMINAL153_LATENCY_AND_DECODE",
+  "analysis_sha256": "e8ee4eca39a0ba731f5a6e9190db422207621971982ab823b86ce05c933a306d",
+  "analysis_source_commit": "9ac9295",
+  "default_changed": false,
+  "evidence_class": "MEDIDO_NO_TARGET",
+  "historical_failures_unchanged": true,
+  "measurement_commit": "ff9d1d7ff6d7df99156cc8e33a613b99afbc4ed4",
+  "mechanics": {
+    "active_block_s": 1846.4678464010067,
+    "complete_natural_requests": 20,
+    "duty_fraction": 0.3998546364333465,
+    "max_official_prompt_tokens": 4853,
+    "request_active_sum_s": 1999.0995002740237,
+    "session_span_s": 4999.565637416992
+  },
+  "next_action": "Prospectively test original 7936+256 boundary on C75 slots40; preserve partial session profile and do not repeat same C132/C133 hypothesis without a new discriminant",
+  "quality": {
+    "failed_task": "c133-turn02",
+    "frozen_pass_count": 19,
+    "manual_scope_note": "answer addresses the prioritization request but the frozen lexical requirement was not met",
+    "reason": "missing literal Aster in final content",
+    "total": 20
+  },
+  "raw_sha256": "70975912055a8546a9d93f56472e04b95e0e79f066f94d99e5d3a6160406c35b",
+  "receipt_sha256": "6c5fcc8165bef71eae9494085bafbebd2287c24032bec10b854a148616c86286",
+  "resources": {
+    "cgroup_peak_bytes": 15996751872,
+    "cpu_c": 72.875,
+    "gpu_c": 56.0,
+    "gpu_total_mib": 6885.0,
+    "nvme_c": 59.85,
+    "rss_bytes": 15985733632,
+    "swap_bytes": 0
+  },
+  "schema": "c133-decision-v1",
+  "scope": "20 varied user turns with all actual prior assistant messages in one slots40 session, first 15 continuous and last five spaced 600 s",
+  "status": "SESSION_QUALITY_OR_DURATION_NO_GO"
+}

@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="420" viewBox="0 0 1400 420">
+  <rect width="1400" height="420" fill="#f6f7f9"/>
+  <style>
+    .box{fill:#fff;stroke:#b9c9da;stroke-width:2;rx:16}.hi{fill:#eaf2f8;stroke:#5b9bd5;stroke-width:2}.t{font:600 28px Arial;fill:#1f2937}.s{font:22px Arial;fill:#4b5563}.a{stroke:#5b9bd5;stroke-width:4;marker-end:url(#m)}
+  </style>
+  <defs><marker id="m" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto"><path d="M0,0 L12,6 L0,12 z" fill="#5b9bd5"/></marker></defs>
+  <rect class="box" x="40" y="110" width="230" height="120"/><text class="t" x="155" y="160" text-anchor="middle">Token</text><text class="s" x="155" y="198" text-anchor="middle">hidden state</text>
+  <line class="a" x1="280" y1="170" x2="360" y2="170"/>
+  <rect class="hi" x="370" y="90" width="260" height="160" rx="16"/><text class="t" x="500" y="145" text-anchor="middle">Router</text><text class="s" x="500" y="185" text-anchor="middle">escolhe experts exatos</text><text class="s" x="500" y="218" text-anchor="middle">top-k preservado</text>
+  <line class="a" x1="640" y1="170" x2="720" y2="170"/>
+  <rect class="box" x="730" y="90" width="260" height="160"/><text class="t" x="860" y="145" text-anchor="middle">Residência</text><text class="s" x="860" y="185" text-anchor="middle">cache RAM + VRAM</text><text class="s" x="860" y="218" text-anchor="middle">experts já disponíveis</text>
+  <line class="a" x1="1000" y1="170" x2="1080" y2="170"/>
+  <rect class="box" x="1090" y="90" width="260" height="160"/><text class="t" x="1220" y="145" text-anchor="middle">Streaming</text><text class="s" x="1220" y="185" text-anchor="middle">carrega apenas</text><text class="s" x="1220" y="218" text-anchor="middle">os experts em falta</text>
+  <text class="t" x="700" y="335" text-anchor="middle" fill="#17365d">O que muda é a forma de servir os pesos — não o routing autoritativo do modelo.</text>
+</svg>

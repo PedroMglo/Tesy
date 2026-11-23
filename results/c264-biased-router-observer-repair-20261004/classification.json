@@ -1,0 +1,8 @@
+{
+  "status": "OBSERVER_WRONG_ALIAS_FAILURE",
+  "cause": "Investigator incorrectly identified selected_experts->src[0] as biasADD; nativeargsort_top_k actually returns a view whose src0 is I32 ARGSORT. Actual biased ADD renamedffn_moe_probs bySOFTMAX_WEIGHT probs=logits. Source and C127 actual index independently confirm.",
+  "correction_scope": "Observer mapping only; actual native argsort_top_k metadata counterproof required; same216 stage requirement",
+  "tile": "FAIL_PRESERVED_OBSERVER; partial raw retained",
+  "reuse": "NOT_RUN_UNIT_FAIL",
+  "R0": "C262 selected PASS reused only unchanged scope"
+}

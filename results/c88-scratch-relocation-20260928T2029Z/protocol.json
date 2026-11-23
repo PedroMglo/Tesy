@@ -1,0 +1,17 @@
+{
+  "schema": "c88-scratch-relocation-protocol-v1",
+  "identity": "C88",
+  "objective": "Preserve three obsolete owned build trees on NVMe and measure whether removing their tmpfs charge materially raises host MemAvailable for a future E18 bridge admission.",
+  "source_builds": [
+    "/tmp/tesy-c15-backend-20260927/build-c33-nvtx",
+    "/tmp/tesy-c46-backend-20260928/build-c46-nvtx",
+    "/tmp/tesy-c47-backend-20260928/build-c47-skip"
+  ],
+  "destination": "backends/c88-archived-builds/",
+  "preservation": "rsync -aH copy, rsync -aHcn --delete byte comparison, replace original directory with symlink to verified archive; original paths remain usable. Source and current C75/C84 builds are untouched.",
+  "preconditions": ["No running process from the selected builds", "Selected source directories are real directories", "Destination absent", "NVMe free space exceeds source size plus 20 GiB"],
+  "measurement": "Read MemAvailable and Shmem immediately before and after relocation; this alone is not 60-second capacity admission.",
+  "no_model_run": true,
+  "failure_policy": "Stop on any copy or checksum mismatch, keep source; preserve partial archive for inspection. Do not delete raw results or services.",
+  "publication": "local_only"
+}

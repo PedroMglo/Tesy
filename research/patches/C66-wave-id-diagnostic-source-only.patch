@@ -1,0 +1,64 @@
+From 1c6f503bbb2ee0ee315540a17cbfb6b2bab68f22 Mon Sep 17 00:00:00 2001
+From: PedroMglo <pedro.lourenco2001@hotmail.com>
+Date: Mon, 28 Sep 2026 17:13:09 +0100
+Subject: [PATCH] C66: identify first invalid routed ID before wave planning
+
+---
+ src/llama-moe-stream-id-check.h | 20 ++++++++++++++++++++
+ src/llama-moe-stream.cpp        |  8 ++++++++
+ 2 files changed, 28 insertions(+)
+ create mode 100644 src/llama-moe-stream-id-check.h
+
+diff --git a/src/llama-moe-stream-id-check.h b/src/llama-moe-stream-id-check.h
+new file mode 100644
+index 0000000..9a423db
+--- /dev/null
++++ b/src/llama-moe-stream-id-check.h
+@@ -0,0 +1,20 @@
++#pragma once
++
++#include <cstdint>
++
++struct llama_moe_invalid_id {
++    int64_t index;
++    int32_t value;
++};
++
++// Diagnostic-only, read-only check of the exact ID buffer passed to wave planning.
++static inline llama_moe_invalid_id llama_moe_first_invalid_id(
++        const int32_t * ids, int64_t count, uint32_t n_expert) {
++    for (int64_t i = 0; i < count; ++i) {
++        const int32_t value = ids[i];
++        if (value < 0 || static_cast<uint32_t>(value) >= n_expert) {
++            return {i, value};
++        }
++    }
++    return {-1, 0};
++}
+diff --git a/src/llama-moe-stream.cpp b/src/llama-moe-stream.cpp
+index 6bbff9a..8a11c8d 100644
+--- a/src/llama-moe-stream.cpp
++++ b/src/llama-moe-stream.cpp
+@@ -1,4 +1,5 @@
+ #include "llama-moe-stream.h"
++#include "llama-moe-stream-id-check.h"
+ 
+ #include "llama-impl.h"
+ 
+@@ -814,6 +815,13 @@ void llama_moe_stream_wave_ids(ggml_tensor * dst, int ith, int nth, void * userd
+     const int32_t * ids = (const int32_t *) a->data;
+           int32_t * out = (int32_t *) dst->data;
+ 
++    const auto invalid = llama_moe_first_invalid_id(ids, n, sl->n_expert);
++    if (invalid.index >= 0) {
++        GGML_ABORT("MoE wave routed-ID diagnostic: layer=%d wave=%d index=%" PRId64
++                   " id=%d n_expert=%u n=%" PRId64 " ne0=%" PRId64 " ne1=%" PRId64,
++                   sl->il, w, invalid.index, invalid.value, sl->n_expert, n, a->ne[0], a->ne[1]);
++    }
++
+     std::unique_lock<std::mutex> lk(mgr->mtx);
+ 
+     if (mgr->load_failed) {
+-- 
+2.55.0
+

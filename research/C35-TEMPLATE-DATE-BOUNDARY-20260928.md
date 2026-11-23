@@ -1,0 +1,10 @@
+# C35: session date boundary
+
+- Objective: test whether the embedded GPT-OSS template's `strftime_now("%Y-%m-%d")` caused C29's second-turn `cache_n=35`, and whether a fixed date per session restores exact-prefix reuse.
+- Base: investigation `2eb3a0b` after preserving C34b FAIL; original backend `1248fd8`, isolated opt-in backend `c3759bad92c0e6f71bb936afea9b0a162fb83f76`. No original backend files changed.
+- Observed: C29 crossed local midnight between turns. C18 and C34b official 513-ID snapshots differ only at position 35, IDs 2092 and 2029. Substituting the latter in C29's second-turn snapshot makes its ordered common prefix 35, matching the measured `cache_n=35`. This is a strong causal inference; actual second-turn server IDs were not captured in C29.
+- Source: GGUF template metadata has the date expression; pinned Jinja runtime uses local time at each render. `chat_template_kwargs` pass through the server request. The C35 patch sets Jinja's render time only when `tesy_template_date` is supplied and rejects malformed dates. The embedded template, tokenizer, weights and routing remain in use.
+- Alternative: server-held token or KV invalidation independently caused the short prefix. C35 controls this with one shifted-date and one stable-date two-turn run. The first prompt and assistant response must remain identical; second-turn cache length is the discriminant.
+- Model-free: isolated `test-chat-template` passed with two valid dates and three invalid mutants. Python focused tests: 15 passed. A CUDA 13.3 / GCC 15.3 / arch89 build is in progress. Physical runs: NOT_RUN at this checkpoint.
+- Claim limit: synthetic two-turn cache mechanism. Neither a quality evaluation nor a sustained M3/M4 qualification; diagnostic timing is not a speedup estimate. C29 and C34b failures are unchanged. C15 stays model-NOT_RUN.
+- Next gate: fresh host preflight, frozen C35 backend binary/libraries and official token IDs, then shifted-date control followed by stable-date candidate under E18 and thermal idle admissions. Stop on the first new failure.

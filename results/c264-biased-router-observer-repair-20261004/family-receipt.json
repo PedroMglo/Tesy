@@ -1,0 +1,39 @@
+{
+  "measurement_commit": "8d36faf82a599b3e58168fa4b1a14a74ef995b9c",
+  "start": {
+    "utc": "2026-10-04T18:59:25.321349+00:00",
+    "monotonic_s": 30088.781836546
+  },
+  "end": {
+    "utc": "2026-10-04T19:02:04.888650+00:00",
+    "monotonic_s": 30248.34913593
+  },
+  "argv": [
+    "systemd-run",
+    "--user",
+    "--slice=tesy-post-c154.slice",
+    "--unit=tesy-c264-layer-observer-name-repair",
+    "--collect",
+    "--pipe",
+    "--wait",
+    "--working-directory=/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc",
+    "-p",
+    "MemoryMax=21474836480",
+    "-p",
+    "MemoryHigh=21474836480",
+    "-p",
+    "MemorySwapMax=0",
+    "-p",
+    "RuntimeMaxSec=740",
+    "-p",
+    "TimeoutStopSec=10",
+    "--",
+    "/usr/bin/python3",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/tools/residency_unit_run.py",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c264-biased-router-observer-repair-20261004",
+    "--inside"
+  ],
+  "returncode": 1,
+  "stdout": "",
+  "stderr": "Running as unit: tesy-c264-layer-observer-name-repair.service\n          Finished with result: exit-code\nMain processes terminated with: code=exited, status=1/FAILURE\n               Service runtime: 2min 39.293s\n             CPU time consumed: 10min 37.932s\n                   Memory peak: 14.7G (swap: 0B)\n"
+}

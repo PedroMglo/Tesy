@@ -1,0 +1,39 @@
+{
+  "measurement_commit": "63cc72dde85c768f9814ce5969afa5f276a9f81b",
+  "start": {
+    "utc": "2026-10-04T15:22:47.400095+00:00",
+    "monotonic_s": 17090.860583222
+  },
+  "end": {
+    "utc": "2026-10-04T15:24:16.276467+00:00",
+    "monotonic_s": 17179.736952506
+  },
+  "argv": [
+    "systemd-run",
+    "--user",
+    "--slice=tesy-post-c154.slice",
+    "--unit=tesy-c253-head-value-audit",
+    "--collect",
+    "--pipe",
+    "--wait",
+    "--working-directory=/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc",
+    "-p",
+    "MemoryMax=4294967296",
+    "-p",
+    "MemoryHigh=4294967296",
+    "-p",
+    "MemorySwapMax=0",
+    "-p",
+    "RuntimeMaxSec=180",
+    "-p",
+    "TimeoutStopSec=10",
+    "--",
+    "/usr/bin/python3",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/tools/residency_unit_run.py",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c253-head-converted-value-audit-20261004",
+    "--inside"
+  ],
+  "returncode": 1,
+  "stdout": "",
+  "stderr": "Running as unit: tesy-c253-head-value-audit.service\n          Finished with result: exit-code\nMain processes terminated with: code=exited, status=1/FAILURE\n               Service runtime: 1min 28.239s\n             CPU time consumed: 49.646s\n                   Memory peak: 1.3G (swap: 0B)\n"
+}

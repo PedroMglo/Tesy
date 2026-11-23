@@ -1,0 +1,39 @@
+{
+  "measurement_commit": "9c0c25a9e6dce528c385fbec3086f4cc24ec749d",
+  "start": {
+    "utc": "2026-10-04T21:20:09.863909+00:00",
+    "monotonic_s": 38533.324388544
+  },
+  "end": {
+    "utc": "2026-10-04T21:52:19.530351+00:00",
+    "monotonic_s": 40462.990827359
+  },
+  "argv": [
+    "systemd-run",
+    "--user",
+    "--slice=tesy-post-c154.slice",
+    "--unit=tesy-c273-two-class-native-utility-ac-restored",
+    "--collect",
+    "--pipe",
+    "--wait",
+    "--working-directory=/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc",
+    "-p",
+    "MemoryMax=21474836480",
+    "-p",
+    "MemoryHigh=21474836480",
+    "-p",
+    "MemorySwapMax=0",
+    "-p",
+    "RuntimeMaxSec=5400",
+    "-p",
+    "TimeoutStopSec=10",
+    "--",
+    "/usr/bin/python3",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/tools/residency_unit_run.py",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c273-layer-utility-ac-restored-20261004",
+    "--inside"
+  ],
+  "returncode": 0,
+  "stdout": "",
+  "stderr": "Running as unit: tesy-c273-two-class-native-utility-ac-restored.service\n          Finished with result: success\nMain processes terminated with: code=exited, status=0/SUCCESS\n               Service runtime: 32min 9.502s\n             CPU time consumed: 1h 42min 12.945s\n                   Memory peak: 15.1G (swap: 0B)\n"
+}

@@ -1,0 +1,387 @@
+diff --git a/src/c305-cpu-stage.h b/src/c305-cpu-stage.h
+new file mode 100644
+index 00000000..43a7cc4d
+--- /dev/null
++++ b/src/c305-cpu-stage.h
+@@ -0,0 +1,160 @@
++#pragma once
++#include "c291-direct-reader.h"
++#include <array>
++#include <algorithm>
++#include <cstdint>
++#include <cstring>
++#include <memory>
++#include <chrono>
++#include <stdexcept>
++
++// All state transitions require the stream manager mutex. IO owns its entry
++// until completion; expiry never frees a buffer still being read or consumed.
++struct c305_cpu_stage {
++    static constexpr size_t arena_limit=128*1024*1024, slab=4406400;
++    static constexpr int slots=10;
++    enum state { EMPTY, QUEUED, READING, READY, CONSUMING };
++    struct entry {
++        state status=EMPTY;
++        uint64_t scope=0, ticket=0;
++        int call=0, layer=-1, expert=-1;
++        bool expired=false, demand=false;
++        std::array<size_t,3> head{};
++    };
++    struct event {
++        int64_t us=0; uint64_t scope=0,ticket=0,generation=0;
++        int kind=0,call=0,layer=-1,expert=-1,slot=-1,component=-1;
++    };
++    static constexpr size_t journal_capacity=24576;
++    std::array<event,journal_capacity> journal{}; size_t journal_count=0;
++    bool journal_enabled=false,validate=false;
++    void record(int kind,int i,int slot=-1,uint64_t gen=0,int component=-1) {
++        if(!journal_enabled)return;
++        require(journal_count<journal_capacity,"stage journal overflow");
++        const auto&e=entries.at(i);
++        const auto us=std::chrono::duration_cast<std::chrono::microseconds>(std::chrono::steady_clock::now().time_since_epoch()).count();
++        journal[journal_count++]={us,e.scope,e.ticket,gen,kind,e.call,e.layer,e.expert,slot,component};
++    }
++    struct counters {
++        uint64_t issued=0, deduplicated=0, no_capacity=0, reads=0, completed_reads=0, read_bytes=0;
++        uint64_t expired_queued=0, expired_ready=0, expired_running=0;
++        uint64_t consumed=0, waits=0, errors=0, peak_running_spec=0;
++        uint64_t validation_components=0,validation_claims=0;
++    } stats;
++    tesy_witness::direct_reader reader;
++    std::array<std::array<uint64_t,3>,36> offsets{};
++    std::array<entry,slots> entries{};
++    std::unique_ptr<uint8_t,decltype(&std::free)> arena{nullptr,&std::free};
++    size_t component_stride=0, entry_stride=0;
++    uint64_t scope=0, serial=0;
++    int running=0;
++    bool enabled=false;
++    static void require(bool good,const char * why){if(!good)throw std::runtime_error(why);}
++    #ifdef TESY_C305_STAGE_TESTING
++    c305_cpu_stage()=default; // queue fault fixtures only; absent from runtime build
++    #endif
++
++    c305_cpu_stage(const char *path,const std::array<std::array<uint64_t,3>,36>& source):offsets(source) {
++        reader.open_file(path);
++        const size_t a=std::max(reader.memory_alignment(),reader.offset_alignment());
++        require(a && !(a&(a-1)) && a<=1024*1024,"stage DIO alignment unsupported");
++        component_stride=(slab+2*a+a-1)/a*a;
++        entry_stride=3*component_stride;
++        require(entry_stride*slots+sizeof(*this)<=arena_limit,"128MiB stage arena accounting exceeded");
++        void *p=nullptr;require(!posix_memalign(&p,a,entry_stride*slots),"stage arena allocation failed");
++        arena.reset(static_cast<uint8_t*>(p));std::memset(p,0,entry_stride*slots);
++        for(int l=2;l<=24;l++)for(int k=0;k<3;k++){
++            require(offsets[l][k]<=UINT64_MAX-128*slab,"stage metadata offset overflow");
++            reader.validate_range(offsets[l][k],128*slab);
++        }
++    }
++    uint8_t *component(int i,int k) {
++        require(bool(arena),"stage byte arena absent");
++        require(i>=0&&i<slots&&k>=0&&k<3,"stage component index");
++        return arena.get()+size_t(i)*entry_stride+size_t(k)*component_stride;
++    }
++    int find(int call,int layer,int expert) const {
++        for(int i=0;i<slots;i++){const auto&e=entries.at(i);if(e.status!=EMPTY&&!e.expired&&e.scope==scope&&e.call==call&&e.layer==layer&&e.expert==expert)return i;}
++        return -1;
++    }
++    bool idle() const {
++        return running==0&&std::all_of(entries.begin(),entries.end(),[](const entry&e){return e.status==EMPTY;});
++    }
++    void begin(bool active) {
++        require(idle()&&scope<UINT64_MAX,"stage scope reset while buffers live");
++        scope++;enabled=active;stats={};journal_count=0;
++    }
++    int request(int call,int layer,int expert) {
++        require(call>=1&&call<=32&&layer>=2&&layer<=24&&expert>=0&&expert<128,"stage request scope");
++        if(!enabled)return -1;
++        int old=find(call,layer,expert);if(old>=0){stats.deduplicated++;return old;}
++        for(int i=0;i<slots;i++)if(entries.at(i).status==EMPTY){
++            require(serial<UINT64_MAX,"stage ticket overflow");
++            entries.at(i)={};auto&e=entries.at(i);e.status=QUEUED;e.scope=scope;e.ticket=++serial;e.call=call;e.layer=layer;e.expert=expert;stats.issued++;record(1,i);return i;
++        }
++        stats.no_capacity++;return -1;
++    }
++    int speculative_running() const {
++        return int(std::count_if(entries.begin(),entries.end(),[](const entry&e){return e.status==READING&&!e.demand;}));
++    }
++    int next() const {
++        if(!enabled||speculative_running()>=3)return -1;
++        int best=-1;for(int i=0;i<slots;i++)if(entries.at(i).status==QUEUED&&!entries.at(i).expired&&(best<0||entries.at(i).ticket<entries[best].ticket))best=i;
++        return best;
++    }
++    uint64_t start(int i) {
++        require(i==next()&&i>=0,"stage dispatch violates demand worker reserve");
++        auto&e=entries.at(i);e.status=READING;running++;
++        stats.peak_running_spec=std::max(stats.peak_running_spec,uint64_t(speculative_running()));record(2,i);return e.ticket;
++    }
++    // Caller owns this entry; no state mutation or mutex while positional reads run.
++    void read(int i,uint64_t ticket,tesy_witness::direct_reader::read_fn fn=::pread) {
++        const auto&e=entries.at(i);require(e.status==READING&&e.ticket==ticket,"stage read owner stale");
++        for(int k=0;k<3;k++){
++            const auto off=offsets[e.layer][k]+uint64_t(e.expert)*slab;
++            const size_t a=reader.offset_alignment(),head=off%a;
++            const uint64_t begin=off-head,amount=(head+slab+a-1)/a*a;
++            auto *out=component(i,k);
++            require(amount<=component_stride&&reinterpret_cast<uintptr_t>(out)%reader.memory_alignment()==0,"stage aligned window bound");
++            require(begin<=uint64_t(std::numeric_limits<off_t>::max())-amount,"stage aligned off_t overflow");
++            ssize_t n;do{n=fn(reader.descriptor(),out,amount,off_t(begin));}while(n<0&&errno==EINTR);
++            require(n>=0&&size_t(n)>=head+slab,"stage direct IO failed/short; no fallback");
++        }
++    }
++    void complete(int i,uint64_t ticket,bool ok) {
++        auto&e=entries.at(i);require(e.status==READING&&e.ticket==ticket&&running>0,"late stage completion ownership");
++        running--;stats.reads++;stats.read_bytes+=3*slab;
++        if(!ok){stats.errors++;record(9,i);e={};return;}
++        stats.completed_reads++;record(3,i);
++        if(arena)for(int k=0;k<3;k++)e.head[k]=(offsets[e.layer][k]+uint64_t(e.expert)*slab)%reader.offset_alignment();
++        if(e.expired&&!e.demand){stats.expired_running++;record(4,i);e={};}else e.status=READY;
++    }
++    void cancel(int i) {
++        auto&e=entries.at(i);if(e.status==EMPTY||e.demand||e.status==CONSUMING)return;
++        if(e.status==QUEUED){stats.expired_queued++;record(4,i);e={};}
++        else if(e.status==READY){stats.expired_ready++;record(4,i);e={};}
++        else if(e.status==READING&&!e.expired){record(5,i);e.expired=true;}
++    }
++    void expire(int call,int layer,const int32_t *ids,size_t n) {
++        for(int i=0;i<slots;i++){auto&e=entries.at(i);if(e.status!=EMPTY&&e.scope==scope&&e.call==call&&e.layer==layer&&std::find(ids,ids+n,e.expert)==ids+n)cancel(i);}
++    }
++    void finish() {
++        enabled=false;for(int i=0;i<slots;i++)cancel(i);
++    }
++    // True demand attaches only after reserving/claiming the authoritative slot.
++    bool demand(int i,uint64_t ticket) {
++        auto&e=entries.at(i);require(!e.expired&&e.ticket==ticket&&e.scope==scope,"stage demand generation stale");
++        if(e.status==QUEUED){record(4,i);e={};return false;} // normal demand read has priority
++        require(e.status==READING||e.status==READY,"duplicate stage consumer");
++        e.demand=true;record(6,i);return true;
++    }
++    void claim(int i,uint64_t ticket) {
++        auto&e=entries.at(i);require(e.status==READY&&e.ticket==ticket&&e.demand&&!e.expired,"stage not ready at consumer");e.status=CONSUMING;
++    }
++    const uint8_t *bytes(int i,int k,uint64_t ticket) {
++        const auto&e=entries.at(i);require(e.status==CONSUMING&&e.ticket==ticket&&e.demand,"stage buffer lifetime invalid");return component(i,k)+e.head[k];
++    }
++    void release(int i,uint64_t ticket) {
++        auto&e=entries.at(i);require(e.status==CONSUMING&&e.ticket==ticket,"stage release stale");stats.consumed++;record(8,i);e={};
++    }
++};
+diff --git a/src/llama-moe-stream.cpp b/src/llama-moe-stream.cpp
+index 3e2cb571..89aff4d5 100644
+--- a/src/llama-moe-stream.cpp
++++ b/src/llama-moe-stream.cpp
+@@ -1,6 +1,7 @@
+ #include "llama-moe-stream.h"
+ #include "c269-last-use-order.h"
+ #include "c291-expert-store.h"
++#include "c305-cpu-stage.h"
+ 
+ #include "llama-impl.h"
+ 
+@@ -157,7 +158,7 @@ llama_moe_stream::~llama_moe_stream() {
+         shutting_down = true;
+         q_demand.clear();
+     }
+-    cv_work.notify_all();
++    cv_work.notify_all();cv_done.notify_all();
+     for (auto & w : workers) {
+         w.join();
+     }
+@@ -301,6 +302,67 @@ void llama_moe_stream::open_files(const std::vector<std::string> & paths) {
+         if (!use_direct_io || paths.size()!=1) throw std::runtime_error("expert store requires original single-file direct streaming");
+         expert_store=std::make_unique<tesy_expert_store>(manifest,paths[0],layers);
+     }
++    if(const char *arena=std::getenv("TESY_C305_ARENA")) {
++        if(std::strcmp(arena,"128")||!use_direct_io||expert_store||paths.size()!=1||n_io_threads!=4)
++            throw std::runtime_error("CPU staging requires original direct byte service/four workers/128MiB");
++        std::array<std::array<uint64_t,3>,36> offsets{};
++        for(int l=2;l<=24;l++) {
++            const auto *sl=layer(l);
++            if(!sl||sl->n_expert!=128||sl->n_slots!=40||sl->weights.size()!=3)
++                throw std::runtime_error("CPU staging primary pool metadata");
++            for(int k=0;k<3;k++) {
++                const auto &wt=sl->weights[k];
++                if(wt.file_idx!=0||wt.nb_expert!=c305_cpu_stage::slab||wt.cache->type!=GGML_TYPE_MXFP4||wt.cache->ne[0]!=2880||wt.cache->ne[1]!=2880||wt.cache->nb[2]!=c305_cpu_stage::slab||!ggml_backend_buffer_is_host(wt.cache->buffer))
++                    throw std::runtime_error("CPU staging component/device/encoding differs");
++                offsets[l][k]=wt.offs;
++            }
++        }
++        prediction_stage=std::make_unique<c305_cpu_stage>(paths[0].c_str(),offsets);
++        prediction_stage->journal_enabled=std::getenv("TESY_C305_JOURNAL")!=nullptr;
++        prediction_stage->validate=std::getenv("TESY_C305_VALIDATE")!=nullptr;
++        if(prediction_stage->validate&&!prediction_stage->journal_enabled)throw std::runtime_error("stage witness requires journal");
++    }
++}
++
++void llama_moe_stream::prediction_begin(bool enabled) {
++    std::lock_guard<std::mutex> lk(mtx);
++    if(!prediction_stage)throw std::runtime_error("CPU staging arena was not prospectively allocated");
++    prediction_stage->begin(enabled);
++}
++void llama_moe_stream::prediction_finish() {
++    std::unique_lock<std::mutex> lk(mtx);
++    if(!prediction_stage)return;
++    prediction_stage->finish();cv_work.notify_all();
++    if(!cv_done.wait_for(lk,std::chrono::seconds(10),[&]{return prediction_stage->idle()||load_failed;}))
++        throw std::runtime_error("CPU staging cleanup timeout");
++    if(load_failed)throw std::runtime_error("CPU staging byte service failed");
++}
++void llama_moe_stream::prediction_request(int call,int target,const std::array<int,4>& experts) {
++    std::lock_guard<std::mutex> lk(mtx);
++    if(!prediction_stage||!prediction_stage->enabled)return;
++    auto *sl=layer(target);
++    if(!sl||target<2||target>24)throw std::runtime_error("CPU prediction target scope");
++    std::array<uint8_t,128> seen{};
++    for(int expert:experts) {
++        if(expert<0||expert>=128||seen[expert]++)throw std::runtime_error("CPU prediction top4 identity");
++        // Neither a prediction nor a loading entry is a primary resident hit.
++        if(sl->expert_slot.find(expert)==sl->expert_slot.end())prediction_stage->request(call,target,expert);
++    }
++    cv_work.notify_all();
++}
++void llama_moe_stream::prediction_router_locked(int call,llama_moe_stream_layer &sl,const int32_t *ids,size_t n) {
++    if(!prediction_stage||!prediction_stage->enabled||sl.il<2||sl.il>24)return;
++    prediction_stage->expire(call,sl.il,ids,n);
++    for(size_t j=0;j<n;j++) {
++        auto it=sl.expert_slot.find(ids[j]);
++        // An existing primary load/resident byte source wins; it cannot be evicted
++        // or delayed just because a prediction also exists.
++        if(it!=sl.expert_slot.end()) {
++            int i=prediction_stage->find(call,sl.il,ids[j]);
++            if(i>=0)prediction_stage->cancel(i);
++        }
++    }
++    cv_work.notify_all();
+ }
+ 
+ // spawn the I/O thread pool on first use (from the remap callback, under mtx)
+@@ -326,10 +388,19 @@ void llama_moe_stream::worker_loop() {
+ 
+     std::unique_lock<std::mutex> lk(mtx);
+     while (true) {
+-        cv_work.wait(lk, [&]{ return shutting_down || !q_demand.empty(); });
++        cv_work.wait(lk, [&]{ return shutting_down || !q_demand.empty() || (prediction_stage&&prediction_stage->next()>=0); });
+         if (shutting_down) {
+             break;
+         }
++        if(q_demand.empty()) {
++            const int index=prediction_stage->next();
++            const auto ticket=prediction_stage->start(index);
++            lk.unlock();bool ok=true;
++            try{prediction_stage->read(index,ticket);}catch(const std::exception &error){LLAMA_LOG_ERROR("CPU staging read failed: %s\n",error.what());ok=false;}
++            lk.lock();prediction_stage->complete(index,ticket,ok);
++            if(!ok&&!shutting_down)load_failed=true;
++            cv_done.notify_all();cv_work.notify_all();continue;
++        }
+ 
+         llama_moe_stream_work w = q_demand.front();
+         q_demand.pop_front();
+@@ -344,11 +415,47 @@ void llama_moe_stream::worker_loop() {
+         sl.slot_claimed[w.slot] = 1;
+         window.record(5,sl.il,w.expert,w.slot,w.gen,w.trace_route,-1,0,0,w.trace_call);
+ 
++        int staged=-1;uint64_t prediction_ticket=0;bool validate_stage=false;
++        if(prediction_stage&&prediction_stage->enabled) {
++            staged=prediction_stage->find(int(w.trace_call),sl.il,w.expert);
++            if(staged>=0) {
++                prediction_ticket=prediction_stage->entries[staged].ticket;
++                if(!prediction_stage->demand(staged,prediction_ticket))staged=-1;
++                else {
++                    cv_work.notify_all();
++                    if(prediction_stage->entries[staged].status==c305_cpu_stage::READING) {
++                        prediction_stage->stats.waits++;
++                        cv_done.wait(lk,[&]{return shutting_down||load_failed||prediction_stage->entries[staged].status!=c305_cpu_stage::READING;});
++                    }
++                    if(shutting_down||load_failed){sl.slot_claimed[w.slot]=0;cv_done.notify_all();break;}
++                    if(w.gen!=sl.slot_gen[w.slot]||sl.slot_expert[w.slot]!=w.expert||sl.slot_state[w.slot]!=LLAMA_MOE_STREAM_SLOT_LOADING||!sl.slot_claimed[w.slot]) {
++                        load_failed=true;sl.slot_claimed[w.slot]=0;cv_done.notify_all();break;
++                    }
++                    prediction_stage->claim(staged,prediction_ticket);
++                    prediction_stage->record(7,staged,w.slot,w.gen);
++                    if(prediction_stage->validate&&prediction_stage->stats.validation_claims<8){prediction_stage->stats.validation_claims++;validate_stage=true;}
++                }
++            }
++        }
++
+         lk.unlock();
+ 
+         bool ok = true;
+         try {
+-            if (expert_store) {
++            if(staged>=0) {
++                for(size_t k=0;k<sl.weights.size();k++) {
++                    const auto &wt=sl.weights[k];
++                    window.record(8,sl.il,w.expert,w.slot,w.gen,w.trace_route,int(k),wt.nb_expert,0,w.trace_call);
++                    ggml_backend_tensor_set(wt.cache,prediction_stage->bytes(staged,int(k),prediction_ticket),(size_t)w.slot*wt.nb_expert,wt.nb_expert);
++                    if(validate_stage){
++                        prediction_stage->reader.read(staging,wt.nb_expert,wt.offs+size_t(w.expert)*wt.nb_expert);
++                        if(std::memcmp(staging,prediction_stage->bytes(staged,int(k),prediction_ticket),wt.nb_expert)||
++                           std::memcmp(staging,static_cast<uint8_t*>(wt.cache->data)+size_t(w.slot)*wt.nb_expert,wt.nb_expert))
++                            throw std::runtime_error("stage canonical/destination bytes mismatch");
++                    }
++                    window.record(9,sl.il,w.expert,w.slot,w.gen,w.trace_route,int(k),wt.nb_expert,0,w.trace_call);
++                }
++            } else if (expert_store) {
+                 const uint8_t *data=expert_store->read(sl.il,w.expert,staging);
+                 const auto &entry=expert_store->entries[sl.il][w.expert];
+                 for (size_t k=0;k<sl.weights.size();k++) {
+@@ -372,6 +479,11 @@ void llama_moe_stream::worker_loop() {
+         }
+         lk.lock();
+         const bool valid=tesy_store_completion_valid(shutting_down,ok,w.gen,sl.slot_gen[w.slot],w.expert,sl.slot_expert[w.slot],sl.slot_state[w.slot],sl.slot_claimed[w.slot]);
++        if(staged>=0){
++            if(valid)prediction_stage->record(11,staged,w.slot,w.gen);
++            if(validate_stage&&ok)for(int k=0;k<3;k++){prediction_stage->stats.validation_components++;prediction_stage->record(10,staged,w.slot,w.gen,k);}
++            prediction_stage->release(staged,prediction_ticket);
++        }
+         if (w.gen==sl.slot_gen[w.slot] && w.expert==sl.slot_expert[w.slot]) sl.slot_claimed[w.slot]=0;
+         if (!valid) {
+             if (!shutting_down) load_failed=true; // stale/error fail closed, cancellation never publishes
+@@ -481,6 +593,10 @@ void llama_moe_stream_remap(ggml_tensor * dst, const ggml_tensor * a, int ith, i
+     std::unique_lock<std::mutex> lk(mgr->mtx);
+     mgr->active_route=++mgr->window.next_route;
+     mgr->window.record(2,sl->il,-1,-1,0,mgr->active_route,-1,0,(int)a->ne[1]);
++    if(mgr->prediction_stage&&mgr->prediction_stage->enabled) {
++        if(a->ne[1]!=1)throw std::runtime_error("CPU staging only qualified for single-position decode");
++        mgr->prediction_router_locked(int(mgr->window.call.load()),*sl,ids,size_t(n));
++    }
+ 
+     if (mgr->load_failed) {
+         GGML_ABORT("MoE expert streaming: expert load failed (I/O error)");
+diff --git a/src/llama-moe-stream.h b/src/llama-moe-stream.h
+index 9d2da6ce..335be7db 100644
+--- a/src/llama-moe-stream.h
++++ b/src/llama-moe-stream.h
+@@ -6,6 +6,7 @@
+ #include "ggml-cpp.h"
+ 
+ #include <condition_variable>
++#include <array>
+ #include <cstdint>
+ #include <deque>
+ #include <memory>
+@@ -33,6 +34,7 @@
+ 
+ struct llama_moe_stream;
+ struct tesy_expert_store;
++struct c305_cpu_stage;
+ 
+ enum llama_moe_stream_slot_state : uint8_t {
+     LLAMA_MOE_STREAM_SLOT_EMPTY    = 0,
+@@ -147,6 +149,7 @@ struct llama_moe_stream {
+     bool use_direct_io = false; // O_DIRECT streaming reads (LLAMA_MOE_STREAM_DIRECT), no page cache
+ 
+     std::unique_ptr<tesy_expert_store> expert_store; // opt-in immutable byte source, no additional primary experts
++    std::unique_ptr<c305_cpu_stage> prediction_stage;
+     llama_files files; // privately reopened GGUF files, same indices as the loader's
+ 
+     size_t  max_nb_expert      = 0;
+@@ -195,6 +198,10 @@ struct llama_moe_stream {
+     // internals
+     void start_workers_locked();
+     void worker_loop();
++    void prediction_begin(bool enabled);
++    void prediction_finish();
++    void prediction_request(int call,int layer,const std::array<int,4>& experts);
++    void prediction_router_locked(int call,llama_moe_stream_layer &sl,const int32_t *ids,size_t n);
+     int32_t pick_victim_locked(llama_moe_stream_layer & sl, const uint8_t * keep) const;
+     void reserve_slot_locked(llama_moe_stream_layer & sl, int32_t expert, int32_t slot);
+ 

@@ -1,0 +1,42 @@
+{
+  "id": "c179-live-backend-smoke",
+  "start": {
+    "utc": "2026-09-30T15:36:07.122054+00:00",
+    "monotonic_s": 276946.59527429
+  },
+  "end": {
+    "utc": "2026-09-30T15:37:11.691661+00:00",
+    "monotonic_s": 277011.16489231
+  },
+  "argv": [
+    "/usr/bin/python3",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/tools/run_bounded.py",
+    "--run-id",
+    "c179-live-backend-smoke",
+    "--model-id",
+    "model-free",
+    "--backend",
+    "stock",
+    "--backend-root",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/backends/c165-mmap-diagnostic",
+    "--output-root",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c179-layer24-reference-after-smoke-20260930T1529Z/raw",
+    "--variant",
+    "real-entrypoint-backend-mapping-smoke",
+    "--workload",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c179-layer24-reference-after-smoke-20260930T1529Z/protocol.json",
+    "--cache-condition",
+    "no-weights-no-graph",
+    "--resource-protocol",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c179-layer24-reference-after-smoke-20260930T1529Z/protocol.json",
+    "--require-telemetry",
+    "--timeout-s",
+    "5",
+    "--collect-start-inventory",
+    "--",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c179-layer24-reference-after-smoke-20260930T1529Z/build/backend_identity_smoke"
+  ],
+  "returncode": 0,
+  "stdout": "{\"run_id\": \"c179-live-backend-smoke\", \"elapsed_s\": 2.091, \"returncode\": 0, \"stop_reason\": null, \"maxima\": {\"rss_bytes\": 4894720, \"swap_bytes\": 0, \"cgroup_memory_bytes\": 34447360, \"cgroup_peak_bytes\": 55676928, \"cgroup_file_bytes\": 53248, \"gpu_used_mib\": 12.0, \"gpu_temperature_c\": 44.0, \"cpu_tctl_c\": 49.0, \"nvme_composite_c\": 33.85, \"direct_model_fds\": 0, \"buffered_model_fds\": 0}}\n",
+  "stderr": ""
+}

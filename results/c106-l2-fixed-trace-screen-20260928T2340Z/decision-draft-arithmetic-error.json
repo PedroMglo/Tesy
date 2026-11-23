@@ -1,0 +1,30 @@
+{
+  "3GiB_L2_not_admitted_from_this_accounting": "3 GiB plus C105 peak exceeds E18 preventive stop before staging/copy overhead",
+  "E18_cgroup_peak_C105_bytes": 15486615552,
+  "E18_memory_stop_bytes": 18790481920,
+  "M3": "PARTIAL",
+  "M4": "NOT_MET",
+  "best_optimistic_fraction": 0.1336,
+  "default_changed": false,
+  "limitations": [
+    "fixed routed-event sequence with no feedback from L2",
+    "logical expert bytes, not physical NVMe traffic or wall-time speedup",
+    "copy/H2D costs, RAM ownership/staging, page cache and equal-memory pool alternative excluded",
+    "189+32 numeric workload only; warm 153-ID session representativeness NOT_RUN",
+    "wait union is diagnostic interval, not proven removable critical-path time"
+  ],
+  "measurement": "MODEL_FREE_SIMULATION_OF_C105_TARGET_TRACE",
+  "next_action": "Do not build L2 for 189+32 based on this trace. A distinct 512-prefix plus 153-new-ID session trace may test whether warm exact-prefix reuse changes the result; first bound event count and freeze C75/C84 output bridge. Otherwise pivot to decode compute/overlap/backend.",
+  "primary_investment_gate_fraction": 0.2,
+  "scenario_saved_fractions": {
+    "1GiB_on_evict_lru": 0.0884,
+    "1GiB_on_load_lru": 0.0,
+    "2GiB_on_evict_lru": 0.114,
+    "2GiB_on_load_lru": 0.0004,
+    "3GiB_on_evict_lru": 0.1336,
+    "3GiB_on_load_lru": 0.0008
+  },
+  "schema": "c106-decision-v1",
+  "status": "NO_GO_L2_189_PLUS_32_FIXED_TRACE",
+  "trace_sha256": "bb3ae9352749283f76ce12b65ea76801916396f87849d609169215fefdf4e40d"
+}

@@ -1,0 +1,251 @@
+{
+  "run_id": "c2-probe20b-stream-short01",
+  "started_utc": "2026-09-26T14:19:27.347280+00:00",
+  "model_id": "gpt-oss-20b-mxfp4-gguf",
+  "model_path": "/home/pmglo/.local/share/tesy/models/gpt-oss-20b/gpt-oss-20b-mxfp4.gguf",
+  "artifact_identity": {
+    "revision": "a7443ebb00ba299cbbbf7e9b69487670447ae8c0",
+    "sha256_previously_verified": "52f57ab7d3df3ba9173827c1c6832e73375553a846f3e32b49f1ae2daad688d4",
+    "size_bytes_at_launch": 12109564352
+  },
+  "backend": "streaming",
+  "backend_sha": "1248fd8fa8cfebaece5ea992e4d951c1e18bb9d5",
+  "binary_sha256": "60374476286e31c77dc787b7154f1475f202a9b9f069fd6c02a7de20711a56e8",
+  "backend_libraries_sha256": {
+    "build-gcc15/bin/libllama.so.0.0.1": "31b56002c36c159f71eba54c0d8e625ae140d34b2b1a503f3dc4db47237719cc",
+    "build-gcc15/bin/libggml.so.0.15.3": "97a33247336b56aaabe1a8bee4da6cd05e73e8b4327afd2cef67c5526df8ab71",
+    "build-gcc15/bin/libggml-cpu.so.0.15.3": "b57845ea9f9ce9455d78e6fe290c09b50b9414db9280409b9e5cc143d1b13b61",
+    "build-gcc15/bin/libggml-cuda.so.0.15.3": "5b363c951b87164e94d5b6af35a82c875634aadcb29c9278245cd7516f44cc7e",
+    "build-gcc15/bin/libggml-base.so.0.15.3": "4c322a199c86b801389ed4bda94074083624e0a6460e25681be4b626cc72873d"
+  },
+  "variant": "c2-probe-cpu0-stream24-ub32",
+  "workload": "workloads/c2_numeric_cases_v1.tsv",
+  "workload_sha256": "09c35d5c7df557e066ec6e81483479fde81cc29c11e0c673221f9379b98ec805",
+  "input_files_sha256": {
+    "results/c2-target-numeric-v1.ids": "8fb3aff447febaeaa5a8bdd0c485fd20d51d39fb6ac3e6ba4849eb4a664dbc23"
+  },
+  "cache_condition": "direct-expert-reads-same-target-token-ids",
+  "command": [
+    "tools/c2_logits_probe_streaming",
+    "run",
+    "/home/pmglo/.local/share/tesy/models/gpt-oss-20b/gpt-oss-20b-mxfp4.gguf",
+    "stream",
+    "0",
+    "results/c2-target-numeric-v1.ids",
+    "results/c2-probe20b-stream-short01",
+    "24",
+    "32",
+    "quant_short"
+  ],
+  "explicit_env": {
+    "LLAMA_MOE_STREAM_NO_PRELOAD": "1"
+  },
+  "stdin_file": null,
+  "stdin_sha256": null,
+  "limits": {
+    "timeout_s": 900,
+    "max_rss_gib": 17.0,
+    "min_available_gib": 6.0,
+    "max_gpu_mib": 7000.0,
+    "max_cpu_c": 95.0,
+    "max_gpu_c": 80.0,
+    "max_nvme_c": 70.0,
+    "allow_cgroup_max_reclaim": false,
+    "require_telemetry": true
+  },
+  "cgroup_start": {
+    "path": "/user.slice/user-1000.slice/user@1000.service/app.slice/run-p217138-i176014.scope",
+    "memory_max": 19327352832,
+    "swap_max": 0,
+    "memory_current": 13066240,
+    "memory_peak": 15466496,
+    "swap_current": 0,
+    "memory_stat": {
+      "anon": 10997760,
+      "file": 0,
+      "kernel": 212992,
+      "shmem": 0,
+      "file_mapped": 0
+    },
+    "events": {
+      "low": 0,
+      "high": 0,
+      "max": 0,
+      "oom": 0,
+      "oom_kill": 0,
+      "oom_group_kill": 0,
+      "sock_throttled": 0
+    },
+    "events_local": {
+      "low": 0,
+      "high": 0,
+      "max": 0,
+      "oom": 0,
+      "oom_kill": 0,
+      "oom_group_kill": 0,
+      "sock_throttled": 0
+    },
+    "pressure": {
+      "some": {
+        "avg10": 0.0,
+        "avg60": 0.0,
+        "avg300": 0.0,
+        "total": 0
+      },
+      "full": {
+        "avg10": 0.0,
+        "avg60": 0.0,
+        "avg300": 0.0,
+        "total": 0
+      }
+    }
+  },
+  "publication": "local only; stdout/stderr are untracked",
+  "samples_path": "/home/pmglo/Projects/Tesy/tesy-scale-lab/results/c2-probe20b-stream-short01.samples.jsonl",
+  "cgroup_limit_enforced": true,
+  "ended_utc": "2026-09-26T14:19:41.112988+00:00",
+  "elapsed_s": 13.766,
+  "returncode": 0,
+  "stop_reason": null,
+  "maxima": {
+    "rss_bytes": 10192195584,
+    "swap_bytes": 0,
+    "cgroup_memory_bytes": 10452430848,
+    "cgroup_peak_bytes": 10472841216,
+    "cgroup_file_bytes": 2463948800,
+    "gpu_used_mib": 116.0,
+    "gpu_temperature_c": 55.0,
+    "cpu_tctl_c": 90.5,
+    "nvme_composite_c": 46.85,
+    "direct_model_fds": 2,
+    "buffered_model_fds": 0
+  },
+  "last_sample": {
+    "elapsed_s": 12.765,
+    "pid": 217195,
+    "proc": {
+      "VmHWM": 10192195584,
+      "VmRSS": 10192195584,
+      "VmSwap": 0,
+      "rchar": 13060182885,
+      "syscr": 6216,
+      "read_bytes": 12189655040
+    },
+    "mem_available_bytes": 17971875840,
+    "gpu": {
+      "used_mib": 116.0,
+      "temperature_c": 55.0,
+      "power_w": 10.45
+    },
+    "thermal": {
+      "cpu_tctl_c": 80.375,
+      "nvme_composite_c": 45.85
+    },
+    "cgroup": {
+      "path": "/user.slice/user-1000.slice/user@1000.service/app.slice/run-p217138-i176014.scope",
+      "memory_max": 19327352832,
+      "swap_max": 0,
+      "memory_current": 10452430848,
+      "memory_peak": 10472841216,
+      "swap_current": 0,
+      "memory_stat": {
+        "anon": 7956541440,
+        "file": 2463948800,
+        "kernel": 28946432,
+        "shmem": 1979084800,
+        "file_mapped": 1981181952
+      },
+      "events": {
+        "low": 0,
+        "high": 0,
+        "max": 0,
+        "oom": 0,
+        "oom_kill": 0,
+        "oom_group_kill": 0,
+        "sock_throttled": 0
+      },
+      "events_local": {
+        "low": 0,
+        "high": 0,
+        "max": 0,
+        "oom": 0,
+        "oom_kill": 0,
+        "oom_group_kill": 0,
+        "sock_throttled": 0
+      },
+      "pressure": {
+        "some": {
+          "avg10": 0.0,
+          "avg60": 0.0,
+          "avg300": 0.0,
+          "total": 0
+        },
+        "full": {
+          "avg10": 0.0,
+          "avg60": 0.0,
+          "avg300": 0.0,
+          "total": 0
+        }
+      }
+    },
+    "model_fds": {
+      "open": 1,
+      "direct": 1,
+      "buffered": 0
+    }
+  },
+  "stdout_path": "/home/pmglo/Projects/Tesy/tesy-scale-lab/results/c2-probe20b-stream-short01.stdout",
+  "stderr_path": "/home/pmglo/Projects/Tesy/tesy-scale-lab/results/c2-probe20b-stream-short01.stderr",
+  "cgroup_end": {
+    "path": "/user.slice/user-1000.slice/user@1000.service/app.slice/run-p217138-i176014.scope",
+    "memory_max": 19327352832,
+    "swap_max": 0,
+    "memory_current": 505778176,
+    "memory_peak": 10496983040,
+    "swap_current": 0,
+    "memory_stat": {
+      "anon": 11055104,
+      "file": 490504192,
+      "kernel": 946176,
+      "shmem": 0,
+      "file_mapped": 0
+    },
+    "events": {
+      "low": 0,
+      "high": 0,
+      "max": 0,
+      "oom": 0,
+      "oom_kill": 0,
+      "oom_group_kill": 0,
+      "sock_throttled": 0
+    },
+    "events_local": {
+      "low": 0,
+      "high": 0,
+      "max": 0,
+      "oom": 0,
+      "oom_kill": 0,
+      "oom_group_kill": 0,
+      "sock_throttled": 0
+    },
+    "pressure": {
+      "some": {
+        "avg10": 0.0,
+        "avg60": 0.0,
+        "avg300": 0.0,
+        "total": 0
+      },
+      "full": {
+        "avg10": 0.0,
+        "avg60": 0.0,
+        "avg300": 0.0,
+        "total": 0
+      }
+    }
+  },
+  "output_sha256": {
+    ".stdout": "9a7ef69719584c7ce78a30edd230533666c626694ff7ea0e65221b14c04c84e7",
+    ".stderr": "2df25f7018122c6d3c04b4de4acf8130ca71ce9badbd4ae4ad07d94547297cc3",
+    ".samples.jsonl": "b77040649d91ed3311d51db4a91d4e8a64b6ba97b7c05100b0470643a566c179"
+  }
+}

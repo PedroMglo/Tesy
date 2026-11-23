@@ -1,0 +1,39 @@
+{
+  "measurement_commit": "7dd91314e31766674dcce1f466ea47cc9dcd978b",
+  "start": {
+    "utc": "2026-10-06T23:11:34.553830+00:00",
+    "monotonic_s": 104512.999416507
+  },
+  "end": {
+    "utc": "2026-10-06T23:12:40.631308+00:00",
+    "monotonic_s": 104579.07689052
+  },
+  "argv": [
+    "systemd-run",
+    "--user",
+    "--slice=tesy-post-c154.slice",
+    "--unit=tesy-c300-heldout-fixture",
+    "--collect",
+    "--pipe",
+    "--wait",
+    "--working-directory=/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc",
+    "-p",
+    "MemoryMax=4294967296",
+    "-p",
+    "MemoryHigh=4294967296",
+    "-p",
+    "MemorySwapMax=0",
+    "-p",
+    "RuntimeMaxSec=240",
+    "-p",
+    "TimeoutStopSec=10",
+    "--",
+    "/usr/bin/python",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/tools/residency_unit_run.py",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c300-prediction-heldout-fixture-20261007",
+    "--inside"
+  ],
+  "returncode": 1,
+  "stdout": "",
+  "stderr": "Running as unit: tesy-c300-heldout-fixture.service\n          Finished with result: exit-code\nMain processes terminated with: code=exited, status=1/FAILURE\n               Service runtime: 1min 5.968s\n             CPU time consumed: 8.994s\n                   Memory peak: 177.7M (swap: 0B)\n"
+}

@@ -1,0 +1,137 @@
+{
+  "run_id": "server20b-gpu8-smoke01",
+  "started_utc": "2026-09-26T00:19:47.418845+00:00",
+  "model_id": "gpt-oss-20b-mxfp4-gguf",
+  "model_path": "/home/pmglo/.local/share/tesy/models/gpt-oss-20b/gpt-oss-20b-mxfp4.gguf",
+  "backend": "streaming",
+  "backend_sha": "1248fd8fa8cfebaece5ea992e4d951c1e18bb9d5",
+  "binary_sha256": "0d64bd6d66d68dac91cdadafc46e22d4f09f22bdc997aaae870f42865b024a3e",
+  "variant": "gpu8-stream16-localhost-server",
+  "workload": "public-arithmetic-chat",
+  "cache_condition": "warm-after-prior-runs-loader-and-experts-direct",
+  "command": [
+    "/usr/bin/python3",
+    "tools/server_check.py",
+    "/home/pmglo/.local/share/tesy/models/gpt-oss-20b/gpt-oss-20b-mxfp4.gguf",
+    "server20b-gpu8-smoke01"
+  ],
+  "explicit_env": {},
+  "stdin_file": null,
+  "stdin_sha256": null,
+  "limits": {
+    "timeout_s": 130,
+    "max_rss_gib": 8.5,
+    "min_available_gib": 6.0,
+    "max_gpu_mib": 7000.0
+  },
+  "cgroup_start": {
+    "path": "/user.slice/user-1000.slice/user@1000.service/app.slice/run-p84620-i97567.scope",
+    "memory_max": 9663676416,
+    "swap_max": 0,
+    "memory_current": 12128256,
+    "swap_current": 0,
+    "memory_stat": {
+      "anon": 10633216,
+      "file": 0,
+      "kernel": 282624,
+      "shmem": 0,
+      "file_mapped": 0
+    },
+    "events": {
+      "low": 0,
+      "high": 0,
+      "max": 0,
+      "oom": 0,
+      "oom_kill": 0,
+      "oom_group_kill": 0,
+      "sock_throttled": 0
+    }
+  },
+  "publication": "local only; stdout/stderr are untracked",
+  "samples_path": "/home/pmglo/Projects/Tesy/tesy-scale-lab/results/server20b-gpu8-smoke01.samples.jsonl",
+  "cgroup_limit_enforced": true,
+  "ended_utc": "2026-09-26T00:20:09.871899+00:00",
+  "elapsed_s": 22.453,
+  "returncode": 0,
+  "stop_reason": null,
+  "maxima": {
+    "rss_bytes": 24547328,
+    "swap_bytes": 0,
+    "cgroup_memory_bytes": 5329498112,
+    "cgroup_file_bytes": 1141170176,
+    "gpu_used_mib": 2387.0,
+    "gpu_temperature_c": 55.0,
+    "direct_model_fds": 0,
+    "buffered_model_fds": 0
+  },
+  "last_sample": {
+    "elapsed_s": 21.453,
+    "proc": {
+      "VmHWM": 24547328,
+      "VmRSS": 24547328,
+      "VmSwap": 0,
+      "rchar": 29627846233,
+      "syscr": 13517,
+      "read_bytes": 28953362432
+    },
+    "mem_available_bytes": 26893828096,
+    "gpu": {
+      "used_mib": 23.0,
+      "temperature_c": 54.0,
+      "power_w": 15.11
+    },
+    "cgroup": {
+      "path": "/user.slice/user-1000.slice/user@1000.service/app.slice/run-p84620-i97567.scope",
+      "memory_max": 9663676416,
+      "swap_max": 0,
+      "memory_current": 13938688,
+      "swap_current": 0,
+      "memory_stat": {
+        "anon": 10665984,
+        "file": 28672,
+        "kernel": 561152,
+        "shmem": 0,
+        "file_mapped": 0
+      },
+      "events": {
+        "low": 0,
+        "high": 0,
+        "max": 0,
+        "oom": 0,
+        "oom_kill": 0,
+        "oom_group_kill": 0,
+        "sock_throttled": 0
+      }
+    },
+    "model_fds": {
+      "open": 0,
+      "direct": 0,
+      "buffered": 0
+    }
+  },
+  "stdout_path": "/home/pmglo/Projects/Tesy/tesy-scale-lab/results/server20b-gpu8-smoke01.stdout",
+  "stderr_path": "/home/pmglo/Projects/Tesy/tesy-scale-lab/results/server20b-gpu8-smoke01.stderr",
+  "cgroup_end": {
+    "path": "/user.slice/user-1000.slice/user@1000.service/app.slice/run-p84620-i97567.scope",
+    "memory_max": 9663676416,
+    "swap_max": 0,
+    "memory_current": 13209600,
+    "swap_current": 0,
+    "memory_stat": {
+      "anon": 10665984,
+      "file": 28672,
+      "kernel": 561152,
+      "shmem": 0,
+      "file_mapped": 0
+    },
+    "events": {
+      "low": 0,
+      "high": 0,
+      "max": 0,
+      "oom": 0,
+      "oom_kill": 0,
+      "oom_group_kill": 0,
+      "sock_throttled": 0
+    }
+  }
+}

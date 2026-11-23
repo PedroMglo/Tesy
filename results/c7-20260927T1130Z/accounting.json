@@ -1,0 +1,133 @@
+{
+  "schema": "c7-tensor-accounting-v1",
+  "evidence_class": "GGUF metadata and source placement estimate",
+  "inventory_sha256": "2c8ca725f50000bf3177712cfa30d29a809f77f25826b425ea67d8fcbffd6d82",
+  "tensor_count": 687,
+  "model_data_offset": 13022240,
+  "categories_gguf_bytes": {
+    "biases_gguf_bytes": 160422912,
+    "dense_router_norm_gguf_bytes": 1069157376,
+    "expert_encoded_gguf_bytes": 60914073600
+  },
+  "per_expert_streamed_bytes": 13219200,
+  "slots_per_layer": 32,
+  "slot_pool_per_layer_bytes": 423014400,
+  "profiles": {
+    "P8": {
+      "ngl": 8,
+      "expected_cpu_layers": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24,
+        25,
+        26,
+        27,
+        28
+      ],
+      "expected_gpu_layers": [
+        29,
+        30,
+        31,
+        32,
+        33,
+        34,
+        35
+      ],
+      "cpu_expert_pools_bytes": 12267417600,
+      "gpu_expert_pools_bytes": 2961100800,
+      "cpu_nonstream_layer_gguf_bytes": 990495232,
+      "gpu_nonstream_layer_gguf_bytes": 239085056,
+      "output_gpu_gguf_bytes": 615340800,
+      "token_embedding_cpu_gguf_bytes": 615329280
+    },
+    "P12": {
+      "ngl": 12,
+      "expected_cpu_layers": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24
+      ],
+      "expected_gpu_layers": [
+        25,
+        26,
+        27,
+        28,
+        29,
+        30,
+        31,
+        32,
+        33,
+        34,
+        35
+      ],
+      "cpu_expert_pools_bytes": 10575360000,
+      "gpu_expert_pools_bytes": 4653158400,
+      "cpu_nonstream_layer_gguf_bytes": 853875200,
+      "gpu_nonstream_layer_gguf_bytes": 375705088,
+      "output_gpu_gguf_bytes": 615340800,
+      "token_embedding_cpu_gguf_bytes": 615329280
+    }
+  },
+  "p12_minus_p8": {
+    "cpu_expert_pools_bytes": -1692057600,
+    "gpu_expert_pools_bytes": 1692057600,
+    "gpu_nonstream_layer_gguf_bytes": 136620032
+  },
+  "unbounded_or_runtime_only": [
+    "KV and recurrent KV allocation",
+    "staging and pinned host memory",
+    "graph/workspace and CUDA allocator reserves",
+    "page cache and metadata",
+    "actual output placement"
+  ],
+  "admission_policy": {
+    "gpu_total_mib_at_most": 6500,
+    "cgroup_gib_at_most": 16.5,
+    "rss_gib_at_most": 16,
+    "requires_bounded_init": true
+  }
+}

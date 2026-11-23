@@ -1,0 +1,7 @@
+# C41b 8K boundary monitor failure
+
+- Objective/base: one P12 7936+256 synthetic retrieval at 8K, E18, frozen at `cc226d1a0a030227aba817f062023811aaec940d`; C41 prelaunch failure retained. Same C35 backend, model, input and guards as C41.
+- Observed: official tokenizer returned 7936 IDs. The prefill reached at least 5693 IDs in backend progress logs. At 784.785 s the CPU monitor read impossible `policy19` value 21786195 kHz and stopped the child. Zero responses completed. Raw and stop reasons are preserved; there is no 8K PASS or quality result.
+- Resources until last valid sample at 778.200 s: CPU max 95.125 C (warning), GPU max 63 C, NVMe max 45.85 C, GPU max 5746 MiB, cgroup peak 13069123584 B, swap/OOM/cooling zero. The final cgroup had zero swap/OOM. The run is `FAIL_RESOURCES_OR_EVIDENCE`, not a thermal guard failure.
+- Alternative: the high clock value could indicate a transient sysfs read, or a persistent kernel/telemetry fault. A single later idle read was 605264 kHz, which does not establish what a simultaneous reread would have shown. Fix prospectively by logging one immediate reread; accept only if it is in range, otherwise stop. Test both valid and persistent-invalid cases model-free.
+- Decision: C41b remains failed and cannot be resumed. Use new C41c identity after the small monitor repair, fresh preflight and unchanged 8K workload/profile/guards. C15 full-model, M4 and true assistant-history continuity remain NOT_RUN; no default change.

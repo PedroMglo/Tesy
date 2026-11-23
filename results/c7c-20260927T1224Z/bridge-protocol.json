@@ -1,0 +1,45 @@
+{
+  "analyzer_sha256": "8c9443a4c982d3e8e7adcdf8553e7daf5d42c4c840771a5754a73ced3ea8d65a",
+  "baseline": "unmodified C4 prefill probe, ngl8 ub32 slots32, API defaults effective full-SWA",
+  "binary_sha256": {
+    "c4_original": "37357baa6b822dacdfb8182b778ee0d27b2737ede5419d7c3b0eb3d826990964",
+    "c7_parametric": "4c0dc056cec3edcf5b05cd6b34208a9fe9a18bb92cf74d5e33f2f2553ccc5a43"
+  },
+  "candidate": "C7 profile probe, ngl8 ub32 slots32, explicit full-SWA/Flash/KV settings",
+  "created_utc": "2026-09-27T12:25:04.349632+00:00",
+  "decision": "both full 201088-F32 logits payloads bitwise equal, complete output index, raw provenance and resources valid; mismatch blocks bridge claim",
+  "external_calls": 1,
+  "model_sha256": "582bd40f6886200101f4c4ed9f25f3fe80cc14c86e9e2b37746cd8904a0c622d",
+  "original_backend_commit": "1248fd8fa8cfebaece5ea992e4d951c1e18bb9d5",
+  "output_mask": "position 112 only",
+  "p12_reference_complete_sha256": "45a5232fbde130ce729e1772583318ebacc1192bbf7899086e6e7fd5874d258b",
+  "parent_protocol_sha256": "a49377550b7a05e26225c38cbefa2dab8f1ecce38e27c6827b2e0c10a5aac108",
+  "prompt_case": "latency-short",
+  "prompt_ids": 113,
+  "publication": "local only",
+  "purpose": "same-host original C4 probe versus C7 parametrized P8 numerical bridge",
+  "resource": {
+    "max_cgroup_gib": 16.5,
+    "max_cpu_c": 95,
+    "max_gpu_c": 80,
+    "max_gpu_mib": 6500,
+    "max_nvme_c": 70,
+    "max_rss_gib": 16,
+    "mem_available_min_gib": 6,
+    "scope_memory_max_bytes": 19327352832,
+    "scope_swap_max_bytes": 0,
+    "timeout_s": 300
+  },
+  "run_order": [
+    "c7c-p8-c4-bridge01",
+    "c7c-p8-c7-bridge01"
+  ],
+  "schema": "c7c-p8-bridge-protocol-v1",
+  "source_sha256": {
+    "c4_original": "4e1e5d849e6c5697fd0f2f7cd590cab4ed04f8418fff721b17c9e24c80c3f26f",
+    "c7_parametric": "cdb95c9df8dcc2b6749d787c80d419e37bfcc6eeacfbbf246cfc26e9627f070c"
+  },
+  "teacher_forcing": false,
+  "timing_ids_path": "results/c3-p1-latency-ids01.tsv",
+  "timing_ids_sha256": "368c48ac1e93d68ec1746bb3d5f7e63118f35d7903c58f88dbe5c983b69190fb"
+}

@@ -1,0 +1,22 @@
+{
+  "C15_model_status": "NOT_RUN",
+  "C29_failure_preserved": true,
+  "C34b_failure_preserved": true,
+  "attempted_command": "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=tools python3 tools/c35_template_date.py results/c35-template-date-20260928T0115Z --run c35-date-shift-control --measurement-commit 2d33d306cfc907ac40e3f32738576c299e2050e2",
+  "attempted_run_id": "c35-date-shift-control",
+  "cache_claim": "NOT_RUN",
+  "candidate": "NOT_RUN",
+  "closed_utc": "2026-09-28T01:20:38.536057+00:00",
+  "completed_requests": 0,
+  "control": "FAIL_HARNESS_PRELAUNCH_SCOPE_NO_MODEL",
+  "default_changed": false,
+  "error": "c2_gate.GateError: E18 zero-swap scope unavailable",
+  "gpu_apps_after": "none",
+  "measurement_commit": "2d33d306cfc907ac40e3f32738576c299e2050e2",
+  "model_loads": 0,
+  "next_action": "new C35b identity with systemd-run --user --scope MemoryMax=19327352832 MemorySwapMax=0; fresh preflight and protocols",
+  "port_18367_after": "free",
+  "reason": "runner invoked outside required systemd-run user scope; check_scope rejected E18 zero-swap scope before idle, model loading or request",
+  "schema": "c35-date-decision-v1",
+  "status": "FAIL_HARNESS_PRELAUNCH_SCOPE_NO_MODEL"
+}

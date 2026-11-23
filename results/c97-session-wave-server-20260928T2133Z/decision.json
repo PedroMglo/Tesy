@@ -1,0 +1,28 @@
+{
+  "M3": "PARTIAL",
+  "M4": "NOT_MET",
+  "candidate": "NOT_RUN_MODEL",
+  "candidate_prelaunch_attempt_id": "c97-candidate01",
+  "control": "PASS_BRIDGE_TESTED_SCOPE",
+  "control_maxima": {
+    "cgroup_peak_bytes": 13145841664,
+    "cpu_c": 95.125,
+    "gpu_c": 62.0,
+    "gpu_total_mib": 5752.0,
+    "nvme_c": 54.85,
+    "rss_bytes": 13286535168,
+    "swap_bytes": 0
+  },
+  "control_run_id": "c97-control01",
+  "default_changed": false,
+  "historical_failures_unchanged": [
+    "C48",
+    "C78",
+    "C96 candidate prelaunch"
+  ],
+  "measurement_commit": "586aa5488af58a8faa6159e8b53dead18017a55b",
+  "next_action": "Use a new C98 candidate identity with C97 control SHA frozen; remove redundant port bind and let c2_server_run use SO_REUSEADDR.",
+  "reason": "prelaunch bind(127.0.0.1:18367) without SO_REUSEADDR rejected TIME_WAIT socket after control; independent ss inspection found no listener",
+  "schema": "c97-decision-v1",
+  "status": "FAIL_HARNESS_PRELAUNCH"
+}

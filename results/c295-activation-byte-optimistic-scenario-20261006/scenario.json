@@ -1,0 +1,575 @@
+{
+  "schema": "optimistic-activation-byte-scenario-v1",
+  "classification": "OPTIMISTIC_OFFLINE_SCENARIO",
+  "assumptions": [
+    "Observed original missing-demand/generation stream held fixed; no new cache hits/evictions awarded",
+    "Same original three-read service and native copies; predictorzero/falsepositiveszero; staging reads before truth, destinationcopy only after true demand",
+    "Four nonpreemptible whole-expert worker tasks; demand priority,128MiB arena includes running/ready stages; no future token forecasting",
+    "Nonwait attention/compute/sampling gaps fixed; feature release recomputed as earlier readiness waits accelerate",
+    "Observed service duration fixed ONLY conditioned scenario; sensitivity0.8/1.0/1.2; physical bandwidth/cache/contention can change",
+    "No transfer of slots44 timing or logicalbytes into physicalNVMe claims"
+  ],
+  "cases": {
+    "nominal153": [
+      {
+        "run": "c294-nominal153-2-on",
+        "service_sensitivity": [
+          {
+            "scale": 0.8,
+            "baseline": {
+              "decode_us": 7831833.599999993,
+              "staging_peak_bytes": 0,
+              "staging_capacity_bytes": 134217728,
+              "observed_decode_us": 9381482.0,
+              "original_decode_wait_us": 7608074,
+              "initial_inflight": 0
+            },
+            "baseline_vs_observed_percent": -16.518162055845835,
+            "variants": {
+              "0": {
+                "decode_us": 7432576.600000002,
+                "staging_peak_bytes": 52876800,
+                "staging_capacity_bytes": 134217728,
+                "observed_decode_us": 9381482.0,
+                "original_decode_wait_us": 7608074,
+                "initial_inflight": 0,
+                "gain_vs_same_service_replay_percent": 5.0978738874124065
+              },
+              "2": {
+                "decode_us": 5488623.799999994,
+                "staging_peak_bytes": 105753600,
+                "staging_capacity_bytes": 134217728,
+                "observed_decode_us": 9381482.0,
+                "original_decode_wait_us": 7608074,
+                "initial_inflight": 0,
+                "gain_vs_same_service_replay_percent": 29.919044756007086
+              }
+            }
+          },
+          {
+            "scale": 1.0,
+            "baseline": {
+              "decode_us": 9346440.0,
+              "staging_peak_bytes": 0,
+              "staging_capacity_bytes": 134217728,
+              "observed_decode_us": 9381482.0,
+              "original_decode_wait_us": 7608074,
+              "initial_inflight": 0
+            },
+            "baseline_vs_observed_percent": -0.3735230744993168,
+            "variants": {
+              "0": {
+                "decode_us": 8947183.0,
+                "staging_peak_bytes": 52876800,
+                "staging_capacity_bytes": 134217728,
+                "observed_decode_us": 9381482.0,
+                "original_decode_wait_us": 7608074,
+                "initial_inflight": 0,
+                "gain_vs_same_service_replay_percent": 4.2717548071779206
+              },
+              "2": {
+                "decode_us": 6602030.0,
+                "staging_peak_bytes": 92534400,
+                "staging_capacity_bytes": 134217728,
+                "observed_decode_us": 9381482.0,
+                "original_decode_wait_us": 7608074,
+                "initial_inflight": 0,
+                "gain_vs_same_service_replay_percent": 29.363158593004396
+              }
+            }
+          },
+          {
+            "scale": 1.2,
+            "baseline": {
+              "decode_us": 10861046.4,
+              "staging_peak_bytes": 0,
+              "staging_capacity_bytes": 134217728,
+              "observed_decode_us": 9381482.0,
+              "original_decode_wait_us": 7608074,
+              "initial_inflight": 0
+            },
+            "baseline_vs_observed_percent": 15.77111590684713,
+            "variants": {
+              "0": {
+                "decode_us": 10461789.399999991,
+                "staging_peak_bytes": 52876800,
+                "staging_capacity_bytes": 134217728,
+                "observed_decode_us": 9381482.0,
+                "original_decode_wait_us": 7608074,
+                "initial_inflight": 0,
+                "gain_vs_same_service_replay_percent": 3.6760454314973674
+              },
+              "2": {
+                "decode_us": 7720163.799999998,
+                "staging_peak_bytes": 92534400,
+                "staging_capacity_bytes": 134217728,
+                "observed_decode_us": 9381482.0,
+                "original_decode_wait_us": 7608074,
+                "initial_inflight": 0,
+                "gain_vs_same_service_replay_percent": 28.918784473658103
+              }
+            }
+          }
+        ],
+        "gpu_prefill_gross_conditional_upper": {
+          "gross_upper_us": 477660,
+          "prefill_observed_us": 9645227,
+          "remove_all_gross_percent": 4.952294020659131,
+          "tiles": [
+            {
+              "begin_us": 100601232098,
+              "end_us": 100601870029,
+              "nonwait_gross_us": 101271,
+              "readiness_wait_union_us": 536660
+            },
+            {
+              "begin_us": 100602704360,
+              "end_us": 100602913751,
+              "nonwait_gross_us": 88435,
+              "readiness_wait_union_us": 120956
+            },
+            {
+              "begin_us": 100603950108,
+              "end_us": 100604416185,
+              "nonwait_gross_us": 96252,
+              "readiness_wait_union_us": 369825
+            },
+            {
+              "begin_us": 100605315121,
+              "end_us": 100605762351,
+              "nonwait_gross_us": 101525,
+              "readiness_wait_union_us": 345705
+            },
+            {
+              "begin_us": 100608309809,
+              "end_us": 100609138783,
+              "nonwait_gross_us": 90177,
+              "readiness_wait_union_us": 738797
+            }
+          ],
+          "scope": "Conditional fixed observed work/release/wait scenario. Gross overestimate includes CPU24FFN plus all GPU attention, copies, dispatch and logits; NOT eligible parked-kernel duration or universal physical bound."
+        }
+      },
+      {
+        "run": "c294-nominal153-3-on",
+        "service_sensitivity": [
+          {
+            "scale": 0.8,
+            "baseline": {
+              "decode_us": 7873357.400000003,
+              "staging_peak_bytes": 0,
+              "staging_capacity_bytes": 134217728,
+              "observed_decode_us": 9414981.0,
+              "original_decode_wait_us": 7584062,
+              "initial_inflight": 0
+            },
+            "baseline_vs_observed_percent": -16.37415518947937,
+            "variants": {
+              "0": {
+                "decode_us": 7449224.3999999855,
+                "staging_peak_bytes": 52876800,
+                "staging_capacity_bytes": 134217728,
+                "observed_decode_us": 9414981.0,
+                "original_decode_wait_us": 7584062,
+                "initial_inflight": 0,
+                "gain_vs_same_service_replay_percent": 5.386939503089464
+              },
+              "2": {
+                "decode_us": 5507628.199999991,
+                "staging_peak_bytes": 92534400,
+                "staging_capacity_bytes": 134217728,
+                "observed_decode_us": 9414981.0,
+                "original_decode_wait_us": 7584062,
+                "initial_inflight": 0,
+                "gain_vs_same_service_replay_percent": 30.047273098513365
+              }
+            }
+          },
+          {
+            "scale": 1.0,
+            "baseline": {
+              "decode_us": 9383967.0,
+              "staging_peak_bytes": 0,
+              "staging_capacity_bytes": 134217728,
+              "observed_decode_us": 9414981.0,
+              "original_decode_wait_us": 7584062,
+              "initial_inflight": 0
+            },
+            "baseline_vs_observed_percent": -0.3294111799057268,
+            "variants": {
+              "0": {
+                "decode_us": 8959834.0,
+                "staging_peak_bytes": 52876800,
+                "staging_capacity_bytes": 134217728,
+                "observed_decode_us": 9414981.0,
+                "original_decode_wait_us": 7584062,
+                "initial_inflight": 0,
+                "gain_vs_same_service_replay_percent": 4.519762271116256
+              },
+              "2": {
+                "decode_us": 6620902.0,
+                "staging_peak_bytes": 92534400,
+                "staging_capacity_bytes": 134217728,
+                "observed_decode_us": 9414981.0,
+                "original_decode_wait_us": 7584062,
+                "initial_inflight": 0,
+                "gain_vs_same_service_replay_percent": 29.444530229059843
+              }
+            }
+          },
+          {
+            "scale": 1.2,
+            "baseline": {
+              "decode_us": 10894576.59999999,
+              "staging_peak_bytes": 0,
+              "staging_capacity_bytes": 134217728,
+              "observed_decode_us": 9414981.0,
+              "original_decode_wait_us": 7584062,
+              "initial_inflight": 0
+            },
+            "baseline_vs_observed_percent": 15.715332829667851,
+            "variants": {
+              "0": {
+                "decode_us": 10470443.600000009,
+                "staging_peak_bytes": 52876800,
+                "staging_capacity_bytes": 134217728,
+                "observed_decode_us": 9414981.0,
+                "original_decode_wait_us": 7584062,
+                "initial_inflight": 0,
+                "gain_vs_same_service_replay_percent": 3.8930654725947016
+              },
+              "2": {
+                "decode_us": 7738041.600000013,
+                "staging_peak_bytes": 92534400,
+                "staging_capacity_bytes": 134217728,
+                "observed_decode_us": 9414981.0,
+                "original_decode_wait_us": 7584062,
+                "initial_inflight": 0,
+                "gain_vs_same_service_replay_percent": 28.973452717749307
+              }
+            }
+          }
+        ],
+        "gpu_prefill_gross_conditional_upper": {
+          "gross_upper_us": 477899,
+          "prefill_observed_us": 9748395,
+          "remove_all_gross_percent": 4.902335204923477,
+          "tiles": [
+            {
+              "begin_us": 100747989442,
+              "end_us": 100748646739,
+              "nonwait_gross_us": 102460,
+              "readiness_wait_union_us": 554837
+            },
+            {
+              "begin_us": 100749521566,
+              "end_us": 100749729661,
+              "nonwait_gross_us": 87268,
+              "readiness_wait_union_us": 120827
+            },
+            {
+              "begin_us": 100750782191,
+              "end_us": 100751252971,
+              "nonwait_gross_us": 97213,
+              "readiness_wait_union_us": 373567
+            },
+            {
+              "begin_us": 100752174159,
+              "end_us": 100752616317,
+              "nonwait_gross_us": 101079,
+              "readiness_wait_union_us": 341079
+            },
+            {
+              "begin_us": 100755163252,
+              "end_us": 100755986166,
+              "nonwait_gross_us": 89879,
+              "readiness_wait_union_us": 733035
+            }
+          ],
+          "scope": "Conditional fixed observed work/release/wait scenario. Gross overestimate includes CPU24FFN plus all GPU attention, copies, dispatch and logits; NOT eligible parked-kernel duration or universal physical bound."
+        }
+      }
+    ],
+    "code153": [
+      {
+        "run": "c294-code153-2-on",
+        "service_sensitivity": [
+          {
+            "scale": 0.8,
+            "baseline": {
+              "decode_us": 9121972.399999995,
+              "staging_peak_bytes": 0,
+              "staging_capacity_bytes": 134217728,
+              "observed_decode_us": 10986137.0,
+              "original_decode_wait_us": 9169023,
+              "initial_inflight": 0
+            },
+            "baseline_vs_observed_percent": -16.968335639724913,
+            "variants": {
+              "0": {
+                "decode_us": 8631799.399999997,
+                "staging_peak_bytes": 52876800,
+                "staging_capacity_bytes": 134217728,
+                "observed_decode_us": 10986137.0,
+                "original_decode_wait_us": 9169023,
+                "initial_inflight": 0,
+                "gain_vs_same_service_replay_percent": 5.373541801113084
+              },
+              "2": {
+                "decode_us": 6028918.199999996,
+                "staging_peak_bytes": 92534400,
+                "staging_capacity_bytes": 134217728,
+                "observed_decode_us": 10986137.0,
+                "original_decode_wait_us": 9169023,
+                "initial_inflight": 0,
+                "gain_vs_same_service_replay_percent": 33.90773469123849
+              }
+            }
+          },
+          {
+            "scale": 1.0,
+            "baseline": {
+              "decode_us": 10948187.0,
+              "staging_peak_bytes": 0,
+              "staging_capacity_bytes": 134217728,
+              "observed_decode_us": 10986137.0,
+              "original_decode_wait_us": 9169023,
+              "initial_inflight": 0
+            },
+            "baseline_vs_observed_percent": -0.34543534274149323,
+            "variants": {
+              "0": {
+                "decode_us": 10458014.0,
+                "staging_peak_bytes": 52876800,
+                "staging_capacity_bytes": 134217728,
+                "observed_decode_us": 10986137.0,
+                "original_decode_wait_us": 9169023,
+                "initial_inflight": 0,
+                "gain_vs_same_service_replay_percent": 4.477207048071064
+              },
+              "2": {
+                "decode_us": 7290462.0,
+                "staging_peak_bytes": 92534400,
+                "staging_capacity_bytes": 134217728,
+                "observed_decode_us": 10986137.0,
+                "original_decode_wait_us": 9169023,
+                "initial_inflight": 0,
+                "gain_vs_same_service_replay_percent": 33.40941290096708
+              }
+            }
+          },
+          {
+            "scale": 1.2,
+            "baseline": {
+              "decode_us": 12774401.599999996,
+              "staging_peak_bytes": 0,
+              "staging_capacity_bytes": 134217728,
+              "observed_decode_us": 10986137.0,
+              "original_decode_wait_us": 9169023,
+              "initial_inflight": 0
+            },
+            "baseline_vs_observed_percent": 16.27746495424184,
+            "variants": {
+              "0": {
+                "decode_us": 12284228.6,
+                "staging_peak_bytes": 52876800,
+                "staging_capacity_bytes": 134217728,
+                "observed_decode_us": 10986137.0,
+                "original_decode_wait_us": 9169023,
+                "initial_inflight": 0,
+                "gain_vs_same_service_replay_percent": 3.837150383623421
+              },
+              "2": {
+                "decode_us": 8557515.600000003,
+                "staging_peak_bytes": 92534400,
+                "staging_capacity_bytes": 134217728,
+                "observed_decode_us": 10986137.0,
+                "original_decode_wait_us": 9169023,
+                "initial_inflight": 0,
+                "gain_vs_same_service_replay_percent": 33.01043862594702
+              }
+            }
+          }
+        ],
+        "gpu_prefill_gross_conditional_upper": {
+          "gross_upper_us": 493012,
+          "prefill_observed_us": 15712890,
+          "remove_all_gross_percent": 3.1376277693027825,
+          "tiles": [
+            {
+              "begin_us": 101186288322,
+              "end_us": 101186369764,
+              "nonwait_gross_us": 81442,
+              "readiness_wait_union_us": 0
+            },
+            {
+              "begin_us": 101187000899,
+              "end_us": 101187083976,
+              "nonwait_gross_us": 83077,
+              "readiness_wait_union_us": 0
+            },
+            {
+              "begin_us": 101190490295,
+              "end_us": 101191583320,
+              "nonwait_gross_us": 114107,
+              "readiness_wait_union_us": 978918
+            },
+            {
+              "begin_us": 101195758947,
+              "end_us": 101197175645,
+              "nonwait_gross_us": 119992,
+              "readiness_wait_union_us": 1296706
+            },
+            {
+              "begin_us": 101200600440,
+              "end_us": 101201374671,
+              "nonwait_gross_us": 94394,
+              "readiness_wait_union_us": 679837
+            }
+          ],
+          "scope": "Conditional fixed observed work/release/wait scenario. Gross overestimate includes CPU24FFN plus all GPU attention, copies, dispatch and logits; NOT eligible parked-kernel duration or universal physical bound."
+        }
+      },
+      {
+        "run": "c294-code153-3-on",
+        "service_sensitivity": [
+          {
+            "scale": 0.8,
+            "baseline": {
+              "decode_us": 9145647.800000004,
+              "staging_peak_bytes": 0,
+              "staging_capacity_bytes": 134217728,
+              "observed_decode_us": 11009780.0,
+              "original_decode_wait_us": 9180769,
+              "initial_inflight": 0
+            },
+            "baseline_vs_observed_percent": -16.93160262966195,
+            "variants": {
+              "0": {
+                "decode_us": 8663333.800000004,
+                "staging_peak_bytes": 52876800,
+                "staging_capacity_bytes": 134217728,
+                "observed_decode_us": 11009780.0,
+                "original_decode_wait_us": 9180769,
+                "initial_inflight": 0,
+                "gain_vs_same_service_replay_percent": 5.273699693530728
+              },
+              "2": {
+                "decode_us": 6021707.8,
+                "staging_peak_bytes": 92534400,
+                "staging_capacity_bytes": 134217728,
+                "observed_decode_us": 11009780.0,
+                "original_decode_wait_us": 9180769,
+                "initial_inflight": 0,
+                "gain_vs_same_service_replay_percent": 34.15766786908198
+              }
+            }
+          },
+          {
+            "scale": 1.0,
+            "baseline": {
+              "decode_us": 10974807.0,
+              "staging_peak_bytes": 0,
+              "staging_capacity_bytes": 134217728,
+              "observed_decode_us": 11009780.0,
+              "original_decode_wait_us": 9180769,
+              "initial_inflight": 0
+            },
+            "baseline_vs_observed_percent": -0.317653940405712,
+            "variants": {
+              "0": {
+                "decode_us": 10492493.0,
+                "staging_peak_bytes": 52876800,
+                "staging_capacity_bytes": 134217728,
+                "observed_decode_us": 11009780.0,
+                "original_decode_wait_us": 9180769,
+                "initial_inflight": 0,
+                "gain_vs_same_service_replay_percent": 4.394737875572664
+              },
+              "2": {
+                "decode_us": 7281942.0,
+                "staging_peak_bytes": 92534400,
+                "staging_capacity_bytes": 134217728,
+                "observed_decode_us": 11009780.0,
+                "original_decode_wait_us": 9180769,
+                "initial_inflight": 0,
+                "gain_vs_same_service_replay_percent": 33.64856438933277
+              }
+            }
+          },
+          {
+            "scale": 1.2,
+            "baseline": {
+              "decode_us": 12803966.199999986,
+              "staging_peak_bytes": 0,
+              "staging_capacity_bytes": 134217728,
+              "observed_decode_us": 11009780.0,
+              "original_decode_wait_us": 9180769,
+              "initial_inflight": 0
+            },
+            "baseline_vs_observed_percent": 16.296294748850443,
+            "variants": {
+              "0": {
+                "decode_us": 12321652.199999988,
+                "staging_peak_bytes": 52876800,
+                "staging_capacity_bytes": 134217728,
+                "observed_decode_us": 11009780.0,
+                "original_decode_wait_us": 9180769,
+                "initial_inflight": 0,
+                "gain_vs_same_service_replay_percent": 3.7669109123390117
+              },
+              "2": {
+                "decode_us": 8550936.999999998,
+                "staging_peak_bytes": 92534400,
+                "staging_capacity_bytes": 134217728,
+                "observed_decode_us": 11009780.0,
+                "original_decode_wait_us": 9180769,
+                "initial_inflight": 0,
+                "gain_vs_same_service_replay_percent": 33.216498181633696
+              }
+            }
+          }
+        ],
+        "gpu_prefill_gross_conditional_upper": {
+          "gross_upper_us": 491496,
+          "prefill_observed_us": 15703703,
+          "remove_all_gross_percent": 3.129809574213165,
+          "tiles": [
+            {
+              "begin_us": 101335576457,
+              "end_us": 101335657661,
+              "nonwait_gross_us": 81204,
+              "readiness_wait_union_us": 0
+            },
+            {
+              "begin_us": 101336290505,
+              "end_us": 101336372964,
+              "nonwait_gross_us": 82459,
+              "readiness_wait_union_us": 0
+            },
+            {
+              "begin_us": 101339781692,
+              "end_us": 101340882542,
+              "nonwait_gross_us": 112652,
+              "readiness_wait_union_us": 988198
+            },
+            {
+              "begin_us": 101345052321,
+              "end_us": 101346453635,
+              "nonwait_gross_us": 118225,
+              "readiness_wait_union_us": 1283089
+            },
+            {
+              "begin_us": 101349871317,
+              "end_us": 101350651534,
+              "nonwait_gross_us": 96956,
+              "readiness_wait_union_us": 683261
+            }
+          ],
+          "scope": "Conditional fixed observed work/release/wait scenario. Gross overestimate includes CPU24FFN plus all GPU attention, copies, dispatch and logits; NOT eligible parked-kernel duration or universal physical bound."
+        }
+      }
+    ]
+  },
+  "scope": "CPU same-layer and CPU two-layers-earlier only; fixed supplied153+32 inputs and observed residency, not learned predictor, generatedtoken or realizable production benefit."
+}

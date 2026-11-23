@@ -1,0 +1,39 @@
+{
+  "measurement_commit": "a6cf8c668878e5d17aad2be323cf2a96432e7c4c",
+  "start": {
+    "utc": "2026-10-04T15:46:24.567436+00:00",
+    "monotonic_s": 18508.027926248
+  },
+  "end": {
+    "utc": "2026-10-04T15:50:30.596600+00:00",
+    "monotonic_s": 18754.057086158
+  },
+  "argv": [
+    "systemd-run",
+    "--user",
+    "--slice=tesy-post-c154.slice",
+    "--unit=tesy-c257-real-head-multigrid",
+    "--collect",
+    "--pipe",
+    "--wait",
+    "--working-directory=/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc",
+    "-p",
+    "MemoryMax=17985175552",
+    "-p",
+    "MemoryHigh=17985175552",
+    "-p",
+    "MemorySwapMax=0",
+    "-p",
+    "RuntimeMaxSec=1260",
+    "-p",
+    "TimeoutStopSec=10",
+    "--",
+    "/usr/bin/python3",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/tools/residency_unit_run.py",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c257-eagle3-multigrid-fidelity-20261004",
+    "--inside"
+  ],
+  "returncode": 0,
+  "stdout": "",
+  "stderr": "Running as unit: tesy-c257-real-head-multigrid.service\n          Finished with result: success\nMain processes terminated with: code=exited, status=0/SUCCESS\n               Service runtime: 4min 5.302s\n             CPU time consumed: 7min 58.882s\n                   Memory peak: 15.7G (swap: 0B)\n"
+}

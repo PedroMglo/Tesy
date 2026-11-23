@@ -1,0 +1,122 @@
+{
+  "server_command": [
+    "/tmp/tesy-c75-backend-20260928/build-c75-cuda/bin/llama-server",
+    "-m",
+    "/home/pmglo/models/gpt-oss-120b-gguf/gpt-oss-120b-MXFP4.gguf",
+    "--host",
+    "127.0.0.1",
+    "--port",
+    "18367",
+    "-ngl",
+    "12",
+    "-c",
+    "8192",
+    "-np",
+    "1",
+    "-b",
+    "256",
+    "-ub",
+    "32",
+    "-t",
+    "8",
+    "-tb",
+    "8",
+    "--no-warmup",
+    "--no-webui",
+    "-lv",
+    "3",
+    "--no-mmap",
+    "--direct-io",
+    "--no-repack",
+    "--no-op-offload",
+    "--moe-stream",
+    "--moe-stream-cache",
+    "40s",
+    "--moe-stream-io-threads",
+    "4",
+    "--moe-stream-direct",
+    "--swa-full",
+    "--flash-attn",
+    "on",
+    "--cache-type-k",
+    "f16",
+    "--cache-type-v",
+    "f16",
+    "--kv-offload",
+    "--kv-unified",
+    "--cache-prompt",
+    "--cache-reuse",
+    "0",
+    "--cache-ram",
+    "0",
+    "--ctx-checkpoints",
+    "0",
+    "--no-cache-idle-slots",
+    "--no-context-shift",
+    "--fit",
+    "off",
+    "--chat-template-kwargs",
+    "{\"reasoning_effort\":\"medium\"}"
+  ],
+  "explicit_env": {
+    "TESY_CPU_WAVE_SKIP_PARKED": "1"
+  },
+  "suite": "native64natural",
+  "task_ids": [
+    "c112-code",
+    "c112-repeat",
+    "native64-sql"
+  ],
+  "backend_root": "/tmp/tesy-c75-backend-20260928",
+  "n_ctx": 8192,
+  "request_policy": {
+    "mode": "nominal128-actual-history-bridge",
+    "attempts": 1,
+    "max_tokens": 256,
+    "temperature": 0,
+    "seed": 42,
+    "per_request_timeout_s": 180
+  },
+  "total_timeout_s": 230,
+  "output_root": "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c196-native64-natural-screen-20260930T223734Z/raw",
+  "pretokenize": true,
+  "freeze_token_ids": true,
+  "append_previous_assistant_to_next": true,
+  "allow_cache_prompt": true,
+  "enforce_output_reserve": true,
+  "stream_requests": true,
+  "inter_request_idle_s": 0,
+  "dynamic_cache_min_common": 1900,
+  "dynamic_cache_max_lost": 32,
+  "prompt_token_ranges": {
+    "c112-code": [
+      1980,
+      2150
+    ],
+    "c112-repeat": [
+      2100,
+      2500
+    ],
+    "native64-sql": [
+      2100,
+      3500
+    ]
+  },
+  "record_monotonic_request_markers": true,
+  "readiness_timeout_s": 30,
+  "require_natural_stop": true,
+  "per_task_request_policy": {
+    "c112-code": {
+      "max_tokens": 256,
+      "per_request_timeout_s": 180
+    },
+    "c112-repeat": {
+      "max_tokens": 256,
+      "per_request_timeout_s": 90
+    },
+    "native64-sql": {
+      "max_tokens": 384,
+      "per_request_timeout_s": 120
+    }
+  }
+}

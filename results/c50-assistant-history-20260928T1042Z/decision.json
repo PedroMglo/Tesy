@@ -1,0 +1,40 @@
+{
+  "M3": "PARTIAL",
+  "M4": "NOT_RUN",
+  "closed_utc": "2026-09-28T11:01:05.416412+00:00",
+  "default_changed": false,
+  "first_response_content_sha256": "891b37049297633347693518fe3ee5e50bf62b6be57e6ac1f0b9e8604bb223d4",
+  "measurement_commit": "563b94ce035a5f224620cdde6d88a1710eef1945",
+  "new_claim": "NOT_PROMOTED",
+  "next_action": "C51 new identity: source-backed assistant-history cache bound allows matched generated tokens beyond previous prompt length; same model/backend/workload/guards; preserve C50 FAIL",
+  "old_failure_preserved": "C49 THERMAL_PREFLIGHT_BLOCKED; C48 FAIL_SAME_PROFILE_FIDELITY; C47 runtime assertion",
+  "old_prompt_lcp_ids": 2043,
+  "physical_budget_consumed_s": 50815.37260915796,
+  "physical_budget_remaining_s": 6784.627390842041,
+  "prompt_ids": [
+    2043,
+    2197
+  ],
+  "reported_cache_n": 2044,
+  "reported_cache_n_excess_over_old_prompt": 1,
+  "request_count": 2,
+  "resource_gate": "NOT_QUALIFIED_DUE_RUN_ERROR",
+  "resource_maxima_observed": {
+    "cgroup_peak_bytes": 13396131840,
+    "cpu_c": 95.125,
+    "gpu_c": 63.0,
+    "gpu_used_mib": 5752.0,
+    "nvme_c": 54.85,
+    "rss_bytes": 13288587264,
+    "swap_bytes": 0
+  },
+  "run_id": "c50-p12-assistant-history01",
+  "schema": "c50-decision-v1",
+  "second_response_matches_first": true,
+  "server_returncode": 0,
+  "specific_failure": "PREFIX_ACCOUNTING_GATE_BOUNDED_TO_OLD_PROMPT_ONLY",
+  "status": "FAIL_RESOURCES_OR_EVIDENCE",
+  "stop_reasons": [
+    "RUN_ERROR:GateError:adjacent exact-prefix cache outside frozen band"
+  ]
+}

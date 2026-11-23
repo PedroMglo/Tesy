@@ -1,0 +1,48 @@
+{
+  "id": "c294-nominal153-2-on",
+  "start": {
+    "utc": "2026-10-06T22:04:14.304963+00:00",
+    "monotonic_s": 100472.750537935
+  },
+  "end": {
+    "utc": "2026-10-06T22:06:40.699155+00:00",
+    "monotonic_s": 100619.144741368
+  },
+  "argv": [
+    "/usr/bin/python",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/tools/run_bounded.py",
+    "--run-id",
+    "c294-nominal153-2-on",
+    "--model-id",
+    "gpt-oss-120b-mxfp4-gguf",
+    "--backend",
+    "stock",
+    "--backend-root",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/backends/c294-service-window",
+    "--output-root",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c294-feature-ready-service-window-20261006/raw",
+    "--variant",
+    "R0-TRACE-ON",
+    "--workload",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c294-feature-ready-service-window-20261006/protocol.json",
+    "--cache-condition",
+    "Same original R0 full-prefix; initial drain outside window; no intermediate drain; bounded events no file/hash during153+32; phase overhead qualification",
+    "--resource-protocol",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c294-feature-ready-service-window-20261006/protocol.json",
+    "--require-telemetry",
+    "--timeout-s",
+    "200",
+    "--collect-start-inventory",
+    "--",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c283-exact-expert-service-epoch-20261006T194311Z/build/service-window/bin/expert-service-window",
+    "/home/pmglo/models/gpt-oss-120b-gguf/gpt-oss-120b-MXFP4.gguf",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c276-post-c274-r2-causal-qualification-20261005T204839Z/development-inputs.json",
+    "nominal153",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c294-feature-ready-service-window-20261006/raw/c294-nominal153-2-on.native",
+    "R0",
+    "v1"
+  ],
+  "returncode": 0,
+  "stdout": "{\"run_id\": \"c294-nominal153-2-on\", \"elapsed_s\": 85.83, \"returncode\": 0, \"stop_reason\": null, \"maxima\": {\"rss_bytes\": 15993806848, \"swap_bytes\": 0, \"cgroup_memory_bytes\": 15804637184, \"cgroup_peak_bytes\": 15825956864, \"cgroup_file_bytes\": 1521012736, \"gpu_used_mib\": 6889.0, \"gpu_temperature_c\": 61.0, \"cpu_tctl_c\": 94.75, \"nvme_composite_c\": 51.85, \"direct_model_fds\": 2, \"buffered_model_fds\": 0}}\n",
+  "stderr": ""
+}

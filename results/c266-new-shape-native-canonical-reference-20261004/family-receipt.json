@@ -1,0 +1,39 @@
+{
+  "measurement_commit": "04cc1b39c0e072c5e49f0e80f3f983e0866e5dca",
+  "start": {
+    "utc": "2026-10-04T19:15:27.465178+00:00",
+    "monotonic_s": 31050.925667646
+  },
+  "end": {
+    "utc": "2026-10-04T19:18:36.849243+00:00",
+    "monotonic_s": 31240.309729421
+  },
+  "argv": [
+    "systemd-run",
+    "--user",
+    "--slice=tesy-post-c154.slice",
+    "--unit=tesy-c266-native-canonical-reference",
+    "--collect",
+    "--pipe",
+    "--wait",
+    "--working-directory=/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc",
+    "-p",
+    "MemoryMax=4294967296",
+    "-p",
+    "MemoryHigh=4294967296",
+    "-p",
+    "MemorySwapMax=0",
+    "-p",
+    "RuntimeMaxSec=540",
+    "-p",
+    "TimeoutStopSec=10",
+    "--",
+    "/usr/bin/python3",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/tools/residency_unit_run.py",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c266-new-shape-native-canonical-reference-20261004",
+    "--inside"
+  ],
+  "returncode": 0,
+  "stdout": "",
+  "stderr": "Running as unit: tesy-c266-native-canonical-reference.service\n          Finished with result: success\nMain processes terminated with: code=exited, status=0/SUCCESS\n               Service runtime: 3min 9.093s\n             CPU time consumed: 46.009s\n                   Memory peak: 1G (swap: 0B)\n"
+}

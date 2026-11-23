@@ -1,0 +1,39 @@
+{
+  "measurement_commit": "e9f2c014b258611d3549b872fd77efa2d3d570ad",
+  "start": {
+    "utc": "2026-10-04T19:42:07.801989+00:00",
+    "monotonic_s": 32651.262479151
+  },
+  "end": {
+    "utc": "2026-10-04T19:54:09.142836+00:00",
+    "monotonic_s": 33372.603321179
+  },
+  "argv": [
+    "systemd-run",
+    "--user",
+    "--slice=tesy-post-c154.slice",
+    "--unit=tesy-c268-controlled-native-prefill-service",
+    "--collect",
+    "--pipe",
+    "--wait",
+    "--working-directory=/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc",
+    "-p",
+    "MemoryMax=21474836480",
+    "-p",
+    "MemoryHigh=21474836480",
+    "-p",
+    "MemorySwapMax=0",
+    "-p",
+    "RuntimeMaxSec=1500",
+    "-p",
+    "TimeoutStopSec=10",
+    "--",
+    "/usr/bin/python3",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/tools/residency_unit_run.py",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c268-controlled-native-prefill-service-20261004",
+    "--inside"
+  ],
+  "returncode": 0,
+  "stdout": "",
+  "stderr": "Running as unit: tesy-c268-controlled-native-prefill-service.service\n          Finished with result: success\nMain processes terminated with: code=exited, status=0/SUCCESS\n               Service runtime: 12min 1.064s\n             CPU time consumed: 49min 57.428s\n                   Memory peak: 14.7G (swap: 0B)\n"
+}

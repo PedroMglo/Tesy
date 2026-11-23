@@ -1,0 +1,22 @@
+{
+  "schema": "c94-decision-v1",
+  "status": "PASS_FULL_RESIDENT_CANONICAL_FFN_8K_TESTED_SCOPE",
+  "source_commit": "7555fd7444cc89d1ff1052d7ab524ce811bfcb7f",
+  "measurement_commits": {"witness": "4054e5cc766d591c28348d4b309b68cf60f58cd4", "remaining": "20fb9b11517d33cf78d1cce1eb6af856e5054ec0"},
+  "profile": "P12 n_ctx8192 preload ON unified KV captured activations; same C75 backend/device canonical FFN",
+  "canonical_layer_loads": 36,
+  "numeric_rows_bitwise": 250,
+  "masked_rows_na": 2,
+  "routing_ids": "ordered equality",
+  "routing_weights": "bitwise",
+  "ffn_output": "bitwise",
+  "resources": {"cgroup_cap_bytes": 17179869184, "cgroup_peak_bytes": 4133711872, "gpu_used_mib": 1734.0, "cpu_max_c": 61.375, "swap_bytes": 0},
+  "claim_limit": "Isolated same-build routed FFN for frozen 8K captured states only. Attention/KV independent reference, fresh ON race check, serving and quality remain untested.",
+  "fresh_on_repeat": "NOT_RUN",
+  "server_bridge": "NOT_RUN",
+  "M4": "NOT_MET",
+  "preserved_failures": ["C48 fidelity FAIL", "C78 E16 resource FAIL", "C91 launcher FAIL"],
+  "next_action": "Run one fresh-process C93-profile wave ON capture under new identity, require 250 states, five logits and bitwise equality with C93 ON before server timing.",
+  "default_changed": false,
+  "publication": "local_only"
+}

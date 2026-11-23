@@ -1,0 +1,11 @@
+{
+  "status": "FAIL_OBSERVER_TRUE_ROUTING_LABEL_ALIAS",
+  "native_fixture": "PASS_NUMERICAL_AND_RUNTIME_TELEMETRY",
+  "model_first_arm": "FAIL_EXIT1_exact_true_gate_label_coverage_after32forwards",
+  "stop_reason": null,
+  "numeric_evidence": "NOT_EXPOSED_COMPLETE_ROWS_NOT_YET_SERIALIZED; no parity claim from failed arm",
+  "remaining_model_arms": "NOT_RUN_PREDECESSOR_OBSERVER_FAILURE",
+  "physical_envelope_s": 213.26335101800214,
+  "cause_SOURCE_AUDITED": "openai-moe usesSOFTMAX_WEIGHT; biased logits pointer aliased to probs then cb renames same tensor ffn_moe_probs. Hook watched obsolete biased name, so no true labels delivered",
+  "repair": "C299 strict actual ffn_moe_probs CPU2-24, same F32biased original scores; synthetic name-boundary assertions. No model arithmetic/threshold/feature/horizon change"
+}

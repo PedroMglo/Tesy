@@ -1,0 +1,95 @@
+From c3759bad92c0e6f71bb936afea9b0a162fb83f76 Mon Sep 17 00:00:00 2001
+From: PedroMglo <pedro.lourenco2001@hotmail.com>
+Date: Mon, 28 Sep 2026 02:13:04 +0100
+Subject: [PATCH] common: permit fixed template date per request
+
+Assisted-by: Codex
+---
+ common/chat.cpp              | 25 +++++++++++++++++++++++++
+ tests/test-chat-template.cpp | 20 ++++++++++++++++++++
+ 2 files changed, 45 insertions(+)
+
+diff --git a/common/chat.cpp b/common/chat.cpp
+index 22d2ee4..544f957 100644
+--- a/common/chat.cpp
++++ b/common/chat.cpp
+@@ -17,6 +17,7 @@
+ 
+ #include <cstdio>
+ #include <cstdlib>
++#include <cctype>
+ #include <ctime>
+ #include <exception>
+ #include <functional>
+@@ -912,6 +913,30 @@ static std::string common_chat_template_direct_apply_impl(
+     if (inputs.add_generation_prompt) {
+         inp["add_generation_prompt"] = true;
+     }
++    if (inp.contains("tesy_template_date")) {
++        if (!inp["tesy_template_date"].is_string()) {
++            throw std::invalid_argument("tesy_template_date must be a YYYY-MM-DD string");
++        }
++        const std::string date = inp["tesy_template_date"].get<std::string>();
++        if (date.size() != 10 || date[4] != '-' || date[7] != '-' ||
++            !std::isdigit(date[0]) || !std::isdigit(date[1]) || !std::isdigit(date[2]) || !std::isdigit(date[3]) ||
++            !std::isdigit(date[5]) || !std::isdigit(date[6]) || !std::isdigit(date[8]) || !std::isdigit(date[9])) {
++            throw std::invalid_argument("tesy_template_date must be a YYYY-MM-DD string");
++        }
++        std::tm local_date = {};
++        local_date.tm_year = std::stoi(date.substr(0, 4)) - 1900;
++        local_date.tm_mon  = std::stoi(date.substr(5, 2)) - 1;
++        local_date.tm_mday = std::stoi(date.substr(8, 2));
++        local_date.tm_hour = 12;
++        local_date.tm_isdst = -1;
++        const std::time_t fixed_time = std::mktime(&local_date);
++        if (fixed_time == static_cast<std::time_t>(-1) ||
++            format_time(std::chrono::system_clock::from_time_t(fixed_time), "%Y-%m-%d") != date) {
++            throw std::invalid_argument("tesy_template_date is not a calendar date");
++        }
++        ctx.current_time = fixed_time;
++        inp.erase("tesy_template_date");
++    }
+     if (inp.contains("preserve_reasoning") && inp["preserve_reasoning"].is_boolean()) {
+         bool enabled = inp["preserve_reasoning"].get<bool>();
+         jinja::caps_apply_preserve_reasoning(ctx, enabled);
+diff --git a/tests/test-chat-template.cpp b/tests/test-chat-template.cpp
+index 6a6292c..d5ea1c9 100644
+--- a/tests/test-chat-template.cpp
++++ b/tests/test-chat-template.cpp
+@@ -15,6 +15,7 @@
+ #include "llama.h"
+ #include "common.h"
+ #include "chat.h"
++#include "chat-auto-parser.h"
+ #include "jinja/runtime.h"
+ #include "jinja/parser.h"
+ #include "jinja/lexer.h"
+@@ -350,6 +351,25 @@ static common_chat_msg simple_msg(const std::string & role, const std::string &
+ int main_automated_tests(void) {
+     // jinja::enable_debug(true);
+ 
++    {
++        common_chat_template date_template("{{ strftime_now('%Y-%m-%d') }}", "", "");
++        autoparser::generation_params params;
++        params.extra_context = json::object({{"tesy_template_date", "2026-09-27"}});
++        assert(common_chat_template_direct_apply(date_template, params) == "2026-09-27");
++        params.extra_context["tesy_template_date"] = "2026-09-28";
++        assert(common_chat_template_direct_apply(date_template, params) == "2026-09-28");
++        for (const auto & invalid : {"2026-02-30", "2026-9-28", "2026-09-28x"}) {
++            params.extra_context["tesy_template_date"] = invalid;
++            bool rejected = false;
++            try {
++                common_chat_template_direct_apply(date_template, params);
++            } catch (const std::invalid_argument &) {
++                rejected = true;
++            }
++            assert(rejected);
++        }
++    }
++
+     std::vector<llama_chat_message> conversation {
+         {"system", "You are a helpful assistant"},
+         {"user", "Hello"},
+-- 
+2.55.0
+

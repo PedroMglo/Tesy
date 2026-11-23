@@ -1,0 +1,39 @@
+{
+  "measurement_commit": "20e8f48c8c11f6203f3b3e7f27bc960872f60a6a",
+  "start": {
+    "utc": "2026-10-06T23:20:25.295592+00:00",
+    "monotonic_s": 105043.741174661
+  },
+  "end": {
+    "utc": "2026-10-06T23:20:25.443097+00:00",
+    "monotonic_s": 105043.888673487
+  },
+  "argv": [
+    "systemd-run",
+    "--user",
+    "--slice=tesy-post-c154.slice",
+    "--unit=tesy-c301-vocabulary-model-id",
+    "--collect",
+    "--pipe",
+    "--wait",
+    "--working-directory=/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc",
+    "-p",
+    "MemoryMax=4294967296",
+    "-p",
+    "MemoryHigh=4294967296",
+    "-p",
+    "MemorySwapMax=0",
+    "-p",
+    "RuntimeMaxSec=125",
+    "-p",
+    "TimeoutStopSec=10",
+    "--",
+    "/usr/bin/python",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/tools/residency_unit_run.py",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c301-vocabulary-model-id-repair-20261007",
+    "--inside"
+  ],
+  "returncode": 1,
+  "stdout": "",
+  "stderr": "Running as unit: tesy-c301-vocabulary-model-id.service\n          Finished with result: exit-code\nMain processes terminated with: code=exited, status=1/FAILURE\n               Service runtime: 54ms\n             CPU time consumed: 38ms\n                   Memory peak: 11.3M (swap: 0B)\n"
+}

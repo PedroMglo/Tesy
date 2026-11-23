@@ -1,0 +1,69 @@
+{
+  "budget": {
+    "accounted_physical_used_s": 14902.360009688997,
+    "c22_idle_s": 1970.1996325809996,
+    "physical_limit_s": 57600,
+    "prior_idle_s": 5749.356354353004,
+    "raw_server_cumulative_s": 7182.804022754994,
+    "remaining_s": 42697.639990311
+  },
+  "claims": [
+    "Synthetic 513/641-ID P12 server prefix-reuse screen only",
+    "Returned message equality is not full-logit or sampling equality",
+    "Two pairs do not establish tail latency or sustained session utility"
+  ],
+  "closed_utc": "2026-09-27T20:25:10.044921+00:00",
+  "default_changed": false,
+  "gates": {
+    "C15": "SOURCE_ONLY_NOT_COMPILED_NOT_MEASURED",
+    "M3": "PARTIAL_PREFIX_MECHANISM_ONLY",
+    "M4": "NOT_RUN",
+    "four_arm_outputs_and_cache": "PASS",
+    "four_arm_resources": "PASS",
+    "model_identity": "PASS",
+    "paired_screen": "PASS",
+    "same_profile_full_logits": "NOT_RUN"
+  },
+  "next_action": "C23: three new OFF/ON prefix-confirmation pairs in frozen alternating order and the same profile/guards; no C22 times in confirmatory median.",
+  "old_fails_preserved": "C9/C10b/C13/C14/C17 CPU95 failures, C20 incomplete pair and C21 prelaunch failure unchanged",
+  "pairs": [
+    {
+      "gain_first_pct": 0.8310242825404642,
+      "gain_second_pct": 80.53868792951339,
+      "off_first_s": 81.64294031499594,
+      "off_run_id": "c22-p1-off",
+      "off_second_s": 95.34945152099681,
+      "on_first_s": 80.9644676559983,
+      "on_run_id": "c22-p1-on",
+      "on_second_s": 18.556254317998537,
+      "order": [
+        "off",
+        "on"
+      ],
+      "pair": "P1"
+    },
+    {
+      "gain_first_pct": 2.336676144900192,
+      "gain_second_pct": 80.70389797281024,
+      "off_first_s": 82.81927541500045,
+      "off_run_id": "c22-p2-off",
+      "off_second_s": 95.87627472599706,
+      "on_first_s": 80.88405716299894,
+      "on_run_id": "c22-p2-on",
+      "on_second_s": 18.500383790997148,
+      "order": [
+        "on",
+        "off"
+      ],
+      "pair": "P2"
+    }
+  ],
+  "runs": [
+    "c22-p1-off",
+    "c22-p1-on",
+    "c22-p2-on",
+    "c22-p2-off"
+  ],
+  "schema": "c22-decision-v1",
+  "status": "SCREEN_GO_CONFIRMATION_REQUIRED"
+}

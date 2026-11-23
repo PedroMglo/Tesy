@@ -1,0 +1,57 @@
+{
+  "alternative": "C111 teacher-forced gain does not transfer to server final-content latency; C100 decode regression persists",
+  "base_harness_sha256": "b0b2393b8caf9f96630ce0c3b4189c4b919747a6d7e21ffecdd6ee90ba6a3c8e",
+  "default_changed": false,
+  "gain_formula": "100*(control-candidate)/control, positive denominator",
+  "input_sha256": "57cdc0a34842943a4abc0cad852ed2f50adb4fe183aede17f23dff1bcd0a0fed",
+  "launcher_prefix": [
+    "systemd-run",
+    "--user",
+    "--scope",
+    "-p",
+    "MemoryMax=19327352832",
+    "-p",
+    "MemorySwapMax=0",
+    "--"
+  ],
+  "limitations": [
+    "synthetic two-turn history; not M3 diverse or M4 quality",
+    "two screening pairs do not certify p95 or broad quality",
+    "page cache uncontrolled; O_DIRECT configured for expert I/O"
+  ],
+  "objective": "screen nominal128 actual-history server latency in a declared operational warm-start regime after C113/C114 cold matching stopped",
+  "order": [
+    "c117-p1-control",
+    "c117-p1-candidate",
+    "c117-p2-candidate",
+    "c117-p2-control"
+  ],
+  "pairs": 2,
+  "primary": "warm first_final_content_s",
+  "prior_c111_decision_sha256": "4ff08a3d8ee9650557670b1f0ed2264c7efc87923571f9340bfa6975f33b0141",
+  "prior_c114_decision_sha256": "293e3b10e57a48eac159903aa64a0b074d2732653f997ed456a0920964296fcf",
+  "protected": [
+    "warm decode_s",
+    "cold decode_s",
+    "cold first_final_content_s",
+    "cold prefill_s",
+    "answer and prefix correctness"
+  ],
+  "resource_cap_bytes": 19327352832,
+  "runner_sha256": "3afdb767d345eaff25c57e44bc5fe2e4c4431d228da4ada2a45b3d7d6a3d9c4c",
+  "schema": "c117-screen-policy-v1",
+  "scope_memory_swap_max_bytes": 0,
+  "scope_test_sha256": "57ab47e7b64e7fb25bc7a498a6e4816f7952e7984e52e56a0be14ba8a241b9ba",
+  "screen_go": "median paired primary gain >=5%, both pairs positive; warm/cold decode median gains >=-5%; all identity/output/resource gates pass",
+  "start": {
+    "interpretation": "two alternating pairs are a screen; start temperature and external activity must be reported, not silently normalized",
+    "inventory_before_each_arm_s": 60,
+    "mode": "CAUSAL_AB_OPERATIONAL_WARM",
+    "no_artificial_heating": true,
+    "no_global_cache_reset": true,
+    "record_start_cpu_gpu_nvme_and_power": true,
+    "same_ac_and_power_profile_required": true,
+    "temperature_match_gate": "NONE_IN_THIS_REGIME"
+  },
+  "status": "FROZEN_BEFORE_MODEL"
+}

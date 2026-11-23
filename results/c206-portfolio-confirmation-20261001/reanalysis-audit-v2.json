@@ -1,0 +1,415 @@
+{
+  "status": "REPRODUZIDO_MODEL_FREE_RECEIPT_AUDIT",
+  "hypothesis": "H1",
+  "all_planned_arms": [
+    {
+      "run_id": "c206-1-A",
+      "profile": "A",
+      "status": "FAIL_OR_INCOMPLETE_NATURAL_ARM",
+      "reason": "ValueError: server response/resource/identity gate failed; raw preserved",
+      "measurement_head": "82be38b6121805db4d749105a86de55cd11717be",
+      "requests": [
+        {
+          "id": "c112-code",
+          "official_ids_n": 2043,
+          "official_ids_sha256": "0cbd8fd4398acf250db4c9be666f841ba4ecf27b392133f0389b434405245db3",
+          "tokenization_file_sha256": "55b10e111d1fc51f786fa988c8b018a18440e9c3996aa7aa3d20b1f2c51b5687",
+          "cache_n": 0,
+          "prompt_n": 2043,
+          "outputs_reported": 77,
+          "output_ids": "NOT_EXPOSED",
+          "finish_reason": "stop",
+          "accepted": true,
+          "invalid_reason": null,
+          "prefill_s": 63.595392,
+          "decode_s": 20.230293000000003,
+          "native_predicted_n": 77,
+          "first_reasoning_s": 64.34390405297745,
+          "first_final_s": 83.35911816399312,
+          "completion_s": 83.84502062899992,
+          "validated_s": null,
+          "validator_s": null,
+          "final": "48327",
+          "reasoning": "The user gave a huge repetitive text \"alpha ...\" and then asks: \"Choose any five-digit code. Reply with the five digits only.\"\n\nWe need to comply. Provide a five-digit code, e.g., 48327. Must be only the digits, no extra text. Ensure no disallowed content. It's fine.",
+          "functional": {
+            "PASS": true,
+            "scope": "five ASCII digits"
+          }
+        },
+        {
+          "id": "c112-repeat",
+          "official_ids_n": 2197,
+          "official_ids_sha256": "0152a556f42dda80f7b7405ebd6af0ebcf1f41429aa44ca9543a4e31ce386f43",
+          "tokenization_file_sha256": "55b10e111d1fc51f786fa988c8b018a18440e9c3996aa7aa3d20b1f2c51b5687",
+          "cache_n": 2044,
+          "prompt_n": 153,
+          "outputs_reported": 37,
+          "output_ids": "NOT_EXPOSED",
+          "finish_reason": "stop",
+          "accepted": true,
+          "invalid_reason": null,
+          "prefill_s": 10.852725,
+          "decode_s": 7.759357,
+          "native_predicted_n": 37,
+          "first_reasoning_s": 11.577758559025824,
+          "first_final_s": 18.302308582002297,
+          "completion_s": 18.62837337102974,
+          "validated_s": null,
+          "validator_s": null,
+          "final": "48327",
+          "reasoning": "The user wants the exact text of the previous answer, which was \"48327\". Must repeat exactly that, no additions.",
+          "functional": {
+            "PASS": true,
+            "scope": "exact supplied prior answer48327"
+          }
+        },
+        {
+          "id": "native64-sql",
+          "official_ids_n": 2292,
+          "official_ids_sha256": "3e6e5dbee6d35b81517a402e2ed1071eb140903709d2b5cf192fd9d1695e3fec",
+          "tokenization_file_sha256": "55b10e111d1fc51f786fa988c8b018a18440e9c3996aa7aa3d20b1f2c51b5687",
+          "cache_n": 2198,
+          "prompt_n": 94,
+          "outputs_reported": 255,
+          "output_ids": "NOT_EXPOSED",
+          "finish_reason": "stop",
+          "accepted": true,
+          "invalid_reason": null,
+          "prefill_s": 14.71976,
+          "decode_s": 62.14058,
+          "native_predicted_n": 255,
+          "first_reasoning_s": 15.451761224016082,
+          "first_final_s": 61.59983576502418,
+          "completion_s": 76.87729623401538,
+          "validated_s": 76.8802897540154,
+          "validator_s": 0.0013171309838071465,
+          "final": "```sql\nSELECT cliente,\n       SUM(COALESCE(valor, 0)) AS total_valor\nFROM (\n    SELECT *,\n           ROW_NUMBER() OVER (PARTITION BY event_id\n                              ORDER BY atualizado DESC, ingest_id DESC) AS rn\n    FROM eventos\n) AS sub\nWHERE rn = 1\nGROUP BY cliente\nORDER BY cliente ASC;\n```",
+          "reasoning": "User asks: Provide a single read query that for each event_id retains the row with max atualizado, tie break max ingest_id; then sum COALESCE(valor,0) per cliente, order by cliente asc. Return only the query or a single SQL block, no explanations.\n\nWe need to write a query. Use subquery with ROW_NUMBER partition by event_id order by atualizado desc, ingest_id desc. Then select rows where rn=1, group by cliente sum.\n\nSQL:\n\nSELECT cliente, SUM(COALESCE(valor,0)) AS total_valor\nFROM (\n    SELECT *,\n           ROW_NUMBER() OVER (PARTITION BY event_id ORDER BY atualizado DESC, ingest_id DESC) AS rn\n    FROM eventos\n) AS sub\nWHERE rn = 1\nGROUP BY cliente\nORDER BY cliente ASC;\n\nReturn just that.",
+          "functional": {
+            "PASS": true,
+            "query": "SELECT cliente,\n       SUM(COALESCE(valor, 0)) AS total_valor\nFROM (\n    SELECT *,\n           ROW_NUMBER() OVER (PARTITION BY event_id\n                              ORDER BY atualizado DESC, ingest_id DESC) AS rn\n    FROM eventos\n) AS sub\nWHERE rn = 1\nGROUP BY cliente\nORDER BY cliente ASC;",
+            "fixtures": [
+              {
+                "rows": 0,
+                "expected": [],
+                "actual": [],
+                "instruction_bound": 100000
+              },
+              {
+                "rows": 4,
+                "expected": [
+                  [
+                    "ana",
+                    7
+                  ],
+                  [
+                    "bia",
+                    8
+                  ]
+                ],
+                "actual": [
+                  [
+                    "ana",
+                    7
+                  ],
+                  [
+                    "bia",
+                    8
+                  ]
+                ],
+                "instruction_bound": 100000
+              },
+              {
+                "rows": 6,
+                "expected": [
+                  [
+                    "ana",
+                    8
+                  ],
+                  [
+                    "bia",
+                    -2
+                  ]
+                ],
+                "actual": [
+                  [
+                    "ana",
+                    8
+                  ],
+                  [
+                    "bia",
+                    -2
+                  ]
+                ],
+                "instruction_bound": 100000
+              },
+              {
+                "rows": 4,
+                "expected": [
+                  [
+                    "a",
+                    10
+                  ],
+                  [
+                    "z",
+                    0
+                  ]
+                ],
+                "actual": [
+                  [
+                    "a",
+                    10
+                  ],
+                  [
+                    "z",
+                    0
+                  ]
+                ],
+                "instruction_bound": 100000
+              }
+            ],
+            "validator_s": 0.0013171309838071465,
+            "validated_monotonic_s": 309932.669084428
+          }
+        },
+        {
+          "id": "portfolio-holdout",
+          "official_ids_n": 2582,
+          "official_ids_sha256": "334e96709f1afb04732531c8e0b245745cf0a27a2df4c23f48d83a41fd5ecef5",
+          "tokenization_file_sha256": "55b10e111d1fc51f786fa988c8b018a18440e9c3996aa7aa3d20b1f2c51b5687",
+          "cache_n": 2293,
+          "prompt_n": 289,
+          "outputs_reported": 384,
+          "output_ids": "NOT_EXPOSED",
+          "finish_reason": "length",
+          "accepted": false,
+          "invalid_reason": "SQL response absent/oversize",
+          "prefill_s": 37.328603,
+          "decode_s": 86.82228599999999,
+          "native_predicted_n": 384,
+          "first_reasoning_s": 38.21885080402717,
+          "first_final_s": null,
+          "completion_s": 124.17011060699588,
+          "validated_s": null,
+          "validator_s": null,
+          "final": "",
+          "reasoning": "We need to write a single query (SELECT/WITH) that computes net total per client: sum of values of 'ok' orders minus all refunds for those orders. Cancelled orders and their refunds are excluded. Must preserve all clients, including those with no orders, with total zero. Totals can be negative. Must not double-count order value when multiple refunds exist (i.e., order value counted once, refunds summed). So net = sum(order.valor where estado='ok') - sum(reembolso.valor where reembolso.pedido_id references an ok order). Use LEFT JOINs and aggregate. Use COALESCE for null values.\n\nWe need to ensure that refunds for cancelled orders are excluded. So join refunds to orders where order.estado='ok'.\n\nWe also need to include clients with no orders: left join from clientes to derived aggregates.\n\nWe can use CTEs: orders_agg per client sum of order values (only ok). refunds_agg per client sum of refund values for ok orders. Then final select.\n\nSQL:\n\nWITH ok_orders AS (\n  SELECT cliente_id, SUM(COALESCE(valor,0)) AS sum_orders\n  FROM pedidos\n  WHERE estado='ok'\n  GROUP BY cliente_id\n),\nok_refunds AS (\n  SELECT p.cliente_id, SUM(COALESCE(r.valor,0)) AS sum_refunds\n  FROM reembolsos r\n  JOIN pedidos p ON r.pedido_id = p.pedido_id\n  WHERE p.estado='ok'\n  GROUP BY p.cliente_id\n)\nSELECT c.cliente_id,\n       c.nome,\n       COALESCE(o.sum_orders,0) - COALESCE(r.sum_refunds,0) AS total_liquido\nFROM clientes c\nLEFT JOIN ok_orders o ON c.cliente_id = o.cliente_id\nLEFT JOIN ok_refunds r ON c.cliente",
+          "functional": "NOT_VALIDATED"
+        }
+      ],
+      "stop_reasons": [
+        "RUN_ERROR:GateError:SQL response absent/oversize"
+      ],
+      "maxima": null,
+      "cgroup_end": {
+        "path": "/user.slice/user-1000.slice/user@1000.service/app.slice/tesy-c206-1-A.service",
+        "memory_max": 21474836480,
+        "memory_high": 21474836480,
+        "swap_max": 0,
+        "memory_current": 29396992,
+        "memory_peak": 15738941440,
+        "swap_current": 0,
+        "memory_stat": {
+          "anon": 23052288,
+          "file": 2547712,
+          "kernel": 536576,
+          "kernel_stack": 0,
+          "pagetables": 184320,
+          "sec_pagetables": 0,
+          "percpu": 1248,
+          "sock": 0,
+          "vmalloc": 0,
+          "shmem": 0,
+          "zswap": 0,
+          "zswapped": 0,
+          "zswap_incomp": 0,
+          "file_mapped": 0,
+          "file_dirty": 110592,
+          "file_writeback": 0,
+          "swapcached": 0,
+          "anon_thp": 0,
+          "file_thp": 0,
+          "shmem_thp": 0,
+          "inactive_anon": 0,
+          "active_anon": 23019520,
+          "inactive_file": 2535424,
+          "active_file": 4096,
+          "unevictable": 0,
+          "slab_reclaimable": 95592,
+          "slab_unreclaimable": 105896,
+          "slab": 201488,
+          "hugetlb": 0,
+          "workingset_refault_anon": 0,
+          "workingset_refault_file": 0,
+          "workingset_activate_anon": 0,
+          "workingset_activate_file": 0,
+          "workingset_restore_anon": 0,
+          "workingset_restore_file": 0,
+          "workingset_nodereclaim": 0,
+          "pgdemote_kswapd": 0,
+          "pgdemote_direct": 0,
+          "pgdemote_khugepaged": 0,
+          "pgdemote_proactive": 0,
+          "pgsteal_kswapd": 0,
+          "pgsteal_direct": 0,
+          "pgsteal_khugepaged": 0,
+          "pgsteal_proactive": 0,
+          "pgscan_kswapd": 1,
+          "pgscan_direct": 0,
+          "pgscan_khugepaged": 0,
+          "pgscan_proactive": 0,
+          "pgrefill": 7,
+          "pgpromote_success": 0,
+          "pgscan": 1,
+          "pgsteal": 0,
+          "pswpin": 0,
+          "pswpout": 0,
+          "pgfault": 7707305,
+          "pgmajfault": 5,
+          "pgactivate": 1,
+          "pgdeactivate": 0,
+          "pglazyfree": 0,
+          "pglazyfreed": 0,
+          "swpin_zero": 0,
+          "swpout_zero": 0,
+          "zswpin": 0,
+          "zswpout": 0,
+          "zswpwb": 0,
+          "thp_fault_alloc": 0,
+          "thp_collapse_alloc": 0,
+          "thp_swpout": 0,
+          "thp_swpout_fallback": 0,
+          "numa_pages_migrated": 0,
+          "numa_pte_updates": 0,
+          "numa_hint_faults": 0
+        },
+        "events": {
+          "low": 0,
+          "high": 0,
+          "max": 0,
+          "oom": 0,
+          "oom_kill": 0,
+          "oom_group_kill": 0,
+          "sock_throttled": 0
+        },
+        "events_local": {
+          "low": 0,
+          "high": 0,
+          "max": 0,
+          "oom": 0,
+          "oom_kill": 0,
+          "oom_group_kill": 0,
+          "sock_throttled": 0
+        },
+        "pressure": {
+          "some": {
+            "avg10": 0.0,
+            "avg60": 0.0,
+            "avg300": 0.0,
+            "total": 9
+          },
+          "full": {
+            "avg10": 0.0,
+            "avg60": 0.0,
+            "avg300": 0.0,
+            "total": 9
+          }
+        }
+      }
+    },
+    {
+      "run_id": "c206-2-B",
+      "profile": "B",
+      "status": "NOT_RUN_AFTER_FAMILY_STOP",
+      "metrics": "NOT_RUN"
+    },
+    {
+      "run_id": "c206-3-B",
+      "profile": "B",
+      "status": "NOT_RUN_AFTER_FAMILY_STOP",
+      "metrics": "NOT_RUN"
+    },
+    {
+      "run_id": "c206-4-A",
+      "profile": "A",
+      "status": "NOT_RUN_AFTER_FAMILY_STOP",
+      "metrics": "NOT_RUN"
+    },
+    {
+      "run_id": "c206-5-A",
+      "profile": "A",
+      "status": "NOT_RUN_AFTER_FAMILY_STOP",
+      "metrics": "NOT_RUN"
+    },
+    {
+      "run_id": "c206-6-B",
+      "profile": "B",
+      "status": "NOT_RUN_AFTER_FAMILY_STOP",
+      "metrics": "NOT_RUN"
+    }
+  ],
+  "paired_result": "NOT_COMPUTABLE_INCOMPLETE_FAMILY",
+  "raw_manifest": {
+    "raw_root": "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c206-portfolio-confirmation-20261001/raw",
+    "files": {
+      "c206-1-A.json": {
+        "bytes": 169950,
+        "sha256": "3efbc7f9b555325fe2feb2f4b52074dd89309b3f10743ddfcbb64cf89bf3f94d"
+      },
+      "c206-1-A.launch.json": {
+        "bytes": 3408,
+        "sha256": "0f988d79b54f0daee6407b81e8d3cef373c1284015171ecb6b166f937de84350"
+      },
+      "c206-1-A.preflight.json": {
+        "bytes": 129230,
+        "sha256": "03c83fcd842a4c237720063aa56bd50ae5078c158d578910400a3d55376b4aa3"
+      },
+      "c206-1-A.request-1.jsonl": {
+        "bytes": 39876,
+        "sha256": "d5ff2b8075caa9459b69cd5bcadc4b8d30d6a0f92faa2ef0fe49e3f5349f7bd2"
+      },
+      "c206-1-A.request-2.jsonl": {
+        "bytes": 18122,
+        "sha256": "e8a49a27653897f2529216d25cbde14157dd6fa7e9957fdf7d2a6c15697ad9c3"
+      },
+      "c206-1-A.request-3.jsonl": {
+        "bytes": 135854,
+        "sha256": "e4d632e87e75b2d17de7ec5b0ec45386f025fef3b9757277c155a6d12e5fb3e3"
+      },
+      "c206-1-A.request-4.jsonl": {
+        "bytes": 214532,
+        "sha256": "52ed989b78393975ffa6c603862054631ea8911f415bbc170c8e51c0851d607f"
+      },
+      "c206-1-A.request-markers.jsonl": {
+        "bytes": 1170,
+        "sha256": "04a93be8767cdbe01246ac2186b3b909ef460c0341f1b6e4ca0e52046024096b"
+      },
+      "c206-1-A.samples.jsonl": {
+        "bytes": 1010863,
+        "sha256": "91d7c42440b682a7f8b1ce286f15440794a88700c30176a212cfada69857c03e"
+      },
+      "c206-1-A.start-inventory.jsonl": {
+        "bytes": 28382,
+        "sha256": "a25fd84f966d732515a55f62e929e2b3111d89400510f2434843368de2692c8a"
+      },
+      "c206-1-A.start-inventory.receipt.json": {
+        "bytes": 615,
+        "sha256": "ecaea139dbea566c8c9e006a2bbd16536b1d8d33c089e34453fcfc972eb5f0ca"
+      },
+      "c206-1-A.stderr": {
+        "bytes": 9248,
+        "sha256": "d24c08e0e94c40713a7765669181cfcfcac2b4f3a3fdb219aaaf1bbbd78722aa"
+      },
+      "c206-1-A.stdout": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "c206-1-A.tokenization.json": {
+        "bytes": 99529,
+        "sha256": "55b10e111d1fc51f786fa988c8b018a18440e9c3996aa7aa3d20b1f2c51b5687"
+      }
+    },
+    "total_bytes": 1860779,
+    "includes_invalid_and_partial": true
+  }
+}

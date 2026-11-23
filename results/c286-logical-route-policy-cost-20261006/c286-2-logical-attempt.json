@@ -1,0 +1,48 @@
+{
+  "id": "c286-2-logical",
+  "start": {
+    "utc": "2026-10-06T20:19:03.615275+00:00",
+    "monotonic_s": 94162.060851969
+  },
+  "end": {
+    "utc": "2026-10-06T20:21:29.856331+00:00",
+    "monotonic_s": 94308.301915107
+  },
+  "argv": [
+    "/usr/bin/python",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/tools/run_bounded.py",
+    "--run-id",
+    "c286-2-logical",
+    "--model-id",
+    "gpt-oss-120b-mxfp4-gguf",
+    "--backend",
+    "stock",
+    "--backend-root",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/backends/c284-logical-route",
+    "--output-root",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c286-logical-route-policy-cost-20261006/raw",
+    "--variant",
+    "C286-E-LOGICAL",
+    "--workload",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c286-logical-route-policy-cost-20261006/protocol.json",
+    "--cache-condition",
+    "Fresh own-policy full mode0 prefix; mode2 incremental153,32 supplied n1, no intermediate drain/metadata/hash/disc; final snapshots outside timing",
+    "--resource-protocol",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c286-logical-route-policy-cost-20261006/protocol.json",
+    "--require-telemetry",
+    "--timeout-s",
+    "200",
+    "--collect-start-inventory",
+    "--",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c283-exact-expert-service-epoch-20261006T194311Z/build/logical-route/bin/logical-route-native",
+    "/home/pmglo/models/gpt-oss-120b-gguf/gpt-oss-120b-MXFP4.gguf",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c276-post-c274-r2-causal-qualification-20261005T204839Z/development-inputs.json",
+    "nominal153",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c286-logical-route-policy-cost-20261006/raw/c286-2-logical.native",
+    "E",
+    "v1"
+  ],
+  "returncode": 0,
+  "stdout": "{\"run_id\": \"c286-2-logical\", \"elapsed_s\": 85.656, \"returncode\": 0, \"stop_reason\": null, \"maxima\": {\"rss_bytes\": 16047026176, \"swap_bytes\": 0, \"cgroup_memory_bytes\": 15856046080, \"cgroup_peak_bytes\": 15877173248, \"cgroup_file_bytes\": 1543884800, \"gpu_used_mib\": 6983.0, \"gpu_temperature_c\": 62.0, \"cpu_tctl_c\": 94.75, \"nvme_composite_c\": 52.85, \"direct_model_fds\": 2, \"buffered_model_fds\": 0}}\n",
+  "stderr": ""
+}

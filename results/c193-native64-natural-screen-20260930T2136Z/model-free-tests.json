@@ -1,0 +1,63 @@
+{
+  "status": "PASS_DIRECTED_SUITE",
+  "authority": "REPRODUZIDO_MODEL_FREE",
+  "methods": 21,
+  "additional_freeze_budget_methods": 2,
+  "command": "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=tools python3 -m unittest test_native64_natural test_native64_contract test_native64_evaluate test_request_evidence test_c120_prelaunch_entrypoint test_c55_runner_entrypoint test_server_file_paging",
+  "final_measured_s": 10.279,
+  "initial_measured_s": 10.289,
+  "initial_fixture_defects": [
+    "dummy child default SIGTERM exit differs from graceful llama-server exit; added dummy signal handler",
+    "real terminated PID absent in /proc raises FileNotFoundError; assert path absence"
+  ],
+  "initial_product_runner_failures": 0,
+  "dependencies": "Real Python/SQLite and real child /proc ownership; sensors/HTTP/library identity fixture substitutions explicit; no weights",
+  "matrix": [
+    {
+      "requirement": "SQL updates/ties/NULL/distinct clients/empty and read-only bounds",
+      "test": "test_sql_positive_and_discriminating_negatives",
+      "result": "PASS"
+    },
+    {
+      "requirement": "T3 cap384/task deadlines and historical global defaults",
+      "test": "test_task_overrides_keep_defaults_and_reject_unfrozen_fields",
+      "result": "PASS"
+    },
+    {
+      "requirement": "actual spawn/monitor/3-turn history/receipt/cleanup",
+      "test": "test_three_turn_actual_child_entrypoint",
+      "result": "PASS"
+    },
+    {
+      "requirement": "late second persisted; third never submitted",
+      "test": "test_late_second_preserved_and_third_never_launched",
+      "result": "PASS"
+    },
+    {
+      "requirement": "60s inventory/freshness/scope prelaunch",
+      "test": "test_c120_prelaunch_entrypoint",
+      "result": "PASS"
+    },
+    {
+      "requirement": "deadlines independent of slow telemetry; actual child identity",
+      "test": "test_c55_runner_entrypoint",
+      "result": "PASS"
+    },
+    {
+      "requirement": "FILE_PAGING versus STREAMING preserved",
+      "test": "test_server_file_paging",
+      "result": "PASS"
+    },
+    {
+      "requirement": "protocol tampering before launch",
+      "test": "test_artifact_tamper_is_rejected",
+      "result": "PASS"
+    },
+    {
+      "requirement": "unknown endpoint charge not deduplicated",
+      "test": "test_unknown_endpoints_get_no_dedup_credit",
+      "result": "PASS"
+    }
+  ],
+  "full_repository_suite": "NOT_RUN_NOT_REQUIRED"
+}

@@ -1,0 +1,71 @@
+{
+  "M3": "PARTIAL",
+  "M4": "NOT_MET",
+  "default_changed": false,
+  "failures_preserved": [
+    "C48",
+    "C78",
+    "C100 NO_GO_CONFIRM",
+    "C102",
+    "C103"
+  ],
+  "next_action": "Do not build recent-token expert prefetch for this workload. Investigate bounded overlap with measured waits or another backend mechanism; only revisit prediction with a discriminant that targets novel absent experts.",
+  "results": [
+    {
+      "absent_coverage_fraction": 0.0,
+      "absent_demands_covered": 0,
+      "absent_primary_expert_demands": 1191,
+      "covered_absent_logical_bytes": 0,
+      "evaluated_decode_steps": 31,
+      "history_tokens": 1,
+      "oracle_absent_logical_bytes": 15744067200,
+      "proposals_targeting_absent_demand_fraction": 0.0,
+      "proposed_layer_experts": 4464,
+      "selected_layer_experts": 4464,
+      "selected_route_coverage_fraction": 0.24238351254480286
+    },
+    {
+      "absent_coverage_fraction": 0.0,
+      "absent_demands_covered": 0,
+      "absent_primary_expert_demands": 1140,
+      "covered_absent_logical_bytes": 0,
+      "evaluated_decode_steps": 30,
+      "history_tokens": 2,
+      "oracle_absent_logical_bytes": 15069888000,
+      "proposals_targeting_absent_demand_fraction": 0.0,
+      "proposed_layer_experts": 7626,
+      "selected_layer_experts": 4320,
+      "selected_route_coverage_fraction": 0.29768518518518516
+    },
+    {
+      "absent_coverage_fraction": 0.0,
+      "absent_demands_covered": 0,
+      "absent_primary_expert_demands": 982,
+      "covered_absent_logical_bytes": 0,
+      "evaluated_decode_steps": 28,
+      "history_tokens": 4,
+      "oracle_absent_logical_bytes": 12981254400,
+      "proposals_targeting_absent_demand_fraction": 0.0,
+      "proposed_layer_experts": 12501,
+      "selected_layer_experts": 4032,
+      "selected_route_coverage_fraction": 0.42336309523809523
+    },
+    {
+      "absent_coverage_fraction": 0.0027624309392265192,
+      "absent_demands_covered": 2,
+      "absent_primary_expert_demands": 724,
+      "covered_absent_logical_bytes": 26438400,
+      "evaluated_decode_steps": 24,
+      "history_tokens": 8,
+      "oracle_absent_logical_bytes": 9570700800,
+      "proposals_targeting_absent_demand_fraction": 0.00011588828369451848,
+      "proposed_layer_experts": 17258,
+      "selected_layer_experts": 3456,
+      "selected_route_coverage_fraction": 0.6160300925925926
+    }
+  ],
+  "schema": "c107-decision-v1",
+  "scope": "189+32 teacher-forced P12 8K C105 trace, simple previous-horizon per-layer predictor",
+  "status": "NO_GO_RECENT_HISTORY_PREFETCH_ON_C105_DECODE",
+  "trace_sha256": "bb3ae9352749283f76ce12b65ea76801916396f87849d609169215fefdf4e40d"
+}

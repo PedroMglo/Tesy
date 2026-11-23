@@ -1,0 +1,303 @@
+diff --git a/src/llama-moe-stream.cpp b/src/llama-moe-stream.cpp
+index 224c368..e58166d 100644
+--- a/src/llama-moe-stream.cpp
++++ b/src/llama-moe-stream.cpp
+@@ -152,7 +152,12 @@ llama_moe_stream::llama_moe_stream(uint32_t n_layer, uint32_t n_slots, int32_t n
+         if (trace_file == nullptr) {
+             throw std::runtime_error("C84 expert trace open failed");
+         }
+-        trace_events.reserve(8192);
++        trace_events.reserve(trace_cap);
++        if (std::getenv("TESY_C152_SNAPSHOT_ENABLED")) {
++            snapshot_bytes.resize(1024*1024);
++            routed_journal.reserve(1024*1024);
++            for (auto & phase : owned_phase) phase.store(0);
++        }
+         if (const char * trigger = std::getenv("TESY_C122_TRACE_TRIGGER_FILE")) {
+             trace_trigger = trigger;
+         } else {
+@@ -175,7 +180,7 @@ llama_moe_stream::~llama_moe_stream() {
+     }
+ #ifdef TESY_C84_EXPERT_TRACE
+     if (trace_file != nullptr) {
+-        std::fprintf(trace_file, "#c122-expert-decode-v1\n");
++        std::fprintf(trace_file, "#c152-expert-snapshot-v1\n");
+         std::fprintf(trace_file, "#layer\tlayer\tlogical_expert_bytes\tbuffer_name\n");
+         for (const auto & sl : layers) {
+             if (!sl || sl->weights.empty()) continue;
+@@ -185,12 +190,12 @@ llama_moe_stream::~llama_moe_stream() {
+             std::fprintf(trace_file, "L\t%d\t%zu\t%s\n", sl->il, bytes,
+                          buffer ? ggml_backend_buffer_name(buffer) : "UNALLOCATED");
+         }
+-        std::fprintf(trace_file, "kind\tseq\tmono_us\tlayer\texpert\tslot\tvictim\tn_tokens\twave\tstate\tlogical_bytes\tcall_id\tgeneration\tcomponent\n");
++        std::fprintf(trace_file, "kind\tseq\tmono_us\tlayer\texpert\tslot\tvictim\tn_tokens\twave\tstate\tlogical_bytes\tcall_id\tgeneration\tcomponent\twork_id\n");
+         for (const auto & e : trace_events) {
+-            std::fprintf(trace_file, "%s\t%" PRIu64 "\t%" PRId64 "\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%" PRIu64 "\t%" PRIu64 "\t%" PRIu64 "\t%d\n",
++            std::fprintf(trace_file, "%s\t%" PRIu64 "\t%" PRId64 "\t%d\t%d\t%d\t%d\t%d\t%d\t%d\t%" PRIu64 "\t%" PRIu64 "\t%" PRIu64 "\t%d\t%" PRIu64 "\n",
+                          e.kind, e.seq, e.mono_us, e.layer, e.expert, e.slot,
+                          e.victim, e.n_tokens, e.wave, e.state, e.logical_bytes,
+-                         e.call_id, e.generation, e.component);
++                         e.call_id, e.generation, e.component, e.work_id);
+         }
+         std::fprintf(trace_file, "#end\t%zu\t%d\n", trace_events.size(), trace_overflow ? 1 : 0);
+         const bool write_failed = std::ferror(trace_file) != 0;
+@@ -198,6 +203,14 @@ llama_moe_stream::~llama_moe_stream() {
+             LLAMA_LOG_ERROR("C84 expert trace write failed\n");
+         }
+         trace_file = nullptr;
++        if (!snapshot_bytes.empty()) {
++            if (const char * route_path = std::getenv("TESY_C152_ROUTE_FILE")) {
++                FILE * out = std::fopen(route_path,"wx");
++                if (!out || std::fwrite(routed_journal.data(),sizeof(int64_t),routed_journal.size(),out) != routed_journal.size() || std::fclose(out)) {
++                    LLAMA_LOG_ERROR("C152 route journal write failed\n");
++                }
++            }
++        }
+     }
+ #endif
+ }
+@@ -207,8 +220,13 @@ void llama_moe_stream::trace_locked(const char * kind, int32_t layer, int32_t ex
+                                     int32_t slot, int32_t victim, int32_t n_tokens,
+                                     int32_t wave, int32_t state, uint64_t logical_bytes,
+                                     int64_t mono_us, uint64_t call_id,
+-                                    uint64_t generation, int32_t component) {
++                                    uint64_t generation, int32_t component, uint64_t work_id) {
+     if (trace_file == nullptr || !trace_enabled || trace_overflow) return;
++    if (!snapshot_bytes.empty() &&
++        (trace_events.size()-request_event_begin)*sizeof(trace_event) +
++        (routed_journal.size()-request_route_begin)*sizeof(int64_t) >= 32*1024*1024) {
++        trace_overflow = snapshot_overflow = true; return;
++    }
+     if (trace_events.size() >= trace_cap) {
+         trace_overflow = true;
+         return;
+@@ -216,7 +234,7 @@ void llama_moe_stream::trace_locked(const char * kind, int32_t layer, int32_t ex
+     trace_events.push_back({ trace_events.size(), mono_us >= 0 ? mono_us : ggml_time_us(),
+                              kind, layer, expert, slot, victim, n_tokens, wave, state,
+                              logical_bytes, call_id ? call_id : trace_call_id,
+-                             generation, component });
++                             generation, component, work_id });
+ }
+ 
+ void llama_moe_stream::trace_begin_call(int32_t n_tokens, int32_t first_pos, int32_t last_pos) {
+@@ -243,10 +261,10 @@ void llama_moe_stream::queue_load_locked(llama_moe_stream_layer * sl, int32_t ex
+ #else
+     const uint64_t call_id = 0;
+ #endif
+-    q_demand.push_back({ sl, expert, slot, sl->slot_gen[slot], call_id, now });
++    q_demand.push_back({ sl, expert, slot, sl->slot_gen[slot], call_id, now, ++snapshot_work_id });
+ #ifdef TESY_C84_EXPERT_TRACE
+     trace_locked("ENQUEUE", sl->il, expert, slot, -1, 0, -1, -1, 0,
+-                 now, call_id, sl->slot_gen[slot]);
++                 now, call_id, sl->slot_gen[slot], -1, snapshot_work_id);
+ #endif
+ }
+ 
+@@ -394,13 +412,13 @@ void llama_moe_stream::start_workers_locked() {
+     workers_started = true;
+     workers.reserve(n_io_threads);
+     for (int32_t i = 0; i < n_io_threads; i++) {
+-        workers.emplace_back([this]() { worker_loop(); });
++        workers.emplace_back([this,i]() { worker_loop(i); });
+     }
+ }
+ 
+ // I/O worker: pops a reserved load, reads its expert slab(s) from the GGUF file into the cache
+ // slot, and marks the slot RESIDENT (or flags load_failed); stale/duplicate items are skipped
+-void llama_moe_stream::worker_loop() {
++void llama_moe_stream::worker_loop(int32_t worker_id) {
+     // page-aligned staging (Metal private buffers require page-aligned source + page-multiple
+     // length; O_DIRECT needs the extra head/tail slack for its aligned reads)
+     uint8_t * staging = (uint8_t *) moe_aligned_alloc(max_nb_expert + 2*MOE_STREAM_DIRECT_ALIGN);
+@@ -421,13 +439,20 @@ void llama_moe_stream::worker_loop() {
+             sl.slot_state[w.slot] != LLAMA_MOE_STREAM_SLOT_LOADING ||
+             sl.slot_expert[w.slot] != w.expert ||
+             sl.slot_claimed[w.slot]) {
++#ifdef TESY_C84_EXPERT_TRACE
++            trace_locked("STALE_WORK", sl.il, w.expert, w.slot, -1, 0, -1, -1, 0,
++                         -1, w.trace_call_id, w.gen, worker_id, w.snapshot_work_id);
++#endif
+             continue; // stale or duplicate item
+         }
+         sl.slot_claimed[w.slot] = 1;
++#ifdef TESY_C84_EXPERT_TRACE
++        if (!snapshot_bytes.empty()) { owned_work[worker_id] = w; owned_phase[worker_id].store(1); }
++#endif
+ #ifdef TESY_C84_EXPERT_TRACE
+         if (w.trace_call_id) {
+             trace_locked("DEQUEUE", sl.il, w.expert, w.slot, -1, 0, -1, -1,
+-                         0, ggml_time_us(), w.trace_call_id, w.gen);
++                         0, ggml_time_us(), w.trace_call_id, w.gen, worker_id, w.snapshot_work_id);
+         }
+ #endif
+ 
+@@ -470,6 +495,9 @@ void llama_moe_stream::worker_loop() {
+         const int64_t load_end_us = ggml_time_us();
+ #endif
+ 
++#ifdef TESY_C84_EXPERT_TRACE
++        if (!snapshot_bytes.empty()) owned_phase[worker_id].store(2,std::memory_order_release);
++#endif
+         lk.lock();
+ 
+ #ifdef TESY_C84_EXPERT_TRACE
+@@ -501,6 +529,12 @@ void llama_moe_stream::worker_loop() {
+         } else {
+             sl.slot_state[w.slot] = LLAMA_MOE_STREAM_SLOT_RESIDENT;
+         }
++#ifdef TESY_C84_EXPERT_TRACE
++        trace_locked(ok ? "RESIDENT_COMMIT" : "COMMIT_ERROR", sl.il, w.expert,
++                     w.slot, -1, 0, -1, sl.slot_state[w.slot], 0,
++                     ggml_time_us(), w.trace_call_id, w.gen, worker_id, w.snapshot_work_id);
++        if (!snapshot_bytes.empty()) { owned_phase[worker_id].store(0); owned_work[worker_id] = {}; }
++#endif
+         cv_done.notify_all();
+     }
+     lk.unlock();
+@@ -555,7 +589,7 @@ void llama_moe_stream::reserve_slot_locked(llama_moe_stream_layer & sl, int32_t
+     sl.expert_slot[expert] = slot;
+     sl.seen[expert] = 1;
+ #ifdef TESY_C84_EXPERT_TRACE
+-    trace_locked("RESERVE", sl.il, expert, slot);
++    trace_locked("RESERVE", sl.il, expert, slot, -1, 0, -1, sl.slot_state[slot], 0, -1, 0, sl.slot_gen[slot]);
+ #endif
+ }
+ 
+@@ -622,6 +656,9 @@ void llama_moe_stream_remap(ggml_tensor * dst, const ggml_tensor * a, int ith, i
+         GGML_ABORT("MoE expert streaming: expert load failed (I/O error)");
+     }
+ 
++    #ifdef TESY_C84_EXPERT_TRACE
++    mgr->route_locked(*sl, ids, n, 0);
++    #endif
+     mgr->stats.n_calls++;
+     mgr->start_workers_locked();
+ 
+@@ -710,6 +747,8 @@ void llama_moe_stream_remap(ggml_tensor * dst, const ggml_tensor * a, int ith, i
+     if (waited) {
+         const int64_t t0 = ggml_time_us();
+ #ifdef TESY_C84_EXPERT_TRACE
++        for (int32_t slot : sl->demand_slots) mgr->trace_locked("BARRIER_SLOT", sl->il,
++            sl->slot_expert[slot],slot,-1,a->ne[1],-1,sl->slot_state[slot],0,-1,0,sl->slot_gen[slot]);
+         mgr->trace_locked("WAIT_BEGIN", sl->il, -1, -1, -1, a->ne[1], -1,
+                           -1, 0, t0);
+ #endif
+@@ -740,6 +779,9 @@ void llama_moe_stream_remap(ggml_tensor * dst, const ggml_tensor * a, int ith, i
+         sl->slot_last_use[s] = ++sl->use_counter;
+         out[i] = s;
+     }
++#ifdef TESY_C84_EXPERT_TRACE
++    mgr->trace_locked("REMAP_DONE", sl->il, -1, -1, -1, a->ne[1]);
++#endif
+ }
+ 
+ // stable per-wave userdata; grows lazily and records the per-wave expert capacity (set at build)
+@@ -758,6 +800,9 @@ llama_moe_stream_wave * llama_moe_stream_layer::wave_userdata(int32_t wave, uint
+ // wave 0 of a ubatch: record the distinct touched experts (sl.uniq, first-use order) and split them
+ // into consecutive groups of plan_capacity, one group per wave (sl.expert_wave[e] = e's wave)
+ void llama_moe_stream::plan_waves_locked(llama_moe_stream_layer & sl, const int32_t * ids, int64_t n) {
++    #ifdef TESY_C84_EXPERT_TRACE
++    route_locked(sl, ids, n, 1);
++    #endif
+     stats.n_calls++;
+     start_workers_locked();
+ 
+@@ -896,6 +941,8 @@ void llama_moe_stream::stage_wave_locked(std::unique_lock<std::mutex> & lk, llam
+     if (waited) {
+         const int64_t t0 = ggml_time_us();
+ #ifdef TESY_C84_EXPERT_TRACE
++        for (int32_t slot : sl.demand_slots) trace_locked("BARRIER_SLOT", sl.il,
++            sl.slot_expert[slot],slot,-1,n_tokens,w,sl.slot_state[slot],0,-1,0,sl.slot_gen[slot]);
+         trace_locked("WAIT_BEGIN", sl.il, -1, -1, -1, n_tokens, w, -1, 0, t0);
+ #endif
+         cv_done.wait(lk, [&]{
+@@ -1013,6 +1060,9 @@ void llama_moe_stream_wave_ids(ggml_tensor * dst, int ith, int nth, void * userd
+     sl->plan_next_wave = w + 1;
+ 
+     mgr->emit_wave_slots(*sl, ids, out, w, n_ids, a->ne[1]);
++#ifdef TESY_C84_EXPERT_TRACE
++    mgr->trace_locked("WAVE_DONE", sl->il, -1, -1, -1, a->ne[1], w);
++#endif
+ #ifdef TESY_C47_CPU_SKIP_PARKED
+     if (std::getenv("TESY_CPU_WAVE_SKIP_PARKED") != nullptr) {
+         GGML_ASSERT(!sl->weights.empty() && sl->weights[0].cache != nullptr &&
+@@ -1062,3 +1112,7 @@ void llama_moe_stream_wave_mask(ggml_tensor * dst, int ith, int nth, void * user
+         out[i] = sl->expert_wave[ids[i]] == (uint8_t) w ? 1.0f : 0.0f;
+     }
+ }
++
++#ifdef TESY_C84_EXPERT_TRACE
++#include "c152-snapshot.inl"
++#endif
+diff --git a/src/llama-moe-stream.h b/src/llama-moe-stream.h
+index 25e63b6..cca7518 100644
+--- a/src/llama-moe-stream.h
++++ b/src/llama-moe-stream.h
+@@ -31,6 +31,9 @@
+ // note: multiple contexts decoding the same streamed model concurrently are not supported -
+ // one context can evict slots referenced by the other's in-flight graph.
+ 
++#include <array>
++#include <atomic>
++
+ struct llama_moe_stream;
+ 
+ enum llama_moe_stream_slot_state : uint8_t {
+@@ -113,10 +116,12 @@ struct llama_moe_stream_work {
+     uint64_t gen    = 0; // stale unless it matches slot_gen[slot]
+     uint64_t trace_call_id = 0;
+     int64_t  enqueue_us = 0;
++    uint64_t snapshot_work_id = 0;
+ };
+ 
+ struct llama_moe_stream {
+     uint32_t n_slots      = 0; // expert cache slots per streamed layer
++    uint64_t snapshot_work_id = 0;
+     int32_t  n_io_threads = 0;
+ 
+     std::vector<std::unique_ptr<llama_moe_stream_layer>> layers; // [n_layer], null = not streamed
+@@ -179,6 +184,7 @@ struct llama_moe_stream {
+         uint64_t logical_bytes;
+         uint64_t call_id, generation;
+         int32_t component;
++        uint64_t work_id;
+     };
+     FILE * trace_file = nullptr;
+     std::vector<trace_event> trace_events;
+@@ -186,14 +192,25 @@ struct llama_moe_stream {
+     bool trace_enabled = false;
+     uint64_t trace_call_id = 0;
+     std::string trace_trigger;
+-    static constexpr size_t trace_cap = 300000;
++    static constexpr size_t trace_cap = 600000;
++    std::vector<uint8_t> snapshot_bytes;
++    std::vector<int64_t> routed_journal;
++    std::array<llama_moe_stream_work,64> owned_work{};
++    std::array<std::atomic<uint8_t>,64> owned_phase{};
++    int64_t snapshot_request = 0;
++    size_t request_event_begin = 0, request_route_begin = 0;
++    bool snapshot_overflow = false;
++    void journal_request(int64_t request);
++    void route_locked(const llama_moe_stream_layer & sl, const int32_t * ids, int64_t n, int32_t mode);
++    void snapshot(const char * path, int64_t sequence, int32_t phase, int32_t first_pos, int32_t last_pos);
++
+     void trace_begin_call(int32_t n_tokens, int32_t first_pos, int32_t last_pos);
+     void trace_end_call(int32_t n_tokens, int32_t first_pos, int32_t last_pos);
+     void trace_locked(const char * kind, int32_t layer, int32_t expert = -1,
+                       int32_t slot = -1, int32_t victim = -1, int32_t n_tokens = 0,
+                       int32_t wave = -1, int32_t state = -1, uint64_t logical_bytes = 0,
+                       int64_t mono_us = -1, uint64_t call_id = 0,
+-                      uint64_t generation = 0, int32_t component = -1);
++                      uint64_t generation = 0, int32_t component = -1, uint64_t work_id = 0);
+ #endif
+ 
+     struct {
+@@ -212,7 +229,7 @@ struct llama_moe_stream {
+ 
+     // internals
+     void start_workers_locked();
+-    void worker_loop();
++    void worker_loop(int32_t worker_id);
+     int32_t pick_victim_locked(llama_moe_stream_layer & sl, const uint8_t * keep) const;
+     void reserve_slot_locked(llama_moe_stream_layer & sl, int32_t expert, int32_t slot);
+ 

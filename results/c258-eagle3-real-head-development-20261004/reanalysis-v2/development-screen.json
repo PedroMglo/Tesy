@@ -1,0 +1,228 @@
+{
+  "decision": "NO_GO_CURRENT_HEAD_GRID_DEVELOPMENT_SCREEN",
+  "classes": [
+    {
+      "class": "development-code-rle",
+      "pairs": [
+        {
+          "A_arm": 1,
+          "B_arm": 2,
+          "A_wall_s": 14.740787788,
+          "B_wall_s": 17.267693181,
+          "same_count_32": true,
+          "gain_percent": -17.142268305748694,
+          "prefill_gain_percent": 10.264591424614165,
+          "native_confirmed_ids_equal": true,
+          "A_decode_count": 32,
+          "B_decode_count": 32,
+          "B_actual_matched_proposals": 20,
+          "B_native_proposals_generated": 84,
+          "B_target_calls": 12,
+          "B_full_logit_rows": 96,
+          "B_mean_new_confirmed_per_verification": 2.6666666666666665,
+          "B_draft_s": 0.657972247,
+          "B_feature_process_s": 0.13799650700000002
+        },
+        {
+          "A_arm": 4,
+          "B_arm": 3,
+          "A_wall_s": 13.235810318,
+          "B_wall_s": 16.481298911,
+          "same_count_32": true,
+          "gain_percent": -24.520513025079445,
+          "prefill_gain_percent": 8.440564999421012,
+          "native_confirmed_ids_equal": true,
+          "A_decode_count": 32,
+          "B_decode_count": 32,
+          "B_actual_matched_proposals": 20,
+          "B_native_proposals_generated": 84,
+          "B_target_calls": 12,
+          "B_full_logit_rows": 96,
+          "B_mean_new_confirmed_per_verification": 2.6666666666666665,
+          "B_draft_s": 0.6620169210000001,
+          "B_feature_process_s": 0.14123497799999998
+        }
+      ],
+      "median_decode_gain_percent": -20.83139066541407,
+      "median_prefill_gain_percent": 9.352578212017589,
+      "decision": "NO_GO_DEVELOPMENT_INTEGRATED_DECODE"
+    },
+    {
+      "class": "development-structured-route",
+      "pairs": [
+        {
+          "A_arm": 1,
+          "B_arm": 2,
+          "A_wall_s": 11.604038591,
+          "B_wall_s": 17.271688285,
+          "same_count_32": true,
+          "gain_percent": -48.84204451367288,
+          "prefill_gain_percent": 3.385328858034012,
+          "native_confirmed_ids_equal": true,
+          "A_decode_count": 32,
+          "B_decode_count": 32,
+          "B_actual_matched_proposals": 17,
+          "B_native_proposals_generated": 84,
+          "B_target_calls": 15,
+          "B_full_logit_rows": 120,
+          "B_mean_new_confirmed_per_verification": 2.1333333333333333,
+          "B_draft_s": 0.6589834019999999,
+          "B_feature_process_s": 0.174474313
+        },
+        {
+          "A_arm": 4,
+          "B_arm": 3,
+          "A_wall_s": 10.544075587,
+          "B_wall_s": 17.964228658,
+          "same_count_32": true,
+          "gain_percent": -70.37272267042977,
+          "prefill_gain_percent": -2.1720027410234506,
+          "native_confirmed_ids_equal": true,
+          "A_decode_count": 32,
+          "B_decode_count": 32,
+          "B_actual_matched_proposals": 17,
+          "B_native_proposals_generated": 84,
+          "B_target_calls": 15,
+          "B_full_logit_rows": 120,
+          "B_mean_new_confirmed_per_verification": 2.1333333333333333,
+          "B_draft_s": 0.67378081,
+          "B_feature_process_s": 0.16830689100000001
+        }
+      ],
+      "median_decode_gain_percent": -59.60738359205132,
+      "median_prefill_gain_percent": 0.6066630585052808,
+      "decision": "NO_GO_DEVELOPMENT_INTEGRATED_DECODE"
+    }
+  ],
+  "scope": "Two short native development classes; actual head proposals, fixed32 newly confirmed decode tokens and complete costs. This is not a 2K functional utility screen or M4.",
+  "native_residency": [
+    {
+      "total_native_target_calls": 32,
+      "logical_loads_by_tier": {
+        "CPU": {
+          "loads": 1047,
+          "logical_bytes": 13840502400
+        },
+        "CUDA0": {
+          "loads": 395,
+          "logical_bytes": 5221584000
+        }
+      },
+      "paired_full_initial_state_equal": null,
+      "wait_union_s": 12.779038,
+      "note": "Logical loads/bytes and native exposed wait, not physical NVMe or whole-model exclusive phase decomposition"
+    },
+    {
+      "total_native_target_calls": 12,
+      "logical_loads_by_tier": {
+        "CPU": {
+          "loads": 1391,
+          "logical_bytes": 18387907200
+        },
+        "CUDA0": {
+          "loads": 492,
+          "logical_bytes": 6503846400
+        }
+      },
+      "paired_full_initial_state_equal": true,
+      "wait_union_s": 12.890158,
+      "note": "Logical loads/bytes and native exposed wait, not physical NVMe or whole-model exclusive phase decomposition"
+    },
+    {
+      "total_native_target_calls": 12,
+      "logical_loads_by_tier": {
+        "CPU": {
+          "loads": 1391,
+          "logical_bytes": 18387907200
+        },
+        "CUDA0": {
+          "loads": 492,
+          "logical_bytes": 6503846400
+        }
+      },
+      "paired_full_initial_state_equal": true,
+      "wait_union_s": 12.108916,
+      "note": "Logical loads/bytes and native exposed wait, not physical NVMe or whole-model exclusive phase decomposition"
+    },
+    {
+      "total_native_target_calls": 32,
+      "logical_loads_by_tier": {
+        "CPU": {
+          "loads": 1047,
+          "logical_bytes": 13840502400
+        },
+        "CUDA0": {
+          "loads": 395,
+          "logical_bytes": 5221584000
+        }
+      },
+      "paired_full_initial_state_equal": null,
+      "wait_union_s": 11.387937,
+      "note": "Logical loads/bytes and native exposed wait, not physical NVMe or whole-model exclusive phase decomposition"
+    },
+    {
+      "total_native_target_calls": 32,
+      "logical_loads_by_tier": {
+        "CPU": {
+          "loads": 875,
+          "logical_bytes": 11566800000
+        },
+        "CUDA0": {
+          "loads": 362,
+          "logical_bytes": 4785350400
+        }
+      },
+      "paired_full_initial_state_equal": null,
+      "wait_union_s": 9.791619,
+      "note": "Logical loads/bytes and native exposed wait, not physical NVMe or whole-model exclusive phase decomposition"
+    },
+    {
+      "total_native_target_calls": 15,
+      "logical_loads_by_tier": {
+        "CPU": {
+          "loads": 1383,
+          "logical_bytes": 18282153600
+        },
+        "CUDA0": {
+          "loads": 471,
+          "logical_bytes": 6226243200
+        }
+      },
+      "paired_full_initial_state_equal": true,
+      "wait_union_s": 11.937634,
+      "note": "Logical loads/bytes and native exposed wait, not physical NVMe or whole-model exclusive phase decomposition"
+    },
+    {
+      "total_native_target_calls": 15,
+      "logical_loads_by_tier": {
+        "CPU": {
+          "loads": 1383,
+          "logical_bytes": 18282153600
+        },
+        "CUDA0": {
+          "loads": 471,
+          "logical_bytes": 6226243200
+        }
+      },
+      "paired_full_initial_state_equal": true,
+      "wait_union_s": 12.645795,
+      "note": "Logical loads/bytes and native exposed wait, not physical NVMe or whole-model exclusive phase decomposition"
+    },
+    {
+      "total_native_target_calls": 32,
+      "logical_loads_by_tier": {
+        "CPU": {
+          "loads": 875,
+          "logical_bytes": 11566800000
+        },
+        "CUDA0": {
+          "loads": 362,
+          "logical_bytes": 4785350400
+        }
+      },
+      "paired_full_initial_state_equal": null,
+      "wait_union_s": 8.722494,
+      "note": "Logical loads/bytes and native exposed wait, not physical NVMe or whole-model exclusive phase decomposition"
+    }
+  ]
+}

@@ -1,0 +1,5 @@
+# C7b canonical witness result
+
+Objective: test the four layers moved CPU→CUDA and the two boundary layers first. Measurement commit `a4b72cb25f9da5317b414ee8489bac4c15501977`, tree `8b36bc9c3bf6d7a0bffed77c2c599809f7c9aab6`; protocol and model identity are in `results/c7b-20260927T1206Z/reference-protocol.json`. Each replay received its own E18 scope. The compact `reference-witness-summary.json` holds layer results, raw manifest hashes and per-state metrics.
+
+Layers 25, 26, 27, 28, 24 and 29 all passed ordered routing IDs, routing weights and FFN bitwise for seven states each: 42 numeric comparisons. No swap, OOM, mapped-library mismatch or resource guard was observed. Replays were 1.2–1.7 s long with two or three samples, so the telemetry claim is bounded start/end coverage, not sustained resource behavior. The alternative that moved-layer placement broke streaming fidelity is rejected for these captured ub32 states. The full 36-layer contract remains NOT_RUN until the other 30 layers pass; attention/KV independent reference, timing and utility remain NOT_RUN. Next gate: remaining layers, same source/protocol, new clean measurement commit.

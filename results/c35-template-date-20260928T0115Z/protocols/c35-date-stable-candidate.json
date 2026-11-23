@@ -1,0 +1,114 @@
+{
+  "c18": {
+    "monitor_sha256": "ca93538e31cfb5a8c437fc1edd9eff9ade6ceeac13be4e907047b621d85eb2c2",
+    "thermal_monitor": "CPU95 warning, CPU100/explicit cooling/clock collapse stop"
+  },
+  "c24": {
+    "admission_runner_sha256": "eebb2642ce2c270367854c5575c1ebc5b3fc013af24923d1f9da4ddca3d0b8dc",
+    "arm": "stable",
+    "backend_dirty": "",
+    "backend_tree": "8219dfba2414cdcbb388e43b1c67a49f1f70e4aa",
+    "claim": "one bounded generated-assistant two-turn bridge; no 20-request or quality claim",
+    "idle_match_tolerance_c": [
+      5,
+      5,
+      3
+    ],
+    "idle_max_start_c": [
+      50,
+      50,
+      45
+    ],
+    "mode": "synthetic-two-turn-chat-bridge",
+    "model_stat": {
+      "ctime_ns": 1790389637807910988,
+      "dev": 53,
+      "inode": 14833675,
+      "mtime_ns": 1790389637795911032,
+      "size_bytes": 63387346208
+    },
+    "monitor_scope": "systemd user scope E18, zero swap",
+    "n_gpu_layers": 12,
+    "order": 2,
+    "parent_C20_decision_sha256": "3ee5bd0ae0c94b0471903e28ebeea084e911c101fa2ec4858746505fdfdc2f75",
+    "parent_C21_decision_sha256": "cebe46c8bddc78ba7f931f279d2a15870a77f52b6e6bd5bcc6181b92d5c98599",
+    "parent_C22_decision_sha256": "e0f90af9717b57868be7ec310b200c1d583eaeb1beb6ea53c9e7ef4d813e71f6",
+    "parent_C23_decision_sha256": "bcb65d0947853aeb8be2b28b1e67f07c9cf0a971a2e7e3a19f8c7e9d216ca358",
+    "phase": "G2",
+    "prefix_runner_sha256": "3fe00b797d0c6b45bbcbaa727e1937f08ba742ad398d14079fddd6d9f8c4c604",
+    "server_runner_sha256": "ca93538e31cfb5a8c437fc1edd9eff9ade6ceeac13be4e907047b621d85eb2c2"
+  },
+  "c29": {
+    "assistant_message_digest": "5547eefff07c55ea015d3bae88c1dbd1d08cfe58223484d48891a63b067c2f58",
+    "assistant_message_sha256": "71208b83a64d992ae0ad402057dd15ead3ceb20798988c9bdf6902dd04a102e5",
+    "cache_upper_bound": "min(second prompt IDs, first prompt IDs + first completion tokens), from server slot.prompt.tokens",
+    "first_final_content_nullable": true,
+    "first_turn_must_match_before_second": true,
+    "minimum_ordered_common_prefix_ids": 1900,
+    "parent_c27_decision_sha256": "a02f3c65cb46d7d9a95fdfb81c6be9083701766a61bc4ead5ad64a822d0caca6",
+    "parent_c28_failure_sha256": "5e387d1094676a7c5982932213668cdb90da0f265201778ba105026ee45e3c36",
+    "second_user_words": 127
+  },
+  "c35": {
+    "arm": "stable",
+    "backend_tree": "b1e1647729c6e81ae8b2a4fa8119c626e674f6a1",
+    "claim": "synthetic two-turn cache mechanism only",
+    "date_variable_only": true,
+    "dates": [
+      "2026-09-27",
+      "2026-09-27"
+    ],
+    "order": 2,
+    "phase": "G2",
+    "run_id": "c35-date-stable-candidate",
+    "runner_sha256": "e856875c24136e12079542eaacf57af424f8cdfe00aa4a8280d6a7c22f9b6a44",
+    "timing_promotable": false
+  },
+  "campaign_id": "tesy-c35-template-date-20260928",
+  "expected_request_ids": [
+    "c35-first-turn2048",
+    "c35-second-turn128"
+  ],
+  "identity": {
+    "backend_sha": "c3759bad92c0e6f71bb936afea9b0a162fb83f76",
+    "binary_sha256": "2c91e0572ad71e4977e3e9134c9f8339256e6481a3f316f6fef9493a370d4822",
+    "config_sha256": "7d943ab32b13ba22378d2fa88636fefd30ad67310e9fd083a9a249408ec90a63",
+    "input_sha256": {
+      "assistant-message.json": "71208b83a64d992ae0ad402057dd15ead3ceb20798988c9bdf6902dd04a102e5",
+      "bridge-input.json": "fe146f86559b30e506cb225c6189004aac473f1eb49ac4f56d7f82bde48beebf",
+      "protocol.json": "b0de7af817abd2fc15b1e3c2d3af12c5952b810a73d12d1dc5178c39fcbd8749",
+      "usage-contract.json": "460605f7fc0feef0bf8e01df0d89dc5a712cf965d7e86983a8b92ce8aef7994c"
+    },
+    "library_sha256": {
+      "build-c35-gcc15/bin/libggml-base.so.0.15.3": "6666b1fa65172a992429c516864dd1fb44a2ae4370ec2d044ed684d0b33d6f9e",
+      "build-c35-gcc15/bin/libggml-cpu.so.0.15.3": "b2ed71c16ad669536840c63a999305a3c6ae0e2ab278e9a891c1d0fab96b8a2b",
+      "build-c35-gcc15/bin/libggml-cuda.so.0.15.3": "4d4ef9068b1057abf9e4a73a872f48703723d30591ebafb962bfb0612df70dcc",
+      "build-c35-gcc15/bin/libggml.so.0.15.3": "45bd5d9edee4c8a3eeec23166478ef7ec495dc55785e3942aa72afddc0125417",
+      "build-c35-gcc15/bin/libllama-common.so.0.0.2": "e64791fe0c072c3710c2f9ed92f1e3d9487f2c34f626086b196f60077bd1d374",
+      "build-c35-gcc15/bin/libllama-server-impl.so": "3cbba6ad27138ef34adf0a2c8e8f5b204ea7c73111e2bef4acc8288cef5f6e05",
+      "build-c35-gcc15/bin/libllama.so.0.0.2": "4ba0477592acb4a8808c259d836aea42f20aeef88ad7c3b4ea41572dae8418c6",
+      "build-c35-gcc15/bin/libmtmd.so.0.0.2": "48efbf1711ec3b170d8651ab1149f9fe7549972d2e420fa40f2ecae39670a253"
+    },
+    "model_id": "target120b",
+    "model_sha256": "582bd40f6886200101f4c4ed9f25f3fe80cc14c86e9e2b37746cd8904a0c622d",
+    "workload_sha256": "fe146f86559b30e506cb225c6189004aac473f1eb49ac4f56d7f82bde48beebf"
+  },
+  "limits": {
+    "boundary_s": 2,
+    "cpu_max_c": 100,
+    "gpu_max_c": 80,
+    "gpu_max_mib": 6500,
+    "max_gap_s": 3,
+    "memory_max_bytes": 17716740096,
+    "min_active_s": 0,
+    "min_decode_s": 0,
+    "min_decode_tok_s": 0,
+    "min_elapsed_s": 0,
+    "min_last_half_tok_s": 0,
+    "min_mem_available_bytes": 6442450944,
+    "nvme_max_c": 70,
+    "rss_max_bytes": 17179869184
+  },
+  "protocol_id": "c35-date-stable-candidate-v1",
+  "schema_version": "c2-protocol-v1"
+}

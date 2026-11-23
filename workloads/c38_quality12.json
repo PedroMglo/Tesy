@@ -1,0 +1,75 @@
+{
+  "schema": "c38-quality12-v1",
+  "evidence_class": "new synthetic tasks, not historical user work",
+  "policy": {
+    "reasoning_effort": "medium",
+    "temperature": 0,
+    "seed": 42,
+    "max_output_tokens": 3072,
+    "context_tokens": 8192,
+    "task_timeout_s": 600,
+    "task_count": 12
+  },
+  "tasks": [
+    {
+      "id": "c38-code-01",
+      "category": "code",
+      "prompt": "Write only a Python function merge_halfopen(intervals). Input is a list of integer (start,end) pairs representing half-open ranges [start,end); empty/reversed ranges have end<=start and must be ignored. Return a sorted list of disjoint (start,end) tuples covering the union. Merge overlapping AND touching ranges. Do not mutate the input."
+    },
+    {
+      "id": "c38-code-02",
+      "category": "code",
+      "prompt": "Write only a Python function latest_by_key(records). Each record is a dict with keys 'key', 'time', 'seq', 'value'; keys are strings, time and seq are integers. For each key choose the record with lexicographically greatest (time,seq). Return a dict mapping each key to the selected value. Empty input returns {}. Do not mutate records."
+    },
+    {
+      "id": "c38-code-03",
+      "category": "code",
+      "prompt": "Write only a Python function topo_batches(nodes,edges). nodes is a list of distinct strings. Each edge (a,b) means a must finish before b. Return a list of batches: each batch is the sorted list of all currently ready nodes, and the whole batch finishes before the next batch starts. Ignore duplicate edges. Return [] for a cycle. For an empty graph return []."
+    },
+    {
+      "id": "c38-code-04",
+      "category": "code",
+      "prompt": "Write only a Python function rolling_valid_sum(xs,width). xs is a list of integers or None; width is a positive integer. Return one result for every contiguous window of exactly width elements. The result is the sum if every element is an integer, otherwise None. A window wider than xs returns []. Booleans are not valid integers. Do not modify xs."
+    },
+    {
+      "id": "c38-sql-01",
+      "category": "sql_data",
+      "prompt": "Return only one SQLite SELECT query. Tables: users(id INTEGER PRIMARY KEY, name TEXT), sessions(id INTEGER, user_id INTEGER, minutes INTEGER, state TEXT). For every user, return (id, completed_minutes), where completed_minutes is the sum of non-NULL minutes for rows with state='complete', or 0 if none. Include users without sessions. Sort by completed_minutes descending, then id ascending."
+    },
+    {
+      "id": "c38-sql-02",
+      "category": "sql_data",
+      "prompt": "Return only one SQLite SELECT query. Table: job_events(job_id TEXT, event_id INTEGER, minute INTEGER, state TEXT). For each job_id, return (job_id,state) from its latest event by greatest minute, breaking ties by greatest event_id. Sort by job_id ascending."
+    },
+    {
+      "id": "c38-sql-03",
+      "category": "sql_data",
+      "prompt": "Return only one SQLite SELECT query. Tables: products(id INTEGER, category TEXT), sales(product_id INTEGER, units INTEGER, day TEXT). Return (category,total_units) for every category with at least one product, summing non-NULL sales units only for day='d2'. Categories with no d2 sales return 0. Sort by category ascending. Avoid double counting when a product has multiple sales rows."
+    },
+    {
+      "id": "c38-sql-04",
+      "category": "sql_data",
+      "prompt": "Return only one SQLite SELECT query. Tables: teams(id INTEGER, name TEXT), members(id INTEGER, team_id INTEGER), tickets(id INTEGER, member_id INTEGER, priority TEXT, closed INTEGER). Return (team_id,open_high) for every team. Count distinct tickets with priority='high' and closed=0 belonging to its members. A team with none returns 0. Sort by open_high descending, then team_id ascending."
+    },
+    {
+      "id": "c38-plan-01",
+      "category": "planning",
+      "prompt": "Return only JSON with keys order,starts,finish_minute. One worker begins minute 0. Non-preemptive tasks A=2 min, B=4 min, C=1 min, D=2 min. B requires A; D requires both B and C. The worker is unavailable during [3,5). Tasks cannot cross this blocked interval. Find an earliest-finish valid schedule; ties are broken by lexicographically smallest task order. starts lists start minutes corresponding to order."
+    },
+    {
+      "id": "c38-plan-02",
+      "category": "planning",
+      "prompt": "Return only JSON with keys items,total_cost,total_score. Choose whole projects under budget 12. Projects are A(cost 7,score 11), B(5,9), C(4,8), D(3,5), E(2,4). Maximize total score. Ties: choose lower total cost, then lexicographically smallest sorted item list. items must be sorted."
+    },
+    {
+      "id": "c38-plan-03",
+      "category": "planning",
+      "prompt": "Return only JSON with keys route,arrival_minute. Start at S at minute 0. Directed travel times: S->A 4, S->B 2, B->A 1, A->T 4, B->T 8. You may wait at nodes. T opens at minute 7 and arrivals before 7 must wait until 7. Find earliest arrival at T; ties use the lexicographically smallest route list."
+    },
+    {
+      "id": "c38-plan-04",
+      "category": "planning",
+      "prompt": "Return only JSON with keys assignment,total_minutes. Two identical workers W1,W2 start at minute 0 and each must do one whole independent job. Jobs J1=6 min and J2=4 min. W1 cannot start work before minute 2; W2 can start at 0. Assign both jobs to minimize the time when both finish. Ties use lexicographically smallest assignment list of [worker,job,start] triples sorted by worker. total_minutes is the finishing time, not sum of durations."
+    }
+  ]
+}

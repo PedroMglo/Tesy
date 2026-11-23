@@ -1,0 +1,427 @@
+{
+  "schema": "c274-identity-v1",
+  "analysis_predecessor": "f546b2e9ac9dc57b0f42d91053724dc5f1d9dabf",
+  "measurement_C273": "9c0c25a9e6dce528c385fbec3086f4cc24ec749d",
+  "base": "8c78f598e446b1b09fb3ba518b77e0d7496bfa47",
+  "backend_C75_original": "27d2e42d8c994507ee6d71acc7c58d3eddd3f7a5",
+  "base_streaming": "1248fd8fa8cfebaece5ea992e4d951c1e18bb9d5",
+  "backends": {
+    "c236-block-verifier-c75": {
+      "path": "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/backends/c236-block-verifier-c75",
+      "HEAD": "092a57f7457d098ecbdb3c7a8afdcc796062c29c",
+      "tree": "45b2b5b97353845d9d982a06f20c4f2f420528e2",
+      "status": ""
+    },
+    "c262-layer-expert-reuse": {
+      "path": "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/backends/c262-layer-expert-reuse",
+      "HEAD": "93151fc4c2968d0e2ec4a6c43a77c9d7300f7035",
+      "tree": "17924b46cbdbcbbffded103d340be1f94c36c106",
+      "status": ""
+    },
+    "c269-layer-last-use": {
+      "path": "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/backends/c269-layer-last-use",
+      "HEAD": "d0ebfbcc6c8f456bc1083027c1b08075a32824d8",
+      "tree": "49812e6f011a8cf0fc14a71074e5f4b120f87216",
+      "status": ""
+    }
+  },
+  "frozen_numeric_libraries_rehashed_at_closure": [
+    {
+      "path": "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/backends/c269-layer-last-use/build-c269-cuda/bin/libllama-common.so.0.0.9884",
+      "size": 5774880,
+      "sha256": "cc5a0f0b264bdd093287cfdb38f3607b8ab98bd35ae21f4550ddc44076c92d27",
+      "same_frozen_C273": true
+    },
+    {
+      "path": "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/backends/c269-layer-last-use/build-c269-cuda/bin/libllama.so.0.0.9884",
+      "size": 4010992,
+      "sha256": "347267b2e9cbf920dbf912d6aaf1884e5eff4cccc41c349e93c42bd6403a658f",
+      "same_frozen_C273": true
+    },
+    {
+      "path": "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/backends/c269-layer-last-use/build-c269-cuda/bin/libggml-cpu.so.0.15.3",
+      "size": 1362760,
+      "sha256": "9aabce5751c5d7ca19b50e4cabb1fcf484c1581d275141dae8aba8ed33060313",
+      "same_frozen_C273": true
+    },
+    {
+      "path": "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/backends/c269-layer-last-use/build-c269-cuda/bin/libggml-base.so.0.15.3",
+      "size": 892576,
+      "sha256": "6e27d9ecb86e4747177189d2d2f6390280a2ee1000221ad68a0404023ea72539",
+      "same_frozen_C273": true
+    },
+    {
+      "path": "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/backends/c269-layer-last-use/build-c269-cuda/bin/libggml.so.0.15.3",
+      "size": 51512,
+      "sha256": "70f635b8ba22ddd751590ec1fe11c895ef88e2aff0f4a63a3af96314e6a77d65",
+      "same_frozen_C273": true
+    },
+    {
+      "path": "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/backends/c269-layer-last-use/build-c269-cuda/bin/libggml-cuda.so.0.15.3",
+      "size": 65624144,
+      "sha256": "ff43655b15df5f3de1d5e00b0da18469a14f118bd644eb4b6d7f1915c85a4493",
+      "same_frozen_C273": true
+    },
+    {
+      "path": "/usr/lib64/libgomp.so.1.0.0",
+      "size": 390520,
+      "sha256": "637b2ab4eedf3ce72173a9d34a4c41c480082d68662db3f0ef4998117df8f9b2",
+      "same_frozen_C273": true
+    }
+  ],
+  "model": {
+    "path": "/home/pmglo/models/gpt-oss-120b-gguf/gpt-oss-120b-MXFP4.gguf",
+    "stat_revalidated": {
+      "dev": 53,
+      "inode": 14833675,
+      "size_bytes": 63387346208,
+      "mtime_ns": 1790389637795911032,
+      "ctime_ns": 1790389637807910988
+    },
+    "previously_verified_sha256": "582bd40f6886200101f4c4ed9f25f3fe80cc14c86e9e2b37746cd8904a0c622d",
+    "full_rehash_this_closure": false
+  },
+  "sources": [
+    {
+      "path": "patches/c262-layer-expert-reuse.patch",
+      "size": 15861,
+      "sha256": "24a7e9f711905423d1cb0fed70915f2a850b6d74fdaa4364393b0365e467c4d6"
+    },
+    {
+      "path": "patches/c269-authoritative-last-use-order.patch",
+      "size": 2176,
+      "sha256": "d3ddd973896c0c3fcce5e167e984bb6fb9cc873babeabe9920d65bf5ed3b99e0"
+    },
+    {
+      "path": "tools/block_causal_probe.cpp",
+      "size": 10596,
+      "sha256": "acbf04f18425eb12465451408b2be323c733c5aedde0282cc28e84a5c45ed0fa"
+    },
+    {
+      "path": "tools/block_layer_reference.cpp",
+      "size": 8264,
+      "sha256": "ab036cb2922fcf45c8a3a94ca609a9139977743c3591baa4534f3f906db8783c"
+    },
+    {
+      "path": "tools/block_native_run.cpp",
+      "size": 15154,
+      "sha256": "22a5e2b6028c14e0719c33d0033965bfc7f8c02e06aa896840cb0d6cb25dafbc"
+    },
+    {
+      "path": "tools/block_continuity_run.cpp",
+      "size": 5456,
+      "sha256": "cc3e60d54e69ba2e5c58452da4ced345987b1b90264457b7f7f4973df3f4c99d"
+    },
+    {
+      "path": "tools/block_expert_reuse_operator.cpp",
+      "size": 17444,
+      "sha256": "4ceb573da1196b7612af8c1aa4ab65a4e14f9bfe966d77303e3b6f71de32ad3e"
+    },
+    {
+      "path": "tools/block_eagle3_probe.cpp",
+      "size": 6560,
+      "sha256": "651bbf67fc22421a346bc8e2630775bbd6b7e3498249acefdd04ea4af1edc696"
+    },
+    {
+      "path": "tools/block_eagle3_loop.cpp",
+      "size": 12717,
+      "sha256": "54bfdf4b039b12e1491f0516e956fb1ec8366ad8c145a0f4301680915a247bda"
+    },
+    {
+      "path": "tools/block_layer_reuse_probe.cpp",
+      "size": 12762,
+      "sha256": "51158f2cf7e59a97dc18830505a19b95b984b99ee0a07e621409f250dbe60981"
+    },
+    {
+      "path": "tools/block_prefill_reference.cpp",
+      "size": 11667,
+      "sha256": "5f94b2a4be765ccf74f6ee34ab23d0df418df964cb356f0b6c38949df0fc46ab"
+    },
+    {
+      "path": "tools/block_prefill_timing.cpp",
+      "size": 3309,
+      "sha256": "7fd63d4778d69cb4702d9547682aa04ec0c63d691f0db4efb9a8995bcdd62f46"
+    },
+    {
+      "path": "tools/block_layer_utility.cpp",
+      "size": 8825,
+      "sha256": "dc315697bb53162272b22619ad3314af95101f3d82fd9933ae3874ae94748d98"
+    },
+    {
+      "path": "tools/block_eagle3_runtime.h",
+      "size": 3510,
+      "sha256": "8ae949cf4b5be75f2ce78d2333bbbd74ed857d6e6fe6ea8587be90dc613429c7"
+    },
+    {
+      "path": "tools/block_prefill_reuse.py",
+      "size": 8911,
+      "sha256": "0916a1a6a344bbf3a88e70ee1f1b9fea12281475a96fef20ea80a021150b26fd"
+    },
+    {
+      "path": "tools/block_rebuild_bridge.py",
+      "size": 2004,
+      "sha256": "6b605845b68052b586d2ede87b88758e7223a4b41c7c54e5170e1351d0b91aca"
+    },
+    {
+      "path": "tools/block_verifier_contract.py",
+      "size": 2844,
+      "sha256": "bf8886eb2d72bcc43a4aebe919086a2b9c68b138765a8c0588cc4d19ec9ce56a"
+    },
+    {
+      "path": "tools/block_prepare_capture.py",
+      "size": 1451,
+      "sha256": "63e62a13c35db0d32bf798d963bd7b2ea6740df456a8b571ac2591568abb6a8f"
+    },
+    {
+      "path": "tools/block_causal_gate.py",
+      "size": 4871,
+      "sha256": "c738f2e2214c57efd9a21f58154fbe233cd5986fb5ee39a111c43cbf453a535d"
+    },
+    {
+      "path": "tools/block_reference_gate.py",
+      "size": 1588,
+      "sha256": "3dc527e5ddaf8f9257bb20f10952538e85320ca139ce0d0abc88d78277ff9289"
+    },
+    {
+      "path": "tools/block_grid_contract.py",
+      "size": 2323,
+      "sha256": "167d0f05f5337f468e120a75fc995dd21bba1a5fdeeca5bd768d3afb7f6c7350"
+    },
+    {
+      "path": "tools/block_grid_gate.py",
+      "size": 3004,
+      "sha256": "474db334c0d8dd6dbbde0712283a1b57820029be2e07ebc2be320809df9c907d"
+    },
+    {
+      "path": "tools/block_continuity_gate.py",
+      "size": 2618,
+      "sha256": "489b05338c5d2343ef0f4a40e3d8538cd7402198c3a15932ab5a04146c4bbdce"
+    },
+    {
+      "path": "tools/block_amortization_gate.py",
+      "size": 8074,
+      "sha256": "5094a39733cde5f37d274d0fab9d8890e993410894797da8dc7242ed89ef0d6e"
+    },
+    {
+      "path": "tools/block_confirmation_grade.py",
+      "size": 4510,
+      "sha256": "6d9f37f79bd69328d80d27f2f2fb761ae69d45a551767ef9f05f4a2c4c496d5e"
+    },
+    {
+      "path": "tools/block_expert_reuse_gate.py",
+      "size": 7062,
+      "sha256": "898509ce0c481f467e4869d6729275485e3c55138dd0cebf10606c37c886e1ad"
+    },
+    {
+      "path": "tools/block_eagle3_convert.py",
+      "size": 4681,
+      "sha256": "712ffebbc844c608eb19070d4596a9d8966677f6c790d740f7f009932fdb08be"
+    },
+    {
+      "path": "tools/block_eagle3_conversion_gate.py",
+      "size": 7241,
+      "sha256": "d572d9c200722819c618f7a6f252423612ba1bc08bbe40f6ac463690e970525c"
+    },
+    {
+      "path": "tools/block_eagle3_probe_gate.py",
+      "size": 3782,
+      "sha256": "39d9a78cf62bb7d4204570526b33de343e4292e4e2273ffb21f3d26296f3ecd9"
+    },
+    {
+      "path": "tools/block_head_grid_contract.py",
+      "size": 1541,
+      "sha256": "10099cd928293dc86b48dafcc68bc3d44ee6fc216916bb191b2c47b827600eca"
+    },
+    {
+      "path": "tools/block_eagle3_loop_gate.py",
+      "size": 8255,
+      "sha256": "1158cddc761afe566b78c257f316d9b15d8389e9aa39dc55620e71f2987d0f92"
+    },
+    {
+      "path": "tools/block_eagle3_development_gate.py",
+      "size": 4357,
+      "sha256": "09592e81a7f95c50b6fcd8be54e25236aa525ae076c976352261dcf5502f42e0"
+    },
+    {
+      "path": "tools/block_expert_reuse_timing.py",
+      "size": 3022,
+      "sha256": "4fa8fbb20db7c18ecb21991bb39126b476f2e8d0151852389a70e225b3c6e976"
+    },
+    {
+      "path": "tools/block_prefill_slots40_bound.py",
+      "size": 5375,
+      "sha256": "673ae9c9bee9686522a4690548f3c1d8ea91fc2ca63b965f696701f01698568c"
+    },
+    {
+      "path": "tools/block_layer_reuse_gate.py",
+      "size": 8787,
+      "sha256": "2b47079f3eab3975e78da12f9fc9a0c40d0ced417375d91ab4e42d81e8e39017"
+    },
+    {
+      "path": "tools/block_prefill_timing_gate.py",
+      "size": 5048,
+      "sha256": "52d2f4b07dcb10eb9584008e6022c00570bd7ac9760e6b7a2d07c41d12d7cce0"
+    },
+    {
+      "path": "tools/block_last_use_gate.py",
+      "size": 2207,
+      "sha256": "f2895fc8a3dbd7c9ddab643fa8a6660a15272723679694cfebe2396acea2bad3"
+    },
+    {
+      "path": "tools/block_layer_utility_gate.py",
+      "size": 12060,
+      "sha256": "53028e695936f37bcd3ca8f5936ba411b33654f03e3cdf0393b4a2090d3ca9a4"
+    },
+    {
+      "path": "tools/residency_unit_run.py",
+      "size": 9103,
+      "sha256": "5635fe18004c42c97ccda13bff5566ced282ae959ce1c360ceb4502e15f4366a"
+    },
+    {
+      "path": "tools/epoch_accounting.py",
+      "size": 6139,
+      "sha256": "05b48d8aed463b85b78ef39c437a3d877c7e47d087236e2be8450218f5171149"
+    }
+  ],
+  "parallel_runtime": {
+    "schema": "parallel-runtime-v1",
+    "environment": {
+      "values": {},
+      "unset": [
+        "OMP_WAIT_POLICY",
+        "OMP_NUM_THREADS",
+        "OMP_DYNAMIC",
+        "OMP_PROC_BIND",
+        "OMP_PLACES",
+        "GOMP_SPINCOUNT",
+        "GOMP_CPU_AFFINITY",
+        "KMP_BLOCKTIME",
+        "KMP_AFFINITY"
+      ]
+    },
+    "libraries_sha256": {
+      "/usr/lib64/libgomp.so.1.0.0": "637b2ab4eedf3ce72173a9d34a4c41c480082d68662db3f0ef4998117df8f9b2"
+    }
+  },
+  "implementation_build": {
+    "compiler": "g++-15 (GCC) 15.3.1 20260722 (Red Hat 15.3.1-1)",
+    "CUDA": "13.3/arch89",
+    "GGML_CUDA": true,
+    "CPU_SKIP_PARKED_compile_flag": true,
+    "backend_build": "build-c269-cuda",
+    "operational_C236": "unchanged, C262 unchanged, privateC269 source/load order qualified prospectively"
+  },
+  "existing_recipe_argv_not_executed_at_closure": [
+    {
+      "receipt": "results/c269-layer-last-use-engineering-20261004/configure.json",
+      "sha256": "7e7a4ba14681cf4a654683fb6ecdeb7cca84a15e2eee4e23f5d8d055c130de3f",
+      "argv": [
+        "cmake",
+        "-S",
+        "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/backends/c269-layer-last-use",
+        "-B",
+        "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/backends/c269-layer-last-use/build-c269-cuda",
+        "-G",
+        "Ninja",
+        "-DCMAKE_BUILD_TYPE=Release",
+        "-DCMAKE_C_COMPILER=/usr/bin/gcc-15",
+        "-DCMAKE_CXX_COMPILER=/usr/bin/g++-15",
+        "-DCMAKE_CUDA_COMPILER=/usr/local/cuda-13.3/bin/nvcc",
+        "-DCMAKE_CUDA_HOST_COMPILER=/usr/bin/g++-15",
+        "-DCMAKE_CUDA_ARCHITECTURES=89",
+        "-DCMAKE_C_FLAGS=-DTESY_C47_CPU_SKIP_PARKED",
+        "-DCMAKE_CXX_FLAGS=-DTESY_C47_CPU_SKIP_PARKED",
+        "-DGGML_CUDA=ON",
+        "-DLLAMA_BUILD_TESTS=OFF",
+        "-DLLAMA_BUILD_EXAMPLES=OFF",
+        "-DLLAMA_BUILD_SERVER=OFF",
+        "-DLLAMA_BUILD_TOOLS=OFF",
+        "-DLLAMA_BUILD_APP=OFF",
+        "-DLLAMA_BUILD_UI=OFF",
+        "-DLLAMA_BUILD_MTMD=OFF"
+      ],
+      "recorded_returncode": 0
+    },
+    {
+      "receipt": "results/c269-layer-last-use-engineering-20261004/build.json",
+      "sha256": "07b365b5fd10894b0f249a790bb8935fec7fee8e99fffeac4ca995775e967e33",
+      "argv": [
+        "cmake",
+        "--build",
+        "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/backends/c269-layer-last-use/build-c269-cuda",
+        "--target",
+        "llama",
+        "-j",
+        "4"
+      ],
+      "recorded_returncode": 0
+    },
+    {
+      "receipt": "results/c272-layer-utility-screen-20261004/common-parser-target-repair-build.json",
+      "sha256": "35675d0b2cd01d4f6b5688690bb109cbac89710d2ce41bdd4cd54563602bd1cf",
+      "argv": [
+        "cmake",
+        "--build",
+        "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/backends/c269-layer-last-use/build-c269-cuda",
+        "--target",
+        "llama-common",
+        "-j",
+        "4"
+      ],
+      "recorded_returncode": 0
+    },
+    {
+      "receipt": "results/c272-layer-utility-screen-20261004/native-client-final-build.json",
+      "sha256": "dbd5bb83088bd9e5d70fdab19443a8841d0a5be1ca07cf746f4a6f1a5c88cfd4",
+      "argv": [
+        "g++-15",
+        "-std=c++17",
+        "-O2",
+        "-I",
+        "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/backends/c269-layer-last-use/vendor",
+        "-I",
+        "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/backends/c269-layer-last-use/common",
+        "-I",
+        "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/backends/c269-layer-last-use/vendor/nlohmann",
+        "-I",
+        "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/backends/c269-layer-last-use/include",
+        "-I",
+        "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/backends/c269-layer-last-use/src",
+        "-I",
+        "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/backends/c269-layer-last-use/ggml/include",
+        "-I",
+        "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/tools",
+        "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/tools/block_layer_utility.cpp",
+        "-L",
+        "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/backends/c269-layer-last-use/build-c269-cuda/bin",
+        "-Wl,-rpath,/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/backends/c269-layer-last-use/build-c269-cuda/bin",
+        "-lllama-common",
+        "-lllama",
+        "-lggml-cpu",
+        "-lggml-base",
+        "-lggml",
+        "-ldl",
+        "-o",
+        "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c236-post-c235-blocks-expert-reuse-20261004T105527Z/build/block-layer-utility-c272"
+      ],
+      "recorded_returncode": 0
+    }
+  ],
+  "profiles": {
+    "R0": "original C75 shape/ub32, rebuilt new binary qualified C237, not historical /tmp hash",
+    "R1": "fixed grid B8/pad0, full output rows, independent confirmed-prefix reference; greedy observed scope",
+    "R2": "span153 attention/router, native FFN32 tiles, expert-major union,last-use order; own profile selected same-profile references",
+    "A_C273": "R0; span/order unset",
+    "B_C273": "R2, TESY_C262_LAYER_SPAN=153,TESY_C269_LAST_USE_ORDER=1; CAPI mode2 only incremental153; decode n1 unchanged"
+  },
+  "runtime_delivery": "No new opt-in launcher/preset delivered; source/history slots40 C143 unchanged. Original /tmp artefact absent at opening, rebuilt C236 is separate identity and not C143 reintegration",
+  "head": {
+    "repository": "nvidia/gpt-oss-120b-Eagle3-long-context",
+    "revision": "633caf45f31288cbb70ee237f7c939db707ecc94",
+    "source_sha256_previously_checked": "1831df81533be3ce4901a382afdedc1ad7c1af3ab3f4b4708e21210c00e3b6f6",
+    "source_size": 430964464,
+    "derived_sha256_previously_checked": "4f6b2fec94d4d891a10841e7ea0d24d70524ee6ee4f1a430d922aefe7928a7ee",
+    "conversion_selected_oracle": "C254 BF16/F32 independent permutation PASS",
+    "no_new_head_download_or_rehash_at_closure": true
+  }
+}

@@ -1,0 +1,40 @@
+{
+  "M3": "PARTIAL",
+  "M4": "NOT_RUN",
+  "backend_commit": "6a2c6c1f0c1032b5567d2a8463eb9bce85df94e8",
+  "canonical_reference": "NOT_RUN",
+  "closed_utc": "2026-09-28T09:50:25.934385+00:00",
+  "default_changed": false,
+  "measurement_commit": "ec035213ecf0f92e3b4e98c40fb943afec58e5b7",
+  "next_action": "C48 new identity: use ggml_backend_buffer_is_host for CPU execution eligibility, new source commit/build/operator test/preflight and contemporary OFF/ON/ON captures; no C47 retry",
+  "off": {
+    "elapsed_s": 71.895,
+    "run_id": "c47-g2-off01",
+    "status": "PASS_CAPTURE_SCOPE"
+  },
+  "old_failures_preserved": [
+    "C43 profiler prelaunch FAIL",
+    "C44 profiler prelaunch FAIL",
+    "C41b telemetry FAIL",
+    "C9-C17 CPU95 thermal FAILs"
+  ],
+  "on": {
+    "elapsed_s": 15.817,
+    "returncode": -6,
+    "run_id": "c47-g2-on01",
+    "status": "FAIL_OTHER_RUNTIME_ASSERT",
+    "stderr_sha256": "4d6db179f7e0f2cd3cacb37bfb9e87a1c9ac054ae0d84f153c4c8d590366a886"
+  },
+  "on_fresh_repeat": {
+    "run_id": "c47-g2-on02",
+    "status": "NOT_RUN_AFTER_FIRST_ON_FAIL"
+  },
+  "physical_budget_consumed_s": 48253.46942877697,
+  "physical_budget_remaining_s": 9346.530571223033,
+  "same_profile_fidelity": "NOT_RUN_DUE_RUNTIME_ASSERT",
+  "schema": "c47-decision-v1",
+  "source_cause": "ggml_backend_cpu_buffer_type has NULL device by design; C47 called ggml_backend_dev_type on that NULL; no prefill output was produced",
+  "specific_failure": "RUNTIME_ASSERT_CPU_BUFFER_TYPE_DEVICE_NULL",
+  "status": "FAIL_RESOURCES_OR_EVIDENCE",
+  "timing": "NOT_RUN"
+}

@@ -1,0 +1,7 @@
+# C69 wave ON targeted boundary
+
+- Objective/base: after C68 repaired OFF capture passed, test whether C57's CPU parked-pair skip preserves active P12 layer0/prefill0 states and five complete logits. Base Tesy `933b7793910e06809f585753bc34a29c56981c99`; backend C66 `1c6f503bbb2ee0ee315540a17cbfb6b2bab68f22`. The only numerical intervention is `TESY_CPU_WAVE_SKIP_PARKED=1`.
+- Alternative: despite the shared-activation conversion fix passing model-free, an active pair, alias, scratch or accumulation defect remains. C48, C61 and C66 historical failures are not relabeled by any C69 result.
+- Control: frozen C68 repaired observer OFF raw and manifest SHA; same model, backend, binary, P12/ub32/slots32/n_ctx4096/no preload, one external 189-ID prefill call and 32 teacher-forced steps. Page cache uncontrolled; no timing claim.
+- Gate: fresh inventory, E18/zero swap, clean measurement commit, one bounded ON process. Validate active routed states and five full logits bitwise with C68 OFF using the C61 targeted schema; `N/A_MASKED` is not measured equality. Reject any invalid ID, nonfinite, byte/lifetime issue, same-profile mismatch, OOM, telemetry or guard stop. Do not retry in this identity.
+- Model-free: C57 MXFP4/F16/F32 broadcast and FFN tests previously passed; C68 scheduler contract fixed and OFF capture passed; five focused C61/C66 gate tests pass. Full 36-layer reference and uninstrumented performance remain `NOT_RUN` until this gate passes.

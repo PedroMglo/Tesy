@@ -1,0 +1,66 @@
+{
+  "C61": "FAIL_NUMERIC_RUNTIME_ASSERTION_UNCHANGED",
+  "CPU95_warning_not_stop": true,
+  "M3": "C52B_TESTED_SCOPE_UNCHANGED",
+  "M4": "NOT_MET",
+  "default_changed": false,
+  "forward": {
+    "completion_tokens": 4,
+    "decode_s": 0.8759389999999999,
+    "finish_reason": "length",
+    "prefill_s": 76.791305,
+    "prompt_tokens": 513
+  },
+  "measurement_commit": "36819f62f4127603ae237e939511ab50501eb068",
+  "next_action": "P14 explicit loader placement evidence and same-profile numeric boundary/reference on C35 backend before paired timing; diagnose C61 invalid ID separately",
+  "numeric_fidelity": "NOT_RUN",
+  "observed_placement": "INCOMPLETE_EVIDENCE",
+  "paired_performance": "NOT_RUN",
+  "publication": "local only",
+  "quality": "NOT_RUN",
+  "resource_status": "PASS_UNDER_E18",
+  "runs": [
+    {
+      "completion_tokens": null,
+      "elapsed_s": 4.7188113709999016,
+      "maxima": {
+        "cgroup_peak_bytes": 4439064576,
+        "cpu_c": 52.5,
+        "gpu_c": 44.0,
+        "gpu_total_mib": 6600.0,
+        "nvme_c": 38.85,
+        "rss_bytes": 4658335744,
+        "swap_bytes": 0
+      },
+      "prompt_tokens": null,
+      "raw_sha256": "01c8d635727986d39abd9e327a28586e75ae181499ec6fc0a9973e9286cac99f",
+      "ready_s": 4.01994655400631,
+      "returncode": 0,
+      "run_id": "c62-p14-init01",
+      "status": "PASS_CAPACITY_ADMISSION",
+      "stop_reasons": []
+    },
+    {
+      "completion_tokens": 4,
+      "elapsed_s": 82.4384998530004,
+      "maxima": {
+        "cgroup_peak_bytes": 12104060928,
+        "cpu_c": 95.125,
+        "gpu_c": 62.0,
+        "gpu_total_mib": 6660.0,
+        "nvme_c": 44.85,
+        "rss_bytes": 12340846592,
+        "swap_bytes": 0
+      },
+      "prompt_tokens": 513,
+      "raw_sha256": "4506824b3b4001377803b38f08fa3e96b12cbed1719b78bdfd5efe4f9bf0d8da",
+      "ready_s": 4.018733859003987,
+      "returncode": 0,
+      "run_id": "c62-p14-cold51301",
+      "status": "PASS_CAPACITY_ADMISSION",
+      "stop_reasons": []
+    }
+  ],
+  "schema": "c62-decision-v1",
+  "status": "PASS_LOAD_AND_FORWARD_PLACEMENT_MAP_PENDING"
+}

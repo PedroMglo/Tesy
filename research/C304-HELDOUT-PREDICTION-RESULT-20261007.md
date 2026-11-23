@@ -1,0 +1,20 @@
+# C304 — conditional heldout GO for real byte staging
+
+Decision: GO_BOUNDED_REAL_STAGING_CANARY. Not a measured prefetch speedup, utility improvement, training result, preset or M4. All five processes passed, including rebuilt nativeCPU fixture. MeasurementHEAD b636189, physicalfamily1392.445692s. C300/C301/C303 failures remain unchanged; C304 solved the diagnostic prefix envelope without changing tasks, numerical profile, estimator horizon, thresholds or32-forward limit.
+
+MEDIDO_NO_TARGET: both new conversations produced32 nativegreedy nonEOS input forwards,33 complete finite vocabulary rows. Both ON provided exactly those native controlIDs and reproduced every full-logit byte and initial complete cache/policy state. Actual original biased gate scores agree with true authoritative top4; exact736 earlier-residual forecasts perON case. No speculative reads or auxiliary training happened.
+
+| Predictor heldout | Missing-demand recall | Issued precision | Complete predictor cost /32 forwards | Conditional decode gain |
+|---|---:|---:|---:|---:|
+| intervals |66.9654%|54.9947%|36.2643ms|11.5260%|
+| inventory |72.8411%|58.6694%|36.1207ms|13.99995%|
+
+Last column ESTIMADO: scoped offline scenario, observed OFF services/missing-generation stream and compute held fixed, real ON predictions/costs, false reads using target-layer observed median, four workers/max3 unconfirmed speculative reads, demand priority, nonpreemptible reads,128MiB arena including running/ready entries, expiry at true router and copy only after authority. Service scale0.8/1.0/1.2 gives intervals12.1558/11.5260/11.2419%, inventory14.3472/13.99995/13.8557%. Baseline scenario differs from observed decode by−0.4454/−0.4688%. This agreement does not prove the physical counterfactual. Stage lookup/publication overhead and changed IO/compute contention remain unmeasured. No fixed-primary-cache scenario is labelled a universal bound.
+
+Actual preparation took242.210/242.734s in intervals and234.316/231.831s in inventory. It is separate from warm153/decode and includes the prospective bounded progress writes. C303 had stopped before this preparation could finish at220s; its FAIL/NOT_RUN and nativeIDs NOT_EXPOSED remain preserved. Timing variations between control and estimator are not mechanism gains because no bytes were prefetched. This prefix characterization does not complete either functional task, validate a final, certify a server or count teacher-forced tokens as useful throughput.
+
+Source/library/model/env/profile identity, all arm clocks/inputs/native IDs/resource receipts and SHA256/size raw manifests are under results/c304-prefix-cost-observer-repair-20261007. Original helpers/historical evaluators intact;8 directed synthetic boundary tests PASS. Source alias remains actual ffn_moe_probs; original destination gates/norm/bias are shared readonly. Full newcase logit hashes0e3e83d3... andcea29c24... are in compact/native receipts. Raw is local, not weights/large traces in Git.
+
+Common E20/swap0/19.5GiB guard admitted live; mandatory AC/performance and device/ancestral/persistentpressure gates passed. Perarm sampled memory.current is distinguished from cumulative family memory.peak in compact. No OOM/high/max/workloadswap observed. Clocks/CPU energy unqualified; no energy conclusion. Own service observed inactive, GPU compute-app query empty, habitual ollama ps empty. Cleanup does not change daemon/default.
+
+Next authorized gate: implement a narrow separate128MiB CPU staging arena using original GGUF byte slices and the existing four workers. Predictions do not reserve/evict primary slots, update hotness or authorize execution. At least one worker remains available to real demand; readiness must follow complete valid IO, and actual router+slot+expert+generation authorize destination copy/publication. Source/model-free fault cases, real O_DIRECT/bytes and selected full R0 rows precede timing. One bounded real canary determines net costs; no training or B-store composition is justified by this result. Epoch remains ACTIVE, LOCAL_ONLY, M3 partial/M4 NOT_MET, no remote publication authority.

@@ -1,0 +1,48 @@
+{
+  "id": "c311-train-06",
+  "start": {
+    "utc": "2026-10-07T02:21:09.036934+00:00",
+    "monotonic_s": 115887.482509034
+  },
+  "end": {
+    "utc": "2026-10-07T02:27:12.235113+00:00",
+    "monotonic_s": 116250.680698757
+  },
+  "argv": [
+    "/usr/bin/python",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/tools/run_bounded.py",
+    "--run-id",
+    "c311-train-06",
+    "--model-id",
+    "gpt-oss-120b-mxfp4-gguf",
+    "--backend",
+    "stock",
+    "--backend-root",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/backends/c305-cpu-prediction-staging",
+    "--output-root",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c311-original-task-separated-score-corpus-20261007/raw",
+    "--variant",
+    "OriginalR0-training-only-corpus",
+    "--workload",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c311-original-task-separated-score-corpus-20261007/protocol.json",
+    "--cache-condition",
+    "Frozennewtask/128native nonEOS cap/no targetforecast/training; sameoriginalprofile, suppliedhistory, taskdisjointdevelopmentholdout",
+    "--resource-protocol",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c311-original-task-separated-score-corpus-20261007/protocol.json",
+    "--require-telemetry",
+    "--timeout-s",
+    "600",
+    "--collect-start-inventory",
+    "--",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c283-exact-expert-service-epoch-20261006T194311Z/build/score-corpus/bin/expert-prediction-corpus",
+    "/home/pmglo/models/gpt-oss-120b-gguf/gpt-oss-120b-MXFP4.gguf",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c310-score-calibration-corpus-boundary-20261007/raw/official-training-inputs.json",
+    "train-06-scheduled-trip",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c311-original-task-separated-score-corpus-20261007/raw/c311-train-06.native",
+    "train128",
+    "v1"
+  ],
+  "returncode": 0,
+  "stdout": "{\"run_id\": \"c311-train-06\", \"elapsed_s\": 302.594, \"returncode\": 0, \"stop_reason\": null, \"maxima\": {\"rss_bytes\": 16010354688, \"swap_bytes\": 0, \"cgroup_memory_bytes\": 15980261376, \"cgroup_peak_bytes\": 16007892992, \"cgroup_file_bytes\": 1702002688, \"gpu_used_mib\": 6889.0, \"gpu_temperature_c\": 55.0, \"cpu_tctl_c\": 73.875, \"nvme_composite_c\": 59.85, \"direct_model_fds\": 2, \"buffered_model_fds\": 0}}\n",
+  "stderr": ""
+}

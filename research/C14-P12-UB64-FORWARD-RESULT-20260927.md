@@ -1,0 +1,6 @@
+# C14 P12/ub64 minimum forward result
+
+- Objective/base: E18 execution-workspace admission for original-backend P12 native ub64 8K full-SWA server, measurement commit `b4fe6507aed4e47f9bee3fa894b3daea673ed18a`. Init passed separately. Evidence class: one physical synthetic resource/latency diagnostic, raw local.
+- Run: `systemd-run --user --scope -p MemoryMax=19327352832 -p MemorySwapMax=0 -- python3 tools/c14_p12ub64_server.py results/c14-20260927T1555Z --run forward --measurement-commit b4fe6507aed4e47f9bee3fa894b3daea673ed18a`. Embedded tokenizer fixed 78 prompt IDs, cache_n=0, four output tokens completed. Return 0, 26 valid samples, identity/mapped-library/raw checks passed, no guard/event/swap failure.
+- Observed: backend prefill 21.989 s/decode 1.043 s, API 23.036 s, scope 27.823 s; sampled peak RSS 13.248 GB, cgroup 13.021 GB, GPU 5716 MiB, CPU 84.25 C, GPU 53 C, NVMe 46.85 C, swap 0. C11 P12/ub32's one corresponding request had backend prefill 24.537 s, but this is a single descriptive cross-profile contrast without numeric reference or paired timing.
+- Decision: `MINIMUM_FORWARD_ADMITTED_NEW_PROFILE`. Next: frozen 513-ID cold request, with prospective investment rule CPU≤92 C and backend prefill≤75 s. Same-profile native64 reference and product qualification remain NOT_RUN; default unchanged.

@@ -1,0 +1,39 @@
+{
+  "measurement_commit": "efcf4aa808008665f3e2c3fe07f6acc5cd517067",
+  "start": {
+    "utc": "2026-10-01T19:00:44.718477+00:00",
+    "monotonic_s": 375624.191705983
+  },
+  "end": {
+    "utc": "2026-10-01T19:01:48.902167+00:00",
+    "monotonic_s": 375688.375400779
+  },
+  "argv": [
+    "systemd-run",
+    "--user",
+    "--slice=tesy-post-c154.slice",
+    "--unit=tesy-c234-readiness-pilot",
+    "--collect",
+    "--pipe",
+    "--wait",
+    "--working-directory=/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc",
+    "-p",
+    "MemoryMax=2147483648",
+    "-p",
+    "MemoryHigh=2147483648",
+    "-p",
+    "MemorySwapMax=0",
+    "-p",
+    "RuntimeMaxSec=210",
+    "-p",
+    "TimeoutStopSec=10",
+    "--",
+    "/usr/bin/python3",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/tools/residency_unit_run.py",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c234-readiness-pilot-or-bound-20261001",
+    "--inside"
+  ],
+  "returncode": 0,
+  "stdout": "",
+  "stderr": "Running as unit: tesy-c234-readiness-pilot.service\n          Finished with result: success\nMain processes terminated with: code=exited, status=0/SUCCESS\n               Service runtime: 1min 4.108s\n             CPU time consumed: 11.351s\n                   Memory peak: 302.7M (swap: 0B)\n"
+}

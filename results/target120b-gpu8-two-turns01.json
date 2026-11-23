@@ -1,0 +1,167 @@
+{
+  "run_id": "target120b-gpu8-two-turns01",
+  "started_utc": "2026-09-26T10:14:56.779953+00:00",
+  "model_id": "gpt-oss-120b-mxfp4-gguf",
+  "model_path": "/home/pmglo/models/gpt-oss-120b-gguf/gpt-oss-120b-MXFP4.gguf",
+  "backend": "streaming",
+  "backend_sha": "1248fd8fa8cfebaece5ea992e4d951c1e18bb9d5",
+  "binary_sha256": "422ff917448c9bb4cb3b59e9af75d9f0d8fc145ffa6c49317d722dd86aa14b94",
+  "variant": "gpu8-stream16-direct-no-repack-ub32-greedy256",
+  "workload": "workloads/m1_two_turns.txt",
+  "cache_condition": "cold-process-direct-experts-after-prefix-probes",
+  "command": [
+    "backends/streaming/build-gcc15/bin/llama-cli",
+    "-m",
+    "/home/pmglo/models/gpt-oss-120b-gguf/gpt-oss-120b-MXFP4.gguf",
+    "-ngl",
+    "8",
+    "-c",
+    "4096",
+    "-b",
+    "256",
+    "-ub",
+    "32",
+    "-t",
+    "8",
+    "-tb",
+    "8",
+    "-n",
+    "256",
+    "-s",
+    "42",
+    "--temp",
+    "0",
+    "--no-warmup",
+    "--simple-io",
+    "--no-display-prompt",
+    "--no-repack",
+    "-lv",
+    "3",
+    "--moe-stream-cache",
+    "16s",
+    "--moe-stream-io-threads",
+    "4",
+    "--moe-stream-direct"
+  ],
+  "explicit_env": {
+    "LLAMA_MOE_STREAM_NO_PRELOAD": "1"
+  },
+  "stdin_file": "workloads/m1_two_turns.txt",
+  "stdin_sha256": "54329122bb29db556fdd12a517a298797c813666768d4866de7687e7648d2c31",
+  "limits": {
+    "timeout_s": 900,
+    "max_rss_gib": 17.0,
+    "min_available_gib": 6.0,
+    "max_gpu_mib": 7000.0
+  },
+  "cgroup_start": {
+    "path": "/user.slice/user-1000.slice/user@1000.service/app.slice/run-p138179-i121461.scope",
+    "memory_max": 19327352832,
+    "swap_max": 0,
+    "memory_current": 12091392,
+    "swap_current": 0,
+    "memory_stat": {
+      "anon": 10772480,
+      "file": 200704,
+      "kernel": 278528,
+      "shmem": 0,
+      "file_mapped": 0
+    },
+    "events": {
+      "low": 0,
+      "high": 0,
+      "max": 0,
+      "oom": 0,
+      "oom_kill": 0,
+      "oom_group_kill": 0,
+      "sock_throttled": 0
+    }
+  },
+  "publication": "local only; stdout/stderr are untracked",
+  "samples_path": "/home/pmglo/Projects/Tesy/tesy-scale-lab/results/target120b-gpu8-two-turns01.samples.jsonl",
+  "cgroup_limit_enforced": true,
+  "ended_utc": "2026-09-26T10:19:54.994749+00:00",
+  "elapsed_s": 298.215,
+  "returncode": 0,
+  "stop_reason": null,
+  "maxima": {
+    "rss_bytes": 8694730752,
+    "swap_bytes": 0,
+    "cgroup_memory_bytes": 9627729920,
+    "cgroup_file_bytes": 2808901632,
+    "gpu_used_mib": 2406.0,
+    "gpu_temperature_c": 59.0,
+    "direct_model_fds": 1,
+    "buffered_model_fds": 1
+  },
+  "last_sample": {
+    "elapsed_s": 297.214,
+    "proc": {
+      "VmHWM": 8689876992,
+      "VmRSS": 4363960320,
+      "VmSwap": 0,
+      "rchar": 400264594739,
+      "syscr": 99840,
+      "read_bytes": 398831923200
+    },
+    "mem_available_bytes": 24465219584,
+    "gpu": {
+      "used_mib": 2354.0,
+      "temperature_c": 54.0,
+      "power_w": 11.17
+    },
+    "cgroup": {
+      "path": "/user.slice/user-1000.slice/user@1000.service/app.slice/run-p138179-i121461.scope",
+      "memory_max": 19327352832,
+      "swap_max": 0,
+      "memory_current": 4503093248,
+      "swap_current": 0,
+      "memory_stat": {
+        "anon": 1667293184,
+        "file": 2799095808,
+        "kernel": 27115520,
+        "shmem": 1616310272,
+        "file_mapped": 1626492928
+      },
+      "events": {
+        "low": 0,
+        "high": 0,
+        "max": 0,
+        "oom": 0,
+        "oom_kill": 0,
+        "oom_group_kill": 0,
+        "sock_throttled": 0
+      }
+    },
+    "model_fds": {
+      "open": 1,
+      "direct": 1,
+      "buffered": 0
+    }
+  },
+  "stdout_path": "/home/pmglo/Projects/Tesy/tesy-scale-lab/results/target120b-gpu8-two-turns01.stdout",
+  "stderr_path": "/home/pmglo/Projects/Tesy/tesy-scale-lab/results/target120b-gpu8-two-turns01.stderr",
+  "cgroup_end": {
+    "path": "/user.slice/user-1000.slice/user@1000.service/app.slice/run-p138179-i121461.scope",
+    "memory_max": 19327352832,
+    "swap_max": 0,
+    "memory_current": 1199198208,
+    "swap_current": 0,
+    "memory_stat": {
+      "anon": 10813440,
+      "file": 1182785536,
+      "kernel": 2830336,
+      "shmem": 0,
+      "file_mapped": 0
+    },
+    "events": {
+      "low": 0,
+      "high": 0,
+      "max": 0,
+      "oom": 0,
+      "oom_kill": 0,
+      "oom_group_kill": 0,
+      "sock_throttled": 0
+    }
+  }
+}

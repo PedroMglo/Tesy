@@ -1,0 +1,7 @@
+# C7 G2 observer attempt 01: schema gate failure
+
+Objective: qualify P12 observer OFF/ON on measurement commit `2dcc7e465a6904f0dbfb4266e587ff76b18dbd95`, tree `0e5d7f7f0d1e49de7e389fd7aeffa2d00449f045`. Runs `c7-g2-p12-off01` and `c7-g2-p12-on01` completed under E18 without a sampled guard. Their raw manifests and capture index are hashed in `g2-attempt01.json`. OFF2, layer references and timing were stopped.
+
+The frozen validator expected `ffn_moe_logits_biased` in every numeric state; the observed index has none of those 250 rows. Source inspection and the captured stage list show the biased router tensor is aliased and later named `ffn_moe_probs`, so the graph callback cannot expose the earlier name. This is a gate-schema defect. A read-only diagnostic that excludes the unobservable alias finds 250 numeric states, 2 masked states, 3675 indexed tensors and 996 equal canonical-byte slices; all five selected OFF/ON logits vectors are bitwise equal. These observations do not relabel attempt 01 as a prospective PASS.
+
+Decision: `GATE_REPAIR_BLOCKED` for attempt 01. Preserve its raw. The next test is a new G2b identity with the corrected observable-stage set frozen before fresh OFF/ON/repeat outputs. No default, timing or functional claim changed. The alternative that the capture itself lacked router information is weakened by the present `ffn_moe_probs` and route-byte witnesses, but G2b must still pass.

@@ -1,0 +1,1 @@
+C59: C7 tensor inventory rehashed. P14 known GPU pool+dense delta from P12 gives estimated 6623.98 MiB before new workspace vs 7676 MiB stop; P16 7495.96 MiB. No P14/P16 model run. P14 bounded forward screen justified, not admitted for timing.

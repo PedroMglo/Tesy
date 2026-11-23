@@ -1,0 +1,37 @@
+{
+  "run_id": "c211-B",
+  "start": {
+    "utc": "2026-10-01T10:51:36.678947+00:00",
+    "monotonic_s": 346276.152173226
+  },
+  "end": {
+    "utc": "2026-10-01T10:53:14.740031+00:00",
+    "monotonic_s": 346374.213265289
+  },
+  "rc": 0,
+  "stderr": "",
+  "parallel_runtime": [
+    {
+      "libraries_sha256": {
+        "/usr/lib64/libgomp.so.1.0.0": "637b2ab4eedf3ce72173a9d34a4c41c480082d68662db3f0ef4998117df8f9b2"
+      },
+      "initial_process_environment": {
+        "values": {
+          "GOMP_SPINCOUNT": "0"
+        },
+        "unset": [
+          "OMP_WAIT_POLICY",
+          "OMP_NUM_THREADS",
+          "OMP_DYNAMIC",
+          "OMP_PROC_BIND",
+          "OMP_PLACES",
+          "GOMP_CPU_AFFINITY",
+          "KMP_BLOCKTIME",
+          "KMP_AFFINITY"
+        ]
+      },
+      "source_note": "ggml init may set KMP_BLOCKTIME=200 after exec; GNU libgomp does not use KMP blocktime. /proc/environ observes initial exec environment."
+    }
+  ],
+  "runtime_errors": []
+}

@@ -1,0 +1,5 @@
+# C74 wave skip confirmation
+
+Objective: test whether the C73 screen gains survive three new alternating pairs per workload. Measurement commit `6dfc6848646d1100133f78aaa06a05cb9fed7394`. Evidence class: MEDIDO_NO_TARGET. Alternative: screen gain arises from order, thermal state or uncontrolled cache.
+
+Twelve fresh arms passed telemetry, output and full33-logit bitwise checks. Median paired T_work gain: 55.86% cold513, 39.19% retained-KV incremental154; three pairs positive in each case, decode medians did not regress. All incremental pair starts matched the frozen 3/3/2 C diagnostic band. Cold pairs 1 and 3 did not; gains nevertheless spanned only 55.73–55.93%. CPU max 95.25 C was warning, no stop. Scope: P12 n_ctx4096/preload OFF teacher-forced probe; no server cache, API TTFT, quality or M4 claim. Historical C48/C61/C66 FAILs unchanged. Next discriminating gate: isolated source feasibility/port to pinned C35 server profile, then numerical qualification. See `results/c74-wave-confirm-20260928T1740Z/decision.json`.

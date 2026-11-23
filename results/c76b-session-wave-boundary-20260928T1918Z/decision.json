@@ -1,0 +1,57 @@
+{
+  "backend_commit": "27d2e42d8c994507ee6d71acc7c58d3eddd3f7a5",
+  "claim_limit": "P12 n_ctx4096 preload OFF full boundary only; independent attention/KV, 8192 session and quality NOT_RUN",
+  "core_stage_comparisons": 1500,
+  "cross_build_C70_OFF": {
+    "core_equal": 1500,
+    "core_total": 1500,
+    "full_logits_equal": {
+      "decode0": true,
+      "decode1": true,
+      "decode31": true,
+      "decode7": true,
+      "prefill_final": true
+    },
+    "scope": "cross-build descriptive only; not the same-profile gate"
+  },
+  "default_changed": false,
+  "full_logit_vectors": 5,
+  "masked_states": 2,
+  "measurement_commit": "9985ebf89e9dcb20f12493505c1a4ae4999d39f9",
+  "next_action": "C75 same-build resident canonical FFN reference, then 8192 session numeric bridge before timing",
+  "numeric_states": 250,
+  "off_maxima": {
+    "buffered_model_fds": 1,
+    "cgroup_file_bytes": 3097755648,
+    "cgroup_memory_bytes": 14458404864,
+    "cgroup_peak_bytes": 14479769600,
+    "cpu_tctl_c": 88.625,
+    "direct_model_fds": 2,
+    "gpu_temperature_c": 57.0,
+    "gpu_used_mib": 5698.0,
+    "nvme_composite_c": 48.85,
+    "rss_bytes": 13090766848,
+    "swap_bytes": 0
+  },
+  "on_maxima": {
+    "buffered_model_fds": 1,
+    "cgroup_file_bytes": 3176472576,
+    "cgroup_memory_bytes": 14302429184,
+    "cgroup_peak_bytes": 14323863552,
+    "cpu_tctl_c": 65.125,
+    "direct_model_fds": 2,
+    "gpu_temperature_c": 53.0,
+    "gpu_used_mib": 5698.0,
+    "nvme_composite_c": 53.85,
+    "rss_bytes": 13090963456,
+    "swap_bytes": 0
+  },
+  "preserved_failures": [
+    "C48 FAIL_SAME_PROFILE_FIDELITY",
+    "C61 FAIL_NUMERIC_RUNTIME_ASSERTION",
+    "C66 FAIL_NUMERIC_RUNTIME_ASSERTION"
+  ],
+  "raw_file_count": 7382,
+  "schema": "c76b-decision-v1",
+  "status": "SAME_PROFILE_BITWISE_PASS_FULL_BOUNDARY"
+}

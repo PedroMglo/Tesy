@@ -1,0 +1,37 @@
+{
+  "schema": "post-c198-short-qualified-optin-v1",
+  "tasks_source": "portfolio_workload.JSON_TURNS already hashed in screen workload before outputs",
+  "expected_json": [
+    {
+      "projeto": "Lume",
+      "local": true,
+      "armazenamento": "disco",
+      "porta": 18440
+    },
+    {
+      "projeto": "Lume",
+      "local": true,
+      "armazenamento": "disco",
+      "porta": 18441
+    }
+  ],
+  "grader": "Existing optin_integration_client.grade indices2/3: strict JSON object/no extra fields, bool local, int port; no output repair",
+  "history": "Actual own assistant final content enters second turn",
+  "caps": [
+    256,
+    256
+  ],
+  "deadlines_s": [
+    180,
+    120
+  ],
+  "readiness_after_popen_s": 30,
+  "server_maximum_s": 340,
+  "complete_envelope_s": 420,
+  "reserve_maximum_s": 600,
+  "prefix_min_common": 500,
+  "prefix_max_lost": 32,
+  "prefix_rule": "validate_generated_prefix_cache against actual official IDs/counts; not nominal153",
+  "only_if": "C GO_CONFIRMATION; original C143 preset/default remain intact",
+  "qualification_scope": "two-turn semantic/JSON opt-in path; not quality12/holdout8/session/full8K"
+}

@@ -1,0 +1,97 @@
+{
+  "campaign": "tesy-scale-lab-20260926",
+  "main_state": "MODEL_ARTIFACT_REQUIRED",
+  "target": {
+    "model": "gpt-oss-120b",
+    "native_mxfp4_safetensors_present": true,
+    "selected_backend_compatible_gguf_present": false,
+    "executed": false,
+    "correctness_validated": false,
+    "sustained_decode_tokens_per_second": null,
+    "task_benefit": null
+  },
+  "milestones": {
+    "M0_BACKEND_SELECTED": "20B candidate generated",
+    "M1_OVER_BUDGET_END_TO_END": "20B surrogate only",
+    "M2_IO_ACCOUNTED": "partial",
+    "M3_MEASURED_OPTIMIZATION": false,
+    "M4_REAL_OVER_RAM_MODEL": false,
+    "M5_PERFORMANCE_TARGET_MET": false,
+    "M6_LARGER_MODEL_TASK_ADVANTAGE": false
+  },
+  "surrogate": {
+    "model_id": "gpt-oss-20b-mxfp4-gguf",
+    "sha256": "52f57ab7d3df3ba9173827c1c6832e73375553a846f3e32b49f1ae2daad688d4",
+    "causal_fixed_prefix": {
+      "same_backend_sha": "1248fd8fa8cfebaece5ea992e4d951c1e18bb9d5",
+      "cpu_ubatch_1_equal_logits": 201088,
+      "cpu_ubatch_32_equal_logits": 201088,
+      "gpu8_ubatch_32_equal_logits": 201088,
+      "claims": "bitwise final-prefix logit equality under matched buffer, repack and op-offload settings on one 17-token prefix"
+    },
+    "two_request_comparisons": [
+      {
+        "run_id": "stream20b-m1-two-turns01",
+        "backend": "candidate",
+        "placement": "CPU 16 slots per layer O_DIRECT",
+        "host_cgroup_limit_gib": 9,
+        "cgroup_peak_bytes": 7348518912,
+        "gpu_peak_total_mib": 23,
+        "prefill_tokens_per_second": [7.11, 7.78],
+        "decode_tokens_per_second": [7.40, 5.83],
+        "decode_tokens": [195, 193],
+        "zero_swap_and_oom": true
+      },
+      {
+        "run_id": "plain20b-two-turns-nommap01",
+        "backend": "candidate_same_sha_plain",
+        "placement": "CPU full model no mmap no repack",
+        "host_cgroup_limit_gib": 16,
+        "cgroup_peak_bytes": 12670738432,
+        "gpu_peak_total_mib": 23,
+        "prefill_tokens_per_second": [62.99, 62.04],
+        "decode_tokens_per_second": [23.12, 22.80],
+        "decode_tokens": [195, 193],
+        "zero_swap_and_oom": true
+      },
+      {
+        "run_id": "stream20b-gpu8-two-turns01",
+        "backend": "candidate",
+        "placement": "GPU8 CPU 16 slots per remaining layer O_DIRECT",
+        "host_cgroup_limit_gib": 9,
+        "cgroup_peak_bytes": 5368156160,
+        "gpu_peak_total_mib": 2423,
+        "gpu_peak_temperature_c": 57,
+        "prefill_tokens_per_second": [9.40, 10.29],
+        "decode_tokens_per_second": [9.24, 6.75],
+        "decode_tokens": [195, 163],
+        "zero_swap_and_oom": true
+      },
+      {
+        "run_id": "stock20b-gpu14-two-turns01",
+        "backend": "stock",
+        "placement": "GPU14 full model resident direct loader",
+        "host_cgroup_limit_gib": 9,
+        "cgroup_peak_bytes": 6221205504,
+        "gpu_peak_total_mib": 6589,
+        "gpu_peak_temperature_c": 61,
+        "prefill_tokens_per_second": [99.22, 96.86],
+        "decode_tokens_per_second": [45.50, 43.88],
+        "decode_tokens": [180, 133],
+        "zero_swap_and_oom": true
+      }
+    ],
+    "io": {
+      "direct_fd_confirmed": true,
+      "cpu_stream_decode_process_read_bytes_approx": [33500000000, 45400000000],
+      "exclusive_physical_nvme_bytes": null,
+      "host_to_device_bytes": null,
+      "tier_hit_rates": null
+    },
+    "sustained_15_to_30_minutes": false,
+    "ttft_measured": false,
+    "task_eval_run": false
+  },
+  "evidence": "research/M0-M1-RESULT-20260926.md",
+  "limitations": "One exploratory full-model run per configuration; different backend SHA and placement in practical stock comparison; target artifact absent."
+}

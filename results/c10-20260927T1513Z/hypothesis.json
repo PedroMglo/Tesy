@@ -1,0 +1,17 @@
+{
+  "alternative": "benefit may vanish or reverse with preload ON, 8K server, or thermal behavior; C4 timing/resource provenance does not qualify this run",
+  "benefit_expected": "hypothesis only, fewer microbatch callbacks and lower elapsed/thermal exposure",
+  "envelope": "E18, CPU95/GPU80/NVMe70, GPU6500 MiB reservation, cgroup16.5 GiB, RSS16 GiB, zero swap",
+  "historical_evidence": "C4 ub64 one-shot 113-ID prefill 44.624687->40.774453 s, graph wave callbacks 1225->700; C4 native ub64 36 canonical layers passed its own historical spec_pressure capture; cross-profile logits/routing differ",
+  "minimal_path": [
+    "init-only bounded",
+    "one 78-ID minimum forward",
+    "one 513-ID cold synthetic request if prior gate passes"
+  ],
+  "numeric_contract": "new ub64 native profile; same-profile streaming reference and observer proof required before timing/quality promotion",
+  "objective": "test native ub64 as a distinct numeric profile and possible reduction in prefill callback work/thermal exposure",
+  "risk": "different Flash Attention arithmetic and routing; larger workspace/peak memory",
+  "schema": "c10-native64-hypothesis-v1",
+  "stop": "any guard, nonfinite, resource/identity/evidence failure; no retry; no comparison claim from incomplete pair",
+  "variable": "only n_ubatch 32->64 relative to C9 P8 server, with n_batch256 and all other runtime flags fixed"
+}

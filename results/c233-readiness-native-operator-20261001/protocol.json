@@ -1,0 +1,817 @@
+{
+  "schema": "readiness-native-operator-feasibility-v1",
+  "campaign_id": "c233-readiness-native-operator",
+  "epoch_path": "results/c232-post-c231-readiness-20261001T180602Z",
+  "execution_scope_unit": "tesy-c233-readiness-operator",
+  "physical_envelope_s": 450,
+  "raw_projection_bytes": 16777216,
+  "claim_scope": "Isolated CPU C127 decode states, original40 and44 pool metadata; first gate_MMID/fullFFN resident and direct reload timing; no Transformer/tokens/GPU compute",
+  "success_status": "MEASURED_NATIVE_CPU_OPERATOR_SELECTED_SCOPE",
+  "model_path": "/home/pmglo/models/gpt-oss-120b-gguf/gpt-oss-120b-MXFP4.gguf",
+  "model_id": "gpt-oss-120b-mxfp4-gguf",
+  "model_stat": {
+    "dev": 53,
+    "inode": 14833675,
+    "size_bytes": 63387346208,
+    "mtime_ns": 1790389637795911032,
+    "ctime_ns": 1790389637807910988
+  },
+  "model_sha256_previously_verified": "582bd40f6886200101f4c4ed9f25f3fe80cc14c86e9e2b37746cd8904a0c622d",
+  "backend_root": "/tmp/tesy-c75-backend-20260928",
+  "backend_commit": "27d2e42d8c994507ee6d71acc7c58d3eddd3f7a5",
+  "file_sha256": {
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c232-post-c231-readiness-20261001T180602Z/build/readiness_operator": "61a677c3a073ea2c84a4636890e02dc55dee7749063e7c493115e9886c647a1e",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/tools/readiness_operator.cpp": "3866164c1d564c48b0bf3ba050564b93bc6cf260e896765fdca51bd0a388aeb7",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/tools/c7_layer_reference.cpp": "8e2cea78501bc1889fc99cada9613a60288a71e2014b8d2a201308cceabb21a9",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/tools/c210_direct_reader.h": "cb386577d0b424d531a484d81619e29887b2419dd03c05578004b0878f601af6",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/tools/readiness_feasibility.py": "78bc00d6cdf2cbd3e4f7335d1d7ecddbea426b785ab954731277dfbbeca69a4e",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/tools/readiness_prepare_operator.py": "da09b4db3737809255e44695cc985bce3ac7f3f5f35f2291a44c6f3beb3a8532",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/tools/residency_unit_run.py": "5635fe18004c42c97ccda13bff5566ced282ae959ce1c360ceb4502e15f4366a",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/tools/run_bounded.py": "7ea7246b415df4e18ab083fb847ebc35a1e59b3849c2f2ad0b97626f029fee06",
+    "/tmp/tesy-c75-backend-20260928/build-c75-cuda/bin/libggml.so.0.15.3": "c8e142ca0fd311d472d17578f58d5a9694d95e256131b13456b8f9d11e867951",
+    "/tmp/tesy-c75-backend-20260928/build-c75-cuda/bin/libggml-cpu.so.0.15.3": "ec5de96d7cacaf0a96e7d678ec28f337c1082c57ae6fbfbbbbcbaaf945cf5697",
+    "/tmp/tesy-c75-backend-20260928/build-c75-cuda/bin/libggml-base.so.0.15.3": "c91a937208a64dd1beabf13de83a5896729f3983b51e8636eaa44b111bb6f229",
+    "/tmp/tesy-c75-backend-20260928/build-c75-cuda/bin/libggml-cuda.so.0.15.3": "b119db0b5abd29cba9101aaba7c2cc0607a521585028a102e459ac7e318d575d",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c127-slots40-numeric-20260929T1654Z/raw/c127-slots40-on01.capture/decode0_0_attn_post_norm_2247.bin": "f4b7b1fc1595244c263e292a8cd2d6c1d3c939e00b56e151c5c5d48fc403092e",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c127-slots40-numeric-20260929T1654Z/raw/c127-slots40-on01.capture/decode0_0_ffn_moe_logits_2248.bin": "11641bdfc06920fbf3848b067530f8e577e6c874375fa72739c2b5f301418b21",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c127-slots40-numeric-20260929T1654Z/raw/c127-slots40-on01.capture/decode0_0_ffn_moe_probs_2249.bin": "b65b432a06c2cce290c8cd0b6624e7afbfabd183a22fccc272ff8763be2b425d",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c127-slots40-numeric-20260929T1654Z/raw/c127-slots40-on01.capture/decode0_0_ffn_moe_topk_2250.bin": "0132e8af7db0cae65ffcd07b97da7e7445368d95ffb0528723b92ac4ddb16d1e",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c127-slots40-numeric-20260929T1654Z/raw/c127-slots40-on01.capture/decode0_0_ffn_moe_weights_softmax_2251.bin": "2144b1ce76f2161a0ae725f6341c7811c33c5c4ae16366620736103704feb18d",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c127-slots40-numeric-20260929T1654Z/raw/c127-slots40-on01.capture/decode0_0_ffn_moe_topk_stream_2252.bin": "91b5009ad8fffc726414c61e3dc1fd5f3dd1e4ac48a05ecd1bebe61517052ec0",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c127-slots40-numeric-20260929T1654Z/raw/c127-slots40-on01.capture/decode0_0_ffn_moe_out_2253.bin": "6bc70d200ac08db00f6c3fa34098bd660d2ba4bc4c02368de319cbadf6167333",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c127-slots40-numeric-20260929T1654Z/raw/c127-slots40-on01.capture/decode0_12_attn_post_norm_2331.bin": "37beb9a150c007ad8569e9ee6c891dfe74f7965eaf3c090a2094e4fe40cfe16c",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c127-slots40-numeric-20260929T1654Z/raw/c127-slots40-on01.capture/decode0_12_ffn_moe_logits_2332.bin": "0df94310debfc301a0db0a67e946abcc9d09f2f549755c0e1930a88c34078669",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c127-slots40-numeric-20260929T1654Z/raw/c127-slots40-on01.capture/decode0_12_ffn_moe_probs_2333.bin": "b2f37499afdbd2daa1eb3a6717980d86ec3f55273d4d6fd666f5921d15d7ed9c",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c127-slots40-numeric-20260929T1654Z/raw/c127-slots40-on01.capture/decode0_12_ffn_moe_topk_2334.bin": "50ca6c7f895a785862db7222d6b307f8e9dbb54f481068b85ccbe2214a10cbb7",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c127-slots40-numeric-20260929T1654Z/raw/c127-slots40-on01.capture/decode0_12_ffn_moe_weights_softmax_2335.bin": "34c6166c6dea2847fcb45ac44441fec472cc5173f41affa6cdfbb3d4e6d22dca",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c127-slots40-numeric-20260929T1654Z/raw/c127-slots40-on01.capture/decode0_12_ffn_moe_topk_stream_2336.bin": "21046d67b48b1eabdb64f4c40bf1137361f61dc5874c026743085795b0796381",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c127-slots40-numeric-20260929T1654Z/raw/c127-slots40-on01.capture/decode0_12_ffn_moe_out_2337.bin": "9e416bb044a6b6c3a038fc8bdbdc20863e2e243a4ce26e4cde93055307edd367",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c127-slots40-numeric-20260929T1654Z/raw/c127-slots40-on01.capture/decode0_24_attn_post_norm_2415.bin": "f4b349a199809ee982f3599efa9b876f70d2d56dfe04ab2d65d8fcf284d3dd0f",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c127-slots40-numeric-20260929T1654Z/raw/c127-slots40-on01.capture/decode0_24_ffn_moe_logits_2416.bin": "7f39ccd9907f5b0778c2a9150b19fc40aa5f964b10ef8a8bf32eebc1ca03deec",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c127-slots40-numeric-20260929T1654Z/raw/c127-slots40-on01.capture/decode0_24_ffn_moe_probs_2417.bin": "d6125316ea06c0611018cff82dc0de61e78a436a4a7d647da5204533e23991a9",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c127-slots40-numeric-20260929T1654Z/raw/c127-slots40-on01.capture/decode0_24_ffn_moe_topk_2418.bin": "68f656d0d260ca137c34570ee1790d620aa7b3ecaf2fe914e269fc84515f88ec",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c127-slots40-numeric-20260929T1654Z/raw/c127-slots40-on01.capture/decode0_24_ffn_moe_weights_softmax_2419.bin": "fa5f88b848caac3d1f2a4d3011ac664b8673993f92bc36fb40eb76e190d8c202",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c127-slots40-numeric-20260929T1654Z/raw/c127-slots40-on01.capture/decode0_24_ffn_moe_topk_stream_2420.bin": "aa5dbb994f05e311ca50cbd20c7f9f8df1d7d96a1747161b003545640911f120",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c127-slots40-numeric-20260929T1654Z/raw/c127-slots40-on01.capture/decode0_24_ffn_moe_out_2421.bin": "41c1b92497956d659b4a6c8d366a7b50e00bda879f80c9af09abf012ffedbf62",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c127-slots40-numeric-20260929T1654Z/raw/c127-slots40-on01.capture/decode1_0_attn_post_norm_2499.bin": "abcbbfcb42b343e9df76d03fce4223ffd714e732410498c0ed9c7567ae4b8586",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c127-slots40-numeric-20260929T1654Z/raw/c127-slots40-on01.capture/decode1_0_ffn_moe_logits_2500.bin": "999c95e1bda7dcfccba0f02ab202f1fbc2db8158e09a999f714102a388b82f7f",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c127-slots40-numeric-20260929T1654Z/raw/c127-slots40-on01.capture/decode1_0_ffn_moe_probs_2501.bin": "ad58d407594254a381e084be602834601cc843fbbafe405f0d885bce3541dad8",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c127-slots40-numeric-20260929T1654Z/raw/c127-slots40-on01.capture/decode1_0_ffn_moe_topk_2502.bin": "a7bdfd06badfaad7a86dd1849e9e9f2963678b6ab113bdf32e316e20b0acbb63",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c127-slots40-numeric-20260929T1654Z/raw/c127-slots40-on01.capture/decode1_0_ffn_moe_weights_softmax_2503.bin": "b29f96ed99ad2ba2d3eb5325650628999fcb5ff9f8dd2b18d5fe01abcecf7b8c",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c127-slots40-numeric-20260929T1654Z/raw/c127-slots40-on01.capture/decode1_0_ffn_moe_topk_stream_2504.bin": "8b926e8ae8527deae4c3f5d0917dc2486649fb7db9bfad60822b6cf8a3dccb86",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c127-slots40-numeric-20260929T1654Z/raw/c127-slots40-on01.capture/decode1_0_ffn_moe_out_2505.bin": "47c49cb36fbb30f2e611889cfe84d4a96a97adfb7b40d1e417a7520a48b68e35",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c127-slots40-numeric-20260929T1654Z/raw/c127-slots40-on01.capture/decode1_12_attn_post_norm_2583.bin": "368ea1bf466dcdd9949593e91eaee2a02d027a8cfe006c3f63ffd2f278401d5d",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c127-slots40-numeric-20260929T1654Z/raw/c127-slots40-on01.capture/decode1_12_ffn_moe_logits_2584.bin": "982a06571d552676cde00d8354e0cf267635c125aa38f617c93635e5eb97a00a",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c127-slots40-numeric-20260929T1654Z/raw/c127-slots40-on01.capture/decode1_12_ffn_moe_probs_2585.bin": "25f932ff5dc7e3f370b7c0307b7b75174764717f77a450e5f3afa98d7747d20c",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c127-slots40-numeric-20260929T1654Z/raw/c127-slots40-on01.capture/decode1_12_ffn_moe_topk_2586.bin": "28cf18d4522a6b1f6e266f724a39def0d1fe8df3ca90679c6033d115a79d1509",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c127-slots40-numeric-20260929T1654Z/raw/c127-slots40-on01.capture/decode1_12_ffn_moe_weights_softmax_2587.bin": "c2fab277fc224a8700f37525cdb4577757dccda75dfaa507bb37ea6ccef82c32",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c127-slots40-numeric-20260929T1654Z/raw/c127-slots40-on01.capture/decode1_12_ffn_moe_topk_stream_2588.bin": "7952a8c5e9efbc5d1105480eae4c25b98e9d4a0087a2a1f21e52101a53bc2039",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c127-slots40-numeric-20260929T1654Z/raw/c127-slots40-on01.capture/decode1_12_ffn_moe_out_2589.bin": "ca35edcb296d1032dd922ef4f1413351ed90cb1a673c61240dd658057739b279",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c127-slots40-numeric-20260929T1654Z/raw/c127-slots40-on01.capture/decode1_24_attn_post_norm_2667.bin": "e6fa9bb71f5a6f4600e245ec2c949d3835ad1f37e83d8bfae5c4c9086e26256c",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c127-slots40-numeric-20260929T1654Z/raw/c127-slots40-on01.capture/decode1_24_ffn_moe_logits_2668.bin": "3fa14a87b23c4f37bbc9d4f008f7f263b634f4e615ac55034cad74e79ba9dcb9",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c127-slots40-numeric-20260929T1654Z/raw/c127-slots40-on01.capture/decode1_24_ffn_moe_probs_2669.bin": "affaf239303cf3bbeffb2a311aaf9d3027b104772b332678f62a1a51699795de",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c127-slots40-numeric-20260929T1654Z/raw/c127-slots40-on01.capture/decode1_24_ffn_moe_topk_2670.bin": "164e1321986f1dbb49765311010829a472a27cba866ee84c2ee7452dc28e2cfe",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c127-slots40-numeric-20260929T1654Z/raw/c127-slots40-on01.capture/decode1_24_ffn_moe_weights_softmax_2671.bin": "ea9b6ad1b4fbed09dd99b9b0c720343258956c276e2d99418305b138c172d88c",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c127-slots40-numeric-20260929T1654Z/raw/c127-slots40-on01.capture/decode1_24_ffn_moe_topk_stream_2672.bin": "c7835727e6d5809f1548058102b5423b727c873c70b23fa8fd7a02beb090346f",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c127-slots40-numeric-20260929T1654Z/raw/c127-slots40-on01.capture/decode1_24_ffn_moe_out_2673.bin": "f558bc5c450b363f294de71f05f32cfd70cbb03d2a88538eb92c00649c612542",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c127-slots40-numeric-20260929T1654Z/raw/c127-slots40-on01.capture/decode7_0_attn_post_norm_2751.bin": "e58bf5b28f7c64ecd7703da4cb8e1ce3fc383ec8c883d0954c45bc340d59d3a5",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c127-slots40-numeric-20260929T1654Z/raw/c127-slots40-on01.capture/decode7_0_ffn_moe_logits_2752.bin": "0636925924362f5b4a4a7ab7621e1d85bc0fbd7f857c2aa5ad9fbf6a21da9f30",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c127-slots40-numeric-20260929T1654Z/raw/c127-slots40-on01.capture/decode7_0_ffn_moe_probs_2753.bin": "0273a614a798514b6690f74720d8e9453169a097cfd56b4906ec88eaaae8d6b8",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c127-slots40-numeric-20260929T1654Z/raw/c127-slots40-on01.capture/decode7_0_ffn_moe_topk_2754.bin": "f2607dc4f88127078c9144ecb484386c8ac9a16b97ea64349d3ced8136be27bc",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c127-slots40-numeric-20260929T1654Z/raw/c127-slots40-on01.capture/decode7_0_ffn_moe_weights_softmax_2755.bin": "298457d52bcc16d4e06ead5d324cb1a07ba0dadda09c68ba80c1626b71f7fc46",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c127-slots40-numeric-20260929T1654Z/raw/c127-slots40-on01.capture/decode7_0_ffn_moe_topk_stream_2756.bin": "5116940699c7151fb431ac85493caa0572a898f6ee70589ea46530eb25ecb462",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c127-slots40-numeric-20260929T1654Z/raw/c127-slots40-on01.capture/decode7_0_ffn_moe_out_2757.bin": "237004e8d916bddfc3d44c26fc9f8ab8c03720e9a275f28ca21c328d758788fc",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c127-slots40-numeric-20260929T1654Z/raw/c127-slots40-on01.capture/decode7_12_attn_post_norm_2835.bin": "8f057112696f5c1903630a8459ef23d52bb2fc89879d02fa6a64733e963597c4",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c127-slots40-numeric-20260929T1654Z/raw/c127-slots40-on01.capture/decode7_12_ffn_moe_logits_2836.bin": "bff7846ed52c204197a71924b95113c4812f6403e49da7ce25ced1dc6c78f512",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c127-slots40-numeric-20260929T1654Z/raw/c127-slots40-on01.capture/decode7_12_ffn_moe_probs_2837.bin": "290c81bfe6523a42bb433e04e266fbe845185b75fa70e91738413de186ef2804",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c127-slots40-numeric-20260929T1654Z/raw/c127-slots40-on01.capture/decode7_12_ffn_moe_topk_2838.bin": "f096cc576823ef50e3cb94c557a3be0e7f36c409731f3ce4ec77b7e49736625a",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c127-slots40-numeric-20260929T1654Z/raw/c127-slots40-on01.capture/decode7_12_ffn_moe_weights_softmax_2839.bin": "970aaa54f5b366acc6bf9f3698bf339c0355c5bf05fb8947111b355c8e6676d5",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c127-slots40-numeric-20260929T1654Z/raw/c127-slots40-on01.capture/decode7_12_ffn_moe_topk_stream_2840.bin": "792b206652d474dfd07968b7faae4c0fa6251be0212eef8c7dac164fb661e6db",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c127-slots40-numeric-20260929T1654Z/raw/c127-slots40-on01.capture/decode7_12_ffn_moe_out_2841.bin": "244200c30047623fea983b13b479d6cab0680c0166b687cd9247e1fa1d025278",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c127-slots40-numeric-20260929T1654Z/raw/c127-slots40-on01.capture/decode7_24_attn_post_norm_2919.bin": "e5685a4e6ca9f69419ed3f21342c7c7a988546fd065563b380eeebc35406d0fb",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c127-slots40-numeric-20260929T1654Z/raw/c127-slots40-on01.capture/decode7_24_ffn_moe_logits_2920.bin": "dcec9c21730d971999dd85422fd4a9bf7e37d46e99c0fb57a11c94286979063b",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c127-slots40-numeric-20260929T1654Z/raw/c127-slots40-on01.capture/decode7_24_ffn_moe_probs_2921.bin": "02ced1202c3bc64aa3623485b4ba8f5015f02b3a51f678e03afd5b8dc7bd2b2e",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c127-slots40-numeric-20260929T1654Z/raw/c127-slots40-on01.capture/decode7_24_ffn_moe_topk_2922.bin": "98cc7eb33f22dc3b97c5c58f7ff32387e1db3f58862ea851d407aa620ea9ed65",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c127-slots40-numeric-20260929T1654Z/raw/c127-slots40-on01.capture/decode7_24_ffn_moe_weights_softmax_2923.bin": "9fcbeadefb2ff35dc9345af851d6cc96956485a88fd673ccffa199b49902bd31",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c127-slots40-numeric-20260929T1654Z/raw/c127-slots40-on01.capture/decode7_24_ffn_moe_topk_stream_2924.bin": "8fc64f4da4557293f05a3bc74b9a6c93848faf9c253c2f291aefbe8d40f76cc8",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c127-slots40-numeric-20260929T1654Z/raw/c127-slots40-on01.capture/decode7_24_ffn_moe_out_2925.bin": "7fb282f41f0db537ca491ab5c628368202f6f66ea8698fcd58bad28a3477365e",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c127-slots40-numeric-20260929T1654Z/raw/c127-slots40-on01.capture/decode31_0_attn_post_norm_3003.bin": "cc5b85b82da495f50f8279ceb01862cce98868220f13004f23863c23637fd577",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c127-slots40-numeric-20260929T1654Z/raw/c127-slots40-on01.capture/decode31_0_ffn_moe_logits_3004.bin": "e10222ae28ba97027c95d5eb71f56637848cf219815da82aadf54f310c625122",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c127-slots40-numeric-20260929T1654Z/raw/c127-slots40-on01.capture/decode31_0_ffn_moe_probs_3005.bin": "14e9c86111ccee837537f37b280c87f2b10ba18c370c3b4599e48ae99ff15efd",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c127-slots40-numeric-20260929T1654Z/raw/c127-slots40-on01.capture/decode31_0_ffn_moe_topk_3006.bin": "9b58f9d4632f5df02d47ff3fa165e8b66a6c98b533a6fa6abe76f75bddfe821a",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c127-slots40-numeric-20260929T1654Z/raw/c127-slots40-on01.capture/decode31_0_ffn_moe_weights_softmax_3007.bin": "b5f28d90ebe1dc17f23ba2c35d3b6dd2800f248133c6c94d0232e6bceee43a59",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c127-slots40-numeric-20260929T1654Z/raw/c127-slots40-on01.capture/decode31_0_ffn_moe_topk_stream_3008.bin": "38e417c6d59e414f965f22640cccf3f146ba5b47a1079fa0cadf634bddd37951",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c127-slots40-numeric-20260929T1654Z/raw/c127-slots40-on01.capture/decode31_0_ffn_moe_out_3009.bin": "97a25b009c362f567558c824d2475edcee67666925429a2d18862ef063823afe",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c127-slots40-numeric-20260929T1654Z/raw/c127-slots40-on01.capture/decode31_12_attn_post_norm_3087.bin": "513ed4c3e38bca375bf87fc286555a009a9bd9487cb764af58c31ecb9b56a765",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c127-slots40-numeric-20260929T1654Z/raw/c127-slots40-on01.capture/decode31_12_ffn_moe_logits_3088.bin": "2a142e50ed26c56ed75066e5df8c5c828c76af81541cefff5ad7eec6b90e1d77",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c127-slots40-numeric-20260929T1654Z/raw/c127-slots40-on01.capture/decode31_12_ffn_moe_probs_3089.bin": "3ffee63600045d779e76ca85dfab1b9db5bebf53c3329e4abf68c98a4437a9dc",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c127-slots40-numeric-20260929T1654Z/raw/c127-slots40-on01.capture/decode31_12_ffn_moe_topk_3090.bin": "a992a628fd919060da889a5038b2ed462dae499012d9125e1a375f5f126d7c15",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c127-slots40-numeric-20260929T1654Z/raw/c127-slots40-on01.capture/decode31_12_ffn_moe_weights_softmax_3091.bin": "5327d6020837fb117a10270f6f41e2033d4a3c5a562b4bc716b78b1f756c20e0",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c127-slots40-numeric-20260929T1654Z/raw/c127-slots40-on01.capture/decode31_12_ffn_moe_topk_stream_3092.bin": "d5fa85637806c4237258071c6f276c3e3c99ff74b340f05cb006fa2d40788315",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c127-slots40-numeric-20260929T1654Z/raw/c127-slots40-on01.capture/decode31_12_ffn_moe_out_3093.bin": "661689fbbae1ffcb123ffc455936ea697369eb97764145a8d63e206af42bc774",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c127-slots40-numeric-20260929T1654Z/raw/c127-slots40-on01.capture/decode31_24_attn_post_norm_3171.bin": "2fab47cdc6edf7a1ac044393298a7ce8799cefc5dfb1c6ad0ffefa14bcdae5ee",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c127-slots40-numeric-20260929T1654Z/raw/c127-slots40-on01.capture/decode31_24_ffn_moe_logits_3172.bin": "dd9cb87866acd02023be33aaa819cacbff1a7cd9df2400c19c8eb1f5af14130b",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c127-slots40-numeric-20260929T1654Z/raw/c127-slots40-on01.capture/decode31_24_ffn_moe_probs_3173.bin": "5d94d98954a92de9229a2f9e57981566164671edc18c4394d2ef0ee2a03cbb6d",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c127-slots40-numeric-20260929T1654Z/raw/c127-slots40-on01.capture/decode31_24_ffn_moe_topk_3174.bin": "7c1730ac1ee41b12763f0709d31a098e972d9760e3bf7fbfefad3006b1a3b52c",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c127-slots40-numeric-20260929T1654Z/raw/c127-slots40-on01.capture/decode31_24_ffn_moe_weights_softmax_3175.bin": "abf2cf03b0298e9e4bac0e1f8f6b728e603d9f08e823ca90d2ea6068de17ec7d",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c127-slots40-numeric-20260929T1654Z/raw/c127-slots40-on01.capture/decode31_24_ffn_moe_topk_stream_3176.bin": "a6e13de9839914fdbf9e3da7319a68b7825d495f2fe86a6740e13d2d5e3e6d93",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c127-slots40-numeric-20260929T1654Z/raw/c127-slots40-on01.capture/decode31_24_ffn_moe_out_3177.bin": "ee5f34dfa097de4bad6862ba0924a2d249ac0516902b6664d3669d4641eeea60",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c127-slots40-numeric-20260929T1654Z/raw/c127-slots40-on01.capture/index.tsv": "74685f32d8fc11fdec6c4317ac844c70ac7bb3d9ab27dc7fe26a0f1b4b9b459b"
+  },
+  "resources": {
+    "schema": "tesy-resources-v2",
+    "snapshot_sha256": "23b0e792f217ab5c38583c3f20875a9e8cb2313651eed364b64010279d8c2137",
+    "inventory_snapshot": {
+      "ancestors": [
+        {
+          "memory_current": 2991460352,
+          "memory_max": "max",
+          "path": "/sys/fs/cgroup/user.slice/user-1000.slice/user@1000.service/app.slice/app-gnome-org.wezfurlong.wezterm-37314.scope"
+        },
+        {
+          "memory_current": 6124830720,
+          "memory_max": "max",
+          "path": "/sys/fs/cgroup/user.slice/user-1000.slice/user@1000.service/app.slice"
+        },
+        {
+          "memory_current": 8011497472,
+          "memory_max": "max",
+          "path": "/sys/fs/cgroup/user.slice/user-1000.slice/user@1000.service"
+        },
+        {
+          "memory_current": 8352796672,
+          "memory_max": "max",
+          "path": "/sys/fs/cgroup/user.slice/user-1000.slice"
+        },
+        {
+          "memory_current": 8406401024,
+          "memory_max": "max",
+          "path": "/sys/fs/cgroup/user.slice"
+        },
+        {
+          "memory_current": null,
+          "memory_max": "UNBOUNDED_ROOT",
+          "path": "/sys/fs/cgroup"
+        }
+      ],
+      "baseline": [
+        {
+          "MemAvailable": 23968952320,
+          "elapsed_s": 3.5099219530820847e-07,
+          "psi_full_avg10": 0.0
+        },
+        {
+          "MemAvailable": 23968235520,
+          "elapsed_s": 1.000123984995298,
+          "psi_full_avg10": 0.0
+        },
+        {
+          "MemAvailable": 23968538624,
+          "elapsed_s": 2.0002424599952064,
+          "psi_full_avg10": 0.0
+        },
+        {
+          "MemAvailable": 23970205696,
+          "elapsed_s": 3.000886073044967,
+          "psi_full_avg10": 0.0
+        },
+        {
+          "MemAvailable": 23970611200,
+          "elapsed_s": 4.001289995037951,
+          "psi_full_avg10": 0.0
+        },
+        {
+          "MemAvailable": 23969099776,
+          "elapsed_s": 5.001684388029389,
+          "psi_full_avg10": 0.0
+        },
+        {
+          "MemAvailable": 23970037760,
+          "elapsed_s": 6.002671007008757,
+          "psi_full_avg10": 0.0
+        },
+        {
+          "MemAvailable": 23970062336,
+          "elapsed_s": 7.003142787027173,
+          "psi_full_avg10": 0.0
+        },
+        {
+          "MemAvailable": 23967137792,
+          "elapsed_s": 8.003293160989415,
+          "psi_full_avg10": 0.0
+        },
+        {
+          "MemAvailable": 23969652736,
+          "elapsed_s": 9.0040813460364,
+          "psi_full_avg10": 0.0
+        },
+        {
+          "MemAvailable": 23970385920,
+          "elapsed_s": 10.004188940045424,
+          "psi_full_avg10": 0.0
+        },
+        {
+          "MemAvailable": 23969906688,
+          "elapsed_s": 11.0047613690258,
+          "psi_full_avg10": 0.0
+        },
+        {
+          "MemAvailable": 23972900864,
+          "elapsed_s": 12.00485667999601,
+          "psi_full_avg10": 0.0
+        },
+        {
+          "MemAvailable": 23972900864,
+          "elapsed_s": 13.005330913991202,
+          "psi_full_avg10": 0.0
+        },
+        {
+          "MemAvailable": 23974416384,
+          "elapsed_s": 14.005431305035017,
+          "psi_full_avg10": 0.0
+        },
+        {
+          "MemAvailable": 23976157184,
+          "elapsed_s": 15.005502230022103,
+          "psi_full_avg10": 0.0
+        },
+        {
+          "MemAvailable": 23975514112,
+          "elapsed_s": 16.005601729033515,
+          "psi_full_avg10": 0.0
+        },
+        {
+          "MemAvailable": 23975694336,
+          "elapsed_s": 17.005673115025274,
+          "psi_full_avg10": 0.0
+        },
+        {
+          "MemAvailable": 23976734720,
+          "elapsed_s": 18.006104969012085,
+          "psi_full_avg10": 0.0
+        },
+        {
+          "MemAvailable": 23977443328,
+          "elapsed_s": 19.006199468043633,
+          "psi_full_avg10": 0.0
+        },
+        {
+          "MemAvailable": 23979249664,
+          "elapsed_s": 20.006298547028564,
+          "psi_full_avg10": 0.0
+        },
+        {
+          "MemAvailable": 23978745856,
+          "elapsed_s": 21.006446877028793,
+          "psi_full_avg10": 0.0
+        },
+        {
+          "MemAvailable": 23979970560,
+          "elapsed_s": 22.00653975404566,
+          "psi_full_avg10": 0.0
+        },
+        {
+          "MemAvailable": 23980232704,
+          "elapsed_s": 23.0066393330344,
+          "psi_full_avg10": 0.0
+        },
+        {
+          "MemAvailable": 23981547520,
+          "elapsed_s": 24.006743992038537,
+          "psi_full_avg10": 0.0
+        },
+        {
+          "MemAvailable": 23981064192,
+          "elapsed_s": 25.006842869042885,
+          "psi_full_avg10": 0.0
+        },
+        {
+          "MemAvailable": 23981064192,
+          "elapsed_s": 26.006944402994122,
+          "psi_full_avg10": 0.0
+        },
+        {
+          "MemAvailable": 23979266048,
+          "elapsed_s": 27.00704603502527,
+          "psi_full_avg10": 0.0
+        },
+        {
+          "MemAvailable": 23979266048,
+          "elapsed_s": 28.00713923200965,
+          "psi_full_avg10": 0.0
+        },
+        {
+          "MemAvailable": 23979266048,
+          "elapsed_s": 29.00723906198982,
+          "psi_full_avg10": 0.0
+        },
+        {
+          "MemAvailable": 23982133248,
+          "elapsed_s": 30.007311600027606,
+          "psi_full_avg10": 0.0
+        },
+        {
+          "MemAvailable": 23981629440,
+          "elapsed_s": 31.007749085023534,
+          "psi_full_avg10": 0.0
+        },
+        {
+          "MemAvailable": 23978803200,
+          "elapsed_s": 32.007847942004446,
+          "psi_full_avg10": 0.0
+        },
+        {
+          "MemAvailable": 23979896832,
+          "elapsed_s": 33.0079408090096,
+          "psi_full_avg10": 0.0
+        },
+        {
+          "MemAvailable": 23979982848,
+          "elapsed_s": 34.00837959704222,
+          "psi_full_avg10": 0.0
+        },
+        {
+          "MemAvailable": 23981228032,
+          "elapsed_s": 35.008482020988595,
+          "psi_full_avg10": 0.0
+        },
+        {
+          "MemAvailable": 23981228032,
+          "elapsed_s": 36.008563115028664,
+          "psi_full_avg10": 0.0
+        },
+        {
+          "MemAvailable": 23982653440,
+          "elapsed_s": 37.00866306503303,
+          "psi_full_avg10": 0.0
+        },
+        {
+          "MemAvailable": 23983611904,
+          "elapsed_s": 38.00875918701058,
+          "psi_full_avg10": 0.0
+        },
+        {
+          "MemAvailable": 23984189440,
+          "elapsed_s": 39.00883817800786,
+          "psi_full_avg10": 0.0
+        },
+        {
+          "MemAvailable": 23984418816,
+          "elapsed_s": 40.00893048301805,
+          "psi_full_avg10": 0.0
+        },
+        {
+          "MemAvailable": 23985127424,
+          "elapsed_s": 41.00902495201444,
+          "psi_full_avg10": 0.0
+        },
+        {
+          "MemAvailable": 23985618944,
+          "elapsed_s": 42.00911622599233,
+          "psi_full_avg10": 0.0
+        },
+        {
+          "MemAvailable": 23986257920,
+          "elapsed_s": 43.00919663900277,
+          "psi_full_avg10": 0.0
+        },
+        {
+          "MemAvailable": 23986257920,
+          "elapsed_s": 44.00929618801456,
+          "psi_full_avg10": 0.0
+        },
+        {
+          "MemAvailable": 23986266112,
+          "elapsed_s": 45.00968062301399,
+          "psi_full_avg10": 0.0
+        },
+        {
+          "MemAvailable": 23986528256,
+          "elapsed_s": 46.009772177028935,
+          "psi_full_avg10": 0.0
+        },
+        {
+          "MemAvailable": 23986757632,
+          "elapsed_s": 47.00986460200511,
+          "psi_full_avg10": 0.0
+        },
+        {
+          "MemAvailable": 23986757632,
+          "elapsed_s": 48.009956187044736,
+          "psi_full_avg10": 0.0
+        },
+        {
+          "MemAvailable": 23987146752,
+          "elapsed_s": 49.01004803099204,
+          "psi_full_avg10": 0.0
+        },
+        {
+          "MemAvailable": 23987146752,
+          "elapsed_s": 50.01015069603454,
+          "psi_full_avg10": 0.0
+        },
+        {
+          "MemAvailable": 23986683904,
+          "elapsed_s": 51.0102481910144,
+          "psi_full_avg10": 0.0
+        },
+        {
+          "MemAvailable": 23988133888,
+          "elapsed_s": 52.010347880015615,
+          "psi_full_avg10": 0.0
+        },
+        {
+          "MemAvailable": 23987888128,
+          "elapsed_s": 53.01044584601186,
+          "psi_full_avg10": 0.0
+        },
+        {
+          "MemAvailable": 23988338688,
+          "elapsed_s": 54.01054039603332,
+          "psi_full_avg10": 0.0
+        },
+        {
+          "MemAvailable": 23988367360,
+          "elapsed_s": 55.011158350040205,
+          "psi_full_avg10": 0.0
+        },
+        {
+          "MemAvailable": 23988748288,
+          "elapsed_s": 56.01152824802557,
+          "psi_full_avg10": 0.0
+        },
+        {
+          "MemAvailable": 23988748288,
+          "elapsed_s": 57.01216745300917,
+          "psi_full_avg10": 0.0
+        },
+        {
+          "MemAvailable": 23991099392,
+          "elapsed_s": 58.01224682404427,
+          "psi_full_avg10": 0.0
+        },
+        {
+          "MemAvailable": 23991099392,
+          "elapsed_s": 59.012587667035405,
+          "psi_full_avg10": 0.0
+        },
+        {
+          "MemAvailable": 23989071872,
+          "elapsed_s": 60.0129854370025,
+          "psi_full_avg10": 0.0
+        }
+      ],
+      "cpu_identity": {
+        "family": 26,
+        "model": "AMD Ryzen AI 9 HX 370 w/ Radeon 890M",
+        "model_id": 36
+      },
+      "gpu_csv": "GPU-83d90c55-1d92-75da-fc30-7771a85f2521, 00000000:C4:00.0, NVIDIA GeForce RTX 4060 Laptop GPU, 8188, 12, 38, 615.71.09",
+      "gpu_power_query": {
+        "output": "9.92, [N/A], 75.00",
+        "status": "SUPPORTED"
+      },
+      "gpu_temperature_query": "==============NVSMI LOG==============\n\nTimestamp                                              : Thu Oct  1 19:17:46 2026\nDriver Version                                         : 615.71.09 [Deprecated; will be removed in CUDA 14.0. Use KMD Version instead]\nCUDA Version                                           : 13.4 [Deprecated; will be removed in CUDA 14.0. Use CUDA UMD Version instead]\nKMD Version                                            : 615.71.09\nCUDA UMD Version                                       : 13.4\n\nAttached GPUs                                          : 1\nGPU 00000000:C4:00.0\n    Temperature\n        GPU Current Temp                               : 38 C\n        GPU Current Max Temp                           : N/A\n        GPU Current T.Limit Temp                       : 49 C\n        GPU Shutdown T.Limit Temp Specification        : -12 C\n        GPU Slowdown T.Limit Temp Specification        : -2 C\n        GPU Max Operating T.Limit Temp Specification   : 0 C\n        GPU Target Temperature Specification           : 87 C\n        Memory Current Temp                            : N/A\n        Memory Max Operating T.Limit Temp Specification: N/A",
+      "involved_nvme": {
+        "nvme0": {
+          "bdf": "0000:c1:00.0",
+          "firmware": "V3MA101",
+          "model": "MTFDKBK1T0QFM-1BD1AABGB"
+        }
+      },
+      "memory": {
+        "MemAvailable": 23989071872,
+        "MemAvailable_max": 23991099392,
+        "MemAvailable_min": 23967137792,
+        "MemTotal": 32698777600,
+        "SwapFree": 8809771008,
+        "SwapTotal": 16348868608,
+        "ancestor_headroom_bytes": 32698777600
+      },
+      "model_stat": {
+        "dev": 53,
+        "inode": 14833675,
+        "mtime_ns": 1790389637795911032,
+        "size_bytes": 63387346208
+      },
+      "mounts": {
+        "model": {
+          "fstype": "btrfs",
+          "path": "/home/pmglo/models/gpt-oss-120b-gguf/gpt-oss-120b-MXFP4.gguf",
+          "source": "/dev/nvme0n1p3[/home]",
+          "target": "/home"
+        },
+        "raw": {
+          "fstype": "btrfs",
+          "path": "results/c232-post-c231-readiness-20261001T180602Z",
+          "source": "/dev/nvme0n1p3[/home]",
+          "target": "/home"
+        },
+        "workspace": {
+          "fstype": "tmpfs",
+          "path": "/tmp",
+          "source": "tmpfs",
+          "target": "/tmp"
+        }
+      },
+      "power": {
+        "batteries": [
+          {
+            "name": "BAT0",
+            "status": "Not charging"
+          },
+          {
+            "name": "hid-0018:04F3:4359.0005-battery-7",
+            "status": "Unknown"
+          }
+        ],
+        "online_sources": [
+          "AC0"
+        ],
+        "profile": "performance",
+        "source": "AC"
+      },
+      "psi": {
+        "full_avg10": 0.0,
+        "raw": {
+          "avg10": 0.0,
+          "avg300": 0.0,
+          "avg60": 0.0,
+          "total": 41683342
+        }
+      },
+      "schema": "c55-host-snapshot-v1",
+      "sensors": {
+        "BAT0-acpi-0": {
+          "Adapter": "ACPI interface",
+          "in0": {
+            "in0_input": 16.201
+          },
+          "power1": {
+            "power1_input": 0.0
+          }
+        },
+        "acpi_fan-isa-0000": {
+          "Adapter": "ISA adapter",
+          "fan1": {
+            "fan1_input": 0.0
+          }
+        },
+        "acpitz-acpi-0": {
+          "Adapter": "ACPI interface",
+          "temp1": {
+            "temp1_input": 37.0
+          },
+          "temp2": {
+            "temp2_input": 42.0
+          },
+          "temp3": {
+            "temp3_input": 20.0
+          }
+        },
+        "amdgpu-pci-c500": {
+          "Adapter": "PCI adapter",
+          "PPT": {
+            "power1_average": 10.787,
+            "power1_input": 10.787
+          },
+          "edge": {
+            "temp1_input": 38.0
+          },
+          "vddgfx": {
+            "in0_input": 0.0
+          },
+          "vddnb": {
+            "in1_input": 0.0
+          }
+        },
+        "asus-isa-0000": {
+          "Adapter": "ISA adapter",
+          "cpu_fan": {
+            "fan1_input": 0.0
+          },
+          "gpu_fan": {
+            "fan2_input": 0.0
+          }
+        },
+        "k10temp-pci-00c3": {
+          "Adapter": "PCI adapter",
+          "Tctl": {
+            "temp1_input": 42.375
+          }
+        },
+        "mt7925_phy0-pci-c300": {
+          "Adapter": "PCI adapter",
+          "temp1": {
+            "temp1_input": 35.0
+          }
+        },
+        "nvme-pci-c100": {
+          "Adapter": "PCI adapter",
+          "Composite": {
+            "temp1_alarm": 0.0,
+            "temp1_crit": 89.85,
+            "temp1_input": 30.85,
+            "temp1_max": 86.85,
+            "temp1_min": -0.15
+          },
+          "Sensor 1": {
+            "temp2_input": 30.85,
+            "temp2_max": 65261.85,
+            "temp2_min": -273.15
+          }
+        },
+        "ucsi_source_psy_USBC000:001-isa-0000": {
+          "Adapter": "ISA adapter",
+          "curr1": {
+            "curr1_input": 0.0,
+            "curr1_max": 0.0
+          },
+          "in0": {
+            "in0_input": 0.0,
+            "in0_max": 0.0,
+            "in0_min": 0.0
+          }
+        },
+        "ucsi_source_psy_USBC000:002-isa-0000": {
+          "Adapter": "ISA adapter",
+          "curr1": {
+            "curr1_input": 0.0,
+            "curr1_max": 0.0
+          },
+          "in0": {
+            "in0_input": 0.0,
+            "in0_max": 0.0,
+            "in0_min": 0.0
+          }
+        }
+      },
+      "storage_free_bytes": 405347860480,
+      "utc": "2026-10-01T18:17:44.401659+00:00"
+    },
+    "cgroup": {
+      "memory_max_bytes": 2147483648,
+      "memory_swap_max_bytes": 0,
+      "memory_stop_bytes": 1610612736,
+      "memory_high_bytes": 2147483648
+    },
+    "memory": {
+      "reserve_bytes": 2147483648,
+      "available_stop_bytes": 1073741824,
+      "available_stop_samples": 2,
+      "reserve_stop_duration_s": 10,
+      "psi_full_avg10_stop_percent": 10,
+      "psi_stop_duration_s": 10
+    },
+    "gpu": {
+      "uuid": "GPU-83d90c55-1d92-75da-fc30-7771a85f2521",
+      "bdf": "00000000:C4:00.0",
+      "memory_total_mib": 8188.0,
+      "memory_stop_total_mib": 7676.0,
+      "temperature_stop_c": 89.0,
+      "temperature_warning_c": 87.0,
+      "thermal_status": "DEVICE_DERIVED_EXPERIMENT_ADMISSION"
+    },
+    "cpu": {
+      "model": "AMD Ryzen AI 9 HX 370 w/ Radeon 890M",
+      "sensor": "k10temp-pci-00c3",
+      "temperature_warning_c": 95.0,
+      "temperature_stop_c": 100.0
+    },
+    "nvme": [
+      {
+        "controller": "nvme0",
+        "bdf": "0000:c1:00.0",
+        "sensor": "nvme-pci-c100",
+        "stop_c": 87.85,
+        "warning_c": 86.85,
+        "critical_c": 89.85
+      }
+    ],
+    "power": {
+      "source": "AC",
+      "profile": "performance",
+      "online_sources": [
+        "AC0"
+      ]
+    },
+    "start": {
+      "mode": "OPERATIONAL_SESSION_START",
+      "inventory_duration_s": 60,
+      "initial_cpu_below_warning": true,
+      "initial_gpu_below_warning_when_available": true,
+      "initial_nvme_below_warning_when_available": true
+    },
+    "telemetry": {
+      "max_gap_s": 3,
+      "retry_reads": 1,
+      "loss_persistence_s": 3
+    },
+    "comparators": {
+      "temperature": ">=",
+      "gpu_memory": ">=",
+      "cgroup_margin": ">=",
+      "host_available": "<"
+    },
+    "classes": {
+      "cpu_100": "DEVICE_LIMIT",
+      "cpu_95": "WARNING",
+      "gpu_stop": "EXPERIMENT_ADMISSION",
+      "cgroup_cap": "EXPERIMENT_ADMISSION",
+      "nvme_stop": "EXPERIMENT_ADMISSION"
+    },
+    "units": {
+      "memory": "bytes",
+      "gpu_memory": "MiB",
+      "temperature": "C",
+      "time": "s"
+    }
+  },
+  "limits": {},
+  "common_env": {
+    "TESY_CPU_WAVE_SKIP_PARKED": "1"
+  },
+  "start_inventory": {
+    "schema": "c120-start-inventory-v1",
+    "duration_s": 60,
+    "max_age_s": 3,
+    "policy_sha256": "a331b06ebd608be0c1276f255a636dfccd95ca7e0bb627f1b2af79abc5111940"
+  },
+  "runs": [
+    {
+      "id": "c233-layer0",
+      "label": "cpu-layer0",
+      "variant": "first-MMID-and-fullFFN-original-CPU",
+      "inventory": true,
+      "timeout_s": 60,
+      "env": {},
+      "command": [
+        "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c232-post-c231-readiness-20261001T180602Z/build/readiness_operator",
+        "/home/pmglo/models/gpt-oss-120b-gguf/gpt-oss-120b-MXFP4.gguf",
+        "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c127-slots40-numeric-20260929T1654Z/raw/c127-slots40-on01.capture",
+        "0"
+      ]
+    },
+    {
+      "id": "c233-layer12",
+      "label": "cpu-layer12",
+      "variant": "first-MMID-and-fullFFN-original-CPU",
+      "inventory": true,
+      "timeout_s": 60,
+      "env": {},
+      "command": [
+        "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c232-post-c231-readiness-20261001T180602Z/build/readiness_operator",
+        "/home/pmglo/models/gpt-oss-120b-gguf/gpt-oss-120b-MXFP4.gguf",
+        "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c127-slots40-numeric-20260929T1654Z/raw/c127-slots40-on01.capture",
+        "12"
+      ]
+    },
+    {
+      "id": "c233-layer24",
+      "label": "cpu-layer24",
+      "variant": "first-MMID-and-fullFFN-original-CPU",
+      "inventory": true,
+      "timeout_s": 60,
+      "env": {},
+      "command": [
+        "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c232-post-c231-readiness-20261001T180602Z/build/readiness_operator",
+        "/home/pmglo/models/gpt-oss-120b-gguf/gpt-oss-120b-MXFP4.gguf",
+        "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c127-slots40-numeric-20260929T1654Z/raw/c127-slots40-on01.capture",
+        "24"
+      ]
+    }
+  ],
+  "numeric": "All selected decode0/1/7/31 fullFFN bitwise to C127 ON; firstgate bitwise to fullFFN gate; actual graph order gate/up/down; original36FFN chain reused, not rerun",
+  "timing": "Per40/44 pool and activation: one declared fullFFN validation,6 alternating first/full repetitions resident-hot and6 direct-selected-reload repetitions; readback/reload outside compute spans, inside envelope",
+  "selection_rule": "CPU positional strata low0/mid12/high24; all four published C127 decode snapshots, not selected by speedup; decode misses in C163/C164 only explanatory",
+  "economic_gate_percent": 5,
+  "cap_projection": {
+    "pool_max_bytes": 586068480,
+    "graph_metadata_bound_bytes": 33554432,
+    "workspace_bound_bytes": 67108864,
+    "reader_and_comparison_bound_bytes": 16777216,
+    "libraries_and_misc_estimate_bytes": 134217728,
+    "uncertainty_bytes": 536870912,
+    "preventive_cgroup_guard_bytes": 1610612736
+  },
+  "parallel_environment": {
+    "values": {},
+    "unset": [
+      "OMP_WAIT_POLICY",
+      "OMP_NUM_THREADS",
+      "OMP_DYNAMIC",
+      "OMP_PROC_BIND",
+      "OMP_PLACES",
+      "GOMP_SPINCOUNT",
+      "GOMP_CPU_AFFINITY",
+      "KMP_BLOCKTIME",
+      "KMP_AFFINITY"
+    ]
+  },
+  "publication": "LOCAL_ONLY",
+  "full_model_inference_authorized_s": 0,
+  "threads": 8,
+  "no_CUDA_operator": true,
+  "no_retries": true,
+  "next_action": "Per-origin first-op/fullFFN envelopes; only>=5% first-op plus implementable plan admits a separately frozen isolated CPU readiness pilot"
+}

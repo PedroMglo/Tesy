@@ -1,0 +1,89 @@
+{
+  "cpu_diagnostics": {
+    "clock_source": "cpuinfo_avg_freq per cpufreq policy",
+    "cpu_effective_clock_max_mhz": 3309.083,
+    "cpu_effective_clock_median_mhz": 3002.2219999999998,
+    "cpu_effective_clock_min_mhz": 605.264,
+    "cpu_max_c": 95.125,
+    "cpu_package_power_max_w": 70.20627174502552,
+    "cpu_package_power_median_w": 61.39536309817102,
+    "cpu_policy_count": 24,
+    "cpu_warning_observed": true,
+    "cpu_warning_sample_count": 263,
+    "explicit_thermal_flag_source": "ACPI Processor cooling cur_state; AMD hardware flag unavailable",
+    "gpu_power_max_w": 22.81,
+    "power_source": "package-0 RAPL energy counter; interval power estimate",
+    "processor_cooling_max_state": 0,
+    "sample_count": 551
+  },
+  "idle": {
+    "baseline": null,
+    "cadence_breaks": [],
+    "duration_s": 339.02433358399867,
+    "end": {
+      "cpu_c": 42.625,
+      "cpu_fan_rpm": 2500.0,
+      "elapsed_s": 339.02433358399867,
+      "gpu": {
+        "driver": "615.71.09",
+        "temperature_c": 40.0,
+        "used_mib": 12.0
+      },
+      "gpu_fan_rpm": 0.0,
+      "mem_available_bytes": 25512259584,
+      "nvme_c": 33.85,
+      "run_id": "c36c-prefix4096-bridge",
+      "utc": "2026-09-28T02:09:31.693533+00:00"
+    },
+    "last60_trend_c": {
+      "cpu_c": -0.025000000000005684,
+      "gpu_c": 0.0,
+      "nvme_c": -0.10000000000000142
+    },
+    "match_tolerance_c": [
+      5,
+      5,
+      3
+    ],
+    "max_gap_overall_s": 0.8197939239980769,
+    "max_gap_qualifying_s": 0.8197939239980769,
+    "max_start_c": [
+      50,
+      50,
+      45
+    ],
+    "qualifying_duration_s": 300.477434663997,
+    "qualifying_start_s": 38.546898920001695,
+    "sample_count": 679,
+    "series_sha256": "801ecb465231dd45eae655a385920fd596f223bed2af5a54a532550adbca2319",
+    "start": {
+      "cpu_c": 43.75,
+      "cpu_fan_rpm": 2500.0,
+      "elapsed_s": 0.03186321200337261,
+      "gpu": {
+        "driver": "615.71.09",
+        "temperature_c": 40.0,
+        "used_mib": 12.0
+      },
+      "gpu_fan_rpm": 0.0,
+      "mem_available_bytes": 25630101504,
+      "nvme_c": 32.85,
+      "run_id": "c36c-prefix4096-bridge",
+      "utc": "2026-09-28T02:03:52.701065+00:00"
+    },
+    "status": "PASS"
+  },
+  "maxima": {
+    "cgroup_peak_bytes": 13085249536,
+    "cpu_c": 95.125,
+    "gpu_c": 62.0,
+    "gpu_total_mib": 5752.0,
+    "nvme_c": 52.85,
+    "rss_bytes": 13296885760,
+    "swap_bytes": 0
+  },
+  "run_id": "c36c-prefix4096-bridge",
+  "schema": "c36c-resources-v1",
+  "status": "PASS",
+  "stop_reasons": []
+}

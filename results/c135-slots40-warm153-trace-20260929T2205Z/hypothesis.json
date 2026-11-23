@@ -1,0 +1,16 @@
+{
+  "schema": "c135-hypothesis-v1",
+  "status": "FROZEN_BEFORE_MODEL",
+  "question": "After increasing C75 wave-ON pools from 32 to 40 slots, how much of nominal153 decode still blocks on expert readiness?",
+  "hypothesis": "The slots40 profile retains material readiness blocking in CPU layers that a placement-only increase did not remove.",
+  "alternative": "The measured slots40 improvement removes most readiness blocking and serial compute or other work dominates the residual decode.",
+  "intervention": "Enable the already validated C123 diagnostic trace in the same instrumented backend source with slots40, without changing routing, weights or workload.",
+  "workload": "C129 official two-turn assistant-history nominal153 fixture; trace only second request",
+  "primary_diagnostic": "WAIT union by CPU and GPU layer as fraction of exact traced decode-call window",
+  "other_diagnostics": ["READ union", "TENSOR_SET union", "logical expert bytes", "load count", "full server warm decode duration", "first final content"],
+  "neutrality_gate": "Official input IDs and complete response text, output token counts and finish reasons must match all three C129 slots40 candidate arms. Same-binary trace-off latency is a separate follow-on if timing overhead matters to a causal estimate.",
+  "decision": "If readiness waits remain material, identify whether CPU or GPU dominates and choose one bounded movement or residency test only with a plausible critical-path saving. If small or timing shifts materially, prioritize compute/dispatch analysis or same-binary trace-off attribution. No performance promotion from this trace.",
+  "limits": {"model_s": 600, "trace_bytes": 67108864, "capture_bytes": 268435456, "cgroup_cap_bytes": 19327352832, "workload_swap_bytes": 0},
+  "reference_decision_sha256": "a5743ee783a8c6d2850a77316d7ff6baadfc802f96096be2375e6f284e1b40c7",
+  "evidence_scope": "diagnostic single session; trace intervals are observed blocking, not necessarily removable time"
+}

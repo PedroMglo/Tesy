@@ -1,0 +1,253 @@
+{
+  "classification": "ESTIMADO",
+  "training": false,
+  "predictor_heldout": true,
+  "staged_bytes_in_actual_model": 0,
+  "cases": {
+    "heldout-intervals": {
+      "control": {
+        "measurement_valid": true,
+        "status": "PASS_NATIVE_HELDOUT_PREFIX",
+        "investment_window_valid": true,
+        "case": "heldout-intervals",
+        "decode_calls": 32,
+        "complete_logits_sha256": "0e3e83d3a5901015ddd4c5dc8c326404a4150d6774296f1a13d3ee4ccb472c8f",
+        "miss_recall": null,
+        "issued_precision": null,
+        "missing_demands": null,
+        "hypothetical_issued": null,
+        "predictor_complete_s": null,
+        "native_timings": {
+          "prefix_s": 242.209779998,
+          "prefill153_s": 24.577733204,
+          "decode_window_s": 11.218369809,
+          "total_s": 35.796103013
+        },
+        "outcome_note": "At most32 nativegreedy input forwards for predictor data; not completefunctional response/quality success or promoted latency."
+      },
+      "estimator": {
+        "measurement_valid": true,
+        "status": "PASS_NATIVE_HELDOUT_PREFIX",
+        "investment_window_valid": true,
+        "case": "heldout-intervals",
+        "decode_calls": 32,
+        "complete_logits_sha256": "0e3e83d3a5901015ddd4c5dc8c326404a4150d6774296f1a13d3ee4ccb472c8f",
+        "miss_recall": 0.6696542893725992,
+        "issued_precision": 0.5499474237644585,
+        "missing_demands": 781,
+        "hypothetical_issued": 951,
+        "predictor_complete_s": 0.03626432,
+        "native_timings": {
+          "prefix_s": 242.734047229,
+          "prefill153_s": 24.794135913,
+          "decode_window_s": 11.175530842,
+          "total_s": 35.969666755
+        },
+        "outcome_note": "At most32 nativegreedy input forwards for predictor data; not completefunctional response/quality success or promoted latency."
+      },
+      "investment_window_valid": true,
+      "raw": {
+        "control": "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c304-prefix-cost-observer-repair-20261007/raw/c304-heldout-intervals-1-greedy.native",
+        "estimator": "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c304-prefix-cost-observer-repair-20261007/raw/c304-heldout-intervals-2-estimate.native"
+      },
+      "sensitivity": [
+        {
+          "service_scale": 0.8,
+          "baseline": {
+            "decode_us": 9302624.8,
+            "staging_peak_bytes": 0,
+            "staging_capacity_bytes": 134217728,
+            "observed_decode_us": 11217813.0,
+            "original_decode_wait_us": 9378297,
+            "initial_inflight": 0
+          },
+          "prediction": {
+            "decode_us": 8171816.187999996,
+            "predictor_complete_us": 36264.32,
+            "staging_peak_bytes": 105753600,
+            "read_completed": 882,
+            "expired_read_completed": 359,
+            "queued_expirations_avoid_read": 69,
+            "scope": "Heldout conditional scenario with fixed OFF observed services/cache demands; not physical improvement",
+            "gain_percent": 12.155801575486569
+          }
+        },
+        {
+          "service_scale": 1.0,
+          "baseline": {
+            "decode_us": 11168402.0,
+            "staging_peak_bytes": 0,
+            "staging_capacity_bytes": 134217728,
+            "observed_decode_us": 11217813.0,
+            "original_decode_wait_us": 9378297,
+            "initial_inflight": 0
+          },
+          "prediction": {
+            "decode_us": 9881127.573999986,
+            "predictor_complete_us": 36264.32,
+            "staging_peak_bytes": 105753600,
+            "read_completed": 876,
+            "expired_read_completed": 353,
+            "queued_expirations_avoid_read": 75,
+            "scope": "Heldout conditional scenario with fixed OFF observed services/cache demands; not physical improvement",
+            "gain_percent": 11.526039499652805
+          }
+        },
+        {
+          "service_scale": 1.2,
+          "baseline": {
+            "decode_us": 13034179.2,
+            "staging_peak_bytes": 0,
+            "staging_capacity_bytes": 134217728,
+            "observed_decode_us": 11217813.0,
+            "original_decode_wait_us": 9378297,
+            "initial_inflight": 0
+          },
+          "prediction": {
+            "decode_us": 11568884.570999993,
+            "predictor_complete_us": 36264.32,
+            "staging_peak_bytes": 105753600,
+            "read_completed": 872,
+            "expired_read_completed": 349,
+            "queued_expirations_avoid_read": 79,
+            "scope": "Heldout conditional scenario with fixed OFF observed services/cache demands; not physical improvement",
+            "gain_percent": 11.241940182930785
+          }
+        }
+      ]
+    },
+    "heldout-inventory": {
+      "control": {
+        "measurement_valid": true,
+        "status": "PASS_NATIVE_HELDOUT_PREFIX",
+        "investment_window_valid": true,
+        "case": "heldout-inventory",
+        "decode_calls": 32,
+        "complete_logits_sha256": "cea29c24b3d063f7e5a0995610e8c5f547a2ef8ef126cd5fd178b8f5a24823cd",
+        "miss_recall": null,
+        "issued_precision": null,
+        "missing_demands": null,
+        "hypothetical_issued": null,
+        "predictor_complete_s": null,
+        "native_timings": {
+          "prefix_s": 234.316311691,
+          "prefill153_s": 12.105909981,
+          "decode_window_s": 10.977448723,
+          "total_s": 23.083358704
+        },
+        "outcome_note": "At most32 nativegreedy input forwards for predictor data; not completefunctional response/quality success or promoted latency."
+      },
+      "estimator": {
+        "measurement_valid": true,
+        "status": "PASS_NATIVE_HELDOUT_PREFIX",
+        "investment_window_valid": true,
+        "case": "heldout-inventory",
+        "decode_calls": 32,
+        "complete_logits_sha256": "cea29c24b3d063f7e5a0995610e8c5f547a2ef8ef126cd5fd178b8f5a24823cd",
+        "miss_recall": 0.7284105131414268,
+        "issued_precision": 0.5866935483870968,
+        "missing_demands": 799,
+        "hypothetical_issued": 992,
+        "predictor_complete_s": 0.036120732,
+        "native_timings": {
+          "prefix_s": 231.831239283,
+          "prefill153_s": 12.087458869,
+          "decode_window_s": 11.554522876,
+          "total_s": 23.641981745
+        },
+        "outcome_note": "At most32 nativegreedy input forwards for predictor data; not completefunctional response/quality success or promoted latency."
+      },
+      "investment_window_valid": true,
+      "raw": {
+        "control": "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c304-prefix-cost-observer-repair-20261007/raw/c304-heldout-inventory-1-greedy.native",
+        "estimator": "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c304-prefix-cost-observer-repair-20261007/raw/c304-heldout-inventory-2-estimate.native"
+      },
+      "sensitivity": [
+        {
+          "service_scale": 0.8,
+          "baseline": {
+            "decode_us": 9106371.199999982,
+            "staging_peak_bytes": 0,
+            "staging_capacity_bytes": 134217728,
+            "observed_decode_us": 10976578.0,
+            "original_decode_wait_us": 9148646,
+            "initial_inflight": 0
+          },
+          "prediction": {
+            "decode_us": 7799865.492000014,
+            "predictor_complete_us": 36120.732,
+            "staging_peak_bytes": 132192000,
+            "read_completed": 945,
+            "expired_read_completed": 363,
+            "queued_expirations_avoid_read": 47,
+            "scope": "Heldout conditional scenario with fixed OFF observed services/cache demands; not physical improvement",
+            "gain_percent": 14.347160678009384
+          }
+        },
+        {
+          "service_scale": 1.0,
+          "baseline": {
+            "decode_us": 10925981.0,
+            "staging_peak_bytes": 0,
+            "staging_capacity_bytes": 134217728,
+            "observed_decode_us": 10976578.0,
+            "original_decode_wait_us": 9148646,
+            "initial_inflight": 0
+          },
+          "prediction": {
+            "decode_us": 9396349.054000005,
+            "predictor_complete_us": 36120.732,
+            "staging_peak_bytes": 132192000,
+            "read_completed": 942,
+            "expired_read_completed": 360,
+            "queued_expirations_avoid_read": 50,
+            "scope": "Heldout conditional scenario with fixed OFF observed services/cache demands; not physical improvement",
+            "gain_percent": 13.999950631435246
+          }
+        },
+        {
+          "service_scale": 1.2,
+          "baseline": {
+            "decode_us": 12745590.800000027,
+            "staging_peak_bytes": 0,
+            "staging_capacity_bytes": 134217728,
+            "observed_decode_us": 10976578.0,
+            "original_decode_wait_us": 9148646,
+            "initial_inflight": 0
+          },
+          "prediction": {
+            "decode_us": 10979606.186000021,
+            "predictor_complete_us": 36120.732,
+            "staging_peak_bytes": 132192000,
+            "read_completed": 935,
+            "expired_read_completed": 353,
+            "queued_expirations_avoid_read": 57,
+            "scope": "Heldout conditional scenario with fixed OFF observed services/cache demands; not physical improvement",
+            "gain_percent": 13.8556512735369
+          }
+        }
+      ]
+    }
+  },
+  "assumptions": [
+    "Original observed OFF missing-generation stream and fixed compute, primary cache not resimulated",
+    "Real ON earlier residual top4 and complete measured costs; no oracle issuing future IDs",
+    "False experts use destination-layer median three-read service; .8/1/1.2 sensitivity",
+    "Four nonpreemptible workers with at most3 speculative reads; demand priority, original demand copies after authority",
+    "128MiB arena includes in-flight/ready data, queued expiry avoids read but running reads cannot be undone",
+    "Integrated staging lookup/mutex/copy overhead unmeasured; actual service/compute can change under contention",
+    "At most32 nativegreedy forwards per new conversation, not completed functional task or quality confirmation"
+  ],
+  "decision": {
+    "status": "GO_BOUNDED_REAL_STAGING_CANARY",
+    "admitted_scopes": [
+      "heldout-intervals",
+      "heldout-inventory"
+    ],
+    "service_scale1_gain_percent": {
+      "heldout-intervals": 11.526039499652805,
+      "heldout-inventory": 13.999950631435246
+    },
+    "scope": "Conditional investment only. No byte staging or latency improvement measured. Costs of integrated staging lookup/coordination still require real canary."
+  }
+}

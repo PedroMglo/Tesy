@@ -1,0 +1,23 @@
+{
+  "capture_compare_sha256": "4e2fee8b9958cf47f2d533a6fbb6ce1dfa7ff6d8b432df68536c23e4be9261fb",
+  "capture_negative_control": {
+    "mutation": "require ON sentinel against historical OFF capture",
+    "status": "EXPLICIT_GATE_ERROR"
+  },
+  "capture_positive_control": {
+    "core_rows": 1500,
+    "index_sha256": "c5bb2d647b1e11bceca92ab0868d4e19bbc56b39dda9add326bd1bb2fbb86a64",
+    "numeric_states": 250,
+    "source": "C7b P12 historical OFF capture",
+    "status": "PASS"
+  },
+  "focused_legacy_tests": "41/41 PASS",
+  "limits": [
+    "historical capture tests validate parser only; they do not qualify C47 full-model output",
+    "MXFP4 streaming and canonical C47 reference NOT_RUN"
+  ],
+  "operator_positive_control": "F32/F16 parked pairs +0 and active bits equal resident control",
+  "operator_source_sha256": "a503c05c6d9830e37af63b9f7ff0a53dd8442bfc1af7cfb349656905076c486e",
+  "schema": "c47-gate-tests-v1",
+  "status": "PASS_MODEL_FREE"
+}

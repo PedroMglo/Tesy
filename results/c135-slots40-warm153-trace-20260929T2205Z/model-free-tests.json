@@ -1,0 +1,16 @@
+{
+  "schema": "c135-model-free-v1",
+  "status": "PASS_MODEL_FREE_TESTED_SCOPE",
+  "tests": [
+    {"command": "python3 -m py_compile tools/c135_slots40_trace.py", "result": "PASS"},
+    {"command": "python3 -m unittest discover -s tools -p test_c122_trace_validate.py", "result": "PASS", "count": 6},
+    {"command": "python3 -m unittest discover -s tools -p test_c123_analyze_trace.py", "result": "PASS", "count": 2},
+    {"command": "python3 -m unittest discover -s tools -p test_c118_start_inventory.py", "result": "PASS", "count": 4},
+    {"command": "python3 tools/c135_slots40_trace.py freeze results/c135-slots40-warm153-trace-20260929T2205Z", "result": "PASS_MODEL_FREE_PROFILE_CONSTRUCTION"},
+    {"command": "PYTHONPATH=tools python3 - [frozen C135 protocol/config equality and slots40 E18 assertions]", "result": "PASS_C135_FROZEN_PROFILE_MODEL_FREE"}
+  ],
+  "live_inventory": "PASS_60_S_PHYSICAL_HOST",
+  "initial_sandbox_mount_attempt": "NOT_ADMITTED_BEFORE_SAMPLING; no model",
+  "not_run": ["C135 target model trace", "same-binary trace-off timing"],
+  "limitations": "Tests cover reused trace validator and inventory modules; this new wrapper's full live entrypoint is pending its first physical unit."
+}

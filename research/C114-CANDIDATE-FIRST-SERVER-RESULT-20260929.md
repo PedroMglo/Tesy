@@ -1,0 +1,9 @@
+# C114 — standalone ON session, no paired server result
+
+Objective/base: candidate-first nominal actual-history server screen, measurement commit `58029cc0f4401bdeccbe5e7b34e452471fbd15aa`. Same model/backend pins, P12/8K/E18 profile and 3/3/2 °C matched-start rule as frozen in `results/c114-warm-nominal-server-20260929T1035Z/confirm-policy.json`. The directory name predates the final order choice; measured starts, not its name, define the thermal condition.
+
+Measured on target: C75 ON completed two requests with actual assistant history and exact prefix reuse. The first used2043 prompt IDs and reached first final content in92.961 s. The second evaluated153 new IDs, cached2044, reached first final content in25.115 s, decoded47 tokens at3.571 tok/s and ended `stop`. CPU/GPU/NVMe maxima95/62/52.85 °C, swap0; resource/output/cache gates passed. One such run is not a median and does not satisfy M4's ≤10 s first final or ≥6 tok/s target on the observed case.
+
+The C35 control was **not launched**. Its 300 s matching window ended with NVMe37.85 °C; the candidate started at33.85 °C, requiring ≤35.85 °C. CPU/GPU were within band. Hence no contemporary pair, no causal server speedup and no screening decision on performance. Pair2 is NOT_RUN. C113 had the same NVMe recovery obstacle in control-first order; changing the order did not solve admission. We will not loosen the 2 °C rule after seeing this result or repeat the same risk under another ID. C100 `NO_GO_CONFIRM`, C112 prelaunch FAIL and C113 matching stop remain unchanged.
+
+Next discriminant: use the corrected C105 trace and C111 decode windows for a model-free bound of wait/compute, then select a new mechanism or a separately designed operational workload. A raw candidate run here does not promote a profile or M3/M4. No default or remote change.

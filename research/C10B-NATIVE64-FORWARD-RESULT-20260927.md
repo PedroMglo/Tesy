@@ -1,0 +1,6 @@
+# C10b minimum forward result
+
+- Objective/base: E18 execution-workspace admission for original-backend P8 native ub64 8K full-SWA server; measurement commit `5746a78212223cc01519b5650bb2a70a8b3619dd`. Init prerequisite passed. Evidence class: physical one-request resource diagnostic; raw remains local under `results/c10b-20260927T1520Z/raw/`.
+- Run: `systemd-run --user --scope -p MemoryMax=19327352832 -p MemorySwapMax=0 -- python3 tools/c10b_ub64_server.py results/c10b-20260927T1520Z --run forward --measurement-commit 5746a78212223cc01519b5650bb2a70a8b3619dd`. Official tokenizer fixed 78 prompt IDs; 4 output tokens completed, cache_n=0. Return 0, all source/identity/telemetry gates passed, 28 samples.
+- Observed: backend prefill 24.188 s and decode 1.063 s, wall scope 30.020 s; sampled peak RSS 15.136 GB, cgroup 14.935 GB, GPU total 3904 MiB, CPU 85.25 C, GPU 56 C, NVMe 47.85 C, swap 0. These timings are one short diagnostic and do not establish throughput or equality with ub32.
+- Decision: `MINIMUM_FORWARD_ADMITTED_NEW_PROFILE`. C9's CPU95 FAIL is unchanged. Numeric reference/observer, 513-ID capacity, sustained use, prefix reuse and quality remain NOT_RUN. Next gate: frozen 513-ID cold synthetic request under the same guards. Default unchanged.

@@ -1,0 +1,43 @@
+{
+  "candidate_completed_requests": 0,
+  "candidate_model_loaded": false,
+  "candidate_receipt_status": "FAIL_RESOURCES_OR_EVIDENCE",
+  "control_completed_requests": 2,
+  "control_maxima": {
+    "cgroup_peak_bytes": 13119037440,
+    "cpu_c": 95.125,
+    "gpu_c": 64.0,
+    "gpu_total_mib": 5752.0,
+    "nvme_c": 57.85,
+    "rss_bytes": 13288755200,
+    "swap_bytes": 0
+  },
+  "control_raw_sha256": "ad63b4f7040bc128c6ce0894a740069120f949e97aa92eb8c1eaf88d5a6fba84",
+  "control_run": "c113-p1-control",
+  "control_status": "PASS_SCREEN_ARM_TESTED_SCOPE",
+  "default_changed": false,
+  "match_stop": {
+    "elapsed_s": 300.2788495660061,
+    "final_thermal": {
+      "cpu_tctl_c": 46.75,
+      "nvme_composite_by_sensor": {
+        "nvme-pci-c100": 38.85
+      }
+    },
+    "reason": "GateError: C113 matched-start window exhausted",
+    "series_sha256": "46f1c03684fb4c34ba41c197860861a5af70271b59b64a4324117c504240d497"
+  },
+  "measurement_commit": "59219176e50ffc0b2f5a29f6a48372025f023192",
+  "next_action": "one new operational warm-start family only if prospective band and remaining epoch budget admit; otherwise close epoch",
+  "old_failures_preserved": [
+    "C100",
+    "C109",
+    "C110",
+    "C112"
+  ],
+  "pair_gain": "NOT_RUN",
+  "publication": "LOCAL_ONLY",
+  "remaining_arms": "NOT_RUN",
+  "schema": "c113-decision-v1",
+  "status": "INCOMPLETE_MATCH_NOT_ADMITTED"
+}

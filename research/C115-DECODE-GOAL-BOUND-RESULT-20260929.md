@@ -1,0 +1,9 @@
+# C115 — prefill alone does not meet the observed session target
+
+Measurement/source freeze commit `fc9ce98`; protocol/input hashes in `results/c115-decode-goal-bound-20260929T1050Z/protocol.json`. The analyzer verified C114 raw against its manifest, the complete nominal153/2044-cache/47-output-token request, C111's two pairs and C108's repaired trace gate. A mutated C114 raw SHA failed before output. No model was run.
+
+Observed C114 ON incremental first final was25.115190 s, with prompt phase12.353251 s and decode3.571410 tok/s. Conditional subtraction gives12.761939 s if prompt time were zero while the rest of **that same request** stayed fixed; this remains2.761939 s over the 10 s target. Reaching6 tok/s at the observed token work would require40.4765% less time per token. Reaching first final10 s from25.115 s requires60.18% total reduction. These are inferred arithmetic bounds, not interventions or a forecast of achievable speed.
+
+C111's two teacher-forced pairs support a 35.66% median prefill gain but no persistent late-decode gain; its decode workload differs from the free server request. C108's C105 instrumented waits also differ in workload and omit some wait sites, so they cannot be divided by C114 wall time or called removable I/O. The C106 optimistic 13.36% demand saving is a byte scenario, not a latency result. A small L2 is not yet justified as the solution to the ~40% decode time gap.
+
+Decision: prefill-only work cannot meet the observed first-final target under fixed decode. The next test should capture a nominal153 warm server request with bounded, phase-marked wait/queue/read/H2D/compute intervals and an overhead-neutrality bridge, then select a local pipeline mechanism or source-screen a mature backend. C100 NO_GO and the C112–C114 incomplete server comparisons remain unchanged; M4 remains unproven. No default or remote change.

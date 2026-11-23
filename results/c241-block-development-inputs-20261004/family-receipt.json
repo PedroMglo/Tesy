@@ -1,0 +1,39 @@
+{
+  "measurement_commit": "410d675d4764b27c529227d5533b0dbcea944f7f",
+  "start": {
+    "utc": "2026-10-04T12:11:09.355364+00:00",
+    "monotonic_s": 5592.815846162
+  },
+  "end": {
+    "utc": "2026-10-04T12:12:41.558479+00:00",
+    "monotonic_s": 5685.01896323
+  },
+  "argv": [
+    "systemd-run",
+    "--user",
+    "--slice=tesy-post-c154.slice",
+    "--unit=tesy-c241-native-control",
+    "--collect",
+    "--pipe",
+    "--wait",
+    "--working-directory=/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc",
+    "-p",
+    "MemoryMax=17985175552",
+    "-p",
+    "MemoryHigh=17985175552",
+    "-p",
+    "MemorySwapMax=0",
+    "-p",
+    "RuntimeMaxSec=1080",
+    "-p",
+    "TimeoutStopSec=10",
+    "--",
+    "/usr/bin/python3",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/tools/residency_unit_run.py",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c241-block-development-inputs-20261004",
+    "--inside"
+  ],
+  "returncode": 1,
+  "stdout": "",
+  "stderr": "Running as unit: tesy-c241-native-control.service\n          Finished with result: exit-code\nMain processes terminated with: code=exited, status=1/FAILURE\n               Service runtime: 1min 31.966s\n             CPU time consumed: 1min 55.563s\n                   Memory peak: 14.6G (swap: 0B)\n"
+}

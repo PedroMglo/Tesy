@@ -1,0 +1,39 @@
+{
+  "measurement_commit": "737cd3c0b531c242061aaaf26e9f4c81b6f1cb16",
+  "start": {
+    "utc": "2026-10-07T03:55:17.784599+00:00",
+    "monotonic_s": 121536.230183918
+  },
+  "end": {
+    "utc": "2026-10-07T03:56:30.667917+00:00",
+    "monotonic_s": 121609.1134998
+  },
+  "argv": [
+    "systemd-run",
+    "--user",
+    "--slice=tesy-post-c154.slice",
+    "--unit=tesy-c319-lossless-characterization",
+    "--collect",
+    "--pipe",
+    "--wait",
+    "--working-directory=/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc",
+    "-p",
+    "MemoryMax=4294967296",
+    "-p",
+    "MemoryHigh=4294967296",
+    "-p",
+    "MemorySwapMax=0",
+    "-p",
+    "RuntimeMaxSec=500",
+    "-p",
+    "TimeoutStopSec=10",
+    "--",
+    "/usr/bin/python",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/tools/residency_unit_run.py",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c319-fixed-lossless-compressibility-20261007",
+    "--inside"
+  ],
+  "returncode": 0,
+  "stdout": "",
+  "stderr": "Running as unit: tesy-c319-lossless-characterization.service\n          Finished with result: success\nMain processes terminated with: code=exited, status=0/SUCCESS\n               Service runtime: 1min 12.805s\n             CPU time consumed: 16.093s\n                   Memory peak: 107M (swap: 0B)\n"
+}

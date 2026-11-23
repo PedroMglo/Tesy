@@ -1,0 +1,32 @@
+{
+  "checks": {
+    "architecture_registered": true,
+    "expert_weights_not_marked_lazy": true,
+    "lazy_cli_targets_certain_tensors": true,
+    "lazy_mode_is_mmap_based": true,
+    "lazy_requires_explicit_tensor_flag": true,
+    "mmap_and_direct_io_are_separate_load_modes": true,
+    "model_recognizes_36_layers_as_120b": true,
+    "mxfp4_ampere_kernel_config_present": true
+  },
+  "evidence_class": "SOURCE_AUDITED",
+  "expert_weight_source_lines": [
+    "layer.ffn_gate_exps = create_tensor(tn(LLM_TENSOR_FFN_GATE_EXPS, \"weight\", i), {  n_embd, n_ff_exp, n_expert}, 0);",
+    "layer.ffn_down_exps = create_tensor(tn(LLM_TENSOR_FFN_DOWN_EXPS, \"weight\", i), {n_ff_exp,   n_embd, n_expert}, 0);",
+    "layer.ffn_up_exps   = create_tensor(tn(LLM_TENSOR_FFN_UP_EXPS,   \"weight\", i), {  n_embd, n_ff_exp, n_expert}, 0);"
+  ],
+  "interpretation": "GPT-OSS/MXFP4 implementation exists, but this source pin does not mark GPT-OSS expert weights for its explicit lazy row-loading path. Ordinary mmap/page cache may still permit bounded operation; fit, numerical coverage, and speed on the target are NOT_RUN.",
+  "schema": "c116-upstream-source-screen-v1",
+  "source_commit": "8019dc563b1ecbae6b161a70c3a1359f1b206c1e",
+  "source_dirty": false,
+  "source_file_sha256": {
+    "common/arg.cpp": "216f20ed31c542a422295319225c2e3861bc019168a036c8e75498b12ddc54fb",
+    "ggml/src/ggml-cuda/mmq-config-ampere.cuh": "6de9336a6c2f65c0ad83cbe9303dcd03e8cbb6185d15346133a31421000f6408",
+    "src/llama-arch.cpp": "1bc7ed7ee3924ef582382dabd1bb787c1bba87a1b0982d9c440876070a22efd0",
+    "src/llama-model-loader.cpp": "efdb5f273bd1ab77301f2cadea1a5a804bafb28040aca033e45605a97a450242",
+    "src/llama-model-loader.h": "687dac85ea01c1fb0db19a4e53286144e29f351233c411e88932b99553538422",
+    "src/llama-model.cpp": "15acd497f5ad85fd2754e8023b0ea524fd8961e326f6d3df15244fbd69b1b88b",
+    "src/models/openai-moe.cpp": "dbde7196916f83db11239e3b98292c57c05a34d36825d24f6e3b48e6e8d8bd1f"
+  },
+  "source_repo": "https://github.com/ggml-org/llama.cpp"
+}

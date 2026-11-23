@@ -1,0 +1,40 @@
+{
+  "alternative": "the C100 decode regression arose from build differences or uncontrolled state rather than active wave skip",
+  "base_harness_sha256": "2a7a38da648418dbd147f3e270ed5cbc594db326c566bcb1c80d0922146e754c",
+  "default_changed": false,
+  "diagnostic_rule": "report both paired 100*(OFF-ON)/OFF gains for cold/warm decode and prefill, with same-profile full outputs and resources; two consistently negative decode gains implicate active skip in this workload but are not confirmation or promotion",
+  "gain_formula": "100*(OFF-ON)/OFF, positive denominator",
+  "input_sha256": "a19fcef2b1cd07451ccf5b965d7591a2b7580a00f143992ff4f7de231a9d3353",
+  "limitations": [
+    "synthetic two-turn history; not M3 diverse or M4 quality",
+    "two diagnostic pairs do not confirm a performance promotion",
+    "page cache uncontrolled; O_DIRECT configured for expert I/O"
+  ],
+  "objective": "diagnose C100 decode regression by toggling wave skip OFF/ON in the same C75 binary on the same two-request workload",
+  "order": [
+    "c102-p1-off",
+    "c102-p1-on",
+    "c102-p2-on",
+    "c102-p2-off"
+  ],
+  "pairs": 2,
+  "primary": [
+    "cold decode_s",
+    "warm decode_s"
+  ],
+  "prior_c100_decision_sha256": "c4fdb9019cbc901f5094f58d829bbbb8a0c9de2dfb15d2aa51d5a8d08c1d0020",
+  "resource_cap_bytes": 19327352832,
+  "runner_sha256": "9d8935d688a2d018bd1536e31c6aecad69b4d255b44cfad7e12446136adcdeb0",
+  "schema": "c102-toggle-policy-v1",
+  "scope_memory_swap_max_bytes": 0,
+  "start": {
+    "maximum_wait_s": 300,
+    "mode": "CAUSAL_AB_COLD_MATCHED",
+    "on_mismatch": "CLOSE_PAIR_NO_MODEL; new warm-regime identity if justified",
+    "sample_interval_s": 1,
+    "within_pair_cpu_c": 3,
+    "within_pair_gpu_c": 3,
+    "within_pair_nvme_c": 2
+  },
+  "status": "FROZEN_BEFORE_MODEL"
+}

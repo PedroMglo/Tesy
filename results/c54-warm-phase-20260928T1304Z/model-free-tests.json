@@ -1,0 +1,43 @@
+{
+  "analyzer_controls": "PASS",
+  "binary_sha256": "dee1f13a234521dccf181e9b80a0a3ce6f5dd3019bb9b3f6cd03c7121f6f2fe9",
+  "build_cache_sha256": "75c0655cfc9f29a6a9bff37413a997f0492e500792554a4bb6485fce9c070702",
+  "changed_files": [
+    "ggml/src/ggml-cpu/ggml-cpu.c",
+    "src/llama-moe-stream.cpp",
+    "tools/server/server-context.cpp"
+  ],
+  "help_exit_code": 0,
+  "library_sha256": {
+    "build-c54-nvtx/bin/libggml-base.so.0.15.3": "b95678606baa39e4aff04b35ba929721d03e95f8e4eef00f8cca0fa17ab50921",
+    "build-c54-nvtx/bin/libggml-cpu.so.0.15.3": "fcb94b36a1c14ffcf6151530530cd7a6dffaba2394007f44e6a4c263930ca11b",
+    "build-c54-nvtx/bin/libggml-cuda.so.0.15.3": "14f5e7d9aa7ccdd69890a05812f44dec4cf90509bef62b2dbcf696b264b46c00",
+    "build-c54-nvtx/bin/libggml.so.0.15.3": "b1ca39fc4959cee8ee282499a48575b33ab8b1af0fd6f7e58bf5667f1784a626",
+    "build-c54-nvtx/bin/libllama-common.so.0.0.0": "7b31a2585c64a844f7716b70fb63a31834c09d52a99e7ad94f581d054f512537",
+    "build-c54-nvtx/bin/libllama-server-impl.so": "2613ea6ad657a678c13e4f670b84c5532de8b58681156ecec87bfa701348c485",
+    "build-c54-nvtx/bin/libllama.so.0.0.0": "32b86b688c6322a6de5ef75e8dcb1753051073d584a1f472345435b48bbb5c29",
+    "build-c54-nvtx/bin/libmtmd.so.0.0.0": "1540d0daf5e300a04faced501fbf089a6bf8a5eff7f3bdb6c887dfecfdadcd3f"
+  },
+  "limits": [
+    "source/build/profiler checked without model; actual phase coverage unknown",
+    "instrumented run is diagnostic; no production timing promotion"
+  ],
+  "schema": "c54-model-free-tests-v1",
+  "smoke_events": [
+    {
+      "event_type": 59,
+      "text": "C46_SERVER_PREFILL_DECODE"
+    },
+    {
+      "event_type": 34,
+      "text": "C46_WAVE_LAYER=0_WAVE=0_ACTIVE=1_OF=32"
+    }
+  ],
+  "smoke_report_sha256": "f39683aad966c159742f2fbc4277074a606329dad849f4348ab5bd8f04d7dea9",
+  "smoke_source_sha256": "aa8eae095eb19d7b632e5e3958e602af901c91fada357c66ca52feb8c68c5a77",
+  "smoke_sqlite_sha256": "3303444e704533a09a8a9e43319e320c23d897b0ec3a661e34ead920a08c6acf",
+  "source_clean": true,
+  "source_commit": "2e558cb79f9184e1c87f7bc842c03fe66f7f580e",
+  "source_tree": "b5c2ff3e68001955ad60652539fe355b7d8553ae",
+  "status": "PASS"
+}

@@ -1,0 +1,3 @@
+# C314 — Original start-inventory contract restored
+
+C313 charged its real systemd envelope0.386529 s and stopped before any inventory/fit child: the top-level c120 own-inventory contract was absent from the newly constructed protocol. No weights were fitted. C314 adds the original schema,60s duration,3s freshness and SHA of the actual resource-policy file; the producer/consumer and guards remain unchanged. A new ID/root/scope preserves the earlier failure. Same single fixed affine fit, no scientific alteration or extra hypothesis. All pending ledger/raw-root updates are committed before start.

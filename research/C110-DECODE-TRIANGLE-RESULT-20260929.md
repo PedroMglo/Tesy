@@ -1,0 +1,11 @@
+# C110 — one valid A/B pair; cold triangle not admitted
+
+Objective/base: prospective timeout correction after C109, frozen at measurement commit `0790b899d9b87a35e5277144748c8f01ed5854df`. Protocol, original backend pins, input SHA, guards and decision rule are in `results/c110-decode-triangle-20260929T0900Z/protocol.json`. The only experimental limit changed from C109 was the long-arm timeout, 450→750 s, before outputs.
+
+Measured on target: A/C35 and B/C75 OFF each finished 2009 prompt IDs plus 192 teacher-forced steps. Their 193 full-logit rows were bitwise equal; all three short canaries A/B/C also had equal full logits. A prefill 507.237868 s, decode 49.188860 s, steps 65–192 29.263118 s. B prefill 507.190119 s, decode 48.854176 s, steps 65–192 29.293266 s. B/A gain in this **one** pair: prefill +0.0094%, full decode +0.6804%, late window −0.1030%. This is diagnostic only and does not meet the frozen three-block attribution rule.
+
+The first start matching wait took about 153 s; after B, the remaining aggregate 300 s wait expired. Final observed CPU/GPU/NVMe was 47.25/44/39.85 °C. The first arm's start NVMe was 36.85 °C; the frozen ≤2 °C band required ≤38.85 °C. The C arm was not launched, and blocks 2–3 were NOT_RUN. There was no temperature guard breach or OOM in the completed arms. State: `INCOMPLETE_ATTRIBUTION_MATCH_NOT_ADMITTED`.
+
+Interpretation: the sole A/B pair does not show a large compiled C35→C75 late-decode penalty under this probe. It cannot resolve C100's server decode regression, the C75 ON effect, or variance. C100 remains `NO_GO_CONFIRM`; C104 remains a separate short diagnostic; C109 remains `FAIL_TIMEOUT`. The evidence calls for a C75 ON same-profile long-sequence witness and a product-relevant nominal128 bridge if budget admits, or source/trace analysis if it does not. A new causal warm-regime comparison would need its own protocol; this cold unit cannot be resumed.
+
+Evidence and limits: all five arm receipts and raw hashes are in the C110 manifest; the match series is raw local. `timing-pairs.json` has exactly one diagnostic A/B pair. Independent attention/KV reference, free-generation server first-final timing and M4 are NOT_RUN here. No default or remote change.

@@ -1,0 +1,36 @@
+{
+  "boundary_summary_sha256": "59159f5346f6ba6d7c18fa19d89a769c42435d52b312a706c3bfa128c0190061",
+  "coverage": {
+    "capture_bytes": 84500240,
+    "checked_slices": 996,
+    "index_rows": 3675,
+    "index_sha256": "c5bb2d647b1e11bceca92ab0868d4e19bbc56b39dda9add326bd1bb2fbb86a64",
+    "masked_sha256": "1c01ae46d4a6b2636f6c95c5a277190b8a0c3146420e9e3c71829cdf818e5a14",
+    "masked_states": 2,
+    "numeric_states": 250
+  },
+  "limitations": [
+    "canonical layer comparison NOT_RUN",
+    "attention/KV independent reference NOT_RUN",
+    "P8/P12 timing and functionality NOT_RUN"
+  ],
+  "measurement_commit": "505c3ce1cbb5aad3f42d1b312f3d0bfdaa98b551",
+  "measurement_tree": "291a0f81e435bd809448a0b07f44c1262e43e251",
+  "next_action": "freeze and run canonical P12 layers 25-28 and 24/29 first",
+  "off1_off2_all_33_logits_rows_sha_equal": true,
+  "protocol_sha256": "3d340a157796d0d6e3d229f8004da7f4c945b34f076f0ac5d7eea20178e28a9d",
+  "recorded_utc": "2026-09-27T12:14:25.982914+00:00",
+  "run_ids": [
+    "c7b-g2-p12-off01",
+    "c7b-g2-p12-on01",
+    "c7b-g2-p12-off02"
+  ],
+  "same_profile_selected_logits_bitwise": true,
+  "schema": "c7b-g2-observer-result-v1",
+  "status": "OBSERVER_SAME_PROFILE_PASS_REFERENCE_PENDING",
+  "telemetry_incident": {
+    "description": "one read-only nvidia-smi query after ON completed returned unable to communicate with driver",
+    "raw_sha256": "048657b4d08c72340c69b727d1eca25f7b3eec9daae4dac6081df8ac8069f0dc",
+    "recovered_before_off2": true
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "action": "SIGTERM to those two owner-user PIDs under explicit user authorization",
+  "after_action_check": "both PIDs absent; GPU compute apps empty",
+  "causal_temperature_attribution": "UNKNOWN",
+  "during_run_id": "c22-p1-off",
+  "observed_processes": [
+    {
+      "name": "missioncenter",
+      "observed_cpu_pct": 13.8,
+      "pid": 241515
+    },
+    {
+      "name": "missioncenter-magpie-glibc",
+      "observed_cpu_pct": 10.1,
+      "pid": 241566
+    }
+  ],
+  "phase": "idle admission before qualified 300 s window",
+  "power_fan_policy_changed": false,
+  "qualified_window_start_s": 537.5467609959996,
+  "schema": "c22-environment-intervention-v1",
+  "time_precision": "after ~519 s of idle; exact wall-clock signal time not separately captured"
+}

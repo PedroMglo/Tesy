@@ -1,0 +1,22 @@
+{
+  "schema": "tesy-native-plan-no-weights-v1",
+  "scope": "Native graph metadata only; no tensor payload/forward; model.no_alloc,load_mode NONE,K/V dummy",
+  "source_backend": "d12811df4e9f37cefd7ad4b5405b9e0825ea4fe5",
+  "parent_pin": "8019dc563b1ecbae6b161a70c3a1359f1b206c1e",
+  "profile": "C166 CPU experts/nonexpert ngl12/ctx8192/b256ub32/FlashON/F16fullSWA/op_offloadfalse",
+  "variants_tokens": [
+    32,
+    1
+  ],
+  "model_metadata_path": "/home/pmglo/models/gpt-oss-120b-gguf/gpt-oss-120b-MXFP4.gguf",
+  "timeout_s": 45,
+  "live_charge": "whole metadata/device inspection envelope",
+  "gates": [
+    "no weights read or compute",
+    "all backend assignments emitted",
+    "real optimizer fusion witnesses",
+    "strict schema/negative plan controls"
+  ],
+  "source_sha256": "b3655dea62f341f44a3454421e7059751e4ee33c6e1fa47d05c708ce5f648003",
+  "binary_sha256": "0935e32884193bcc425da2a45473b0aef3a2a26faa7ae107f2db3587cb977aa1"
+}

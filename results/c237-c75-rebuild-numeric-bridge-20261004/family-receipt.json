@@ -1,0 +1,39 @@
+{
+  "measurement_commit": "4184c0c88cdef0c50cc83484573088d3411a8b85",
+  "start": {
+    "utc": "2026-10-04T11:11:55.374717+00:00",
+    "monotonic_s": 2038.835199206
+  },
+  "end": {
+    "utc": "2026-10-04T11:13:42.932507+00:00",
+    "monotonic_s": 2146.39298495
+  },
+  "argv": [
+    "systemd-run",
+    "--user",
+    "--slice=tesy-post-c154.slice",
+    "--unit=tesy-c237-c75-rebuild-bridge",
+    "--collect",
+    "--pipe",
+    "--wait",
+    "--working-directory=/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc",
+    "-p",
+    "MemoryMax=17985175552",
+    "-p",
+    "MemoryHigh=17985175552",
+    "-p",
+    "MemorySwapMax=0",
+    "-p",
+    "RuntimeMaxSec=360",
+    "-p",
+    "TimeoutStopSec=10",
+    "--",
+    "/usr/bin/python3",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/tools/residency_unit_run.py",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c237-c75-rebuild-numeric-bridge-20261004",
+    "--inside"
+  ],
+  "returncode": 0,
+  "stdout": "",
+  "stderr": "Running as unit: tesy-c237-c75-rebuild-bridge.service\n          Finished with result: success\nMain processes terminated with: code=exited, status=0/SUCCESS\n               Service runtime: 1min 47.486s\n             CPU time consumed: 1min 45.455s\n                   Memory peak: 14.8G (swap: 0B)\n"
+}

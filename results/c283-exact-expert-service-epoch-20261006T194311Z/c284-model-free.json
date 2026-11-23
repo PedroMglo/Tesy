@@ -1,0 +1,28 @@
+{
+  "status": "REPRODUZIDO_MODEL_FREE",
+  "checks": [
+    {
+      "binary": "results/c283-exact-expert-service-epoch-20261006T194311Z/build/logical-route/bin/test-logical-route",
+      "sha256": "03ca956dc636434f466eb061234763aacd9fac82f33c09078c0b92bc05fae145",
+      "returncode": 0,
+      "stdout": "PASS grouping153/32, decay64/128/256, duplicate/revaluation, masked-empty, invalid topk, saturation, reset and old-clock counterexample\n",
+      "stderr": ""
+    },
+    {
+      "binary": "results/c283-exact-expert-service-epoch-20261006T194311Z/build/logical-route/bin/logical-route-native",
+      "sha256": "bae9535fd0947df31f0f88c48b05c4466ee725b8cd9343466b4d8682c66da943",
+      "returncode": 0,
+      "stdout": "PASS_MODEL_FREE_R2_CAUSAL_MODE_CALLS_ROWS\n",
+      "stderr": ""
+    },
+    {
+      "binary": "results/c283-exact-expert-service-epoch-20261006T194311Z/build/logical-route/bin/logical-route-capture",
+      "sha256": "4c63b6288b5265839f97d648173d7cfb078f672410806fae8e0f4c61f932bde4",
+      "returncode": 0,
+      "stdout": "{\"status\":\"PASS_REAL_C262_GRAPH_METADATA_AND_LIFETIME_COUNTERPROOF\",\"weights_loaded\":false,\"forwards\":0}\n",
+      "stderr": "ggml_cuda_init: found 1 CUDA devices (Total VRAM: 7888 MiB):\n  Device 0: NVIDIA GeForce RTX 4060 Laptop GPU, compute capability 8.9, VMM: yes, VRAM: 7888 MiB\nalloc_bufs:          CPU expert cache size =     0.01 MiB (40 slots per layer)\n"
+    }
+  ],
+  "compile_failure_preserved": "results/c283-exact-expert-service-epoch-20261006T194311Z/build/logical-route-build.log",
+  "repair": "n_layer() accessor; no runtime physical retry"
+}

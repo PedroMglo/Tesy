@@ -1,0 +1,217 @@
+{
+  "run_id": "c2-telemetry-smoke02",
+  "started_utc": "2026-09-26T14:10:54.514484+00:00",
+  "model_id": "synthetic",
+  "model_path": null,
+  "backend": "streaming",
+  "backend_sha": "1248fd8fa8cfebaece5ea992e4d951c1e18bb9d5",
+  "binary_sha256": "651468d5d1adbd00e0cf39813d90dc2c0deeb57c99ef06227f13d4407797e14b",
+  "backend_libraries_sha256": {},
+  "variant": "model-free-monitor-boundary-repair",
+  "workload": "model-free-sleep7",
+  "cache_condition": "none",
+  "command": [
+    "/usr/bin/sleep",
+    "7"
+  ],
+  "explicit_env": {},
+  "stdin_file": null,
+  "stdin_sha256": null,
+  "limits": {
+    "timeout_s": 20,
+    "max_rss_gib": 17.0,
+    "min_available_gib": 6.0,
+    "max_gpu_mib": 7000.0,
+    "max_cpu_c": 95.0,
+    "max_gpu_c": 80.0,
+    "max_nvme_c": 70.0,
+    "allow_cgroup_max_reclaim": false,
+    "require_telemetry": true
+  },
+  "cgroup_start": {
+    "path": "/user.slice/user-1000.slice/user@1000.service/app.slice/run-p211472-i162338.scope",
+    "memory_max": 19327352832,
+    "swap_max": 0,
+    "memory_current": 13189120,
+    "memory_peak": 13881344,
+    "swap_current": 0,
+    "memory_stat": {
+      "anon": 10870784,
+      "file": 0,
+      "kernel": 724992,
+      "shmem": 0,
+      "file_mapped": 0
+    },
+    "events": {
+      "low": 0,
+      "high": 0,
+      "max": 0,
+      "oom": 0,
+      "oom_kill": 0,
+      "oom_group_kill": 0,
+      "sock_throttled": 0
+    },
+    "events_local": {
+      "low": 0,
+      "high": 0,
+      "max": 0,
+      "oom": 0,
+      "oom_kill": 0,
+      "oom_group_kill": 0,
+      "sock_throttled": 0
+    },
+    "pressure": {
+      "some": {
+        "avg10": 0.0,
+        "avg60": 0.0,
+        "avg300": 0.0,
+        "total": 0
+      },
+      "full": {
+        "avg10": 0.0,
+        "avg60": 0.0,
+        "avg300": 0.0,
+        "total": 0
+      }
+    }
+  },
+  "publication": "local only; stdout/stderr are untracked",
+  "samples_path": "/home/pmglo/Projects/Tesy/tesy-scale-lab/results/c2-telemetry-smoke02.samples.jsonl",
+  "cgroup_limit_enforced": true,
+  "ended_utc": "2026-09-26T14:11:01.748104+00:00",
+  "elapsed_s": 7.234,
+  "returncode": 0,
+  "stop_reason": null,
+  "maxima": {
+    "rss_bytes": 2134016,
+    "swap_bytes": 0,
+    "cgroup_memory_bytes": 14446592,
+    "cgroup_peak_bytes": 35553280,
+    "cgroup_file_bytes": 4096,
+    "gpu_used_mib": 13.0,
+    "gpu_temperature_c": 44.0,
+    "cpu_tctl_c": 48.625,
+    "nvme_composite_c": 37.85,
+    "direct_model_fds": 0,
+    "buffered_model_fds": 0
+  },
+  "last_sample": {
+    "elapsed_s": 6.233,
+    "pid": 211501,
+    "proc": {
+      "VmHWM": 2134016,
+      "VmRSS": 2134016,
+      "VmSwap": 0,
+      "rchar": 7034,
+      "syscr": 10,
+      "read_bytes": 0
+    },
+    "mem_available_bytes": 28244918272,
+    "gpu": {
+      "used_mib": 13.0,
+      "temperature_c": 44.0,
+      "power_w": 11.85
+    },
+    "thermal": {
+      "cpu_tctl_c": 46.875,
+      "nvme_composite_c": 36.85
+    },
+    "cgroup": {
+      "path": "/user.slice/user-1000.slice/user@1000.service/app.slice/run-p211472-i162338.scope",
+      "memory_max": 19327352832,
+      "swap_max": 0,
+      "memory_current": 13737984,
+      "memory_peak": 35553280,
+      "swap_current": 0,
+      "memory_stat": {
+        "anon": 11034624,
+        "file": 4096,
+        "kernel": 495616,
+        "shmem": 0,
+        "file_mapped": 0
+      },
+      "events": {
+        "low": 0,
+        "high": 0,
+        "max": 0,
+        "oom": 0,
+        "oom_kill": 0,
+        "oom_group_kill": 0,
+        "sock_throttled": 0
+      },
+      "events_local": {
+        "low": 0,
+        "high": 0,
+        "max": 0,
+        "oom": 0,
+        "oom_kill": 0,
+        "oom_group_kill": 0,
+        "sock_throttled": 0
+      },
+      "pressure": {
+        "some": {
+          "avg10": 0.0,
+          "avg60": 0.0,
+          "avg300": 0.0,
+          "total": 0
+        },
+        "full": {
+          "avg10": 0.0,
+          "avg60": 0.0,
+          "avg300": 0.0,
+          "total": 0
+        }
+      }
+    },
+    "model_fds": null
+  },
+  "stdout_path": "/home/pmglo/Projects/Tesy/tesy-scale-lab/results/c2-telemetry-smoke02.stdout",
+  "stderr_path": "/home/pmglo/Projects/Tesy/tesy-scale-lab/results/c2-telemetry-smoke02.stderr",
+  "cgroup_end": {
+    "path": "/user.slice/user-1000.slice/user@1000.service/app.slice/run-p211472-i162338.scope",
+    "memory_max": 19327352832,
+    "swap_max": 0,
+    "memory_current": 13602816,
+    "memory_peak": 35553280,
+    "swap_current": 0,
+    "memory_stat": {
+      "anon": 11034624,
+      "file": 4096,
+      "kernel": 495616,
+      "shmem": 0,
+      "file_mapped": 0
+    },
+    "events": {
+      "low": 0,
+      "high": 0,
+      "max": 0,
+      "oom": 0,
+      "oom_kill": 0,
+      "oom_group_kill": 0,
+      "sock_throttled": 0
+    },
+    "events_local": {
+      "low": 0,
+      "high": 0,
+      "max": 0,
+      "oom": 0,
+      "oom_kill": 0,
+      "oom_group_kill": 0,
+      "sock_throttled": 0
+    },
+    "pressure": {
+      "some": {
+        "avg10": 0.0,
+        "avg60": 0.0,
+        "avg300": 0.0,
+        "total": 0
+      },
+      "full": {
+        "avg10": 0.0,
+        "avg60": 0.0,
+        "avg300": 0.0,
+        "total": 0
+      }
+    }
+  }
+}

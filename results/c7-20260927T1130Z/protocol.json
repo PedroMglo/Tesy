@@ -1,0 +1,271 @@
+{
+  "schema": "c7-120b-mainline-protocol-v1",
+  "created_utc": "2026-09-27T11:30:22Z",
+  "branch": "campaign/120b-mainline-investigation-20260927-1132utc",
+  "base_repair_commit": "c6a7ca339fcdbe1ef58515ede3f69792ef607820",
+  "publication": "local only; no service replacement",
+  "program": {
+    "objective": "qualify GPT-OSS 120B as a primary local model while preserving exact routed computation",
+    "milestones": [
+      "M1 reliable gates",
+      "M2 confirmed full-model gain",
+      "M3 qualified session and 8K",
+      "M4 primary-model candidate"
+    ],
+    "use_contract_proposed": {
+      "n_ctx_total": 8192,
+      "incremental_tokens": 128,
+      "prefix_tokens": [
+        2048,
+        4096
+      ],
+      "cold_prompt_tokens": [
+        512,
+        2048
+      ],
+      "reasoning_effort": "medium",
+      "boundary_input_tokens": 7936,
+      "boundary_output_cap": 256,
+      "task_output_cap_when_fits": 3072,
+      "goals": {
+        "median_decode_tok_s_min": 6,
+        "median_incremental_final_content_s_max": 10,
+        "median_cold512_prefill_s_max": 30,
+        "critical_tasks_all_pass": true,
+        "no_120b_control_solved_task_lost": true
+      }
+    },
+    "budget": {
+      "active_hours_max": 24,
+      "physical_hours_max": 16,
+      "raw_new_bytes_max": 42949672960,
+      "checkpoint_active_hours_max": 4
+    }
+  },
+  "initial_experiment": {
+    "profiles": {
+      "P8": {
+        "ngl": 8,
+        "expected_cpu_layers": [
+          0,
+          28
+        ],
+        "expected_gpu_layers": [
+          29,
+          35
+        ]
+      },
+      "P12": {
+        "ngl": 12,
+        "expected_cpu_layers": [
+          0,
+          24
+        ],
+        "expected_gpu_layers": [
+          25,
+          35
+        ]
+      }
+    },
+    "variable": "n_gpu_layers only",
+    "envelope": "E18",
+    "cache_condition": "fresh expert pools; page cache uncontrolled; O_DIRECT to verify",
+    "inputs": {
+      "numeric_path": "results/c2-target-numeric-v1.ids",
+      "numeric_sha256": "8fb3aff447febaeaa5a8bdd0c485fd20d51d39fb6ac3e6ba4849eb4a664dbc23",
+      "numeric_case": "log_medium",
+      "numeric_prompt_ids": 189,
+      "numeric_continuation_ids": 43,
+      "timing_path": "results/c3-p1-latency-ids01.tsv",
+      "timing_sha256": "368c48ac1e93d68ec1746bb3d5f7e63118f35d7903c58f88dbe5c983b69190fb",
+      "timing_cases": {
+        "latency-short": 113,
+        "latency-medium": 496,
+        "latency-long": 1522
+      },
+      "teacher_forced_32_ids_sha256": "5256b4d64365d2135d9bb75893b3facdb56ad706b4341617c04e0ebbaaf46ac7",
+      "teacher_forced_sha_encoding": "comma-separated decimal IDs, no trailing newline",
+      "teacher_forced_steps": 32
+    },
+    "effective_options": {
+      "n_ctx": 4096,
+      "n_batch": 256,
+      "n_ubatch": 32,
+      "n_seq_max": 1,
+      "n_threads": 8,
+      "n_threads_batch": 8,
+      "moe_stream": true,
+      "moe_stream_slots": 32,
+      "moe_stream_io_threads": 4,
+      "use_mmap": false,
+      "use_direct_io": true,
+      "moe_stream_direct": true,
+      "use_extra_bufts": false,
+      "op_offload": false,
+      "flash_attn_type": "enabled",
+      "type_k": "f16",
+      "type_v": "f16",
+      "swa_full": true,
+      "offload_kqv": true,
+      "kv_unified": false,
+      "LLAMA_MOE_STREAM_NO_PRELOAD": "1",
+      "prefix_reuse": false,
+      "kv_clear_between_measured_cases": true
+    },
+    "numeric_contract": {
+      "artifact_bytes_offsets_biases_scales_ids_lifetime": "exact",
+      "same_profile_stream_vs_resident_layer": "bitwise on frozen states",
+      "same_profile_observer_off_on_and_fresh_process": "bitwise selected full logits",
+      "cross_profile": "descriptive only; target routing independent",
+      "masked_states": "layer35 prefill0 and prefill128 N/A_MASKED",
+      "numeric_states": 250,
+      "masked_states_count": 2,
+      "canonical_layer_loads": 36,
+      "numeric_call_plan": "one external decode of 189 prompt IDs, then 32 single-ID teacher-forced calls",
+      "numeric_logits": [
+        "prefill_final",
+        "decode0",
+        "decode1",
+        "decode7",
+        "decode31"
+      ]
+    },
+    "timing": {
+      "gain_formula": "100*(P8-P12)/P8, positive denominator, paired median",
+      "screen113_pairs": [
+        [
+          "P8",
+          "P12"
+        ],
+        [
+          "P12",
+          "P8"
+        ]
+      ],
+      "screen113_signal": {
+        "median_work_gain_min_pct": 3,
+        "any_pair_work_gain_min_pct": -3,
+        "median_prefill_and_tpot_gain_min_pct": -5,
+        "negative_result_is_not_global_veto": true
+      },
+      "screen496_pairs": [
+        [
+          "P8",
+          "P12"
+        ],
+        [
+          "P12",
+          "P8"
+        ]
+      ],
+      "screen496_general_go": {
+        "median_work_gain_min_pct": 5,
+        "all_pairs_positive": true,
+        "median_prefill_and_tpot_gain_min_pct": -5
+      },
+      "confirm496_pairs": [
+        [
+          "P8",
+          "P12"
+        ],
+        [
+          "P12",
+          "P8"
+        ],
+        [
+          "P8",
+          "P12"
+        ]
+      ],
+      "confirm496_general_go": {
+        "median_work_gain_min_pct": 8,
+        "all_pairs_positive": true,
+        "median_prefill_and_tpot_gain_min_pct": -5
+      },
+      "long1522_screen_pairs": [
+        [
+          "P8",
+          "P12"
+        ],
+        [
+          "P12",
+          "P8"
+        ]
+      ],
+      "long1522_go": {
+        "median_work_gain_min_pct": 5,
+        "no_negative_pair": true,
+        "median_prefill_and_tpot_gain_min_pct": -5
+      },
+      "load_excluded_from_primary_work": true,
+      "all_32_teacher_forced_steps_in_work": true
+    },
+    "resource": {
+      "memory_max_bytes": 19327352832,
+      "memory_swap_max_bytes": 0,
+      "rss_guard_bytes": 18253611008,
+      "gpu_total_guard_mib": 7000,
+      "mem_available_min_bytes": 6442450944,
+      "cpu_max_c": 95,
+      "gpu_max_c": 80,
+      "nvme_max_c": 70,
+      "reserve_gpu_mib_max": 6500,
+      "reserve_cgroup_gib_max": 16.5,
+      "reserve_rss_gib_max": 16,
+      "sample_interval_s_max": 1,
+      "sample_gap_s_max": 3,
+      "timeouts_s": {
+        "init_only": 120,
+        "short": 300,
+        "medium": 600,
+        "long": 1200,
+        "canonical_layer": 180
+      }
+    },
+    "stages": {
+      "G0": "repaired gates, reauditor, tensor accounting",
+      "G1": "sequential init-only P8 and P12; C7_CONTEXT_READY marker, then /proc mappings and placement",
+      "G2": "same-profile OFF/ON plus 36 canonical layers; source graph plan to freeze before outputs",
+      "G3": "two alternating 113 pairs; short signal does not veto medium",
+      "G4": "two alternating 496 pairs",
+      "G5": "new three-pair 496 confirmation and bounded long check"
+    },
+    "stop_on": [
+      "same-profile mismatch",
+      "artifact/byte corruption",
+      "nonfinite",
+      "canonical reference failure",
+      "OOM",
+      "unexpected retry",
+      "resource guard",
+      "essential telemetry missing"
+    ]
+  },
+  "identity": {
+    "model_repository": "ggml-org/gpt-oss-120b-GGUF",
+    "model_revision": "238abdd290bb874b90a5da1b4549881b7d05c091",
+    "model_path": "/home/pmglo/models/gpt-oss-120b-gguf/gpt-oss-120b-MXFP4.gguf",
+    "model_size_bytes": 63387346208,
+    "model_sha256_verified": "582bd40f6886200101f4c4ed9f25f3fe80cc14c86e9e2b37746cd8904a0c622d",
+    "model_stat_at_freeze": {
+      "dev": 53,
+      "inode": 14833675,
+      "size_bytes": 63387346208,
+      "mtime_ns": 1790389637795911032,
+      "ctime_ns": 1790389637807910988
+    },
+    "backend_repository": "freedomljc/llama.cpp",
+    "backend_commit": "1248fd8fa8cfebaece5ea992e4d951c1e18bb9d5",
+    "backend_tree": "8219dfba2414cdcbb388e43b1c67a49f1f70e4aa",
+    "backend_clean": true,
+    "probe_source_sha256": "cdb95c9df8dcc2b6749d787c80d419e37bfcc6eeacfbbf246cfc26e9627f070c",
+    "probe_binary_sha256": "4c0dc056cec3edcf5b05cd6b34208a9fe9a18bb92cf74d5e33f2f2553ccc5a43",
+    "ldd_diagnostic_backend_libraries_sha256": {
+      "build-gcc15/bin/libllama.so.0.0.1": "31b56002c36c159f71eba54c0d8e625ae140d34b2b1a503f3dc4db47237719cc",
+      "build-gcc15/bin/libggml.so.0.15.3": "97a33247336b56aaabe1a8bee4da6cd05e73e8b4327afd2cef67c5526df8ab71",
+      "build-gcc15/bin/libggml-base.so.0.15.3": "4c322a199c86b801389ed4bda94074083624e0a6460e25681be4b626cc72873d",
+      "build-gcc15/bin/libggml-cpu.so.0.15.3": "b57845ea9f9ce9455d78e6fe290c09b50b9414db9280409b9e5cc143d1b13b61",
+      "build-gcc15/bin/libggml-cuda.so.0.15.3": "5b363c951b87164e94d5b6af35a82c875634aadcb29c9278245cd7516f44cc7e"
+    }
+  }
+}

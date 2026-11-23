@@ -1,0 +1,89 @@
+{
+  "status": "CPU52_GPU44_POLICY_NO_GO_ON_FROZEN_HOLDOUT_GATE",
+  "holdouts": [
+    {
+      "id": "c164-sql",
+      "replay": {
+        "status": "LOGICAL_REPLAY_MATCHED",
+        "differences": [],
+        "statistics": {
+          "demands": 6768,
+          "hits": 5533,
+          "misses": 1235,
+          "generated_victims": 1202,
+          "loads": 1235,
+          "commits": 1235,
+          "barriers": 821
+        },
+        "remap_invocations": 1692,
+        "scope": "Actual snapshot to final snapshot, mode0 remap only; observed external worker ordering; no prefill wave or counterfactual timing qualification"
+      },
+      "phase_s": {
+        "prefix-warmup": 65.946351,
+        "warm-prefill": 18.775776,
+        "decode": 11.188811
+      },
+      "counterfactual": {
+        "CPU_slots": 52,
+        "GPU_slots": 44,
+        "misses": 1062,
+        "new_misses": 0,
+        "conditional_avoided_wait_union_s": 0.799712,
+        "credited_barriers": 111,
+        "no_observed_blocking_commit": 0,
+        "assumptions": "Fixed routed work and original per-load completion times; unchanged remaining service and wake tail. New misses need independent unknown penalty; original44 seeded extra empty slots is not warm52 state. This is a conditional scenario, not formal optimistic class bound or measured speedup.",
+        "conditional_decode_percent": 7.147426120612815
+      },
+      "raw_hashes": {
+        "trace": "cd7ae9d43bed30eec7a2bc1a564f2ce12c39e95f9de7785aa26842a96c808ce3",
+        "routing": "8b509aceb3267241367cc308d8929a95f41552b89c98f8cf16568b843041fad1",
+        "post_prefill_snapshot": "6e6bdab2009136e16606f20677d140025678208807fba789857acf76f7e21f26",
+        "final_snapshot": "d31f030ed6cc749222aef27ab00f08a474cb0cee98f4cc7e6a64e7bfef561e9c"
+      }
+    },
+    {
+      "id": "c164-energy",
+      "replay": {
+        "status": "LOGICAL_REPLAY_MATCHED",
+        "differences": [],
+        "statistics": {
+          "demands": 6768,
+          "hits": 5285,
+          "misses": 1483,
+          "generated_victims": 1450,
+          "loads": 1483,
+          "commits": 1483,
+          "barriers": 993
+        },
+        "remap_invocations": 1692,
+        "scope": "Actual snapshot to final snapshot, mode0 remap only; observed external worker ordering; no prefill wave or counterfactual timing qualification"
+      },
+      "phase_s": {
+        "prefix-warmup": 69.602635,
+        "warm-prefill": 19.606185,
+        "decode": 13.087705
+      },
+      "counterfactual": {
+        "CPU_slots": 52,
+        "GPU_slots": 44,
+        "misses": 1288,
+        "new_misses": 0,
+        "conditional_avoided_wait_union_s": 0.930386,
+        "credited_barriers": 140,
+        "no_observed_blocking_commit": 0,
+        "assumptions": "Fixed routed work and original per-load completion times; unchanged remaining service and wake tail. New misses need independent unknown penalty; original44 seeded extra empty slots is not warm52 state. This is a conditional scenario, not formal optimistic class bound or measured speedup.",
+        "conditional_decode_percent": 7.108855219459791
+      },
+      "raw_hashes": {
+        "trace": "504b4eda69f22d69910bbcf779f12d079d2cfaf3251b3469cea598982fc4a35b",
+        "routing": "c314f424ce8ab2d85c883ea52ca9cf92291ac03aa5eed5d22f0a6862fb03d0ba",
+        "post_prefill_snapshot": "8078b78e546c6c8c2ab2203f409d2b3f4911ae728e8e77928f9d88305ef4ab65",
+        "final_snapshot": "665d62e6175806480643c943719234fd9ac1127e921b7d2feb18b007f7d5b58e"
+      }
+    }
+  ],
+  "gate": ">=8% conditioned decode reduction on BOTH frozen holdouts; no newly required unmeasured service",
+  "authority": "LOGICAL_REPLAY_MATCHED plus COUNTERFACTUAL_SIMULATED/TEMPORAL_BOUND_CONDITIONAL; no new physical profile timing",
+  "scope": "Actual post-prefill snapshots of direct C API probe,47 forwards. Primary decode remap reproduced independently; wave/prefill replay and server-state bridge NOT_RUN. Not an upper bound rejecting all static/adaptive residency or other memory envelopes",
+  "next_action": "Conditional upstream mmap observer/phase diagnostic; selectedCPU52 rejected without implementation or holdout retuning"
+}

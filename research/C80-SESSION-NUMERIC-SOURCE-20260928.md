@@ -1,0 +1,6 @@
+# C80 — Source feasibility for the 8K session numeric profile
+
+- Objective/base: prepare a minimal numeric bridge from C76b's P12 C75 probe to C52b's C35 server options. Base Tesy `73c575740e01928050483a6c6a11460b25d2fe70`; C75 backend `27d2e42d8c994507ee6d71acc7c58d3eddd3f7a5`. Evidence class SOURCE_AUDITED and REPRODUZIDO_MODEL_FREE for compilation only.
+- Alternative: context 8192, preload ON and unified KV may expose a graph or lifetime difference. `tools/c80_session_boundary_capture.cpp` copies the validated C70 observer/call plan and changes only those three profile fields plus marker/environment checks. The C52b raw preflight is the server-side authority for the frozen flags; the direct capture cannot establish HTTP exact-prefix behavior or quality.
+- `bash tools/build_c80_session_boundary.sh` passed; model load, 36-layer boundary, resident reference, repeat, server bridge and timing are NOT_RUN. C79 E18 capacity admission was 256 MiB short, so no physical run is inferred or launched from this source checkpoint.
+- Decision: keep C80 source-only; on fresh adequate capacity, freeze a new campaign with mapped library hashes and run OFF/ON before server performance. C78 resource FAIL and C48/C61/C66 historical FAILs unchanged. No default or remote change.

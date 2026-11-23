@@ -1,0 +1,78 @@
+{
+  "c18": {
+    "clock_collapse_rule": "five consecutive warning samples below half prewarning median",
+    "cpu_stop_c": 100,
+    "cpu_warning_c": 95,
+    "explicit_thermal_limit": "any Processor cooling cur_state > 0"
+  },
+  "c34b": {
+    "backend_dirty": "",
+    "backend_tree": "44221c494f85ec8f77374e189a67e11497c6dadd",
+    "model_stat": {
+      "ctime_ns": 1790389637807910988,
+      "dev": 53,
+      "inode": 14833675,
+      "mtime_ns": 1790389637795911032,
+      "size_bytes": 63387346208
+    },
+    "monitor_scope": "systemd user scope E18, zero swap",
+    "numerical_scope": "greedy four-token output equality only; full logits NOT_RUN",
+    "order": 2,
+    "phase": "C15_PLAIN",
+    "run_id": "c43-c15-plain-cold513",
+    "runner_sha256": "c670b409d1b08dd869abd2907bff44228a6f2c70687f595c41553965bd8eaf49",
+    "server_runner_sha256": "0f7db04350f6a23b96ac0d3062a884c52cdab05a7bd74733c72ea47450f604d1",
+    "timing_promotable": false
+  },
+  "c43": {
+    "cpu_telemetry_sha256": "1a6e2b6e48f1190e71423b0c2aa95f6f80911e6ed987a8b6f7a76efe28ceae7a",
+    "local_template_date": "2026-09-28",
+    "optimistic_bound_policy": "sum/union of C15_CPU_STREAM_MATMUL_ID intervals across profiler run is only an optimistic upper bound for prefill removability, since it may include decode and overlap; denominator is uninstrumented control completed prefill time; if <20%, deprioritize MMID compaction for this cold513 workload; if >=20%, require phase-specific attribution before implementation",
+    "parent_c42_decision_sha256": "d29225cee2dd1ae75bf516379611ad817366da0ffed3fa70369d964a88d77acf",
+    "runner_sha256": "1f4f03f384bdf4729969f18f6466e7dc20884f82c19e7c8f1fb0979c9d9d992e"
+  },
+  "campaign_id": "tesy-c43-wave-critical-20260928",
+  "expected_request_ids": [
+    "c17-cold513"
+  ],
+  "identity": {
+    "backend_sha": "1691fb65a00c963ec3aa64a5b66a1b951de52d15",
+    "binary_sha256": "f28ca1357faac2fce851ccce6d96869669bd1bac0925f5cef48a93412545089c",
+    "config_sha256": "208c225e6785a8a3677d0f4f5986b94ffa70d3fe25d832cff540c570eab08669",
+    "input_sha256": {
+      "input.json": "93e903655663ce28667e597fee4c4d1b4737f0a69c964c327bbff6de2f1cd8de",
+      "usage-contract.json": "0dcf1b7584eb450f805e369a95fe09c79557983235a8d7ce59fae0d438e06189"
+    },
+    "library_sha256": {
+      "build-c33-nvtx/bin/libggml-base.so.0.15.3": "be34b6fbe224f9a3a613d158e9d8b42c7bfb813194db65fad4bfdb8e8681a8ce",
+      "build-c33-nvtx/bin/libggml-cpu.so.0.15.3": "8b0fbbe5a980c7418f1c603acb2efbe87a635235bc2555121e9b8dfba2d11274",
+      "build-c33-nvtx/bin/libggml-cuda.so.0.15.3": "0eac8faf2fe78618e58e21f48ba4f1eb8e60a5a7233a7986459e4c0b2cb93f85",
+      "build-c33-nvtx/bin/libggml.so.0.15.3": "4d81a67b8a2f59b20863c0636e6608fa18036609ee719df080e95e240f1d47d3",
+      "build-c33-nvtx/bin/libllama-common.so.0.0.2": "7472f3fe191f117434c127f835014dae3dace78813ac5bf04c5a1e5fd82fcfcc",
+      "build-c33-nvtx/bin/libllama-server-impl.so": "e9f675f7af627d3622175050f0ec172ca014c70016e91b5ff79cd5b61e8f6ec6",
+      "build-c33-nvtx/bin/libllama.so.0.0.2": "9b13168dbac4874c13f7f57d31b38c067f54f7b0b284e1a542060b6063859652",
+      "build-c33-nvtx/bin/libmtmd.so.0.0.2": "9c6d73e7c2e818e16532e7515dca64d04e723b2dd255fe87e8c4b9da78f8d251"
+    },
+    "model_id": "target120b",
+    "model_sha256": "582bd40f6886200101f4c4ed9f25f3fe80cc14c86e9e2b37746cd8904a0c622d",
+    "workload_sha256": "93e903655663ce28667e597fee4c4d1b4737f0a69c964c327bbff6de2f1cd8de"
+  },
+  "limits": {
+    "boundary_s": 2,
+    "cpu_max_c": 100,
+    "gpu_max_c": 80,
+    "gpu_max_mib": 6500,
+    "max_gap_s": 3,
+    "memory_max_bytes": 17716740096,
+    "min_active_s": 0,
+    "min_decode_s": 0,
+    "min_decode_tok_s": 0,
+    "min_elapsed_s": 0,
+    "min_last_half_tok_s": 0,
+    "min_mem_available_bytes": 6442450944,
+    "nvme_max_c": 70,
+    "rss_max_bytes": 17179869184
+  },
+  "protocol_id": "c43-c15-plain-cold513-v1",
+  "schema_version": "c2-protocol-v1"
+}

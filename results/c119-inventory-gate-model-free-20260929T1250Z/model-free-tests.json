@@ -1,0 +1,23 @@
+{
+  "schema": "c119-model-free-tests-v1",
+  "evidence_class": "REPRODUZIDO_MODEL_FREE",
+  "base_commit": "4d4bb92e42ea138595f3f2d49d2766545848cd68",
+  "command": "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=tools python3 -m unittest tools.test_c84_trace_validate tools.test_c106_l2_trace_screen tools.test_c107_history_prefetch_screen tools.test_c117_start_inventory tools.test_c118_start_inventory",
+  "result": "PASS",
+  "tests_run": 20,
+  "collector_sha256": "2d2d356b9de1726267d26cb7939cd85d1b56cb0e66fe59a391118035ad9bac83",
+  "test_sha256": "aa25bf0423a7daded45ccf66ba04f243f00a7ef34e46a537849fb61462e9e394",
+  "negative_controls": [
+    "missing observation in an otherwise well-formed series",
+    "wrong arm identity",
+    "stale UTC series",
+    "CPU stop exceeded",
+    "AC changed to BATTERY",
+    "raw hash mismatch",
+    "receipt cap mismatch",
+    "slow terminal sample",
+    "second NVMe above stop"
+  ],
+  "full_entrypoint": "NOT_RUN",
+  "model_inference": "NOT_RUN"
+}

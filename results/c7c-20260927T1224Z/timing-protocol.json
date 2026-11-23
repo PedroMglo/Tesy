@@ -1,0 +1,174 @@
+{
+  "alternative": "additional GPU residency increases transfer/contention or decode cost enough to cancel the prefill benefit",
+  "analyzer_sha256": "220a976b5402f51f67fbf9ad1b111a2310128780ade2a142d7e7d6e41f17e100",
+  "backend_commit": "1248fd8fa8cfebaece5ea992e4d951c1e18bb9d5",
+  "binary_sha256": "4c0dc056cec3edcf5b05cd6b34208a9fe9a18bb92cf74d5e33f2f2553ccc5a43",
+  "confirm496": {
+    "go": {
+      "all_pair_work_gains_positive": true,
+      "median_prefill_gain_pct_min": -5,
+      "median_tpot_gain_pct_min": -5,
+      "median_work_gain_pct_min": 8
+    },
+    "new_pairs": [
+      [
+        "P8",
+        "P12"
+      ],
+      [
+        "P12",
+        "P8"
+      ],
+      [
+        "P8",
+        "P12"
+      ]
+    ]
+  },
+  "created_utc": "2026-09-27T12:35:06.619231+00:00",
+  "effective_options": {
+    "LLAMA_MOE_STREAM_NO_PRELOAD": "1",
+    "flash_attn_type": "enabled",
+    "kv_clear_between_measured_cases": true,
+    "kv_unified": false,
+    "moe_stream": true,
+    "moe_stream_direct": true,
+    "moe_stream_io_threads": 4,
+    "moe_stream_slots": 32,
+    "n_batch": 256,
+    "n_ctx": 4096,
+    "n_seq_max": 1,
+    "n_threads": 8,
+    "n_threads_batch": 8,
+    "n_ubatch": 32,
+    "offload_kqv": true,
+    "op_offload": false,
+    "prefix_reuse": false,
+    "swa_full": true,
+    "type_k": "f16",
+    "type_v": "f16",
+    "use_direct_io": true,
+    "use_extra_bufts": false,
+    "use_mmap": false
+  },
+  "hypothesis": "moving layers 25-28 to CUDA in native P12 reduces completed prefill/work for medium or long prompts under E18",
+  "long_specialized_precommitted": {
+    "confirmation": "three new 1522 pairs; median work gain >=8%, all positive, median prefill >=8%, median TPOT >=-5%; freeze new unit before runs",
+    "screen1522_new_pairs": [
+      [
+        "P8",
+        "P12"
+      ],
+      [
+        "P12",
+        "P8"
+      ]
+    ],
+    "screen_go": {
+      "all_pairs_nonnegative": true,
+      "median_prefill_gain_pct_min": 8,
+      "median_tpot_gain_pct_min": -5,
+      "median_work_gain_pct_min": 5
+    },
+    "trigger_if_496_general_no_go": "only when median prefill gain at 496 >=3% and at least 2 percentage points above median prefill gain at 113, with valid resources/fidelity"
+  },
+  "metric": {
+    "aggregate": "median of paired gains for each metric including prefill and TPOT; never ratio of medians",
+    "cache_condition": "fresh expert pools; page cache uncontrolled; O_DIRECT observed; not cold physical SSD",
+    "cross_profile": "descriptive mismatch/top1/top2 only; independent target routing",
+    "gain_formula": "g_i(X)=100*(X_P8,i-X_P12,i)/X_P8,i, denominator positive",
+    "output_exclusion": "load/init excluded from primary, exported logits after clock",
+    "primary": "T_work=prefill_completion+sum(32 teacher-forced step completions)",
+    "secondary": [
+      "prefill_completion_s",
+      "TPOT aggregate and each step",
+      "model_load_s",
+      "context_init_s",
+      "cold_end_to_end_s"
+    ],
+    "within_profile": "all 33 full logits rows bitwise across fresh processes; selected five checkpoints required"
+  },
+  "model_sha256": "582bd40f6886200101f4c4ed9f25f3fe80cc14c86e9e2b37746cd8904a0c622d",
+  "model_stat": {
+    "ctime_ns": 1790389637807910988,
+    "dev": 53,
+    "inode": 14833675,
+    "mtime_ns": 1790389637795911032,
+    "size_bytes": 63387346208
+  },
+  "numeric_ids_sha256": "8fb3aff447febaeaa5a8bdd0c485fd20d51d39fb6ac3e6ba4849eb4a664dbc23",
+  "numerical_prerequisites": {
+    "p12_boundary_sha256": "59159f5346f6ba6d7c18fa19d89a769c42435d52b312a706c3bfa128c0190061",
+    "p12_reference_complete_sha256": "45a5232fbde130ce729e1772583318ebacc1192bbf7899086e6e7fd5874d258b",
+    "p8_bridge_sha256": "cd4e23e3a6ca03b1bf499d7f538699d1f678bbe1d3c5f01067d35f9bc9afa669"
+  },
+  "publication": "local only; no service change",
+  "resource": {
+    "cool_start_cpu_max_c": 75,
+    "cool_start_gpu_max_c": 60,
+    "cool_start_nvme_max_c": 60,
+    "cool_start_timeout_s": 120,
+    "cpu_max_c": 95,
+    "gpu_max_c": 80,
+    "max_cgroup_gib": 16.5,
+    "max_gpu_total_mib": 6500,
+    "max_rss_gib": 16,
+    "medium_timeout_s": 600,
+    "mem_available_min_gib": 6,
+    "nvme_max_c": 70,
+    "scope_memory_max_bytes": 19327352832,
+    "scope_swap_max_bytes": 0,
+    "settle_after_arm_s": 10,
+    "short_timeout_s": 300
+  },
+  "runner_sha256": "dc107620855081698b0d7dbbca46f378a67a9337965b6afdc2c6a00cc447488d",
+  "schema": "c7c-p8-p12-timing-protocol-v1",
+  "screen113": {
+    "case": "latency-short",
+    "negative_result": "SHORT_NEUTRAL or SHORT_REGRESSION, proceed to 496 if fidelity/resources pass",
+    "prompt_ids": 113,
+    "run_order": [
+      [
+        "P8",
+        "P12"
+      ],
+      [
+        "P12",
+        "P8"
+      ]
+    ],
+    "signal_favorable": {
+      "each_work_gain_pct_min": -3,
+      "median_prefill_gain_pct_min": -5,
+      "median_tpot_gain_pct_min": -5,
+      "median_work_gain_pct_min": 3
+    },
+    "teacher_forced_steps": 32
+  },
+  "screen496": {
+    "case": "latency-medium",
+    "general_go": {
+      "all_pair_work_gains_positive": true,
+      "median_prefill_gain_pct_min": -5,
+      "median_tpot_gain_pct_min": -5,
+      "median_work_gain_pct_min": 5
+    },
+    "prompt_ids": 496,
+    "run_order": [
+      [
+        "P8",
+        "P12"
+      ],
+      [
+        "P12",
+        "P8"
+      ]
+    ],
+    "teacher_forced_steps": 32
+  },
+  "source_accounting_limit": "/proc/PID/io and global NVMe block counters are accounting/diagnostic, not expert-byte physical traffic; energy unavailable",
+  "source_sha256": "cdb95c9df8dcc2b6749d787c80d419e37bfcc6eeacfbbf246cfc26e9627f070c",
+  "stop_on": "first same-profile mismatch, missing evidence, unexpected retry, nonfinite, OOM, swap or guard; preserve raw, no automatic model retry",
+  "teacher_forced_32_sha256": "5256b4d64365d2135d9bb75893b3facdb56ad706b4341617c04e0ebbaaf46ac7",
+  "timing_ids_sha256": "368c48ac1e93d68ec1746bb3d5f7e63118f35d7903c58f88dbe5c983b69190fb"
+}

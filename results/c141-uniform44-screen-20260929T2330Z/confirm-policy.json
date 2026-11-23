@@ -1,0 +1,53 @@
+{
+  "campaign_wrapper_sha256": "769e3dd3244d642e0f555d724e1f9581bc1fab7a08aaf198a4099065619b93f8",
+  "cap_bytes": 21474836480,
+  "cleanup_s": 15,
+  "deadline_utc": "2026-09-30T01:31:15+00:00",
+  "default_changed": false,
+  "family_envelope_s": 1500,
+  "gain_formula": "100*(control-candidate)/control per pair",
+  "historical_c117_effective_sha256": "408cce72942a4bcf38d69e9915b80f4ada6a3c94ad02250544b842d4820eb68a",
+  "input_sha256": "57cdc0a34842943a4abc0cad852ed2f50adb4fe183aede17f23dff1bcd0a0fed",
+  "numeric_decision_sha256": "2def01aa1f0bc6f0e34fca8a05f608a1c15d6207e60aa7e8d102669aa4ce1539",
+  "order": [
+    "c141-p1-control",
+    "c141-p1-candidate",
+    "c141-p2-candidate",
+    "c141-p2-control"
+  ],
+  "pairs": 2,
+  "primary": "warm decode_s",
+  "profiles": {
+    "candidate": {
+      "backend": "C75",
+      "slots": 44,
+      "wave": "ON"
+    },
+    "control": {
+      "backend": "C75",
+      "slots": 40,
+      "wave": "ON"
+    }
+  },
+  "protected": [
+    "warm first_final_content_s",
+    "warm prefill_s",
+    "cold decode_s",
+    "cold first_final_content_s",
+    "cold prefill_s",
+    "answer/prefix/resources/identity/inventory"
+  ],
+  "request_timeout_s": 240,
+  "schema": "c141-uniform44-policy-v1",
+  "screen_go": "median warm decode duration gain>=8%; all 2 primary gains positive; every protected median>=-5%; equal work and all gates PASS",
+  "server_timeout_s": 300,
+  "start": {
+    "inventory_per_arm_s": 60,
+    "max_gap_s": 1.5,
+    "max_launch_age_s": 3,
+    "mode": "OPERATIONAL_WARM",
+    "narrow_thermal_match": false
+  },
+  "status": "FROZEN_BEFORE_MODEL",
+  "swap_max_bytes": 0
+}

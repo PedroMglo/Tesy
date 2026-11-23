@@ -1,0 +1,53 @@
+{
+  "budget": {
+    "physical_limit_s": 57600,
+    "program_physical_after_s": 5396.793596283995
+  },
+  "claim_limits": [
+    "no per-layer C11 server placement proof",
+    "no same-profile 8K numeric reference",
+    "no paired server timing/quality claim",
+    "no 20-request/60min or exact-prefix reuse evidence"
+  ],
+  "default_changed": false,
+  "failures_preserved": [
+    "C9 P8 ub32 513-ID CPU95.125 guard FAIL",
+    "C10b P8 ub64 513-ID CPU95.125 guard FAIL",
+    "C10 no-model start-precondition blocks"
+  ],
+  "gates": {
+    "functional_12": "NOT_RUN",
+    "init": "CAPACITY_ADMITTED_INIT_ONLY",
+    "minimum_forward": "MINIMUM_FORWARD_ADMITTED_NEW_PROFILE",
+    "model_free": "PASS_70_TESTS_AND_ONE_NGL_DELTA",
+    "prefix_reuse": "NOT_RUN",
+    "same_profile_8k_numeric_reference": "NOT_RUN",
+    "server_placement_per_tensor": "NOT_VERIFIED_SERVER_LOG_LEVEL",
+    "short513": "SHORT513_RESOURCE_PASS_NUMERIC_NOT_PROMOTED",
+    "sustained_60min_20req": "NOT_RUN"
+  },
+  "interpretation": "One request completed inside E18 guards but CPU reached exactly 95 C; no thermal margin or sustained stability demonstrated. Four output tokens do not estimate sustained decode. P8 controls failed before completion, so no paired timing gain.",
+  "measurement_commit": "18400ef8f857e2909d00025968c8fd5c5c06df55",
+  "next_action": "model-free P16/slots24 tensor/capacity and cache-miss bound; if plausible, new numerical profile and bounded E18 admission before any timing",
+  "observed": {
+    "backend_decode_s": 0.883842,
+    "backend_prefill_s": 80.019864,
+    "cache_n": 0,
+    "cpu_thermal_margin_c": 0.0,
+    "maxima": {
+      "cgroup_peak_bytes": 13061337088,
+      "cpu_c": 95.0,
+      "gpu_c": 61.0,
+      "gpu_total_mib": 5746.0,
+      "nvme_c": 48.85,
+      "rss_bytes": 13284438016,
+      "swap_bytes": 0
+    },
+    "output_tokens": 4,
+    "prompt_tokens": 513,
+    "scope_elapsed_s": 85.19121951699708
+  },
+  "profile": "P12 ngl12/ub32/slots32/native preload ON original backend 8K full-SWA server E18",
+  "schema": "c11-p12-server-decision-v1",
+  "status": "CONTINUE_NEXT_HYPOTHESIS"
+}

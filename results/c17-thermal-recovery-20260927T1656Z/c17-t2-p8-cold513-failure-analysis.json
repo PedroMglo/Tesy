@@ -1,0 +1,60 @@
+{
+  "cgroup": {
+    "event_delta": {
+      "events": {
+        "max": 0,
+        "oom": 0,
+        "oom_group_kill": 0,
+        "oom_kill": 0
+      },
+      "events_local": {
+        "max": 0,
+        "oom": 0,
+        "oom_group_kill": 0,
+        "oom_kill": 0
+      }
+    },
+    "memory_max": 19327352832,
+    "memory_peak": 14949707776,
+    "swap_end": 0,
+    "swap_max": 0
+  },
+  "classification": "FAIL_THERMAL_GUARD",
+  "completed_requests": 0,
+  "cooling_condition": "changed_physical_placement (owner report)",
+  "elapsed_s": 93.15053073099989,
+  "expected_requests": 1,
+  "first_guard_exceed_elapsed_s": 87.63496141900032,
+  "first_guard_exceed_utc": "2026-09-27T17:31:07.461280+00:00",
+  "historical_order": "T2 control first",
+  "initial_temperatures_c": {
+    "cpu": 43.25,
+    "gpu": 39.0,
+    "nvme": 31.85
+  },
+  "input_token_ids_sha256": "e19cb14e4c38e8f1b153a58c1d3450ded2b402d82f5798961a1246285099d316",
+  "maxima": {
+    "cgroup_peak_bytes": 14949707776,
+    "cpu_c": 95.125,
+    "gpu_c": 59.0,
+    "gpu_total_mib": 3947.0,
+    "nvme_c": 40.85,
+    "rss_bytes": 15163801600
+  },
+  "measurement_commit": "1b48428245d2549929fdb77cf86ab1fb8a9acafc",
+  "output_complete": false,
+  "profile": "P8 ub32 preload ON",
+  "protocol": "results/c17-thermal-recovery-20260927T1656Z/protocols/c17-t2-p8-cold513.json",
+  "raw": "results/c17-thermal-recovery-20260927T1656Z/raw/c17-t2-p8-cold513.json",
+  "raw_sha256": "fb7cd82ba08f03a189168dd5b35dfe284ab23bc6fdad66b095d470c5830c6403",
+  "reasons": [],
+  "returncode": -9,
+  "run_id": "c17-t2-p8-cold513",
+  "sample_count": 83,
+  "schema": "c17-thermal-failure-analysis-v1",
+  "stop_reasons": [
+    "THERMAL_GUARD",
+    "RUN_ERROR:RemoteDisconnected:Remote end closed connection without response"
+  ],
+  "workload": "513+4"
+}

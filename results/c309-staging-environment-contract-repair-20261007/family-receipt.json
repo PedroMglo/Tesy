@@ -1,0 +1,39 @@
+{
+  "measurement_commit": "6387561a695527e71508ea9fbd23714adc40ff90",
+  "start": {
+    "utc": "2026-10-07T01:09:21.998538+00:00",
+    "monotonic_s": 111580.444121088
+  },
+  "end": {
+    "utc": "2026-10-07T01:29:17.288317+00:00",
+    "monotonic_s": 112775.73389318
+  },
+  "argv": [
+    "systemd-run",
+    "--user",
+    "--slice=tesy-post-c154.slice",
+    "--unit=tesy-c309-real-staging-cost",
+    "--collect",
+    "--pipe",
+    "--wait",
+    "--working-directory=/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc",
+    "-p",
+    "MemoryMax=21474836480",
+    "-p",
+    "MemoryHigh=21474836480",
+    "-p",
+    "MemorySwapMax=0",
+    "-p",
+    "RuntimeMaxSec=2900",
+    "-p",
+    "TimeoutStopSec=10",
+    "--",
+    "/usr/bin/python",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/tools/residency_unit_run.py",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c309-staging-environment-contract-repair-20261007",
+    "--inside"
+  ],
+  "returncode": 0,
+  "stdout": "",
+  "stderr": "Running as unit: tesy-c309-real-staging-cost.service\n          Finished with result: success\nMain processes terminated with: code=exited, status=0/SUCCESS\n               Service runtime: 19min 55.178s\n             CPU time consumed: 56min 3.597s\n                   Memory peak: 15.1G (swap: 0B)\n"
+}

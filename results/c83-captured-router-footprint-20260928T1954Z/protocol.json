@@ -1,0 +1,35 @@
+{
+  "alternative": "The four captured checkpoints alone constrain reuse tightly enough to support an L2 screen",
+  "decision_rule": "If checkpoints do not encode a continuous demand/eviction sequence, L2 benefit remains UNKNOWN and a bounded diagnostic trace is the next discriminant",
+  "default_changed": false,
+  "expected_numeric_states": 250,
+  "expert_payload_bytes": 13219200,
+  "hypothesis": "Sparse captured decode checkpoints reveal key footprint but cannot infer L2 miss savings without continuous demand and eviction trace",
+  "input_labels": [
+    "prefill0",
+    "prefill128",
+    "prefill_final",
+    "decode0",
+    "decode1",
+    "decode7",
+    "decode31"
+  ],
+  "input_stages": [
+    "ffn_moe_topk"
+  ],
+  "method": "verify selected payload SHA/shape/strides/positions; count distinct (layer,expert) keys and checkpoint overlap; no hit-rate or traffic simulation",
+  "no_model": true,
+  "objective": "Bound captured per-layer router working set and test whether available evidence can decide RAM L2 investment",
+  "parent_backend_commit": "27d2e42d8c994507ee6d71acc7c58d3eddd3f7a5",
+  "parent_boundary_summary_sha256": "2d7be1b515a0706159ee971c27f032fe1e3bd52316aad1bfa7615bd116ccf591",
+  "parent_campaign": "c76b-session-wave-boundary-20260928T1918Z",
+  "parent_index_sha256": "c5bb2d647b1e11bceca92ab0868d4e19bbc56b39dda9add326bd1bb2fbb86a64",
+  "parent_manifest_sha256": "c2e78a7af849a7c70ddb22dd46c57f0a6f7d1b21b1bed01484cdc17771176d8a",
+  "parent_measurement_commit": "9985ebf89e9dcb20f12493505c1a4ae4999d39f9",
+  "publication": "local compact only; raw parent remains local",
+  "schema": "c83-captured-router-footprint-protocol-v1",
+  "script_sha256": "0f54d55c9fa7fe7447549eaf8d83c18cf2885e97800174dac6f21e00986986f8",
+  "status": "FROZEN_BEFORE_ANALYSIS",
+  "test_command": "PYTHONDONTWRITEBYTECODE=1 PYTHONPATH=tools python3 -m unittest tools.test_c83_router_footprint",
+  "test_sha256": "c1630ba26bc099540129008ed31e03d75f24feaf8beb71588bc88f445f1cb156"
+}

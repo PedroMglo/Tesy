@@ -1,0 +1,45 @@
+{
+  "id": "c313-fit-original-scores",
+  "start": {
+    "utc": "2026-10-07T02:43:46.948288+00:00",
+    "monotonic_s": 117245.393858848
+  },
+  "end": {
+    "utc": "2026-10-07T02:43:47.174971+00:00",
+    "monotonic_s": 117245.620546728
+  },
+  "argv": [
+    "/usr/bin/python",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/tools/run_bounded.py",
+    "--run-id",
+    "c313-fit-original-scores",
+    "--model-id",
+    "model-free",
+    "--backend",
+    "stock",
+    "--backend-root",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/backends/c305-cpu-prediction-staging",
+    "--output-root",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c313-affine-fit-checkpoint-repair-20261007/raw",
+    "--variant",
+    "OriginalR0-auxiliary-affine-fit-only",
+    "--workload",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c313-affine-fit-checkpoint-repair-20261007/protocol.json",
+    "--cache-condition",
+    "Exact eight original training conversations only; fixed lambda=n, no dev/heldout statistics",
+    "--resource-protocol",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c313-affine-fit-checkpoint-repair-20261007/protocol.json",
+    "--require-telemetry",
+    "--timeout-s",
+    "90",
+    "--collect-start-inventory",
+    "--",
+    "/usr/bin/python",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/tools/expert_score_train.py",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c312-fixed-training-only-affine-fit-20261007/fit-input.json",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c313-affine-fit-checkpoint-repair-20261007/raw/weights-v1"
+  ],
+  "returncode": 1,
+  "stdout": "",
+  "stderr": "Traceback (most recent call last):\n  File \"/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/tools/run_bounded.py\", line 741, in <module>\n    sys.exit(main())\n             ~~~~^^\n  File \"/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/tools/run_bounded.py\", line 477, in main\n    start_inventory = inventory_before_spawn(out.parent,a.run_id,resource_protocol)\n  File \"/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/tools/run_bounded.py\", line 292, in inventory_before_spawn\n    raise RuntimeError('opt-in frozen inventory contract invalid')\nRuntimeError: opt-in frozen inventory contract invalid\n"
+}

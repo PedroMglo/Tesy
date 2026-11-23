@@ -1,87 +1,36 @@
 # Tesy
 
-Tesy is an experimental local-inference project for **sparse/Mixture-of-Experts (MoE) language models on severely memory-constrained PCs**.
+Inferência local de modelos Mixture-of-Experts maiores do que a VRAM e a RAM disponíveis. O caso de referência é uma conversa com o GPT-OSS-120B MXFP4 num Ryzen AI 9 HX 370, RTX 4060 Laptop de 8 GiB, 32 GiB de RAM e NVMe. O target conserva routing, top-k, experts, quantização, contexto e confirmação de tokens.
 
-The long-term question is not "how many parameters can be advertised as loaded?". It is:
+**Estado do 120B.** R0 `slots40-persistent` é o controlo operacional opt-in. M3 está parcial e M4 continua por atingir. O objetivo nominal é chegar ao primeiro conteúdo final em até 10 s e sustentar pelo menos 6 tok/s de decode. A última decisão experimental está em C320. C321 regista a publicação e o ponto de retoma. A reorganização de novembro reuniu o laboratório, a fundação, a tese e os relatórios científicos na `main`. [Fecho C320](research/C320-EXACT-EXPERT-SERVICE-ARCHITECTURAL-CLOSURE-20261007.md) · [Receita R0 e limites](research/C281-PERSISTENT-R0-RESTORATION-RESULT-20261005.md)
 
-> How much useful exact model capacity can be made conversational under fixed VRAM, RAM, storage-bandwidth and latency budgets?
+## Retomar o trabalho
 
-## Decisão de arquitetura após C320 · 23 de novembro de 2026
+1. Ler a [segunda reanálise e decisões de integração](research/consolidacao-20261123/README.md) e a [decisão de arquitetura](docs/architecture/0004-servico-exato-de-experts.md).
+2. Reproduzir os cálculos sobre os recibos compactos da `main` com `python3 research/post-c320/analyse.py`. O passo seguinte, medir ocupação dos workers, requer os oito journals C317 identificados pelo comando.
+3. Usar o [prompt de continuação para o Codex](research/consolidacao-20261123/PROMPT-CODEX.md) para o trabalho no portátil. Os [comparadores e a literatura](research/post-c320/literatura.md) fixam a fronteira dos claims.
 
-O laboratório publicou inferência GPT-OSS-120B acima da RAM no portátil. O controlo operacional é R0 `slots40-persistent`, com M3 parcial e M4 por atingir. A investigação seguinte avalia o custo de manter um worker bloqueado durante uma leitura e a possibilidade de reutilizar os mesmos experts entre tiles de prefill preservando o plano numérico. A decisão de implementar cada mecanismo depende de demonstrar margem no pedido completo. O Ollama intervém na comparação de experiência final.
+## Onde trabalhar
 
-[Reanálise e primeiro comando reproduzível](research/post-c320/README.md) · [Decisão de arquitetura e gates da equipa](docs/architecture/0004-servico-exato-de-experts.md) · [Literatura e comparadores](research/post-c320/literatura.md) · [Mapa das 44 branches](research/post-c320/repositorio.md)
+| Área | Conteúdo |
+|---|---|
+| [tools](tools), [patches](patches), [workloads](workloads) | Runtime experimental, launcher, clientes, receitas e avaliadores do laboratório. Os binários e os pesos físicos têm proveniência própria. |
+| [research](research), [results](results) | Protocolos, fechos e evidência compacta por campanha. Os FAILs e as qualificações parciais conservam o âmbito original. |
+| [src/tesy](src/tesy), [native](native), [scripts](scripts), [tests](tests) | CLI de fundação, simuladores, tracer, operadores e testes sem modelo. [Estado de implementação](IMPLEMENTATION_STATUS.md) |
+| [Documentação científica](docs/research-reports/README.md), [tese](docs/thesis/first-meeting-20261017/README.md) | Relatórios LaTeX, locks da evidência, política de publicação e materiais de apresentação. |
+| [Modelos e locks](MODELOS_A_INSTALAR.md) | Identidade e função de cada artefacto. |
+| [Inventário de branches original](research/consolidacao-20261123/branches.json) | Nomes e commits recuperáveis a partir da história da `main`. |
 
-## Scientific position
+## Ambiente de desenvolvimento
 
-Existing work already covers expert offload, CPU/GPU expert scheduling, activation-aware caching, prefetching, speculative decoding with MoE, expert-union-aware speculation, and multi-tier residency mechanisms. Tesy therefore does **not** claim those ideas as novel.
+A partir da raiz do repositório, num ambiente Python 3.11 ou posterior:
 
-The second-pass prior-art decision is:
-
-```text
-BROAD_NOVELTY_NO_GO / ENGINEERING_AND_MEASUREMENT_GO
-```
-
-Tesy now first measures what actually works on the 8 GiB VRAM / 32 GiB RAM reference laptop. A narrower scientific contribution is allowed to emerge only from a measured gap that survives comparison with strong existing baselines.
-
-Novelty status: **NOT ESTABLISHED**.
-
-## Reference hardware
-
-Target host (must be re-verified before measurement):
-
-- AMD Ryzen AI 9 HX 370, 12C/24T
-- NVIDIA RTX 4060 Laptop, 8 GiB VRAM
-- 32 GiB RAM
-- NVMe
-- Linux
-
-## Foundation implementation on main
-
-The first development slice provides:
-
-- an adversarial research/novelty charter;
-- a backend decision record;
-- a strict machine-readable model candidate/lock file;
-- host inspection and static planning utilities;
-- a normalized MoE routing-trace schema;
-- a deterministic two-tier RAM/VRAM LRU simulator with NVMe backing;
-- count-space LRU plus an offline Belady lower bound;
-- speculative-window expert-union analysis;
-- a native passive llama.cpp MoE top-k tracer;
-- paired trace OFF/ON token-equality tooling;
-- fail-closed GGUF expert encoded-payload inventory;
-- byte-weighted trace simulation;
-- reference-host identity checks and a no-replace bring-up runner;
-- model verification helpers;
-- synthetic unit tests and CI;
-- a concrete model installation guide.
-
-It **does not yet** provide a Tesy-optimized expert-residency runtime, causal prefetch policy, speculative decoder, >RAM production path, or real-model performance result. vLLM and KTransformers are comparators/reference backends, not assumed winners.
-
-## Install for development
-
-```bash
+```sh
 python3 -m venv .venv
-source .venv/bin/activate
-python -m pip install -U pip
+. .venv/bin/activate
 python -m pip install -e '.[dev]'
-```
-
-Then:
-
-```bash
-tesy doctor
-tesy models list
-tesy trace summarize path/to/routing.jsonl --windows 1,2,4,8
-tesy simulate --trace path/to/routing.jsonl --ram-cache-gib 16 --vram-cache-gib 4
 pytest -q
+tesy --help
 ```
 
-See `MODELOS_A_INSTALAR.md` before downloading any model.
-
-## Claim policy
-
-A simulator result is SIMULATED. A source-derived capacity calculation is ESTIMATED. A model run is only MEASURED when the exact host, model, binary, command and outputs were actually observed.
-
-Negative results are retained. The project will pivot rather than weaken a gate after seeing a result.
+O estado científico continua `BROAD_NOVELTY_NO_GO / ENGINEERING_AND_MEASUREMENT_GO`. Uma contribuição estreita exige um efeito causal replicado ou um limite explicativo que sobreviva a comparadores fortes. O Ollama serve de comparação de experiência de utilização. [Reanálise e limites da evidência](research/post-c320/README.md)

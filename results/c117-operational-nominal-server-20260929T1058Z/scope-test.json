@@ -1,0 +1,63 @@
+{
+  "argv": [
+    "systemd-run",
+    "--user",
+    "--scope",
+    "-p",
+    "MemoryMax=19327352832",
+    "-p",
+    "MemorySwapMax=0",
+    "--",
+    "python3",
+    "-c",
+    "import sys,json;sys.path.insert(0,\"tools\");from c2_server_run import cgroup_state;print(json.dumps(cgroup_state(),sort_keys=True))"
+  ],
+  "cgroup": {
+    "events": {
+      "high": 0,
+      "low": 0,
+      "max": 0,
+      "oom": 0,
+      "oom_group_kill": 0,
+      "oom_kill": 0,
+      "sock_throttled": 0
+    },
+    "events_local": {
+      "high": 0,
+      "low": 0,
+      "max": 0,
+      "oom": 0,
+      "oom_group_kill": 0,
+      "oom_kill": 0,
+      "sock_throttled": 0
+    },
+    "memory_current": 12734464,
+    "memory_max": 19327352832,
+    "memory_peak": 12734464,
+    "memory_stat": {
+      "anon": 11956224,
+      "file": 0,
+      "file_mapped": 0,
+      "kernel": 192512,
+      "shmem": 0
+    },
+    "path": "/user.slice/user-1000.slice/user@1000.service/app.slice/run-p1077560-i1096263.scope",
+    "pressure": {
+      "full": {
+        "avg10": 0.0,
+        "avg300": 0.0,
+        "avg60": 0.0,
+        "total": 0
+      },
+      "some": {
+        "avg10": 0.0,
+        "avg300": 0.0,
+        "avg60": 0.0,
+        "total": 0
+      }
+    },
+    "swap_current": 0,
+    "swap_max": 0
+  },
+  "status": "PASS_MODEL_FREE"
+}

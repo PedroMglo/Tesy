@@ -1,0 +1,101 @@
+{
+  "status": "GO_LAYOUT_INTEGRATION_INVESTMENT",
+  "tiers": {
+    "CPU": {
+      "pairs": [
+        {
+          "arms": [
+            "c289-1-a",
+            "c289-2-b"
+          ],
+          "reference_s": 1.183357675,
+          "candidate_s": 0.886070741,
+          "gain_percent": 25.122322716164412
+        },
+        {
+          "arms": [
+            "c289-4-a",
+            "c289-3-b"
+          ],
+          "reference_s": 1.201083123,
+          "candidate_s": 0.822815681,
+          "gain_percent": 31.493860396205072
+        }
+      ],
+      "median_paired_gain_percent": 28.308091556184742,
+      "service_15_percent_gate": true
+    },
+    "GPU": {
+      "pairs": [
+        {
+          "arms": [
+            "c289-1-a",
+            "c289-2-b"
+          ],
+          "reference_s": 1.179036879,
+          "candidate_s": 0.985595447,
+          "gain_percent": 16.40673293986083
+        },
+        {
+          "arms": [
+            "c289-4-a",
+            "c289-3-b"
+          ],
+          "reference_s": 1.200953288,
+          "candidate_s": 0.898255895,
+          "gain_percent": 25.20475992068727
+        }
+      ],
+      "median_paired_gain_percent": 20.80574643027405,
+      "service_15_percent_gate": true
+    }
+  },
+  "combined_serial_service": {
+    "pairs": [
+      {
+        "arms": [
+          "c289-1-a",
+          "c289-2-b"
+        ],
+        "reference_s": 2.362394554,
+        "candidate_s": 1.871666188,
+        "gain_percent": 20.77249819125684
+      },
+      {
+        "arms": [
+          "c289-4-a",
+          "c289-3-b"
+        ],
+        "reference_s": 2.402036411,
+        "candidate_s": 1.721071576,
+        "gain_percent": 28.34948012784308
+      }
+    ],
+    "median_paired_gain_percent": 24.560989159549962,
+    "15_percent_gate": true
+  },
+  "critical_projection": {
+    "nominal153": {
+      "estimated_service_gain_percent": 26.05798122064583,
+      "optimistic_decode_projection_percent": 21.07598309051508,
+      "tier_sensitivity_percent": {
+        "CPU": 22.895897188313178,
+        "GPU": 16.827917567250914
+      }
+    },
+    "code153": {
+      "estimated_service_gain_percent": 26.511285770125482,
+      "optimistic_decode_projection_percent": 22.24807430662393,
+      "tier_sensitivity_percent": {
+        "CPU": 23.755940390126565,
+        "GPU": 17.460028027275936
+      }
+    }
+  },
+  "projection_class": "ESTIMADO_CONDITIONED_SCENARIO; observed normal callback wait scaled by logical load mix/service, one prefill output-row wait included, no compute contention/wake-tail attribution. Not formal bound or target speedup",
+  "scope": "64 expert lossless sample, four persistent workers, native CPU/CUDA bytes-ready destination; no Transformer compute",
+  "engineering_estimate_h": 8,
+  "inference_speedup": "NOT_RUN",
+  "full_pack": "ADMITTED_ONLY_IF_GO_AND_LIVE_STORAGE",
+  "next": "One isolated integrated canary required to resolve critical projection and contention before performance claims"
+}

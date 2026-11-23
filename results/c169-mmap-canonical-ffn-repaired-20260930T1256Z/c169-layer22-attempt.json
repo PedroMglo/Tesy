@@ -1,0 +1,46 @@
+{
+  "id": "c169-layer22",
+  "start": {
+    "utc": "2026-09-30T12:58:18.770770+00:00",
+    "monotonic_s": 267478.244011633
+  },
+  "end": {
+    "utc": "2026-09-30T12:58:21.043380+00:00",
+    "monotonic_s": 267480.516613385
+  },
+  "argv": [
+    "/usr/bin/python3",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/tools/run_bounded.py",
+    "--run-id",
+    "c169-layer22",
+    "--model-id",
+    "gpt-oss-120b-mxfp4-gguf",
+    "--backend",
+    "stock",
+    "--backend-root",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/backends/c165-mmap-diagnostic",
+    "--output-root",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c169-mmap-canonical-ffn-repaired-20260930T1256Z/raw",
+    "--variant",
+    "nativeCPU-MoE-canonical-resident-layer",
+    "--workload",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c169-mmap-canonical-ffn-repaired-20260930T1256Z/protocol.json",
+    "--cache-condition",
+    "canonical-reference-not-performance",
+    "--resource-protocol",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c169-mmap-canonical-ffn-repaired-20260930T1256Z/protocol.json",
+    "--require-telemetry",
+    "--timeout-s",
+    "10",
+    "--",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c168-reference-lifetime-model-free-20260930T1300Z/build/mmap_phase_reference",
+    "/home/pmglo/models/gpt-oss-120b-gguf/gpt-oss-120b-MXFP4.gguf",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c166-mmap-phase-diagnostic-20260930T1230Z/raw/verify.capture",
+    "22",
+    "--ngl",
+    "12"
+  ],
+  "returncode": 0,
+  "stdout": "{\"run_id\": \"c169-layer22\", \"elapsed_s\": 2.006, \"returncode\": 0, \"stop_reason\": null, \"maxima\": {\"rss_bytes\": 2067853312, \"swap_bytes\": 0, \"cgroup_memory_bytes\": 19841581056, \"cgroup_peak_bytes\": 19887841280, \"cgroup_file_bytes\": 17461288960, \"gpu_used_mib\": 15.0, \"gpu_temperature_c\": 46.0, \"cpu_tctl_c\": 60.25, \"nvme_composite_c\": 38.85, \"direct_model_fds\": 0, \"buffered_model_fds\": 1}}\n",
+  "stderr": ""
+}

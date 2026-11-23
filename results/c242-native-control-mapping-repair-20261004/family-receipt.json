@@ -1,0 +1,39 @@
+{
+  "measurement_commit": "b3587bea462a919d5705185159039198afc9152b",
+  "start": {
+    "utc": "2026-10-04T12:16:56.287188+00:00",
+    "monotonic_s": 5939.747677574
+  },
+  "end": {
+    "utc": "2026-10-04T12:24:19.987871+00:00",
+    "monotonic_s": 6383.448356061
+  },
+  "argv": [
+    "systemd-run",
+    "--user",
+    "--slice=tesy-post-c154.slice",
+    "--unit=tesy-c242-native-control",
+    "--collect",
+    "--pipe",
+    "--wait",
+    "--working-directory=/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc",
+    "-p",
+    "MemoryMax=17985175552",
+    "-p",
+    "MemoryHigh=17985175552",
+    "-p",
+    "MemorySwapMax=0",
+    "-p",
+    "RuntimeMaxSec=1080",
+    "-p",
+    "TimeoutStopSec=10",
+    "--",
+    "/usr/bin/python3",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/tools/residency_unit_run.py",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c242-native-control-mapping-repair-20261004",
+    "--inside"
+  ],
+  "returncode": 0,
+  "stdout": "",
+  "stderr": "Running as unit: tesy-c242-native-control.service\n          Finished with result: success\nMain processes terminated with: code=exited, status=0/SUCCESS\n               Service runtime: 7min 23.464s\n             CPU time consumed: 22min 4.413s\n                   Memory peak: 14.6G (swap: 0B)\n"
+}

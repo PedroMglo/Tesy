@@ -1,0 +1,67 @@
+{
+  "classification": "MEDIDO_NO_TARGET_FROM_EXISTING_DIAGNOSTIC_RAW + SOURCE_AUDITED",
+  "cases": [
+    {
+      "source": "results/c307-staging-observer-production-boundary-20261007/raw/c307-code153-2-trace.native",
+      "source_stage_sha256": "b19564baefd48128d0b2e6de38f8abf590dcc184ce8ef406a6d60c0978c71b54",
+      "source_events_sha256": "1582dc6c423e4123efaf222aa6ea8dafcb1f9d26aea0f7b535d6046fe0d02c1f",
+      "true_primary_staged": 574,
+      "completed_stage_reads": 1053,
+      "unused_completed": 479,
+      "unused_logical_weight_bytes": 6331996800,
+      "attached_before_ready": 245,
+      "blocked_primary_worker_aggregate_s": 1.889461,
+      "blocked_primary_worker_union_s": 1.818995,
+      "blocked_and_primary_queue_union_s": 0.593781,
+      "unused_read_aggregate_worker_s": 9.162678,
+      "scope": "Observed tracedworker occupancy/queuedprimaryrequests; concurrentthread-time not additivewall/criticalgain. Logical3MXFP4payloadbytes notphysicalNVMe. False readcontinuesnonpreemptibly; no proof ofuniversalbandwidthceiling."
+    },
+    {
+      "source": "results/c307-staging-observer-production-boundary-20261007/raw/c307-code153-3-trace.native",
+      "source_stage_sha256": "c9f03e890d859d5fa00a782421b913d900db67e21c2d2325c36de794aadff9d0",
+      "source_events_sha256": "db3385f5780e0b24a91b058b99961703a80b72f6d25ae8b1099183ebfaf179d2",
+      "true_primary_staged": 574,
+      "completed_stage_reads": 1053,
+      "unused_completed": 479,
+      "unused_logical_weight_bytes": 6331996800,
+      "attached_before_ready": 263,
+      "blocked_primary_worker_aggregate_s": 1.881477,
+      "blocked_primary_worker_union_s": 1.823822,
+      "blocked_and_primary_queue_union_s": 0.633316,
+      "unused_read_aggregate_worker_s": 9.069116,
+      "scope": "Observed tracedworker occupancy/queuedprimaryrequests; concurrentthread-time not additivewall/criticalgain. Logical3MXFP4payloadbytes notphysicalNVMe. False readcontinuesnonpreemptibly; no proof ofuniversalbandwidthceiling."
+    },
+    {
+      "source": "results/c307-staging-observer-production-boundary-20261007/raw/c307-nominal153-2-trace.native",
+      "source_stage_sha256": "965b7842a41e11802e205cc0ba10df3889ad73f7443a221b0b9c07682dcc9749",
+      "source_events_sha256": "7cce2fd83f59f036877600c019ebe1c93d94960807c659164a55ab971ec304ea",
+      "true_primary_staged": 454,
+      "completed_stage_reads": 832,
+      "unused_completed": 378,
+      "unused_logical_weight_bytes": 4996857600,
+      "attached_before_ready": 222,
+      "blocked_primary_worker_aggregate_s": 1.655531,
+      "blocked_primary_worker_union_s": 1.601411,
+      "blocked_and_primary_queue_union_s": 0.515236,
+      "unused_read_aggregate_worker_s": 6.844199,
+      "scope": "Observed tracedworker occupancy/queuedprimaryrequests; concurrentthread-time not additivewall/criticalgain. Logical3MXFP4payloadbytes notphysicalNVMe. False readcontinuesnonpreemptibly; no proof ofuniversalbandwidthceiling."
+    },
+    {
+      "source": "results/c307-staging-observer-production-boundary-20261007/raw/c307-nominal153-3-trace.native",
+      "source_stage_sha256": "d477f4cf7e792c6340482fca2337b87b2dea21d7b2825cc00d13aa216cde07ea",
+      "source_events_sha256": "fd0a2ca72e3e5a21def35b4341737f562aa9b24ffced30e8a6fce2de87e87b17",
+      "true_primary_staged": 452,
+      "completed_stage_reads": 830,
+      "unused_completed": 378,
+      "unused_logical_weight_bytes": 4996857600,
+      "attached_before_ready": 218,
+      "blocked_primary_worker_aggregate_s": 1.636509,
+      "blocked_primary_worker_union_s": 1.593177,
+      "blocked_and_primary_queue_union_s": 0.499738,
+      "unused_read_aggregate_worker_s": 6.891769,
+      "scope": "Observed tracedworker occupancy/queuedprimaryrequests; concurrentthread-time not additivewall/criticalgain. Logical3MXFP4payloadbytes notphysicalNVMe. False readcontinuesnonpreemptibly; no proof ofuniversalbandwidthceiling."
+    }
+  ],
+  "source_boundary": "C305nativeworker.cpp actualtrueworker claimsprimaryslot andcv_donewaits whileanotherproducerisREADING. This occupiesasecondworker; trueq_demandpriority appliesto dequeue, cannotpreemptfalseIO. C307 tracequalifiesselectedoverhead but theseintervals remaindiagnostic.",
+  "causal_limits": "Neither aggregatewait nor false-readsum is directly removablecriticalwall. Readstillmustcompleteandprimarybytescopied. Therearequeuedoverlaps, but changingconcurrency/earlyreadtimings hasnotbeenmeasured. CompleteC309original-vs-stage familybeforechoosingatmostone materialC revision. No currentproductgainclaim."
+}

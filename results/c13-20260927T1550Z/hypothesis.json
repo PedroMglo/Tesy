@@ -1,0 +1,12 @@
+{
+  "alternative": "CPU thermal guard may stop either request; server may decline prefix reuse despite identical token prefix/positions/options, or reported cache_n may need an independent full-logit validity check",
+  "hypothesis": "with P12, the first 513-ID request completes and second 641-ID request reuses >=450 of ~510 common prefix IDs, reducing processed prompt tokens",
+  "input": "same synthetic alpha*445 plus beta*128 messages as C9; official tokenizer must produce first480-540, second600-700 and common>=450 IDs; output cap4 each, medium effort, greedy/seed42",
+  "next_if_observed": "same-profile full-logit fresh-process/cold-full vs prefix-resumed numeric gate, then paired timing and longer-prefix service tests",
+  "objective": "observe whether the mature original backend reuses an exact token prefix in a two-request P12 8K server session while staying under E18 guards",
+  "profile": "P12 ngl12/ub32/slots32/native preload ON, 8K full SWA original backend E18; same as C11",
+  "schema": "c13-p12-prefix-hypothesis-v1",
+  "scope": "single ON arm only, mechanism/resource observation, no OFF timing pair or numerical promotion",
+  "source_evidence": "C9 source exposes cache_prompt/cache_n and official embedded tokenizer; C9 P8 first513 thermal FAIL prevented second request. C11 P12 first513 completed but CPU reached exactly95 C.",
+  "stop": "any guard/evidence failure ends C13; no automatic replay"
+}

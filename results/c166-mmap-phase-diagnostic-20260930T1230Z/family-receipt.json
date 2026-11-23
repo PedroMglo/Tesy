@@ -1,0 +1,39 @@
+{
+  "measurement_commit": "8a257405ad9ebd20dd8fdbf3e49e709105d9ab82",
+  "start": {
+    "utc": "2026-09-30T12:34:19.446116+00:00",
+    "monotonic_s": 266038.919347445
+  },
+  "end": {
+    "utc": "2026-09-30T12:42:13.400425+00:00",
+    "monotonic_s": 266512.873652312
+  },
+  "argv": [
+    "systemd-run",
+    "--user",
+    "--slice=tesy-post-c154.slice",
+    "--unit=c166-mmap-phase-diagnostic",
+    "--collect",
+    "--pipe",
+    "--wait",
+    "--working-directory=/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc",
+    "-p",
+    "MemoryMax=21474836480",
+    "-p",
+    "MemoryHigh=20937965568",
+    "-p",
+    "MemorySwapMax=0",
+    "-p",
+    "RuntimeMaxSec=1050",
+    "-p",
+    "TimeoutStopSec=10",
+    "--",
+    "/usr/bin/python3",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/tools/residency_unit_run.py",
+    "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c166-mmap-phase-diagnostic-20260930T1230Z",
+    "--inside"
+  ],
+  "returncode": 0,
+  "stdout": "",
+  "stderr": "Running as unit: c166-mmap-phase-diagnostic.service\n          Finished with result: success\nMain processes terminated with: code=exited, status=0/SUCCESS\n               Service runtime: 7min 53.761s\n             CPU time consumed: 6min 35.909s\n                   Memory peak: 19.5G (swap: 0B)\n"
+}

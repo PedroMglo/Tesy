@@ -1,0 +1,307 @@
+{
+  "c105_manifest_sha256": "ffb54d0329d37ff67c17e43eb0181f445f015d89f2fd4500ede54797ecb7a5a0",
+  "c107_coverage": [
+    {
+      "absent": 1191,
+      "covered": 0,
+      "horizon": 1
+    },
+    {
+      "absent": 1140,
+      "covered": 0,
+      "horizon": 2
+    },
+    {
+      "absent": 982,
+      "covered": 0,
+      "horizon": 4
+    },
+    {
+      "absent": 724,
+      "covered": 2,
+      "horizon": 8
+    }
+  ],
+  "c107_historical_status": "NO_GO_RECENT_HISTORY_PREFETCH_ON_C105_DECODE",
+  "corrections": [
+    "state=1 is LOADING/in-flight; state=2 is RESIDENT",
+    "four layer-35 n_tokens=1 DEMAND events belong to final prefill",
+    "phase boundary is verified by 32 ordered decode passes",
+    "destination follows C105 loader header, not layer>=25 in generic code",
+    "LOAD_END now needs its matching LOAD_BEGIN; C107 verdict is trace-bound"
+  ],
+  "evidence_class": "REPRODUZIDO_MODEL_FREE_FROM_MEASURED_TRACE",
+  "first_decode_event_seq": 30730,
+  "global_state0_and_savings_unchanged": true,
+  "historical_c106_sha256": "89da7b7507161b8a84c0b9bc6fa20a818069f6df992b4c42d1404bcc54560c62",
+  "historical_c107_sha256": "3e1f41be0c1b8d247a203abd4c97c6f51ee2dcf01edd3022611032b4d23c8281",
+  "limits": [
+    "trace only 189+32, not warm nominal128/153 session",
+    "LOAD spans include read and tensor_set; WAIT spans omit other blocking",
+    "fixed routed stream cannot measure cache feedback or equal-memory pool alternative",
+    "no new model inference or performance promotion"
+  ],
+  "placement": {
+    "0": "CPU",
+    "1": "CPU",
+    "2": "CPU",
+    "3": "CPU",
+    "4": "CPU",
+    "5": "CPU",
+    "6": "CPU",
+    "7": "CPU",
+    "8": "CPU",
+    "9": "CPU",
+    "10": "CPU",
+    "11": "CPU",
+    "12": "CPU",
+    "13": "CPU",
+    "14": "CPU",
+    "15": "CPU",
+    "16": "CPU",
+    "17": "CPU",
+    "18": "CPU",
+    "19": "CPU",
+    "20": "CPU",
+    "21": "CPU",
+    "22": "CPU",
+    "23": "CPU",
+    "24": "CPU",
+    "25": "GPU",
+    "26": "GPU",
+    "27": "GPU",
+    "28": "GPU",
+    "29": "GPU",
+    "30": "GPU",
+    "31": "GPU",
+    "32": "GPU",
+    "33": "GPU",
+    "34": "GPU",
+    "35": "GPU"
+  },
+  "scenarios": [
+    {
+      "budget_bytes": 1073741824,
+      "misses": 2500,
+      "mode": "on_load_lru",
+      "phase_destination": {
+        "decode:CPU": {
+          "hits_primary": 2223,
+          "inflight_primary": 0,
+          "misses": 977,
+          "saved": 0
+        },
+        "decode:GPU": {
+          "hits_primary": 1124,
+          "inflight_primary": 0,
+          "misses": 284,
+          "saved": 0
+        },
+        "prefill:CPU": {
+          "hits_primary": 2951,
+          "inflight_primary": 2151,
+          "misses": 881,
+          "saved": 0
+        },
+        "prefill:GPU": {
+          "hits_primary": 1010,
+          "inflight_primary": 796,
+          "misses": 358,
+          "saved": 0
+        }
+      },
+      "saved": 0,
+      "saved_fraction": 0.0
+    },
+    {
+      "budget_bytes": 1073741824,
+      "misses": 2500,
+      "mode": "on_evict_lru",
+      "phase_destination": {
+        "decode:CPU": {
+          "hits_primary": 2223,
+          "inflight_primary": 0,
+          "misses": 977,
+          "saved": 54
+        },
+        "decode:GPU": {
+          "hits_primary": 1124,
+          "inflight_primary": 0,
+          "misses": 284,
+          "saved": 3
+        },
+        "prefill:CPU": {
+          "hits_primary": 2951,
+          "inflight_primary": 2151,
+          "misses": 881,
+          "saved": 117
+        },
+        "prefill:GPU": {
+          "hits_primary": 1010,
+          "inflight_primary": 796,
+          "misses": 358,
+          "saved": 47
+        }
+      },
+      "saved": 221,
+      "saved_fraction": 0.0884
+    },
+    {
+      "budget_bytes": 2147483648,
+      "misses": 2500,
+      "mode": "on_load_lru",
+      "phase_destination": {
+        "decode:CPU": {
+          "hits_primary": 2223,
+          "inflight_primary": 0,
+          "misses": 977,
+          "saved": 1
+        },
+        "decode:GPU": {
+          "hits_primary": 1124,
+          "inflight_primary": 0,
+          "misses": 284,
+          "saved": 0
+        },
+        "prefill:CPU": {
+          "hits_primary": 2951,
+          "inflight_primary": 2151,
+          "misses": 881,
+          "saved": 0
+        },
+        "prefill:GPU": {
+          "hits_primary": 1010,
+          "inflight_primary": 796,
+          "misses": 358,
+          "saved": 0
+        }
+      },
+      "saved": 1,
+      "saved_fraction": 0.0004
+    },
+    {
+      "budget_bytes": 2147483648,
+      "misses": 2500,
+      "mode": "on_evict_lru",
+      "phase_destination": {
+        "decode:CPU": {
+          "hits_primary": 2223,
+          "inflight_primary": 0,
+          "misses": 977,
+          "saved": 117
+        },
+        "decode:GPU": {
+          "hits_primary": 1124,
+          "inflight_primary": 0,
+          "misses": 284,
+          "saved": 4
+        },
+        "prefill:CPU": {
+          "hits_primary": 2951,
+          "inflight_primary": 2151,
+          "misses": 881,
+          "saved": 117
+        },
+        "prefill:GPU": {
+          "hits_primary": 1010,
+          "inflight_primary": 796,
+          "misses": 358,
+          "saved": 47
+        }
+      },
+      "saved": 285,
+      "saved_fraction": 0.114
+    },
+    {
+      "budget_bytes": 3221225472,
+      "misses": 2500,
+      "mode": "on_load_lru",
+      "phase_destination": {
+        "decode:CPU": {
+          "hits_primary": 2223,
+          "inflight_primary": 0,
+          "misses": 977,
+          "saved": 2
+        },
+        "decode:GPU": {
+          "hits_primary": 1124,
+          "inflight_primary": 0,
+          "misses": 284,
+          "saved": 0
+        },
+        "prefill:CPU": {
+          "hits_primary": 2951,
+          "inflight_primary": 2151,
+          "misses": 881,
+          "saved": 0
+        },
+        "prefill:GPU": {
+          "hits_primary": 1010,
+          "inflight_primary": 796,
+          "misses": 358,
+          "saved": 0
+        }
+      },
+      "saved": 2,
+      "saved_fraction": 0.0008
+    },
+    {
+      "budget_bytes": 3221225472,
+      "misses": 2500,
+      "mode": "on_evict_lru",
+      "phase_destination": {
+        "decode:CPU": {
+          "hits_primary": 2223,
+          "inflight_primary": 0,
+          "misses": 977,
+          "saved": 161
+        },
+        "decode:GPU": {
+          "hits_primary": 1124,
+          "inflight_primary": 0,
+          "misses": 284,
+          "saved": 9
+        },
+        "prefill:CPU": {
+          "hits_primary": 2951,
+          "inflight_primary": 2151,
+          "misses": 881,
+          "saved": 117
+        },
+        "prefill:GPU": {
+          "hits_primary": 1010,
+          "inflight_primary": 796,
+          "misses": 358,
+          "saved": 47
+        }
+      },
+      "saved": 334,
+      "saved_fraction": 0.1336
+    }
+  ],
+  "schema": "c108-trace-errata-v1",
+  "single_token_prefill_demand_count": 4,
+  "status": "REANALYSIS_VALIDATED_FIXED_TRACE",
+  "trace_sha256": "bb3ae9352749283f76ce12b65ea76801916396f87849d609169215fefdf4e40d",
+  "trace_validation": {
+    "demand_events": 12755,
+    "events": 41842,
+    "layer_count": 36,
+    "load_pairs": 6005,
+    "schema": "c84-trace-validation-v1",
+    "status": "PASS",
+    "wait_pairs": 1357
+  },
+  "waits_diagnostic_not_total_removable": {
+    "decode": {
+      "sum_s": 8.628409,
+      "union_s": 8.628409,
+      "wait_intervals": 744
+    },
+    "prefill": {
+      "sum_s": 25.815006,
+      "union_s": 25.815006,
+      "wait_intervals": 613
+    }
+  }
+}

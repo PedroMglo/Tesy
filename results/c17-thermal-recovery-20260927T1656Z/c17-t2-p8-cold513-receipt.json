@@ -1,0 +1,73 @@
+{
+  "arm": "P8",
+  "completed_requests": 0,
+  "default_changed": false,
+  "idle": {
+    "baseline": {
+      "cpu_c": 41.125,
+      "gpu_c": 39.0,
+      "nvme_c": 32.85
+    },
+    "cadence_breaks": [],
+    "duration_s": 300.021009682001,
+    "end": {
+      "cpu_c": 42.25,
+      "cpu_fan_rpm": 2500.0,
+      "elapsed_s": 300.021009682001,
+      "gpu": {
+        "driver": "615.71.09",
+        "temperature_c": 39.0,
+        "used_mib": 23.0
+      },
+      "gpu_fan_rpm": 2400.0,
+      "mem_available_bytes": 25901772800,
+      "nvme_c": 31.85,
+      "run_id": "c17-t2-p8-cold513",
+      "utc": "2026-09-27T17:29:39.656168+00:00"
+    },
+    "last60_trend_c": {
+      "cpu_c": 1.4874999999999972,
+      "gpu_c": 1.0,
+      "nvme_c": 0.0
+    },
+    "max_gap_overall_s": 0.7908438550002757,
+    "max_gap_qualifying_s": 0.7908438550002757,
+    "qualifying_duration_s": 300.00271902700115,
+    "qualifying_start_s": 0.018290654999873368,
+    "sample_count": 601,
+    "series_sha256": "460d8eef5101ac037c6c3da1430c1c7bff031b0297045f808adda0887e7ae08a",
+    "start": {
+      "cpu_c": 45.25,
+      "cpu_fan_rpm": 2600.0,
+      "elapsed_s": 0.018290654999873368,
+      "gpu": {
+        "driver": "615.71.09",
+        "temperature_c": 41.0,
+        "used_mib": 23.0
+      },
+      "gpu_fan_rpm": 2400.0,
+      "mem_available_bytes": 26000670720,
+      "nvme_c": 33.85,
+      "run_id": "c17-t2-p8-cold513",
+      "utc": "2026-09-27T17:24:39.653452+00:00"
+    },
+    "status": "PASS"
+  },
+  "launch_error": null,
+  "measurement_commit": "1b48428245d2549929fdb77cf86ab1fb8a9acafc",
+  "mode": "cold513",
+  "order": 1,
+  "phase": "T2",
+  "raw_sha256": "fb7cd82ba08f03a189168dd5b35dfe284ab23bc6fdad66b095d470c5830c6403",
+  "returncode": -9,
+  "run_id": "c17-t2-p8-cold513",
+  "runner_returncode": 1,
+  "schema": "c17-thermal-unit-v1",
+  "scope": "/user.slice/user-1000.slice/user@1000.service/app.slice/run-p172011-i205933.scope",
+  "server_elapsed_s": 93.15053073099989,
+  "status": "FAIL_THERMAL_GUARD",
+  "stop_reasons": [
+    "THERMAL_GUARD",
+    "RUN_ERROR:RemoteDisconnected:Remote end closed connection without response"
+  ]
+}

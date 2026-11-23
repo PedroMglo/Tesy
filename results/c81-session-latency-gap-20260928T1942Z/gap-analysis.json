@@ -1,0 +1,215 @@
+{
+  "C52b_manifest_sha256": "9b74df9783079eccdf39725168a71ae424aeea3cec675b12478810a48133e6ef",
+  "C52b_raw_sha256": "be2bf54e1fda221f2338fe12f7e29821cb991111aa21b9d17b60a05dd6db9ddb",
+  "C74_manifest_sha256": "0e724af007098b66b96acb61d3b00c4a951866fcc3f11ccdf905dce5229b1cec",
+  "C74_probe_median_pair_gain_percent": {
+    "cold513": {
+      "decode32": 1.1261160516561681,
+      "prefill": 62.50387546557959,
+      "work": 55.85965996933094
+    },
+    "warm154": {
+      "decode32": 1.4417872530398752,
+      "prefill": 51.952641240710186,
+      "work": 39.18564297978605
+    }
+  },
+  "C74_timing_pairs_sha256": "bd1a2667cf08a0676f73d691c3a229ca0a87d0172b2125ccb405cdce5b9af933",
+  "evidence_class": "INFERIDO_FROM_C52b_AND_C74_MEASURED_INPUTS",
+  "hypothesis_sha256": "d4636e7c1af1f2962ac00add2e797f2b6d9512139fd61aaf78315d80d262c9fa",
+  "incremental_request_count": 19,
+  "interpretation": "Under fixed per-request post-prefill residual, zero prefill alone leaves all 19 incremental first-final times above 10 s. C74 probe gains are not server gains.",
+  "limits": [
+    "SSE client first-content and server prefill are duration measures from different instrumentation paths",
+    "arithmetic residual is not a physical lower bound after a runtime/profile change",
+    "C52b synthetic repeated-answer session, not diverse quality suite",
+    "C74 teacher-forced probe does not measure exact-prefix server TTFT"
+  ],
+  "medians": {
+    "decode_tok_s": 3.7525239134703465,
+    "first_final_s": 41.464092736991006,
+    "held_fixed_post_prefill_residual_s": 15.761199337995542,
+    "prefill_s": 25.924975
+  },
+  "next_discriminant": "After C75 8K numeric/session gate, measure phase-specific expert demand, cache hit/miss and exposed wait on exact-prefix server decode; simulate bounded RAM L2 before implementation.",
+  "rows": [
+    {
+      "completion_tokens": 51,
+      "decode_tok_s": 3.6976368402953668,
+      "first_final_s": 39.35302216200216,
+      "held_fixed_post_prefill_residual_s": 13.274108162002161,
+      "new_prompt_tokens": 153,
+      "prefill_s": 26.078914,
+      "request_id": "c52b-turn01"
+    },
+    {
+      "completion_tokens": 47,
+      "decode_tok_s": 3.568502453649139,
+      "first_final_s": 38.49959625500196,
+      "held_fixed_post_prefill_residual_s": 12.85823725500196,
+      "new_prompt_tokens": 153,
+      "prefill_s": 25.641359,
+      "request_id": "c52b-turn02"
+    },
+    {
+      "completion_tokens": 55,
+      "decode_tok_s": 3.634113009153273,
+      "first_final_s": 39.97333605699532,
+      "held_fixed_post_prefill_residual_s": 14.758322056995322,
+      "new_prompt_tokens": 153,
+      "prefill_s": 25.215014,
+      "request_id": "c52b-turn03"
+    },
+    {
+      "completion_tokens": 55,
+      "decode_tok_s": 3.728673007309012,
+      "first_final_s": 39.372769690991845,
+      "held_fixed_post_prefill_residual_s": 14.283591690991845,
+      "new_prompt_tokens": 153,
+      "prefill_s": 25.089178,
+      "request_id": "c52b-turn04"
+    },
+    {
+      "completion_tokens": 55,
+      "decode_tok_s": 3.5786369687513426,
+      "first_final_s": 41.098433779989136,
+      "held_fixed_post_prefill_residual_s": 14.970943779989135,
+      "new_prompt_tokens": 153,
+      "prefill_s": 26.12749,
+      "request_id": "c52b-turn05"
+    },
+    {
+      "completion_tokens": 63,
+      "decode_tok_s": 3.810123061531854,
+      "first_final_s": 41.464092736991006,
+      "held_fixed_post_prefill_residual_s": 16.020978736991005,
+      "new_prompt_tokens": 153,
+      "prefill_s": 25.443114,
+      "request_id": "c52b-turn06"
+    },
+    {
+      "completion_tokens": 63,
+      "decode_tok_s": 3.867780120752095,
+      "first_final_s": 41.26620033799554,
+      "held_fixed_post_prefill_residual_s": 15.761199337995542,
+      "new_prompt_tokens": 153,
+      "prefill_s": 25.505001,
+      "request_id": "c52b-turn07"
+    },
+    {
+      "completion_tokens": 64,
+      "decode_tok_s": 3.52770666325361,
+      "first_final_s": 43.32321985298768,
+      "held_fixed_post_prefill_residual_s": 17.483571852987676,
+      "new_prompt_tokens": 153,
+      "prefill_s": 25.839648,
+      "request_id": "c52b-turn08"
+    },
+    {
+      "completion_tokens": 64,
+      "decode_tok_s": 3.868625585530083,
+      "first_final_s": 41.62173121000524,
+      "held_fixed_post_prefill_residual_s": 15.960957210005237,
+      "new_prompt_tokens": 153,
+      "prefill_s": 25.660774,
+      "request_id": "c52b-turn09"
+    },
+    {
+      "completion_tokens": 55,
+      "decode_tok_s": 3.7525239134703465,
+      "first_final_s": 39.898165935999714,
+      "held_fixed_post_prefill_residual_s": 14.186198935999712,
+      "new_prompt_tokens": 153,
+      "prefill_s": 25.711967,
+      "request_id": "c52b-turn10"
+    },
+    {
+      "completion_tokens": 55,
+      "decode_tok_s": 3.726781137120881,
+      "first_final_s": 40.32853933000297,
+      "held_fixed_post_prefill_residual_s": 14.288177330002966,
+      "new_prompt_tokens": 153,
+      "prefill_s": 26.040362000000002,
+      "request_id": "c52b-turn11"
+    },
+    {
+      "completion_tokens": 55,
+      "decode_tok_s": 3.712213547041642,
+      "first_final_s": 40.265806695999345,
+      "held_fixed_post_prefill_residual_s": 14.340831695999345,
+      "new_prompt_tokens": 153,
+      "prefill_s": 25.924975,
+      "request_id": "c52b-turn12"
+    },
+    {
+      "completion_tokens": 64,
+      "decode_tok_s": 3.8273423664194723,
+      "first_final_s": 42.07669369300129,
+      "held_fixed_post_prefill_residual_s": 16.141669693001287,
+      "new_prompt_tokens": 153,
+      "prefill_s": 25.935024000000002,
+      "request_id": "c52b-turn13"
+    },
+    {
+      "completion_tokens": 64,
+      "decode_tok_s": 3.853313042429071,
+      "first_final_s": 42.11811526500969,
+      "held_fixed_post_prefill_residual_s": 16.034865265009692,
+      "new_prompt_tokens": 153,
+      "prefill_s": 26.08325,
+      "request_id": "c52b-turn14"
+    },
+    {
+      "completion_tokens": 64,
+      "decode_tok_s": 3.6023673181979494,
+      "first_final_s": 43.36819790500158,
+      "held_fixed_post_prefill_residual_s": 17.145630905001582,
+      "new_prompt_tokens": 153,
+      "prefill_s": 26.222566999999998,
+      "request_id": "c52b-turn15"
+    },
+    {
+      "completion_tokens": 64,
+      "decode_tok_s": 3.935405242205745,
+      "first_final_s": 42.471665978009696,
+      "held_fixed_post_prefill_residual_s": 15.740647978009697,
+      "new_prompt_tokens": 153,
+      "prefill_s": 26.731018,
+      "request_id": "c52b-turn16"
+    },
+    {
+      "completion_tokens": 64,
+      "decode_tok_s": 3.8965768146495217,
+      "first_final_s": 41.9255128520017,
+      "held_fixed_post_prefill_residual_s": 15.9273118520017,
+      "new_prompt_tokens": 153,
+      "prefill_s": 25.998201,
+      "request_id": "c52b-turn17"
+    },
+    {
+      "completion_tokens": 64,
+      "decode_tok_s": 3.8309873723473107,
+      "first_final_s": 42.40731818000495,
+      "held_fixed_post_prefill_residual_s": 16.27158018000495,
+      "new_prompt_tokens": 153,
+      "prefill_s": 26.135738,
+      "request_id": "c52b-turn18"
+    },
+    {
+      "completion_tokens": 64,
+      "decode_tok_s": 3.832474629467071,
+      "first_final_s": 42.050568657999975,
+      "held_fixed_post_prefill_residual_s": 16.282725657999976,
+      "new_prompt_tokens": 153,
+      "prefill_s": 25.767843,
+      "request_id": "c52b-turn19"
+    }
+  ],
+  "schema": "c81-session-latency-gap-v1",
+  "status": "PREFILL_ONLY_INSUFFICIENT_HELD_FIXED",
+  "target_gap": {
+    "decode_tpot_reduction_needed_percent": 37.45793477549423,
+    "post_prefill_reduction_needed_with_zero_prefill_percent": 36.553051671055336,
+    "zero_prefill_residual_over_10_count": 19
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "evidence_class": "SOURCE_AUDITED",
+  "version": "0.35.0",
+  "revision": "c359cb774db4daab623cddde6c7e0399a49cf7d2",
+  "observed_utc": "2026-10-04T14:28:44.578888+00:00",
+  "files": [
+    {
+      "path": "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c236-post-c235-blocks-expert-reuse-20261004T105527Z/raw/modelopt-feature-contract/transformers.py",
+      "source": "https://github.com/NVIDIA/Model-Optimizer/blob/c359cb774db4daab623cddde6c7e0399a49cf7d2/modelopt/torch/speculative/plugins/transformers.py",
+      "size": 46923,
+      "sha256": "b71ff06a28f15c2a80d48ed53ff39f003b8bfae5bef75caa4f60ea5bf9c5ff59"
+    },
+    {
+      "path": "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c236-post-c235-blocks-expert-reuse-20261004T105527Z/raw/modelopt-feature-contract/megatron_eagle.py",
+      "source": "https://github.com/NVIDIA/Model-Optimizer/blob/c359cb774db4daab623cddde6c7e0399a49cf7d2/modelopt/torch/speculative/plugins/megatron_eagle.py",
+      "size": 93584,
+      "sha256": "4b28b27b42cea6eddb4267bd0ff255ce2c084a3a9e3eb1dd7521b090ec8b5f27"
+    },
+    {
+      "path": "/home/pmglo/Projects/Tesy/c7-native-placement-screen-20260927-1117utc/results/c236-post-c235-blocks-expert-reuse-20261004T105527Z/raw/modelopt-feature-contract/utils.py",
+      "source": "https://github.com/NVIDIA/Model-Optimizer/blob/c359cb774db4daab623cddde6c7e0399a49cf7d2/modelopt/torch/speculative/eagle/utils.py",
+      "size": 3816,
+      "sha256": "cca5b11300446db641cda13b1a7e029ec238465b3e4a55c32a43564e1b9b0508"
+    }
+  ],
+  "scope": "Both HF and Megatron hooks collect decoder-layer outputs at zero-based auxiliary indices. They do not collect the layer input or the final model norm. C75 OpenAI-MoE next-layer inputs are the preceding layer residual output; indices 1/17/32 map to inputs 2/18/33. This resolves source index convention, not measured head feature fidelity or acceptance."
+}

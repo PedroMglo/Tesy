@@ -1,0 +1,12 @@
+{
+  "status": "NATIVE_PLAN_METADATA_AND_SOURCE_MATCHED",
+  "numeric": "NOT_RUN",
+  "weights_loaded": false,
+  "layer24": "CPU router/CPU experts -> GPU weighted fused reduction; scheduler witness",
+  "layers25_35": "GPU router/CPU experts -> GPU weighted fused reduction",
+  "CPU_Mapped_vs_dummy_CUDA_Host": "Both host buffers supported by CPU; no inference from names; actual C166 observed buffers separately preserved",
+  "copy_inputs_UNKNOWN": "Native public scheduler query has no copied-tensor backend entry; native-created copy name plus consumer assignment identify destination; raw UNKNOWN retained",
+  "optimizer_witness": "Real CUDA optimizer records experts/weights allocation dependencies to output; runtime range guard separately tested by synthetic fixture",
+  "tests": "4 targeted methods;9 plan mutations plus strict schema/schedule; first parser run rejected unallocated copies, resolved from source without weights retry",
+  "limitations": "No forward, dynamic clocks/performance not measured; exact runtime fences/fusion tested next"
+}

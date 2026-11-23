@@ -1,0 +1,36 @@
+{
+  "schema": "c3-off-on-logits-v1",
+  "status": "PASS",
+  "off_run_id": "c3-r2-parity-off01",
+  "on_run_id": "c3-r2-prestate-log01",
+  "float32_vocab": 201088,
+  "rows": [
+    {
+      "phase": "prompt",
+      "position": 31,
+      "off_row": 0,
+      "bitwise_equal": true,
+      "off_sha256": "6406756c88ebce653fbaa251f7fe5cba3266b84baba375882f7cf355b84dc1c8",
+      "on_sha256": "6406756c88ebce653fbaa251f7fe5cba3266b84baba375882f7cf355b84dc1c8"
+    },
+    {
+      "phase": "continuation",
+      "position": 189,
+      "off_row": 6,
+      "bitwise_equal": true,
+      "off_sha256": "e980f5b978be3f42fbc56c2456126842d9f009d02642b96616b9c7e735471b50",
+      "on_sha256": "e980f5b978be3f42fbc56c2456126842d9f009d02642b96616b9c7e735471b50"
+    }
+  ],
+  "sample_counts": [
+    71,
+    59
+  ],
+  "source_sha256": {
+    "results/c3-r2-parity-off01.json": "dfc57bb2e234ab10e0cf54432160e5c9c7c08a5f00b2631f8bf3c01955a83829",
+    "results/c3-r2-prestate-log01.json": "16ad98a338680bb06f3d0813ddf9fc27740dfd3df5e36261811e2b88bf3a9152",
+    "results/c3-r2-parity-off01.rows.tsv": "6795f277352d3fc852b6235306294b4757bc32abbaf59677f8000f42998300ca",
+    "results/c3-r2-parity-off01.f32": "5f7541ef909063c576aa2b9d6f2d445dac2fbcfc2a87817df752577a7bace924",
+    "results/c3-r2-prestate-log01.raw/index.tsv": "cab3d43ab0c0389029104c0dcd4026590813c8717df6a5ac3ffa7ab8412b05be"
+  }
+}
