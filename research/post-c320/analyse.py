@@ -184,11 +184,42 @@ def checked_bytes(path, receipt):
     return data
 
 
+def prefill_union_sizes():
+    layers = archived("results/c261-slots40-prefill-opportunity-20261004/analysis.json")["layers"]
+    if sorted(layer["layer"] for layer in layers) != list(range(36)):
+        raise ValueError("C261 layer inventory is incomplete")
+    counts = {"CPU": [], "CUDA0": []}
+    for layer in layers:
+        experts = layer["demanded_union"]
+        if len(experts) != len(set(experts)) or len(experts) != layer["union_count"]:
+            raise ValueError("union cardinality disagrees with logical IDs")
+        counts[layer["tier"]].append(len(experts))
+    return {
+        tier: {
+            "layers": len(sizes),
+            "above_40": sum(n > 40 for n in sizes),
+            "min": min(sizes),
+            "max": max(sizes),
+        }
+        for tier, sizes in counts.items()
+    }
+
+
 def report(raw_dir):
+    c136 = archived("results/c135-slots40-warm153-trace-20260929T2205Z/analysis.json")["server"][
+        "trace_off"
+    ]
     published = archived(f"{C318}/paired-cost-analysis.json")["cases"]
     inputs = required_files()
     result = {
         "source_commit": SOURCE,
+        "C261_whole_prefill_distinct_experts_per_layer": prefill_union_sizes(),
+        "C136_fixed_work_scenario_s": {
+            "first_final_less_entire_decode": c136["warm_first_final_s"] - c136["warm_decode_s"],
+            "decode_saving_needed_for_6_tps": c136["warm_decode_s"]
+            - c136["warm_output_tokens"] / 6,
+            "prefill_alone": c136["warm_prefill_s"],
+        },
         "C318_conditional_arithmetic": {c: historical_cost(c, published[c]) for c in CASES},
         "C317_inputs_relative_to_raw_dir": inputs,
         "occupancy": "NOT_RUN_RAW_REQUIRED",
