@@ -1,0 +1,77 @@
+"""Local fault probes for the independent auditor, not Tesy repository tests."""
+import copy
+import os
+import importlib.util
+import unittest
+from pathlib import Path
+
+spec = importlib.util.spec_from_file_location('auditor', Path(__file__).with_name('audit_bundle.py'))
+a = importlib.util.module_from_spec(spec)
+spec.loader.exec_module(a)
+
+class AuditFaultProbes(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        cls.data, _ = a.load_archive(Path(os.environ.get('TESY_EVIDENCE_BUNDLE', str(Path(__file__).with_name('tesy-vertical-raw-evidence-20260924.tar.gz')))))
+        cls.root = a.STOCK + '/rep1-code-short-ngl0'
+        cls.record = a.load(cls.data[cls.root+'/run.json'])
+        cls.events = [a.load(x) for x in cls.data[cls.root+'/sse-events.jsonl'].splitlines()]
+        cls.rows = [a.load(x) for x in cls.data[cls.root+'/resources.jsonl'].splitlines()]
+        cls.gpu_total = a.load(cls.data[cls.root+'/doctor-public.json'])['snapshot']['gpu']['gpus'][0]['memory_total_bytes']
+
+    def test_real_stream_accepted(self):
+        self.assertEqual(a.inspect_stream(self.events, self.data[self.root+'/stream.sse'], self.record)['status'], 'PASS')
+
+    def test_empty_sse_rejected(self):
+        with self.assertRaises(ValueError):
+            a.inspect_stream(self.events, b'', self.record)
+
+    def test_output_mismatch_rejected(self):
+        run = copy.deepcopy(self.record); run['output_text'] += 'not in stream'
+        with self.assertRaises(ValueError):
+            a.inspect_stream(self.events, self.data[self.root+'/stream.sse'], run)
+
+    def test_missing_done_rejected(self):
+        with self.assertRaises(ValueError):
+            a.inspect_stream(self.events[:-1], self.data[self.root+'/stream.sse'], self.record)
+
+    def test_arrival_time_reversal_rejected(self):
+        ev = copy.deepcopy(self.events); ev[2]['arrival_s_from_request'] = ev[0]['arrival_s_from_request']
+        with self.assertRaises(ValueError):
+            a.inspect_stream(ev, self.data[self.root+'/stream.sse'], self.record)
+
+    def test_real_trailing_absence_classified(self):
+        result = a.inspect_resources(self.rows, self.gpu_total)
+        self.assertEqual(result['trailing_empty_indices'], [len(self.rows)-1])
+        self.assertEqual(result['interior_process_gaps'], 0)
+
+    def test_interior_empty_process_rejected(self):
+        rows = copy.deepcopy(self.rows); rows[3]['process'] = {}
+        with self.assertRaises(ValueError):
+            a.inspect_resources(rows, self.gpu_total)
+
+    def test_partial_positive_swap_rejected(self):
+        rows = copy.deepcopy(self.rows); rows[3]['process'] = {'VmSwap_bytes':4096}
+        with self.assertRaises(ValueError):
+            a.inspect_resources(rows, self.gpu_total)
+
+    def test_partial_zero_swap_also_rejected(self):
+        rows = copy.deepcopy(self.rows); rows[3]['process'] = {'VmSwap_bytes':0}
+        with self.assertRaises(ValueError):
+            a.inspect_resources(rows, self.gpu_total)
+
+    def test_nonfinite_gpu_rejected(self):
+        rows = copy.deepcopy(self.rows); rows[2]['gpu']['power_w'] = float('nan')
+        with self.assertRaises(ValueError):
+            a.inspect_resources(rows, self.gpu_total)
+
+    def test_json_duplicate_key_rejected(self):
+        with self.assertRaises(ValueError):
+            a.load('{"a":1,"a":2}')
+
+    def test_json_nan_rejected(self):
+        with self.assertRaises(ValueError):
+            a.load('{"a":NaN}')
+
+if __name__ == '__main__':
+    unittest.main(verbosity=2)
