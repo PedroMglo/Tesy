@@ -19,7 +19,7 @@ jobs:
   preflight:
     name: Preflight automatic release
     if: github.event_name == 'pull_request'
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     defaults:
       run:
         working-directory: docs/research-reports
@@ -52,7 +52,7 @@ jobs:
   publish:
     name: Create immutable tags and releases
     if: github.event_name == 'push'
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     permissions:
       contents: write
     concurrency:
