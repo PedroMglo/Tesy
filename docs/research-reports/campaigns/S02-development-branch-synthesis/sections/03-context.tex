@@ -1,0 +1,16 @@
+\section{Contexto}
+O inventário agrupa branches por linha de investigação, não por quantidade de commits. N0 definiu residência causal, tracing estrito e análise model-free; N1 formalizou como derivar footprint dos experts do GGUF. A linha CPU-MoE explorou capacidade e colocação N12/N16/N20/N24. Em paralelo, branches distintas testaram overlap assíncrono, reinjection e execução split-graph no backend live. Outra linha tentou substituição vertical de FFN e isolou uma divergência numérica. Por fim, a sequência 120B documentou residência, mmap e integração opt-in, enquanto os ramos C52b/C54 e a política prospectiva de recursos registaram estados de execução e de admissão.
+
+Estas linhas desenvolvem mecanismos estabelecidos. MoE-Infinity trata cache/offload e ProMoE/linhas recentes estudam prefetch e pipelines; PowerInfer explora inferência híbrida em GPU de consumo; MoE-Lightning e Klotski cobrem overlap/pipelining; DALI estuda offloading MoE em PCs locais \cite{xue2024moeinfinity,song2024powerinfer,cao2025moelightning,fang2025klotski,zhu2026dali}. Trabalhos contemporâneos complementam a leitura: Patterns Behind Chaos mede movement em MoEs de 200B--1000B e propõe placement sensível ao prefill; CoPilotIO testa CPU-assisted completion polling em GPU I/O, incluindo MoE inference; Kairox faz prefetch e balanceamento de neurónios sob activation sparsity \cite{yu2026patterns,chen2026copilotio,jiang2026kairox}. São relacionados por movimento de dados, I/O e heterogeneidade, mas não são comparações equivalentes ao placement de experts ou ao contrato Tesy. R01 relaciona essa literatura diretamente às claims Tesy.
+
+\begin{tabularx}{\linewidth}{@{}p{38mm}Y@{}}
+\toprule
+\textbf{Família de branches} & \textbf{Cobertura nesta edição}\\\midrule
+N0/N1 e inventário & Fundação sintética e fronteira entre footprint codificado e tráfego físico.\\
+CPU-MoE & Tentativa com falha de papéis do probe, piloto e continuum de uma observação por colocação.\\
+Mixed residency / async & Resultado ponderado de um operador e próximos gates de cauda; sem latência de modelo inteiro.\\
+Live MoE / exactness & Reinjection e split-graph com igualdade observada em casos estreitos; sem timing.\\
+Vertical / numerical & Falha de correctness multi-layer, localização aritmética e revisão do contrato.\\
+120B / recursos & Preflight C52b, interrupção C54 e distinção entre limites do dispositivo e regras de admissão.\\
+\bottomrule
+\end{tabularx}

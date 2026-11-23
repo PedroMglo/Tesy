@@ -1,0 +1,18 @@
+\clearpage
+\section{Falhas de admissão e correções}
+\begin{tabularx}{\linewidth}{@{}p{33mm}Y@{}}
+\toprule \textbf{Eixo} & \textbf{Motivo preservado}\\ \midrule
+Inventário & Base/tree de execução e host PHYSICAL não preservados no output selecionado.\\
+Replay byte-weighted & Provenance e manifest insuficientes; percentuais históricos não requalificados.\\
+Stock B0/B1 & Telemetria vazia, provenance incompleta e trajetórias de tokens não retidas para same-work.\\
+Fronteira de capacidade & Prova PHYSICAL do host em falta; admissões retiradas.\\
+Crossover & Base não preservada e comparador diferente do caminho único n-cpu-moe.\\
+\bottomrule
+\end{tabularx}
+\evidence{E-R00-STATUS}
+
+\historicalclaim{CL-R00-PAYLOAD}{Inventário permanece inconclusivo por provenance.}
+\historicalclaim{CL-R00-BYTES}{Percentuais de replay não são apresentados como medição qualificada.}
+\historicalclaim{CL-R00-STOCK}{Recuperar estatuto de baseline exige rerun, não nova narrativa.}
+
+\historicalclaim{CL-R00-MMAP}{CPU\_Mapped é um span mmap, não bytes lógicos Host do fit. O gate de igualdade misturava grandezas não comparáveis; NOT\_COMPARABLE\_MMAP\_SPAN conserva a correção.}

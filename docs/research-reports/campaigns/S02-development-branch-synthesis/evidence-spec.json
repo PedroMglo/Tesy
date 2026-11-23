@@ -1,0 +1,531 @@
+{
+  "authorities": {
+    "async": [
+      "E-S02-MIXED-ASYNC"
+    ],
+    "capacity": [
+      "E-S02-NCPU-FAIL",
+      "E-S02-NCPU-PILOT",
+      "E-S02-NCPU-CONTINUUM"
+    ],
+    "exactness": [
+      "E-S02-LIVE-REINJECTION",
+      "E-S02-LIVE-SPLIT"
+    ],
+    "foundation": [
+      "E-S02-N0-VALIDATION",
+      "E-S02-N1-INVENTORY"
+    ],
+    "protocol": [
+      "E-S02-RESOURCE-POLICY",
+      "E-S02-C52B-PREFLIGHT",
+      "E-S02-C54-INTERRUPTION"
+    ],
+    "vertical": [
+      "E-S02-VERTICAL-C3",
+      "E-S02-VERTICAL-CAPACITY",
+      "E-S02-N2-BLOCKER",
+      "E-S02-NUMERICAL-AB"
+    ],
+    "inventory": [
+      "E-S02-N1-INVENTORY"
+    ],
+    "numerical": [
+      "E-S02-N2-BLOCKER",
+      "E-S02-NUMERICAL-AB"
+    ],
+    "line-120b": [
+      "E-S02-C195-CLOSURE",
+      "E-S02-C198-CLOSURE"
+    ]
+  },
+  "checks": [],
+  "claims": [
+    {
+      "evidence": [
+        {
+          "quote": "The trace-weighted same-campaign serial median diagnostic is **0.4950063228 ms**.",
+          "source": "E-S02-MIXED-ASYNC",
+          "type": "text"
+        }
+      ],
+      "evidence_class": "DIAGNOSTICO",
+      "family": "async",
+      "id": "CL-S02-ASYNC",
+      "limitation": "Conclusão circunscrita ao protocolo, target, commit e âmbito descritos na fonte; não é uma claim de aceleração geral do Tesy.",
+      "source_class": "Branch development source / closure document",
+      "statement": "O resultado async foi um diagnóstico ponderado de um operador/traço; não é latência de modelo inteiro nem demonstra estabilidade ou tráfego físico.",
+      "status": "HISTORICAL"
+    },
+    {
+      "evidence": [
+        {
+          "quote": "natural useful latency is INCONCLUSIVE_HARNESS_PREMODEL.",
+          "source": "E-S02-C195-CLOSURE",
+          "type": "text"
+        },
+        {
+          "quote": "prefill153 **12.569621%**",
+          "source": "E-S02-C195-CLOSURE",
+          "type": "text"
+        },
+        {
+          "quote": "Zero weights launches.",
+          "source": "E-S02-C195-CLOSURE",
+          "type": "text"
+        },
+        {
+          "quote": "No performance NO_GO is inferred from that integration failure.",
+          "source": "E-S02-C195-CLOSURE",
+          "type": "text"
+        },
+        {
+          "quote": "PASS_NATIVE64_NUMERIC_SELECTED_SCOPE",
+          "source": "E-S02-C195-CLOSURE",
+          "type": "text"
+        },
+        {
+          "quote": "REPRODUZIDO_MODEL_FREE",
+          "source": "E-S02-C195-CLOSURE",
+          "type": "text"
+        }
+      ],
+      "evidence_class": "DIAGNOSTICO",
+      "family": "line-120b",
+      "id": "CL-S02-C195",
+      "limitation": "Resultado W de input fixo e scope native64 selecionado; natural first-final, output throughput, qualidade ampla e benefício end-to-end não foram medidos nem herdados.",
+      "source_class": "Branch development source / closure document",
+      "statement": "C195 fechou a família native64 com parity numérica no scope selecionado e redução mediana paired de 12,569621% no prefill de input fixo; C193 falhou no harness antes de abrir pesos, C194 testou a correção model-free, a latência natural permaneceu inconclusiva e não foi inferido um no-go de desempenho.",
+      "status": "HISTORICAL"
+    },
+    {
+      "evidence": [
+        {
+          "quote": "NATIVE64_NATURAL_NO_GO_IN_TESTED_SCOPE.",
+          "source": "E-S02-C198-CLOSURE",
+          "type": "text"
+        },
+        {
+          "quote": "First-final paired gains5.357438%/2.529461%, median3.943449%<15%.",
+          "source": "E-S02-C198-CLOSURE",
+          "type": "text"
+        },
+        {
+          "quote": "SQL validated gains-26.312120%/-9.717295%, median-18.014708%<0%.",
+          "source": "E-S02-C198-CLOSURE",
+          "type": "text"
+        },
+        {
+          "quote": "T3 first-final protection median-20.921647%<-5%.",
+          "source": "E-S02-C198-CLOSURE",
+          "type": "text"
+        },
+        {
+          "quote": "C197 NOT_RUN_S_GATE",
+          "source": "E-S02-C198-CLOSURE",
+          "type": "text"
+        },
+        {
+          "quote": "This is not arithmetic, hardware, harness or universal ub64 failure.",
+          "source": "E-S02-C198-CLOSURE",
+          "type": "text"
+        }
+      ],
+      "evidence_class": "DIAGNOSTICO",
+      "family": "line-120b",
+      "id": "CL-S02-C198",
+      "limitation": "NO_GO circunscrito ao perfil/workload natural native64 medido em C196; C197 não executou confirmação. Mantêm-se C191/C192 como evidência parcial e não se infere uma falha universal do hardware, da aritmética ou do ub64.",
+      "source_class": "Branch development source / closure document",
+      "statement": "C198 encerrou native64 natural como NO_GO no scope testado: C196 concluiu doze pedidos válidos, mas o ganho mediano de first-final ficou abaixo do limiar e o SQL validado regrediu; C197 não foi executado pelo gate. Os ganhos numérico e de prefill de input fixo de C191/C192 permanecem evidência parcial, sem qualificação geral de desempenho.",
+      "status": "HISTORICAL"
+    },
+    {
+      "evidence": [
+        {
+          "pointer": "/guard_status",
+          "source": "E-S02-C52B-PREFLIGHT",
+          "type": "json"
+        }
+      ],
+      "evidence_class": "NOT_RUN",
+      "family": "protocol",
+      "id": "CL-S02-C52B",
+      "limitation": "Conclusão circunscrita ao protocolo, target, commit e âmbito descritos na fonte; não é uma claim de aceleração geral do Tesy.",
+      "source_class": "Branch development source / closure document",
+      "statement": "A branch C52b arquivada contém um preflight de admissão; o snapshot não contém um resultado de sessão que permita nova claim experimental.",
+      "status": "HISTORICAL"
+    },
+    {
+      "evidence": [
+        {
+          "quote": "C54 is `INTERRUPTED_BY_OWNER`.",
+          "source": "E-S02-C54-INTERRUPTION",
+          "type": "text"
+        }
+      ],
+      "evidence_class": "NOT_RUN",
+      "family": "protocol",
+      "id": "CL-S02-C54",
+      "limitation": "Conclusão circunscrita ao protocolo, target, commit e âmbito descritos na fonte; não é uma claim de aceleração geral do Tesy.",
+      "source_class": "Branch development source / closure document",
+      "statement": "C54 foi interrompida pelo owner durante o segundo pedido; as atribuições de intervalo e comparações ficam NOT_RUN/incompletas.",
+      "status": "HISTORICAL"
+    },
+    {
+      "evidence": [
+        {
+          "quote": "Classification: **DEVELOPMENT_ONLY / CPU_ONLY / SYNTHETIC**.",
+          "source": "E-S02-N0-VALIDATION",
+          "type": "text"
+        }
+      ],
+      "evidence_class": "REPRODUZIDO",
+      "family": "foundation",
+      "id": "CL-S02-N0",
+      "limitation": "Conclusão circunscrita ao protocolo, target, commit e âmbito descritos na fonte; não é uma claim de aceleração geral do Tesy.",
+      "source_class": "Branch development source / closure document",
+      "statement": "A fase N0 validou fundações e fixtures sintéticas; não executou modelo real, não qualificou speedup nem estabeleceu novidade.",
+      "status": "HISTORICAL"
+    },
+    {
+      "evidence": [
+        {
+          "quote": "per_expert_weight_bytes is an encoded GGUF layout footprint.",
+          "source": "E-S02-N1-INVENTORY",
+          "type": "text"
+        }
+      ],
+      "evidence_class": "DIAGNOSTICO",
+      "family": "inventory",
+      "id": "CL-S02-N1",
+      "limitation": "Conclusão circunscrita ao protocolo, target, commit e âmbito descritos na fonte; não é uma claim de aceleração geral do Tesy.",
+      "source_class": "Branch development source / closure document",
+      "statement": "O inventário N1 mede footprint codificado de GGUF, não tráfego físico de SSD, DRAM, PCIe ou cópia CUDA.",
+      "status": "HISTORICAL"
+    },
+    {
+      "evidence": [
+        {
+          "quote": "**Resultado: B — diferença aritmética isolada, sem correção técnica localizada admitida.**",
+          "source": "E-S02-N2-BLOCKER",
+          "type": "text"
+        }
+      ],
+      "evidence_class": "DIAGNOSTICO",
+      "family": "numerical",
+      "id": "CL-S02-N2",
+      "limitation": "Conclusão circunscrita ao protocolo, target, commit e âmbito descritos na fonte; não é uma claim de aceleração geral do Tesy.",
+      "source_class": "Branch development source / closure document",
+      "statement": "N2 isolou uma diferença aritmética num operador GPU, mantendo FAIL do contrato global e sem promover timing.",
+      "status": "HISTORICAL"
+    },
+    {
+      "evidence": [
+        {
+          "quote": "stable ranking or Pareto frontier",
+          "source": "E-S02-NCPU-CONTINUUM",
+          "type": "text"
+        }
+      ],
+      "evidence_class": "DIAGNOSTICO",
+      "family": "capacity",
+      "id": "CL-S02-NCPU-CONTINUUM",
+      "limitation": "Conclusão circunscrita ao protocolo, target, commit e âmbito descritos na fonte; não é uma claim de aceleração geral do Tesy.",
+      "source_class": "Branch development source / closure document",
+      "statement": "O continuum N12--N24 manteve observações únicas por ponto; não estabelece fronteira de Pareto nem um ponto ótimo estável.",
+      "status": "HISTORICAL"
+    },
+    {
+      "evidence": [
+        {
+          "quote": "not a model, hardware, placement, capacity or performance result.",
+          "source": "E-S02-NCPU-FAIL",
+          "type": "text"
+        }
+      ],
+      "evidence_class": "DIAGNOSTICO",
+      "family": "capacity",
+      "id": "CL-S02-NCPU-FAIL",
+      "limitation": "Conclusão circunscrita ao protocolo, target, commit e âmbito descritos na fonte; não é uma claim de aceleração geral do Tesy.",
+      "source_class": "Branch development source / closure document",
+      "statement": "A primeira tentativa N-CPU-MoE falhou na separação dos papéis probe/execução e não é resultado de capacidade ou desempenho.",
+      "status": "HISTORICAL"
+    },
+    {
+      "evidence": [
+        {
+          "quote": "These are one observations each. They do not establish a stable ranking.",
+          "source": "E-S02-NCPU-PILOT",
+          "type": "text"
+        }
+      ],
+      "evidence_class": "DIAGNOSTICO",
+      "family": "capacity",
+      "id": "CL-S02-NCPU-PILOT",
+      "limitation": "Conclusão circunscrita ao protocolo, target, commit e âmbito descritos na fonte; não é uma claim de aceleração geral do Tesy.",
+      "source_class": "Branch development source / closure document",
+      "statement": "O piloto N12/N24 descreve uma observação por colocação: mostra uma troca local entre VRAM e throughput, sem ranking estável.",
+      "status": "HISTORICAL"
+    },
+    {
+      "evidence": [
+        {
+          "quote": "**Resultado:** A `COMPLETE`; B `NUMERICAL_CONTRACT_REVIEW_REQUIRED`",
+          "source": "E-S02-NUMERICAL-AB",
+          "type": "text"
+        }
+      ],
+      "evidence_class": "DIAGNOSTICO",
+      "family": "numerical",
+      "id": "CL-S02-NUMERICAL-AB",
+      "limitation": "Conclusão circunscrita ao protocolo, target, commit e âmbito descritos na fonte; não é uma claim de aceleração geral do Tesy.",
+      "source_class": "Branch development source / closure document",
+      "statement": "A caracterização A+B decompôs input/backend na down projection, mas manteve a decisão B sujeita a revisão do contrato.",
+      "status": "HISTORICAL"
+    },
+    {
+      "evidence": [
+        {
+          "quote": "os logits observados ficaram bitwise iguais após os dois checkpoints",
+          "source": "E-S02-LIVE-REINJECTION",
+          "type": "text"
+        }
+      ],
+      "evidence_class": "MEDIDO",
+      "family": "exactness",
+      "id": "CL-S02-REINJECTION",
+      "limitation": "Conclusão circunscrita ao protocolo, target, commit e âmbito descritos na fonte; não é uma claim de aceleração geral do Tesy.",
+      "source_class": "Branch development source / closure document",
+      "statement": "Reinjection/continuation preservou logits bitwise em dois checkpoints do caso de teste, embora os outputs FFN injectados não fossem bitwise iguais; não houve timing.",
+      "status": "HISTORICAL"
+    },
+    {
+      "evidence": [
+        {
+          "quote": "Historical campaign guards remain part of their original protocols and are never reclassified.",
+          "source": "E-S02-RESOURCE-POLICY",
+          "type": "text"
+        }
+      ],
+      "evidence_class": "FORMAL",
+      "family": "protocol",
+      "id": "CL-S02-RESOURCE-POLICY",
+      "limitation": "Conclusão circunscrita ao protocolo, target, commit e âmbito descritos na fonte; não é uma claim de aceleração geral do Tesy.",
+      "source_class": "Branch development source / closure document",
+      "statement": "A política de recursos redefine apenas regras prospectivas; preserva guardas históricos como política de ensaio, não limites universais do hardware.",
+      "status": "HISTORICAL"
+    },
+    {
+      "evidence": [
+        {
+          "quote": "LIVE_MOE_SPLIT_GRAPH_SKIP_EXACTNESS_GO",
+          "source": "E-S02-LIVE-SPLIT",
+          "type": "text"
+        }
+      ],
+      "evidence_class": "MEDIDO",
+      "family": "exactness",
+      "id": "CL-S02-SPLIT",
+      "limitation": "Conclusão circunscrita ao protocolo, target, commit e âmbito descritos na fonte; não é uma claim de aceleração geral do Tesy.",
+      "source_class": "Branch development source / closure document",
+      "statement": "A linha split-graph obteve exactness no âmbito testado e no trace/caso específico; isso não demonstra desempenho nem integração vertical geral.",
+      "status": "HISTORICAL"
+    },
+    {
+      "evidence": [
+        {
+          "quote": "O candidato **não passou a correctness multi-layer**.",
+          "source": "E-S02-VERTICAL-C3",
+          "type": "text"
+        }
+      ],
+      "evidence_class": "MEDIDO",
+      "family": "vertical",
+      "id": "CL-S02-VERTICAL",
+      "limitation": "Conclusão circunscrita ao protocolo, target, commit e âmbito descritos na fonte; não é uma claim de aceleração geral do Tesy.",
+      "source_class": "Branch development source / closure document",
+      "statement": "O protótipo vertical 20B divergiu na terceira layer além do limite congelado; não qualifica integração Tesy end-to-end.",
+      "status": "HISTORICAL"
+    }
+  ],
+  "datasets": [],
+  "metrics": [],
+  "schema_version": "tesy-evidence-spec-v1",
+  "source_contracts": [
+    {
+      "json_values": [],
+      "path": "research/C195-NATIVE64-EPOCH-CLOSURE-20260930.md",
+      "source": "E-S02-C195-CLOSURE",
+      "text": [
+        "natural useful latency is INCONCLUSIVE_HARNESS_PREMODEL.",
+        "Median **paired** reductions: prefill153 **12.569621%**",
+        "Zero weights launches.",
+        "No performance NO_GO is inferred from that integration failure.",
+        "PASS_NATIVE64_NUMERIC_SELECTED_SCOPE",
+        "REPRODUZIDO_MODEL_FREE"
+      ]
+    },
+    {
+      "json_values": [],
+      "path": "research/C198-NATIVE64-NATURAL-CLOSURE-20260930.md",
+      "source": "E-S02-C198-CLOSURE",
+      "text": [
+        "NATIVE64_NATURAL_NO_GO_IN_TESTED_SCOPE.",
+        "C197 NOT_RUN_S_GATE",
+        "median3.943449%<15%.",
+        "median-18.014708%<0%.",
+        "median-20.921647%<-5%.",
+        "This is not arithmetic, hardware, harness or universal ub64 failure.",
+        "No invalid run discarded,"
+      ]
+    },
+    {
+      "json_values": [
+        {
+          "expected": "READY_FOR_IDLE_ADMISSION",
+          "pointer": "/guard_status"
+        },
+        {
+          "expected": true,
+          "pointer": "/port_18367_free"
+        },
+        {
+          "expected": "PASS",
+          "pointer": "/scope_model_free_test/status"
+        }
+      ],
+      "path": "results/c52b-assistant-history-sustained-20260928T1132Z/preflight.json",
+      "source": "E-S02-C52B-PREFLIGHT",
+      "text": []
+    },
+    {
+      "json_values": [],
+      "path": "research/C54-WARM-PREFIX-PHASE-INTERRUPTION-20260928.md",
+      "source": "E-S02-C54-INTERRUPTION",
+      "text": [
+        "C54 is `INTERRUPTED_BY_OWNER`.",
+        "NOT_RUN`/incomplete."
+      ]
+    },
+    {
+      "json_values": [],
+      "path": "research/LIVE-MOE-REINJECTION-CONTINUATION-EXACTNESS-RESULT-20260924.md",
+      "source": "E-S02-LIVE-REINJECTION",
+      "text": [
+        "Cada checkpoint comparou 201,088 logits F32 completos.",
+        "os logits observados ficaram bitwise iguais após os dois checkpoints"
+      ]
+    },
+    {
+      "json_values": [],
+      "path": "research/LIVE-MOE-SPLIT-GRAPH-SKIP-EXACTNESS-RESULT-20260924.md",
+      "source": "E-S02-LIVE-SPLIT",
+      "text": [
+        "LIVE_MOE_SPLIT_GRAPH_SKIP_EXACTNESS_GO",
+        "Todos os 1,349 nodes foram atribuídos a `CPU`"
+      ]
+    },
+    {
+      "json_values": [],
+      "path": "research/MIXED-RESIDENCY-ASYNC-OVERLAP-RESULT-20260924.md",
+      "source": "E-S02-MIXED-ASYNC",
+      "text": [
+        "The trace-weighted same-campaign serial median diagnostic is **0.4950063228 ms**.",
+        "not full-model latency.",
+        "Prediction, prefetch, cache policy and speculation remain **NOT_RUN**."
+      ]
+    },
+    {
+      "json_values": [],
+      "path": "research/n0/VALIDATION.md",
+      "source": "E-S02-N0-VALIDATION",
+      "text": [
+        "Classification: **DEVELOPMENT_ONLY / CPU_ONLY / SYNTHETIC**.",
+        "No real model was downloaded/opened.",
+        "This report does not establish novelty, real-model exactness or speedup."
+      ]
+    },
+    {
+      "json_values": [],
+      "path": "research/N1-EXPERT-INVENTORY-BOUNDARY.md",
+      "source": "E-S02-N1-INVENTORY",
+      "text": [
+        "per_expert_weight_bytes is an encoded GGUF layout footprint.",
+        "It is not automatically equal to physical SSD reads, page-cache misses, DRAM traffic, PCIe bus bytes"
+      ]
+    },
+    {
+      "json_values": [],
+      "path": "research/VERTICAL-NUMERICAL-BLOCKER-N2-20260925.md",
+      "source": "E-S02-N2-BLOCKER",
+      "text": [
+        "**Resultado: B — diferença aritmética isolada, sem correção técnica localizada admitida.**",
+        "O contrato congelado continua FAIL"
+      ]
+    },
+    {
+      "json_values": [],
+      "path": "research/N-CPU-MOE-CONTINUUM-SHAPE-INTERPRETATION-20260924.md",
+      "source": "E-S02-NCPU-CONTINUUM",
+      "text": [
+        "one observation per point",
+        "stable ranking or Pareto frontier"
+      ]
+    },
+    {
+      "json_values": [],
+      "path": "research/N-CPU-MOE-CAPACITY-ATTEMPT-20260923T232032Z.md",
+      "source": "E-S02-NCPU-FAIL",
+      "text": [
+        "Classification: `FAIL_INSTRUMENTATION_PROBE_ROLE`",
+        "Therefore this failure is an instrumentation/provenance-boundary defect.",
+        "not a model, hardware, placement, capacity or performance result."
+      ]
+    },
+    {
+      "json_values": [],
+      "path": "research/N-CPU-MOE-TIMING-PILOT-INTERPRETATION-20260924.md",
+      "source": "E-S02-NCPU-PILOT",
+      "text": [
+        "These are one observations each. They do not establish a stable ranking."
+      ]
+    },
+    {
+      "json_values": [],
+      "path": "research/NUMERICAL-CHARACTERIZATION-AB-RESULT-20260925.md",
+      "source": "E-S02-NUMERICAL-AB",
+      "text": [
+        "**Resultado:** A `COMPLETE`; B `NUMERICAL_CONTRACT_REVIEW_REQUIRED`",
+        "Não houve timing Tesy"
+      ]
+    },
+    {
+      "json_values": [],
+      "path": "research/PROSPECTIVE-RESOURCE-POLICY-20260928.md",
+      "source": "E-S02-RESOURCE-POLICY",
+      "text": [
+        "Historical campaign guards remain part of their original protocols and are never reclassified.",
+        "DEVICE_LIMIT",
+        "EXPERIMENT_ADMISSION"
+      ]
+    },
+    {
+      "json_values": [],
+      "path": "research/FULL-MODEL-VERTICAL-INTEGRATION-C3-RESULT-20260924.md",
+      "source": "E-S02-VERTICAL-C3",
+      "text": [
+        "O candidato **não passou a correctness multi-layer**.",
+        "0,00855978666"
+      ]
+    },
+    {
+      "json_values": [],
+      "path": "research/FULL-MODEL-VERTICAL-CAPACITY-20260924.md",
+      "source": "E-S02-VERTICAL-CAPACITY",
+      "text": [
+        "mmap span não é DRAM residente",
+        "loader working set"
+      ]
+    }
+  ]
+}

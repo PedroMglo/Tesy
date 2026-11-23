@@ -1,0 +1,8 @@
+\clearpage
+\section{Resultados}
+\subsection{Correção delimitada}
+\claim{CL-C3-BOUNDARY}{As 504 comparações de routing e saída FFN passaram bitwise.} \claim{CL-C3-LOGITS}{Os 14 vetores completos de logits de callback OFF/ON também passaram bitwise.} Os checks de bytes ativos, lifetime e negativos estão resumidos no fecho, mas a paridade está condicionada às ativações e aos inputs capturados. \evidence{E-C3-FINAL} \evidence{E-C3-BROAD}
+\subsection{Prefill e serviço}
+\claim{CL-C3-PREFILL}{As reduções medianas pareadas foram 17.515\% em 496 IDs e 18.240\% em 1522 IDs, ambas abaixo de 25\%.} Os valores extraídos do JSON são frações \metric{M-C3-MEDIUM-REDUCTION} e \metric{M-C3-LONG-REDUCTION}. O serviço terminou \metric{M-C3-REQUESTS} pedidos, com \metric{M-C3-DECODE} token/s de decode e \metric{M-C3-TAIL} na segunda metade; o pico contabilizado pelo cgroup foi \metric{M-C3-PEAK} GiB. \evidence{E-C3-AB} \evidence{E-C3-GATE}
+\subsection{Latência e utilidade}
+\claim{CL-C3-LATENCY}{No prompt curto, primeiro texto e primeiro conteúdo final chegaram em \metric{M-C3-SHORT-FIRST} e \metric{M-C3-SHORT-FINAL} s.} A comparação C2 de latência é histórica, não A/B causal. \claim{CL-C3-Q}{O stock20B com cap3072 passou \metric{M-C3-Q-PASS} de duas tarefas selecionadas; a outra truncou.} Isto altera a interpretação de uma vitória aparente da suite C2, sem produzir novo score held-out. \evidence{E-C3-LATENCY} \evidence{E-C3-Q}

@@ -1,0 +1,15 @@
+\clearpage
+\section{Falhas e resultados negativos}
+\begin{tabularx}{\linewidth}{@{}p{40mm}Y@{}}
+\toprule \textbf{Tentativa / eixo} & \textbf{O que fica preservado}\\ \midrule
+CLI sustentado anterior & TIMEOUT após seis das oito voltas planeadas; não apagado pelo PASS posterior do servidor.\\
+Referência Harmony & Paragem no cgroup antes dos logits; sem paridade para o prefix completo.\\
+Extração inicial & Falha do critério exato de campos.\\
+M6 & Vantagem ausente: empate funcional e custo maior no target.\\
+M2 & Accounting parcial; sem atribuição física exclusiva de I/O.\\
+Lifetime & EIO exercitado no surrogate, mas cobertura de outras falhas não exaustiva.\\
+\bottomrule
+\end{tabularx}
+\evidence{E-C1-AUDIT}
+
+\historicalclaim{CL-C1-FAULTS}{O EIO sintético O\_DIRECT em 20B saiu com código não zero em \metric{M-C1-EIO-EXIT} s, sem resposta. Esta observação de fail-closed não prova lifetime correto em todos os casos de upload ou publicação de slots.}

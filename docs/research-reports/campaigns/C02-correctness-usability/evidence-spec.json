@@ -1,0 +1,1314 @@
+{
+  "authorities": {
+    "authority": [
+      "E-C2-INDEX"
+    ],
+    "correctness": [
+      "E-C2-SUMMARY",
+      "E-C2-FINAL"
+    ],
+    "identity": [
+      "E-C2-SUMMARY",
+      "E-C2-FINAL"
+    ],
+    "latency": [
+      "E-C2-LATENCY"
+    ],
+    "narrative": [
+      "E-C2-FINAL"
+    ],
+    "operation": [
+      "E-C2-SUMMARY",
+      "E-C2-FINAL"
+    ],
+    "resource": [
+      "E-C2-SUMMARY",
+      "E-C2-GATE",
+      "E-C2-FINAL"
+    ],
+    "summary": [
+      "E-C2-SUMMARY"
+    ],
+    "timing": [
+      "E-C2-SUMMARY",
+      "E-C2-GATE",
+      "E-C2-FINAL"
+    ],
+    "utility": [
+      "E-C2-SUMMARY",
+      "E-C2-FINAL"
+    ]
+  },
+  "checks": [
+    {
+      "atol": 0,
+      "left": "M-C2-DECODE",
+      "right": "M-C2-SUMMARY-RATE",
+      "type": "equal"
+    },
+    {
+      "atol": 1e-12,
+      "left": "M-C2-DECODE",
+      "right": "M-C2-RATIO",
+      "type": "equal"
+    },
+    {
+      "atol": 1e-12,
+      "left": "M-C2-WALL-RATIO",
+      "right": "M-C2-WALL-RECALC",
+      "type": "equal"
+    },
+    {
+      "atol": 0.0005,
+      "left": "M-C2-FIRST-TEXT",
+      "right": "M-C2-SHORT-TEXT",
+      "type": "equal"
+    },
+    {
+      "atol": 0.0005,
+      "left": "M-C2-FIRST-FINAL",
+      "right": "M-C2-SHORT-FINAL",
+      "type": "equal"
+    },
+    {
+      "pointer": "/source_sha256/results~1c2c-target32-sustained01.gate.json",
+      "source": "E-C2-SUMMARY",
+      "target": "E-C2-GATE",
+      "type": "hash-link"
+    },
+    {
+      "pointer": "/source_sha256/research~1C2-D-RESULT-20260926.md",
+      "source": "E-C2-SUMMARY",
+      "target": "E-C2-LATENCY",
+      "type": "hash-link"
+    }
+  ],
+  "claims": [
+    {
+      "evidence": [
+        {
+          "pointer": "/global_state",
+          "source": "E-C2-SUMMARY",
+          "type": "json"
+        }
+      ],
+      "evidence_class": "DIAGNOSTICO",
+      "family": "summary",
+      "id": "CL-C2-STATE",
+      "limitation": "PASS de timing não certifica correção.",
+      "source_class": "Published campaign evidence",
+      "statement": "C2 fecha CORRECTNESS_BLOCKED.",
+      "status": "CURRENT"
+    },
+    {
+      "evidence": [
+        {
+          "pointer": "/correctness",
+          "source": "E-C2-SUMMARY",
+          "type": "json"
+        },
+        {
+          "quote": "| C2-B mechanism/numerics | **MEDIDO_NO_TARGET** surrogate 20B; target diagnostic references | 20B 30 rows plain/streamed and delayed read bitwise; EIO/short/EOF abort fail closed. Both bounded 120B full-reference attempts failed RSS guard at 135/141 and 2/141 rows. Historical target only one final 201,088-logit vector after four token IDs bitwise vs isolated reference. Production GPU8/32 long-prefix parity **PARTIAL/BLOCKED**. |",
+          "source": "E-C2-FINAL",
+          "type": "text"
+        }
+      ],
+      "evidence_class": "DIAGNOSTICO",
+      "family": "correctness",
+      "id": "CL-C2-CORRECTNESS",
+      "limitation": "Surrogate e respostas funcionais não substituem o contrato target.",
+      "source_class": "Published campaign evidence",
+      "statement": "Paridade independente GPU8/32 longa não validada.",
+      "status": "CURRENT"
+    },
+    {
+      "evidence": [
+        {
+          "pointer": "",
+          "source": "E-C2-GATE",
+          "type": "json"
+        },
+        {
+          "quote": "| C2-C 32-slot sustained | **MEDIDO_NO_TARGET** 20 fixed requests, one process, 2156.499 s wall | 4588 / 1379.108 s decode = **3.326788 tok/s**; last half 3.289640; min request 2.848732. Timing/resource gate PASS; >=2 met, >=4 not met. Two tasks truncated at 512-token cap. |",
+          "source": "E-C2-FINAL",
+          "type": "text"
+        }
+      ],
+      "evidence_class": "DIAGNOSTICO",
+      "family": "timing",
+      "id": "CL-C2-PERFORMANCE",
+      "limitation": "Não atingiu 4 tok/s nem qualifica numéricos.",
+      "source_class": "Published campaign evidence",
+      "statement": "Gate C2-C passou no âmbito timing/recursos.",
+      "status": "CURRENT"
+    },
+    {
+      "evidence": [
+        {
+          "pointer": "/resources",
+          "source": "E-C2-SUMMARY",
+          "type": "json"
+        },
+        {
+          "quote": "Performance/resource detail: C2-C was GPU8 (eight layers), 32 per-layer expert slots, context4096, batch256, microbatch32, eight CPU threads, four I/O threads, greedy/seed42/medium, no preload/repack, O_DIRECT expert reads, no prompt cache, one sequence/context. Enforced cgroup memory.max **18 GiB**, memory.swap.max=0; watchdog RSS17 GiB, GPU total<=7000 MiB, host MemAvailable>=6 GiB and CPU/GPU/NVMe limits 95/80/70 C. Peak C2-C `memory.peak` 15,344,664,576 B, GPU 3856 MiB, max CPU/GPU/NVMe 86/58/60.85 C; zero swap/max/OOM/kill events. On the 50-minute C2-E target run: peak cgroup 15,911,616,512 B, GPU 3858 MiB, max 90.375/58/60.85 C, zero swap/max/OOM/kill events; 8423 completion tokens in 2408.562 s decode = 3.497 tok/s on this different task mix. Device-exclusive physical NVMe bytes, per-tier host/device hits and H2D traffic are **DESCONHECIDO**. C2-C sampled process `read_bytes` rose 3.090 TB, C2-E target 4.442 TB; those counters are not physical device attribution. CPU/power-limit throttling behavior beyond sampled sensors is **DESCONHECIDO**.",
+          "source": "E-C2-FINAL",
+          "type": "text"
+        }
+      ],
+      "evidence_class": "DIAGNOSTICO",
+      "family": "resource",
+      "id": "CL-C2-RESOURCE",
+      "limitation": "Não misturar cgroup, RSS e GPU nem inferir tráfego físico.",
+      "source_class": "Published campaign evidence",
+      "statement": "Picos e limites têm âmbito e unidades diferentes.",
+      "status": "CURRENT"
+    },
+    {
+      "evidence": [
+        {
+          "quote": "All three responses ended naturally and had zero cached prompt tokens. The short prompt fails the prospectively declared <=10 s first-text and <=20 s first-final goals. The major measured component before first text is prefill: approximately 41/147/447 s, increasing with actual prompt length. First final content also includes the model's reasoning generation; it is not all prefill. The answer validator required exactly one JSON ticket value from the corresponding synthetic log. Its three PASS results show task-specific functional outputs, not general numerical parity.",
+          "source": "E-C2-LATENCY",
+          "type": "text"
+        },
+        {
+          "quote": "These are client SSE *first nonempty text arrivals*, not per-token timing intervals. p50/p95 token interval: **NOT_MEASURED**. The client was run in one already loaded process in short→medium→long order; the short request was cold in expert slots, while the host had previous model runs and a count-only tokenizer probe. This is neither a cold-storage comparison nor a matched A/B across prompt lengths. Exact-prefix reuse: **NOT_RUN** because the profile disables prompt cache. Process read bytes and backend stage timers do not identify exclusive physical NVMe traffic or individual layer wait/compute.",
+          "source": "E-C2-LATENCY",
+          "type": "text"
+        }
+      ],
+      "evidence_class": "DIAGNOSTICO",
+      "family": "latency",
+      "id": "CL-C2-LATENCY",
+      "limitation": "Ordem/caches impedem interpretação causal do comprimento.",
+      "source_class": "Published campaign evidence",
+      "statement": "Metas de first text e first final falharam.",
+      "status": "CURRENT"
+    },
+    {
+      "evidence": [
+        {
+          "pointer": "/utility",
+          "source": "E-C2-SUMMARY",
+          "type": "json"
+        },
+        {
+          "quote": "Utility decision: the new suite was fixed before model answers, with four development cases, twelve evaluation cases and correct/mutant validator checks. All twelve evaluation cases were run once per model; none was selected after seeing answers. The two target-only wins are real under the frozen 2048-token cap and validators. The ten shared successes, 11.478× time cost, short first-final latency of 74.506 s and narrow synthetic scope support a **selective fallback candidate** when the fast 20B produces no final answer at its cap, not default 120B use. A longer stock cap could alter those wins; it would be another prospectively frozen quality/cost experiment. No statistical significance or parameter-count causal claim follows from twelve cases. The earlier C1 8/10 tie remains unchanged.",
+          "source": "E-C2-FINAL",
+          "type": "text"
+        }
+      ],
+      "evidence_class": "DIAGNOSTICO",
+      "family": "utility",
+      "id": "CL-C2-UTILITY",
+      "limitation": "Dois exclusivos com stock sem final ao atingir o cap; sem superioridade geral.",
+      "source_class": "Published campaign evidence",
+      "statement": "Target 12/12 e stock 10/12 sob cap congelado.",
+      "status": "CURRENT"
+    },
+    {
+      "evidence": [
+        {
+          "pointer": "/operation",
+          "source": "E-C2-SUMMARY",
+          "type": "json"
+        },
+        {
+          "quote": "| C2-F operation | **MEDIDO_NO_TARGET** monitored localhost launcher | Full target SHA-256 preflight, context grew 86→663→2150 actual prompt tokens over three correct turns, cancel/follow-up PASS, clean shutdown and GPU/port release. Full 4K boundary/multi-client reliability NOT_RUN. |",
+          "source": "E-C2-FINAL",
+          "type": "text"
+        }
+      ],
+      "evidence_class": "DIAGNOSTICO",
+      "family": "operation",
+      "id": "CL-C2-OPERATION",
+      "limitation": "Fronteira total 4096 e multi-client NOT_RUN.",
+      "source_class": "Published campaign evidence",
+      "statement": "Multiturn/cancel/shutdown publicados no âmbito limitado.",
+      "status": "CURRENT"
+    },
+    {
+      "evidence": [
+        {
+          "pointer": "/identity",
+          "source": "E-C2-SUMMARY",
+          "type": "json"
+        },
+        {
+          "quote": "Objective/base: C2 started 2026-09-26 13:49:33 UTC from clean lab commit `c67529e` on local branch `campaign/c2-correctness-usability-20260926-1349utc`. Physical host was reconfirmed: Ryzen AI 9 HX370, RTX4060 Laptop 8188 MiB with driver 615.71.09, 30 GiB reported RAM, target GGUF on internal `/dev/nvme0n1p3` Btrfs `/home`, not an external/remote filesystem. Target `ggml-org/gpt-oss-120b-GGUF` MXFP4 revision `238abdd290bb874b90a5da1b4549881b7d05c091`, 63,387,346,208 B, SHA-256 `582bd40f6886200101f4c4ed9f25f3fe80cc14c86e9e2b37746cd8904a0c622d`. Stock 20B SHA-256 `52f57ab7d3df3ba9173827c1c6832e73375553a846f3e32b49f1ae2daad688d4`. Stock backend `ggml-org/llama.cpp` SHA `4b1a27fa0eb875bbca4f6cfe936e3d65adc685c0`; streamed backend `freedomljc/llama.cpp` SHA `1248fd8fa8cfebaece5ea992e4d951c1e18bb9d5`. Binary and loaded-library SHA-256 values are in frozen protocols/run manifests. No backend source patch, quantization, routing, tokenizer, attention or sampler change was promoted.",
+          "source": "E-C2-FINAL",
+          "type": "text"
+        }
+      ],
+      "evidence_class": "DIAGNOSTICO",
+      "family": "identity",
+      "id": "CL-C2-IDENTITY",
+      "limitation": "Não houve inspeção live do target para este relatório.",
+      "source_class": "Published campaign evidence",
+      "statement": "Modelo/backend/host são os da publicação histórica.",
+      "status": "CURRENT"
+    },
+    {
+      "evidence": [
+        {
+          "quote": "Retained failures/limits: target smoke02 fails its 2.162 s telemetry boundary; 120B plain reference runs `c2-ref120b-cpu-all01/02` stopped at their declared secondary RSS guards without OOM and do not yield full-model parity; a first descriptive sustained report had an event-key bug, preserved under its original name with corrected `analysis-v2` authoritative. GPU8 plain full-reference weights alone exceed the RTX4060 VRAM budget, so no matching full-model GPU reference was run. Source audit and 20B fault injection do not replace an executed 120B in-flight eviction/stale publication or upload-error test. C2-E answers are functional tests, not proof of exact numeric computation across the token prefixes they traversed. Complete 4096-token prompt use, 8192 context, prefix reuse, physical-device-exclusive I/O and per-tier cache accounting remain NOT_RUN/DESCONHECIDO as documented.",
+          "source": "E-C2-FINAL",
+          "type": "text"
+        }
+      ],
+      "evidence_class": "DIAGNOSTICO",
+      "family": "narrative",
+      "id": "CL-C2-FAILURES",
+      "limitation": "Inventário das publicações selecionadas, não de todos os raws.",
+      "source_class": "Published campaign evidence",
+      "statement": "Falhas e correções permanecem visíveis.",
+      "status": "CURRENT"
+    },
+    {
+      "evidence": [
+        {
+          "quote": "The C1 24-slot sustained 2.733 tok/s and three short 24/32 A/B pairs (2.568→3.269 mean) are retained as historical comparisons with different coverage. No fresh same-protocol sustained24 control was run, so the 3.327 C2-C figure is not a causal sustained 24→32 speedup. No candidate `-ngl12`, larger microbatch, predictor, prefetch, speculative decoder or three-tier cache was promoted: C2-B's independent numerical gate was not cleared. New optimization intervention count **0/6**. C2-D's prefill timings locate the observable delay but do not identify an exclusive per-layer I/O or compute bottleneck. Token interval p50/p95 is **NOT_MEASURED**; SSE first-chunk arrival is not a per-token interval. The task runner's nonstream API did not expose TTFT or reasoning/final token split; total completion tokens and reasoning/final character counts are retained.",
+          "source": "E-C2-FINAL",
+          "type": "text"
+        }
+      ],
+      "evidence_class": "DIAGNOSTICO",
+      "family": "narrative",
+      "id": "CL-C2-BOUNDARY",
+      "limitation": "Sem speedup causal sustentado 24/32.",
+      "source_class": "Published campaign evidence",
+      "statement": "Não existe sustained24 novo no protocolo C2.",
+      "status": "CURRENT"
+    },
+    {
+      "evidence": [
+        {
+          "quote": "Next discriminating gate: qualify longer target token prefixes on a reference independent of the tested expert cache while preserving GPU8 placement or explicitly documenting a differential layer/kernel scope under the unchanged 18 GiB/zero-swap envelope. A new reference design must account for file-backed reclaim and avoid the RSS guard conflict that stopped both C2 attempts. Only after numerical coverage is sufficient should one profile the prefill wait/compute path and prospectively test a single placement or microbatch change against the 32-slot baseline. The selective fallback policy also needs a separate prospective latency/quality run if deployment is considered. These are reasons for a future experiment, not claims that this campaign completed them.",
+          "source": "E-C2-FINAL",
+          "type": "text"
+        }
+      ],
+      "evidence_class": "DIAGNOSTICO",
+      "family": "narrative",
+      "id": "CL-C2-NEXT",
+      "limitation": "Plano, não resultado executado.",
+      "source_class": "Published campaign evidence",
+      "statement": "Próximo gate é referência independente admissível.",
+      "status": "CURRENT"
+    },
+    {
+      "evidence": [
+        {
+          "quote": "The current authoritative narrative is `../research/C2-FINAL-20260926.md`, with machine-readable state in `c2-final-summary.json` and live lab ledger in `../LAB_STATE.md`/`../DECISIONS.md`. Campaign 1 final evidence is in `../research/PLAN-AUDIT-20260926.md`; its original conclusions are preserved. The compact `c2-historical-reaudit-index.json` lists source hashes and analyzer commit for re-read campaign 1 runs. C2-C's authoritative timing/resource result is `c2c-target32-sustained01.gate.json` plus `c2c-target32-sustained01-analysis-v2.json`; the earlier descriptive analysis without `-v2` has a report-only event-key error and must not be used for event detail. `c2c-target32-sustained01.published.json` records raw file hashes and final cgroup audit. C2-D/F latency and launcher lifecycle are in `../research/C2-D-RESULT-20260926.md` and `../research/C2-F-RESULT-20260926.md`. The frozen twelve-task C2-E comparison is `c2e-eval12-comparison01.json`, supported by both grade/gate/publication files and `../research/C2-E-RESULT-20260926.md`. No file replaced or rewrote the historical campaign summary or failed runs.",
+          "source": "E-C2-INDEX",
+          "type": "text"
+        }
+      ],
+      "evidence_class": "DIAGNOSTICO",
+      "family": "authority",
+      "id": "CL-C2-AUTHORITY",
+      "limitation": "Detalhe de eventos exige fonte integral v2 não incluída aqui.",
+      "source_class": "Published campaign evidence",
+      "statement": "Índice identifica o resumo inicial e a análise v2.",
+      "status": "CURRENT"
+    },
+    {
+      "evidence": [
+        {
+          "quote": "Local evidence authority: `../LAB_STATE.md`, `../DECISIONS.md`, `../results/INDEX.md`, phase reports `C2-A` through `C2-F`, and `../results/c2-final-summary.json`. Raw stdout/stderr, one-second samples, answer texts and logit rows remain local and no-replace; compact gates, grades, comparison and source-hash publications are versioned. Old `../results/campaign-summary.json` is byte-preserved as an early C1 snapshot. No model process, watcher or localhost listener remained at closure. The C2 branch has local commits only; **no push, PR, merge or remote publication** occurred under this campaign's explicit instruction.",
+          "source": "E-C2-FINAL",
+          "type": "text"
+        }
+      ],
+      "evidence_class": "DIAGNOSTICO",
+      "family": "narrative",
+      "id": "CL-C2-RAW",
+      "limitation": "Sem reprodução experimental neste pacote.",
+      "source_class": "Published campaign evidence",
+      "statement": "Publicações compactas versionadas, raws ficaram locais.",
+      "status": "CURRENT"
+    }
+  ],
+  "datasets": [
+    {
+      "columns": [
+        {
+          "key": "prompt",
+          "label": "prompt",
+          "unit": "token"
+        },
+        {
+          "key": "prefill",
+          "label": "prefill",
+          "unit": "s"
+        },
+        {
+          "key": "text",
+          "label": "text",
+          "unit": "s"
+        },
+        {
+          "key": "final",
+          "label": "final",
+          "unit": "s"
+        }
+      ],
+      "id": "latency",
+      "rows": [
+        {
+          "cells": {
+            "final": "M-C2-SHORT-FINAL",
+            "prefill": "M-C2-SHORT-PREFILL",
+            "prompt": "M-C2-SHORT-PROMPT",
+            "text": "M-C2-SHORT-TEXT"
+          },
+          "label": "short"
+        },
+        {
+          "cells": {
+            "final": "M-C2-MEDIUM-FINAL",
+            "prefill": "M-C2-MEDIUM-PREFILL",
+            "prompt": "M-C2-MEDIUM-PROMPT",
+            "text": "M-C2-MEDIUM-TEXT"
+          },
+          "label": "medium"
+        },
+        {
+          "cells": {
+            "final": "M-C2-LONG-FINAL",
+            "prefill": "M-C2-LONG-PREFILL",
+            "prompt": "M-C2-LONG-PROMPT",
+            "text": "M-C2-LONG-TEXT"
+          },
+          "label": "long"
+        }
+      ]
+    },
+    {
+      "columns": [
+        {
+          "key": "peak",
+          "label": "Pico",
+          "unit": "GiB"
+        },
+        {
+          "key": "limit",
+          "label": "Limite",
+          "unit": "GiB"
+        }
+      ],
+      "id": "host-memory",
+      "rows": [
+        {
+          "cells": {
+            "limit": "M-C2-HOST-LIMIT",
+            "peak": "M-C2-HOST-PEAK"
+          },
+          "label": "C2-C"
+        },
+        {
+          "cells": {
+            "limit": "M-C2-HOST-LIMIT",
+            "peak": "M-C2-HOST-E-PEAK"
+          },
+          "label": "C2-E"
+        }
+      ]
+    },
+    {
+      "columns": [
+        {
+          "key": "peak",
+          "label": "Pico",
+          "unit": "MiB"
+        },
+        {
+          "key": "limit",
+          "label": "Limite",
+          "unit": "MiB"
+        }
+      ],
+      "id": "gpu-memory",
+      "rows": [
+        {
+          "cells": {
+            "limit": "M-C2-GPU-LIMIT",
+            "peak": "M-C2-GPU-PEAK"
+          },
+          "label": "C2-C"
+        },
+        {
+          "cells": {
+            "limit": "M-C2-GPU-LIMIT",
+            "peak": "M-C2-GPU-E-PEAK"
+          },
+          "label": "C2-E"
+        }
+      ]
+    }
+  ],
+  "metrics": [
+    {
+      "decimals": 3,
+      "evidence_class": "MEDIDO",
+      "extract": {
+        "pointer": "/decode_tok_s",
+        "source": "E-C2-GATE",
+        "type": "json"
+      },
+      "family": "timing",
+      "id": "M-C2-DECODE",
+      "label": "Decode agregado C2-C",
+      "limitation": "Não amplia o contrato de correção ou o âmbito do workload publicado.",
+      "raw_unit": "token/s",
+      "run_id": "c2c-target32-sustained01",
+      "scope": "Valor da publicação selecionada; não é nova medição.",
+      "source_class": "MEDIDO_NO_TARGET",
+      "unit": "token/s"
+    },
+    {
+      "decimals": 0,
+      "evidence_class": "MEDIDO",
+      "extract": {
+        "pointer": "/decode_tokens",
+        "source": "E-C2-GATE",
+        "type": "json"
+      },
+      "family": "timing",
+      "id": "M-C2-TOKENS",
+      "label": "Tokens C2-C",
+      "limitation": "Não amplia o contrato de correção ou o âmbito do workload publicado.",
+      "raw_unit": "token",
+      "run_id": "c2c-target32-sustained01",
+      "scope": "Valor da publicação selecionada; não é nova medição.",
+      "source_class": "MEDIDO_NO_TARGET",
+      "unit": "token"
+    },
+    {
+      "decimals": 3,
+      "evidence_class": "MEDIDO",
+      "extract": {
+        "pointer": "/decode_s",
+        "source": "E-C2-GATE",
+        "type": "json"
+      },
+      "family": "timing",
+      "id": "M-C2-SECONDS",
+      "label": "Tempo de decode C2-C",
+      "limitation": "Não amplia o contrato de correção ou o âmbito do workload publicado.",
+      "raw_unit": "s",
+      "run_id": "c2c-target32-sustained01",
+      "scope": "Valor da publicação selecionada; não é nova medição.",
+      "source_class": "MEDIDO_NO_TARGET",
+      "unit": "s"
+    },
+    {
+      "decimals": 3,
+      "evidence_class": "MEDIDO",
+      "extract": {
+        "pointer": "/last_half_decode_tok_s",
+        "source": "E-C2-GATE",
+        "type": "json"
+      },
+      "family": "timing",
+      "id": "M-C2-SECOND-HALF",
+      "label": "Decode segunda metade",
+      "limitation": "Não amplia o contrato de correção ou o âmbito do workload publicado.",
+      "raw_unit": "token/s",
+      "run_id": "c2c-target32-sustained01",
+      "scope": "Valor da publicação selecionada; não é nova medição.",
+      "source_class": "MEDIDO_NO_TARGET",
+      "unit": "token/s"
+    },
+    {
+      "decimals": 0,
+      "evidence_class": "MEDIDO",
+      "extract": {
+        "pointer": "/completed_requests",
+        "source": "E-C2-GATE",
+        "type": "json"
+      },
+      "family": "timing",
+      "id": "M-C2-REQUESTS",
+      "label": "Pedidos C2-C",
+      "limitation": "Não amplia o contrato de correção ou o âmbito do workload publicado.",
+      "raw_unit": "count",
+      "run_id": "c2c-target32-sustained01",
+      "scope": "Valor da publicação selecionada; não é nova medição.",
+      "source_class": "MEDIDO_NO_TARGET",
+      "unit": "count"
+    },
+    {
+      "decimals": 3,
+      "evidence_class": "MEDIDO",
+      "extract": {
+        "pointer": "/performance/sustained32_decode_tok_s",
+        "source": "E-C2-SUMMARY",
+        "type": "json"
+      },
+      "family": "timing",
+      "id": "M-C2-SUMMARY-RATE",
+      "label": "Rate do resumo",
+      "limitation": "Não amplia o contrato de correção ou o âmbito do workload publicado.",
+      "raw_unit": "token/s",
+      "run_id": null,
+      "scope": "Valor da publicação selecionada; não é nova medição.",
+      "source_class": "MEDIDO_NO_TARGET",
+      "unit": "token/s"
+    },
+    {
+      "decimals": 3,
+      "evidence_class": "INFERIDO",
+      "extract": {
+        "inputs": [
+          "M-C2-TOKENS",
+          "M-C2-SECONDS"
+        ],
+        "type": "ratio"
+      },
+      "family": "timing",
+      "id": "M-C2-RATIO",
+      "label": "Rate recomposto dos agregados",
+      "limitation": "Não amplia o contrato de correção ou o âmbito do workload publicado.",
+      "raw_unit": "token/s",
+      "run_id": null,
+      "scope": "Aritmética sobre agregados publicados; não reanálise de raws.",
+      "source_class": "MEDIDO_NO_TARGET",
+      "unit": "token/s"
+    },
+    {
+      "decimals": 3,
+      "evidence_class": "MEDIDO",
+      "extract": {
+        "pointer": "/cgroup_peak_bytes",
+        "source": "E-C2-GATE",
+        "type": "json"
+      },
+      "family": "resource",
+      "id": "M-C2-HOST-PEAK",
+      "label": "memory.peak C2-C",
+      "limitation": "Pico do cgroup; não RSS nem RAM total do host.",
+      "raw_unit": "B",
+      "run_id": "c2c-target32-sustained01",
+      "scope": "Valor da publicação selecionada; não é nova medição.",
+      "source_class": "MEDIDO_NO_TARGET",
+      "unit": "GiB"
+    },
+    {
+      "decimals": 0,
+      "evidence_class": "MEDIDO",
+      "extract": {
+        "pointer": "/resources/memory_max_bytes",
+        "source": "E-C2-SUMMARY",
+        "type": "json"
+      },
+      "family": "resource",
+      "id": "M-C2-HOST-LIMIT",
+      "label": "memory.max imposto",
+      "limitation": "Limite, não alocação observada.",
+      "raw_unit": "B",
+      "run_id": null,
+      "scope": "Valor da publicação selecionada; não é nova medição.",
+      "source_class": "MEDIDO_NO_TARGET",
+      "unit": "GiB"
+    },
+    {
+      "decimals": 3,
+      "evidence_class": "MEDIDO",
+      "extract": {
+        "pointer": "/resources/utility_target_cgroup_peak_bytes",
+        "source": "E-C2-SUMMARY",
+        "type": "json"
+      },
+      "family": "resource",
+      "id": "M-C2-HOST-E-PEAK",
+      "label": "memory.peak target C2-E",
+      "limitation": "Run diferente de C2-C.",
+      "raw_unit": "B",
+      "run_id": null,
+      "scope": "Valor da publicação selecionada; não é nova medição.",
+      "source_class": "MEDIDO_NO_TARGET",
+      "unit": "GiB"
+    },
+    {
+      "decimals": 0,
+      "evidence_class": "MEDIDO",
+      "extract": {
+        "pointer": "/resources/gpu_guard_mib",
+        "source": "E-C2-SUMMARY",
+        "type": "json"
+      },
+      "family": "resource",
+      "id": "M-C2-GPU-LIMIT",
+      "label": "Guard GPU total",
+      "limitation": "7000 MiB não são 7 GiB.",
+      "raw_unit": "MiB",
+      "run_id": null,
+      "scope": "Valor da publicação selecionada; não é nova medição.",
+      "source_class": "MEDIDO_NO_TARGET",
+      "unit": "MiB"
+    },
+    {
+      "decimals": 0,
+      "evidence_class": "MEDIDO",
+      "extract": {
+        "pointer": "/resources/target_utility_gpu_max_mib",
+        "source": "E-C2-SUMMARY",
+        "type": "json"
+      },
+      "family": "resource",
+      "id": "M-C2-GPU-E-PEAK",
+      "label": "Máximo amostrado GPU C2-E",
+      "limitation": "Máximo amostrado, não pico contínuo.",
+      "raw_unit": "MiB",
+      "run_id": null,
+      "scope": "Valor da publicação selecionada; não é nova medição.",
+      "source_class": "MEDIDO_NO_TARGET",
+      "unit": "MiB"
+    },
+    {
+      "decimals": 0,
+      "evidence_class": "MEDIDO",
+      "extract": {
+        "quote": "GPU 3856 MiB",
+        "source": "E-C2-FINAL",
+        "token": "3856",
+        "type": "text-number"
+      },
+      "family": "resource",
+      "id": "M-C2-GPU-PEAK",
+      "label": "Máximo GPU C2-C",
+      "limitation": "Máximo publicado de amostras; não cobre todos os transientes.",
+      "raw_unit": "MiB",
+      "run_id": "c2c-target32-sustained01",
+      "scope": "Valor da publicação selecionada; não é nova medição.",
+      "source_class": "MEDIDO_NO_TARGET",
+      "unit": "MiB"
+    },
+    {
+      "decimals": 3,
+      "evidence_class": "MEDIDO",
+      "extract": {
+        "pointer": "/identity/target_bytes",
+        "source": "E-C2-SUMMARY",
+        "type": "json"
+      },
+      "family": "identity",
+      "id": "M-C2-MODEL-GB",
+      "label": "Tamanho do artefacto target",
+      "limitation": "Ficheiro MXFP4 GGUF, não pesos em outra precisão.",
+      "raw_unit": "B",
+      "run_id": null,
+      "scope": "Valor da publicação selecionada; não é nova medição.",
+      "source_class": "MEDIDO_NO_TARGET",
+      "unit": "GB"
+    },
+    {
+      "decimals": 3,
+      "evidence_class": "MEDIDO",
+      "extract": {
+        "pointer": "/performance/short_first_text_s",
+        "source": "E-C2-SUMMARY",
+        "type": "json"
+      },
+      "family": "timing",
+      "id": "M-C2-FIRST-TEXT",
+      "label": "Primeiro reasoning text curto",
+      "limitation": "SSE primeiro texto; não intervalo por token.",
+      "raw_unit": "s",
+      "run_id": null,
+      "scope": "Valor da publicação selecionada; não é nova medição.",
+      "source_class": "MEDIDO_NO_TARGET",
+      "unit": "s"
+    },
+    {
+      "decimals": 3,
+      "evidence_class": "MEDIDO",
+      "extract": {
+        "pointer": "/performance/short_first_final_s",
+        "source": "E-C2-SUMMARY",
+        "type": "json"
+      },
+      "family": "timing",
+      "id": "M-C2-FIRST-FINAL",
+      "label": "Primeiro conteúdo final curto",
+      "limitation": "Inclui reasoning; não é só prefill.",
+      "raw_unit": "s",
+      "run_id": null,
+      "scope": "Valor da publicação selecionada; não é nova medição.",
+      "source_class": "MEDIDO_NO_TARGET",
+      "unit": "s"
+    },
+    {
+      "decimals": 0,
+      "evidence_class": "MEDIDO",
+      "extract": {
+        "pointer": "/utility/stock_pass",
+        "source": "E-C2-SUMMARY",
+        "type": "json"
+      },
+      "family": "utility",
+      "id": "M-C2-STOCK-PASS",
+      "label": "Tarefas corretas stock",
+      "limitation": "Doze tarefas sintéticas, uma execução por caso/modelo; sem superioridade geral.",
+      "raw_unit": "count",
+      "run_id": null,
+      "scope": "Valor da publicação selecionada; não é nova medição.",
+      "source_class": "MEDIDO_NO_TARGET",
+      "unit": "count"
+    },
+    {
+      "decimals": 0,
+      "evidence_class": "MEDIDO",
+      "extract": {
+        "pointer": "/utility/target_pass",
+        "source": "E-C2-SUMMARY",
+        "type": "json"
+      },
+      "family": "utility",
+      "id": "M-C2-TARGET-PASS",
+      "label": "Tarefas corretas target",
+      "limitation": "Doze tarefas sintéticas, uma execução por caso/modelo; sem superioridade geral.",
+      "raw_unit": "count",
+      "run_id": null,
+      "scope": "Valor da publicação selecionada; não é nova medição.",
+      "source_class": "MEDIDO_NO_TARGET",
+      "unit": "count"
+    },
+    {
+      "decimals": 0,
+      "evidence_class": "MEDIDO",
+      "extract": {
+        "pointer": "/utility/counts/both_pass",
+        "source": "E-C2-SUMMARY",
+        "type": "json"
+      },
+      "family": "utility",
+      "id": "M-C2-BOTH",
+      "label": "Corretas em ambos",
+      "limitation": "Doze tarefas sintéticas, uma execução por caso/modelo; sem superioridade geral.",
+      "raw_unit": "count",
+      "run_id": null,
+      "scope": "Valor da publicação selecionada; não é nova medição.",
+      "source_class": "MEDIDO_NO_TARGET",
+      "unit": "count"
+    },
+    {
+      "decimals": 0,
+      "evidence_class": "MEDIDO",
+      "extract": {
+        "pointer": "/utility/counts/target_only",
+        "source": "E-C2-SUMMARY",
+        "type": "json"
+      },
+      "family": "utility",
+      "id": "M-C2-TARGET-ONLY",
+      "label": "Corretas só no target",
+      "limitation": "Doze tarefas sintéticas, uma execução por caso/modelo; sem superioridade geral.",
+      "raw_unit": "count",
+      "run_id": null,
+      "scope": "Valor da publicação selecionada; não é nova medição.",
+      "source_class": "MEDIDO_NO_TARGET",
+      "unit": "count"
+    },
+    {
+      "decimals": 0,
+      "evidence_class": "MEDIDO",
+      "extract": {
+        "pointer": "/utility/counts/stock_only",
+        "source": "E-C2-SUMMARY",
+        "type": "json"
+      },
+      "family": "utility",
+      "id": "M-C2-STOCK-ONLY",
+      "label": "Corretas só no stock",
+      "limitation": "Doze tarefas sintéticas, uma execução por caso/modelo; sem superioridade geral.",
+      "raw_unit": "count",
+      "run_id": null,
+      "scope": "Valor da publicação selecionada; não é nova medição.",
+      "source_class": "MEDIDO_NO_TARGET",
+      "unit": "count"
+    },
+    {
+      "decimals": 0,
+      "evidence_class": "MEDIDO",
+      "extract": {
+        "pointer": "/utility/counts/both_fail",
+        "source": "E-C2-SUMMARY",
+        "type": "json"
+      },
+      "family": "utility",
+      "id": "M-C2-BOTH-FAIL",
+      "label": "Falhadas em ambos",
+      "limitation": "Doze tarefas sintéticas, uma execução por caso/modelo; sem superioridade geral.",
+      "raw_unit": "count",
+      "run_id": null,
+      "scope": "Valor da publicação selecionada; não é nova medição.",
+      "source_class": "MEDIDO_NO_TARGET",
+      "unit": "count"
+    },
+    {
+      "decimals": 0,
+      "evidence_class": "INFERIDO",
+      "extract": {
+        "inputs": [
+          "M-C2-BOTH",
+          "M-C2-TARGET-ONLY",
+          "M-C2-STOCK-ONLY",
+          "M-C2-BOTH-FAIL"
+        ],
+        "type": "sum"
+      },
+      "family": "utility",
+      "id": "M-C2-CASES",
+      "label": "Total de casos do piloto",
+      "limitation": "Soma das quatro classes mutuamente exclusivas publicadas.",
+      "raw_unit": "count",
+      "run_id": null,
+      "scope": "Valor da publicação selecionada; não é nova medição.",
+      "source_class": "MEDIDO_NO_TARGET",
+      "unit": "count"
+    },
+    {
+      "decimals": 3,
+      "evidence_class": "MEDIDO",
+      "extract": {
+        "pointer": "/utility/stock_request_wall_s",
+        "source": "E-C2-SUMMARY",
+        "type": "json"
+      },
+      "family": "utility",
+      "id": "M-C2-STOCK-WALL",
+      "label": "Soma wall time stock",
+      "limitation": "Não amplia o contrato de correção ou o âmbito do workload publicado.",
+      "raw_unit": "s",
+      "run_id": null,
+      "scope": "Valor da publicação selecionada; não é nova medição.",
+      "source_class": "MEDIDO_NO_TARGET",
+      "unit": "s"
+    },
+    {
+      "decimals": 3,
+      "evidence_class": "MEDIDO",
+      "extract": {
+        "pointer": "/utility/target_request_wall_s",
+        "source": "E-C2-SUMMARY",
+        "type": "json"
+      },
+      "family": "utility",
+      "id": "M-C2-TARGET-WALL",
+      "label": "Soma wall time target",
+      "limitation": "Não amplia o contrato de correção ou o âmbito do workload publicado.",
+      "raw_unit": "s",
+      "run_id": null,
+      "scope": "Valor da publicação selecionada; não é nova medição.",
+      "source_class": "MEDIDO_NO_TARGET",
+      "unit": "s"
+    },
+    {
+      "decimals": 3,
+      "evidence_class": "MEDIDO",
+      "extract": {
+        "pointer": "/utility/target_to_stock_wall_ratio",
+        "source": "E-C2-SUMMARY",
+        "type": "json"
+      },
+      "family": "utility",
+      "id": "M-C2-WALL-RATIO",
+      "label": "Custo temporal target/stock",
+      "limitation": "Custo deste piloto, não comparação causal de número de parâmetros.",
+      "raw_unit": "ratio",
+      "run_id": null,
+      "scope": "Valor da publicação selecionada; não é nova medição.",
+      "source_class": "MEDIDO_NO_TARGET",
+      "unit": "ratio"
+    },
+    {
+      "decimals": 3,
+      "evidence_class": "INFERIDO",
+      "extract": {
+        "inputs": [
+          "M-C2-TARGET-WALL",
+          "M-C2-STOCK-WALL"
+        ],
+        "type": "ratio"
+      },
+      "family": "utility",
+      "id": "M-C2-WALL-RECALC",
+      "label": "Razão temporal recomposta",
+      "limitation": "Não amplia o contrato de correção ou o âmbito do workload publicado.",
+      "raw_unit": "ratio",
+      "run_id": null,
+      "scope": "Valor da publicação selecionada; não é nova medição.",
+      "source_class": "MEDIDO_NO_TARGET",
+      "unit": "ratio"
+    },
+    {
+      "decimals": 0,
+      "evidence_class": "MEDIDO",
+      "extract": {
+        "pointer": "/operation/actual_multiturn_prompt_tokens/0",
+        "source": "E-C2-SUMMARY",
+        "type": "json"
+      },
+      "family": "operation",
+      "id": "M-C2-TURN-1",
+      "label": "Tokens reais de prompt no turno 1",
+      "limitation": "Não demonstra fronteira completa de 4096 tokens.",
+      "raw_unit": "token",
+      "run_id": null,
+      "scope": "Valor da publicação selecionada; não é nova medição.",
+      "source_class": "MEDIDO_NO_TARGET",
+      "unit": "token"
+    },
+    {
+      "decimals": 0,
+      "evidence_class": "MEDIDO",
+      "extract": {
+        "pointer": "/operation/actual_multiturn_prompt_tokens/1",
+        "source": "E-C2-SUMMARY",
+        "type": "json"
+      },
+      "family": "operation",
+      "id": "M-C2-TURN-2",
+      "label": "Tokens reais de prompt no turno 2",
+      "limitation": "Não demonstra fronteira completa de 4096 tokens.",
+      "raw_unit": "token",
+      "run_id": null,
+      "scope": "Valor da publicação selecionada; não é nova medição.",
+      "source_class": "MEDIDO_NO_TARGET",
+      "unit": "token"
+    },
+    {
+      "decimals": 0,
+      "evidence_class": "MEDIDO",
+      "extract": {
+        "pointer": "/operation/actual_multiturn_prompt_tokens/2",
+        "source": "E-C2-SUMMARY",
+        "type": "json"
+      },
+      "family": "operation",
+      "id": "M-C2-TURN-3",
+      "label": "Tokens reais de prompt no turno 3",
+      "limitation": "Não demonstra fronteira completa de 4096 tokens.",
+      "raw_unit": "token",
+      "run_id": null,
+      "scope": "Valor da publicação selecionada; não é nova medição.",
+      "source_class": "MEDIDO_NO_TARGET",
+      "unit": "token"
+    },
+    {
+      "decimals": 0,
+      "evidence_class": "MEDIDO",
+      "extract": {
+        "pointer": "/budget/optimization_interventions_used",
+        "source": "E-C2-SUMMARY",
+        "type": "json"
+      },
+      "family": "summary",
+      "id": "M-C2-INTERVENTIONS",
+      "label": "Intervenções de otimização usadas",
+      "limitation": "Não amplia o contrato de correção ou o âmbito do workload publicado.",
+      "raw_unit": "count",
+      "run_id": null,
+      "scope": "Valor da publicação selecionada; não é nova medição.",
+      "source_class": "MEDIDO_NO_TARGET",
+      "unit": "count"
+    },
+    {
+      "decimals": 0,
+      "evidence_class": "MEDIDO",
+      "extract": {
+        "quote": "| short | 113 | 41.353 | 42.309 | 74.506 | 76.342 | 106 / 34.986 = 3.030 | correct ticket T001 |",
+        "source": "E-C2-LATENCY",
+        "token": "113",
+        "type": "text-number"
+      },
+      "family": "latency",
+      "id": "M-C2-SHORT-PROMPT",
+      "label": "PROMPT short",
+      "limitation": "Não é A/B de comprimento nem cold-storage. Não extrapolar.",
+      "raw_unit": "token",
+      "run_id": "c2d-target32-latency01",
+      "scope": "Sequência short/medium/long no mesmo processo; tabela publicada arredondada.",
+      "source_class": "MEDIDO_NO_TARGET",
+      "unit": "token"
+    },
+    {
+      "decimals": 3,
+      "evidence_class": "MEDIDO",
+      "extract": {
+        "quote": "| short | 113 | 41.353 | 42.309 | 74.506 | 76.342 | 106 / 34.986 = 3.030 | correct ticket T001 |",
+        "source": "E-C2-LATENCY",
+        "token": "41.353",
+        "type": "text-number"
+      },
+      "family": "latency",
+      "id": "M-C2-SHORT-PREFILL",
+      "label": "PREFILL short",
+      "limitation": "Não é A/B de comprimento nem cold-storage. Não extrapolar.",
+      "raw_unit": "s",
+      "run_id": "c2d-target32-latency01",
+      "scope": "Sequência short/medium/long no mesmo processo; tabela publicada arredondada.",
+      "source_class": "MEDIDO_NO_TARGET",
+      "unit": "s"
+    },
+    {
+      "decimals": 3,
+      "evidence_class": "MEDIDO",
+      "extract": {
+        "quote": "| short | 113 | 41.353 | 42.309 | 74.506 | 76.342 | 106 / 34.986 = 3.030 | correct ticket T001 |",
+        "source": "E-C2-LATENCY",
+        "token": "42.309",
+        "type": "text-number"
+      },
+      "family": "latency",
+      "id": "M-C2-SHORT-TEXT",
+      "label": "TEXT short",
+      "limitation": "Não é A/B de comprimento nem cold-storage. Não extrapolar.",
+      "raw_unit": "s",
+      "run_id": "c2d-target32-latency01",
+      "scope": "Sequência short/medium/long no mesmo processo; tabela publicada arredondada.",
+      "source_class": "MEDIDO_NO_TARGET",
+      "unit": "s"
+    },
+    {
+      "decimals": 3,
+      "evidence_class": "MEDIDO",
+      "extract": {
+        "quote": "| short | 113 | 41.353 | 42.309 | 74.506 | 76.342 | 106 / 34.986 = 3.030 | correct ticket T001 |",
+        "source": "E-C2-LATENCY",
+        "token": "74.506",
+        "type": "text-number"
+      },
+      "family": "latency",
+      "id": "M-C2-SHORT-FINAL",
+      "label": "FINAL short",
+      "limitation": "Não é A/B de comprimento nem cold-storage. Não extrapolar.",
+      "raw_unit": "s",
+      "run_id": "c2d-target32-latency01",
+      "scope": "Sequência short/medium/long no mesmo processo; tabela publicada arredondada.",
+      "source_class": "MEDIDO_NO_TARGET",
+      "unit": "s"
+    },
+    {
+      "decimals": 0,
+      "evidence_class": "MEDIDO",
+      "extract": {
+        "quote": "| medium | 496 | 146.961 | 147.683 | 163.222 | 165.004 | 60 / 18.036 = 3.327 | correct ticket T009 |",
+        "source": "E-C2-LATENCY",
+        "token": "496",
+        "type": "text-number"
+      },
+      "family": "latency",
+      "id": "M-C2-MEDIUM-PROMPT",
+      "label": "PROMPT medium",
+      "limitation": "Não é A/B de comprimento nem cold-storage. Não extrapolar.",
+      "raw_unit": "token",
+      "run_id": "c2d-target32-latency01",
+      "scope": "Sequência short/medium/long no mesmo processo; tabela publicada arredondada.",
+      "source_class": "MEDIDO_NO_TARGET",
+      "unit": "token"
+    },
+    {
+      "decimals": 3,
+      "evidence_class": "MEDIDO",
+      "extract": {
+        "quote": "| medium | 496 | 146.961 | 147.683 | 163.222 | 165.004 | 60 / 18.036 = 3.327 | correct ticket T009 |",
+        "source": "E-C2-LATENCY",
+        "token": "146.961",
+        "type": "text-number"
+      },
+      "family": "latency",
+      "id": "M-C2-MEDIUM-PREFILL",
+      "label": "PREFILL medium",
+      "limitation": "Não é A/B de comprimento nem cold-storage. Não extrapolar.",
+      "raw_unit": "s",
+      "run_id": "c2d-target32-latency01",
+      "scope": "Sequência short/medium/long no mesmo processo; tabela publicada arredondada.",
+      "source_class": "MEDIDO_NO_TARGET",
+      "unit": "s"
+    },
+    {
+      "decimals": 3,
+      "evidence_class": "MEDIDO",
+      "extract": {
+        "quote": "| medium | 496 | 146.961 | 147.683 | 163.222 | 165.004 | 60 / 18.036 = 3.327 | correct ticket T009 |",
+        "source": "E-C2-LATENCY",
+        "token": "147.683",
+        "type": "text-number"
+      },
+      "family": "latency",
+      "id": "M-C2-MEDIUM-TEXT",
+      "label": "TEXT medium",
+      "limitation": "Não é A/B de comprimento nem cold-storage. Não extrapolar.",
+      "raw_unit": "s",
+      "run_id": "c2d-target32-latency01",
+      "scope": "Sequência short/medium/long no mesmo processo; tabela publicada arredondada.",
+      "source_class": "MEDIDO_NO_TARGET",
+      "unit": "s"
+    },
+    {
+      "decimals": 3,
+      "evidence_class": "MEDIDO",
+      "extract": {
+        "quote": "| medium | 496 | 146.961 | 147.683 | 163.222 | 165.004 | 60 / 18.036 = 3.327 | correct ticket T009 |",
+        "source": "E-C2-LATENCY",
+        "token": "163.222",
+        "type": "text-number"
+      },
+      "family": "latency",
+      "id": "M-C2-MEDIUM-FINAL",
+      "label": "FINAL medium",
+      "limitation": "Não é A/B de comprimento nem cold-storage. Não extrapolar.",
+      "raw_unit": "s",
+      "run_id": "c2d-target32-latency01",
+      "scope": "Sequência short/medium/long no mesmo processo; tabela publicada arredondada.",
+      "source_class": "MEDIDO_NO_TARGET",
+      "unit": "s"
+    },
+    {
+      "decimals": 0,
+      "evidence_class": "MEDIDO",
+      "extract": {
+        "quote": "| long | 1522 | 447.076 | 447.879 | 461.473 | 463.271 | 55 / 16.189 = 3.397 | correct ticket T029 |",
+        "source": "E-C2-LATENCY",
+        "token": "1522",
+        "type": "text-number"
+      },
+      "family": "latency",
+      "id": "M-C2-LONG-PROMPT",
+      "label": "PROMPT long",
+      "limitation": "Não é A/B de comprimento nem cold-storage. Não extrapolar.",
+      "raw_unit": "token",
+      "run_id": "c2d-target32-latency01",
+      "scope": "Sequência short/medium/long no mesmo processo; tabela publicada arredondada.",
+      "source_class": "MEDIDO_NO_TARGET",
+      "unit": "token"
+    },
+    {
+      "decimals": 3,
+      "evidence_class": "MEDIDO",
+      "extract": {
+        "quote": "| long | 1522 | 447.076 | 447.879 | 461.473 | 463.271 | 55 / 16.189 = 3.397 | correct ticket T029 |",
+        "source": "E-C2-LATENCY",
+        "token": "447.076",
+        "type": "text-number"
+      },
+      "family": "latency",
+      "id": "M-C2-LONG-PREFILL",
+      "label": "PREFILL long",
+      "limitation": "Não é A/B de comprimento nem cold-storage. Não extrapolar.",
+      "raw_unit": "s",
+      "run_id": "c2d-target32-latency01",
+      "scope": "Sequência short/medium/long no mesmo processo; tabela publicada arredondada.",
+      "source_class": "MEDIDO_NO_TARGET",
+      "unit": "s"
+    },
+    {
+      "decimals": 3,
+      "evidence_class": "MEDIDO",
+      "extract": {
+        "quote": "| long | 1522 | 447.076 | 447.879 | 461.473 | 463.271 | 55 / 16.189 = 3.397 | correct ticket T029 |",
+        "source": "E-C2-LATENCY",
+        "token": "447.879",
+        "type": "text-number"
+      },
+      "family": "latency",
+      "id": "M-C2-LONG-TEXT",
+      "label": "TEXT long",
+      "limitation": "Não é A/B de comprimento nem cold-storage. Não extrapolar.",
+      "raw_unit": "s",
+      "run_id": "c2d-target32-latency01",
+      "scope": "Sequência short/medium/long no mesmo processo; tabela publicada arredondada.",
+      "source_class": "MEDIDO_NO_TARGET",
+      "unit": "s"
+    },
+    {
+      "decimals": 3,
+      "evidence_class": "MEDIDO",
+      "extract": {
+        "quote": "| long | 1522 | 447.076 | 447.879 | 461.473 | 463.271 | 55 / 16.189 = 3.397 | correct ticket T029 |",
+        "source": "E-C2-LATENCY",
+        "token": "461.473",
+        "type": "text-number"
+      },
+      "family": "latency",
+      "id": "M-C2-LONG-FINAL",
+      "label": "FINAL long",
+      "limitation": "Não é A/B de comprimento nem cold-storage. Não extrapolar.",
+      "raw_unit": "s",
+      "run_id": "c2d-target32-latency01",
+      "scope": "Sequência short/medium/long no mesmo processo; tabela publicada arredondada.",
+      "source_class": "MEDIDO_NO_TARGET",
+      "unit": "s"
+    }
+  ],
+  "schema_version": "tesy-evidence-spec-v1",
+  "source_contracts": [
+    {
+      "json_values": [
+        {
+          "expected": "c2-final-summary-v1",
+          "pointer": "/schema_version"
+        },
+        {
+          "expected": "tesy-c2-20260926",
+          "pointer": "/campaign_id"
+        },
+        {
+          "expected": "CORRECTNESS_BLOCKED",
+          "pointer": "/global_state"
+        },
+        {
+          "expected": "research/C2-FINAL-20260926.md",
+          "pointer": "/authoritative_narrative"
+        }
+      ],
+      "path": "results/c2-final-summary.json",
+      "source": "E-C2-SUMMARY",
+      "text": []
+    },
+    {
+      "json_values": [
+        {
+          "expected": "c2-gate-result-v1",
+          "pointer": "/schema_version"
+        },
+        {
+          "expected": "c2c-target32-sustained01",
+          "pointer": "/run_id"
+        }
+      ],
+      "path": "results/c2c-target32-sustained01.gate.json",
+      "source": "E-C2-GATE",
+      "text": []
+    },
+    {
+      "json_values": [],
+      "path": "research/C2-FINAL-20260926.md",
+      "source": "E-C2-FINAL",
+      "text": [
+        "**Global state: CORRECTNESS_BLOCKED.**",
+        "corrected `analysis-v2` authoritative"
+      ]
+    },
+    {
+      "json_values": [],
+      "path": "results/INDEX.md",
+      "source": "E-C2-INDEX",
+      "text": [
+        "immutable **early campaign 1 snapshot**",
+        "report-only event-key error"
+      ]
+    },
+    {
+      "json_values": [],
+      "path": "research/C2-D-RESULT-20260926.md",
+      "source": "E-C2-LATENCY",
+      "text": [
+        "within the frozen diagnostic scope",
+        "This is neither a cold-storage comparison nor a matched A/B across prompt lengths."
+      ]
+    }
+  ]
+}

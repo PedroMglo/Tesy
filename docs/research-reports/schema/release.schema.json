@@ -1,0 +1,176 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "schema_version": {
+      "const": "tesy-release-v1"
+    },
+    "report_id": {
+      "type": "string",
+      "pattern": "^[A-Za-z][A-Za-z0-9-]{0,79}$"
+    },
+    "version": {
+      "type": "string",
+      "minLength": 1
+    },
+    "inputs_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "mode": {
+      "enum": [
+        "draft",
+        "release"
+      ]
+    },
+    "scientific_state": {
+      "type": "string",
+      "minLength": 1
+    },
+    "source_integrity": {
+      "const": "PASS"
+    },
+    "derivation": {
+      "const": "PASS"
+    },
+    "pdf_build": {
+      "const": "PASS"
+    },
+    "pdf_reproducibility": {
+      "enum": [
+        "BYTE_REPRODUCIBLE_IN_RECORDED_ENVIRONMENT",
+        "NOT_RUN"
+      ]
+    },
+    "experimental_reproduction": {
+      "const": "NOT_RUN"
+    },
+    "raw_data_availability": {
+      "const": "NOT_ACCESSED"
+    },
+    "pdf_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "pdf_sha256_second": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "toolchain": {
+      "type": "object",
+      "properties": {
+        "python": {
+          "type": "string",
+          "minLength": 1
+        },
+        "jsonschema": {
+          "type": "string",
+          "minLength": 1
+        },
+        "lualatex": {
+          "type": "string",
+          "minLength": 1
+        },
+        "latexmk": {
+          "type": "string",
+          "minLength": 1
+        },
+        "biber": {
+          "type": "string",
+          "minLength": 1
+        },
+        "platform": {
+          "type": "string",
+          "minLength": 1
+        },
+        "locale": {
+          "type": "string",
+          "minLength": 1
+        },
+        "source_date_epoch": {
+          "type": "integer"
+        }
+      },
+      "required": [
+        "python",
+        "jsonschema",
+        "lualatex",
+        "latexmk",
+        "biber",
+        "platform",
+        "locale",
+        "source_date_epoch"
+      ],
+      "additionalProperties": false
+    },
+    "loaded_tex_files": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "path": {
+            "type": "string",
+            "minLength": 1
+          },
+          "sha256": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$"
+          }
+        },
+        "required": [
+          "path",
+          "sha256"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "audit_sha256": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^[0-9a-f]{64}$"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "build_log_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "pdf_bytes": {
+      "type": "integer",
+      "minimum": 1
+    }
+  },
+  "required": [
+    "schema_version",
+    "report_id",
+    "version",
+    "inputs_sha256",
+    "mode",
+    "scientific_state",
+    "source_integrity",
+    "derivation",
+    "pdf_build",
+    "pdf_reproducibility",
+    "experimental_reproduction",
+    "raw_data_availability",
+    "pdf_sha256",
+    "pdf_sha256_second",
+    "toolchain",
+    "loaded_tex_files",
+    "audit_sha256",
+    "build_log_sha256",
+    "pdf_bytes"
+  ],
+  "additionalProperties": false
+}

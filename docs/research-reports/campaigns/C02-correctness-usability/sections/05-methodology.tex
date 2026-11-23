@@ -1,0 +1,23 @@
+\clearpage
+\section{Metodologia e definição das métricas}
+\subsection{Correção antes de interpretar velocidade}
+\claim{CL-C2-CORRECTNESS}{A referência histórica target cobre uma única linha final de 201088 logits float32 após quatro token IDs fixos. No surrogate 20B, trinta linhas plain/streamed e delayed read foram bitwise; EIO, short read e EOF falharam de forma fechada. Essa cobertura não transfere automaticamente a validade para 120B, GPU8/32 e prefixes longos.}
+
+\claim{CL-C2-CORRECTNESS}{As duas tentativas alargadas de referência 120B terminaram no RSS guard, com 135/141 e 2/141 linhas. As linhas parciais não aprovam a comparação completa. Faults de GPU in-flight continuam NOT\_RUN.}
+
+\subsection{Agregação e observabilidade}
+A taxa de decode é a razão de somas, não a média aritmética das taxas de cada pedido:
+\[
+R_{\mathrm{decode}}=\frac{\sum_i n_{i,\mathrm{decode}}}{\sum_i t_{i,\mathrm{decode}}}
+=\frac{\metric{M-C2-TOKENS}}{\metric{M-C2-SECONDS}}
+\simeq\metric{M-C2-DECODE}\ \mathrm{token/s}.
+\]
+\claim{CL-C2-PERFORMANCE}{O pipeline documental reconcilia o gate com o resumo e com os agregados publicados. Não recompõe tempos a partir de raw samples. Decode time, active request time e wall time são medidas distintas.}
+
+\claim{CL-C2-RESOURCE}{O pico host é \Code{memory.peak} do cgroup, convertido de bytes para GiB por divisão por $2^{30}$. O máximo de GPU vem de amostras de GPU total. Não se soma um tier ao outro para inventar uma medida de tráfego físico ou de RAM total.}
+
+\claim{CL-C2-LATENCY}{First text e first final são chegadas SSE de texto não vazio. Não são intervalos de tokens. Os prompts short, medium e long correram nessa ordem no mesmo processo carregado; slots frios no primeiro pedido não tornam o ensaio uma comparação cold-storage.}
+
+\begin{FindingBox}{Garantia documental, não prova experimental}
+Verificam-se bytes, seletores, unidades, relações de autoridade, consistência dos derivados e identidade do PDF. O hash de uma publicação não prova que a medição subjacente estava correta. A semântica da prosa continua a exigir revisão.
+\end{FindingBox}

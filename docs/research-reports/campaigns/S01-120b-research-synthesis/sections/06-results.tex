@@ -1,0 +1,25 @@
+\section{Resultados por época}
+\begin{tabularx}{\linewidth}{@{}p{25mm}p{31mm}Y@{}}
+\toprule
+\textbf{Fecho} & \textbf{Estado chave} & \textbf{Consequência científica}\\
+\midrule
+C108--C118 & protocolo/telemetria & C117 preserva observações preliminares mas falha o seu inventário de arranque; sem promoção de performance \claim{CL-S01-C117}.\\
+C138--C145 & slots44 + opt-in & C142 confirma ganho nominal153 para slots44, mas M4 e cobertura ampla continuam por demonstrar \claim{CL-S01-SLOTS44}. C143 prepara slots40 opt-in, ainda sem sessão real nesse fecho.\\
+C146--C154 & mmap inicial & O wall deadline fecha a época com numerical repeat, prefix e confirmação física ainda NOT\_RUN \claim{CL-S01-C154-CLOSE}.\\
+C155--C170 & policy + replay & Instrumentação/replay qualificam o probe; CPU52/GPU44 falha os dois holdouts e é rejeitada antes de implementação \claim{CL-S01-POLICY}.\\
+C171--C184 & referência nativa & A referência independente recupera o plano nativo no scope selecionado; o pedido mmap excede o deadline e o gate de prefixo não é demonstrado \claim{CL-S01-MMAP}.\\
+C185--C189 & caminho real & C188 exerce prepare--start--health--quatro pedidos--stop no perfil slots40; integração opt-in validada, sem causal speedup pair \claim{CL-S01-OPTIN}.\\
+\bottomrule
+\end{tabularx}
+
+\paragraph{Residency.}
+C145 regista C142 com median warm decode de aproximadamente 8.98 s / 5.24 tok/s e first-final de aproximadamente 19.31 s para slots44 no nominal153; estes números são MEDIDO no seu protocolo e não uma lei de working set. A cobertura de qualidade/sessão/retrieval de slots40 não é herdada por slots44. \evidence{E-S01-C145}
+
+\paragraph{Política diferenciada.}
+C170 selecionou CPU52/GPU44 em development e congelou antes dos holdouts. O crédito condicionado ficou abaixo do gate de 8\% nos dois holdouts, pelo que não houve implementação nem retuning. Isto mata essa política no scope testado, não todas as políticas de residency. \evidence{E-S01-C170}
+
+\paragraph{mmap/paging.}
+C184 resolve a referência numérica no âmbito native32+4 e em ativações FFN capturadas, mas o pedido natural C182 excede o deadline congelado. Os seus tempos permanecem diagnóstico de uma run protocol-failed; não há par igual-trabalho nem speedup mmap. \evidence{E-S01-C184}
+
+\paragraph{Integração real.}
+C189 regista quatro pedidos naturais no caminho C143/slots40. O pedido incremental T2 avaliou 153 novos IDs após reuse, mas o output e a carga diferem das campanhas pareadas anteriores. Portanto, a run demonstra integração e prefix persistence no processo; não demonstra aceleração causal sobre outro perfil. \evidence{E-S01-C189}

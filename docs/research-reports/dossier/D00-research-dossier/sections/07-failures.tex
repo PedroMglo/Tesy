@@ -1,0 +1,15 @@
+\clearpage
+\section{Resultados negativos e correções}
+\begin{tabularx}{\linewidth}{@{}p{28mm}Y@{}}
+\toprule \textbf{Origem} & \textbf{Limite que não se apaga}\\ \midrule
+R00 & Inventário, replay, capacidade e crossover inconclusivos/retirados; lazy expert no-go local ao pin.\\
+C1 & CLI TIMEOUT, referência Harmony bloqueada, M2 parcial e vantagem funcional ausente.\\
+C2-A & Lacuna de telemetria no smoke preservada como FAIL.\\
+C2-B & Referências longas interrompidas; produção GPU8/32 não certificada.\\
+C2-C & Meta de 4 token/s não atingida; análise descritiva corrigida sem apagar original.\\
+C2-D/F & Latência falhada; prompt completo de 4096 tokens e multi-client não testados.\\
+\bottomrule
+\end{tabularx}
+\evidence{E-R00-STATUS} \evidence{E-C1-AUDIT} \evidence{E-C2-FINAL}
+
+Conservar negativos permite escolher o teste seguinte sem perseguir uma narrativa de sucesso. Mudar unidade, threshold ou fonte depois do resultado não corrige um FAIL experimental.

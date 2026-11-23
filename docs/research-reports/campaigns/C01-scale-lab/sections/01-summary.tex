@@ -1,0 +1,19 @@
+\section{Síntese executiva}
+\historicalclaim{CL-C1-STATE}{A Campanha 1 fechou como SUCCESS no contrato original: execução target acima da RAM, desempenho sustentado e cobertura de correção declarada. Não demonstrou correção geral nem superioridade funcional do modelo maior.}
+
+\begin{tabularx}{\linewidth}{@{}Y r@{}}
+\toprule \textbf{Resultado publicado} & \textbf{C1}\\ \midrule
+GGUF target, tamanho arredondado & \metric{M-C1-MODEL-GB} GB\\
+Limite host target & \metric{M-C1-HOST-LIMIT} GiB\\
+Decode agregado, perfil de 24 slots & \metric{M-C1-DECODE} token/s\\
+Decode nos últimos cinco pedidos & \metric{M-C1-SECOND-HALF} token/s\\
+Tarefas corretas, em cada modelo & \metric{M-C1-UTILITY-PASS}/\metric{M-C1-UTILITY-N}\\
+Razão wall time target/stock & \metric{M-C1-COST}\\
+\bottomrule
+\end{tabularx}
+{\small Valores publicados na auditoria original, não novas medições. \evidence{E-C1-AUDIT}}
+
+\begin{FindingBox}{Resultado negativo que altera a decisão}
+A maior dimensão não justificou uso por defeito: a suite empatou em tarefas corretas e o target teve custo temporal muito maior. A contabilização de I/O e a cobertura de prefixes longos permaneceram incompletas.
+\end{FindingBox}
+\historicalclaim{CL-C1-STATE}{Os próximos testes eram instrumentar tiers, qualificar sustained32 e alargar prospectivamente a avaliação funcional. Este relatório conserva a decisão no seu momento histórico, sem importar resultados posteriores da C2.}

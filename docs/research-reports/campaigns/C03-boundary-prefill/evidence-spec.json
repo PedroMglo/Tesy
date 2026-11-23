@@ -1,0 +1,403 @@
+{
+  "authorities": {
+    "correctness": [
+      "E-C3-FINAL",
+      "E-C3-BROAD"
+    ],
+    "decision": [
+      "E-C3-FINAL"
+    ],
+    "performance": [
+      "E-C3-FINAL",
+      "E-C3-AB",
+      "E-C3-GATE",
+      "E-C3-LATENCY"
+    ],
+    "utility": [
+      "E-C3-FINAL",
+      "E-C3-Q"
+    ]
+  },
+  "checks": [],
+  "claims": [
+    {
+      "evidence": [
+        {
+          "quote": "504/504 layer/case/state FFN and routing comparisons bitwise across all 36 layers",
+          "source": "E-C3-FINAL",
+          "type": "text"
+        }
+      ],
+      "evidence_class": "DIAGNOSTICO",
+      "family": "correctness",
+      "id": "CL-C3-BOUNDARY",
+      "limitation": "Não prova paridade de attention, KV, modelo plain completo ou inputs arbitrários.",
+      "source_class": "Fecho ou publicação compacta C3",
+      "statement": "504/504 comparações da boundary por camada foram bitwise nos estados capturados.",
+      "status": "CURRENT"
+    },
+    {
+      "evidence": [
+        {
+          "quote": "14/14 callback OFF/ON full logits vectors bitwise",
+          "source": "E-C3-FINAL",
+          "type": "text"
+        }
+      ],
+      "evidence_class": "DIAGNOSTICO",
+      "family": "correctness",
+      "id": "CL-C3-LOGITS",
+      "limitation": "Âmbito das capturas e callbacks publicados.",
+      "source_class": "Fecho ou publicação compacta C3",
+      "statement": "14/14 vetores completos de logits callback OFF/ON foram bitwise.",
+      "status": "CURRENT"
+    },
+    {
+      "evidence": [
+        {
+          "quote": "both below the frozen **25%** goal",
+          "source": "E-C3-FINAL",
+          "type": "text"
+        }
+      ],
+      "evidence_class": "MEDIDO",
+      "family": "performance",
+      "id": "CL-C3-PREFILL",
+      "limitation": "Três pares por prompt; não é causalidade para outros workloads.",
+      "source_class": "Fecho ou publicação compacta C3",
+      "statement": "Preload reduziu prefill mediano pareado nos prompts 496 e 1522, abaixo da meta.",
+      "status": "CURRENT"
+    },
+    {
+      "evidence": [
+        {
+          "quote": "below 4 tok/s",
+          "source": "E-C3-FINAL",
+          "type": "text"
+        }
+      ],
+      "evidence_class": "MEDIDO",
+      "family": "performance",
+      "id": "CL-C3-SUSTAINED",
+      "limitation": "20 pedidos fixos, um de cada vez.",
+      "source_class": "Fecho ou publicação compacta C3",
+      "statement": "Serviço sustentado passou o seu gate, mas ficou abaixo de 4 token/s.",
+      "status": "CURRENT"
+    },
+    {
+      "evidence": [
+        {
+          "quote": "missing 10/20 s goals",
+          "source": "E-C3-FINAL",
+          "type": "text"
+        }
+      ],
+      "evidence_class": "MEDIDO",
+      "family": "performance",
+      "id": "CL-C3-LATENCY",
+      "limitation": "First text e first final não são intervalos por token.",
+      "source_class": "Fecho ou publicação compacta C3",
+      "statement": "Resposta curta falhou as metas 10/20 s.",
+      "status": "CURRENT"
+    },
+    {
+      "evidence": [
+        {
+          "quote": "one apparent 120B-only code win is output-budget dependent",
+          "source": "E-C3-FINAL",
+          "type": "text"
+        }
+      ],
+      "evidence_class": "DIAGNOSTICO",
+      "family": "utility",
+      "id": "CL-C3-Q",
+      "limitation": "Seleção pós hoc, sem nova suite held-out.",
+      "source_class": "Fecho ou publicação compacta C3",
+      "statement": "Diagnóstico stock20B com cap maior recuperou code-02; plan-01 continuou truncado.",
+      "status": "CURRENT"
+    },
+    {
+      "evidence": [
+        {
+          "quote": "retain C2 GPU8/32-slot, ub32, no-preload as the conservative sustained default",
+          "source": "E-C3-FINAL",
+          "type": "text"
+        }
+      ],
+      "evidence_class": "DIAGNOSTICO",
+      "family": "decision",
+      "id": "CL-C3-DEFAULT",
+      "limitation": "Não é veredito de impossibilidade de hardware.",
+      "source_class": "Fecho ou publicação compacta C3",
+      "statement": "Conservar configuração C2 sem preload como default; preload C3 fica opt-in diagnóstico.",
+      "status": "CURRENT"
+    },
+    {
+      "evidence": [
+        {
+          "quote": "not robust daily deployment",
+          "source": "E-C3-FINAL",
+          "type": "text"
+        }
+      ],
+      "evidence_class": "DIAGNOSTICO",
+      "family": "decision",
+      "id": "CL-C3-LIMIT",
+      "limitation": "Correção restrita à boundary e perfil testados.",
+      "source_class": "Fecho ou publicação compacta C3",
+      "statement": "C3 não certifica uso diário robusto nem paridade full-model.",
+      "status": "CURRENT"
+    }
+  ],
+  "datasets": [],
+  "metrics": [
+    {
+      "decimals": 0,
+      "evidence_class": "MEDIDO",
+      "extract": {
+        "pointer": "/completed_requests",
+        "source": "E-C3-GATE",
+        "type": "json"
+      },
+      "family": "performance",
+      "id": "M-C3-REQUESTS",
+      "label": "Pedidos completos",
+      "limitation": "Carga fixa de 20 pedidos; sem concorrência.",
+      "raw_unit": "count",
+      "run_id": null,
+      "scope": "Perfil físico e workload C3 publicados.",
+      "source_class": "Publicação compacta C3; sem reprodução independente",
+      "unit": "count"
+    },
+    {
+      "decimals": 3,
+      "evidence_class": "MEDIDO",
+      "extract": {
+        "pointer": "/decode_tok_s",
+        "source": "E-C3-GATE",
+        "type": "json"
+      },
+      "family": "performance",
+      "id": "M-C3-DECODE",
+      "label": "Decode sustentado",
+      "limitation": "Abaixo de 4 token/s; não é taxa de serviço end-to-end.",
+      "raw_unit": "token/s",
+      "run_id": "c3-p2-preload-sustained20-01",
+      "scope": "Perfil físico e workload C3 publicados.",
+      "source_class": "Publicação compacta C3; sem reprodução independente",
+      "unit": "token/s"
+    },
+    {
+      "decimals": 3,
+      "evidence_class": "MEDIDO",
+      "extract": {
+        "pointer": "/last_half_decode_tok_s",
+        "source": "E-C3-GATE",
+        "type": "json"
+      },
+      "family": "performance",
+      "id": "M-C3-TAIL",
+      "label": "Decode na segunda metade",
+      "limitation": "Dez pedidos finais do mesmo workload.",
+      "raw_unit": "token/s",
+      "run_id": null,
+      "scope": "Perfil físico e workload C3 publicados.",
+      "source_class": "Publicação compacta C3; sem reprodução independente",
+      "unit": "token/s"
+    },
+    {
+      "decimals": 3,
+      "evidence_class": "MEDIDO",
+      "extract": {
+        "pointer": "/cgroup_peak_bytes",
+        "source": "E-C3-GATE",
+        "type": "json"
+      },
+      "family": "performance",
+      "id": "M-C3-PEAK",
+      "label": "Pico de cgroup",
+      "limitation": "Pico contabilizado no cgroup, não RAM total.",
+      "raw_unit": "B",
+      "run_id": null,
+      "scope": "Perfil físico e workload C3 publicados.",
+      "source_class": "Publicação compacta C3; sem reprodução independente",
+      "unit": "GiB"
+    },
+    {
+      "decimals": 3,
+      "evidence_class": "MEDIDO",
+      "extract": {
+        "pointer": "/cases/1/median_reduction_fraction",
+        "source": "E-C3-AB",
+        "type": "json"
+      },
+      "family": "performance",
+      "id": "M-C3-MEDIUM-REDUCTION",
+      "label": "Redução mediana pareada, 496 IDs",
+      "limitation": "Três pares no mesmo contrato; 0.175 equivale a 17.515%.",
+      "raw_unit": "ratio",
+      "run_id": null,
+      "scope": "Perfil físico e workload C3 publicados.",
+      "source_class": "Publicação compacta C3; sem reprodução independente",
+      "unit": "ratio"
+    },
+    {
+      "decimals": 3,
+      "evidence_class": "MEDIDO",
+      "extract": {
+        "pointer": "/cases/2/median_reduction_fraction",
+        "source": "E-C3-AB",
+        "type": "json"
+      },
+      "family": "performance",
+      "id": "M-C3-LONG-REDUCTION",
+      "label": "Redução mediana pareada, 1522 IDs",
+      "limitation": "Três pares no mesmo contrato; 0.182 equivale a 18.240%.",
+      "raw_unit": "ratio",
+      "run_id": null,
+      "scope": "Perfil físico e workload C3 publicados.",
+      "source_class": "Publicação compacta C3; sem reprodução independente",
+      "unit": "ratio"
+    },
+    {
+      "decimals": 3,
+      "evidence_class": "MEDIDO",
+      "extract": {
+        "pointer": "/rows/0/first_text_s",
+        "source": "E-C3-LATENCY",
+        "type": "json"
+      },
+      "family": "performance",
+      "id": "M-C3-SHORT-FIRST",
+      "label": "Primeiro texto, prompt 113",
+      "limitation": "Sequência de latência; comparador C2 histórico, não A/B causal.",
+      "raw_unit": "s",
+      "run_id": null,
+      "scope": "Perfil físico e workload C3 publicados.",
+      "source_class": "Publicação compacta C3; sem reprodução independente",
+      "unit": "s"
+    },
+    {
+      "decimals": 3,
+      "evidence_class": "MEDIDO",
+      "extract": {
+        "pointer": "/rows/0/first_final_s",
+        "source": "E-C3-LATENCY",
+        "type": "json"
+      },
+      "family": "performance",
+      "id": "M-C3-SHORT-FINAL",
+      "label": "Primeiro conteúdo final, prompt 113",
+      "limitation": "Falha metas 10/20 s; SSE não é intervalo por token.",
+      "raw_unit": "s",
+      "run_id": null,
+      "scope": "Perfil físico e workload C3 publicados.",
+      "source_class": "Publicação compacta C3; sem reprodução independente",
+      "unit": "s"
+    },
+    {
+      "decimals": 0,
+      "evidence_class": "MEDIDO",
+      "extract": {
+        "pointer": "/pass_count",
+        "source": "E-C3-Q",
+        "type": "json"
+      },
+      "family": "utility",
+      "id": "M-C3-Q-PASS",
+      "label": "Tarefas selecionadas resolvidas no stock20B cap3072",
+      "limitation": "Duas tarefas escolhidas após falhas C2; não é novo held-out.",
+      "raw_unit": "count",
+      "run_id": "c3-q-stock20-cap3072-02",
+      "scope": "Perfil físico e workload C3 publicados.",
+      "source_class": "Publicação compacta C3; sem reprodução independente",
+      "unit": "count"
+    }
+  ],
+  "schema_version": "tesy-evidence-spec-v1",
+  "source_contracts": [
+    {
+      "json_values": [],
+      "path": "research/C3-FINAL-20260927.md",
+      "source": "E-C3-FINAL",
+      "text": [
+        "ENGINEERING_UNBLOCKED_IN_TESTED_SCOPE",
+        "not full plain-model, attention or KV parity",
+        "not a same-day causal sustained A/B"
+      ]
+    },
+    {
+      "json_values": [],
+      "path": "research/C3-R2-BROAD-RESULT-20260926.md",
+      "source": "E-C3-BROAD",
+      "text": [
+        "504 comparisons include three prefill microbatches",
+        "R3 remains pending lifetime and negative-test gates"
+      ]
+    },
+    {
+      "json_values": [
+        {
+          "expected": "c3-preload-ab-summary-v1",
+          "pointer": "/schema"
+        },
+        {
+          "expected": "PASS_EVIDENCE",
+          "pointer": "/status"
+        },
+        {
+          "expected": false,
+          "pointer": "/goal_25pct_prefill"
+        }
+      ],
+      "path": "results/c3-p2b-ab-summary01.json",
+      "source": "E-C3-AB",
+      "text": []
+    },
+    {
+      "json_values": [
+        {
+          "expected": "c3-p2-preload-sustained20-01",
+          "pointer": "/run_id"
+        },
+        {
+          "expected": "PASS",
+          "pointer": "/status"
+        }
+      ],
+      "path": "results/c3-p2-preload-sustained20-01.gate.json",
+      "source": "E-C3-GATE",
+      "text": []
+    },
+    {
+      "json_values": [
+        {
+          "expected": "c3-preload-latency-summary-v1",
+          "pointer": "/schema"
+        },
+        {
+          "expected": "MEASURED_WITH_OUTPUT_DIVERGENCE",
+          "pointer": "/status"
+        }
+      ],
+      "path": "results/c3-p2-preload-latency-summary01.json",
+      "source": "E-C3-LATENCY",
+      "text": []
+    },
+    {
+      "json_values": [
+        {
+          "expected": "c3-selected-cap-followup-v1",
+          "pointer": "/schema"
+        },
+        {
+          "expected": "post-C2-failure diagnostic, not held-out",
+          "pointer": "/selection"
+        }
+      ],
+      "path": "results/c3-q-stock20-cap3072-02-grade.json",
+      "source": "E-C3-Q",
+      "text": []
+    }
+  ]
+}

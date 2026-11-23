@@ -1,0 +1,86 @@
+{
+  "schema": "c3-preload-latency-summary-v1",
+  "status": "MEASURED_WITH_OUTPUT_DIVERGENCE",
+  "run_id": "c3-p2-preload-latency-server01",
+  "rows": [
+    {
+      "id": "latency-short",
+      "prompt_tokens": 113,
+      "completion_tokens": 106,
+      "prefill_s": 36.29769,
+      "decode_s": 39.01164,
+      "first_text_s": 37.21913538200897,
+      "first_final_s": 73.22344023700862,
+      "completed_s": 75.31272125001124,
+      "baseline_first_text_s": 42.309152927999094,
+      "baseline_first_final_s": 74.50597923299938,
+      "baseline_completed_s": 76.34220370300318,
+      "reasoning_equal_to_historical": true,
+      "final_equal_to_historical": true,
+      "answer_valid": true
+    },
+    {
+      "id": "latency-medium",
+      "prompt_tokens": 496,
+      "completion_tokens": 60,
+      "prefill_s": 129.54677,
+      "decode_s": 19.49794,
+      "first_text_s": 130.47630439900968,
+      "first_final_s": 147.14255839500402,
+      "completed_s": 149.0523837750079,
+      "baseline_first_text_s": 147.68316230900382,
+      "baseline_first_final_s": 163.22219384300115,
+      "baseline_completed_s": 165.00408633900224,
+      "reasoning_equal_to_historical": true,
+      "final_equal_to_historical": true,
+      "answer_valid": true
+    },
+    {
+      "id": "latency-long",
+      "prompt_tokens": 1522,
+      "completion_tokens": 56,
+      "prefill_s": 380.95259000000004,
+      "decode_s": 17.47485,
+      "first_text_s": 381.8633459620032,
+      "first_final_s": 396.6604263210029,
+      "completed_s": 398.44216624500405,
+      "baseline_first_text_s": 447.8791993470004,
+      "baseline_first_final_s": 461.47307383500447,
+      "baseline_completed_s": 463.2709967250048,
+      "reasoning_equal_to_historical": false,
+      "final_equal_to_historical": true,
+      "answer_valid": true
+    }
+  ],
+  "resource": {
+    "sample_count": 1293,
+    "maxima": {
+      "rss_bytes": 14888583168,
+      "swap_bytes": 0,
+      "cgroup_memory_bytes": 14765727744,
+      "cgroup_peak_bytes": 14787072000,
+      "cgroup_file_bytes": 1748963328,
+      "gpu_used_mib": 3869.0,
+      "gpu_temperature_c": 60.0,
+      "cpu_tctl_c": 93.25,
+      "nvme_composite_c": 58.85,
+      "direct_model_fds": 2,
+      "buffered_model_fds": 0
+    },
+    "zero_swap_oom_max_events": true
+  },
+  "limitations": [
+    "historical comparator, not paired causal A/B",
+    "SSE chunks are not token intervals",
+    "reasoning divergence blocks broad preload promotion"
+  ],
+  "source_sha256": {
+    "results/c3-p2-preload-latency-client01.json": "dfdf01099f7871a92faebff127075b99df19bf298a623bb483205d7eb1daecf6",
+    "results/c3-p2-preload-latency-server01.json": "46add83b30861f7fc749fb1790321ccf630c84de2fac184beb1b502760c916b2",
+    "results/c2d-target32-latency01.json": "d4d253b1db3914b46cc4fc5c7d1dbd44fbbb8f8590a3665f63cac3e3f69f24b3",
+    "workloads/c3_p2_preload_sustained20_protocol.json": "f77d5ad5fe42d488981bd51f7e795e074a6ab7fa3794b5e361c04f62793203dc",
+    "results/c3-p2-preload-latency-server01.samples.jsonl": "26657b21ecc638b71c476ccfd5dc36f91260e360a094f53fa37ba7ce3722bd27",
+    "results/c3-p2-preload-latency-server01.stderr": "0957fc6404e0ad8f8b0b0ae38e792ddf3fc29a3263d593852a03273b351eabdf"
+  },
+  "analyzer_sha256": "6bd68596abc4c11fbf32743d631d25b25f8d7d6e22c5d6f5a8b7dbd711a483dc"
+}

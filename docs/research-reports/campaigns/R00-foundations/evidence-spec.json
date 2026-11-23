@@ -1,0 +1,287 @@
+{
+  "authorities": {
+    "foundation": [
+      "E-R00-STATUS"
+    ]
+  },
+  "checks": [],
+  "claims": [
+    {
+      "evidence": [
+        {
+          "quote": "| N0 prior-art screen | IMPLEMENTED | second pass records `BROAD_NOVELTY_NO_GO / ENGINEERING_AND_MEASUREMENT_GO`; not a patent/legal opinion |",
+          "source": "E-R00-STATUS",
+          "type": "text"
+        }
+      ],
+      "evidence_class": "DIAGNOSTICO",
+      "family": "foundation",
+      "id": "CL-R00-NOVELTY",
+      "limitation": "Não é nova revisão bibliográfica.",
+      "source_class": "Ledger dated 2026-09-24",
+      "statement": "Novidade ampla não admitida no rastreio histórico.",
+      "status": "HISTORICAL"
+    },
+    {
+      "evidence": [
+        {
+          "quote": "| native llama.cpp MoE top-k tracer | REAL_MODEL_DIAGNOSTIC_PASS | pinned CUDA build and 384 routing records from real GGUF; zero weight layers offloaded in paired gate |",
+          "source": "E-R00-STATUS",
+          "type": "text"
+        }
+      ],
+      "evidence_class": "DIAGNOSTICO",
+      "family": "foundation",
+      "id": "CL-R00-TRACER",
+      "limitation": "Não é baseline de timing.",
+      "source_class": "Ledger dated 2026-09-24",
+      "statement": "Tracing diagnóstico no modelo real.",
+      "status": "HISTORICAL"
+    },
+    {
+      "evidence": [
+        {
+          "quote": "| paired trace OFF/ON token gate | REAL_MODEL_TOKEN_ID_EQUALITY_PASS | same 16 generated IDs for one deterministic raw prompt; no bitwise/numerical parity claim |",
+          "source": "E-R00-STATUS",
+          "type": "text"
+        }
+      ],
+      "evidence_class": "DIAGNOSTICO",
+      "family": "foundation",
+      "id": "CL-R00-TOKENS",
+      "limitation": "Não demonstra logits bitwise.",
+      "source_class": "Ledger dated 2026-09-24",
+      "statement": "IDs iguais num teste emparelhado.",
+      "status": "HISTORICAL"
+    },
+    {
+      "evidence": [
+        {
+          "quote": "| count-space LRU headroom | REAL_TRACE_DERIVED | 1,440 one-token expert accesses; equal-sized-slot LRU, not physical bytes |",
+          "source": "E-R00-STATUS",
+          "type": "text"
+        }
+      ],
+      "evidence_class": "DIAGNOSTICO",
+      "family": "foundation",
+      "id": "CL-R00-LRU",
+      "limitation": "Não é I/O físico.",
+      "source_class": "Ledger dated 2026-09-24",
+      "statement": "Headroom derivado em count-space.",
+      "status": "HISTORICAL"
+    },
+    {
+      "evidence": [
+        {
+          "quote": "| Belady offline oracle | REAL_TRACE_DERIVED | non-causal equal-slot lower bound; not a production policy |",
+          "source": "E-R00-STATUS",
+          "type": "text"
+        }
+      ],
+      "evidence_class": "DIAGNOSTICO",
+      "family": "foundation",
+      "id": "CL-R00-BELADY",
+      "limitation": "Não é política de produção.",
+      "source_class": "Ledger dated 2026-09-24",
+      "statement": "Oracle offline não causal.",
+      "status": "HISTORICAL"
+    },
+    {
+      "evidence": [
+        {
+          "quote": "| GGUF expert payload inventory | INCONCLUSIVE_EXECUTION_PROVENANCE_NOT_PRESERVED | historical native metadata output reports 24 layers × 32 experts and 13,253,760 encoded bytes/expert, but committed evidence does not preserve exact Tesy base/tree or prove PHYSICAL host |",
+          "source": "E-R00-STATUS",
+          "type": "text"
+        }
+      ],
+      "evidence_class": "DIAGNOSTICO",
+      "family": "foundation",
+      "id": "CL-R00-PAYLOAD",
+      "limitation": "Provenance insuficiente não requalificada.",
+      "source_class": "Ledger dated 2026-09-24",
+      "statement": "Admissão de inventário inconclusiva.",
+      "status": "HISTORICAL"
+    },
+    {
+      "evidence": [
+        {
+          "quote": "| byte-weighted native trace simulation | INCONCLUSIVE_REPLAY_PROVENANCE_NOT_PRESERVED | historical 4 GiB LRU 66.25% / Belady 70.21% values remain descriptive only; exact replay execution provenance/output manifest is not preserved in the reviewed tree |",
+          "source": "E-R00-STATUS",
+          "type": "text"
+        }
+      ],
+      "evidence_class": "DIAGNOSTICO",
+      "family": "foundation",
+      "id": "CL-R00-BYTES",
+      "limitation": "Não promover simulação a tráfego físico.",
+      "source_class": "Ledger dated 2026-09-24",
+      "statement": "Replay byte-weighted inconclusivo.",
+      "status": "HISTORICAL"
+    },
+    {
+      "evidence": [
+        {
+          "quote": "| stock B0/B1 measurements | INCONCLUSIVE_RERUN_REQUIRED | physical-host runs exist, but review invalidated same-work admission: placement telemetry empty, provenance incomplete and token trajectories unretained |",
+          "source": "E-R00-STATUS",
+          "type": "text"
+        }
+      ],
+      "evidence_class": "DIAGNOSTICO",
+      "family": "foundation",
+      "id": "CL-R00-STOCK",
+      "limitation": "Same-work não demonstrado.",
+      "source_class": "Ledger dated 2026-09-24",
+      "statement": "Baselines requerem rerun.",
+      "status": "HISTORICAL"
+    },
+    {
+      "evidence": [
+        {
+          "quote": "| original n-cpu-moe + auto-fit sweep | STATIC_NO_GO_PIN_FIT_CONFLICT | pinned source reproduces incompatible tensor override / fit semantics; preserved N=4 campaign OOM is not a capacity bound |",
+          "source": "E-R00-STATUS",
+          "type": "text"
+        }
+      ],
+      "evidence_class": "DIAGNOSTICO",
+      "family": "foundation",
+      "id": "CL-R00-FIT",
+      "limitation": "OOM não é capacity bound geral.",
+      "source_class": "Ledger dated 2026-09-24",
+      "statement": "Conflito estático no pin.",
+      "status": "HISTORICAL"
+    },
+    {
+      "evidence": [
+        {
+          "quote": "| capacity-gated stock placement frontier | INCONCLUSIVE_PHYSICAL_HOST_NOT_PROVEN | historical campaign retains projected N=12/16/20/24 vs N=0/4/8 sets, but publication admissions were withdrawn because virtualization/physical-host state was not proven; new campaign identity required |",
+          "source": "E-R00-STATUS",
+          "type": "text"
+        }
+      ],
+      "evidence_class": "DIAGNOSTICO",
+      "family": "foundation",
+      "id": "CL-R00-CAPACITY",
+      "limitation": "Nova campanha PHYSICAL requerida.",
+      "source_class": "Ledger dated 2026-09-24",
+      "statement": "Admissões retiradas por host não provado.",
+      "status": "HISTORICAL"
+    },
+    {
+      "evidence": [
+        {
+          "quote": "| realized stock placement telemetry | CUDA0_PARITY_OBSERVED_REVISED_GATE_RETRY_REQUIRED | Attempt 2 physically observed CUDA0 6095.35 MiB versus 6095 MiB projected; the Host equality gate was invalidated because `CPU_Mapped` is an mmap span, not fit-print logical Host bytes. Telemetry v2 requires positive Host mmap buffer presence and classifies its span `NOT_COMPARABLE_MMAP_SPAN`; revised live gate remains NOT_RUN |",
+          "source": "E-R00-STATUS",
+          "type": "text"
+        }
+      ],
+      "evidence_class": "DIAGNOSTICO",
+      "family": "foundation",
+      "id": "CL-R00-MMAP",
+      "limitation": "NOT_COMPARABLE_MMAP_SPAN preservado.",
+      "source_class": "Ledger dated 2026-09-24",
+      "statement": "Mmap span não equivale a bytes lógicos.",
+      "status": "HISTORICAL"
+    },
+    {
+      "evidence": [
+        {
+          "quote": "| stock B2 gpt-oss lazy-expert baseline | STATIC_NO_GO | pinned gpt-oss expert tensors are not marked `TENSOR_READ_LAZY`; no model-bearing B2 run is justified for this purpose |",
+          "source": "E-R00-STATUS",
+          "type": "text"
+        }
+      ],
+      "evidence_class": "DIAGNOSTICO",
+      "family": "foundation",
+      "id": "CL-R00-LAZY",
+      "limitation": "No-go local ao pin, não impossibilidade geral.",
+      "source_class": "Ledger dated 2026-09-24",
+      "statement": "Expert tensors sem TENSOR_READ_LAZY.",
+      "status": "HISTORICAL"
+    },
+    {
+      "evidence": [
+        {
+          "quote": "| CPU-vs-transfer-vs-GPU expert crossover | INCONCLUSIVE_EXECUTION_BASE_NOT_PRESERVED | historical k=1/k=4 measurements use a CPU-default fallback comparator, not the unique `--n-cpu-moe` loader path; exact Tesy execution commit/tree is not preserved, so campaign admission and blocking-transfer NO_GO require rerun |",
+          "source": "E-R00-STATUS",
+          "type": "text"
+        }
+      ],
+      "evidence_class": "DIAGNOSTICO",
+      "family": "foundation",
+      "id": "CL-R00-CROSSOVER",
+      "limitation": "Conclusão requer rerun.",
+      "source_class": "Ledger dated 2026-09-24",
+      "statement": "Base de execução não preservada.",
+      "status": "HISTORICAL"
+    },
+    {
+      "evidence": [
+        {
+          "quote": "| joint K/residency scheduler | OPEN_RESEARCH_QUESTION | broad novelty overlap exists; benefit and narrower novelty unknown |",
+          "source": "E-R00-STATUS",
+          "type": "text"
+        }
+      ],
+      "evidence_class": "DIAGNOSTICO",
+      "family": "foundation",
+      "id": "CL-R00-NEXT",
+      "limitation": "Sem benefício/novidade já demonstrados.",
+      "source_class": "Ledger dated 2026-09-24",
+      "statement": "Scheduler conjunto é pergunta aberta.",
+      "status": "HISTORICAL"
+    }
+  ],
+  "datasets": [],
+  "metrics": [
+    {
+      "decimals": 0,
+      "evidence_class": "MEDIDO",
+      "extract": {
+        "quote": "| native llama.cpp MoE top-k tracer | REAL_MODEL_DIAGNOSTIC_PASS | pinned CUDA build and 384 routing records from real GGUF; zero weight layers offloaded in paired gate |",
+        "source": "E-R00-STATUS",
+        "token": "384",
+        "type": "text-number"
+      },
+      "family": "foundation",
+      "id": "M-R00-RECORDS",
+      "label": "Registos de routing",
+      "limitation": "Âmbito diagnóstico histórico; não nova medição nem validação de performance.",
+      "raw_unit": "count",
+      "run_id": null,
+      "scope": "Valor da publicação selecionada; não é nova medição.",
+      "source_class": "REAL_MODEL_DIAGNOSTIC_PASS",
+      "unit": "count"
+    },
+    {
+      "decimals": 0,
+      "evidence_class": "MEDIDO",
+      "extract": {
+        "quote": "| paired trace OFF/ON token gate | REAL_MODEL_TOKEN_ID_EQUALITY_PASS | same 16 generated IDs for one deterministic raw prompt; no bitwise/numerical parity claim |",
+        "source": "E-R00-STATUS",
+        "token": "16",
+        "type": "text-number"
+      },
+      "family": "foundation",
+      "id": "M-R00-TOKENS",
+      "label": "IDs iguais OFF/ON",
+      "limitation": "Âmbito diagnóstico histórico; não nova medição nem validação de performance.",
+      "raw_unit": "count",
+      "run_id": null,
+      "scope": "Valor da publicação selecionada; não é nova medição.",
+      "source_class": "REAL_MODEL_DIAGNOSTIC_PASS",
+      "unit": "count"
+    }
+  ],
+  "schema_version": "tesy-evidence-spec-v1",
+  "source_contracts": [
+    {
+      "json_values": [],
+      "path": "IMPLEMENTATION_STATUS.md",
+      "source": "E-R00-STATUS",
+      "text": [
+        "Date: 2026-09-24",
+        "No source-only row is a performance claim."
+      ]
+    }
+  ]
+}

@@ -1,0 +1,56 @@
+{
+  "inputs_sha256": "9aaa3aefdbebfda972b63d06c8c322f3242a99416f29f7c4cda3b897a96907aa",
+  "metrics": {
+    "M-R00-RECORDS": {
+      "decimals": 0,
+      "display": "384",
+      "evidence_class": "MEDIDO",
+      "extract": {
+        "quote": "| native llama.cpp MoE top-k tracer | REAL_MODEL_DIAGNOSTIC_PASS | pinned CUDA build and 384 routing records from real GGUF; zero weight layers offloaded in paired gate |",
+        "source": "E-R00-STATUS",
+        "token": "384",
+        "type": "text-number"
+      },
+      "family": "foundation",
+      "id": "M-R00-RECORDS",
+      "label": "Registos de routing",
+      "limitation": "Âmbito diagnóstico histórico; não nova medição nem validação de performance.",
+      "raw": 384,
+      "raw_unit": "count",
+      "run_id": null,
+      "scope": "Valor da publicação selecionada; não é nova medição.",
+      "source_class": "REAL_MODEL_DIAGNOSTIC_PASS",
+      "sources": [
+        "E-R00-STATUS"
+      ],
+      "unit": "count",
+      "value": 384
+    },
+    "M-R00-TOKENS": {
+      "decimals": 0,
+      "display": "16",
+      "evidence_class": "MEDIDO",
+      "extract": {
+        "quote": "| paired trace OFF/ON token gate | REAL_MODEL_TOKEN_ID_EQUALITY_PASS | same 16 generated IDs for one deterministic raw prompt; no bitwise/numerical parity claim |",
+        "source": "E-R00-STATUS",
+        "token": "16",
+        "type": "text-number"
+      },
+      "family": "foundation",
+      "id": "M-R00-TOKENS",
+      "label": "IDs iguais OFF/ON",
+      "limitation": "Âmbito diagnóstico histórico; não nova medição nem validação de performance.",
+      "raw": 16,
+      "raw_unit": "count",
+      "run_id": null,
+      "scope": "Valor da publicação selecionada; não é nova medição.",
+      "source_class": "REAL_MODEL_DIAGNOSTIC_PASS",
+      "sources": [
+        "E-R00-STATUS"
+      ],
+      "unit": "count",
+      "value": 16
+    }
+  },
+  "schema_version": "tesy-values-v1"
+}

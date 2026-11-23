@@ -1,0 +1,17 @@
+\clearpage
+\section{Contrato experimental publicado}
+\begin{tabularx}{\linewidth}{@{}p{37mm}Y@{}}
+\toprule \textbf{Dimensão} & \textbf{Contrato e limite da fonte}\\ \midrule
+Host histórico & Ryzen AI 9 HX 370, RTX 4060 Laptop de 8188 MiB, 30 GiB de RAM reportados e NVMe interno.\\
+Modelo & GGUF target de \metric{M-C1-MODEL-GB} GB, valor arredondado. Identidades completas remetidas para locks/manifests originais.\\
+Memória & Cgroups de 9 GiB no surrogate e \metric{M-C1-HOST-LIMIT} GiB no target, swap máximo zero; watchdogs de RSS/GPU/MemAvailable/temperatura.\\
+Residência & \metric{M-C1-SLOTS} slots por camada no perfil sustentado; pool CPU ou GPU, não tier host dinâmico independente medido.\\
+Correção & Comparações fixas restritas com referência plain e entre pares de slots. Não cobrem todos os estados routed.\\
+Tarefas & Dez casos held-out, uma tentativa, cap de 512 tokens e medium/greedy; dois casos de tuning separados.\\
+\bottomrule
+\end{tabularx}
+\evidence{E-C1-AUDIT}
+
+\historicalclaim{CL-C1-PREFETCH}{Prefetch e speculative decoding permaneceram desligados. Não foram promovidos repacking, requantização, treino ou um Transformer reimplementado.}
+
+\historicalclaim{CL-C1-IDENTITY}{Os limites de potência do chassis e o estado completo de throttling não foram medidos. Amostras de um segundo podem omitir transientes. O hardware descrito não é uma inspeção live durante a compilação do PDF.}

@@ -1,0 +1,15 @@
+\section{Síntese executiva}
+\claim{CL-C3-BOUNDARY}{A C3 ampliou a verificação da boundary MoE por camada para estados capturados em 36 camadas.} \claim{CL-C3-LOGITS}{O callback OFF/ON conservou logits completos nos estados publicados.} Estas igualdades têm fronteira definida: não qualificam attention, KV nem o modelo plain integral.
+\begin{FindingBox}{Decisão C3}
+\claim{CL-C3-DEFAULT}{O default sustentado continua C2 sem preload; o preload é opção diagnóstica para prefill longo.} A C3 confirmou redução de prefill, mas não atingiu as metas de 25\% nem de 4 token/s. \evidence{E-C3-FINAL}
+\end{FindingBox}
+\begin{tabularx}{\linewidth}{@{}Y r@{}}
+\toprule \textbf{Resultado selecionado} & \textbf{C3}\\ \midrule
+Comparações bitwise da boundary & 504/504\\
+Logits completos callback OFF/ON & 14/14\\
+Serviço sustentado & \metric{M-C3-DECODE} token/s\\
+Última metade & \metric{M-C3-TAIL} token/s\\
+Primeiro texto / final curto & \metric{M-C3-SHORT-FIRST} / \metric{M-C3-SHORT-FINAL} s\\
+\bottomrule
+\end{tabularx}
+{\small Valores publicados, não recalculados a partir de raws. \evidence{E-C3-FINAL} \evidence{E-C3-GATE}}
