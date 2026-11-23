@@ -7,7 +7,7 @@ on:
       - '.github/workflows/publish-research-report.yml'
   push:
     branches:
-      - 'campaign/c3-layer-reference-prefill-20260926-1800utc'
+      - main
     paths:
       - 'docs/research-reports/**'
       - '.github/workflows/publish-research-report.yml'
@@ -19,7 +19,7 @@ jobs:
   preflight:
     name: Preflight automatic release
     if: github.event_name == 'pull_request'
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     defaults:
       run:
         working-directory: docs/research-reports
@@ -52,11 +52,11 @@ jobs:
   publish:
     name: Create immutable tags and releases
     if: github.event_name == 'push'
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     permissions:
       contents: write
     concurrency:
-      group: tesy-research-report-publication-c3
+      group: tesy-research-report-publication-main
       cancel-in-progress: false
     defaults:
       run:

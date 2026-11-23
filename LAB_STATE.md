@@ -1,5 +1,7 @@
 # Tesy scale lab state
 
+**Índice histórico.** A 23 de novembro de 2026, o ponto de retoma passou para a [reanálise da árvore unificada](research/consolidacao-20261123/README.md). As entradas abaixo preservam o contexto de cada campanha.
+
 ## Campaign 6, scoped CPU Flash compatibility (local review, no default change)
 
 C6 branch `campaign/c6-attn-dispatch-compat-20260927-0301utc` began from published C5 `9426492db4faeb3f5765af24938bd4fb4d8708f6`. Separate backend worktree at patch `c4104706a123ea92fb47bfab9a1f95a4e6cf106d`; original backend/build and conservative ub32 no-preload profile remain intact. The physical Ryzen/RTX target, exact GGUF and 113 IDs were reconfirmed. **`COMPAT_NOT_RECOVERED_NEXT_DIVERGENCE`:** scoped CPU vector selection passed native replays and target branch witness; A0=A=A+ and B=B0 full logits, C64 ON stable across two processes but differs from A+ in 201087/201088 logits. Neutral captures found CPU layers0–28 equal and the next first difference at GPU layer29 Flash Attention, absolute token48/feature64. Exact common Q/K/V/mask/sinks and same-form native CUDA replay reproduce a shape-dependent difference without streaming; a same-input native32 regrouping recovers A+. This does not certify the original 64 profile or any sampling equivalence. No qualified performance comparison, longer/decode target extension, sustained service, waves patch, remote push, PR, merge or default change. `BROAD_NOVELTY_NO_GO / ENGINEERING_AND_MEASUREMENT_GO`.

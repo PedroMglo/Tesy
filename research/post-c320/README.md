@@ -35,7 +35,7 @@ O analisador também recompõe o cenário C136 e o tamanho das uniões C261 a pa
 
 ## Primeiro trabalho da equipa
 
-A partir de um clone com o objeto do lab `623a5b97b6e14a39bc671f6d81e7a993a3efe7cb`, o primeiro comando reproduz as tabelas sem modelo nem GPU. Num clone raso, obter o histórico da branch `campaign/120b-exact-expert-service-20261006T194311Z` antes do comando.
+A partir da raiz da `main`, o primeiro comando reproduz as tabelas sem modelo nem GPU, inclusive num clone de profundidade 1. Os [13 blobs congelados de C321](source-blobs.json) estão na árvore unificada. O leitor identifica o conteúdo pelo OID Git e preserva a proveniência anterior à consolidação.
 
 ```sh
 python3 research/post-c320/analyse.py

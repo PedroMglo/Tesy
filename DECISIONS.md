@@ -1,5 +1,7 @@
 # Decisions and A/B ledger
 
+**Índice histórico.** A 23 de novembro de 2026, o ponto de retoma passou para a [reanálise da árvore unificada](research/consolidacao-20261123/README.md). As entradas abaixo preservam o contexto de cada campanha.
+
 | Time (Europe/Lisbon) | Hypothesis/change | Result | Decision and reason |
 |---|---|---|---|
 | 2026-09-26 00:44 | Use a sibling lab at the requested path | Path absent and outside authorized writable roots | Create a separate nested Git repo inside the authorized Tesy root; do not alter its branch or tracked files. |

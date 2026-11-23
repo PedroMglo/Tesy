@@ -4,12 +4,16 @@ on:
   pull_request:
   push:
     branches:
-      - 'campaign/**'
-      - 'docs/research-reports-*'
+      - main
+    paths:
+      - 'docs/research-reports/**'
+      - 'research/C*-FINAL-*.md'
+      - 'tools/release_candidates.py'
+      - '.github/workflows/research-reports.yml'
 
 jobs:
   evidence:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     defaults:
       run:
         working-directory: docs/research-reports
@@ -31,7 +35,7 @@ jobs:
   pdf-preview:
     name: Build PDF previews
     needs: evidence
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     permissions:
       contents: read
     defaults:

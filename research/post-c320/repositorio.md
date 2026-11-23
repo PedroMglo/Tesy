@@ -1,6 +1,6 @@
 # Cobertura do repositório e autoridade de cada linha
 
-Fotografia do remoto em 23 de novembro de 2026, antes da branch desta revisão. Foram inventariadas **44 branches**, com 21 na história da fundação e 23 na do laboratório. A referência simbólica `origin/HEAD` apontava para `main`. O índice abaixo fixa cada ponta por SHA e função. A revisão verificou árvores, parentesco, sínteses e falhas anteriores, depois leu as fontes, avaliadores, configurações e recibos que sustentam as decisões. Os milhares de registos derivados e os bytes de cada commit histórico não tiveram uma nova auditoria um a um.
+Fotografia do remoto anterior ao PR #42 em 23 de novembro de 2026. A [consolidação posterior](../consolidacao-20261123/README.md) reuniu essas linhas na main e substituiu as recomendações acerca da base de desenvolvimento. Foram inventariadas **44 branches**, com 21 na história da fundação e 23 na do laboratório. A referência simbólica `origin/HEAD` apontava para `main`. O índice abaixo fixa cada ponta por SHA e função. A revisão verificou árvores, parentesco, sínteses e falhas anteriores, depois leu as fontes, avaliadores, configurações e recibos que sustentam as decisões. Os milhares de registos derivados e os bytes de cada commit histórico não tiveram uma nova auditoria um a um.
 
 | Linha | O que contém e como a usar |
 |---|---|
