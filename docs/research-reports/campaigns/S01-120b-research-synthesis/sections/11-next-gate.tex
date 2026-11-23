@@ -1,0 +1,14 @@
+\section{Próximo gate discriminante}
+O próximo investimento deve começar por source/static feasibility, não por uma nova campanha física longa. C189 propõe um screen limitado para perceber se \texttt{ubatch64} no caminho C75/waves pode reduzir repetição de prefill para o nominal153, tratando-o como \textbf{novo perfil numérico} devido às divergências shape-dependent já observadas em C4--C6. \evidence{E-S01-C189}
+
+A ordem recomendada é:
+\begin{enumerate}
+\item localizar no source/trace uma repetição ou accounting evitável que ub64 ataque;
+\item se existir, congelar identidade de modelo/backend/workload e executar gates numéricos/funcionais próprios;
+\item apenas depois fazer um screen pareado e limitado de first-final, protegendo decode e recursos;
+\item parar se o source screen não encontrar trabalho removível ou se correctness divergir sem uma qualificação explícita.
+\end{enumerate}
+
+Em paralelo, qualquer claim de I/O deve medir o tier certo. \texttt{read\_bytes}, bytes de tensor e requests de copy não substituem instrumentação de tráfego físico. Amdahl/Roofline servem para limitar o ganho possível antes de acrescentar mecanismos \cite{amdahl1967validity,williams2009roofline}.
+
+APEX e Cache-Aware Joint Router Adaptation passam a integrar a matriz mínima de comparadores para pre-attention prefetch exacto e cache-aware router adaptation \cite{kanani2026apex,wu2026cacheaware}. Benchmarks externos de consumo justificam medir throughput, footprint e energia, sem extrapolar magnitudes \cite{alfarizy2026consumer}.

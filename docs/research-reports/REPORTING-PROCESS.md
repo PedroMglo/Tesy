@@ -11,3 +11,9 @@ Todo o relatório LaTeX registado passa a publicação contínua assim que a sua
 Para o bloqueio ser efetivo no merge, o proprietário do repositório deve configurar o job `evidence` como **required status check** nas branches de campanha protegidas. Sem essa regra, a CI deteta o atraso mas o GitHub pode permitir merge apesar do FAIL. Pushes diretos para branches sem proteção também não ficam bloqueados. A revisão humana continua necessária para aprovar interpretação e layout.
 
 Estado em 27 setembro 2026: C2 e C3 têm relatórios revistos e o gate passa na branch documental. C03 v1.0.0 tem PDF, hash e auditoria de seis páginas. D00 v1.0.0 conserva o corte histórico R00/C1/C2; a síntese corrente de C3 está em C03 e `CURRENT-LAB.md`. Uma verificação recorrente acompanha futuras atualizações e cria/atualiza trabalho documental, sem executar modelos nem fazer merge.
+
+## Literatura externa e imutabilidade
+
+A literatura científica é uma autoridade contextual separada da evidência experimental Tesy. `\\cite{...}` sustenta contexto, prior art e claim boundaries; `\\evidence{...}` aponta para fontes internas congeladas que sustentam resultados do Tesy. Não usar um artigo externo para validar números de campanha.
+
+Não editar `shared/bibliography.bib` para acrescentar referências a relatórios já publicados: o adapter v1 inclui `shared/**` no `inputs_sha256`, pelo que isso alteraria retroativamente a identidade das releases v1.0.0. Relatórios novos usam `sections/bibliography.bib`, que é versionado dentro do próprio relatório. Uma futura mudança global desta regra exige nova versão explícita do adapter e migração deliberada, nunca mutação silenciosa.
