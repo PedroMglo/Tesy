@@ -1,6 +1,10 @@
 # Implementation status
 
-Date: 2026-09-24
+## Estado entre branches em 23 de novembro de 2026
+
+O laboratório qualifica R0 `slots40-persistent` para o 120B nos âmbitos registados. M3 está parcial e M4 continua por atingir. O índice de novembro distingue a evidência medida no portátil, os cálculos reproduzidos e as hipóteses que aguardam validação. [Reanálise C320/C321](research/post-c320/README.md) · [Autoridade de cada branch](research/post-c320/repositorio.md)
+
+## Foundation snapshot · 2026-09-24
 
 This table distinguishes source implementation, model-free CI validation and
 reference-host/model validation. No source-only row is a performance claim.

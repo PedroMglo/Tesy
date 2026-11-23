@@ -30,7 +30,9 @@ Bitwise equality, numerical parity, greedy token equality and distribution-prese
 
 ## Research direction
 
-The current candidate question is narrower than generic MoE offload:
+Use the [post-C320 decision](docs/architecture/0004-servico-exato-de-experts.md) and the [evidence index](research/post-c320/README.md) for the current 120B research path. R0 `slots40-persistent` is the operational control on the laboratory history. The next decode decision requires a model-free replay of four-worker service. The separate prefill hypothesis starts with the feasibility of preserving R0's numerical tile geometry. Ollama serves as an optional end-user comparator. Mechanism evaluation uses a contemporary R0 and an isolating ablation. Locate the correct Git lineage before engineering a change.
+
+The original N0 candidate question was:
 
 Can speculation depth, future expert working set, and NVMe/RAM/VRAM residency be scheduled jointly so that cold expert bytes per exact committed token decrease on severely constrained local hardware?
 

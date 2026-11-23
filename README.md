@@ -6,7 +6,13 @@ The long-term question is not "how many parameters can be advertised as loaded?"
 
 > How much useful exact model capacity can be made conversational under fixed VRAM, RAM, storage-bandwidth and latency budgets?
 
-## Current research position
+## Decisão de arquitetura após C320 · 23 de novembro de 2026
+
+O laboratório publicou inferência GPT-OSS-120B acima da RAM no portátil. O controlo operacional é R0 `slots40-persistent`, com M3 parcial e M4 por atingir. A investigação seguinte avalia o custo de manter um worker bloqueado durante uma leitura e a possibilidade de reutilizar os mesmos experts entre tiles de prefill preservando o plano numérico. A decisão de implementar cada mecanismo depende de demonstrar margem no pedido completo. O Ollama intervém na comparação de experiência final.
+
+[Reanálise e primeiro comando reproduzível](research/post-c320/README.md) · [Decisão de arquitetura e gates da equipa](docs/architecture/0004-servico-exato-de-experts.md) · [Literatura e comparadores](research/post-c320/literatura.md) · [Mapa das 44 branches](research/post-c320/repositorio.md)
+
+## Scientific position
 
 Existing work already covers expert offload, CPU/GPU expert scheduling, activation-aware caching, prefetching, speculative decoding with MoE, expert-union-aware speculation, and multi-tier residency mechanisms. Tesy therefore does **not** claim those ideas as novel.
 
@@ -30,7 +36,7 @@ Target host (must be re-verified before measurement):
 - NVMe
 - Linux
 
-## What exists in this branch
+## Foundation implementation on main
 
 The first development slice provides:
 
