@@ -1,0 +1,238 @@
+{
+  "backend_pin": "237e3b8789650fd68b97641c5b8e259d198ed3b1",
+  "backend_tree": "149078c009a40b2c69ee126cdb84091fe3e95606",
+  "compiler": "c++ (GCC) 16.2.1 20261029 (Red Hat 16.2.1-3)",
+  "integrated_off_on": "NOT_RUN_PHYSICAL_ADMISSION_REQUIRED",
+  "objects": {
+    "expert_service_window.cpp": {
+      "object_output": "discarded after assembly",
+      "status": "COMPILED_OBJECT"
+    },
+    "llama-context.cpp": {
+      "sha256": "c3f06a331f0f1074876d2c9ac77c471caebd0470ba280500bd714a0a06fac41f",
+      "size": 263072,
+      "status": "COMPILED_OBJECT"
+    },
+    "llama-moe-stream.cpp": {
+      "sha256": "89b7ee9838c5f33e8617a73aa22127c82c5b8d67ae079130b39571d7b102d3bc",
+      "size": 395048,
+      "status": "COMPILED_OBJECT"
+    }
+  },
+  "real_routes": "NOT_RUN_PHYSICAL_ADMISSION_REQUIRED",
+  "reproduction": {
+    "compared_backend_objects": 2,
+    "fixture_executable_and_journal_match": true,
+    "prior_receipt_sha256": "0ad1214a257a677dc3a9b84a05c8d8b9e780f2d30cba68aafeb8902ac8ba00d5",
+    "prior_workspace_regular_bytes": 913635,
+    "status": "MATCH"
+  },
+  "schema": "tesy-prefix-observer-v1",
+  "source_sha256": {
+    "backend.patch": "5c15f6cd0114fd7d06a0c5b35ac5b6d74f8f69b92f8f5b869965184866fd341e",
+    "fixture.cpp": "e179b9aca79fd75acbfcc65dad0ba031e850cf5c3c9b2725c0f1f588c0c8c789",
+    "harness.patch": "f5b77c0a34b581bcb82303ddcbc1a450b1c4bbf8d9ce564c9e89380ce7189f87",
+    "journal.py": "408226f815f62218275cf06b6f6730b167103f07b1999b25dc11e439720700c0",
+    "prefix_routes.h": "b4f33678dd9e8905080dac5d59922c331e7d8b3a152ac903af7c617568bb3279",
+    "protocol.md": "f25600f6b2ed899c84410c7eba73cc4633a9cb3d4b20b292ceb26e4a63be92a7",
+    "reproducibility.md": "1fd4d6c4e73e35b8a9f4d794681fba3f4f0fa1d67318795274ef08b51f12138d",
+    "verify.py": "6334dabf8cca4b0e93fc9154705f3e5425ba9c1ea7c4a49bedc3172b612e0245"
+  },
+  "stages": [
+    {
+      "command": [
+        "c++",
+        "-std=c++17",
+        "-O1",
+        "-g0",
+        "-ffile-prefix-map=$WORK=/tesy-build",
+        "-ffile-prefix-map=$TESY=/tesy-project",
+        "-pipe",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "$OBSERVER/fixture.cpp",
+        "-o",
+        "$WORK/fixture"
+      ],
+      "log": "",
+      "returncode": 0,
+      "stage": "fixture-build",
+      "stop": null,
+      "tree_peak_rss_kib_sampled": 112244,
+      "wall_s": 0.398
+    },
+    {
+      "command": [
+        "$WORK/fixture",
+        "$WORK/fixture.bin"
+      ],
+      "log": "PASS fixture OFF/ON and eight fault checks\n",
+      "returncode": 0,
+      "stage": "fixture-run",
+      "stop": null,
+      "tree_peak_rss_kib_sampled": 432,
+      "wall_s": 0.032
+    },
+    {
+      "command": [
+        "git",
+        "apply",
+        "--no-index",
+        "$OBSERVER/backend.patch"
+      ],
+      "log": "",
+      "returncode": 0,
+      "stage": "apply-backend",
+      "stop": null,
+      "tree_peak_rss_kib_sampled": 928,
+      "wall_s": 0.032
+    },
+    {
+      "command": [
+        "git",
+        "apply",
+        "--no-index",
+        "$OBSERVER/harness.patch"
+      ],
+      "log": "",
+      "returncode": 0,
+      "stage": "apply-harness",
+      "stop": null,
+      "tree_peak_rss_kib_sampled": 848,
+      "wall_s": 0.032
+    },
+    {
+      "command": [
+        "c++",
+        "-std=gnu++17",
+        "-O1",
+        "-g0",
+        "-pipe",
+        "-fPIC",
+        "-ffile-prefix-map=$WORK=/tesy-build",
+        "-ffile-prefix-map=$TESY=/tesy-project",
+        "-ffile-prefix-map=$C294_BACKEND=/tesy-backend",
+        "-DNDEBUG",
+        "-DGGML_BACKEND_SHARED",
+        "-DGGML_SHARED",
+        "-DGGML_USE_CPU",
+        "-DGGML_USE_CUDA",
+        "-DLLAMA_SHARED",
+        "-I$WORK/src",
+        "-I$C294_BACKEND/src",
+        "-I$C294_BACKEND/include",
+        "-isystem",
+        "$C294_BACKEND/ggml/include",
+        "-DLLAMA_BUILD",
+        "-DTESY_C47_CPU_SKIP_PARKED",
+        "-Dllama_EXPORTS",
+        "-c",
+        "$WORK/src/llama-context.cpp",
+        "-o",
+        "$WORK/llama-context.cpp.o"
+      ],
+      "log": "",
+      "returncode": 0,
+      "stage": "object-llama-context.cpp",
+      "stop": null,
+      "tree_peak_rss_kib_sampled": 332056,
+      "wall_s": 1.841
+    },
+    {
+      "command": [
+        "c++",
+        "-std=gnu++17",
+        "-O1",
+        "-g0",
+        "-pipe",
+        "-fPIC",
+        "-ffile-prefix-map=$WORK=/tesy-build",
+        "-ffile-prefix-map=$TESY=/tesy-project",
+        "-ffile-prefix-map=$C294_BACKEND=/tesy-backend",
+        "-DNDEBUG",
+        "-DGGML_BACKEND_SHARED",
+        "-DGGML_SHARED",
+        "-DGGML_USE_CPU",
+        "-DGGML_USE_CUDA",
+        "-DLLAMA_SHARED",
+        "-I$WORK/src",
+        "-I$C294_BACKEND/src",
+        "-I$C294_BACKEND/include",
+        "-isystem",
+        "$C294_BACKEND/ggml/include",
+        "-DLLAMA_BUILD",
+        "-DTESY_C47_CPU_SKIP_PARKED",
+        "-Dllama_EXPORTS",
+        "-c",
+        "$WORK/src/llama-moe-stream.cpp",
+        "-o",
+        "$WORK/llama-moe-stream.cpp.o"
+      ],
+      "log": "",
+      "returncode": 0,
+      "stage": "object-llama-moe-stream.cpp",
+      "stop": null,
+      "tree_peak_rss_kib_sampled": 391124,
+      "wall_s": 2.676
+    },
+    {
+      "command": [
+        "c++",
+        "-std=gnu++17",
+        "-O1",
+        "-g0",
+        "-pipe",
+        "-fPIC",
+        "-ffile-prefix-map=$WORK=/tesy-build",
+        "-ffile-prefix-map=$TESY=/tesy-project",
+        "-ffile-prefix-map=$C294_BACKEND=/tesy-backend",
+        "-DNDEBUG",
+        "-DGGML_BACKEND_SHARED",
+        "-DGGML_SHARED",
+        "-DGGML_USE_CPU",
+        "-DGGML_USE_CUDA",
+        "-DLLAMA_SHARED",
+        "-I$WORK/src",
+        "-I$C294_BACKEND/src",
+        "-I$C294_BACKEND/include",
+        "-isystem",
+        "$C294_BACKEND/ggml/include",
+        "-I$TESY/tools",
+        "-I$C294_BACKEND/vendor/nlohmann",
+        "-c",
+        "$WORK/tools/expert_service_window.cpp",
+        "-o",
+        "/dev/null"
+      ],
+      "log": "",
+      "returncode": 0,
+      "stage": "object-expert_service_window.cpp",
+      "stop": null,
+      "tree_peak_rss_kib_sampled": 492468,
+      "wall_s": 4.271
+    }
+  ],
+  "status": "PASS_MODEL_FREE",
+  "synthetic_fixture": {
+    "cuts": {
+      "I": {
+        "call": 2,
+        "logical_rows_so_far": 1263,
+        "per_layer_expert_count_sha256": "9fafc214df396750a28068ea42a8bb98170f0a5aa5b3c3404da9bfa560112b50"
+      },
+      "P": {
+        "call": 1,
+        "logical_rows_so_far": 1156,
+        "per_layer_expert_count_sha256": "bde806dbc34cf07607a3ba6d85b16dc007d657601f29e2333d30e1130125ec83"
+      }
+    },
+    "executable_sha256": "e3c3c66be4af4d47fdd761a4131778b45d99cb9774e3631645345700d4413c7a",
+    "journal_bytes": 5925,
+    "journal_sha256": "d74ae9dd998d292a479c0e6d34ca66a9d0db0900637ad750f2f94e94913f64b2",
+    "pruned_groups": 1,
+    "rows": 1299,
+    "status": "COMPLETE_JOURNAL"
+  },
+  "workspace_regular_bytes": 913635
+}

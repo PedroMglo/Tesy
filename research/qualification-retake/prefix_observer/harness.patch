@@ -1,0 +1,62 @@
+--- a/tools/expert_service_window.cpp
++++ b/tools/expert_service_window.cpp
+@@ -75,30 +75,56 @@
+     const std::filesystem::path root=argv[4];check(std::filesystem::create_directory(root),"output root reused");
+     window_observer observer;runtime r(argv[1],observe_window,&observer);observer.r=&r;
+     const bool trace=getenv("TESY_C294_WINDOW")!=nullptr;
++    auto & prefix_audit = r.model->moe_stream()->prefix_audit;
++    if (const char * value = getenv("TESY_PREFIX_ROUTE_AUDIT")) {
++        check(std::string(value) == "1", "invalid prefix route audit option");
++        prefix_audit = std::make_unique<prefix_routes>();
++    }
++    auto observed_call = [&](const std::vector<llama_token> & input, int pos, bool all) {
++        if (prefix_audit) check(prefix_audit->begin_call(input.size()), "incomplete route call");
++        return r.call(input, pos, all); // this harness already synchronizes before return
++    };
+     check(!getenv("TESY_EXPERT_STORE_MANIFEST"),"C294 original byte service only");check(r.ctx->get_cparams().c262_layer_mode==0,"warmup mode not original");
+     check(r.ctx->get_cparams().c262_layer_span==(mode?153:0),"reserve span differs from frozen profile");
+     const bool packed=bool(getenv("TESY_EXPERT_STORE_MANIFEST"));
+     const auto load_before_prefix=r.model->moe_stream()->stats.n_store_loads;
+     const auto prepare_begin=clock_type::now();int pos=0;
+-    for(int n:plan){r.call({ids.begin()+pos,ids.begin()+pos+n},pos,false);pos+=n;}
++    for(int n:plan){observed_call({ids.begin()+pos,ids.begin()+pos+n},pos,false);pos+=n;}
+     const auto prepare_end=clock_type::now();const auto initial=r.snapshot();save(root/"initial.json",initial);
++    if (prefix_audit) check(prefix_audit->cut('P'), "prefix route coverage incomplete");
+     std::vector<float> complete_rows(static_cast<size_t>(33)*vocab);std::vector<int> winners;winners.reserve(33);
+     auto &window=r.model->moe_stream()->window;observer.on=trace;window.enabled.store(trace);window.call.store(0);
+     window.record(15);
+     const auto begin=clock_type::now();
+     if(mode)check(llama_c262_set_layer_mode(r.ctx,mode),"mode/reset graph refused");
+     check(r.ctx->get_cparams().c262_layer_mode==mode,"mode did not reach real context");
+-    auto row=r.call({ids.begin()+prefix,ids.end()},prefix,false);
++    auto row=observed_call({ids.begin()+prefix,ids.end()},prefix,false);
+     std::copy(row.begin(),row.end(),complete_rows.begin());winners.push_back(greedy(row.data()));
+     const auto prefill_end=clock_type::now();window.record(16);
++    if (prefix_audit) check(prefix_audit->cut('I'), "incremental route coverage incomplete");
+     for(int i=0;i<32;++i) {
+         window.call.store(i+1);window.record(15);
+-        row=r.call({tokens[i]},static_cast<int>(ids.size())+i,false);
++        row=observed_call({tokens[i]},static_cast<int>(ids.size())+i,false);
+         std::copy(row.begin(),row.end(),complete_rows.begin()+static_cast<size_t>(i+1)*vocab);
+         winners.push_back(greedy(row.data()));window.record(16);
+     }
+     const auto end=clock_type::now();const auto final=r.snapshot();
+     window.enabled.store(false);observer.on=false;
++    if (prefix_audit) {
++        check(prefix_audit->finish(), "incomplete decode route coverage");
++        const auto & bytes = prefix_audit->data();
++        const auto tmp = root/"prefix-routes.partial";
++        const int fd = open(tmp.c_str(), O_WRONLY|O_CREAT|O_EXCL|O_CLOEXEC, 0600);
++        check(fd >= 0, "cannot create private route journal");
++        size_t at = 0;
++        while (at < bytes.size()) {
++            const auto n = write(fd, bytes.data()+at, bytes.size()-at);
++            check(n > 0, "route journal write failed");
++            at += static_cast<size_t>(n);
++        }
++        check(fsync(fd) == 0 && close(fd) == 0, "route journal flush failed");
++        std::filesystem::rename(tmp, root/"prefix-routes.bin"); // new exclusive run root
++    }
+     check(!window.overflow.load(),"bounded event overflow");
+     std::ofstream journal(root/"events.tsv");
+     journal<<"kind us call route layer expert slot gen component bytes rows\n";
