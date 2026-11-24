@@ -38,12 +38,12 @@ class StartupTests(unittest.TestCase):
             a = argparse.Namespace(
                 new_output=root / "output", new_raw=root / "private", policy=root / "policy"
             )
-            a.policy.write_text("{}")
-            res = {"cgroup": {}}
+            source = (
+                start.HERE.parents[2]
+                / "results/post-c195-epoch-20260930T223734Z/resource-policy.json"
+            )
+            a.policy.write_bytes(source.read_bytes())
             with (
-                patch.object(start, "cap_for", return_value=8 * start.GIB),
-                patch.object(start.policy_api, "freeze_protocol_resource_limits", return_value=res),
-                patch.object(start.policy_api, "validate_resource_protocol"),
                 patch.object(start.bounded, "cgroup_state", return_value=None),
                 patch.object(start.subprocess, "Popen") as popen,
             ):

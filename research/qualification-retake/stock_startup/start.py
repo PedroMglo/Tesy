@@ -144,7 +144,7 @@ def run(a):
             start_mode="CAPACITY_ADMISSION_START",
             execution_class="FILE_PAGING",
         )
-        protocol = {"resources": resources}
+        protocol = {"limits": {}, "resources": resources}
         policy_api.validate_resource_protocol(protocol)
         stop = cap - 512 * MIB
         state0 = bounded.cgroup_state()
@@ -212,6 +212,9 @@ def run(a):
             "cap_bytes": cap,
             "duration_s": 60,
         }
+        if a.before_inventory_only:
+            r["status"] = "PASS_MODEL_FREE_PRE_INVENTORY"
+            return r["status"]
         inv = c118.collect(a.new_raw, run_id, **args)
         c118.require_inventory(a.new_raw, run_id, inv, **args, now=datetime.now(UTC), max_age_s=3)
         r["c118"] = {k: v for k, v in inv.items() if k != "path"}
@@ -398,6 +401,11 @@ def run(a):
 
 if __name__ == "__main__":
     ap = argparse.ArgumentParser(description=__doc__)
+    ap.add_argument(
+        "--before-inventory-only",
+        action="store_true",
+        help="Check the real policy, scope, placement metadata and ELFs, then stop before C118.",
+    )
     for name in ("policy", "placement", "binary", "build-receipt", "new-raw", "new-output"):
         ap.add_argument("--" + name, type=Path, required=True)
     status = run(ap.parse_args())
