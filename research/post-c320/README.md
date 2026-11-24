@@ -4,7 +4,7 @@
 
 ## Qualificação de produto em 24 de novembro
 
-M3 PARTIAL e M4 NOT_MET. A reanálise da sessão de 20 turnos localizou uma falha de conteúdo ainda sem referência independente para aquela entrada. O replay C322 fecha o fallback que duplica a leitura. A auditoria atual confirma integralmente o GGUF e documenta as condições de RAM, armazenamento e dependências para retomar no portátil. A triagem do MoEStream inclui o cabeçalho real e uma fixture de leitura incompleta. [Decisões, recibos e comandos](../qualification-retake/README.md)
+M3 PARTIAL e M4 NOT_MET. A reanálise da sessão de 20 turnos localizou uma falha de conteúdo ainda sem referência independente para aquela entrada. O replay C322 fecha o fallback que duplica a leitura. A auditoria atual confirma integralmente o GGUF e documenta as condições de RAM, armazenamento e dependências para retomar no portátil. Na colocação USB escolhida pelo Pedro, o limite de transporte dos 32 passos C294 e a reconstrução dos quatro estados de cache excluem atingir seis só escolhendo outras vítimas em R0. A triagem do MoEStream inclui o cabeçalho real e uma fixture de leitura incompleta. [Decisões, recibos e comandos](../qualification-retake/README.md)
 
 ## O que sustenta a decisão
 
