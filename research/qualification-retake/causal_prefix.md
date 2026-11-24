@@ -22,3 +22,9 @@ OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 python3 -B \
   research/qualification-retake/causal_prefix.py \
   --raw-dir "$TESY_C294_RAW" --new-output-dir "$TESY_NEW_PREFIX_OUT"
 ```
+
+## Procura das rotas anteriores ao snapshot
+
+C294 entrega o prefixo em oito chamadas, drena o serviço e grava `initial.json` antes de armar a janela. Os journals verificados começam na chamada 0 do incremento e terminam na 32 do decode. C291 falhou. C292 recebeu outro vetor de entrada e conservou pontos selecionados. No corpus de treino C311 a observação de rótulos começa depois do prefixo e do incremento e cobre um subconjunto de camadas CPU em decode. C316/C317 também armam a janela posterior ao snapshot. Estas fontes não identificam a sucessão de procuras do próprio prefixo de C294. [Cliente C294](../../tools/expert_service_window.cpp) · [Cliente do corpus](../../tools/expert_prediction_corpus.cpp) · [Cliente C317](../../tools/expert_learned_staging.cpp)
+
+Para testar retenção causal ao longo desse prefixo é preciso, no mínimo, ordenar a procura autoritativa por wave e camada, ligando os estados de entrada/saída às 36 camadas e aos IDs do mesmo workload. Uma hipótese por token exige ainda a posição e o top-4 ordenado por linha. A cobertura da camada final tem de seguir as linhas que o backend realmente avalia. Qualificar IDs e grafos OFF/ON precede qualquer atribuição de custo ao cliente.
