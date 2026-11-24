@@ -241,6 +241,12 @@ def merge(primary_depth, stage_depth, edges):
     return viable
 
 
+def locked_attach_edge(accept, attach):
+    """All earlier staging records precede accept in this uninterrupted critical section."""
+    require(accept >= 1 and attach > 1, "missing prior staging record")
+    return accept, attach - 1, False
+
+
 def audit(text, staged):
     decode, tasks, routes, features, depths, pending, report = primary(text)
     tickets, stage_depth, counts, stats = staging(staged)
@@ -260,6 +266,7 @@ def audit(text, staged):
     edges = []
     attached = set()
     wait_at = {}
+    locked_edges = []
     queued_takeover = 0
     receiver_cancel = 0
     for seq in tickets.values():
@@ -277,8 +284,9 @@ def audit(text, staged):
             require((claim["slot"], claim["generation"]) == (publish["slot"], publish["generation"])
                     and work in tasks and work not in attached, "staged generation join")
             attached.add(work)
-            _, accept, first_copy, *_, last_copy, resident = [i for i, _ in tasks[work]]
             require(len(tasks[work]) == 9, "staged ticket also did an original demand read")
+            _, accept, first_copy, *_, last_copy, resident = [i for i, _ in tasks[work]]
+            locked_edges.append(locked_attach_edge(accept, positions[6]))
             edges.extend([
                 (accept, positions[6], True),
                 (next_mutex[accept], positions[6], False),
@@ -307,24 +315,35 @@ def audit(text, staged):
             and len(wait_at) == stats["waits"]
             and counts["queued_removed"] == stats["expired_queued"] + queued_takeover,
             "cross-journal conservation")
-    viable = merge(depths, stage_depth, edges)
+    relaxed = merge(depths, stage_depth, edges)
+    viable = merge(depths, stage_depth, edges + locked_edges)
     ambiguous = 0
     full = Counter()
+    occupied = Counter()
+    previously_ambiguous = 0
     example = None
     for p, attach in wait_at.items():
         # Immediately after primary accept, before the matching staging attach.
-        occupancies = {depths[p] + stage_depth[s] for s in viable[p] if s < attach}
-        require(occupancies, "missing point before blocked attach")
+        prefixes = {s for s in viable[p] if s < attach}
+        require(prefixes == {attach - 1}, "nonadjacent locked accept/attach")
+        occupancies = {depths[p] + stage_depth[s] for s in prefixes}
+        occupied[depths[p] + stage_depth[attach - 1]] += 1
+        before_fix = {depths[p] + stage_depth[s] for s in relaxed[p] if s < attach}
+        previously_ambiguous += len(before_fix) > 1
         ambiguous += len(occupancies) > 1
         if pending[p]:
             full["pending_accepted_later"] += 1
             full["necessarily_four_busy"] += occupancies == {4}
             full["possibly_four_busy"] += 4 in occupancies
-            if example is None and min(occupancies) < 4 and 4 in occupancies:
+            if example is None and min(before_fix) < 4 and 4 in before_fix:
                 e = decode[p - 1]
                 example = {"primary_decode_index": p, "staging_attach_index": attach,
                            "call": e.call, "layer": e.layer, "possible_busy": sorted(occupancies),
-                           "other_already_queued": pending[p]}
+                           "other_already_queued": pending[p],
+                           "old_possible_busy": sorted(before_fix),
+                           "primary_assigned": depths[p],
+                           "staging_assigned": stage_depth[attach - 1],
+                           "locked_stage_prefix": attach - 1}
     return report | {
         "blocking_projection": "CAPACITY_FEASIBLE",
         "complete_timed_blocking_replay": "INCONCLUSIVE",
@@ -338,7 +357,9 @@ def audit(text, staged):
         "unlogged_refused_forecasts": stats["no_capacity"],
         "ambiguous_occupancy_at_accepts": ambiguous,
         "other_work_at_blocked_accept": dict(full),
-        "relaxed_projection_example": example,
+        "old_relaxed_ambiguous_accepts": previously_ambiguous,
+        "assigned_at_blocked_accept": dict(sorted(occupied.items())),
+        "corrected_relaxed_example": example,
     }
 
 
@@ -350,7 +371,7 @@ def main():
     options.output_dir.mkdir()
     manifest = source.required_files()
     missing = [name for name in manifest if not (options.raw_dir / name).is_file()]
-    result = {"schema": "tesy-c317-blocking-projection-v1",
+    result = {"schema": "tesy-c317-blocking-projection-v2",
               "inputs": manifest, "missing": missing, "arms": {},
               "continuation": {"status": "NOT_RUN", "favorable": None, "with_costs": None,
                                "maximum_admissible_us_per_continuation": None}}

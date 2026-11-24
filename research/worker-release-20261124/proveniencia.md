@@ -18,3 +18,5 @@ diferenças tracked. No checkout histórico separado há um
 `objects/maintenance.lock` vazio sem titular visível. O estudo estático
 de prefill usa a releitura do trace histórico C135 pelo SHA-256 já fixado
 em C261. Nenhum lock foi removido, trabalho relançado ou backend modificado.
+
+A correção do mutex partiu da cabeça e7a659db do #44 e conferiu os ficheiros pinados da implementação C305. O aditamento conserva o [pré-registo](protocolo-mutex.md), os [resultados da nova projeção](receipts/audit-mutex.json) e o [primeiro recibo](receipts/audit.json). A medição física histórica e a ordem interna dos journals são as mesmas nos dois cálculos.
