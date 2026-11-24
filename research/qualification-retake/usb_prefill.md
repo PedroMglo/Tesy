@@ -1,0 +1,35 @@
+# Primeiro conteúdo nominal · prefill e limite USB
+
+## Pergunta e regra de decisão
+
+Determinar, separadamente em C135 trace ON e C136 trace OFF, se no pedido incremental nominal real com retorno de 5 e 148 tokens existe uma contagem de componentes obrigatoriamente lidas dentro do prefill que, projetada no link direto de 10 Gbit/s observado no portátil, excede os 10 s até ao primeiro conteúdo final do cliente. Os bytes de preparação do prefixo ficam fora. O relógio do cliente e o do servidor continuam separados.
+
+Admitir apenas gerações com três componentes completas do GGUF na fase correta, sem staging nem serviço buffered, com duração delimitada dentro do pedido incremental. Verificar os IDs, os retornos, o estado e o estatuto do observador para cada braço. Quando um contador não separa fases, só permitir uma subtração ou um limite conservador cuja atribuição seja demonstrada. Uma coincidência de IDs sozinha não transfere o número de misses. Ignorar todos os overheads do fio, alinhamento e cálculo para o piso favorável; a existência de overlap não altera o piso de largura de banda. Um piso acima de 10 s fecha apenas a repetição do mesmo serviço por essa colocação. Se faltar uma condição, publicar a observação mínima. Sem leitura dos pesos, novos forwards ou inferência. Orçamento por tentativa de 60 s e 256 MiB.
+
+## Resultado
+
+**C135 ON · NO_GO condicionado para os 10 s no USB.** No segundo pedido natural, `c112-repeat`, o prefill de R0 fez 1 222 carregamentos completos associados à procura de um expert do target. Os 16 153 862 400 bytes de payload exigiriam **pelo menos 12,923 s** no link atual a 10 Gbit/s, mesmo com todo o cálculo sobreposto e sem custo de protocolo. A chamada de 148 tokens, por si só, já excederia 10 s. O cliente só pode emitir conteúdo deste pedido depois desse prefill. O dado observado é a sequência de leituras no NVMe histórico. O tempo no USB é um limite FORMAL para repetir essa sequência no mesmo envelope. [Recibo reproduzido](usb_prefill_evidence/receipt.json) · [Topologia e condições do link](usb.md)
+
+| C135 ON, segundo pedido | Posições do contexto | Gerações | Leituras de componente | Bytes codificados | Piso no USB |
+|---|---|---:|---:|---:|---:|
+| Call 1, 5 tokens | 2044–2048 | 45 | 135 | 594 864 000 | 0,476 s |
+| Call 2, 148 tokens | 2049–2196 | 1 177 | 3 531 | 15 558 998 400 | 12,447 s |
+| Total incremental | 153 tokens | 1 222 | 3 666 | 16 153 862 400 | 12,923 s |
+
+REPRODUZIDO a partir do trace `91610b12291d5a42a12bba09f5d4ff188d25ee0001ab89e894bdd508005e82fb`, do backend `ba058e62c33f6e1c6d8581c4685d9abb64542027` e dos manifestos congelados. O trigger entrou entre as duas requisições. O pedido anterior e os 2 044 IDs reutilizados do prefixo ficam fora da janela. Em cada geração de slot o verificador reencontra a procura autoritativa ou a procura posterior do expert antecipado pela wave, os três pares de leitura e cópia de 4 406 400 B e o fim de serviço. Para contagem usa uma geração, mesmo que a promoção de prioridade repita o enqueue. As 1 222 gerações completadas tiveram consumidor observado. Todos os inícios e fins de leitura ficam **dentro da própria call**, e a segunda call acaba antes do primeiro conteúdo final do cliente. `LOAD_END` antecede o commit de residência no código; o timestamp exato dessa publicação fica desconhecido. No GGUF houve um único FD, direto e zero buffered, nas 19 amostras do pedido C135 e nas 18 de C136. O cap físico histórico em ambos foi 18 GiB. O SHA-256 completo da cópia atual e o caminho direto ext4/UAS do USB foram verificados separadamente nesta unidade. [Validador de gerações](../../tools/c122_trace_validate.py) · [Validador do pedido e dos marcadores](../../tools/c135_analyze_slots40_trace.py)
+
+**Limite da transformação de 184 recargas.** O teste voltou a identificar 102 recargas CPU e 82 CUDA entre tiles da mesma call 148. A condição contabiliza inclusive um expert que já tinha sido encontrado residente numa tile anterior. Se a transformação eliminasse as 184 em simultâneo, mantendo os outros carregamentos e o estado de entrada, restariam **1 038 cargas, 13 721 529 600 B e 10,977 s**. Em 10 s inclusivos, a ligação transportaria 12 500 000 000 B. Isso admite no máximo 945 cargas inteiras de 13 219 200 B, enquanto 946 exigiriam 12 505 363 200 B. O traço original teria de evitar pelo menos 277 cargas; depois do cenário favorável ainda faltam **93**. Assim se fecha a proposta de reduzir apenas estas recargas para atingir 10 s neste regime, antes de cobrar atenção, outras transferências, o início de decode e a entrega ao cliente. Outra política de residência, um estado inicial diferente, ou trabalho deslocado para a requisição anterior exigem contabilização própria. [Classificação e proveniência do #44](https://github.com/PedroMglo/Tesy/blob/e7a659db61bb1def1fa14e9d6eccd06e1963f341/research/worker-release-20261124/prefill.md)
+
+**C136 OFF · bytes de prefill INCONCLUSIVE.** No segundo pedido, os recibos ON/OFF confirmam os mesmos 2 197 IDs de entrada e, para os dois pedidos da sessão, as mesmas mensagens completas, contagens de saída e motivos de terminação. O nominal fornecido C276 usado na C294 difere num ID na posição 35 (origem zero) e a sua continuação tem outro contrato. A análise usou exclusivamente C135/C136 para o prefill. Na sessão natural ambos registaram 47 tokens de saída no segundo pedido. O servidor reportou 11,707 s de prefill e 11,173 s de decode em ON, 10,906 s e 10,206 s em OFF. O cliente mediu primeiro conteúdo final em 22,619 s e 20,871 s, respetivamente. A diferença observada ON−OFF foi +0,801 s no prefill e +1,748 s no primeiro final, num único par ordenado. O custo do observador e a variação entre sessões não se identificam individualmente. A margem histórica de 10,665 s em OFF vem de subtrair todo o decode ao relógio de primeiro final; esse cenário tem outra hipótese e unidade de atribuição.
+
+O braço OFF regista bytes globais de processo em amostras periódicas e o descritor direto. Falta o corte dos **bytes de componentes servidas do GGUF nas calls do prefill**. Um mínimo para decidir o teto OFF seria o delta de um contador cumulativo desses bytes, entre a entrada do pedido incremental e o fim do prefill, com sucesso da entrega, sem trabalho pendente proveniente de outra fase ou a continuar fora da janela. Para distinguir 5 de 148, acrescentar o mesmo snapshot no retorno da primeira call. Assim a medição seguinte pode manter o journal detalhado desligado. O objetivo operacional mantém M3 PARTIAL e M4 NOT_MET. [Política do par ON/OFF](../../results/c136-slots40-trace-neutral-20260929T2205Z/neutrality-policy.json)
+
+## Reprodução
+
+```sh
+python3 -B research/qualification-retake/usb_prefill.py \
+  --historical-results "$TESY_RESULTS_HISTORICOS" --backend "$TESY_C122_BACKEND" \
+  --new-output-dir "$NOVO_PREFILL_USB"
+```
+
+A raiz de resultados contém os diretórios originais C135/C136 com os respetivos raw. SHA-256 do recibo desta reanálise `624dd4b64a045ae9237d581a13d453415b79e21879d8ec16c638f596781dfa1d`. Verificação em 0,30 s, pico de 70 880 KiB, zero leituras de pesos e zero forwards. Energia DESCONHECIDA.
