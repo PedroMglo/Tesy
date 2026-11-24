@@ -1,0 +1,662 @@
+{
+  "schema": "tesy-prepin-c163-v1",
+  "protocol_sha256": "2a70e442ecc5d830f35decde6e58c34d682580907961e355df47031880b0abed",
+  "baseline_controller_sha256": "b3dd3e6796a41c93f39e580f8c34af8228db6c665347ec56e5b3d43f91c3156b",
+  "baseline_reader_sha256": "cfea049ef5b61c1b9ac73495a219db9d7e9e581a32cd030cd6f00bd7ad976949",
+  "arms": {
+    "c163-on-1": {
+      "historical_control": "PREFILL_LOGICAL_REPLAY_MATCHED",
+      "schedules": {
+        "early": {
+          "control": {
+            "prefill_reserve": {
+              "CPU": 649,
+              "CUDA0": 252
+            },
+            "prefill_events": {
+              "DEMAND": 3807,
+              "EVICT": 899,
+              "RESERVE": 901,
+              "ENQUEUE": 901,
+              "BARRIER_SLOT": 2766,
+              "WAIT_BEGIN": 166,
+              "DEQUEUE": 901,
+              "RESIDENT_COMMIT": 901,
+              "noninitial_waves_all_current_mapped": 945,
+              "PRELOAD": 277
+            },
+            "first_decode": {
+              "CPU_miss": 12,
+              "CPU_ready": 88,
+              "CUDA0_ready": 41,
+              "CUDA0_miss": 3
+            },
+            "same_journaled_reservations": true,
+            "equal_prefill_layer_state": true
+          },
+          "candidate": {
+            "prefill_reserve": {
+              "CPU": 620,
+              "CUDA0": 231
+            },
+            "prefill_events": {
+              "DEMAND": 3807,
+              "EVICT": 849,
+              "RESERVE": 851,
+              "ENQUEUE": 851,
+              "BARRIER_SLOT": 2766,
+              "WAIT_BEGIN": 166,
+              "DEQUEUE": 851,
+              "RESIDENT_COMMIT": 851,
+              "noninitial_waves_all_current_mapped": 945,
+              "PRELOAD": 277
+            },
+            "prefill_reservation_sha256": "939ccbd88b4150eda33b66c7fbbe46266421668bdf461fdde90c1789623c1666",
+            "prefill_differences": {
+              "added": {},
+              "saved": {
+                "call10_CPU": 29,
+                "call10_CUDA0": 21
+              }
+            },
+            "natural_first_decode": {
+              "CPU_miss": 12,
+              "CPU_ready": 88,
+              "CUDA0_ready": 41,
+              "CUDA0_miss": 3
+            },
+            "natural_first_decode_reserve": {
+              "CPU": 12,
+              "CUDA0": 3
+            },
+            "natural_first_decode_differences": {
+              "added": {},
+              "saved": {}
+            },
+            "restored_first_decode": {
+              "CPU_miss": 12,
+              "CPU_ready": 88,
+              "CUDA0_ready": 41,
+              "CUDA0_miss": 3
+            },
+            "restored_first_decode_state_matches_control": true,
+            "net_gguf_loads_saved_after_restore": {
+              "no_scratch": {
+                "CPU": 6,
+                "CUDA0": 6
+              },
+              "local_scratch": {
+                "CPU": 29,
+                "CUDA0": 21
+              }
+            },
+            "next_work_id_delta_at_cut": -50,
+            "payload_and_metadata_restoration": {
+              "CPU": {
+                "missing_experts": 0,
+                "moved_resident_experts": 73,
+                "different_payload_slots": 73,
+                "cycles": 23,
+                "metadata_differences": {
+                  "expert_slot": 73,
+                  "keep": 12,
+                  "plan_pool": 7,
+                  "pool_used": 7,
+                  "slot_expert": 73,
+                  "slot_gen": 35,
+                  "slot_last_use": 563,
+                  "use_counter": 15
+                },
+                "no_scratch": {
+                  "cycles": 23,
+                  "extra_scratch_peak_bytes": 0,
+                  "gguf_destination_write_payload_bytes": 304041600,
+                  "gguf_loads": 23,
+                  "gguf_read_payload_bytes": 304041600,
+                  "local_copies": 50,
+                  "local_copy_payload_bytes": 660960000,
+                  "local_copy_read_plus_write_bytes": 1321920000
+                },
+                "local_scratch": {
+                  "cycles": 23,
+                  "extra_scratch_peak_bytes": 13219200,
+                  "gguf_destination_write_payload_bytes": 0,
+                  "gguf_loads": 0,
+                  "gguf_read_payload_bytes": 0,
+                  "local_copies": 96,
+                  "local_copy_payload_bytes": 1269043200,
+                  "local_copy_read_plus_write_bytes": 2538086400
+                }
+              },
+              "CUDA0": {
+                "missing_experts": 0,
+                "moved_resident_experts": 49,
+                "different_payload_slots": 49,
+                "cycles": 15,
+                "metadata_differences": {
+                  "expert_slot": 49,
+                  "keep": 8,
+                  "plan_pool": 4,
+                  "pool_used": 4,
+                  "slot_expert": 49,
+                  "slot_gen": 32,
+                  "slot_last_use": 313,
+                  "use_counter": 8
+                },
+                "no_scratch": {
+                  "cycles": 15,
+                  "extra_scratch_peak_bytes": 0,
+                  "gguf_destination_write_payload_bytes": 198288000,
+                  "gguf_loads": 15,
+                  "gguf_read_payload_bytes": 198288000,
+                  "local_copies": 34,
+                  "local_copy_payload_bytes": 449452800,
+                  "local_copy_read_plus_write_bytes": 898905600
+                },
+                "local_scratch": {
+                  "cycles": 15,
+                  "extra_scratch_peak_bytes": 13219200,
+                  "gguf_destination_write_payload_bytes": 0,
+                  "gguf_loads": 0,
+                  "gguf_read_payload_bytes": 0,
+                  "local_copies": 64,
+                  "local_copy_payload_bytes": 846028800,
+                  "local_copy_read_plus_write_bytes": 1692057600
+                }
+              }
+            }
+          }
+        },
+        "late": {
+          "control": {
+            "prefill_reserve": {
+              "CPU": 649,
+              "CUDA0": 252
+            },
+            "prefill_events": {
+              "DEMAND": 3807,
+              "EVICT": 899,
+              "RESERVE": 901,
+              "ENQUEUE": 1178,
+              "BARRIER_SLOT": 3419,
+              "WAIT_BEGIN": 237,
+              "DEQUEUE": 901,
+              "RESIDENT_COMMIT": 901,
+              "noninitial_waves_all_current_mapped": 945,
+              "PRELOAD": 277,
+              "STALE_WORK": 277
+            },
+            "first_decode": {
+              "CPU_miss": 12,
+              "CPU_ready": 88,
+              "CUDA0_ready": 41,
+              "CUDA0_miss": 3
+            },
+            "same_journaled_reservations": true,
+            "equal_prefill_layer_state": true
+          },
+          "candidate": {
+            "prefill_reserve": {
+              "CPU": 620,
+              "CUDA0": 231
+            },
+            "prefill_events": {
+              "DEMAND": 3807,
+              "EVICT": 849,
+              "RESERVE": 851,
+              "ENQUEUE": 1128,
+              "BARRIER_SLOT": 3419,
+              "WAIT_BEGIN": 237,
+              "DEQUEUE": 851,
+              "RESIDENT_COMMIT": 851,
+              "noninitial_waves_all_current_mapped": 945,
+              "PRELOAD": 277,
+              "STALE_WORK": 277
+            },
+            "prefill_reservation_sha256": "939ccbd88b4150eda33b66c7fbbe46266421668bdf461fdde90c1789623c1666",
+            "prefill_differences": {
+              "added": {},
+              "saved": {
+                "call10_CPU": 29,
+                "call10_CUDA0": 21
+              }
+            },
+            "natural_first_decode": {
+              "CPU_miss": 12,
+              "CPU_ready": 88,
+              "CUDA0_ready": 41,
+              "CUDA0_miss": 3
+            },
+            "natural_first_decode_reserve": {
+              "CPU": 12,
+              "CUDA0": 3
+            },
+            "natural_first_decode_differences": {
+              "added": {},
+              "saved": {}
+            },
+            "restored_first_decode": {
+              "CPU_miss": 12,
+              "CPU_ready": 88,
+              "CUDA0_ready": 41,
+              "CUDA0_miss": 3
+            },
+            "restored_first_decode_state_matches_control": true,
+            "net_gguf_loads_saved_after_restore": {
+              "no_scratch": {
+                "CPU": 6,
+                "CUDA0": 6
+              },
+              "local_scratch": {
+                "CPU": 29,
+                "CUDA0": 21
+              }
+            },
+            "next_work_id_delta_at_cut": -50,
+            "payload_and_metadata_restoration": {
+              "CPU": {
+                "missing_experts": 0,
+                "moved_resident_experts": 73,
+                "different_payload_slots": 73,
+                "cycles": 23,
+                "metadata_differences": {
+                  "expert_slot": 73,
+                  "keep": 12,
+                  "plan_pool": 7,
+                  "pool_used": 7,
+                  "slot_expert": 73,
+                  "slot_gen": 35,
+                  "slot_last_use": 563,
+                  "use_counter": 15
+                },
+                "no_scratch": {
+                  "cycles": 23,
+                  "extra_scratch_peak_bytes": 0,
+                  "gguf_destination_write_payload_bytes": 304041600,
+                  "gguf_loads": 23,
+                  "gguf_read_payload_bytes": 304041600,
+                  "local_copies": 50,
+                  "local_copy_payload_bytes": 660960000,
+                  "local_copy_read_plus_write_bytes": 1321920000
+                },
+                "local_scratch": {
+                  "cycles": 23,
+                  "extra_scratch_peak_bytes": 13219200,
+                  "gguf_destination_write_payload_bytes": 0,
+                  "gguf_loads": 0,
+                  "gguf_read_payload_bytes": 0,
+                  "local_copies": 96,
+                  "local_copy_payload_bytes": 1269043200,
+                  "local_copy_read_plus_write_bytes": 2538086400
+                }
+              },
+              "CUDA0": {
+                "missing_experts": 0,
+                "moved_resident_experts": 49,
+                "different_payload_slots": 49,
+                "cycles": 15,
+                "metadata_differences": {
+                  "expert_slot": 49,
+                  "keep": 8,
+                  "plan_pool": 4,
+                  "pool_used": 4,
+                  "slot_expert": 49,
+                  "slot_gen": 32,
+                  "slot_last_use": 313,
+                  "use_counter": 8
+                },
+                "no_scratch": {
+                  "cycles": 15,
+                  "extra_scratch_peak_bytes": 0,
+                  "gguf_destination_write_payload_bytes": 198288000,
+                  "gguf_loads": 15,
+                  "gguf_read_payload_bytes": 198288000,
+                  "local_copies": 34,
+                  "local_copy_payload_bytes": 449452800,
+                  "local_copy_read_plus_write_bytes": 898905600
+                },
+                "local_scratch": {
+                  "cycles": 15,
+                  "extra_scratch_peak_bytes": 13219200,
+                  "gguf_destination_write_payload_bytes": 0,
+                  "gguf_loads": 0,
+                  "gguf_read_payload_bytes": 0,
+                  "local_copies": 64,
+                  "local_copy_payload_bytes": 846028800,
+                  "local_copy_read_plus_write_bytes": 1692057600
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "c163-on-2": {
+      "historical_control": "PREFILL_LOGICAL_REPLAY_MATCHED",
+      "schedules": {
+        "early": {
+          "control": {
+            "prefill_reserve": {
+              "CPU": 649,
+              "CUDA0": 252
+            },
+            "prefill_events": {
+              "DEMAND": 3807,
+              "EVICT": 899,
+              "RESERVE": 901,
+              "ENQUEUE": 901,
+              "BARRIER_SLOT": 2766,
+              "WAIT_BEGIN": 166,
+              "DEQUEUE": 901,
+              "RESIDENT_COMMIT": 901,
+              "noninitial_waves_all_current_mapped": 945,
+              "PRELOAD": 277
+            },
+            "first_decode": {
+              "CPU_miss": 12,
+              "CPU_ready": 88,
+              "CUDA0_ready": 41,
+              "CUDA0_miss": 3
+            },
+            "same_journaled_reservations": true,
+            "equal_prefill_layer_state": true
+          },
+          "candidate": {
+            "prefill_reserve": {
+              "CPU": 620,
+              "CUDA0": 231
+            },
+            "prefill_events": {
+              "DEMAND": 3807,
+              "EVICT": 849,
+              "RESERVE": 851,
+              "ENQUEUE": 851,
+              "BARRIER_SLOT": 2766,
+              "WAIT_BEGIN": 166,
+              "DEQUEUE": 851,
+              "RESIDENT_COMMIT": 851,
+              "noninitial_waves_all_current_mapped": 945,
+              "PRELOAD": 277
+            },
+            "prefill_reservation_sha256": "939ccbd88b4150eda33b66c7fbbe46266421668bdf461fdde90c1789623c1666",
+            "prefill_differences": {
+              "added": {},
+              "saved": {
+                "call10_CPU": 29,
+                "call10_CUDA0": 21
+              }
+            },
+            "natural_first_decode": {
+              "CPU_miss": 12,
+              "CPU_ready": 88,
+              "CUDA0_ready": 41,
+              "CUDA0_miss": 3
+            },
+            "natural_first_decode_reserve": {
+              "CPU": 12,
+              "CUDA0": 3
+            },
+            "natural_first_decode_differences": {
+              "added": {},
+              "saved": {}
+            },
+            "restored_first_decode": {
+              "CPU_miss": 12,
+              "CPU_ready": 88,
+              "CUDA0_ready": 41,
+              "CUDA0_miss": 3
+            },
+            "restored_first_decode_state_matches_control": true,
+            "net_gguf_loads_saved_after_restore": {
+              "no_scratch": {
+                "CPU": 6,
+                "CUDA0": 6
+              },
+              "local_scratch": {
+                "CPU": 29,
+                "CUDA0": 21
+              }
+            },
+            "next_work_id_delta_at_cut": -50,
+            "payload_and_metadata_restoration": {
+              "CPU": {
+                "missing_experts": 0,
+                "moved_resident_experts": 73,
+                "different_payload_slots": 73,
+                "cycles": 23,
+                "metadata_differences": {
+                  "expert_slot": 73,
+                  "keep": 12,
+                  "plan_pool": 7,
+                  "pool_used": 7,
+                  "slot_expert": 73,
+                  "slot_gen": 35,
+                  "slot_last_use": 563,
+                  "use_counter": 15
+                },
+                "no_scratch": {
+                  "cycles": 23,
+                  "extra_scratch_peak_bytes": 0,
+                  "gguf_destination_write_payload_bytes": 304041600,
+                  "gguf_loads": 23,
+                  "gguf_read_payload_bytes": 304041600,
+                  "local_copies": 50,
+                  "local_copy_payload_bytes": 660960000,
+                  "local_copy_read_plus_write_bytes": 1321920000
+                },
+                "local_scratch": {
+                  "cycles": 23,
+                  "extra_scratch_peak_bytes": 13219200,
+                  "gguf_destination_write_payload_bytes": 0,
+                  "gguf_loads": 0,
+                  "gguf_read_payload_bytes": 0,
+                  "local_copies": 96,
+                  "local_copy_payload_bytes": 1269043200,
+                  "local_copy_read_plus_write_bytes": 2538086400
+                }
+              },
+              "CUDA0": {
+                "missing_experts": 0,
+                "moved_resident_experts": 49,
+                "different_payload_slots": 49,
+                "cycles": 15,
+                "metadata_differences": {
+                  "expert_slot": 49,
+                  "keep": 8,
+                  "plan_pool": 4,
+                  "pool_used": 4,
+                  "slot_expert": 49,
+                  "slot_gen": 32,
+                  "slot_last_use": 313,
+                  "use_counter": 8
+                },
+                "no_scratch": {
+                  "cycles": 15,
+                  "extra_scratch_peak_bytes": 0,
+                  "gguf_destination_write_payload_bytes": 198288000,
+                  "gguf_loads": 15,
+                  "gguf_read_payload_bytes": 198288000,
+                  "local_copies": 34,
+                  "local_copy_payload_bytes": 449452800,
+                  "local_copy_read_plus_write_bytes": 898905600
+                },
+                "local_scratch": {
+                  "cycles": 15,
+                  "extra_scratch_peak_bytes": 13219200,
+                  "gguf_destination_write_payload_bytes": 0,
+                  "gguf_loads": 0,
+                  "gguf_read_payload_bytes": 0,
+                  "local_copies": 64,
+                  "local_copy_payload_bytes": 846028800,
+                  "local_copy_read_plus_write_bytes": 1692057600
+                }
+              }
+            }
+          }
+        },
+        "late": {
+          "control": {
+            "prefill_reserve": {
+              "CPU": 649,
+              "CUDA0": 252
+            },
+            "prefill_events": {
+              "DEMAND": 3807,
+              "EVICT": 899,
+              "RESERVE": 901,
+              "ENQUEUE": 1178,
+              "BARRIER_SLOT": 3419,
+              "WAIT_BEGIN": 237,
+              "DEQUEUE": 901,
+              "RESIDENT_COMMIT": 901,
+              "noninitial_waves_all_current_mapped": 945,
+              "PRELOAD": 277,
+              "STALE_WORK": 277
+            },
+            "first_decode": {
+              "CPU_miss": 12,
+              "CPU_ready": 88,
+              "CUDA0_ready": 41,
+              "CUDA0_miss": 3
+            },
+            "same_journaled_reservations": true,
+            "equal_prefill_layer_state": true
+          },
+          "candidate": {
+            "prefill_reserve": {
+              "CPU": 620,
+              "CUDA0": 231
+            },
+            "prefill_events": {
+              "DEMAND": 3807,
+              "EVICT": 849,
+              "RESERVE": 851,
+              "ENQUEUE": 1128,
+              "BARRIER_SLOT": 3419,
+              "WAIT_BEGIN": 237,
+              "DEQUEUE": 851,
+              "RESIDENT_COMMIT": 851,
+              "noninitial_waves_all_current_mapped": 945,
+              "PRELOAD": 277,
+              "STALE_WORK": 277
+            },
+            "prefill_reservation_sha256": "939ccbd88b4150eda33b66c7fbbe46266421668bdf461fdde90c1789623c1666",
+            "prefill_differences": {
+              "added": {},
+              "saved": {
+                "call10_CPU": 29,
+                "call10_CUDA0": 21
+              }
+            },
+            "natural_first_decode": {
+              "CPU_miss": 12,
+              "CPU_ready": 88,
+              "CUDA0_ready": 41,
+              "CUDA0_miss": 3
+            },
+            "natural_first_decode_reserve": {
+              "CPU": 12,
+              "CUDA0": 3
+            },
+            "natural_first_decode_differences": {
+              "added": {},
+              "saved": {}
+            },
+            "restored_first_decode": {
+              "CPU_miss": 12,
+              "CPU_ready": 88,
+              "CUDA0_ready": 41,
+              "CUDA0_miss": 3
+            },
+            "restored_first_decode_state_matches_control": true,
+            "net_gguf_loads_saved_after_restore": {
+              "no_scratch": {
+                "CPU": 6,
+                "CUDA0": 6
+              },
+              "local_scratch": {
+                "CPU": 29,
+                "CUDA0": 21
+              }
+            },
+            "next_work_id_delta_at_cut": -50,
+            "payload_and_metadata_restoration": {
+              "CPU": {
+                "missing_experts": 0,
+                "moved_resident_experts": 73,
+                "different_payload_slots": 73,
+                "cycles": 23,
+                "metadata_differences": {
+                  "expert_slot": 73,
+                  "keep": 12,
+                  "plan_pool": 7,
+                  "pool_used": 7,
+                  "slot_expert": 73,
+                  "slot_gen": 35,
+                  "slot_last_use": 563,
+                  "use_counter": 15
+                },
+                "no_scratch": {
+                  "cycles": 23,
+                  "extra_scratch_peak_bytes": 0,
+                  "gguf_destination_write_payload_bytes": 304041600,
+                  "gguf_loads": 23,
+                  "gguf_read_payload_bytes": 304041600,
+                  "local_copies": 50,
+                  "local_copy_payload_bytes": 660960000,
+                  "local_copy_read_plus_write_bytes": 1321920000
+                },
+                "local_scratch": {
+                  "cycles": 23,
+                  "extra_scratch_peak_bytes": 13219200,
+                  "gguf_destination_write_payload_bytes": 0,
+                  "gguf_loads": 0,
+                  "gguf_read_payload_bytes": 0,
+                  "local_copies": 96,
+                  "local_copy_payload_bytes": 1269043200,
+                  "local_copy_read_plus_write_bytes": 2538086400
+                }
+              },
+              "CUDA0": {
+                "missing_experts": 0,
+                "moved_resident_experts": 49,
+                "different_payload_slots": 49,
+                "cycles": 15,
+                "metadata_differences": {
+                  "expert_slot": 49,
+                  "keep": 8,
+                  "plan_pool": 4,
+                  "pool_used": 4,
+                  "slot_expert": 49,
+                  "slot_gen": 32,
+                  "slot_last_use": 313,
+                  "use_counter": 8
+                },
+                "no_scratch": {
+                  "cycles": 15,
+                  "extra_scratch_peak_bytes": 0,
+                  "gguf_destination_write_payload_bytes": 198288000,
+                  "gguf_loads": 15,
+                  "gguf_read_payload_bytes": 198288000,
+                  "local_copies": 34,
+                  "local_copy_payload_bytes": 449452800,
+                  "local_copy_read_plus_write_bytes": 898905600
+                },
+                "local_scratch": {
+                  "cycles": 15,
+                  "extra_scratch_peak_bytes": 13219200,
+                  "gguf_destination_write_payload_bytes": 0,
+                  "gguf_loads": 0,
+                  "gguf_read_payload_bytes": 0,
+                  "local_copies": 64,
+                  "local_copy_payload_bytes": 846028800,
+                  "local_copy_read_plus_write_bytes": 1692057600
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
