@@ -28,7 +28,8 @@ def sha(p):
         return hashlib.file_digest(f, "sha256").hexdigest()
 
 
-def run_prepare(raw_parent, private, backend, prev, ggml, receipt):
+def run_prepare(raw_parent, private, backend, prev, ggml, receipt, *, slots=32):
+    require(slots in (28, 32), "unknown canary profile")
     started = time.monotonic()
     env = {
         "PATH": "/usr/bin:/bin",
@@ -172,6 +173,20 @@ def run_prepare(raw_parent, private, backend, prev, ggml, receipt):
     cpp = private / "probe.cpp"
     shutil.copyfile(source, cpp)
     run(["git", "apply", "--no-index", HERE / "canary.patch"], "patch-canary")
+    if slots == 28:
+        gold_source = json.loads((HERE / "attempt-02/receipt.json").read_bytes())[
+            "patched_source_sha256"
+        ]
+        require(sha(cpp) == gold_source, "unaltered canary32 source required")
+        source_bytes = cpp.read_bytes()
+        before, after = b"mp.moe_stream_slots=32;", b"mp.moe_stream_slots=28;"
+        require(source_bytes.count(before) == 1, "ambiguous pool capacity")
+        cpp.write_bytes(source_bytes.replace(before, after, 1))
+        require(
+            cpp.read_bytes().replace(after, before, 1) == source_bytes, "unexpected source delta"
+        )
+        receipt["pool_slots"] = 28
+
     exe = private / "nvme-prefix-canary"
     cmd = [
         "/usr/bin/c++",
@@ -246,7 +261,7 @@ def run_prepare(raw_parent, private, backend, prev, ggml, receipt):
     )
 
 
-if __name__ == "__main__":
+def main(slots=32):
     ap = argparse.ArgumentParser(description=__doc__)
     for name in [
         "raw-parent",
@@ -268,7 +283,7 @@ if __name__ == "__main__":
         "stages": [],
         "target": "NOT_RUN_PHYSICAL_ADMISSION_REQUIRED",
         "forwards": 0,
-        "protocol_sha256": sha(HERE / "protocol.md"),
+        "protocol_sha256": sha((HERE if slots == 32 else HERE / "slots28") / "protocol.md"),
         "source_sha256": {
             name: sha(HERE / name) for name in ["prepare.py", "gate.py", "canary.patch"]
         },
@@ -281,6 +296,7 @@ if __name__ == "__main__":
             a.prefix_build.resolve(),
             a.ggml_bin.resolve(),
             result,
+            slots=slots,
         )
         result["status"] = "PASS_PREPARED_MODEL_FREE"
     except (OSError, ValueError, KeyError) as exc:
@@ -294,3 +310,7 @@ if __name__ == "__main__":
     pending.replace(a.new_output_dir / "receipt.json")
     print(result["status"], result.get("error", ""))
     raise SystemExit(int(result["status"] != "PASS_PREPARED_MODEL_FREE"))
+
+
+if __name__ == "__main__":
+    main()

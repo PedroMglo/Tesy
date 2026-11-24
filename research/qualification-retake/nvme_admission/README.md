@@ -13,6 +13,8 @@
 | NVMe3, Btrfs | 145,518 ms | 261,887 ms | 143,325 ms | 264 630 272 B | 1 130 496 B |
 | USB4, ext4 | 498,305 ms | 607,922 ms | 496,058 ms | 264 630 272 B | 0 B |
 
+Em 14 das 16 camadas com leitura houve um único miss. Uma camada teve dois e outra quatro. Os 14 grupos com um único expert somaram 104,644 ms no NVMe2 e 105,436 ms no NVMe3. Em cada um desses grupos as três componentes foram lidas sequencialmente pelo mesmo worker. A largura de banda sequencial do dispositivo, por si só, omite essa forma de serviço.
+
 O serviço diminuiu **70,53%** no primeiro par e **70,80%** no segundo. Em ambos os braços NVMe o contador do dispositivo avançou 516 856 setores de 512 B, exatamente o volume pedido, e o segundo braço demorou mais 0,102 ms. Esta sequência mede o efeito da colocação completa, com cópia recente em Btrfs montado com compressão zstd e estados naturais das caches dos controladores. Dois pares não separam o transporte, filesystem, estado interno dos discos ou efeito de ordem. Os contadores do dispositivo abrangem o host inteiro. Em USB4 o incremento do contador de tempo ocupado foi de 2 008 ms num braço de 608 ms, pelo que a comparação de latência usa o relógio monotónico da fixture. [Braços, hashes e recibos de origem](evidence-20261124-r1/io.json)
 
 Executou-se na checkout limpa `a85100f717d193dde4b0a54f2461cf0666dd0415`. O serviço systemd durou 3,246 s e consumiu 1,850 s de CPU. O pico de memória do cgroup foi 99 827 712 B, com swap zero. Foram pedidos 529 260 544 B por disco. A energia física e o RSS do observador passivo ficaram sem medição. Os raws C55 e ABBA são locais, com tamanhos e SHA nos manifestos compactos. Os relógios excluem cópias a slots/GPU, cálculo do modelo, amostragem e cleanup do servidor. A execução fez zero forwards.

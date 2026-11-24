@@ -118,6 +118,38 @@ def numerical(raw_c110, prefix, mode):
     }
 
 
+def compare_rows(raw, gold, vocab=VOCAB):
+    """Describe a slots28 result without publishing model outputs or weakening bitwise equality."""
+    require(len(raw) == len(gold) == 12 * vocab, "three full rows required")
+    rows = []
+    for row in range(3):
+        a = raw[row * 4 * vocab : (row + 1) * 4 * vocab]
+        b = gold[row * 4 * vocab : (row + 1) * 4 * vocab]
+        different = sum(
+            x != y
+            for x, y in zip(struct.iter_unpack("<I", a), struct.iter_unpack("<I", b), strict=True)
+        )
+        actual = struct.unpack(f"<{vocab}f", a)
+        expected = struct.unpack(f"<{vocab}f", b)
+        finite = all(math.isfinite(x) for x in actual)
+        rows.append(
+            {
+                "row": row,
+                "sha256": hashed(a),
+                "different_f32_bits_count": different,
+                "all_finite": finite,
+                "max_abs": max(abs(x - y) for x, y in zip(actual, expected, strict=True))
+                if finite
+                else None,
+                "greedy_equal": max(range(vocab), key=actual.__getitem__)
+                == max(range(vocab), key=expected.__getitem__)
+                if finite
+                else None,
+            }
+        )
+    return {"sha256": hashed(raw), "rows": rows}
+
+
 if __name__ == "__main__":
     p = argparse.ArgumentParser(description=__doc__)
     p.add_argument("--raw-c110", required=True, type=Path)

@@ -24,6 +24,17 @@ def synthetic_routes():
 
 
 class CanaryGateTest(unittest.TestCase):
+    def test_row_comparison_reports_bitwise_zero_and_nonfinite(self):
+        first = struct.pack("<2f", 0, 2)
+        changed = struct.pack("<2f", -0.0, 2)
+        rows = gate.compare_rows(
+            first + changed + struct.pack("<2f", float("nan"), 2), first * 3, 2
+        )["rows"]
+        self.assertEqual([r["different_f32_bits_count"] for r in rows], [0, 1, 1])
+        self.assertEqual(rows[1]["max_abs"], 0)
+        self.assertTrue(rows[1]["greedy_equal"])
+        self.assertIsNone(rows[2]["max_abs"])
+
     def test_cap_admission_keeps_other_guards_and_both_memory_estimates(self):
         mem = {"cap_max_bytes": run_pair.CAP}
         w = {

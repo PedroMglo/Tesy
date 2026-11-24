@@ -8,8 +8,9 @@ import subprocess
 import sys
 import time
 from pathlib import Path
+from typing import NamedTuple
 
-from gate import C110, DIGEST, HERE, IDS, REPO, numerical, reference, require
+from gate import C110, DIGEST, HERE, IDS, REPO, SIZE, compare_rows, numerical, reference, require
 from prepare import sha
 
 sys.path.insert(0, str(REPO / "tools"))
@@ -25,6 +26,17 @@ MAX_BYTES = 64 * 1024**2
 RECEIPT = HERE / "attempt-02/receipt.json"
 PREPARED = "56d6db87ac18b40407b0b6c55bac3898e5c65aaefc623d233e803ac14297878a"
 PIN = "237e3b8789650fd68b97641c5b8e259d198ed3b1"
+
+
+class Profile(NamedTuple):
+    slots: int
+    cap: int
+    directory: Path
+    build_receipt: Path
+    receipt_sha256: str
+
+
+SLOTS32 = Profile(32, CAP, HERE, RECEIPT, PREPARED)
 
 
 def load(path):
@@ -47,7 +59,7 @@ class NotAdmitted(ValueError):
     pass
 
 
-def admit_window(window, policy, policy_digest):
+def admit_window(window, policy, policy_digest, cap=CAP):
     require(
         window["status"] in ("NOT_ADMITTED", "PASS_RESOURCE_WINDOW_ONLY"),
         "incomplete C55 inventory",
@@ -59,23 +71,24 @@ def admit_window(window, policy, policy_digest):
         window["canonical_memory"]["cap_max_bytes"],
         policy["memory"]["cap_max_bytes"],
     )
-    if reasons or available < CAP:
-        raise NotAdmitted(f"cap={available} required={CAP} other_reasons={sorted(reasons)}")
+    if reasons or available < cap:
+        raise NotAdmitted(f"cap={available} required={cap} other_reasons={sorted(reasons)}")
 
 
-def checked(a):
+def checked(a, profile):
     require(
         git(REPO, "rev-parse", "HEAD") == a.measurement_commit
         and not git(REPO, "status", "--porcelain"),
         "clean measurement checkout required",
     )
     require(git(a.backend, "rev-parse", "HEAD") == PIN, "incorrect backend")
-    require(sha(RECEIPT) == PREPARED, "unknown prepared client receipt")
-    prepared = load(RECEIPT)
+    require(sha(profile.build_receipt) == profile.receipt_sha256, "unknown prepared client receipt")
+    prepared = load(profile.build_receipt)
+    require(prepared.get("pool_slots", 32) == profile.slots, "prepared pool geometry changed")
     require(sha(a.executable) == prepared["executable_sha256"], "canary digest changed")
     w = load(a.window / "receipt.json")
     policy = load(a.window / "resource-policy.json")
-    admit_window(w, policy, sha(a.window / "resource-policy.json"))
+    admit_window(w, policy, sha(a.window / "resource-policy.json"), profile.cap)
     placement = load(HERE.parent / "nvme_placement/receipt.json")
     require(sha(a.placement) == placement["raw_receipt_sha256"], "NVMe placement receipt mismatch")
     physical = load(a.placement)
@@ -122,13 +135,13 @@ def checked(a):
         "libraries_sha256": {str(gomp[0]): actual[gomp[0].name]},
     }
     resources = freeze_protocol_resource_limits(
-        policy, cgroup_memory_max_bytes=CAP, start_mode="CAUSAL_AB_START"
+        policy, cgroup_memory_max_bytes=profile.cap, start_mode="CAUSAL_AB_START"
     )
     return model, identity, raw, ids, env_contract, resources
 
 
-def run(a, out):
-    model, identity, raw, ids, omp, resources = checked(a)
+def run(a, out, profile):
+    model, identity, raw, ids, omp, resources = checked(a, profile)
     parent = a.new_output_dir.resolve()
     (parent / "raw").mkdir()
     shutil.copyfile(a.window / "resource-policy.json", parent / "resource-policy.json")
@@ -142,7 +155,7 @@ def run(a, out):
             "policy_sha256": sha(parent / "resource-policy.json"),
         },
         "measurement_commit": a.measurement_commit,
-        "source_protocol_sha256": sha(HERE / "protocol.md"),
+        "source_protocol_sha256": sha(profile.directory / "protocol.md"),
         "model_sha256": MODEL_SHA,
         "model_stat": identity,
         "supplied_fixture_sha256": IDS,
@@ -151,6 +164,7 @@ def run(a, out):
         "monitor_sha256": sha(REPO / "tools/run_bounded.py"),
         "new_unit": a.unit,
     }
+    proto["pool_slots"] = profile.slots
     publish(parent / "protocol.json", proto)
     if a.prepare_only:
         out["status"] = "PASS_PRELAUNCH_ONLY"
@@ -176,9 +190,9 @@ def run(a, out):
             "--service-type=exec",
             "--unit=" + arm,
             "-p",
-            "MemoryHigh=" + str(CAP),
+            "MemoryHigh=" + str(profile.cap),
             "-p",
-            "MemoryMax=" + str(CAP),
+            "MemoryMax=" + str(profile.cap),
             "-p",
             "MemorySwapMax=0",
             "-p",
@@ -207,7 +221,7 @@ def run(a, out):
             "--output-root",
             str(parent / "raw"),
             "--variant",
-            "C294-prefix-canary32-" + mode,
+            f"C294-prefix-canary{profile.slots}-{mode}",
             "--workload",
             str(ids),
             "--cache-condition",
@@ -261,8 +275,8 @@ def run(a, out):
             and measured["workload_sha256"] == IDS
             and measured["resource_authority"] == resources
             and measured["cgroup_limit_enforced"]
-            and measured["cgroup_start"]["memory_high"] == CAP
-            and measured["cgroup_end"]["memory_high"] == CAP
+            and measured["cgroup_start"]["memory_high"] == profile.cap
+            and measured["cgroup_end"]["memory_high"] == profile.cap
             and measured["artifact_identity"]["stat_at_end"] == identity
             and measured["artifact_identity"]["stat_at_launch"] == identity
             and measured["mapped_backend_libraries_sha256"]
@@ -277,11 +291,18 @@ def run(a, out):
             sum(p.stat().st_size for p in (parent / "raw").glob(arm + "*")) <= MAX_BYTES,
             "private output limit",
         )
+        if profile.slots == 28:
+            path = Path(str(stem) + ".logits.f32")
+            require(path.stat().st_size == SIZE, "incomplete numerical trajectory")
+            summary["row_comparison"] = compare_rows(path.read_bytes(), reference(raw)[1])
         summary["numerical"] = numerical(raw, stem, mode)
-    out["status"] = "PASS_PAIRED_SLOTS32_NUMERICAL"
+        if profile.slots == 28 and mode == "ON":
+            counts = summary["numerical"]["routing"]["counts_by_path"]
+            require(counts["S"] > 0 and counts["M"] > 0, "both route paths required")
+    out["status"] = f"PASS_PAIRED_SLOTS{profile.slots}_NUMERICAL"
 
 
-if __name__ == "__main__":
+def main(profile=SLOTS32):
     ap = argparse.ArgumentParser(description=__doc__)
     for key in ["window", "placement", "backend", "executable", "raw-parent", "new-output-dir"]:
         ap.add_argument("--" + key, required=True, type=Path)
@@ -300,7 +321,7 @@ if __name__ == "__main__":
     a.new_output_dir.mkdir(mode=0o700)
     out = {"status": "FAIL_PRESERVED", "arms": []}
     try:
-        run(a, out)
+        run(a, out, profile)
     except NotAdmitted as exc:
         out.update(status="NOT_RUN_PHYSICAL_ADMISSION_REQUIRED", error=str(exc))
     except (OSError, ValueError, RuntimeError, KeyError, subprocess.SubprocessError) as exc:
@@ -308,3 +329,7 @@ if __name__ == "__main__":
     publish(a.new_output_dir / "receipt.json", out)
     print(json.dumps(out, indent=2))
     raise SystemExit(int(not out["status"].startswith("PASS")))
+
+
+if __name__ == "__main__":
+    main()
