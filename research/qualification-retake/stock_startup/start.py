@@ -128,7 +128,11 @@ def rollup_bytes(text):
     return result
 
 
-def run(a, *, paging=False):
+def run(a, *, paging=False, placement_log=False):
+    check(not placement_log or paging, "placement_log_requires_file_paging")
+    unit = HERE
+    if paging:
+        unit = HERE.parent / ("stock_log" if placement_log else "stock_paging")
     a.new_raw.mkdir(exist_ok=False)
     raw = a.new_raw / "raw"
     raw.mkdir()
@@ -141,7 +145,7 @@ def run(a, *, paging=False):
         "warmup_requested": False,
         "sampling_forwards_requested": 0,
         "physical_energy_j": None,
-        "protocol_sha256": sha((HERE.parent / "stock_paging" if paging else HERE) / "protocol.md"),
+        "protocol_sha256": sha(unit / "protocol.md"),
         "runner_sha256": sha(__file__),
     }
     proc = None
@@ -177,6 +181,8 @@ def run(a, *, paging=False):
         r.update(resource_policy_sha256=sha(a.policy), cap_bytes=cap, preventive_stop_bytes=stop)
         if paging:
             r.update(start_regime="FILE_PAGING_V3", memory_high_bytes=high)
+        if placement_log:
+            r.update(log_verbosity=4, logger_fixture_sha256=sha(unit / "fixture-r1/receipt.json"))
         verified = read(a.placement)
         check(
             verified["status"] == "PASS_NVME_MODEL_PLACEMENT"
@@ -226,6 +232,8 @@ def run(a, *, paging=False):
             "HF_HUB_OFFLINE": "1",
         }
         run_id = "stock-nvme-paging" if paging else "stock-nvme-startup"
+        if placement_log:
+            run_id = "stock-nvme-placement-log"
         args = {
             "policy": policy,
             "expected_power": {k: policy["power"][k] for k in ("source", "profile")},
@@ -283,7 +291,7 @@ def run(a, *, paging=False):
         with stop_log.open("xb", buffering=0) as logs:
             tick = time.monotonic()
             proc = subprocess.Popen(
-                [exe, "-m", MODEL, *ARGS],
+                [exe, "-m", MODEL, *ARGS, *(["-lv", "4"] if placement_log else [])],
                 env=env,
                 stdin=subprocess.DEVNULL,
                 stdout=logs,
@@ -293,6 +301,7 @@ def run(a, *, paging=False):
         print("one stock loader started, cgroup cap", cap, flush=True)
         r.update(status="FAIL", server_starts=1)
         closing_at = None
+        missing_placement = []
         first_observation_s = None
         last_observation_s = None
 
@@ -392,13 +401,29 @@ def run(a, *, paging=False):
                 marks = logged_geometry(text)
                 if marks["ready"] and closing_at is None:
                     r["ready_s"] = round(time.monotonic() - tick, 4)
-                    check(all(marks.values()), "startup_geometry")
-                    check(
-                        exe_key in observed
-                        and model_key in observed
-                        and all(x in observed for x in dep_ids.values()),
-                        "elf_or_gguf_mapping",
-                    )
+                    if placement_log:
+                        live = vm_objects(proc.pid)
+                        r["ready_vma"] = {
+                            "executable": exe_key in live,
+                            "gguf": model_key in live,
+                            "own_libraries": sorted(k for k, v in dep_ids.items() if v in live),
+                        }
+                        r["ready_log_geometry"] = marks
+                        missing_placement = [k for k, v in marks.items() if not v]
+                        if not (
+                            r["ready_vma"]["executable"]
+                            and r["ready_vma"]["gguf"]
+                            and set(r["ready_vma"]["own_libraries"]) == dep_ids.keys()
+                        ):
+                            missing_placement.append("live_elf_or_gguf")
+                    else:
+                        check(all(marks.values()), "startup_geometry")
+                        check(
+                            exe_key in observed
+                            and model_key in observed
+                            and all(x in observed for x in dep_ids.values()),
+                            "elf_or_gguf_mapping",
+                        )
                     check("warming up the model" not in text.lower(), "unexpected_warmup")
                     check("processing task, is_child" not in text, "unexpected_request")
                     check(identity(MODEL) == current, "model_changed")
@@ -432,7 +457,10 @@ def run(a, *, paging=False):
                 resources,
             )
             check(detail is None, detail or "endpoint")
+            check(not missing_placement, "startup_placement_" + ",".join(missing_placement))
             r["status"] = "PASS_STOCK_NVME_FILE_PAGING_STARTUP"
+            if placement_log:
+                r["status"] = "PASS_STOCK_NVME_PLACEMENT_AT_READY"
         r["mapped_own_libraries"] = sorted(name for name, val in dep_ids.items() if val in observed)
         r["gguf_mapping_observed"] = model_key in observed
         check(not fast, fast.get("reason", "watchdog"))
@@ -485,7 +513,7 @@ def run(a, *, paging=False):
     return r["status"]
 
 
-def cli(*, paging=False):
+def cli(*, paging=False, placement_log=False):
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument(
         "--before-inventory-only",
@@ -494,7 +522,7 @@ def cli(*, paging=False):
     )
     for name in ("policy", "placement", "binary", "build-receipt", "new-raw", "new-output"):
         ap.add_argument("--" + name, type=Path, required=True)
-    status = run(ap.parse_args(), paging=paging)
+    status = run(ap.parse_args(), paging=paging, placement_log=placement_log)
     print(status)
     sys.exit(0 if status.startswith("PASS") else 1)
 
