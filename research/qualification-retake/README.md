@@ -1,0 +1,29 @@
+# Qualificação da conversa local com o GPT-OSS-120B
+
+**M3 PARTIAL. M4 NOT_MET.** O controlo operacional é R0 `slots40-persistent`, com ub32 e contexto 8192. A mesma receita tem de satisfazer os gates de exatidão, utilidade, desempenho e recursos. A base desta unidade é a main 293f5b184da9439771cce361cd33fc4068d749f4, árvore 7683d6c07063adef6de232c43ab05d19e98e679d. As stacks de prefill e o replay C317 estavam em revisão quando a unidade começou. A alternativa mais barata a uma nova sessão de 60 minutos foi procurar uma execução independente do turno que falhou, verificar o que de facto pode correr no portátil e recuperar o ensaio emparelhado de custo já existente. [Protocolo e orçamento](protocol.md) · [Contrato de produto](../../results/c9-20260927T1441Z/usage-contract.json)
+
+| Decisão | Evidência e condição de reabertura |
+|---|---|
+| **Conversa, M3 PARTIAL** | C133 teve 20 conclusões naturais, 19/20 no validador. O turno 02 omitiu «Aster». Em 417 pedidos pesquisados, as duas ocorrências do input de 435 IDs pertenciam ao mesmo runtime. Reproduzir o histórico de dois turnos numa referência independente do mesmo target pode distinguir efeito do runtime de limitação do modelo. A falha continua a contar para o produto. [Recibo](product-evidence/receipt.json) · [Método e M4](product.md) |
+| **Duplicar uma leitura em curso, NO_GO em C305** | Nos quatro pares trace-OFF de C322, o candidato eliminou a espera e piorou tanto o decode como o total. No decode com cleanup as perdas foram 9,13–9,23% em código e 10,52–11,64% no nominal. R0 e a continuação que usa os mesmos bytes têm comparadores próprios. [Oito braços e limiares](fallback.md) · [Recibo](fallback-evidence/receipt.json) |
+| **R0 comparável neste inventário, NOT_RUN** | Digest integral do GGUF confirmado. O modelo está em USB, o cap admissível observado foi 13,5 GiB e o linker resolve 23 dependências congeladas. Quatro têm digest diferente (libcuda, libgcc_s, libgomp e libstdc++). Requalificar armazenamento, ambiente de carga e recursos antes de usar uma medição física. [Inventário e custos](host.md) · [Resolução ELF](elf.md) |
+| **MoEStream pinado, NO_GO nos dois testes identificados** | Para ub32, as 36 camadas na GPU e a cache por camada sem arena requerem 43,434 GiB só para os slots. Uma leitura parcial na rotina pinada conserva bytes antigos no buffer e devolve normalmente. O caminho de baixa capacidade ou a arena exigem uma correção de E/S verificada antes de um teste com o modelo. [Capacidade, fixture e prior art](moestream.md) |
+
+## Relação com as unidades em revisão
+
+O #44 corrigido encontra trabalho imediato para a cabeça FIFO em 133 de 334 aceitações saturadas com outra procura na fila. O atraso até à última dependência com outra agenda permanece desconhecido. C318 continua NO_GO para o staging aprendido. O controlo C136 já excedia 10 s no nominal mesmo na conta condicional que subtrai todo o decode. A observação sobre a fila, por si só, deixa aberto o custo de prefill. No #48, o replay da política a 44 slots requer mais de 5% de melhoria no serviço que resta depois dos carregamentos evitados para alcançar a via histórica de fase. Estes resultados pertencem aos denominadores de cada estudo. [C317](https://github.com/PedroMglo/Tesy/pull/44) · [Prefill 40](https://github.com/PedroMglo/Tesy/pull/45) · [Calibração C163](https://github.com/PedroMglo/Tesy/pull/46) · [Replay a 44 slots](https://github.com/PedroMglo/Tesy/pull/48)
+
+Data de corte da leitura dirigida, 24 de novembro de 2026. Em Bevy a sobreposição demonstrada depende de outras solicitações concorrentes. A fixture C317 pergunta que trabalho existe dentro de uma só conversa. A entrega e a colocação de experts em tiers já se encontram em SSD-LLaMA. A cache moderna de llama.cpp suporta política de misses no host e usa mmap por omissão. O acesso a páginas mapeadas e a sua residência têm custos distintos e a capacidade efetiva do comparador ainda requer medição. Mantém-se `BROAD_NOVELTY_NO_GO / ENGINEERING_AND_MEASUREMENT_GO`. [Bevy](https://arxiv.org/abs/2611.04794) · [SSD-LLaMA](https://arxiv.org/abs/2609.18110) · [llama.cpp no pin](https://github.com/ggml-org/llama.cpp/blob/e95426f16982054c379ca7bdc8186996dd22f0fe/docs/moe-cache.md) · [Revisão anterior](../post-c320/literatura.md)
+
+## Validação local
+
+As notas de cada linha indicam inputs, hashes e comandos. Os receipts de produto e fallback são agregados. Os prompts, os raws, os pesos e os binários históricos ficam no portátil. Para verificar o código e os recibos da main sem modelo, a partir da raiz.
+
+```sh
+python3 -B -m unittest discover -s research/qualification-retake
+ruff check research/qualification-retake
+python3 research/post-c320/analyse.py
+python3 research/consolidacao-20261123/verify.py
+```
+
+O último comando requer um clone com o histórico completo. O ensaio do conteúdo integral do GGUF só entra numa nova auditoria de inputs com orçamento de leitura. O primeiro arranque local de pytest encontrou um plug-in da estação que tentou abrir um socket. Com os plug-ins externos desativados, os 352 testes do projeto passaram. Passaram também os 42 testes dos gates operacionais. A próxima referência física de dois turnos requer uma nova identidade ELF qualificada e uma janela de recursos admissível. O par de pedidos verifica a falha de conteúdo. Os tempos de M4 exigem os workloads completos do contrato.

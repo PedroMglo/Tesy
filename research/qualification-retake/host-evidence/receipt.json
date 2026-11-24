@@ -1,0 +1,57 @@
+{
+  "scope": "INPUT_AUDIT_ONLY",
+  "inference": "NOT_RUN",
+  "hash_started_utc": "2026-11-24T22:20:05.144666+00:00",
+  "cpu": "AMD Ryzen AI 9 HX 370 w/ Radeon 890M",
+  "gpu_csv": "NVIDIA GeForce RTX 4060 Laptop GPU, 8188, 2, 49.48, 620.70.06",
+  "memory_before_hash": {
+    "samples": 61,
+    "span_s": 60.0,
+    "max_gap_s": 1.0,
+    "mem_available_min": 16681951232,
+    "mem_available_max": 17449037824,
+    "reserve_bytes": 2147483648,
+    "cap_upper_bytes": 14495514624,
+    "r0_cap_bytes": 21474836480
+  },
+  "model_content": {
+    "size_bytes": 63387346208,
+    "sha256": "582bd40f6886200101f4c4ed9f25f3fe80cc14c86e9e2b37746cd8904a0c622d",
+    "wall_s": 144.81
+  },
+  "model_fs": "ext4",
+  "model_transport": [
+    "usb"
+  ],
+  "model_mount_gate": "storage backing device not mapped to NVMe",
+  "historical_stat_tuple_matches": false,
+  "backend_sha": "d0ebfbcc6c8f456bc1083027c1b08075a32824d8",
+  "backend_checkout_clean": true,
+  "main_has_backend_at_launcher_path": false,
+  "frozen_dependency_file_digests": {
+    "binary": "MATCH",
+    "backend/libllama-server-impl.so": "MATCH",
+    "backend/libllama-common.so.0.0.9884": "MATCH",
+    "backend/libllama.so.0.0.9884": "MATCH",
+    "backend/libggml.so.0.15.3": "MATCH",
+    "backend/libggml-base.so.0.15.3": "MATCH",
+    "backend/libggml-cpu.so.0.15.3": "MATCH",
+    "backend/libggml-cuda.so.0.15.3": "MATCH",
+    "system/libmtmd.so.0.0.9884": "MATCH",
+    "system/libssl.so.3.5.9": "MATCH",
+    "system/libcrypto.so.3.5.9": "MATCH",
+    "system/libstdc++.so.6.0.36": "MISMATCH",
+    "system/libm.so.6": "MATCH",
+    "system/libgcc_s-16-20260819.so.1": "ABSENT",
+    "system/libc.so.6": "MATCH",
+    "system/libcuda.so.615.71.09": "ABSENT",
+    "system/libgomp.so.1.0.0": "MISMATCH",
+    "system/libz.so.1.3.1.zlib-ng": "MATCH",
+    "system/libcudart.so.13.3.29": "MATCH",
+    "system/libcublas.so.13.6.0.2": "MATCH",
+    "system/libcublasLt.so.13.6.0.2": "MATCH",
+    "system/libpthread.so.0": "MATCH",
+    "system/libdl.so.2": "MATCH",
+    "system/librt.so.1": "MATCH"
+  }
+}
