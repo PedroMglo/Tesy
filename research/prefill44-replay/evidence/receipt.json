@@ -1,0 +1,177 @@
+{
+  "schema": "tesy-prefill44-replay-v1",
+  "arms": {
+    "c163-on-1": {
+      "inputs": {
+        "c163-on-1.routes": {
+          "bytes": 347424,
+          "sha256": "209f1a3adb041dff92cdb7e1500b1d98a22444768d77ba3eaa62eed2d60a7454"
+        },
+        "c163-on-1.trace.window.trace": {
+          "bytes": 4391187,
+          "sha256": "c3f87e903364ae0745cfb60b02e36f754fb819f56a2d4b65a830a0b64f7783aa"
+        },
+        "c163-on-1.capture/before-warm.snap": {
+          "bytes": 296676,
+          "sha256": "b0d5cc7a42cd21c2ecbe74021257fe384a4bb2a24a57c732a7e2617128b09130"
+        },
+        "c163-on-1.capture/after-prefill.snap": {
+          "bytes": 295924,
+          "sha256": "6b5ac2652897d38748acb4b7e6d403818851ab631b9c056b76e70b1bbef8c2ae"
+        },
+        "c163-on-1.capture/calls.tsv": {
+          "bytes": 2973,
+          "sha256": "15e78ae1d617cfbdc57366e996c13f884878e13ab0c1cd566cffeeb2219125a7"
+        }
+      },
+      "journal_cut_seq": [
+        0,
+        26548
+      ],
+      "replay": {
+        "status": "PREFILL_LOGICAL_REPLAY_MATCHED",
+        "events": {
+          "CALL_BEGIN": 2,
+          "MUTEX_WAIT_BEGIN": 37,
+          "MUTEX_WAIT_END": 37,
+          "routes": 212,
+          "DEMAND": 3807,
+          "EVICT": 899,
+          "RESERVE": 901,
+          "ENQUEUE": 1104,
+          "BARRIER_SLOT": 3284,
+          "WAIT_BEGIN": 211,
+          "DEQUEUE": 901,
+          "LOAD_BEGIN": 901,
+          "READ_BEGIN": 2703,
+          "READ_END": 2703,
+          "TENSOR_SET_BEGIN": 2703,
+          "TENSOR_SET_RETURN": 2703,
+          "LOAD_END": 901,
+          "RESIDENT_COMMIT": 901,
+          "WAIT_END": 211,
+          "REMAP_DONE": 37,
+          "CALL_END": 2,
+          "WAVE_DONE": 1120,
+          "PRELOAD": 277,
+          "STALE_WORK": 203
+        },
+        "manager_route_calls": 212,
+        "equal_layer_fields": [
+          "slot_expert",
+          "slot_state",
+          "slot_claimed",
+          "slot_gen",
+          "slot_last_use",
+          "route_hotness",
+          "seen",
+          "expert_slot",
+          "uniq",
+          "touched",
+          "keep",
+          "demand_slots",
+          "expert_wave",
+          "plan_pool",
+          "pool_used",
+          "use_counter",
+          "n_slots",
+          "plan_capacity",
+          "n_waves",
+          "next_wave"
+        ],
+        "reconciled_layers": 36,
+        "pending_work_at_both_cuts": 0
+      }
+    },
+    "c163-on-2": {
+      "inputs": {
+        "c163-on-2.routes": {
+          "bytes": 347424,
+          "sha256": "6416a5f361a6401417f5231eba3c9a04e6578b431c761e0d1cd7eb39172e7fcf"
+        },
+        "c163-on-2.trace.window.trace": {
+          "bytes": 4391059,
+          "sha256": "767708876ec6e2285fe1474b30ae2e08ce0b2314449cfee3925f9e829a534604"
+        },
+        "c163-on-2.capture/before-warm.snap": {
+          "bytes": 296676,
+          "sha256": "4ba65cd6e9681e18134e4be6b63c49792fe62630ec18807f18d31316c6f00de9"
+        },
+        "c163-on-2.capture/after-prefill.snap": {
+          "bytes": 295924,
+          "sha256": "165e68df3b297a2870d47f1666cf11bd88a516bbc78d1806ba34dce920893fff"
+        },
+        "c163-on-2.capture/calls.tsv": {
+          "bytes": 2973,
+          "sha256": "27432d7345870c8a16fda6e5f9e6c11656cd111efee0afb3fd076bdba7282611"
+        }
+      },
+      "journal_cut_seq": [
+        0,
+        26546
+      ],
+      "replay": {
+        "status": "PREFILL_LOGICAL_REPLAY_MATCHED",
+        "events": {
+          "CALL_BEGIN": 2,
+          "MUTEX_WAIT_BEGIN": 37,
+          "MUTEX_WAIT_END": 37,
+          "routes": 212,
+          "DEMAND": 3807,
+          "EVICT": 899,
+          "RESERVE": 901,
+          "ENQUEUE": 1105,
+          "BARRIER_SLOT": 3282,
+          "WAIT_BEGIN": 210,
+          "DEQUEUE": 901,
+          "LOAD_BEGIN": 901,
+          "READ_BEGIN": 2703,
+          "READ_END": 2703,
+          "TENSOR_SET_BEGIN": 2703,
+          "TENSOR_SET_RETURN": 2703,
+          "LOAD_END": 901,
+          "RESIDENT_COMMIT": 901,
+          "WAIT_END": 210,
+          "REMAP_DONE": 37,
+          "CALL_END": 2,
+          "WAVE_DONE": 1120,
+          "PRELOAD": 277,
+          "STALE_WORK": 204
+        },
+        "manager_route_calls": 212,
+        "equal_layer_fields": [
+          "slot_expert",
+          "slot_state",
+          "slot_claimed",
+          "slot_gen",
+          "slot_last_use",
+          "route_hotness",
+          "seen",
+          "expert_slot",
+          "uniq",
+          "touched",
+          "keep",
+          "demand_slots",
+          "expert_wave",
+          "plan_pool",
+          "pool_used",
+          "use_counter",
+          "n_slots",
+          "plan_capacity",
+          "n_waves",
+          "next_wave"
+        ],
+        "reconciled_layers": 36,
+        "pending_work_at_both_cuts": 0
+      }
+    }
+  },
+  "freeze_sha256": "6bb92134e11a6de0661aecefae82b4d18091f995a49e27c3c0a749b8b31b7625",
+  "rejected_faults": {
+    "victim_slot": "expected {'kind': 'EVICT', 'call_id': 9, 'layer': 0, 'expert': 54, 'slot': 27, 'victim': 73, 'state': 2, 'generation': 4} observed EVICT at seq 5",
+    "route_rank": "expected {'kind': 'DEMAND', 'call_id': 10, 'layer': 0, 'expert': 30, 'slot': -1, 'state': 0, 'generation': 0, 'wave': 0, 'n_tokens': 32} observed DEMAND at seq 3312",
+    "snapshot_pool_used": "final layer 0 pool_used",
+    "snapshot_slot_last_use": "final layer 0 slot_last_use",
+    "snapshot_route_hotness": "final layer 0 route_hotness"
+  }
+}

@@ -53,6 +53,8 @@ A reconstrução completa precisa ainda de reconciliar o controlo, a agenda dos 
 
 **Estado da execução em novembro.** Aritmética e inventário Git reproduzidos. Caminho do analisador testado com fixtures para workers sobrepostos, duas origens de relógio, fila duplicada/obsoleta, identidade de geração e digest divergente. Os oito raw figuram no manifesto e estão ausentes dos objetos publicados inspecionados. Ocupação real: `NOT_RUN_RAW_REQUIRED`. Tempo poupável, paridade de uma implementação nova e benchmark externo: `DESCONHECIDO / NOT_RUN`. O próximo resultado pode fechar a hipótese antes de qualquer alteração de backend.
 
+A [calibração do replay de prefill a 44 slots](../prefill44-replay/README.md) confronta escolhas de vítima, gerações e cache final com dois braços C163. Esse perfil histórico permite testar o algoritmo de simulação. O controlo operacional de produto continua a usar 40 slots.
+
 [base]: https://github.com/PedroMglo/Tesy/blob/7a7d3dcbd1ff8e594ac57459c3db06306083c3ca/IMPLEMENTATION_STATUS.md
 [matrix]: https://github.com/PedroMglo/Tesy/blob/7a7d3dcbd1ff8e594ac57459c3db06306083c3ca/docs/architecture/0002-baseline-matrix.md
 [s02]: https://github.com/PedroMglo/Tesy/blob/a1f39c84a777b822208f63686657c30d03a38e67/docs/research-reports/campaigns/S02-development-branch-synthesis/sections/06-results.tex
