@@ -1,0 +1,169 @@
+{
+  "build_receipt_sha256": "089ff4f67b7914f075e67293c08a195a23af9cc2df49d3848815674f3f33bb52",
+  "c118": {
+    "cap_bytes": 10737418240,
+    "duration_s": 60.177645860001576,
+    "expected_power": {
+      "profile": "performance",
+      "source": "AC"
+    },
+    "last_utc": "2026-11-24T23:56:26.743175+00:00",
+    "policy_sha256": "4ffb965b82f52df1c4bc076d5e985f84d520edebe6736e3d8b43fe8623a161c9",
+    "run_id": "stock-nvme-placement-log",
+    "sample_count": 61,
+    "schema": "c118-per-arm-start-inventory-v2",
+    "sha256": "6b7f1c8b04a21e6dae8aa5cc13902f40160d63f3b4e62511d7f0557d267335fe"
+  },
+  "cap_bytes": 10737418240,
+  "child_gone": true,
+  "elapsed_s": 88.29,
+  "end_cgroup": {
+    "events": {
+      "high": 118128,
+      "low": 0,
+      "max": 0,
+      "oom": 0,
+      "oom_group_kill": 0,
+      "oom_kill": 0,
+      "sock_throttled": 0
+    },
+    "events_local": {
+      "high": 118128,
+      "low": 0,
+      "max": 0,
+      "oom": 0,
+      "oom_group_kill": 0,
+      "oom_kill": 0,
+      "sock_throttled": 0
+    },
+    "memory_current": 9733357568,
+    "memory_peak": 10203271168,
+    "swap_current": 0
+  },
+  "end_memory_stat": {
+    "anon": 17473536,
+    "file": 9639649280,
+    "file_mapped": 0,
+    "pgfault": 2248896,
+    "pgmajfault": 1277,
+    "pgscan": 23307740,
+    "pgsteal": 14997973,
+    "workingset_refault_file": 2803096
+  },
+  "gguf_mapping_observed": true,
+  "http_requests_sent": 0,
+  "io_stat_delta_by_device": {
+    "251:0": {},
+    "259:0": {
+      "dbytes": 0,
+      "dios": 0,
+      "rbytes": 71029784576,
+      "rios": 576191,
+      "wbytes": 0,
+      "wios": 0
+    },
+    "8:0": {
+      "dbytes": 0,
+      "dios": 0,
+      "rbytes": 6811648,
+      "rios": 60,
+      "wbytes": 196608,
+      "wios": 15
+    }
+  },
+  "log_geometry": {
+    "cuda": true,
+    "full_kv": true,
+    "group": true,
+    "mapped": true,
+    "ready": true,
+    "swa_kv": true
+  },
+  "log_verbosity": 4,
+  "logger_fixture_sha256": "c896b10bad10b45f330344fa70831ad38d42f9344a4d0ca160ea56dbd7efdd91",
+  "mapped_own_libraries": [
+    "libggml-base.so.0",
+    "libggml-cpu.so.0",
+    "libggml-cuda.so.0",
+    "libggml.so.0",
+    "libllama-common.so.0",
+    "libllama-server-impl.so",
+    "libllama.so.0",
+    "libmtmd.so.0"
+  ],
+  "memory_high_bytes": 10200547328,
+  "model": {
+    "placement_receipt_sha256": "50a35a1e5c3fde78066d1378e13dfeb89867d9970528135ff3294c6aa5bd1bf7",
+    "sha256": "582bd40f6886200101f4c4ed9f25f3fe80cc14c86e9e2b37746cd8904a0c622d",
+    "size": 63387346208
+  },
+  "physical_energy_j": null,
+  "pre_start_memory_stat": {
+    "anon": 17346560,
+    "file": 28438528,
+    "file_mapped": 0,
+    "pgfault": 1011469,
+    "pgmajfault": 0,
+    "pgscan": 0,
+    "pgsteal": 0,
+    "workingset_refault_file": 0
+  },
+  "preventive_stop_bytes": null,
+  "protocol_sha256": "27548f617598ad50440d7edf99605d90bc9033939df40e091381b9c81cdfc1ed",
+  "raw_sha256": {
+    "monitor.jsonl": "3a902af85a519a0aaab0a0f7dd8e644b6d1dbd2896ea8f983a75c40230944bcf",
+    "server.log": "eb77251d19579af81493e50b1b4270acbdc1cac9b83d51ae0b76f77e2e68afcf",
+    "stock-nvme-placement-log.start-inventory.jsonl": "6b7f1c8b04a21e6dae8aa5cc13902f40160d63f3b4e62511d7f0557d267335fe"
+  },
+  "ready_log_geometry": {
+    "cuda": true,
+    "full_kv": true,
+    "group": true,
+    "mapped": true,
+    "ready": true,
+    "swa_kv": true
+  },
+  "ready_s": 27.1251,
+  "ready_vma": {
+    "executable": true,
+    "gguf": true,
+    "own_libraries": [
+      "libggml-base.so.0",
+      "libggml-cpu.so.0",
+      "libggml-cuda.so.0",
+      "libggml.so.0",
+      "libllama-common.so.0",
+      "libllama-server-impl.so",
+      "libllama.so.0",
+      "libmtmd.so.0"
+    ]
+  },
+  "resource_policy_sha256": "7b372cf36a4c8ceb947bf93c86661cf3eb51f41437f669fdf7468f4a726480aa",
+  "returncode": 0,
+  "runner_sha256": "e76dc8f4d76f657bdaa648e4df378f9aa0b021d9addf3845c748fd43fea05b6e",
+  "sampled_memory_max_bytes": {
+    "anon": 317800448,
+    "file": 9893781504,
+    "file_mapped": 9819426816
+  },
+  "sampled_peak_gpu_mib": 4070.0,
+  "sampled_smaps_max_bytes": {
+    "Anonymous": 300388352,
+    "Locked": 0,
+    "Pss": 12562713600,
+    "Pss_Anon": 300388352,
+    "Pss_File": 12305128448,
+    "Rss": 12580757504,
+    "Swap": 0
+  },
+  "sampled_vm_locked_max_bytes": 0,
+  "sampling_forwards_requested": 0,
+  "server_elapsed_s": 27.6868,
+  "server_sha256": "2396cc20738e1c2b7d8bfbe209b89098874683c424518d4bf139f7f51e9cfe00",
+  "server_starts": 1,
+  "shutdown_s": 0.5608,
+  "start_regime": "FILE_PAGING_V3",
+  "status": "PASS_STOCK_NVME_PLACEMENT_AT_READY",
+  "telemetry_samples": 46,
+  "warmup_requested": false
+}
