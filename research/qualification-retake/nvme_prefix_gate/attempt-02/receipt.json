@@ -1,0 +1,148 @@
+{
+  "compile_argv": [
+    "/usr/bin/c++",
+    "-DGGML_BACKEND_SHARED",
+    "-DGGML_SHARED",
+    "-DGGML_USE_CPU",
+    "-DGGML_USE_CUDA",
+    "-DLLAMA_SHARED",
+    "-I",
+    "$PREFIX_BUILD/source/src",
+    "-I",
+    "$PREFIX_BUILD/source/vendor/nlohmann",
+    "-I",
+    "$PREFIX_BUILD/source/include",
+    "-isystem",
+    "$PREFIX_BUILD/source/ggml/include",
+    "-ffile-prefix-map=$CANARY_BUILD=/tesy-canary",
+    "-ffile-prefix-map=$PREFIX_BUILD=/tesy-prefix-build",
+    "-pipe",
+    "-O3",
+    "-DNDEBUG",
+    "-std=gnu++17",
+    "$CANARY_BUILD/probe.cpp",
+    "-o",
+    "$CANARY_BUILD/nvme-prefix-canary",
+    "-L",
+    "$PREFIX_BUILD/cmake/bin",
+    "-L",
+    "$GGML",
+    "-Wl,-rpath,$PREFIX_BUILD/cmake/bin:$GGML",
+    "-lllama",
+    "-lggml",
+    "-lggml-base",
+    "-lggml-cpu",
+    "-lggml-cuda",
+    "-pthread"
+  ],
+  "elapsed_s": 2.779,
+  "exe_bytes": 58512,
+  "executable_sha256": "eacf65a6b00b602c91c64ca1c7f0de61ce797c9dfd51a911f57d5006ae1d6147",
+  "forwards": 0,
+  "historical_logit_sha256": {
+    "c109-canary-a.logits.f32": "1fb158e3fa6bd7ec2e48d4c85c1f0a79b8d3575e9ca58d8a696b5c3ea8f4e613",
+    "c109-canary-b.logits.f32": "1fb158e3fa6bd7ec2e48d4c85c1f0a79b8d3575e9ca58d8a696b5c3ea8f4e613",
+    "c109-canary-c.logits.f32": "1fb158e3fa6bd7ec2e48d4c85c1f0a79b8d3575e9ca58d8a696b5c3ea8f4e613",
+    "c110-canary-a.logits.f32": "1fb158e3fa6bd7ec2e48d4c85c1f0a79b8d3575e9ca58d8a696b5c3ea8f4e613",
+    "c110-canary-b.logits.f32": "1fb158e3fa6bd7ec2e48d4c85c1f0a79b8d3575e9ca58d8a696b5c3ea8f4e613",
+    "c110-canary-c.logits.f32": "1fb158e3fa6bd7ec2e48d4c85c1f0a79b8d3575e9ca58d8a696b5c3ea8f4e613"
+  },
+  "mapped_objects_sha256": {
+    "libc.so.6": "a5c5ad9d59d3c69eda93aa8f82930ba06cc4e893a113e66c85ad6e96243d53c8",
+    "libcublas.so.13.6.0.2": "01dd70979e68625846e9a5edcba531d3798498b866aa1c925cc25d60f63fe680",
+    "libcublasLt.so.13.6.0.2": "93c275af70b6d39fbd9b78cbc925ad9a9a0a81189aaec1521a951119ebe72da3",
+    "libcuda.so.620.70.06": "aa6bd5117c0c66bb804ec63b31b8b5d54130259b1079941b9e00e6b928e8ed71",
+    "libcudart.so.13.3.29": "9f92e4c3f7e14d0fed69ef876a45d4255a2dc88cb552a673a90ce881c26282fe",
+    "libdl.so.2": "54d56c0f10466a05cc92685f8062ee6a2eaf59c62fb6f724217e984fcfbb5031",
+    "libgcc_s-16-20261029.so.1": "5a52ae4a6f1b119aa092aa1483c967e19d9ba036b1b0c2133236a8a2ce826ebf",
+    "libggml-base.so.0.15.3": "6e27d9ecb86e4747177189d2d2f6390280a2ee1000221ad68a0404023ea72539",
+    "libggml-cpu.so.0.15.3": "9aabce5751c5d7ca19b50e4cabb1fcf484c1581d275141dae8aba8ed33060313",
+    "libggml-cuda.so.0.15.3": "ff43655b15df5f3de1d5e00b0da18469a14f118bd644eb4b6d7f1915c85a4493",
+    "libggml.so.0.15.3": "70f635b8ba22ddd751590ec1fe11c895ef88e2aff0f4a63a3af96314e6a77d65",
+    "libgomp.so.1.0.0": "1e20cd85608bdb5d1662f07988adad28a6473cd70f80de2d2b4dcf82c94eaa74",
+    "libllama.so.0.0.9884": "23bc41af61d232a552d79fa1048b3afa0d7250f8451983ce220465f89dadef44",
+    "libm.so.6": "16a03ce6d24c8a46742206d4a9c1d35bb6577ae2384f153dc6ef4a4b62b5357f",
+    "libpthread.so.0": "41cad1a2bda56ff226e0b08db7edfaf4ec47d876ab1414a979fd157467b6c39d",
+    "librt.so.1": "3a23e51370381b0ab993932341fd69643ade24869936e471e1dde2e62398d9f7",
+    "libstdc++.so.6.0.36": "49811507d8fc0283d8f8023546613774c673f876fe823b1b99d0c8d46039deda"
+  },
+  "patched_source_sha256": "98d41d9b7afb5d4dad3ac503d8c64ab5bdf7c2240eefb0a86747d9f5048febe8",
+  "private_bytes": 109141,
+  "protocol_sha256": "6cab01fcdfaf20beb4dcc99476592033a8ba53b02a0653eb20e037644c18a476",
+  "source_sha256": {
+    "canary.patch": "1e72aa3c51575b2d5c7b3c8e7ad878ad75781a784cf0145b450854c1cbbea4bb",
+    "gate.py": "c35e5718f3e494c36910f15f5c14de8d395da772f97b159a4b057fc18aa39195",
+    "prepare.py": "a053e8685edffb854f1cc77d032cd568bd87cda1fe711a194a5c785462a3ea31"
+  },
+  "stages": [
+    {
+      "exit": 0,
+      "expected_exit": 0,
+      "stage": "git-blobs",
+      "tree_peak_kib_sampled": 1204
+    },
+    {
+      "exit": 0,
+      "expected_exit": 0,
+      "stage": "original-layout",
+      "tree_peak_kib_sampled": 884
+    },
+    {
+      "exit": 0,
+      "expected_exit": 0,
+      "stage": "derive-layout",
+      "tree_peak_kib_sampled": 764
+    },
+    {
+      "exit": 0,
+      "expected_exit": 0,
+      "stage": "patch-canary",
+      "tree_peak_kib_sampled": 864
+    },
+    {
+      "exit": 0,
+      "expected_exit": 0,
+      "stage": "compile",
+      "tree_peak_kib_sampled": 243712
+    },
+    {
+      "exit": 0,
+      "expected_exit": 0,
+      "stage": "ldd",
+      "tree_peak_kib_sampled": 1196
+    },
+    {
+      "exit": 0,
+      "expected_exit": 0,
+      "stage": "input",
+      "tree_peak_kib_sampled": 252792
+    },
+    {
+      "exit": 1,
+      "expected_exit": 1,
+      "stage": "bad-input",
+      "tree_peak_kib_sampled": 252872
+    },
+    {
+      "exit": 0,
+      "expected_exit": 0,
+      "stage": "first-output",
+      "tree_peak_kib_sampled": 154200
+    },
+    {
+      "exit": 1,
+      "expected_exit": 1,
+      "stage": "duplicate-output",
+      "tree_peak_kib_sampled": 190192
+    },
+    {
+      "exit": 2,
+      "expected_exit": 2,
+      "stage": "reject-long",
+      "tree_peak_kib_sampled": 163708
+    }
+  ],
+  "status": "PASS_PREPARED_MODEL_FREE",
+  "target": "NOT_RUN_PHYSICAL_ADMISSION_REQUIRED",
+  "validated_headers": 63
+}

@@ -1,0 +1,82 @@
+--- a/probe.cpp
++++ b/probe.cpp
+@@ -1,6 +1,8 @@
+ // One identical P12/8K 2009+192 teacher-forced call plan for C35 and C75.
+ #include "llama.h"
+ #include "ggml.h"
++#include "llama-model.h"
++#include "llama-moe-stream.h"
+
+ #include <algorithm>
+ #include <chrono>
+@@ -104,12 +106,22 @@
+             return 1;
+         }
+     }
+-    if ((argc!=6 && argc!=7) || std::strcmp(argv[4],"--arm")!=0 ||
+-        (argc==7 && std::strcmp(argv[6],"--canary")!=0)) {
+-        std::cerr << "usage: c109_probe MODEL IDS_TSV OUTPUT_PREFIX --arm A|B|C [--canary]\n";
++    if (argc == 3 && std::strcmp(argv[1], "--check-exclusive-output") == 0) {
++        try { write_new(argv[2], "x", 1); return 0; }
++        catch (const std::exception &) { return 1; }
++    }
++    if (argc != 7 || std::strcmp(argv[4],"--arm") != 0 ||
++        std::strcmp(argv[5],"C") != 0 || std::strcmp(argv[6],"--canary") != 0) {
++        std::cerr << "usage: nvme-canary MODEL IDS_TSV NEW_PREFIX --arm C --canary\n";
+         return 2;
+     }
+     try {
++        const char * enabled = std::getenv("TESY_PREFIX_ROUTE_AUDIT");
++        check(!enabled || std::strcmp(enabled,"1") == 0, "invalid prefix route audit option");
++        for (const char * key : {"TESY_EXPERT_STORE_MANIFEST", "TESY_C294_WINDOW",
++                 "TESY_C262_LAYER_SPAN", "TESY_C269_LAST_USE_ORDER"}) {
++            check(!std::getenv(key), "unexpected staging/window/span environment");
++        }
+         const std::string arm=argv[5];
+         check(arm=="A" || arm=="B" || arm=="C","invalid arm");
+         check(std::getenv("LLAMA_MOE_STREAM_NO_PRELOAD")==nullptr &&
+@@ -133,6 +145,10 @@
+         mp.moe_stream_io_threads=4;mp.moe_stream_direct=true;
+         llama_model * model=llama_model_load_from_file(argv[1],mp);
+         check(model!=nullptr,"model load failed");
++        auto * service = model->moe_stream();
++        check(service && !service->prefix_audit, "missing service or observer enabled by default");
++        auto & audit = service->prefix_audit;
++        if (enabled) audit = std::make_unique<prefix_routes>();
+         const double model_load_s=seconds(started);
+         const auto ctx_started=clock_type::now();
+         auto cp=llama_context_default_params();
+@@ -155,8 +171,10 @@
+         const auto prefill_started=clock_type::now();
+         for (int offset=0;offset<static_cast<int>(prompt.size());offset+=256) {
+             const int count=std::min(256,static_cast<int>(prompt.size())-offset);
++            if (audit) check(audit->begin_call(count), "bad prompt entry");
+             decode(ctx,prompt,offset,count,0,static_cast<int>(prompt.size())-1);
+         }
++        if (audit) check(audit->cut('P'), "incomplete prefix exit");
+         const double prefill_s=seconds(prefill_started);
+         append_logits(ctx,vocab,full_logits);
+         std::string steps="step\tposition\ttoken_id\tcompletion_s\n";
+@@ -164,8 +182,10 @@
+         durations.reserve(continuation.size());
+         for (int step=0;step<static_cast<int>(continuation.size());++step) {
+             const auto begin=clock_type::now();
++            if (audit) check(audit->begin_call(1), "bad single-token entry");
+             decode(ctx,continuation,step,1,static_cast<int>(prompt.size()),
+                    static_cast<int>(prompt.size())+step);
++            if (audit && step == 0) check(audit->cut('I'), "incomplete first decode exit");
+             const double elapsed=seconds(begin);
+             check(elapsed>0 && std::isfinite(elapsed),"invalid step duration");
+             durations.push_back(elapsed);
+@@ -186,6 +206,11 @@
+             std::to_string(sum(durations,std::min(64,total),total))+'\t'+
+             std::to_string(sum(durations,0,std::min(77,total)))+'\t'+
+             std::to_string(1+total)+'\n';
++        if (audit) {
++            check(audit->finish(), "incomplete final decode");
++            const auto & journal = audit->data();
++            write_new(prefix+".routes.bin",journal.data(),journal.size());
++        }
+         write_new(prefix+".steps.tsv",steps.data(),steps.size());
+         write_new(prefix+".ops.tsv",ops.data(),ops.size());
+         write_new(prefix+".logits.f32",full_logits.data(),full_logits.size()*sizeof(float));
