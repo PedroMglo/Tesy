@@ -46,7 +46,7 @@ O último comando requer um clone com o histórico completo. O ensaio do conteú
 
 O modelo de trabalho passou para o NVMe interno e o launcher encontra o GGUF original pelo caminho habitual. Foi verificado o SHA-256 integral das duas cópias. [Colocação e controlo histórico](nvme_placement/README.md)
 
-No primeiro passo de decode nominal da C135, medimos o serviço das 60 leituras reais com quatro workers. O USB deu 493,418 e 498,305 ms, e o NVMe 145,416 e 145,518 ms. O veredito é **GO para a colocação NVMe**. O ganho de serviço foi 70,53% e 70,80% nos dois pares. O tráfego de leitura do dispositivo confirmou 264 630 272 B em cada braço. A latência do pedido requer uma execução integrada. O inventário contemporâneo admitiu 12,5 GiB para um processo e R0 exige 20 GiB. [Agenda, contraprovas e recursos](nvme_admission/README.md)
+No primeiro passo de decode nominal da C135, medimos o serviço das 60 leituras reais com quatro workers. O USB deu 493,418 e 498,305 ms, e o NVMe 145,416 e 145,518 ms. O veredito é **GO para a colocação NVMe**. O ganho de serviço foi 70,53% e 70,80% nos dois pares. O tráfego de leitura do dispositivo confirmou 264 630 272 B em cada braço. A latência do pedido requer uma execução integrada. As três janelas C55 admitiram sucessivamente 12,5, 18 e 22 GiB. Na terceira, após a paragem das cargas concorrentes e um arranque stock com paginação, o cap R0 de 20 GiB passou o gate de capacidade. [Agenda, contraprovas e recursos](nvme_admission/README.md)
 
 ## Exatidão das camadas e comparador independente
 

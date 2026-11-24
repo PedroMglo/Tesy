@@ -37,3 +37,7 @@ python3 -B research/qualification-retake/nvme_admission/io_pair/plan.py \
 ```
 
 Para a janela física usar `window.py --nvme-model "$GGUF_NVME" --new-output-dir "$NOVA_JANELA"` com o laboratório livre. O runner `io_pair/run.py` exige o recibo de colocação física desta unidade, os mesmos ficheiros, a política C55 da última hora e a checkout de medição. Executá-lo apenas em novo cgroup dedicado, com MemoryMax=MemoryHigh=256M, MemorySwapMax=0 e RuntimeMaxSec=125. A saída de cada invocação tem de ser nova.
+
+## Nova janela depois da carga stock
+
+O novo antecedente foi um arranque completo em mmap com reclaim normal no cgroup FILE_PAGING de 10 GiB. O processo terminou com código zero e a guarda da sua campanha registou falha de observabilidade da geometria. Depois do encerramento, C55 mediu entre 25 801 736 192 e 26 075 840 512 B de MemAvailable durante 60 s. Com reserva de 2 GiB, tanto C55 como o observador suplementar admitiram um cap de **22 GiB**. O cap de 20 GiB de R0 passou o gate de capacidade nesta janela. Os caps anteriores de 12,5 e 18 GiB conservam os seus recibos. Esta sequência observacional inclui a paragem de cargas, a atividade de paginação e a limpeza do processo. A nova janela não isola a contribuição de cada uma. O processo de modelo exige o seu C118 fresco e a nova identidade de runtime. [Janela R3 e hashes](evidence-20261124-r3/window.json) · [Arranque stock](../stock_paging/startup-r1/receipt.json)
