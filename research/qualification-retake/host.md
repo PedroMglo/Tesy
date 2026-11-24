@@ -21,3 +21,7 @@ python3 -B research/qualification-retake/host_readiness.py \
 ```
 
 Digest do protocolo `19bbb51bae496b32e4570145a00a1b1ca83ad217c8afa95aa19024a02afb1484`. Digest do auditor executado `799e6e0baa87227e951bccc59ad9c41452a86465414d963212b4b1944eb30b82`. Digest do recibo `c20e5301620468ca4d9c79a3ead7dff8e944179bab9bce7527057627f57b951e`.
+
+## Decisão de colocação
+
+Em 24 de novembro, depois da verificação integral de conteúdo, Pedro decidiu conservar o GGUF apenas no SSD USB por agora. O próprio ficheiro medido continua a ser a cópia de trabalho. Enquanto esta colocação vigorar, o critério de armazenamento do protocolo R0 impede a sua campanha de qualificação física, mesmo que surja uma janela admissível de RAM. Uma experiência que estude a configuração USB precisa de identidade e comparador próprios.
