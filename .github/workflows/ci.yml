@@ -51,6 +51,8 @@ jobs:
         run: python research/post-c320/analyse.py > "$RUNNER_TEMP/post-c320.json"
       - name: Verify worker projection and historical cost arithmetic
         run: python -m unittest discover -s research/worker-release-20261124
+      - name: Verify prefill slot certificates and scheduling bounds
+        run: python -m unittest discover -s research/prefill-slot-proof
       - name: Validate operational lab gates with model-free fixtures
         env:
           PYTHONPATH: tools

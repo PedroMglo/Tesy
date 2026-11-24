@@ -1,5 +1,7 @@
 # Reavaliação do Tesy após C320
 
+Seguimento em revisão. A [auditoria C317/C318](../worker-release-20261124/README.md) deixa a continuação em decode INCONCLUSIVE. A [prova de prefill por slots](../prefill-slot-proof/README.md) testa a capacidade, a barreira crítica e a reposição da cache no primeiro decode.
+
 **23 de novembro de 2026.** O projeto demonstrou inferência do GPT-OSS-120B acima da RAM no portátil e ganhos de mecanismos específicos. O último controlo operacional publicado é R0 `slots40-persistent`, opt-in. **M3 PARTIAL, M4 NOT_MET.** O último fecho experimental é C320, de 7 de outubro. C321 regista a publicação e o estado para retomar. A branch da tese, de 17 de outubro, acrescenta documentação. A decisão desta revisão é investir primeiro na análise de filas do decode e estudar a possibilidade de reutilização no prefill mantendo a geometria de R0. [Decisão de arquitetura e responsabilidades](../../docs/architecture/0004-servico-exato-de-experts.md) · [Literatura e comparadores](literatura.md) · [Inventário Git](repositorio.md)
 
 ## O que sustenta a decisão

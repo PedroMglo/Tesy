@@ -1,0 +1,407 @@
+{
+  "schema": "tesy-c135-fixed-destination-v1",
+  "evidence": "TRACE_DERIVED / conditional on fixed wave geometry and service",
+  "c135_sha256": "91610b12291d5a42a12bba09f5d4ff188d25ee0001ab89e894bdd508005e82fb",
+  "protocol_sha256": "6a625cb0ed05deb45a9646354e59042c41f8aecb6e41fe727bb0c9448d3cbe09",
+  "prefill_5_plus_148_s": 11.702723,
+  "diagnostic_ten_percent_prefill_us": 1170272.3,
+  "selection": {
+    "candidate_partition": {
+      "candidates": 184,
+      "conservative_tile_pin": 29,
+      "unproven_ready": 37,
+      "displaced_expert_requested": 16,
+      "destination_unavailable": 49
+    },
+    "optimistic_matching_upper_for_fixed_destination": 104,
+    "individually_certifiable": 53
+  },
+  "certificate_source_target_evict_seq": [
+    [
+      8630,
+      21243
+    ],
+    [
+      8639,
+      8647
+    ],
+    [
+      8972,
+      8981
+    ],
+    [
+      9208,
+      24271
+    ],
+    [
+      9572,
+      9584
+    ],
+    [
+      9661,
+      13946
+    ],
+    [
+      9934,
+      9952
+    ],
+    [
+      10133,
+      14660
+    ],
+    [
+      10155,
+      14688
+    ],
+    [
+      10488,
+      10519
+    ],
+    [
+      10492,
+      10515
+    ],
+    [
+      10727,
+      10737
+    ],
+    [
+      10731,
+      10753
+    ],
+    [
+      11270,
+      11287
+    ],
+    [
+      11812,
+      11820
+    ],
+    [
+      11844,
+      24267
+    ],
+    [
+      12053,
+      24532
+    ],
+    [
+      12057,
+      12068
+    ],
+    [
+      13140,
+      16413
+    ],
+    [
+      13404,
+      13411
+    ],
+    [
+      13419,
+      25896
+    ],
+    [
+      13612,
+      16725
+    ],
+    [
+      13707,
+      13717
+    ],
+    [
+      13915,
+      13923
+    ],
+    [
+      14589,
+      14598
+    ],
+    [
+      14677,
+      14681
+    ],
+    [
+      14929,
+      14934
+    ],
+    [
+      15236,
+      15241
+    ],
+    [
+      15362,
+      15366
+    ],
+    [
+      15540,
+      15544
+    ],
+    [
+      15715,
+      24528
+    ],
+    [
+      15898,
+      15915
+    ],
+    [
+      15911,
+      15919
+    ],
+    [
+      16089,
+      16102
+    ],
+    [
+      16108,
+      16113
+    ],
+    [
+      16378,
+      16398
+    ],
+    [
+      16770,
+      16803
+    ],
+    [
+      16778,
+      16788
+    ],
+    [
+      16782,
+      16794
+    ],
+    [
+      17000,
+      17011
+    ],
+    [
+      17155,
+      26877
+    ],
+    [
+      21195,
+      21213
+    ],
+    [
+      21452,
+      21456
+    ],
+    [
+      21660,
+      21664
+    ],
+    [
+      22391,
+      22399
+    ],
+    [
+      23766,
+      23798
+    ],
+    [
+      23774,
+      23790
+    ],
+    [
+      24060,
+      24082
+    ],
+    [
+      24501,
+      24513
+    ],
+    [
+      25872,
+      25880
+    ],
+    [
+      26332,
+      26340
+    ],
+    [
+      26656,
+      26660
+    ],
+    [
+      26664,
+      26671
+    ]
+  ],
+  "joint_replay": {
+    "verified_pairs": 53,
+    "loads_avoided": {
+      "CPU": 31,
+      "CUDA0": 22
+    },
+    "avoided_logical_read_bytes": 700617600,
+    "same_tier_copy_payload_bytes": 700617600,
+    "equal_payload_at_call_ends": [
+      2,
+      3
+    ],
+    "first_decode_demands": 144,
+    "first_decode_loads": 20
+  },
+  "charged_copy_payload_by_tier_B": {
+    "CPU": 409795200,
+    "CUDA0": 290822400
+  },
+  "scenarios": {
+    "all_observed_cross_tile": {
+      "call2_us": 11205722,
+      "removed_generations": 184,
+      "candidate_generations": 184,
+      "conditional_projection": {
+        "wait_us": 7556772,
+        "barriers": 222,
+        "direct_saving_lower_us": 214562,
+        "direct_saving_upper_us": 333667,
+        "barriers_with_candidates": 94,
+        "whole_wait_us_at_barriers_with_candidates": 3579168,
+        "last_dependency_is_candidate": 45,
+        "removed_pending_at_a_demand_barrier": 172,
+        "removed_ready_at_demand": 12,
+        "affected_tile_layer_scopes": 76,
+        "wait_us_in_affected_scopes": 4593586,
+        "fixed_wave_release_flexible_dispatch_saving_upper_us": 1614516
+      },
+      "last_dependency_retained_witness": {
+        "tile_zero_based_layer_wave": [
+          1,
+          12,
+          0
+        ],
+        "wait_begin_end_seq": [
+          8654,
+          8760
+        ],
+        "wait_us": 39441,
+        "candidate_layer_expert_slot_generation": [
+          12,
+          93,
+          26,
+          6
+        ],
+        "candidate_commit_block_seq": 8745,
+        "last_retained_layer_expert_slot_generation": [
+          12,
+          124,
+          31,
+          5
+        ],
+        "last_retained_commit_block_seq": 8759
+      },
+      "four_worker_relaxation": {
+        "changed_tile_layers": 76,
+        "retained_service_generations": 993,
+        "interval_capacity_saving_upper_us": 1367310,
+        "free_observed_callback_saving_upper_us": 1368083
+      }
+    },
+    "optimistic_fixed_destination_union": {
+      "call2_us": 11205722,
+      "removed_generations": 119,
+      "candidate_generations": 184,
+      "conditional_projection": {
+        "wait_us": 7556772,
+        "barriers": 222,
+        "direct_saving_lower_us": 131879,
+        "direct_saving_upper_us": 218777,
+        "barriers_with_candidates": 71,
+        "whole_wait_us_at_barriers_with_candidates": 2966619,
+        "last_dependency_is_candidate": 29,
+        "removed_pending_at_a_demand_barrier": 113,
+        "removed_ready_at_demand": 6,
+        "affected_tile_layer_scopes": 61,
+        "wait_us_in_affected_scopes": 4002880,
+        "fixed_wave_release_flexible_dispatch_saving_upper_us": 1218549
+      },
+      "last_dependency_retained_witness": {
+        "tile_zero_based_layer_wave": [
+          1,
+          12,
+          0
+        ],
+        "wait_begin_end_seq": [
+          8654,
+          8760
+        ],
+        "wait_us": 39441,
+        "candidate_layer_expert_slot_generation": [
+          12,
+          93,
+          26,
+          6
+        ],
+        "candidate_commit_block_seq": 8745,
+        "last_retained_layer_expert_slot_generation": [
+          12,
+          124,
+          31,
+          5
+        ],
+        "last_retained_commit_block_seq": 8759
+      },
+      "four_worker_relaxation": {
+        "changed_tile_layers": 61,
+        "retained_service_generations": 1058,
+        "interval_capacity_saving_upper_us": 984452,
+        "free_observed_callback_saving_upper_us": 984950
+      }
+    },
+    "verified_schedule": {
+      "call2_us": 11205722,
+      "removed_generations": 53,
+      "candidate_generations": 184,
+      "conditional_projection": {
+        "wait_us": 7556772,
+        "barriers": 222,
+        "direct_saving_lower_us": 88123,
+        "direct_saving_upper_us": 98824,
+        "barriers_with_candidates": 40,
+        "whole_wait_us_at_barriers_with_candidates": 1767715,
+        "last_dependency_is_candidate": 11,
+        "removed_pending_at_a_demand_barrier": 51,
+        "removed_ready_at_demand": 2,
+        "affected_tile_layer_scopes": 36,
+        "wait_us_in_affected_scopes": 2072620,
+        "fixed_wave_release_flexible_dispatch_saving_upper_us": 629844
+      },
+      "last_dependency_retained_witness": {
+        "tile_zero_based_layer_wave": [
+          1,
+          12,
+          0
+        ],
+        "wait_begin_end_seq": [
+          8654,
+          8760
+        ],
+        "wait_us": 39441,
+        "candidate_layer_expert_slot_generation": [
+          12,
+          93,
+          26,
+          6
+        ],
+        "candidate_commit_block_seq": 8745,
+        "last_retained_layer_expert_slot_generation": [
+          12,
+          124,
+          31,
+          5
+        ],
+        "last_retained_commit_block_seq": 8759
+      },
+      "four_worker_relaxation": {
+        "changed_tile_layers": 36,
+        "retained_service_generations": 1124,
+        "interval_capacity_saving_upper_us": 514192,
+        "free_observed_callback_saving_upper_us": 514498
+      }
+    }
+  }
+}
