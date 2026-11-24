@@ -1,0 +1,70 @@
+{
+  "evidence": "TRACE_DERIVED_C135_CONDITIONAL_FIXED_OTHER_WORK",
+  "trace_sha256": "91610b12291d5a42a12bba09f5d4ff188d25ee0001ab89e894bdd508005e82fb",
+  "call2_original_same_wave_reload_count_by_tier": {
+    "CPU": 47,
+    "CUDA0": 32
+  },
+  "same_wave_overlapping_the_184": 63,
+  "same_wave_outside_the_184": 16,
+  "partition_of_184_by_victim_eviction": {
+    "source_in_consumer_wave": 63,
+    "source_in_earlier_tile": 110,
+    "source_in_earlier_wave_of_consumer_tile": 11
+  },
+  "same_tile_transitions_among_the_184": {
+    "0->0": 63,
+    "0->2": 11
+  },
+  "unchanged_other_load_stream": {
+    "call2_us": 11205722,
+    "removed_generations": 79,
+    "candidate_generations": 79,
+    "conditional_projection": {
+      "wait_us": 7556772,
+      "barriers": 222,
+      "direct_saving_lower_us": 112080,
+      "direct_saving_upper_us": 156617,
+      "barriers_with_candidates": 55,
+      "whole_wait_us_at_barriers_with_candidates": 2821262,
+      "last_dependency_is_candidate": 15,
+      "removed_pending_at_a_demand_barrier": 79,
+      "removed_ready_at_demand": 0,
+      "affected_tile_layer_scopes": 55,
+      "wait_us_in_affected_scopes": 3589770,
+      "fixed_wave_release_flexible_dispatch_saving_upper_us": 966919
+    },
+    "last_dependency_retained_witness": {
+      "tile_zero_based_layer_wave": [
+        0,
+        18,
+        0
+      ],
+      "wait_begin_end_seq": [
+        4015,
+        4136
+      ],
+      "wait_us": 63267,
+      "candidate_layer_expert_slot_generation": [
+        18,
+        115,
+        23,
+        4
+      ],
+      "candidate_commit_block_seq": 4093,
+      "last_retained_layer_expert_slot_generation": [
+        18,
+        110,
+        32,
+        5
+      ],
+      "last_retained_commit_block_seq": 4135
+    }
+  },
+  "four_worker_bounds_us": {
+    "changed_tile_layers": 55,
+    "retained_service_generations": 1098,
+    "interval_capacity_saving_upper_us": 794992,
+    "free_observed_callback_saving_upper_us": 795363
+  }
+}
