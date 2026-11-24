@@ -1,7 +1,12 @@
 name: Research reports documentation
 
 on:
-  pull_request:
+  workflow_dispatch:
+    inputs:
+      build_pdfs:
+        description: Build reproducible draft PDFs after checking evidence
+        type: boolean
+        default: false
   push:
     branches:
       - main
@@ -34,6 +39,7 @@ jobs:
 
   pdf-preview:
     name: Build PDF previews
+    if: github.event_name == 'workflow_dispatch' && inputs.build_pdfs
     needs: evidence
     runs-on: ubuntu-24.04
     permissions:
@@ -62,7 +68,7 @@ jobs:
       - name: Upload PDF previews
         uses: actions/upload-artifact@v4
         with:
-          name: tesy-reports-preview-${{ github.event.pull_request.number || github.sha }}
+          name: tesy-reports-preview-${{ github.sha }}
           path: docs/research-reports/published/**/draft-*/
           if-no-files-found: error
           retention-days: 14

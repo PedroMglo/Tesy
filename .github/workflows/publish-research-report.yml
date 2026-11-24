@@ -1,10 +1,7 @@
 name: Automatically publish reviewed research reports
 
 on:
-  pull_request:
-    paths:
-      - 'docs/research-reports/**'
-      - '.github/workflows/publish-research-report.yml'
+  workflow_dispatch:
   push:
     branches:
       - main
@@ -18,7 +15,7 @@ permissions:
 jobs:
   preflight:
     name: Preflight automatic release
-    if: github.event_name == 'pull_request'
+    if: github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-24.04
     defaults:
       run:
@@ -36,7 +33,7 @@ jobs:
       - name: Build every eligible release without publishing
         run: |
           python ../../tools/release_candidates.py --root . > release-candidates.tsv
-          while IFS="$(printf '\t')" read -r report_id version release_tag; do
+          while IFS="$(printf '\t')" read -r report_id _; do
             [ -n "$report_id" ] || continue
             python tools/build_report.py "$report_id" --mode release --check-reproducible
           done < release-candidates.tsv
@@ -92,7 +89,7 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          while IFS="$(printf '\t')" read -r report_id version release_tag; do
+          while IFS="$(printf '\t')" read -r report_id _ release_tag; do
             [ -n "$report_id" ] || continue
             if ! gh release view "$release_tag" >/dev/null 2>&1; then
               continue

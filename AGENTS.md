@@ -78,6 +78,8 @@ schema -> synthetic/fault -> simulator -> operator -> routed layer -> small real
 
 Development occurs on dedicated branches. Do not merge automatically and do not force-push. Keep commits intentional.
 
+Run the relevant model-free tests locally for each research unit and report the commands and results in its PR. Batch remote validation on a selected review head with `gh workflow run ci.yml --ref BRANCH`. Request PDF previews explicitly for a report review with `gh workflow run research-reports.yml --ref BRANCH -f build_pdfs=true`.
+
 Do not commit model weights, build products, caches, raw traces containing private prompts, or generated large artefacts.
 
 External dependencies must be pinned before measurements. Do not silently modify a shared installation from another project.

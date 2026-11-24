@@ -4,9 +4,9 @@ O agente que executa campanhas publica protocolos, resultados, manifests e o fec
 
 Uma campanha com `research/CN-FINAL-YYYYMMDD.md` é **fechada cientificamente**, mas só fica **coberta editorialmente** quando um relatório `CNN-*` está no registo, inclui esse fecho como fonte congelada, valida os bytes atuais, tem derivados e lock atuais, e conserva `audit.json` revisto para a versão exata. O gate `ci/check_campaign_coverage.py` falha se faltar qualquer parte. O gate não afirma que todos os números da prosa são semanticamente corretos nem que a experiência foi reproduzida.
 
-O workflow documental corre nos PRs e nos pushes para `main` que correspondam aos caminhos definidos. Ao fechar uma campanha, o agente experimental publica a evidência. Uma falha `REPORT_REQUIRED_FOR_CNN` identifica o relatório que o assistente documental precisa de preparar para revisão. [Workflow documental](../../.github/workflows/research-reports.yml)
+A verificação de evidência corre por pedido na branch escolhida e nos pushes documentais relevantes para `main`. A opção manual `build_pdfs` acrescenta os previews à revisão. Ao fechar uma campanha, o agente experimental publica a evidência. Uma falha `REPORT_REQUIRED_FOR_CNN` identifica o relatório que o assistente documental precisa de preparar para revisão. [Workflow documental](../../.github/workflows/research-reports.yml)
 
-Todo o relatório LaTeX registado entra na publicação contínua quando a metadata e a auditoria passam a `REVIEWED`. A CI verifica no PR os bytes dos PDFs de release. Depois do merge na `main`, cria automaticamente uma tag e uma release para cada versão nova. Alterar os inputs de um relatório publicado exige nova versão e nova auditoria. [Publicação e verificação dos ficheiros](README.md)
+Todo o relatório LaTeX registado entra na publicação contínua quando a metadata e a auditoria passam a `REVIEWED`. O preflight manual verifica os bytes dos PDFs de release na revisão escolhida. Depois do merge na `main`, cria automaticamente uma tag e uma release para cada versão nova. Alterar os inputs de um relatório publicado exige nova versão e nova auditoria. [Publicação e verificação dos ficheiros](README.md)
 
 O bloqueio de merge pelo GitHub depende de o job `evidence` estar configurado como **required status check** na proteção da `main`. A revisão humana aprova a interpretação e o layout.
 
