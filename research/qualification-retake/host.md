@@ -24,4 +24,4 @@ Digest do protocolo `19bbb51bae496b32e4570145a00a1b1ca83ad217c8afa95aa19024a02af
 
 ## Decisão de colocação
 
-Em 24 de novembro, depois da verificação integral de conteúdo, Pedro decidiu conservar o GGUF apenas no SSD USB por agora. O próprio ficheiro medido continua a ser a cópia de trabalho. Enquanto esta colocação vigorar, o critério de armazenamento do protocolo R0 impede a sua campanha de qualificação física, mesmo que surja uma janela admissível de RAM. Uma experiência que estude a configuração USB precisa de identidade e comparador próprios.
+Em 24 de novembro, depois da verificação integral de conteúdo, Pedro decidiu conservar o GGUF apenas no SSD USB por agora. Essa foi a colocação disponível durante o inventário acima. O critério de armazenamento impedia a qualificação física de R0 nessa janela. Depois de conhecer os limites C135 e C294 do USB, Pedro autorizou a colocação da cópia de trabalho no NVMe interno. [Protocolo de colocação](nvme_placement/protocol.md) Uma experiência que estude a configuração USB precisa de identidade e comparador próprios.
