@@ -42,6 +42,12 @@ python3 research/consolidacao-20261123/verify.py
 
 O último comando requer um clone com o histórico completo. O ensaio do conteúdo integral do GGUF só entra numa nova auditoria de inputs com orçamento de leitura. O primeiro arranque local de pytest encontrou um plug-in da estação que tentou abrir um socket. Com os plug-ins externos desativados, os 352 testes do projeto passaram. Passaram também os 42 testes dos gates operacionais. A análise do USB precedeu a decisão de Pedro de colocar uma cópia de trabalho no NVMe. O ensaio de colocação verifica o conteúdo e o caminho canónico do launcher. [Protocolo de colocação](nvme_placement/protocol.md) A referência física de dois turnos também requer identidade ELF e recursos qualificados. O par de pedidos verifica a falha de conteúdo. Os tempos de M4 exigem os workloads completos do contrato.
 
+## Comparação física dos discos
+
+O modelo de trabalho passou para o NVMe interno e o launcher encontra o GGUF original pelo caminho habitual. Foi verificado o SHA-256 integral das duas cópias. [Colocação e controlo histórico](nvme_placement/README.md)
+
+No primeiro passo de decode nominal da C135, medimos o serviço das 60 leituras reais com quatro workers. O USB deu 493,418 e 498,305 ms, e o NVMe 145,416 e 145,518 ms. O veredito é **GO para a colocação NVMe**. O ganho de serviço foi 70,53% e 70,80% nos dois pares. O tráfego de leitura do dispositivo confirmou 264 630 272 B em cada braço. A latência do pedido requer uma execução integrada. O inventário contemporâneo admitiu 12,5 GiB para um processo e R0 exige 20 GiB. [Agenda, contraprovas e recursos](nvme_admission/README.md)
+
 ## Exatidão das camadas e comparador independente
 
 O ambiente atual reproduziu as referências completas C266 em CPU0 e CUDA25. Em cada braço, 153 routers e 440 640 valores de FFN coincidiram bit a bit. Com CUDA35, ficam cobertos os onze tiles selecionados. A primeira família parou na identificação de um ELF e o respetivo recibo foi preservado. [Dados por braço e consumos](rows153/README.md)
