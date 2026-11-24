@@ -25,6 +25,10 @@ Em 133 dessas 334 observações, a cabeça FIFO podia iniciar uma leitura direta
 
 O envelope entre accept e primeira cópia soma 1,52–1,86 milhões de worker-µs. A união na parede é 1,45–1,79 s. A interseção com procura posteriormente aceite e WAIT do router é 0,46–0,58 s. Estes números localizam a sobreposição nesta execução. Libertar um worker pode deslocar trabalho que apareceria noutra janela ou deixar intacta a última dependência. A interseção não fornece um limite superior da melhoria. Também fica por identificar o custo máximo admissível em µs de parede por continuação. Sem um controlo temporizado reproduzido, a continuação não chega à fixture. [Critérios](protocolo.md)
 
+## Fixture de instrumentação
+
+**PASS funcional sem modelo.** Quatro threads reais e os headers C305 pinados reproduziram a saturação do pool, o anexo READING, o despacho direto e a última publicação antes da barreira e do drain. OFF/ON/ON/OFF entregaram os mesmos bytes nas duas gerações. O serviço de bytes e a fila primária são controlados pela fixture. A política bloqueante é a mesma nos quatro braços. Fica por qualificar a neutralidade do observador integrado no `worker_loop` real. [Relatório, pré-registo, código e teste de falhas](observador/README.md)
+
 ## C318 trace-OFF
 
 Os oito recibos confirmam a ordem ABBA, os relógios, os digests da matriz completa de 33 linhas de logits e os ganhos publicados. O custo fixado inclui predictor, cópias, cancelamentos e cleanup. O prefixo fica fora do total. Cada par usa o seu R0 como denominador.
