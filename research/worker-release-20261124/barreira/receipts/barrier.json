@@ -1,0 +1,278 @@
+{
+  "schema": "tesy-c317-fifo-observed-last-publication-v1",
+  "evidence": "TRACE_DERIVED",
+  "inputs": {
+    "c317-nominal153-2-trace.native/events.tsv": {
+      "size_bytes": 1783273,
+      "sha256": "c6cf2327a8bd7ec2c7755979e594b33b72a5547826a2d2b057326be66039838e"
+    },
+    "c317-nominal153-2-trace.native/staging.json": {
+      "size_bytes": 963169,
+      "sha256": "e93fceb6a61b1a710951252eb05b467d310055414fc24e73dc9816aa4c94eff2"
+    },
+    "c317-nominal153-3-trace.native/events.tsv": {
+      "size_bytes": 1784362,
+      "sha256": "05c830ebb865c5f0740717ff5935e5bf3c15fcbb0cdad26825ca56ca8432d7be"
+    },
+    "c317-nominal153-3-trace.native/staging.json": {
+      "size_bytes": 961025,
+      "sha256": "b2d5e3bbeeee0a776380e4433fcded264f7f5e6ec3c427102a3f40e8d3589a3d"
+    },
+    "c317-code153-2-trace.native/events.tsv": {
+      "size_bytes": 2647793,
+      "sha256": "8bdd96f879cda7fad466dc252ae9915e7b05233b95fd91539b6b4bd4400d27a1"
+    },
+    "c317-code153-2-trace.native/staging.json": {
+      "size_bytes": 1225649,
+      "sha256": "38b46e7d48336bd10577d80a1fcf48cc35e5f084c13380dadf0a69f73657ac86"
+    },
+    "c317-code153-3-trace.native/events.tsv": {
+      "size_bytes": 2648115,
+      "sha256": "70c9c37864e25201711d23cc60a7d0b1afeba21f254a410e785b24e901e00b07"
+    },
+    "c317-code153-3-trace.native/staging.json": {
+      "size_bytes": 1222640,
+      "sha256": "ea0e449455a6cd2d957ba42665c8d30bb0ea14679d1d8c1ee881cc901207b59b"
+    }
+  },
+  "head_receipt_sha256": "0433bed283cec04478b136fced1461ac717d28b41d5fc5422851a7695bd69599",
+  "arms": {
+    "c317-nominal153-2-trace.native": {
+      "any": {
+        "episodes": 26,
+        "distinct_barriers": 26,
+        "last_publication": {
+          "fifo_head": 18,
+          "other": 5,
+          "blocked": 3
+        },
+        "fifo_head_is_last": {
+          "accept_to_head_accept_us": {
+            "minimum": 227,
+            "median": 6536.0,
+            "maximum": 11536
+          },
+          "last_minus_penultimate_publish_us": {
+            "minimum": 3382,
+            "median": 17086.0,
+            "maximum": 28397
+          }
+        }
+      },
+      "direct_read": {
+        "episodes": 20,
+        "distinct_barriers": 20,
+        "last_publication": {
+          "fifo_head": 18,
+          "other": 2
+        },
+        "fifo_head_is_last": {
+          "accept_to_head_accept_us": {
+            "minimum": 227,
+            "median": 6536.0,
+            "maximum": 11536
+          },
+          "last_minus_penultimate_publish_us": {
+            "minimum": 3382,
+            "median": 17086.0,
+            "maximum": 28397
+          }
+        }
+      },
+      "ready_copy": {
+        "episodes": 6,
+        "distinct_barriers": 6,
+        "last_publication": {
+          "blocked": 3,
+          "other": 3
+        },
+        "fifo_head_is_last": {
+          "accept_to_head_accept_us": null,
+          "last_minus_penultimate_publish_us": null
+        }
+      }
+    },
+    "c317-nominal153-3-trace.native": {
+      "any": {
+        "episodes": 27,
+        "distinct_barriers": 27,
+        "last_publication": {
+          "fifo_head": 21,
+          "other": 6
+        },
+        "fifo_head_is_last": {
+          "accept_to_head_accept_us": {
+            "minimum": 38,
+            "median": 6804,
+            "maximum": 15512
+          },
+          "last_minus_penultimate_publish_us": {
+            "minimum": 62,
+            "median": 14011,
+            "maximum": 29509
+          }
+        }
+      },
+      "direct_read": {
+        "episodes": 23,
+        "distinct_barriers": 23,
+        "last_publication": {
+          "fifo_head": 20,
+          "other": 3
+        },
+        "fifo_head_is_last": {
+          "accept_to_head_accept_us": {
+            "minimum": 38,
+            "median": 6649.0,
+            "maximum": 15512
+          },
+          "last_minus_penultimate_publish_us": {
+            "minimum": 3085,
+            "median": 15602.5,
+            "maximum": 29509
+          }
+        }
+      },
+      "ready_copy": {
+        "episodes": 4,
+        "distinct_barriers": 4,
+        "last_publication": {
+          "other": 3,
+          "fifo_head": 1
+        },
+        "fifo_head_is_last": {
+          "accept_to_head_accept_us": {
+            "minimum": 14298,
+            "median": 14298,
+            "maximum": 14298
+          },
+          "last_minus_penultimate_publish_us": {
+            "minimum": 62,
+            "median": 62,
+            "maximum": 62
+          }
+        }
+      }
+    },
+    "c317-code153-2-trace.native": {
+      "any": {
+        "episodes": 39,
+        "distinct_barriers": 39,
+        "last_publication": {
+          "other": 2,
+          "fifo_head": 34,
+          "blocked": 3
+        },
+        "fifo_head_is_last": {
+          "accept_to_head_accept_us": {
+            "minimum": 46,
+            "median": 3775.5,
+            "maximum": 12730
+          },
+          "last_minus_penultimate_publish_us": {
+            "minimum": 1483,
+            "median": 16690.5,
+            "maximum": 25192
+          }
+        }
+      },
+      "direct_read": {
+        "episodes": 36,
+        "distinct_barriers": 36,
+        "last_publication": {
+          "other": 2,
+          "fifo_head": 34
+        },
+        "fifo_head_is_last": {
+          "accept_to_head_accept_us": {
+            "minimum": 46,
+            "median": 3775.5,
+            "maximum": 12730
+          },
+          "last_minus_penultimate_publish_us": {
+            "minimum": 1483,
+            "median": 16690.5,
+            "maximum": 25192
+          }
+        }
+      },
+      "ready_copy": {
+        "episodes": 3,
+        "distinct_barriers": 3,
+        "last_publication": {
+          "blocked": 3
+        },
+        "fifo_head_is_last": {
+          "accept_to_head_accept_us": null,
+          "last_minus_penultimate_publish_us": null
+        }
+      }
+    },
+    "c317-code153-3-trace.native": {
+      "any": {
+        "episodes": 41,
+        "distinct_barriers": 41,
+        "last_publication": {
+          "other": 3,
+          "fifo_head": 37,
+          "blocked": 1
+        },
+        "fifo_head_is_last": {
+          "accept_to_head_accept_us": {
+            "minimum": 203,
+            "median": 5027,
+            "maximum": 12694
+          },
+          "last_minus_penultimate_publish_us": {
+            "minimum": 30,
+            "median": 15890,
+            "maximum": 25330
+          }
+        }
+      },
+      "direct_read": {
+        "episodes": 36,
+        "distinct_barriers": 36,
+        "last_publication": {
+          "other": 2,
+          "fifo_head": 34
+        },
+        "fifo_head_is_last": {
+          "accept_to_head_accept_us": {
+            "minimum": 203,
+            "median": 5010.5,
+            "maximum": 12694
+          },
+          "last_minus_penultimate_publish_us": {
+            "minimum": 3506,
+            "median": 16431.5,
+            "maximum": 25330
+          }
+        }
+      },
+      "ready_copy": {
+        "episodes": 5,
+        "distinct_barriers": 5,
+        "last_publication": {
+          "fifo_head": 3,
+          "blocked": 1,
+          "other": 1
+        },
+        "fifo_head_is_last": {
+          "accept_to_head_accept_us": {
+            "minimum": 2437,
+            "median": 6578,
+            "maximum": 9793
+          },
+          "last_minus_penultimate_publish_us": {
+            "minimum": 30,
+            "median": 30,
+            "maximum": 36
+          }
+        }
+      }
+    }
+  },
+  "counterfactual_gain": "INCONCLUSIVE",
+  "status": "PASS_OBSERVED_BARRIER_IDENTIFIED"
+}
