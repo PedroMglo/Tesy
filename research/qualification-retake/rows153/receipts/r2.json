@@ -1,0 +1,155 @@
+{
+  "schema": "tesy-c266-153rows-usb-v1",
+  "status": "PASS_CPU0_CUDA25_ROWS153",
+  "target_sha256_previously_verified": "582bd40f6886200101f4c4ed9f25f3fe80cc14c86e9e2b37746cd8904a0c622d",
+  "resolved_elf_sha256": {
+    "libcuda.so.1": "aa6bd5117c0c66bb804ec63b31b8b5d54130259b1079941b9e00e6b928e8ed71",
+    "libgcc_s.so.1": "5a52ae4a6f1b119aa092aa1483c967e19d9ba036b1b0c2133236a8a2ce826ebf",
+    "libggml-base.so.0": "6e27d9ecb86e4747177189d2d2f6390280a2ee1000221ad68a0404023ea72539",
+    "libggml-cpu.so.0": "9aabce5751c5d7ca19b50e4cabb1fcf484c1581d275141dae8aba8ed33060313",
+    "libggml-cuda.so.0": "ff43655b15df5f3de1d5e00b0da18469a14f118bd644eb4b6d7f1915c85a4493",
+    "libggml.so.0": "70f635b8ba22ddd751590ec1fe11c895ef88e2aff0f4a63a3af96314e6a77d65",
+    "libgomp.so.1": "1e20cd85608bdb5d1662f07988adad28a6473cd70f80de2d2b4dcf82c94eaa74",
+    "libllama.so.0": "347267b2e9cbf920dbf912d6aaf1884e5eff4cccc41c349e93c42bd6403a658f",
+    "libstdc++.so.6": "49811507d8fc0283d8f8023546613774c673f876fe823b1b99d0c8d46039deda"
+  },
+  "map_classifier_sha256": "873252118af707bbe41dc0701cff6bd0b570ebdad2a2630a79de76ae9b4cbaa7",
+  "protocol_sha256": "bf117c7e17039d95797cf57826cee7b98b0c25ff006f279ef0188efb5be17ee2",
+  "runner_sha256": "96f5dbb9ecf79d2bdfeefc679cc149fe8639643bfff29dee0cbc1b8b655766e5",
+  "family_wall_s": 126.80798388899893,
+  "original_receipt_sha256": "dc367fd251bf76c9b926b48f53d17aedbfac3bbf17be9e1b8843c45961b6593d",
+  "output_bytes": 129792,
+  "generation": 0,
+  "context_server": false,
+  "integrated_energy_j": null,
+  "arms": {
+    "0": {
+      "device": "cpu",
+      "operator_calls": 1,
+      "status": "PASS_NUMERICAL_ROWS153",
+      "distinct_experts": 67,
+      "source_sha256": {
+        "attn_post_norm-0.bin": "7904f706fc9bcad58c587e6cc0f93eaea1b975265928e1ff7d8b1907652889dd",
+        "ffn_moe_logits-0.bin": "1d80949514ce12cd58b2a00fbfde9fd9d014cebd25c8fd019d908eaef8f65f17",
+        "ffn_moe_logits_biased-0.bin": "68fb05c8763d0e784773e9115d323f52ece50e95879820f22c932e1a8981c94d",
+        "ffn_moe_topk-0.bin": "14ada9ecbfe77401ff5d40955e9b491c6ebc82f34787737c2e4c8910ffa6cd96",
+        "ffn_moe_weights_softmax-0.bin": "06df91cdb5060cd4b5c7dd16877b7272a551a64b160d4bb20f7f9c7ad92b0ec4",
+        "ffn_moe_out-0.bin": "338a790937eb4de5512ea25d55318c4f3971f6f16e9ab89364e93cfe8dd2b428"
+      },
+      "observed_map_sha256": "649800ed12f941261d49adc91c3386332b0908c5f7e748fdb8591551a5376f64",
+      "mapped_elf": [
+        "libcuda.so.1",
+        "libgcc_s.so.1",
+        "libggml-base.so.0",
+        "libggml-cpu.so.0",
+        "libggml-cuda.so.0",
+        "libggml.so.0",
+        "libgomp.so.1",
+        "libllama.so.0",
+        "libstdc++.so.6"
+      ],
+      "stdout_sha256": "aa71877afd1ce43f1f56988105af75021d649fe842ae47d39402c3a06b0fe5bf",
+      "logical_bytes": 889476992,
+      "exit": 0,
+      "preflight": {
+        "sample_count": 61,
+        "duration_s": 60.272809517000496,
+        "last_utc": "2026-11-24T23:13:10.175063+00:00",
+        "sha256": "e54f8cd6694cd0c0202e504ec9db5e09afc9846568e2a4d1e7c2a5eaa33aecde"
+      },
+      "resources": {
+        "family_cgroup_peak_bytes_at_arm_end": 1086152704,
+        "swap_bytes": 0,
+        "cgroup_events": {
+          "low": 0,
+          "high": 0,
+          "max": 0,
+          "oom": 0,
+          "oom_kill": 0,
+          "oom_group_kill": 0,
+          "sock_throttled": 0
+        },
+        "live_samples": 14,
+        "max_observed_gpu_mib": 4.0,
+        "post_gpu_mib": 2.0,
+        "max_observed_cpu_c": 68.375,
+        "max_observed_gpu_c": 49.14,
+        "max_observed_nvme_c": 41.85,
+        "power_source": "AC",
+        "power_profile": "performance"
+      },
+      "operator_stdout": [
+        "CANONICAL_R2_TILE first=0 n=32 bitwise=1 nonfinite=0 max_abs=0",
+        "CANONICAL_R2_TILE first=32 n=32 bitwise=1 nonfinite=0 max_abs=0",
+        "CANONICAL_R2_TILE first=64 n=32 bitwise=1 nonfinite=0 max_abs=0",
+        "CANONICAL_R2_TILE first=96 n=32 bitwise=1 nonfinite=0 max_abs=0",
+        "CANONICAL_R2_TILE first=128 n=25 bitwise=1 nonfinite=0 max_abs=0",
+        "PASS_NATIVE_CANONICAL_R2_LAYER layer=0 device=cpu logical_bytes_read=889476992 O_DIRECT=1"
+      ]
+    },
+    "25": {
+      "device": "cuda",
+      "operator_calls": 1,
+      "status": "PASS_NUMERICAL_ROWS153",
+      "distinct_experts": 54,
+      "source_sha256": {
+        "attn_post_norm-25.bin": "a3c7863fd308f9822ec5092b81ad381785a06fef1d69c22667e539e68916a294",
+        "ffn_moe_logits-25.bin": "42c95d9be710ceba2cebd892fabef8b6a6f433c17ce65260be6304c080cd4d39",
+        "ffn_moe_logits_biased-25.bin": "dfbb3aa538cacd2ee058c010ffb09938cc008124ad089312d6a08b332ca90ad3",
+        "ffn_moe_topk-25.bin": "852c9c928ff5c9043205e6c86062cb65ff719da52e5fbeda132acb27f02d2326",
+        "ffn_moe_weights_softmax-25.bin": "3859aec323c7ec2089affa001e1319f4cfa42f9e598b3ee7fe07bf4fd138af86",
+        "ffn_moe_out-25.bin": "b4c3c46bece1661f366aff66fecb4561d678f3a59a09952a739c54d4b8f515c7"
+      },
+      "observed_map_sha256": "ce8e0629967e05422353bcc042f989758cdf361bcec753533b1970654922e0b1",
+      "mapped_elf": [
+        "libcuda.so.1",
+        "libgcc_s.so.1",
+        "libggml-base.so.0",
+        "libggml-cpu.so.0",
+        "libggml-cuda.so.0",
+        "libggml.so.0",
+        "libgomp.so.1",
+        "libllama.so.0",
+        "libstdc++.so.6"
+      ],
+      "stdout_sha256": "c4e3740f2aabb51efc9d9e7c96d9bd8f884022f3d856184f494d47cc3003249a",
+      "logical_bytes": 717178112,
+      "exit": 0,
+      "preflight": {
+        "sample_count": 61,
+        "duration_s": 60.193339220999405,
+        "last_utc": "2026-11-24T23:14:13.522954+00:00",
+        "sha256": "fc8da49210d0a788e8f3927f261c5b909282b8d2a3ce04bb8b2ed1913ff65191"
+      },
+      "resources": {
+        "family_cgroup_peak_bytes_at_arm_end": 1086152704,
+        "swap_bytes": 0,
+        "cgroup_events": {
+          "low": 0,
+          "high": 0,
+          "max": 0,
+          "oom": 0,
+          "oom_kill": 0,
+          "oom_group_kill": 0,
+          "sock_throttled": 0
+        },
+        "live_samples": 13,
+        "max_observed_gpu_mib": 1736.0,
+        "post_gpu_mib": 2.0,
+        "max_observed_cpu_c": 71.125,
+        "max_observed_gpu_c": 51.04,
+        "max_observed_nvme_c": 41.85,
+        "power_source": "AC",
+        "power_profile": "performance"
+      },
+      "operator_stdout": [
+        "CANONICAL_R2_TILE first=0 n=32 bitwise=1 nonfinite=0 max_abs=0",
+        "CANONICAL_R2_TILE first=32 n=32 bitwise=1 nonfinite=0 max_abs=0",
+        "CANONICAL_R2_TILE first=64 n=32 bitwise=1 nonfinite=0 max_abs=0",
+        "CANONICAL_R2_TILE first=96 n=32 bitwise=1 nonfinite=0 max_abs=0",
+        "CANONICAL_R2_TILE first=128 n=25 bitwise=1 nonfinite=0 max_abs=0",
+        "PASS_NATIVE_CANONICAL_R2_LAYER layer=25 device=cuda logical_bytes_read=717178112 O_DIRECT=1"
+      ]
+    }
+  }
+}

@@ -1,0 +1,42 @@
+{
+  "status": "FAIL",
+  "reason": "INCOMPLETE_ELF_EVIDENCE",
+  "runner_sha256": "020032f2e610e80eb5f92b0a85ebc014982dc128193155f59e68b7e74fdfea38",
+  "protocol_sha256": "d124b15075b5951a59167549fa835e9a13fb471e0eb785cb1612308f83253c4b",
+  "original_receipt_sha256": "38c83b38adc8159b3f8ae304998a1a4b3aa18eef20c9c162678738d4ceb07fcb",
+  "family_wall_s": 63.52670488400145,
+  "cpu0": {
+    "calls": 1,
+    "process_exit": 0,
+    "status": "FAIL",
+    "observed_mapped": [
+      "libcuda.so.1",
+      "libggml-base.so.0",
+      "libggml-cpu.so.0",
+      "libggml-cuda.so.0",
+      "libggml.so.0",
+      "libgomp.so.1",
+      "libllama.so.0",
+      "libstdc++.so.6"
+    ],
+    "missing_elf": "libgcc_s.so.1",
+    "operator_stdout": [
+      "CANONICAL_R2_TILE first=0 n=32 bitwise=1 nonfinite=0 max_abs=0",
+      "CANONICAL_R2_TILE first=32 n=32 bitwise=1 nonfinite=0 max_abs=0",
+      "CANONICAL_R2_TILE first=64 n=32 bitwise=1 nonfinite=0 max_abs=0",
+      "CANONICAL_R2_TILE first=96 n=32 bitwise=1 nonfinite=0 max_abs=0",
+      "CANONICAL_R2_TILE first=128 n=25 bitwise=1 nonfinite=0 max_abs=0",
+      "PASS_NATIVE_CANONICAL_R2_LAYER layer=0 device=cpu logical_bytes_read=889476992 O_DIRECT=1"
+    ],
+    "observed_raw_vmas_saved": false,
+    "admission_samples": 61,
+    "admission_sha": "cd53250ae00ff25d0f06d02901fdec13d751a77466a03e667f84bf3c43ae9438",
+    "cgroup_peak_bytes": 1088319488,
+    "swap_end_bytes": 0,
+    "gpu_post_mib": 2.0
+  },
+  "cuda25": {
+    "status": "NOT_RUN",
+    "operator_calls": 0
+  }
+}

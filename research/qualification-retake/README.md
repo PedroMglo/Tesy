@@ -41,3 +41,11 @@ python3 research/consolidacao-20261123/verify.py
 ```
 
 O último comando requer um clone com o histórico completo. O ensaio do conteúdo integral do GGUF só entra numa nova auditoria de inputs com orçamento de leitura. O primeiro arranque local de pytest encontrou um plug-in da estação que tentou abrir um socket. Com os plug-ins externos desativados, os 352 testes do projeto passaram. Passaram também os 42 testes dos gates operacionais. Pedro decidiu conservar o modelo apenas no USB por agora. A receita física R0 fica por qualificar enquanto a colocação exigida pelo protocolo estiver indisponível. A referência física de dois turnos também requer identidade ELF e recursos qualificados. O par de pedidos verifica a falha de conteúdo. Os tempos de M4 exigem os workloads completos do contrato.
+
+## Exatidão das camadas e comparador independente
+
+O ambiente atual reproduziu as referências completas C266 em CPU0 e CUDA25. Em cada braço, 153 routers e 440 640 valores de FFN coincidiram bit a bit. Com CUDA35, ficam cobertos os onze tiles selecionados. A primeira família parou na identificação de um ELF e o respetivo recibo foi preservado. [Dados por braço e consumos](rows153/README.md)
+
+O cliente C294 com o observador opt-in passou a ligação das 166 unidades da biblioteca e do cliente, o self-test e a fixture de 1 299 grupos top-4. As quatro GGML carregadas coincidem. A neutralidade integrada das rotas continua por testar. [Build e hashes](prefix_build/README.md)
+
+A cache do llama.cpp stock no pin e95426f passou uma fixture do planeador. A configuração estudada deixa 3 914 457 216 B até ao teto de VRAM para grafo, buffers e runtime. As faltas podem ser servidas por páginas residentes do ficheiro e o arranque tenta paginar o GGUF. O orçamento de leituras O_DIRECT de R0 é específico desse controlo. [Fonte, capacidade e decisões](stock_cache_result.md)

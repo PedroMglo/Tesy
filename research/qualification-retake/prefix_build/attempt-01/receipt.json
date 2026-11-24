@@ -1,0 +1,478 @@
+{
+  "backend_commit": "237e3b8789650fd68b97641c5b8e259d198ed3b1",
+  "backend_tree": "149078c009a40b2c69ee126cdb84091fe3e95606",
+  "build_identities": {
+    "cmake": "cmake version 4.3.0",
+    "compiler": "c++ (GCC) 16.2.1 20261029 (Red Hat 16.2.1-3)",
+    "ninja": "1.13.2"
+  },
+  "compile_graph": {
+    "clean_client_tus": 1,
+    "clean_llama_tus": 166,
+    "cuda_compilations": 0,
+    "layout_consumers": [
+      "expert_service_window.cpp.o",
+      "llama-context.cpp.o",
+      "llama-graph.cpp.o",
+      "llama-model.cpp.o",
+      "llama-moe-stream.cpp.o"
+    ],
+    "source_relative_list_sha256": "672bd6eb560b9e048575b92dd0eb73dc4ca871e643a4dd779cb94db905223900"
+  },
+  "fixture_and_build_sha256": {
+    "build.py": "03cf19adaf80423088d91bd5fcc3efb87da31796285e5f349338d136f0c0d38a",
+    "client-probe.patch": "7170cf40ae199f84360303960fbe20529609d2bc89ae6d8dbd9ab5e5886c5d46",
+    "protocol.json": "ac8c25f5a38313e75d4fbb25ba15908be16a350e733582e46ef11eb17b6b2c6e",
+    "protocol.md": "2117233dd73f527daf815425277d5298e40d1beec3ff39c4cb1f245387ef3fba"
+  },
+  "fixture_journal_sha256": "d74ae9dd998d292a479c0e6d34ca66a9d0db0900637ad750f2f94e94913f64b2",
+  "imported_ggml": {
+    "libggml-base.so.0.15.3": "6e27d9ecb86e4747177189d2d2f6390280a2ee1000221ad68a0404023ea72539",
+    "libggml-cpu.so.0.15.3": "9aabce5751c5d7ca19b50e4cabb1fcf484c1581d275141dae8aba8ed33060313",
+    "libggml-cuda.so.0.15.3": "ff43655b15df5f3de1d5e00b0da18469a14f118bd644eb4b6d7f1915c85a4493",
+    "libggml.so.0.15.3": "70f635b8ba22ddd751590ec1fe11c895ef88e2aff0f4a63a3af96314e6a77d65"
+  },
+  "integrated_neutrality": "NOT_RUN_PHYSICAL_ADMISSION_REQUIRED",
+  "model_forwards": 0,
+  "needed_direct": [
+    "libllama.so.0",
+    "libggml.so.0",
+    "libggml-base.so.0",
+    "libggml-cpu.so.0",
+    "libggml-cuda.so.0",
+    "libstdc++.so.6",
+    "libm.so.6",
+    "libgcc_s.so.1",
+    "libc.so.6"
+  ],
+  "pinned_client_sources": {
+    "tools/block_native_run.cpp": "22a5e2b6028c14e0719c33d0033965bfc7f8c02e06aa896840cb0d6cb25dafbc",
+    "tools/expert_service_window.cpp": "dce6c8e7b172f705f65d70105bc563a945655d74c9504639b5c513a8b81f960e",
+    "tools/expert_window_build/CMakeLists.txt": "9cf5631d9ef388529875b1488e0e57b1843aafa5c021122e195079b15e1a4965"
+  },
+  "products": {
+    "expert-service-window": {
+      "bytes": 292760,
+      "sha256": "9ae65da60a35730896a168a4a77aa4e3bb05e964db883e0649ece78663faec4f"
+    },
+    "libllama.so.0.0.9884": {
+      "bytes": 4174304,
+      "sha256": "23bc41af61d232a552d79fa1048b3afa0d7250f8451983ce220465f89dadef44"
+    }
+  },
+  "resources": {
+    "elapsed_s": 43.087,
+    "private_peak_sampled_bytes": 26104857,
+    "process_tree_peak_rss_kib_sampled": 1576668
+  },
+  "scope": "MODEL_FREE_ELF_STARTUP",
+  "stages": [
+    {
+      "argv": [
+        "git",
+        "-C",
+        "$C294_BACKEND",
+        "rev-parse",
+        "237e3b8789650fd68b97641c5b8e259d198ed3b1",
+        "237e3b8789650fd68b97641c5b8e259d198ed3b1^{tree}"
+      ],
+      "cwd": "$BUILD",
+      "elapsed_s": 0.023,
+      "expected_returncode": 0,
+      "observer_option": null,
+      "returncode": 0,
+      "stage": "pin",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_sha256": "e457a14ba22f420dcc87925329bfa3484b12798ed649d9d3a7f83c81a86dc034",
+      "stop": null,
+      "tree_peak_rss_kib_sampled": 904
+    },
+    {
+      "argv": [
+        "git",
+        "-C",
+        "$C294_BACKEND",
+        "archive",
+        "--format=tar",
+        "-o",
+        "$BUILD/source.tar",
+        "237e3b8789650fd68b97641c5b8e259d198ed3b1",
+        "src",
+        "include",
+        "ggml/include",
+        "vendor/nlohmann"
+      ],
+      "cwd": "$BUILD",
+      "elapsed_s": 0.103,
+      "expected_returncode": 0,
+      "observer_option": null,
+      "returncode": 0,
+      "stage": "export",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stop": null,
+      "tree_peak_rss_kib_sampled": 9976
+    },
+    {
+      "argv": [
+        "tar",
+        "-xf",
+        "$BUILD/source.tar",
+        "-C",
+        "$BUILD/source"
+      ],
+      "cwd": "$BUILD",
+      "elapsed_s": 0.023,
+      "expected_returncode": 0,
+      "observer_option": null,
+      "returncode": 0,
+      "stage": "extract",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stop": null,
+      "tree_peak_rss_kib_sampled": 712
+    },
+    {
+      "argv": [
+        "git",
+        "apply",
+        "--no-index",
+        "$TESY/research/qualification-retake/prefix_observer/backend.patch"
+      ],
+      "cwd": "$BUILD/source",
+      "elapsed_s": 0.023,
+      "expected_returncode": 0,
+      "observer_option": null,
+      "returncode": 0,
+      "stage": "patch-backend",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stop": null,
+      "tree_peak_rss_kib_sampled": 616
+    },
+    {
+      "argv": [
+        "git",
+        "apply",
+        "--no-index",
+        "$TESY/research/qualification-retake/prefix_observer/harness.patch"
+      ],
+      "cwd": "$BUILD/project",
+      "elapsed_s": 0.023,
+      "expected_returncode": 0,
+      "observer_option": null,
+      "returncode": 0,
+      "stage": "patch-client",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stop": null,
+      "tree_peak_rss_kib_sampled": 812
+    },
+    {
+      "argv": [
+        "git",
+        "apply",
+        "--no-index",
+        "$TESY/research/qualification-retake/prefix_build/client-probe.patch"
+      ],
+      "cwd": "$BUILD/project",
+      "elapsed_s": 0.024,
+      "expected_returncode": 0,
+      "observer_option": null,
+      "returncode": 0,
+      "stage": "patch-probe",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stop": null,
+      "tree_peak_rss_kib_sampled": 820
+    },
+    {
+      "argv": [
+        "cmake",
+        "-S",
+        "$BUILD/project/tools/expert_window_build",
+        "-B",
+        "$BUILD/cmake",
+        "-G",
+        "Ninja",
+        "-DCMAKE_BUILD_TYPE=Release",
+        "-DCMAKE_C_COMPILER=/usr/bin/cc",
+        "-DCMAKE_CXX_COMPILER=/usr/bin/c++",
+        "-DCMAKE_EXPORT_COMPILE_COMMANDS=ON",
+        "-DCMAKE_BUILD_WITH_INSTALL_RPATH=ON",
+        "-DCMAKE_INSTALL_RPATH=$ORIGIN;$GGML_BIN",
+        "-DCMAKE_CXX_FLAGS=-ffile-prefix-map=$BUILD=/tesy-prefix-build -pipe",
+        "-DTESY_BACKEND=$BUILD/source",
+        "-DTESY_QUALIFIED_BIN=$GGML_BIN",
+        "-DTESY_REPO=$BUILD/project"
+      ],
+      "cwd": "$BUILD",
+      "elapsed_s": 0.411,
+      "expected_returncode": 0,
+      "observer_option": null,
+      "returncode": 0,
+      "stage": "configure",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_sha256": "e6fbcef90ac5d6f32c232ab6d86ceca1a265312a4469c9c8dc0adc58d73842f4",
+      "stop": null,
+      "tree_peak_rss_kib_sampled": 56188
+    },
+    {
+      "argv": [
+        "cmake",
+        "--build",
+        "$BUILD/cmake",
+        "--parallel",
+        "4",
+        "--target",
+        "expert-service-window"
+      ],
+      "cwd": "$BUILD",
+      "elapsed_s": 40.082,
+      "expected_returncode": 0,
+      "observer_option": null,
+      "returncode": 0,
+      "stage": "compile-all",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_sha256": "2705cf42fb00b95c4994c080298e603bb04bc8740cde45da66b8637bee456f0e",
+      "stop": null,
+      "tree_peak_rss_kib_sampled": 1576668
+    },
+    {
+      "argv": [
+        "ninja",
+        "-C",
+        "$BUILD/cmake",
+        "-t",
+        "deps"
+      ],
+      "cwd": "$BUILD",
+      "elapsed_s": 0.025,
+      "expected_returncode": 0,
+      "observer_option": null,
+      "returncode": 0,
+      "stage": "header-dependency-closure",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_sha256": "92c19294602752261b715de92a98e840c429709c115ab978ec7a241864a3219c",
+      "stop": null,
+      "tree_peak_rss_kib_sampled": 840
+    },
+    {
+      "argv": [
+        "c++",
+        "--version"
+      ],
+      "cwd": "$BUILD",
+      "elapsed_s": 0.025,
+      "expected_returncode": 0,
+      "observer_option": null,
+      "returncode": 0,
+      "stage": "compiler-version",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_sha256": "d4838ab2821a28fd0b9b7700536bfbd550f11ac13a7885ec670df7ff1c4d7b48",
+      "stop": null,
+      "tree_peak_rss_kib_sampled": 704
+    },
+    {
+      "argv": [
+        "cmake",
+        "--version"
+      ],
+      "cwd": "$BUILD",
+      "elapsed_s": 0.026,
+      "expected_returncode": 0,
+      "observer_option": null,
+      "returncode": 0,
+      "stage": "cmake-version",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_sha256": "6b8c2501a983639b330c555c9a105057ea877b701cf25920bc3fe32dd2a54b13",
+      "stop": null,
+      "tree_peak_rss_kib_sampled": 556
+    },
+    {
+      "argv": [
+        "ninja",
+        "--version"
+      ],
+      "cwd": "$BUILD",
+      "elapsed_s": 0.026,
+      "expected_returncode": 0,
+      "observer_option": null,
+      "returncode": 0,
+      "stage": "ninja-version",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_sha256": "810ab97f4b3fccb9adf1db7959945b479635931ccc4a0243c34a41b739eae25a",
+      "stop": null,
+      "tree_peak_rss_kib_sampled": 548
+    },
+    {
+      "argv": [
+        "/usr/bin/readelf",
+        "-dW",
+        "$BUILD/cmake/bin/expert-service-window"
+      ],
+      "cwd": "$BUILD",
+      "elapsed_s": 0.025,
+      "expected_returncode": 0,
+      "observer_option": null,
+      "returncode": 0,
+      "stage": "elf",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_sha256": "3d33c01e3aaf607f2a7eb71eb67255ce06396a17b04980143c989add882905a0",
+      "stop": null,
+      "tree_peak_rss_kib_sampled": 568
+    },
+    {
+      "argv": [
+        "/usr/bin/ldd",
+        "$BUILD/cmake/bin/expert-service-window"
+      ],
+      "cwd": "$BUILD",
+      "elapsed_s": 0.026,
+      "expected_returncode": 0,
+      "observer_option": null,
+      "returncode": 0,
+      "stage": "ldd",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_sha256": "127ffe71c8bfceac4fb6097ece057497f15722090663338f4e7fb1c0a5624261",
+      "stop": null,
+      "tree_peak_rss_kib_sampled": 684
+    },
+    {
+      "argv": [
+        "$BUILD/cmake/bin/expert-service-window"
+      ],
+      "cwd": "$BUILD",
+      "elapsed_s": 0.066,
+      "expected_returncode": 1,
+      "observer_option": null,
+      "returncode": 1,
+      "stage": "cli-usage",
+      "stderr_sha256": "40782423e35abfc62e9f09daef678c14d6cabfc8091b3538f164ef7ea76ae0bc",
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stop": null,
+      "tree_peak_rss_kib_sampled": 131832
+    },
+    {
+      "argv": [
+        "$BUILD/cmake/bin/expert-service-window",
+        "--self-test"
+      ],
+      "cwd": "$BUILD",
+      "elapsed_s": 0.086,
+      "expected_returncode": 0,
+      "observer_option": null,
+      "returncode": 0,
+      "stage": "window-self-test",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_sha256": "50538b7322c8f1aa06ab24883c5dbe991c5f2dcafba39f6e41d837c5455f6187",
+      "stop": null,
+      "tree_peak_rss_kib_sampled": 198452
+    },
+    {
+      "argv": [
+        "$BUILD/cmake/bin/expert-service-window",
+        "--prefix-config-probe"
+      ],
+      "cwd": "$BUILD",
+      "elapsed_s": 0.086,
+      "expected_returncode": 0,
+      "observer_option": null,
+      "returncode": 0,
+      "stage": "prefix-default",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_sha256": "4482ea84931ac2d4e08f6ebc24031f7ee7a1e296e59a085fa4b905ae257b57b2",
+      "stop": null,
+      "tree_peak_rss_kib_sampled": 177376
+    },
+    {
+      "argv": [
+        "$BUILD/cmake/bin/expert-service-window",
+        "--prefix-config-probe"
+      ],
+      "cwd": "$BUILD",
+      "elapsed_s": 0.066,
+      "expected_returncode": 0,
+      "observer_option": "1",
+      "returncode": 0,
+      "stage": "prefix-enabled",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_sha256": "7532a39e3039e71247fa9ec8d60062f13475ccac2c11c5bc2c8412741b301e75",
+      "stop": null,
+      "tree_peak_rss_kib_sampled": 213076
+    },
+    {
+      "argv": [
+        "$BUILD/cmake/bin/expert-service-window",
+        "--prefix-config-probe"
+      ],
+      "cwd": "$BUILD",
+      "elapsed_s": 0.066,
+      "expected_returncode": 1,
+      "observer_option": "0",
+      "returncode": 1,
+      "stage": "prefix-invalid",
+      "stderr_sha256": "be5cd1d8af81f9066050c9d9c68b9fd24fedac00eff29309ee903736a236f079",
+      "stdout_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stop": null,
+      "tree_peak_rss_kib_sampled": 220488
+    },
+    {
+      "argv": [
+        "python3",
+        "-B",
+        "$TESY/research/qualification-retake/prefix_observer/verify.py",
+        "--new-output-dir",
+        "$BUILD/fixture"
+      ],
+      "cwd": "$BUILD",
+      "elapsed_s": 0.516,
+      "expected_returncode": 0,
+      "observer_option": null,
+      "returncode": 0,
+      "stage": "independent-fixture",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stdout_sha256": "a4fa3880bc0af4a40543b1d3ddd706c705b16a6b7c6b74d8e378cd8c68e3490f",
+      "stop": null,
+      "tree_peak_rss_kib_sampled": 132304
+    }
+  ],
+  "startup_mapped_objects_sha256": {
+    "ld-linux-x86-64.so.2": "4e5d39355699e90fa29313d3100e82af4a23290028c58c364d6a249ef6a78e5e",
+    "libc.so.6": "a5c5ad9d59d3c69eda93aa8f82930ba06cc4e893a113e66c85ad6e96243d53c8",
+    "libcublas.so.13.6.0.2": "01dd70979e68625846e9a5edcba531d3798498b866aa1c925cc25d60f63fe680",
+    "libcublasLt.so.13.6.0.2": "93c275af70b6d39fbd9b78cbc925ad9a9a0a81189aaec1521a951119ebe72da3",
+    "libcuda.so.620.70.06": "aa6bd5117c0c66bb804ec63b31b8b5d54130259b1079941b9e00e6b928e8ed71",
+    "libcudart.so.13.3.29": "9f92e4c3f7e14d0fed69ef876a45d4255a2dc88cb552a673a90ce881c26282fe",
+    "libdl.so.2": "54d56c0f10466a05cc92685f8062ee6a2eaf59c62fb6f724217e984fcfbb5031",
+    "libgcc_s-16-20261029.so.1": "5a52ae4a6f1b119aa092aa1483c967e19d9ba036b1b0c2133236a8a2ce826ebf",
+    "libggml-base.so.0.15.3": "6e27d9ecb86e4747177189d2d2f6390280a2ee1000221ad68a0404023ea72539",
+    "libggml-cpu.so.0.15.3": "9aabce5751c5d7ca19b50e4cabb1fcf484c1581d275141dae8aba8ed33060313",
+    "libggml-cuda.so.0.15.3": "ff43655b15df5f3de1d5e00b0da18469a14f118bd644eb4b6d7f1915c85a4493",
+    "libggml.so.0.15.3": "70f635b8ba22ddd751590ec1fe11c895ef88e2aff0f4a63a3af96314e6a77d65",
+    "libgomp.so.1.0.0": "1e20cd85608bdb5d1662f07988adad28a6473cd70f80de2d2b4dcf82c94eaa74",
+    "libllama.so.0.0.9884": "23bc41af61d232a552d79fa1048b3afa0d7250f8451983ce220465f89dadef44",
+    "libm.so.6": "16a03ce6d24c8a46742206d4a9c1d35bb6577ae2384f153dc6ef4a4b62b5357f",
+    "libpthread.so.0": "41cad1a2bda56ff226e0b08db7edfaf4ec47d876ab1414a979fd157467b6c39d",
+    "librt.so.1": "3a23e51370381b0ab993932341fd69643ade24869936e471e1dde2e62398d9f7",
+    "libstdc++.so.6.0.36": "49811507d8fc0283d8f8023546613774c673f876fe823b1b99d0c8d46039deda"
+  },
+  "startup_probes": [
+    {
+      "default_pointer_empty": true,
+      "enabled": false,
+      "open_model_files": 0,
+      "schema": "tesy-prefix-build-probe-v1",
+      "worker_count": 0
+    },
+    {
+      "default_pointer_empty": true,
+      "enabled": true,
+      "open_model_files": 0,
+      "schema": "tesy-prefix-build-probe-v1",
+      "worker_count": 0
+    }
+  ],
+  "status": "PASS_LINKED_MODEL_FREE",
+  "target_inference": "NOT_RUN_PHYSICAL_ADMISSION_REQUIRED"
+}
