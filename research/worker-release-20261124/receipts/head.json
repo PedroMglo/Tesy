@@ -1,0 +1,127 @@
+{
+  "schema": "tesy-c317-at-accept-fifo-head-v1",
+  "evidence": "TRACE_DERIVED",
+  "inputs": {
+    "c317-nominal153-2-trace.native/events.tsv": {
+      "size_bytes": 1783273,
+      "sha256": "c6cf2327a8bd7ec2c7755979e594b33b72a5547826a2d2b057326be66039838e"
+    },
+    "c317-nominal153-2-trace.native/staging.json": {
+      "size_bytes": 963169,
+      "sha256": "e93fceb6a61b1a710951252eb05b467d310055414fc24e73dc9816aa4c94eff2"
+    },
+    "c317-nominal153-3-trace.native/events.tsv": {
+      "size_bytes": 1784362,
+      "sha256": "05c830ebb865c5f0740717ff5935e5bf3c15fcbb0cdad26825ca56ca8432d7be"
+    },
+    "c317-nominal153-3-trace.native/staging.json": {
+      "size_bytes": 961025,
+      "sha256": "b2d5e3bbeeee0a776380e4433fcded264f7f5e6ec3c427102a3f40e8d3589a3d"
+    },
+    "c317-code153-2-trace.native/events.tsv": {
+      "size_bytes": 2647793,
+      "sha256": "8bdd96f879cda7fad466dc252ae9915e7b05233b95fd91539b6b4bd4400d27a1"
+    },
+    "c317-code153-2-trace.native/staging.json": {
+      "size_bytes": 1225649,
+      "sha256": "38b46e7d48336bd10577d80a1fcf48cc35e5f084c13380dadf0a69f73657ac86"
+    },
+    "c317-code153-3-trace.native/events.tsv": {
+      "size_bytes": 2648115,
+      "sha256": "70c9c37864e25201711d23cc60a7d0b1afeba21f254a410e785b24e901e00b07"
+    },
+    "c317-code153-3-trace.native/staging.json": {
+      "size_bytes": 1222640,
+      "sha256": "ea0e449455a6cd2d957ba42665c8d30bb0ea14679d1d8c1ee881cc901207b59b"
+    }
+  },
+  "missing": {},
+  "arms": {
+    "c317-nominal153-2-trace.native": {
+      "full_with_pending": 70,
+      "next_direct_read_eligible": 20,
+      "next_ready_copy_eligible": 6,
+      "next_attaches_to_reading_producer": 44,
+      "at_accept_then_at_observed_dispatch": {
+        "ABSENT": {
+          "DIRECT": 17
+        },
+        "READING": {
+          "READING": 36,
+          "READY": 8
+        },
+        "QUEUED": {
+          "DIRECT": 3
+        },
+        "READY": {
+          "READY": 6
+        }
+      }
+    },
+    "c317-nominal153-3-trace.native": {
+      "full_with_pending": 73,
+      "next_direct_read_eligible": 23,
+      "next_ready_copy_eligible": 4,
+      "next_attaches_to_reading_producer": 46,
+      "at_accept_then_at_observed_dispatch": {
+        "ABSENT": {
+          "DIRECT": 19
+        },
+        "READING": {
+          "READING": 40,
+          "READY": 6
+        },
+        "QUEUED": {
+          "DIRECT": 4
+        },
+        "READY": {
+          "READY": 4
+        }
+      }
+    },
+    "c317-code153-2-trace.native": {
+      "full_with_pending": 94,
+      "next_direct_read_eligible": 36,
+      "next_ready_copy_eligible": 3,
+      "next_attaches_to_reading_producer": 55,
+      "at_accept_then_at_observed_dispatch": {
+        "READING": {
+          "READING": 45,
+          "READY": 10
+        },
+        "ABSENT": {
+          "DIRECT": 31
+        },
+        "READY": {
+          "READY": 3
+        },
+        "QUEUED": {
+          "DIRECT": 5
+        }
+      }
+    },
+    "c317-code153-3-trace.native": {
+      "full_with_pending": 97,
+      "next_direct_read_eligible": 36,
+      "next_ready_copy_eligible": 5,
+      "next_attaches_to_reading_producer": 56,
+      "at_accept_then_at_observed_dispatch": {
+        "READING": {
+          "READING": 48,
+          "READY": 8
+        },
+        "ABSENT": {
+          "DIRECT": 32
+        },
+        "READY": {
+          "READY": 5
+        },
+        "QUEUED": {
+          "DIRECT": 4
+        }
+      }
+    }
+  },
+  "counterfactual_gain": "INCONCLUSIVE",
+  "status": "PASS_FIFO_HEAD_CLASSIFICATION"
+}

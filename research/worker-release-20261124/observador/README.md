@@ -1,0 +1,31 @@
+# Observação bloqueante em quatro threads reais
+
+**PASS na fixture sem modelo.** O mesmo identificador acompanha a procura antes e depois da espera. Com o pool saturado, concluída uma leitura especulativa já cancelada, a thread desse produtor despachou a procura FIFO de leitura direta enquanto a primeira procura ainda aguardava. A leitura direta publicou em último lugar e o cliente só atravessou a barreira depois dessa publicação. A ordem foi imposta por condições de serviço, repetida com identidades diferentes de threads e observada num único relógio monotónico. O resultado admite instrumentar o manager real num teste local sem modelo. O ganho da continuação continua INCONCLUSIVE. [Protocolo](protocolo.md) · [Recibo OFF/ON](receipts/observer.json)
+
+A fixture liga diretamente os dois headers das patches Tesy e confere os seus SHA-256 com o manifesto C317. Usa o construtor de testes do C305 para executar a máquina nativa de tickets em dez slots, incluindo emissão, limite de três leituras especulativas, anexo em READING, expiração em voo, preservação da posse do buffer até claim/release e finish. Quatro threads Linux partilham um único pool e uma fila primária com prioridade. A fila, o manager, o router com quatro IDs fornecidos, os slots/gerações de destino e o serviço dos bytes são da fixture. Os componentes de 64 B são copiados entre arrays com conteúdo canónico conhecido. Os buffers de payload e os seus contadores pertencem à fixture; o contador nominal C305 para slabs de 4 406 400 B não mede estas transferências. O construtor real exigiria por camada CPU 40 × 3 × 4 406 400 B de capacidade no cache, além da arena de staging, acima do limite de espaço virtual de 256 MiB deste teste. [Fixture](fixture.cpp) · [C305](../../../patches/c305-cpu-prediction-staging.patch)
+
+Em OFF/ON/ON/OFF, ambos os destinos de 192 B com as suas gerações corresponderam byte a byte à referência independente Python. Cada braço fez três leituras de staging e uma leitura direta, em três componentes cada. Expiraram duas leituras em voo. Uma procura esperou pelo produtor e ambas publicaram. O observador OFF registou zero eventos. Os dois ON do recibo tiveram 88 eventos e conservaram o encadeamento com duas atribuições distintas de workers. As diferenças de tempo no JSON são locais à fixture com portões artificiais. A observação de park/resume cobre a chamada à condição e a recuperação do mutex; a medição de desagendamento do kernel e a neutralidade integrada ficam por qualificar. As invocações do processo listadas no recibo servem para documentar o orçamento. A unidade não mediu exatidão numérica de modelo nem desempenho C317/C318.
+
+O registo pré-aloca 256 entradas. Cada marcador é sequenciado e recebe o seu tempo sob o mutex da fixture. As leituras/cópias da fixture executam-se fora do mutex. Os quatro ordinais dos workers têm correspondência biunívoca com TIDs e o controlador tem identidade separada. O verificador rejeitou o overflow real provocado com capacidade de uma entrada, a supressão do fim de uma componente com a sequência renumerada, a supressão do drain e a corrupção de um byte de destino. Uma repetição independente com o mesmo fonte passou os mesmos critérios. O pico publicado foi 5 292 KiB por execução funcional e 150 160 KiB durante a compilação. O diretório local guardou 82 145 B antes do recibo final. Não houve GPU, modelo ou downloads. Uma tentativa de compilação anterior terminou antes do primeiro braço por acesso sem verificação de índice. O fonte passou a verificar o índice e a identidade do trabalho. [FAIL preservado](receipts/initial-build-fail.json) · [Verificador e referência](run.py)
+
+## Portar a observação para o pin C305
+
+| Marco da fixture | Ponto no backend c94780b12820c7b3fb20f2a9acf38bb27506c6ae | O que a integração tem de preservar ou medir |
+|---|---|---|
+| Identidade e despacho | Em `src/llama-moe-stream.cpp:370–397`, cada thread é criada no loop e entra no mesmo `worker_loop`; o mutex guarda a escolha entre `q_demand` e `prediction_stage->next()`. | Passar o índice do loop por valor a cada thread e contar separadamente espera/retoma/despacho. |
+| Anexo e sono da procura | Em `llama-moe-stream.cpp:416–436`, P5, `demand` e S6 partilham a aquisição do mutex. A espera na condição liberta-o e o claim valida o regresso. | Marcar a espera e a retoma com ticket e geração; manter a prioridade FIFO, a posse do slot e o mesmo caminho OFF. |
+| Serviço das componentes | Em `src/c305-cpu-stage.h:106–119`, o produtor faz três pread fora do mutex. Em `llama-moe-stream.cpp:438–479`, o primário lê/copia no destino fora do mutex. | Capturar limites de componente sem manter o mutex durante o serviço. Medir o custo de obter a sequência e a arbitragem adicional com OFF/ON. Expor intervalos do serviço separáveis de cancelamento em voo. |
+| Publicação e barreira | Em `llama-moe-stream.cpp:478–494`, o worker volta a obter o mutex, verifica a geração, liberta o staging e publica RESIDENT. O remap regista o fim da espera e devolve os slots (cerca de 690–705). | Unir pelo destino e geração e distinguir a última publicação da retoma do router. |
+| Drain | Em `llama-moe-stream.cpp:332–338`, finish expira os tickets e aguarda idle. O cliente regista a fase após `prediction_finish`. | Conservar o cleanup no decode e a preparação fora do total. O join das quatro threads nesta fixture encerra o teste; no manager persistente o drain por pedido e o shutdown são eventos distintos. |
+
+O próximo ensaio precisa do loop real, de bytes determinísticos e de comparação emparelhada dos observadores com a mesma agenda e os mesmos destinos. Qualificar a instrumentação integrada precede qualquer uso dos seus intervalos para comparar políticas ou reabrir uma medição no 120B.
+
+## Reproduzir
+
+Em Linux com Python 3.11+, Git, compilador C++17 com pthreads, headers de desenvolvimento Linux e GNU time. Na raiz Tesy, escolher um destino novo.
+
+```sh
+python3 research/worker-release-20261124/observador/run.py --new-output-dir "$out/observador"
+```
+
+O comando confere as identidades dos headers, compila só a fixture e preserva os raws e o recibo no destino exclusivo. Aplica por subprocesso um limite de 60 s e 256 MiB de espaço virtual. O pré-registo tem SHA-256 eb125f5e6c13261ed5ac713274c9d96e21b467c997a7d43207dacb58b4a379e4.

@@ -1,0 +1,134 @@
+{
+  "schema": "tesy-c305-observer-native-fixture-v1",
+  "status": "PASS_MODEL_FREE_BLOCKING_OBSERVER",
+  "arms": [
+    {
+      "mode": "off",
+      "events": 0,
+      "destinations_sha256": {
+        "11/2": "241c8bd8a2153e670f0640d394ae52a1b910fdfb39ce11d9af1ddef0b7bf0a40",
+        "17/3": "3206f24d51dfc5e9dc3c3664aaf4777d3c2cf3a053b152bc6f936fee1fe1d911"
+      },
+      "local_stdout_sha256": "1ab7617a1278c092ea79d45558e96b07151fdb69dfa8b70f22a260b42180c18f",
+      "process": {
+        "wall_s": 0.00474,
+        "peak_rss_kib": 5232
+      }
+    },
+    {
+      "mode": "on",
+      "events": 88,
+      "destinations_sha256": {
+        "11/2": "241c8bd8a2153e670f0640d394ae52a1b910fdfb39ce11d9af1ddef0b7bf0a40",
+        "17/3": "3206f24d51dfc5e9dc3c3664aaf4777d3c2cf3a053b152bc6f936fee1fe1d911"
+      },
+      "local_stdout_sha256": "ed0fe452be7d6ac22d122ce1e71678fd0dc041f105050dac35bc6d188d901cbb",
+      "process": {
+        "wall_s": 0.004563,
+        "peak_rss_kib": 5292
+      },
+      "causality": {
+        "workers": 4,
+        "saturated_at_attach": true,
+        "head_dispatched_from": "cancelled_producer",
+        "last_publication": "direct",
+        "drain_after_join": true,
+        "worker_by_dispatch": [
+          0,
+          1,
+          2,
+          3,
+          1
+        ],
+        "controlled_fixture_spans_ns": {
+          "demand_park_to_resume": 49464,
+          "blocked_dispatch_to_direct_dispatch": 35176,
+          "direct_publish_minus_blocked_publish": 7243,
+          "last_publish_to_barrier_end": 2305,
+          "drain_begin_to_joined_end": 76073
+        }
+      }
+    },
+    {
+      "mode": "on",
+      "events": 88,
+      "destinations_sha256": {
+        "11/2": "241c8bd8a2153e670f0640d394ae52a1b910fdfb39ce11d9af1ddef0b7bf0a40",
+        "17/3": "3206f24d51dfc5e9dc3c3664aaf4777d3c2cf3a053b152bc6f936fee1fe1d911"
+      },
+      "local_stdout_sha256": "8beae39e2a3dd9988b9aa70dd027d8c8b2d669d36b8324684f9be5593315b9c5",
+      "process": {
+        "wall_s": 0.004297,
+        "peak_rss_kib": 5236
+      },
+      "causality": {
+        "workers": 4,
+        "saturated_at_attach": true,
+        "head_dispatched_from": "cancelled_producer",
+        "last_publication": "direct",
+        "drain_after_join": true,
+        "worker_by_dispatch": [
+          1,
+          0,
+          3,
+          2,
+          0
+        ],
+        "controlled_fixture_spans_ns": {
+          "demand_park_to_resume": 39835,
+          "blocked_dispatch_to_direct_dispatch": 25087,
+          "direct_publish_minus_blocked_publish": 8967,
+          "last_publish_to_barrier_end": 5120,
+          "drain_begin_to_joined_end": 63981
+        }
+      }
+    },
+    {
+      "mode": "off",
+      "events": 0,
+      "destinations_sha256": {
+        "11/2": "241c8bd8a2153e670f0640d394ae52a1b910fdfb39ce11d9af1ddef0b7bf0a40",
+        "17/3": "3206f24d51dfc5e9dc3c3664aaf4777d3c2cf3a053b152bc6f936fee1fe1d911"
+      },
+      "local_stdout_sha256": "1ab7617a1278c092ea79d45558e96b07151fdb69dfa8b70f22a260b42180c18f",
+      "process": {
+        "wall_s": 0.004465,
+        "peak_rss_kib": 5232
+      }
+    }
+  ],
+  "protocol_sha256": "eb125f5e6c13261ed5ac713274c9d96e21b467c997a7d43207dacb58b4a379e4",
+  "fixture_sha256": "9b21a18a7b2652bfa2ec6f8cc576c02ff21dcbc002913a775221646c64b32c5b",
+  "verifier_sha256": "0429c4faecc7952cbc7293ba583b13dedf9723635209ff426a3757ae0be583b7",
+  "headers": {
+    "c291-direct-reader.h": "cb386577d0b424d531a484d81619e29887b2419dd03c05578004b0878f601af6",
+    "c305-cpu-stage.h": "fe93a2460a22412bc3ccf15596e370e3bed79db2df13a8425e5e053dfac306d0"
+  },
+  "compiler": "c++ (GCC) 16.2.1 20261029 (Red Hat 16.2.1-3)",
+  "build": {
+    "wall_s": 0.916458,
+    "peak_rss_kib": 150160
+  },
+  "binary_sha256": "2cf90007190c50947e98303b1a8a0e593cd936a8663392f2953345a0cc43ac9e",
+  "faults": {
+    "overflow": "journal overflow",
+    "lost_component": "expected one read_end 4 1",
+    "incomplete_terminal": "expected one drain_end -1 -1",
+    "bad_destination": "destination bytes or generation"
+  },
+  "c305_counters_per_arm": {
+    "issued": 3,
+    "completed_reads": 3,
+    "expired_running": 2,
+    "consumed": 1,
+    "waits": 1,
+    "errors": 0
+  },
+  "fixture_payload_bytes_per_arm": {
+    "component_size": 64,
+    "staged_reads": 576,
+    "direct_reads": 192,
+    "destination_copies": 384
+  },
+  "local_payload_bytes_before_receipt": 82145
+}

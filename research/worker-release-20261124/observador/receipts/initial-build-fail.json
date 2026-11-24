@@ -1,0 +1,12 @@
+{
+  "status": "FAIL_BUILD_BEFORE_FIRST_ARM",
+  "source_sha256": "9c1d8651bb58d7358a72834a09535bc45253b441b3ad3b06199ace18ee1e144f",
+  "verifier_sha256": "11d9508f6a113da55cd24a2c9e2eee861ada56e8c8f0597ae2bc2c63973cfdd8",
+  "local_receipt_sha256": "bded6ca9be016cd600c3c10e7385e9371fe45f8cb8790efe1eba24a43213f090",
+  "local_build_stderr_sha256": "57bb7e1ebfc5f72761af6c31cfa6b5aaf924d50ab5b303306bb167fc03337bb2",
+  "peak_compiler_rss_kib": 150492,
+  "reason": "GCC -Werror=array-bounds rejected unchecked stage.entries[index] when next() can return -1.",
+  "recovery": "The fixture now checks the stage index with .at() and validates the fixture job before access. The bounded rerun used a new directory.",
+  "model_loads": 0,
+  "native_fixture_arms": 0
+}

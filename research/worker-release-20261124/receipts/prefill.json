@@ -1,0 +1,46 @@
+{
+  "c135_trace_sha256": "91610b12291d5a42a12bba09f5d4ff188d25ee0001ab89e894bdd508005e82fb",
+  "numerical_tile_plan": {
+    "1": [
+      5
+    ],
+    "2": [
+      32,
+      32,
+      32,
+      32,
+      20
+    ]
+  },
+  "classification": "HISTORICAL_TRACE_DIAGNOSTIC",
+  "tiers": {
+    "CPU": {
+      "load_partition": {
+        "first_in_phase": 679,
+        "between_calls": 17,
+        "between_tiles_same_call": 102,
+        "within_tile": 0
+      },
+      "logical_bytes_of_cross_tile_candidates": 1348358400,
+      "first_decode": {
+        "hits": 83,
+        "hits_seen_in_prefill": 83,
+        "loads": 17
+      }
+    },
+    "CUDA0": {
+      "load_partition": {
+        "first_in_phase": 323,
+        "between_calls": 19,
+        "between_tiles_same_call": 82,
+        "within_tile": 0
+      },
+      "logical_bytes_of_cross_tile_candidates": 1083974400,
+      "first_decode": {
+        "hits": 41,
+        "hits_seen_in_prefill": 39,
+        "loads": 3
+      }
+    }
+  }
+}
