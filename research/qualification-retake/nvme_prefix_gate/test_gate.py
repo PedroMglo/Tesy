@@ -2,6 +2,7 @@ import struct
 import tempfile
 import unittest
 from pathlib import Path
+from types import SimpleNamespace
 from unittest import mock
 
 import gate
@@ -24,6 +25,33 @@ def synthetic_routes():
 
 
 class CanaryGateTest(unittest.TestCase):
+    def test_prepare_only_validates_complete_monitor_envelope(self):
+        # Exercise the actual monitor validator that rejected the first slots28 identity.
+        r = gate.REPO / "results/c294-feature-ready-service-window-20261006"
+        policy = run_pair.load(r / "resource-policy.json")
+        resources = run_pair.freeze_protocol_resource_limits(
+            policy, cgroup_memory_max_bytes=run_pair.CAP, start_mode="CAUSAL_AB_START"
+        )
+        with self.assertRaisesRegex(ValueError, "legacy"):
+            run_pair.validate_resource_protocol({"resources": resources})
+        with tempfile.TemporaryDirectory() as tmp:
+            args = SimpleNamespace(
+                new_output_dir=Path(tmp),
+                window=r,
+                executable=Path(__file__),
+                measurement_commit="fixture",
+                unit="tesy-fixture",
+                prepare_only=True,
+            )
+            with mock.patch.object(
+                run_pair, "checked", return_value=(None, {}, None, None, {}, resources)
+            ):
+                state = {}
+                run_pair.run(args, state, run_pair.SLOTS32)
+            self.assertEqual(state["status"], "PASS_PRELAUNCH_ONLY")
+            prepared = run_pair.load(Path(tmp) / "protocol.json")
+            self.assertEqual(run_pair.validate_resource_protocol(prepared), resources)
+
     def test_row_comparison_reports_bitwise_zero_and_nonfinite(self):
         first = struct.pack("<2f", 0, 2)
         changed = struct.pack("<2f", -0.0, 2)

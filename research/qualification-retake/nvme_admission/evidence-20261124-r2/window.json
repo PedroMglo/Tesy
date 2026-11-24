@@ -1,0 +1,112 @@
+{
+  "canonical_samples": 61,
+  "canonical_span_s": 60.00538465799946,
+  "end_utc": "2026-11-24T23:47:01.926227+00:00",
+  "local_manifest": {
+    "receipt.json": {
+      "bytes": 2766,
+      "sha256": "c4563782085cce89e314a7a77a2c9860f39cd77bae0fe14c778fa3c9ac0613be"
+    },
+    "resource-policy.json": {
+      "bytes": 16919,
+      "sha256": "c3bcf790c1c61508646dea22ba1239ab82df765ca1d9eb2a5681192be160ad71"
+    },
+    "samples.jsonl": {
+      "bytes": 42360,
+      "sha256": "e78657520a741cb9a7a37d0a642e6cb6b7d9f1fef2b6e6d665faf91e94c7f1a0"
+    },
+    "snapshot.json": {
+      "bytes": 13424,
+      "sha256": "905cdee7cfa70d7072fa2158060139c1ea78aa411211181eb59d9ad4a368d2a2"
+    }
+  },
+  "measurement_commit": "a85100f717d193dde4b0a54f2461cf0666dd0415",
+  "memory_quantum_bytes": 268435456,
+  "minimum_delta_bytes_if_reserve_fixed": {
+    "canonical_memory": 2036867072,
+    "memory": 2053169152
+  },
+  "power_profile": "performance",
+  "power_source": "AC",
+  "receipt": {
+    "canonical_memory": {
+      "ancestor_headroom_bytes": 32695992320,
+      "available_max_bytes": 21770006528,
+      "available_min_bytes": 21585453056,
+      "cap_max_bytes": 19327352832,
+      "external_variation_bytes": 184553472,
+      "reserve_bytes": 2147483648,
+      "total_bytes": 32695992320
+    },
+    "canonical_policy_sha256": "c3bcf790c1c61508646dea22ba1239ab82df765ca1d9eb2a5681192be160ad71",
+    "concurrent": [],
+    "cpu": "AMD Ryzen AI 9 HX 370 w/ Radeon 890M",
+    "cpu_c_max": 54.875,
+    "disk_delta": {
+      "disk_busy_ms": 455,
+      "disk_read_sectors": 872,
+      "disk_written_sectors": 132272
+    },
+    "gpu_c_max": 45.3,
+    "gpu_compute_max": 0,
+    "gpu_driver": "620.70.06",
+    "gpu_name": "NVIDIA GeForce RTX 4060 Laptop GPU",
+    "gpu_total_mib": 8188.0,
+    "gpu_used_mib_max": 2.0,
+    "historical_path_points_to_selected": true,
+    "historical_stat_equal": false,
+    "max_gap_s": 1.354604981999728,
+    "memory": {
+      "ancestor_headroom_bytes": 32695992320,
+      "available_max_bytes": 21770006528,
+      "available_min_bytes": 21569150976,
+      "cap_max_bytes": 19327352832,
+      "external_variation_bytes": 200855552,
+      "reserve_bytes": 2147483648,
+      "total_bytes": 32695992320
+    },
+    "missing_capacity_bytes": 2147483648,
+    "model_bytes_read": 0,
+    "model_device": "/dev/nvme0n1p3[/home]",
+    "model_fs": "btrfs",
+    "nvme": [
+      {
+        "bdf": "0000:c1:00.0",
+        "controller": "nvme0",
+        "critical_c": 89.85,
+        "current_c": 38.85,
+        "firmware": "V3MA101",
+        "model": "MTFDKBK1T0QFM-1BD1AABGB",
+        "sensor": "nvme-pci-c100",
+        "source": "Composite critical minus 2C admission; max is warning",
+        "stop_c": 87.85,
+        "warning_c": 86.85
+      }
+    ],
+    "nvme_c_max": {
+      "nvme-pci-c100": 38.85
+    },
+    "protocol_sha256": "5f2e87d96b3047aec1ee071383ae30d433ce4a087ddcf6f4a438a80cace09b28",
+    "psi_full_max": 0.0,
+    "r0_cap_bytes": 21474836480,
+    "r0_launch": "NOT_RUN",
+    "raw_destination_free_bytes": 14675824640,
+    "reason": [
+      "HOST_CAP_PLUS_RESERVE_UNAVAILABLE"
+    ],
+    "runner_sha256": "ce13cc95568b06d9f42443fb14e08af0922fdb8655bed6c3367397827cba64b7",
+    "samples": 62,
+    "span_s": 61.336667825000404,
+    "status": "NOT_ADMITTED",
+    "swap_free_min": 16026947584,
+    "swap_total": 16347820032,
+    "window_sha256": "e78657520a741cb9a7a37d0a642e6cb6b7d9f1fef2b6e6d665faf91e94c7f1a0"
+  },
+  "start_utc": "2026-11-24T23:46:00.589563+00:00",
+  "tmpfs_postwindow": {
+    "allocated_bytes": 1672269824,
+    "changed": false,
+    "conditional_cap_all_tmpfs_bytes": 20937965568,
+    "eligible_idle_checkout_bytes": 554262528
+  }
+}

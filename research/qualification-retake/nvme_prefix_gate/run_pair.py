@@ -15,7 +15,10 @@ from prepare import sha
 
 sys.path.insert(0, str(REPO / "tools"))
 from c55_inventory import mounts  # noqa: E402
-from host_resource_policy import freeze_protocol_resource_limits  # noqa: E402
+from host_resource_policy import (  # noqa: E402
+    freeze_protocol_resource_limits,
+    validate_resource_protocol,
+)
 from parallel_runtime import parallel_environment  # noqa: E402
 from run_bounded import backend_library_hashes, file_identity  # noqa: E402
 
@@ -147,6 +150,7 @@ def run(a, out, profile):
     shutil.copyfile(a.window / "resource-policy.json", parent / "resource-policy.json")
     proto = {
         "resources": resources,
+        "limits": {},
         "parallel_runtime": omp,
         "start_inventory": {
             "schema": "c120-start-inventory-v1",
@@ -165,6 +169,7 @@ def run(a, out, profile):
         "new_unit": a.unit,
     }
     proto["pool_slots"] = profile.slots
+    validate_resource_protocol(proto)
     publish(parent / "protocol.json", proto)
     if a.prepare_only:
         out["status"] = "PASS_PRELAUNCH_ONLY"
@@ -179,6 +184,7 @@ def run(a, out, profile):
         arm = a.unit + "-" + mode.lower()
         stem = parent / "raw" / arm
         protocol = dict(proto, execution_scope_unit=arm)
+        validate_resource_protocol(protocol)
         locked = parent / (arm + ".json")
         publish(locked, protocol)
         cmd = [
