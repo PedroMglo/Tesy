@@ -51,8 +51,10 @@ def read(p):
     return json.loads(p.read_text())
 
 
-def cap_for(policy):
+def cap_for(policy, paging=False):
     check(policy_api.derive_policy(snapshot=policy["snapshot"]) == policy, "c55_policy_derivation")
+    if paging:
+        return 10 * GIB
     return min(20 * GIB, policy["memory"]["cap_max_bytes"] - 256 * MIB)
 
 
@@ -111,7 +113,22 @@ def logged_geometry(log):
     return {k: bool(re.search(p, log, re.I)) for k, p in patterns.items()}
 
 
-def run(a):
+def at_preventive_limit(current, peak, threshold):
+    return threshold is not None and max(current, peak) >= threshold
+
+
+def rollup_bytes(text):
+    fields = {"Rss", "Pss", "Pss_Anon", "Pss_File", "Anonymous", "Locked", "Swap"}
+    result = {
+        name: int(n) * 1024
+        for name, n in re.findall(r"^(\w+):\s+(\d+) kB$", text, re.M)
+        if name in fields
+    }
+    check(result.keys() == fields, "smaps_rollup_missing")
+    return result
+
+
+def run(a, *, paging=False):
     a.new_raw.mkdir(exist_ok=False)
     raw = a.new_raw / "raw"
     raw.mkdir()
@@ -124,7 +141,7 @@ def run(a):
         "warmup_requested": False,
         "sampling_forwards_requested": 0,
         "physical_energy_j": None,
-        "protocol_sha256": sha(HERE / "protocol.md"),
+        "protocol_sha256": sha((HERE.parent / "stock_paging" if paging else HERE) / "protocol.md"),
         "runner_sha256": sha(__file__),
     }
     proc = None
@@ -137,7 +154,7 @@ def run(a):
     stop_log = raw / "server.log"
     try:
         policy = read(a.policy)
-        cap = cap_for(policy)
+        cap = cap_for(policy, paging)
         resources = policy_api.freeze_protocol_resource_limits(
             policy,
             cgroup_memory_max_bytes=cap,
@@ -146,17 +163,20 @@ def run(a):
         )
         protocol = {"limits": {}, "resources": resources}
         policy_api.validate_resource_protocol(protocol)
-        stop = cap - 512 * MIB
+        high = cap - 512 * MIB
+        stop = None if paging else high
         state0 = bounded.cgroup_state()
         check(
             state0
             and state0["memory_max"] == cap
-            and state0["memory_high"] == stop
+            and state0["memory_high"] == high
             and state0["swap_max"] == state0["swap_current"] == 0,
             "scope_limit",
         )
         cg = Path("/sys/fs/cgroup") / state0["path"].lstrip("/")
         r.update(resource_policy_sha256=sha(a.policy), cap_bytes=cap, preventive_stop_bytes=stop)
+        if paging:
+            r.update(start_regime="FILE_PAGING_V3", memory_high_bytes=high)
         verified = read(a.placement)
         check(
             verified["status"] == "PASS_NVME_MODEL_PLACEMENT"
@@ -205,7 +225,7 @@ def run(a):
             "LD_LIBRARY_PATH": str(exe.parent),
             "HF_HUB_OFFLINE": "1",
         }
-        run_id = "stock-nvme-startup"
+        run_id = "stock-nvme-paging" if paging else "stock-nvme-startup"
         args = {
             "policy": policy,
             "expected_power": {k: policy["power"][k] for k in ("source", "profile")},
@@ -215,7 +235,24 @@ def run(a):
         if a.before_inventory_only:
             r["status"] = "PASS_MODEL_FREE_PRE_INVENTORY"
             return r["status"]
-        inv = c118.collect(a.new_raw, run_id, **args)
+
+        def audited_inventory_sample():
+            obs = c118.live_sample()
+            try:
+                c118.validate_sample(
+                    obs, policy=policy, cap_bytes=cap, expected_power=args["expected_power"]
+                )
+            except Exception:
+                (raw / "rejected-c118.json").write_text(json.dumps(obs, allow_nan=False) + "\n")
+                raise
+            return obs
+
+        inv = c118.collect(
+            a.new_raw,
+            run_id,
+            sample=audited_inventory_sample if paging else c118.live_sample,
+            **args,
+        )
         c118.require_inventory(a.new_raw, run_id, inv, **args, now=datetime.now(UTC), max_age_s=3)
         r["c118"] = {k: v for k, v in inv.items() if k != "path"}
         observation = c118.live_sample()
@@ -230,11 +267,12 @@ def run(a):
         check(not issues, "start_resources_" + ",".join(issues))
         guard = policy_api.RuntimeGuard(protocol, state0)
         first_io = io_stat(cg)
-        r["pre_start_memory_stat"] = {
-            k: v for k, v in bounded.cgroup_state()["memory_stat"].items() if k in MEM_FIELDS
-        }
+        memory_fields = MEM_FIELDS + (("pgscan", "pgsteal") if paging else ())
+        before = bounded.cgroup_state()
+        r["pre_start_memory_stat"] = {k: before["memory_stat"][k] for k in memory_fields}
         check(
-            identity(MODEL) == current and bounded.cgroup_state()["memory_peak"] < stop,
+            identity(MODEL) == current
+            and not at_preventive_limit(before["memory_current"], before["memory_peak"], stop),
             "pre_spawn_identity_or_memory",
         )
         check(
@@ -254,17 +292,21 @@ def run(a):
             )
         print("one stock loader started, cgroup cap", cap, flush=True)
         r.update(status="FAIL", server_starts=1)
+        closing_at = None
+        first_observation_s = None
+        last_observation_s = None
 
         def margin_watch():
             try:
                 while not end.is_set():
                     mem = int((cg / "memory.current").read_text())
                     peak = int((cg / "memory.peak").read_text())
-                    if max(mem, peak) >= stop or time.monotonic() - tick >= 180:
+                    deadline = closing_at + 10 if closing_at is not None else tick + 180
+                    if at_preventive_limit(mem, peak, stop) or time.monotonic() >= deadline:
                         fast.update(
                             reason="CGROUP_PREVENTIVE_MARGIN"
-                            if max(mem, peak) >= stop
-                            else "LOAD_TIMEOUT",
+                            if at_preventive_limit(mem, peak, stop)
+                            else ("SHUTDOWN_TIMEOUT" if closing_at is not None else "LOAD_TIMEOUT"),
                             current=mem,
                             peak=peak,
                             elapsed_s=round(time.monotonic() - tick, 4),
@@ -301,6 +343,11 @@ def run(a):
                         "host_psi_full_avg10": policy_api.host_pressure(),
                     },
                 }
+                if paging:
+                    rollup = bounded.live_smaps_rollup(proc)
+                    if rollup is None and proc.poll() is not None:
+                        break
+                    s["smaps_rollup_bytes"] = rollup_bytes(rollup)
                 stamp = time.monotonic()
                 s["elapsed_s"] = stamp - tick
                 if fast or proc.poll() is not None:
@@ -324,6 +371,13 @@ def run(a):
                 series.flush()
                 count += 1
                 r["telemetry_samples"] = count
+                last_observation_s = s["elapsed_s"]
+                if first_observation_s is None:
+                    first_observation_s = last_observation_s
+                if paging:
+                    maxima = r.setdefault("sampled_smaps_max_bytes", {})
+                    for k, v in s["smaps_rollup_bytes"].items():
+                        maxima[k] = max(maxima.get(k, 0), v)
                 peaks = r.setdefault("sampled_memory_max_bytes", {})
                 for key in ("anon", "file", "file_mapped"):
                     peaks[key] = max(peaks.get(key, 0), s["cgroup"]["memory_stat"][key])
@@ -336,7 +390,7 @@ def run(a):
                 check(stop_log.stat().st_size < 32 * MIB and series.tell() < 32 * MIB, "log_budget")
                 text = stop_log.read_text(errors="replace")
                 marks = logged_geometry(text)
-                if marks["ready"]:
+                if marks["ready"] and closing_at is None:
                     r["ready_s"] = round(time.monotonic() - tick, 4)
                     check(all(marks.values()), "startup_geometry")
                     check(
@@ -349,17 +403,36 @@ def run(a):
                     check("processing task, is_child" not in text, "unexpected_request")
                     check(identity(MODEL) == current, "model_changed")
                     shutdown = time.monotonic()
+                    if paging:
+                        closing_at = shutdown
                     os.killpg(proc.pid, signal.SIGTERM)
+                    if paging:
+                        end.wait(0.05)
+                        continue
                     proc.wait(timeout=10)
                     r["shutdown_s"] = round(time.monotonic() - shutdown, 4)
                     check(proc.returncode == 0, "unclean_ready_shutdown")
                     check(
-                        not fast and int((cg / "memory.peak").read_text()) < stop,
+                        not fast
+                        and not at_preventive_limit(0, int((cg / "memory.peak").read_text()), stop),
                         "shutdown_crossed_margin",
                     )
                     r["status"] = "PASS_STOCK_NVME_STARTUP_ONLY"
                     break
                 end.wait(0.35)
+        if paging and closing_at is not None:
+            check(proc.poll() == 0, "unclean_ready_shutdown")
+            r["shutdown_s"] = round(time.monotonic() - closing_at, 4)
+            detail = bounded.prospective_endpoint_reason(
+                first_observation_s,
+                last_observation_s,
+                time.monotonic() - tick,
+                bounded.cgroup_state(),
+                state0,
+                resources,
+            )
+            check(detail is None, detail or "endpoint")
+            r["status"] = "PASS_STOCK_NVME_FILE_PAGING_STARTUP"
         r["mapped_own_libraries"] = sorted(name for name, val in dep_ids.items() if val in observed)
         r["gguf_mapping_observed"] = model_key in observed
         check(not fast, fast.get("reason", "watchdog"))
@@ -383,6 +456,19 @@ def run(a):
                 for k in ("memory_peak", "memory_current", "swap_current", "events", "events_local")
             }
             r["end_memory_stat"] = {k: st["memory_stat"][k] for k in MEM_FIELDS}
+            if paging:
+                r["end_memory_stat"].update(
+                    {k: st["memory_stat"][k] for k in ("pgscan", "pgsteal")}
+                )
+                if r["server_starts"] and (
+                    st["swap_current"]
+                    or any(
+                        st[which][k] > state0[which][k]
+                        for which in ("events", "events_local")
+                        for k in ("oom", "oom_kill")
+                    )
+                ):
+                    r.update(status="FAIL", reason="CGROUP_END_OOM_OR_SWAP")
             r["io_stat_delta_by_device"] = (
                 io_delta(first_io, io_stat(cg)) if first_io is not None else {}
             )
@@ -399,7 +485,7 @@ def run(a):
     return r["status"]
 
 
-if __name__ == "__main__":
+def cli(*, paging=False):
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument(
         "--before-inventory-only",
@@ -408,6 +494,10 @@ if __name__ == "__main__":
     )
     for name in ("policy", "placement", "binary", "build-receipt", "new-raw", "new-output"):
         ap.add_argument("--" + name, type=Path, required=True)
-    status = run(ap.parse_args())
+    status = run(ap.parse_args(), paging=paging)
     print(status)
     sys.exit(0 if status.startswith("PASS") else 1)
+
+
+if __name__ == "__main__":
+    cli()
