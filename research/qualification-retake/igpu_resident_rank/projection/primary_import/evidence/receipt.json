@@ -1,0 +1,126 @@
+{
+  "build_sha256": "ef67fa3aee5f5f0ca8cd279e9eb3823cc270501e1a341922324a64c13c2af89e",
+  "cpu_sha256": "3ef107129e6d4c7afb755ac5836c9099b37a37f3eb3ab87f25fed3e9ba28dd53",
+  "files": {
+    "actual.q8_1": "c26244654f971c944790a667a90cbadf1955f01b8eefa4df8bda9044cfd32f23",
+    "after.json": "ed315f0ebb11fa59b8fbbab1a9b5c29322fcd93f4a757a945c8a96a1ef6bcd47",
+    "before.json": "3dd414665757e5e87cb9e403100e5f5a5cf6b88a08d65bd873301978cc9b6718",
+    "e24-gate.f32": "90709cf4e526cab2356d3e14114ac46dfff59528a5e865afe7b4b591aeeea9c1",
+    "e28-gate.f32": "756c8384a4cda89c62040a81d3e45dd06e0707121dcbadecc73d45ecec0e1db3",
+    "e28-up.f32": "2a4d3291d3c2664fdb0d60937c7236c372eaa256288ec19d8a6b0bcf76dd199b",
+    "native.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "native.tsv": "01f91240bc856ec38a8b72fa5fe77085850539de0a88841ad6a562c088e50c31"
+  },
+  "model_forwards": 0,
+  "proof": {
+    "dispatches": 4,
+    "ggml_owner_bytes": 528768000,
+    "imports": 3,
+    "peak_after_six_sets_bytes": 38649856,
+    "peak_bytes": 38649856,
+    "primary_bytes_set": 26438400,
+    "subranges": [
+      [
+        28,
+        3,
+        0,
+        13217728,
+        1472,
+        4407872,
+        4407872,
+        4411392,
+        4,
+        5,
+        32,
+        1965
+      ],
+      [
+        28,
+        3,
+        2,
+        365727680,
+        3520,
+        4409920,
+        4409920,
+        4411392,
+        4,
+        5,
+        32,
+        1965
+      ],
+      [
+        24,
+        14,
+        0,
+        61685696,
+        3904,
+        4410304,
+        4410304,
+        4411392,
+        4,
+        5,
+        32,
+        1965
+      ]
+    ],
+    "tensors": [
+      [
+        0,
+        0,
+        176256000,
+        528768000,
+        64,
+        64
+      ],
+      [
+        1,
+        176256000,
+        176256000,
+        528768000,
+        64,
+        1088
+      ],
+      [
+        2,
+        352512000,
+        176256000,
+        528768000,
+        64,
+        2112
+      ]
+    ],
+    "weight_transfers_to_dedicated_gpu_memory": 0
+  },
+  "result": {
+    "decision": "GO_DENSE_GGML_PRIMARY_GATE_UP_ONLY",
+    "rows": {
+      "e24-gate": {
+        "first_different": null,
+        "gold_sha256": "90709cf4e526cab2356d3e14114ac46dfff59528a5e865afe7b4b591aeeea9c1",
+        "max_abs": 0.0,
+        "sha256": "90709cf4e526cab2356d3e14114ac46dfff59528a5e865afe7b4b591aeeea9c1",
+        "unequal": 0
+      },
+      "e28-gate": {
+        "first_different": null,
+        "gold_sha256": "756c8384a4cda89c62040a81d3e45dd06e0707121dcbadecc73d45ecec0e1db3",
+        "max_abs": 0.0,
+        "sha256": "756c8384a4cda89c62040a81d3e45dd06e0707121dcbadecc73d45ecec0e1db3",
+        "unequal": 0
+      },
+      "e28-up": {
+        "first_different": null,
+        "gold_sha256": "2a4d3291d3c2664fdb0d60937c7236c372eaa256288ec19d8a6b0bcf76dd199b",
+        "max_abs": 0.0,
+        "sha256": "2a4d3291d3c2664fdb0d60937c7236c372eaa256288ec19d8a6b0bcf76dd199b",
+        "unequal": 0
+      }
+    }
+  },
+  "scope_after": [
+    "ActiveState=inactive",
+    "SubState=dead"
+  ],
+  "status": "MEASURED_GGML_PRIMARY_IMPORT",
+  "wall_ns": 114206454
+}
