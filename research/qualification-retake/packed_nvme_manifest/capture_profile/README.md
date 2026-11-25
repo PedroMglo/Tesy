@@ -15,3 +15,5 @@ systemd-run --user --scope --unit="$UNIT" -p MemoryHigh=2G -p MemoryMax=2G \
 ```
 
 As chamadas de listagem recebem só `PATH`, `LC_ALL` e o caminho de bibliotecas selado. Em ON recebem também o manifesto C291. O programa de ensaio não invoca o binário de captura, nvidia-smi ou CUDA. O código de arranque C127 confirma que a opção `--list-devices` pertence a outro cliente. [Próxima prova numérica](../../phase_fd/integrated/t1_full_pack_service/product-path.md)
+
+A execução na revisão 755c14a4 terminou em PASS_C292_CAPTURE_STATIC_CLOSURE. O loader resolveu as relocações dos 18 fornecedores em OFF e ON e o controlo detetou a biblioteca errada. O recibo SHA-256 7b0ca3bcc778f527dfc4cdfab3aaa3f93687045cba5e12d5a74b8310aeb7b670 identifica os providers, o manifesto e o construtor. O ensaio durou 0,299 s, com zero forwards e leituras de payload. A prova VMA e dos FDs efetivamente usados entra na captura numérica nativa.
