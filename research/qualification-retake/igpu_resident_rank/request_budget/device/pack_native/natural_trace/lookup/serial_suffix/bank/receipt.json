@@ -1,0 +1,1231 @@
+{
+  "P106": {
+    "actions": {
+      "anchor": 11,
+      "ar": 23,
+      "prefill": 2,
+      "skip": 12
+    },
+    "actual_tail_callback_credit_ns": 0,
+    "banks": {
+      "lru": {
+        "counts": {
+          "decode_first/ordinary/CPU": {
+            "callbacks": 575,
+            "hits": 89,
+            "reserved": 423,
+            "retained_callbacks": 575,
+            "retained_hit_jobs": 89,
+            "retained_ns": 2506894280,
+            "width_ns": 2506894280
+          },
+          "decode_first/ordinary/CUDA0": {
+            "callbacks": 253,
+            "hits": 12,
+            "reserved": 148,
+            "retained_callbacks": 253,
+            "retained_hit_jobs": 12,
+            "retained_ns": 919462415,
+            "width_ns": 919462415
+          },
+          "decode_first/verified/CPU": {
+            "callbacks": 525,
+            "hits": 54,
+            "reserved": 350,
+            "retained_callbacks": 0,
+            "retained_hit_jobs": 0,
+            "retained_ns": 0,
+            "width_ns": 2100544570
+          },
+          "decode_first/verified/CUDA0": {
+            "callbacks": 231,
+            "hits": 16,
+            "reserved": 146,
+            "retained_callbacks": 231,
+            "retained_hit_jobs": 16,
+            "retained_ns": 955001096,
+            "width_ns": 955001096
+          },
+          "decode_tail/verified/CPU": {
+            "callbacks": 50,
+            "hits": 0,
+            "reserved": 13,
+            "retained_callbacks": 0,
+            "retained_hit_jobs": 0,
+            "retained_ns": 0,
+            "width_ns": 81854390
+          },
+          "decode_tail/verified/CUDA0": {
+            "callbacks": 22,
+            "hits": 1,
+            "reserved": 11,
+            "retained_callbacks": 22,
+            "retained_hit_jobs": 1,
+            "retained_ns": 74222032,
+            "width_ns": 74222032
+          },
+          "prefill/ordinary/CPU": {
+            "callbacks": 950,
+            "hits": 110,
+            "reserved": 808,
+            "retained_callbacks": 950,
+            "retained_hit_jobs": 110,
+            "retained_ns": 3715084596,
+            "width_ns": 3715084596
+          },
+          "prefill/ordinary/CUDA0": {
+            "callbacks": 381,
+            "hits": 45,
+            "reserved": 455,
+            "retained_callbacks": 381,
+            "retained_hit_jobs": 45,
+            "retained_ns": 2160479223,
+            "width_ns": 2160479223
+          }
+        },
+        "drained_phases": {
+          "decode_first": {
+            "direct_callbacks": 105,
+            "direct_ns": 1149442820,
+            "gross_covered_ns": 1643417934,
+            "overlap_already_free_ns": 493975114,
+            "retained_covered_ns": 1149442820,
+            "retained_floor_1x_ns": 769768970,
+            "retained_floor_half_ns": 384884472
+          },
+          "decode_tail": {
+            "direct_callbacks": 1,
+            "direct_ns": 5788037,
+            "gross_covered_ns": 5788037,
+            "retained_covered_ns": 5788037,
+            "retained_floor_1x_ns": 0,
+            "retained_floor_half_ns": 0
+          },
+          "prefill": {
+            "direct_callbacks": 91,
+            "direct_ns": 2874066124,
+            "gross_covered_ns": 3717327977,
+            "propagated_callbacks": 46,
+            "propagated_ns": 843261853,
+            "retained_covered_ns": 3717327977,
+            "retained_floor_1x_ns": 2031613387,
+            "retained_floor_half_ns": 1015806675
+          }
+        },
+        "drained_prices_unchanged_when_excluding_free_origins": true,
+        "prices": {
+          "direct": {
+            "suffix_callbacks_only": {
+              "1x": [
+                9082519263,
+                15081771836,
+                5418862427,
+                -5081771836,
+                2414470907,
+                -508177184,
+                "NO_GO_FIXED_SCENARIO"
+              ],
+              "free": [
+                7050905876,
+                12280389479,
+                4649093457,
+                -2280389479,
+                3184239877,
+                -228038948,
+                "NO_GO_FIXED_SCENARIO"
+              ],
+              "half": [
+                8066712551,
+                13681080626,
+                5033977929,
+                -3681080626,
+                2799355405,
+                -368108063,
+                "NO_GO_FIXED_SCENARIO"
+              ]
+            },
+            "suffix_to_return": {
+              "1x": [
+                9082519263,
+                15187362757,
+                5534276715,
+                -5187362757,
+                2299056619,
+                -518736276,
+                "NO_GO_FIXED_SCENARIO"
+              ],
+              "free": [
+                7050905876,
+                12385980400,
+                4764507745,
+                -2385980400,
+                3068825589,
+                -238598040,
+                "NO_GO_FIXED_SCENARIO"
+              ],
+              "half": [
+                8066712551,
+                13786671547,
+                5149392217,
+                -3786671547,
+                2683941117,
+                -378667155,
+                "NO_GO_FIXED_SCENARIO"
+              ]
+            }
+          },
+          "drained": {
+            "suffix_callbacks_only": {
+              "1x": [
+                8239257410,
+                14238509983,
+                5418862427,
+                -4238509983,
+                2414470907,
+                -423850999,
+                "NO_GO_FIXED_SCENARIO"
+              ],
+              "free": [
+                6207644023,
+                11437127626,
+                4649093457,
+                -1437127626,
+                3184239877,
+                -143712763,
+                "NO_GO_FIXED_SCENARIO"
+              ],
+              "half": [
+                7223450698,
+                12837818773,
+                5033977929,
+                -2837818773,
+                2799355405,
+                -283781878,
+                "NO_GO_FIXED_SCENARIO"
+              ]
+            },
+            "suffix_to_return": {
+              "1x": [
+                8239257410,
+                14344100904,
+                5534276715,
+                -4344100904,
+                2299056619,
+                -434410091,
+                "NO_GO_FIXED_SCENARIO"
+              ],
+              "free": [
+                6207644023,
+                11542718547,
+                4764507745,
+                -1542718547,
+                3068825589,
+                -154271855,
+                "NO_GO_FIXED_SCENARIO"
+              ],
+              "half": [
+                7223450698,
+                12943409694,
+                5149392217,
+                -2943409694,
+                2683941117,
+                -294340970,
+                "NO_GO_FIXED_SCENARIO"
+              ]
+            }
+          },
+          "persistent": {
+            "suffix_callbacks_only": {
+              "1x": [
+                7760563368,
+                13734444459,
+                5393049368,
+                -3734444459,
+                2440283966,
+                -373444446,
+                "NO_GO_FIXED_SCENARIO"
+              ],
+              "free": [
+                4049408181,
+                6046976813,
+                1348744491,
+                3953023187,
+                6484588843,
+                395302318,
+                "HEADROOM_ONLY"
+              ],
+              "half": [
+                5904985732,
+                9890710479,
+                3370896812,
+                109289521,
+                4462436522,
+                10928952,
+                "HEADROOM_ONLY"
+              ]
+            },
+            "suffix_to_return": {
+              "1x": [
+                7760563368,
+                13840035380,
+                5508463656,
+                -3840035380,
+                2324869678,
+                -384003538,
+                "NO_GO_FIXED_SCENARIO"
+              ],
+              "free": [
+                4049408181,
+                6152567734,
+                1464158779,
+                3847432266,
+                6369174555,
+                384743226,
+                "HEADROOM_ONLY"
+              ],
+              "half": [
+                5904985732,
+                9996301400,
+                3486311100,
+                3698600,
+                4347022234,
+                369860,
+                "HEADROOM_ONLY"
+              ]
+            }
+          }
+        },
+        "wave_table_sha256": "620a9e633538e0ae288f609951b50bd6fa2037641de7dcb400804b31afe16fb7"
+      },
+      "prefill": {
+        "counts": {
+          "decode_first/ordinary/CPU": {
+            "callbacks": 575,
+            "hits": 20,
+            "reserved": 423,
+            "retained_callbacks": 575,
+            "retained_hit_jobs": 20,
+            "retained_ns": 2506894280,
+            "width_ns": 2506894280
+          },
+          "decode_first/ordinary/CUDA0": {
+            "callbacks": 253,
+            "hits": 11,
+            "reserved": 148,
+            "retained_callbacks": 253,
+            "retained_hit_jobs": 11,
+            "retained_ns": 919462415,
+            "width_ns": 919462415
+          },
+          "decode_first/verified/CPU": {
+            "callbacks": 525,
+            "hits": 20,
+            "reserved": 350,
+            "retained_callbacks": 0,
+            "retained_hit_jobs": 0,
+            "retained_ns": 0,
+            "width_ns": 2100544570
+          },
+          "decode_first/verified/CUDA0": {
+            "callbacks": 231,
+            "hits": 19,
+            "reserved": 146,
+            "retained_callbacks": 231,
+            "retained_hit_jobs": 19,
+            "retained_ns": 955001096,
+            "width_ns": 955001096
+          },
+          "decode_tail/verified/CPU": {
+            "callbacks": 50,
+            "hits": 1,
+            "reserved": 13,
+            "retained_callbacks": 0,
+            "retained_hit_jobs": 0,
+            "retained_ns": 0,
+            "width_ns": 81854390
+          },
+          "decode_tail/verified/CUDA0": {
+            "callbacks": 22,
+            "hits": 5,
+            "reserved": 11,
+            "retained_callbacks": 22,
+            "retained_hit_jobs": 5,
+            "retained_ns": 74222032,
+            "width_ns": 74222032
+          },
+          "prefill/ordinary/CPU": {
+            "callbacks": 950,
+            "hits": 171,
+            "reserved": 808,
+            "retained_callbacks": 950,
+            "retained_hit_jobs": 171,
+            "retained_ns": 3715084596,
+            "width_ns": 3715084596
+          },
+          "prefill/ordinary/CUDA0": {
+            "callbacks": 381,
+            "hits": 126,
+            "reserved": 455,
+            "retained_callbacks": 381,
+            "retained_hit_jobs": 126,
+            "retained_ns": 2160479223,
+            "width_ns": 2160479223
+          }
+        },
+        "drained_phases": {
+          "decode_first": {
+            "direct_callbacks": 49,
+            "direct_ns": 496515311,
+            "gross_covered_ns": 720996291,
+            "overlap_already_free_ns": 224480980,
+            "retained_covered_ns": 496515311,
+            "retained_floor_1x_ns": 327264335,
+            "retained_floor_half_ns": 163632160
+          },
+          "decode_tail": {
+            "direct_callbacks": 4,
+            "direct_ns": 34172851,
+            "gross_covered_ns": 41190048,
+            "overlap_already_free_ns": 7017197,
+            "retained_covered_ns": 34172851,
+            "retained_floor_1x_ns": 0,
+            "retained_floor_half_ns": 0
+          },
+          "prefill": {
+            "direct_callbacks": 119,
+            "direct_ns": 3461272756,
+            "gross_covered_ns": 4139799519,
+            "propagated_callbacks": 41,
+            "propagated_ns": 678526763,
+            "retained_covered_ns": 4139799519,
+            "retained_floor_1x_ns": 2307194752,
+            "retained_floor_half_ns": 1153597349
+          }
+        },
+        "drained_prices_unchanged_when_excluding_free_origins": true,
+        "prices": {
+          "direct": {
+            "suffix_callbacks_only": {
+              "1x": [
+                8770893996,
+                14980569443,
+                5600900487,
+                -4980569443,
+                2232432847,
+                -498056945,
+                "NO_GO_FIXED_SCENARIO"
+              ],
+              "free": [
+                6463699244,
+                12346110356,
+                5273636152,
+                -2346110356,
+                2559697182,
+                -234611036,
+                "NO_GO_FIXED_SCENARIO"
+              ],
+              "half": [
+                7617296593,
+                13663339865,
+                5437268312,
+                -3663339865,
+                2396065022,
+                -366333987,
+                "NO_GO_FIXED_SCENARIO"
+              ]
+            },
+            "suffix_to_return": {
+              "1x": [
+                8770893996,
+                15086160364,
+                5716314775,
+                -5086160364,
+                2117018559,
+                -508616037,
+                "NO_GO_FIXED_SCENARIO"
+              ],
+              "free": [
+                6463699244,
+                12451701277,
+                5389050440,
+                -2451701277,
+                2444282894,
+                -245170128,
+                "NO_GO_FIXED_SCENARIO"
+              ],
+              "half": [
+                7617296593,
+                13768930786,
+                5552682600,
+                -3768930786,
+                2280650734,
+                -376893079,
+                "NO_GO_FIXED_SCENARIO"
+              ]
+            }
+          },
+          "drained": {
+            "suffix_callbacks_only": {
+              "1x": [
+                8092367233,
+                14302042680,
+                5600900487,
+                -4302042680,
+                2232432847,
+                -430204268,
+                "NO_GO_FIXED_SCENARIO"
+              ],
+              "free": [
+                5785172481,
+                11667583593,
+                5273636152,
+                -1667583593,
+                2559697182,
+                -166758360,
+                "NO_GO_FIXED_SCENARIO"
+              ],
+              "half": [
+                6938769830,
+                12984813102,
+                5437268312,
+                -2984813102,
+                2396065022,
+                -298481311,
+                "NO_GO_FIXED_SCENARIO"
+              ]
+            },
+            "suffix_to_return": {
+              "1x": [
+                8092367233,
+                14407633601,
+                5716314775,
+                -4407633601,
+                2117018559,
+                -440763361,
+                "NO_GO_FIXED_SCENARIO"
+              ],
+              "free": [
+                5785172481,
+                11773174514,
+                5389050440,
+                -1773174514,
+                2444282894,
+                -177317452,
+                "NO_GO_FIXED_SCENARIO"
+              ],
+              "half": [
+                6938769830,
+                13090404023,
+                5552682600,
+                -3090404023,
+                2280650734,
+                -309040403,
+                "NO_GO_FIXED_SCENARIO"
+              ]
+            }
+          },
+          "persistent": {
+            "suffix_callbacks_only": {
+              "1x": [
+                7448788031,
+                13629184689,
+                5571314674,
+                -3629184689,
+                2262018660,
+                -362918469,
+                "NO_GO_FIXED_SCENARIO"
+              ],
+              "free": [
+                4101546381,
+                6099115013,
+                1348744491,
+                3900884987,
+                6484588843,
+                390088498,
+                "HEADROOM_ONLY"
+              ],
+              "half": [
+                5775167166,
+                9864149689,
+                3460029458,
+                135850311,
+                4373303876,
+                13585031,
+                "HEADROOM_ONLY"
+              ]
+            },
+            "suffix_to_return": {
+              "1x": [
+                7448788031,
+                13734775610,
+                5686728962,
+                -3734775610,
+                2146604372,
+                -373477561,
+                "NO_GO_FIXED_SCENARIO"
+              ],
+              "free": [
+                4101546381,
+                6204705934,
+                1464158779,
+                3795294066,
+                6369174555,
+                379529406,
+                "HEADROOM_ONLY"
+              ],
+              "half": [
+                5775167166,
+                9969740610,
+                3575443746,
+                30259390,
+                4257889588,
+                3025939,
+                "HEADROOM_ONLY"
+              ]
+            }
+          }
+        },
+        "wave_table_sha256": "b5ebe2c9c46b3c74b21186de778a712540936ea8ba09718dcb18dfc826bd3a12"
+      }
+    },
+    "decode_ns": 9213847000,
+    "first_actions": {
+      "anchor": 10,
+      "ar": 23,
+      "prefill": 2,
+      "skip": 11
+    },
+    "first_final_ns": 19528568213,
+    "pre_stream_diagnostic_allowance_ns": 646428255,
+    "prefill_ns": 9924972000
+  },
+  "P97": {
+    "actions": {
+      "anchor": 11,
+      "ar": 23,
+      "prefill": 2,
+      "skip": 12
+    },
+    "actual_tail_callback_credit_ns": 0,
+    "banks": {
+      "lru": {
+        "counts": {
+          "decode_first/ordinary/CPU": {
+            "callbacks": 575,
+            "hits": 89,
+            "reserved": 423,
+            "retained_callbacks": 575,
+            "retained_hit_jobs": 89,
+            "retained_ns": 2539386508,
+            "width_ns": 2539386508
+          },
+          "decode_first/ordinary/CUDA0": {
+            "callbacks": 253,
+            "hits": 12,
+            "reserved": 148,
+            "retained_callbacks": 253,
+            "retained_hit_jobs": 12,
+            "retained_ns": 922488322,
+            "width_ns": 922488322
+          },
+          "decode_first/verified/CPU": {
+            "callbacks": 525,
+            "hits": 54,
+            "reserved": 350,
+            "retained_callbacks": 0,
+            "retained_hit_jobs": 0,
+            "retained_ns": 0,
+            "width_ns": 2116179916
+          },
+          "decode_first/verified/CUDA0": {
+            "callbacks": 231,
+            "hits": 16,
+            "reserved": 146,
+            "retained_callbacks": 231,
+            "retained_hit_jobs": 16,
+            "retained_ns": 937921652,
+            "width_ns": 937921652
+          },
+          "decode_tail/verified/CPU": {
+            "callbacks": 50,
+            "hits": 0,
+            "reserved": 13,
+            "retained_callbacks": 0,
+            "retained_hit_jobs": 0,
+            "retained_ns": 0,
+            "width_ns": 76644761
+          },
+          "decode_tail/verified/CUDA0": {
+            "callbacks": 22,
+            "hits": 1,
+            "reserved": 11,
+            "retained_callbacks": 22,
+            "retained_hit_jobs": 1,
+            "retained_ns": 75832484,
+            "width_ns": 75832484
+          },
+          "prefill/ordinary/CPU": {
+            "callbacks": 950,
+            "hits": 110,
+            "reserved": 808,
+            "retained_callbacks": 950,
+            "retained_hit_jobs": 110,
+            "retained_ns": 3760635716,
+            "width_ns": 3760635716
+          },
+          "prefill/ordinary/CUDA0": {
+            "callbacks": 381,
+            "hits": 45,
+            "reserved": 455,
+            "retained_callbacks": 381,
+            "retained_hit_jobs": 45,
+            "retained_ns": 2138220737,
+            "width_ns": 2138220737
+          }
+        },
+        "drained_phases": {
+          "decode_first": {
+            "direct_callbacks": 105,
+            "direct_ns": 1131458183,
+            "gross_covered_ns": 1634950380,
+            "overlap_already_free_ns": 503492197,
+            "retained_covered_ns": 1131458183,
+            "retained_floor_1x_ns": 738421834,
+            "retained_floor_half_ns": 369210905
+          },
+          "decode_tail": {
+            "direct_callbacks": 1,
+            "direct_ns": 7604605,
+            "gross_covered_ns": 7604605,
+            "retained_covered_ns": 7604605,
+            "retained_floor_1x_ns": 0,
+            "retained_floor_half_ns": 0
+          },
+          "prefill": {
+            "direct_callbacks": 91,
+            "direct_ns": 2932983508,
+            "gross_covered_ns": 3786054363,
+            "propagated_callbacks": 44,
+            "propagated_ns": 853070855,
+            "retained_covered_ns": 3786054363,
+            "retained_floor_1x_ns": 2026993327,
+            "retained_floor_half_ns": 1013496646
+          }
+        },
+        "drained_prices_unchanged_when_excluding_free_origins": true,
+        "prices": {
+          "direct": {
+            "suffix_callbacks_only": {
+              "1x": [
+                8705370819,
+                13932081910,
+                5289455837,
+                -3932081910,
+                2543877497,
+                -393208191,
+                "NO_GO_FIXED_SCENARIO"
+              ],
+              "free": [
+                6678377492,
+                11166666749,
+                4551034003,
+                -1166666749,
+                3282299331,
+                -116666675,
+                "NO_GO_FIXED_SCENARIO"
+              ],
+              "half": [
+                7691874138,
+                12549374300,
+                4920244908,
+                -2549374300,
+                2913088426,
+                -254937430,
+                "NO_GO_FIXED_SCENARIO"
+              ]
+            },
+            "suffix_to_return": {
+              "1x": [
+                8705370819,
+                14037197660,
+                5404595328,
+                -4037197660,
+                2428738006,
+                -403719766,
+                "NO_GO_FIXED_SCENARIO"
+              ],
+              "free": [
+                6678377492,
+                11271782499,
+                4666173494,
+                -1271782499,
+                3167159840,
+                -127178250,
+                "NO_GO_FIXED_SCENARIO"
+              ],
+              "half": [
+                7691874138,
+                12654490050,
+                5035384399,
+                -2654490050,
+                2797948935,
+                -265449005,
+                "NO_GO_FIXED_SCENARIO"
+              ]
+            }
+          },
+          "drained": {
+            "suffix_callbacks_only": {
+              "1x": [
+                7852299964,
+                13079011055,
+                5289455837,
+                -3079011055,
+                2543877497,
+                -307901106,
+                "NO_GO_FIXED_SCENARIO"
+              ],
+              "free": [
+                5825306637,
+                10313595894,
+                4551034003,
+                -313595894,
+                3282299331,
+                -31359590,
+                "NO_GO_FIXED_SCENARIO"
+              ],
+              "half": [
+                6838803283,
+                11696303445,
+                4920244908,
+                -1696303445,
+                2913088426,
+                -169630345,
+                "NO_GO_FIXED_SCENARIO"
+              ]
+            },
+            "suffix_to_return": {
+              "1x": [
+                7852299964,
+                13184126805,
+                5404595328,
+                -3184126805,
+                2428738006,
+                -318412681,
+                "NO_GO_FIXED_SCENARIO"
+              ],
+              "free": [
+                5825306637,
+                10418711644,
+                4666173494,
+                -418711644,
+                3167159840,
+                -41871165,
+                "NO_GO_FIXED_SCENARIO"
+              ],
+              "half": [
+                6838803283,
+                11801419195,
+                5035384399,
+                -1801419195,
+                2797948935,
+                -180141920,
+                "NO_GO_FIXED_SCENARIO"
+              ]
+            }
+          },
+          "persistent": {
+            "suffix_callbacks_only": {
+              "1x": [
+                7395710680,
+                12585549222,
+                5251303906,
+                -2585549222,
+                2582029428,
+                -258554923,
+                "NO_GO_FIXED_SCENARIO"
+              ],
+              "free": [
+                3712504547,
+                4932455505,
+                1214467825,
+                5067544495,
+                6618865509,
+                506754449,
+                "HEADROOM_ONLY"
+              ],
+              "half": [
+                5554107577,
+                8759002223,
+                3232885759,
+                1240997777,
+                4600447575,
+                124099777,
+                "HEADROOM_ONLY"
+              ]
+            },
+            "suffix_to_return": {
+              "1x": [
+                7395710680,
+                12690664972,
+                5366443397,
+                -2690664972,
+                2466889937,
+                -269066498,
+                "NO_GO_FIXED_SCENARIO"
+              ],
+              "free": [
+                3712504547,
+                5037571255,
+                1329607316,
+                4962428745,
+                6503726018,
+                496242874,
+                "HEADROOM_ONLY"
+              ],
+              "half": [
+                5554107577,
+                8864117973,
+                3348025250,
+                1135882027,
+                4485308084,
+                113588202,
+                "HEADROOM_ONLY"
+              ]
+            }
+          }
+        },
+        "wave_table_sha256": "6d6f41d2b993a3440359031c4402917411eddd14b35dee3dcbfecdace13ae8da"
+      },
+      "prefill": {
+        "counts": {
+          "decode_first/ordinary/CPU": {
+            "callbacks": 575,
+            "hits": 20,
+            "reserved": 423,
+            "retained_callbacks": 575,
+            "retained_hit_jobs": 20,
+            "retained_ns": 2539386508,
+            "width_ns": 2539386508
+          },
+          "decode_first/ordinary/CUDA0": {
+            "callbacks": 253,
+            "hits": 11,
+            "reserved": 148,
+            "retained_callbacks": 253,
+            "retained_hit_jobs": 11,
+            "retained_ns": 922488322,
+            "width_ns": 922488322
+          },
+          "decode_first/verified/CPU": {
+            "callbacks": 525,
+            "hits": 20,
+            "reserved": 350,
+            "retained_callbacks": 0,
+            "retained_hit_jobs": 0,
+            "retained_ns": 0,
+            "width_ns": 2116179916
+          },
+          "decode_first/verified/CUDA0": {
+            "callbacks": 231,
+            "hits": 19,
+            "reserved": 146,
+            "retained_callbacks": 231,
+            "retained_hit_jobs": 19,
+            "retained_ns": 937921652,
+            "width_ns": 937921652
+          },
+          "decode_tail/verified/CPU": {
+            "callbacks": 50,
+            "hits": 1,
+            "reserved": 13,
+            "retained_callbacks": 0,
+            "retained_hit_jobs": 0,
+            "retained_ns": 0,
+            "width_ns": 76644761
+          },
+          "decode_tail/verified/CUDA0": {
+            "callbacks": 22,
+            "hits": 5,
+            "reserved": 11,
+            "retained_callbacks": 22,
+            "retained_hit_jobs": 5,
+            "retained_ns": 75832484,
+            "width_ns": 75832484
+          },
+          "prefill/ordinary/CPU": {
+            "callbacks": 950,
+            "hits": 171,
+            "reserved": 808,
+            "retained_callbacks": 950,
+            "retained_hit_jobs": 171,
+            "retained_ns": 3760635716,
+            "width_ns": 3760635716
+          },
+          "prefill/ordinary/CUDA0": {
+            "callbacks": 381,
+            "hits": 126,
+            "reserved": 455,
+            "retained_callbacks": 381,
+            "retained_hit_jobs": 126,
+            "retained_ns": 2138220737,
+            "width_ns": 2138220737
+          }
+        },
+        "drained_phases": {
+          "decode_first": {
+            "direct_callbacks": 49,
+            "direct_ns": 506665831,
+            "gross_covered_ns": 727556442,
+            "overlap_already_free_ns": 220890611,
+            "retained_covered_ns": 506665831,
+            "retained_floor_1x_ns": 331772074,
+            "retained_floor_half_ns": 165886030
+          },
+          "decode_tail": {
+            "direct_callbacks": 4,
+            "direct_ns": 35197123,
+            "gross_covered_ns": 40489166,
+            "overlap_already_free_ns": 5292043,
+            "retained_covered_ns": 35197123,
+            "retained_floor_1x_ns": 0,
+            "retained_floor_half_ns": 0
+          },
+          "prefill": {
+            "direct_callbacks": 119,
+            "direct_ns": 3490361737,
+            "gross_covered_ns": 4174732657,
+            "propagated_callbacks": 42,
+            "propagated_ns": 684370920,
+            "retained_covered_ns": 4174732657,
+            "retained_floor_1x_ns": 2333216890,
+            "retained_floor_half_ns": 1166608423
+          }
+        },
+        "drained_prices_unchanged_when_excluding_free_origins": true,
+        "prices": {
+          "direct": {
+            "suffix_callbacks_only": {
+              "1x": [
+                8454216153,
+                13899069836,
+                5480005911,
+                -3899069836,
+                2353327423,
+                -389906984,
+                "NO_GO_FIXED_SCENARIO"
+              ],
+              "free": [
+                6120999263,
+                11234080872,
+                5148233837,
+                -1234080872,
+                2685099497,
+                -123408088,
+                "NO_GO_FIXED_SCENARIO"
+              ],
+              "half": [
+                7287607686,
+                12566575325,
+                5314119867,
+                -2566575325,
+                2519213467,
+                -256657533,
+                "NO_GO_FIXED_SCENARIO"
+              ]
+            },
+            "suffix_to_return": {
+              "1x": [
+                8454216153,
+                14004185586,
+                5595145402,
+                -4004185586,
+                2238187932,
+                -400418559,
+                "NO_GO_FIXED_SCENARIO"
+              ],
+              "free": [
+                6120999263,
+                11339196622,
+                5263373328,
+                -1339196622,
+                2569960006,
+                -133919663,
+                "NO_GO_FIXED_SCENARIO"
+              ],
+              "half": [
+                7287607686,
+                12671691075,
+                5429259358,
+                -2671691075,
+                2404073976,
+                -267169108,
+                "NO_GO_FIXED_SCENARIO"
+              ]
+            }
+          },
+          "drained": {
+            "suffix_callbacks_only": {
+              "1x": [
+                7769845233,
+                13214698916,
+                5480005911,
+                -3214698916,
+                2353327423,
+                -321469892,
+                "NO_GO_FIXED_SCENARIO"
+              ],
+              "free": [
+                5436628343,
+                10549709952,
+                5148233837,
+                -549709952,
+                2685099497,
+                -54970996,
+                "NO_GO_FIXED_SCENARIO"
+              ],
+              "half": [
+                6603236766,
+                11882204405,
+                5314119867,
+                -1882204405,
+                2519213467,
+                -188220441,
+                "NO_GO_FIXED_SCENARIO"
+              ]
+            },
+            "suffix_to_return": {
+              "1x": [
+                7769845233,
+                13319814666,
+                5595145402,
+                -3319814666,
+                2238187932,
+                -331981467,
+                "NO_GO_FIXED_SCENARIO"
+              ],
+              "free": [
+                5436628343,
+                10654825702,
+                5263373328,
+                -654825702,
+                2569960006,
+                -65482571,
+                "NO_GO_FIXED_SCENARIO"
+              ],
+              "half": [
+                6603236766,
+                11987320155,
+                5429259358,
+                -1987320155,
+                2404073976,
+                -198732016,
+                "NO_GO_FIXED_SCENARIO"
+              ]
+            }
+          },
+          "persistent": {
+            "suffix_callbacks_only": {
+              "1x": [
+                7108144036,
+                12512251903,
+                5438502726,
+                -2512251903,
+                2394830608,
+                -251225191,
+                "NO_GO_FIXED_SCENARIO"
+              ],
+              "free": [
+                3761735746,
+                4981686704,
+                1214467825,
+                5018313296,
+                6618865509,
+                501831329,
+                "HEADROOM_ONLY"
+              ],
+              "half": [
+                5434939855,
+                8746969159,
+                3326485166,
+                1253030841,
+                4506848168,
+                125303084,
+                "HEADROOM_ONLY"
+              ]
+            },
+            "suffix_to_return": {
+              "1x": [
+                7108144036,
+                12617367653,
+                5553642217,
+                -2617367653,
+                2279691117,
+                -261736766,
+                "NO_GO_FIXED_SCENARIO"
+              ],
+              "free": [
+                3761735746,
+                5086802454,
+                1329607316,
+                4913197546,
+                6503726018,
+                491319754,
+                "HEADROOM_ONLY"
+              ],
+              "half": [
+                5434939855,
+                8852084909,
+                3441624657,
+                1147915091,
+                4391708677,
+                114791509,
+                "HEADROOM_ONLY"
+              ]
+            }
+          }
+        },
+        "wave_table_sha256": "2650742788e9662cadc3886c7cd5cce9e675f19d8374045b58a6099de301c607"
+      }
+    },
+    "decode_ns": 8946626000,
+    "first_actions": {
+      "anchor": 10,
+      "ar": 23,
+      "prefill": 2,
+      "skip": 11
+    },
+    "first_final_ns": 18325560801,
+    "pre_stream_diagnostic_allowance_ns": 0,
+    "prefill_ns": 9611361000
+  },
+  "code_sha256": "dfce9cb36f46a69e3cb6d92b45dbc3d443ef0d92644c50bd08b91253c3b5046b",
+  "price_columns": [
+    "prefill_ns",
+    "first_final_ns",
+    "decode_ns",
+    "first_new_cost_budget_ns",
+    "decode_new_cost_budget_ns",
+    "uniform_extra_per_attempt_ns",
+    "joint"
+  ],
+  "provenance": {
+    "P106": {
+      "family_sha256": "90750b0ccf87d7f5ceb6d89b6b320e1bf9cf07c0082c1961a31f14b67326aee9",
+      "manifest_sha256": "d54f29ed903b5dbc772af42be9bd489dc15b2e9819de8cb8ac8b4dea7988a89d"
+    },
+    "P97": {
+      "family_sha256": "e5012e559a2403145abc6f5317bddc8b83f95f1e09b592eb83a6baa2c18980a9",
+      "manifest_sha256": "a649b2e520fcbcc9c8897e4465f85fa6bb38504ab11a5189e71ded47a2ba9309"
+    }
+  },
+  "raw_sha256": "667700adf58f9b05fbb70884feedd8a0546883909cfee3a403445d8dcd2c955e",
+  "sources": {
+    "bank_code": "bdd8a06f8694efccbd5282db0b73b222768d328f8263e431c694dcbadddb991c",
+    "bank_receipt": "8c7d2c73abbe81bf3214f3f79cb7fd30fb21ec6c85078e93c42701730dbe0299",
+    "protocol": "d7f82141982c18f4cda5165ae69902df8d28ce12d1558a2acfe6065e985791c3",
+    "serial_code": "c8b63224facd06ae49e08cbb20c0ea19a98c77aa0354e51a48cf9349e42d776e",
+    "serial_receipt": "2b1f7f3111cd5442d0177546ccbbff9180ca1e3a10067b056d6d399631201561"
+  },
+  "status": "REPRODUCED_UNION_AT_FIXED_AR_PRICES"
+}
