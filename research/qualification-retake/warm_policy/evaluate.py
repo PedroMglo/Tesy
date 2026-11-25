@@ -3,6 +3,7 @@
 import argparse
 import hashlib
 import json
+import re
 import sys
 from pathlib import Path
 
@@ -216,6 +217,16 @@ def evaluate(family, family_sha, historical):
     }
 
 
+def report_text(result):
+    """Keep each ranked set of integer expert IDs visible on one line."""
+    pretty = json.dumps(result, indent=2, sort_keys=True, allow_nan=False)
+    return re.sub(
+        r'("top40_by_score_then_id": )(\[(?:\s*\d+\s*,?)+\])',
+        lambda group: group[1] + json.dumps(json.loads(group[2])),
+        pretty,
+    ) + "\n"
+
+
 if __name__ == "__main__":
     p = argparse.ArgumentParser(description=__doc__)
     p.add_argument("--family", required=True, type=Path)
@@ -235,8 +246,7 @@ if __name__ == "__main__":
         }
     tmp = a.new_output_dir / ".pending"
     with tmp.open("x") as stream:
-        json.dump(out, stream, indent=2, sort_keys=True, allow_nan=False)
-        stream.write("\n")
+        stream.write(report_text(out))
     tmp.rename(a.new_output_dir / "receipt.json")
     print(out["status"])
     raise SystemExit(int("cases" not in out))

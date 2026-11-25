@@ -19,7 +19,7 @@ Os quatro processos físicos de 40 slots passaram o gate dos observadores. A sub
 
 Os 153 tokens novos mudaram 125 membros dos conjuntos top-40 no nominal e 249 em código, somando as 36 camadas. No nominal, a regra com o incremento fez 436 cargas a mais que R0 (+40,33%). Em código, melhorou sobre o prefixo sozinho e sobre o contador C286, mas ainda fez 238 cargas a mais que R0 (+18,20%). No fim da janela faltariam 532 e 561 identidades para recompor os respetivos conjuntos finais de R0. Só o payload dessas identidades totaliza pelo menos 7 032 614 400 B e 7 415 971 200 B. Os bytes dependem do contrafactual. Não foram medidos novos tempos de conversa ou de serviço da política.
 
-O verificador congelado em `ffd90fac14e97fdfe0d85078e1e6849cf8d6bd12` validou novamente a família privada, os dois WRT1, o TPR1, os cortes e os inputs históricos de cada caso. A execução durou 0,92 s e usou 77 988 KiB de RSS. O SHA-256 do recibo é `3a8610fff17c23aefbf1a1d2d16e76367c78cf99a2044c8c9ab78d897ef78c09`. A política física fica NOT_RUN. Os resultados fecham esta regra no regime avaliado. [Custos das regras por ID e recência](../warm_policy_controls/README.md)
+O verificador congelado em `ffd90fac14e97fdfe0d85078e1e6849cf8d6bd12` validou novamente a família privada, os dois WRT1, o TPR1, os cortes e os inputs históricos de cada caso. A execução durou 0,92 s e usou 77 988 KiB de RSS. O SHA-256 do recibo original, antes de colocar cada top-40 numa única linha, é `3a8610fff17c23aefbf1a1d2d16e76367c78cf99a2044c8c9ab78d897ef78c09`. A política física fica NOT_RUN. Os resultados fecham esta regra no regime avaliado. [Custos das regras por ID e recência](../warm_policy_controls/README.md)
 
 Na literatura consultada em 25/11/2026, Suram usa llama.cpp para recolher top-k com stride real. Na camada 24 de Qwen3-30B-A3B em código, a tabela 3 dá 65,9% de hits para LRU e 60,1% para LFU a 13,4% de capacidade. A medição física de 0,441 tok/s usa outro modelo, Qwen3-235B-A22B Q4_K_M, em RTX 3070 de 8 GB, 32 GB de RAM e SN530. O apêndice F atribui a diferença entre 5,3 GB/s quentes e 2,4 GB/s frios à page cache. Por isso os tempos de movimento do Tesy exigem os bytes efetivamente lidos do dispositivo. Os quatro braços C294 medem o efeito da classificação sobre o mesmo estado de 40/128 por camada do próprio target. [Suram, §§3–5, tabela 3 e correções](https://arxiv.org/html/2608.18261v1)
 
@@ -31,3 +31,5 @@ python3 -B research/qualification-retake/warm_policy/evaluate.py \
   --family "$TESY_WARM_ROUTE_FAMILY" --family-receipt-sha256 "$TESY_FAMILY_SHA256" \
   --historical-results "$TESY_HISTORICAL_RESULTS" --new-output-dir "$NEW_POLICY_REPORT"
 ```
+
+A representação compacta publicada conserva todos os scores agregados, ranks e resultados por braço. SHA-256 `a15bf10fb11c51b3879c4281145af4b21bcc18320ddde21ac63fa3bff77fa790`. A igualdade dos dois documentos JSON foi conferida campo a campo.
