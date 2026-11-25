@@ -33,3 +33,11 @@ systemd-run --user --scope --quiet --unit="$scope" -p MemoryMax=150M -p MemorySw
   --new-output-dir "$new_output_dir"
 systemctl --user show "$scope.scope" --property=ActiveState,SubState,Result
 ```
+
+### Reprodução independente R03
+
+A R03 repetiu os três processos no mesmo regime, em novo scope transitório e diretório. A reabertura compara diretamente os 32 logits de cada saída, as 12 vistas, os argumentos e retornos do mmap e dos hints observados e o número de threads. Estes valores e o artefacto GGUF coincidem. Na R03 o pico do cgroup foi 52 297 728 B, a RSS OFF/DEFER/DEFER_PREFETCH foi 43 472 / 42 836 / 43 216 KiB e o swap permaneceu em zero. O scope terminou inactive/dead com sucesso. O recibo da R03 em `/tmp/tesy-ik-tiny-loader-20261125-r03` tem SHA-256 `0cdf0a7138cc216569e372842951e956e1e92516444585c53a3c638f9c7e7851`. [Revisor independente](reproduce.py)
+
+```sh
+python3 -IB "$module/reproduce.py" /tmp/tesy-ik-tiny-loader-20261125-r02 /tmp/tesy-ik-tiny-loader-20261125-r03
+```
