@@ -5,8 +5,6 @@ from pathlib import Path
 from types import SimpleNamespace
 
 from analyse import GEOMETRY, HISTORICAL, bound, close_barrier, verify_routes
-
-
 from client_cut import upper_bounds
 
 
