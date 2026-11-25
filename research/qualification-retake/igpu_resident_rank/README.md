@@ -32,3 +32,5 @@ python3 -IB "$d/run.py" --build-dir "$NEW_BUILD" --build-sha256 "$BUILD_RECEIPT_
 ```
 
 A parte 81 preserva a compilação, o executável e a saída física antes/depois do ensaio. [Manifesto do arquivo](../private_archive/part-81.json)
+
+Os dois blocos com máximo 11 identificam também uma diferença entre a álgebra F32 literal do shader Q8_1 e a quantização CPU. A variante selecionada e o código i8 realmente gravado dependem do dispositivo e da compilação. [Testemunhos numéricos](rhs/README.md) · [Protocolo do dispatch](rhs_device/protocol.md)
