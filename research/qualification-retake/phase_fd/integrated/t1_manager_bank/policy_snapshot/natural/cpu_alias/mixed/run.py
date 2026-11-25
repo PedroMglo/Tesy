@@ -4,6 +4,7 @@ import argparse
 import hashlib
 import json
 import os
+import resource
 import signal
 import subprocess
 import time
@@ -226,6 +227,8 @@ def main():
         p.add_argument("--" + nm, type=Path, required=True)
     a = p.parse_args()
     os.umask(0o077)
+    # The process tree must not charge a large core dump outside the private output budget.
+    resource.setrlimit(resource.RLIMIT_CORE, (0, 0))
     out = a.new_output_dir.resolve()
     out.mkdir()
     r = {"status": "FAIL_PRESERVED"}
