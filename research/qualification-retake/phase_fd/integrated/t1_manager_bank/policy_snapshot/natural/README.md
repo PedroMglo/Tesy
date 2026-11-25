@@ -39,6 +39,8 @@ A primeira família física ficou **FAIL_PRESERVED** em `1c5219d8`. OFF terminou
 
 ## Reprodução
 
+O pré-registo do pipeline relaxou uma hipótese do limite. Na parte 40, sobrepor a primeira parte da tile seguinte ao fim da anterior só poderia esconder até 785,652 ms dos intervalos medidos. Mesmo com 793 cargas escolhidas por um oráculo, manter-se-iam 356,959 ms nas extremidades. Esse cenário precisa de 6,248 tok/s no decode a 4,5 GB/s. A taxa pertence à seleção com conhecimento do futuro na parte 40. O cruzamento de 7,887 tok/s apresentado acima pertence à política causal e ao pedido ON de R02. A parte 64 guarda esta experiência, o seu FAIL de marcador em GPU35, a interseção das chaves e a fixture CPU de páginas, com 21 ficheiros e 26 629 357 B sob o manifesto `90716b6e8892aa0dee4f50f10bd79c68896463f6c15adff465a8c83d38be8204`. [Limite da sobreposição por tile](../../../tile_pipeline/README.md)
+
 A parte 63 de `qualification-20261124-nvme-01` guarda os braços R02 e a revisão dupla em 88 ficheiros e 23 191 689 B. O manifesto tem SHA-256 `f46876468215957504f27d593081142a99d46220cf9ab42782965833eab1da7f`. As duas revisões do par deram `bb6e2b508bf35af6001ccbb5bec655ae3235bf69d1a8d74af84b4382b640b889` em 0,89 / 0,86 s, com RSS até 82 604 KiB. O crivo de capacidade deu `d331d4069d172246588f2f5ad86bcd7d317082eeb11204252dbcb7fb6349f6ef` em 0,24 / 0,23 s, até 84 036 KiB. O crivo de custo deu `19e326bc467aa5c6403a29cb3fc05357706f7d23f33bf598928352b02b00592e` em 0,03 s por processo. As revisões leem traces e recibos em CPU. A experiência física fechada utilizou o modelo três vezes no total, incluindo o controlo da primeira família. [Aquisição no portátil](acquisition-result.md)
 
 ```sh
