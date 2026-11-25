@@ -273,19 +273,27 @@ def analyse(directory, mode, bases, reference):
 
 def child(argv, out, env, deadline):
     def limits():
-        resource.setrlimit(resource.RLIMIT_AS, (256 * 1024**2, 256 * 1024**2))
+        resource.setrlimit(resource.RLIMIT_AS, (512 * 1024**2, 512 * 1024**2))
         resource.setrlimit(resource.RLIMIT_CPU, (40, 40))
 
     with (out / "stdout").open("xb") as f, (out / "stderr").open("xb") as e:
-        subprocess.run(
-            argv,
-            env=env,
-            preexec_fn=limits,
-            stdout=f,
-            stderr=e,
-            check=True,
-            timeout=max(0.01, deadline - time.monotonic()),
-        )
+        with subprocess.Popen(argv, env=env, preexec_fn=limits, stdout=f, stderr=e) as proc:
+            try:
+                while proc.poll() is None:
+                    check(time.monotonic() < deadline, "wall budget")
+                    try:
+                        status = Path(f"/proc/{proc.pid}/status").read_text()
+                    except FileNotFoundError:
+                        continue
+                    for line in status.splitlines():
+                        if line.startswith("VmHWM:"):
+                            check(int(line.split()[1]) <= 256 * 1024, "child resident peak")
+                    time.sleep(0.005)
+                check(proc.returncode == 0, f"child exit {proc.returncode}: {out.name}")
+            except BaseException:
+                proc.kill()
+                proc.wait()
+                raise
 
 
 def measure(a, out):
