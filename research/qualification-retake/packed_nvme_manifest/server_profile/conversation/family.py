@@ -60,6 +60,7 @@ def arguments():
         p.add_argument("--" + path, type=Path, required=True)
     for field in ("commit", "unit-prefix", "preflight-sha256", "window-sha256", "c270-sha256"):
         p.add_argument("--" + field, required=True)
+    p.add_argument("--order", choices=("ROP", "POR"), default="ROP")
     p.add_argument("--prepared", type=Path)
     p.add_argument("--execute", action="store_true")
     p.add_argument("--arm", choices=ORDERS, help=argparse.SUPPRESS)
@@ -75,6 +76,8 @@ def identity(a):
         tree=version("rev-parse", "HEAD^{tree}"),
         protocol=sha(HERE / "protocol.md"),
         supervisor={f: sha(HERE / f) for f in ("family.py", "transport_profile.py", "review.py")},
+        order=a.order,
+        order_protocol_sha256=sha(HERE / "order.md"),
         unit_prefix=a.unit_prefix,
         window=a.window_sha256,
         c270=a.c270_sha256,
@@ -183,20 +186,22 @@ def await_closed_endpoint(out, unit_prefix, previous):
 
 def family(a, out, current):
     start = time.monotonic()
+    order = a.order
+    need(order in ("ROP", "POR") and current["order"] == order, "family order")
     if a.execute:
         need(a.prepared is not None, "static preflight required")
         data = json.loads(a.prepared.read_bytes())
         need(data["status"] == READY and data["identity"] == current, "changed preflight")
-        for mode in ORDERS:
+        for mode in order:
             need(
                 sha(a.prepared.parent / mode / "arm.json") == data["arms"][mode]["sha256"],
                 "preflight arm changed",
             )
     arms = {}
     transitions = {}
-    for index, mode in enumerate(ORDERS):
+    for index, mode in enumerate(order):
         if index and a.execute:
-            transitions[mode] = await_closed_endpoint(out, a.unit_prefix, ORDERS[index - 1])
+            transitions[mode] = await_closed_endpoint(out, a.unit_prefix, order[index - 1])
         remaining = 1950 - (time.monotonic() - start)
         need(remaining > 0, "family deadline")
         arms[mode] = call_child(a, out, mode, min(650, remaining))
@@ -207,6 +212,7 @@ def family(a, out, current):
     return dict(
         status=DONE if a.execute else READY,
         arms=arms,
+        order=order,
         identity=current,
         family_elapsed_s=time.monotonic() - start,
         closed_endpoint_wait_before_arm_s=transitions,
@@ -227,6 +233,7 @@ def main():
         result = dict(
             status="FAIL_PRESERVED",
             mode=a.arm,
+            order=a.order,
             commit=a.commit,
             reason=f"{type(exc).__name__}: {exc}",
         )
