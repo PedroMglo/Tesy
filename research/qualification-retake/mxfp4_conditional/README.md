@@ -34,7 +34,7 @@ Os limites cobrem esta população e este contexto estatístico específico. O m
 
 O protocolo ficou congelado em `9060622b`. As duas confirmações usaram a revisão limpa `09333588bceb61dcab3d9425569784f515abc01d`, árvore `c220ad5d9fe77a15a3c2355d4d3cc4428288ee86`. Cada processo leu o pack sequencialmente uma vez, 848 560 128 B. Verificou o SHA-256 integral e os 384 componentes, incluindo os 192 biases residentes excluídos da conta de pesos. R01 consumiu 5,24 s e 78 216 KiB de RSS máxima. R02 consumiu 3,41 s e 78 580 KiB. Esses relógios incluem a auditoria. Houve zero forwards e zero uso de GPU. Os sete testes sintéticos e o Ruff passaram. [Fixtures e controlos negativos](test_screen.py)
 
-Na checkout limpa, com o arquivo local C7 e um diretório de saída novo por execução:
+Na checkout limpa, usar o arquivo local C7 e escolher um diretório de saída novo por execução.
 
 ```sh
 python3 -B research/qualification-retake/mxfp4_conditional/screen.py \
