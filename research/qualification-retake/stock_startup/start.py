@@ -159,6 +159,7 @@ def run(a, *, paging=False, placement_log=False, ready_profile=None):
     end = threading.Event()
     fast = {}
     first_io = None
+    experiment = None
     stop_log = raw / "server.log"
     try:
         policy = read(a.policy)
@@ -210,7 +211,7 @@ def run(a, *, paging=False, placement_log=False, ready_profile=None):
             and current[4] <= a.placement.stat().st_mtime_ns,
             "model_changed_since_qualification",
         )
-        c55.mounts({"model": MODEL.resolve(strict=True)})
+        mounts, _ = c55.mounts({"model": MODEL.resolve(strict=True)})
         r["model"] = {
             "sha256": MODEL_SHA,
             "size": MODEL_SIZE,
@@ -241,6 +242,9 @@ def run(a, *, paging=False, placement_log=False, ready_profile=None):
             "LD_LIBRARY_PATH": str(exe.parent),
             "HF_HUB_OFFLINE": "1",
         }
+        if hasattr(ready_profile, "runtime_overlay"):
+            experiment = ready_profile.runtime_overlay(a, exe, build, mounts["model"], env, r)
+            experiment.bind(refs, dep_ids)
         run_id = "stock-nvme-paging" if paging else "stock-nvme-startup"
         if placement_log:
             run_id = "stock-nvme-placement-log"
@@ -267,6 +271,8 @@ def run(a, *, paging=False, placement_log=False, ready_profile=None):
                 raise
             return obs
 
+        if experiment is not None:
+            experiment.require_window(250)
         inv = c118.collect(
             a.new_raw,
             run_id,
@@ -299,6 +305,8 @@ def run(a, *, paging=False, placement_log=False, ready_profile=None):
             (datetime.now(UTC) - datetime.fromisoformat(inv["last_utc"])).total_seconds() <= 3,
             "c118_stale",
         )
+        if experiment is not None:
+            experiment.before_spawn()
         model_key = PlacedFile(refs, MODEL, current).key
         with stop_log.open("xb", buffering=0) as logs:
             tick = time.monotonic()
@@ -321,6 +329,8 @@ def run(a, *, paging=False, placement_log=False, ready_profile=None):
         def margin_watch():
             try:
                 while not end.is_set():
+                    if experiment is not None:
+                        experiment.watch()
                     mem = int((cg / "memory.current").read_text())
                     peak = int((cg / "memory.peak").read_text())
                     deadline = (
@@ -351,7 +361,9 @@ def run(a, *, paging=False, placement_log=False, ready_profile=None):
                         return
                     end.wait(0.05)
             except Exception as exc:
-                fast["reason"] = "WATCHDOG_" + type(exc).__name__
+                fast["reason"] = "WATCHDOG_" + (
+                    str(exc) if experiment is not None else type(exc).__name__
+                )
                 if proc.poll() is None:
                     os.killpg(proc.pid, signal.SIGKILL)
 
@@ -430,6 +442,8 @@ def run(a, *, paging=False, placement_log=False, ready_profile=None):
                             "gguf": model_key in live,
                             "own_libraries": sorted(k for k, v in dep_ids.items() if v in live),
                         }
+                        if experiment is not None:
+                            r["ready_vma"].update(experiment.mapping(live))
                         r["ready_log_geometry"] = marks
                         missing_placement = [k for k, v in marks.items() if not v]
                         if not (
@@ -438,6 +452,8 @@ def run(a, *, paging=False, placement_log=False, ready_profile=None):
                             and set(r["ready_vma"]["own_libraries"]) == dep_ids.keys()
                         ):
                             missing_placement.append("live_elf_or_gguf")
+                        if experiment is not None and not r["ready_vma"]["stock_libllama_absent"]:
+                            missing_placement.append("stock_libllama_co_mapped")
                     else:
                         check(all(marks.values()), "startup_geometry")
                         check(
@@ -539,6 +555,12 @@ def run(a, *, paging=False, placement_log=False, ready_profile=None):
             r["io_stat_delta_by_device"] = (
                 io_delta(first_io, io_stat(cg)) if first_io is not None else {}
             )
+        if experiment is not None and r["server_starts"]:
+            try:
+                experiment.finish(r)
+            except Exception as exc:
+                r.update(status="FAIL", experiment_stop=str(exc))
+                r.setdefault("reason", str(exc))
         if fast:
             r["fast_stop"] = fast
         if stop_log.exists():
@@ -564,6 +586,8 @@ def cli(*, paging=False, placement_log=False, ready_profile=None):
     if ready_profile is not None:
         ap.add_argument("--expect-head", required=True, help="Frozen clean measurement commit.")
         ap.add_argument("--original-jinja", type=Path, required=True)
+        if hasattr(ready_profile, "add_arguments"):
+            ready_profile.add_arguments(ap)
     status = run(
         ap.parse_args(), paging=paging, placement_log=placement_log, ready_profile=ready_profile
     )
