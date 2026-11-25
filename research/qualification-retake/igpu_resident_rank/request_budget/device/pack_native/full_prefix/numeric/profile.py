@@ -3,6 +3,7 @@
 import argparse
 import os
 import signal
+import stat
 import sys
 import time
 from pathlib import Path
@@ -32,8 +33,38 @@ def bound(func, **dependencies):
     )
 
 
+class LiveOutput:
+    """Bound ordinary capture files while the journal has its fixed provisional extent."""
+
+    def __getattr__(self, name):
+        return getattr(base.measure, name)
+
+    @staticmethod
+    def file_bytes(root):
+        total = 0
+        for directory, _, names in os.walk(root):
+            for name in names:
+                path = Path(directory, name)
+                try:
+                    info = path.lstat()
+                except FileNotFoundError:
+                    continue
+                if path == root / "phase.pfj1":
+                    need(
+                        stat.S_ISREG(info.st_mode) and stat.S_IMODE(info.st_mode) == 0o600,
+                        "foreign journal type/mode",
+                    )
+                    need(info.st_size <= 134217664, "journal exceeded allocation")
+                    if info.st_size == 134217664:
+                        continue
+                total += info.st_size
+        return total
+
+
 class Scope:
     """The new diagnostic mapping requires a larger per-file limit for journal creation."""
+
+    measure = LiveOutput()
 
     def __getattr__(self, name):
         return getattr(base, name)
