@@ -34,3 +34,5 @@ O oitavo lote conserva as janelas C55, FAILs, binários congelados, instruções
 O nono lote reúne os originais das duas confirmações de cada estudo de cache, a falha de pré-verificação inicial e os ficheiros privados da preparação e do ensaio físico Aster T2. São 24 ficheiros e 4 742 800 B. O verificador confirmou tamanhos e hashes depois da publicação exclusiva. [Recibo do nono lote](part-09.json)
 
 O décimo lote preserva as duas janelas C55 e a respetiva falha, a pré-verificação sem modelo e o arranque físico E20, incluindo os journals e recibos originais. A verificação comparou 14 ficheiros e 248 414 B. [Recibo do décimo lote](part-10.json)
+
+O décimo primeiro lote preserva a janela C55, pré-verificações, telemetria, os quatro pedidos com o 120B e a interrupção anterior ao arranque do primeiro B20. O arquivo tem 57 ficheiros e 4 478 138 bytes. Os três braços E10 que serviram de referência à transferência E20 estão arquivados uma vez. [Recibo do décimo primeiro lote](part-11.json)
