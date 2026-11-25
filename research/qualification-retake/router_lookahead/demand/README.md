@@ -26,7 +26,7 @@ Entre o fim do último remap da fonte e a entrada do primeiro do alvo, as median
 
 ## Reprodução
 
-Protocolo inicial 537456cb e código 9e1ee4d6. Extensão de mesmo volume 960d9347 e código d8c49d90. Duas execuções por método, de 0,70–0,93 s e até 194 868 KiB de RSS (0,94 s na última repetição). Recibos deterministas SHA-256 5e83418c00905348b46a442f0caee4affbf7ab3073a3faaeff8f958971e02c05 e 277b544287500017c7d4201b520dd39f8ae3eb8ab85f4a4900100642d6687aa8. O verificador de emissão igual reabre o journal e regenera o primeiro recibo completo. A parte 114 conserva os quatro resultados juntamente com os dois replays económicos P97/P106. Foram usados apenas CPU, ativações e parâmetros de router previamente verificados. [Recibo de arquivo](../../private_archive/part-114.json) · [Construção do bundle privado](../tf32/README.md)
+Protocolo inicial 537456cb e código 9e1ee4d6. Extensão de mesmo volume 960d9347 e código d8c49d90. Duas execuções por método, de 0,70–0,94 s e até 194 868 KiB de RSS. Recibos deterministas SHA-256 5e83418c00905348b46a442f0caee4affbf7ab3073a3faaeff8f958971e02c05 e 277b544287500017c7d4201b520dd39f8ae3eb8ab85f4a4900100642d6687aa8. O verificador de emissão igual reabre o journal e regenera o primeiro recibo completo. A parte 114 conserva os quatro resultados juntamente com os dois replays económicos P97/P106. Foram usados apenas CPU, ativações e parâmetros de router previamente verificados. [Recibo de arquivo](../../private_archive/part-114.json) · [Construção do bundle privado](../tf32/README.md)
 
 ```sh
 export LC_ALL=C PYTHONUTF8=1 PYTHONCOERCECLOCALE=0 OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1
