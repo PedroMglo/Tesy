@@ -40,6 +40,7 @@ SMOKE = "0d7d2dbd7993c1e16e1bbd7d77a4d1955754658e0b4fabe10819ad5fc026cb6a"
 VERIFIED = "494101d84e2696670bf59589768c3a7208db1c6b0b5ac1f6f914d3d9f264f08d"
 PROTOCOL = "72269b49e2b17a63a0b17650a7cddcfc532f590f180d988948d7e547753e5988"
 ORIGINAL_SESSION = "435c1381939a6ade6eda67c460695ea1e99cfb428ad8b8831a6c9b551fc27f4e"
+DENOMINATORS = "29425b51a1037e8099d7b56a4f69ae0ccbf30df88633007a3db4a79fd97d2b6c"
 METRICS = ("prefill_s", "decode_s", "first_final_s", "valid_wall_s")
 JOURNAL_MAX = 64 + 262144 * 96
 
@@ -114,12 +115,20 @@ def prompt_budget(row, phase):
         return int((Decimal(str(row[key])) * n).to_integral_value(rounding=rounding))
 
     need(row["predicted_n"] == 47, "nominal denominator")
-    budget = 10**10 + ns("prefill_s", ROUND_CEILING) + ns("decode_s", ROUND_CEILING)
-    budget -= ns("first_final_s", ROUND_FLOOR) + 47 * 10**9 // 6
-    admissible = max(0, (budget * 4_500_000_000 + 10**9 - 1) // 10**9)
+    base = 10**10 + ns("prefill_s", ROUND_CEILING) + ns("decode_s", ROUND_CEILING)
+    base -= ns("first_final_s", ROUND_FLOOR)
+
+    def price(count):
+        budget = base - count * 10**9 // 6
+        return {
+            "denominator": count,
+            "conditional_prompt_budget_ns_upper": budget,
+            "scenario_bytes_at_4_5GBps": max(0, (budget * 4_500_000_000 + 10**9 - 1) // 10**9),
+        }
+
     return {
-        "conditional_prompt_budget_ns_upper": budget,
-        "scenario_bytes_at_4_5GBps": admissible,
+        "C281_M4_predicted_tokens": price(47),
+        "optimistic_AR_post_first_evaluations": price(46),
         "compulsory_payload_floor_bytes": phase["compulsory_payload_floor"],
         "relaxed_40slot_payload_floor_bytes": phase["relaxed_40slot_payload_floor"],
         "completed_in_calls_returned_bytes": phase["completed_in_calls_returned_bytes"],
@@ -471,6 +480,7 @@ def main():
             and source.git(a.repo, "rev-parse", "HEAD") == a.commit
             and not source.git(a.repo, "status", "--porcelain")
             and sha(HERE / "protocol.md") == PROTOCOL
+            and sha(HERE / "denominadores.md") == DENOMINATORS
             and not source.relevant_environment(os.environ),
             "research freeze",
         )
@@ -528,6 +538,7 @@ def main():
         envelope_s=time.monotonic() - before,
         profile_sha256=sha(__file__),
         protocol_sha256=PROTOCOL,
+        denominator_addendum_sha256=DENOMINATORS,
     )
     if r["envelope_s"] > 650:
         r.update(status="FAIL_PRESERVED", failure="650s envelope")

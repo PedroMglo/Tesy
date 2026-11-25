@@ -74,10 +74,25 @@ class Conversation(unittest.TestCase):
         )
         row = dict(prefill_s=11, decode_s=9, first_final_s=20, predicted_n=47)
         value = M.prompt_budget(row, phases)
-        self.assertEqual(value["conditional_prompt_budget_ns_upper"], 2166666667)
-        self.assertEqual(
-            M.prompt_budget(row | {"first_final_s": 43}, phases)["scenario_bytes_at_4_5GBps"], 0
+        m4 = "C281_M4_predicted_tokens"
+        ar = "optimistic_AR_post_first_evaluations"
+        self.assertEqual(value[m4]["conditional_prompt_budget_ns_upper"], 2166666667)
+        gap = (
+            value[ar]["conditional_prompt_budget_ns_upper"]
+            - value[m4]["conditional_prompt_budget_ns_upper"]
         )
+        self.assertLessEqual(abs(6 * gap - 1_000_000_000), 5)
+        self.assertEqual(
+            M.prompt_budget(row | {"first_final_s": 43}, phases)[m4]["scenario_bytes_at_4_5GBps"], 0
+        )
+        independent = dict(
+            prefill_s=10.784107, decode_s=9.858674, first_final_s=20.385070365, predicted_n=47
+        )
+        r = M.prompt_budget(independent, phases)
+        self.assertEqual(r[m4]["conditional_prompt_budget_ns_upper"], 2_424_377_302)
+        self.assertEqual(r[ar]["conditional_prompt_budget_ns_upper"], 2_591_043_969)
+        self.assertEqual(r[m4]["denominator"], 47)
+        self.assertEqual(r[ar]["denominator"], 46)
 
     def test_monitor_argv_preserves_server_and_separates_observer(self):
         target = ["/server", "-lv", "3", "--port", "18442"]
