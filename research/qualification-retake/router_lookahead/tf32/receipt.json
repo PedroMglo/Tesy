@@ -1,0 +1,686 @@
+{
+  "calibration": {
+    "decode/CPU": {
+      "archived_order_misses": 0,
+      "different_logit_bits": 11228,
+      "logits_words": 12800,
+      "max_abs": 9.5367431640625e-07,
+      "min_4th_minus_5th": 0.0011168122291564941,
+      "projected_order_misses": 0,
+      "rows": 100
+    },
+    "decode/CUDA": {
+      "archived_order_misses": 0,
+      "different_logit_bits": 5038,
+      "logits_words": 5632,
+      "max_abs": 9.5367431640625e-07,
+      "min_4th_minus_5th": 0.0009544491767883301,
+      "projected_order_misses": 0,
+      "rows": 44
+    },
+    "prefill/CPU": {
+      "archived_order_misses": 0,
+      "different_logit_bits": 265862,
+      "logits_words": 297600,
+      "max_abs": 2.86102294921875e-06,
+      "min_4th_minus_5th": 3.635883331298828e-06,
+      "projected_order_misses": 0,
+      "rows": 2325
+    },
+    "prefill/CUDA": {
+      "archived_order_misses": 0,
+      "different_logit_bits": 117482,
+      "logits_words": 119168,
+      "max_abs": 0.00016260147094726562,
+      "min_4th_minus_5th": 8.571147918701172e-05,
+      "projected_order_misses": 0,
+      "rows": 931
+    }
+  },
+  "gguf_read_bytes": 0,
+  "index_sha256": "74685f32d8fc11fdec6c4317ac844c70ac7bb3d9ab27dc7fe26a0f1b4b9b459b",
+  "method_sha256": "91caf54a367a6912b26cbf92abebe9a725a0622285a644d73eacf23e1459ac61",
+  "mix_per_native_rank": {
+    "decode/CPU": {
+      "native_reconstruction_different_bits": 198,
+      "native_reconstruction_max_abs": 5.960464477539063e-08,
+      "native_sum_max_error": 1.1920928955078125e-07,
+      "projected_different_bits": 323,
+      "projected_max_abs": 2.086162567138672e-07,
+      "projected_sum_max_error": 1.1920928955078125e-07,
+      "words": 400
+    },
+    "decode/CUDA": {
+      "native_reconstruction_different_bits": 85,
+      "native_reconstruction_max_abs": 5.960464477539063e-08,
+      "native_sum_max_error": 1.1920928955078125e-07,
+      "projected_different_bits": 151,
+      "projected_max_abs": 2.086162567138672e-07,
+      "projected_sum_max_error": 1.1920928955078125e-07,
+      "words": 176
+    },
+    "prefill/CPU": {
+      "native_reconstruction_different_bits": 4760,
+      "native_reconstruction_max_abs": 1.1920928955078125e-07,
+      "native_sum_max_error": 1.1920928955078125e-07,
+      "projected_different_bits": 7842,
+      "projected_max_abs": 3.5762786865234375e-07,
+      "projected_sum_max_error": 1.7881393432617188e-07,
+      "words": 9300
+    },
+    "prefill/CUDA": {
+      "native_reconstruction_different_bits": 2046,
+      "native_reconstruction_max_abs": 1.7881393432617188e-07,
+      "native_sum_max_error": 1.1920928955078125e-07,
+      "projected_different_bits": 3379,
+      "projected_max_abs": 7.569789886474609e-06,
+      "projected_sum_max_error": 1.1920928955078125e-07,
+      "words": 3724
+    }
+  },
+  "numpy_version": "2.5.3",
+  "prefill_horizons_above_source_route_both_tiers": [
+    1,
+    2
+  ],
+  "previous_calibration_reproduced": true,
+  "private_manifest_sha256": "48a9e35554d2805c04b484b2a51d2e057d1e0cd453f535ee44f7db8e3c7ab2de",
+  "program_sha256": "7d373bf50126c2c6a058c92705d4d926b42857b96240baa26f11ddfc4862c3e5",
+  "rank_mismatches": [],
+  "results": {
+    "+1/decode/CPU": {
+      "paired_extra_hits_vs_recency": 59,
+      "paired_extra_hits_vs_source": 302,
+      "projection": {
+        "hits": 313,
+        "hits_hist": [
+          0,
+          1,
+          11,
+          46,
+          38
+        ],
+        "ordered_exact": 13,
+        "recall": 0.8151041666666666,
+        "rows": 96,
+        "set_exact": 38
+      },
+      "projection_on_recency_rows": {
+        "hits": 152,
+        "hits_hist": [
+          0,
+          1,
+          6,
+          25,
+          16
+        ],
+        "ordered_exact": 5,
+        "recall": 0.7916666666666666,
+        "rows": 48,
+        "set_exact": 16
+      },
+      "recency": {
+        "hits": 93,
+        "hits_hist": [
+          4,
+          9,
+          21,
+          14,
+          0
+        ],
+        "ordered_exact": 0,
+        "recall": 0.484375,
+        "rows": 48,
+        "set_exact": 0
+      },
+      "source_route": {
+        "hits": 11,
+        "hits_hist": [
+          85,
+          11,
+          0,
+          0,
+          0
+        ],
+        "ordered_exact": 0,
+        "recall": 0.028645833333333332,
+        "rows": 96,
+        "set_exact": 0
+      },
+      "source_route_on_recency_rows": {
+        "hits": 5,
+        "hits_hist": [
+          43,
+          5,
+          0,
+          0,
+          0
+        ],
+        "ordered_exact": 0,
+        "recall": 0.026041666666666668,
+        "rows": 48,
+        "set_exact": 0
+      }
+    },
+    "+1/decode/CUDA": {
+      "paired_extra_hits_vs_recency": 45,
+      "paired_extra_hits_vs_source": 151,
+      "projection": {
+        "hits": 155,
+        "hits_hist": [
+          0,
+          0,
+          2,
+          17,
+          25
+        ],
+        "ordered_exact": 13,
+        "recall": 0.8806818181818182,
+        "rows": 44,
+        "set_exact": 25
+      },
+      "projection_on_recency_rows": {
+        "hits": 78,
+        "hits_hist": [
+          0,
+          0,
+          2,
+          6,
+          14
+        ],
+        "ordered_exact": 5,
+        "recall": 0.8863636363636364,
+        "rows": 22,
+        "set_exact": 14
+      },
+      "recency": {
+        "hits": 33,
+        "hits_hist": [
+          4,
+          7,
+          8,
+          2,
+          1
+        ],
+        "ordered_exact": 0,
+        "recall": 0.375,
+        "rows": 22,
+        "set_exact": 1
+      },
+      "source_route": {
+        "hits": 4,
+        "hits_hist": [
+          40,
+          4,
+          0,
+          0,
+          0
+        ],
+        "ordered_exact": 0,
+        "recall": 0.022727272727272728,
+        "rows": 44,
+        "set_exact": 0
+      },
+      "source_route_on_recency_rows": {
+        "hits": 2,
+        "hits_hist": [
+          20,
+          2,
+          0,
+          0,
+          0
+        ],
+        "ordered_exact": 0,
+        "recall": 0.022727272727272728,
+        "rows": 22,
+        "set_exact": 0
+      }
+    },
+    "+1/prefill/CPU": {
+      "paired_extra_hits_vs_recency": 31,
+      "paired_extra_hits_vs_source": 6647,
+      "projection": {
+        "hits": 6932,
+        "hits_hist": [
+          7,
+          56,
+          345,
+          1110,
+          714
+        ],
+        "ordered_exact": 258,
+        "recall": 0.7764336917562724,
+        "rows": 2232,
+        "set_exact": 714
+      },
+      "projection_on_recency_rows": {
+        "hits": 60,
+        "hits_hist": [
+          0,
+          6,
+          5,
+          8,
+          5
+        ],
+        "ordered_exact": 2,
+        "recall": 0.625,
+        "rows": 24,
+        "set_exact": 5
+      },
+      "recency": {
+        "hits": 29,
+        "hits_hist": [
+          5,
+          12,
+          5,
+          1,
+          1
+        ],
+        "ordered_exact": 0,
+        "recall": 0.3020833333333333,
+        "rows": 24,
+        "set_exact": 1
+      },
+      "source_route": {
+        "hits": 285,
+        "hits_hist": [
+          1960,
+          259,
+          13,
+          0,
+          0
+        ],
+        "ordered_exact": 0,
+        "recall": 0.03192204301075269,
+        "rows": 2232,
+        "set_exact": 0
+      },
+      "source_route_on_recency_rows": {
+        "hits": 3,
+        "hits_hist": [
+          21,
+          3,
+          0,
+          0,
+          0
+        ],
+        "ordered_exact": 0,
+        "recall": 0.03125,
+        "rows": 24,
+        "set_exact": 0
+      }
+    },
+    "+1/prefill/CUDA": {
+      "paired_extra_hits_vs_recency": 18,
+      "paired_extra_hits_vs_source": 2720,
+      "projection": {
+        "hits": 2826,
+        "hits_hist": [
+          2,
+          33,
+          176,
+          439,
+          281
+        ],
+        "ordered_exact": 123,
+        "recall": 0.7588614393125671,
+        "rows": 931,
+        "set_exact": 281
+      },
+      "projection_on_recency_rows": {
+        "hits": 31,
+        "hits_hist": [
+          0,
+          0,
+          3,
+          3,
+          4
+        ],
+        "ordered_exact": 2,
+        "recall": 0.775,
+        "rows": 10,
+        "set_exact": 4
+      },
+      "recency": {
+        "hits": 13,
+        "hits_hist": [
+          2,
+          3,
+          5,
+          0,
+          0
+        ],
+        "ordered_exact": 0,
+        "recall": 0.325,
+        "rows": 10,
+        "set_exact": 0
+      },
+      "source_route": {
+        "hits": 106,
+        "hits_hist": [
+          826,
+          104,
+          1,
+          0,
+          0
+        ],
+        "ordered_exact": 0,
+        "recall": 0.028464017185821696,
+        "rows": 931,
+        "set_exact": 0
+      },
+      "source_route_on_recency_rows": {
+        "hits": 0,
+        "hits_hist": [
+          10,
+          0,
+          0,
+          0,
+          0
+        ],
+        "ordered_exact": 0,
+        "recall": 0.0,
+        "rows": 10,
+        "set_exact": 0
+      }
+    },
+    "+2/decode/CPU": {
+      "paired_extra_hits_vs_recency": 36,
+      "paired_extra_hits_vs_source": 249,
+      "projection": {
+        "hits": 262,
+        "hits_hist": [
+          0,
+          5,
+          22,
+          47,
+          18
+        ],
+        "ordered_exact": 2,
+        "recall": 0.7119565217391305,
+        "rows": 92,
+        "set_exact": 18
+      },
+      "projection_on_recency_rows": {
+        "hits": 127,
+        "hits_hist": [
+          0,
+          3,
+          11,
+          26,
+          6
+        ],
+        "ordered_exact": 1,
+        "recall": 0.6902173913043478,
+        "rows": 46,
+        "set_exact": 6
+      },
+      "recency": {
+        "hits": 91,
+        "hits_hist": [
+          4,
+          7,
+          21,
+          14,
+          0
+        ],
+        "ordered_exact": 0,
+        "recall": 0.4945652173913043,
+        "rows": 46,
+        "set_exact": 0
+      },
+      "source_route": {
+        "hits": 13,
+        "hits_hist": [
+          79,
+          13,
+          0,
+          0,
+          0
+        ],
+        "ordered_exact": 0,
+        "recall": 0.035326086956521736,
+        "rows": 92,
+        "set_exact": 0
+      },
+      "source_route_on_recency_rows": {
+        "hits": 9,
+        "hits_hist": [
+          37,
+          9,
+          0,
+          0,
+          0
+        ],
+        "ordered_exact": 0,
+        "recall": 0.04891304347826087,
+        "rows": 46,
+        "set_exact": 0
+      }
+    },
+    "+2/decode/CUDA": {
+      "paired_extra_hits_vs_recency": 47,
+      "paired_extra_hits_vs_source": 144,
+      "projection": {
+        "hits": 152,
+        "hits_hist": [
+          0,
+          0,
+          3,
+          18,
+          23
+        ],
+        "ordered_exact": 8,
+        "recall": 0.8636363636363636,
+        "rows": 44,
+        "set_exact": 23
+      },
+      "projection_on_recency_rows": {
+        "hits": 80,
+        "hits_hist": [
+          0,
+          0,
+          1,
+          6,
+          15
+        ],
+        "ordered_exact": 4,
+        "recall": 0.9090909090909091,
+        "rows": 22,
+        "set_exact": 15
+      },
+      "recency": {
+        "hits": 33,
+        "hits_hist": [
+          4,
+          7,
+          8,
+          2,
+          1
+        ],
+        "ordered_exact": 0,
+        "recall": 0.375,
+        "rows": 22,
+        "set_exact": 1
+      },
+      "source_route": {
+        "hits": 8,
+        "hits_hist": [
+          36,
+          8,
+          0,
+          0,
+          0
+        ],
+        "ordered_exact": 0,
+        "recall": 0.045454545454545456,
+        "rows": 44,
+        "set_exact": 0
+      },
+      "source_route_on_recency_rows": {
+        "hits": 3,
+        "hits_hist": [
+          19,
+          3,
+          0,
+          0,
+          0
+        ],
+        "ordered_exact": 0,
+        "recall": 0.03409090909090909,
+        "rows": 22,
+        "set_exact": 0
+      }
+    },
+    "+2/prefill/CPU": {
+      "paired_extra_hits_vs_recency": 20,
+      "paired_extra_hits_vs_source": 5591,
+      "projection": {
+        "hits": 5788,
+        "hits_hist": [
+          31,
+          158,
+          581,
+          1008,
+          361
+        ],
+        "ordered_exact": 88,
+        "recall": 0.6764843384759234,
+        "rows": 2139,
+        "set_exact": 361
+      },
+      "projection_on_recency_rows": {
+        "hits": 48,
+        "hits_hist": [
+          0,
+          8,
+          8,
+          4,
+          3
+        ],
+        "ordered_exact": 2,
+        "recall": 0.5217391304347826,
+        "rows": 23,
+        "set_exact": 3
+      },
+      "recency": {
+        "hits": 28,
+        "hits_hist": [
+          5,
+          11,
+          5,
+          1,
+          1
+        ],
+        "ordered_exact": 0,
+        "recall": 0.30434782608695654,
+        "rows": 23,
+        "set_exact": 1
+      },
+      "source_route": {
+        "hits": 197,
+        "hits_hist": [
+          1946,
+          189,
+          4,
+          0,
+          0
+        ],
+        "ordered_exact": 0,
+        "recall": 0.02302477793361384,
+        "rows": 2139,
+        "set_exact": 0
+      },
+      "source_route_on_recency_rows": {
+        "hits": 4,
+        "hits_hist": [
+          19,
+          4,
+          0,
+          0,
+          0
+        ],
+        "ordered_exact": 0,
+        "recall": 0.043478260869565216,
+        "rows": 23,
+        "set_exact": 0
+      }
+    },
+    "+2/prefill/CUDA": {
+      "paired_extra_hits_vs_recency": 14,
+      "paired_extra_hits_vs_source": 2397,
+      "projection": {
+        "hits": 2518,
+        "hits_hist": [
+          12,
+          73,
+          267,
+          405,
+          174
+        ],
+        "ordered_exact": 61,
+        "recall": 0.6761546723952739,
+        "rows": 931,
+        "set_exact": 174
+      },
+      "projection_on_recency_rows": {
+        "hits": 27,
+        "hits_hist": [
+          0,
+          1,
+          4,
+          2,
+          3
+        ],
+        "ordered_exact": 1,
+        "recall": 0.675,
+        "rows": 10,
+        "set_exact": 3
+      },
+      "recency": {
+        "hits": 13,
+        "hits_hist": [
+          2,
+          3,
+          5,
+          0,
+          0
+        ],
+        "ordered_exact": 0,
+        "recall": 0.325,
+        "rows": 10,
+        "set_exact": 0
+      },
+      "source_route": {
+        "hits": 121,
+        "hits_hist": [
+          812,
+          117,
+          2,
+          0,
+          0
+        ],
+        "ordered_exact": 0,
+        "recall": 0.032491944146079484,
+        "rows": 931,
+        "set_exact": 0
+      },
+      "source_route_on_recency_rows": {
+        "hits": 0,
+        "hits_hist": [
+          10,
+          0,
+          0,
+          0,
+          0
+        ],
+        "ordered_exact": 0,
+        "recall": 0.0,
+        "rows": 10,
+        "set_exact": 0
+      }
+    }
+  },
+  "status": "MEASURED_TF32_ROUTER_SIGNAL",
+  "weights_sha256": "5d61f8b0e2dabeadaab422063c3e1c0c2504225fdb12a4719af1993d7d1ab751"
+}

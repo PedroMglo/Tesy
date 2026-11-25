@@ -33,3 +33,5 @@ env LC_ALL=C PYTHONCOERCECLOCALE=0 PYTHONUTF8=1 OPENBLAS_NUM_THREADS=1 OMP_NUM_T
   --part23 "$ARCHIVE/part-23" --c7 "$TESY_REPO/c7-native-placement-screen-20260927-1117utc" \
   --placement /tmp/tesy-nvme-placement-20261124-01/receipt.json --new-output-dir "$NEW"
 ```
+
+Uma [calibração posterior, com identidade e protocolo próprios](tf32/README.md), recuperou os 3 400 quartetos e permitiu medir o sinal nas duas fases e nos dois destinos.
