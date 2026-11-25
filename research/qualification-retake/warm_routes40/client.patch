@@ -1,0 +1,63 @@
+--- a/expert_service_window.cpp
++++ b/expert_service_window.cpp
+@@ -4,6 +4,7 @@
+ #undef main
+ #include "llama-context.h"
+ #include <link.h>
++#include "routed_witness.h"
+ 
+ int chosen_mode(const std::string & profile) {
+     if(profile=="R0")return 0;
+@@ -21,14 +22,15 @@
+     const char * span=getenv("TESY_C262_LAYER_SPAN"),*order=getenv("TESY_C269_LAST_USE_ORDER");
+     check(mode==0?(!span&&!order):(span&&order&&std::string(span)=="153"&&std::string(order)=="1"),"causal profile env changed");
+ }
+-struct window_observer {runtime * r=nullptr; bool on=false;};
++struct window_observer {runtime * r=nullptr; bool on=false; std::unique_ptr<routed_witness> witness;};
+ bool observe_window(ggml_tensor *t,bool ask,void *opaque) {
+     auto &o=*static_cast<window_observer *>(opaque);
+     if(o.r)observe_rows(t,ask,&o.r->rows);
+     int layer=-1;
+     const std::string name=ggml_get_name(t);
+     const bool selected=o.on && sscanf(name.c_str(),"attn_norm-%d",&layer)==1 && name=="attn_norm-"+std::to_string(layer) && layer>=0 && layer<=24;
+-    if(ask)return selected;
++    const bool witnessed=o.witness && o.witness->observe(t,ask);
++    if(ask)return selected || witnessed;
+     if(selected)o.r->model->moe_stream()->window.record(1,layer,-1,-1,0,0,-1,0,(int)t->ne[1]);
+     return true;
+ }
+@@ -108,9 +110,16 @@
+     const bool trace=getenv("TESY_C294_WINDOW")!=nullptr;
+     auto & prefix_audit = r.model->moe_stream()->prefix_audit;
+     configure_prefix_observer(*r.model->moe_stream());
++    if (const char *v = getenv("TESY_ROUTE_GRAPH_WITNESS")) {
++        check(std::string(v)=="1" && !trace, "common witness requires C294 window off");
++        observer.witness=std::make_unique<routed_witness>();
++    }
+     auto observed_call = [&](const std::vector<llama_token> & input, int pos, bool all) {
+         if (prefix_audit) check(prefix_audit->begin_call(input.size()), "incomplete route call");
+-        return r.call(input, pos, all); // this harness already synchronizes before return
++        if (observer.witness) observer.witness->begin_call(pos, static_cast<int>(input.size()));
++        auto row=r.call(input,pos,all); // synchronizes before return
++        if (observer.witness) observer.witness->end_call();
++        return row;
+     };
+     check(!getenv("TESY_EXPERT_STORE_MANIFEST"),"C294 original byte service only");check(r.ctx->get_cparams().c262_layer_mode==0,"warmup mode not original");
+     check(r.ctx->get_cparams().c262_layer_span==(mode?153:0),"reserve span differs from frozen profile");
+@@ -138,6 +147,16 @@
+     }
+     const auto end=clock_type::now();const auto final=r.snapshot();
+     window.enabled.store(false);observer.on=false;
++    if (observer.witness) {
++        observer.witness->finish();
++        const auto & data=observer.witness->bytes;
++        const auto tmp=root/"routed-witness.partial";
++        std::ofstream output(tmp,std::ios::binary);
++        output.write(reinterpret_cast<const char *>(data.data()),data.size());
++        output.close();
++        check(bool(output),"witness write");
++        std::filesystem::rename(tmp, root/"routed-witness.bin");
++    }
+     if (prefix_audit) {
+         check(prefix_audit->finish(), "incomplete decode route coverage");
+         const auto & bytes = prefix_audit->data();

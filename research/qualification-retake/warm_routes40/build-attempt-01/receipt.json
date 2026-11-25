@@ -1,0 +1,120 @@
+{
+  "client_sha256": "5305f8edd2dfbc0137f3a25c29a9010006afe2446dd657976c664df6e2e217d3",
+  "common_libs_sha256": {
+    "libggml-base.so.0.15.3": "6e27d9ecb86e4747177189d2d2f6390280a2ee1000221ad68a0404023ea72539",
+    "libggml-cpu.so.0.15.3": "9aabce5751c5d7ca19b50e4cabb1fcf484c1581d275141dae8aba8ed33060313",
+    "libggml-cuda.so.0.15.3": "ff43655b15df5f3de1d5e00b0da18469a14f118bd644eb4b6d7f1915c85a4493",
+    "libggml.so.0.15.3": "70f635b8ba22ddd751590ec1fe11c895ef88e2aff0f4a63a3af96314e6a77d65",
+    "libllama.so.0.0.9884": "23bc41af61d232a552d79fa1048b3afa0d7250f8451983ce220465f89dadef44"
+  },
+  "elapsed_s": 5.406,
+  "fixture": {
+    "normal": {
+      "graphs": 2,
+      "rows": 176,
+      "sha256": "acf82ea63074ccd0792f4f03be229c3a1b52bdd7285c051dcfffdae8bc35ff1a"
+    },
+    "pruned-entirely": {
+      "graphs": 2,
+      "rows": 176,
+      "sha256": "acf82ea63074ccd0792f4f03be229c3a1b52bdd7285c051dcfffdae8bc35ff1a"
+    },
+    "swapped-ranks": "REJECTED_BY_INDEPENDENT_RANK_REFERENCE",
+    "swapped-rows": "REJECTED_BY_INDEPENDENT_RANK_REFERENCE"
+  },
+  "fixture_executable_sha256": "c650bcc4ef30082e1b9f28f5e7954aa381c1ea2a5044bc3b799c22f0fd0c2231",
+  "gpu_work": 0,
+  "max_child_rss_kib": 495896,
+  "model_forwards": 0,
+  "parent_receipt_sha256": "b5bccd6b296d9d12ebd92cbfb9cb1404495b62f742b59d0473e29fae288f8604",
+  "private_files_bytes": 383528,
+  "source_hashes": {
+    "build.py": "cc1fc5a779dd31843fa4f4d1a0df23be96483de904750d943b42a2ee1d83b9cf",
+    "client.patch": "d9f4e0c1567c80b36cd034b4625b73b825f266cd49d93f65b0ec491623ddad95",
+    "graph_fixture.cpp": "a374c5051ec04679f6d30447b8ef34dfedb280865191dcf137b628f8250c6a94",
+    "protocol.md": "b05bae00d4c639f421838cadcb7d1907520585990d727237a8ac64355b5c38d0",
+    "routed_witness.h": "57313d33561bbfd129f86734bd453e13af9baa5fce9b44728dcc9e1f33528520",
+    "witness.py": "51a8a71eaf84693fc261a25c686694e8361f6a6bda5d68c4c60890aba55dc058"
+  },
+  "stages": [
+    {
+      "log_sha256": "365c61a24468c154d065a275fc334d859d638723fb1634138d64fcbdcdff27e6",
+      "name": "patch",
+      "returncode": 0,
+      "seconds": 0.0074
+    },
+    {
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "name": "fixture-compile",
+      "returncode": 0,
+      "seconds": 0.4264
+    },
+    {
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "name": "fixture-normal",
+      "returncode": 0,
+      "seconds": 0.0053
+    },
+    {
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "name": "fixture-pruned-entirely",
+      "returncode": 0,
+      "seconds": 0.0047
+    },
+    {
+      "log_sha256": "3d7b691790578974d9bdaaab5437b1a31fed64a37101e0eed09108a48a8817ff",
+      "name": "fixture-omit-layer",
+      "returncode": 1,
+      "seconds": 0.0039
+    },
+    {
+      "log_sha256": "3678fafcde51c474182e7a8c72a18c5b1655ee80cc3aa050cff572c0ae91f4f2",
+      "name": "fixture-wrong-position",
+      "returncode": 1,
+      "seconds": 0.0037
+    },
+    {
+      "log_sha256": "28bad0cc6fc868811fb1e081860e3492278003e5ae85d57aa1d16ae9a7e22576",
+      "name": "fixture-wrong-output",
+      "returncode": 1,
+      "seconds": 0.0044
+    },
+    {
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "name": "fixture-swapped-ranks",
+      "returncode": 0,
+      "seconds": 0.005
+    },
+    {
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "name": "fixture-swapped-rows",
+      "returncode": 0,
+      "seconds": 0.0048
+    },
+    {
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "name": "client-compile",
+      "returncode": 0,
+      "seconds": 4.7339
+    },
+    {
+      "log_sha256": "e8b73f6678e6d6da8dbca12e1e22948145ee0b41c5b96a22b42bbf15e7c83a8b",
+      "name": "client-ldd",
+      "returncode": 0,
+      "seconds": 0.0064
+    },
+    {
+      "log_sha256": "50538b7322c8f1aa06ab24883c5dbe991c5f2dcafba39f6e41d837c5455f6187",
+      "name": "selftest",
+      "returncode": 0,
+      "seconds": 0.0568
+    },
+    {
+      "log_sha256": "328a73d087a534ca7ec073ee8b506c2de442e415cc2fa969d6bbb89a14ac01a8",
+      "name": "no-model-probe",
+      "returncode": 0,
+      "seconds": 0.0568
+    }
+  ],
+  "status": "PASS_GGML_CPU_FIXTURE_AND_CLIENT_ONLY"
+}

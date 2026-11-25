@@ -1,0 +1,63 @@
+{
+  "client_patch_sha256": "b0a509a4c1772ff3375042a945800f75e21a56b738771c0cb5c683a478abfedf",
+  "common_header_sha256": "57313d33561bbfd129f86734bd453e13af9baa5fce9b44728dcc9e1f33528520",
+  "elapsed_s": 1.562,
+  "executable_sha256": "4acbff5a22d9d34e4c8c483c066cdefc5ca8140eda899972d5acc8a07755addb",
+  "forward_passes": 0,
+  "mapped_objects_sha256": {
+    "libc.so.6": "a5c5ad9d59d3c69eda93aa8f82930ba06cc4e893a113e66c85ad6e96243d53c8",
+    "libcublas.so.13.6.0.2": "01dd70979e68625846e9a5edcba531d3798498b866aa1c925cc25d60f63fe680",
+    "libcublasLt.so.13.6.0.2": "93c275af70b6d39fbd9b78cbc925ad9a9a0a81189aaec1521a951119ebe72da3",
+    "libcuda.so.620.70.06": "aa6bd5117c0c66bb804ec63b31b8b5d54130259b1079941b9e00e6b928e8ed71",
+    "libcudart.so.13.3.29": "9f92e4c3f7e14d0fed69ef876a45d4255a2dc88cb552a673a90ce881c26282fe",
+    "libdl.so.2": "54d56c0f10466a05cc92685f8062ee6a2eaf59c62fb6f724217e984fcfbb5031",
+    "libgcc_s-16-20261029.so.1": "5a52ae4a6f1b119aa092aa1483c967e19d9ba036b1b0c2133236a8a2ce826ebf",
+    "libggml-base.so.0.15.3": "6e27d9ecb86e4747177189d2d2f6390280a2ee1000221ad68a0404023ea72539",
+    "libggml-cpu.so.0.15.3": "9aabce5751c5d7ca19b50e4cabb1fcf484c1581d275141dae8aba8ed33060313",
+    "libggml-cuda.so.0.15.3": "ff43655b15df5f3de1d5e00b0da18469a14f118bd644eb4b6d7f1915c85a4493",
+    "libggml.so.0.15.3": "70f635b8ba22ddd751590ec1fe11c895ef88e2aff0f4a63a3af96314e6a77d65",
+    "libgomp.so.1.0.0": "1e20cd85608bdb5d1662f07988adad28a6473cd70f80de2d2b4dcf82c94eaa74",
+    "libllama.so.0.0.9884": "23bc41af61d232a552d79fa1048b3afa0d7250f8451983ce220465f89dadef44",
+    "libm.so.6": "16a03ce6d24c8a46742206d4a9c1d35bb6577ae2384f153dc6ef4a4b62b5357f",
+    "libpthread.so.0": "41cad1a2bda56ff226e0b08db7edfaf4ec47d876ab1414a979fd157467b6c39d",
+    "librt.so.1": "3a23e51370381b0ab993932341fd69643ade24869936e471e1dde2e62398d9f7",
+    "libstdc++.so.6.0.36": "49811507d8fc0283d8f8023546613774c673f876fe823b1b99d0c8d46039deda"
+  },
+  "max_child_rss_kib": 250608,
+  "original_canary_receipt_sha256": "56d6db87ac18b40407b0b6c55bac3898e5c65aaefc623d233e803ac14297878a",
+  "pool_slots": 32,
+  "protocol_sha256": "ba2072695be87c5494ab77a6aa85b0501aaa3da32b169a1fe86735197fa981be",
+  "stages": [
+    {
+      "log_sha256": "c784c612a7afc9aee5a4a18174b155a998ed96fa34b331a02838add782b931d6",
+      "name": "overlay",
+      "returncode": 0
+    },
+    {
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "name": "compile",
+      "returncode": 0
+    },
+    {
+      "log_sha256": "21a3c99bf609d72d0509b3f28a4b0ee5b2f993e24c3bd70bf308e6c8ae9e4dee",
+      "name": "ldd",
+      "returncode": 0
+    },
+    {
+      "log_sha256": "d3b7c7c28cb698ad9fcc8fa50ac418043cf137d44ab94655f628856f173ad220",
+      "name": "reject-long",
+      "returncode": 2
+    },
+    {
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "name": "exclusive",
+      "returncode": 0
+    },
+    {
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "name": "reject-duplicate",
+      "returncode": 1
+    }
+  ],
+  "status": "PASS_MODEL_FREE_CANARY_BUILD"
+}

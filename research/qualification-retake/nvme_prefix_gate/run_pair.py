@@ -143,7 +143,7 @@ def checked(a, profile):
     return model, identity, raw, ids, env_contract, resources
 
 
-def run(a, out, profile):
+def run(a, out, profile, validator=numerical):
     model, identity, raw, ids, omp, resources = checked(a, profile)
     parent = a.new_output_dir.resolve()
     (parent / "raw").mkdir()
@@ -301,14 +301,14 @@ def run(a, out, profile):
             path = Path(str(stem) + ".logits.f32")
             require(path.stat().st_size == SIZE, "incomplete numerical trajectory")
             summary["row_comparison"] = compare_rows(path.read_bytes(), reference(raw)[1])
-        summary["numerical"] = numerical(raw, stem, mode)
+        summary["numerical"] = validator(raw, stem, mode)
         if profile.slots == 28 and mode == "ON":
             counts = summary["numerical"]["routing"]["counts_by_path"]
             require(counts["S"] > 0 and counts["M"] > 0, "both route paths required")
     out["status"] = f"PASS_PAIRED_SLOTS{profile.slots}_NUMERICAL"
 
 
-def main(profile=SLOTS32):
+def main(profile=SLOTS32, validator=numerical):
     ap = argparse.ArgumentParser(description=__doc__)
     for key in ["window", "placement", "backend", "executable", "raw-parent", "new-output-dir"]:
         ap.add_argument("--" + key, required=True, type=Path)
@@ -327,7 +327,7 @@ def main(profile=SLOTS32):
     a.new_output_dir.mkdir(mode=0o700)
     out = {"status": "FAIL_PRESERVED", "arms": []}
     try:
-        run(a, out, profile)
+        run(a, out, profile, validator)
     except NotAdmitted as exc:
         out.update(status="NOT_RUN_PHYSICAL_ADMISSION_REQUIRED", error=str(exc))
     except (OSError, ValueError, RuntimeError, KeyError, subprocess.SubprocessError) as exc:
