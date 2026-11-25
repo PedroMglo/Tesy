@@ -14,6 +14,7 @@ from warm_policy_controls.replay import EXPERT_BYTES, replay  # noqa: E402
 from warm_route_reference.verify import PROMPT, check_witness, witness_rows  # noqa: E402
 from warm_routes40.boundary import verify as verify_boundary  # noqa: E402
 from warm_routes40.witness import compare_tpr  # noqa: E402
+from warm_routes40.witness import read as read_witness  # noqa: E402
 
 C286_RECEIPT = "1288f59b44a1ddd69eecd52778f4f9b56e354d60973fdbf48c25175fe43796f4"
 ARM_ORDER = [("nominal153", "OFF"), ("nominal153", "ON"), ("code153", "ON"), ("code153", "OFF")]
@@ -25,43 +26,121 @@ def read_pinned(path, digest):
     return data
 
 
-def evaluate(family, family_sha, historical):
+def family_inputs(family, family_sha):
     receipt = json.loads(read_pinned(family / "receipt.json", family_sha))
     arms = receipt["arms"]
     boundary.require(
         receipt["status"] == "PASS_WARM_ROUTE_FAMILY"
-        and [(r["case"], r["mode"]) for r in arms] == ARM_ORDER,
-        "four validated arms required",
+        and receipt["not_run"] == []
+        and receipt["model_launch_receipts"] == 4
+        and [(arm["case"], arm["mode"]) for arm in arms] == ARM_ORDER
+        and len({arm["run_id"] for arm in arms}) == 4,
+        "four independent completed arms required",
     )
+    plan = json.loads(read_pinned(family / "protocol.json", receipt["plan_sha256"]))
+    boundary.require(
+        plan["schema"] == "tesy-warm-route-family-v1"
+        and plan["measurement_commit"] == receipt["measurement_commit"]
+        and plan["order"] == [list(pair) for pair in ARM_ORDER],
+        "family plan or commit mismatch",
+    )
+    raw = family / "raw"
+    for number, arm in enumerate(arms, 1):
+        mode, case, unit = arm["mode"], arm["case"], arm["run_id"]
+        suffix = f"-{number}-{case}-{mode.lower()}"
+        native = Path(arm["native_dir"])
+        boundary.require(
+            arm["status"] == "PASS_WARM_ROUTE_ARM"
+            and arm["scope_returncode"] == 0
+            and arm["monitor_stop"] is None
+            and arm["process_and_scope_closed"] is True
+            and unit == plan["unit_stem"] + suffix
+            and native.parts == ("raw", unit + ".native"),
+            "failed, unclosed or misplaced arm",
+        )
+        monitor = json.loads(read_pinned(raw / (unit + ".json"), arm["monitor_sha256"]))
+        launch = json.loads(read_pinned(raw / (unit + ".launch.json"), arm["launch_sha256"]))
+        read_pinned(raw / (unit + ".start-inventory.receipt.json"), arm["inventory_sha256"])
+        locked = json.loads(
+            read_pinned(family / (unit + ".json"), launch["resource_protocol_sha256"])
+        )
+        boundary.require(
+            monitor["run_id"] == launch["run_id"] == unit
+            and monitor["returncode"] == 0
+            and monitor["stop_reason"] is None
+            and monitor["process_identity"] == launch["process_identity"]
+            and monitor["start_inventory"] == launch["start_inventory"]
+            and arm["inventory_sha256"] == monitor["start_inventory"]["receipt_sha256"]
+            and monitor["limits"]["resource_protocol_sha256"] == launch["resource_protocol_sha256"]
+            and locked == dict(plan, execution_scope_unit=unit)
+            and monitor["binary_sha256"] == launch["binary_sha256"] == plan["executable_sha256"],
+            "inconsistent physical receipts",
+        )
+        gold = plan["independent_reference"][case]
+        hashes = arm["native_sha256"]
+        boundary.require(
+            arm["P_sha256"] == gold["P"]
+            and arm["F_sha256"] == gold["F"]
+            and hashes["all33.logits.f32"] == gold["gold"],
+            "unqualified numeric anchor",
+        )
+        native = family / native
+        for name in ("all33.logits.f32", "initial.json", "result.json", "events.tsv"):
+            with (native / name).open("rb") as stream:
+                boundary.require(
+                    hashlib.file_digest(stream, "sha256").hexdigest() == hashes[name],
+                    "changed native " + name,
+                )
+        if mode == "OFF":
+            boundary.require(
+                "prefix-routes.bin" not in hashes and not (native / "prefix-routes.bin").exists(),
+                "OFF emitted TPR1",
+            )
+    return arms
+
+
+def case_inputs(family, case, arms):
+    by_mode = {arm["mode"]: arm for arm in arms if arm["case"] == case}
+    states, witnesses = {}, {}
+    for mode, arm in by_mode.items():
+        native = family / arm["native_dir"]
+        hashes = arm["native_sha256"]
+        boundary_file = native / "boundary-i.json"
+        read_pinned(boundary_file, hashes["boundary-i.json"])
+        states[mode] = verify_boundary(case, boundary_file)["slot_vector_sha256"]
+        boundary.require(states[mode] == arm["I_sha256"], "arm I receipt differs from its snapshot")
+        witnesses[mode] = read_pinned(native / "routed-witness.bin", hashes["routed-witness.bin"])
+    boundary.require(states["OFF"] == states["ON"], "different contemporary slot vectors at I")
+    boundary.require(witnesses["OFF"] == witnesses["ON"], "contemporary routed witnesses differ")
+    wrt = witnesses["ON"]
+    graphs, rows = read_witness(wrt)
+    ordered = check_witness(
+        case, ((call - 9, layer, pos, ids) for call, _, layer, pos, ids in rows if call >= 10)
+    )
+    boundary.require(
+        all(
+            arm["decode_sha256"] == ordered
+            and arm["groups"] == len(rows)
+            and arm["ubatches"] == len(graphs)
+            for arm in by_mode.values()
+        ),
+        "contemporary rank or graph receipt differs",
+    )
+    del rows, graphs
+    on = by_mode["ON"]
+    raw = read_pinned(
+        family / on["native_dir"] / "prefix-routes.bin", on["native_sha256"]["prefix-routes.bin"]
+    )
+    compare_tpr(wrt, raw)
+    return raw, states["ON"]
+
+
+def evaluate(family, family_sha, historical):
+    arms = family_inputs(family, family_sha)
     cross = json.loads(read_pinned(UNIT / "cross_prefix_evidence/receipt.json", C286_RECEIPT))
     cases = {}
     for case, length in PROMPT.items():
-        files = {}
-        hashes = {}
-        for arm in (a for a in arms if a["case"] == case):
-            mode = arm["mode"]
-            native = Path(arm["native_dir"])
-            boundary.require(
-                native.parts == ("raw", arm["run_id"] + ".native"), "unexpected native path"
-            )
-            hashes[mode] = arm["native_sha256"]
-            files[mode] = family / native
-        states_i = []
-        for mode in ("OFF", "ON"):
-            boundary_file = files[mode] / "boundary-i.json"
-            read_pinned(boundary_file, hashes[mode]["boundary-i.json"])
-            states_i.append(verify_boundary(case, boundary_file)["slot_vector_sha256"])
-        boundary.require(states_i[0] == states_i[1], "different contemporary slot vectors at I")
-        wrt = read_pinned(files["ON"] / "routed-witness.bin", hashes["ON"]["routed-witness.bin"])
-        boundary.require(
-            wrt
-            == read_pinned(
-                files["OFF"] / "routed-witness.bin", hashes["OFF"]["routed-witness.bin"]
-            ),
-            "contemporary routed witnesses differ",
-        )
-        raw = read_pinned(files["ON"] / "prefix-routes.bin", hashes["ON"]["prefix-routes.bin"])
-        compare_tpr(wrt, raw)
+        raw, state_i = case_inputs(family, case, arms)
         tables = freeze_tables(raw, 8, length - 153, 153, 32)
         stats = {phase: describe(table) for phase, table in tables.items()}
         stats["changed_top40_memberships"] = sum(
@@ -85,7 +164,7 @@ def evaluate(family, family_sha, historical):
             root = historical / boundary.CAMPAIGN / "raw"
             pools, facts = boundary.audit_arm(root, name)
             boundary.require(
-                facts["boundary_slot_vector_sha256"] == states_i[0], "initial slots differ"
+                facts["boundary_slot_vector_sha256"] == state_i, "initial slots differ"
             )
             native = root / (name + ".native")
             historical_result = json.loads(
@@ -147,7 +226,7 @@ if __name__ == "__main__":
     a.new_output_dir.mkdir(mode=0o700)
     try:
         out = evaluate(a.family, a.family_receipt_sha256, a.historical_results)
-    except (ValueError, KeyError, OSError) as exc:
+    except (TypeError, IndexError, ValueError, KeyError, OSError) as exc:
         out = {
             "status": "NOT_RUN_RAW_REQUIRED"
             if isinstance(exc, FileNotFoundError)
