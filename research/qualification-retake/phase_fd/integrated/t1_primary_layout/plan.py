@@ -68,7 +68,7 @@ def bind(layer, expert, index, meta):
     offset = entry["pack_offset"]
     check(
         (entry["layer"], entry["expert"]) == (layer, expert)
-        and entry["tier"] == ("CPU" if layer < 25 else "CUDA")
+        and entry["tier"] == ("CPU" if layer < 25 else "GPU")
         and offset == (128 * layer + expert) * index["stride"],
         "indexed record",
     )
