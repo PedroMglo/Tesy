@@ -1,6 +1,6 @@
 # Manifesto C291 para o pack integral no NVMe
 
-**R01 passou a validação dos metadados e do construtor C291. A memória da derivação R01 ficou INCONCLUSIVE.** O índice conserva as 4 608 entradas nas 36 camadas, os 13 824 descritores de pesos e o total de 27 648 componentes, incluindo os biases. Usou a cópia integral C290 de 61 096 329 216 bytes qualificada no NVMe. A derivação leu metadados e verificou o FD dos pesos. O contador de bytes de payload lidos nesta fase foi zero. [Protocolo](protocol.md) · [Colocação integral](../packed_nvme_placement/)
+**R02 passou a validação dos metadados, o limite de 512 MiB desde o exec e a prova no construtor C291.** A própria imagem de derivação atingiu 87 396 KiB de espaço de endereços e 78 600 KiB de RSS. A memória da derivação R01 permanece INCONCLUSIVE. O índice conserva as 4 608 entradas nas 36 camadas, os 13 824 descritores de pesos e o total de 27 648 componentes, incluindo os biases. Usou a cópia integral C290 de 61 096 329 216 bytes qualificada no NVMe. A derivação leu metadados e verificou o FD dos pesos. O contador de bytes de payload lidos nesta fase foi zero. [Protocolo](protocol.md) · [Colocação integral](../packed_nvme_placement/)
 
 | Fase R01 no commit `b809f186e7df3ee8b8b4ef1d6d1e7550d222fdbe` | Resultado | Tempo | Memória registada |
 |---|---|---:|---:|
@@ -26,6 +26,16 @@ A derivação R01 chamou `setrlimit(RLIMIT_AS)` já dentro do interpretador. Os 
 **REPRODUZIDO em memória anónima.** Após tocar 48 MiB num ancestral, a sequência fork → exec de prlimit → Python arrancou com limite de 32 MiB. A nova imagem reportou `VmPeak` de 15 744 KiB e `VmHWM` de 11 248 KiB, mas `ru_maxrss` de 56 420 KiB. Ao colocar GNU time entre prlimit e Python, o filho de time reportou `VmPeak` de 15 744 KiB e `VmHWM` de 11 244 KiB. Tanto GNU time como o filho reportaram 11 052 KiB de RSS máximo. O `wait4` do ancestral sobre time continuou a reportar 56 420 KiB. O ensaio demonstra um mecanismo suficiente para a discrepância. O histórico R01 não identifica a sua causa individual. [Contraprova sintética](test_usage.py)
 
 **R02 pré-registado para a memória da derivação.** O lançador passa um limite hard e soft de 536 870 912 bytes a `prlimit` antes do exec, introduz GNU time como pai independente do interpretador e autentica o mesmo `derive.py` de R01 por SHA-256. No filho verifica o limite e os valores em `/proc/self/status` à entrada e à saída. O PASS exige `VmPeak`, `VmHWM` e máximo RSS medido por GNU time dentro do envelope, saída zero, integridade dos metadados e o resultado interno da derivação. A prova e os metadados recebem diretórios exclusivos distintos. A releitura do GGUF ou do pack, a compilação e o GPU têm orçamento zero nesta confirmação. [Lançador R02](usage.py)
+
+**MEDIDO em R02.** GNU time mediu 0,30 s e 78 600 KiB no filho. O limite hard e soft foi de 536 870 912 bytes à entrada e saída. A nova derivação produziu o mesmo índice de R01 e um manifesto que identifica o novo inode desse índice. O construtor percorreu as 4 608 entradas, observou o FD O_DIRECT, rejeitou a alteração do offset e registou zero pread. Compilação e execução desta fase tomaram 2,650 s; o maior filho atingiu 351 476 KiB.
+
+| Artefacto R02 | SHA-256 |
+|---|---|
+| Recibo da derivação | `cd4c0665c5485268cddfc7dba576b1cf490222c120cf34f72d555a6cbccbc5b9` |
+| Recibo do limite de memória | `63057a0a80dd6637f04f876a854a3b711bed72ec1e798d595fe328c0aaf7f9b0` |
+| Manifesto derivado | `f9773869e644f536bf465873ef0c72992af43296171ea959f9379f23afb57565` |
+| Recibo do construtor | `c81c15cb9614fd2780f35d5f3fc2b96ce280056f9da363ca74b42b112d1642f1` |
+| Manifesto do arquivo privado, parte 52 | `7be78dfac14c7b28c770d279964884cd04ded17549e986806940cc1ee3f87d5b` |
 
 Para repetir, apontar as variáveis para os artefactos Tesy selados e escolher dois destinos novos. `FROZEN` é a checkout limpa com o produtor de R01, `AUDIT` a checkout da correção. Manter o diretório dos metadados no destino definitivo para conservar a identidade do índice. A CLI do construtor está em `native_gate.py --help`.
 
