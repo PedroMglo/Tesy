@@ -30,3 +30,5 @@ O sexto lote contém a sonda de oito saídas em E10, o stream privado, o prechec
 O sétimo lote conserva o precheck e o FAIL da tentativa stock E20, incluindo a telemetria até à última amostra persistida. O arquivo contém sete ficheiros e 188 795 B. [Recibo do sétimo lote](part-07.json)
 
 O oitavo lote conserva as janelas C55, FAILs, binários congelados, instruções desmontadas, operandos e gold dos dois operadores CPU, os braços físicos e os recibos dos primeiros replays de prefill desta unidade. Os 134 ficheiros totalizam 37 537 825 B. A verificação releu cada ficheiro antes da publicação. [Recibo do oitavo lote](part-08.json)
+
+O nono lote reúne os originais das duas confirmações de cada estudo de cache, a falha de pré-verificação inicial e os ficheiros privados da preparação e do ensaio físico Aster T2. São 24 ficheiros e 4 742 800 B. O verificador confirmou tamanhos e hashes depois da publicação exclusiva. [Recibo do nono lote](part-09.json)
