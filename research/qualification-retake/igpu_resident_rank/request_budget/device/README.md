@@ -19,7 +19,7 @@ Preservando o custo exterior aos 44 passos, se **mais de 26,634%** desse mínimo
 
 A preparação e a execução usaram o commit `3aefff6608b74dccf07e1c7ecb8e8a7744b469fb`. A C118 durou 60,180 s e terminou 0,048 s antes do arranque. O cgroup atingiu 15 778 426 880 B, com swap zero e STOP a 19,5 GiB. O servidor saiu com código zero, o serviço encerrou e a porta ficou livre. O lote privado contém a tentativa inicial do probe que detetou a diferença entre o dev_t do subvolume e o do mount, a verificação posterior do mount ID, a prova do sampler perante um serviço transitório, a C55, a preparação e a sessão. Uma revisão independente dos originais e uma reabertura do lote reproduziram integralmente a classificação. [Manifesto de 49 ficheiros e 1 814 054 B](archive-88.json)
 
-Na checkout congelada, `ARCHIVE` designa a raiz de qualification-20261124-nvme-01. A repetição seguinte verifica o arquivo sem chamar o servidor.
+Na checkout que contém este relatório, `ARCHIVE` designa a raiz de qualification-20261124-nvme-01. A repetição seguinte verifica o arquivo sem chamar o servidor.
 
 ```sh
 u=research/qualification-retake/igpu_resident_rank/request_budget/device
