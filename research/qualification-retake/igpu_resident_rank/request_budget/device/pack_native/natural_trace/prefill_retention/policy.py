@@ -1,6 +1,9 @@
 """Streaming shadow banks. Each admission needs an actual, live victim offer."""
 
+import hashlib
+import json
 from collections import Counter
+from pathlib import Path
 
 
 class VictimBank:
@@ -96,3 +99,25 @@ def replay(prefix, prefill_calls, capacity=353):
     for bank in banks.values():
         bank.receipt()
     return banks, offered, slots
+
+
+def seal(prefix, prefill_calls, capacity=353):
+    """Serialize the decision made before submitting T2; keys are in oldest-offer order."""
+    banks, offered, slots = replay(prefix, prefill_calls, capacity)
+    inventory = [[*place, *entry] for place, entry in sorted(slots.items())]
+    primary_digest = hashlib.sha256(
+        json.dumps(inventory, separators=(",", ":")).encode()
+    ).hexdigest()
+    return {
+        "schema": "tesy-first-prefill-retention-v1",
+        "policy_sha256": hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
+        "capacity": capacity,
+        "prefill_calls": sorted(prefill_calls),
+        "primary_sha256": primary_digest,
+        "offered_keys": [list(key) for key in sorted(offered)],
+        "banks": {
+            name: bank.receipt()
+            | {"ordered_keys": [list(key) for key in sorted(bank.held, key=bank.held.get)]}
+            for name, bank in banks.items()
+        },
+    }
