@@ -54,3 +54,5 @@ O lote 18 guarda a enumeração CUDA, a C55, o grafo misto com o FAIL de bibliot
 O lote 19 reúne as seleções e avaliações de desenvolvimento WRT, o cálculo das quatro filas de componentes e a reanálise dos 638 grupos históricos com uma falta. O verificador conferiu dez ficheiros e 122 328 B. [Índice do lote 19](part-19.json)
 
 O lote 20 conserva a nova C55, as três fases da confirmação CUDA usando uma só release de driver e as duas reproduções da escolha de SSD no passo C135. Foram conferidos 27 ficheiros e 10 227 937 B. Os aliases temporários do driver apontavam para objetos pré-existentes do deployment autenticado. [Índice do lote 20](part-20.json)
+
+O lote 21 guarda as duas tentativas de build e os três lançamentos do replay de tokens, com o executável, os recibos idênticos das duas confirmações e os dois incidentes preservados. Foram conferidos 20 ficheiros e 1 407 714 B. [Índice do lote 21](part-21.json)
