@@ -1,6 +1,7 @@
 """Selected C292 parity for the recompiled C291 control and production pack observer."""
 
 import argparse
+import json
 import os
 import signal
 import subprocess
@@ -265,6 +266,32 @@ def arm(a, out, mode, gold, original_tree, r):
     ident, n, seen, wall = base.up.guarded_run(
         spec, out, unit, ctl, base.measure, live.linkage.run_bounded
     )
+    postflight(
+        ctl,
+        out,
+        out,
+        unit,
+        expected,
+        gold,
+        original_tree,
+        r,
+        ident,
+        n,
+        seen,
+        wall,
+        ctl.fd_evidence(),
+    )
+
+
+def postflight(
+    ctl, out, review, unit, expected, gold, original_tree, r, ident, n, seen, wall, fd_evidence
+):
+    raw = out / "raw"
+    capture = raw / (unit + ".capture")
+    journal = raw / "phase.pfj1"
+    protocol = read(out / "resource-store.json")
+    policy = read(out / "resource-policy.json")
+    baseline = read(out / "qualified-protocol.json")
     launch = read(raw / (unit + ".launch.json"))
     m = read(raw / (unit + ".json"))
     need(
@@ -285,8 +312,13 @@ def arm(a, out, mode, gold, original_tree, r):
     base.validate_monitor(normalized, normalized["explicit_env"], protocol)
     loader = ctl.audit(raw / "loader", ident["pid"])
     need(
-        loader["startup_count"] == 18
-        and loader["initialized_sha256"][name] == ctl.digest
+        len(ctl.initial) == 18
+        and ctl.initial <= set(seen)
+        and all(
+            loader["initialized_sha256"].get(Path(path).name) == ctl.files[path]["sha256"]
+            for path in ctl.initial
+        )
+        and loader["initialized_sha256"][ctl.image.name] == ctl.digest
         and {Path(v).name for v in seen} <= loader["initialized_sha256"].keys(),
         "observed numerical loader",
     )
@@ -296,7 +328,7 @@ def arm(a, out, mode, gold, original_tree, r):
             policy, datetime.fromisoformat(launch["start_inventory"]["popen_invoked_utc"])
         ),
         loader=loader,
-        pack=ctl.fd_evidence(),
+        pack=fd_evidence,
         maxima=m["maxima"],
         live_samples=n,
         cleanup=True,
@@ -313,11 +345,11 @@ def arm(a, out, mode, gold, original_tree, r):
     r["journal"] = inspect_journal(
         journal, bool(ctl.journal), ctl.data_stats["pack"], ctl.data_stats["model"]
     )
-    with (out / "c127-check.log").open("xb") as log:
-        subprocess.run(
-            baseline["check"], stdout=log, stderr=subprocess.STDOUT, timeout=45, check=True
-        )
-    c127 = read(out / "selected.json")
+    check_cmd = list(baseline["check"])
+    base.replace_once(check_cmd, str(out / "selected.json"), str(review / "selected.json"))
+    with (review / "c127-check.log").open("xb") as log:
+        subprocess.run(check_cmd, stdout=log, stderr=subprocess.STDOUT, timeout=45, check=True)
+    c127 = read(review / "selected.json")
     base.measure.check_gate(c127)
     numerics = grade.check_arm(capture, raw / (unit + ".stdout"), gold, c127)
     need(
@@ -325,12 +357,101 @@ def arm(a, out, mode, gold, original_tree, r):
         and numerics["c292"]["capture"] == original_tree,
         "C127/C270/original-C291 gate",
     )
-    save(out / "numerical.json", numerics)
+    save(review / "numerical.json", numerics)
     r.update(
         status=numerics["status"],
         capture_tree=numerics["c292"]["capture"],
-        numerical_sha256=sha(out / "numerical.json"),
-        c127_sha256=sha(out / "selected.json"),
+        numerical_sha256=sha(review / "numerical.json"),
+        c127_sha256=sha(review / "selected.json"),
+    )
+
+
+FAILED = "a6bd01e79fef679a739195efbd102a0b40861d017f0fa063dac904fa5f72a306"
+LIVE_CONTROL = "5b113a33e9f6d4f16797ac6fe29aa2ff05593a6c621039ada27494932e737177"
+R01_MONITOR = "c68b7974757e20aef54bb374285f388adf4d13aad74dda2d0e76e01bf3ebdfb4"
+
+
+def reopen_control(a, dest, gold, tree, row):
+    terminal = grade.read(a.failed_family / "receipt.json", FAILED)
+    proof = grade.read(a.control_fds / "receipt.json", LIVE_CONTROL)
+    pdata = a.failed_family / "control_off"
+    physical = grade.read(pdata / "receipt.json", terminal["arms"]["control_off"]["receipt_sha256"])
+    unit = physical["unit"]
+    raw = pdata / "raw"
+    contract = grade.read(pdata / "argv-observer.json", physical["contract_sha256"])
+    launch = grade.read(raw / (unit + ".launch.json"), proof["launch_sha256"])
+    end = grade.read(raw / (unit + ".json"), R01_MONITOR)
+    ident = proof["process_identity"]
+    need(
+        terminal["status"] == "FAIL_PRESERVED"
+        and terminal["model_launch_receipts"] == 1
+        and physical["reason"] == "KeyError: 'startup_count'"
+        and terminal["unexecuted_arms"] == ["overlay_off", "overlay_on"]
+        and proof["status"] == "PASS_LIVE_CONTROL_OFF_FD"
+        and proof["digest"] == physical["image_sha256"] == LIBS["control"]
+        and proof["source"] == "ff7543204a687fdaa1aa52ba354d6f5cdc7f91a8c86f1a201bba8775360c3fe6"
+        and ident == end["process_identity"] == launch["process_identity"]
+        and end["returncode"] == 0
+        and end["stop_reason"] is None
+        and not Path("/proc", str(ident["pid"])).exists()
+        and base.up.scope_active(unit) in {"inactive", "unknown"}
+        and "status=0/SUCCESS" in (pdata / "scope.log").read_text()
+        and sha(pdata / "resource-store.json") == contract["resource_sha256"]
+        and sha(pdata / "resource-policy.json") == sha(a.window / "resource-policy.json"),
+        "failed review versus physical control authority",
+    )
+    ctl = NumericalAuthority(a, "control_off", raw / "phase.pfj1")
+    samples_path = a.control_fds / "samples.jsonl"
+    need(sha(samples_path) == proof["sample_sha256"], "control FD samples")
+    samples = [json.loads(line) for line in samples_path.read_bytes().splitlines()]
+    fd = proof["pack"]
+    need(
+        len(samples) == proof["samples"] == fd["positive_samples"] == 4
+        and len(fd["fd_and_flags"]) == 1
+        and fd["fd_and_flags"][0][1] & os.O_DIRECT
+        and fd["fd_and_flags"][0][1] & os.O_ACCMODE == os.O_RDONLY
+        and all(
+            s["pid"] == ident["pid"]
+            and s["pack"] == fd["fd_and_flags"]
+            and s["model_stat"] == ctl.data_stats["model"] == contract["model_stat"]
+            and s["pack_stat"] == ctl.data_stats["pack"] == contract["pack_stat"]
+            and s["environ_verified"]
+            and set(s["mapped"]) <= ctl.allowed
+            for s in samples
+        ),
+        "reopened live FD samples",
+    )
+    seen = set().union(*(s["mapped"] for s in samples))
+    need(
+        seen == set(proof["observed"]) and ctl.initial == set(proof["startup"]),
+        "original live VMA census",
+    )
+    row.update(
+        unit=unit,
+        journal_enabled=False,
+        image_sha256=ctl.digest,
+        build_receipt_sha256=BUILD,
+        contract_sha256=physical["contract_sha256"],
+        r01_family_sha256=FAILED,
+        live_fd_sha256=LIVE_CONTROL,
+        raw_at=str(pdata),
+        monitor_provider=physical["monitor_provider"],
+        reused_measured_control=True,
+    )
+    postflight(
+        ctl,
+        pdata,
+        dest,
+        unit,
+        contract["explicit_env"],
+        gold,
+        tree,
+        row,
+        ident,
+        len(samples),
+        seen,
+        None,
+        fd,
     )
 
 
@@ -355,6 +476,7 @@ def campaign(a, out, r):
             "c291_family_sha256": FAMILY,
             "capture_tree": tree,
         },
+        revalidated_prior_launch_receipts=1,
         boundary_scope="C127_selected_189_plus_32",
         libraries=LIBS,
         build_receipt_sha256=BUILD,
@@ -366,7 +488,10 @@ def campaign(a, out, r):
         dest.mkdir()
         row = dict(status="FAIL_PRESERVED", mode=mode)
         try:
-            arm(a, dest, mode, gold, tree, row)
+            if mode == "control_off":
+                reopen_control(a, dest, gold, tree, row)
+            else:
+                arm(a, dest, mode, gold, tree, row)
         except Exception as exc:
             row["reason"] = f"{type(exc).__name__}: {exc}"
             raise
@@ -379,7 +504,7 @@ def campaign(a, out, r):
             r["model_launch_receipts"] += row["model_launch_receipts"]
     if a.execute:
         need(
-            r["model_launch_receipts"] == 3
+            r["model_launch_receipts"] == 2
             and all(x["capture_tree"] == tree for x in r["arms"].values()),
             "three independent captures",
         )
@@ -391,6 +516,8 @@ def main():
     for arg in (
         "build-dir",
         "original-family",
+        "failed-family",
+        "control-fds",
         "closure-dir",
         "preflight-dir",
         "r0-dir",
