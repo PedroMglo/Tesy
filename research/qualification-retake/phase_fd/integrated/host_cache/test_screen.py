@@ -2,6 +2,7 @@ import importlib.util
 import unittest
 from pathlib import Path
 from types import SimpleNamespace
+from unittest.mock import patch
 
 F = Path(__file__).with_name("screen.py")
 spec = importlib.util.spec_from_file_location("host_cache", F)
@@ -26,6 +27,71 @@ class HostCache(unittest.TestCase):
         )
         self.assertGreater(l2.additional(240), 3 * 2**30)
         self.assertGreater(l2.additional(354), l2.STOP - 16191946752 - l2.JOURNAL)
+
+    def test_evaluate_traverses_calibration_then_both_clock_budgets(self):
+        on, off = Path("ON"), Path("OFF")
+        row = {"predicted_n": 47, "prefill_s": 10, "decode_s": 8, "first_final_s": 10}
+        prices = {}
+        for label, n in (
+            ("C281_M4_predicted_tokens", 47),
+            ("optimistic_AR_post_first_evaluations", 46),
+        ):
+            ns, amount = l2.budget(row, n)
+            prices[label] = dict(
+                denominator=n,
+                conditional_prompt_budget_ns_upper=ns,
+                scenario_bytes_at_4_5GBps=amount,
+            )
+        receipt = dict(gates={}, trajectories=[1, 2], maxima={"cgroup_peak_bytes": 1})
+        phase = dict(
+            compulsory_unique=1,
+            origin_returned_bytes=l2.TRIPLE,
+            returned_after_prefill_for_origin_bytes=0,
+        )
+        fresh = dict(
+            status="PASS",
+            fd_identity_checked=False,
+            nominal_prefill=phase,
+            calls=[{"tokens": n} for n in [5, 148] + [1] * 46],
+        )
+        pinned_inputs = {
+            on / "receipt.json": dict(
+                receipt,
+                status="PASS_C281_PFJ_ON",
+                own_ON_price=prices,
+                rows=[{}, row],
+                journal_audit_sha256="audit",
+                journal_sha256="journal",
+                clock_transfer="test",
+            ),
+            off / "receipt.json": dict(receipt, status="PASS_C281_PFJ_OFF"),
+            on / "journal-audit.json": dict(fresh, fd_identity_checked=True),
+        }
+        for name, (_, peak) in l2.BASELINE.items():
+            pinned_inputs[l2.ROOT / name] = {"maxima": {"cgroup_peak_bytes": peak}}
+        inputs = [(0, 0, 1, 4, 2), (0, 1, 1, 6, 3)]
+        rows = [ev(k, *g, c=l2.TRIPLE) for g in inputs for k in (13, 15, 17, 10)]
+        native = SimpleNamespace(
+            read_journal=lambda path: (rows, {"journal_sha256": "journal"}),
+            audit=lambda *args: fresh,
+            identity=key,
+        )
+        loader = SimpleNamespace(exec_module=lambda mod: None)
+        with (
+            patch.object(l2, "pinned", side_effect=lambda path, digest: pinned_inputs[path]),
+            patch.object(
+                l2.importlib.util,
+                "spec_from_file_location",
+                return_value=SimpleNamespace(loader=loader),
+            ),
+            patch.object(l2.importlib.util, "module_from_spec", return_value=native),
+        ):
+            out = l2.evaluate(on, "on", off, "off")
+        self.assertEqual(out["decision"], "NO_GO_LRU_SCREEN")
+        self.assertEqual(out["gates"]["C281_M4_predicted_tokens"]["allowed_ns"], 10166666667)
+        self.assertEqual(
+            out["gates"]["optimistic_AR_post_first_evaluations"]["allowed_ns"], 10333333334
+        )
 
     def test_pinned_hit_cannot_be_evicted_by_concurrent_publication(self):
         c = l2.Cache(1)

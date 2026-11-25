@@ -219,8 +219,8 @@ def evaluate(on_root, on_hash, off_root, off_hash):
     for name, (digest, peak) in BASELINE.items():
         need(pinned(ROOT / name, digest)["maxima"]["cgroup_peak_bytes"] == peak, "historical peak")
         peaks.append(peak)
-    for budget, k in ((3 * 2**30, 239), (STOP - max(peaks) - JOURNAL, 353)):
-        need(additional(k) <= budget < additional(k + 1), "capacity calibration")
+    for capacity_bytes, k in ((3 * 2**30, 239), (STOP - max(peaks) - JOURNAL, 353)):
+        need(additional(k) <= capacity_bytes < additional(k + 1), "capacity calibration")
     on = pinned(on_root / "receipt.json", on_hash)
     off = pinned(off_root / "receipt.json", off_hash)
     need(
