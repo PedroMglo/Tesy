@@ -40,3 +40,5 @@ env LC_ALL=C PYTHONCOERCECLOCALE=0 PYTHONUTF8=1 OPENBLAS_NUM_THREADS=1 OMP_NUM_T
   python3 -B research/qualification-retake/c135_warm_entry/screen.py \
     --repo "$PWD" --trace "$C135_TRACE" --pr45-checkout "$PR45" --new-output-dir "$NEW_OUT"
 ```
+
+A comparação com o prefill de Tideway quantifica a sobreposição por dupla bufferização quando todas as 128 entradas são trazidas para cada camada. [Limite por capacidade e variante seletiva](../tideway/README.md)
