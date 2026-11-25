@@ -1,0 +1,213 @@
+--- a/src/llama-moe-stream.h
++++ b/src/llama-moe-stream.h
+@@ -166,6 +166,19 @@
+     std::deque<llama_moe_stream_work> q_demand;
+-
++
+     std::vector<std::thread> workers;
++    // A detached demand still owns a LOADING primary slot. Only its producer
++    // may take this record under mtx after its synchronous read has returned.
++    struct attached_demand {
++        llama_moe_stream_work work;
++        uint64_t scope = 0;
++        uint64_t ticket = 0;
++    };
++    std::array<attached_demand, 10> continuations{};
++    bool continuations_enabled = false; // fixed before any worker starts
++    size_t continuation_count_locked() const;
++    bool take_continuation_locked(int index, uint64_t ticket, bool read_ok,
++                                  llama_moe_stream_work & work);
++
+     bool workers_started = false;
+     bool shutting_down   = false;
+     bool load_failed     = false;
+--- a/src/llama-moe-stream.cpp
++++ b/src/llama-moe-stream.cpp
+@@ -328,13 +328,15 @@
+ void llama_moe_stream::prediction_begin(bool enabled) {
+     std::lock_guard<std::mutex> lk(mtx);
+     if(!prediction_stage)throw std::runtime_error("CPU staging arena was not prospectively allocated");
++    if (continuation_count_locked() || load_failed)
++        throw std::runtime_error("cannot start a scope with pending demands or failed service");
+     prediction_stage->begin(enabled);
+ }
+ void llama_moe_stream::prediction_finish() {
+     std::unique_lock<std::mutex> lk(mtx);
+     if(!prediction_stage)return;
+     prediction_stage->finish();ob::note("finish_begin");cv_work.notify_all();
+-    if(!cv_done.wait_for(lk,std::chrono::seconds(10),[&]{return prediction_stage->idle()||load_failed;}))
++    if(!cv_done.wait_for(lk,std::chrono::seconds(10),[&]{return (prediction_stage->idle() && !continuation_count_locked()) || load_failed;}))
+         throw std::runtime_error("CPU staging cleanup timeout");
+     if(load_failed)throw std::runtime_error("CPU staging byte service failed");
+     ob::note("finish_end");
+@@ -379,6 +381,46 @@
+     }
+ }
+-
++
++size_t llama_moe_stream::continuation_count_locked() const {
++    return std::count_if(continuations.begin(), continuations.end(),
++                         [](const attached_demand & d) { return d.work.sl != nullptr; });
++}
++
++// Called by the producer under mtx, immediately after complete() on this index.
++// complete(false) already discarded the failed entry. Copy/publish share the
++// path used by the waiting worker and execute only with both ownerships proven.
++bool llama_moe_stream::take_continuation_locked(int index, uint64_t ticket, bool read_ok,
++                                               llama_moe_stream_work & work) {
++    const auto saved = std::exchange(continuations.at(index), attached_demand{});
++    if (!saved.work.sl) return false;
++
++    work = saved.work;
++    auto & layer = *work.sl;
++    auto & stage = *prediction_stage;
++    const auto & entry = stage.entries.at(index);
++    const bool owns_source = stage.scope == saved.scope && saved.ticket == ticket &&
++        entry.scope == saved.scope && entry.ticket == ticket && entry.expert == work.expert &&
++        entry.call == work.trace_call && entry.layer == layer.il && entry.demand &&
++        !entry.expired && entry.status == c305_cpu_stage::READY;
++    const bool owns_dest = layer.slot_gen.at(work.slot) == work.gen &&
++        layer.slot_expert.at(work.slot) == work.expert &&
++        layer.slot_state.at(work.slot) == LLAMA_MOE_STREAM_SLOT_LOADING &&
++        layer.slot_claimed.at(work.slot);
++    if (!read_ok || !owns_source || !owns_dest || shutting_down || load_failed) {
++        if (owns_dest) layer.slot_claimed.at(work.slot) = 0;
++        if (owns_source) {
++            // No reader is in flight any longer; never free another ticket.
++            stage.record(4, index);
++            stage.entries.at(index) = {};
++        }
++        if (!shutting_down) load_failed = true;
++        ob::note("continuation_reject", work.expert, work.slot, work.gen, saved.ticket);
++        return false;
++    }
++    ob::note("handoff", work.expert, work.slot, work.gen, ticket);
++    return true;
++}
++
+ // I/O worker: pops a reserved load, reads its expert slab(s) from the GGUF file into the cache
+ // slot, and marks the slot RESIDENT (or flags load_failed); stale/duplicate items are skipped
+ void llama_moe_stream::worker_loop() {
+@@ -394,6 +436,11 @@
+         if (shutting_down) {
+             break;
+         }
++        static_assert(std::tuple_size<decltype(continuations)>::value == c305_cpu_stage::slots);
++        llama_moe_stream_work w{};
++        int staged = -1;
++        uint64_t prediction_ticket = 0;
++        bool validate_stage = false;
+         if(q_demand.empty()) {
+             const int index=prediction_stage->next();
+             const auto ticket=prediction_stage->start(index);
+@@ -404,46 +451,70 @@
+             lk.lock();prediction_stage->complete(index,ticket,ok);
+             ob::note("stage_complete",expert,-1,0,ticket);
+             if(!ok&&!shutting_down)load_failed=true;
+-            cv_done.notify_all();cv_work.notify_all();continue;
+-        }
+-
+-        llama_moe_stream_work w = q_demand.front();
+-        q_demand.pop_front();
++            const bool attached = continuations_enabled && take_continuation_locked(index, ticket, ok, w);
++            cv_done.notify_all();cv_work.notify_all();
++            if (!attached) continue;
++            staged = index;
++            prediction_ticket = ticket;
++        } else {
++            w = q_demand.front();
++            q_demand.pop_front();
++            auto & sl = *w.sl;
++            if (w.gen != sl.slot_gen[w.slot] ||
++                sl.slot_state[w.slot] != LLAMA_MOE_STREAM_SLOT_LOADING ||
++                sl.slot_expert[w.slot] != w.expert || sl.slot_claimed[w.slot]) {
++                continue;
++            }
++            sl.slot_claimed[w.slot] = 1;
++            window.record(5,sl.il,w.expert,w.slot,w.gen,w.trace_route,-1,0,0,w.trace_call);
++            if (prediction_stage && prediction_stage->enabled) {
++                staged = prediction_stage->find(int(w.trace_call), sl.il, w.expert);
++            }
++            if (staged >= 0) {
++                auto & stage = *prediction_stage;
++                const auto & entry = stage.entries.at(staged);
++                prediction_ticket = entry.ticket;
++                if (!stage.demand(staged, prediction_ticket)) {
++                    staged = -1;
++                } else if (entry.status == c305_cpu_stage::READING) {
++                    cv_work.notify_all();
++                    if (continuations_enabled) {
++                        auto & pending = continuations.at(staged);
++                        if (pending.work.sl) {
++                            // The older reservation remains owned; the fixture stops on protocol failure.
++                            sl.slot_claimed[w.slot] = 0;
++                            load_failed = true;
++                            cv_done.notify_all();
++                            continue;
++                        }
++                        pending = {w, entry.scope, prediction_ticket};
++                        ob::note("defer", w.expert, w.slot, w.gen, prediction_ticket);
++                        continue;
++                    }
++                    stage.stats.waits++;
++                    ob::note("park",w.expert,w.slot,w.gen,prediction_ticket);
++                    cv_done.wait(lk,[&]{return shutting_down||load_failed||entry.status!=c305_cpu_stage::READING;});
++                    ob::note("resume",w.expert,w.slot,w.gen,prediction_ticket);
++                } else {
++                    cv_work.notify_all();
++                }
++            }
++        }
+-
++
+         auto & sl = *w.sl;
+-        if (w.gen != sl.slot_gen[w.slot] ||
+-            sl.slot_state[w.slot] != LLAMA_MOE_STREAM_SLOT_LOADING ||
+-            sl.slot_expert[w.slot] != w.expert ||
+-            sl.slot_claimed[w.slot]) {
+-            continue; // stale or duplicate item
+-        }
+-        sl.slot_claimed[w.slot] = 1;
+-        window.record(5,sl.il,w.expert,w.slot,w.gen,w.trace_route,-1,0,0,w.trace_call);
+-
+-        int staged=-1;uint64_t prediction_ticket=0;bool validate_stage=false;
+-        if(prediction_stage&&prediction_stage->enabled) {
+-            staged=prediction_stage->find(int(w.trace_call),sl.il,w.expert);
+-            if(staged>=0) {
+-                prediction_ticket=prediction_stage->entries[staged].ticket;
+-                if(!prediction_stage->demand(staged,prediction_ticket))staged=-1;
+-                else {
+-                    cv_work.notify_all();
+-                    if(prediction_stage->entries[staged].status==c305_cpu_stage::READING) {
+-                        prediction_stage->stats.waits++;
+-                        ob::note("park",w.expert,w.slot,w.gen,prediction_ticket);
+-                        cv_done.wait(lk,[&]{return shutting_down||load_failed||prediction_stage->entries[staged].status!=c305_cpu_stage::READING;});
+-                        ob::note("resume",w.expert,w.slot,w.gen,prediction_ticket);
+-                    }
+-                    if(shutting_down||load_failed){sl.slot_claimed[w.slot]=0;cv_done.notify_all();break;}
+-                    if(w.gen!=sl.slot_gen[w.slot]||sl.slot_expert[w.slot]!=w.expert||sl.slot_state[w.slot]!=LLAMA_MOE_STREAM_SLOT_LOADING||!sl.slot_claimed[w.slot]) {
+-                        load_failed=true;sl.slot_claimed[w.slot]=0;cv_done.notify_all();break;
+-                    }
+-                    prediction_stage->claim(staged,prediction_ticket);
+-                    ob::note("claim",w.expert,w.slot,w.gen,prediction_ticket);
+-                    prediction_stage->record(7,staged,w.slot,w.gen);
+-                    if(prediction_stage->validate&&prediction_stage->stats.validation_claims<8){prediction_stage->stats.validation_claims++;validate_stage=true;}
+-                }
+-            }
++        if (staged >= 0) {
++            const bool owns = w.gen == sl.slot_gen[w.slot] && w.expert == sl.slot_expert[w.slot] &&
++                              sl.slot_state[w.slot] == LLAMA_MOE_STREAM_SLOT_LOADING && sl.slot_claimed[w.slot];
++            if (shutting_down || load_failed || !owns) {
++                if (owns) sl.slot_claimed[w.slot] = 0;
++                if (!shutting_down) load_failed = true;
++                cv_done.notify_all();
++                break;
++            }
++            prediction_stage->claim(staged,prediction_ticket);
++            ob::note("claim",w.expert,w.slot,w.gen,prediction_ticket);
++            prediction_stage->record(7,staged,w.slot,w.gen);
++            if(prediction_stage->validate&&prediction_stage->stats.validation_claims<8){prediction_stage->stats.validation_claims++;validate_stage=true;}
+         }
+-
++
+         lk.unlock();
