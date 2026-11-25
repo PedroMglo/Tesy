@@ -1,0 +1,404 @@
+{
+  "schema": "tesy-c305-native-blocking-manager-v1",
+  "decision": "PASS_NATIVE_BLOCKING_MANAGER_FIXTURE",
+  "source_commit": "c94780b12820c7b3fb20f2a9acf38bb27506c6ae",
+  "source_tree": "e418713c063a33214d5bf75f3ff25b40090ab7a1",
+  "files": {
+    "run.py": "0c0de77f6e809c854163e5fa47fb9db31e5410766090e4b9fff6e69e85c9debd",
+    "verify_result.py": "762950b44e69670fcb9423dd62f412dd94911836894c0b1767a57ecaa5b7bffc",
+    "fixture.cpp": "65ba02a8086e8372a738e224ee0486f404a882b7bf6cc6fb623705990b119ec9",
+    "fixture_observer.h": "52e4fa06bbcf166cae839abf2ccea5258b29821dc4697f8c68971a097eb2453f",
+    "observer.patch": "541128979609fcd64720d6cd582a1a316dea6242f42a100c2261b2fed999cb44",
+    "protocolo.md": "d5a6f79e823ba31691e33fc358305c9f123f07e137d840d681d943c08205f4b3"
+  },
+  "phases": {
+    "hooks": {
+      "elapsed_s": 0.004815,
+      "max_rss_kib": 2176,
+      "allocated_bytes": 1486848
+    },
+    "compiler": {
+      "elapsed_s": 0.002423,
+      "max_rss_kib": 3176,
+      "allocated_bytes": 1495040
+    },
+    "build": {
+      "elapsed_s": 3.972951,
+      "max_rss_kib": 390664,
+      "allocated_bytes": 2568192
+    },
+    "linkage": {
+      "elapsed_s": 0.009631,
+      "max_rss_kib": 3476,
+      "allocated_bytes": 2576384
+    }
+  },
+  "arms": [
+    {
+      "arm": 1,
+      "mode": "OFF",
+      "result": {
+        "decision": "PASS_NATIVE_MANAGER_FIXTURE_ARM",
+        "events": 0,
+        "worker_count_observed": 0,
+        "schedule": null,
+        "journal_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "destinations": [
+          {
+            "expert": 1,
+            "slot": 4,
+            "generation": 1,
+            "components_sha256": [
+              "dfddd100be91ad4f2b1123e50e3d9dcda526069fea2401699b58d944426cbed3",
+              "f4651e7fd75e9ebc06f659f1ced674878152b70d2c7dae6ba8d2f20a83edecf3",
+              "73fe32a5c0f2a5a90162385c62f62bed297cef332b0bad270bdd82438c095412"
+            ]
+          },
+          {
+            "expert": 4,
+            "slot": 5,
+            "generation": 1,
+            "components_sha256": [
+              "32cd61cd7e0cf2f3fb6faa943b5bab68a6632e92da75d9b4339b07eef0e57adc",
+              "d8f771dd6b521ab3780c7c71a2e7c0ccfe8bfbb9c4b93f88ed419c6b1f870cf7",
+              "ec44f30d480487f67c26beba49f49baab584772572792dea2b3d8ef96e9b6100"
+            ]
+          },
+          {
+            "expert": 8,
+            "slot": 0,
+            "generation": 1,
+            "components_sha256": [
+              "3024cf3bf81bad9ffadd61351de454116cffd2bbe72729101bda6398ea24a3e7",
+              "5e42fa972d4b0d817dbafdb3595f5dd0312175c2655f93cdf4b86f96ca518db8",
+              "c463a4699041b92c6fa3c8e8d300ab35d178f4302fd3194feeb1f4428873dc08"
+            ]
+          },
+          {
+            "expert": 9,
+            "slot": 1,
+            "generation": 1,
+            "components_sha256": [
+              "b7a89dfc552b5c1856aca49784abd4dc8f7b29f89dde51ec53dbac4b16ae7aa3",
+              "a19274432bf568d3b70f77456775de5bae4ea472e9d4c459997fe5f6503197f0",
+              "2ce3e64632536c3dcf736ac840609f47895209c609043c5712e9a5a6ebb07c38"
+            ]
+          }
+        ],
+        "destinations_sha256": "3aa0ce706797e89970774a75de6e180ea2e9b1cf95039f85932052c32adad74f",
+        "counters": {
+          "issued": 3,
+          "reads": 3,
+          "completed_reads": 3,
+          "expired_running": 2,
+          "waits": 1,
+          "consumed": 1,
+          "errors": 0,
+          "peak_running_spec": 3
+        },
+        "terminal": {
+          "idle": true,
+          "workers": 4,
+          "queue": 0,
+          "claimed": 0,
+          "shutting_down": false,
+          "load_failed": false,
+          "direct_primary": true,
+          "direct_stage": true
+        }
+      },
+      "raw_sha256": "b079bbc84ff4338f73c6e1cef74ff71f35d8a70d676c13e02a9821e0c76f80c7",
+      "usage": {
+        "elapsed_s": 0.366673,
+        "max_rss_kib": 291280,
+        "allocated_bytes": 108810240
+      }
+    },
+    {
+      "arm": 2,
+      "mode": "ON",
+      "result": {
+        "decision": "PASS_NATIVE_MANAGER_FIXTURE_ARM",
+        "events": 63,
+        "worker_count_observed": 4,
+        "schedule": {
+          "workers": 4,
+          "producer_workers_by_expert": [
+            3,
+            2,
+            0
+          ],
+          "parked_worker": 1,
+          "direct_dispatch_worker": 2,
+          "last_publish_seq": 48,
+          "barrier_end_seq": 49,
+          "remap_return_seq": 50,
+          "finish_begin_seq": 51,
+          "late_completion_seq": 57,
+          "finish_end_seq": 58
+        },
+        "journal_sha256": "137a9587ac7b78d89fb4d240b280e5b43c06ca14b230b418cd537aebfde34f54",
+        "destinations": [
+          {
+            "expert": 1,
+            "slot": 4,
+            "generation": 1,
+            "components_sha256": [
+              "dfddd100be91ad4f2b1123e50e3d9dcda526069fea2401699b58d944426cbed3",
+              "f4651e7fd75e9ebc06f659f1ced674878152b70d2c7dae6ba8d2f20a83edecf3",
+              "73fe32a5c0f2a5a90162385c62f62bed297cef332b0bad270bdd82438c095412"
+            ]
+          },
+          {
+            "expert": 4,
+            "slot": 5,
+            "generation": 1,
+            "components_sha256": [
+              "32cd61cd7e0cf2f3fb6faa943b5bab68a6632e92da75d9b4339b07eef0e57adc",
+              "d8f771dd6b521ab3780c7c71a2e7c0ccfe8bfbb9c4b93f88ed419c6b1f870cf7",
+              "ec44f30d480487f67c26beba49f49baab584772572792dea2b3d8ef96e9b6100"
+            ]
+          },
+          {
+            "expert": 8,
+            "slot": 0,
+            "generation": 1,
+            "components_sha256": [
+              "3024cf3bf81bad9ffadd61351de454116cffd2bbe72729101bda6398ea24a3e7",
+              "5e42fa972d4b0d817dbafdb3595f5dd0312175c2655f93cdf4b86f96ca518db8",
+              "c463a4699041b92c6fa3c8e8d300ab35d178f4302fd3194feeb1f4428873dc08"
+            ]
+          },
+          {
+            "expert": 9,
+            "slot": 1,
+            "generation": 1,
+            "components_sha256": [
+              "b7a89dfc552b5c1856aca49784abd4dc8f7b29f89dde51ec53dbac4b16ae7aa3",
+              "a19274432bf568d3b70f77456775de5bae4ea472e9d4c459997fe5f6503197f0",
+              "2ce3e64632536c3dcf736ac840609f47895209c609043c5712e9a5a6ebb07c38"
+            ]
+          }
+        ],
+        "destinations_sha256": "3aa0ce706797e89970774a75de6e180ea2e9b1cf95039f85932052c32adad74f",
+        "counters": {
+          "issued": 3,
+          "reads": 3,
+          "completed_reads": 3,
+          "expired_running": 2,
+          "waits": 1,
+          "consumed": 1,
+          "errors": 0,
+          "peak_running_spec": 3
+        },
+        "terminal": {
+          "idle": true,
+          "workers": 4,
+          "queue": 0,
+          "claimed": 0,
+          "shutting_down": false,
+          "load_failed": false,
+          "direct_primary": true,
+          "direct_stage": true
+        }
+      },
+      "raw_sha256": "8cbf6d5330e4de55ae21f3a09360333632b5fa446be9ff35a56929e51a4d6629",
+      "usage": {
+        "elapsed_s": 0.367209,
+        "max_rss_kib": 291068,
+        "allocated_bytes": 109277184
+      }
+    },
+    {
+      "arm": 3,
+      "mode": "ON",
+      "result": {
+        "decision": "PASS_NATIVE_MANAGER_FIXTURE_ARM",
+        "events": 63,
+        "worker_count_observed": 4,
+        "schedule": {
+          "workers": 4,
+          "producer_workers_by_expert": [
+            2,
+            1,
+            3
+          ],
+          "parked_worker": 0,
+          "direct_dispatch_worker": 1,
+          "last_publish_seq": 48,
+          "barrier_end_seq": 49,
+          "remap_return_seq": 50,
+          "finish_begin_seq": 51,
+          "late_completion_seq": 57,
+          "finish_end_seq": 58
+        },
+        "journal_sha256": "f397727e451ecf4eb6e243c38a2274e7748b41582be7ff6800361bad11cc61f2",
+        "destinations": [
+          {
+            "expert": 1,
+            "slot": 4,
+            "generation": 1,
+            "components_sha256": [
+              "dfddd100be91ad4f2b1123e50e3d9dcda526069fea2401699b58d944426cbed3",
+              "f4651e7fd75e9ebc06f659f1ced674878152b70d2c7dae6ba8d2f20a83edecf3",
+              "73fe32a5c0f2a5a90162385c62f62bed297cef332b0bad270bdd82438c095412"
+            ]
+          },
+          {
+            "expert": 4,
+            "slot": 5,
+            "generation": 1,
+            "components_sha256": [
+              "32cd61cd7e0cf2f3fb6faa943b5bab68a6632e92da75d9b4339b07eef0e57adc",
+              "d8f771dd6b521ab3780c7c71a2e7c0ccfe8bfbb9c4b93f88ed419c6b1f870cf7",
+              "ec44f30d480487f67c26beba49f49baab584772572792dea2b3d8ef96e9b6100"
+            ]
+          },
+          {
+            "expert": 8,
+            "slot": 0,
+            "generation": 1,
+            "components_sha256": [
+              "3024cf3bf81bad9ffadd61351de454116cffd2bbe72729101bda6398ea24a3e7",
+              "5e42fa972d4b0d817dbafdb3595f5dd0312175c2655f93cdf4b86f96ca518db8",
+              "c463a4699041b92c6fa3c8e8d300ab35d178f4302fd3194feeb1f4428873dc08"
+            ]
+          },
+          {
+            "expert": 9,
+            "slot": 1,
+            "generation": 1,
+            "components_sha256": [
+              "b7a89dfc552b5c1856aca49784abd4dc8f7b29f89dde51ec53dbac4b16ae7aa3",
+              "a19274432bf568d3b70f77456775de5bae4ea472e9d4c459997fe5f6503197f0",
+              "2ce3e64632536c3dcf736ac840609f47895209c609043c5712e9a5a6ebb07c38"
+            ]
+          }
+        ],
+        "destinations_sha256": "3aa0ce706797e89970774a75de6e180ea2e9b1cf95039f85932052c32adad74f",
+        "counters": {
+          "issued": 3,
+          "reads": 3,
+          "completed_reads": 3,
+          "expired_running": 2,
+          "waits": 1,
+          "consumed": 1,
+          "errors": 0,
+          "peak_running_spec": 3
+        },
+        "terminal": {
+          "idle": true,
+          "workers": 4,
+          "queue": 0,
+          "claimed": 0,
+          "shutting_down": false,
+          "load_failed": false,
+          "direct_primary": true,
+          "direct_stage": true
+        }
+      },
+      "raw_sha256": "e5ca6a87862cbaf2386992d33d0edb4ef4ef1081e416757778f25d9dc5650ca2",
+      "usage": {
+        "elapsed_s": 0.318331,
+        "max_rss_kib": 291244,
+        "allocated_bytes": 109744128
+      }
+    },
+    {
+      "arm": 4,
+      "mode": "OFF",
+      "result": {
+        "decision": "PASS_NATIVE_MANAGER_FIXTURE_ARM",
+        "events": 0,
+        "worker_count_observed": 0,
+        "schedule": null,
+        "journal_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+        "destinations": [
+          {
+            "expert": 1,
+            "slot": 4,
+            "generation": 1,
+            "components_sha256": [
+              "dfddd100be91ad4f2b1123e50e3d9dcda526069fea2401699b58d944426cbed3",
+              "f4651e7fd75e9ebc06f659f1ced674878152b70d2c7dae6ba8d2f20a83edecf3",
+              "73fe32a5c0f2a5a90162385c62f62bed297cef332b0bad270bdd82438c095412"
+            ]
+          },
+          {
+            "expert": 4,
+            "slot": 5,
+            "generation": 1,
+            "components_sha256": [
+              "32cd61cd7e0cf2f3fb6faa943b5bab68a6632e92da75d9b4339b07eef0e57adc",
+              "d8f771dd6b521ab3780c7c71a2e7c0ccfe8bfbb9c4b93f88ed419c6b1f870cf7",
+              "ec44f30d480487f67c26beba49f49baab584772572792dea2b3d8ef96e9b6100"
+            ]
+          },
+          {
+            "expert": 8,
+            "slot": 0,
+            "generation": 1,
+            "components_sha256": [
+              "3024cf3bf81bad9ffadd61351de454116cffd2bbe72729101bda6398ea24a3e7",
+              "5e42fa972d4b0d817dbafdb3595f5dd0312175c2655f93cdf4b86f96ca518db8",
+              "c463a4699041b92c6fa3c8e8d300ab35d178f4302fd3194feeb1f4428873dc08"
+            ]
+          },
+          {
+            "expert": 9,
+            "slot": 1,
+            "generation": 1,
+            "components_sha256": [
+              "b7a89dfc552b5c1856aca49784abd4dc8f7b29f89dde51ec53dbac4b16ae7aa3",
+              "a19274432bf568d3b70f77456775de5bae4ea472e9d4c459997fe5f6503197f0",
+              "2ce3e64632536c3dcf736ac840609f47895209c609043c5712e9a5a6ebb07c38"
+            ]
+          }
+        ],
+        "destinations_sha256": "3aa0ce706797e89970774a75de6e180ea2e9b1cf95039f85932052c32adad74f",
+        "counters": {
+          "issued": 3,
+          "reads": 3,
+          "completed_reads": 3,
+          "expired_running": 2,
+          "waits": 1,
+          "consumed": 1,
+          "errors": 0,
+          "peak_running_spec": 3
+        },
+        "terminal": {
+          "idle": true,
+          "workers": 4,
+          "queue": 0,
+          "claimed": 0,
+          "shutting_down": false,
+          "load_failed": false,
+          "direct_primary": true,
+          "direct_stage": true
+        }
+      },
+      "raw_sha256": "b079bbc84ff4338f73c6e1cef74ff71f35d8a70d676c13e02a9821e0c76f80c7",
+      "usage": {
+        "elapsed_s": 0.317503,
+        "max_rss_kib": 291076,
+        "allocated_bytes": 110198784
+      }
+    }
+  ],
+  "tesy": {
+    "commit": "2fbf3aaa1293b10d918c0a00e6dd3b090dcc14fc",
+    "tree": "ec0f1d2087de7bfec4cf63b3a415cf78a666c8e9",
+    "clean": true
+  },
+  "libggml_base_sha256": "6ed6609cc6862c3d971cef8bacde6f0c0dd6275a4bb3a263a28bac5063826195",
+  "base_manager_sha256": "393a6f9b47e7de9084cea2be3415e8d4d2b1c15ac906312b12ad49a6d4d63a22",
+  "compiler": "g++ (GCC) 16.2.1 20261029 (Red Hat 16.2.1-3)",
+  "compiler_sha256": "ca48a2d27d0796399adc3387225eec4be62974e26fa299710edfde0c1af5aa63",
+  "executable_sha256": "415cbfc1e921a4b14c1013c4b8def83ef51ddccb0970a6e0de33a6cf74523ab3",
+  "input": {
+    "logical_bytes": 1692061696,
+    "allocated_bytes": 105779200,
+    "written_slabs_sha256_component_then_expert": "acb3fe7ea65a909b9e7bb580f19405b6175024a52891a5b4d459f12c6c078c37"
+  },
+  "allocated_bytes_before_receipt": 110198784
+}

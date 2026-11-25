@@ -29,6 +29,8 @@ O envelope entre accept e primeira cópia soma 1,52–1,86 milhões de worker-µ
 
 **PASS funcional sem modelo.** Quatro threads reais e os headers C305 pinados reproduziram a saturação do pool, o anexo READING, o despacho direto e a última publicação antes da barreira e do drain. OFF/ON/ON/OFF entregaram os mesmos bytes nas duas gerações. O serviço de bytes e a fila primária são controlados pela fixture. A política bloqueante é a mesma nos quatro braços. Fica por qualificar a neutralidade do observador integrado no `worker_loop` real. [Relatório, pré-registo, código e teste de falhas](observador/README.md)
 
+O ensaio seguinte confirmou a mesma dependência na fila e no worker_loop do **manager C305 real**, com inputs sintéticos e três produtores. Em ambos os braços observados, a thread que terminou um produtor expirado assumiu a procura direta enquanto a quarta thread aguardava o ticket. O último produtor prolongou o drain depois do retorno. [Agenda, comparação e reprodução](manager/README.md)
+
 ## C318 trace-OFF
 
 Os oito recibos confirmam a ordem ABBA, os relógios, os digests da matriz completa de 33 linhas de logits e os ganhos publicados. O custo fixado inclui predictor, cópias, cancelamentos e cleanup. O prefixo fica fora do total. Cada par usa o seu R0 como denominador.
