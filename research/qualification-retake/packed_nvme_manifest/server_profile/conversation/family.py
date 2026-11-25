@@ -150,6 +150,37 @@ def call_child(a, out, mode, timeout):
     return dict(sha256=sha(path), arm=row)
 
 
+def await_closed_endpoint(out, unit_prefix, previous):
+    directory = out / previous
+    arm = json.loads((directory / "arm.json").read_bytes())
+    native_file = directory / "receipt.json"
+    need(sha(native_file) == arm["receipt_sha256"], "predecessor receipt changed")
+    native = json.loads(native_file.read_bytes())
+    preset_file = directory / "preset.json"
+    unit = unit_prefix + "-" + previous.lower()
+    need(
+        native["cleanup"] == "SERVER_EXIT_0_OWNER_STOP_UNIT_CLOSED_PORT_AVAILABLE"
+        and sha(preset_file) == native["preset_sha256"]
+        and json.loads(preset_file.read_bytes())["run_id"] == unit,
+        "preceding C281 owner",
+    )
+    pid = native["runtime_authority"]["native_pid"]
+    transport = run_path(HERE / "transport_profile.py")
+    session = transport["session"]
+    port = session.PORT
+    checks = run_path(
+        transport["INTEGRATED"] / "t1_manager_bank/policy_snapshot/natural/acquisition_port.py"
+    )
+    marks = {"previous": previous, "port": port, "pid": pid}
+    try:
+        checks["transition"](
+            session.idle_port, port, lambda: checks["verify_owner"](unit, pid), marks
+        )
+    finally:
+        save(out / (previous + "-closed-endpoint.json"), marks)
+    return marks["elapsed_s"]
+
+
 def family(a, out, current):
     start = time.monotonic()
     if a.execute:
@@ -162,7 +193,10 @@ def family(a, out, current):
                 "preflight arm changed",
             )
     arms = {}
-    for mode in ORDERS:
+    transitions = {}
+    for index, mode in enumerate(ORDERS):
+        if index and a.execute:
+            transitions[mode] = await_closed_endpoint(out, a.unit_prefix, ORDERS[index - 1])
         remaining = 1950 - (time.monotonic() - start)
         need(remaining > 0, "family deadline")
         arms[mode] = call_child(a, out, mode, min(650, remaining))
@@ -175,6 +209,7 @@ def family(a, out, current):
         arms=arms,
         identity=current,
         family_elapsed_s=time.monotonic() - start,
+        closed_endpoint_wait_before_arm_s=transitions,
         preflight_sha256=sha(a.prepared) if a.execute else None,
     )
 
