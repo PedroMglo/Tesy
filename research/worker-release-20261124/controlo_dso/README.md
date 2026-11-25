@@ -46,3 +46,15 @@ Confirmação em checkout limpa `88278d4d16936e884093ff2647047b4318a92787`, com 
 ## Condição de retoma
 
 O próximo ensaio deve comparar o mesmo callback ligado a A e B, com preads livres e mais de uma rota, e registar a primeira divergência dos tickets e o destino de cada leitura. Um controlo explícito de despacho pode restringir a continuação aos casos com procura autoritativa elegível. A reconstituição de uma entrada histórica no decode tem de atravessar o prefill incremental de 153 tokens, pois o snapshot inicial C317 antecede essa chamada. Para admitir timing de produto, o observador integrado terá de provar primeiro neutralidade OFF/ON e a mesma matriz completa finita de 33 × 201 088 logits em cada caso. O fixture de uma camada funciona com o DSO original e serve de referência antes desse investimento. A política de recursos e o binário do launcher exigem recibos contemporâneos para qualquer nova execução 120B.
+
+## Residência antes do primeiro decode
+
+**TRACE_DERIVED.** Um exame retrospetivo dos quatro braços reconstituiu (expert, slot, geração, estado e claim) desde o snapshot anterior ao prefill. O auditor atravessa as reservas, os accepts e as publicações da chamada incremental antes de fotografar os pools. Em cada braço, 1 411 dos 1 440 slots estavam residentes e 29 vazios, sem trabalho em voo nessa fronteira. As duas repetições do mesmo caso tinham o mesmo vetor. A reconstituição reproduziu as 4 608 seleções P3 do decode de cada braço e os 1 440 slots do snapshot final de cada processo.
+
+No nominal, a camada 4 chega ao decode com o expert 60 no slot 0 (geração 2), 72 no slot 1 (geração 1) e 22 no slot 10 (geração 2). O expert 13 está ausente. O controlo reafetou o slot 20, antes ocupado por 33 na geração 4, a 13 na geração 5. Esta testemunha permite inicializar os três hits reais numa fixture. Para afirmar que o manager escolhe autonomamente o mesmo slot 20 também é preciso reconstituir prioridades de evicção, recência e desempates, ou provar a independência da escolha em relação a esses valores. O vetor de residência por si só não identifica as prioridades, o KV, as ativações ou a cronologia de um forward.
+
+Reprodução em checkout limpa `e4d9d9a1`. O script autentica os doze ficheiros (initial, events e result para cada braço) e emite o recibo em stdout. O digest inclui o LF final. O resultado reproduzido é `d132c48615683a8b7d2a3d4bad828f21c48b7702da341bf335b5c0bf017fe606`. [Recibo por braço e hashes](fronteira.json) · [Reprodutor](fronteira.py)
+
+```sh
+python3 -B research/worker-release-20261124/controlo_dso/fronteira.py --raw-dir "$TESY_C317_RAW"
+```
