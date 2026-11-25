@@ -52,10 +52,10 @@ def main():
     for label in ("A", "B"):
         dest = root / label
 
-        def retain(*argv, **kwargs):
+        def retain(*argv, destination=dest, **kwargs):
             result = real_run(*argv, **kwargs)
             if "preexec_fn" in kwargs and "input" in kwargs:
-                (dest / "native.stderr").write_bytes(result.stderr)
+                (destination / "native.stderr").write_bytes(result.stderr)
             return result
 
         sys.argv = [str(PROGRAM), *command, "--new-output-dir", str(dest)]
