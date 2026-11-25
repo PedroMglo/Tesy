@@ -26,6 +26,16 @@ Nos relógios host do R0, a chamada de 148 durou 10,390470 s. A posição dos ma
 
 **A decisão de engenharia é medir a taxa útil efetiva e as entregas do próprio prefill de 1 058 leituras antes de construir esta agenda.** Os requisitos de 7,054–7,171 GB/s em série e de 5,041–5,101 GB/s mesmo com a agenda ideal excedem a referência nominal de 4,5 GB/s. Para baixar o requisito podem mudar o volume que realmente chega ao NVMe, os custos das camadas nas pontas ou o decode. A banda de cenário e os tempos das lacunas conservadas são premissas. A execução do candidato no chat, os SET sem preço, as interações com os quatro workers e a exatidão de uma implementação com duas tiles ficam por demonstrar.
 
+## O que permite o enlace do SSD
+
+No portátil, depois dos ensaios físicos e em repouso, sysfs devolveu 16,0 GT/s ×4 como estado atual e máximo tanto para o NVMe Micron 2400 (`0000:c1:00.0`) como para a sua ponte (`0000:00:02.1`). À codificação 128b/130b da Gen4, isso corresponde a no máximo 7,877 GB/s por sentido antes dos pacotes. Por si só, esse teto não separa os cenários de 7,171 e 5,101 GB/s. O tamanho de payload PCIe negociado ficou desconhecido. A conta corrente tem acesso aos atributos de ligação em sysfs e não conseguiu ler o registo de configuração Device Control. A especificação de 4,5 GB/s da unidade aplica-se ao ensaio sequencial do fabricante. [Especificação e regime do fabricante](../../../../../../dual_store/capacity.md) · [Taxa de transmissão e overhead de pacotes, Intel AN855](https://cdrdv2-public.intel.com/666287/an855-683504-666287.pdf)
+
+```sh
+for bdf in 0000:c1:00.0 0000:00:02.1; do
+  cat /sys/bus/pci/devices/"$bdf"/{current_link_speed,current_link_width,max_link_speed,max_link_width}
+done
+```
+
 ## Reprodução
 
 Pré-registo `ade35288`, método `d375ada0`. Os três testes cobrem a fronteira inclusiva, o caso sem banda finita, a conservação por fase e a preservação de falha em destino exclusivo. Duas execuções sequenciais em checkout limpa leram as partes 63 e 66. R01 custou 0,68 s de parede e 77 696 KiB de RSS máxima. R02 custou 0,54 s e 77 968 KiB. Ambos os recibos têm SHA-256 `5225590f4a5ea17f7faa1d13fede10dc9abc771d53dbc388333709a4d86765c2`. O custo refere-se apenas à análise offline. [Implementação](screen.py) · [Testes](test_screen.py)

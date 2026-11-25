@@ -16,6 +16,8 @@ A interação também se vê em números absolutos. No prefill, acrescentar o ba
 
 A primeira linha corresponde aos pedidos físicos verificados. As outras são **SIMULATED** nas rotas da execução ON. A reposição adiciona 19 entradas, todas cobertas pelo banco, e 428 movimentos dentro dos dispositivos. Cobrar a leitura das entradas ausentes deixa portanto a mesma contagem no disco. O custo de mover os pesos e tornar as gerações seguras precisa de execução. Durante o sufixo observado de T1, construir o banco a partir de vazio implica 20,225 GB de cópias de pesos CPU e 8,103 GB de cópias de pesos CUDA. A fixture que partilha páginas entre duas vistas na CPU passou os controlos de leitor e de reutilização das páginas. [Reposição por tier](replay/README.md) · [Experiência CPU e falhas induzidas](cpu_alias/README.md)
 
+A parte 68 conserva as duas reproduções da fronteira de prefill e os estados de manager que a fixture de entregas tem de carregar. Na parte 67, a auditoria numérica da fixture CPU_Mapped com consumidores mistos CPU/CUDA conseguiu reproduzir a substituição A/B/A das páginas. A campanha física preserva a falha do supervisor no fim. [Fronteira por fase](prefill_frontier/README.md) · [Os 6 624 destinos de rank](replay/decode_clock/transport/manager_state/README.md) · [Paridade do operador e falhas](cpu_alias/mixed/README.md)
+
 ## O orçamento da conversa
 
 | Braço físico R02, PFJ1 ativo nos dois | Prefill T2 | Decode T2 | Primeiro final | Conclusão válida | Débito |
