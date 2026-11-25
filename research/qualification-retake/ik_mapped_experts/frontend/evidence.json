@@ -31,6 +31,32 @@
     "verify.py": "9d3f76702d1ca044b6d854085394f56a0c5325b2a96181d2c5e2e2826e36abc4"
   },
   "status": "PASS_IK_C281_FRONTEND_OFFLINE",
+  "stderr_diagnosis": {
+    "original_replacement": "decimal CPU MiB free on first line only",
+    "probe_receipt_sha256": "59fd85a584077243cc1783d43f53c0c076fc781a55d5e324524ad040d5dbd8c7",
+    "reconstruction_receipt_sha256": "eb60dbb2ef3d4d9ba0064a116ebd1df559e16240c8828b1960440cfe1d4185eb",
+    "recovered": [
+      {
+        "reported_cpu_free_mib": 9809,
+        "run": "tesy-ik-c281-frontend-20261125-r01",
+        "sha256": "25b1d9abe59cffebee8c127650013b42e68316d11f0b10721d4b7ff659b8fb8d",
+        "stderr_bytes": 7082
+      },
+      {
+        "reported_cpu_free_mib": 9827,
+        "run": "tesy-ik-c281-frontend-20261125-r02",
+        "sha256": "e30004523ce92be8ae8a6dbf05be8bafce207a2c1012bee159e7146b22dbac4d",
+        "stderr_bytes": 7082
+      }
+    ],
+    "status": "PASS_HISTORICAL_STDERR_HASH_RECONSTRUCTION",
+    "suffix_sha256": "11665d844d23b5baa50d9b398b06300b8f96597f508a8b7f5758dffbc2dc1c82",
+    "witness_sha256": [
+      "8006b0872e17a6210b592e9fd576149b3ec941e81b5c8be870ba840173de8ee4",
+      "2695794d86293112cca8439628c944225e2aaa7a1b2883be66b16cf75fb2bb82"
+    ],
+    "witness_suffix_comparison": "identical"
+  },
   "turns": [
     {
       "channel_updates": 68,
