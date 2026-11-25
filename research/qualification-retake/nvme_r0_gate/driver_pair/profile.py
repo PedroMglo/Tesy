@@ -36,6 +36,13 @@ PINS = {
     Q
     / "packed_real_layer/profile.py": "3dfc12a50909fddd285143023a2edff5cd6e25b087453f21d4950649618db7cb",  # noqa: E501
 }
+HOMOGENEOUS_PINS = {
+    "absent-query.md": "8e9ec4253bafc089b52a45fc862adc148b975f57fdf46efc3d98dd2aba369ab0",
+    "homogeneous-protocol.md": "47b4a354a91a25ee6e660380163e2c6efbcbe06029fbc31f1fc957559020e0ed",
+    "driver_origin.json": "0d2b2ad1503c15bb5829ec96d5e6c55b307d5545fd4fe39537607b8e8f5bae44",
+    "driver_origin.py": "c71f64856df95b11f324201e5ebf4a065850961892c1e064ac498eaefaaafacb",
+}
+HOMOGENEOUS_PASS = "PASS_C269_MIXED_KERNEL_SINGLE_DRIVER_DEPLOYMENT_ONLY"
 DRIVER = "libcuda.so.620.70.06"
 TOOLKIT = ("libcudart.so.13.3.29", "libcublas.so.13.6.0.2", "libcublasLt.so.13.6.0.2")
 
@@ -151,11 +158,16 @@ def source_guard(a):
     need(SELF.parent == (a.checkout / S).resolve(), "execute the committed supervisor")
     for name, sha in PINS.items():
         need(digest(a.checkout / name) == sha, "source/receipt " + str(name))
+    if homogeneous(a):
+        for name, pin in HOMOGENEOUS_PINS.items():
+            need(digest(SELF.parent / name) == pin, "homogeneous authority " + name)
     return {
         "head": head,
         "tree": git(a, "rev-parse", "HEAD^{tree}"),
         "supervisor_sha256": digest(SELF),
-        "protocol_sha256": PINS[S / "mixed_protocol.md"],
+        "protocol_sha256": HOMOGENEOUS_PINS["homogeneous-protocol.md"]
+        if homogeneous(a)
+        else PINS[S / "mixed_protocol.md"],
     }
 
 
@@ -174,9 +186,59 @@ def native_env(a, *, debug=False):
     return env
 
 
+def homogeneous(a):
+    return getattr(a, "homogeneous", False)
+
+
+def origin():
+    return load(SELF.parent / "driver_origin.py", "tesy_signed_driver")
+
+
+def deployment_files(a):
+    meta = origin()
+    driver = a.installed_driver.resolve(strict=True)
+    need(driver == (meta.LIB / "libcuda.so.1").resolve(strict=True), "driver origin")
+    return {n: (meta.LIB / n).resolve(strict=True) for n in meta.ORDER}
+
+
+def qualify_deployment(a, records):
+    meta = origin()
+    audit = get_json(SELF.parent / "driver_origin.json")
+    need(
+        audit["status"] == "PASS_STATIC_DRIVER_ORIGIN_ONLY"
+        and meta.deployment() == audit["deployment"]
+        and meta.kernel() == audit["kernel"]
+        and audit["kernel"]["release"] == "620.70.06",
+        "signed deployment or active kernel",
+    )
+    for name in (*meta.ORDER, meta.MON):
+        path = (meta.LIB / name).resolve(strict=True)
+        if name == meta.MON:
+            alias = Path(os.environ["LD_LIBRARY_PATH"]) / meta.MON
+            need(alias.resolve(strict=True) == path, "NVML origin")
+        observed = meta.object_info(name) | {"sha256": remember(path, records)}
+        need(observed == audit["providers"][name], "qualified NVIDIA object: " + name)
+    return audit
+
+
 def alias_check(a):
     folder = a.new_output_dir / "driver"
     alias = folder / "libcuda.so.1"
+    if homogeneous(a):
+        targets = deployment_files(a)
+        need(
+            {p.name for p in folder.iterdir()} == set(targets)
+            and all(
+                (folder / n).is_symlink() and (folder / n).resolve(strict=True) == path
+                for n, path in targets.items()
+            ),
+            "private homogeneous driver aliases",
+        )
+        need(
+            origin().kernel() == get_json(SELF.parent / "driver_origin.json")["kernel"],
+            "live kernel changed",
+        )
+        return alias
     need(
         {p.name for p in folder.iterdir()} == {alias.name}
         and alias.is_symlink()
@@ -218,6 +280,15 @@ def c55(a, p, policy):
         >= STATIC_CAP,
         "C55 resources",
     )
+    if homogeneous(a):
+        auth = get_json(SELF.parent / "driver_origin.json")
+        samples = (a.c55_receipt.parent / "samples.jsonl").read_text().splitlines()
+        need(
+            a.c55_sha256 != auth["r01_c55_sha256"]
+            and dt.datetime.fromisoformat(json.loads(samples[0])["utc"])
+            > dt.datetime.fromisoformat(auth["r01_closed_utc"]),
+            "new post-R01 C55 required",
+        )
     return pol
 
 
@@ -237,9 +308,20 @@ def prepare(a, report, p):
         "driver not from qualified NVML directory",
     )
     (root / "driver").mkdir()
-    (root / "driver/libcuda.so.1").symlink_to(a.installed_driver.resolve(strict=True))
+    if homogeneous(a):
+        for name, path in deployment_files(a).items():
+            (root / "driver" / name).symlink_to(path)
+    else:
+        (root / "driver/libcuda.so.1").symlink_to(a.installed_driver.resolve(strict=True))
     alias = alias_check(a)
     files = {}
+    if homogeneous(a):
+        audit = qualify_deployment(a, files)
+        report.update(
+            driver_audit_sha256=HOMOGENEOUS_PINS["driver_origin.json"],
+            signed_deployment=audit["deployment"]["commit"],
+            candidate_driver_sha256={n: row["sha256"] for n, row in audit["providers"].items()},
+        )
     need(remember(a.executable, files) == MIXED, "wrong executable")
     loader = Path("/lib64/ld-linux-x86-64.so.2")
     listed = subprocess.check_output(
@@ -266,6 +348,16 @@ def prepare(a, report, p):
         and Path(actual[crypto.name]).samefile(crypto),
         "critical preflight coverage",
     )
+    if homogeneous(a):
+        observed = {
+            n: {
+                "filename": Path(path).resolve(strict=True).name,
+                "sha256": files[str(Path(path).resolve(strict=True))]["sha256"],
+            }
+            for n, path in links.items()
+        }
+        need(observed == audit["r01_startup"], "changed linked dependency against R01")
+        report["linked_r01_sha256_verified"] = len(observed)
     for soname, filename in links.items():
         if soname.startswith("libcuda.so."):
             need(Path(filename).samefile(alias), "incorrect driver in linker map")
@@ -302,6 +394,11 @@ def physical(a, r, p, service, b, policy, inv, guard0):
     need(limits["cgroup"]["memory_stop_bytes"] == CAP // 2, "preventive memory margin")
     proto = dict(resources=limits, limits={})
     guard = policy.RuntimeGuard(proto, guard0)
+    if homogeneous(a):
+        need(
+            digest(out / "static-map.json") == get_json(out / "pre.json")["static_sha256"],
+            "sealed preflight",
+        )
     r["monitor_provider"], unchanged = service.monitor_provider(p)
     need(r["monitor_provider"]["mode"] == "PRIVATE_MATCHED_NVML", "qualified private monitor")
     raw = out / "raw"
@@ -423,6 +520,11 @@ def post(a, r):
     out = a.new_output_dir
     inventory = get_json(out / "static-map.json")
     measured = get_json(out / "run.json")
+    if homogeneous(a):
+        need(
+            digest(out / "static-map.json") == get_json(out / "pre.json")["static_sha256"],
+            "sealed preflight",
+        )
     pid = measured["native_pid"]
     log = out / f"loads.{pid}"
     loaded = initialized(log.read_text(), pid)
@@ -436,7 +538,14 @@ def post(a, r):
             str(Path(source).resolve(strict=True)) == resolved and resolved in records,
             "changed loader alias",
         )
-    initial = set(records)
+    initial = (
+        (
+            {resolved for _, resolved in inventory["links"].values()}
+            | {str(a.executable.resolve()), str(a.installed_driver.resolve())}
+        )
+        if homogeneous(a)
+        else set(records)
+    )
     for name in sorted(loaded - initial):
         remember(Path(name), records)
     optional = {}
@@ -469,6 +578,23 @@ def post(a, r):
     )
     check_records(records)
     need(output_bytes(out) + 65536 < MAX_OUT, "private output closure")
+    if homogeneous(a):
+        meta = origin()
+        authority = get_json(SELF.parent / "driver_origin.json")
+        requested = meta.all_requests(log.read_text(), pid)
+        r["all_search_names"] = sorted(requested)
+        need(requested <= set(authority["r01_all_search_names"]), "new unqualified runtime search")
+        eligible = {v[1] for v in inventory["links"].values()} | {
+            str(v) for v in deployment_files(a).values()
+        }
+        need(loaded <= eligible, "new unqualified runtime initializer")
+        r["runtime_driver"] = meta.validate_driver_log(
+            meta.requests(log.read_text(), pid), loaded, deployment_files(a)
+        )
+        r["driver_audit_sha256"] = HOMOGENEOUS_PINS["driver_origin.json"]
+        # All already authenticated providers (including optional, not loaded) stay unchanged.
+        check_records(records)
+        return
     for name in public:
         if name.startswith("libnvidia-"):
             need(name.endswith(".620.70.06"), "unqualified auxiliary NVIDIA release: " + name)
@@ -575,7 +701,7 @@ def main(a):
                     code == 0 and elapsed <= limit and rec["status"] == "PASS_" + phase.upper(),
                     phase + " failed: " + str(rec.get("reason", "scope")),
                 )
-            r["status"] = PASS
+            r["status"] = HOMOGENEOUS_PASS if homogeneous(a) else PASS
     except Exception as exc:
         r.update(status="FAIL_PRESERVED", reason=f"{type(exc).__name__}: {exc}")
     finally:
@@ -597,5 +723,8 @@ if __name__ == "__main__":
         ap.add_argument("--" + key, type=lambda s: Path(s).absolute(), required=True)
     for key in ("c55-sha256", "expect-head", "unit"):
         ap.add_argument("--" + key, required=True)
+    ap.add_argument(
+        "--homogeneous", action="store_true", help="use the sealed R02 single-deployment gate"
+    )
     ap.add_argument("--phase", choices=["pre", "run", "post"], help=argparse.SUPPRESS)
     sys.exit(main(ap.parse_args()))
