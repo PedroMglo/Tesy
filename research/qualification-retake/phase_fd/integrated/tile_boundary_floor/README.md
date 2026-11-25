@@ -12,6 +12,8 @@ São mínimos **necessários** de admissões distintas, condicionados às chaves
 
 As seis tiles observaram 51, 326, 69, 199, 151 e 467 reservas físicas. Com as fronteiras preservadas e o banco de vítimas, as cargas compulsórias foram 34, 272, 59, 164, 99 e 357. Nos sete cortes havia 1 440 READY, zero LOADING e FIFO vazia. A união das procuras e dos residentes exigidos à saída foi confrontada com as admissões reais de cada intervalo. Os 1 440 descritores finais reproduzem os campos dos dois processos C281 independentes. Os tempos e bytes do decode mantêm os seus próprios denominadores. [Fronteira do primeiro decode](../t1_manager_bank/decode_entry/README.md) · [Ótimo com o primário limitado](../t1_primary_victim/README.md)
 
+Com os 40 slots reais, o ótimo de 748 sobe a **793** no banco de vítimas, permitindo mudar os residentes nos quatro cortes internos e conservando os dois retornos externos. [Ótimo por combinação de cortes](cuts.md)
+
 ## Reprodução
 
 Freeze de implementação b0216e97. Duas execuções deram o mesmo SHA-256 31c680ae31f11c7130ef3f71bf973ff69914bea7735cff5b1274bbf3ce980706 em 0,56 e 0,51 s, com pico RSS de 70 668 KiB. Usaram os recibos privados já selados, zero leituras de pesos e zero GPU. A seleção é recalculada exclusivamente a partir do prefixo anterior ao POST.
