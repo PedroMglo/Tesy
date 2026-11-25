@@ -32,3 +32,16 @@ python3 -IB "$u/family.py" --repo "$FROZEN" \
 ```
 
 Na segunda invocação foi conservada a mesma lista de argumentos até `--window-sha256` e foram passados `--prepared "$PREPARED/family.json" --execute --new-output-dir "$RAW"`. O cliente, os binários e os dados privados permanecem no portátil. O verificador e os testes de rejeição funcionam sem modelo.
+
+## As duas ordens na mesma comparação
+
+O bloco P/O/R tem freeze de lançamento `ca0e90f76cce8c632e47698d074d6e5bbd928062`. A preparação e o lançamento passaram `--order POR`, usando os mesmos inputs, prefixo próprio e destinos exclusivos. O SHA-256 de `family.json` foi recolhido no fecho antes do revisor. Duas reaberturas locais e uma das cópias de arquivo conferiram os hashes dos seis braços e as esperas até à saída efetiva do predecessor. As três deram SHA-256 `4cefe36f27fa59f8d3a5c80a74b40ca780ea190df8ca930c4cdbd3c144ea41ac`, 0,21 s cada e até 33 332 KiB de RSS. [Efeitos por fase e ordem](ordens.md) · [Preparação P/O/R](../../../private_archive/part-79.json) · [Arquivo dos três processos e das revisões](evidence/archive-80.json)
+
+```sh
+python3 -IB "$u/order_review.py" \
+  --rop "$ARCHIVE/part-78/tesy-c281-rop-natural-20261125-r02" \
+  --por "$ARCHIVE/part-80/tesy-c281-por-natural-20261125-r01" \
+  --por-sha256 9428a171c354c6cd2d3f12ecb338249ac33be9ced2633ab8c4fdddbdd2b3e284 \
+  --history-dir "$ARCHIVE/part-23/tesy-c281-driver-20261125-r01" \
+  --new-output-dir "$NEW_ORDER_REVIEW"
+```
