@@ -4,8 +4,11 @@ import importlib.util
 import os
 import select
 import signal
+import subprocess
+import sys
 import threading
 import time
+from datetime import UTC, datetime
 from pathlib import Path
 from types import FunctionType, SimpleNamespace
 
@@ -29,6 +32,41 @@ need, sha, pinned = conversation.need, conversation.sha, conversation.pinned
 SONAME = screen.SONAME
 CLOSURE = "9e553bcfa3dd8889100c8836bc3b873491248567672f93e7859e7f8b76e35116"
 MODES = {"R": "original", "O": "off", "P": "on"}
+# The family grants 55 minutes within the earlier C292 one-hour ceiling.
+C55_VALID_S = min(55 * 60, 3600)
+
+
+def c55_age(stamp, now):
+    elapsed = (now - datetime.fromisoformat(stamp)).total_seconds()
+    need(0 <= elapsed < C55_VALID_S, "C55 expired or from the future")
+    return elapsed
+
+
+def monitor_main():
+    """The pinned monitor admits the native Popen only while both C55 and C118 are current."""
+    need(sys.argv[1] == "--c55-launch-policy", "monitor mode")
+    policy = pinned(Path(sys.argv[2]), sys.argv[3])
+    del sys.argv[1:4]
+    stamp = policy["snapshot"]["utc"]
+    c55_age(stamp, datetime.now(UTC))
+    runner = live.linkage.run_bounded
+    ldd = live.linkage.child_ldd(live.linkage.search_from_args(sys.argv[1:]))
+
+    def launch(*args, **kwargs):
+        c55_age(stamp, datetime.now(UTC))
+        return subprocess.Popen(*args, **kwargs)
+
+    process = SimpleNamespace(**vars(subprocess))
+    process.Popen = launch
+    base = runner.main
+    scoped = FunctionType(
+        base.__code__,
+        base.__globals__ | {"backend_library_hashes": ldd, "subprocess": process},
+        base.__name__,
+        base.__defaults__,
+        base.__closure__,
+    )
+    return scoped()
 
 
 def numerical_pair(path):
@@ -238,6 +276,11 @@ class Runtime(capture.Runtime):
         super().__init__(a, out, capture.attest_history(a.history_dir))
         closure, self.paths, self.stats = input_files(a, self.authority, mode)
         self.mode = mode
+        self.c55_digest = post.load(a.window / "receipt.json")["canonical_policy_sha256"]
+        self.c55_stamp = pinned(a.window / "resource-policy.json", self.c55_digest)["snapshot"][
+            "utc"
+        ]
+        self.c55_age_at_entry_s = c55_age(self.c55_stamp, datetime.now(UTC))
         self.numeric_dsos = numerical_pair(a.c292_receipt)
         self.image = install_selection(self.authority, closure, mode)
         self.native = self.authority.child_env(self.prefix)
@@ -297,7 +340,13 @@ class Runtime(capture.Runtime):
         cmd = post.monitor_argv(cmd, self.authority.monitor_dir, base)
         original = str(post.contract.REPO / "tools/run_bounded.py")
         need(cmd.count(original) == 1, "original process monitor")
-        cmd[cmd.index(original)] = str(INTEGRATED / "profile/monitor.py")
+        at = cmd.index(original)
+        cmd[at : at + 1] = [
+            str(Path(__file__).resolve()),
+            "--c55-launch-policy",
+            str(out / "resource-policy.json"),
+            self.c55_digest,
+        ]
         sep = len(cmd) - len(self.reference["server_command"]) - 1
         need(
             cmd[sep] == "--" and cmd[sep + 1 :] == self.reference["server_command"],
@@ -352,6 +401,9 @@ class Runtime(capture.Runtime):
         )
 
     def finish(self, identity, manifest, out, rid):
+        self.c55_age_at_spawn_s = c55_age(
+            self.c55_stamp, datetime.fromisoformat(manifest["start_inventory"]["popen_invoked_utc"])
+        )
         self.exit_thread.join(timeout=2)
         self.cleanup_observed_ns = time.monotonic_ns()
         need(
@@ -420,6 +472,7 @@ def prepare_arm(a, out, mode):
         closure_sha256=CLOSURE,
         c292_sha256=screen.C292,
         libllama_sha256=rt.selected["sha256"],
+        c55_age_at_entry_s=rt.c55_age_at_entry_s,
         **prior,
     )
 
@@ -451,6 +504,8 @@ def run_arm(a, out, mode):
         constructor_sha256=live.CONSTRUCTOR,
         libllama=rt.selected,
         data_stat=rt.stats,
+        c55_age_at_entry_s=rt.c55_age_at_entry_s,
+        c55_age_at_spawn_s=rt.c55_age_at_spawn_s,
         cuts=rt.cuts,
         shutdown=dict(
             sigint_before_ns=rt.owner_signal[2],
@@ -463,3 +518,7 @@ def run_arm(a, out, mode):
     result["envelope_s"] = time.monotonic() - started
     need(result["envelope_s"] <= 650, "650 s arm envelope")
     return result
+
+
+if __name__ == "__main__":
+    raise SystemExit(monitor_main())

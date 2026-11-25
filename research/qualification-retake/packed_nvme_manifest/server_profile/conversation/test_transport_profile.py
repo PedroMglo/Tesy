@@ -5,6 +5,7 @@ import subprocess
 import sys
 import tempfile
 import unittest
+from datetime import UTC, datetime, timedelta
 from pathlib import Path
 from runpy import run_path
 
@@ -77,6 +78,14 @@ class TransportTests(unittest.TestCase):
             (self.proc / "fdinfo" / "5").write_text("flags:\t" + oct(bits) + "\n")
             with self.assertRaisesRegex(ValueError, "buffered or writable"):
                 self.check_cut("P")
+
+    def test_c55_expires_before_launch(self):
+        now = datetime.now(UTC)
+        age = profile["c55_age"]
+        self.assertEqual(age((now - timedelta(seconds=3299)).isoformat(), now), 3299)
+        for delta in (-1, 3300, 3600):
+            with self.assertRaisesRegex(ValueError, "C55"):
+                age((now - timedelta(seconds=delta)).isoformat(), now)
 
     def test_exactly_one_replacement(self):
         old = {"image": live.static.C269, "cpu": "same"}
