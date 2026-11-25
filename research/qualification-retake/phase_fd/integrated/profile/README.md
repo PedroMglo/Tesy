@@ -22,3 +22,31 @@ python3 -B research/qualification-retake/phase_fd/integrated/profile/compact_sta
   --smoke-dir "$SMOKE" --window "$C55" --new-output "$NEW"
 cmp "$NEW" research/qualification-retake/phase_fd/integrated/profile/startup-r01.json
 ```
+
+## Dois processos numéricos C270
+
+**PASS para observar o serviço no próximo par de conversas.** Os dois processos carregaram o candidato com SHA-256 `911b3be5b529d8e07409c12cf600ca9f7f6182f7a397fc6de265e5ea4be254eb`. Cada um verificou os 1500 payloads selecionados e cinco vetores completos de logits finitos da C127. O verificador de consumo examinou 996 componentes em 166 combinações. A entrada foi o prefill de 189 IDs fornecidos, em seis tiles de 32+32+32+32+32+29, seguido dos mesmos 32 IDs, um por chamada. O processo OFF encerrou sem journal. O ON encerrou após os quatro joins e deixou um journal selado de 7 879 264 B e 82 075 registos. A verificação offline repetiu o gate numérico contra o raw C127 e a conservação no journal. Para a identidade do FD usou o par dispositivo/inode recolhido no arranque pelo monitor. [Compacto C270](c270-r01.json)
+
+| Observador | Duração C118 | Idade da C118 no arranque | Cliente | Pico do cgroup | Pico GPU | Raw |
+|---|---:|---:|---:|---:|---:|---:|
+| OFF | 60,184 s | 44,675 ms | 35,164 s | 15 856 644 096 B | 6882 MiB | 89 041 814 B |
+| ON | 60,175 s | 43,001 ms | 35,341 s | 15 851 438 080 B | 6882 MiB | 96 920 892 B |
+
+Os dois arranques usaram E20, sem swap nem motivo de stop. A família durou 205,229 s incluindo as duas janelas C118 e validação. Há uma observação por braço. A diferença de 0,177 s entre os tempos de cliente deixa por medir a neutralidade temporal do observador.
+
+| Origem das leituras, ON | Gerações carregadas | Bytes devolvidos pelo pread | Payload das cópias |
+|---|---:|---:|---:|
+| Prefill de 189 | 3441 | 45 529 227 264 | 45 487 267 200 |
+| 32 decodes | 1060 | 14 025 490 432 | 14 012 352 000 |
+
+As 4501 reservas tiveram publicação. Cada uma exigiu três READ e três SET, com 13 503 de cada. Os pedidos e os retornos de pread totalizaram 59 554 717 696 B. A soma da duração dos READ pelos workers foi 83,525 s, e a união no relógio desses intervalos foi 27,124 s. Para SET, as duas durações foram 5,213 s e 5,051 s. A soma e a união incluem sobreposições diferentes. Determinar o custo no caminho crítico do T2 requer a sua própria trajetória, com as fronteiras de 5 e 148 observadas. Os contadores de pread descrevem o contrato do kernel. O tráfego físico que chegou ao dispositivo permanece desconhecido.
+
+Para repetir a verificação usar o analisador do commit de medição `1d3109c19a831cd0c485cc0ac0ab72da1e0d7688`, a captura integral C127 e a árvore privada C270 terminal. O comando lê e autentica os dois braços e produz um ficheiro público novo.
+
+```sh
+OPENBLAS_NUM_THREADS=1 python3 -B research/qualification-retake/phase_fd/integrated/profile/compact_c270.py \
+  --family-dir "$FAMILY" \
+  --family-sha256 9aa14a7cd43197f24f53f3d6169c21a030de34cf83569c09777dd387076984c1 \
+  --c127-reference "$C127" --analyser "$MEASUREMENT_ANALYSE" --new-output "$NEW"
+cmp "$NEW" research/qualification-retake/phase_fd/integrated/profile/c270-r01.json
+```
