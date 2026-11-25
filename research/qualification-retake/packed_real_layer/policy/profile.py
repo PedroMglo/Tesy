@@ -390,6 +390,24 @@ def collect_child(a, prior, monitor, r, mode, exe, env, gold, expected, pack_id)
         prior.put(folder / "receipt.json", row)
 
 
+def live_admission(frozen_policy, window):
+    """The signed C55 snapshot and the RuntimeGuard policy module are distinct inputs."""
+    age = (
+        datetime.now(UTC) - datetime.fromisoformat(frozen_policy["snapshot"]["utc"])
+    ).total_seconds()
+    need(0 <= age < 3300 and window["operational_session_ready"](frozen_policy)[0], "C55 freshness")
+    need(not window["concurrent"](), "concurrent build, model or transfer")
+
+
+def with_live_admission(base, frozen_policy, window):
+    class Monitor(base):
+        def observe(self, stream):
+            live_admission(frozen_policy, window)
+            return super().observe(stream)
+
+    return Monitor
+
+
 def run(a, r):
     prior, svc = shared()
     sys.path.insert(0, str(ROOT / "tools"))
@@ -449,28 +467,16 @@ def run(a, r):
         recheck()
         window = run_path(Q / "nvme_admission/window.py")
         gate = prior.sealed_json(a.c55_receipt, a.c55_sha256)
-        pol = prior.sealed_json(
+        frozen_policy = prior.sealed_json(
             a.c55_receipt.with_name("resource-policy.json"), gate["canonical_policy_sha256"]
         )
 
-        def live_admission():
-            age = (
-                datetime.now(UTC) - datetime.fromisoformat(pol["snapshot"]["utc"])
-            ).total_seconds()
-            need(0 <= age < 3300 and window["operational_session_ready"](pol)[0], "C55 freshness")
-            need(not window["concurrent"](), "concurrent build, model or transfer")
+        live_admission(frozen_policy, window)
+        guard, runtime_policy, bound, cg = svc.admit(a, prior, HERE.parent, r, a.new_output_dir)
 
-        live_admission()
-        guard, pol, bound, cg = svc.admit(a, prior, HERE.parent, r, a.new_output_dir)
-
-        class Monitor(svc.Monitor):
-            def observe(self, stream):
-                live_admission()
-                return super().observe(stream)
-
-        monitor = Monitor(
+        monitor = with_live_admission(svc.Monitor, frozen_policy, window)(
             guard,
-            pol,
+            runtime_policy,
             bound,
             cg,
             a.new_output_dir / "raw/samples.jsonl",

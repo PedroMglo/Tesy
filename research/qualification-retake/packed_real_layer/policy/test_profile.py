@@ -1,8 +1,10 @@
 import struct
 import unittest
+from datetime import UTC, datetime
 from pathlib import Path
 from runpy import run_path
 from tempfile import TemporaryDirectory
+from types import ModuleType
 
 p = run_path(Path(__file__).with_name("profile.py"))
 ACTUAL = p["ACTUAL"]
@@ -77,6 +79,28 @@ class Policy(unittest.TestCase):
             self.assertEqual(p["vector"](f, gold, "MUTANT")["changed_f32_bit_patterns"], 1)
             with self.assertRaisesRegex(ValueError, "tile control"):
                 p["vector"](f, gold, "BACKED")
+
+    def test_c55_after_runtime_policy_module_is_returned(self):
+        snap = {"snapshot": {"utc": datetime.now(UTC).isoformat()}}
+        probes = []
+        window = {
+            "operational_session_ready": lambda arg: (probes.append(arg) or True, []),
+            "concurrent": lambda: [],
+        }
+        runtime_policy = ModuleType("host_resource_policy")
+        p["live_admission"](snap, window)
+
+        class Base:
+            def __init__(self, policy):
+                self.policy = policy
+
+            def observe(self, stream):
+                return self.policy
+
+        monitor = p["with_live_admission"](Base, snap, window)(runtime_policy)
+        self.assertIs(monitor.observe(None), runtime_policy)
+        self.assertEqual(probes, [snap, snap])
+        self.assertIsNot(snap, runtime_policy)
 
     def test_original_inputs_and_shared_helpers(self):
         prior, service = p["shared"]()
