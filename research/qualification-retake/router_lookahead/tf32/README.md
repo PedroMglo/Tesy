@@ -30,5 +30,17 @@ O recall conta a interseção dos dois conjuntos de quatro experts no mesmo toke
 env LC_ALL=C PYTHONCOERCECLOCALE=0 PYTHONUTF8=1 OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 \
   timeout 90 prlimit --as=536870912 -- "$TESY_REPO/.venv/bin/python" -IB "$UNIT/tf32/score.py" \
   --part23 "$ARCHIVE/part-23" --c7 "$TESY_REPO/c7-native-placement-screen-20260927-1117utc" \
-  --bundle /tmp/tesy-router-lookahead-diagnostic-20261125-r01 --new-output-dir "$NEW"
+  --bundle "$BUNDLE" --new-output-dir "$NEW"
+```
+
+`BUNDLE` aponta para o diretório privado de parâmetros já construído no portátil. Se for preciso reconstituí-lo após uma interrupção, o localizador pode usar o recibo original de colocação da parte 01 e o controlo F32 da parte 111. Reabre apenas os 39 intervalos autenticados do GGUF no NVMe e grava-os no novo diretório privado escolhido para `BUNDLE`. A lista e o SHA-256 de cada intervalo estão no manifesto arquivado da parte 111.
+
+```sh
+env LC_ALL=C PYTHONCOERCECLOCALE=0 PYTHONUTF8=1 OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 \
+  timeout 90 prlimit --as=536870912 -- "$TESY_REPO/.venv/bin/python" -IB "$UNIT/localize.py" \
+  --part23 "$ARCHIVE/part-23" --c7 "$TESY_REPO/c7-native-placement-screen-20260927-1117utc" \
+  --placement "$ARCHIVE/part-01/placement/r1/receipt.json" \
+  --baseline "$ARCHIVE/part-111/tesy-router-lookahead-20261125-r01" --new-output-dir "$BUNDLE"
+cmp "$BUNDLE/parameters.json" \
+  "$ARCHIVE/part-111/tesy-router-lookahead-diagnostic-index-20261125-r01/parameters.json"
 ```
