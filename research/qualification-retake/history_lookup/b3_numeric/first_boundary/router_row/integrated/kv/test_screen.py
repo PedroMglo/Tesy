@@ -17,7 +17,7 @@ def synthetic(transposed):
         data.extend(struct.pack("<II", int(transposed), 1))
         for role in (0, 1):
 
-            def values(pos, j):
+            def values(pos, j, il=il, role=role):
                 return 100 * il + 35 * role + pos * 3 + j
 
             if role and transposed:

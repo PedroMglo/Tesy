@@ -12,7 +12,9 @@ PIN = "d0ebfbcc6c8f456bc1083027c1b08075a32824d8"
 FILES = {
     "src/llama-context.cpp": "7d8cfa9f33f38d761cf18b8e548ab7811866fbb8fdfaa95eeb2211d56851681b",
     "src/llama-kv-cache.cpp": "8db6426600c87a54967ef8c5074fd42ea768c2f97e90184749320adf19143ed7",
-    "src/llama-kv-cache-iswa.cpp": "c8f2cfa6a639be22dcd4e574ec70d6d2ab945a2f2e3d644cb000f5e202c6e0af",
+    "src/llama-kv-cache-iswa.cpp": (
+        "c8f2cfa6a639be22dcd4e574ec70d6d2ab945a2f2e3d644cb000f5e202c6e0af"
+    ),
     "src/llama-hparams.h": "b200dc2ebcf776d30c8fe87a883b6b572f55d72cd8b0f9fc1ddeb5cbbd8bbe0e",
     "src/models/openai-moe.cpp": "239407aaa98f8b65eb280e4423588ba7cefc520371811b9c47d7457fc1f469d4",
     "ggml/include/ggml.h": "98c5fcf96279e16c09d42dcba482be1b03434839db723bba4b65518e424ba181",
