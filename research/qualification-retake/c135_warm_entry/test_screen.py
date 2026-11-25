@@ -46,7 +46,8 @@ class TestWarmEntry(unittest.TestCase):
             for i, duration in enumerate(spans):
                 for kind, stamp in [("READ_BEGIN", start), ("READ_END", start + duration)]:
                     rows.append(dict(call_id=1, layer=layer, expert=7, slot=slot, generation=1,
-                                     component=i, kind=kind, logical_bytes=4_406_400, mono_us=stamp))
+                                     component=i, kind=kind, logical_bytes=4_406_400,
+                                     mono_us=stamp))
                 start += duration + 2
             return rows
         rows = job(0, 0, 10, [10, 2, 2]) + job(0, 1, 40, [2, 10, 5])

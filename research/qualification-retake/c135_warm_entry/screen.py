@@ -122,10 +122,12 @@ def run(repo, trace, pr45):
     checked(base / "prefill_read_floor/bound.py", SOURCE_CLOCK)
     checked(base / "prefill_entry40/screen.py", SOURCE_ENTRY)
     sys.path.insert(0, str(base))
-    from prefill_entry40 import screen as slots
     from prefill_read_floor import bound
 
+    # Verify the #45 modules before the slot helper imports tools of the same names.
     require(bound.run(trace, pr45) == service, "independent service receipt")
+    from prefill_entry40 import screen as slots
+
     layers, rows = slots.free.trace_rows(trace)
     cuts = slots.reconstruct(rows)
     for cut, table in cuts.items():
@@ -163,7 +165,8 @@ def run(repo, trace, pr45):
     n = sum(by_tier.values())
     volume = frontier(groups, unknowns, layered=False)
     phase = frontier(groups, unknowns, layered=True)
-    require(len(volume) == len(phase) == n + 1 and all(a <= b for a, b in zip(volume, phase, strict=True)),
+    require(len(volume) == len(phase) == n + 1
+            and all(a <= b for a, b in zip(volume, phase, strict=True)),
             "nested floors")
     max_bytes = BUDGET_US * 4500
     byte_cutoff = max(0, n - int(max_bytes // PAYLOAD))
