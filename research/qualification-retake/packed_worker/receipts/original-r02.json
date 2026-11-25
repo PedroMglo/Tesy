@@ -1,0 +1,168 @@
+{
+  "arm_count": 0,
+  "backend": {
+    "commit": "c89c88b342054223e3f27a17fbfd0954803147ac",
+    "tree": "3962daa588dfa89971c60c95ce4c5054bc27fd3f"
+  },
+  "budget": {
+    "memory_max": 1073741824,
+    "memory_swap_max": 0,
+    "per_child_wall_s": 180,
+    "synthetic_storage_max": 201326592,
+    "total_wall_s": 720
+  },
+  "combined_active_wall_s": 4.788521,
+  "commands": {
+    "build-original": {
+      "maxrss_kib": 441104,
+      "returncode": 0,
+      "scope_after": {
+        "memory.current": 100573184,
+        "memory.events": {
+          "high": 0,
+          "low": 0,
+          "max": 0,
+          "oom": 0,
+          "oom_group_kill": 0,
+          "oom_kill": 0,
+          "sock_throttled": 0
+        },
+        "memory.max": 1073741824,
+        "memory.peak": 527962112,
+        "memory.swap.current": 0,
+        "memory.swap.max": 0,
+        "sole_process": true
+      },
+      "wall_s": 4.395115
+    },
+    "compiler": {
+      "maxrss_kib": 3368,
+      "returncode": 0,
+      "scope_after": {
+        "memory.current": 15405056,
+        "memory.events": {
+          "high": 0,
+          "low": 0,
+          "max": 0,
+          "oom": 0,
+          "oom_group_kill": 0,
+          "oom_kill": 0,
+          "sock_throttled": 0
+        },
+        "memory.max": 1073741824,
+        "memory.peak": 16240640,
+        "memory.swap.current": 0,
+        "memory.swap.max": 0,
+        "sole_process": true
+      },
+      "wall_s": 0.004565
+    },
+    "generate": {
+      "maxrss_kib": 36008,
+      "returncode": 0,
+      "scope_after": {
+        "memory.current": 95092736,
+        "memory.events": {
+          "high": 0,
+          "low": 0,
+          "max": 0,
+          "oom": 0,
+          "oom_group_kill": 0,
+          "oom_kill": 0,
+          "sock_throttled": 0
+        },
+        "memory.max": 1073741824,
+        "memory.peak": 117592064,
+        "memory.swap.current": 0,
+        "memory.swap.max": 0,
+        "sole_process": true
+      },
+      "wall_s": 0.265774
+    },
+    "loader-original": {
+      "maxrss_kib": 3244,
+      "returncode": 0,
+      "scope_after": {
+        "memory.current": 101359616,
+        "memory.events": {
+          "high": 0,
+          "low": 0,
+          "max": 0,
+          "oom": 0,
+          "oom_group_kill": 0,
+          "oom_kill": 0,
+          "sock_throttled": 0
+        },
+        "memory.max": 1073741824,
+        "memory.peak": 527962112,
+        "memory.swap.current": 0,
+        "memory.swap.max": 0,
+        "sole_process": true
+      },
+      "wall_s": 0.009983
+    }
+  },
+  "commit": "a5d98e99a15ff84cf8d6f90addbb0d988d76f9c4",
+  "finished_utc": "2026-11-25T06:00:37.026322+00:00",
+  "loader_stdout_sha256": "3f1a59c2b84fe8147d5afd210aa89163c070ba6116c042b1a56a1dabb3840e09",
+  "model_forwards": 0,
+  "observed_worker_threads": 0,
+  "original_receipt_sha256": "5d830f17d822f1e8fd0f7ab71e0c61a356591cdeac12bed08129e2183f92d18b",
+  "pack": {
+    "allocated_bytes": 79552512,
+    "gold_sha256": "88351268e4740bc1ed540dda380dc9df7d87f591fc1668c3743e5ce60acdd533",
+    "sha256": "293bfbcf151c7df72e37f5812e1a7af0b408c5a368c66d270c07349b8685599a"
+  },
+  "phase": "original",
+  "providers": {
+    "crypto": "695648ac8dc5e6a2b70e5e72399940de0f84bf24fddb7dd18949ba40bc575c72",
+    "ggml": "6e27d9ecb86e4747177189d2d2f6390280a2ee1000221ad68a0404023ea72539"
+  },
+  "resolved_sonames": [
+    "linux-vdso.so.1",
+    "libggml-base.so.0",
+    "libcrypto.so.3",
+    "libstdc++.so.6",
+    "libm.so.6",
+    "libgcc_s.so.1",
+    "libc.so.6",
+    "libgomp.so.1",
+    "libz.so.1",
+    "ld-linux-x86-64.so.2"
+  ],
+  "schema": "c291-synthetic-worker-packed-v1",
+  "scope_before": {
+    "memory.current": 15372288,
+    "memory.events": {
+      "high": 0,
+      "low": 0,
+      "max": 0,
+      "oom": 0,
+      "oom_group_kill": 0,
+      "oom_kill": 0,
+      "sock_throttled": 0
+    },
+    "memory.max": 1073741824,
+    "memory.peak": 16240640,
+    "memory.swap.current": 0,
+    "memory.swap.max": 0,
+    "sole_process": true
+  },
+  "source_files": {
+    "fixture.cpp": "3ccb44872c84b160c0a8dd5b3c0d219af1c3386bb54432bd074ed41a10e21bd3",
+    "generate.py": "3b9c94261e71e3a0aef16311670ca907343e89b5474af3bbf13899e5eadc6c5d",
+    "protocol.md": "4dd589e8abe40f5326cf51e1202655b9d7da74bab011b48923de8e3e15796855",
+    "run.py": "b347d01d10a56329463e79eecd26e10203051ac6316afbf802d4b057518c8ee4"
+  },
+  "started_utc": "2026-11-25T06:00:32.237805+00:00",
+  "status": "FAIL_PRESERVED",
+  "stop": "PRECHECK_MATCHED_CUDA_IN_DIRECTORY_NAME",
+  "toolchain": {
+    "compiler_sha256": "ca48a2d27d0796399adc3387225eec4be62974e26fa299710edfde0c1af5aa63",
+    "openssl_digest": "695648ac8dc5e6a2b70e5e72399940de0f84bf24fddb7dd18949ba40bc575c72",
+    "scope_reader_sha256": "385556de0929051fb526c8f98012c461b318172844d9ec5c8f16fedc4d2b7ff4",
+    "version": "g++ (GCC) 16.2.1 20261029 (Red Hat 16.2.1-3)"
+  },
+  "total_wall_s": 4.788521,
+  "tree": "dd2cf7d9789b2ea7d08ddfd2d78e54d6684c9d5c"
+}
