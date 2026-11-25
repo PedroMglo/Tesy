@@ -263,6 +263,8 @@ def after(a, out, rt, r, prior):
     save(out / "boundary-audit.json", result)
     r.update(
         journal_sha256=h["journal_sha256"],
+        t2_result_sha256=sha(out / "raw/T2-result.json"),
+        t1_candidates_sha256=rt.t1_seal["candidate_file_sha256"],
         journal_bytes=rt.journal.stat().st_size,
         boundary_audit_sha256=sha(out / "boundary-audit.json"),
         before_t2_sha256=sha(out / "before-t2.json"),
