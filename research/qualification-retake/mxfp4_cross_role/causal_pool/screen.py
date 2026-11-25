@@ -151,7 +151,7 @@ def main():
     a.new_output_dir.mkdir()
     resource.setrlimit(resource.RLIMIT_AS, (512 << 20, 512 << 20))
     signal.alarm(120)
-    git = ["git", "-C", str(HERE)]
+    git = ["git", "-C", str(HERE), "-c", "core.preloadIndex=false", "-c", "index.threads=1"]
     try:
         need(not subprocess.check_output([*git, "status", "--porcelain"]), "dirty checkout")
         result = analyse(a.archive)
