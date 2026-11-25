@@ -67,6 +67,38 @@ def build(a, out, r):
         "    extern void tile_workers_joined(llama_moe_stream &);\n"
         "    tile_workers_joined(*this);",
     )
+    header = src / "src/llama-moe-stream.h"
+    h = patch["change"](
+        header.read_text(),
+        "void enqueue_locked(llama_moe_stream_layer *sl,int expert,int slot,uint64_t gen)",
+        "void enqueue_locked(llama_moe_stream_layer *sl,int expert,int slot,"
+        "uint64_t gen,int origin=-1)",
+    )
+    header.write_text(
+        patch["change"](
+            h,
+            "window.record(4,sl->il,expert,slot,gen,active_route,-1,0,0,owner);",
+            "window.record(4,sl->il,expert,slot,gen,active_route,origin,0,0,owner);",
+        )
+    )
+    s = patch["change"](
+        s,
+        "enqueue_locked(&sl,e,s,sl.slot_gen[s]); // promote",
+        "enqueue_locked(&sl,e,s,sl.slot_gen[s],1); // promote",
+    )
+    for indent, origin in ((16, 0), (12, 2)):
+        line = "\n" + " " * indent + "enqueue_locked(&sl,e,v,sl.slot_gen[v]);"
+        s = patch["change"](s, line, line[:-2] + f",{origin});")
+    needle = "            continue; // stale or duplicate item"
+    s = patch["change"](
+        s,
+        needle,
+        "            int reason=(w.gen!=sl.slot_gen[w.slot]) | "
+        "((sl.slot_state[w.slot]!=LLAMA_MOE_STREAM_SLOT_LOADING)<<1) | "
+        "((sl.slot_expert[w.slot]!=w.expert)<<2) | ((sl.slot_claimed[w.slot]!=0)<<3);\n"
+        "            window.record(64,sl.il,w.expert,w.slot,w.gen,w.trace_route,reason);\n"
+        + needle,
+    )
     manager.write_text(s)
     helper = out / "pairs-finish.inc"
     helper.write_text(F["functions"](ROOT / "tools/block_expert_reuse_operator.cpp"))
@@ -79,6 +111,8 @@ def build(a, out, r):
             HERE / "native.cpp",
             HERE / "graph.inc",
             HERE / "protocol.md",
+            HERE / "queue-addendum.md",
+            header,
             parent_patch,
             helper,
             manager,

@@ -11,6 +11,7 @@
 #include <cmath>
 #include <cstdlib>
 #include <cstring>
+#include <deque>
 #include <filesystem>
 #include <fstream>
 #include <iostream>
@@ -150,12 +151,33 @@ static void traffic(json &r){
     need(wit.drained&&wit.workers.size()==4&&wit.sets.size()==375,"terminal worker conservation");
     std::map<Binding,std::set<int>> dst;std::map<Binding,int> published;std::set<Binding> queued;
     std::map<int,int64_t> waits;int64_t wait_ns=0;
-    json intervals=json::array(),stages=json::array();
+    json intervals=json::array(),stages=json::array(),queue_events=json::array();
+    std::deque<Binding> fifo; std::set<Binding> preloaded,promoted,claimed;
+    size_t skips=0,enqueues=0;
     for(auto &s:wit.sets)need(dst[{int(s[0]),int(s[1]),int(s[2]),int(s[3])}].insert(s[4]).second,"duplicate SET");
     for(auto &e:wit.journal){
         auto b=Binding{e.layer,e.expert,e.slot,int(e.gen)};
-        if(e.kind==4)need(queued.insert(b).second,"duplicate queue");
-        if(e.kind==10)++published[b];
+        if(e.kind==4 || e.kind==5 || e.kind==64 || e.kind==10)
+            queue_events.push_back({e.kind,e.layer,e.expert,e.slot,int(e.gen),e.component});
+        if(e.kind==4){
+            ++enqueues;
+            if(e.component==1){
+                need(preloaded.count(b)&&!published.count(b)&&promoted.insert(b).second,
+                     "invalid second enqueue: expected one promotion of an outstanding preload");
+            }else{
+                need((e.component==0||e.component==2)&&queued.insert(b).second,"duplicate initial enqueue");
+                if(e.component==2)preloaded.insert(b);
+            }
+            fifo.push_back(b);
+        }
+        if(e.kind==5 || e.kind==64){
+            need(!fifo.empty()&&fifo.front()==b,"pop does not follow actual FIFO");fifo.pop_front();
+            if(e.kind==5)need(claimed.insert(b).second&&!published.count(b),"duplicate worker claim");
+            else {need(e.component>0&&claimed.count(b)&&promoted.count(b),"skip without previous claim/promotion");++skips;}
+        }
+        if(e.kind==10){
+            need(claimed.count(b)&&!published.count(b),"duplicate or unclaimed publication");++published[b];
+        }
         if(e.kind==11)need(waits.emplace(e.layer,e.us).second,"nested wait");
         if(e.kind==12){
             auto start=waits.at(e.layer);need(start<=e.us,"invalid wait");
@@ -163,6 +185,10 @@ static void traffic(json &r){
         }
     }
     need(queued.size()==125&&waits.empty()&&dst.size()==125&&published.size()==125,"generation census");
+    need(fifo.empty()&&preloaded.size()==wit.preload&&claimed==queued&&enqueues==125+promoted.size()
+         &&skips==promoted.size(),"FIFO admission/dispatch/promotion/drain totals");
+    r.update(json{{"queue_events",queue_events},{"promoted_bindings",promoted},
+                  {"queue_enqueues",enqueues},{"queue_skips",skips}});
     for(const auto &[key,b]:wit.authoritative)
         need(queued.count(b)&&dst.at(b)==std::set<int>{0,1,2}&&published.at(b)==1,"incomplete generation");
     for(auto &s:wit.stage)stages.push_back({s.kind,s.expert,s.ticket,s.slot,s.generation,s.us});
@@ -261,6 +287,10 @@ static json run(const fs::path &dir,const fs::path &pack_path,const std::string 
     auto remap0=graphs[0]->remap_intervals(),remap1=graphs[1]->remap_intervals();
     need(fd_identity(wit.fd)==plan.at("pack_stat")&&tesy_expert_store::identity(pack_path.c_str())==fd_identity(wit.fd),
          "changed pack before cleanup");
+    {
+        std::lock_guard<std::mutex> lock(m->mtx);
+        need(m->q_demand.empty()&&m->prediction_stage->idle(),"pending source FIFO before shutdown");
+    }
     graphs[0].reset();graphs[1].reset();
     m.reset();epochs[7]=wit.joined;
     need(std::is_sorted(epochs.begin(),epochs.end()),"backwards primary clock");
