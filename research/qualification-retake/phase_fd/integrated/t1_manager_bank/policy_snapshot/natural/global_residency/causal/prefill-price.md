@@ -1,0 +1,3 @@
+# Adenda anterior à execução da política
+
+Para cada braço e chamada de prefill, identificar também as leituras com um homólogo do pack nas duas travessias autenticadas da parte 71. Exigir (call,tile,layer,wave,expert) idênticos e reconciliar os 34 e 1 024 jobs com o plano e a duração READ individual original. Divulgar por tier a contagem e soma de nanossegundos de worker dos homólogos e a contagem sem duração conhecida. Os tempos das filas físicas originais mantêm o seu âmbito. Não se somam ao relógio de parede nem mudam o critério do protocolo. Registar igualmente a soma worker de READ CPU conhecida no decode, separada da cadeia crítica já especificada.
