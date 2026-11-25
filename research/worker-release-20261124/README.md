@@ -31,6 +31,8 @@ O envelope entre accept e primeira cópia soma 1,52–1,86 milhões de worker-µ
 
 O ensaio seguinte confirmou a mesma dependência na fila e no worker_loop do **manager C305 real**, com inputs sintéticos e três produtores. Em ambos os braços observados, a thread que terminou um produtor expirado assumiu a procura direta enquanto a quarta thread aguardava o ticket. O último produtor prolongou o drain depois do retorno. [Agenda, comparação e reprodução](manager/README.md)
 
+A [ablação nativa de continuação](continuacao/README.md) obteve GO funcional em CPU. Nos quatro processos B a thread libertada aceitou a procura direta antes de qualquer produtor concluir. Com o terceiro produtor tardio, o remap adiantou-se cerca de 280 ms mas o ganho desapareceu em finish. A latência da conversa continua INCONCLUSIVE.
+
 ## C318 trace-OFF
 
 Os oito recibos confirmam a ordem ABBA, os relógios, os digests da matriz completa de 33 linhas de logits e os ganhos publicados. O custo fixado inclui predictor, cópias, cancelamentos e cleanup. O prefixo fica fora do total. Cada par usa o seu R0 como denominador.
