@@ -1,0 +1,634 @@
+{
+  "arms": {
+    "carry": {
+      "cases": {
+        "all_sets_fixed": {
+          "all": 958,
+          "cpu": 600,
+          "cuda": 358
+        },
+        "external_sets_fixed": {
+          "all": 787,
+          "cpu": 499,
+          "cuda": 288
+        },
+        "no_required_exit": {
+          "all": 734,
+          "cpu": 467,
+          "cuda": 267
+        },
+        "only_terminal_fixed": {
+          "all": 778,
+          "cpu": 491,
+          "cuda": 287
+        },
+        "return5_fixed_terminal_free": {
+          "all": 746,
+          "cpu": 478,
+          "cuda": 268
+        }
+      },
+      "conditional_prices": {
+        "all_sets_fixed": {
+          "PR": {
+            "largest_jobs_pipeline": 933,
+            "largest_jobs_serial": 663,
+            "min_useful_pipeline_Bps": 4618505818.185703,
+            "min_useful_serial_Bps": 6493208465.576293,
+            "optimistic_pipeline_margin_ns": -72209834.0,
+            "prefill_budget_ns": 3101495846,
+            "serial_margin_ns": -863876272.0
+          },
+          "RP": {
+            "largest_jobs_pipeline": 944,
+            "largest_jobs_serial": 674,
+            "min_useful_pipeline_Bps": 4564814936.008198,
+            "min_useful_serial_Bps": 6387582249.759033,
+            "optimistic_pipeline_margin_ns": -39958584.0,
+            "prefill_budget_ns": 3133747096,
+            "serial_margin_ns": -831625022.0
+          }
+        },
+        "external_sets_fixed": {
+          "PR": {
+            "largest_jobs_pipeline": 933,
+            "largest_jobs_serial": 663,
+            "min_useful_pipeline_Bps": 3794116992.6014075,
+            "min_useful_serial_Bps": 5334191088.109126,
+            "optimistic_pipeline_margin_ns": 430119766.0,
+            "prefill_budget_ns": 3101495846,
+            "serial_margin_ns": -361546672.0
+          },
+          "RP": {
+            "largest_jobs_pipeline": 944,
+            "largest_jobs_serial": 674,
+            "min_useful_pipeline_Bps": 3750009764.7583,
+            "min_useful_serial_Bps": 5247418821.044216,
+            "optimistic_pipeline_margin_ns": 462371016.0,
+            "prefill_budget_ns": 3133747096,
+            "serial_margin_ns": -329295422.0
+          }
+        },
+        "no_required_exit": {
+          "PR": {
+            "largest_jobs_pipeline": 933,
+            "largest_jobs_serial": 663,
+            "min_useful_pipeline_Bps": 3538604666.543117,
+            "min_useful_serial_Bps": 4974963479.888309,
+            "optimistic_pipeline_margin_ns": 585812566.0,
+            "prefill_budget_ns": 3101495846,
+            "serial_margin_ns": -205853872.0
+          },
+          "RP": {
+            "largest_jobs_pipeline": 944,
+            "largest_jobs_serial": 674,
+            "min_useful_pipeline_Bps": 3497467811.096051,
+            "min_useful_serial_Bps": 4894034834.366524,
+            "optimistic_pipeline_margin_ns": 618063816.0,
+            "prefill_budget_ns": 3133747096,
+            "serial_margin_ns": -173602622.0
+          }
+        },
+        "only_terminal_fixed": {
+          "PR": {
+            "largest_jobs_pipeline": 933,
+            "largest_jobs_serial": 663,
+            "min_useful_pipeline_Bps": 3750728107.044339,
+            "min_useful_serial_Bps": 5273190173.505591,
+            "optimistic_pipeline_margin_ns": 456558166.0,
+            "prefill_budget_ns": 3101495846,
+            "serial_margin_ns": -335108272.0
+          },
+          "RP": {
+            "largest_jobs_pipeline": 944,
+            "largest_jobs_serial": 674,
+            "min_useful_pipeline_Bps": 3707125282.060937,
+            "min_useful_serial_Bps": 5187410219.532909,
+            "optimistic_pipeline_margin_ns": 488809416.0,
+            "prefill_budget_ns": 3133747096,
+            "serial_margin_ns": -302857022.0
+          }
+        },
+        "return5_fixed_terminal_free": {
+          "PR": {
+            "largest_jobs_pipeline": 933,
+            "largest_jobs_serial": 663,
+            "min_useful_pipeline_Bps": 3596456513.9525414,
+            "min_useful_serial_Bps": 5056298032.693022,
+            "optimistic_pipeline_margin_ns": 550561366.0,
+            "prefill_budget_ns": 3101495846,
+            "serial_margin_ns": -241105072.0
+          },
+          "RP": {
+            "largest_jobs_pipeline": 944,
+            "largest_jobs_serial": 674,
+            "min_useful_pipeline_Bps": 3554647121.359202,
+            "min_useful_serial_Bps": 4974046303.048265,
+            "optimistic_pipeline_margin_ns": 582812616.0,
+            "prefill_budget_ns": 3133747096,
+            "serial_margin_ns": -208853822.0
+          }
+        }
+      },
+      "cuts": [
+        {
+          "all": 958,
+          "cpu": 600,
+          "cuda": 358,
+          "released_after_tiles": []
+        },
+        {
+          "all": 954,
+          "cpu": 599,
+          "cuda": 355,
+          "released_after_tiles": [
+            1
+          ]
+        },
+        {
+          "all": 948,
+          "cpu": 597,
+          "cuda": 351,
+          "released_after_tiles": [
+            2
+          ]
+        },
+        {
+          "all": 933,
+          "cpu": 589,
+          "cuda": 344,
+          "released_after_tiles": [
+            3
+          ]
+        },
+        {
+          "all": 929,
+          "cpu": 586,
+          "cuda": 343,
+          "released_after_tiles": [
+            4
+          ]
+        },
+        {
+          "all": 920,
+          "cpu": 584,
+          "cuda": 336,
+          "released_after_tiles": [
+            1,
+            2
+          ]
+        },
+        {
+          "all": 929,
+          "cpu": 588,
+          "cuda": 341,
+          "released_after_tiles": [
+            1,
+            3
+          ]
+        },
+        {
+          "all": 925,
+          "cpu": 585,
+          "cuda": 340,
+          "released_after_tiles": [
+            1,
+            4
+          ]
+        },
+        {
+          "all": 918,
+          "cpu": 584,
+          "cuda": 334,
+          "released_after_tiles": [
+            2,
+            3
+          ]
+        },
+        {
+          "all": 919,
+          "cpu": 583,
+          "cuda": 336,
+          "released_after_tiles": [
+            2,
+            4
+          ]
+        },
+        {
+          "all": 874,
+          "cpu": 556,
+          "cuda": 318,
+          "released_after_tiles": [
+            3,
+            4
+          ]
+        },
+        {
+          "all": 884,
+          "cpu": 567,
+          "cuda": 317,
+          "released_after_tiles": [
+            1,
+            2,
+            3
+          ]
+        },
+        {
+          "all": 891,
+          "cpu": 570,
+          "cuda": 321,
+          "released_after_tiles": [
+            1,
+            2,
+            4
+          ]
+        },
+        {
+          "all": 870,
+          "cpu": 555,
+          "cuda": 315,
+          "released_after_tiles": [
+            1,
+            3,
+            4
+          ]
+        },
+        {
+          "all": 855,
+          "cpu": 546,
+          "cuda": 309,
+          "released_after_tiles": [
+            2,
+            3,
+            4
+          ]
+        },
+        {
+          "all": 787,
+          "cpu": 499,
+          "cuda": 288,
+          "released_after_tiles": [
+            1,
+            2,
+            3,
+            4
+          ]
+        }
+      ],
+      "extra_minimum_for_terminal": {
+        "return5_fixed": 41,
+        "return5_free": 44
+      },
+      "fixed_bank_causal_witness": 1058,
+      "resident_set_sha256": [
+        "83e1b184d3594cce47ff5c2dd0cd9e947de406a082ea0c0b7c8f8afebedb296f",
+        "b947846ca347f50cca97014381f0c212b1d65a0982c9f7d99cb9dc5b9451d40e",
+        "ea9e3d325a21f9e0c20e82514fcc5c7d7a8bfe10f0413d8033028595793f3a93",
+        "8a5ff58b7371e143c8920c3429eaae9dc2de87371360aab8ea7d565b01a48e5e",
+        "8ebce011d7c3e76070ce800537c8d9ea757979e4530dbd6254ab26afa47cef26",
+        "02709e5ae4843ddbe11d91453dfd0798784f89caccae583e97d7b69437985458",
+        "de48a9738476d83a4b33fa9aad789b4a129d25bc862cc7013921185e70da07c5"
+      ]
+    },
+    "r0": {
+      "cases": {
+        "all_sets_fixed": {
+          "all": 985,
+          "cpu": 621,
+          "cuda": 364
+        },
+        "external_sets_fixed": {
+          "all": 793,
+          "cpu": 505,
+          "cuda": 288
+        },
+        "no_required_exit": {
+          "all": 734,
+          "cpu": 467,
+          "cuda": 267
+        },
+        "only_terminal_fixed": {
+          "all": 776,
+          "cpu": 490,
+          "cuda": 286
+        },
+        "return5_fixed_terminal_free": {
+          "all": 754,
+          "cpu": 485,
+          "cuda": 269
+        }
+      },
+      "conditional_prices": {
+        "all_sets_fixed": {
+          "PR": {
+            "largest_jobs_pipeline": 933,
+            "largest_jobs_serial": 663,
+            "min_useful_pipeline_Bps": 4748672474.856908,
+            "min_useful_serial_Bps": 6676211209.386899,
+            "optimistic_pipeline_margin_ns": -151525034.0,
+            "prefill_budget_ns": 3101495846,
+            "serial_margin_ns": -943191472.0
+          },
+          "RP": {
+            "largest_jobs_pipeline": 944,
+            "largest_jobs_serial": 674,
+            "min_useful_pipeline_Bps": 4693468384.1002865,
+            "min_useful_serial_Bps": 6567608054.292952,
+            "optimistic_pipeline_margin_ns": -119273784.0,
+            "prefill_budget_ns": 3133747096,
+            "serial_margin_ns": -910940222.0
+          }
+        },
+        "external_sets_fixed": {
+          "PR": {
+            "largest_jobs_pipeline": 933,
+            "largest_jobs_serial": 663,
+            "min_useful_pipeline_Bps": 3823042916.3061194,
+            "min_useful_serial_Bps": 5374858364.511483,
+            "optimistic_pipeline_margin_ns": 412494166.0,
+            "prefill_budget_ns": 3101495846,
+            "serial_margin_ns": -379172272.0
+          },
+          "RP": {
+            "largest_jobs_pipeline": 944,
+            "largest_jobs_serial": 674,
+            "min_useful_pipeline_Bps": 3778599419.8898754,
+            "min_useful_serial_Bps": 5287424555.385087,
+            "optimistic_pipeline_margin_ns": 444745416.0,
+            "prefill_budget_ns": 3133747096,
+            "serial_margin_ns": -346921022.0
+          }
+        },
+        "no_required_exit": {
+          "PR": {
+            "largest_jobs_pipeline": 933,
+            "largest_jobs_serial": 663,
+            "min_useful_pipeline_Bps": 3538604666.543117,
+            "min_useful_serial_Bps": 4974963479.888309,
+            "optimistic_pipeline_margin_ns": 585812566.0,
+            "prefill_budget_ns": 3101495846,
+            "serial_margin_ns": -205853872.0
+          },
+          "RP": {
+            "largest_jobs_pipeline": 944,
+            "largest_jobs_serial": 674,
+            "min_useful_pipeline_Bps": 3497467811.096051,
+            "min_useful_serial_Bps": 4894034834.366524,
+            "optimistic_pipeline_margin_ns": 618063816.0,
+            "prefill_budget_ns": 3133747096,
+            "serial_margin_ns": -173602622.0
+          }
+        },
+        "only_terminal_fixed": {
+          "PR": {
+            "largest_jobs_pipeline": 933,
+            "largest_jobs_serial": 663,
+            "min_useful_pipeline_Bps": 3741086132.476102,
+            "min_useful_serial_Bps": 5259634414.704805,
+            "optimistic_pipeline_margin_ns": 462433366.0,
+            "prefill_budget_ns": 3101495846,
+            "serial_margin_ns": -329233072.0
+          },
+          "RP": {
+            "largest_jobs_pipeline": 944,
+            "largest_jobs_serial": 674,
+            "min_useful_pipeline_Bps": 3697595397.0170784,
+            "min_useful_serial_Bps": 5174074974.75262,
+            "optimistic_pipeline_margin_ns": 494684616.0,
+            "prefill_budget_ns": 3133747096,
+            "serial_margin_ns": -296981822.0
+          }
+        },
+        "return5_fixed_terminal_free": {
+          "PR": {
+            "largest_jobs_pipeline": 933,
+            "largest_jobs_serial": 663,
+            "min_useful_pipeline_Bps": 3635024412.2254906,
+            "min_useful_serial_Bps": 5110521067.896164,
+            "optimistic_pipeline_margin_ns": 527060566.0,
+            "prefill_budget_ns": 3101495846,
+            "serial_margin_ns": -264605872.0
+          },
+          "RP": {
+            "largest_jobs_pipeline": 944,
+            "largest_jobs_serial": 674,
+            "min_useful_pipeline_Bps": 3592766661.5346355,
+            "min_useful_serial_Bps": 5027387282.169427,
+            "optimistic_pipeline_margin_ns": 559311816.0,
+            "prefill_budget_ns": 3133747096,
+            "serial_margin_ns": -232354622.0
+          }
+        }
+      },
+      "cuts": [
+        {
+          "all": 985,
+          "cpu": 621,
+          "cuda": 364,
+          "released_after_tiles": []
+        },
+        {
+          "all": 981,
+          "cpu": 620,
+          "cuda": 361,
+          "released_after_tiles": [
+            1
+          ]
+        },
+        {
+          "all": 969,
+          "cpu": 615,
+          "cuda": 354,
+          "released_after_tiles": [
+            2
+          ]
+        },
+        {
+          "all": 960,
+          "cpu": 609,
+          "cuda": 351,
+          "released_after_tiles": [
+            3
+          ]
+        },
+        {
+          "all": 955,
+          "cpu": 607,
+          "cuda": 348,
+          "released_after_tiles": [
+            4
+          ]
+        },
+        {
+          "all": 939,
+          "cpu": 600,
+          "cuda": 339,
+          "released_after_tiles": [
+            1,
+            2
+          ]
+        },
+        {
+          "all": 956,
+          "cpu": 608,
+          "cuda": 348,
+          "released_after_tiles": [
+            1,
+            3
+          ]
+        },
+        {
+          "all": 951,
+          "cpu": 606,
+          "cuda": 345,
+          "released_after_tiles": [
+            1,
+            4
+          ]
+        },
+        {
+          "all": 937,
+          "cpu": 600,
+          "cuda": 337,
+          "released_after_tiles": [
+            2,
+            3
+          ]
+        },
+        {
+          "all": 939,
+          "cpu": 601,
+          "cuda": 338,
+          "released_after_tiles": [
+            2,
+            4
+          ]
+        },
+        {
+          "all": 900,
+          "cpu": 577,
+          "cuda": 323,
+          "released_after_tiles": [
+            3,
+            4
+          ]
+        },
+        {
+          "all": 903,
+          "cpu": 583,
+          "cuda": 320,
+          "released_after_tiles": [
+            1,
+            2,
+            3
+          ]
+        },
+        {
+          "all": 909,
+          "cpu": 586,
+          "cuda": 323,
+          "released_after_tiles": [
+            1,
+            2,
+            4
+          ]
+        },
+        {
+          "all": 896,
+          "cpu": 576,
+          "cuda": 320,
+          "released_after_tiles": [
+            1,
+            3,
+            4
+          ]
+        },
+        {
+          "all": 870,
+          "cpu": 561,
+          "cuda": 309,
+          "released_after_tiles": [
+            2,
+            3,
+            4
+          ]
+        },
+        {
+          "all": 793,
+          "cpu": 505,
+          "cuda": 288,
+          "released_after_tiles": [
+            1,
+            2,
+            3,
+            4
+          ]
+        }
+      ],
+      "extra_minimum_for_terminal": {
+        "return5_fixed": 39,
+        "return5_free": 42
+      },
+      "fixed_bank_causal_witness": 1108,
+      "resident_set_sha256": [
+        "83e1b184d3594cce47ff5c2dd0cd9e947de406a082ea0c0b7c8f8afebedb296f",
+        "aa11b31b404dfc733a48887ba91854524e791994540a65aadc313495304b8fb5",
+        "b29e4a32b9e908e9027e813f2f29ec5e9c0f6355499d60a64b15863b7dae83fa",
+        "69b0d4c36d32afcf752784eea71357e5a0368d119cc2601ad93de85e63091402",
+        "720dff716fd35f89386ed2b2567fcf5a889e823f1d8f6744ae8b6b3d0e365909",
+        "c7c7919a7996e63098f320cc0b51cc64ce55835d4313276d8f1e2a3c84ff9612",
+        "973db5686e06842d12865f8425202b66b1f16a73d9f7150782eab0a6dcc15020"
+      ]
+    }
+  },
+  "carry_only_members_by_boundary": [
+    0,
+    14,
+    25,
+    42,
+    36,
+    34,
+    19
+  ],
+  "carry_reconstructed_terminal_policy_sha256": "1709891b54d60c9a5c4b6b9178d9542e77e993b4ee99f29614399ba1d43ce813",
+  "commit": "98e63c83b7c6d57f97108789a92e239be34960c9",
+  "demand_groups_by_tile": [
+    35,
+    53,
+    36,
+    52,
+    52,
+    81
+  ],
+  "frontier_sha256": "5225590f4a5ea17f7faa1d13fede10dc9abc771d53dbc388333709a4d86765c2",
+  "model_forwards": 0,
+  "part65_manifest_sha256": "1713b1e73b8e59c34b1f12fc268a9d6caafba09d5c82707476ec9a0febd0069b",
+  "physically_loaded_weights": 0,
+  "plan_sha256": "aed09397a16ed706365d73e0d2535427528476b41d66e3d5e43ad90da345d79a",
+  "program_sha256": "4a88438987e08569ba4d87fbe95b0c30732f0a3b85e89cb21b7b1ad4d000ed4f",
+  "protocol_sha256": "9308ea58fe0e5ae8113ed74a98b7f90b98fcf5376b39e2335e42d78f7a44eefc",
+  "source_seals": {
+    "archive63": "f46876468215957504f27d593081142a99d46220cf9ab42782965833eab1da7f",
+    "archive66": "de926e27af098ac21015917772c36f5357496c3e1604b121b371e1ec5e2979e7",
+    "arm": "8428c5ee301281ddeb1a7b1e2ed6883073e53578027139a67c2daef5b4eaaaf5",
+    "cost": "19e326bc467aa5c6403a29cb3fc05357706f7d23f33bf598928352b02b00592e",
+    "family": "cb70c934dbbe0f1ca7452904718589b44fa906179208e7f95b0c934808d70a42",
+    "journal": "5b4d1cb6827d518a72d418f0625c8ea3a6c90a2ac57ef46b9360e9a45613f311",
+    "pair": "bb6e2b508bf35af6001ccbb5bec655ae3235bf69d1a8d74af84b4382b640b889",
+    "replay": "494bb5d2e73b4e129b020118e1bcf2110f253b1c2b565b5d110023129516aa54",
+    "service": "27832256db8ae629ece5c8d95f1ce5e0d285c24cfddf3b7e110b92154ad4cbc1"
+  },
+  "status": "REPRODUCED_R02_OFFLINE_40_SLOT_PREFILL_FLOORS",
+  "tile_widths": [
+    [
+      5
+    ],
+    [
+      32,
+      32,
+      32,
+      32,
+      20
+    ]
+  ]
+}
