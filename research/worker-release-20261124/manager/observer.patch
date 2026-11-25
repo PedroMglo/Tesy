@@ -1,0 +1,77 @@
+--- a/src/llama-moe-stream.cpp
++++ b/src/llama-moe-stream.cpp
+@@ -155,6 +155,7 @@
+ llama_moe_stream::~llama_moe_stream() {
+     {
+         std::lock_guard<std::mutex> lock(mtx);
++        ob::note("shutdown");
+         shutting_down = true;
+         q_demand.clear();
+     }
+@@ -332,10 +333,11 @@
+ void llama_moe_stream::prediction_finish() {
+     std::unique_lock<std::mutex> lk(mtx);
+     if(!prediction_stage)return;
+-    prediction_stage->finish();cv_work.notify_all();
++    prediction_stage->finish();ob::note("finish_begin");cv_work.notify_all();
+     if(!cv_done.wait_for(lk,std::chrono::seconds(10),[&]{return prediction_stage->idle()||load_failed;}))
+         throw std::runtime_error("CPU staging cleanup timeout");
+     if(load_failed)throw std::runtime_error("CPU staging byte service failed");
++    ob::note("finish_end");
+ }
+ void llama_moe_stream::prediction_request(int call,int target,const std::array<int,4>& experts) {
+     std::lock_guard<std::mutex> lk(mtx);
+@@ -373,6 +375,6 @@
+     workers_started = true;
+     workers.reserve(n_io_threads);
+     for (int32_t i = 0; i < n_io_threads; i++) {
+-        workers.emplace_back([this]() { worker_loop(); });
++        workers.emplace_back([this,i]() { ob::worker(i); worker_loop(); ob::note("worker_exit"); });
+     }
+ }
+@@ -395,9 +397,12 @@
+         if(q_demand.empty()) {
+             const int index=prediction_stage->next();
+             const auto ticket=prediction_stage->start(index);
++            const auto expert=prediction_stage->entries[index].expert;
++            ob::stage(expert,ticket);
+             lk.unlock();bool ok=true;
+             try{prediction_stage->read(index,ticket);}catch(const std::exception &error){LLAMA_LOG_ERROR("CPU staging read failed: %s\n",error.what());ok=false;}
+             lk.lock();prediction_stage->complete(index,ticket,ok);
++            ob::note("stage_complete",expert,-1,0,ticket);
+             if(!ok&&!shutting_down)load_failed=true;
+             cv_done.notify_all();cv_work.notify_all();continue;
+         }
+@@ -425,13 +430,16 @@
+                     cv_work.notify_all();
+                     if(prediction_stage->entries[staged].status==c305_cpu_stage::READING) {
+                         prediction_stage->stats.waits++;
++                        ob::note("park",w.expert,w.slot,w.gen,prediction_ticket);
+                         cv_done.wait(lk,[&]{return shutting_down||load_failed||prediction_stage->entries[staged].status!=c305_cpu_stage::READING;});
++                        ob::note("resume",w.expert,w.slot,w.gen,prediction_ticket);
+                     }
+                     if(shutting_down||load_failed){sl.slot_claimed[w.slot]=0;cv_done.notify_all();break;}
+                     if(w.gen!=sl.slot_gen[w.slot]||sl.slot_expert[w.slot]!=w.expert||sl.slot_state[w.slot]!=LLAMA_MOE_STREAM_SLOT_LOADING||!sl.slot_claimed[w.slot]) {
+                         load_failed=true;sl.slot_claimed[w.slot]=0;cv_done.notify_all();break;
+                     }
+                     prediction_stage->claim(staged,prediction_ticket);
++                    ob::note("claim",w.expert,w.slot,w.gen,prediction_ticket);
+                     prediction_stage->record(7,staged,w.slot,w.gen);
+                     if(prediction_stage->validate&&prediction_stage->stats.validation_claims<8){prediction_stage->stats.validation_claims++;validate_stage=true;}
+                 }
+--- a/src/c294-service-window.h
++++ b/src/c294-service-window.h
+@@ -1,4 +1,5 @@
+ #pragma once
++#include "fixture_observer.h"
+ #include <atomic>
+ #include <cstdint>
+ #include <vector>
+@@ -19,6 +20,7 @@
+     c294_window():events(capacity) {}
+     void record(int kind,int layer=-1,int expert=-1,int slot=-1,uint64_t gen=0,
+                 int64_t route=0,int component=-1,int64_t bytes=0,int rows=0,int64_t owner=-1) {
++        ob::primary(kind,expert,slot,gen,component);
+         if (!enabled.load(std::memory_order_relaxed)) return;
+         const size_t i=count.fetch_add(1,std::memory_order_relaxed);
+         if(i>=capacity){overflow.store(true);return;}

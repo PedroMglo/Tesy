@@ -1,0 +1,107 @@
+{
+  "schema": "c305-native-control-relink-v1",
+  "decision": "NO_GO_RELINK_BYTE_IDENTITY",
+  "link_invocations": 1,
+  "source": {
+    "commit": "f6f1da1eea81c9c1328b962b0afe21f0aacdd1a1",
+    "tree": "fef6b43d282fb3e8b3697cff86462b88ab648464",
+    "clean": true,
+    "exploratory": false,
+    "script_sha256": "134d284c1725aa951518879d23220c96b58c91530902885a56c35fed3879fdfb",
+    "preregistration_sha256": "0136736cc8eeb846e5ee4146d481d51d986df325516b792880e9ea06cb43aadc",
+    "c317_protocol_sha256": "1c7ba3b67377bf22af2280f6dfa1d09fae0f1deff70bbddfa7061ecc6d9eb4ac",
+    "c317_libraries_and_client": {
+      "libggml-base.so.0.15.3": "6e27d9ecb86e4747177189d2d2f6390280a2ee1000221ad68a0404023ea72539",
+      "libggml-cpu.so.0.15.3": "9aabce5751c5d7ca19b50e4cabb1fcf484c1581d275141dae8aba8ed33060313",
+      "libggml-cuda.so.0.15.3": "ff43655b15df5f3de1d5e00b0da18469a14f118bd644eb4b6d7f1915c85a4493",
+      "libggml.so.0.15.3": "70f635b8ba22ddd751590ec1fe11c895ef88e2aff0f4a63a3af96314e6a77d65",
+      "libllama.so.0.0.9884": "d8460ecec23274ebba145530a1aacdb2746ee94969aba40b8b2beb38e0bb90d4",
+      "expert-learned-staging": "9358a2bce056bfba07dc3c928bf66b7ac907f846ce11c4d02d457688e13219cc"
+    },
+    "link_command_sha256": "d665df498b7dc4cef67184f71f9a22fa865ffda42846b7343964cd91700cbe71",
+    "flags_make_sha256": "224a9e66082ba808a02fb957c855f4915e2f5e5345f01435d0cc6ba085d7ed3d"
+  },
+  "objects": {
+    "count": 166,
+    "bytes": 9090808,
+    "manifest_sha256": "ec70d3ef4ece5490265334d82d9b713730c1cbcb29bafce1a1c079645d4f9115"
+  },
+  "toolchain": {
+    "c++": {
+      "sha256": "ca48a2d27d0796399adc3387225eec4be62974e26fa299710edfde0c1af5aa63",
+      "version": "c++ (GCC) 16.2.1 20261029 (Red Hat 16.2.1-3)"
+    },
+    "ld": {
+      "sha256": "eccfdb2b11bcae1ca6e2915a40db609299f46d7def305dab744c0da0aaf54370",
+      "version": "GNU ld version 2.46.1-1.fc44"
+    },
+    "readelf": {
+      "sha256": "20f4971b177980026114be33ed5ce3814aeeac3c12ba8a329b9c2ef3b42cf20f",
+      "version": "GNU readelf version 2.46.1-1.fc44"
+    },
+    "nm": {
+      "sha256": "2dc5364b80142b8495034049ef3633bbaf76471da35b5d9f1a829b5f0073b70e",
+      "version": "GNU nm version 2.46.1-1.fc44"
+    }
+  },
+  "original": {
+    "sha256": "d8460ecec23274ebba145530a1aacdb2746ee94969aba40b8b2beb38e0bb90d4",
+    "bytes": 4207296,
+    "elf": {
+      "Class": "ELF64",
+      "Machine": "Advanced Micro Devices X86-64"
+    },
+    "build_id": "2c15de0880cf0d332e73c042a7d904bb071cd7c3",
+    "soname": [
+      "libllama.so.0"
+    ],
+    "needed": [
+      "libggml.so.0",
+      "libggml-base.so.0",
+      "libstdc++.so.6",
+      "libm.so.6",
+      "libgcc_s.so.1",
+      "libc.so.6"
+    ],
+    "runpath_sha256": "973296c5ee76cf819a281e341d7ba580d55dad756d0a32f52a3832deefec6ed2",
+    "dynsyms_sha256": "5887b42b4d9d2331eadf846562187d413b13c1c6467105e427ef3d11c6666344",
+    "dynsyms_count": 4698
+  },
+  "link_returncode": 0,
+  "relinked": {
+    "sha256": "f28cf30e4830b86bf62612a11fd0e26be4fbe268e2b636bbe117914b1ef8704a",
+    "bytes": 4207344,
+    "elf": {
+      "Class": "ELF64",
+      "Machine": "Advanced Micro Devices X86-64"
+    },
+    "build_id": "aec137afca72fe59ba59d683b651bf6b901bc685",
+    "soname": [
+      "libllama.so.0"
+    ],
+    "needed": [
+      "libggml.so.0",
+      "libggml-base.so.0",
+      "libstdc++.so.6",
+      "libm.so.6",
+      "libgcc_s.so.1",
+      "libc.so.6"
+    ],
+    "runpath_sha256": "973296c5ee76cf819a281e341d7ba580d55dad756d0a32f52a3832deefec6ed2",
+    "dynsyms_sha256": "5887b42b4d9d2331eadf846562187d413b13c1c6467105e427ef3d11c6666344",
+    "dynsyms_count": 4698
+  },
+  "equal": {
+    "sha256": false,
+    "bytes": false,
+    "elf": true,
+    "build_id": false,
+    "soname": true,
+    "needed": true,
+    "runpath_sha256": true,
+    "dynsyms_sha256": true,
+    "dynsyms_count": true
+  },
+  "allocated_bytes_before_receipt": 14311424,
+  "elapsed_s": 0.2670440410001902
+}
