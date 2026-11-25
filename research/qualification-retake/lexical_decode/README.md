@@ -32,3 +32,9 @@ env LC_ALL=C PYTHONCOERCECLOCALE=0 PYTHONUTF8=1 OPENBLAS_NUM_THREADS=1 OMP_NUM_T
   python3 -B "$s/screen.py" --fixture "$C276/development-inputs.json" \
   --family "$WRT_FAMILY" --raw-dir "$TESY_C294_RAW" --new-output-dir "$DESTINO_NOVO"
 ```
+
+## Antecedentes verificados em 25 de novembro de 2026
+
+Li et al. usam contagens de cada expert por camada e ID de token, com correspondência por embedding para IDs ausentes. Aprendem a tabela com 20% dos dados de cada conjunto e geram os pedidos experimentais a partir dos outros 80%. Avaliam colocação e encaminhamento concorrente em oito aceleradores com Qwen3-30B-A3B e DeepSeek-V2-Lite. O sinal lexical já era conhecido. O crivo Tesy mede a cobertura de primeiras faltas ainda relevantes no NVMe durante uma única sequência, aprendendo apenas com o prefixo já confirmado. Um preditor treinado externamente constituiria outra hipótese e precisaria de inputs independentes. [Semantic Parallelism, método e avaliação](https://arxiv.org/html/2503.04398v5#S3.SS2)
+
+Bevy mede a sobreposição de cálculo e transferências de experts entre pedidos concorrentes. Na comparação com oito pedidos de código e 30% de cache, 51–64% dos experts antecipados por duas baselines ficaram sem uso. No Tesy contamos também as propostas sem uso e se alguma leitura sai da última cadeia de dependências em cada grupo de uma única conversa. [Bevy, decomposição das medições](https://arxiv.org/html/2611.04794v1#S5.SS3)
