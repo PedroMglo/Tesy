@@ -127,7 +127,7 @@ def execute(a, report):
         "base": (libdir / "libggml-base.so.0.15.3", common.BASE),
     }
     for name in ("control", "separate", "shared"):
-        libs[name] = (build / (name + ".so"), b["arms"][name]["sha256"])
+        libs[name] = (build / (name + ".so"), b["arms"][name]["elf_sha256"])
     env = {
         "PATH": "/usr/bin:/bin",
         "LC_ALL": "C",
