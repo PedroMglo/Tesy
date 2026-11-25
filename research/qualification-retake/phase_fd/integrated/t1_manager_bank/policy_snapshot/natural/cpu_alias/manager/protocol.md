@@ -1,0 +1,18 @@
+# Último leitor e backing de páginas no manager C291
+
+## Hipótese e controlo
+
+O manager C291 c89c88b342054223e3f27a17fbfd0954803147ac pode reservar outra geração enquanto dois consumidores ainda têm a antiga. A troca das páginas no endereço fixo exige a saída de ambos e uma nova validação do ticket sob o mutex que publica a geração. Uma entrada retida no banco pode ser restaurada no mesmo endereço sem copiar as três componentes. A parte 67 já verificou o cálculo GGML com CPU_Mapped na geometria 2880² × 40 e o scheduler misto. Aqui o consumidor é um leitor coordenado das três vistas reais GGML. A captura de leases por todos os kernels em produção fica para uma integração futura.
+
+Em processos independentes, usar os quatro trabalhadores C291, fila FIFO, reserva/claim e validação de publicação originais. O adaptador privado substitui apenas o serviço de bytes, insere a espera dos leitores e a instalação das páginas antes da publicação. Um memfd de origem com cinco registos diferenciáveis substitui o disco. Cada registo tem 13 221 888 B, incluindo 2 688 B de padding. Preservar as quatro áreas de staging originais. Um banco com uma entrada retém apenas o primeiro expert. As variantes usam a mesma agenda, inputs e geometria. Sem download, servidor, pesos reais, GPU ou alterações ao sistema.
+
+- **Alias**. Publicar A, adquirir dois leases da mesma geração no slot 0, reservar B/C/D/E para quatro slots e observar quatro claims simultâneos de threads distintas. Deixar as três entregas independentes terminar. Libertar um lease e manter o segundo. Confirmar que as vistas ainda leem integralmente A e B continua LOADING. Após o último leitor, confirmar B/C/D/E. Pedir A de novo para o slot 0 e confrontar bytes, endereço e geração. O banco deve evitar uma leitura da origem e qualquer cópia de captura/restauro.
+- **Ablação**. Mesma agenda e cinco registos, sem banco. A última admissão volta à origem e os bytes finais coincidem.
+- **Early overwrite**. Desligar deliberadamente a espera, trocar A por B mantendo dois leitores e exigir que o comparador independente de A detete o conteúdo errado. O teste coordena leituras e troca, sem acessos simultâneos não sincronizados.
+- **Geração obsoleta e erro de leitura**. Substituir um ticket real sob o mutex enquanto o worker está fora; injetar uma leitura curta em processo separado. Ambos devem deixar A no endereço, impedir publicação de B e ativar a falha sticky do manager. Uma tentativa de devolver um lease da geração errada não pode libertar o leitor legítimo.
+
+Verificar as 3 × 4 406 400 posições de byte por expert usando fórmula independente e estado no manager. Publicações e evicções requerem correspondência exata de expert/slot/geração. Medir pread concluído apenas no FD sintético, bytes retidos, st_blocks do memfd, endereços relativos, RSS e memória do scope. VA adicional não conta como nova cópia. A partilha elimina backing duplicado somente quando o mesmo registo é simultaneamente primário e retido; gerações antigas que sobrevivem às suas vítimas continuam pagas. Não inferir largura de banda ou latência do produto.
+
+## Orçamento e decisão
+
+Congelar este protocolo e o código antes de compilar em checkout limpa. Scope único CPU com memory.max=1 GiB, swap.max=0, limite 180 s por comando, 600 s totais, resultados e fonte extraída até 80 MiB, sem modelo. Parar na primeira divergência, violação de recursos ou falta de proveniência; preservar o diretório e usar nova identidade para qualquer reparação. GO apenas para adaptar o ciclo de leases de consumidores GGML reais se os cinco modos satisfizerem os contratos. Um corte sintético favorável não decide M3/M4.
