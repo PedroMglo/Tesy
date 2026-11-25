@@ -1,0 +1,337 @@
+{
+  "commit": "f024dc718a288fe6badb69f8e2cb0dd2fe98178b",
+  "tree": "c1f93dddb205c2d362f64f251314f312cc731c30",
+  "status": "PASS_REAL_CPU0_POLICY_AND_MUTANT",
+  "elapsed_s": 64.16272250798647,
+  "c55_sha256": "7aec93a77b5ed50b999cb7583d8207139f07b0da1353cb7cb4516a300a912729",
+  "monitor_samples": 6,
+  "monitor_sha256": "5666414dd36c2ffb22eb252ef195219a11a3126f3558910503a89982fec585c9",
+  "peak_bytes": 723611648,
+  "swap_peak_bytes": 0,
+  "child_launches": 3,
+  "full_model_processes": 0,
+  "integral_pack_sha256": "f17e9fbf6f6aed1ad60ca7da3431c5156a946d2e0bf119722afc1f934cbc6b11",
+  "input_sha256": "a3a6028b45719ee0a1c63f689a2e6896b5a401ee394d5aa9d3188d98e72dc269",
+  "derived_manifest_receipt_sha256": "cd4c0665c5485268cddfc7dba576b1cf490222c120cf34f72d555a6cbccbc5b9",
+  "selected_components_sha256": "3e0986ef058c75f44fa3b4587db9a9203516cf000fb414cb040155e2d95ef6a6",
+  "measurement_reference": "CPU0 tile [32,64) / C266; external FFN gold",
+  "build": {
+    "receipt_sha256": "fe99a0d63abfd238872e1f026717e9146e7df4d58dedd399a6d49fc4ea96ac76",
+    "commit": "f258b24bd34fb4cee67260be90698126e7895edd",
+    "executables": {
+      "policy-layer": "de6944c55ba4fd779fb6a4a3373c68b76537b2f80ba3c128e2ea1b83718fd000"
+    },
+    "libs": {
+      "libggml-cpu.so.0.15.3": "9aabce5751c5d7ca19b50e4cabb1fcf484c1581d275141dae8aba8ed33060313",
+      "libggml-base.so.0.15.3": "6e27d9ecb86e4747177189d2d2f6390280a2ee1000221ad68a0404023ea72539"
+    },
+    "crypto_sha256": "695648ac8dc5e6a2b70e5e72399940de0f84bf24fddb7dd18949ba40bc575c72",
+    "worker_commit": "c89c88b342054223e3f27a17fbfd0954803147ac"
+  },
+  "r01": {
+    "status": "FAIL_PRESERVED",
+    "reason": "TypeError: 'module' object is not subscriptable",
+    "receipt_sha256": "a7150479ed77e1812c79a60bea8d63dc637cd7895f1a620f1b95232ecbd1b9c5",
+    "child_launches": 0,
+    "commit": "f258b24bd34fb4cee67260be90698126e7895edd",
+    "c118": {
+      "cap_bytes": 4294967296,
+      "duration_s": 60.15593539099791,
+      "expected_power": {
+        "profile": "performance",
+        "source": "AC"
+      },
+      "last_utc": "2026-11-25T15:29:38.062428+00:00",
+      "policy_sha256": "c121d870cb312df031a4690afebf19dca0ab42fa55834e11cea0adab34a69253",
+      "run_id": "tesy-policy-layer-20261125-r01",
+      "sample_count": 61,
+      "schema": "c118-per-arm-start-inventory-v2",
+      "sha256": "9f22668ea1a9e4999be33e2cb4a72f88b62e5e972ba4d5e128e338db55775203"
+    }
+  },
+  "r02_receipt_sha256": "fe0b2a54df523090a68fc20e02a63410420baacc5a66f6af6f18ea361d18b589",
+  "c118": {
+    "cap_bytes": 4294967296,
+    "duration_s": 60.17200093700376,
+    "expected_power": {
+      "profile": "performance",
+      "source": "AC"
+    },
+    "last_utc": "2026-11-25T15:32:35.467774+00:00",
+    "policy_sha256": "c121d870cb312df031a4690afebf19dca0ab42fa55834e11cea0adab34a69253",
+    "run_id": "tesy-policy-layer-20261125-r02",
+    "sample_count": 61,
+    "schema": "c118-per-arm-start-inventory-v2",
+    "sha256": "3dd1fc147d09d2cc0b80941dcb836014e5678996ab28e6cf76decaa98d3542bd"
+  },
+  "arms": [
+    {
+      "mode": "R0",
+      "proof": {
+        "active_waves": 1,
+        "arm": "R0",
+        "backing_bytes": 66096000,
+        "backing_enabled": false,
+        "backing_experts": [
+          35,
+          36,
+          37,
+          38,
+          39
+        ],
+        "backing_roles_verified": 15,
+        "bias_nodes_observed": 24,
+        "compute_backend": "CPU",
+        "evicted_experts": [
+          0,
+          1,
+          2,
+          3,
+          4
+        ],
+        "fd_odirect": true,
+        "ffn_positions": 32,
+        "ffn_unequal": 0,
+        "full_ffn_values": 92160,
+        "graph_waves": 8,
+        "joined_workers": 4,
+        "logical_weight_bytes": 594864000,
+        "manager_destructor_returned": true,
+        "mmid_nodes_observed": 24,
+        "pread_bytes": 594984960,
+        "router_positions": 153,
+        "seed_roles_verified": 120,
+        "selected_bias_roles": 15,
+        "selected_bindings": [
+          [
+            45,
+            0,
+            2
+          ],
+          [
+            49,
+            4,
+            2
+          ],
+          [
+            57,
+            3,
+            2
+          ],
+          [
+            60,
+            1,
+            2
+          ],
+          [
+            98,
+            2,
+            2
+          ]
+        ],
+        "selected_weight_roles": 15,
+        "status": "PASS_C291_CPU0_POLICY_TILE",
+        "unique_loads": 45,
+        "weight_mismatches": [],
+        "weight_sets": 135,
+        "workers_before_destructor": 4,
+        "fd_matches_placement": true
+      },
+      "tile": {
+        "bytes": 368640,
+        "changed_f32_bit_patterns": 0,
+        "finite": true,
+        "sha256": "bf0391c5e7aad2aa22c730d56c07213fadcd0db1b7801d5dd58e1533f9aaba24",
+        "values": 92160
+      },
+      "native_stdout_sha256": "831b29355a6978b6f9e142c1988fd8d8508d24fc7929498c2a85ed2898a6df54"
+    },
+    {
+      "mode": "BACKED",
+      "proof": {
+        "active_waves": 1,
+        "arm": "BACKED",
+        "backing_bytes": 66096000,
+        "backing_enabled": true,
+        "backing_experts": [
+          35,
+          36,
+          37,
+          38,
+          39
+        ],
+        "backing_roles_verified": 15,
+        "bias_nodes_observed": 24,
+        "compute_backend": "CPU",
+        "evicted_experts": [
+          35,
+          36,
+          37,
+          38,
+          39
+        ],
+        "fd_odirect": true,
+        "ffn_positions": 32,
+        "ffn_unequal": 0,
+        "full_ffn_values": 92160,
+        "graph_waves": 8,
+        "joined_workers": 4,
+        "logical_weight_bytes": 594864000,
+        "manager_destructor_returned": true,
+        "mmid_nodes_observed": 24,
+        "pread_bytes": 594984960,
+        "router_positions": 153,
+        "seed_roles_verified": 120,
+        "selected_bias_roles": 15,
+        "selected_bindings": [
+          [
+            45,
+            35,
+            2
+          ],
+          [
+            49,
+            39,
+            2
+          ],
+          [
+            57,
+            38,
+            2
+          ],
+          [
+            60,
+            36,
+            2
+          ],
+          [
+            98,
+            37,
+            2
+          ]
+        ],
+        "selected_weight_roles": 15,
+        "status": "PASS_C291_CPU0_POLICY_TILE",
+        "unique_loads": 45,
+        "weight_mismatches": [],
+        "weight_sets": 135,
+        "workers_before_destructor": 4,
+        "fd_matches_placement": true
+      },
+      "tile": {
+        "bytes": 368640,
+        "changed_f32_bit_patterns": 0,
+        "finite": true,
+        "sha256": "bf0391c5e7aad2aa22c730d56c07213fadcd0db1b7801d5dd58e1533f9aaba24",
+        "values": 92160
+      },
+      "native_stdout_sha256": "6f4fc57b586f3722be3e6ff6438b33a10eafccad5dfe0417cfad7359f98a61c7"
+    },
+    {
+      "mode": "MUTANT",
+      "proof": {
+        "active_waves": 1,
+        "arm": "MUTANT",
+        "backing_bytes": 66096000,
+        "backing_enabled": true,
+        "backing_experts": [
+          35,
+          36,
+          37,
+          38,
+          39
+        ],
+        "backing_roles_verified": 15,
+        "bias_nodes_observed": 24,
+        "compute_backend": "CPU",
+        "evicted_experts": [
+          35,
+          36,
+          37,
+          38,
+          39
+        ],
+        "fd_odirect": true,
+        "ffn_positions": 32,
+        "ffn_unequal": 92160,
+        "full_ffn_values": 92160,
+        "graph_waves": 8,
+        "joined_workers": 4,
+        "logical_weight_bytes": 594864000,
+        "manager_destructor_returned": true,
+        "mmid_nodes_observed": 24,
+        "pread_bytes": 594984960,
+        "router_positions": 153,
+        "seed_roles_verified": 120,
+        "selected_bias_roles": 15,
+        "selected_bindings": [
+          [
+            45,
+            35,
+            2
+          ],
+          [
+            49,
+            39,
+            2
+          ],
+          [
+            57,
+            38,
+            2
+          ],
+          [
+            60,
+            36,
+            2
+          ],
+          [
+            98,
+            37,
+            2
+          ]
+        ],
+        "selected_weight_roles": 15,
+        "status": "PASS_C291_CPU0_DETECTED_MUTATION",
+        "unique_loads": 45,
+        "weight_mismatches": [
+          [
+            45,
+            "gate"
+          ],
+          [
+            49,
+            "gate"
+          ]
+        ],
+        "weight_sets": 135,
+        "workers_before_destructor": 4,
+        "fd_matches_placement": true
+      },
+      "tile": {
+        "bytes": 368640,
+        "changed_f32_bit_patterns": 92160,
+        "finite": true,
+        "sha256": "dee7674d700ece6e862bc0c4c39f4aab31035cda4a884f96396c59add2562fa1",
+        "values": 92160
+      },
+      "native_stdout_sha256": "33171ee1dfd2ee6a1fe2ebdf32991ff00cbeaf93280a377454dbe54736a1aa04"
+    }
+  ],
+  "resource_observations": {
+    "power_source": [
+      "AC"
+    ],
+    "compute_gpu_pids_total": 0,
+    "cpu_c_minmax": [
+      46.625,
+      62.5
+    ],
+    "nvme_c_max": 34.85,
+    "gpu_c_max": 42.11,
+    "psi_full_avg10_max": 0.0,
+    "available_host_memory_min_bytes": 24201580544,
+    "cgroup_io_read_bytes": 1784987648,
+    "cgroup_cpu_us": 12475730
+  }
+}
