@@ -8,6 +8,7 @@ No C135 histórico, a reordenação ideal dos mesmos 1 177 serviços dentro de c
 
 | Decisão | Evidência e condição de reabertura |
 |---|---|
+| **Escolha durante o prefixo por frequência, NO_GO com reposição em I** | Em C294 o incremento nominal teve 121 cargas a menos contra R0. O incremento de código teve duas a menos. A reposição da composição inicial de decode exigiria 268 e 372, respetivamente. [Fases, ablação e controlos](prefill_causal/README.md) |
 | **Residência no início do prefill C135** | **NO_GO condicionado** para mudar só as vítimas depois da chegada do pedido. Mesmo conhecendo o futuro são necessárias pelo menos 874 cargas a partir do estado observado, contra 826 admissíveis a 4,5 GB/s com decode a 6 tok/s. Com o estado inicial escolhido gratuitamente o mínimo baixa para 378. [Estado real](prefill_entry40/README.md) · [Oráculo livre](prefill_oracle40/README.md) |
 | **Compressão marginal sem perdas, NO_GO na amostra C319** | Com tabelas individuais gratuitas, o rANS especificado pode poupar até 8,605% dos bytes das 192 matrizes em conjunto e até 13,256% na melhor. O gate para prototipar era 20%. [Prova, amostra e limites](mxfp4_entropy/README.md) |
 | **Quatro linhas por ativação, NO_GO para o MUL_MAT_ID** | A partilha melhorou os oito pares face à intercalação com quatro ponteiros. Ao percorrer 35 MB de pesos, o tempo subiu 74,55%–108,26% contra o R0. As 23 040 saídas mantiveram igualdade bitwise. [Todos os braços e limites](mxfp4_four_rows/README.md) |
