@@ -8,6 +8,7 @@ No C135 histórico, a reordenação ideal dos mesmos 1 177 serviços dentro de c
 
 | Decisão | Evidência e condição de reabertura |
 |---|---|
+| **Compressão exata dos nibbles condicionada à escala** | **NO_GO** nos 64 experts C287. Mesmo com tabelas gratuitas e sem custo de decodificação, o teto das 192 matrizes passa de 8,605% para 9,765% dos bytes. A melhor matriz admite 14,545%, abaixo dos 20% exigidos. [Por tier, por camada e prova](mxfp4_conditional/README.md) |
 | **Primeiros oito tokens de Aster** | No stock e em C133 coincidem os primeiros 28 bytes do canal de raciocínio. A atribuição da falha funcional continua **INCONCLUSIVE** até uma conclusão natural independente. [Prova e limites](aster_reasoning_prefix/README.md) |
 | **Prefault no carregador de inferência independente** | O controlo recompilado reproduziu a biblioteca stock byte a byte e o candidato preservou os 6 089 símbolos exportados. O primeiro teste de inferência ficou **NOT_RUN** após o carregador dinâmico exceder o teto virtual de 768 MiB antes de abrir o GGUF. Quatro bibliotecas já exigiam 779,977 MiB de espaço virtual. [Build](stock_prefault_build/README.md) · [Falha preservada](stock_prefault_build/tiny.md) |
 | **Cópia literal de propostas da história, B8** | **NO_GO em C247.** Mesmo com escolha perfeita, os seis pares só admitem medianas de 5,45% em código e 4,77% em planeamento. A triagem de desenvolvimento exige 15% em ambos. No nominal, o ótimo prefere confirmar individualmente as 32 posições. [Oráculo e custos](history_lookup/README.md) |
