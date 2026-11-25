@@ -8,6 +8,7 @@ No C135 histórico, a reordenação ideal dos mesmos 1 177 serviços dentro de c
 
 | Decisão | Evidência e condição de reabertura |
 |---|---|
+| **Residência no início do prefill C135** | **NO_GO condicionado** para mudar só as vítimas depois da chegada do pedido. Mesmo conhecendo o futuro são necessárias pelo menos 874 cargas a partir do estado observado, contra 826 admissíveis a 4,5 GB/s com decode a 6 tok/s. Com o estado inicial escolhido gratuitamente o mínimo baixa para 378. [Estado real](prefill_entry40/README.md) · [Oráculo livre](prefill_oracle40/README.md) |
 | **Compressão marginal sem perdas, NO_GO na amostra C319** | Com tabelas individuais gratuitas, o rANS especificado pode poupar até 8,605% dos bytes das 192 matrizes em conjunto e até 13,256% na melhor. O gate para prototipar era 20%. [Prova, amostra e limites](mxfp4_entropy/README.md) |
 | **Quatro linhas por ativação, NO_GO para o MUL_MAT_ID** | A partilha melhorou os oito pares face à intercalação com quatro ponteiros. Ao percorrer 35 MB de pesos, o tempo subiu 74,55%–108,26% contra o R0. As 23 040 saídas mantiveram igualdade bitwise. [Todos os braços e limites](mxfp4_four_rows/README.md) |
 | **Dot MXFP4 AVX-VNNI, NO_GO para promoção global** | Os 23 040 resultados reais coincidiram bit a bit. A percorrer as oito matrizes, as reduções contra o R0 nos dois pares de cada tipo de núcleo ficaram entre 4,64% e 7,91%. O gate de 10% contra o R0 e a ablação falhou. [Todos os braços e recursos](mxfp4_vnni/README.md) |
