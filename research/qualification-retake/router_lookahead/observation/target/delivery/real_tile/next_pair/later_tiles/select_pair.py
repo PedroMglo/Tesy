@@ -59,7 +59,7 @@ def collect(rows):
             tiles[e.tile] = (e.a, e.b, e.c, i)
         elif e.kind == 35:
             site["begin"] = i
-        elif e.kind == 33:
+        elif e.kind == 33 and 1 <= e.layer <= 24:
             n, start, _, _ = tiles[e.tile]
             need(e.b == len(site["pred"]) and e.c == start + e.b, "E33 row/position")
             site["pred"].append(list(P["rank4"](e.a)))
