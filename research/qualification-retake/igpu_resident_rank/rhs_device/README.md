@@ -30,3 +30,5 @@ python3 -IB "$d/review_spirv.py" "$NEW_BUILD/subgroup.spv"
 ```
 
 Build R01 `8a3171e81809f8a1b151c3a3f5ad025320e91a67a283ae6eb52880ad8c728e75`. Execução R01 `472fa699385b57fc56df08c48264f0bb39ba8731365c3adc6b581858e2e45edd`. Saída `b2ce0eebb92489cdae2b5d5cdd4d4792ee7207bf748e955c1f5ee67d8102c434`. Uma compilação e uma execução confirmatórias concluídas à primeira tentativa. [Manifesto privado da parte 82](../../private_archive/part-82.json)
+
+Para a comparação seguinte estão autenticados os 2 880 F32 de entrada e os pesos do expert 28 no primeiro decode de CPU0. A captura mede o FFN completo. A observação mínima que falta é a saída gate do rank 0 no grafo original de quatro ranks, antes do bias. [Entrada real, registo e observação](../projection/input.md)
