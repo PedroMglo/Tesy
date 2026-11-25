@@ -10,6 +10,8 @@
 | Expulsão prioritária com as cópias do banco | **1 058** | **797** |
 | Mesma combinação, com reposição do estado antes do primeiro decode | **1 058** | **799** |
 
+A interação também se vê em números absolutos. No prefill, acrescentar o banco à política R0 poupou 155 leituras e dar prioridade às suas tags sem servir os pesos custou 21. Somar os efeitos isolados daria 134 leituras poupadas. A combinação evitou 205, mais 71. No decode, a soma daria 67 e a combinação evitou 294, mais 227. Cada contraste parte da mesma agenda de consumidores do target. A contagem de leituras e a contagem de bytes entregues ao primário divergem quando um miss de slot passa a hit no banco.
+
 A primeira linha corresponde aos pedidos físicos verificados. As outras são **SIMULATED** nas rotas da execução ON. A reposição adiciona 19 entradas, todas cobertas pelo banco, e 428 movimentos dentro dos dispositivos. Cobrar a leitura das entradas ausentes deixa portanto a mesma contagem no disco. O custo de mover os pesos e tornar as gerações seguras precisa de execução. Durante o sufixo observado de T1, construir o banco a partir de vazio implica 20,225 GB de cópias de pesos CPU e 8,103 GB de cópias de pesos CUDA. A fixture que partilha páginas entre duas vistas na CPU passou os controlos de leitor e de reutilização das páginas. [Reposição por tier](replay/README.md) · [Experiência CPU e falhas induzidas](cpu_alias/README.md)
 
 ## O orçamento da conversa
