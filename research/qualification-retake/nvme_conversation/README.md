@@ -27,3 +27,19 @@ python3 -B research/qualification-retake/nvme_conversation/compact.py --raw-root
 ```
 
 A preparação `session.py inputs --new-output-dir "$PREPARACAO_NOVA"` requer os ficheiros históricos originais e as bibliotecas efetivamente selecionadas no portátil. A execução requer o PASS do C270, a colocação verificada, a C55 E20 e uma raiz privada exclusiva. As compilações e os raws do ensaio não são necessários para a CI sem modelo. [Entrada da campanha](session.py)
+
+### Repetir a conversa completa no portátil
+
+A partir da checkout limpa de medição, usar uma janela C55 válida que admita 20 GiB, o recibo privado de colocação do GGUF e o `receipt.json` privado do C270 com o respetivo `protocol.json` ao lado. O portátil precisa dos binários, bibliotecas e inputs históricos verificados pelo preparador. A unidade abaixo inicia o servidor em loopback, verifica quem possui a porta 18442, envia as duas mensagens com a resposta real no histórico e encerra o servidor. A data UTC na identidade serve apenas para reservar uma saída nova. A data de template permanece a que consta do protocolo. [Criar a janela de admissão](../nvme_admission/README.md) · [Executar o C270](../nvme_r0_gate/README.md)
+
+```sh
+stamp=$(date -u +%Y%m%dT%H%M%SZ)
+unit="tesy-c281-nvme-$stamp"
+result="$TESY_PRIVATE_RESULTS/$unit"
+python3 -B research/qualification-retake/nvme_conversation/session.py run \
+  --commit "$(git rev-parse HEAD)" --unit "$unit" \
+  --window "$TESY_NVME_C55" --placement "$TESY_PLACEMENT_RECEIPT" \
+  --c270 "$TESY_C270_RECEIPT" --new-output-dir "$result"
+```
+
+Um resultado `PASS_TWO_NATURAL_REQUESTS_LOCAL_HISTORY` confirma exclusivamente a conclusão dos dois pedidos, o reuso de histórico e o encerramento medidos. A latência e a taxa de decode estão no recibo e são avaliadas pelos limiares de produto. Os ficheiros privados da sessão permanecem em `$result`, inclusive se o comando devolver um código de falha.
