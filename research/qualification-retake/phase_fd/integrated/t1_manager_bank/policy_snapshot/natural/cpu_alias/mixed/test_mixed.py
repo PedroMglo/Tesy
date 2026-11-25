@@ -1,6 +1,8 @@
 """Model-free checks of source provenance and the trial's failure conditions."""
 
 import struct
+import hashlib
+import json
 import tempfile
 import unittest
 from pathlib import Path
@@ -39,6 +41,38 @@ class TestMixed(unittest.TestCase):
         struct.pack_into("<I", changed, 2880 * 4, 123456)  # another slot
         with self.assertRaises(ValueError):
             review["changes"](zero, changed)
+
+    def test_same_pid_and_zero_owner_at_exit(self):
+        verify = run_path(HERE / "monitor.py")["monitoring"]
+        rows = [
+            {
+                "phase": phase,
+                "elapsed_s": i + 0.1,
+                "stage": i,
+                "peak_bytes": 1000,
+                "observation": {"gpu": {"used_mib": 2}, "gpu_owners": owner},
+            }
+            for i, (phase, owner) in enumerate(
+                zip(
+                    ("entry", "active", "finish", "after_exit"), ([], [123], [123], []), strict=True
+                )
+            )
+        ]
+        with tempfile.TemporaryDirectory() as temp:
+            fp = Path(temp) / "monitor.jsonl"
+
+            def apply():
+                raw = "".join(json.dumps(v) + "\n" for v in rows).encode()
+                fp.write_bytes(raw)
+                return verify(fp, hashlib.sha256(raw).hexdigest())
+
+            self.assertEqual(apply(), rows)
+            rows[-1]["observation"]["gpu_owners"] = [123]
+            with self.assertRaises(ValueError):
+                apply()
+            del rows[-1]["observation"]["gpu_owners"]
+            with self.assertRaises(KeyError):
+                apply()
 
     def test_generation_sequence(self):
         with tempfile.TemporaryDirectory() as tmp:

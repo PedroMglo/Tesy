@@ -205,8 +205,10 @@ def execute(a, out, r):
     active = run_path(INT / "t1_native_sink/measure.py")["active_sample"]
     r["process"] = case(out, "alias", a.unit, out, io, policy, cold, active, paths)
     r["numbers"] = REVIEW["review"](out / "alias")
-    obs = io.monitor(policy)["observation"]
-    need(not obs["gpu_owners"], "GPU not released")
+    monitors = run_path(HERE / "monitor.py")["monitoring"](
+        out / "raw/alias.monitor.jsonl", r["process"]["monitor_sha256"]
+    )
+    obs = monitors[-1]["observation"]
     r["gpu_after_mib"] = obs["gpu"]["used_mib"]
     r["cgroup_peak_bytes"] = io.scope()
     need(sha(out / "device") == r["build"]["binary_sha256"], "binary changed")
