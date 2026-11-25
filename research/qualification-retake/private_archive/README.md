@@ -46,3 +46,5 @@ O lote 14 preserva a E/S direta, o grafo misto e o manager C291, incluindo as te
 O lote 15 conserva os recibos da preparação e do build, os dois binários, as três saídas de CPU0 e as janelas C55/C118. Foram verificados 35 ficheiros e 4 045 766 B. O pack privado de cinco registos ficou no NVMe. [Índice do lote 15](part-15.json)
 
 O lote 16 conserva os dois builds, as duas famílias de 36 braços, a falha C55 inicial, a admissão recuperada e os recibos do teste conjunto de L2. O verificador releu 330 ficheiros com 6 419 091 B. [Índice do lote 16](part-16.json)
+
+O lote 17 preserva a primeira falha de memória e os pares de reprodução do piso de down, da retenção primária e da preparação antes de I. Foram conferidos oito ficheiros com 1 214 708 B. [Índice do lote 17](part-17.json)
