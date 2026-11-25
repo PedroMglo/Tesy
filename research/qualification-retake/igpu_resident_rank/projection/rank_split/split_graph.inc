@@ -1,5 +1,6 @@
 // The parent keeps the four verified slot-generation bindings and six weight/bias tensors alive.
 struct SplitGraph {
+    ggml_tensor *free_input = nullptr;
     ggml_context_ptr ctx = context();
     ggml_backend_sched_ptr sched;
     ggml_cgraph *graph;
@@ -42,7 +43,12 @@ struct SplitGraph {
         logical = ggml_new_tensor_2d(c, GGML_TYPE_I32, 4, 1);
         physical_ids = ggml_new_tensor_2d(c, GGML_TYPE_I32, 4, 1);
         mix = ggml_new_tensor_3d(c, GGML_TYPE_F32, 1, 4, 1);
-        for (auto *v : {x, logical, physical_ids, mix}) ggml_set_input(v);
+        for (auto *v : {x, logical, physical_ids, mix}) {
+            ggml_set_input(v);
+            // GGML can repurpose an INPUT after its last consumer in a single run. These
+            // repeated resident graphs must retain the same four leaves across executions.
+            ggml_set_output(v);
+        }
 
         if (mode == "Full") {
             append_group(0, 4);
@@ -54,6 +60,7 @@ struct SplitGraph {
             } else {
                 need(weighted_gold.size() == width || weighted_gold.size() == 4 * width, "e28 oracle shape");
                 rows[0] = ggml_new_tensor_2d(c, GGML_TYPE_F32, width, 1);
+                free_input = rows[0];
                 ggml_set_input(rows[0]);
                 // GGML can reuse a parent for ADD. Keep this pre-resident contribution across calls.
                 ggml_set_output(rows[0]);
@@ -81,6 +88,17 @@ struct SplitGraph {
         need(ggml_backend_sched_graph_compute(sched.get(), graph) == GGML_STATUS_SUCCESS,
              "split graph compute");
         ggml_backend_sched_synchronize(sched.get());
+    }
+
+    // Read only from the controller, outside the measured execution interval.
+    json input_sha256() const {
+        auto hash = [](const auto &v) {
+            return digest(v.data(), v.size() * sizeof(v[0]));
+        };
+        json seals = {{"x", hash(get<float>(x))}, {"logical", hash(get<int>(logical))},
+                      {"physical", hash(get<int>(physical_ids))}, {"mix", hash(get<float>(mix))}};
+        if (free_input) seals["free_e28"] = hash(get<float>(free_input));
+        return seals;
     }
 
     std::array<F,4> contributions() {

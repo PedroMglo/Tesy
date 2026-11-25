@@ -16,7 +16,7 @@ if hashlib.sha256(BASE.read_bytes()).hexdigest() != BASE_HASH:
 spec = importlib.util.spec_from_file_location("split_cpu_build", BASE)
 parent = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(parent)
-FILES = ("engine.inc", "split_graph.inc", "build.py", "protocol.md")
+FILES = ("engine.inc", "split_graph.inc", "build.py", "protocol.md", "repair.md")
 
 
 def materialize(source):

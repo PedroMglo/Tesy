@@ -50,11 +50,29 @@ void run_split(ggml_backend_t cpu, const Input &in, const I &physical,
          "independent FFN and weighted anchors");
     json r={{"status","CHECKING_PARITY"},{"order",in.ids},{"physical",physical},{"generations",gens},
             {"weighted_sha256",weighted_sha},{"ffn_sha256",ffn_sha},{"threads",8}};
+    const json expected={{"x",digest(in.x.data(),in.x.size()*4)},
+        {"logical",digest(in.ids.data(),in.ids.size()*4)},{"physical",digest(physical.data(),physical.size()*4)},
+        {"mix",digest(in.weights.data(),in.weights.size()*4)}};
+    auto verify_inputs=[&](SplitGraph &graph,int mode,const float *free_row) {
+        auto ideal=expected;
+        if(mode==2) ideal["free_e28"]=digest(free_row,width*4);
+        auto observed=graph.input_sha256();
+        return json{{"exact",observed==ideal},{"observed",observed},{"expected",ideal}};
+    };
     std::array<std::unique_ptr<SplitGraph>,3> graphs;
     bool exact=true;
     for (int i=0;i<3;++i) {
         graphs[i]=std::make_unique<SplitGraph>(cpu,split_names[i],in,physical,weighted);
+        auto &inputs=r["inputs"][split_names[i]];
+        inputs["initial"]=verify_inputs(*graphs[i],i,weighted.data());
+        if(!inputs["initial"]["exact"].get<bool>()) {
+            r["status"]="FAIL_INITIAL_INPUT_IDENTITY";write_split(file,r);return;
+        }
         graphs[i]->execute();
+        inputs["after_parity"]=verify_inputs(*graphs[i],i,weighted.data());
+        if(!inputs["after_parity"]["exact"].get<bool>()) {
+            r["status"]="FAIL_PARITY_INPUT_LIFETIME";write_split(file,r);return;
+        }
         r["parity"][split_names[i]]=check_split(*graphs[i],weighted,gold,exact);
     }
     if(!exact) {
@@ -64,7 +82,12 @@ void run_split(ggml_backend_t cpu, const Input &in, const I &physical,
     {
         F wrong(weighted.begin()+width,weighted.begin()+2*width);
         SplitGraph fault(cpu,"Free",in,physical,wrong);
+        r["negative_inputs_before"]=verify_inputs(fault,2,wrong.data());
         fault.execute();
+        r["negative_inputs_after"]=verify_inputs(fault,2,wrong.data());
+        if(!r["negative_inputs_before"]["exact"].get<bool>() || !r["negative_inputs_after"]["exact"].get<bool>()) {
+            r["status"]="FAIL_NEGATIVE_INPUT_LIFETIME";write_split(file,r);return;
+        }
         bool same=true;
         auto seen=check_split(fault,weighted,gold,same);
         r["negative"]=seen;
@@ -73,13 +96,17 @@ void run_split(ggml_backend_t cpu, const Input &in, const I &physical,
         for(int i=1;i<4;++i) detected=detected && seen["weighted"][i]["unequal"]==0;
         if(!detected) {r["status"]="FAIL_NEGATIVE_NOT_DETECTED";write_split(file,r);return;}
     }
-    for(auto& graph:graphs) {
+    for(int i=0;i<3;++i) {
+        auto &graph=graphs[i];
         graph->execute();
-        check_split(*graph,weighted,gold,exact);
+        r["warmup"][split_names[i]]=check_split(*graph,weighted,gold,exact);
+        r["inputs"][split_names[i]]["after_warmup"]=verify_inputs(*graph,i,weighted.data());
+        if(!r["inputs"][split_names[i]]["after_warmup"]["exact"].get<bool>()) exact=false;
     }
     if(!exact){r["status"]="FAIL_WARMUP_EXACTNESS";write_split(file,r);return;}
     // No GET, allocation or comparison runs inside the primary interval.
     r["timings"]=json::array();
+    std::array<int,3> checks{};
     for(int block=0;block<2;++block) {
         for(int rep=0;rep<7;++rep) {
             for(int j=0;j<3;++j) {
@@ -91,12 +118,19 @@ void run_split(ggml_backend_t cpu, const Input &in, const I &physical,
                 auto obs=check_split(*graphs[i],weighted,gold,exact);
                 r["timings"].push_back({{"block",block},{"rep",rep},{"mode",split_names[i]},
                                          {"start_ns",begin},{"end_ns",end}});
+                auto inputs=verify_inputs(*graphs[i],i,weighted.data());
+                if(inputs["exact"].get<bool>()) {
+                    ++checks[i];
+                } else {
+                    exact=false; r["failed_inputs"]=inputs;
+                }
                 if(!exact) {
                     r["status"]="FAIL_TIMED_EXACTNESS";r["failure"]=obs;write_split(file,r);return;
                 }
             }
         }
     }
+    r["timed_input_checks"]=checks;
     r["status"]="PASS_RESIDENT_RANK_SPLIT_EXACT_TIMINGS";
     write_split(file,r);
 }

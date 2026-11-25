@@ -17,6 +17,14 @@ def need(ok, label):
         raise ValueError(label)
 
 
+LEAVES = {
+    "x": "f4b7b1fc1595244c263e292a8cd2d6c1d3c939e00b56e151c5c5d48fc403092e",
+    "logical": "0132e8af7db0cae65ffcd07b97da7e7445368d95ffb0528723b92ac4ddb16d1e",
+    "physical": "91b5009ad8fffc726414c61e3dc1fd5f3dd1e4ac48a05ecd1bebe61517052ec0",
+    "mix": "2144b1ce76f2161a0ae725f6341c7811c33c5c4ae16366620736103704feb18d",
+}
+
+
 def grade(payload, ranks, ffn):
     need(
         payload["order"] == [28, 24, 8, 16]
@@ -34,6 +42,10 @@ def grade(payload, ranks, ffn):
         and hashlib.sha256(ffn).hexdigest() == payload["ffn_sha256"],
         "anchors",
     )
+    if payload["status"].startswith("FAIL_"):
+        n = len(payload.get("timings", []))
+        need(n == 0 or payload["status"] == "FAIL_TIMED_EXACTNESS", "clocks before admission")
+        return dict(status=payload["status"], timed_graphs=n, evidence=payload)
     hashes = word_hash + [payload["ffn_sha256"]]
     exact = True
     for mode in NAMES:
@@ -69,6 +81,19 @@ def grade(payload, ranks, ffn):
         and fault["ffn"]["sha256"] != hashes[-1],
         "fault sensitivity",
     )
+    need(payload["timed_input_checks"] == [14, 14, 14], "repetition leaf checks")
+    for mode in NAMES:
+        expected = LEAVES | ({"free_e28": word_hash[0]} if mode == "Free" else {})
+        for phase in ("initial", "after_parity", "after_warmup"):
+            proof = payload["inputs"][mode][phase]
+            need(
+                proof == dict(exact=True, observed=expected, expected=expected),
+                "stable input " + mode + " " + phase,
+            )
+        need(payload["warmup"][mode] == payload["parity"][mode], "warmup gold")
+    wrong = LEAVES | {"free_e28": word_hash[1]}
+    for field in ("negative_inputs_before", "negative_inputs_after"):
+        need(payload[field] == dict(exact=True, observed=wrong, expected=wrong), "negative inputs")
     timing = payload["timings"]
     need(
         payload["status"] == "PASS_RESIDENT_RANK_SPLIT_EXACT_TIMINGS" and len(timing) == 42,

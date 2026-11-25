@@ -35,6 +35,19 @@ def make_fixture():
         ffn_sha256=obs(ffn)["sha256"],
         timings=[],
     )
+    r["inputs"] = {}
+    for mode in mod["NAMES"]:
+        expected = mod["LEAVES"] | (
+            {"free_e28": obs0["weighted"][0]["sha256"]} if mode == "Free" else {}
+        )
+        r["inputs"][mode] = {
+            k: dict(exact=True, observed=expected, expected=expected)
+            for k in ("initial", "after_parity", "after_warmup")
+        }
+    wrong = mod["LEAVES"] | {"free_e28": obs0["weighted"][1]["sha256"]}
+    for k in ("negative_inputs_before", "negative_inputs_after"):
+        r[k] = dict(exact=True, observed=wrong, expected=wrong)
+    r.update(warmup=copy.deepcopy(r["parity"]), timed_input_checks=[14, 14, 14])
     ns = 100
     for block in range(2):
         for rep in range(7):
@@ -74,6 +87,17 @@ class SplitTests(unittest.TestCase):
             grade(r, w, f)
         del r["timings"]
         self.assertEqual(grade(r, w, f)["timed_graphs"], 0)
+
+    def test_warmup_fail_and_mutated_leaf(self):
+        r, w, f = make_fixture()
+        r["inputs"]["Free"]["after_warmup"]["exact"] = False
+        with self.assertRaises(ValueError):
+            grade(r, w, f)
+        r["status"] = "FAIL_WARMUP_EXACTNESS"
+        with self.assertRaises(ValueError):
+            grade(r, w, f)
+        del r["timings"]
+        self.assertEqual(grade(r, w, f)["status"], "FAIL_WARMUP_EXACTNESS")
 
     def test_original_materialization(self):
         recipe = run_path(HERE / "build.py")
