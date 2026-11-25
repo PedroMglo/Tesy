@@ -68,6 +68,10 @@ class Profile:
 
     def __init__(self, probe=None):
         self.probe = probe
+        # Only the explicitly selected probe class may change the startup-only E10 recipe.
+        self.ram_profile = vars(type(probe)).get("ram_profile", "E10")
+        start.check(self.ram_profile in ("E10", "R0_E20"), "unknown_stock_ram_profile")
+        self.paging_cap_bytes = (20 if self.ram_profile == "R0_E20" else 10) * start.GIB
         self.run_id = probe.run_id if probe else "stock-aster-full-ready"
         self.pass_status = probe.pass_status if probe else "PASS_STOCK_FULL_SWA_ASTER_READY_ONLY"
         self.thread = None
@@ -87,6 +91,24 @@ class Profile:
     @property
     def probe_started(self):
         return self.thread is not None
+
+    def admit_memory(self, window, policy):
+        memories = (policy["memory"], window["memory"], window["canonical_memory"])
+        start.check(
+            min(m["cap_max_bytes"] for m in memories) >= self.paging_cap_bytes,
+            "C55_insufficient_stock_ram_cap",
+        )
+        if self.ram_profile == "R0_E20":
+            start.check(
+                window["status"] == "PASS_RESOURCE_WINDOW_ONLY"
+                and not window["reason"]
+                and all(
+                    m["reserve_bytes"] >= 2 * start.GIB
+                    and m["available_min_bytes"] >= self.paging_cap_bytes + m["reserve_bytes"]
+                    for m in memories
+                ),
+                "C55_E20_host_reserve_or_window",
+            )
 
     def prepare(self, a, raw, record):
         a.new_raw.chmod(0o700)
@@ -111,15 +133,16 @@ class Profile:
             and window["status"] in ("PASS_RESOURCE_WINDOW_ONLY", "NOT_ADMITTED")
             and not set(window["reason"])
             - {"C55_CAP_UNAVAILABLE", "HOST_CAP_PLUS_RESERVE_UNAVAILABLE"}
-            and min(
-                policy["memory"]["cap_max_bytes"],
-                window["memory"]["cap_max_bytes"],
-                window["canonical_memory"]["cap_max_bytes"],
-            )
-            >= 10 * start.GIB
             and tuple(window["selected_stat"]) == start.identity(start.MODEL),
             "C55_window_or_model_stat",
         )
+        self.admit_memory(window, policy)
+        if self.ram_profile == "R0_E20":
+            record.update(
+                stock_ram_profile=self.ram_profile,
+                host_reserve_bytes=policy["memory"]["reserve_bytes"],
+                ram_profile_sha256=start.sha(HERE.parent / "aster_ram_budget/profile.md"),
+            )
         # A later C55 is reproducible under the same collection procedure and live C118.
         start.check(
             start.sha(wpath.parent / "samples.jsonl") == window["window_sha256"],

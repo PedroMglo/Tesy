@@ -51,10 +51,10 @@ def read(p):
     return json.loads(p.read_text())
 
 
-def cap_for(policy, paging=False):
+def cap_for(policy, paging=False, *, ready_profile=None):
     check(policy_api.derive_policy(snapshot=policy["snapshot"]) == policy, "c55_policy_derivation")
     if paging:
-        return 10 * GIB
+        return 10 * GIB if ready_profile is None else ready_profile.paging_cap_bytes
     return min(20 * GIB, policy["memory"]["cap_max_bytes"] - 256 * MIB)
 
 
@@ -162,7 +162,7 @@ def run(a, *, paging=False, placement_log=False, ready_profile=None):
     stop_log = raw / "server.log"
     try:
         policy = read(a.policy)
-        cap = cap_for(policy, paging)
+        cap = cap_for(policy, paging, ready_profile=ready_profile)
         resources = policy_api.freeze_protocol_resource_limits(
             policy,
             cgroup_memory_max_bytes=cap,

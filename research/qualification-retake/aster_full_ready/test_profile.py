@@ -1,5 +1,6 @@
 """Model-free checks of the full-cache parser, dated example and single probe lifecycle."""
 
+import argparse
 import threading
 import unittest
 from pathlib import Path
@@ -26,6 +27,86 @@ srv server_on_li: listening on http://127.0.0.1:19433
 
 
 class ProfileTests(unittest.TestCase):
+    def test_E20_requires_probe_opt_in_matching_scope_and_full_C55_margin(self):
+        class LargeProbe:
+            run_id = "test-aster-e20-ram"
+            pass_status = "PASS_TEST"
+            timeout_s = 2
+            ram_profile = "R0_E20"
+
+        class Undeclared(LargeProbe):
+            pass
+
+        class Invalid(LargeProbe):
+            ram_profile = "R0_E22"
+
+        profile = loader.Profile(LargeProbe())
+        self.assertEqual(loader.Profile().paging_cap_bytes, 10 * loader.start.GIB)
+        self.assertEqual(loader.Profile(Undeclared()).paging_cap_bytes, 10 * loader.start.GIB)
+        with self.assertRaisesRegex(ValueError, "unknown_stock_ram_profile"):
+            loader.Profile(Invalid())
+        lock = loader.ROOT / "results/post-c195-epoch-20260930T223734Z/resource-policy.json"
+        policy = loader.start.read(lock)
+        requested = loader.start.cap_for(policy, paging=True, ready_profile=profile)
+        self.assertEqual(requested, 21474836480)
+        resource = loader.start.policy_api.freeze_protocol_resource_limits(
+            policy,
+            cgroup_memory_max_bytes=requested,
+            start_mode="CAPACITY_ADMISSION_START",
+            execution_class="FILE_PAGING",
+        )
+        guard = loader.start.policy_api.validate_resource_protocol(
+            {"resources": resource, "limits": {}}
+        )
+        self.assertEqual(guard["cgroup"]["memory_high_bytes"], 20937965568)
+        self.assertEqual(guard["memory"]["reserve_bytes"], 2 * loader.start.GIB)
+        memory = policy["memory"]
+        window = {
+            "status": "PASS_RESOURCE_WINDOW_ONLY",
+            "reason": [],
+            "canonical_memory": memory,
+            "memory": memory,
+        }
+        profile.admit_memory(window, policy)
+        for key, bad in (
+            ("cap_max_bytes", requested - 1),
+            ("available_min_bytes", requested + memory["reserve_bytes"] - 1),
+            ("reserve_bytes", 2 * loader.start.GIB - 1),
+        ):
+            for source in ("canonical_memory", "memory"):
+                with (
+                    self.subTest(key=key, source=source),
+                    self.assertRaisesRegex(ValueError, "C55_"),
+                ):
+                    profile.admit_memory(window | {source: memory | {key: bad}}, policy)
+        with self.assertRaisesRegex(ValueError, "C55_E20_host_reserve_or_window"):
+            profile.admit_memory(
+                window | {"status": "NOT_ADMITTED", "reason": ["C55_CAP_UNAVAILABLE"]}, policy
+            )
+        # A genuinely admissible C55 cannot silently run E20 inside an E10 cgroup.
+        scope = {
+            "memory_max": 10 * loader.start.GIB,
+            "memory_high": int(9.5 * loader.start.GIB),
+            "swap_max": 0,
+            "swap_current": 0,
+        }
+        with (
+            TemporaryDirectory() as tmp,
+            patch.object(loader.start.bounded, "cgroup_state", return_value=scope),
+            patch.object(loader.start.subprocess, "Popen") as spawn,
+        ):
+            a = argparse.Namespace(
+                new_raw=Path(tmp) / "raw", new_output=Path(tmp) / "result", policy=lock
+            )
+            self.assertEqual(
+                loader.start.run(a, paging=True, placement_log=True, ready_profile=profile),
+                "NOT_RUN",
+            )
+            self.assertEqual(
+                loader.start.read(a.new_output / "receipt.json")["reason"], "scope_limit"
+            )
+            spawn.assert_not_called()
+
     def test_full_geometry_requires_both_caches_and_a_dated_server_example(self):
         self.assertTrue(all(loader.geometry(JOURNAL).values()))
         for before, after in (
