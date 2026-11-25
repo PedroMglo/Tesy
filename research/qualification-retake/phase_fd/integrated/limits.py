@@ -192,6 +192,12 @@ def execute(args):
     raw_relative = args.on_dir.name + "/raw/T2-result.json"
     raw = load(args.on_dir / "raw/T2-result.json", archive["files"][raw_relative]["sha256"])
     result["client_clock"] = joint_clock(records, grade["calls"], raw, on["rows"][1])
+    service_spec = importlib.util.spec_from_file_location("pfj_cold_service", HERE / "mandatory.py")
+    service = importlib.util.module_from_spec(service_spec)
+    service_spec.loader.exec_module(service)
+    result["mandatory_service"] = service.evaluate(
+        records, raw, on["rows"][1], result["client_clock"]
+    )
     phase = grade["nominal_prefill"]
     check(
         result["relaxed"]["payload_floor"] == phase["relaxed_40slot_payload_floor"],
@@ -230,6 +236,8 @@ def execute(args):
             "journal": header["journal_sha256"],
             "code": sha(Path(__file__)),
             "client_protocol": sha(HERE / "cliente.md"),
+            "mandatory_protocol": sha(HERE / "mandatory.md"),
+            "mandatory_code": sha(HERE / "mandatory.py"),
             "private_raw_manifest": args.archive_sha256,
             "wait_protocol": sha(HERE / "wait_bound.md"),
             "handoff_protocol": sha(HERE / "retorno.md"),

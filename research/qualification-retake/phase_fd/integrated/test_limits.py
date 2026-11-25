@@ -42,3 +42,14 @@ def test_two_thresholds_on_same_clock_and_exclusive_union():
 def test_threshold_equality_leaves_only_headroom():
     assert bounds.scenario(100, 30, 69)["decision"] == "NO_GO_FIXED_REMAINDER"
     assert bounds.scenario(100, 30, 70)["decision"] == "HEADROOM_ONLY"
+
+
+def test_four_worker_floor_captures_latency_and_work():
+    spec = importlib.util.spec_from_file_location(
+        "mandatory_scope", Path(__file__).with_name("mandatory.py")
+    )
+    mod = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(mod)
+    assert mod.lower_bound([]) == 0
+    assert mod.lower_bound([40, 2, 2, 2, 2]) == 40
+    assert mod.lower_bound([10] * 8) == 20
