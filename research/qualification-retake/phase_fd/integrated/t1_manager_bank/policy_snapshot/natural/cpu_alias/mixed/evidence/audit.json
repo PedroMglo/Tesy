@@ -1,0 +1,119 @@
+{
+  "c118_s": 60.14859404299932,
+  "c118_samples": 61,
+  "c55_sha256": "7a777b4d4036173fb90c5e742468def9d1d37d2f7df7e6dcf7c97ea656e74838",
+  "cgroup_peak_at_scope_extinction": null,
+  "drained": true,
+  "entry_and_exit_gpu_owners": 0,
+  "family_sha256": "5b9dfecec28619ae502916a58db82ffd480f9f8f94818b7210e127808a7f09e1",
+  "family_status": "FAIL_PRESERVED",
+  "journal": {
+    "epochs": [
+      {
+        "gen": 1,
+        "offset_bytes": 0,
+        "splits": 7,
+        "stale_rejected": false
+      },
+      {
+        "gen": 2,
+        "offset_bytes": 13221888,
+        "splits": 7,
+        "stale_rejected": true
+      },
+      {
+        "gen": 3,
+        "offset_bytes": 0,
+        "splits": 7,
+        "stale_rejected": true
+      },
+      {
+        "gen": 4,
+        "offset_bytes": 13221888,
+        "splits": 7,
+        "stale_rejected": true
+      }
+    ],
+    "input_changes_before_resubmission": [
+      [
+        380,
+        12,
+        0,
+        34280,
+        0
+      ],
+      [
+        380,
+        12,
+        0,
+        34272,
+        0
+      ],
+      [
+        380,
+        12,
+        0,
+        34280,
+        0
+      ]
+    ]
+  },
+  "max_cgroup_peak_captured": 291471360,
+  "model_forwards": 0,
+  "observed_max_gpu_c": 41.2,
+  "observed_max_nvme_c": 34.85,
+  "observed_max_tctl_c": 48.375,
+  "postflight_sha256": "d35f3db8652fbd7687f1d1899ff21e6fc3339c608db1900814b624e8dcdab5b9",
+  "process_completed": true,
+  "proof": {
+    "changed_coordinates_by_component_position_rank": [
+      {
+        "0,0,0": 2870,
+        "1,0,0": 2870,
+        "2,0,0": 2870
+      },
+      {
+        "0,0,0": 2870,
+        "1,0,0": 2870,
+        "2,0,0": 2870
+      }
+    ],
+    "output_sha256": {
+      "dense_A": "66f39a5b85ebacf371e1164214263f351fb75012f2dafe5c4e9d8a81545d6ad8",
+      "dense_B": "96b6a26192664daf7785a2b5dafe71b22bf4662fcf93649c8239d3b1309308ee",
+      "stage1": "66f39a5b85ebacf371e1164214263f351fb75012f2dafe5c4e9d8a81545d6ad8",
+      "stage2": "96b6a26192664daf7785a2b5dafe71b22bf4662fcf93649c8239d3b1309308ee",
+      "stage3": "66f39a5b85ebacf371e1164214263f351fb75012f2dafe5c4e9d8a81545d6ad8",
+      "stage4": "96b6a26192664daf7785a2b5dafe71b22bf4662fcf93649c8239d3b1309308ee"
+    },
+    "values_per_phase": 103680,
+    "weight_operand_witnesses": 18
+  },
+  "raw_sha256": {
+    "alias/active.providers": "97b1ff2cf9721b371180b4063c2f1906a18130f91b91af56d87222108ef4bf4c",
+    "alias/boundary.tsv": "cc11e78921f0d916a19a39c68459b2ee18eb54465d36cc52d302d8fc4eeac34f",
+    "alias/dense_A.f32": "66f39a5b85ebacf371e1164214263f351fb75012f2dafe5c4e9d8a81545d6ad8",
+    "alias/dense_B.f32": "96b6a26192664daf7785a2b5dafe71b22bf4662fcf93649c8239d3b1309308ee",
+    "alias/drain.providers": "97b1ff2cf9721b371180b4063c2f1906a18130f91b91af56d87222108ef4bf4c",
+    "alias/finish.providers": "97b1ff2cf9721b371180b4063c2f1906a18130f91b91af56d87222108ef4bf4c",
+    "alias/stage1.f32": "66f39a5b85ebacf371e1164214263f351fb75012f2dafe5c4e9d8a81545d6ad8",
+    "alias/stage2.f32": "96b6a26192664daf7785a2b5dafe71b22bf4662fcf93649c8239d3b1309308ee",
+    "alias/stage3.f32": "66f39a5b85ebacf371e1164214263f351fb75012f2dafe5c4e9d8a81545d6ad8",
+    "alias/stage4.f32": "96b6a26192664daf7785a2b5dafe71b22bf4662fcf93649c8239d3b1309308ee",
+    "alias/start.providers": "1c65230ec1ab3accccbefa1d51c0d5d814860a00479fdb65de6d63b7a9e2094b",
+    "raw/alias.monitor.jsonl": "f431cfe18e79c074d0355e72cc24cfe8dfeaeb4f1362324c0c7eafa0d06fb93b",
+    "raw/alias.stderr": "f522e804729b69dd76de7e3a1314034fe4431003590acbb45f8fbd883d7dfb47",
+    "raw/alias.stdout": "3c5e772cb4948c0ac137afc0a179c737b2ba0ef69fee9c8a8bedc82f7732088c",
+    "raw/tesy-mmapped-mixed-20261125-r02-alias.start-inventory.jsonl": "081dd071053ef67714ae4b284122366007d9f565997699d4d76f313777fb622f"
+  },
+  "raw_total_bytes": 5327051,
+  "review_commit": "2a5ff5bbb6f5113a853fc289018710514cfe2b77",
+  "review_gpu_calls": 0,
+  "stage_gpu_used_mib": [
+    2.0,
+    104.0,
+    106.0,
+    2.0
+  ],
+  "status": "REPRODUCED_MIXED_CPU_MAPPED_NUMERICS_AND_RECORDED_RESOURCES"
+}
