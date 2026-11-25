@@ -1,0 +1,237 @@
+{
+  "after": {
+    "ac": 1,
+    "cgroup_peak_bytes": 240132096,
+    "cpu_mC": 60625,
+    "swap_bytes": 0
+  },
+  "bank": {
+    "authenticate_and_load_ns": 50693586,
+    "blas_persistent_scratch_bytes": 385024,
+    "cpu_tier_parameters_bytes": 37164800,
+    "cuda_tier_host_parameters_bytes": 16352512,
+    "cuda_tier_rounded_bank_bytes": 16220160,
+    "finite_checks_ns": 1873323,
+    "rounded_construction_ns": 5333591,
+    "scalar_header_lhs_bytes": 11520
+  },
+  "before": {
+    "ac": 1,
+    "cgroup_peak_bytes": 23474176,
+    "cpu_mC": 45875,
+    "swap_bytes": 0
+  },
+  "calibration_rows": {
+    "20": 1000,
+    "32": 1600,
+    "5": 250
+  },
+  "cpu": {
+    "cpuinfo_max_khz": 5157895,
+    "kernel": "7.3.4-200.fc44.x86_64",
+    "logical_cpu": 0,
+    "model": "AMD Ryzen AI 9 HX 370 w/ Radeon 890M"
+  },
+  "external_elapsed_s": 7.68,
+  "external_maxrss_KiB": 202488,
+  "freeze": "879ca1d1510c9bee0e91e70a362058b65996ab8f",
+  "gguf_bytes": 0,
+  "gold_provider": {
+    "frame_sha256": "b2ad2fd6e893c85986af58949af84a879e42836dc6d255bbd973c4b9884d733e",
+    "native_sha256": "a6090ec8d099c823e7e8e6f6f3b37226b43bd70b19dff3a3e97cb2af19ca8780",
+    "providers": {
+      "libggml-base.so.0": "6e27d9ecb86e4747177189d2d2f6390280a2ee1000221ad68a0404023ea72539",
+      "libggml-cpu.so.0": "9aabce5751c5d7ca19b50e4cabb1fcf484c1581d275141dae8aba8ed33060313"
+    }
+  },
+  "model_forwards": 0,
+  "observed_sha256": "477815bb2401666eb4bd168286501f170c32cb6d587b6d461741e579b617f9a2",
+  "paired_executions": 768,
+  "permuted_control_detected": true,
+  "producer": {
+    "blas_core": "SkylakeX",
+    "blas_sha256": "432e1c1739731468ba305771af96773939e43016643e2d630f58cb45b6670e96",
+    "compiler_sha256": "ca48a2d27d0796399adc3387225eec4be62974e26fa299710edfde0c1af5aa63",
+    "elf_sha256": "b37156455c25df12cb03cadbd1b82c8c5c01f5fa96221e38a8bf7be530f5b76c",
+    "source_sha256": "0e06a74a4745273c122e263aed83f969fe5eaa578d3dfc915b73e6161f1d90b7",
+    "threads": 1
+  },
+  "protocol_sha256": "7bddc888d1dd94e22d0bc67606b50048de802d4fe72fb234436250199bf4579c",
+  "raw_receipt_sha256": "bf436d337ff3beed3c235c13d4abea55ed96f1d83b65df06217d7a0e86244c57",
+  "scope_final": [
+    "inactive",
+    "dead"
+  ],
+  "site_times_ns": {
+    "20": {
+      "blas": {
+        "max": 217005.0,
+        "median": 214971.0,
+        "min": 211154.0,
+        "n": 48,
+        "p10": 213954.0,
+        "p90": 215948.0
+      },
+      "scalar": {
+        "max": 4321941.5,
+        "median": 4316864.75,
+        "min": 4311507.5,
+        "n": 48,
+        "p10": 4313451.5,
+        "p90": 4318971.5
+      }
+    },
+    "5": {
+      "blas": {
+        "max": 107011.5,
+        "median": 104728.0,
+        "min": 100013.5,
+        "n": 48,
+        "p10": 104131.5,
+        "p90": 105334.0
+      },
+      "scalar": {
+        "max": 1098064.0,
+        "median": 1080062.0,
+        "min": 1078557.0,
+        "n": 48,
+        "p10": 1079288.5,
+        "p90": 1081928.5
+      }
+    }
+  },
+  "source_sha256": "9c389b7aa85de3a9e02af3064e273048d1237d0174fb25a5c464de0fa773eb63",
+  "status": "MEASURED_NATIVE_CPU_ROUTER_WIDTHS",
+  "widths": {
+    "20": {
+      "blas_mix": {
+        "max_abs": 2.980232238769531e-07,
+        "unequal_bits": 3382,
+        "words": 4000
+      },
+      "blas_scores": {
+        "max_abs": 1.9073486328125e-06,
+        "unequal_bits": 112905,
+        "words": 128000
+      },
+      "native_vs_slice_biased": {
+        "max_abs": 0.0,
+        "unequal_bits": 0,
+        "words": 128000
+      },
+      "native_vs_slice_ids": {
+        "max_abs": 0.0,
+        "unequal_bits": 0,
+        "words": 4000
+      },
+      "native_vs_slice_logits": {
+        "max_abs": 0.0,
+        "unequal_bits": 0,
+        "words": 128000
+      },
+      "native_vs_slice_mix": {
+        "max_abs": 0.0,
+        "unequal_bits": 0,
+        "words": 4000
+      },
+      "plus1_intersection": 3030,
+      "plus1_rows": 960,
+      "scalar_mix": {
+        "max_abs": 2.2351741790771484e-06,
+        "unequal_bits": 3857,
+        "words": 4000
+      },
+      "scalar_scores": {
+        "max_abs": 1.3828277587890625e-05,
+        "unequal_bits": 123224,
+        "words": 128000
+      }
+    },
+    "32": {
+      "blas_mix": {
+        "max_abs": 3.5762786865234375e-07,
+        "unequal_bits": 5384,
+        "words": 6400
+      },
+      "blas_scores": {
+        "max_abs": 2.86102294921875e-06,
+        "unequal_bits": 180748,
+        "words": 204800
+      },
+      "native_vs_slice_biased": {
+        "max_abs": 0.0,
+        "unequal_bits": 0,
+        "words": 204800
+      },
+      "native_vs_slice_ids": {
+        "max_abs": 0.0,
+        "unequal_bits": 0,
+        "words": 6400
+      },
+      "native_vs_slice_logits": {
+        "max_abs": 0.0,
+        "unequal_bits": 0,
+        "words": 204800
+      },
+      "native_vs_slice_mix": {
+        "max_abs": 0.0,
+        "unequal_bits": 0,
+        "words": 6400
+      },
+      "scalar_mix": {
+        "max_abs": 2.2351741790771484e-06,
+        "unequal_bits": 6170,
+        "words": 6400
+      },
+      "scalar_scores": {
+        "max_abs": 1.3828277587890625e-05,
+        "unequal_bits": 197100,
+        "words": 204800
+      }
+    },
+    "5": {
+      "blas_mix": {
+        "max_abs": 3.5762786865234375e-07,
+        "unequal_bits": 848,
+        "words": 1000
+      },
+      "blas_scores": {
+        "max_abs": 2.86102294921875e-06,
+        "unequal_bits": 28440,
+        "words": 32000
+      },
+      "native_vs_slice_biased": {
+        "max_abs": 0.0,
+        "unequal_bits": 0,
+        "words": 32000
+      },
+      "native_vs_slice_ids": {
+        "max_abs": 0.0,
+        "unequal_bits": 0,
+        "words": 1000
+      },
+      "native_vs_slice_logits": {
+        "max_abs": 0.0,
+        "unequal_bits": 0,
+        "words": 32000
+      },
+      "native_vs_slice_mix": {
+        "max_abs": 0.0,
+        "unequal_bits": 0,
+        "words": 1000
+      },
+      "plus1_intersection": 757,
+      "plus1_rows": 240,
+      "scalar_mix": {
+        "max_abs": 1.1920928955078125e-06,
+        "unequal_bits": 961,
+        "words": 1000
+      },
+      "scalar_scores": {
+        "max_abs": 8.58306884765625e-06,
+        "unequal_bits": 30752,
+        "words": 32000
+      }
+    }
+  }
+}
