@@ -442,18 +442,18 @@ def run(a, *, paging=False, placement_log=False, ready_profile=None):
                             "gguf": model_key in live,
                             "own_libraries": sorted(k for k, v in dep_ids.items() if v in live),
                         }
-                        if experiment is not None:
-                            r["ready_vma"].update(experiment.mapping(live))
                         r["ready_log_geometry"] = marks
                         missing_placement = [k for k, v in marks.items() if not v]
+                        if experiment is not None:
+                            variant_marks = experiment.mapping(live)
+                            r["ready_vma"].update(variant_marks)
+                            missing_placement.extend(k for k, ok in variant_marks.items() if not ok)
                         if not (
                             r["ready_vma"]["executable"]
                             and r["ready_vma"]["gguf"]
                             and set(r["ready_vma"]["own_libraries"]) == dep_ids.keys()
                         ):
                             missing_placement.append("live_elf_or_gguf")
-                        if experiment is not None and not r["ready_vma"]["stock_libllama_absent"]:
-                            missing_placement.append("stock_libllama_co_mapped")
                     else:
                         check(all(marks.values()), "startup_geometry")
                         check(
