@@ -20,10 +20,15 @@ struct ProjectionDevice {
 };
 
 void load_weight(const char *path, unsigned char *dest) {
+    const char *crypto_path="/usr/lib64/libcrypto.so.3";
+    void *crypto=dlopen(crypto_path,RTLD_NOW|RTLD_LOCAL);
+    need(crypto,"open authenticated SHA256 provider");
+    void *symbol=dlsym(crypto,"SHA256");
     Dl_info provider{};
-    need(dladdr(reinterpret_cast<void*>(SHA256),&provider) &&
+    need(symbol && dladdr(symbol,&provider) &&
         std::filesystem::canonical(provider.dli_fname) == std::filesystem::canonical("/usr/lib64/libcrypto.so.3"),
         "SHA256 provider");
+    auto hash_range=reinterpret_cast<decltype(&SHA256)>(symbol);
     int fd=open(path,O_RDONLY|O_NOFOLLOW|O_CLOEXEC);
     need(fd>=0,"open existing pack");
     auto stat_ok=[&]() {
@@ -34,11 +39,11 @@ void load_weight(const char *path, unsigned char *dest) {
     };
     stat_ok();
     need(pread(fd,dest,matrix_bytes,371245056) == matrix_bytes,"pack gate extent");
-    unsigned char hash[32];need(SHA256(dest,matrix_bytes,hash) != nullptr,"weight SHA256");
+    unsigned char hash[32];need(hash_range(dest,matrix_bytes,hash) != nullptr,"weight SHA256");
     char hex[65]{};
     for(size_t i=0;i<32;++i) std::snprintf(hex+2*i,3,"%02x",hash[i]);
     need(!strcmp(hex,"3a76d368a4c215dafd9d39e740d1db137709d8bac6df70084c918656ec31cc50"),"gate SHA");
-    stat_ok();need(!close(fd),"pack close");
+    stat_ok();need(!close(fd),"pack close");need(!dlclose(crypto),"close SHA256 provider");
     std::printf("weight\t%s\t%u\t%u\t%u\n",hex,matrix_bytes,3*matrix_bytes,371245056);
 }
 
