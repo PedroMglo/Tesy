@@ -1,0 +1,80 @@
+{
+  "archive_calibration": {
+    "duration_s": 1.9647793180047302,
+    "forecast": {
+      "decode/CPU": {
+        "hits": 313,
+        "order_mismatches_vs_surrogate": 0,
+        "rows": 96
+      },
+      "decode/CUDA": {
+        "hits": 155,
+        "order_mismatches_vs_surrogate": 0,
+        "rows": 44
+      },
+      "prefill/CPU": {
+        "hits": 6932,
+        "order_mismatches_vs_surrogate": 0,
+        "rows": 2232
+      },
+      "prefill/CUDA": {
+        "hits": 2826,
+        "order_mismatches_vs_surrogate": 0,
+        "rows": 931
+      }
+    },
+    "gguf_read_bytes": 0,
+    "index_sha256": "74685f32d8fc11fdec6c4317ac844c70ac7bb3d9ab27dc7fe26a0f1b4b9b459b",
+    "model_forwards": 0,
+    "projector_sha256": "0d58291534aa84b66de887a816069451628ef7ad33a313abd10b95b10dc1eb22",
+    "reference_order_mismatches": 0,
+    "reference_rows": 3400,
+    "replay_image_sha256": "c5ec1f5a8d77fca534e12d77c0a7b9f0c7634d99f58bf6693de6889d86bbae59",
+    "status": "PASS_ARCHIVED_ROUTER_RANKS",
+    "weights_sha256": "5d61f8b0e2dabeadaab422063c3e1c0c2504225fdb12a4719af1993d7d1ab751",
+    "widths": [
+      1,
+      29,
+      32
+    ]
+  },
+  "build": {
+    "backend_commit": "c89c88b342054223e3f27a17fbfd0954803147ac",
+    "candidate_sha256": "9b15c522ec3c407199b8438317503453cc1170594e2f5a886a2ab7822139901b",
+    "commit": "442dff1f3b6407e58b1dec59e0bd518b522685e2",
+    "control_sha256": "772740127a1227afae0b0325d0b186f35e1c7e428d6929181019bb8c455b6b25",
+    "elapsed_s": 14.62071,
+    "final_scope": {
+      "memory.high": 2147483648,
+      "memory.max": 2147483648,
+      "memory.peak": 508792832,
+      "memory.swap.max": 0
+    },
+    "model_forwards": 0,
+    "original_sha256": "04af70ea943b816769e2c6d62873ded11f00603df6c3be42340b3785aa880819",
+    "overlay_sha256": {
+      "llama-context.cpp": "a98ac0441bd3cdd29d5bf87ce5243eec8d43f7b743743ca6e0009d790ffe0e52",
+      "llama-moe-stream.cpp": "af8b637426e1514a94d51d02e2d5cee4b0380528b4e4d98cc0626a2298136d6f",
+      "lookahead.h": "9cffa4cd9778173c470631f1c28c9afc1a70144f7114d6e933659e46feef6b2d",
+      "phase-fd-integrated.h": "bc622a0ab63c8270a2701be138b64c8286f39a6e48528e02726dd48a4d93ba1a",
+      "profile.h": "b180342bc607f8f15bf61905419c1beb48b2b851bc1d044393657df5c0aaa65c",
+      "projector.h": "0d58291534aa84b66de887a816069451628ef7ad33a313abd10b95b10dc1eb22"
+    },
+    "probe_sources": {
+      "build.py": "d60888c7dedceb0c88d03811a07a16db2413f1bdb871794764623ce0c8ad71f8",
+      "profile.h": "b180342bc607f8f15bf61905419c1beb48b2b851bc1d044393657df5c0aaa65c",
+      "projector.h": "0d58291534aa84b66de887a816069451628ef7ad33a313abd10b95b10dc1eb22"
+    },
+    "server_starts": 0,
+    "status": "PASS_C291_ROUTER_LOOKAHEAD_STATIC_C281",
+    "tree": "a24f43aa64cf09f843ba9ee5a0a36e54dc4a1a69"
+  },
+  "providers": {
+    "C281": 24,
+    "C292": 18
+  },
+  "sha256": {
+    "archive_calibration": "36e98ebc7e6fc0b2ae3d91de16bdb1dced82d43e08f4fdc145f1e5b9f8e9075c",
+    "build": "ac166701bf998ffdac0e4cb75a796d4208b033a573d49f16aed6329c7942978b"
+  }
+}
