@@ -6,6 +6,7 @@ import json
 import math
 from collections import Counter, defaultdict
 from datetime import datetime
+from itertools import pairwise
 from pathlib import Path
 from statistics import median
 
@@ -206,7 +207,7 @@ def resources(root, meta):
     check(digest(tel) == meta["telemetry_sha256"], "operation samples")
     obs = [json.loads(s) for s in tel.read_bytes().splitlines()]
     times = [datetime.fromisoformat(x["utc"]) for x in obs]
-    gaps = [(b - a).total_seconds() for a, b in zip(times, times[1:])]
+    gaps = [(b - a).total_seconds() for a, b in pairwise(times)]
     check(
         gaps
         and min(gaps) > 0
