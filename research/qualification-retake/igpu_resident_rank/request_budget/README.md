@@ -20,6 +20,8 @@
 
 Análise sem carga de modelo, nos dois arquivos privados. Fonte congelada em b13b1739. Uma segunda implementação reabriu as partes 78 e 80 e reproduziu o número de passos, ambos os mínimos e os quatro orçamentos. [Arquivo da unidade](../../private_archive/part-86.json)
 
+**Critério de custo para dividir quatro ranks entre CPU e Radeon.** Os dois servidores colocaram as camadas 0–24 na CPU e 25–35 na RTX. Concedendo um rank elegível em cada uma das 25 camadas CPU em todos os passos, uma mudança só aí teria de poupar em média **0,954 ms / 0,812 ms líquidos por camada** para atingir 6 tok/s nas ordens R/O/P e P/O/R. Atingir os 10 s exclusivamente por essa via exigiria **7,741 ms / 7,557 ms** por camada anterior ao primeiro final. Se houver menos oportunidades, o ganho exigido por oportunidade cresce. Estes valores orientam a comparação do grafo original, da divisão 3+1 toda em CPU e da divisão CPU/Radeon até à redução dos quatro ranks. [Verificador das colocações e denominadores](layer_budget.py)
+
 ```sh
 D=research/qualification-retake/igpu_resident_rank/request_budget
 python3 -IB "$D/test_screen.py"
