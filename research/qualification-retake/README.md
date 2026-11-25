@@ -8,6 +8,7 @@ No C135 histórico, a reordenação ideal dos mesmos 1 177 serviços dentro de c
 
 | Decisão | Evidência e condição de reabertura |
 |---|---|
+| **Reter todo expert depois da primeira procura do decode** | **NO_GO condicional à entrada I e ao restante trabalho do C295.** As primeiras 779/928 faltas mantêm, com READ a 0,8×, pisos totais de 6,223–6,278 s no nominal e 7,292–7,303 s no código, para 32 passos. O teto concede espaço ilimitado depois de I e remap e hits gratuitos. [Limites separados e condição de reabertura](primary_backing/README.md) |
 | **Omitir bytes de down sem contribuição** | **NO_GO no prefill C135 com serviço fixo e decode a 6 tok/s.** Apagar o READ mais lento de cada admissão ainda deixa um piso de 4,341 s. Apagar precisamente down deixa 4,981 s. O orçamento do pedido era 2,427 s. [Projeções, orçamento e quatro decodes](zero_down/README.md) |
 | **Tempo até à última publicação de cinco experts reais** | **NO_GO para ampliar o pack.** Em 36 processos R02, a leitura direta reduziu a última publicação em 3,44% face à mesma arena com cópia (5/6 pares positivos) e 3,51% face ao pack denso (6/6). O mínimo prospetivo era 5% contra ambos. R01 fica FAIL_TELEMETRY. [Tempos, dispersão e conservação](packed_layer_service/README.md) |
 | **Combinar L2 ideal de 378 entradas e SET CPU gratuito** | **NO_GO condicional C294/C295.** Mesmo a 0,8× e com SET e resíduo CPU grátis, os 32 passos em código exigem 6,491 e 6,521 s. O orçamento é 5,333 s. Os quatro braços falham à escala 1×. [Cálculo conjunto, contagens e conservação](joint_cpu_l2/README.md) |
