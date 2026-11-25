@@ -47,7 +47,7 @@ def load_module(folder, name, expected):
     return mod
 
 
-def check_row(row, grade, mode):
+def check_row(row, grade, mode, prep=None):
     need(
         row["status"] == "PASS_REAL_TILE" and row["grade"] == grade and row["mode"] == mode,
         "native terminal",
@@ -111,7 +111,39 @@ def paired(arms):
     return delta, verdict
 
 
-def authorities(args, svc, prior, result):
+def cold_sources():
+    return {
+        name: HERE / name
+        for name in (
+            "profile.py",
+            "protocol.md",
+            "build.py",
+            "prepare.py",
+            "native.cpp",
+            "graph.inc",
+        )
+    }
+
+
+def check_cold_preparation(prep, sources):
+    need(
+        prep["status"] == "PASS_REAL_TILE_INPUT"
+        and prep["program_sha256"] == sources["prepare.py"]
+        and prep["protocol_sha256"] == sources["protocol.md"]
+        and prep["offers"] == OFFERS
+        and prep["weight_matrix_read_bytes"] == 0
+        and prep["pack_bias_reads"] == 375,
+        "preparation status or stale input contract",
+    )
+    need(
+        len(prep["entries"]) == 125 and all(len(e["hashes"]) == 3 for e in prep["entries"]),
+        "archived read coverage",
+    )
+
+
+def authorities(
+    args, svc, prior, result, sources, build_sources, binary, build_status, check_preparation
+):
     git = ["/usr/bin/git", "--no-optional-locks", "-C", ROOT]
     need(
         re.fullmatch("[0-9a-f]{40}", args.expect_head)
@@ -119,11 +151,11 @@ def authorities(args, svc, prior, result):
         and not prior.command([*git, "status", "--porcelain"]),
         "clean frozen checkout",
     )
-    for key in ("profile.py", "protocol.md", "build.py", "prepare.py", "native.cpp", "graph.inc"):
-        result["source_sha256"][key] = svc.frozen(ROOT, HERE / key, args.expect_head)
+    for key, path in sources.items():
+        result["source_sha256"][key] = svc.frozen(ROOT, path, args.expect_head)
     build = prior.sealed_json(args.build_dir / "receipt.json", args.build_sha256)
-    need(build["status"] == "PASS_REAL_TILE_BUILD", "unqualified executable")
-    exe = args.build_dir / "real-tile"
+    need(build["status"] == build_status, "unqualified executable")
+    exe = args.build_dir / binary
     prior.sealed_file(exe, build["binary_sha256"])
     need(
         build["binary"] == exe.name and re.fullmatch(r"[0-9a-f]{40}", build["commit"]),
@@ -134,7 +166,7 @@ def authorities(args, svc, prior, result):
         timeout=8,
         check=True,
     )
-    for name in ("build.py", "native.cpp", "graph.inc", "protocol.md"):
+    for name in build_sources:
         need(build["source_sha256"][name] == result["source_sha256"][name], "stale native source")
     libs = build["providers"]
     for path, digest in libs.values():
@@ -167,15 +199,7 @@ def authorities(args, svc, prior, result):
     }
     need(observed == {k: v[0] for k, v in libs.items()}, "runtime providers differ from build")
     prep = prior.sealed_json(args.input_dir / "prepare.json", args.input_sha256)
-    need(
-        prep["status"] == "PASS_REAL_TILE_INPUT"
-        and prep["program_sha256"] == result["source_sha256"]["prepare.py"]
-        and prep["protocol_sha256"] == result["source_sha256"]["protocol.md"]
-        and prep["offers"] == OFFERS
-        and prep["weight_matrix_read_bytes"] == 0
-        and prep["pack_bias_reads"] == 375,
-        "preparation status or stale input contract",
-    )
+    check_preparation(prep, result["source_sha256"])
     need(
         set(prep["file_sha256"]) | {"prepare.json"} == {p.name for p in args.input_dir.iterdir()},
         "prepared file coverage",
@@ -190,10 +214,6 @@ def authorities(args, svc, prior, result):
         ),
         "integral pack identity",
     )
-    need(
-        len(prep["entries"]) == 125 and all(len(e["hashes"]) == 3 for e in prep["entries"]),
-        "archived read coverage",
-    )
     result.update(
         commit=args.expect_head,
         tree=prior.command([*git, "rev-parse", "HEAD^{tree}"]),
@@ -207,7 +227,7 @@ def authorities(args, svc, prior, result):
     return exe, env, build, prep
 
 
-def check_golds(numeric, files):
+def check_golds(numeric, files, active_waves=(4, 4)):
     need(set(numeric) == {"L0", "L1"}, "incomplete layer outputs")
     for layer in range(2):
         tag = f"L{layer}"
@@ -216,7 +236,7 @@ def check_golds(numeric, files):
             row["layer"] == layer
             and row["ffn_words"] == 32 * 2880
             and row["mmid_nodes"] == row["bias_nodes"] == 24
-            and row["active_waves"] == 4,
+            and row["active_waves"] == active_waves[layer],
             "changed graph work",
         )
         for field, filename in (
@@ -256,7 +276,21 @@ def package_energy():
 
 
 def run_child(
-    args, svc, prior, mon, exe, env, grade, mode, idx, result, reference, official, files
+    args,
+    svc,
+    prior,
+    mon,
+    exe,
+    env,
+    grade,
+    mode,
+    idx,
+    result,
+    reference,
+    official,
+    prep,
+    validate,
+    active_waves,
 ):
     folder = args.new_output_dir / f"{idx:02d}-{grade}-{mode}"
     folder.mkdir()
@@ -296,8 +330,8 @@ def run_child(
             record["observed_process_s"] <= CHILD_S and proc.returncode == 0, "native child failed"
         )
         row = json.loads((folder / "stdout").read_bytes())
-        compared = check_row(row, grade, mode)
-        check_golds(row["numeric"], files)
+        compared = validate(row, grade, mode, prep)
+        check_golds(row["numeric"], prep["file_sha256"], active_waves)
         need({tuple(v) for v in compared[1]} == official, "official slot generation changed")
         need(reference is None or compared == reference, "changed numerical output or assignments")
         record.update(
@@ -321,8 +355,22 @@ def run_child(
         result["arms"].append(record)
 
 
-def family(args, result, svc, prior, start):
-    exe, env, build, prep = authorities(args, svc, prior, result)
+def cold_authorities(args, svc, prior, result):
+    return authorities(
+        args,
+        svc,
+        prior,
+        result,
+        cold_sources(),
+        ("build.py", "native.cpp", "graph.inc", "protocol.md"),
+        "real-tile",
+        "PASS_REAL_TILE_BUILD",
+        check_cold_preparation,
+    )
+
+
+def family(args, result, svc, prior, start, authority, validate, active_waves, pass_status):
+    exe, env, build, prep = authority(args, svc, prior, result)
     official = {tuple(e[k] for k in ("layer", "expert", "slot", "gen")) for e in prep["entries"]}
     files = list(args.input_dir.iterdir())
     identities = {
@@ -379,7 +427,9 @@ def family(args, result, svc, prior, start):
                 result,
                 ref,
                 official,
-                prep["file_sha256"],
+                prep,
+                validate,
+                active_waves,
             )
             if ref is None:
                 ref = compared
@@ -400,10 +450,12 @@ def family(args, result, svc, prior, start):
         mon.check()
         need(result["remaining_pids"] == [str(os.getpid())] and mon.count >= 2, "cleanup")
     result["paired_saved_ns"], result["decision"] = paired(result["arms"])
-    result["status"] = PASS
+    result["status"] = pass_status
 
 
-def main(args):
+def main(
+    args, authority=cold_authorities, validate=check_row, active_waves=(4, 4), pass_status=PASS
+):
     os.umask(0o077)
     svc = load_module("packed_layer_service", "tile_service", SERVICE)
     prior = load_module("packed_real_layer", "tile_prior", LAYER)
@@ -421,7 +473,7 @@ def main(args):
     )
     try:
         need(re.fullmatch(r"tesy-[a-z0-9][a-z0-9-]{1,110}", args.unit), "systemd unit")
-        family(args, result, svc, prior, start)
+        family(args, result, svc, prior, start, authority, validate, active_waves, pass_status)
     except Exception as error:
         result.update(
             status="FAIL_PRESERVED",
@@ -431,13 +483,17 @@ def main(args):
     result.update(closed_utc=svc.clock(), elapsed_s=time.monotonic() - start)
     svc.save(out / "receipt.json", result)
     print(result["status"], result["decision"], result.get("reason", ""), flush=True)
-    return int(result["status"] != PASS)
+    return int(result["status"] != pass_status)
 
 
-if __name__ == "__main__":
+def arguments():
     parser = argparse.ArgumentParser(description=__doc__)
     for field in ("build-dir", "input-dir", "pack", "c55-receipt", "new-output-dir"):
         parser.add_argument("--" + field, required=True, type=lambda x: Path(x).resolve())
     for field in ("unit", "expect-head", "input-sha256", "build-sha256", "c55-sha256"):
         parser.add_argument("--" + field, required=True)
-    raise SystemExit(main(parser.parse_args()))
+    return parser.parse_args()
+
+
+if __name__ == "__main__":
+    raise SystemExit(main(arguments()))
