@@ -338,6 +338,7 @@ def family(args, result, svc, prior, start):
     last = json.loads(trace.read_bytes().splitlines()[-1])
     age = dt.datetime.now(dt.UTC) - dt.datetime.fromisoformat(last["utc"])
     need(0 <= age.total_seconds() <= 3600, "C55 outside its hour")
+    (args.new_output_dir / "raw").mkdir(mode=0o700)
     guard, policy, bounded, cg = svc.admit(
         args, prior, Q / "packed_layer_service", result, args.new_output_dir
     )
@@ -422,7 +423,11 @@ def main(args):
         need(re.fullmatch(r"tesy-[a-z0-9][a-z0-9-]{1,110}", args.unit), "systemd unit")
         family(args, result, svc, prior, start)
     except Exception as error:
-        result.update(status="FAIL_PRESERVED", decision="INCONCLUSIVE", reason=repr(error))
+        result.update(
+            status="FAIL_PRESERVED",
+            decision="INCONCLUSIVE",
+            reason=f"{type(error).__name__}: {error}",
+        )
     result.update(closed_utc=svc.clock(), elapsed_s=time.monotonic() - start)
     svc.save(out / "receipt.json", result)
     print(result["status"], result["decision"], result.get("reason", ""), flush=True)
