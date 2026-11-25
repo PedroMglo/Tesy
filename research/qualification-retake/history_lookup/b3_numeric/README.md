@@ -11,6 +11,8 @@
 
 A leitura do formato C269 localizou 54 696 valores F16 diferentes nas três posições novas das camadas 13–35. As 11 304 linhas anteriores que continuavam presentes e os metadados serializados coincidiram. Este diagnóstico separa o conteúdo dos tensores dos cabeçalhos do arquivo; a primeira operação que produziu a diferença continua por identificar. [Localização no KV](kv_difference/README.md)
 
+Uma fixture complementar no Ryzen exercitou o operador CPU MXFP4 em 2 880 dimensões, com quatro ranks e o mesmo DSO. Para as duas famílias de entradas sintéticas, processar uma ou três posições conservou todos os F32 e os bytes quantizados do operando. A primeira operação responsável pela divergência do modelo continua em aberto. [Projeção CPU isolada](cpu_row_geometry/README.md)
+
 ## Por que se podem comparar os dois braços
 
 Dois processos E20 independentes carregaram o mesmo GGUF GPT-OSS-120B MXFP4 com o mesmo cliente, bibliotecas C269, P12, 40 slots e ub32. Executaram o prefill real do caso log_medium de 189 IDs. Cada braço reproduziu os 2248 ficheiros de prefill da C127, 81 624 144 bytes. O AR reproduziu também as duas primeiras linhas de decode históricas. A C127 guardava o fim do prefill e os passos 0, 1, 7 e 31. As referências para os passos 2 e 3 vieram do AR contemporâneo. O verificador reabriu as linhas históricas da C270 pós-atualização e aferiu os respetivos hashes. [Ponte C127/C270](../../nvme_r0_gate/README.md)
