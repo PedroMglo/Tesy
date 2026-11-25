@@ -6,6 +6,7 @@ import importlib.util
 import json
 from collections import defaultdict
 from pathlib import Path
+from types import SimpleNamespace
 
 HERE = Path(__file__).resolve().parent
 INT = HERE.parent
@@ -266,7 +267,8 @@ def analyse_arm(rows, observed, raw, meta, data, memory):
     )
 
 
-def run(a):
+def prepare_inputs(a):
+    """Authenticate the pre-POST selection before opening either T2 journal."""
     need(host.sha(HERE / "protocol.md") == PROTO, "freeze")
     capture = host.pinned(a.capture_dir / "receipt.json", a.capture_sha256)
     need(
@@ -338,14 +340,58 @@ def run(a):
     current_mem = min(
         oldvol["observed_memory_margin_bytes"], host.STOP - capture["maxima"]["cgroup_peak_bytes"]
     )
-    current = analyse_arm(tail, capture["rows"][1], raw_now, meta, selection, current_mem)
+    return SimpleNamespace(
+        tail=tail,
+        raw_now=raw_now,
+        capture=capture,
+        meta=meta,
+        current_mem=current_mem,
+        selection=selection,
+        old=old,
+        raw_old=raw_old,
+        prior=prior,
+        oldvol=oldvol,
+        oldvictim=oldvictim,
+        sources=dict(
+            protocol=PROTO,
+            capture=a.capture_sha256,
+            seal=capture["before_t2_sha256"],
+            selected=seal["candidate_file_sha256"],
+            journal=hn["journal_sha256"],
+            prior=PRIOR,
+            boundary=capture["boundary_audit_sha256"],
+            current_raw=a.current_result_sha256,
+            prior_raw=reference_plan["t2_result_sha256"],
+            inventory=planner.INVENTORY,
+        ),
+        same_service_order=struct["service_interleaving_equal"],
+    )
+
+
+def run(a):
+    data = prepare_inputs(a)
+    current = analyse_arm(
+        data.tail,
+        data.capture["rows"][1],
+        data.raw_now,
+        data.meta,
+        data.selection,
+        data.current_mem,
+    )
     transported = analyse_arm(
-        old, prior["rows"][1], raw_old, meta, selection, oldvol["observed_memory_margin_bytes"]
+        data.old,
+        data.prior["rows"][1],
+        data.raw_old,
+        data.meta,
+        data.selection,
+        data.oldvol["observed_memory_margin_bytes"],
     )
     for r in transported["arms"]:
         if not r["warm"]:
             prior_set = (
-                oldvol["capacities"] if r["family"] == "publication" else oldvictim["capacities"]
+                data.oldvol["capacities"]
+                if r["family"] == "publication"
+                else data.oldvictim["capacities"]
             )
             ref = next(x for x in prior_set if x["capacity"] == r["k"])
             volkey = (
@@ -365,22 +411,11 @@ def run(a):
     )
     return dict(
         status="PASS",
-        sources=dict(
-            protocol=PROTO,
-            capture=a.capture_sha256,
-            seal=capture["before_t2_sha256"],
-            selected=seal["candidate_file_sha256"],
-            journal=hn["journal_sha256"],
-            prior=PRIOR,
-            boundary=capture["boundary_audit_sha256"],
-            current_raw=a.current_result_sha256,
-            prior_raw=reference_plan["t2_result_sha256"],
-            inventory=planner.INVENTORY,
-        ),
-        same_service_order=struct["service_interleaving_equal"],
+        sources=data.sources,
+        same_service_order=data.same_service_order,
         t1_costs={
             n: {k: val for k, val in info.items() if k != "ordered_keys"}
-            for n, info in selection["capacities"].items()
+            for n, info in data.selection["capacities"].items()
         },
         current=current,
         historical_order_projection=transported,
