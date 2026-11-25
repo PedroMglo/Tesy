@@ -1,6 +1,6 @@
 # Quantas chaves teria o T1 de deixar na cache secundária?
 
-**192 chaves são o mínimo para fazer o piso temporal tocar os 10 s com as durações R0.** Com as 191 melhores, o piso do primeiro conteúdo final ainda é 10,002106 s. Com 192 cai para 9,994385 s, dando só 5,615 ms de margem ao modelo otimista. A escala de serviço 0,8 precisa de 84 chaves. No denominador contratual M4, o piso de volume do prefill impõe em ambos os casos pelo menos **224 chaves úteis**. A capacidade L2 de 239 comporta cada mínimo individual. Uma seleção comum aos dois objetivos e a sua realização sem acesso ao futuro permanecem **INCONCLUSIVE**. [Recibo reproduzido](receipt.json) · [Pré-registo](protocol.md)
+**192 chaves são o mínimo para fazer o piso temporal tocar os 10 s com as durações R0.** Com as 191 melhores, o piso do primeiro conteúdo final ainda é 10,002106 s. Com 192 cai para 9,994385 s, dando só 5,615 ms de margem ao modelo otimista. A escala de serviço 0,8 precisa de 84 chaves. No denominador contratual M4, o piso de volume do prefill impõe em ambos os casos pelo menos **224 chaves úteis**. A capacidade L2 de 239 comporta cada mínimo individual. A análise conjunta posterior estabelece o mínimo de **247** para o contrato a 1×. A realização sem acesso ao futuro permanece **INCONCLUSIVE**. [Mínimos conjuntos](joint.md) [Recibo reproduzido](receipt.json) · [Pré-registo](protocol.md)
 
 ## Tempo até ao primeiro conteúdo final
 
@@ -22,7 +22,7 @@ O primeiro serviço de cada uma das 1051 identidades obrigatórias custa 13 219 
 | 47 saídas M4 · 10 938 366 806 B | 224 | 2 961 100 800 B | 204 376 406 / 1 711 365 206 B | 224 / 224 |
 | 46 avaliações · 11 688 366 807 B | 167 | 2 207 606 400 B | 954 376 407 / 2 461 365 207 B | 192 / 167 |
 
-A última coluna é o máximo dos dois mínimos independentes. O conjunto temporal pode conter chaves úteis apenas durante o decode. Por isso, 15 lugares acima do mínimo de volume contratual, na cache de 239, não representam 15 escolhas livres numa agenda que cumpra simultaneamente os dois limites. A pergunta seguinte, ainda respondível no journal existente, é se há uma mesma seleção inicial que passe ambos os pisos. Havendo essa margem, uma captura de T1 só tem interesse se revelar quais dessas identidades uma política causal consegue materializar, a que custo, por quanto tempo e com que efeito no primeiro turno, na memória e no primeiro decode. Alcançar um piso otimista ainda exige demonstrar uma agenda executável e validar o outro caso. M4 permanece NOT_MET.
+A última coluna é o máximo dos dois mínimos independentes. O conjunto temporal pode conter chaves úteis apenas durante o decode. Por isso, 15 lugares acima do mínimo de volume contratual, na cache de 239, não representam 15 escolhas livres numa agenda que cumpra simultaneamente os dois limites. A extensão prospetiva reconstruiu uma mesma seleção para ambos os pisos e excluiu K=239 no cenário contratual a 1×. [Seleção comum e teste de minimalidade](joint.md) Havendo essa margem, uma captura de T1 só tem interesse se revelar quais dessas identidades uma política causal consegue materializar, a que custo, por quanto tempo e com que efeito no primeiro turno, na memória e no primeiro decode. Alcançar um piso otimista ainda exige demonstrar uma agenda executável e validar o outro caso. M4 permanece NOT_MET.
 
 ## Reprodução
 
