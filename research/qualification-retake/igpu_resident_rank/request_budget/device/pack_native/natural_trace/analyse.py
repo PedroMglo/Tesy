@@ -313,6 +313,13 @@ def audit_arm(arm_dir, receipt, trigger_ns):
         "jobs": work,
         "first_decode": host["first_decode"],
         "blocking": host["blocking"],
+        "coverage": {
+            "logical_routes": "ORDERED_TOP4_AT_REMAP",
+            "physical_demand": "EXPERT_SLOT_GENERATION_BY_WAVE",
+            "effective_per_token_parking_mask": "UNOBSERVED",
+            "last_cuda_reader": "BOUNDED_ONLY_BY_EXISTING_DOWNSTREAM_DEPENDENCIES",
+            "temporal_claim": "FIXED_EXTERIOR_SCENARIO_ONLY",
+        },
         "calls": host["calls"],
         "budget": totals,
     }
