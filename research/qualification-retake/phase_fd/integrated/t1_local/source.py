@@ -122,9 +122,11 @@ def load_inputs(part, model, inventory, prepared_dir):
     loader = pinned(root / "qualified-loader.json", r["runtime_authority"]["loader_audit_sha256"])
     client = json.loads((root / "client-receipt.json").read_bytes())
     launch = pinned(raw / (unit + ".launch.json"), client["launch_sha256"])
+    owner_stop = json.loads((raw / (unit + ".owner-stop.json")).read_bytes())
     need(
         mon["returncode"] == 0
-        and mon["stop_reason"] is None
+        and mon["stop_reason"] == owner_stop["status"] == "INTERRUPTED_BY_OWNER"
+        and owner_stop["process_identity"] == mon["process_identity"]
         and mon["process_identity"] == launch["process_identity"] == client["process_identity"]
         and r["maxima"]["swap_bytes"] == 0
         and DSO in loader["initialized_sha256"].values()
