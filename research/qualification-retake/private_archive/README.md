@@ -58,3 +58,5 @@ O lote 20 conserva a nova C55, as três fases da confirmação CUDA usando uma s
 O lote 21 guarda as duas tentativas de build e os três lançamentos do replay de tokens, com o executável, os recibos idênticos das duas confirmações e os dois incidentes preservados. Foram conferidos 20 ficheiros e 1 407 714 B. [Índice do lote 21](part-21.json)
 
 O lote 22 preserva os mapas privados e as listagens de C270 e C281 nas duas confirmações do loader, bem como a janela física C55. Foram conferidos 12 ficheiros e 148 200 B. [Índice do lote 22](part-22.json)
+
+O lote 23 conserva a preparação e a execução do gate C270 e do par natural C281 após a atualização NVIDIA, e os três ensaios do piso de residência no prefill, incluindo a falha inicial de importação. O verificador conferiu 3 322 ficheiros e 90 189 679 B. Os dois compactos físicos foram reproduzidos a partir das cópias arquivadas. [Índice do lote 23](part-23.json)

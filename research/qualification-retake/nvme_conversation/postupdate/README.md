@@ -17,3 +17,5 @@ python3 -IB "$TESY_CHECKOUT/$entry" --repo "$TESY_CHECKOUT" \
 ```
 
 A versão de preparação foi ensaiada com quatro testes CPU, incluindo recusa de E18, SHA do preflight divergente, mapa do primeiro cliente incompleto, loader anterior adulterado e variáveis de processo cruzadas. A leitura da seleção estática R01 e dos dois inputs históricos permitiu verificar o digest completo da nova seleção, `f11c3f000fb4a0b9778c2fb465d94f9c228b91f0e8d69d47e7bd6c6e7adefbdc`. Recolocar apenas o nome histórico do ficheiro de libcuda reproduziu exatamente o digest das entradas C281 anteriores, `3351fcc91bcb8a82029b13ea3e48630880b54d415b76371e56fa0c4c9e1b0bfe`. Os argumentos de atividade do modelo, os SHA de todos os ELF, a data do template e os hashes dos prompts fazem parte dessa comparação. A confirmação estática usou zero forwards. A medição futura usa sempre os caminhos realmente selecionados no novo perfil.
+
+A execução física de 25 de novembro completou e validou os dois turnos. [Resultados, relógios e encerramento](physical-result.md)

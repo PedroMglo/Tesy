@@ -43,3 +43,5 @@ python3 -B research/qualification-retake/nvme_conversation/session.py run \
 ```
 
 Um resultado `PASS_TWO_NATURAL_REQUESTS_LOCAL_HISTORY` confirma exclusivamente a conclusão dos dois pedidos, o reuso de histórico e o encerramento medidos. A latência e a taxa de decode estão no recibo e são avaliadas pelos limiares de produto. Os ficheiros privados da sessão permanecem em `$result`, inclusive se o comando devolver um código de falha.
+
+Em 25 de novembro o controlo foi novamente qualificado após a atualização do driver. O turno incremental de 153 tokens atingiu 4,767 tok/s e primeiro conteúdo final aos 20,385 s. [Medição posterior e os dois relógios de conclusão](postupdate/physical-result.md)
