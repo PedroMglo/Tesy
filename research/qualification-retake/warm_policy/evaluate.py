@@ -12,6 +12,7 @@ import cache_boundary as boundary  # noqa: E402
 from scores import describe, freeze_tables  # noqa: E402
 from warm_policy_controls.replay import EXPERT_BYTES, replay  # noqa: E402
 from warm_route_reference.verify import PROMPT, check_witness, witness_rows  # noqa: E402
+from warm_routes40.boundary import verify as verify_boundary  # noqa: E402
 from warm_routes40.witness import compare_tpr  # noqa: E402
 
 C286_RECEIPT = "1288f59b44a1ddd69eecd52778f4f9b56e354d60973fdbf48c25175fe43796f4"
@@ -45,6 +46,12 @@ def evaluate(family, family_sha, historical):
             )
             hashes[mode] = arm["native_sha256"]
             files[mode] = family / native
+        states_i = []
+        for mode in ("OFF", "ON"):
+            boundary_file = files[mode] / "boundary-i.json"
+            read_pinned(boundary_file, hashes[mode]["boundary-i.json"])
+            states_i.append(verify_boundary(case, boundary_file)["slot_vector_sha256"])
+        boundary.require(states_i[0] == states_i[1], "different contemporary slot vectors at I")
         wrt = read_pinned(files["ON"] / "routed-witness.bin", hashes["ON"]["routed-witness.bin"])
         boundary.require(
             wrt
@@ -77,6 +84,9 @@ def evaluate(family, family_sha, historical):
             name = f"c294-{case}-{rep}-on"
             root = historical / boundary.CAMPAIGN / "raw"
             pools, facts = boundary.audit_arm(root, name)
+            boundary.require(
+                facts["boundary_slot_vector_sha256"] == states_i[0], "initial slots differ"
+            )
             native = root / (name + ".native")
             historical_result = json.loads(
                 read_pinned(native / "result.json", facts["source_sha256"]["result.json"])

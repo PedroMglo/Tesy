@@ -42,7 +42,13 @@ static void graph(routed_witness &obs, int first, int n, bool outputs, const std
         inputs.push_back(scores);
         auto top=ggml_argsort_top_k(ctx,scores,4);
         ggml_set_name(top,("ffn_moe_topk-"+std::to_string(l)).c_str());
-        ggml_build_forward_expand(g,top);
+        if (mutation=="alias-only" && l==0) {
+            ggml_set_name(top,"ffn_moe_topk-0 (noncanonical)");
+        }
+        auto *contiguous=ggml_cont(ctx,top);
+        const auto expected=std::string(ggml_get_name(top))+" (cont)";
+        routed_witness::need(ggml_get_name(contiguous)==expected,"GGML cont naming changed");
+        ggml_build_forward_expand(g,contiguous);
     }
     if (!outputs && mutation!="pruned-entirely") {
         auto *empty=ggml_view_2d(ctx,inputs.back(),4,0,128*sizeof(int32_t),0);

@@ -85,9 +85,15 @@ def build(parent, ggml, out, receipt):
             src / "block_native_run.cpp",
             HERE / "routed_witness.h",
             HERE / "graph_fixture.cpp",
+            HERE / "boundary_i.h",
+            HERE / "boundary_fixture.cpp",
         ):
             shutil.copyfile(source, out / source.name)
         run("patch", ["/usr/bin/patch", "-p1", "--fuzz=0", "--batch", "-i", HERE / "client.patch"])
+        run(
+            "boundary-overlay",
+            ["/usr/bin/patch", "-p1", "--fuzz=0", "--batch", "-i", HERE / "boundary.patch"],
+        )
         flags = [
             "/usr/bin/c++",
             "-O2",
@@ -101,6 +107,32 @@ def build(parent, ggml, out, receipt):
             f"-I{inc}/vendor/nlohmann",
         ]
         ggml_link = [f"-Wl,-rpath,{ggml}", ggml / "libggml-cpu.so", ggml / "libggml-base.so"]
+        legacy = out / "r1"
+        legacy.mkdir()
+        frozen = "1670fb44e9e012b3a387b753b306a7e6650ecb09:research/qualification-retake/warm_routes40/routed_witness.h"
+        (legacy / "routed_witness.h").write_bytes(
+            subprocess.check_output(["git", "-C", str(HERE), "show", frozen], timeout=5)
+        )
+        require(
+            sha(legacy / "routed_witness.h")
+            == "57313d33561bbfd129f86734bd453e13af9baa5fce9b44728dcc9e1f33528520",
+            "R1 header",
+        )
+        shutil.copyfile(out / "graph_fixture.cpp", legacy / "graph_fixture.cpp")
+        run(
+            "r1-fixture-compile",
+            [*flags, "r1/graph_fixture.cpp", "-o", "r1/graph-fixture", *ggml_link],
+        )
+        run(
+            "r1-real-cont-counterexample",
+            [legacy / "graph-fixture", "normal", legacy / "unexpected.bin"],
+            1,
+        )
+        require(
+            "invalid target topk name" in (out / "r1-real-cont-counterexample.log").read_text()
+            and not (legacy / "unexpected.bin").exists(),
+            "original failure not reproduced",
+        )
         run("fixture-compile", [*flags, "graph_fixture.cpp", "-o", "graph-fixture", *ggml_link])
         executable = out / "graph-fixture"
         passes = {}
@@ -108,6 +140,7 @@ def build(parent, ggml, out, receipt):
             ("normal", 0),
             ("pruned-entirely", 0),
             ("omit-layer", 1),
+            ("alias-only", 1),
             ("wrong-position", 1),
             ("wrong-output", 1),
             ("swapped-ranks", 0),
@@ -138,6 +171,28 @@ def build(parent, ggml, out, receipt):
                 "-DLLAMA_SHARED",
             ]
         )
+        boundary_link = [
+            f"-Wl,-rpath,{libs}",
+            llama,
+            ggml / "libggml.so",
+            *ggml_link,
+            ggml / "libggml-cuda.so",
+        ]
+        run(
+            "boundary-compile",
+            [*flags, "boundary_fixture.cpp", "-o", "boundary-fixture", *boundary_link],
+        )
+        test_boundary = json.loads(run("boundary-fixture", [out / "boundary-fixture"]))
+        require(
+            test_boundary["pending_queue"] == 0 and len(test_boundary["slot_vector"]) == 36,
+            "boundary fixture",
+        )
+        result["boundary_fixture"] = {
+            "slots": 1440,
+            "reserved_object_bytes": test_boundary["reserved_object_bytes"],
+            "mutex_busy_rejected": True,
+            "queue_claim_generation_tested": True,
+        }
         new = out / "expert-service-window"
         run(
             "client-compile",
@@ -185,6 +240,12 @@ def build(parent, ggml, out, receipt):
                     "routed_witness.h",
                     "graph_fixture.cpp",
                     "client.patch",
+                    "canary/alias-repair.md",
+                    "boundary.patch",
+                    "boundary_i.h",
+                    "boundary.py",
+                    "boundary_fixture.cpp",
+                    "boundary-protocol.md",
                     "protocol.md",
                     "build.py",
                     "witness.py",
@@ -197,7 +258,7 @@ def build(parent, ggml, out, receipt):
     finally:
         result["elapsed_s"] = round(time.monotonic() - started, 3)
         result["max_child_rss_kib"] = resource.getrusage(resource.RUSAGE_CHILDREN).ru_maxrss
-        result["private_files_bytes"] = sum(p.stat().st_size for p in out.iterdir() if p.is_file())
+        result["private_files_bytes"] = sum(p.stat().st_size for p in out.rglob("*") if p.is_file())
         with (receipt / "receipt.json").open("x") as handle:
             json.dump(result, handle, sort_keys=True, indent=2)
             handle.write("\n")

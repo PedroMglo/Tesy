@@ -1,0 +1,34 @@
+--- a/expert_service_window.cpp
++++ b/expert_service_window.cpp
+@@ -5,6 +5,7 @@
+ #include "llama-context.h"
+ #include <link.h>
+ #include "routed_witness.h"
++#include "boundary_i.h"
+ 
+ int chosen_mode(const std::string & profile) {
+     if(profile=="R0")return 0;
+@@ -130,6 +131,7 @@
+     const auto prepare_end=clock_type::now();const auto initial=r.snapshot();save(root/"initial.json",initial);
+     if (prefix_audit) check(prefix_audit->cut('P'), "prefix route coverage incomplete");
+     std::vector<float> complete_rows(static_cast<size_t>(33)*vocab);std::vector<int> winners;winners.reserve(33);
++    boundary_i increment_end;
+     auto &window=r.model->moe_stream()->window;observer.on=trace;window.enabled.store(trace);window.call.store(0);
+     window.record(15);
+     const auto begin=clock_type::now();
+@@ -138,6 +140,7 @@
+     auto row=observed_call({ids.begin()+prefix,ids.end()},prefix,false);
+     std::copy(row.begin(),row.end(),complete_rows.begin());winners.push_back(greedy(row.data()));
+     const auto prefill_end=clock_type::now();window.record(16);
++    if (observer.witness) increment_end.capture(*r.model->moe_stream());
+     if (prefix_audit) check(prefix_audit->cut('I'), "incremental route coverage incomplete");
+     for(int i=0;i<32;++i) {
+         window.call.store(i+1);window.record(15);
+@@ -148,6 +151,7 @@
+     const auto end=clock_type::now();const auto final=r.snapshot();
+     window.enabled.store(false);observer.on=false;
+     if (observer.witness) {
++        save(root/"boundary-i.json", increment_end.report());
+         observer.witness->finish();
+         const auto & data=observer.witness->bytes;
+         const auto tmp=root/"routed-witness.partial";

@@ -1,0 +1,3 @@
+# Freeze da tentativa física R2 em C110
+
+Aplicam-se integralmente a [agenda OFF/ON, recursos e critério C110](../protocol.md) e o [aditamento de reparação do reconhecimento de nomes](../alias-repair.md). A primeira execução física ficou encerrada em FAIL antes do primeiro vetor de logits e o segundo braço não arrancou. Nesta nova identidade o supervisor confere o novo binário pelo recibo de build e mantém a mesma referência TPR1 histórica, os três logits completos e todas as 633 tuplas. Rejeições do callback passam a incluir nome, operação e largura. O sucesso neste caso curto autoriza avaliar a preparação dos quatro braços R0. Não qualifica o processamento longo.

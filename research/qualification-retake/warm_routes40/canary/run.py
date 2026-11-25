@@ -14,9 +14,9 @@ REFERENCE_SHA = "507b70db15461ab9217d593dc92c6113557bfdb6c99cfc7806ca85c20e1e707
 PROFILE = supervisor.Profile(
     32,
     supervisor.CAP,
-    HERE,
-    HERE / "build-attempt-01/receipt.json",
-    "bb4cc325006bdb2d4c45f0a4f4b380d86aa6eefed004ba91fca616162bf26cbe",
+    HERE / "alias-r2",
+    HERE / "build-attempt-02/receipt.json",
+    "86b953e2ce7d82e02009e1a513815e574fcd99a254e3db40d3dcd8e12fc4d642",
 )
 
 
