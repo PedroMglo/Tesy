@@ -1,10 +1,13 @@
 import struct
+import sys
 import tempfile
 import unittest
 from pathlib import Path
 from runpy import run_path
+from unittest.mock import patch
 
-G = run_path(str(Path(__file__).with_name("grade.py")))
+with patch.object(sys, "path", sys.path.copy()):
+    G = run_path(str(Path(__file__).with_name("grade.py")))
 P = G["probes"]
 
 
