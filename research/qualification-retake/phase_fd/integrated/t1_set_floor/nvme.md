@@ -30,3 +30,5 @@ cmp "$NEW/receipt.json" "$STUDY/evidence/nvme.json"
 ```
 
 A segunda reprodução usou `--copy 2` e os recibos correspondentes à segunda preparação e à segunda avaliação local.
+
+A [verificação das sete lacunas do próprio worker](gaps.md) fecha ambos os cenários com esse custo a 100%. O segundo preço ainda admite 83,06% dessas durações no piso.
