@@ -1,0 +1,622 @@
+{
+  "budgets": {
+    "46": 11440306616,
+    "47": 10690306614
+  },
+  "capacity": 353,
+  "causal_control_sha256": "5a98dfe45eae6900c68b8ca6bea899d3222c1769f3ca99ccf1ab79eddd53c796",
+  "extra_bytes": 4720263168,
+  "headroom_bytes": 5217624064,
+  "journal_sha256": "40d2ea8049ccee9213ffc3f317482d67ebbed85a887a933043a3f4e7bd132033",
+  "local": "eb08c93c08201a8074a996a2f898505a452be38f20c03b345df77f9a7a04638a",
+  "method_sha256": "14aa0cb25a4becbb18b7cf798d13f9fa684e844f4a1f08e6e0e0fb79bd066850",
+  "model_forwards": 0,
+  "payload_bytes": 13219200,
+  "program_sha256": "80b62207ba33d121dc24f1e180d7e7a760b0d774bea6e2f33338079602a794fc",
+  "remaining_bytes": 497360896,
+  "seal": "d5321a870115d479ea5d53016a1796bda52dff0d343984d9aa05e92676a384d4",
+  "status": "PASS_BANK_CONSTRUCTION_BYTE_ACCOUNTING",
+  "t1": {
+    "by_tier": {
+      "cpu": {
+        "bytes_cold": 20225376000,
+        "bytes_min": 16814822400,
+        "censored": 0,
+        "count_contained_in_call": 1530,
+        "counters": {
+          "discards": 1267,
+          "first_install": 1182,
+          "offers": 1543,
+          "promotion": 13,
+          "reinstall": 348
+        },
+        "exact_windows": 1530,
+        "installed": 1530,
+        "installed_min": 1272,
+        "max_call_minimum_Bps": 1446988320,
+        "offers": 1543,
+        "peak_individual_minimum_Bps": 7954245279,
+        "retained": 263,
+        "shortest_window_ns": 1661905,
+        "suffix_minimum_Bps_cold": 1079531463,
+        "unique": 1182
+      },
+      "cuda": {
+        "bytes_cold": 8103369600,
+        "bytes_min": 6847545600,
+        "censored": 0,
+        "count_contained_in_call": 613,
+        "counters": {
+          "discards": 523,
+          "first_install": 516,
+          "offers": 613,
+          "reinstall": 97
+        },
+        "exact_windows": 613,
+        "installed": 613,
+        "installed_min": 518,
+        "max_call_minimum_Bps": 812940352,
+        "offers": 613,
+        "peak_individual_minimum_Bps": 7156755423,
+        "retained": 90,
+        "shortest_window_ns": 1847094,
+        "suffix_minimum_Bps_cold": 432518162,
+        "unique": 516
+      }
+    },
+    "calls": 73,
+    "positions": [
+      2047,
+      2119
+    ],
+    "wall_ns": 18735327960,
+    "washout_call": 8,
+    "washout_offer": 353,
+    "washout_offset_ns": 2838100445
+  },
+  "t2": {
+    "evict_backed_first": {
+      "maximum_live_payload": 3344457600,
+      "never_used": 100,
+      "phases": {
+        "eager": {
+          "call148": {
+            "disk": 978,
+            "disk_cpu": 624,
+            "disk_cuda": 354,
+            "gguf_fd_bytes": 12940218368,
+            "pack_fd_bytes": 12931006464,
+            "primary": 2177,
+            "primary_cpu": 1440,
+            "primary_cuda": 737,
+            "ram": 212,
+            "ram_cpu": 138,
+            "ram_cuda": 74
+          },
+          "call5": {
+            "disk": 34,
+            "disk_cpu": 26,
+            "disk_cuda": 8,
+            "gguf_fd_bytes": 449880064,
+            "pack_fd_bytes": 449544192,
+            "primary": 408,
+            "primary_cpu": 301,
+            "primary_cuda": 107,
+            "ram": 17,
+            "ram_cpu": 14,
+            "ram_cuda": 3
+          },
+          "decode": {
+            "disk": 974,
+            "disk_cpu": 661,
+            "disk_cuda": 313,
+            "gguf_fd_bytes": 12887441408,
+            "pack_fd_bytes": 12878118912,
+            "primary": 5264,
+            "primary_cpu": 3621,
+            "primary_cuda": 1643,
+            "ram": 386,
+            "ram_cpu": 318,
+            "ram_cuda": 68
+          },
+          "restore": {
+            "disk": 172,
+            "disk_cpu": 113,
+            "disk_cuda": 59,
+            "gguf_fd_bytes": 2275753984,
+            "pack_fd_bytes": 2274164736,
+            "ram": 88,
+            "ram_cpu": 70,
+            "ram_cuda": 18
+          }
+        },
+        "lazy": {
+          "call148": {
+            "bank_write_bytes_cpu": 1348358400,
+            "bank_write_bytes_cuda": 436233600,
+            "disk": 978,
+            "disk_cpu": 624,
+            "disk_cuda": 354,
+            "first_disk_for_bank": 135,
+            "first_disk_for_bank_cpu": 102,
+            "first_disk_for_bank_cuda": 33,
+            "gguf_fd_bytes": 14726451200,
+            "pack_fd_bytes": 14715961344,
+            "primary": 2177,
+            "primary_cpu": 1440,
+            "primary_cuda": 737,
+            "ram": 77,
+            "ram_cpu": 36,
+            "ram_cuda": 41
+          },
+          "call5": {
+            "bank_write_bytes_cpu": 185068800,
+            "bank_write_bytes_cuda": 39657600,
+            "disk": 34,
+            "disk_cpu": 26,
+            "disk_cuda": 8,
+            "first_disk_for_bank": 17,
+            "first_disk_for_bank_cpu": 14,
+            "first_disk_for_bank_cuda": 3,
+            "gguf_fd_bytes": 674832384,
+            "pack_fd_bytes": 674316288,
+            "primary": 408,
+            "primary_cpu": 301,
+            "primary_cuda": 107
+          },
+          "decode": {
+            "bank_write_bytes_cpu": 991440000,
+            "bank_write_bytes_cuda": 290822400,
+            "disk": 974,
+            "disk_cpu": 661,
+            "disk_cuda": 313,
+            "first_disk_for_bank": 97,
+            "first_disk_for_bank_cpu": 75,
+            "first_disk_for_bank_cuda": 22,
+            "gguf_fd_bytes": 14170873856,
+            "pack_fd_bytes": 14160642048,
+            "primary": 5264,
+            "primary_cpu": 3621,
+            "primary_cuda": 1643,
+            "ram": 289,
+            "ram_cpu": 243,
+            "ram_cuda": 46
+          },
+          "restore": {
+            "bank_write_bytes_cpu": 39657600,
+            "bank_write_bytes_cuda": 13219200,
+            "disk": 172,
+            "disk_cpu": 113,
+            "disk_cuda": 59,
+            "first_disk_for_bank": 4,
+            "first_disk_for_bank_cpu": 3,
+            "first_disk_for_bank_cuda": 1,
+            "gguf_fd_bytes": 2328682496,
+            "pack_fd_bytes": 2327052288,
+            "ram": 84,
+            "ram_cpu": 67,
+            "ram_cuda": 17
+          }
+        }
+      },
+      "prices": {
+        "A_cold": {
+          "at_cut_gguf_fd_bytes": 0,
+          "at_cut_pack_fd_bytes": 0,
+          "charged_prefill_gguf_fd_bytes": 15665852416,
+          "charged_prefill_pack_fd_bytes": 15654715392,
+          "decode_gate": false,
+          "decode_gguf_fd_bytes": 12887441408,
+          "decode_origin_loads": 974,
+          "decode_pack_fd_bytes": 12878118912,
+          "prefill_origin_loads": 1184,
+          "volume_gate_by_layout": {
+            "gguf": {
+              "46": false,
+              "47": false
+            },
+            "pack": {
+              "46": false,
+              "47": false
+            }
+          }
+        },
+        "B_at_cut": {
+          "at_cut_gguf_fd_bytes": 4670611456,
+          "at_cut_pack_fd_bytes": 4667326464,
+          "charged_prefill_gguf_fd_bytes": 20336463872,
+          "charged_prefill_pack_fd_bytes": 20322041856,
+          "decode_gate": false,
+          "decode_gguf_fd_bytes": 12887441408,
+          "decode_origin_loads": 974,
+          "decode_pack_fd_bytes": 12878118912,
+          "prefill_origin_loads": 1184,
+          "volume_gate_by_layout": {
+            "gguf": {
+              "46": false,
+              "47": false
+            },
+            "pack": {
+              "46": false,
+              "47": false
+            }
+          }
+        },
+        "C_lazy": {
+          "at_cut_gguf_fd_bytes": 0,
+          "at_cut_pack_fd_bytes": 0,
+          "charged_prefill_gguf_fd_bytes": 17729966080,
+          "charged_prefill_pack_fd_bytes": 17717329920,
+          "decode_gate": false,
+          "decode_gguf_fd_bytes": 14170873856,
+          "decode_origin_loads": 1071,
+          "decode_pack_fd_bytes": 14160642048,
+          "prefill_origin_loads": 1340,
+          "volume_gate_by_layout": {
+            "gguf": {
+              "46": false,
+              "47": false
+            },
+            "pack": {
+              "46": false,
+              "47": false
+            }
+          }
+        }
+      },
+      "ready": 253,
+      "ready_by_tier": {
+        "cpu": 194,
+        "cuda": 59
+      }
+    },
+    "lru": {
+      "maximum_live_payload": 0,
+      "never_used": 0,
+      "phases": {
+        "eager": {
+          "call148": {
+            "disk": 1133,
+            "disk_cpu": 740,
+            "disk_cuda": 393,
+            "gguf_fd_bytes": 14991065088,
+            "pack_fd_bytes": 14980399104,
+            "primary": 2234,
+            "primary_cpu": 1462,
+            "primary_cuda": 772
+          },
+          "call5": {
+            "disk": 51,
+            "disk_cpu": 40,
+            "disk_cuda": 11,
+            "gguf_fd_bytes": 674832384,
+            "pack_fd_bytes": 674316288,
+            "primary": 408,
+            "primary_cpu": 301,
+            "primary_cuda": 107
+          },
+          "decode": {
+            "disk": 1333,
+            "disk_cpu": 958,
+            "disk_cuda": 375,
+            "gguf_fd_bytes": 17637523456,
+            "pack_fd_bytes": 17624776704,
+            "primary": 5291,
+            "primary_cpu": 3642,
+            "primary_cuda": 1649
+          },
+          "restore": {
+            "disk": 189,
+            "disk_cpu": 126,
+            "disk_cuda": 63,
+            "gguf_fd_bytes": 2500722688,
+            "pack_fd_bytes": 2498936832
+          }
+        },
+        "lazy": {
+          "call148": {
+            "disk": 1133,
+            "disk_cpu": 740,
+            "disk_cuda": 393,
+            "gguf_fd_bytes": 14991065088,
+            "pack_fd_bytes": 14980399104,
+            "primary": 2234,
+            "primary_cpu": 1462,
+            "primary_cuda": 772
+          },
+          "call5": {
+            "disk": 51,
+            "disk_cpu": 40,
+            "disk_cuda": 11,
+            "gguf_fd_bytes": 674832384,
+            "pack_fd_bytes": 674316288,
+            "primary": 408,
+            "primary_cpu": 301,
+            "primary_cuda": 107
+          },
+          "decode": {
+            "disk": 1333,
+            "disk_cpu": 958,
+            "disk_cuda": 375,
+            "gguf_fd_bytes": 17637523456,
+            "pack_fd_bytes": 17624776704,
+            "primary": 5291,
+            "primary_cpu": 3642,
+            "primary_cuda": 1649
+          },
+          "restore": {
+            "disk": 189,
+            "disk_cpu": 126,
+            "disk_cuda": 63,
+            "gguf_fd_bytes": 2500722688,
+            "pack_fd_bytes": 2498936832
+          }
+        }
+      },
+      "prices": {
+        "A_cold": {
+          "at_cut_gguf_fd_bytes": 0,
+          "at_cut_pack_fd_bytes": 0,
+          "charged_prefill_gguf_fd_bytes": 18166620160,
+          "charged_prefill_pack_fd_bytes": 18153652224,
+          "decode_gate": false,
+          "decode_gguf_fd_bytes": 17637523456,
+          "decode_origin_loads": 1333,
+          "decode_pack_fd_bytes": 17624776704,
+          "prefill_origin_loads": 1373,
+          "volume_gate_by_layout": {
+            "gguf": {
+              "46": false,
+              "47": false
+            },
+            "pack": {
+              "46": false,
+              "47": false
+            }
+          }
+        },
+        "B_at_cut": {
+          "at_cut_gguf_fd_bytes": 0,
+          "at_cut_pack_fd_bytes": 0,
+          "charged_prefill_gguf_fd_bytes": 18166620160,
+          "charged_prefill_pack_fd_bytes": 18153652224,
+          "decode_gate": false,
+          "decode_gguf_fd_bytes": 17637523456,
+          "decode_origin_loads": 1333,
+          "decode_pack_fd_bytes": 17624776704,
+          "prefill_origin_loads": 1373,
+          "volume_gate_by_layout": {
+            "gguf": {
+              "46": false,
+              "47": false
+            },
+            "pack": {
+              "46": false,
+              "47": false
+            }
+          }
+        },
+        "C_lazy": {
+          "at_cut_gguf_fd_bytes": 0,
+          "at_cut_pack_fd_bytes": 0,
+          "charged_prefill_gguf_fd_bytes": 18166620160,
+          "charged_prefill_pack_fd_bytes": 18153652224,
+          "decode_gate": false,
+          "decode_gguf_fd_bytes": 17637523456,
+          "decode_origin_loads": 1333,
+          "decode_pack_fd_bytes": 17624776704,
+          "prefill_origin_loads": 1373,
+          "volume_gate_by_layout": {
+            "gguf": {
+              "46": false,
+              "47": false
+            },
+            "pack": {
+              "46": false,
+              "47": false
+            }
+          }
+        }
+      },
+      "ready": 0,
+      "ready_by_tier": {
+        "cpu": 0,
+        "cuda": 0
+      }
+    },
+    "lru_ram": {
+      "maximum_live_payload": 3291580800,
+      "never_used": 104,
+      "phases": {
+        "eager": {
+          "call148": {
+            "disk": 1015,
+            "disk_cpu": 653,
+            "disk_cuda": 362,
+            "gguf_fd_bytes": 13429768192,
+            "pack_fd_bytes": 13420216320,
+            "primary": 2234,
+            "primary_cpu": 1462,
+            "primary_cuda": 772,
+            "ram": 118,
+            "ram_cpu": 87,
+            "ram_cuda": 31
+          },
+          "call5": {
+            "disk": 34,
+            "disk_cpu": 26,
+            "disk_cuda": 8,
+            "gguf_fd_bytes": 449880064,
+            "pack_fd_bytes": 449544192,
+            "primary": 408,
+            "primary_cpu": 301,
+            "primary_cuda": 107,
+            "ram": 17,
+            "ram_cpu": 14,
+            "ram_cuda": 3
+          },
+          "decode": {
+            "disk": 1143,
+            "disk_cpu": 802,
+            "disk_cuda": 341,
+            "gguf_fd_bytes": 15123562496,
+            "pack_fd_bytes": 15112617984,
+            "primary": 5291,
+            "primary_cpu": 3642,
+            "primary_cuda": 1649,
+            "ram": 190,
+            "ram_cpu": 156,
+            "ram_cuda": 34
+          },
+          "restore": {
+            "disk": 185,
+            "disk_cpu": 123,
+            "disk_cuda": 62,
+            "gguf_fd_bytes": 2447785984,
+            "pack_fd_bytes": 2446049280,
+            "ram": 4,
+            "ram_cpu": 3,
+            "ram_cuda": 1
+          }
+        },
+        "lazy": {
+          "call148": {
+            "bank_write_bytes_cpu": 1150070400,
+            "bank_write_bytes_cuda": 383356800,
+            "disk": 1015,
+            "disk_cpu": 653,
+            "disk_cuda": 362,
+            "first_disk_for_bank": 116,
+            "first_disk_for_bank_cpu": 87,
+            "first_disk_for_bank_cuda": 29,
+            "gguf_fd_bytes": 14964609024,
+            "pack_fd_bytes": 14953955328,
+            "primary": 2234,
+            "primary_cpu": 1462,
+            "primary_cuda": 772,
+            "ram": 2,
+            "ram_cuda": 2
+          },
+          "call5": {
+            "bank_write_bytes_cpu": 185068800,
+            "bank_write_bytes_cuda": 39657600,
+            "disk": 34,
+            "disk_cpu": 26,
+            "disk_cuda": 8,
+            "first_disk_for_bank": 17,
+            "first_disk_for_bank_cpu": 14,
+            "first_disk_for_bank_cuda": 3,
+            "gguf_fd_bytes": 674832384,
+            "pack_fd_bytes": 674316288,
+            "primary": 408,
+            "primary_cpu": 301,
+            "primary_cuda": 107
+          },
+          "decode": {
+            "bank_write_bytes_cpu": 1150070400,
+            "bank_write_bytes_cuda": 343699200,
+            "disk": 1143,
+            "disk_cpu": 802,
+            "disk_cuda": 341,
+            "first_disk_for_bank": 113,
+            "first_disk_for_bank_cpu": 87,
+            "first_disk_for_bank_cuda": 26,
+            "gguf_fd_bytes": 16618680320,
+            "pack_fd_bytes": 16606691328,
+            "primary": 5291,
+            "primary_cpu": 3642,
+            "primary_cuda": 1649,
+            "ram": 77,
+            "ram_cpu": 69,
+            "ram_cuda": 8
+          },
+          "restore": {
+            "bank_write_bytes_cpu": 26438400,
+            "bank_write_bytes_cuda": 13219200,
+            "disk": 185,
+            "disk_cpu": 123,
+            "disk_cuda": 62,
+            "first_disk_for_bank": 3,
+            "first_disk_for_bank_cpu": 2,
+            "first_disk_for_bank_cuda": 1,
+            "gguf_fd_bytes": 2487488512,
+            "pack_fd_bytes": 2485714944,
+            "ram": 1,
+            "ram_cpu": 1
+          }
+        }
+      },
+      "prices": {
+        "A_cold": {
+          "at_cut_gguf_fd_bytes": 0,
+          "at_cut_pack_fd_bytes": 0,
+          "charged_prefill_gguf_fd_bytes": 16327434240,
+          "charged_prefill_pack_fd_bytes": 16315809792,
+          "decode_gate": false,
+          "decode_gguf_fd_bytes": 15123562496,
+          "decode_origin_loads": 1143,
+          "decode_pack_fd_bytes": 15112617984,
+          "prefill_origin_loads": 1234,
+          "volume_gate_by_layout": {
+            "gguf": {
+              "46": false,
+              "47": false
+            },
+            "pack": {
+              "46": false,
+              "47": false
+            }
+          }
+        },
+        "B_at_cut": {
+          "at_cut_gguf_fd_bytes": 4670611456,
+          "at_cut_pack_fd_bytes": 4667326464,
+          "charged_prefill_gguf_fd_bytes": 20998045696,
+          "charged_prefill_pack_fd_bytes": 20983136256,
+          "decode_gate": false,
+          "decode_gguf_fd_bytes": 15123562496,
+          "decode_origin_loads": 1143,
+          "decode_pack_fd_bytes": 15112617984,
+          "prefill_origin_loads": 1234,
+          "volume_gate_by_layout": {
+            "gguf": {
+              "46": false,
+              "47": false
+            },
+            "pack": {
+              "46": false,
+              "47": false
+            }
+          }
+        },
+        "C_lazy": {
+          "at_cut_gguf_fd_bytes": 0,
+          "at_cut_pack_fd_bytes": 0,
+          "charged_prefill_gguf_fd_bytes": 18126929920,
+          "charged_prefill_pack_fd_bytes": 18113986560,
+          "decode_gate": false,
+          "decode_gguf_fd_bytes": 16618680320,
+          "decode_origin_loads": 1256,
+          "decode_pack_fd_bytes": 16606691328,
+          "prefill_origin_loads": 1370,
+          "volume_gate_by_layout": {
+            "gguf": {
+              "46": false,
+              "47": false
+            },
+            "pack": {
+              "46": false,
+              "47": false
+            }
+          }
+        }
+      },
+      "ready": 249,
+      "ready_by_tier": {
+        "cpu": 190,
+        "cuda": 59
+      }
+    }
+  },
+  "time_decision": "INCONCLUSIVE_UNMEASURED_COPIES"
+}
