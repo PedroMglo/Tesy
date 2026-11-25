@@ -12,7 +12,7 @@ A retenção precisa de uma página para cada fronteira entre os dois usos do re
 
 No P106, retirar trabalho suficiente ao teto já favorável exige pelo menos **48** leituras, equivalentes a **pelo menos seis páginas** nesta relaxação. Seis não constituem uma agenda com margem. No P97 a margem do cenário sem estas páginas já é positiva, 918,252 ms. Os 1 018,130 ms obtidos depois de oferecer todo o crédito são um teto. O veredito cobre o mesmo conjunto de reservas e os retornos e reduções históricos. Um cache obtido copiando vítimas diretamente dos slots primários tem outros momentos de aquisição e paga cópias. Um produtor disponível antes do RANKS também altera as janelas. [Preços e estados reais](../README.md) · [Taxa de equilíbrio e limite de interface](../bandwidth/README.md)
 
-Protocolo 7240d891, código 6267d5d4. As duas execuções sobre os journals privados duraram 3,76/3,78 s e usaram 63 620/63 372 KiB de RSS. Recibo idêntico por conteúdo SHA-256 d5d5634c45c9b6a0a2e6bca75f82fad7104f482a139931088efe99e6f5dd0f83. O SSD do modelo e a GPU ficaram fora do ensaio. O ficheiro de evidência conserva também os dois relógios R0 utilizados no preço.
+Protocolo 7240d891, código 6267d5d4. As duas execuções sobre os journals privados duraram 3,76/3,78 s e usaram 63 620/63 372 KiB de RSS. Recibo idêntico por conteúdo SHA-256 d5d5634c45c9b6a0a2e6bca75f82fad7104f482a139931088efe99e6f5dd0f83. O SSD do modelo e a GPU ficaram fora do ensaio. O recibo conserva as margens de primeiro final e decode calculadas no relógio de cada braço C291 com pack.
 
 ```sh
 LC_ALL=C PYTHONUTF8=1 timeout 90 prlimit --as=536870912 -- python3 -IB "$UNIT/screen.py" \
