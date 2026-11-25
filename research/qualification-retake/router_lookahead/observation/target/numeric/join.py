@@ -83,14 +83,27 @@ def audit(rows, enabled):
     probes, positions, actual, looks, demands = (defaultdict(dict) for _ in range(5))
     queries = defaultdict(list)
     tiles, starts, slots, owners, claims, reserves = {}, {}, {}, {}, set(), {}
+    active_tile = active_wave = None
     for index, e in enumerate(rows):
         tile = e.call, e.tile
         site, wave = (*tile, e.layer), (*tile, e.layer, e.wave)
         place, key = (e.layer, e.slot), (e.layer, e.slot, e.gen, e.expert)
         if e.kind == 3:
+            need(active_tile is None, "nested tile")
+            active_tile = tile
             need(tile not in tiles and e.a == e.c - e.b + 1, "tile geometry")
             tiles[tile] = (e.b, e.c)
+        elif e.kind == 4:
+            need(active_tile == tile and active_wave is None, "tile end")
+            active_tile = None
+        elif e.kind == 9:
+            need(active_tile == tile and active_wave is None, "start wave")
+            active_wave = wave
+        elif e.kind == 23:
+            need(active_wave == wave, "end wave")
+            active_wave = None
         elif e.kind == 27:
+            need(active_wave == wave, "ranks outside wave")
             ranks = quartet(e.a)
             need(e.b == len(actual[site]), "ordered rank row")
             actual[site][e.b] = ranks
@@ -101,6 +114,12 @@ def audit(rows, enabled):
             physical.update(struct.pack("<7i", *wave, e.expert, e.slot, e.gen))
         if not enabled:
             continue
+        if 31 <= e.kind <= 36:
+            need(tile == active_tile, "probe outside tile")
+            need(
+                (active_wave == wave) if e.kind == 34 else (active_wave is None),
+                "probe outside its host site",
+            )
         if e.kind == 31:
             lo, hi = tiles[tile]
             need(
@@ -143,6 +162,7 @@ def audit(rows, enabled):
             lookup(e, owners, slots, claims)
             need(e.expert not in looks[wave], "duplicate lookup in wave")
             looks[wave][e.expert] = (index, e)
+    need(active_wave is active_tile is None, "unterminated callback")
     result = dict(
         official_ordered_sha256=official.hexdigest(),
         demanded_slots_sha256=physical.hexdigest(),
