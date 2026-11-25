@@ -1,0 +1,57 @@
+{
+  "status": "PASS_BUILD_FOUR_ROW_DISASSEMBLY",
+  "pin": "d0ebfbcc6c8f456bc1083027c1b08075a32824d8",
+  "gcc": "gcc-15 (GCC) 15.3.1 20260722 (Red Hat 15.3.1-1)",
+  "gcc_sha256": "14243f9ecbf08dfb3490eaca0c832055b8934ca0883f507cf951a5107fe7b36f",
+  "c_sha256": "73a4120c36aaad17bff9ab16831b8b7d2446065471fdb3978daa748933d58d00",
+  "header_sha256": "584ad64c809a6c26fa6d87143947aa6e9a46409cb27021eb2bfc27f9772a0f65",
+  "database_sha256": "2582285bc2b5b7af91570e5c9f4ca326c34bdc6da2ec7aef53ce87c393f6fb6c",
+  "ggml_cpu_sha256": "9aabce5751c5d7ca19b50e4cabb1fcf484c1581d275141dae8aba8ed33060313",
+  "ggml_quants_sha256": "3c489fdc77e3ab484a5f188bff9c60c0e9483c951ed65c1a562a04c249d5628e",
+  "protocol_commit": "aafa22828c82c3dca116849c0247c521df7028b8",
+  "receipt_sha256": "bde4dcea258ed962a60b9b9c6f15b28ab20efde6e14af2b39005fc061c24fa84",
+  "evidence": "BUILD_AND_MACHINE_CODE_ONLY",
+  "arms": {
+    "control": {
+      "elf_sha256": "7551d28af03a6f22e7250920f088134d7e65acb71c57264562c096747f44d4cc",
+      "instructions": 77,
+      "r0_static_call_sites": 4
+    },
+    "shared": {
+      "elf_sha256": "b8be95fa9570eb949168cdb63cbdf24c44be3eeeca79f27a3153e56c544d34eb",
+      "instructions": 564,
+      "r0_static_call_sites": 3,
+      "loop_instructions": 140,
+      "loop_asm_sha256": "ebfca43618d80db1a25e61f7a3c3b417ee28ee0b2bbec03572321c63feaa04bf",
+      "q8_32byte_loads": 2,
+      "q8_f16_index_loads": 2,
+      "vpshufb": 16,
+      "vpsignb": 16,
+      "vpmaddubsw": 8,
+      "vpmaddwd": 8,
+      "vcvtdq2ps": 8,
+      "vpdpbusd": 0,
+      "fma_vector_count": 8,
+      "distinct_fma_destinations": 8,
+      "stack_addressed_instructions_in_loop": 0
+    },
+    "separate": {
+      "elf_sha256": "fd28ccc4247c4f76ad052c7ba15f8d4eef17d3f713ee537216a13f41b64b1f34",
+      "instructions": 589,
+      "r0_static_call_sites": 3,
+      "loop_instructions": 155,
+      "loop_asm_sha256": "48e87c82670dec89f4a244f028cf0eaabf101bf9a02233753ec4ea85f962241e",
+      "q8_32byte_loads": 8,
+      "q8_f16_index_loads": 8,
+      "vpshufb": 16,
+      "vpsignb": 16,
+      "vpmaddubsw": 8,
+      "vpmaddwd": 8,
+      "vcvtdq2ps": 8,
+      "vpdpbusd": 0,
+      "fma_vector_count": 8,
+      "distinct_fma_destinations": 8,
+      "stack_addressed_instructions_in_loop": 0
+    }
+  }
+}
