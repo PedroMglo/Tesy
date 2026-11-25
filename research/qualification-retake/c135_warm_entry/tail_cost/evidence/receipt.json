@@ -1,0 +1,247 @@
+{
+  "status": "REPRODUCED_CONDITIONAL_CPU_SUFFIX_PRICE",
+  "program_sha256": "a6e13b27f70007eac13c6556aa26b3bab22ed0e46e411e0459c7cd8defeb65e5",
+  "protocol_sha256": "a96b9424f3396d60149fc058aa4d2a18ab67e74f0cfc3fbd9bd9a5810010b54d",
+  "prior_receipt_sha256": "5250bcfef94731a8ccdba0056c8bdebc9dd1e47faca42f3160ec86ee820271e7",
+  "c135_sha256": "91610b12291d5a42a12bba09f5d4ff188d25ee0001ab89e894bdd508005e82fb",
+  "pr45": "83146dade3f90235775e4a31a8d3d8ccae3476a7",
+  "additional_entries": 378,
+  "cpu_layers": 25,
+  "cuda_layers": 11,
+  "calls": [
+    5,
+    148
+  ],
+  "budget_us": {
+    "numerator": 485420887,
+    "denominator": 200,
+    "decimal_us": 2427104.435
+  },
+  "modes": {
+    "original_read": {
+      "minimum_read_quarter_us_by_nonempty_cpu_groups": {
+        "6": 10445932,
+        "7": 10239693,
+        "8": 10130128,
+        "9": 10036325,
+        "10": 9950036,
+        "11": 9877993,
+        "12": 9814611,
+        "13": 9758411,
+        "14": 9707447,
+        "15": 9663806,
+        "16": 9624855,
+        "17": 9588078,
+        "18": 9554363,
+        "19": 9524252,
+        "20": 9498718,
+        "21": 9474571,
+        "22": 9457503,
+        "23": 9445247,
+        "24": 9434034,
+        "25": 9424212,
+        "26": 9419485,
+        "27": 9422653,
+        "28": 9426242,
+        "29": 9430737,
+        "30": 9435646,
+        "31": 9441254,
+        "32": 9447599,
+        "33": 9454417,
+        "34": 9461681,
+        "35": 9469241,
+        "36": 9477109,
+        "37": 9485038,
+        "38": 9493071,
+        "39": 9502314,
+        "40": 9511757,
+        "41": 9522347,
+        "42": 9533194,
+        "43": 9544305,
+        "44": 9556477,
+        "45": 9569950,
+        "46": 9590213
+      },
+      "scales": {
+        "1.0": {
+          "minimum_nonempty_cpu_groups": 6,
+          "at_zero_us": {
+            "numerator": 9419485,
+            "denominator": 4,
+            "decimal_us": 2354871.25
+          },
+          "optimal_groups_at_zero": [
+            26
+          ],
+          "status": "FINITE_CONDITIONAL_CUTOFF",
+          "supremum_us": {
+            "numerator": 13158537,
+            "denominator": 4600,
+            "decimal_us": 2860.5515217391303
+          },
+          "last_admissible_integer_us": 2860,
+          "first_excluding_integer_us": 2861,
+          "floor_last_us": {
+            "numerator": 9708367,
+            "denominator": 4,
+            "decimal_us": 2427091.75
+          },
+          "floor_first_excluding_us": {
+            "numerator": 9708459,
+            "denominator": 4,
+            "decimal_us": 2427114.75
+          },
+          "optimal_groups_at_cutoff": [
+            23
+          ]
+        },
+        "0.8": {
+          "minimum_nonempty_cpu_groups": 6,
+          "at_zero_us": {
+            "numerator": 1883897,
+            "denominator": 1,
+            "decimal_us": 1883897.0
+          },
+          "optimal_groups_at_zero": [
+            26
+          ],
+          "status": "FINITE_CONDITIONAL_CUTOFF",
+          "supremum_us": {
+            "numerator": 22527869,
+            "denominator": 400,
+            "decimal_us": 56319.6725
+          },
+          "last_admissible_integer_us": 56319,
+          "first_excluding_integer_us": 56320,
+          "floor_last_us": {
+            "numerator": 12135502,
+            "denominator": 5,
+            "decimal_us": 2427100.4
+          },
+          "floor_first_excluding_us": {
+            "numerator": 12135532,
+            "denominator": 5,
+            "decimal_us": 2427106.4
+          },
+          "optimal_groups_at_cutoff": [
+            6
+          ]
+        }
+      }
+    },
+    "cuda_read_free": {
+      "minimum_read_quarter_us_by_nonempty_cpu_groups": {
+        "6": 3900314,
+        "7": 3727857,
+        "8": 3618395,
+        "9": 3548263,
+        "10": 3498732,
+        "11": 3453986,
+        "12": 3416152,
+        "13": 3384387,
+        "14": 3354670,
+        "15": 3326760,
+        "16": 3307353,
+        "17": 3291019,
+        "18": 3275484,
+        "19": 3261062,
+        "20": 3247792,
+        "21": 3238643,
+        "22": 3235222,
+        "23": 3236752,
+        "24": 3240032,
+        "25": 3245286,
+        "26": 3251934,
+        "27": 3259190,
+        "28": 3266870,
+        "29": 3274964,
+        "30": 3283782,
+        "31": 3293734,
+        "32": 3303825,
+        "33": 3314705,
+        "34": 3325903,
+        "35": 3337270,
+        "36": 3349912,
+        "37": 3365012,
+        "38": 3380588,
+        "39": 3397242,
+        "40": 3415050,
+        "41": 3433420,
+        "42": 3453227,
+        "43": 3474641,
+        "44": 3498002,
+        "45": 3522218,
+        "46": 3551328
+      },
+      "scales": {
+        "1.0": {
+          "minimum_nonempty_cpu_groups": 6,
+          "at_zero_us": {
+            "numerator": 1617611,
+            "denominator": 2,
+            "decimal_us": 808805.5
+          },
+          "optimal_groups_at_zero": [
+            22
+          ],
+          "status": "FINITE_CONDITIONAL_CUTOFF",
+          "supremum_us": {
+            "numerator": 96801729,
+            "denominator": 400,
+            "decimal_us": 242004.3225
+          },
+          "last_admissible_integer_us": 242004,
+          "first_excluding_integer_us": 242005,
+          "floor_last_us": {
+            "numerator": 4854205,
+            "denominator": 2,
+            "decimal_us": 2427102.5
+          },
+          "floor_first_excluding_us": {
+            "numerator": 4854217,
+            "denominator": 2,
+            "decimal_us": 2427108.5
+          },
+          "optimal_groups_at_cutoff": [
+            6
+          ]
+        },
+        "0.8": {
+          "minimum_nonempty_cpu_groups": 6,
+          "at_zero_us": {
+            "numerator": 3235222,
+            "denominator": 5,
+            "decimal_us": 647044.4
+          },
+          "optimal_groups_at_zero": [
+            22
+          ],
+          "status": "FINITE_CONDITIONAL_CUTOFF",
+          "supremum_us": {
+            "numerator": 329408327,
+            "denominator": 1200,
+            "decimal_us": 274506.93916666665
+          },
+          "last_admissible_integer_us": 274506,
+          "first_excluding_integer_us": 274507,
+          "floor_last_us": {
+            "numerator": 12135494,
+            "denominator": 5,
+            "decimal_us": 2427098.8
+          },
+          "floor_first_excluding_us": {
+            "numerator": 12135524,
+            "denominator": 5,
+            "decimal_us": 2427104.8
+          },
+          "optimal_groups_at_cutoff": [
+            6
+          ]
+        }
+      }
+    }
+  },
+  "gpu_used": false,
+  "weight_reads": 0,
+  "model_forwards": 0
+}

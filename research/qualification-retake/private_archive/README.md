@@ -60,3 +60,5 @@ O lote 21 guarda as duas tentativas de build e os três lançamentos do replay d
 O lote 22 preserva os mapas privados e as listagens de C270 e C281 nas duas confirmações do loader, bem como a janela física C55. Foram conferidos 12 ficheiros e 148 200 B. [Índice do lote 22](part-22.json)
 
 O lote 23 conserva a preparação e a execução do gate C270 e do par natural C281 após a atualização NVIDIA, e os três ensaios do piso de residência no prefill, incluindo a falha inicial de importação. O verificador conferiu 3 322 ficheiros e 90 189 679 B. Os dois compactos físicos foram reproduzidos a partir das cópias arquivadas. [Índice do lote 23](part-23.json)
+
+O lote 24 conserva a C55, o build nativo e os oito braços do operador CPU0, incluindo o par fora da banda, e as duas reproduções do custo de cálculo necessário por grupo no prefill. Foram conferidos 86 ficheiros e 9 540 714 B. [Índice do lote 24](part-24.json)

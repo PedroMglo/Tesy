@@ -42,3 +42,5 @@ env LC_ALL=C PYTHONCOERCECLOCALE=0 PYTHONUTF8=1 OPENBLAS_NUM_THREADS=1 OMP_NUM_T
 ```
 
 A comparação com o prefill de Tideway quantifica a sobreposição por dupla bufferização quando todas as 128 entradas são trazidas para cada camada. [Limite por capacidade e variante seletiva](../tideway/README.md)
+
+Ao reotimizar as 378 escolhas para cada preço de computação, um sufixo CPU inevitável de 2,861 ms por grupo com pelo menos um READ seria suficiente para fechar o cenário a 1×. [Fronteira exata e relaxações](tail_cost/README.md)
