@@ -15,12 +15,13 @@ A confirmação em árvore limpa 70ba0277017bee7dd155f000ed744d98c88b5d22 autent
 
 A primeira tentativa de construir o operador parou na leitura do prefixo VEX pelo verificador. As janelas C55 anteriores falharam ao localizar o material C281 no checkout e ao admitir o destino raw externo. A terceira janela foi admitida. A primeira família do operador parou por cadência C118 antes dos pesos e do primeiro braço. A segunda identidade usou o mesmo protocolo. [Falha preservada](evidence/preflight-fail.json)
 
-Reproduzir num checkout limpo do commit acima. C7 aponta para o laboratório histórico pinado. POLICY é a política C55 derivada no portátil na hora anterior, PLACEMENT é o recibo privado autenticado da cópia NVMe. Cada destino é novo. A opção de harness usa a biblioteca padrão C++ e dl. Os hashes concretos do harness, dos seis ELFs e do build constam no recibo físico.
+Reproduzir num checkout limpo do commit acima. C7 aponta para o laboratório histórico pinado. POLICY é a política C55 derivada no portátil na hora anterior, PLACEMENT é o recibo privado autenticado da cópia NVMe. Cada destino é novo. Para repetir com o executável confirmado, atribuir NEW_CLOCK ao ELF conservado no portátil e verificar o hash abaixo. Uma recompilação da fonte com as opções exemplificadas gera uma nova identidade de harness e requer a sua própria confirmação. Os hashes concretos do harness, dos seis ELFs e do build constam no recibo físico.
 
 ```sh
 u=research/qualification-retake/mxfp4_vnni
 python3 -B "$u/build_native.py" --backend "$C7/backends/c269-layer-last-use" --out "$NEW_BUILD"
-g++ -O3 -std=c++17 "$u/clockbench.cpp" -ldl -o "$NEW_CLOCK"
+echo "30d4fd3a14d10b47de3e88148c16cf71801973b253df524142e78bed96ad67d8  $NEW_CLOCK" | sha256sum -c -
+# Para uma nova identidade: g++ -std=c++17 -O2 "$u/clockbench.cpp" -ldl -o "$OTHER_CLOCK"
 systemd-run --user --scope -p MemoryAccounting=yes -p MemoryHigh=1G -p MemoryMax=1G -p MemorySwapMax=0 \
   python3 -B "$u/run.py" --lab "$C7" --placement "$PLACEMENT" --policy "$POLICY" \
   --build-dir "$NEW_BUILD" --build-sha256 "$(sha256sum "$NEW_BUILD/build.json" | cut -d' ' -f1)" \
