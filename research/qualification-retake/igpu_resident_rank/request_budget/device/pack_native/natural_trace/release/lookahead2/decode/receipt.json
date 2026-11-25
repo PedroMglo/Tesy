@@ -1,0 +1,1027 @@
+{
+  "P106": {
+    "baseline_decode_ns": 9213847000,
+    "baseline_first_ns": 19528568213,
+    "callback_ns": {
+      "decode_first": 6481902361,
+      "decode_tail": 156076422,
+      "prefill": 5875563819
+    },
+    "choices": [
+      {
+        "bytes_per_s": 4500000000,
+        "free_set": {
+          "decode_floor_ns": 5557532217,
+          "decode_margin_ns": 2275801116,
+          "first_floor_ns": 11324868433,
+          "first_margin_ns": -1324868433,
+          "joint": "NO_GO_FIXED_SCENARIO",
+          "shared_extra_ceiling_ns": -1324868433
+        },
+        "horizon": 0,
+        "phases": {
+          "decode_first": {
+            "early_bytes_floor": 0,
+            "network_ns": 2928787200,
+            "network_or_set_ns": 2928787200,
+            "pack_bytes": 13179542400,
+            "set_ns": 717065242
+          },
+          "decode_tail": {
+            "early_bytes_floor": 0,
+            "network_ns": 52876800,
+            "network_or_set_ns": 52876800,
+            "pack_bytes": 237945600,
+            "set_ns": 20993909
+          },
+          "prefill": {
+            "early_bytes_floor": 0,
+            "network_ns": 1224979200,
+            "network_or_set_ns": 1224979200,
+            "pack_bytes": 5512406400,
+            "set_ns": 259994478
+          }
+        },
+        "priced_set": {
+          "decode_floor_ns": 5557532217,
+          "decode_margin_ns": 2275801116,
+          "first_floor_ns": 11324868433,
+          "first_margin_ns": -1324868433,
+          "joint": "NO_GO_FIXED_SCENARIO",
+          "shared_extra_ceiling_ns": -1324868433
+        },
+        "release": "none",
+        "width": "none"
+      },
+      {
+        "bytes_per_s": 8000000000,
+        "free_set": {
+          "decode_floor_ns": 4253054217,
+          "decode_margin_ns": 3580279116,
+          "first_floor_ns": 9507595633,
+          "first_margin_ns": 492404367,
+          "joint": "HEADROOM_ONLY",
+          "shared_extra_ceiling_ns": 492404367
+        },
+        "horizon": 0,
+        "phases": {
+          "decode_first": {
+            "early_bytes_floor": 0,
+            "network_ns": 1647442800,
+            "network_or_set_ns": 1647442800,
+            "pack_bytes": 13179542400,
+            "set_ns": 717065242
+          },
+          "decode_tail": {
+            "early_bytes_floor": 0,
+            "network_ns": 29743200,
+            "network_or_set_ns": 29743200,
+            "pack_bytes": 237945600,
+            "set_ns": 20993909
+          },
+          "prefill": {
+            "early_bytes_floor": 0,
+            "network_ns": 689050800,
+            "network_or_set_ns": 689050800,
+            "pack_bytes": 5512406400,
+            "set_ns": 259994478
+          }
+        },
+        "priced_set": {
+          "decode_floor_ns": 4253054217,
+          "decode_margin_ns": 3580279116,
+          "first_floor_ns": 9507595633,
+          "first_margin_ns": 492404367,
+          "joint": "HEADROOM_ONLY",
+          "shared_extra_ceiling_ns": 492404367
+        },
+        "release": "none",
+        "width": "none"
+      },
+      {
+        "bytes_per_s": 4500000000,
+        "free_set": {
+          "decode_floor_ns": 4057397300,
+          "decode_margin_ns": 3775936033,
+          "first_floor_ns": 8873180129,
+          "first_margin_ns": 1126819871,
+          "joint": "HEADROOM_ONLY",
+          "shared_extra_ceiling_ns": 1126819871
+        },
+        "horizon": 1,
+        "phases": {
+          "decode_first": {
+            "early_bytes_floor": 6594755688,
+            "network_ns": 1463285936,
+            "network_or_set_ns": 1463285936,
+            "pack_bytes": 13179542400,
+            "set_ns": 717065242
+          },
+          "decode_tail": {
+            "early_bytes_floor": 155851438,
+            "network_ns": 18243147,
+            "network_or_set_ns": 25546530,
+            "pack_bytes": 237945600,
+            "set_ns": 20993909
+          },
+          "prefill": {
+            "early_bytes_floor": 4437841680,
+            "network_ns": 238792160,
+            "network_or_set_ns": 259994478,
+            "pack_bytes": 5512406400,
+            "set_ns": 259994478
+          }
+        },
+        "priced_set": {
+          "decode_floor_ns": 4064700683,
+          "decode_margin_ns": 3768632650,
+          "first_floor_ns": 8894382447,
+          "first_margin_ns": 1105617553,
+          "joint": "HEADROOM_ONLY",
+          "shared_extra_ceiling_ns": 1105617553
+        },
+        "release": "earliest_outer",
+        "width": "four_per_target"
+      },
+      {
+        "bytes_per_s": 8000000000,
+        "free_set": {
+          "decode_floor_ns": 3051382132,
+          "decode_margin_ns": 4781951201,
+          "first_floor_ns": 7737792409,
+          "first_margin_ns": 2262207591,
+          "joint": "HEADROOM_ONLY",
+          "shared_extra_ceiling_ns": 2262207591
+        },
+        "horizon": 1,
+        "phases": {
+          "decode_first": {
+            "early_bytes_floor": 9402903584,
+            "network_ns": 472079852,
+            "network_or_set_ns": 722449284,
+            "pack_bytes": 13179542400,
+            "set_ns": 717065242
+          },
+          "decode_tail": {
+            "early_bytes_floor": 210473096,
+            "network_ns": 3434063,
+            "network_or_set_ns": 20993909,
+            "pack_bytes": 237945600,
+            "set_ns": 20993909
+          },
+          "prefill": {
+            "early_bytes_floor": 4755522208,
+            "network_ns": 94610524,
+            "network_or_set_ns": 259994478,
+            "pack_bytes": 5512406400,
+            "set_ns": 259994478
+          }
+        },
+        "priced_set": {
+          "decode_floor_ns": 3319311410,
+          "decode_margin_ns": 4514021923,
+          "first_floor_ns": 8153545795,
+          "first_margin_ns": 1846454205,
+          "joint": "HEADROOM_ONLY",
+          "shared_extra_ceiling_ns": 1846454205
+        },
+        "release": "earliest_outer",
+        "width": "four_per_target"
+      },
+      {
+        "bytes_per_s": 4500000000,
+        "free_set": {
+          "decode_floor_ns": 4057397300,
+          "decode_margin_ns": 3775936033,
+          "first_floor_ns": 8776239329,
+          "first_margin_ns": 1223760671,
+          "joint": "HEADROOM_ONLY",
+          "shared_extra_ceiling_ns": 1223760671
+        },
+        "horizon": 1,
+        "phases": {
+          "decode_first": {
+            "early_bytes_floor": 6594755688,
+            "network_ns": 1463285936,
+            "network_or_set_ns": 1463285936,
+            "pack_bytes": 13179542400,
+            "set_ns": 717065242
+          },
+          "decode_tail": {
+            "early_bytes_floor": 155851438,
+            "network_ns": 18243147,
+            "network_or_set_ns": 25546530,
+            "pack_bytes": 237945600,
+            "set_ns": 20993909
+          },
+          "prefill": {
+            "early_bytes_floor": 4874075280,
+            "network_ns": 141851360,
+            "network_or_set_ns": 259994478,
+            "pack_bytes": 5512406400,
+            "set_ns": 259994478
+          }
+        },
+        "priced_set": {
+          "decode_floor_ns": 4064700683,
+          "decode_margin_ns": 3768632650,
+          "first_floor_ns": 8894382447,
+          "first_margin_ns": 1105617553,
+          "joint": "HEADROOM_ONLY",
+          "shared_extra_ceiling_ns": 1105617553
+        },
+        "release": "earliest_outer",
+        "width": "unlimited"
+      },
+      {
+        "bytes_per_s": 8000000000,
+        "free_set": {
+          "decode_floor_ns": 3051382132,
+          "decode_margin_ns": 4781951201,
+          "first_floor_ns": 7678239811,
+          "first_margin_ns": 2321760189,
+          "joint": "HEADROOM_ONLY",
+          "shared_extra_ceiling_ns": 2321760189
+        },
+        "horizon": 1,
+        "phases": {
+          "decode_first": {
+            "early_bytes_floor": 9402903584,
+            "network_ns": 472079852,
+            "network_or_set_ns": 722449284,
+            "pack_bytes": 13179542400,
+            "set_ns": 717065242
+          },
+          "decode_tail": {
+            "early_bytes_floor": 210473096,
+            "network_ns": 3434063,
+            "network_or_set_ns": 20993909,
+            "pack_bytes": 237945600,
+            "set_ns": 20993909
+          },
+          "prefill": {
+            "early_bytes_floor": 5231942992,
+            "network_ns": 35057926,
+            "network_or_set_ns": 259994478,
+            "pack_bytes": 5512406400,
+            "set_ns": 259994478
+          }
+        },
+        "priced_set": {
+          "decode_floor_ns": 3319311410,
+          "decode_margin_ns": 4514021923,
+          "first_floor_ns": 8153545795,
+          "first_margin_ns": 1846454205,
+          "joint": "HEADROOM_ONLY",
+          "shared_extra_ceiling_ns": 1846454205
+        },
+        "release": "earliest_outer",
+        "width": "unlimited"
+      },
+      {
+        "bytes_per_s": 4500000000,
+        "free_set": {
+          "decode_floor_ns": 4486121413,
+          "decode_margin_ns": 3347211920,
+          "first_floor_ns": 9313653693,
+          "first_margin_ns": 686346307,
+          "joint": "HEADROOM_ONLY",
+          "shared_extra_ceiling_ns": 686346307
+        },
+        "horizon": 1,
+        "phases": {
+          "decode_first": {
+            "early_bytes_floor": 4717898505,
+            "network_ns": 1880365310,
+            "network_or_set_ns": 1880365310,
+            "pack_bytes": 13179542400,
+            "set_ns": 717065242
+          },
+          "decode_tail": {
+            "early_bytes_floor": 103450113,
+            "network_ns": 29887886,
+            "network_or_set_ns": 31795925,
+            "pack_bytes": 237945600,
+            "set_ns": 20993909
+          },
+          "prefill": {
+            "early_bytes_floor": 4332567825,
+            "network_ns": 262186350,
+            "network_or_set_ns": 264284430,
+            "pack_bytes": 5512406400,
+            "set_ns": 259994478
+          }
+        },
+        "priced_set": {
+          "decode_floor_ns": 4488029452,
+          "decode_margin_ns": 3345303881,
+          "first_floor_ns": 9315751773,
+          "first_margin_ns": 684248227,
+          "joint": "HEADROOM_ONLY",
+          "shared_extra_ceiling_ns": 684248227
+        },
+        "release": "ranks_observed",
+        "width": "four_per_target"
+      },
+      {
+        "bytes_per_s": 8000000000,
+        "free_set": {
+          "decode_floor_ns": 3283381520,
+          "decode_margin_ns": 4549951813,
+          "first_floor_ns": 7969125984,
+          "first_margin_ns": 2030874016,
+          "joint": "HEADROOM_ONLY",
+          "shared_extra_ceiling_ns": 2030874016
+        },
+        "horizon": 1,
+        "phases": {
+          "decode_first": {
+            "early_bytes_floor": 7594895744,
+            "network_ns": 698080832,
+            "network_or_set_ns": 777149731,
+            "pack_bytes": 13179542400,
+            "set_ns": 717065242
+          },
+          "decode_tail": {
+            "early_bytes_floor": 162485832,
+            "network_ns": 9432471,
+            "network_or_set_ns": 20993909,
+            "pack_bytes": 237945600,
+            "set_ns": 20993909
+          },
+          "prefill": {
+            "early_bytes_floor": 4712861448,
+            "network_ns": 99943119,
+            "network_or_set_ns": 259994478,
+            "pack_bytes": 5512406400,
+            "set_ns": 259994478
+          }
+        },
+        "priced_set": {
+          "decode_floor_ns": 3374011857,
+          "decode_margin_ns": 4459321476,
+          "first_floor_ns": 8208246242,
+          "first_margin_ns": 1791753758,
+          "joint": "HEADROOM_ONLY",
+          "shared_extra_ceiling_ns": 1791753758
+        },
+        "release": "ranks_observed",
+        "width": "four_per_target"
+      },
+      {
+        "bytes_per_s": 4500000000,
+        "free_set": {
+          "decode_floor_ns": 4486121413,
+          "decode_margin_ns": 3347211920,
+          "first_floor_ns": 9216712893,
+          "first_margin_ns": 783287107,
+          "joint": "HEADROOM_ONLY",
+          "shared_extra_ceiling_ns": 783287107
+        },
+        "horizon": 1,
+        "phases": {
+          "decode_first": {
+            "early_bytes_floor": 4717898505,
+            "network_ns": 1880365310,
+            "network_or_set_ns": 1880365310,
+            "pack_bytes": 13179542400,
+            "set_ns": 717065242
+          },
+          "decode_tail": {
+            "early_bytes_floor": 103450113,
+            "network_ns": 29887886,
+            "network_or_set_ns": 31795925,
+            "pack_bytes": 237945600,
+            "set_ns": 20993909
+          },
+          "prefill": {
+            "early_bytes_floor": 4768801425,
+            "network_ns": 165245550,
+            "network_or_set_ns": 259994478,
+            "pack_bytes": 5512406400,
+            "set_ns": 259994478
+          }
+        },
+        "priced_set": {
+          "decode_floor_ns": 4488029452,
+          "decode_margin_ns": 3345303881,
+          "first_floor_ns": 9311461821,
+          "first_margin_ns": 688538179,
+          "joint": "HEADROOM_ONLY",
+          "shared_extra_ceiling_ns": 688538179
+        },
+        "release": "ranks_observed",
+        "width": "unlimited"
+      },
+      {
+        "bytes_per_s": 8000000000,
+        "free_set": {
+          "decode_floor_ns": 3283381520,
+          "decode_margin_ns": 4549951813,
+          "first_floor_ns": 7911820836,
+          "first_margin_ns": 2088179164,
+          "joint": "HEADROOM_ONLY",
+          "shared_extra_ceiling_ns": 2088179164
+        },
+        "horizon": 1,
+        "phases": {
+          "decode_first": {
+            "early_bytes_floor": 7594895744,
+            "network_ns": 698080832,
+            "network_or_set_ns": 777149731,
+            "pack_bytes": 13179542400,
+            "set_ns": 717065242
+          },
+          "decode_tail": {
+            "early_bytes_floor": 162485832,
+            "network_ns": 9432471,
+            "network_or_set_ns": 20993909,
+            "pack_bytes": 237945600,
+            "set_ns": 20993909
+          },
+          "prefill": {
+            "early_bytes_floor": 5171302632,
+            "network_ns": 42637971,
+            "network_or_set_ns": 259994478,
+            "pack_bytes": 5512406400,
+            "set_ns": 259994478
+          }
+        },
+        "priced_set": {
+          "decode_floor_ns": 3374011857,
+          "decode_margin_ns": 4459321476,
+          "first_floor_ns": 8208246242,
+          "first_margin_ns": 1791753758,
+          "joint": "HEADROOM_ONLY",
+          "shared_extra_ceiling_ns": 1791753758
+        },
+        "release": "ranks_observed",
+        "width": "unlimited"
+      }
+    ],
+    "decode_generation_site_bank_sha256": "89e68aa833e2bbf4a38ba168c5af79ebf7d1574618457160080634de71b06c5d",
+    "handoff": {
+      "sha256": "5624f0feabf58eb0bdaaa17087837170a135f478e7bdcb9cb9f90a2e246167d3",
+      "slot_states": {
+        "2": 1440
+      }
+    },
+    "population": {
+      "decode_first": {
+        "CPU_bank": 40,
+        "CPU_pack": 733,
+        "CUDA0_bank": 30,
+        "CUDA0_pack": 264,
+        "charged": 1067,
+        "reservations": 1067
+      },
+      "decode_tail": {
+        "CPU_bank": 1,
+        "CPU_pack": 12,
+        "CUDA0_bank": 5,
+        "CUDA0_pack": 6,
+        "charged": 24,
+        "reservations": 24
+      },
+      "prefill": {
+        "CPU_bank": 101,
+        "CPU_pack": 274,
+        "CUDA0_bank": 49,
+        "CUDA0_pack": 143,
+        "charged": 567,
+        "reservations": 1263
+      }
+    },
+    "return_to_first_final_ns": 3594941,
+    "sample_call": 46,
+    "sample_number": 45
+  },
+  "P97": {
+    "baseline_decode_ns": 8946626000,
+    "baseline_first_ns": 18325560801,
+    "callback_ns": {
+      "decode_first": 6515976398,
+      "decode_tail": 152477245,
+      "prefill": 5898856453
+    },
+    "choices": [
+      {
+        "bytes_per_s": 4500000000,
+        "free_set": {
+          "decode_floor_ns": 5259836357,
+          "decode_margin_ns": 2573496976,
+          "first_floor_ns": 10064494350,
+          "first_margin_ns": -64494350,
+          "joint": "NO_GO_FIXED_SCENARIO",
+          "shared_extra_ceiling_ns": -64494350
+        },
+        "horizon": 0,
+        "phases": {
+          "decode_first": {
+            "early_bytes_floor": 0,
+            "network_ns": 2928787200,
+            "network_or_set_ns": 2928787200,
+            "pack_bytes": 13179542400,
+            "set_ns": 646320880
+          },
+          "decode_tail": {
+            "early_bytes_floor": 0,
+            "network_ns": 52876800,
+            "network_or_set_ns": 52876800,
+            "pack_bytes": 237945600,
+            "set_ns": 19243134
+          },
+          "prefill": {
+            "early_bytes_floor": 0,
+            "network_ns": 1224979200,
+            "network_or_set_ns": 1224979200,
+            "pack_bytes": 5512406400,
+            "set_ns": 239360397
+          }
+        },
+        "priced_set": {
+          "decode_floor_ns": 5259836357,
+          "decode_margin_ns": 2573496976,
+          "first_floor_ns": 10064494350,
+          "first_margin_ns": -64494350,
+          "joint": "NO_GO_FIXED_SCENARIO",
+          "shared_extra_ceiling_ns": -64494350
+        },
+        "release": "none",
+        "width": "none"
+      },
+      {
+        "bytes_per_s": 8000000000,
+        "free_set": {
+          "decode_floor_ns": 3955358357,
+          "decode_margin_ns": 3877974976,
+          "first_floor_ns": 8247221550,
+          "first_margin_ns": 1752778450,
+          "joint": "HEADROOM_ONLY",
+          "shared_extra_ceiling_ns": 1752778450
+        },
+        "horizon": 0,
+        "phases": {
+          "decode_first": {
+            "early_bytes_floor": 0,
+            "network_ns": 1647442800,
+            "network_or_set_ns": 1647442800,
+            "pack_bytes": 13179542400,
+            "set_ns": 646320880
+          },
+          "decode_tail": {
+            "early_bytes_floor": 0,
+            "network_ns": 29743200,
+            "network_or_set_ns": 29743200,
+            "pack_bytes": 237945600,
+            "set_ns": 19243134
+          },
+          "prefill": {
+            "early_bytes_floor": 0,
+            "network_ns": 689050800,
+            "network_or_set_ns": 689050800,
+            "pack_bytes": 5512406400,
+            "set_ns": 239360397
+          }
+        },
+        "priced_set": {
+          "decode_floor_ns": 3955358357,
+          "decode_margin_ns": 3877974976,
+          "first_floor_ns": 8247221550,
+          "first_margin_ns": 1752778450,
+          "joint": "HEADROOM_ONLY",
+          "shared_extra_ceiling_ns": 1752778450
+        },
+        "release": "none",
+        "width": "none"
+      },
+      {
+        "bytes_per_s": 4500000000,
+        "free_set": {
+          "decode_floor_ns": 3886672797,
+          "decode_margin_ns": 3946660536,
+          "first_floor_ns": 7742219126,
+          "first_margin_ns": 2257780874,
+          "joint": "HEADROOM_ONLY",
+          "shared_extra_ceiling_ns": 2257780874
+        },
+        "horizon": 1,
+        "phases": {
+          "decode_first": {
+            "early_bytes_floor": 6040559650,
+            "network_ns": 1586440611,
+            "network_or_set_ns": 1586440611,
+            "pack_bytes": 13179542400,
+            "set_ns": 646320880
+          },
+          "decode_tail": {
+            "early_bytes_floor": 138676369,
+            "network_ns": 22059829,
+            "network_or_set_ns": 26778005,
+            "pack_bytes": 237945600,
+            "set_ns": 19243134
+          },
+          "prefill": {
+            "early_bytes_floor": 4409678857,
+            "network_ns": 245050565,
+            "network_or_set_ns": 256407436,
+            "pack_bytes": 5512406400,
+            "set_ns": 239360397
+          }
+        },
+        "priced_set": {
+          "decode_floor_ns": 3891390973,
+          "decode_margin_ns": 3941942360,
+          "first_floor_ns": 7753575997,
+          "first_margin_ns": 2246424003,
+          "joint": "HEADROOM_ONLY",
+          "shared_extra_ceiling_ns": 2246424003
+        },
+        "release": "earliest_outer",
+        "width": "four_per_target"
+      },
+      {
+        "bytes_per_s": 8000000000,
+        "free_set": {
+          "decode_floor_ns": 2802260482,
+          "decode_margin_ns": 5031072851,
+          "first_floor_ns": 6524694040,
+          "first_margin_ns": 3475305960,
+          "joint": "HEADROOM_ONLY",
+          "shared_extra_ceiling_ns": 3475305960
+        },
+        "horizon": 1,
+        "phases": {
+          "decode_first": {
+            "early_bytes_floor": 9025210528,
+            "network_ns": 519291484,
+            "network_or_set_ns": 679062076,
+            "pack_bytes": 13179542400,
+            "set_ns": 646320880
+          },
+          "decode_tail": {
+            "early_bytes_floor": 199572472,
+            "network_ns": 4796641,
+            "network_or_set_ns": 19243134,
+            "pack_bytes": 237945600,
+            "set_ns": 19243134
+          },
+          "prefill": {
+            "early_bytes_floor": 4755009552,
+            "network_ns": 94674606,
+            "network_or_set_ns": 239360397,
+            "pack_bytes": 5512406400,
+            "set_ns": 239360397
+          }
+        },
+        "priced_set": {
+          "decode_floor_ns": 2976477567,
+          "decode_margin_ns": 4856855766,
+          "first_floor_ns": 6829150423,
+          "first_margin_ns": 3170849577,
+          "joint": "HEADROOM_ONLY",
+          "shared_extra_ceiling_ns": 3170849577
+        },
+        "release": "earliest_outer",
+        "width": "four_per_target"
+      },
+      {
+        "bytes_per_s": 4500000000,
+        "free_set": {
+          "decode_floor_ns": 3886672797,
+          "decode_margin_ns": 3946660536,
+          "first_floor_ns": 7645278326,
+          "first_margin_ns": 2354721674,
+          "joint": "HEADROOM_ONLY",
+          "shared_extra_ceiling_ns": 2354721674
+        },
+        "horizon": 1,
+        "phases": {
+          "decode_first": {
+            "early_bytes_floor": 6040559650,
+            "network_ns": 1586440611,
+            "network_or_set_ns": 1586440611,
+            "pack_bytes": 13179542400,
+            "set_ns": 646320880
+          },
+          "decode_tail": {
+            "early_bytes_floor": 138676369,
+            "network_ns": 22059829,
+            "network_or_set_ns": 26778005,
+            "pack_bytes": 237945600,
+            "set_ns": 19243134
+          },
+          "prefill": {
+            "early_bytes_floor": 4845912457,
+            "network_ns": 148109765,
+            "network_or_set_ns": 239360397,
+            "pack_bytes": 5512406400,
+            "set_ns": 239360397
+          }
+        },
+        "priced_set": {
+          "decode_floor_ns": 3891390973,
+          "decode_margin_ns": 3941942360,
+          "first_floor_ns": 7736528958,
+          "first_margin_ns": 2263471042,
+          "joint": "HEADROOM_ONLY",
+          "shared_extra_ceiling_ns": 2263471042
+        },
+        "release": "earliest_outer",
+        "width": "unlimited"
+      },
+      {
+        "bytes_per_s": 8000000000,
+        "free_set": {
+          "decode_floor_ns": 2802260482,
+          "decode_margin_ns": 5031072851,
+          "first_floor_ns": 6465200810,
+          "first_margin_ns": 3534799190,
+          "joint": "HEADROOM_ONLY",
+          "shared_extra_ceiling_ns": 3534799190
+        },
+        "horizon": 1,
+        "phases": {
+          "decode_first": {
+            "early_bytes_floor": 9025210528,
+            "network_ns": 519291484,
+            "network_or_set_ns": 679062076,
+            "pack_bytes": 13179542400,
+            "set_ns": 646320880
+          },
+          "decode_tail": {
+            "early_bytes_floor": 199572472,
+            "network_ns": 4796641,
+            "network_or_set_ns": 19243134,
+            "pack_bytes": 237945600,
+            "set_ns": 19243134
+          },
+          "prefill": {
+            "early_bytes_floor": 5230955392,
+            "network_ns": 35181376,
+            "network_or_set_ns": 239360397,
+            "pack_bytes": 5512406400,
+            "set_ns": 239360397
+          }
+        },
+        "priced_set": {
+          "decode_floor_ns": 2976477567,
+          "decode_margin_ns": 4856855766,
+          "first_floor_ns": 6829150423,
+          "first_margin_ns": 3170849577,
+          "joint": "HEADROOM_ONLY",
+          "shared_extra_ceiling_ns": 3170849577
+        },
+        "release": "earliest_outer",
+        "width": "unlimited"
+      },
+      {
+        "bytes_per_s": 4500000000,
+        "free_set": {
+          "decode_floor_ns": 4310173668,
+          "decode_margin_ns": 3523159665,
+          "first_floor_ns": 8178675651,
+          "first_margin_ns": 1821324349,
+          "joint": "HEADROOM_ONLY",
+          "shared_extra_ceiling_ns": 1821324349
+        },
+        "horizon": 1,
+        "phases": {
+          "decode_first": {
+            "early_bytes_floor": 4188695067,
+            "network_ns": 1997966074,
+            "network_or_set_ns": 1997966074,
+            "pack_bytes": 13179542400,
+            "set_ns": 646320880
+          },
+          "decode_tail": {
+            "early_bytes_floor": 84787033,
+            "network_ns": 34035237,
+            "network_or_set_ns": 34035237,
+            "pack_bytes": 237945600,
+            "set_ns": 19243134
+          },
+          "prefill": {
+            "early_bytes_floor": 4297489078,
+            "network_ns": 269981627,
+            "network_or_set_ns": 269981627,
+            "pack_bytes": 5512406400,
+            "set_ns": 239360397
+          }
+        },
+        "priced_set": {
+          "decode_floor_ns": 4310173668,
+          "decode_margin_ns": 3523159665,
+          "first_floor_ns": 8178675651,
+          "first_margin_ns": 1821324349,
+          "joint": "HEADROOM_ONLY",
+          "shared_extra_ceiling_ns": 1821324349
+        },
+        "release": "ranks_observed",
+        "width": "four_per_target"
+      },
+      {
+        "bytes_per_s": 8000000000,
+        "free_set": {
+          "decode_floor_ns": 3047813407,
+          "decode_margin_ns": 4785519926,
+          "first_floor_ns": 6768874849,
+          "first_margin_ns": 3231125151,
+          "joint": "HEADROOM_ONLY",
+          "shared_extra_ceiling_ns": 3231125151
+        },
+        "horizon": 1,
+        "phases": {
+          "decode_first": {
+            "early_bytes_floor": 7110591664,
+            "network_ns": 758618842,
+            "network_or_set_ns": 796148589,
+            "pack_bytes": 13179542400,
+            "set_ns": 646320880
+          },
+          "decode_tail": {
+            "early_bytes_floor": 149767936,
+            "network_ns": 11022208,
+            "network_or_set_ns": 19580140,
+            "pack_bytes": 237945600,
+            "set_ns": 19243134
+          },
+          "prefill": {
+            "early_bytes_floor": 4716181944,
+            "network_ns": 99528057,
+            "network_or_set_ns": 239360397,
+            "pack_bytes": 5512406400,
+            "set_ns": 239360397
+          }
+        },
+        "priced_set": {
+          "decode_floor_ns": 3093901086,
+          "decode_margin_ns": 4739432247,
+          "first_floor_ns": 6946236936,
+          "first_margin_ns": 3053763064,
+          "joint": "HEADROOM_ONLY",
+          "shared_extra_ceiling_ns": 3053763064
+        },
+        "release": "ranks_observed",
+        "width": "four_per_target"
+      },
+      {
+        "bytes_per_s": 4500000000,
+        "free_set": {
+          "decode_floor_ns": 4310173668,
+          "decode_margin_ns": 3523159665,
+          "first_floor_ns": 8082813765,
+          "first_margin_ns": 1917186235,
+          "joint": "HEADROOM_ONLY",
+          "shared_extra_ceiling_ns": 1917186235
+        },
+        "horizon": 1,
+        "phases": {
+          "decode_first": {
+            "early_bytes_floor": 4188695067,
+            "network_ns": 1997966074,
+            "network_or_set_ns": 1997966074,
+            "pack_bytes": 13179542400,
+            "set_ns": 646320880
+          },
+          "decode_tail": {
+            "early_bytes_floor": 84787033,
+            "network_ns": 34035237,
+            "network_or_set_ns": 34035237,
+            "pack_bytes": 237945600,
+            "set_ns": 19243134
+          },
+          "prefill": {
+            "early_bytes_floor": 4728867565,
+            "network_ns": 174119741,
+            "network_or_set_ns": 243873930,
+            "pack_bytes": 5512406400,
+            "set_ns": 239360397
+          }
+        },
+        "priced_set": {
+          "decode_floor_ns": 4310173668,
+          "decode_margin_ns": 3523159665,
+          "first_floor_ns": 8152567954,
+          "first_margin_ns": 1847432046,
+          "joint": "HEADROOM_ONLY",
+          "shared_extra_ceiling_ns": 1847432046
+        },
+        "release": "ranks_observed",
+        "width": "unlimited"
+      },
+      {
+        "bytes_per_s": 8000000000,
+        "free_set": {
+          "decode_floor_ns": 3047813407,
+          "decode_margin_ns": 4785519926,
+          "first_floor_ns": 6711521747,
+          "first_margin_ns": 3288478253,
+          "joint": "HEADROOM_ONLY",
+          "shared_extra_ceiling_ns": 3288478253
+        },
+        "horizon": 1,
+        "phases": {
+          "decode_first": {
+            "early_bytes_floor": 7110591664,
+            "network_ns": 758618842,
+            "network_or_set_ns": 796148589,
+            "pack_bytes": 13179542400,
+            "set_ns": 646320880
+          },
+          "decode_tail": {
+            "early_bytes_floor": 149767936,
+            "network_ns": 11022208,
+            "network_or_set_ns": 19580140,
+            "pack_bytes": 237945600,
+            "set_ns": 19243134
+          },
+          "prefill": {
+            "early_bytes_floor": 5175006760,
+            "network_ns": 42174955,
+            "network_or_set_ns": 239360397,
+            "pack_bytes": 5512406400,
+            "set_ns": 239360397
+          }
+        },
+        "priced_set": {
+          "decode_floor_ns": 3093901086,
+          "decode_margin_ns": 4739432247,
+          "first_floor_ns": 6946236936,
+          "first_margin_ns": 3053763064,
+          "joint": "HEADROOM_ONLY",
+          "shared_extra_ceiling_ns": 3053763064
+        },
+        "release": "ranks_observed",
+        "width": "unlimited"
+      }
+    ],
+    "decode_generation_site_bank_sha256": "89e68aa833e2bbf4a38ba168c5af79ebf7d1574618457160080634de71b06c5d",
+    "handoff": {
+      "sha256": "5624f0feabf58eb0bdaaa17087837170a135f478e7bdcb9cb9f90a2e246167d3",
+      "slot_states": {
+        "2": 1440
+      }
+    },
+    "population": {
+      "decode_first": {
+        "CPU_bank": 40,
+        "CPU_pack": 733,
+        "CUDA0_bank": 30,
+        "CUDA0_pack": 264,
+        "charged": 1067,
+        "reservations": 1067
+      },
+      "decode_tail": {
+        "CPU_bank": 1,
+        "CPU_pack": 12,
+        "CUDA0_bank": 5,
+        "CUDA0_pack": 6,
+        "charged": 24,
+        "reservations": 24
+      },
+      "prefill": {
+        "CPU_bank": 101,
+        "CPU_pack": 274,
+        "CUDA0_bank": 49,
+        "CUDA0_pack": 143,
+        "charged": 567,
+        "reservations": 1263
+      }
+    },
+    "return_to_first_final_ns": 3665174,
+    "sample_call": 46,
+    "sample_number": 45
+  },
+  "code_sha256": "f6ba1e45cd7f8d103e5afe22eca0181505a1287299db965a8b401e220df8fb71",
+  "prefill_code_sha256": "ead509600e5d942555af63d74f4faf372a867e9e7364b61cd6585cdbe92481f3",
+  "prefill_receipt_sha256": "cb100940b5b5eeae519b534b54667ce4f5147cf8f006d86e2ab8ed26fdfa624a",
+  "protocol_sha256": "99853d95bb353e9ff45d090b9fe4248d5c4485b9378f1a893d84013394100efe",
+  "source": {
+    "audit_sha256": "a981be3450c0260cf44789c918bd2bb704ffd129ce01ab05a48e33cbac8e23f6",
+    "before_t2_sha256": "c25153fdb39d7776088645f0f9c10ca848fe99d45f1ed2092a17663c79615845",
+    "family_sha256": "90750b0ccf87d7f5ceb6d89b6b320e1bf9cf07c0082c1961a31f14b67326aee9",
+    "journal_sha256": "cb13ff990afb3164bb61086e57a6caeff14187b66a1784c88e79cd3d521121bd",
+    "prefix_sha256": "16574f71e2a697479d1be118ddd5d5a103b3218c1f48b428ee32ebbb355fe259",
+    "selection_sha256": "19d4a2502b41eb96d84017677c2dbdf876b479c247f49134cec0af82ae48eeb8",
+    "t1_positions": [
+      0,
+      2119
+    ],
+    "t1_prefill_calls": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9
+    ],
+    "t1_records": 87736,
+    "t1_routed_rows": 74278,
+    "t2_records": 50647
+  },
+  "status": "REPRODUCED_TWO_PHASE_PACK_BUDGET"
+}
