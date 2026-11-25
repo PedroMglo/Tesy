@@ -18,3 +18,17 @@ A C118 teve 61 observações em 60,153 s. O processo nativo supervisionado demor
 python3 -IB research/qualification-retake/nvme_r0_gate/driver_pair/compact_mixed.py \
   "$TESY_PRIVATE_ARCHIVE/part-18/tesy-r0-mixed-cuda-physical-20261125-r01"
 ```
+
+## Confirmação com todos os objetos de driver da mesma release
+
+**MEDIDO — PASS da fixture C269 com os componentes NVIDIA de um único deployment.** Em R02, o loader do próprio PID inicializou o driver, PTX JIT, NVVM e GPU compiler do commit OSTree assinado `08d80c49…6c136cc4` com o módulo ativo 620.70.06. A NVML do mesmo deployment serviu a telemetria. O processo procurou 21 nomes, validou as 18 dependências de arranque da R01 e deixou a busca opcional de `libnvcuextend` sem fornecedor. O verificador V3 reproduziu 9 953 280 B de saídas F32 em 1, 32 e 3 posições e os 18 testemunhos da fronteira CPU–CUDA. Foram 61 amostras de C118 em 60,143 s, pico de 296 476 672 B no cgroup, zero swap, OOM ou processos compute no fecho. O filho supervisionado durou 0,876 s numa família de 63,027 s. O resultado qualifica a disponibilidade do grafo sintético; o GEMM MXFP4 na GPU, o servidor 120B e a conversa M3/M4 continuam a exigir provas próprias. A R01 conserva o FAIL de proveniência. [Recibo R02](mixed-r02.json) · [Origem dos objetos](origin-note.md)
+
+Para verificar os dois resultados já recolhidos, usar os raws privados e os ELF arquivados da fixture. A verificação lê os recibos, os logs e os F32 e volta a aplicar o verificador numérico em CPU.
+
+```sh
+study=research/qualification-retake/nvme_r0_gate/driver_pair
+python3 -IB "$study/compact_mixed.py" "$R01" | cmp - "$study/mixed-r01.json"
+python3 -IB "$study/compact_mixed.py" "$R02" | cmp - "$study/mixed-r02.json"
+```
+
+Os diretórios privados de R01 e R02 podem ser relocalizados sem recriar os aliases de driver em `/tmp`. O compactador interpreta os caminhos literais do log, liga os nomes de arranque ao `static-map.json` autenticado e restringe o diretório privado histórico aos quatro aliases selados. Todos os caminhos e SHA resultantes têm de coincidir com as inicializações do mesmo PID autenticadas no pós-voo. A origem descreve o instante da medição. O verificador numérico V3 continua a validar os três ELF GGML C269 e o libcrypto persistentes indicados em `native/providers.txt`. Em duas cópias de arquivo relocalizadas, com as ligações efémeras omitidas e o acesso aos diretórios originais interdito durante a reconstrução, ambas as saídas públicas permaneceram idênticas. [Teste de relocalização](test_archive_reproduction.py) · [Recibo](archive-proof.json)

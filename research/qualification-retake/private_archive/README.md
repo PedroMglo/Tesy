@@ -52,3 +52,5 @@ O lote 17 preserva a primeira falha de memória e os pares de reprodução do pi
 O lote 18 guarda a enumeração CUDA, a C55, o grafo misto com o FAIL de bibliotecas e as duas seleções e avaliações independentes de C304. São 32 ficheiros e 10 651 666 B verificados. A ligação simbólica temporária ao driver não duplica a biblioteca da estação. A identidade do ELF e os logs do loader constam dos recibos. [Índice do lote 18](part-18.json)
 
 O lote 19 reúne as seleções e avaliações de desenvolvimento WRT, o cálculo das quatro filas de componentes e a reanálise dos 638 grupos históricos com uma falta. O verificador conferiu dez ficheiros e 122 328 B. [Índice do lote 19](part-19.json)
+
+O lote 20 conserva a nova C55, as três fases da confirmação CUDA usando uma só release de driver e as duas reproduções da escolha de SSD no passo C135. Foram conferidos 27 ficheiros e 10 227 937 B. Os aliases temporários do driver apontavam para objetos pré-existentes do deployment autenticado. [Índice do lote 20](part-20.json)
