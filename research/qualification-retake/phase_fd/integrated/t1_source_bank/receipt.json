@@ -1,0 +1,604 @@
+{
+  "bank_extra_bytes": 4720263168,
+  "bank_payload_bytes": 4666377600,
+  "conditional_volume_budgets": {
+    "46": 11440306616,
+    "47": 10690306614
+  },
+  "headroom_at_observed_peak": 5217624064,
+  "journal_sha256": "40d2ea8049ccee9213ffc3f317482d67ebbed85a887a933043a3f4e7bd132033",
+  "new_forwards": 0,
+  "observed_r0_disk": {
+    "decode": 1091,
+    "prefill": 1263
+  },
+  "prior_sha256": "6c444c8edf073416d539ca07e3ea19797f69e4b28ac881f0bafc76af6e749160",
+  "protocol_sha256": "c65cd87d449c2368efbe0b930f5b4d493abf5819522f3dc14762bfeffcf80812",
+  "record_window": 13221888,
+  "selection_file_sha256": "27f03c1242123e82c9b8c77bd54a0c3479cd628e04451b45b3bfccc030656c15",
+  "source_sha256": "0fe604032499bbf607dd23e9fcd547d8266703f8908d13e2e62eeaf8bb7d5444",
+  "status": "NO_GO_NOMINAL_FLOOR",
+  "t1": {
+    "before_t2": {
+      "source": {
+        "already_primary": {
+          "cpu": 227,
+          "cuda": 87
+        },
+        "outside_primary": {
+          "cpu": 33,
+          "cuda": 6
+        },
+        "retained": {
+          "cpu": 260,
+          "cuda": 93
+        }
+      },
+      "victims": {
+        "already_primary": {
+          "cpu": 36,
+          "cuda": 12
+        },
+        "outside_primary": {
+          "cpu": 227,
+          "cuda": 78
+        },
+        "retained": {
+          "cpu": 263,
+          "cuda": 90
+        }
+      }
+    },
+    "by_destination_tier": {
+      "cpu": {
+        "discards": 1244,
+        "distinct_offers": 1234,
+        "eager_host_copy_all_offers_bytes": 20397225600,
+        "first_install": 1234,
+        "installations": 1504,
+        "logical_install_payload_bytes": 19881676800,
+        "observed_fd_requested_bytes": 20416163840,
+        "observed_fd_returned_bytes": 20416163840,
+        "observed_set_bytes": 20397225600,
+        "offers": 1543,
+        "pack_imputed_pread_bytes_for_complete_offers": 20401373184,
+        "promotion": 39,
+        "published": 1543,
+        "reinstall": 270
+      },
+      "cuda": {
+        "discards": 534,
+        "distinct_offers": 553,
+        "eager_host_copy_all_offers_bytes": 8433849600,
+        "first_install": 553,
+        "installations": 627,
+        "logical_install_payload_bytes": 8288438400,
+        "observed_fd_requested_bytes": 8441765888,
+        "observed_fd_returned_bytes": 8441765888,
+        "observed_set_bytes": 8433849600,
+        "offers": 638,
+        "pack_imputed_pread_bytes_for_complete_offers": 8435564544,
+        "promotion": 11,
+        "published": 638,
+        "reinstall": 74
+      }
+    },
+    "common_bank_keys": {
+      "cpu": 69,
+      "cuda": 18
+    },
+    "ordered_hash": {
+      "source": "624df99e4e2add7bfaa0290de6b9003286621e3c747b256d0ceacca8db4b9cb7",
+      "victims": "ce1114203187fcee91c3884441ef73eb460445d7c278e69a95946a7dfb135cc7"
+    },
+    "washout_call": 8,
+    "washout_offer": 353
+  },
+  "t2": {
+    "lru_off": {
+      "compulsory_disk_with_restore": 852,
+      "decode_disk": 1333,
+      "floor_payload_bytes": 11262758400,
+      "phases_by_destination": {
+        "call148": {
+          "cpu": {
+            "destination_payload": 9782208000,
+            "disk": 740,
+            "gguf_fd_bytes": 9791197184,
+            "pack_fd_bytes": 9784197120,
+            "primary": 1462
+          },
+          "cuda": {
+            "destination_payload": 5195145600,
+            "disk": 393,
+            "gguf_fd_bytes": 5199867904,
+            "pack_fd_bytes": 5196201984,
+            "primary": 772
+          }
+        },
+        "call5": {
+          "cpu": {
+            "destination_payload": 528768000,
+            "disk": 40,
+            "gguf_fd_bytes": 529272832,
+            "pack_fd_bytes": 528875520,
+            "primary": 301
+          },
+          "cuda": {
+            "destination_payload": 145411200,
+            "disk": 11,
+            "gguf_fd_bytes": 145559552,
+            "pack_fd_bytes": 145440768,
+            "primary": 107
+          }
+        },
+        "decode": {
+          "cpu": {
+            "destination_payload": 12663993600,
+            "disk": 958,
+            "gguf_fd_bytes": 12675723264,
+            "pack_fd_bytes": 12666568704,
+            "primary": 3642
+          },
+          "cuda": {
+            "destination_payload": 4957200000,
+            "disk": 375,
+            "gguf_fd_bytes": 4961800192,
+            "pack_fd_bytes": 4958208000,
+            "primary": 1649
+          }
+        },
+        "restore": {
+          "cpu": {
+            "destination_payload": 1665619200,
+            "disk": 126,
+            "gguf_fd_bytes": 1667125248,
+            "pack_fd_bytes": 1665957888
+          },
+          "cuda": {
+            "destination_payload": 832809600,
+            "disk": 63,
+            "gguf_fd_bytes": 833597440,
+            "pack_fd_bytes": 832978944
+          }
+        }
+      },
+      "prefill_including_restore": {
+        "destination_payload": 18149961600,
+        "disk": 1373,
+        "gguf_fd_bytes": 18166620160,
+        "pack_fd_bytes": 18153652224,
+        "primary": 2642
+      },
+      "scenario": {
+        "46": {
+          "decode_pass": false,
+          "floor_excess_bytes": -177548216,
+          "gguf_volume_pass": false,
+          "joint_payload_pass": false,
+          "pack_volume_pass": false,
+          "payload_volume_pass": false
+        },
+        "47": {
+          "decode_pass": false,
+          "floor_excess_bytes": 572451786,
+          "gguf_volume_pass": false,
+          "joint_payload_pass": false,
+          "pack_volume_pass": false,
+          "payload_volume_pass": false
+        }
+      }
+    },
+    "lru_source": {
+      "compulsory_disk_with_restore": 839,
+      "decode_disk": 1074,
+      "floor_payload_bytes": 11090908800,
+      "phases_by_destination": {
+        "call148": {
+          "cpu": {
+            "destination_payload": 9782208000,
+            "disk": 686,
+            "gguf_fd_bytes": 9076641792,
+            "pack_fd_bytes": 9070215168,
+            "primary": 1462,
+            "ram": 54
+          },
+          "cuda": {
+            "destination_payload": 5195145600,
+            "disk": 367,
+            "gguf_fd_bytes": 4855799808,
+            "pack_fd_bytes": 4852432896,
+            "primary": 772,
+            "ram": 26
+          }
+        },
+        "call5": {
+          "cpu": {
+            "destination_payload": 528768000,
+            "disk": 38,
+            "gguf_fd_bytes": 502804480,
+            "pack_fd_bytes": 502431744,
+            "primary": 301,
+            "ram": 2
+          },
+          "cuda": {
+            "destination_payload": 145411200,
+            "disk": 11,
+            "gguf_fd_bytes": 145559552,
+            "pack_fd_bytes": 145440768,
+            "primary": 107
+          }
+        },
+        "decode": {
+          "cpu": {
+            "destination_payload": 12663993600,
+            "disk": 761,
+            "gguf_fd_bytes": 10069118976,
+            "pack_fd_bytes": 10061856768,
+            "primary": 3642,
+            "ram": 197
+          },
+          "cuda": {
+            "destination_payload": 4957200000,
+            "disk": 313,
+            "gguf_fd_bytes": 4141424640,
+            "pack_fd_bytes": 4138450944,
+            "primary": 1649,
+            "ram": 62
+          }
+        },
+        "restore": {
+          "cpu": {
+            "destination_payload": 1665619200,
+            "disk": 117,
+            "gguf_fd_bytes": 1548038144,
+            "pack_fd_bytes": 1546960896,
+            "ram": 9
+          },
+          "cuda": {
+            "destination_payload": 832809600,
+            "disk": 62,
+            "gguf_fd_bytes": 820363264,
+            "pack_fd_bytes": 819757056,
+            "ram": 1
+          }
+        }
+      },
+      "prefill_including_restore": {
+        "destination_payload": 18149961600,
+        "disk": 1281,
+        "gguf_fd_bytes": 16949207040,
+        "pack_fd_bytes": 16937238528,
+        "primary": 2642,
+        "ram": 92
+      },
+      "scenario": {
+        "46": {
+          "decode_pass": false,
+          "floor_excess_bytes": -349397816,
+          "gguf_volume_pass": false,
+          "joint_payload_pass": false,
+          "pack_volume_pass": false,
+          "payload_volume_pass": false
+        },
+        "47": {
+          "decode_pass": false,
+          "floor_excess_bytes": 400602186,
+          "gguf_volume_pass": false,
+          "joint_payload_pass": false,
+          "pack_volume_pass": false,
+          "payload_volume_pass": false
+        }
+      }
+    },
+    "lru_victims": {
+      "compulsory_disk_with_restore": 726,
+      "decode_disk": 1143,
+      "floor_payload_bytes": 9597139200,
+      "phases_by_destination": {
+        "call148": {
+          "cpu": {
+            "destination_payload": 9782208000,
+            "disk": 653,
+            "gguf_fd_bytes": 8640028672,
+            "pack_fd_bytes": 8633892864,
+            "primary": 1462,
+            "ram": 87
+          },
+          "cuda": {
+            "destination_payload": 5195145600,
+            "disk": 362,
+            "gguf_fd_bytes": 4789739520,
+            "pack_fd_bytes": 4786323456,
+            "primary": 772,
+            "ram": 31
+          }
+        },
+        "call5": {
+          "cpu": {
+            "destination_payload": 528768000,
+            "disk": 26,
+            "gguf_fd_bytes": 344018944,
+            "pack_fd_bytes": 343769088,
+            "primary": 301,
+            "ram": 14
+          },
+          "cuda": {
+            "destination_payload": 145411200,
+            "disk": 8,
+            "gguf_fd_bytes": 105861120,
+            "pack_fd_bytes": 105775104,
+            "primary": 107,
+            "ram": 3
+          }
+        },
+        "decode": {
+          "cpu": {
+            "destination_payload": 12663993600,
+            "disk": 802,
+            "gguf_fd_bytes": 10611617792,
+            "pack_fd_bytes": 10603954176,
+            "primary": 3642,
+            "ram": 156
+          },
+          "cuda": {
+            "destination_payload": 4957200000,
+            "disk": 341,
+            "gguf_fd_bytes": 4511944704,
+            "pack_fd_bytes": 4508663808,
+            "primary": 1649,
+            "ram": 34
+          }
+        },
+        "restore": {
+          "cpu": {
+            "destination_payload": 1665619200,
+            "disk": 123,
+            "gguf_fd_bytes": 1627422720,
+            "pack_fd_bytes": 1626292224,
+            "ram": 3
+          },
+          "cuda": {
+            "destination_payload": 832809600,
+            "disk": 62,
+            "gguf_fd_bytes": 820363264,
+            "pack_fd_bytes": 819757056,
+            "ram": 1
+          }
+        }
+      },
+      "prefill_including_restore": {
+        "destination_payload": 18149961600,
+        "disk": 1234,
+        "gguf_fd_bytes": 16327434240,
+        "pack_fd_bytes": 16315809792,
+        "primary": 2642,
+        "ram": 139
+      },
+      "scenario": {
+        "46": {
+          "decode_pass": false,
+          "floor_excess_bytes": -1843167416,
+          "gguf_volume_pass": false,
+          "joint_payload_pass": false,
+          "pack_volume_pass": false,
+          "payload_volume_pass": false
+        },
+        "47": {
+          "decode_pass": false,
+          "floor_excess_bytes": -1093167414,
+          "gguf_volume_pass": false,
+          "joint_payload_pass": false,
+          "pack_volume_pass": false,
+          "payload_volume_pass": false
+        }
+      }
+    },
+    "priority_source": {
+      "compulsory_disk_with_restore": 839,
+      "decode_disk": 893,
+      "floor_payload_bytes": 11090908800,
+      "phases_by_destination": {
+        "call148": {
+          "cpu": {
+            "destination_payload": 10073030400,
+            "disk": 602,
+            "gguf_fd_bytes": 7965224960,
+            "pack_fd_bytes": 7959576576,
+            "primary": 1440,
+            "ram": 160
+          },
+          "cuda": {
+            "destination_payload": 5380214400,
+            "disk": 348,
+            "gguf_fd_bytes": 4604411904,
+            "pack_fd_bytes": 4601217024,
+            "primary": 758,
+            "ram": 59
+          }
+        },
+        "call5": {
+          "cpu": {
+            "destination_payload": 528768000,
+            "disk": 38,
+            "gguf_fd_bytes": 502804480,
+            "pack_fd_bytes": 502431744,
+            "primary": 301,
+            "ram": 2
+          },
+          "cuda": {
+            "destination_payload": 145411200,
+            "disk": 11,
+            "gguf_fd_bytes": 145559552,
+            "pack_fd_bytes": 145440768,
+            "primary": 107
+          }
+        },
+        "decode": {
+          "cpu": {
+            "destination_payload": 13285296000,
+            "disk": 613,
+            "gguf_fd_bytes": 8110886912,
+            "pack_fd_bytes": 8105017344,
+            "primary": 3595,
+            "ram": 392
+          },
+          "cuda": {
+            "destination_payload": 5446310400,
+            "disk": 280,
+            "gguf_fd_bytes": 3704766464,
+            "pack_fd_bytes": 3702128640,
+            "primary": 1612,
+            "ram": 132
+          }
+        },
+        "restore": {
+          "cpu": {
+            "destination_payload": 2260483200,
+            "disk": 102,
+            "gguf_fd_bytes": 1349537792,
+            "pack_fd_bytes": 1348632576,
+            "ram": 69
+          },
+          "cuda": {
+            "destination_payload": 925344000,
+            "disk": 59,
+            "gguf_fd_bytes": 780668928,
+            "pack_fd_bytes": 780091392,
+            "ram": 11
+          }
+        }
+      },
+      "prefill_including_restore": {
+        "destination_payload": 19313251200,
+        "disk": 1160,
+        "gguf_fd_bytes": 15348207616,
+        "pack_fd_bytes": 15337390080,
+        "primary": 2606,
+        "ram": 301
+      },
+      "scenario": {
+        "46": {
+          "decode_pass": false,
+          "floor_excess_bytes": -349397816,
+          "gguf_volume_pass": false,
+          "joint_payload_pass": false,
+          "pack_volume_pass": false,
+          "payload_volume_pass": false
+        },
+        "47": {
+          "decode_pass": false,
+          "floor_excess_bytes": 400602186,
+          "gguf_volume_pass": false,
+          "joint_payload_pass": false,
+          "pack_volume_pass": false,
+          "payload_volume_pass": false
+        }
+      }
+    },
+    "priority_victims": {
+      "compulsory_disk_with_restore": 726,
+      "decode_disk": 974,
+      "floor_payload_bytes": 9597139200,
+      "phases_by_destination": {
+        "call148": {
+          "cpu": {
+            "destination_payload": 10073030400,
+            "disk": 624,
+            "gguf_fd_bytes": 8256335872,
+            "pack_fd_bytes": 8250458112,
+            "primary": 1440,
+            "ram": 138
+          },
+          "cuda": {
+            "destination_payload": 5657817600,
+            "disk": 354,
+            "gguf_fd_bytes": 4683882496,
+            "pack_fd_bytes": 4680548352,
+            "primary": 737,
+            "ram": 74
+          }
+        },
+        "call5": {
+          "cpu": {
+            "destination_payload": 528768000,
+            "disk": 26,
+            "gguf_fd_bytes": 344018944,
+            "pack_fd_bytes": 343769088,
+            "primary": 301,
+            "ram": 14
+          },
+          "cuda": {
+            "destination_payload": 145411200,
+            "disk": 8,
+            "gguf_fd_bytes": 105861120,
+            "pack_fd_bytes": 105775104,
+            "primary": 107,
+            "ram": 3
+          }
+        },
+        "decode": {
+          "cpu": {
+            "destination_payload": 12941596800,
+            "disk": 661,
+            "gguf_fd_bytes": 8745971712,
+            "pack_fd_bytes": 8739667968,
+            "primary": 3621,
+            "ram": 318
+          },
+          "cuda": {
+            "destination_payload": 5036515200,
+            "disk": 313,
+            "gguf_fd_bytes": 4141469696,
+            "pack_fd_bytes": 4138450944,
+            "primary": 1643,
+            "ram": 68
+          }
+        },
+        "restore": {
+          "cpu": {
+            "destination_payload": 2419113600,
+            "disk": 113,
+            "gguf_fd_bytes": 1495093248,
+            "pack_fd_bytes": 1494073344,
+            "ram": 70
+          },
+          "cuda": {
+            "destination_payload": 1017878400,
+            "disk": 59,
+            "gguf_fd_bytes": 780660736,
+            "pack_fd_bytes": 780091392,
+            "ram": 18
+          }
+        }
+      },
+      "prefill_including_restore": {
+        "destination_payload": 19842019200,
+        "disk": 1184,
+        "gguf_fd_bytes": 15665852416,
+        "pack_fd_bytes": 15654715392,
+        "primary": 2585,
+        "ram": 317
+      },
+      "scenario": {
+        "46": {
+          "decode_pass": false,
+          "floor_excess_bytes": -1843167416,
+          "gguf_volume_pass": false,
+          "joint_payload_pass": false,
+          "pack_volume_pass": false,
+          "payload_volume_pass": false
+        },
+        "47": {
+          "decode_pass": false,
+          "floor_excess_bytes": -1093167414,
+          "gguf_volume_pass": false,
+          "joint_payload_pass": false,
+          "pack_volume_pass": false,
+          "payload_volume_pass": false
+        }
+      }
+    }
+  },
+  "time_decision": "INCONCLUSIVE"
+}
