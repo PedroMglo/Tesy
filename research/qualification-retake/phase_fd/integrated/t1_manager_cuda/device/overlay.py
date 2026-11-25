@@ -36,7 +36,6 @@ def render(original):
     need(bool(cpu), "CPU backend");
     ggml_backend_ptr gpu(ggml_backend_cuda_init(0));
     need(bool(gpu) && ggml_backend_is_cuda(gpu.get()), "CUDA0 backend");
-    mapped(dir, "active");
     ggml_backend_event_ptr done(ggml_backend_event_new(ggml_backend_get_device(gpu.get())));
     need(bool(done), "CUDA completion event");""",
     )
@@ -75,6 +74,11 @@ def render(original):
         s.mark(s.graph_done, "GRAPH_DONE");
         if (worker.valid()) worker.get();
     }""",
+    )
+    replace(
+        "    Triplet bank{};",
+        '    mapped(dir, "active"); // all weights and the mask completed synchronous CUDA SET\n'
+        "    Triplet bank{};",
     )
     start = src.index(
         '    std::ifstream maps("/proc/self/maps");', src.index('std::cout << "PROJECTIONS "')

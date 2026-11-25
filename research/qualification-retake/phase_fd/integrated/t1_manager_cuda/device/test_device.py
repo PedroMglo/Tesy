@@ -27,6 +27,39 @@ class Device(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "identity"):
             build["render"](b"unapproved observer")
 
+    def test_owner_stage_follows_real_set_and_stays_bounded(self):
+        src = build["source"]().decode()
+        self.assertLess(src.index('mapped(dir,"start")'), src.index("execute(static_cast<Arm>"))
+        self.assertLess(
+            src.index("ggml_backend_tensor_set(mask,kept.data()"),
+            src.index('mapped(dir, "active")'),
+        )
+
+        def run(marker, owners, times=(1.0, 1.1, 1.2, 1.3)):
+            records = []
+            clock = iter(times)
+
+            def sample(phase, attempt):
+                records.append((phase, attempt))
+                return owners[len(records) - 1]
+
+            result = case["owner_handoff"](marker, 7, sample, lambda: next(clock), lambda _: None)
+            return result, records
+
+        self.assertEqual(run(b"E", [[]]), (1, [("entry", 1)]))
+        self.assertEqual(run(b"A", [[], [7]]), (2, [("active", 1), ("active", 2)]))
+        self.assertEqual(run(b"F", [[7]]), (1, [("finish", 1)]))
+        for marker, owners, reason in (
+            (b"E", [[7]], "before CUDA"),
+            (b"A", [[], [], []], "absent"),
+            (b"F", [[]], "absent"),
+            (b"A", [[8]], "foreign"),
+        ):
+            with self.assertRaisesRegex(ValueError, reason):
+                run(marker, owners)
+        with self.assertRaisesRegex(ValueError, "deadline"):
+            run(b"A", [[7]], (0.0, 2.1))
+
     def test_passive_reference_identity(self):
         with TemporaryDirectory() as tmp:
             root = Path(tmp)

@@ -51,10 +51,10 @@ void mapped(const fs::path &dir, const std::string &phase) {
     for (const auto &kv : seen) f << kv.first << '\n';
     f.flush();
     need(bool(f), "write provider witness");
-    if (phase == "active" || phase == "finish") {
+    if (phase == "start" || phase == "active" || phase == "finish") {
         const char *tx = std::getenv("TESY_TEST_TX"), *rx = std::getenv("TESY_TEST_RX");
         need(tx && rx, "monitor handoff");
-        const char expected = phase == "active" ? 'A' : 'F';
+        const char expected = phase == "start" ? 'E' : (phase == "active" ? 'A' : 'F');
         need(write(std::stoi(tx), &expected, 1) == 1, "notify monitor");
         pollfd ack{std::stoi(rx), POLLIN, 0};
         char value = 0;

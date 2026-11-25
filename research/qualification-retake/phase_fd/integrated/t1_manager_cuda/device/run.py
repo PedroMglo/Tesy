@@ -66,6 +66,23 @@ def verify_maps(directory, paths):
     return receipts
 
 
+def owner_handoff(marker, owner, sample, clock=time.monotonic, pause=time.sleep):
+    labels = {b"E": "entry", b"A": "active", b"F": "finish"}
+    start = clock()
+    for attempt in range(1, 4):
+        observed = sample(labels[marker], attempt)
+        need(observed == [] or observed == [owner], "foreign or multiple GPU owners")
+        if marker == b"E":
+            need(not observed, "compute owner before CUDA init")
+            return attempt
+        need(clock() - start <= 2.0, "active owner observation deadline")
+        if observed == [owner]:
+            return attempt
+        need(marker == b"A" and attempt < 3, "GPU owner absent")
+        pause(0.05)
+    raise AssertionError("unreachable owner handoff")
+
+
 def case(out, arm, unit, build, io, policy, cold, monitor_sample, paths):
     inv = cold["c135"]
     raw = out / "raw"
@@ -109,37 +126,58 @@ def case(out, arm, unit, build, io, policy, cold, monitor_sample, paths):
             ack_r = -1
             try:
 
-                def sample(require_owner):
+                def sample(phase, attempt=1):
                     nonlocal last_sample, samples
-                    row = io.monitor(
-                        policy,
-                        sample=lambda: monitor_sample(
-                            child.pid, policy["gpu"]["uuid"], require_owner
-                        ),
-                    )
-                    need(row["observation"]["gpu"]["used_mib"] < 1536, "VRAM cap")
+                    try:
+                        row = io.monitor(
+                            policy,
+                            sample=lambda: monitor_sample(child.pid, policy["gpu"]["uuid"], False),
+                        )
+                    except (OSError, RuntimeError, ValueError, subprocess.SubprocessError) as exc:
+                        cold["append_row"](
+                            monitor,
+                            dict(
+                                stage=stage,
+                                phase=phase,
+                                attempt=attempt,
+                                error=f"{type(exc).__name__}: {exc}",
+                                elapsed_s=time.monotonic() - start,
+                            ),
+                        )
+                        raise
                     now = time.monotonic()
-                    need(now - last_sample <= 5.0, "service monitor gap")
-                    row.update(stage=stage, elapsed_s=now - start)
+                    row.update(stage=stage, phase=phase, attempt=attempt, elapsed_s=now - start)
                     cold["append_row"](monitor, row)
+                    need(row["observation"]["gpu"]["used_mib"] < 1536, "VRAM cap")
+                    need(now - last_sample <= 5.0, "service monitor gap")
                     last_sample = now
                     samples += 1
+                    return row["observation"]["gpu_owners"]
 
+                markers = (b"E", b"A", b"F")
+                attempts = {}
                 while child.poll() is None:
                     need(time.monotonic() - start < 30, "child deadline")
                     if select.select([rfd], [], [], 0.25)[0]:
                         marker = os.read(rfd, 1)
                         if not marker:
                             break
-                        need(stage < 2 and marker == (b"A", b"F")[stage], "monitor handoff order")
-                        sample(True)
+                        need(
+                            stage < len(markers) and marker == markers[stage],
+                            "monitor handoff order",
+                        )
+                        attempts[marker.decode()] = owner_handoff(marker, child.pid, sample)
                         os.write(ack_w, marker)
                         stage += 1
                     elif time.monotonic() - last_sample >= 0.5:
-                        sample(False)
+                        owners = sample("periodic")
+                        if stage == 2:
+                            need(owners == [child.pid], "GPU owner lost while active")
+                        elif stage == 0:
+                            need(not owners, "compute owner before entry")
                 rc = child.wait(timeout=max(0.001, 30 - (time.monotonic() - start)))
-                need(rc == 0 and stage == 2, f"{arm} closed at stage {stage} exit {rc}")
-                sample(False)
+                need(rc == 0 and stage == len(markers), f"{arm} closed at stage {stage} exit {rc}")
+                sample("after_exit")
             finally:
                 if child.poll() is None:
                     child.kill()
@@ -154,6 +192,7 @@ def case(out, arm, unit, build, io, policy, cold, monitor_sample, paths):
         service_samples=samples,
         start_inventory_sha256=inventory["sha256"],
         inventory_samples=inventory["sample_count"],
+        owner_handoff_attempts=attempts,
         inventory_s=inventory["duration_s"],
         stdout_sha256=sha(outlog),
         providers=verify_maps(out / arm, paths),
