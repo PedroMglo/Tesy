@@ -1,0 +1,772 @@
+{
+  "cases": {
+    "code153": {
+      "contrasts": {
+        "c294-code153-2-on": {
+          "delta_loads": {
+            "decode": 320,
+            "increment": -2,
+            "increment_plus_decode": 318,
+            "prefix": -20,
+            "restored_total": 917
+          },
+          "delta_payload_bytes": {
+            "decode": 4230144000,
+            "increment": -26438400,
+            "increment_plus_decode": 4203705600,
+            "prefix": -264384000,
+            "restored_total": 12122006400
+          },
+          "gates": {
+            "decode_no_more": false,
+            "increment_no_more": true,
+            "increment_plus_decode_at_least_10pct_lower": false,
+            "prefix_no_more": true,
+            "restored_total_no_more": false
+          },
+          "pass": false,
+          "scenario_free_F_only": {
+            "all_other_gates_and_unrestored_total_nonincreasing": false,
+            "delta_total_loads": 298,
+            "delta_total_payload_bytes": 3939321600
+          }
+        },
+        "c294-code153-3-on": {
+          "delta_loads": {
+            "decode": 320,
+            "increment": -2,
+            "increment_plus_decode": 318,
+            "prefix": -20,
+            "restored_total": 917
+          },
+          "delta_payload_bytes": {
+            "decode": 4230144000,
+            "increment": -26438400,
+            "increment_plus_decode": 4203705600,
+            "prefix": -264384000,
+            "restored_total": 12122006400
+          },
+          "gates": {
+            "decode_no_more": false,
+            "increment_no_more": true,
+            "increment_plus_decode_at_least_10pct_lower": false,
+            "prefix_no_more": true,
+            "restored_total_no_more": false
+          },
+          "pass": false,
+          "scenario_free_F_only": {
+            "all_other_gates_and_unrestored_total_nonincreasing": false,
+            "delta_total_loads": 298,
+            "delta_total_payload_bytes": 3939321600
+          }
+        },
+        "lru": {
+          "delta_loads": {
+            "decode": 330,
+            "increment": -91,
+            "increment_plus_decode": 239,
+            "prefix": -8,
+            "restored_total": 758
+          },
+          "delta_payload_bytes": {
+            "decode": 4362336000,
+            "increment": -1202947200,
+            "increment_plus_decode": 3159388800,
+            "prefix": -105753600,
+            "restored_total": 10020153600
+          },
+          "gates": {
+            "decode_no_more": false,
+            "increment_no_more": true,
+            "increment_plus_decode_at_least_10pct_lower": false,
+            "prefix_no_more": true,
+            "restored_total_no_more": false
+          },
+          "pass": false,
+          "scenario_free_F_only": {
+            "all_other_gates_and_unrestored_total_nonincreasing": false,
+            "delta_total_loads": 231,
+            "delta_total_payload_bytes": 3053635200
+          }
+        }
+      },
+      "historical": {
+        "c294-code153-2-on": {
+          "F_sha256": "6eee3c1c7683dcb49c60570c26ec9b574bb4ff1c30281804fdf91bad2ec35912",
+          "counts": {
+            "decode": 1308,
+            "increment": 2106,
+            "prefix": 3019,
+            "restored_total": 6433
+          },
+          "decode_hits": 3300,
+          "decode_ranks_sha256": "2045b1c9510432fb0f98d4941db07b3f5472ffa4e9adb0c8f45ad547089dcb2c",
+          "source_sha256": {
+            "events.tsv": "e68a1bd22a6477a214cfbdd04ff9cfc3515d531e52e68c8b3dc41f317f536bf2",
+            "initial.json": "484bd61b14ae7f970e86e9df29b8e99334d89cb787cf8ffd82af4ce526b895b5",
+            "result.json": "2fc10b510a59e00595fe7a361e44d11e233ffc68c07862964c0cf20c65f8d45a"
+          },
+          "tiers_loads": {
+            "CPU": {
+              "decode": 927,
+              "increment": 1668,
+              "prefix": 2135
+            },
+            "CUDA0": {
+              "decode": 381,
+              "increment": 438,
+              "prefix": 884
+            }
+          },
+          "tiers_payload_bytes": {
+            "CPU": {
+              "decode": 12254198400,
+              "increment": 22049625600,
+              "prefix": 28222992000
+            },
+            "CUDA0": {
+              "decode": 5036515200,
+              "increment": 5790009600,
+              "prefix": 11685772800
+            }
+          }
+        },
+        "c294-code153-3-on": {
+          "F_sha256": "6eee3c1c7683dcb49c60570c26ec9b574bb4ff1c30281804fdf91bad2ec35912",
+          "counts": {
+            "decode": 1308,
+            "increment": 2106,
+            "prefix": 3019,
+            "restored_total": 6433
+          },
+          "decode_hits": 3300,
+          "decode_ranks_sha256": "2045b1c9510432fb0f98d4941db07b3f5472ffa4e9adb0c8f45ad547089dcb2c",
+          "source_sha256": {
+            "events.tsv": "dc3ef0aba2d5c04f51512300a4202c07c3055db36e18e90f4e67646c5e7818f3",
+            "initial.json": "d00a8d5ed6efca5bf3b79bda041a665c6ec10a7ace6eb84f80dfe018ab219966",
+            "result.json": "47fc71ecb38a17ec3d8bfcc4c1249c4e3ac599d90c604ae88ca9c78661b0fd23"
+          },
+          "tiers_loads": {
+            "CPU": {
+              "decode": 927,
+              "increment": 1668,
+              "prefix": 2135
+            },
+            "CUDA0": {
+              "decode": 381,
+              "increment": 438,
+              "prefix": 884
+            }
+          },
+          "tiers_payload_bytes": {
+            "CPU": {
+              "decode": 12254198400,
+              "increment": 22049625600,
+              "prefix": 28222992000
+            },
+            "CUDA0": {
+              "decode": 5036515200,
+              "increment": 5790009600,
+              "prefix": 11685772800
+            }
+          }
+        }
+      },
+      "pass": false,
+      "simulated": {
+        "lru": {
+          "F_membership_sha256": "d17466a6f75f175cfe5ce6b6480574f17b999d54a55cf274d3a995432cd41d2d",
+          "I_membership_sha256": "def8cd05c27f3641584f51fbec8a8ad7abd257d7c6b88a2241dd3e19906cd66b",
+          "P_membership_sha256": "795750f44e088f081e439c389d616452ae3067eb957467a0ce5d91b740306671",
+          "phases": {
+            "decode": {
+              "CPU": {
+                "distinct_demands": 3200,
+                "evictions": 921,
+                "hits": 2279,
+                "logical_load_bytes": 12174883200,
+                "misses": 921,
+                "parking_only_waves": 0,
+                "rank_uses": 3200,
+                "waves": 800
+              },
+              "CUDA0": {
+                "distinct_demands": 1408,
+                "evictions": 348,
+                "hits": 1031,
+                "logical_load_bytes": 4983638400,
+                "misses": 377,
+                "parking_only_waves": 0,
+                "rank_uses": 1408,
+                "waves": 352
+              }
+            },
+            "increment": {
+              "CPU": {
+                "distinct_demands": 3542,
+                "evictions": 1743,
+                "hits": 1799,
+                "logical_load_bytes": 23041065600,
+                "misses": 1743,
+                "parking_only_waves": 685,
+                "rank_uses": 15300,
+                "waves": 265
+              },
+              "CUDA0": {
+                "distinct_demands": 1302,
+                "evictions": 449,
+                "hits": 850,
+                "logical_load_bytes": 5975078400,
+                "misses": 452,
+                "parking_only_waves": 284,
+                "rank_uses": 6124,
+                "waves": 97
+              }
+            },
+            "prefix": {
+              "CPU": {
+                "distinct_demands": 12798,
+                "evictions": 1130,
+                "hits": 10668,
+                "logical_load_bytes": 28156896000,
+                "misses": 2130,
+                "parking_only_waves": 10568,
+                "rank_uses": 195200,
+                "waves": 1632
+              },
+              "CUDA0": {
+                "distinct_demands": 6306,
+                "evictions": 469,
+                "hits": 5429,
+                "logical_load_bytes": 11593238400,
+                "misses": 877,
+                "parking_only_waves": 4217,
+                "rank_uses": 78112,
+                "waves": 671
+              }
+            }
+          },
+          "restore_F_identity_floor": {
+            "CPU": {
+              "excess_identities": 74,
+              "loads": 74,
+              "logical_load_bytes": 978220800
+            },
+            "CUDA0": {
+              "excess_identities": 18,
+              "loads": 18,
+              "logical_load_bytes": 237945600
+            }
+          }
+        },
+        "votes": {
+          "F_membership_sha256": "129cc851ac9e63c2048d0781a79388420e99626c6ba5ed8a5d8bfb03b1fe0614",
+          "I_membership_sha256": "36a4e88cd2cb5aeeca8ba3a41b94c4841f04b1e6981f411b64f29e0413b1c89e",
+          "P_membership_sha256": "5bf1421d84eab9504333e9acf070268ff556b012c6415bdd2ccb0f1e86b71e3c",
+          "phases": {
+            "decode": {
+              "CPU": {
+                "distinct_demands": 3200,
+                "evictions": 1092,
+                "hits": 2108,
+                "logical_load_bytes": 14435366400,
+                "misses": 1092,
+                "parking_only_waves": 0,
+                "rank_uses": 3200,
+                "waves": 800
+              },
+              "CUDA0": {
+                "distinct_demands": 1408,
+                "evictions": 507,
+                "hits": 872,
+                "logical_load_bytes": 7085491200,
+                "misses": 536,
+                "parking_only_waves": 0,
+                "rank_uses": 1408,
+                "waves": 352
+              }
+            },
+            "increment": {
+              "CPU": {
+                "distinct_demands": 3542,
+                "evictions": 1703,
+                "hits": 1839,
+                "logical_load_bytes": 22512297600,
+                "misses": 1703,
+                "parking_only_waves": 685,
+                "rank_uses": 15300,
+                "waves": 265
+              },
+              "CUDA0": {
+                "distinct_demands": 1302,
+                "evictions": 398,
+                "hits": 901,
+                "logical_load_bytes": 5300899200,
+                "misses": 401,
+                "parking_only_waves": 284,
+                "rank_uses": 6124,
+                "waves": 97
+              }
+            },
+            "prefix": {
+              "CPU": {
+                "distinct_demands": 12798,
+                "evictions": 1071,
+                "hits": 10727,
+                "logical_load_bytes": 27376963200,
+                "misses": 2071,
+                "parking_only_waves": 10568,
+                "rank_uses": 195200,
+                "waves": 1632
+              },
+              "CUDA0": {
+                "distinct_demands": 6306,
+                "evictions": 520,
+                "hits": 5378,
+                "logical_load_bytes": 12267417600,
+                "misses": 928,
+                "parking_only_waves": 4217,
+                "rank_uses": 78112,
+                "waves": 671
+              }
+            }
+          },
+          "restore_F_identity_floor": {
+            "CPU": {
+              "excess_identities": 421,
+              "loads": 421,
+              "logical_load_bytes": 5565283200
+            },
+            "CUDA0": {
+              "excess_identities": 198,
+              "loads": 198,
+              "logical_load_bytes": 2617401600
+            }
+          }
+        }
+      },
+      "source_pair": {
+        "OFF": {
+          "F": "6eee3c1c7683dcb49c60570c26ec9b574bb4ff1c30281804fdf91bad2ec35912",
+          "I": "49f3dc0f809ed4d60834820747c4790f9166cb5128fe0f0e8aacdacd9adf6b41",
+          "P": "48387e0551ec3d6d160912e227da3c1afe9680e633d69a7be1cfa56048f186e1",
+          "inputs": {
+            "all33.logits.f32": "6e5223faff42fdb9ff60a1b07ece78dae5b9e191f52c66cc98bcdf008b5e6115",
+            "boundary-i.json": "48e98bd5177939e992aa17c1a3d926e20f2d8e691a28c953df89f69d37441ea2",
+            "events.tsv": "e9a41df983ad0d262a82ad03720c7c73d72005285c2479e01f51f9e3c9991482",
+            "initial.json": "eb91d2c12de17defbb3b0298c1e0a6086ad337590bfcc1f4c20ef40e8b91c5c6",
+            "result.json": "4519fc25cd46846fc80328885e57fbaab4a6a6653fc5715fffb89532df20da0e",
+            "routed-witness.bin": "6c9a638bce6f120fc3c0d31a9e056136d26c99cbed5f339ccf87b7a7f6c7e7a3"
+          },
+          "run_id": "tesy-wrt40-p25-r01-4-code153-off"
+        },
+        "ON": {
+          "F": "6eee3c1c7683dcb49c60570c26ec9b574bb4ff1c30281804fdf91bad2ec35912",
+          "I": "49f3dc0f809ed4d60834820747c4790f9166cb5128fe0f0e8aacdacd9adf6b41",
+          "P": "48387e0551ec3d6d160912e227da3c1afe9680e633d69a7be1cfa56048f186e1",
+          "inputs": {
+            "all33.logits.f32": "6e5223faff42fdb9ff60a1b07ece78dae5b9e191f52c66cc98bcdf008b5e6115",
+            "boundary-i.json": "ba25f0d4233a8c792b75d1a2dcfcb4cefcfc85fc1181373674f41d8f2c46f1a9",
+            "events.tsv": "e9a41df983ad0d262a82ad03720c7c73d72005285c2479e01f51f9e3c9991482",
+            "initial.json": "c06a150b221b624dfb75d72d1a5167cf3fd405827e30b18b423079de6907cccf",
+            "prefix-routes.bin": "ca5897b6cc715257ca2792bf4b0cbdfd3ad1fee966855a72b31d0cf0db18dfba",
+            "result.json": "12551fc33b27c590ce7d55ff78c3341f937b875f805773c679b1fd3372485278",
+            "routed-witness.bin": "6c9a638bce6f120fc3c0d31a9e056136d26c99cbed5f339ccf87b7a7f6c7e7a3"
+          },
+          "run_id": "tesy-wrt40-p25-r01-3-code153-on"
+        }
+      }
+    },
+    "nominal153": {
+      "contrasts": {
+        "c294-nominal153-2-on": {
+          "delta_loads": {
+            "decode": 527,
+            "increment": -121,
+            "increment_plus_decode": 406,
+            "prefix": -55,
+            "restored_total": 925
+          },
+          "delta_payload_bytes": {
+            "decode": 6966518400,
+            "increment": -1599523200,
+            "increment_plus_decode": 5366995200,
+            "prefix": -727056000,
+            "restored_total": 12227760000
+          },
+          "gates": {
+            "decode_no_more": false,
+            "increment_no_more": true,
+            "increment_plus_decode_at_least_10pct_lower": false,
+            "prefix_no_more": true,
+            "restored_total_no_more": false
+          },
+          "pass": false,
+          "scenario_free_F_only": {
+            "all_other_gates_and_unrestored_total_nonincreasing": false,
+            "delta_total_loads": 351,
+            "delta_total_payload_bytes": 4639939200
+          }
+        },
+        "c294-nominal153-3-on": {
+          "delta_loads": {
+            "decode": 527,
+            "increment": -121,
+            "increment_plus_decode": 406,
+            "prefix": -55,
+            "restored_total": 925
+          },
+          "delta_payload_bytes": {
+            "decode": 6966518400,
+            "increment": -1599523200,
+            "increment_plus_decode": 5366995200,
+            "prefix": -727056000,
+            "restored_total": 12227760000
+          },
+          "gates": {
+            "decode_no_more": false,
+            "increment_no_more": true,
+            "increment_plus_decode_at_least_10pct_lower": false,
+            "prefix_no_more": true,
+            "restored_total_no_more": false
+          },
+          "pass": false,
+          "scenario_free_F_only": {
+            "all_other_gates_and_unrestored_total_nonincreasing": false,
+            "delta_total_loads": 351,
+            "delta_total_payload_bytes": 4639939200
+          }
+        },
+        "lru": {
+          "delta_loads": {
+            "decode": 534,
+            "increment": -160,
+            "increment_plus_decode": 374,
+            "prefix": -77,
+            "restored_total": 821
+          },
+          "delta_payload_bytes": {
+            "decode": 7059052800,
+            "increment": -2115072000,
+            "increment_plus_decode": 4943980800,
+            "prefix": -1017878400,
+            "restored_total": 10852963200
+          },
+          "gates": {
+            "decode_no_more": false,
+            "increment_no_more": true,
+            "increment_plus_decode_at_least_10pct_lower": false,
+            "prefix_no_more": true,
+            "restored_total_no_more": false
+          },
+          "pass": false,
+          "scenario_free_F_only": {
+            "all_other_gates_and_unrestored_total_nonincreasing": false,
+            "delta_total_loads": 297,
+            "delta_total_payload_bytes": 3926102400
+          }
+        }
+      },
+      "historical": {
+        "c294-nominal153-2-on": {
+          "F_sha256": "f4bc53c8916be028b162c190640ac9c4a3ad04dac806a537cf742910c24a92ca",
+          "counts": {
+            "decode": 1081,
+            "increment": 1043,
+            "prefix": 3570,
+            "restored_total": 5694
+          },
+          "decode_hits": 3527,
+          "decode_ranks_sha256": "62ff2da0c33e77847aaa56e4c802c2a4569fcd5f08d971b9bda04a0a4c65e17c",
+          "source_sha256": {
+            "events.tsv": "3e735e0dcc1d4aeeb119ef48ad6e0c84ac6fd9a69e8544c27f95106df49e066c",
+            "initial.json": "4ad4a7767a3e6e4c25e5693ec206565dc039394a771ef2074f07f2dcd69a70ee",
+            "result.json": "cf7f22fde47fec4f319a19897a0118b05c1efeb5304b48ca73d94a5b0ef85606"
+          },
+          "tiers_loads": {
+            "CPU": {
+              "decode": 762,
+              "increment": 724,
+              "prefix": 2562
+            },
+            "CUDA0": {
+              "decode": 319,
+              "increment": 319,
+              "prefix": 1008
+            }
+          },
+          "tiers_payload_bytes": {
+            "CPU": {
+              "decode": 10073030400,
+              "increment": 9570700800,
+              "prefix": 33867590400
+            },
+            "CUDA0": {
+              "decode": 4216924800,
+              "increment": 4216924800,
+              "prefix": 13324953600
+            }
+          }
+        },
+        "c294-nominal153-3-on": {
+          "F_sha256": "f4bc53c8916be028b162c190640ac9c4a3ad04dac806a537cf742910c24a92ca",
+          "counts": {
+            "decode": 1081,
+            "increment": 1043,
+            "prefix": 3570,
+            "restored_total": 5694
+          },
+          "decode_hits": 3527,
+          "decode_ranks_sha256": "62ff2da0c33e77847aaa56e4c802c2a4569fcd5f08d971b9bda04a0a4c65e17c",
+          "source_sha256": {
+            "events.tsv": "a963af23de4f4dfd167ef53519d013ee12786d17dc67fba864cb4fe83875d797",
+            "initial.json": "19bf1c09a96e851440d104abbbb08cc062c2e602d7c686c84fd33d7236dbc269",
+            "result.json": "700c3afd93e5b7fe2d3aa8c2739dfa5e4af8da0081c1a0d3509f9f42ccd1d032"
+          },
+          "tiers_loads": {
+            "CPU": {
+              "decode": 762,
+              "increment": 724,
+              "prefix": 2562
+            },
+            "CUDA0": {
+              "decode": 319,
+              "increment": 319,
+              "prefix": 1008
+            }
+          },
+          "tiers_payload_bytes": {
+            "CPU": {
+              "decode": 10073030400,
+              "increment": 9570700800,
+              "prefix": 33867590400
+            },
+            "CUDA0": {
+              "decode": 4216924800,
+              "increment": 4216924800,
+              "prefix": 13324953600
+            }
+          }
+        }
+      },
+      "pass": false,
+      "simulated": {
+        "lru": {
+          "F_membership_sha256": "331fa5359101b06a1ff240c5da3b4423f03704d95dadda56ddaa6b65ac17d029",
+          "I_membership_sha256": "3d035d98c0abaa6cfe501959d5c9f485b56b52840c92175db4ed1d76c1bdb393",
+          "P_membership_sha256": "42c3016358eebb2328540fe7d9bdc7786ef2ac95c486f319ee33d587f5ef8cf8",
+          "phases": {
+            "decode": {
+              "CPU": {
+                "distinct_demands": 3200,
+                "evictions": 754,
+                "hits": 2446,
+                "logical_load_bytes": 9967276800,
+                "misses": 754,
+                "parking_only_waves": 0,
+                "rank_uses": 3200,
+                "waves": 800
+              },
+              "CUDA0": {
+                "distinct_demands": 1408,
+                "evictions": 291,
+                "hits": 1088,
+                "logical_load_bytes": 4230144000,
+                "misses": 320,
+                "parking_only_waves": 0,
+                "rank_uses": 1408,
+                "waves": 352
+              }
+            },
+            "increment": {
+              "CPU": {
+                "distinct_demands": 2373,
+                "evictions": 748,
+                "hits": 1625,
+                "logical_load_bytes": 9887961600,
+                "misses": 748,
+                "parking_only_waves": 750,
+                "rank_uses": 15300,
+                "waves": 200
+              },
+              "CUDA0": {
+                "distinct_demands": 1217,
+                "evictions": 333,
+                "hits": 883,
+                "logical_load_bytes": 4415212800,
+                "misses": 334,
+                "parking_only_waves": 293,
+                "rank_uses": 6124,
+                "waves": 88
+              }
+            },
+            "prefix": {
+              "CPU": {
+                "distinct_demands": 14042,
+                "evictions": 1586,
+                "hits": 11456,
+                "logical_load_bytes": 34184851200,
+                "misses": 2586,
+                "parking_only_waves": 11028,
+                "rank_uses": 204400,
+                "waves": 1747
+              },
+              "CUDA0": {
+                "distinct_demands": 6823,
+                "evictions": 596,
+                "hits": 5817,
+                "logical_load_bytes": 13298515200,
+                "misses": 1006,
+                "parking_only_waves": 4404,
+                "rank_uses": 81792,
+                "waves": 714
+              }
+            }
+          },
+          "restore_F_identity_floor": {
+            "CPU": {
+              "excess_identities": 47,
+              "loads": 47,
+              "logical_load_bytes": 621302400
+            },
+            "CUDA0": {
+              "excess_identities": 3,
+              "loads": 3,
+              "logical_load_bytes": 39657600
+            }
+          }
+        },
+        "votes": {
+          "F_membership_sha256": "49e6f9898e6eac919354b2eedf370f5b29e339b9528c035c40941fccb92ef5e4",
+          "I_membership_sha256": "a99234fcd29b3e16ea8abb76882867e5d24cdf6231b21a52e8c74a5f346840ed",
+          "P_membership_sha256": "723e727595a699c779619beccf2fe43bd27f31e5a6a609511a06c2e4d43f9f3a",
+          "phases": {
+            "decode": {
+              "CPU": {
+                "distinct_demands": 3200,
+                "evictions": 1110,
+                "hits": 2090,
+                "logical_load_bytes": 14673312000,
+                "misses": 1110,
+                "parking_only_waves": 0,
+                "rank_uses": 3200,
+                "waves": 800
+              },
+              "CUDA0": {
+                "distinct_demands": 1408,
+                "evictions": 469,
+                "hits": 910,
+                "logical_load_bytes": 6583161600,
+                "misses": 498,
+                "parking_only_waves": 0,
+                "rank_uses": 1408,
+                "waves": 352
+              }
+            },
+            "increment": {
+              "CPU": {
+                "distinct_demands": 2373,
+                "evictions": 641,
+                "hits": 1732,
+                "logical_load_bytes": 8473507200,
+                "misses": 641,
+                "parking_only_waves": 750,
+                "rank_uses": 15300,
+                "waves": 200
+              },
+              "CUDA0": {
+                "distinct_demands": 1217,
+                "evictions": 280,
+                "hits": 936,
+                "logical_load_bytes": 3714595200,
+                "misses": 281,
+                "parking_only_waves": 293,
+                "rank_uses": 6124,
+                "waves": 88
+              }
+            },
+            "prefix": {
+              "CPU": {
+                "distinct_demands": 14042,
+                "evictions": 1479,
+                "hits": 11563,
+                "logical_load_bytes": 32770396800,
+                "misses": 2479,
+                "parking_only_waves": 11028,
+                "rank_uses": 204400,
+                "waves": 1747
+              },
+              "CUDA0": {
+                "distinct_demands": 6823,
+                "evictions": 626,
+                "hits": 5787,
+                "logical_load_bytes": 13695091200,
+                "misses": 1036,
+                "parking_only_waves": 4404,
+                "rank_uses": 81792,
+                "waves": 714
+              }
+            }
+          },
+          "restore_F_identity_floor": {
+            "CPU": {
+              "excess_identities": 391,
+              "loads": 391,
+              "logical_load_bytes": 5168707200
+            },
+            "CUDA0": {
+              "excess_identities": 183,
+              "loads": 183,
+              "logical_load_bytes": 2419113600
+            }
+          }
+        }
+      },
+      "source_pair": {
+        "OFF": {
+          "F": "f4bc53c8916be028b162c190640ac9c4a3ad04dac806a537cf742910c24a92ca",
+          "I": "671354649bd647f6e4cf20556bfda018bf68bde6c54112304ab33313f2638fbf",
+          "P": "4af0997f62f3457b0e1e071d2ff6555080c7d4c9f9ce492e2114936084dcaa8f",
+          "inputs": {
+            "all33.logits.f32": "cb89a303f2c811d3cb75cf6df457a7bf8dcfb6279b729b326baec519748239a2",
+            "boundary-i.json": "d8f61a91d14413fa074d9f6cdb577c8edd930c30b1d23a5a4d64d028f600e864",
+            "events.tsv": "e9a41df983ad0d262a82ad03720c7c73d72005285c2479e01f51f9e3c9991482",
+            "initial.json": "b62d9582be60866400d12e3777200d0c5dd9bf251676c52358aa1848088433a8",
+            "result.json": "79375017a394dca7af5e20f201bef2300a72e1cead22b320586319ca70b071b0",
+            "routed-witness.bin": "c82d9174488083132be2565799572804ae90436bd03f8c745ba34d3e7f136a9a"
+          },
+          "run_id": "tesy-wrt40-p25-r01-1-nominal153-off"
+        },
+        "ON": {
+          "F": "f4bc53c8916be028b162c190640ac9c4a3ad04dac806a537cf742910c24a92ca",
+          "I": "671354649bd647f6e4cf20556bfda018bf68bde6c54112304ab33313f2638fbf",
+          "P": "4af0997f62f3457b0e1e071d2ff6555080c7d4c9f9ce492e2114936084dcaa8f",
+          "inputs": {
+            "all33.logits.f32": "cb89a303f2c811d3cb75cf6df457a7bf8dcfb6279b729b326baec519748239a2",
+            "boundary-i.json": "8e8386cdff908608a2325d619e187aaa30c12095968cceb356ebc65a559a37fe",
+            "events.tsv": "e9a41df983ad0d262a82ad03720c7c73d72005285c2479e01f51f9e3c9991482",
+            "initial.json": "4a4c3451417fbeae9dfb4c7a63c5a47323b4e2be1cd71be9b8086f6788de55a8",
+            "prefix-routes.bin": "9d66f7ec95aa86e0009cf455092ad884dd99f100fb155651ac26f4159d4d3b46",
+            "result.json": "a3495db9280088f38d6aa48b05e2e91cfdecee39fca794d37deab7f8399b484f",
+            "routed-witness.bin": "c82d9174488083132be2565799572804ae90436bd03f8c745ba34d3e7f136a9a"
+          },
+          "run_id": "tesy-wrt40-p25-r01-2-nominal153-on"
+        }
+      }
+    }
+  },
+  "code_sha256": {
+    "prefill_causal/plan.py": "7d67491c6289c478476f26292ee876d82d278a8b6a0333440434cc999ec9d6de",
+    "prefill_causal_continue/plan.py": "2f0411f89037f748f3713617bb4e96b34865bdbf6bf8417f79d5fa263ab6b2d1",
+    "prefill_causal_continue/protocol.md": "71b790ca15b34c652b69c3a17ca741d92a9dbe0c8ba7fd3c24531dd210b69433"
+  },
+  "family_sha256": "bd69474a52d58cf5e96e88099c20094d3fe98bb285fb14f8d82bcc516273e01a",
+  "measurement_checkout": {
+    "clean_before_output": true,
+    "commit": "979508a3e214787040c999201e127260c3b8f7e2",
+    "tree": "4334c5032a7e4c104864432290616fddf2a3a968"
+  },
+  "previous_receipt_sha256": "5e0aebdcb3fb3b5e2de22fefd145954b3aa5defc1b5ccdfc535e0fb86c4e9c87",
+  "scope": "TRACE_DERIVED_LOGICAL_PAYLOAD_ONLY",
+  "status": "NO_GO"
+}
