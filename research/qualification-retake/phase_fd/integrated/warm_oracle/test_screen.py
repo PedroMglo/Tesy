@@ -1,5 +1,5 @@
-import itertools
 import importlib.util
+import itertools
 import unittest
 from pathlib import Path
 
