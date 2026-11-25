@@ -18,6 +18,8 @@ A primeira linha corresponde aos pedidos físicos verificados. As outras são **
 
 A parte 68 conserva as duas reproduções da fronteira de prefill e os estados de manager que a fixture de entregas tem de carregar. Na parte 67, a auditoria numérica da fixture CPU_Mapped com consumidores mistos CPU/CUDA conseguiu reproduzir a substituição A/B/A das páginas. A campanha física preserva a falha do supervisor no fim. [Fronteira por fase](prefill_frontier/README.md) · [Os 6 624 destinos de rank](replay/decode_clock/transport/manager_state/README.md) · [Paridade do operador e falhas](cpu_alias/mixed/README.md)
 
+O banco exclusivo de vítimas deu um sinal diferente em cada fase sob as mesmas decisões primárias. Promover um expert da RAM e guardar a vítima no lugar libertado poupou 83 leituras no prefill e acrescentou 25 no decode. A agenda passa a exigir 198 leituras em sítios de decode sem preço observado e 10,456 GB de novas cópias de vítimas CUDA para a RAM durante T2. Mesmo com os custos novos a zero, a combinação serial ficou 156–191 ms acima da meta a 4,5 GB/s. Esta variante preserva a poupança de prefill no registo e fica NO_GO para avançar pelo critério congelado. [Comparação por fase com o banco fixo](exclusive_bank/README.md)
+
 ## O orçamento da conversa
 
 | Braço físico R02, PFJ1 ativo nos dois | Prefill T2 | Decode T2 | Primeiro final | Conclusão válida | Débito |
