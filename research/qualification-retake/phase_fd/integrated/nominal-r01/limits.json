@@ -1,0 +1,192 @@
+{
+  "ON_over_OFF": [
+    {
+      "decode_s": 1.0078690371488588,
+      "first_final_s": 1.0072591609233155,
+      "prefill_s": 1.0070087683044269,
+      "valid_wall_s": 1.0072309011806675
+    },
+    {
+      "decode_s": 1.0114306137470275,
+      "first_final_s": 1.0104518092197923,
+      "prefill_s": 1.0099212605381378,
+      "valid_wall_s": 1.0105640495112316
+    }
+  ],
+  "call_five_ns": 484808934,
+  "callbacks_union_ns": 7027876723,
+  "calls": [
+    {
+      "blocking_publications": {
+        "first_absent_barriers": 29,
+        "first_absent_until_publish_ns": 336362259,
+        "publish_to_resume_ns": 1375416
+      },
+      "native_duration_ns": 484808934,
+      "origin_loads": 51,
+      "origin_returned_bytes": 674832384,
+      "tokens": 5
+    },
+    {
+      "blocking_publications": {
+        "first_absent_barriers": 130,
+        "first_absent_until_publish_ns": 4048382742,
+        "publish_to_resume_ns": 8003677,
+        "reload_barriers": 88,
+        "reload_until_publish_ns": 2622549309
+      },
+      "native_duration_ns": 10257226974,
+      "origin_loads": 1212,
+      "origin_returned_bytes": 16036343808,
+      "tokens": 148
+    }
+  ],
+  "client_clock": {
+    "fractions": {
+      "remap": {
+        "decode_fraction": 0.284115848686452,
+        "first_final_fraction": 0.7236884206415303,
+        "joint_minimum_fraction": 0.7236884206415303
+      },
+      "wait": {
+        "decode_fraction": 0.2847130193732344,
+        "first_final_fraction": 0.7250253534906732,
+        "joint_minimum_fraction": 0.7250253534906732
+      }
+    },
+    "required_reduction_ns_decode": 2170443666,
+    "required_reduction_ns_until_final": 10484541489,
+    "unions": {
+      "barrier": {
+        "in_decode_ns": 7623268057,
+        "until_first_final_ns": 14460930833
+      },
+      "remap": {
+        "in_decode_ns": 7639291071,
+        "until_first_final_ns": 14487645774
+      },
+      "wait": {
+        "in_decode_ns": 7623268057,
+        "until_first_final_ns": 14460930833
+      }
+    }
+  },
+  "cost_band_T2": true,
+  "mandatory_service": {
+    "fixed_outside_callbacks_ns": {
+      "decode": 2364485929,
+      "first": 5996895714
+    },
+    "free_first_reservations": {
+      "free_preload_or_other_wave_or_unused": 285
+    },
+    "mandatory_floor_ns": {
+      "decode": 2652668666,
+      "first": 6231568365,
+      "prefill": 3607284262
+    },
+    "max_service_scale": {
+      "decode": 2.0616398403222216,
+      "first": 0.6423911367936986
+    },
+    "required_jobs": {
+      "decode": 312,
+      "first": 875,
+      "prefill": 567
+    },
+    "scenarios": {
+      "0.5": {
+        "decision": "HEADROOM_ONLY",
+        "decode_floor_ns": 3690820262,
+        "first_final_floor_ns": 9112679896
+      },
+      "0.8": {
+        "decision": "NO_GO_FIXED_RELEASE_AND_REMAINDER",
+        "decode_floor_ns": 4486620861,
+        "first_final_floor_ns": 10982150406
+      },
+      "1.0": {
+        "decision": "NO_GO_FIXED_RELEASE_AND_REMAINDER",
+        "decode_floor_ns": 5017154595,
+        "first_final_floor_ns": 12228464079
+      }
+    }
+  },
+  "origin": {
+    "completed_in_calls_returned_bytes": 16711176192,
+    "compulsory_payload_floor": 11262758400,
+    "compulsory_unique": 852,
+    "origin_dispatched": 1263,
+    "origin_payload": 16695849600,
+    "origin_returned_bytes": 16711176192,
+    "read_union_in_calls_ns": 7474366904,
+    "relaxed_40slot_load_floor": 859,
+    "relaxed_40slot_payload_floor": 11355292800,
+    "returned_after_prefill_for_origin_bytes": 0,
+    "set_union_in_calls_ns": 974797662,
+    "two_calls_span_ns": 10742287332,
+    "two_calls_union_ns": 10742035908,
+    "wait_union_in_calls_ns": 7016673403
+  },
+  "relaxed": {
+    "first_decode_loading": 0,
+    "first_decode_resident": 1440,
+    "load_floor": 859,
+    "load_floor_with_handoff": 894,
+    "payload_floor": 11355292800,
+    "payload_floor_with_handoff": 11817964800
+  },
+  "return_148_to_enter_decode_ns": 3383422,
+  "return_five_to_enter_148_ns": 251424,
+  "scenarios": {
+    "C281_M4_predicted_tokens": {
+      "budget_bytes": 10938366806,
+      "forty_slot_handoff_margin_including_gap_B": -864372595,
+      "forty_slot_margin_B": -416925994,
+      "remove_all_remap": {
+        "budget_ns": 2430748179,
+        "decision": "NO_GO_FIXED_REMAINDER",
+        "excess_ns": 1287221098,
+        "remaining_ns": 3717969277
+      },
+      "remove_call_five": {
+        "budget_ns": 2430748179,
+        "decision": "NO_GO_FIXED_REMAINDER",
+        "excess_ns": 7830288887,
+        "remaining_ns": 10261037066
+      },
+      "unlimited_cache_margin_B": -324391594
+    },
+    "optimistic_AR_post_first_evaluations": {
+      "budget_bytes": 11688366807,
+      "forty_slot_handoff_margin_including_gap_B": -114372594,
+      "forty_slot_margin_B": 333074007,
+      "remove_all_remap": {
+        "budget_ns": 2597414846,
+        "decision": "NO_GO_FIXED_REMAINDER",
+        "excess_ns": 1120554431,
+        "remaining_ns": 3717969277
+      },
+      "remove_call_five": {
+        "budget_ns": 2597414846,
+        "decision": "NO_GO_FIXED_REMAINDER",
+        "excess_ns": 7663622220,
+        "remaining_ns": 10261037066
+      },
+      "unlimited_cache_margin_B": 425608407
+    }
+  },
+  "sources": {
+    "client_protocol": "1601bb38bfb8c8c9be3a087f43d600f86a00b848d0adfc00500ba2205797f941",
+    "code": "deb68469fde7aa55a135d7cdcd455ce5d18a3e6f71106c9369f1b359049b146a",
+    "handoff_protocol": "29d22b94f16a8f3d8c4888b97d0ee22e601faed2168243e31f3597def24e0b1f",
+    "journal": "1a96cca8af0fd2dd0a4e4fd1ba2afc031320e6ff0be9b335cead5f5e0035f018",
+    "mandatory_code": "8f83497fe6b7d403232448b72e4f06a3d28eda1a7774ab87635fef040346f930",
+    "mandatory_protocol": "a580f011d980c495e7a33704f78664979089f835528699a707af38338fc15d59",
+    "off": "171e90939e42a55ce51b196224ecc2bb008cc7408205eae7e961d09759cdfc5f",
+    "on": "78c3a5bb34353d2b880b14bfa80634cd06dfe465beec529446206a8728af3f43",
+    "private_raw_manifest": "4c7715c643684b4b7b058fb20d0daea19c95d766a0a60aad43ce2cb29d9c2239",
+    "wait_protocol": "1fda5003685d5a2ab4741566f4b3e53b6f15ddbbbf1cdf1c0edec92cee3bacbe"
+  },
+  "status": "PASS_DIAGNOSTIC_BOUNDS"
+}
