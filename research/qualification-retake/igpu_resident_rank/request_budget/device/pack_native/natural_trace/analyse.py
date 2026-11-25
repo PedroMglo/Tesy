@@ -259,19 +259,24 @@ def bound(host, full, public):
         until = union_ns([(a, min(b, first_cut)) for _, a, b in host[key] if a < first_cut])
         cuts[key] = {"prefill_ns": prompt, "decode_ns": generation, "through_first_final_ns": until}
     margins = {}
+    upper = cuts["callback_spans"]["prefill_ns"]
+    decode_budget_s = 10 - first + upper / 1e9 + decode
     for rate in (6, 8, 10):
         # Concede the complete decode saving before the first final, with unchanged tail.
         credit = max(0, decode - 47 / rate)
         need_ns = math.floor(max(0, first - 10 - credit) * 1e9)
-        upper = cuts["callback_spans"]["prefill_ns"]
         margins[str(rate)] = {
             "required_prefill_saving_ns": need_ns,
             "free_remap_ns": upper,
+            "coordination_budget_ns_if_all_remap_removed": upper - need_ns,
             "decision": "NO_GO_FIXED_EXTERIOR" if upper < need_ns else "HEADROOM_ONLY",
         }
     return {
         "observed_s": {"prefill": phase, "decode": decode, "first_final": first},
         "host_unions": cuts,
+        "min_outputs_per_s_if_all_prefill_remap_free": (
+            max(6.0, 47 / decode_budget_s) if decode_budget_s > 0 else None
+        ),
         "scenarios": margins,
         "independent_last_cuda_consumer": "UNKNOWN",
     }
@@ -303,6 +308,7 @@ def audit_arm(arm_dir, receipt, trigger_ns):
     totals = bound(host, read(arm_dir / "raw/T2-result.json"), receipt["rows"][1])
     if work["status"] != "COMPLETE":
         totals["scenarios"] = {}
+        totals["min_outputs_per_s_if_all_prefill_remap_free"] = None
         totals["withheld_reason"] = "INCOMPLETE_SERVICE_AT_CAPTURE_BOUNDARY"
     return {
         "status": "PASS_PACK_NATURAL_TRACE"
