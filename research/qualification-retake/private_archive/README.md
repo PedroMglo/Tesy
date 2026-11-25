@@ -56,3 +56,5 @@ O lote 19 reúne as seleções e avaliações de desenvolvimento WRT, o cálculo
 O lote 20 conserva a nova C55, as três fases da confirmação CUDA usando uma só release de driver e as duas reproduções da escolha de SSD no passo C135. Foram conferidos 27 ficheiros e 10 227 937 B. Os aliases temporários do driver apontavam para objetos pré-existentes do deployment autenticado. [Índice do lote 20](part-20.json)
 
 O lote 21 guarda as duas tentativas de build e os três lançamentos do replay de tokens, com o executável, os recibos idênticos das duas confirmações e os dois incidentes preservados. Foram conferidos 20 ficheiros e 1 407 714 B. [Índice do lote 21](part-21.json)
+
+O lote 22 preserva os mapas privados e as listagens de C270 e C281 nas duas confirmações do loader, bem como a janela física C55. Foram conferidos 12 ficheiros e 148 200 B. [Índice do lote 22](part-22.json)

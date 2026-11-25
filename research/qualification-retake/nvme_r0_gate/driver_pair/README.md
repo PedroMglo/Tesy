@@ -32,3 +32,5 @@ python3 -IB "$study/compact_mixed.py" "$R02" | cmp - "$study/mixed-r02.json"
 ```
 
 Os diretórios privados de R01 e R02 podem ser relocalizados sem recriar os aliases de driver em `/tmp`. O compactador interpreta os caminhos literais do log, liga os nomes de arranque ao `static-map.json` autenticado e restringe o diretório privado histórico aos quatro aliases selados. Todos os caminhos e SHA resultantes têm de coincidir com as inicializações do mesmo PID autenticadas no pós-voo. A origem descreve o instante da medição. O verificador numérico V3 continua a validar os três ELF GGML C269 e o libcrypto persistentes indicados em `native/providers.txt`. Em duas cópias de arquivo relocalizadas, com as ligações efémeras omitidas e o acesso aos diretórios originais interdito durante a reconstrução, ambas as saídas públicas permaneceram idênticas. [Teste de relocalização](test_archive_reproduction.py) · [Recibo](archive-proof.json)
+
+A verificação dos executáveis reais reproduziu a resolução das 17 dependências de C270 e das 23 do servidor C281 usando o conjunto específico do processo. [Comparação e condições para a campanha com o modelo](server_startup/README.md)
