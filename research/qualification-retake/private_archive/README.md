@@ -50,3 +50,5 @@ O lote 16 conserva os dois builds, as duas famílias de 36 braços, a falha C55 
 O lote 17 preserva a primeira falha de memória e os pares de reprodução do piso de down, da retenção primária e da preparação antes de I. Foram conferidos oito ficheiros com 1 214 708 B. [Índice do lote 17](part-17.json)
 
 O lote 18 guarda a enumeração CUDA, a C55, o grafo misto com o FAIL de bibliotecas e as duas seleções e avaliações independentes de C304. São 32 ficheiros e 10 651 666 B verificados. A ligação simbólica temporária ao driver não duplica a biblioteca da estação. A identidade do ELF e os logs do loader constam dos recibos. [Índice do lote 18](part-18.json)
+
+O lote 19 reúne as seleções e avaliações de desenvolvimento WRT, o cálculo das quatro filas de componentes e a reanálise dos 638 grupos históricos com uma falta. O verificador conferiu dez ficheiros e 122 328 B. [Índice do lote 19](part-19.json)
