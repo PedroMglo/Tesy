@@ -33,6 +33,14 @@ def pinned(path, expected):
     return path
 
 
+def read_manifest(path, expected):
+    # build.py emits pretty JSON but seals the sorted, compact representation.
+    record = json.loads(path.read_bytes())
+    encoded = json.dumps(record, sort_keys=True, separators=(",", ":")).encode()
+    need(len(record) == 171 and hashlib.sha256(encoded).hexdigest() == expected, "build manifest")
+    return record
+
+
 def bounds():
     cg_path = Path("/proc/self/cgroup").read_text().strip()
     need(cg_path.startswith("0::/") and "tesy-phase-fd" in cg_path, "dedicated cgroup")
@@ -170,7 +178,7 @@ def run(a, result):
     pinned(HERE / "native-fixture.md", PROTOCOL)
     backend = a.backend.resolve()
     compiled = backend / "build-c269-cuda"
-    inputs = json.loads(pinned(build / "inputs.json", rec["inputs_sha256"]).read_bytes())
+    inputs = read_manifest(build / "inputs.json", rec["inputs_sha256"])
     overlay = build / "overlay/src"
     for name, digest in rec["overlay_sha256"].items():
         pinned(build / "overlay" / name, digest)
