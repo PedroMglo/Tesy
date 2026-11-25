@@ -69,10 +69,11 @@ def validate_c270(path):
     return p, sha256(path)
 
 
-def campaign(a, out):
-    frozen = sources()
+def campaign(a, out, runtime=None):
+    frozen = sources() if runtime is None else sources(runtime.selection)
+    historical = frozen if runtime is None else runtime.historical_projection(frozen)
     check(
-        source_digest(frozen) == load(HERE / "inputs.json")["actual_inputs_sha256"],
+        source_digest(historical) == load(HERE / "inputs.json")["actual_inputs_sha256"],
         "frozen server, load-time objects or workload differ",
     )
     check(
@@ -81,6 +82,8 @@ def campaign(a, out):
     )
     check(not relevant_environment(os.environ), "inherited runtime override")
     g, g_sha = validate_c270(a.c270)
+    if runtime is not None:
+        runtime.bind_c270(a, g, g_sha)
     policy, model_id = placement(a.window, a.placement)
     check(
         g["model_stat"] == model_id and g["pinned"]["server_sha256"] == frozen["binary_sha256"],
@@ -191,6 +194,8 @@ def campaign(a, out):
         "--",
         *frozen["server_command"],
     ]
+    if runtime is not None:
+        cmd = runtime.monitor_command(cmd, out)
     save(out / "argv.json", dict(command=cmd))
     launch = raw / (rid + ".launch.json")
     identity = {}
@@ -265,6 +270,8 @@ def campaign(a, out):
                     "DSO file changed",
                 )
             owned_listener(pid, PORT)
+            if runtime is not None:
+                runtime.first(pid)
             return {str(ref.path): ref.digest for ref in refs.values()}
 
         original_fetch = client.fetch
@@ -335,6 +342,8 @@ def campaign(a, out):
                     result.get("failure") or "two requests not accepted",
                 )
                 mappings(own(), preset)
+                if runtime is not None:
+                    runtime.last(own())
             finally:
                 safe_terminate()
                 waiter.join(timeout=2)
@@ -370,6 +379,9 @@ def campaign(a, out):
         ["systemctl", "--user", "show", rid + ".service", "-p", "ActiveState", "--value"], text=True
     ).strip()
     check(state in {"inactive", "failed"}, "owned service not closed")
+    runtime_evidence = {}
+    if runtime is not None:
+        runtime_evidence["runtime_authority"] = runtime.finish(identity, m, out, rid)
     rows = []
     for row in result["rows"]:
         t = row["timings"]
@@ -404,6 +416,7 @@ def campaign(a, out):
         monitor_sha256=sha256(raw / (rid + ".json")),
         cleanup="SERVER_EXIT_0_OWNER_STOP_UNIT_CLOSED_PORT_AVAILABLE",
         preset_sha256=psha,
+        **runtime_evidence,
     )
 
 

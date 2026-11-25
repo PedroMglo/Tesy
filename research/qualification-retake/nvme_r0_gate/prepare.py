@@ -48,7 +48,18 @@ def git(root, *args):
     return subprocess.check_output(["git", "-C", root, *args], text=True).strip()
 
 
-def seal():
+def ldd_environment(library_path=None):
+    env = {"PATH": "/usr/bin:/bin", "LC_ALL": "C"}
+    if library_path is not None:
+        check(
+            all(Path(p).is_absolute() for p in library_path.split(os.pathsep)),
+            "ldd search must contain only absolute directories",
+        )
+        env["LD_LIBRARY_PATH"] = library_path
+    return env
+
+
+def seal(*, ldd_library_path=None):
     check(
         sha256(BASE) == "10ee7ec18d4b7d1d44b80eca7dbc2ff2a48ccebdd83bc2c73dadc26289f6a616",
         "C270 changed",
@@ -90,7 +101,7 @@ def seal():
     rows = load(C281_ELF)["selected_frozen_and_unpinned"]
     expected = {row["resolved_file"]: row["resolved_sha256"] for row in rows}
     ldd = subprocess.check_output(
-        ["ldd", exe], text=True, env={"PATH": "/usr/bin:/bin", "LC_ALL": "C"}
+        ["ldd", exe], text=True, env=ldd_environment(ldd_library_path)
     )
     check("not found" not in ldd, "missing capture DSO")
     actual = {}

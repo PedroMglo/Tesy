@@ -19,7 +19,15 @@ def file_bytes(root):
     return total
 
 
-def check_monitor(manifest, protocol, sealed, envelope):
+def check_monitor(manifest, protocol, sealed, envelope, *, loader_env=None):
+    expected_env = {"TESY_CPU_WAVE_SKIP_PARKED": "1"}
+    if loader_env is not None:
+        check(
+            set(loader_env) == {"LD_LIBRARY_PATH", "LD_DEBUG", "LD_DEBUG_OUTPUT"}
+            and loader_env["LD_DEBUG"] == "libs",
+            "invalid selected loader environment",
+        )
+        expected_env.update(loader_env)
     cap = CAPS[envelope]
     check(
         manifest["returncode"] == 0 and manifest["stop_reason"] is None, "runtime monitor refused"
@@ -32,7 +40,7 @@ def check_monitor(manifest, protocol, sealed, envelope):
         "runtime provenance mismatch",
     )
     check(
-        manifest["explicit_env"] == {"TESY_CPU_WAVE_SKIP_PARKED": "1"}
+        manifest["explicit_env"] == expected_env
         and manifest["resource_authority"] == protocol["resources"]
         and manifest["artifact_identity"]["stat_at_launch"]
         == manifest["artifact_identity"]["stat_at_end"]

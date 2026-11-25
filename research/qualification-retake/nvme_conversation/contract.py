@@ -70,7 +70,7 @@ def idle_port():
         s.bind(("127.0.0.1", PORT))
 
 
-def sources():
+def sources(selected=None):
     config = elf.pinned(C281 / "c281-r0-persistent-config.json", elf.CONFIG)
     manifest = elf.pinned(C281 / "runtime-manifest.json", elf.MANIFEST)
     elf.pinned(C281 / "protocols/c281-r0-persistent.json", elf.PROTOCOL)
@@ -99,7 +99,11 @@ def sources():
         )
     evidence = load(HERE.parent / "elf-evidence/receipt.json")
     expected = {r["load_name"]: r for r in evidence["selected_frozen_and_unpinned"]}
-    actual, aux = elf.selections(elf.command("/usr/bin/ldd", cmd[0]))
+    actual, aux = (
+        elf.selections(elf.command("/usr/bin/ldd", cmd[0]))
+        if selected is None
+        else selected(cmd[0])
+    )
     check(
         set(actual) == set(expected)
         and len(actual) == 23
