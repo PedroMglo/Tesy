@@ -152,12 +152,17 @@ bool release_token(int slot,uint64_t generation) {
     if(--it->second==0)s.leases.erase(it);
     notify(); return true;
 }
+bool acquire_token(int slot,int expert,uint64_t generation) {
+    const auto &b=s.bound[slot];
+    if (!b.record || b.record->key!=expert || b.gen!=generation ||
+        s.layer->slot_state[slot]!=LLAMA_MOE_STREAM_SLOT_RESIDENT ||
+        s.layer->slot_gen[slot]!=generation || s.layer->slot_expert[slot]!=expert)
+        return false;
+    ++s.leases[{slot,generation}]; return true;
+}
 void reader(int id) {
     Lock lock(s.mgr->mtx);
-    auto &b=s.bound[0];
-    require(b.record && b.record->key==0 && b.gen==1 && s.layer->slot_gen[0]==1 &&
-            s.layer->slot_state[0]==LLAMA_MOE_STREAM_SLOT_RESIDENT,"reader acquired wrong generation");
-    ++s.leases[{0,1}];
+    require(acquire_token(0,0,1),"reader acquired wrong generation");
     lock.unlock();
     require(valid_payload(0,0),"initial reader gold");
     lock.lock(); s.reader_ready[id]=true; notify();
@@ -242,6 +247,9 @@ json exercise(llama_moe_stream &mgr) {
         s.group=true;
         for(int i=0;i<4;++i)reserve(i+1,i);
         until(lock,[]{return s.workers.size()==4;});
+        require(!acquire_token(0,0,1) && !acquire_token(0,1,2) && s.leases.at({0,1})==2,
+                "late reader entered reserved slot");
+        report["late_reader_rejected"]=true;
         for(int i=0;i<4;++i)
             require(l.slot_claimed[i] && l.slot_state[i]==LLAMA_MOE_STREAM_SLOT_LOADING &&
                     l.slot_gen[i]==(i==0?2u:1u),"simultaneous claim");

@@ -5,10 +5,10 @@ import hashlib
 import importlib.util
 import json
 import os
-from pathlib import Path
 import platform
 import sys
 import time
+from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
 PROJECT = next(p for p in HERE.parents if (p / "AGENTS.md").is_file())

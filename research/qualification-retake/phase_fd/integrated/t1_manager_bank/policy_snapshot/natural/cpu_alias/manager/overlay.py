@@ -23,7 +23,8 @@ def materialize(src: Path) -> None:
     )
     one(
         "            sl.slot_state[w.slot]=LLAMA_MOE_STREAM_SLOT_RESIDENT;",
-        "            lease_install(w);\n            sl.slot_state[w.slot]=LLAMA_MOE_STREAM_SLOT_RESIDENT;",
+        "            lease_install(w);\n"
+        "            sl.slot_state[w.slot]=LLAMA_MOE_STREAM_SLOT_RESIDENT;",
     )
     one("        cv_done.notify_all();", "        lease_end();\n        cv_done.notify_all();")
     path.write_text(text)
