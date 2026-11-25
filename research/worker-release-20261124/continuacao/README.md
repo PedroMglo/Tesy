@@ -17,11 +17,31 @@ Com o terceiro produtor livre aos 350 ms, o adiantamento do remap chegou a finis
 
 Por braço, depois do aquecimento, três produtores leram três componentes cada e a procura direta leu outras três. Os doze componentes somam 52 876 800 bytes lógicos. Seis cópias da cache somam 26 438 400 bytes. A referência independente conferiu os doze componentes dos destinos, incluindo os residentes, e os quatro processos de cada política entregaram o mesmo digest, ordem de ranks, slots e gerações. Cada journal teve 66 eventos e quatro threads distintas. A maior diferença entre um deadline dos portões e a abertura observada foi inferior a 1 ms (tolerância de 150 ms). O relógio parte de t0, antes do remap, e termina quando finish regressa. A compilação e a escrita dos ficheiros de verificação estão fora desses intervalos.
 
-**Segurança observada.** No erro injetado EIO a primeira componente do ticket anexado falhou. O produtor rejeitou a continuação, acordou os consumidores, conservou o slot por publicar e deixou zero claims. Na injeção de geração obsoleta, as três leituras terminaram. O produtor rejeitou a geração 1 e conservou o claim do novo dono na geração 2. Nos dois processos a nova entrada em scope foi recusada, finish propagou o erro e quatro workers terminaram. Estes dois casos exercitam a reserva e a fila nativas diretamente para observar o estado do manager quando falha. O callback do grafo abortaria o processo nesse caminho. Recuperar e servir o pedido seguinte depois de uma falha fica fora da prova.
+**Segurança observada.** No erro injetado EIO a primeira componente do ticket anexado falhou. O produtor rejeitou a continuação e sinalizou o erro ao manager. A geração ficou por publicar e o claim foi libertado. Na injeção de geração obsoleta, as três leituras terminaram. O produtor rejeitou a geração 1 e conservou o claim do novo dono na geração 2. Nos dois processos a nova entrada em scope foi recusada, finish propagou o erro e quatro workers terminaram. Estes dois casos exercitam a reserva e a fila nativas diretamente para observar o estado do manager quando falha. O callback do grafo abortaria o processo nesse caminho. Recuperar e servir o pedido seguinte depois de uma falha fica fora da prova.
 
 **Interpretação para a próxima decisão.** O candidato guarda no máximo um registo por ticket C305, dez no total. Enquanto a leitura está em voo o destino mantém o claim. O produtor valida scope, call, camada, expert, ticket e geração sob o mutex e usa as mesmas cópias para publicar. A fixture prerreserva a mesma população de previsões nos dois braços. Na execução do predictor ligado ao grafo, a thread que volta ao loop também pode aceitar uma previsão adicional se a fila de procuras estiver vazia. Um avanço da barreira só conta se chegar ao fim da fase com as leituras, cópias, cancelamentos e cleanup cobrados. O target assume routing, ordenação e confirmação dos tokens.
 
 A admissão seguinte exige observar o trabalho emergente da fila, validar a neutralidade do observador e comparar a política ligada/desligada no mesmo backend e um R0 contemporâneo. Para os pares C318, a via histórica de +15% exige reduções condicionais de 17,62% nominal e 18,02% código no decode do candidato com prefill fixo. Os ganhos necessários por par são 1,710/1,715 s e 2,055/2,197 s. O saldo admissível de custos adicionais em cada par é o ganho de parede bruto até ao fim do decode menos a respetiva redução exigida, em segundos por pedido. O bruto integrado continua desconhecido. As proteções do outro caso, sinais dos pares, fases e total continuam no [avaliador do controlo](../README.md#c318-trace-off).
+
+## O trabalho à espera nos quatro traces reais C317
+
+**TRACE_DERIVED, retrospetivo.** Em 364 dos 998 anexos em READING, o pool bloqueante tinha quatro trabalhos atribuídos, a fila autoritativa ficava vazia após o accept e havia uma previsão elegível. As cabeças eram tickets distintos dentro de cada braço, para a camada seguinte ou para a segunda camada seguinte. Isto já acontecia no primeiro anexo em READING dos quatro braços. O cálculo reaplica a prioridade da fila e o limite de três produtores puramente especulativos na ordem serializada pelo mutex. A condição é a mesma história até ao accept considerado. Depois de uma divergência da política, a sequência bloqueante deixa de representar o contrafactual. [Reprodutor](fila_historica.py) · [Recibo com os oito hashes e testemunhas individuais](fila.json)
+
+| Braço trace-ON | Anexos em READING | Previsão elegível com fila primária vazia | Dessas, consumidas / expiradas no controlo | Outros tickets na fila nunca iniciados no controlo |
+|---|---:|---:|---:|---:|
+| nominal 2 | 221 | 66 | 46 / 20 | 7 |
+| nominal 3 | 233 | 72 | 54 / 18 | 9 |
+| código 2 | 268 | 112 | 83 / 29 | 9 |
+| código 3 | 276 | 114 | 83 / 31 | 10 |
+
+O controlo acabou por ler as 364 cabeças. Consumiu 266 e deixou expirar 98. Portanto, estas 364 observações provam oportunidade para mudar o instante de despacho. O número de leituras adicionais, a alteração da contenção e o efeito líquido no fim do pedido continuam por medir. Para distinguir trabalho útil de desperdício, o próximo comparador precisa da identidade e destino de todos os tickets posteriores, incluindo os que o controlo retirou ainda em fila. No primeiro anexo nominal o próximo ticket era 6, camada 5, expert 110, e expirou em leitura no controlo. Em código era 20, camada 20, expert 73, e foi consumido em READY. As duas origens de relógio dos journals foram mantidas separadas. Nenhum tempo de serviço dos ensaios sintéticos entrou nesta classificação.
+
+A reprodução a partir de `daac74fe` confirmou o recibo de 9 247 bytes, SHA-256 `0b5d8409bf29fd49a0b9c2fa8d6da38682868a9c4e6f2c902a3e73f6bf1be60a`. Usa a pasta dos oito originais e um destino novo.
+
+```sh
+python3 -B research/worker-release-20261124/continuacao/fila_historica.py \
+  --raw-dir "$TESY_C317_RAW" --new-output-dir "$TESY_NEW_QUEUE_OUTPUT"
+```
 
 ## Reproduzir
 
