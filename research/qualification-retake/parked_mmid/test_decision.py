@@ -2,7 +2,9 @@ import importlib.util
 import unittest
 from pathlib import Path
 
-spec = importlib.util.spec_from_file_location("parked_gate", Path(__file__).with_name("decision.py"))
+spec = importlib.util.spec_from_file_location(
+    "parked_gate", Path(__file__).with_name("decision.py")
+)
 gate = importlib.util.module_from_spec(spec)
 spec.loader.exec_module(gate)
 
