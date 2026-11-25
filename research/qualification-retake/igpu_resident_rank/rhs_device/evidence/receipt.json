@@ -1,0 +1,101 @@
+{
+  "build_sha256": "8a3171e81809f8a1b151c3a3f5ad025320e91a67a283ae6eb52880ad8c728e75",
+  "device_scope": "tesy-igpu-rank-tesy-radv-rhs-physical-20261125-r01.scope",
+  "files": {
+    "actual.q8_1": "b2ce0eebb92489cdae2b5d5cdd4d4792ee7207bf748e955c1f5ee67d8102c434",
+    "after.json": "4499f5af3b182936b8b5996d2445916205480068368f294982669c890f9731e7",
+    "before.json": "478c75f9a86c2abb078429aa238a5b032c8def737cc8cc192e892a686b90145a",
+    "native.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "native.tsv": "692ae2d59747f470d625aa71466a24b07190d369f98cdfd0d069df5c7863e4f2"
+  },
+  "grade": {
+    "codes": [
+      2,
+      2
+    ],
+    "decision": "GO_COMPARE_REAL_PROJECTION",
+    "expected_sha256": {
+      "CPU_CODES_2_2": "b2ce0eebb92489cdae2b5d5cdd4d4792ee7207bf748e955c1f5ee67d8102c434",
+      "LITERAL_Q8_1_1_2": "47a9abe1152f146548c85221e345049afca4af538374efd8ba897c35f698b569"
+    },
+    "input_sha256": "945d5bff8d78d0de8bfad30db658e92e7f7c7a2027fba43035350cca1d0c485b",
+    "output_bytes": 3312,
+    "output_sha256": "b2ce0eebb92489cdae2b5d5cdd4d4792ee7207bf748e955c1f5ee67d8102c434",
+    "scale_f16_bits": [
+      "2d8b",
+      "2d8b",
+      "3c00"
+    ],
+    "sum_f16_bits": [
+      "4996",
+      "4996",
+      "57c0"
+    ],
+    "verdict": "CPU_CODES_2_2"
+  },
+  "inputs": {
+    "deployment": {
+      "commit": "aa52ae7d6bde1dd3486676ac1334d675947e1210",
+      "driver": "c68620e85ebce1e98ee787e46211661130f94378c791a66c9433f2a9c4ab5641",
+      "icd": "d1c36db1d658755b0cb325f991e337544f7a607a6f5c277e62b1de7d81d7a4c7",
+      "loader": "a09dab583a4b8e50bba61d1284b46b9d6256300713aa1db6f20f06b2dbbe0696",
+      "native": "e3b597aec590fae2eefb556e5c654ccdf528078bcc7a585ed20ba854a95a8c8d",
+      "protocol": "61baf8c9fa4302c2d5d2b504c24671766e644d452e058000863b7d94f3946617",
+      "runner": "b27537f659684c90d9adea6eeb58cb63c9299aa93a07f1a556f9b9ea60e4d8c9",
+      "tree": "a3a8d3df8c9d7d4ae5e921fbe3976d944230d1ef"
+    },
+    "import_receipt": "282d56fb8fa99c4b3bad7171318ebc47aeb1df92b2eaa2bb6a22f78979c3cc93",
+    "prior_rhs": "56ed61a33abcf79b3673beffbc62f6bc2a4fcdb44145909a8a9369da85750a6e",
+    "protocol": "e401de9c39a56c57197f58d77e962780eabdfb9d9ef1e397c13e3cae8e7708b8",
+    "sources": {
+      "compile_shader.py": "32dfe380d9e35e8baf64ca138b4395f3f50fb6d5c5ef82a4aa194f2d25e6a482",
+      "dispatch.cpp": "22ba8c88058803f5368a88194ce5347ae9f93b5fa07f15a1aa337bbfcad6e774",
+      "oracle.py": "8d6b23c619593e5830ec4091520e7af8d8485f7fd874a2ec0bb73ae4e485307f",
+      "run.py": "73f636fa0d835cc2e5b39bf5b921f7ad2f164a4660c08126bc314f52e95fb8fb"
+    }
+  },
+  "proof": {
+    "clustered": true,
+    "compute_full_subgroups": true,
+    "device": "AMD Radeon 890M Graphics (RADV STRIX1)",
+    "dispatches": 1,
+    "host_imports": [
+      [
+        65536,
+        16,
+        32,
+        1965,
+        5,
+        0,
+        14
+      ],
+      [
+        65536,
+        16,
+        32,
+        1965,
+        5,
+        0,
+        14
+      ]
+    ],
+    "model_forwards": 0,
+    "pci": "0000:c5:00.0",
+    "push_constants": [
+      2880,
+      12
+    ],
+    "scope_peak_bytes": 6676480,
+    "specialization_id_0": 64,
+    "submit_to_observed_fence_ns": 1069678,
+    "variant": "subgroup",
+    "workgroups": 12
+  },
+  "scope_after": [
+    "ActiveState=inactive",
+    "SubState=dead"
+  ],
+  "selected_module_sha256": "a988ec4090dca42f89a13de2ce43a69c376a0e79919e6f56875d4b1e0ab1ad25",
+  "status": "PASS_RADV_Q8_1_WITNESS",
+  "wall_ns": 63925296
+}
