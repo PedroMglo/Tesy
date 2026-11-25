@@ -1,0 +1,90 @@
+{
+  "f32_bits_order": "most significant first",
+  "float_witness": [
+    {
+      "cpu_dot_f32": "00000000",
+      "cpu_inv_f32": "42fe0000",
+      "cpu_q": 0,
+      "cpu_scaled_f32": "00000000",
+      "d_f16": "2008",
+      "d_f32": "3c010204",
+      "float_rhs_dot_f32": "00000000",
+      "glsl_inv_f32": "42fe0000",
+      "glsl_q": 0,
+      "glsl_q8_dot_f32": "00000000",
+      "glsl_scaled_f32": "00000000",
+      "max_f32": "3f800000",
+      "v_f32": "00000000"
+    },
+    {
+      "cpu_dot_f32": "00000000",
+      "cpu_inv_f32": "42fe0000",
+      "cpu_q": 0,
+      "cpu_scaled_f32": "3dfe0000",
+      "d_f16": "2008",
+      "d_f32": "3c010204",
+      "float_rhs_dot_f32": "3a800000",
+      "glsl_inv_f32": "42fe0000",
+      "glsl_q": 0,
+      "glsl_q8_dot_f32": "00000000",
+      "glsl_scaled_f32": "3dfe0000",
+      "max_f32": "3f800000",
+      "v_f32": "3a800000"
+    }
+  ],
+  "geometry": {
+    "K": 2880,
+    "block_values": 32,
+    "blocks_per_row": 90,
+    "q8_0_bytes_per_row": 3060
+  },
+  "operator_executions": 0,
+  "program_sha256": "16013c7d7d1596607daa33d82136188feefdfb36529636f5aeaea94c7512ef66",
+  "q8_1_witness": [
+    {
+      "cpu_dot_f32": "3e316000",
+      "cpu_inv_f32": "4138ba2f",
+      "cpu_q": 2,
+      "cpu_scaled_f32": "3fc00000",
+      "d_f16": "2d8b",
+      "d_f32": "3db162c6",
+      "float_rhs_dot_f32": "3e050a14",
+      "glsl_inv_f32": "4138ba2e",
+      "glsl_q": 1,
+      "glsl_q8_dot_f32": "3db16000",
+      "glsl_scaled_f32": "3fbfffff",
+      "max_f32": "41300000",
+      "v_f32": "3e050a14"
+    },
+    {
+      "cpu_dot_f32": "3e316000",
+      "cpu_inv_f32": "4138ba2f",
+      "cpu_q": 2,
+      "cpu_scaled_f32": "400a8ba3",
+      "d_f16": "2d8b",
+      "d_f32": "3db162c6",
+      "float_rhs_dot_f32": "3e400000",
+      "glsl_inv_f32": "4138ba2e",
+      "glsl_q": 2,
+      "glsl_q8_dot_f32": "3e316000",
+      "glsl_scaled_f32": "400a8ba2",
+      "max_f32": "41300000",
+      "v_f32": "3e400000"
+    }
+  ],
+  "radv_dispatch": "NOT_RUN",
+  "reference_commit": "d0ebfbcc6c8f456bc1083027c1b08075a32824d8",
+  "sha256_relative_to_ggml_src": {
+    "ggml-common.h": "578a0cffc8284387191aceb7128cc39d92a3b3edc199fe0b79ed8627fefcc633",
+    "ggml-cpu/arch/x86/quants.c": "3c489fdc77e3ab484a5f188bff9c60c0e9483c951ed65c1a562a04c249d5628e",
+    "ggml-cpu/ggml-cpu.c": "bda1c2c81077d89813c3b4776079a5ddf65eaf28bf1e33338473818cc56831f5",
+    "ggml-vulkan/ggml-vulkan.cpp": "63140287d1ed1722d69d30881e4140da9306b3231bc83b07937bc7bbd30dbc77",
+    "ggml-vulkan/vulkan-shaders/dequant_funcs.glsl": "be596a0e9a134c3e0c291dd957f666e74bc6b6368dae94f93bcfec66b81b460d",
+    "ggml-vulkan/vulkan-shaders/mul_mat_vecq_funcs.glsl": "3fd3fb25cfdb3214eeb8659bbeaf0bc0f6d095d9314ca7536933d7cafd52bcf6",
+    "ggml-vulkan/vulkan-shaders/mul_mmq_funcs.glsl": "ccac1efc8af5006edffbf43ae120b514fde899fcc89ec863526be23b9e906ef0",
+    "ggml-vulkan/vulkan-shaders/quantize_q8_1.comp": "9f16a5781b7c2ffebec4d18debbeb03ba86be6b473b69dd658aa42d1188825cd",
+    "ggml-vulkan/vulkan-shaders/types.glsl": "e63375daed0627d0e7d04a21ead2ad17106ee8296cecfbc9d0f6b7fa8e6bf7e9",
+    "ggml-vulkan/vulkan-shaders/vulkan-shaders-gen.cpp": "96f8370fc1bfb226147ad45edaa0c874839c5078373f36265028287c3f180d08"
+  },
+  "status": "PASS_C269_RHS_SOURCE_EXPRESSION_WITNESSES"
+}
