@@ -255,8 +255,13 @@ def main():
     resource.setrlimit(resource.RLIMIT_AS, (512 << 20, 512 << 20))
     signal.alarm(120)
     try:
+
         def git(*cmd):
-            return subprocess.check_output(["git", *cmd], cwd=HERE, text=True).strip()
+            return subprocess.check_output(
+                ["git", "-c", "core.preloadIndex=false", "-c", "index.threads=1", *cmd],
+                cwd=HERE,
+                text=True,
+            ).strip()
 
         commit, tree = git("rev-parse", "HEAD"), git("rev-parse", "HEAD^{tree}")
         require(not git("status", "--porcelain=v1", "--untracked-files=normal"), "dirty checkout")
@@ -265,7 +270,14 @@ def main():
         result.update(commit=commit, tree=tree, clean=True)
     except FileNotFoundError as exc:
         result = {"status": "NOT_RUN_RAW_REQUIRED", "missing": Path(exc.filename).name}
-    except (ValueError, KeyError, StopIteration, OSError, TypeError) as exc:
+    except (
+        ValueError,
+        KeyError,
+        StopIteration,
+        OSError,
+        TypeError,
+        subprocess.CalledProcessError,
+    ) as exc:
         result = {"status": "FAIL_PRESERVED", "reason": str(exc)}
     finally:
         signal.alarm(0)
