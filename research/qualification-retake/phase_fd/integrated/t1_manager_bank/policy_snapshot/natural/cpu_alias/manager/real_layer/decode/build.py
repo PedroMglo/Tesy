@@ -39,8 +39,10 @@ def build(args, r):
     load(overlay).materialize(private)
     source = private / "src/llama-moe-stream.cpp"
     text = source.read_text()
-    start = """int32_t llama_moe_stream::pick_victim_locked(llama_moe_stream_layer & sl, const uint8_t * keep) const {
-    int32_t v = -1;"""
+    start = (
+        "int32_t llama_moe_stream::pick_victim_locked(llama_moe_stream_layer & sl, "
+        "const uint8_t * keep) const {\n    int32_t v = -1;"
+    )
     need(text.count(start) == 1, "declared eligibility site")
     text = text.replace(
         start,
