@@ -26,7 +26,7 @@ físico efetivo é desconhecido, entre zero e o valor que o respectivo estado
 pronto permitiria; um leitor antigo pode manter uma versão adicional até ao
 join. O crédito bruto máximo por duplicado CPU é um registo de 13 221 888 B.
 Cobrar o padding relativamente ao primário denso, os quatro registos de
-staging e o índice de 128 B/chave arredondado a 4 KiB. As PTEs, o último
+staging e o índice de 4 096 + 36×128×4 + 64×(K+4) B arredondado a 4 KiB (fórmula pinada de host_cache). As PTEs, o último
 leitor e os buffers extra de handoff merecem uma coluna/condição própria.
 Usar o pico cgroup e GPU da própria família comparada e os stops já definidos;
 manter o orçamento fixo de K353 separado da margem da máquina.
