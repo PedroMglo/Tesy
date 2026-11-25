@@ -1,0 +1,98 @@
+--- a/src/phase-fd-integrated.h
++++ b/src/phase-fd-integrated.h
+@@ -25,7 +25,9 @@
+     LOAD_FAIL, BARRIER_ENTER, BARRIER_RETURN, VICTIM_WAIT, VICTIM_RESUME,
+     REMAP_END, WORKER_EXIT, END, PENDING_AT_RETURN, RANKS, CANCEL_QUEUED, PACK_FILE, PACK_READ
+ };
+-constexpr size_t capacity = 262144;
++constexpr size_t capacity = 1398100;
++constexpr size_t t2_headroom = 262144;
++constexpr int last_t1_call = 86;
+ struct Header {
+     char magic[8];
+     uint64_t version, record_bytes, capacity, attempted, saved, flags, reserved;
+@@ -49,7 +51,8 @@
+     Header *header;
+     std::atomic<uint64_t> count{0};
+     std::atomic<bool> live{false}, invalid{false};
+-    int calls=0;
++    std::atomic<bool> suffix{false};
++    int calls=0, last_position=-1;
+     Site origin[36][40]{};
+     int components[36][3]{};
+ };
+@@ -71,6 +74,23 @@
+ inline void emit(Kind kind, Site s, int64_t a=0, int64_t b=0, int64_t c=0,
+                  uint64_t begin=0, uint64_t end=0, int error=0) {
+     if (!active()) return;
++    if (!journal->suffix.load(std::memory_order_acquire)) {
++        switch (kind) {
++            case ENTER: case RETURN: case TILE: case TILE_RETURN: case SLOT:
++            case FILE_ID: case WEIGHT: case PACK_FILE: case RANKS:
++            case RESERVE: case PUBLISH: case LOAD_FAIL: case WORKER_EXIT: case END:
++                break;
++            case PACK_READ:
++                if (c < static_cast<int64_t>(tesy_expert_store::weights) || c > b ||
++                    b != 13221888 || error != 0) journal->invalid = true;
++                return;
++            case READ:
++                journal->invalid = true;  // This profile requires the authenticated pack.
++                return;
++            default:
++                return;
++        }
++    }
+     const uint64_t ns=end ? end : now();
+     const auto i=journal->count.fetch_add(1, std::memory_order_relaxed);
+     if (i>=capacity) return;
+@@ -94,7 +114,7 @@
+     if (mapping==MAP_FAILED) { close(fd); throw std::runtime_error("PFJ1 mmap"); }
+     j->file=fd;
+     j->header=static_cast<Header *>(mapping);
+-    *j->header={{'T','E','S','Y','P','F','1','\0'},1,sizeof(Record),capacity,0,0,0,0};
++    *j->header={{'T','E','S','Y','F','P','1','\0'},1,sizeof(Record),capacity,0,0,0,0};
+     journal=j.release();
+ }
+ inline Site slot_site(Site s, const llama_moe_stream_layer &sl, int index) {
+@@ -185,7 +205,10 @@
+     if(first) bind_components(*mgr);
+     journal->live.store(true,std::memory_order_release);
+     emit(ENTER,host,n,p0,p1,start);
+-    if(first) snapshot(*mgr,host);
++    if (first || host.call == last_t1_call + 1) {
++        if (!mgr->q_demand.empty() || claims(*mgr) != 0) journal->invalid = true;
++        snapshot(*mgr,host);
++    }
+ }
+ inline void returned(llama_moe_stream *mgr, int rc) {
+     if (!active() || !host.call) return;
+@@ -197,6 +220,21 @@
+         if(sl->slot_claimed[s] || sl->slot_state[s]==LLAMA_MOE_STREAM_SLOT_LOADING)
+             emit(PENDING_AT_RETURN,slot_site(boundary,*sl,s),sl->slot_state[s],sl->slot_claimed[s]);
+     queue(*mgr,QUEUED_AT_CUT,boundary,2);
++    if (host.call == last_t1_call) {
++        bool drained = !computing && !rc && mgr->q_demand.empty() && !claims(*mgr);
++        for (const auto &sl : mgr->layers) if (sl)
++            for (const auto state : sl->slot_state)
++                if (state == LLAMA_MOE_STREAM_SLOT_LOADING) drained = false;
++        const uint64_t count = journal->count.load();
++        // No worker can still publish an included prefix record across this held manager mutex.
++        // Rank/call events are emitted by this host thread. No T2 POST exists at this point.
++        if (!drained || journal->last_position != 2119 || journal->invalid.load() ||
++            count > capacity - t2_headroom ||
++            ::pwrite(journal->file, &count, sizeof(count), offsetof(Header,reserved)) != sizeof(count))
++            journal->invalid = true;
++        else
++            journal->suffix.store(true, std::memory_order_release);
++    }
+     if(computing || rc) journal->invalid=true;
+     host=Site{};
+ }
+@@ -205,6 +243,7 @@
+     if(!host.call || computing || mgr!=journal->manager) journal->invalid=true;
+     host.tile=host.tile<0 ? 1 : host.tile+1;
+     computing=true;
++    journal->last_position=p1;
+     emit(TILE,host,n,p0,p1);
+ }
+ inline void graph_return(int status) {
