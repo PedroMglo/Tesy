@@ -35,7 +35,7 @@ def inspect_driver(name):
                 )
             ):
                 raise ValueError("device identification failed")
-            devices.append({"name": label.value.decode(), "pci": bus.value.decode()})
+            devices.append({"name": label.value.decode(), "pci": bus.value.decode().lower()})
     mappings = {
         Path(line.split()[-1])
         for line in Path("/proc/self/maps").read_text().splitlines()
