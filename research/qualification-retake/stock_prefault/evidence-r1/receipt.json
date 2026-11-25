@@ -1,0 +1,46 @@
+{
+  "status": "PASS_MAPPING_PTE_FIXTURE_ONLY",
+  "protocol_sha256": "8d9fb999d20d6b65f8e5cbf2ec9e988be057bda047f5e737baf3023186590c6f",
+  "arms": [
+    {
+      "prefetch": true,
+      "map_flags": 32769,
+      "fadvise_sequential": 1,
+      "madvise_willneed": 1,
+      "resident_pages": 1024,
+      "vma_rss_before_kib": 4096,
+      "vma_rss_after_kib": 4096,
+      "bytes_compared_exact": 4194304
+    },
+    {
+      "prefetch": false,
+      "map_flags": 1,
+      "fadvise_sequential": 1,
+      "madvise_willneed": 0,
+      "resident_pages": 1024,
+      "vma_rss_before_kib": 0,
+      "vma_rss_after_kib": 4096,
+      "bytes_compared_exact": 4194304
+    }
+  ],
+  "pin": "e95426f16982054c379ca7bdc8186996dd22f0fe",
+  "source_sha256": {
+    "src/llama-model.cpp": "9956da154d2a34fdb2ae627a4c70ef34f046b86c145039de754a7ad7a4b67667",
+    "src/llama-model-loader.cpp": "b856b513340e9e86ab81e2d8d110fedd07b60f508e0e4f8513690150f8efd7e1",
+    "src/llama-quant.cpp": "f3d57d3a8ec8688604742d3b8c345c00a1c5cde3e06f254294ca57873f98ba6e",
+    "src/llama-mmap.cpp": "130601ff8c2b6e16668b70a1dca07cc09ae84328d91bbd5bd259aea5658103e7",
+    "src/llama-impl.cpp": "abd5851762a157ae477588537e0cfe8dddfa1d2a2efb596d17efa4a19b45c769",
+    "src/llama-mmap.h": "0fff03ce62bc51b1649833f6017fbd84dc0aac7fce3b38484439153fc13ba8f5"
+  },
+  "stock_objects_sha256": {
+    "llama-mmap.cpp.o": "f55d793fc77cd8ec4519fbe2d7a4ed19aca34908c31018f3a451a0001f702156",
+    "llama-impl.cpp.o": "4e139697a87cc906ce0d83555abd5ce6d86063dff77fbce212217ad4861b622e"
+  },
+  "linked_ggml_base_sha256": "c58db87a08edfe5d499f24c1bdbd3efd844c40368f030282ef750c4e56b52c4d",
+  "client_sha256": "d6daea1f0365ff9e50cec6029f3cbae8b7a99c5072383aa9aab05b4f5ac0c0d0",
+  "client_source_sha256": "4dc30a7c444d85bbf6ab5cd2df1c12b7fd3ab19a037164a09db60d58a185d36a",
+  "runner_sha256": "d96c678cd096cf86d8bfcbd996cca6f7381404e449b0dede4dae41203834d819",
+  "private_bytes": 71138,
+  "native_child_max_rss_kib": 100808,
+  "elapsed_s": 0.4569541199998639
+}
