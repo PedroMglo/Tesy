@@ -1,8 +1,8 @@
 """Model-free checks of source provenance and the trial's failure conditions."""
 
-import struct
 import hashlib
 import json
+import struct
 import tempfile
 import unittest
 from pathlib import Path
