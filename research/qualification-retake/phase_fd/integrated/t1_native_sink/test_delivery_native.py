@@ -38,3 +38,14 @@ def test_direct_reads_use_absolute_payload_displacements(monkeypatch):
     )
     assert logs == [(19, 8192, 4096 * i) for i in range(3)]
     assert sink.writes == [("cpu", i, 2, ptr + i) for i in range(3)]
+
+
+def test_live_monitor_accepts_only_own_gpu_context():
+    import pytest
+
+    check = measure["allowed_gpu_owners"]
+    assert check("", 33, "GPU-one", False) == []
+    assert check("GPU-one, 33", 33, "GPU-one", True) == [33]
+    for text in ("", "GPU-two, 33", "GPU-one, 34", "GPU-one, 33\nGPU-one, 34"):
+        with pytest.raises(ValueError):
+            check(text, 33, "GPU-one", True)

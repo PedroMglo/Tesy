@@ -58,10 +58,10 @@ def scope():
     return cg["memory_peak"]
 
 
-def monitor(policy):
+def monitor(policy, *, sample=None):
     peak = scope()
     require(not concurrent(), "concurrent build, model or transfer")
-    obs = live_sample()
+    obs = live_sample() if sample is None else sample()
     validate_sample(
         obs, policy=policy, cap_bytes=CAP, expected_power={"source": "AC", "profile": "performance"}
     )

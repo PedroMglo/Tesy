@@ -100,6 +100,38 @@ def group(pool, sinks, cell, sample, fds, pointers, entries, scratch, output, po
     )
 
 
+def allowed_gpu_owners(rows, owner, gpu_uuid, require_owner):
+    owners = []
+    for row in rows.splitlines():
+        uuid, pid = (v.strip() for v in row.split(","))
+        need(uuid == gpu_uuid and pid.isdecimal() and int(pid) == owner, "foreign GPU process")
+        owners.append(int(pid))
+    need(len(owners) <= 1 and (not require_owner or owners == [owner]), "GPU owner absent")
+    return owners
+
+
+def active_sample(owner, gpu_uuid, require_owner):
+    from c118_start_inventory import live_power, server
+
+    rows = subprocess.check_output(
+        [
+            "/usr/bin/nvidia-smi",
+            "--query-compute-apps=gpu_uuid,pid",
+            "--format=csv,noheader,nounits",
+        ],
+        text=True,
+        timeout=8,
+    ).strip()
+    owners = allowed_gpu_owners(rows, owner, gpu_uuid, require_owner)
+    return dict(
+        thermal=server.thermal_state(prospective=True),
+        gpu=server.gpu_state(prospective=True),
+        power=live_power(),
+        mem_available_bytes=server.mem_available(),
+        gpu_owners=owners,
+    )
+
+
 def execute(a, result, out):
     cold = run_path(str(HERE.parent / "cold_read_fixture/runner.py"))
     io, c135, load = cold["io"], cold["c135"], cold["load"]
@@ -177,13 +209,22 @@ def execute(a, result, out):
     with ExitStack() as outer:
         samples = outer.enter_context((out / "raw/service-monitor.jsonl").open("x"))
         last = clock()
+        gpu_phase = "before"
 
         def monitor(force=False):
             nonlocal last
             delta = clock() - last
             need(delta <= 5_000_000_000, "monitor gap")
             if force or delta >= 500_000_000:
-                s = io.monitor(policy)
+                if gpu_phase == "before":
+                    s = io.monitor(policy)
+                else:
+                    s = io.monitor(
+                        policy,
+                        sample=lambda: active_sample(
+                            os.getpid(), policy["gpu"]["uuid"], gpu_phase == "active"
+                        ),
+                    )
                 need(s["observation"]["gpu"]["used_mib"] < 1536, "local GPU cap")
                 cold["append_row"](samples, s)
                 last = clock()
@@ -216,6 +257,8 @@ def execute(a, result, out):
             sinks = native["NativeSinks"](s, a.map)
             result["native_init_ns"] = clock() - start
             result["native"] = sinks.receipt
+            result["process_pid"] = os.getpid()
+            gpu_phase = "active"
             monitor(True)
             pool = s.enter_context(ThreadPoolExecutor(max_workers=4))
             latch = threading.Barrier(4)
@@ -263,6 +306,7 @@ def execute(a, result, out):
             )
             unchanged()
             cleanup = clock()
+        gpu_phase = "cleanup"
         result["fixture_cleanup_ns"] = clock() - cleanup
         monitor(True)
     result.update(
