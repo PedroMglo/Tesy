@@ -1,0 +1,462 @@
+{
+  "P106": {
+    "dense_router_MAC": 1353646080,
+    "eligible_cpu_reservations": {
+      "bank": 168,
+      "pack": 594
+    },
+    "groups": {
+      "earliest_outer": {
+        "all": {
+          "budgets": {
+            "decode_floor_ns": 4046686729,
+            "decode_margin_ns": 3786646604,
+            "first_floor_ns": 9737635168,
+            "first_margin_ns": 262364832,
+            "independent_decode_saving_needed_ns": 0,
+            "independent_first_saving_needed_ns": 0,
+            "joint": "HEADROOM_ONLY",
+            "shared_extra_ceiling_ns": 262364832
+          },
+          "phases": {
+            "decode_first": {
+              "early_bytes_floor": 6675818481,
+              "either_resource_ns": 1445271982,
+              "link_ns": 1445271982,
+              "pack_bytes": 13179542400,
+              "set_ns": 717065242
+            },
+            "decode_tail": {
+              "early_bytes_floor": 155851438,
+              "either_resource_ns": 25546530,
+              "link_ns": 18243147,
+              "pack_bytes": 237945600,
+              "set_ns": 20993909
+            },
+            "prefill": {
+              "early_bytes_floor": 7802869792,
+              "either_resource_ns": 1121261153,
+              "link_ns": 1103750535,
+              "pack_bytes": 12769747200,
+              "set_ns": 314282276
+            }
+          }
+        },
+        "own": {
+          "budgets": {
+            "decode_floor_ns": 4446035187,
+            "decode_margin_ns": 3387298146,
+            "first_floor_ns": 10702379400,
+            "first_margin_ns": -702379400,
+            "independent_decode_saving_needed_ns": 0,
+            "independent_first_saving_needed_ns": 702379400,
+            "joint": "NO_GO_FIXED_SCENARIO",
+            "minimum_tokens_s_if_only_additional_early_decode_improves": 12.554573036124062,
+            "shared_extra_ceiling_ns": -702379400
+          },
+          "phases": {
+            "decode_first": {
+              "early_bytes_floor": 4906872697,
+              "either_resource_ns": 1838371045,
+              "link_ns": 1838371045,
+              "pack_bytes": 13179542400,
+              "set_ns": 717065242
+            },
+            "decode_tail": {
+              "early_bytes_floor": 103450113,
+              "either_resource_ns": 31795925,
+              "link_ns": 29887886,
+              "pack_bytes": 237945600,
+              "set_ns": 20993909
+            },
+            "prefill": {
+              "early_bytes_floor": 5167635948,
+              "either_resource_ns": 1692906322,
+              "link_ns": 1689358056,
+              "pack_bytes": 12769747200,
+              "set_ns": 314282276
+            }
+          }
+        },
+        "prefill_cpu_only": {
+          "budgets": {
+            "decode_floor_ns": 4446035187,
+            "decode_margin_ns": 3387298146,
+            "first_floor_ns": 10349362027,
+            "first_margin_ns": -349362027,
+            "independent_decode_saving_needed_ns": 0,
+            "independent_first_saving_needed_ns": 349362027,
+            "joint": "NO_GO_FIXED_SCENARIO",
+            "minimum_tokens_s_if_only_additional_early_decode_improves": 11.472723882126832,
+            "shared_extra_ceiling_ns": -349362027
+          },
+          "phases": {
+            "decode_first": {
+              "early_bytes_floor": 4906872697,
+              "either_resource_ns": 1838371045,
+              "link_ns": 1838371045,
+              "pack_bytes": 13179542400,
+              "set_ns": 717065242
+            },
+            "decode_tail": {
+              "early_bytes_floor": 103450113,
+              "either_resource_ns": 31795925,
+              "link_ns": 29887886,
+              "pack_bytes": 237945600,
+              "set_ns": 20993909
+            },
+            "prefill": {
+              "early_bytes_floor": 6794002678,
+              "either_resource_ns": 1339888949,
+              "link_ns": 1327943227,
+              "pack_bytes": 12769747200,
+              "set_ns": 314282276
+            }
+          }
+        }
+      },
+      "ranks_observed": {
+        "all": {
+          "budgets": {
+            "decode_floor_ns": 4488029452,
+            "decode_margin_ns": 3345303881,
+            "first_floor_ns": 10325788687,
+            "first_margin_ns": -325788687,
+            "independent_decode_saving_needed_ns": 0,
+            "independent_first_saving_needed_ns": 325788687,
+            "joint": "NO_GO_FIXED_SCENARIO",
+            "minimum_tokens_s_if_only_additional_early_decode_improves": 11.291994541791,
+            "shared_extra_ceiling_ns": -325788687
+          },
+          "phases": {
+            "decode_first": {
+              "early_bytes_floor": 4717898505,
+              "either_resource_ns": 1880365310,
+              "link_ns": 1880365310,
+              "pack_bytes": 13179542400,
+              "set_ns": 717065242
+            },
+            "decode_tail": {
+              "early_bytes_floor": 103450113,
+              "either_resource_ns": 31795925,
+              "link_ns": 29887886,
+              "pack_bytes": 237945600,
+              "set_ns": 20993909
+            },
+            "prefill": {
+              "early_bytes_floor": 7044742512,
+              "either_resource_ns": 1274321344,
+              "link_ns": 1272223264,
+              "pack_bytes": 12769747200,
+              "set_ns": 314282276
+            }
+          }
+        },
+        "own": {
+          "budgets": {
+            "decode_floor_ns": 5557532217,
+            "decode_margin_ns": 2275801116,
+            "first_floor_ns": 12475474198,
+            "first_margin_ns": -2475474198,
+            "independent_decode_saving_needed_ns": 0,
+            "independent_first_saving_needed_ns": 2475474198,
+            "joint": "NO_GO_FIXED_SCENARIO",
+            "minimum_tokens_s_if_only_additional_early_decode_improves": 15.249550693159744,
+            "shared_extra_ceiling_ns": -2475474198
+          },
+          "phases": {
+            "decode_first": {
+              "early_bytes_floor": 0,
+              "either_resource_ns": 2928787200,
+              "link_ns": 2928787200,
+              "pack_bytes": 13179542400,
+              "set_ns": 717065242
+            },
+            "decode_tail": {
+              "early_bytes_floor": 0,
+              "either_resource_ns": 52876800,
+              "link_ns": 52876800,
+              "pack_bytes": 237945600,
+              "set_ns": 20993909
+            },
+            "prefill": {
+              "early_bytes_floor": 2079614857,
+              "either_resource_ns": 2375584965,
+              "link_ns": 2375584965,
+              "pack_bytes": 12769747200,
+              "set_ns": 314282276
+            }
+          }
+        },
+        "prefill_cpu_only": {
+          "budgets": {
+            "decode_floor_ns": 5557532217,
+            "decode_margin_ns": 2275801116,
+            "first_floor_ns": 11644354895,
+            "first_margin_ns": -1644354895,
+            "independent_decode_saving_needed_ns": 0,
+            "independent_first_saving_needed_ns": 1644354895,
+            "joint": "NO_GO_FIXED_SCENARIO",
+            "minimum_tokens_s_if_only_additional_early_decode_improves": 12.010700290979557,
+            "shared_extra_ceiling_ns": -1644354895
+          },
+          "phases": {
+            "decode_first": {
+              "early_bytes_floor": 0,
+              "either_resource_ns": 2928787200,
+              "link_ns": 2928787200,
+              "pack_bytes": 13179542400,
+              "set_ns": 717065242
+            },
+            "decode_tail": {
+              "early_bytes_floor": 0,
+              "either_resource_ns": 52876800,
+              "link_ns": 52876800,
+              "pack_bytes": 237945600,
+              "set_ns": 20993909
+            },
+            "prefill": {
+              "early_bytes_floor": 5819651721,
+              "either_resource_ns": 1544465662,
+              "link_ns": 1544465662,
+              "pack_bytes": 12769747200,
+              "set_ns": 314282276
+            }
+          }
+        }
+      }
+    },
+    "projected_rows": 3672
+  },
+  "P97": {
+    "dense_router_MAC": 1353646080,
+    "eligible_cpu_reservations": {
+      "bank": 168,
+      "pack": 594
+    },
+    "groups": {
+      "earliest_outer": {
+        "all": {
+          "budgets": {
+            "decode_floor_ns": 3879002098,
+            "decode_margin_ns": 3954331235,
+            "first_floor_ns": 8684900601,
+            "first_margin_ns": 1315099399,
+            "independent_decode_saving_needed_ns": 0,
+            "independent_first_saving_needed_ns": 0,
+            "joint": "HEADROOM_ONLY",
+            "shared_extra_ceiling_ns": 1315099399
+          },
+          "phases": {
+            "decode_first": {
+              "early_bytes_floor": 6096309588,
+              "either_resource_ns": 1574051736,
+              "link_ns": 1574051736,
+              "pack_bytes": 13179542400,
+              "set_ns": 646320880
+            },
+            "decode_tail": {
+              "early_bytes_floor": 138676369,
+              "either_resource_ns": 26778005,
+              "link_ns": 22059829,
+              "pack_bytes": 237945600,
+              "set_ns": 19243134
+            },
+            "prefill": {
+              "early_bytes_floor": 7426694799,
+              "either_resource_ns": 1200120915,
+              "link_ns": 1187344978,
+              "pack_bytes": 12769747200,
+              "set_ns": 294305650
+            }
+          }
+        },
+        "own": {
+          "budgets": {
+            "decode_floor_ns": 4271752940,
+            "decode_margin_ns": 3561580393,
+            "first_floor_ns": 9651065336,
+            "first_margin_ns": 348934664,
+            "independent_decode_saving_needed_ns": 0,
+            "independent_first_saving_needed_ns": 0,
+            "joint": "HEADROOM_ONLY",
+            "shared_extra_ceiling_ns": 348934664
+          },
+          "phases": {
+            "decode_first": {
+              "early_bytes_floor": 4361588343,
+              "either_resource_ns": 1959545346,
+              "link_ns": 1959545346,
+              "pack_bytes": 13179542400,
+              "set_ns": 646320880
+            },
+            "decode_tail": {
+              "early_bytes_floor": 84787033,
+              "either_resource_ns": 34035237,
+              "link_ns": 34035237,
+              "pack_bytes": 237945600,
+              "set_ns": 19243134
+            },
+            "prefill": {
+              "early_bytes_floor": 4756183020,
+              "either_resource_ns": 1780792040,
+              "link_ns": 1780792040,
+              "pack_bytes": 12769747200,
+              "set_ns": 294305650
+            }
+          }
+        },
+        "prefill_cpu_only": {
+          "budgets": {
+            "decode_floor_ns": 4271752940,
+            "decode_margin_ns": 3561580393,
+            "first_floor_ns": 9285656533,
+            "first_margin_ns": 714343467,
+            "independent_decode_saving_needed_ns": 0,
+            "independent_first_saving_needed_ns": 0,
+            "joint": "HEADROOM_ONLY",
+            "shared_extra_ceiling_ns": 714343467
+          },
+          "phases": {
+            "decode_first": {
+              "early_bytes_floor": 4361588343,
+              "either_resource_ns": 1959545346,
+              "link_ns": 1959545346,
+              "pack_bytes": 13179542400,
+              "set_ns": 646320880
+            },
+            "decode_tail": {
+              "early_bytes_floor": 84787033,
+              "either_resource_ns": 34035237,
+              "link_ns": 34035237,
+              "pack_bytes": 237945600,
+              "set_ns": 19243134
+            },
+            "prefill": {
+              "early_bytes_floor": 6432828367,
+              "either_resource_ns": 1415383237,
+              "link_ns": 1408204185,
+              "pack_bytes": 12769747200,
+              "set_ns": 294305650
+            }
+          }
+        }
+      },
+      "ranks_observed": {
+        "all": {
+          "budgets": {
+            "decode_floor_ns": 4310173668,
+            "decode_margin_ns": 3523159665,
+            "first_floor_ns": 9240384235,
+            "first_margin_ns": 759615765,
+            "independent_decode_saving_needed_ns": 0,
+            "independent_first_saving_needed_ns": 0,
+            "joint": "HEADROOM_ONLY",
+            "shared_extra_ceiling_ns": 759615765
+          },
+          "phases": {
+            "decode_first": {
+              "early_bytes_floor": 4188695067,
+              "either_resource_ns": 1997966074,
+              "link_ns": 1997966074,
+              "pack_bytes": 13179542400,
+              "set_ns": 646320880
+            },
+            "decode_tail": {
+              "early_bytes_floor": 84787033,
+              "either_resource_ns": 34035237,
+              "link_ns": 34035237,
+              "pack_bytes": 237945600,
+              "set_ns": 19243134
+            },
+            "prefill": {
+              "early_bytes_floor": 6777141250,
+              "either_resource_ns": 1331690211,
+              "link_ns": 1331690211,
+              "pack_bytes": 12769747200,
+              "set_ns": 294305650
+            }
+          }
+        },
+        "own": {
+          "budgets": {
+            "decode_floor_ns": 5259836357,
+            "decode_margin_ns": 2573496976,
+            "first_floor_ns": 11256215752,
+            "first_margin_ns": -1256215752,
+            "independent_decode_saving_needed_ns": 0,
+            "independent_first_saving_needed_ns": 1256215752,
+            "joint": "NO_GO_FIXED_SCENARIO",
+            "minimum_tokens_s_if_only_additional_early_decode_improves": 11.739374090867434,
+            "shared_extra_ceiling_ns": -1256215752
+          },
+          "phases": {
+            "decode_first": {
+              "early_bytes_floor": 0,
+              "either_resource_ns": 2928787200,
+              "link_ns": 2928787200,
+              "pack_bytes": 13179542400,
+              "set_ns": 646320880
+            },
+            "decode_tail": {
+              "early_bytes_floor": 0,
+              "either_resource_ns": 52876800,
+              "link_ns": 52876800,
+              "pack_bytes": 237945600,
+              "set_ns": 19243134
+            },
+            "prefill": {
+              "early_bytes_floor": 1894594491,
+              "either_resource_ns": 2416700602,
+              "link_ns": 2416700602,
+              "pack_bytes": 12769747200,
+              "set_ns": 294305650
+            }
+          }
+        },
+        "prefill_cpu_only": {
+          "budgets": {
+            "decode_floor_ns": 5259836357,
+            "decode_margin_ns": 2573496976,
+            "first_floor_ns": 10438106153,
+            "first_margin_ns": -438106153,
+            "independent_decode_saving_needed_ns": 0,
+            "independent_first_saving_needed_ns": 438106153,
+            "joint": "NO_GO_FIXED_SCENARIO",
+            "minimum_tokens_s_if_only_additional_early_decode_improves": 9.747538334063123,
+            "shared_extra_ceiling_ns": -438106153
+          },
+          "phases": {
+            "decode_first": {
+              "early_bytes_floor": 0,
+              "either_resource_ns": 2928787200,
+              "link_ns": 2928787200,
+              "pack_bytes": 13179542400,
+              "set_ns": 646320880
+            },
+            "decode_tail": {
+              "early_bytes_floor": 0,
+              "either_resource_ns": 52876800,
+              "link_ns": 52876800,
+              "pack_bytes": 237945600,
+              "set_ns": 19243134
+            },
+            "prefill": {
+              "early_bytes_floor": 5576087686,
+              "either_resource_ns": 1598591003,
+              "link_ns": 1598591003,
+              "pack_bytes": 12769747200,
+              "set_ns": 294305650
+            }
+          }
+        }
+      }
+    },
+    "projected_rows": 3672
+  },
+  "payload_Bps": 4500000000,
+  "prior_sha256": "ed035fcfa6a98e12ec7bbef29343256caa7c857f942d3ffa689e4bb562974147",
+  "protocol_sha256": "323f51a3a664251b30ac5e627bf7778789085cb17fb847d736e8a4fc153c8401",
+  "source_sha256": "22a46e7f77c874076c60818b8e9ea23b41f828374b0fe1795193e1436ee559ce",
+  "status": "REPRODUCED_CPU_ONLY_PREFILL_CONDITIONAL_CLOCKS"
+}
