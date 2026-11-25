@@ -1,5 +1,7 @@
 # A agenda de duas tiles ainda deixa 334–366 ms por recuperar
 
+**Medição posterior no NVMe.** A agenda que disponibiliza todas as leituras de cada chamada logo à entrada mediu 2,522 e 2,628 GB/s úteis no pack. Com estes preços efetivos, ainda faltam 2,187–2,444 s na comparação que concede zero a todas as lacunas. O mínimo offline neste T2 é 787 leituras conservando os conjuntos do carry nos dois retornos, e 734 deixando-os livres. [Quatro travessias e composição com o decode](transport/joint/README.md) · [Limite por seleção](oracle/README.md)
+
 **Neste segundo turno do portátil, mudar apenas a agenda de prefill não chega aos 10 s para o primeiro conteúdo final.** A política de prioridade e banco pede ao disco 1 058 payloads, ou **13 985 913 600 B úteis**. À banda de cenário de 4,5 GB/s, só estes bytes custam 3,107981 s. As 205 lacunas drenadas entre camadas somam mais 1,151151 s na execução serial. O pipeline causal mais favorável aqui admitido pode ocultar até 0,791666 s dessa parcela. Mesmo realizando toda a sobreposição gratuita, sobram 0,359485 s expostos. [Recibo das duas reproduções](evidence/receipt.json) · [Pré-registo](protocol.md)
 
 | No mesmo T2 ON | Pack após GGUF (RP) | Pack antes de GGUF (PR) |
