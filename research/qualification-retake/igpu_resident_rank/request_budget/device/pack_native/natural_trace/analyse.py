@@ -80,7 +80,7 @@ def host_trace(rows):
                 and (e.b, e.c) in ((-1, -1), (next_position, next_position + sum(g) - 1)),
                 "input span",
             )
-            call = {"number": e.call, "enter_ns": e.ns, "geometry": []}
+            call = {"number": e.call, "enter_ns": e.ns, "enter_begin_ns": e.begin, "geometry": []}
             calls.append(call)
             if e.call == 3:
                 h = hashlib.sha256()
@@ -321,6 +321,9 @@ def audit_arm(arm_dir, receipt, trigger_ns):
             "temporal_claim": "FIXED_EXTERIOR_SCENARIO_ONLY",
         },
         "calls": host["calls"],
+        "http_cut": run_path(str(HERE / "client_cut.py"))["inspect"](
+            arm_dir, receipt, host["calls"]
+        ),
         "budget": totals,
     }
 
@@ -342,6 +345,9 @@ def historical(arm):
         "inputs": pins,
         "route": host["route"],
         "fixed_remainder": now,
+        "http_cut": run_path(str(HERE / "client_cut.py"))["inspect"](
+            arm, read(arm / "receipt.json"), host["calls"]
+        ),
     }
 
 

@@ -7,6 +7,9 @@ from types import SimpleNamespace
 from analyse import GEOMETRY, HISTORICAL, bound, close_barrier, verify_routes
 
 
+from client_cut import upper_bounds
+
+
 class HostChecks(unittest.TestCase):
     def test_consumer_wait(self):
         key = (25, 7, 3, 10)
@@ -61,6 +64,18 @@ class HostChecks(unittest.TestCase):
         self.assertEqual(res["host_unions"]["callback_spans"]["prefill_ns"], 2 * ns)
         self.assertEqual(res["scenarios"]["6"]["decision"], "NO_GO_FIXED_EXTERIOR")
         self.assertEqual(res["independent_last_cuda_consumer"], "UNKNOWN")
+
+    def test_http_cut_includes_remaining_model_work(self):
+        calls = [
+            {"number": 1, "enter_begin_ns": 5002},
+            {"number": 2, "return_ns": 20_000},
+            {"number": 3, "return_ns": 40_000},
+        ]
+        data = upper_bounds(0.000001, 0.000042, calls, 2)
+        self.assertEqual(data["sample_call"], 3)
+        self.assertEqual(data["last_relevant_return_to_first_final_ns"], 2000)
+        with self.assertRaises(ValueError):
+            upper_bounds(0.000001, 0.000019, calls, 1)
 
     def test_reference(self):
         row = json.loads(Path(__file__).with_name("historical.json").read_bytes())
