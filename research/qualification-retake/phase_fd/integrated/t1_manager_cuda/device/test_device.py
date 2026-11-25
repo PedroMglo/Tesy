@@ -27,6 +27,21 @@ class Device(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "identity"):
             build["render"](b"unapproved observer")
 
+    def test_passive_reference_identity(self):
+        with TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            name = (root / "mapped.so").resolve()
+            name.write_bytes(bytes(8192))
+            table = root / "allowed.tsv"
+            build["write_vma_table"](
+                table, {"test": name}, {str(name): {"ino": name.stat().st_ino}}
+            )
+            major, minor, ino, target = table.read_text().strip().split()
+            self.assertEqual((int(ino), target), (name.stat().st_ino, str(name)))
+            self.assertTrue(major.isdecimal() and minor.isdecimal())
+            with self.assertRaisesRegex(ValueError, "reference VMA"):
+                build["write_vma_table"](root / "bad.tsv", {"test": name}, {str(name): {"ino": 0}})
+
     def test_staged_provider_and_gpu_event_required(self):
         paths = {
             n: Path("/sealed") / n

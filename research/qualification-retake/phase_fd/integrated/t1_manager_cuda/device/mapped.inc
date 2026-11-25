@@ -36,8 +36,15 @@ void mapped(const fs::path &dir, const std::string &phase) {
         unsigned ma = 0, mi = 0;
         need(std::sscanf(device.c_str(), "%x:%x", &ma, &mi) == 2, "VMA device");
         const auto it = allow.find(name);
-        need(it != allow.end() && it->second.major_id == ma && it->second.minor_id == mi &&
-             it->second.inode == ino, "unexpected ELF or VMA");
+        if (it == allow.end() || it->second.major_id != ma || it->second.minor_id != mi ||
+            it->second.inode != ino) {
+            std::ostringstream message;
+            message << "unexpected ELF or VMA phase=" << phase << " path=" << name
+                    << " actual=" << ma << ':' << mi << ':' << ino << " expected=";
+            if (it == allow.end()) message << "absent";
+            else message << it->second.major_id << ':' << it->second.minor_id << ':' << it->second.inode;
+            throw std::runtime_error(message.str());
+        }
         seen.emplace(name,it->second);
     }
     std::ofstream f(dir/(phase+".providers"));

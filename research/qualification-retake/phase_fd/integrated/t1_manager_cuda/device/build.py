@@ -47,6 +47,41 @@ def verify_files(paths, files):
         )
 
 
+def write_vma_table(table, paths, files):
+    authority = run_path(str(HERE.parents[3] / "nvme_r0_gate/qualified_profile/authority.py"))
+    with table.open("x") as f:
+        for path in sorted(set(paths.values())):
+            name = str(path)
+            need(not any(ch.isspace() for ch in name), "provider path shape")
+            print(*authority["reference_key"](name, files[name]), name, file=f)
+
+
+def inspect_loader(loader, links, binary, paths, out):
+    listing = subprocess.check_output(
+        [loader, "--library-path", links, "--list", binary],
+        env={"PATH": "/usr/bin:/bin", "LC_ALL": "C", "CUDA_VISIBLE_DEVICES": ""},
+        text=True,
+        timeout=10,
+    )
+    rows = {}
+    for line in listing.splitlines():
+        if "=>" not in line:
+            need(line.lstrip().startswith("linux-vdso."), "unrecognised loader row")
+            continue
+        soname, target = line.strip().split(" => ", 1)
+        soname = Path(soname).name
+        chosen = Path(target.split()[0]).resolve(strict=True)
+        need(soname in paths and chosen == paths[soname], f"loader chose {soname} at {chosen}")
+        rows[soname] = str(chosen)
+    need(
+        {"libggml-cpu.so.0", "libggml-base.so.0", "libggml-cuda.so.0", "libcuda.so.1"}
+        <= rows.keys(),
+        "required startup closure",
+    )
+    (out / "loader.json").write_text(json.dumps(rows, indent=2, sort_keys=True) + "\n")
+    return len(rows)
+
+
 def freeze(commit):
     git = ["git", "-C", str(HERE)]
     need(
@@ -70,11 +105,7 @@ def build(a, out, r):
     for name, path in p.items():
         (links / name).symlink_to(path)
     table = out / "allowed.tsv"
-    with table.open("x") as f:
-        for path in sorted(set(p.values())):
-            st = files[str(path)]
-            need(not any(ch.isspace() for ch in str(path)), "provider path shape")
-            print(os.major(st["dev"]), os.minor(st["dev"]), st["ino"], path, file=f)
+    write_vma_table(table, p, files)
     inc = out / "include"
     inc.mkdir()
     for h in (
@@ -117,8 +148,21 @@ def build(a, out, r):
         out / "build.log",
         60,
     )
+    r["startup_objects"] = inspect_loader(p["ld-linux-x86-64.so.2"], links, binary, p, out)
+    passive = out / "passive"
+    cpu["elapsed"](
+        [cc, "-std=c++17", "-O2", HERE / "passive.cpp", "-o", passive],
+        env,
+        out / "passive-build.log",
+        30,
+    )
+    cpu["elapsed"]([passive, out], env | {"TESY_FIXTURE_MAP": str(table)}, out / "passive.log", 10)
+    seen = set((out / "passive.providers").read_text().splitlines())
+    need(seen == {str(x) for x in p.values()}, "passive VMA coverage")
     r.update(
         status="PASS_DEVICE_BUILD_ONLY",
+        loader_sha256=sha(out / "loader.json"),
+        passive_sha256=sha(out / "passive.providers"),
         binary_sha256=sha(binary),
         compiler_sha256=sha(cc),
         allow_sha256=sha(table),
