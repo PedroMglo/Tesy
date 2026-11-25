@@ -128,11 +128,15 @@ def rollup_bytes(text):
     return result
 
 
-def run(a, *, paging=False, placement_log=False):
+def run(a, *, paging=False, placement_log=False, ready_profile=None):
     check(not placement_log or paging, "placement_log_requires_file_paging")
     unit = HERE
     if paging:
         unit = HERE.parent / ("stock_log" if placement_log else "stock_paging")
+    if ready_profile is not None:
+        check(placement_log, "ready_profile_requires_placement")
+        unit = ready_profile.unit
+    geometry = ready_profile.geometry if ready_profile else logged_geometry
     a.new_raw.mkdir(exist_ok=False)
     raw = a.new_raw / "raw"
     raw.mkdir()
@@ -182,7 +186,13 @@ def run(a, *, paging=False, placement_log=False):
         if paging:
             r.update(start_regime="FILE_PAGING_V3", memory_high_bytes=high)
         if placement_log:
-            r.update(log_verbosity=4, logger_fixture_sha256=sha(unit / "fixture-r1/receipt.json"))
+            r.update(
+                log_verbosity=4,
+                logger_fixture_sha256=sha(HERE.parent / "stock_log/fixture-r1/receipt.json"),
+            )
+        extra_args = ["-lv", "4"] if placement_log else []
+        if ready_profile is not None:
+            extra_args.extend(ready_profile.prepare(a, raw, r))
         verified = read(a.placement)
         check(
             verified["status"] == "PASS_NVME_MODEL_PLACEMENT"
@@ -234,6 +244,8 @@ def run(a, *, paging=False, placement_log=False):
         run_id = "stock-nvme-paging" if paging else "stock-nvme-startup"
         if placement_log:
             run_id = "stock-nvme-placement-log"
+        if ready_profile is not None:
+            run_id = ready_profile.run_id
         args = {
             "policy": policy,
             "expected_power": {k: policy["power"][k] for k in ("source", "profile")},
@@ -291,7 +303,7 @@ def run(a, *, paging=False, placement_log=False):
         with stop_log.open("xb", buffering=0) as logs:
             tick = time.monotonic()
             proc = subprocess.Popen(
-                [exe, "-m", MODEL, *ARGS, *(["-lv", "4"] if placement_log else [])],
+                [exe, "-m", MODEL, *ARGS, *extra_args],
                 env=env,
                 stdin=subprocess.DEVNULL,
                 stdout=logs,
@@ -301,6 +313,7 @@ def run(a, *, paging=False, placement_log=False):
         print("one stock loader started, cgroup cap", cap, flush=True)
         r.update(status="FAIL", server_starts=1)
         closing_at = None
+        probe_deadline = None
         missing_placement = []
         first_observation_s = None
         last_observation_s = None
@@ -310,12 +323,20 @@ def run(a, *, paging=False, placement_log=False):
                 while not end.is_set():
                     mem = int((cg / "memory.current").read_text())
                     peak = int((cg / "memory.peak").read_text())
-                    deadline = closing_at + 10 if closing_at is not None else tick + 180
+                    deadline = (
+                        closing_at + 10 if closing_at is not None else probe_deadline or tick + 180
+                    )
                     if at_preventive_limit(mem, peak, stop) or time.monotonic() >= deadline:
                         fast.update(
                             reason="CGROUP_PREVENTIVE_MARGIN"
                             if at_preventive_limit(mem, peak, stop)
-                            else ("SHUTDOWN_TIMEOUT" if closing_at is not None else "LOAD_TIMEOUT"),
+                            else (
+                                "SHUTDOWN_TIMEOUT"
+                                if closing_at is not None
+                                else "PROBE_TIMEOUT"
+                                if probe_deadline is not None
+                                else "LOAD_TIMEOUT"
+                            ),
                             current=mem,
                             peak=peak,
                             elapsed_s=round(time.monotonic() - tick, 4),
@@ -398,8 +419,9 @@ def run(a, *, paging=False, placement_log=False):
                 )
                 check(stop_log.stat().st_size < 32 * MIB and series.tell() < 32 * MIB, "log_budget")
                 text = stop_log.read_text(errors="replace")
-                marks = logged_geometry(text)
-                if marks["ready"] and closing_at is None:
+                marks = geometry(text)
+                first_ready = marks["ready"] and "ready_s" not in r
+                if first_ready:
                     r["ready_s"] = round(time.monotonic() - tick, 4)
                     if placement_log:
                         live = vm_objects(proc.pid)
@@ -427,6 +449,15 @@ def run(a, *, paging=False, placement_log=False):
                     check("warming up the model" not in text.lower(), "unexpected_warmup")
                     check("processing task, is_child" not in text, "unexpected_request")
                     check(identity(MODEL) == current, "model_changed")
+                    if ready_profile is not None:
+                        probe_deadline = ready_profile.at_ready(
+                            proc.pid, raw, end, missing_placement
+                        )
+                if marks["ready"] and closing_at is None:
+                    if ready_profile is not None and ready_profile.probe_started:
+                        if not ready_profile.probe_finished(r):
+                            end.wait(0.35)
+                            continue
                     shutdown = time.monotonic()
                     if paging:
                         closing_at = shutdown
@@ -460,12 +491,18 @@ def run(a, *, paging=False, placement_log=False):
             check(not missing_placement, "startup_placement_" + ",".join(missing_placement))
             r["status"] = "PASS_STOCK_NVME_FILE_PAGING_STARTUP"
             if placement_log:
-                r["status"] = "PASS_STOCK_NVME_PLACEMENT_AT_READY"
+                r["status"] = (
+                    ready_profile.pass_status
+                    if ready_profile
+                    else "PASS_STOCK_NVME_PLACEMENT_AT_READY"
+                )
         r["mapped_own_libraries"] = sorted(name for name, val in dep_ids.items() if val in observed)
         r["gguf_mapping_observed"] = model_key in observed
         check(not fast, fast.get("reason", "watchdog"))
         check(r["status"].startswith("PASS"), "server_exited_before_ready")
     except Exception as exc:
+        if ready_profile is not None and r["server_starts"]:
+            r["status"] = "FAIL"
         r["reason"] = fast.get("reason", str(exc).replace(str(a.new_raw), "<raw>"))
     finally:
         end.set()
@@ -473,6 +510,8 @@ def run(a, *, paging=False, placement_log=False):
             watcher.join(timeout=2)
         if proc and proc.poll() is None:
             bounded.stop_own_group(proc)
+        if ready_profile is not None:
+            ready_profile.close(r)
         if proc:
             r["returncode"] = proc.returncode
             r["server_elapsed_s"] = round(time.monotonic() - tick, 4)
@@ -503,7 +542,7 @@ def run(a, *, paging=False, placement_log=False):
         if fast:
             r["fast_stop"] = fast
         if stop_log.exists():
-            r["log_geometry"] = logged_geometry(stop_log.read_text(errors="replace"))
+            r["log_geometry"] = geometry(stop_log.read_text(errors="replace"))
         r["raw_sha256"] = {p.name: sha(p) for p in raw.iterdir() if p.is_file()}
         r["elapsed_s"] = round(time.monotonic() - start, 4)
         refs.close()
@@ -513,7 +552,7 @@ def run(a, *, paging=False, placement_log=False):
     return r["status"]
 
 
-def cli(*, paging=False, placement_log=False):
+def cli(*, paging=False, placement_log=False, ready_profile=None):
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument(
         "--before-inventory-only",
@@ -522,7 +561,12 @@ def cli(*, paging=False, placement_log=False):
     )
     for name in ("policy", "placement", "binary", "build-receipt", "new-raw", "new-output"):
         ap.add_argument("--" + name, type=Path, required=True)
-    status = run(ap.parse_args(), paging=paging, placement_log=placement_log)
+    if ready_profile is not None:
+        ap.add_argument("--expect-head", required=True, help="Frozen clean measurement commit.")
+        ap.add_argument("--original-jinja", type=Path, required=True)
+    status = run(
+        ap.parse_args(), paging=paging, placement_log=placement_log, ready_profile=ready_profile
+    )
     print(status)
     sys.exit(0 if status.startswith("PASS") else 1)
 
