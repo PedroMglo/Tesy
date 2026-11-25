@@ -11,7 +11,7 @@ O verificador reproduziu os oito recibos nativos da C293, os pares, os contadore
 | Nominal 153+32 | 7,0043% | 7,9408% | 0,101741 s |
 | Código 153+32 | 5,2194% | 6,8769% | 0,524421 s |
 
-Se a redução hipotética for proporcional à duração de cada B, os valores de equilíbrio são 0,57005% e 2,07753%. O ensaio C289 de 256 serviços CPU limita o tempo disponível na sua própria agenda. A fração das cópias que atrasava o pedido C293 permanece desconhecida. A resposta com texto livre e os seis tokens/s de M4 têm de ser medidos na receita qualificada. [Limite das cópias C289](../packed_service_bound/README.md) · [Contrato de produto](../protocol.md)
+Se a redução hipotética for proporcional à duração de cada B, os valores de equilíbrio são 0,57005% e 2,07753%. O ensaio C289 de 256 serviços CPU limita o tempo disponível na sua própria agenda. A fração das cópias que atrasava o pedido C293 permanece desconhecida. Nos dois braços B nominais, o decode32 fornecido sozinho demorou 8,711 e 8,666 s. Passar o limiar de investimento não qualificaria as seis saídas naturais por segundo de M4. [Limite das cópias C289](../packed_service_bound/README.md) · [Contrato de produto](../protocol.md)
 
 A reprodução das contas foi executada na árvore limpa do commit 1a9ff0d9d67603a78f8224b0b80c32b2de18e0f5. SHA-256 do recibo compacto cc57599e5e71e9e8958e6d1c7f2cf4c180985ab81bd79665af585cc801cbd4f4. O comando requer o raw autêntico C293 e um destino novo.
 

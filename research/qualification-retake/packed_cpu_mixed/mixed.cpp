@@ -4,10 +4,22 @@
 #undef main
 #include "ggml-cuda.h"
 #include <algorithm>
+#include <openssl/sha.h>
+#include <sstream>
 
 namespace mixed {
 using Tensor = ggml_tensor *;
 constexpr int score_width = 128;
+std::string sha(const Values &v) {
+    unsigned char h[SHA256_DIGEST_LENGTH];
+    check(SHA256(reinterpret_cast<const unsigned char*>(v.data()), v.size()*sizeof(float), h)!=nullptr,
+          "SHA256");
+    std::string hex;
+    constexpr char digits[] = "0123456789abcdef";
+    for (auto b:h) { hex.push_back(digits[b>>4]); hex.push_back(digits[b&15]); }
+    return hex;
+}
+uint32_t bits(float v) { uint32_t out; std::memcpy(&out,&v,sizeof(out)); return out; }
 
 int selected(int n, int pos, int rank) {
     constexpr std::array<int,4> active{39,0,7,23};
@@ -18,6 +30,10 @@ struct Stage {
     Tensor weight{}, input{}, producer{}, mmid{}, sink{};
     uint8_t *address{};
     std::array<unsigned,3> completed{};
+    Values pre;
+    std::string cpu_sha, mask_sha;
+    ggml_backend_buffer_t pre_buffer{}, out_buffer{};
+    void *pre_address{}, *out_address{};
 };
 
 struct Checkpoint {
@@ -32,13 +48,27 @@ struct Checkpoint {
     unsigned sorts=0;
     std::string error;
     Values unmasked, masked;
+    const char *layout;
+    std::ostream &journal;
+    int component=-1;
+    const char *phase="init";
 
+    std::string context() const {
+        return "n="+std::to_string(n)+" layout="+layout+" phase="+phase+" k="+std::to_string(component);
+    }
+    void mismatch(int p,int r,int y,uint32_t expected,uint32_t actual) const {
+        std::ostringstream out;
+        out << context() << " pos="<<p<<" rank="<<r<<" row="<<y
+            <<" expected_bits="<<expected<<" observed_bits="<<actual;
+        throw std::runtime_error(out.str());
+    }
     void verify_ids(Tensor t) const {
         check(t->type==GGML_TYPE_I32 && t->ne[0]>=ranks && t->ne[1]==n,"ID geometry");
         std::array<int32_t,ranks> picked{};
         for(int pos=0;pos<n;++pos) {
             ggml_backend_tensor_get(t,picked.data(),pos*t->nb[1],sizeof(picked));
-            for(int r=0;r<ranks;++r) check(picked[r]==selected(n,pos,r),"ID transfer");
+            for(int r=0;r<ranks;++r) if(picked[r]!=selected(n,pos,r))
+                mismatch(pos,r,0,selected(n,pos,r),picked[r]);
         }
     }
 
@@ -49,7 +79,8 @@ struct Checkpoint {
         Values values(width*channels*n);
         ggml_backend_tensor_get(t,values.data(),0,values.size()*sizeof(float));
         for(int p=0;p<n;++p) for(int r=0;r<channels;++r) for(int c=0;c<width;++c)
-            check(values[(p*channels+r)*width+c]==activation(p,r,c),"activation transfer");
+            if(bits(values[(p*channels+r)*width+c])!=bits(activation(p,r,c)))
+                mismatch(p,r,c,bits(activation(p,r,c)),bits(values[(p*channels+r)*width+c]));
     }
 
     Values verify_values(Tensor t,int k,bool mask) const {
@@ -61,10 +92,12 @@ struct Checkpoint {
             const int s=selected(n,p,r);
             float gold=sign(k,s,y)*activation(p,k==1?r:0,coordinate(k,s,y));
             float value=values[(p*ranks+r)*width+y];
-            if (mask && n==3 && r>=2) check(value==0.0f,"parking mask");
+            if (mask && n==3 && r>=2) {
+                if(value!=0.0f) mismatch(p,r,y,bits(0.0f),bits(value));
+            }
             else {
                 if(gold==0) gold=0.0f;
-                check(std::memcmp(&value,&gold,sizeof(value))==0,"MMID scalar oracle");
+                if(bits(value)!=bits(gold)) mismatch(p,r,y,bits(gold),bits(value));
             }
         }
         return values;
@@ -73,6 +106,7 @@ struct Checkpoint {
     bool observe(Tensor t,bool ask) {
         if(t==sort) {
             if(!ask) {
+                component=-1; phase="argsort";
                 check(ggml_backend_sched_get_tensor_backend(scheduler,t)==gpu,"argsort not CUDA");
                 verify_ids(t);
                 ++sorts;
@@ -82,13 +116,43 @@ struct Checkpoint {
         for(int k=0;k<3;++k) {
             Stage &s=stages[k];
             if(t!=s.producer && t!=s.mmid && t!=s.sink) continue;
-            if(ask) return true;
+            component=k;
+            if(ask) {
+                if(t==s.sink) {
+                    // Scheduler submitted ALL split input copies before asking about this node.
+                    // Do not sample the output here: its kernel has not run.
+                    phase="cuda_copy_before_mul";
+                    ggml_backend_synchronize(gpu);
+                    Tensor src=t->src[0], mask=t->src[1];
+                    check(s.pre.empty() && s.completed[1]==1 && t->op==GGML_OP_MUL &&
+                          src!=s.mmid && ggml_backend_buffer_get_type(src->buffer)==cuda_buffer,
+                          "unordered or absent input copy");
+                    s.pre=verify_values(src,k,false);
+                    check(sha(s.pre)==s.cpu_sha,"GPU copy differs from CPU result");
+                    s.pre_buffer=src->buffer; s.out_buffer=t->buffer;
+                    s.pre_address=src->data; s.out_address=t->data;
+                    phase="mask_before_mul";
+                    check(mask->type==GGML_TYPE_F32 && ggml_is_contiguous(mask) && mask->ne[0]==1 &&
+                          mask->ne[1]==ranks && mask->ne[2]==n,"mask geometry");
+                    Values mask_values(ranks*n);
+                    ggml_backend_tensor_get(mask,mask_values.data(),0,mask_values.size()*sizeof(float));
+                    for(int p=0;p<n;++p) for(int r=0;r<ranks;++r) {
+                        float want=n==3 && r>=2 ? 0.0f : 1.0f;
+                        if(bits(mask_values[p*ranks+r])!=bits(want))
+                            mismatch(p,r,0,bits(want),bits(mask_values[p*ranks+r]));
+                    }
+                    s.mask_sha=sha(mask_values);
+                }
+                return true;
+            }
             auto assigned=ggml_backend_sched_get_tensor_backend(scheduler,t);
             if(t==s.producer) {
+                phase="cuda_activation_output";
                 check(assigned==gpu,"activation producer not CUDA");
                 verify_activations(t,k);
                 ++s.completed[0];
             } else if(t==s.mmid) {
+                phase="cpu_mmid_weight";
                 Tensor w=t->src[0];
                 check(assigned==cpu && t->op==GGML_OP_MUL_MAT_ID && w==s.weight &&
                       w->buffer==weight_buffer && w->data==s.address && w->nb[0]==block &&
@@ -98,17 +162,39 @@ struct Checkpoint {
                 check(t->src[1]!=s.producer && t->src[2]!=ids &&
                       ggml_backend_buffer_is_host(t->src[1]->buffer) &&
                       ggml_backend_buffer_is_host(t->src[2]->buffer),"missing CUDA-to-CPU edges");
-                verify_ids(t->src[2]);
-                verify_activations(t->src[1],k);
+                phase="cpu_mmid_ids"; verify_ids(t->src[2]);
+                phase="cpu_mmid_input"; verify_activations(t->src[1],k);
+                phase="cpu_mmid_output";
                 auto data=verify_values(t,k,false);
+                s.cpu_sha=sha(data);
                 unmasked.insert(unmasked.end(),data.begin(),data.end());
                 ++s.completed[1];
             } else {
+                phase="cuda_masked_output";
                 check(assigned==gpu && t->src[0]!=s.mmid &&
                       ggml_backend_buffer_get_type(t->src[0]->buffer)==cuda_buffer,
                       "missing CPU-to-CUDA edge");
-                verify_values(t->src[0],k,false);
                 auto data=verify_values(t,k,true);
+                auto *src=t->src[0];
+                check(s.pre.size()==data.size() && s.pre_buffer==src->buffer && s.out_buffer==t->buffer &&
+                      s.pre_address==src->data && s.out_address==t->data,"changed view identity");
+                const bool same_buffer=src->buffer==t->buffer, same_address=src->data==t->data;
+                phase="v2_diagnostic_post_operand";
+                Values late(data.size());
+                ggml_backend_tensor_get(src,late.data(),0,late.size()*sizeof(float));
+                size_t different=0, outside=0; int first=-1; uint32_t was=0,now=0;
+                for(size_t i=0;i<late.size();++i) {
+                    if(bits(late[i])!=bits(s.pre[i])) {
+                        if(first<0) { first=int(i); was=bits(s.pre[i]); now=bits(late[i]); }
+                        ++different;
+                        if(n!=3 || (i/width)%ranks<2) ++outside;
+                    }
+                }
+                check(!same_address || std::memcmp(late.data(),data.data(),late.size()*sizeof(float))==0,
+                      "observed same address but divergent masked values");
+                journal<<layout<<' '<<n<<' '<<k<<' '<<same_buffer<<' '<<same_address<<' '
+                       <<s.cpu_sha<<' '<<sha(s.pre)<<' '<<s.mask_sha<<' '<<sha(late)<<' '<<sha(data)
+                       <<' '<<different<<' '<<outside<<' '<<first<<' '<<was<<' '<<now<<std::endl;
                 masked.insert(masked.end(),data.begin(),data.end());
                 ++s.completed[2];
             }
@@ -120,13 +206,14 @@ struct Checkpoint {
 
 bool witness(Tensor tensor,bool ask,void *opaque) {
     auto &state=*static_cast<Checkpoint *>(opaque);
+    if(!state.error.empty()) return !ask;
     try { return state.observe(tensor,ask); }
-    catch(const std::exception &e) { if(state.error.empty()) state.error=e.what(); return true; }
+    catch(const std::exception &e) { state.error=state.context()+": "+e.what(); return true; }
 }
 
 struct Outputs { Values unmasked,masked; int splits; };
 
-Outputs graph(ggml_backend_t cpu,ggml_backend_t gpu,int n,bool packed) {
+Outputs graph(ggml_backend_t cpu,ggml_backend_t gpu,int n,bool packed,std::ostream &journal) {
     const size_t capacity=packed ? ((slots*stride + block-1)/block)*block : 3*slots*slab;
     auto buft=ggml_backend_cpu_buffer_type();
     ggml_backend_buffer_ptr memory(ggml_backend_buft_alloc_buffer(buft,capacity+page));
@@ -146,7 +233,7 @@ Outputs graph(ggml_backend_t cpu,ggml_backend_t gpu,int n,bool packed) {
     ggml_backend_sched_ptr sched(ggml_backend_sched_new(backends.data(),compute.data(),2,256,false,false));
     check(sched!=nullptr,"scheduler");
     Checkpoint state{n,sched.get(),cpu,gpu,memory.get(),compute[0],nullptr,nullptr,{},
-                     packed?stride:slab,0,{}, {}, {}};
+                     packed?stride:slab,0,{}, {}, {},packed?"packed":"dense",journal};
     Tensor owner=nullptr;
     if(packed) {
         owner=ggml_new_tensor_1d(ctx.get(),GGML_TYPE_MXFP4,32*(capacity/block));
@@ -230,9 +317,11 @@ int main(int argc,char **argv) try {
     check(cpu && gpu && ggml_backend_is_cuda(gpu.get()),"mixed backends");
     ggml_backend_cpu_set_n_threads(cpu.get(),2);
     auto dir=std::filesystem::path(argv[1]);
+    std::ofstream journal(dir/"boundary.tsv");
+    journal.exceptions(std::ios::failbit|std::ios::badbit);
     for(int n:{1,32,3}) {
-        auto a=mixed::graph(cpu.get(),gpu.get(),n,false);
-        auto b=mixed::graph(cpu.get(),gpu.get(),n,true);
+        auto a=mixed::graph(cpu.get(),gpu.get(),n,false,journal);
+        auto b=mixed::graph(cpu.get(),gpu.get(),n,true,journal);
         check(mixed::equal(a.unmasked,b.unmasked) && mixed::equal(a.masked,b.masked),
               "dense versus packed bits");
         check(b.masked.size()==size_t(3*n*ranks*width) && b.masked.size()==b.unmasked.size(),
@@ -249,7 +338,8 @@ int main(int argc,char **argv) try {
     providers.exceptions(std::ios::failbit|std::ios::badbit);
     providers << provider(reinterpret_cast<void *>(&ggml_backend_cpu_init)) << '\n'
               << provider(reinterpret_cast<void *>(&ggml_backend_sched_graph_compute)) << '\n'
-              << provider(reinterpret_cast<void *>(&ggml_backend_cuda_init)) << '\n';
+              << provider(reinterpret_cast<void *>(&ggml_backend_cuda_init)) << '\n'
+              << provider(reinterpret_cast<void *>(&SHA256)) << '\n';
     providers.close();
     return 0;
 } catch(const std::exception &e) {
