@@ -93,3 +93,34 @@ def test_order_and_ties(clocks, expected):
     assert P["paired"](rows) == ([clocks[0] - clocks[1], clocks[3] - clocks[2]], expected)
     with pytest.raises(ValueError):
         P["paired"](rows[2:])
+
+
+def test_independent_gold_rejects_a_changed_mask_despite_equal_final_ffn():
+    rows = {}
+    files = {}
+    for layer in range(2):
+        tag = f"L{layer}"
+        row = dict(
+            layer=layer, ffn_words=92160, mmid_nodes=24, bias_nodes=24, active_waves=4, waves=[]
+        )
+        rows[tag] = row
+        for field, suffix in (
+            ("ffn", "ffn.f32"),
+            ("x", "x.f32"),
+            ("mix", "mix.f32"),
+            ("logical", "ids.i32"),
+        ):
+            row[field + "_sha256"] = files[f"{tag}.{suffix}"] = f"{tag}{field}"
+        for i in range(8):
+            wave = dict(wave=i, active=32 if i < 4 else 0, parking_differences=0)
+            for field, suffix in (
+                ("physical", "ids.i32"),
+                ("generation", "gen.u64"),
+                ("mask", "mask.f32"),
+            ):
+                wave[field + "_sha256"] = files[f"{tag}.w{i}.{suffix}"] = f"{tag}{i}{field}"
+            row["waves"].append(wave)
+    P["check_golds"](rows, files)
+    rows["L1"]["waves"][4]["mask_sha256"] = "wrong"
+    with pytest.raises(ValueError, match="wave digest"):
+        P["check_golds"](rows, files)

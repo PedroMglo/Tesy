@@ -199,7 +199,57 @@ def authorities(args, svc, prior, result):
     return exe, env, build, prep
 
 
-def run_child(args, svc, prior, mon, exe, env, grade, mode, idx, result, reference, official):
+def check_golds(numeric, files):
+    need(set(numeric) == {"L0", "L1"}, "incomplete layer outputs")
+    for layer in range(2):
+        tag = f"L{layer}"
+        row = numeric[tag]
+        need(
+            row["layer"] == layer
+            and row["ffn_words"] == 32 * 2880
+            and row["mmid_nodes"] == row["bias_nodes"] == 24
+            and row["active_waves"] == 4,
+            "changed graph work",
+        )
+        for field, filename in (
+            ("ffn", "ffn.f32"),
+            ("x", "x.f32"),
+            ("mix", "mix.f32"),
+            ("logical", "ids.i32"),
+        ):
+            need(row[field + "_sha256"] == files[tag + "." + filename], "changed " + field)
+        need(
+            len(row["waves"]) == 8 and sum(w["active"] for w in row["waves"]) == 128,
+            "incomplete route coverage",
+        )
+        for i, wave in enumerate(row["waves"]):
+            need(wave["wave"] == i and wave["parking_differences"] == 0, "parking or order changed")
+            for field, filename in (
+                ("physical", "ids.i32"),
+                ("generation", "gen.u64"),
+                ("mask", "mask.f32"),
+            ):
+                need(
+                    wave[field + "_sha256"] == files[f"{tag}.w{i}.{filename}"],
+                    "independent wave digest " + field,
+                )
+
+
+def package_energy():
+    root = Path("/sys/class/powercap/intel-rapl:0")
+    try:
+        return {
+            "domain": (root / "name").read_text().strip(),
+            "range_uj": int((root / "max_energy_range_uj").read_text()),
+            "energy_uj": int((root / "energy_uj").read_text()),
+        }
+    except (OSError, ValueError):
+        return None
+
+
+def run_child(
+    args, svc, prior, mon, exe, env, grade, mode, idx, result, reference, official, files
+):
     folder = args.new_output_dir / f"{idx:02d}-{grade}-{mode}"
     folder.mkdir()
     record = {"grade": grade, "mode": mode, "status": "FAIL_PRESERVED"}
@@ -210,6 +260,7 @@ def run_child(args, svc, prior, mon, exe, env, grade, mode, idx, result, referen
         if idx == 0:
             age = dt.datetime.now(dt.UTC) - dt.datetime.fromisoformat(result["c118"]["last_utc"])
             need(0 <= age.total_seconds() <= 3, "C118 expired before spawn")
+        record["host_package_before_spawn"] = package_energy()
         with (folder / "stdout").open("xb") as stdout, (folder / "stderr").open("xb") as stderr:
             proc = subprocess.Popen(
                 [exe, args.input_dir, args.pack, mode, grade],
@@ -231,12 +282,14 @@ def run_child(args, svc, prior, mon, exe, env, grade, mode, idx, result, referen
                     proc.wait(timeout=0.15)
                 except subprocess.TimeoutExpired:
                     pass
+        record["host_package_after_exit"] = package_energy()
         record.update(observed_process_s=time.monotonic() - started)
         need(
             record["observed_process_s"] <= CHILD_S and proc.returncode == 0, "native child failed"
         )
         row = json.loads((folder / "stdout").read_bytes())
         compared = check_row(row, grade, mode)
+        check_golds(row["numeric"], files)
         need({tuple(v) for v in compared[1]} == official, "official slot generation changed")
         need(reference is None or compared == reference, "changed numerical output or assignments")
         record.update(
@@ -305,7 +358,19 @@ def family(args, result, svc, prior, start):
                     "exactness gate failed",
                 )
             compared = run_child(
-                args, svc, prior, mon, exe, env, grade, mode, i, result, ref, official
+                args,
+                svc,
+                prior,
+                mon,
+                exe,
+                env,
+                grade,
+                mode,
+                i,
+                result,
+                ref,
+                official,
+                prep["file_sha256"],
             )
             if ref is None:
                 ref = compared
