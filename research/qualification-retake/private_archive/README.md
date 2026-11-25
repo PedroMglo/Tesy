@@ -32,3 +32,5 @@ O sétimo lote conserva o precheck e o FAIL da tentativa stock E20, incluindo a 
 O oitavo lote conserva as janelas C55, FAILs, binários congelados, instruções desmontadas, operandos e gold dos dois operadores CPU, os braços físicos e os recibos dos primeiros replays de prefill desta unidade. Os 134 ficheiros totalizam 37 537 825 B. A verificação releu cada ficheiro antes da publicação. [Recibo do oitavo lote](part-08.json)
 
 O nono lote reúne os originais das duas confirmações de cada estudo de cache, a falha de pré-verificação inicial e os ficheiros privados da preparação e do ensaio físico Aster T2. São 24 ficheiros e 4 742 800 B. O verificador confirmou tamanhos e hashes depois da publicação exclusiva. [Recibo do nono lote](part-09.json)
+
+O décimo lote preserva as duas janelas C55 e a respetiva falha, a pré-verificação sem modelo e o arranque físico E20, incluindo os journals e recibos originais. A verificação comparou 14 ficheiros e 248 414 B. [Recibo do décimo lote](part-10.json)
