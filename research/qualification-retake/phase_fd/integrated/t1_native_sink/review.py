@@ -226,12 +226,16 @@ def monitoring(root, r, gate_path):
     )
     inv = read(root / "inventory.json", r["inventory_sha256"])
     raw = root / "raw"
-    inventory = journal(raw / (r["unit"] + ".start-inventory.jsonl"), inv["sha256"])
+    inv_log = raw / (r["unit"] + ".start-inventory.jsonl")
+    inventory = journal(inv_log, inv["sha256"])
     samples = journal(raw / "service-monitor.jsonl", r["monitor_sha256"])
     stamps = [datetime.fromisoformat(s["utc"]) for s in samples]
     power = {"source": "AC", "profile": "performance"}
     kw = dict(policy=policy, cap_bytes=2**31, expected_power=power)
-    c118.require_inventory(root, r["unit"], inv, **kw, now=stamps[0])
+    recorded = Path(inv["path"])
+    need(recorded.is_absolute() and recorded.parts[-2:] == inv_log.parts[-2:], "inventory origin")
+    # Revalidate the hashed contents at the archive location using the original launch time.
+    c118.require_inventory(root, r["unit"], dict(inv, path=str(inv_log)), **kw, now=stamps[0])
     gaps = [(b - a).total_seconds() for a, b in zip(stamps, stamps[1:], strict=False)]
     need(len(samples) >= 23 and gaps and 0 < min(gaps) and max(gaps) <= 5, "service cadence")
     owners = [s["observation"].get("gpu_owners") for s in samples]

@@ -24,7 +24,7 @@ Protocolo em `26d0243d`, implementação em `d2cbd729`. O plano usa o PFJ e o se
 
 ```sh
 cd research/qualification-retake/phase_fd/integrated/t1_full_workload
-python3 -IB test_plan.py
+python3 -IB test_workload_strata.py
 env LC_ALL=C PYTHONCOERCECLOCALE=0 PYTHONUTF8=1 OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1 \
   timeout 120s prlimit --as=536870912 --cpu=120 --fsize=4194304 -- python3 -IB plan.py \
     --part "$PART40" --model "$GGUF_NVME" --inventory "$C7_INVENTORY" \
