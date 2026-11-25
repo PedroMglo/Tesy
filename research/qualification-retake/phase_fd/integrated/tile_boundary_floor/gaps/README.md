@@ -27,3 +27,5 @@ timeout 120 prlimit --as=805306368 python3 -IB screen.py \
   --backend "$C7/backends/c269-layer-last-use" \
   --new-output-dir "$NEW_RESULT"
 ```
+
+Para o mesmo nominal, permitir que o decode ultrapasse 6 tok/s muda o orçamento do prefill. Com os preços do prefill mantidos, a projeção exige 6,977 tok/s. [Troca entre as duas fases](tradeoff.md)
