@@ -51,7 +51,7 @@ def fixed_run(path, expected):
     return second
 
 
-def parse(raw, client_s, fixed):
+def trajectory(raw, client_s, length, cached):
     require(nonnegative(client_s), "client clock")
     terminal = None
     tokens = {}
@@ -63,14 +63,18 @@ def parse(raw, client_s, fixed):
         event = split.strict_json(line[6:])
         n = event["tokens_predicted"]
         require(
-            type(n) is int and 1 <= n <= 8 and event["tokens_evaluated"] == 121,
+            type(n) is int
+            and 1 <= n <= 8
+            and type(event["tokens_evaluated"]) is int
+            and event["tokens_evaluated"] == length,
             "wrong request counts",
         )
         t = event["timings"]
         require(
-            t["predicted_n"] == n
-            and t["prompt_n"] == 121
-            and t["cache_n"] == 0
+            all(type(t[key]) is int for key in ("predicted_n", "prompt_n", "cache_n"))
+            and t["predicted_n"] == n
+            and t["prompt_n"] == length - cached
+            and t["cache_n"] == cached
             and nonnegative(t["predicted_ms"])
             and nonnegative(t["prompt_ms"]),
             "wrong per-token timings",
@@ -115,16 +119,31 @@ def parse(raw, client_s, fixed):
     }
     if n < 8:
         require(terminal["stop_type"] == "eos", "early output without EOS")
-        return dict(observed, decision="INCONCLUSIVE_EARLY_STOP", projected_historical_s=None)
+        return (
+            dict(observed, decision="INCONCLUSIVE_EARLY_STOP", projected_historical_s=None),
+            list(tokens.values()),
+            [],
+        )
     if list(stamps) != list(range(1, 9)):
-        return dict(
-            observed, decision="INCONCLUSIVE_MISSING_TOKEN_CLOCK", projected_historical_s=None
+        return (
+            dict(
+                observed, decision="INCONCLUSIVE_MISSING_TOKEN_CLOCK", projected_historical_s=None
+            ),
+            list(tokens.values()),
+            [],
         )
     steps = [stamps[i] - stamps[i - 1] for i in range(2, 9)]
     require(min(steps) > 0, "nonpositive time between tokens")
-    residual0 = max(0.0, client_s - t["prompt_ms"] / 1000 - t["predicted_ms"] / 1000)
+    return observed, list(tokens.values()), steps
+
+
+def parse(raw, client_s, fixed):
+    observed, _, steps = trajectory(raw, client_s, 121, 0)
+    if not steps:
+        return observed
+    residual0 = max(0.0, client_s - observed["server_prompt_s"] - observed["server_generation_s"])
     residual1 = max(0.0, fixed["client_s"] - (fixed["prompt_ms"] + fixed["predicted_ms"]) / 1000)
-    base = t["prompt_ms"] / 1000 + fixed["prompt_ms"] / 1000 + residual0 + residual1
+    base = observed["server_prompt_s"] + fixed["prompt_ms"] / 1000 + residual0 + residual1
     band = {"favorable": min(steps), "mean": statistics.mean(steps), "unfavorable": max(steps)}
     cost = {k: base + 791 * v for k, v in band.items()}
     decision = "INCONCLUSIVE_BUDGET"
@@ -144,6 +163,68 @@ def parse(raw, client_s, fixed):
         admissible_s_per_step=(1800 - base) / 791,
         projected_1532_steps_s={k: base + 1532 * v for k, v in band.items()},
     )
+
+
+def listener_port(raw):
+    ports = set(
+        re.findall(
+            r"listening on http://127\.0\.0\.1:(\d+)\b",
+            (raw / "server.log").read_text(errors="replace"),
+        )
+    )
+    require(len(ports) == 1, "missing unique listener")
+    return int(ports.pop())
+
+
+def exchange(pid, raw, cancelled, progress, ids, stem, port, deadline):
+    require(not cancelled.is_set(), "cancelled by monitor")
+    split.owned_listener(pid, port)
+    payload = json_bytes(
+        {
+            "prompt": ids,
+            "n_predict": 8,
+            "id_slot": 0,
+            "cache_prompt": True,
+            "temperature": 0,
+            "seed": 42,
+            "stream": True,
+            "return_tokens": True,
+            "timings_per_token": True,
+        }
+    )
+    split.save(raw / f"{stem}.request.json", payload)
+    before = time.monotonic()
+    remaining = deadline - before
+    require(remaining > 0, "budget expired")
+    conn = http.client.HTTPConnection("127.0.0.1", port, timeout=remaining)
+    try:
+        progress["http_requests_sent"] += 1
+        progress["sampling_tokens_requested"] += 8
+        conn.request("POST", "/completion", payload, {"Content-Type": "application/json"})
+        response = conn.getresponse()
+        require(response.status == 200, "non-200 HTTP response")
+        total = 0
+        with (raw / f"{stem}.sse").open("xb") as f:
+            while True:
+                require(
+                    not cancelled.is_set() and time.monotonic() <= deadline,
+                    "budget expired",
+                )
+                line = response.readline(131073)
+                if not line:
+                    break
+                total += len(line)
+                require(
+                    len(line) <= 131072 and total + len(payload) <= 1024 * 1024,
+                    "private byte budget",
+                )
+                f.write(line)
+        elapsed = time.monotonic() - before
+    finally:
+        conn.close()
+    data = (raw / f"{stem}.sse").read_bytes()
+    require(before + elapsed <= deadline and not cancelled.is_set(), "budget expired")
+    return data, elapsed, hashlib.sha256(payload).hexdigest()
 
 
 class Probe:
@@ -166,63 +247,22 @@ class Probe:
         )
 
     def run(self, pid, raw, cancelled, progress):
-        ports = set(
-            re.findall(
-                r"listening on http://127\.0\.0\.1:(\d+)\b",
-                (raw / "server.log").read_text(errors="replace"),
-            )
+        port = listener_port(raw)
+        data, elapsed, request_sha = exchange(
+            pid,
+            raw,
+            cancelled,
+            progress,
+            self.ids,
+            "budget",
+            port,
+            time.monotonic() + self.timeout_s,
         )
-        require(len(ports) == 1, "missing unique listener")
-        port = int(ports.pop())
-        require(not cancelled.is_set(), "cancelled by monitor")
-        split.owned_listener(pid, port)
-        payload = json_bytes(
-            {
-                "prompt": self.ids,
-                "n_predict": 8,
-                "id_slot": 0,
-                "cache_prompt": True,
-                "temperature": 0,
-                "seed": 42,
-                "stream": True,
-                "return_tokens": True,
-                "timings_per_token": True,
-            }
-        )
-        split.save(raw / "budget.request.json", payload)
-        before = time.monotonic()
-        conn = http.client.HTTPConnection("127.0.0.1", port, timeout=self.timeout_s)
-        try:
-            progress["http_requests_sent"] += 1
-            progress["sampling_tokens_requested"] += 8
-            conn.request("POST", "/completion", payload, {"Content-Type": "application/json"})
-            response = conn.getresponse()
-            require(response.status == 200, "non-200 HTTP response")
-            total = 0
-            with (raw / "budget.sse").open("xb") as f:
-                while True:
-                    require(
-                        not cancelled.is_set() and time.monotonic() - before <= self.timeout_s,
-                        "budget expired",
-                    )
-                    line = response.readline(131073)
-                    if not line:
-                        break
-                    total += len(line)
-                    require(
-                        len(line) <= 131072 and total + len(payload) <= 1024 * 1024,
-                        "private byte budget",
-                    )
-                    f.write(line)
-            elapsed = time.monotonic() - before
-        finally:
-            conn.close()
-        data = (raw / "budget.sse").read_bytes()
         return parse(data, elapsed, self.fixed) | {
             "fixed_receipt_sha256": self.fixed_sha,
             "protocol_sha256": PROTO,
             "input_sha256": digest(self.ids),
-            "request_sha256": hashlib.sha256(payload).hexdigest(),
+            "request_sha256": request_sha,
             "sse_sha256": hashlib.sha256(data).hexdigest(),
         }
 
