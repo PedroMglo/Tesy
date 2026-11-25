@@ -21,3 +21,5 @@ python3 -IB "$unit/run.py" --backend "$C269" --map "$STATIC_MAP" --new-output-di
 ```
 
 R01 fechou em 25 de novembro de 2026, com 0,715 s de compilação e 0,017 s para os cinco processos. O pico do filho, incluindo o compilador, foi 191 692 KiB. O recibo SHA-256 `ef013d60b5899dd9f8513518ab9f742af8ee8423072f12b7c34e9e88901e1dce` identifica a fonte nativa, o verificador, o compilador, os providers, o binário e os dois golds. Zero modelos e zero atividade da fixture na GPU. O sinal de avanço exige agora comprovar no dispositivo que a conclusão da última leitura da vítima precede a primeira escrita da geração nova.
+
+R02 repetiu os cinco processos a partir da checkout limpa 577c6a2c. O binário e todos os indicadores por braço coincidiram, com novas durações medidas. O SHA-256 do segundo recibo é 7edb6635449145af12e70ef703f0fc658746a9f0c5a472f9b3d5317222f50d91. Os dois raws e as duas janelas de recursos estão na parte 49, manifesto 9cc0fa1c68e2ddc48f29ca166a22e5622d95da89577df253d6dc905fc717dfc6.
