@@ -63,10 +63,21 @@ def run(server, a, out, original, image, r):
     )
     search = [str(base), *auth.arm["native_search"]]
     modes = {}
-    for mode in ("original", "off", "on"):
+    choices = {
+        "original": (historical_alias, original, paths),
+        "off": (alias, image, search),
+        "on": (alias, image, search),
+    }
+    if r.get("control_file"):
+        control = out / r["control_file"]
+        folder = out / "control-libs"
+        folder.mkdir(mode=0o700)
+        (folder / name).symlink_to(control)
+        c.aliases(folder, {name: str(control)})
+        choices["control"] = (folder / name, control, [str(folder), *auth.arm["native_search"]])
+    for mode, (selected, provider, env_search) in choices.items():
         original_mode = mode == "original"
-        selected, provider = (historical_alias, original) if original_mode else (alias, image)
-        env = auth.static.environment(paths if original_mode else search)
+        env = auth.static.environment(env_search)
         env["TESY_EXPERT_STORE_MANIFEST"] = history["manifest"]
         if mode == "on":
             env["TESY_PHASE_FD_FILE"] = str(out / "forbidden-journal")
@@ -99,6 +110,10 @@ def run(server, a, out, original, image, r):
             need(projections[0] == projections[1], "relocations")
             reports[n] = projections[0]
         modes[mode] = reports
+    if "control" in choices:
+        r["control_queries"] = {k: calls.pop(k) for k in list(calls) if k.startswith("control-")}
+        need(len(r["control_queries"]) == 9, "four control relocations and lists")
+        r["control_per_consumer"] = modes.pop("control")
     last = auth.static.interpret(
         query(
             "original-end", [auth.static.LOADER, "--list", auth.exe], auth.static.environment(paths)
@@ -123,19 +138,38 @@ def run(server, a, out, original, image, r):
     )
     exe = Path(numeric["executable"])
     need(sha(exe) == c.CAPTURE, "C292 executable")
-    spec = auth.static.environment([str(base), *numeric["explicit_search"][1:]])
-    q = {}
-    for label, args in (
-        ("C292-list", [auth.static.LOADER, "--list", exe]),
-        ("C292-relocations", ["/usr/bin/ldd", "-r", exe]),
-    ):
-        listed = auth.static.interpret(c.query(logs, label, args, spec, q))
-        need(
-            listed.keys() == nmap.keys()
-            and listed[name] == alias
-            and all(str(v.resolve(strict=True)) == nmap[n]["file"] for n, v in listed.items()),
-            "C292 resolves unexpected DSO",
+
+    def capture_check(prefix, selected, expected):
+        spec = auth.static.environment([str(selected.parent), *numeric["explicit_search"][1:]])
+        q = {}
+        for suffix, args in (
+            ("list", [auth.static.LOADER, "--list", exe]),
+            ("relocations", ["/usr/bin/ldd", "-r", exe]),
+        ):
+            listed = auth.static.interpret(c.query(logs, prefix + suffix, args, spec, q))
+            need(
+                listed.keys() == expected.keys()
+                and listed[name] == selected
+                and all(
+                    str(v.resolve(strict=True)) == expected[n]["file"] for n, v in listed.items()
+                ),
+                "C292 resolves unexpected DSO",
+            )
+        return q
+
+    q = capture_check("C292-", alias, nmap)
+    if "control" in choices:
+        control_alias, control, env_search = choices["control"]
+        values = {name: {"file": str(control), "sha256": sha(control)}}
+        r.update(
+            control_startup=history["startup"] | values,
+            control_capture_startup=numeric["startup"] | values,
+            control_explicit_search=env_search,
         )
+        r["control_capture_queries"] = capture_check(
+            "C292-control-", control_alias, r["control_capture_startup"]
+        )
+        c.aliases(control_alias.parent, {name: str(control)})
     c.aliases(base, {name: str(image)})
     auth.recheck()
     r.update(

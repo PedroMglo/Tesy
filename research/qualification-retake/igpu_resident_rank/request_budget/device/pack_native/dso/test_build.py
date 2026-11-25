@@ -31,6 +31,29 @@ class PrivateLink(unittest.TestCase):
             with self.assertRaises(ValueError):
                 BUILD["link"](args, self.destination, BUILD["TUS"])
 
+    def test_current_compiler_preserves_abi(self):
+        compare = BUILD["abi_delta"]
+        original = {"llama_decode": ["T", None], "_Z8internal": ["W", None], "_Z4data": ["V", "20"]}
+        changed = original | {"_Z9internal": ["W", None]}
+        self.assertEqual(set(compare(original, changed)), {"_Z9internal"})
+        for wrong in (
+            {"llama_decode": ["W", None]},
+            {"_Z4data": ["V", "21"]},
+            {"_ZN3pfjX": ["W", None]},
+        ):
+            with self.assertRaises(ValueError):
+                compare(original, original | wrong)
+        self.assertEqual(
+            BUILD["loadable_differences"](
+                {
+                    ".comment": [("MS",), None],
+                    ".note.gnu.build-id": [("A",), None],
+                    ".text": [None, ("AX",)],
+                }
+            ),
+            [".text"],
+        )
+
 
 if __name__ == "__main__":
     unittest.main()

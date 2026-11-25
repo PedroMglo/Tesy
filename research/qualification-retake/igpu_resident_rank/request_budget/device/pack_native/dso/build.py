@@ -31,6 +31,7 @@ RECIPES = {
     "build.make": "eaefa2fc7fa0422a7621925403945ee34c2a79b7bccd1b6ce556594ed0835c37",
 }
 PIN = "c89c88b342054223e3f27a17fbfd0954803147ac"
+R01 = "6526d401ab30ee3db1f72c23608eb2f0987a385c3be295b3aa4967b7fbf360c4"
 
 
 def load(file, name):
@@ -84,6 +85,7 @@ def section_diff(first, second):
 
         blob = file.read_bytes()
         result = {}
+        seen = {}
         for line in old.captured("readelf", "-SW", file).splitlines():
             m = re.match(
                 r"\s*\[\s*\d+\]\s+(\.[^ ]+)\s+(\S+)\s+(\w+)\s+(\w+)\s+(\w+)\s+\w+\s+([A-Z]*)\s",
@@ -93,12 +95,48 @@ def section_diff(first, second):
                 name, kind, addr, offset, size, flags = m.groups()
                 begin, length = int(offset, 16), int(size, 16)
                 data = b"" if kind == "NOBITS" else blob[begin : begin + length]
-                result[name] = (flags, addr, length, hashlib.sha256(data).hexdigest())
+                occurrence = seen.get(name, 0)
+                seen[name] = occurrence + 1
+                key = name if not occurrence else f"{name}#{occurrence + 1}"
+                result[key] = (flags, addr, length, hashlib.sha256(data).hexdigest())
         need(".text" in result, "ELF section census")
         return result
 
     x, y = sections(first), sections(second)
     return {k: [x.get(k), y.get(k)] for k in sorted(x.keys() | y.keys()) if x.get(k) != y.get(k)}
+
+
+def abi_delta(before, after):
+    delta = {}
+    for k in before.keys() | after.keys():
+        x, y = before.get(k), after.get(k)
+        need("3pfj" not in k, "exported PFJ implementation")
+        if x == y:
+            continue
+        delta[k] = [x, y]
+        need(
+            k.startswith("_Z") and (x is None or y is None) and (x or y)[0] in {"W", "V", "u"},
+            "existing symbol type/size or non-weak C++ export changed: " + k,
+        )
+    return delta
+
+
+def abi_symbols(path):
+    result = pfj.symbols(path)
+    # V (weak object) and u (unique global) carry data sizes as well.
+    for line in pfj.cmd("nm", "-D", "--defined-only", "--format=posix", path).splitlines():
+        name, kind, *values = line.split()
+        if kind in {"V", "v", "u"}:
+            result[name] = [kind, values[-1]]
+    return result
+
+
+def loadable_differences(diff):
+    return sorted(
+        k
+        for k, pair in diff.items()
+        if k != ".note.gnu.build-id" and any(v and "A" in v[0] for v in pair)
+    )
 
 
 def private_sources(backend, directory):
@@ -191,6 +229,23 @@ def run(a, out, r):
     )
     save(out / "inputs.json", inputs)
     r["inputs_sha256"] = INPUTS
+    matched = a.intact_receipt is not None
+    prior = None
+    if matched:
+        prior = capture.derive.load(a.intact_receipt, R01)
+        need(
+            prior["status"] == "FAIL_PRESERVED"
+            and prior["stage"] == "intact"
+            and prior["tool_sha256"] == tools
+            and prior["inputs_sha256"] == INPUTS,
+            "R01 toolchain authority",
+        )
+        r.update(
+            build_variant="current_compiler_control",
+            r01_sha256=R01,
+            addendum_sha256=sha(HERE / "current-toolchain.md"),
+            object_comparisons={},
+        )
     deadline = time.monotonic() + 280
 
     def invoke(argv, directory, label):
@@ -217,7 +272,16 @@ def run(a, out, r):
     intact = out / "intact"
     intact.mkdir()
     invoke(link(tokens, intact, ()), intact, "link")
-    identical(original, intact / IMAGE, "intact ELF")
+    if matched:
+        r["intact_sha256"] = sha(intact / IMAGE)
+        need(
+            r["intact_sha256"] == prior["mismatch"]["actual_sha256"]
+            and set(section_diff(original, intact / IMAGE)) == {".note.gnu.build-id", ".comment"}
+            and old.abi(original) == old.abi(intact / IMAGE),
+            "different intact relink",
+        )
+    else:
+        identical(original, intact / IMAGE, "intact ELF")
     args = flags(rules)
     src = next(t[2:] for t in args if t.startswith("-I") and t.endswith("/src/."))
     need(Path(src).resolve() == backend / "src", "historical include location")
@@ -254,7 +318,20 @@ def run(a, out, r):
                 d,
                 name,
             )
-            if mode == "gold":
+            if mode == "gold" and matched:
+                historical = rules / (name + ".o")
+                report = dict(
+                    original_sha256=sha(historical),
+                    recompiled_sha256=sha(target),
+                    sections=section_diff(historical, target),
+                )
+                save(d / (name + ".sections.json"), report)
+                r["object_comparisons"][name] = dict(
+                    original=sha(historical),
+                    actual=sha(target),
+                    report_sha256=sha(d / (name + ".sections.json")),
+                )
+            elif mode == "gold":
                 identical(rules / (name + ".o"), target, "gold " + name)
             else:
                 need(
@@ -263,14 +340,38 @@ def run(a, out, r):
                 )
         invoke(link(tokens, d, TUS), d, "link")
         if mode == "gold":
-            identical(original, d / IMAGE, "recompiled gold ELF")
+            if matched:
+                control = d / IMAGE
+                delta = section_diff(original, control)
+                save(d / "elf.sections.json", delta)
+                need(
+                    old.abi(original)["dynamic"] == old.abi(control)["dynamic"],
+                    "control dependencies",
+                )
+                r.update(
+                    control_sha256=sha(control),
+                    control_file=str(control.relative_to(out)),
+                    control_exec_same=not loadable_differences(delta),
+                    control_alloc_differences=loadable_differences(delta),
+                    control_section_delta_sha256=sha(d / "elf.sections.json"),
+                    control_export_changes=abi_delta(abi_symbols(original), abi_symbols(control)),
+                )
+            else:
+                identical(original, d / IMAGE, "recompiled gold ELF")
             r["gold_sha256"] = sha(d / IMAGE)
     image = out / "candidate" / IMAGE
     r.update(candidate_sha256=sha(image), candidate_file=str(image.relative_to(out)))
-    need(
-        r["candidate_sha256"] != ORIGINAL and old.abi(image) == old.abi(original),
-        "candidate ABI or identity",
-    )
+    need(r["candidate_sha256"] not in {ORIGINAL, r["gold_sha256"]}, "candidate unchanged")
+    if matched:
+        need(old.abi(image)["dynamic"] == old.abi(original)["dynamic"], "candidate dependencies")
+        r["candidate_export_changes_vs_control"] = abi_delta(
+            abi_symbols(control), abi_symbols(image)
+        )
+        r["candidate_export_changes_vs_original"] = abi_delta(
+            abi_symbols(original), abi_symbols(image)
+        )
+    else:
+        need(old.abi(image) == old.abi(original), "candidate ABI")
     r["stage"] = "closure"
     qualify = load(HERE / "closure.py", "c291_closure")
     qualify.run(server, a, out, original, image, r)
@@ -294,6 +395,7 @@ def main():
         ap.add_argument("--" + k, type=Path, required=True)
     for k in ("unit", "commit"):
         ap.add_argument("--" + k, required=True)
+    ap.add_argument("--intact-receipt", type=Path, help="R02 only: pinned failed intact link")
     a = ap.parse_args()
     os.umask(0o077)
     out = a.new_output_dir.resolve()
