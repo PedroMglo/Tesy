@@ -1,10 +1,14 @@
 import itertools
-import sys
+import importlib.util
 import unittest
 from pathlib import Path
 
-sys.path.insert(0, str(Path(__file__).resolve().parent))
-from screen import optimum
+spec = importlib.util.spec_from_file_location(
+    "warm_oracle_screen", Path(__file__).with_name("screen.py")
+)
+subject = importlib.util.module_from_spec(spec)
+spec.loader.exec_module(subject)
+optimum = subject.optimum
 
 
 def brute(groups):

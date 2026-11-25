@@ -1,11 +1,14 @@
 import hashlib
-import sys
+import importlib.util
 import tempfile
 import unittest
 from pathlib import Path
 
-sys.path.insert(0, str(Path(__file__).resolve().parent))
-import plan  # noqa: E402
+spec = importlib.util.spec_from_file_location(
+    "cold_read_fixture_plan", Path(__file__).with_name("plan.py")
+)
+plan = importlib.util.module_from_spec(spec)
+spec.loader.exec_module(plan)
 
 ROW = plan.analyse.Row(*([0] * len(plan.analyse.Row._fields)))
 BEGIN = 1_020_000

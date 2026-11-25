@@ -1,10 +1,16 @@
-import sys
+import importlib.util
 import unittest
 from decimal import Decimal
 from pathlib import Path
 
-sys.path.insert(0, str(Path(__file__).resolve().parent))
-from screen import MARGIN, SIZE, case  # noqa: E402
+spec = importlib.util.spec_from_file_location(
+    "interturn_screen", Path(__file__).with_name("screen.py")
+)
+subject = importlib.util.module_from_spec(spec)
+spec.loader.exec_module(subject)
+MARGIN = subject.MARGIN
+SIZE = subject.SIZE
+case = subject.case
 
 
 class Cases(unittest.TestCase):

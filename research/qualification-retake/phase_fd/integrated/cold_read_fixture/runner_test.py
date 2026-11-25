@@ -2,17 +2,28 @@ import errno
 import hashlib
 import importlib.util
 import os
+import sys
 import tempfile
 import unittest
 from concurrent.futures import ThreadPoolExecutor
 from contextlib import ExitStack
 from pathlib import Path
+from unittest.mock import patch
 
 spec = importlib.util.spec_from_file_location(
     "first_demand_runner", Path(__file__).with_name("runner.py")
 )
 m = importlib.util.module_from_spec(spec)
-spec.loader.exec_module(m)
+# The pinned C135 scripts use short module names. Keep their isolated CLI
+# namespace from leaking into other research clients in the same pytest process.
+original_path = sys.path[:]
+try:
+    with patch.dict(sys.modules):
+        for name in ("measure", "run", "plan"):
+            sys.modules.pop(name, None)
+        spec.loader.exec_module(m)
+finally:
+    sys.path[:] = original_path
 
 
 class FirstReads(unittest.TestCase):
