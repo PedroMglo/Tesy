@@ -28,6 +28,12 @@ class PipelineBounds(unittest.TestCase):
             )
         rows.append(event(2, 60))
         self.assertEqual(screen["host_bounds"](rows, 75)["wall_cap_ns"], 8)
+        for r in rows:
+            if r.layer == 35 and r.tile != 5:
+                r.layer = 34
+        wider = screen["host_bounds"](rows, 75)
+        self.assertEqual(wider["last_observed_layer"], [34, 34, 34, 34, 35])
+        self.assertEqual(wider["wall_cap_ns"], 8)
 
     def test_disk_and_gap_share_one_credit(self):
         arm = {

@@ -76,6 +76,7 @@ def host_bounds(rows, call):
     (returned,) = (r.ns for r in host if r.kind == 2)
     elapsed = returned - enter
     tiles = []
+    last_observed = []
     for t in range(1, 6):
         tile = [r for r in host if r.tile == t]
         (begin,) = (r.ns for r in tile if r.kind == 3)
@@ -83,11 +84,15 @@ def host_bounds(rows, call):
         first = {
             layer: min(r.ns for r in tile if r.layer == layer and r.kind == 9) for layer in (0, 25)
         }
+        # Four early tiles can have no last-layer FFN because no output row was
+        # requested. Its preceding observed layer widens both cut envelopes.
+        final_layer = max(r.layer for r in tile if 25 <= r.layer <= 35 and r.kind == 23)
+        last_observed.append(final_layer)
         last = {
             layer: max(r.ns for r in tile if r.layer == layer and r.kind == 23)
-            for layer in (24, 35)
+            for layer in (24, final_layer)
         }
-        chain = [begin, first[0], last[24], first[25], last[35], end]
+        chain = [begin, first[0], last[24], first[25], last[final_layer], end]
         check(enter <= begin and end <= returned and sorted(chain) == chain, "tile host cuts")
         tiles.append([n - enter for n in chain])
     check(
@@ -135,6 +140,7 @@ def host_bounds(rows, call):
     return dict(
         call148_elapsed_ns=elapsed,
         tile_markers_relative_ns=tiles,
+        last_observed_layer=last_observed,
         pairs=pairs,
         min_path_ns=min_path,
         worker_read_set_service_ns=service,
