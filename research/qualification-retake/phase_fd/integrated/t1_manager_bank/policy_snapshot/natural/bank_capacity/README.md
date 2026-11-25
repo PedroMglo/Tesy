@@ -1,6 +1,6 @@
 # Quantas chaves pode a compressão acrescentar ao banco de T1?
 
-**A bytes iguais, o cenário da amostra passa de 353 para 386 registos.** Para que o piso de volume do banco de publicações da parte 40 caiba no limiar nominal, pelo menos 31 das 33 entradas adicionais teriam de ser chaves distintas efetivamente necessárias e ausentes do primário inicial. O efeito permanece **INCONCLUSIVE**. A experiência seguinte é contar essa interseção no prefixo selado, antes de investir num codec. Os picos históricos das partes 37 e 40 comportariam o mesmo K386 em formato cru se os restantes custos se mantivessem. [Pré-registo](protocol.md) · [Recibo aritmético](receipt.json)
+**A bytes iguais, o cenário da amostra passa de 353 para 386 registos.** Para que o piso de volume do banco de publicações da parte 40 caiba no limiar nominal, pelo menos 31 das 33 entradas adicionais teriam de ser chaves distintas efetivamente necessárias e ausentes do primário inicial. O teste posterior sobre o prefixo selado encontrou cinco. Isso fecha a expansão isolada até K390 para o ramo D=47. Os picos históricos das partes 37 e 40 comportariam o mesmo K386 em formato cru se os restantes custos se mantivessem. [Pré-registo](protocol.md) · [Recibo aritmético](receipt.json) · [Teste da interseção](intersection/README.md)
 
 | Envelope | Bytes disponíveis para o banco | Raw | Ideal da compressão da amostra | Amostra com tabelas e workspace | Todos os registos em fallback raw com o workspace do codec |
 |---|---:|---:|---:|---:|---:|
