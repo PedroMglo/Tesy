@@ -132,7 +132,7 @@ def active_sample(owner, gpu_uuid, require_owner):
     )
 
 
-def execute(a, result, out):
+def execute(a, result, out, *, full_pack=None):
     cold = run_path(str(HERE.parent / "cold_read_fixture/runner.py"))
     io, c135, load = cold["io"], cold["c135"], cold["load"]
 
@@ -149,12 +149,19 @@ def execute(a, result, out):
     plan = load(a.plan, ram["PLAN"])
     seal = load(RAM / "plan-receipt.json", ram["SEAL"])
     entries = ram["checked_plan"](plan, seal)
+    pack_path = a.partial if full_pack is None else full_pack.path
+    pack_stat = baseline["partial_stat"] if full_pack is None else full_pack.stat
+    stat_key = "partial_stat" if full_pack is None else "full_pack_stat"
+    status = "PASS_NATIVE_SINKS" if full_pack is None else "PASS_FULL_PACK_NATIVE_SINKS"
+    if full_pack is not None:
+        entries = full_pack.bind(plan, seal, entries)
+        result.update(full_pack.evidence)
     need(
         baseline["status"] == "PASS_RAM_TRANSPORT"
         and baseline["model_stat"] == io.stat_id(a.model)
-        and baseline["partial_stat"] == io.stat_id(a.partial)
-        and io.disk(a.model, "nvme") == io.disk(a.partial, "nvme")
-        and io.mount(a.model)[1] == io.mount(a.partial)[1] == "btrfs",
+        and pack_stat == io.stat_id(pack_path)
+        and io.disk(a.model, "nvme") == io.disk(pack_path, "nvme")
+        and io.mount(a.model)[1] == io.mount(pack_path)[1] == "btrfs",
         "source identity",
     )
     io.CAP, io.STOPS = 2 * 2**30, 1856 * 2**20
@@ -180,11 +187,12 @@ def execute(a, result, out):
     if a.arm == 2:
         first = load(a.first_dir / "receipt.json", a.first_sha256)
         need(
-            first["status"] == "PASS_NATIVE_SINKS"
+            first["status"] == status
             and first["arm"] == 1
             and first["commit"] == a.commit
             and first["monitor_provider"] == provider
-            and first["partial_stat"] == io.stat_id(a.partial),
+            and first[stat_key] == io.stat_id(pack_path)
+            and (full_pack is None or all(first[k] == v for k, v in full_pack.evidence.items())),
             "independent process chain",
         )
     result.update(
@@ -192,7 +200,7 @@ def execute(a, result, out):
         ram_receipt_sha256=PREVIOUS,
         c55_sha256=a.c55_sha256,
         model_stat=baseline["model_stat"],
-        partial_stat=baseline["partial_stat"],
+        **{stat_key: pack_stat},
         monitor_provider=provider,
         resource_cap=io.CAP,
         first_sha256=a.first_sha256,
@@ -232,15 +240,18 @@ def execute(a, result, out):
         monitor(True)
         with ExitStack() as s:
             gguf = ram["direct"](s, a.model, os.O_RDONLY)
-            pack = ram["direct"](s, a.partial, os.O_RDONLY)
+            pack = ram["direct"](s, pack_path, os.O_RDONLY)
             for fd, path, ident in (
                 (gguf, a.model, baseline["model_stat"]),
-                (pack, a.partial, baseline["partial_stat"]),
+                (pack, pack_path, pack_stat),
             ):
                 cold["check_fd"](fd, path, ident)
-            gold, digest, prep_ns = ram["prepare"](plan, pack, gguf, None, False, monitor)
+            gold, digest, prep_ns = ram["prepare"](
+                plan, pack, gguf, None, False, monitor, source_offsets=full_pack is not None
+            )
             need(digest == baseline["partial_sha256"], "pack readback")
-            result.update(partial_sha256=digest, prepare_ns=prep_ns)
+            result.update(prepare_ns=prep_ns)
+            result["partial_sha256" if full_pack is None else "selected_windows_sha256"] = digest
             pointers = {k: byte_address(v) for k, v in gold.items()}
             poison = bytes([0xA5]) * WIDTH
             output = s.enter_context(mmap.mmap(-1, WIDTH))
@@ -298,7 +309,7 @@ def execute(a, result, out):
             sinks.end_check()
             for fd, path, ident in (
                 (gguf, a.model, baseline["model_stat"]),
-                (pack, a.partial, baseline["partial_stat"]),
+                (pack, pack_path, pack_stat),
             ):
                 cold["check_fd"](fd, path, ident)
             need(
@@ -310,7 +321,7 @@ def execute(a, result, out):
         result["fixture_cleanup_ns"] = clock() - cleanup
         monitor(True)
     result.update(
-        status="PASS_NATIVE_SINKS",
+        status=status,
         contrasts=ram["contrast"](blocks),
         arm_read_bytes=read_bytes,
         verified_components=verified,

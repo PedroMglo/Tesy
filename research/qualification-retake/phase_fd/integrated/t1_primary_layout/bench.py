@@ -89,7 +89,8 @@ def direct(stack, path, flags):
     return fd
 
 
-def prepare(plan, stage, model, external, create, monitor):
+def prepare(plan, stage, model, external, create, monitor, *, source_offsets=False):
+    need(not (source_offsets and create), "an integral source is read-only")
     gold = {}
     prepared_hash = hashlib.sha256()
     t = CLOCK()
@@ -98,7 +99,7 @@ def prepare(plan, stage, model, external, create, monitor):
         scratch = stack.enter_context(mmap.mmap(-1, WINDOW))
         verify = stack.enter_context(mmap.mmap(-1, WINDOW))
         for i, r in enumerate(plan["entries"]):
-            offset = i * WINDOW
+            offset = r["pack_offset"] if source_offsets else i * WINDOW
             if create:
                 read_at(external, scratch, WINDOW, r["pack_offset"])
                 check_payload(scratch, r)
