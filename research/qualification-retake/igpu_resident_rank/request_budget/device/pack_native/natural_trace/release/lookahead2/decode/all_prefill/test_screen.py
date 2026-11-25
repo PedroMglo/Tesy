@@ -7,6 +7,13 @@ S = run_path(str(Path(__file__).with_name("screen.py")))
 
 
 class FullDelivery(unittest.TestCase):
+    def test_pfj_enqueues(self):
+        S["verify_reason"](0, -1, -1)
+        S["verify_reason"](2, 0, 1)
+        for args in [(1, 0, 1), (2, 0, 0), (0, 0, 1)]:
+            with self.assertRaises(ValueError):
+                S["verify_reason"](*args)
+
     def test_preload_sets_can_hide_until_the_demand(self):
         self.assertEqual(S["set_floor"]([(5, 15, 8)]), 0)
         self.assertEqual(S["set_floor"]([(5, 15, 18)]), 8)

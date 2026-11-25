@@ -27,6 +27,14 @@ class Job:
     set_ns: int
 
 
+def verify_reason(why, origin_wave, use_wave):
+    # observer.patch: 0=new demand, 2=next-wave preload, 1=promotion of an existing load.
+    check(
+        (why == 0 and use_wave == origin_wave) or (why == 2 and use_wave == origin_wave + 1),
+        "invalid first enqueue or consuming wave",
+    )
+
+
 def jobs(rows, host, tiers, bank):
     waves, reservations = C["timeline"](rows)
     spans = {w.site: (w.start, w.end) for w in waves}
@@ -53,10 +61,10 @@ def jobs(rows, host, tiers, bank):
         D["strict"](use is not None and use[:3] == site[:3], "unobserved same-cell use")
         q = queues[k][0]
         check(
-            q.a in (0, 1) and C["origin"](q) == site and k[3] in routes[site[:3]],
+            C["origin"](q) == site and k[3] in routes[site[:3]],
             "queue, generation or target rank",
         )
-        check(site[-1] <= use[-1] and (q.a != 0 or use == site), "demand/preload order")
+        verify_reason(q.a, site[-1], use[-1])
         finish = spans[use][1]
         read, service, _, _ = REL["price"](services[k], releases[k].ns, finish)
         check(spans[site][0] <= releases[k].ns <= spans[site][1], "reservation outside site")
