@@ -34,3 +34,5 @@ timeout 10 prlimit --as=201326592 -- python3 -IB "$study/screen.py" \
   --part63 "$ARCHIVE/part-63" --output "$NEW/receipt.json"
 sha256sum "$NEW/receipt.json"
 ```
+
+A reprodução inicial está preservada em `e13326f6` e na parte 79. A cópia de leitura de `protocol.md` perdeu um espaço final de linha após a medição. A reprodução com esta cópia deu SHA-256 `e1c649c0c9dadd0ab4662af2c3f97d2775a167364073538fa6525922fab8770a`; a única diferença entre os dois JSON é o digest do próprio documento. [Manifesto privado](../private_archive/part-79.json)
