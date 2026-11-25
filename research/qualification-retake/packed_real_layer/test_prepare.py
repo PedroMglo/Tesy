@@ -1,11 +1,12 @@
 """Tiny synthetic counterexamples, independent of any GGUF or captured activations."""
 
 import os
-from pathlib import Path
 import struct
 import tempfile
 import unittest
+from pathlib import Path
 from unittest.mock import patch
+
 import prepare as p
 
 
