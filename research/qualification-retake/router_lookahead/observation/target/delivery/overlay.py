@@ -82,6 +82,9 @@ def apply(src: Path):
         stage_site=next;
     }""",
     )
+    s = change(
+        s, "#include <condition_variable>", "#include <condition_variable>\n#include <stdexcept>"
+    )
     header.write_text(
         change(
             s,
