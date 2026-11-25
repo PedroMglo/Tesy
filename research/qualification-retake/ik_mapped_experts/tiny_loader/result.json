@@ -1,0 +1,143 @@
+{
+  "arms": {
+    "DEFER": {
+      "dropped_bytes": 1712128,
+      "dropped_ranges": [
+        [
+          872448,
+          856064,
+          4,
+          0
+        ],
+        [
+          2531328,
+          856064,
+          4,
+          0
+        ]
+      ],
+      "greedy": 25,
+      "logits_sha256": "d4a53844b37bff3fbfe97f576be5fb0895efd11654fed0311f1b0cdb72f62385",
+      "mapped_expert_biases": 6,
+      "mapped_expert_weights": 6,
+      "max_rss_kib": 43044,
+      "mmap_flags": 1,
+      "pool_enabled": false,
+      "returncode": 0,
+      "stderr_sha256": "8c7ac97ba0270e5106ff10e299f35605fd59a5573c3171f95c04945544920db0",
+      "stdout_sha256": "b4b6cbf7651fd4eaa50eadc92b580a012fc2fc193f654d56c9affefc463474cb",
+      "tasks_before_after": [
+        1,
+        1
+      ],
+      "whole_file_willneed": 0
+    },
+    "DEFER_PREFETCH": {
+      "dropped_bytes": 1712128,
+      "dropped_ranges": [
+        [
+          872448,
+          856064,
+          4,
+          0
+        ],
+        [
+          2531328,
+          856064,
+          4,
+          0
+        ]
+      ],
+      "greedy": 25,
+      "logits_sha256": "d4a53844b37bff3fbfe97f576be5fb0895efd11654fed0311f1b0cdb72f62385",
+      "mapped_expert_biases": 6,
+      "mapped_expert_weights": 6,
+      "max_rss_kib": 43164,
+      "mmap_flags": 1,
+      "pool_enabled": true,
+      "returncode": 0,
+      "stderr_sha256": "634d203dbfcfbdfb618f4f44f933781d8de43176eba798e786e643809acfb87c",
+      "stdout_sha256": "f38ee7ac8c7632cdd992f2d19c561fe5d0a232c8043f85743c353a7826cdd82c",
+      "tasks_before_after": [
+        1,
+        5
+      ],
+      "whole_file_willneed": 0
+    },
+    "OFF": {
+      "dropped_bytes": 0,
+      "dropped_ranges": [],
+      "greedy": 25,
+      "logits_sha256": "d4a53844b37bff3fbfe97f576be5fb0895efd11654fed0311f1b0cdb72f62385",
+      "mapped_expert_biases": 6,
+      "mapped_expert_weights": 6,
+      "max_rss_kib": 43364,
+      "mmap_flags": 32769,
+      "pool_enabled": false,
+      "returncode": 0,
+      "stderr_sha256": "9ed36a056a24b7f8c910808c59e363d28d7f99b98f24dc46a5766c446c0b189a",
+      "stdout_sha256": "dbe163ba8e053ab847dc948f396952e46e69184fc986034ef271d3d063f126d1",
+      "tasks_before_after": [
+        1,
+        1
+      ],
+      "whole_file_willneed": 1
+    }
+  },
+  "build_sha256": "e08c80b9b011bcde7575900c66fd41d058ed05920212e619499a98ea0b529956",
+  "cgroup_after": {
+    "events": {
+      "high": 0,
+      "low": 0,
+      "max": 0,
+      "oom": 0,
+      "oom_group_kill": 0,
+      "oom_kill": 0,
+      "sock_throttled": 0
+    },
+    "memory.current": 21049344,
+    "memory.max": 157286400,
+    "memory.peak": 54013952,
+    "memory.swap.max": 0,
+    "memory.swap.peak": 0
+  },
+  "cgroup_before": {
+    "events": {
+      "high": 0,
+      "low": 0,
+      "max": 0,
+      "oom": 0,
+      "oom_group_kill": 0,
+      "oom_kill": 0,
+      "sock_throttled": 0
+    },
+    "memory.current": 11059200,
+    "memory.max": 157286400,
+    "memory.peak": 11091968,
+    "memory.swap.max": 0,
+    "memory.swap.peak": 0
+  },
+  "controller_sha256": "9bee3ab05f2a01661243627f259ae2362b0e372dab757cbebbedddd7b6ae1a2a",
+  "gguf_bytes": 3390592,
+  "gguf_sha256": "3771d5de5067095852a0132324c16b01e39c2b999082d4a3b6165e13aff90644",
+  "ik_commit": "7a5d90009b7ae55d3239cdd33244977c4eb10ff6",
+  "libraries": {
+    "ggml/src/libggml.so": "5395348a4bffef748be95e7657cbd25dd2ceaaa50f4f00e0f9d58dc742329c0c",
+    "src/libllama.so": "aa1e18b41a8f04ed396e885f24288965a8961e611261e173774e9f9cd538b74a"
+  },
+  "model": "synthetic",
+  "original_model_loads": 0,
+  "r01_sha256": "4cace6b6464f09816ce2809ec3a8babb50d9fb8734758538b8acc7a2f912dd9d",
+  "resident_limit_bytes": 157286400,
+  "scope": "tesy-ik-tiny-loader-20261125-r02.scope",
+  "sources": {
+    "data.py": "88862ee91843b9f9ad06adb0c36aa05e197f1515a14127f748dc7a7db9fb367c",
+    "probe.cpp": "3ac453a41a15775105d34120a93316310ba29b2dd9277d7e259d2458a00f4b21",
+    "protocol.md": "47c5e958509bf44e96483a9c0a61695b3b78bee4431bac69d84c9cd80ebeb806",
+    "run.py": "398a298c08f9f9cfdf95642cff702df0ac858c13dab45df6692cdfa03a78332a"
+  },
+  "status": "PASS_TINY_IK_DEFERRED_GPT_OSS_LOGITS",
+  "supplement_sha256": "999adb61a10ff831aa75a2a034245b4a725d0e96cc1c663de8fadd37f83e786f",
+  "tensors": 41,
+  "virtual_limit_bytes": 805306368
+}
