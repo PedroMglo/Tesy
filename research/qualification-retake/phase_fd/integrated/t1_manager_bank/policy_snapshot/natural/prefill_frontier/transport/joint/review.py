@@ -50,12 +50,19 @@ def occupancy(spans, elapsed):
 
 def inspect_jobs(rows, expected, layout, summary):
     workers = defaultdict(list)
-    for row, (group, job) in zip(rows, expected, strict=True):
+    acquired = 0
+    for index, (row, (group, job)) in enumerate(zip(rows, expected, strict=True)):
         check(
-            row["layer"] == group["layer"]
-            and all(row[k] == job[k] for k in ("expert", "slot", "generation")),
+            row["index"] == index
+            and all(row[k] == group[k] for k in ("tier", "layer", "wave", "tile"))
+            and all(
+                row[k] == job[k]
+                for k in ("ordinal", "expert", "slot", "generation", "source_enqueue")
+            ),
             "timed job order/generation",
         )
+        check(acquired <= row["acquired_ns"] <= row["read_spans_ns"][0][0], "FIFO acquisition")
+        acquired = row["acquired_ns"]
         spans = row["read_spans_ns"]
         check(len(spans) == (1 if layout == "P" else 3), "component pread count")
         workers[row["worker"]].extend(spans)
@@ -74,7 +81,25 @@ def inspect_jobs(rows, expected, layout, summary):
         and sum(i * v for i, v in enumerate(hist)) == summary["read_worker_ns"],
         "call clocks",
     )
+    check(hist == [summary["qd_wall_ns"][str(i)] for i in range(5)], "inflight duration")
     return hist
+
+
+def inspect_integrity(line, expected):
+    for index, (row, (g, j)) in enumerate(zip(line["jobs"], expected, strict=True)):
+        check(
+            row["index"] == index
+            and all(row[k] == g[k] for k in ("tier", "layer", "wave", "tile"))
+            and all(
+                row[k] == j[k]
+                for k in ("ordinal", "expert", "slot", "generation", "source_enqueue")
+            ),
+            "integrity job order",
+        )
+        check(
+            row["component_sha256"] == [c["sha256"] for c in j["components"]],
+            "integrity traversal weight digest",
+        )
 
 
 def calculate(a):
@@ -103,6 +128,12 @@ def calculate(a):
             and sha(root / "raw/telemetry.jsonl") == receipt["telemetry_sha256"],
             "monitor coverage",
         )
+        check(
+            receipt["frontier_sha256"] == FRONTIER_SHA
+            and receipt["cgroup_peak_bytes"] < receipt["stop_bytes"] == 336 << 20
+            and receipt["model_forwards"] == receipt["gpu_compute"] == 0,
+            "scope resources",
+        )
         last = digest
         arms[order] = {}
         for layout in order:
@@ -117,9 +148,12 @@ def calculate(a):
             )
             calls = []
             lines = [json.loads(s) for s in raw.read_bytes().splitlines()]
-            for line, summary, (tokens, expected) in zip(
-                lines, totals["calls"], schedules.items(), strict=True
+            reread = [json.loads(s) for s in verified.read_bytes().splitlines()]
+            for line, full, summary, (tokens, expected) in zip(
+                lines, reread, totals["calls"], schedules.items(), strict=True
             ):
+                check(full["call"] == line["call"] and full["call_tokens"] == tokens, "reread call")
+                inspect_integrity(full, expected)
                 check(
                     line["call_tokens"] == summary["call_tokens"] == tokens
                     and summary["call"] == line["call"] == expected[0][0]["call"],
