@@ -1,0 +1,132 @@
+// Compile-time insertions are exact expressions and blocks from the frozen stock source.
+// Tokens and checkpoint payloads here are CPU fixture values, not tensors or a KV instance.
+#include <algorithm>
+#include <cassert>
+#include <cstdint>
+#include <cstdio>
+#include <memory>
+#include <stdexcept>
+#include <vector>
+
+using llama_pos = int;
+#define SLT_TRC(...) ((void)0)
+#define SLT_DBG(...) ((void)0)
+#define SLT_WRN(...) ((void)0)
+#define GGML_ABORT(...) throw std::runtime_error("invalid checkpoint")
+constexpr int LLAMA_STATE_SEQ_FLAGS_PARTIAL_ONLY = 1;
+struct Tokens {
+    static constexpr bool has_mtmd = false;
+    std::vector<int> tokens;
+    size_t size() const { return tokens.size(); }
+    llama_pos pos_next(int64_t n_tokens) const { @TEXT_NEXT@ }
+    size_t size_up_to_pos(llama_pos max_pos) const { @TEXT_SIZE@ }
+    size_t get_common_prefix(const Tokens & b) const { @TEXT_PREFIX@ }
+};
+struct Checkpoint {
+    int n_tokens = 0, pos_min = 0, pos_max = 0, id_task = 1, data_spec = 0;
+    bool good = true;
+    bool load_tgt(void *, int, int) const { return good; }
+    bool load_dft(void *, int, int) const { return true; }
+};
+struct Prompt {
+    Tokens tokens;
+    std::vector<std::shared_ptr<Checkpoint>> checkpoints;
+};
+struct Task {
+    int length = 435;
+    int n_tokens_shared = 0;
+    bool stateless = false;
+    struct {bool cache_prompt = true;} params;
+    bool is_stateless() const {return stateless;}
+    int n_tokens() const { return length; }
+};
+struct Slot {
+    Prompt prompt;
+    Task * task;
+    int id = 0;
+    int alora_invocation_start = -1;
+};
+struct Model {int window;};
+int llama_model_n_swa(Model *m) {return m->window;}
+void common_speculative_set_state(void *, int, int) {}
+
+int prefix(Slot &slot, const Tokens &input_tokens, int n_decision_first) {
+    int n_past = 0;
+    @PREFIX_GUARDS@
+    }
+    return n_past;
+}
+
+int split(Slot &slot, int n_past, int pos_min, bool full) {
+    struct { bool swa_full; } params_base{full};
+    Model model{128};
+    Model *ctx_model = &model;
+    auto *model_tgt = ctx_model;
+    int n_swa = -1;
+    @SWA_MODE@
+    std::shared_ptr<int> spec;
+    void *ctx_tgt = nullptr, *ctx_dft = nullptr;
+    @TEXT_LIMIT@
+    if (n_past > 0) {
+        if (pos_min < 0) throw std::runtime_error("no KV state");
+        @RESTORE@
+    }
+    @LAST_LOGIT@
+    return n_past;
+}
+
+int main() {
+    Task task;
+    Slot slot{{},&task,0};
+    slot.prompt.tokens.tokens.resize(461,9);
+    const Tokens original = slot.prompt.tokens;
+    for (int lcp = 0; lcp <= 435; ++lcp) {
+        Tokens next;
+        next.tokens.assign(435,7);
+        std::fill_n(next.tokens.begin(),lcp,9);
+        assert(original.get_common_prefix(next) == (size_t)lcp);
+    }
+    Tokens second;
+    second.tokens.assign(435,7);
+    std::fill_n(second.tokens.begin(),122,9);
+    assert(prefix(slot,second,-1)==122);
+    task.params.cache_prompt=false; assert(prefix(slot,second,-1)==0); task.params.cache_prompt=true;
+    task.stateless=true; assert(prefix(slot,second,-1)==0); task.stateless=false;
+    task.n_tokens_shared=87; assert(prefix(slot,second,-1)==87); task.n_tokens_shared=0;
+    assert(prefix(slot,second,85)==85);
+    slot.alora_invocation_start=7; assert(prefix(slot,second,-1)==6); slot.alora_invocation_start=-1;
+    // A conservative superset. Even allow a checkpoint claiming all 121 input tokens.
+    // For each LCP, being at/above vs below the threshold exhausts the live-state decision.
+    int comparisons = 0;
+    auto ck = std::make_shared<Checkpoint>();
+    slot.prompt.checkpoints = {ck};
+    for (int lcp = 0; lcp <= 435; ++lcp) {
+        for (int n = 0; n <= 121; ++n) {
+            ck->n_tokens = n;
+            ck->pos_max = n ? n-1 : 0;
+            for (int earliest : {0, 460}) {
+                assert(split(slot,lcp,earliest,false) != 122);
+                ++comparisons;
+            }
+        }
+    }
+    slot.prompt.checkpoints.clear();
+    assert(split(slot,122,0,false)==0 && split(slot,122,0,true)==122);
+    assert(split(slot,122,121,true)==122 && split(slot,122,122,true)==0);
+    assert(split(slot,435,0,true)==434); // At least one position yields logits.
+    assert(split(slot,0,0,true)==0); // Effective prefix zero when cache disabled/stateless.
+    assert(split(slot,121,0,true)==121 && split(slot,123,0,true)==123);
+    slot.prompt.checkpoints = {ck};
+    ck->n_tokens=118; ck->pos_max=117;
+    assert(split(slot,122,0,false)==117 && split(slot,122,380,true)==117);
+    ck->pos_max=123; assert(split(slot,122,0,false)==0);
+    ck->n_tokens=123; ck->pos_max=122;
+    assert(split(slot,122,0,false)==122); // Requires a checkpoint beyond natural T1.
+    ck->pos_min=4; assert(split(slot,122,0,false)==0);
+    ck->pos_min=0; ck->good=false; ck->id_task=-1; assert(split(slot,122,0,false)==0);
+    ck->id_task=1;
+    bool aborted=false;
+    try { (void) split(slot,122,0,false); } catch(const std::runtime_error&) { aborted=true; }
+    assert(aborted);
+    std::printf("%d source-branch comparisons; full=122 compact=0 no-checkpoint\n", comparisons);
+}
