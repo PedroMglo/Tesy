@@ -167,7 +167,15 @@ def authorities(args, svc, prior, result):
     }
     need(observed == {k: v[0] for k, v in libs.items()}, "runtime providers differ from build")
     prep = prior.sealed_json(args.input_dir / "prepare.json", args.input_sha256)
-    need(prep["status"] == "PASS_REAL_TILE_INPUT", "preparation status")
+    need(
+        prep["status"] == "PASS_REAL_TILE_INPUT"
+        and prep["program_sha256"] == result["source_sha256"]["prepare.py"]
+        and prep["protocol_sha256"] == result["source_sha256"]["protocol.md"]
+        and prep["offers"] == OFFERS
+        and prep["weight_matrix_read_bytes"] == 0
+        and prep["pack_bias_reads"] == 375,
+        "preparation status or stale input contract",
+    )
     need(
         set(prep["file_sha256"]) | {"prepare.json"} == {p.name for p in args.input_dir.iterdir()},
         "prepared file coverage",
