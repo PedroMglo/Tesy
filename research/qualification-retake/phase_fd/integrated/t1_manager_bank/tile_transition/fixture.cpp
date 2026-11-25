@@ -1,6 +1,8 @@
 // Two controlled tiles and a first decode through the pinned C291 manager.
-#include "c291-expert-store.h"
 #include "llama-moe-stream.h"
+
+// This pinned store header consumes the complete manager-layer and GGML types.
+#include "c291-expert-store.h"
 #include <algorithm>
 #include <array>
 #include <chrono>
