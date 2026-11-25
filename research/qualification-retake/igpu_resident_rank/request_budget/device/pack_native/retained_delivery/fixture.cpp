@@ -159,12 +159,17 @@ json execute(const char *pack,const char *gold_file) {
             auto *b=ggml_dup_tensor(inputs.get(),a);
             std::memcpy(a->data,logical.data(),logical.size()*4);
             llama_moe_stream_remap(b,a,0,1,s.layer);
-            ensure(!std::memcmp(b->data,expected.data(),expected.size()*4),"target remap order");
+            auto *received=static_cast<const int32_t *>(b->data);
+            if(!std::equal(expected.begin(),expected.end(),received)) {
+                std::cerr<<"phase "<<s.phase<<" IDs "<<json(logical)<<" expected "<<json(expected)
+                         <<" got "<<json(std::vector<int32_t>(received,received+expected.size()))<<"\n";
+                throw std::runtime_error("target remap order");
+            }
             s.ranks.push_back(expected);
         };
-        route({36,37,38,39,36,0,1,2},{0,1,2,3,0,4,5,6});
-        for(int e=3;e<=31;e+=4) route({e,e+1,e+2,e+3},{e+4,e+5,e+6,e+7});
-        route({35,32,33,34},{39,36,37,38});
+        route({36,37,38,39, 36,0,1,2, 36,37,38,39, 0,1,2,3},
+              {0,1,2,3, 0,4,5,6, 0,1,2,3, 4,5,6,7});
+        for(int e=4;e<36;e+=4) route({e,e+1,e+2,e+3},{e+4,e+5,e+6,e+7});
         s.phase=offer_phase;
         route({40,41,42,43},{0,1,2,3});
         {
