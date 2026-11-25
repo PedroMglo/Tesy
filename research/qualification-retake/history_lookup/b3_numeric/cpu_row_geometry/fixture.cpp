@@ -141,8 +141,7 @@ int main(int argc,char **argv) {
         auto pp=ggml_threadpool_params_default(threads);
         std::unique_ptr<ggml_threadpool,decltype(&ggml_threadpool_free)>
             pool(ggml_threadpool_new(&pp),ggml_threadpool_free);
-        require(pool && ggml_threadpool_get_n_threads(pool.get())==threads &&
-                !omp_get_dynamic(),"eight-thread pool");
+        require(pool && pp.n_threads==threads && !omp_get_dynamic(),"eight-thread pool");
         int actual=0;
 #pragma omp parallel num_threads(threads)
         {
