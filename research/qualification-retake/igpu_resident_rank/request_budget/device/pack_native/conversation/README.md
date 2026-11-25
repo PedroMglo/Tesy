@@ -6,6 +6,8 @@ O supervisor verificou offline as cinco execuções da fixture C291, os recibos 
 
 Uma execução completa do bloco anterior de três braços levou 620,5–631,5 s. Para quatro, a previsão é de aproximadamente 14 min de bloco e 60 s adicionais de C55. O máximo do bloco é 2600 s, 256 MiB, quatro novos processos e oito pedidos de geração. Cada processo tem C118 própria de 60 s, E20 com stop de 19,5 GiB, swap zero e confirmação da saída e da porta. [Custos históricos](../../../../../packed_nvme_manifest/server_profile/conversation/ordens.md)
 
+O controlo do C292 R01 terminou com código zero. O supervisor falhou ao procurar `startup_count` após a saída. A família R02 usa a medição desse PID e as quatro observações independentes do FD aberto em O_DIRECT. O revisor numérico reabre o controlo em R01 e os dois overlays em R02, compara as três árvores completas e vincula os resultados por SHA. A conversa exige o recibo dessa reprodução, os monitores e os lançamentos originais, as graduações de cada braço e o ficheiro de amostras do FD. O relógio do scope CONTROL ficou por observar no relatório R01. [Método de reabertura](../numeric/reopen.md) · [Revisor numérico](../numeric/review.py)
+
 O protocolo do gatilho, a alimentação por IDs ordenados, o revisor SSE e os relógios vêm dos supervisores anteriores. A banda descritiva é aplicada a doze razões T2, quatro por contraste. A validação do PFJ pertence ao auditor independente. A conclusão host de um SET CUDA não prova o instante do último consumidor na GPU; o seu custo exposto só admite os limites que o grafo e os dados da própria execução sustentarem. [Auditor do journal](../natural_trace/analyse.py)
 
 ### Preparar e executar na checkout congelada
@@ -18,6 +20,9 @@ ARCHIVE=/mnt/sdisk-ssd-ext/Tesy/outputs/qualification-20261124-nvme-01
 
 opts=(--repo "$FROZEN" --commit "$COMMIT" --unit-prefix "$NEW_UNIT_PREFIX"
   --method toolchain --bridge-dir "$NEW_C292" --bridge-sha256 "$NEW_C292_SHA"
+  --bridge-failed-dir /var/tmp/tesy-c292-pack-numeric-physical-20261125-r01
+  --bridge-fds-dir /var/tmp/tesy-c292-pack-numeric-control-fds-20261125-r01
+  --bridge-review "$C292_REVIEW/receipt.json" --bridge-review-sha256 "$C292_REVIEW_SHA"
   --window "$NEW_C55" --window-sha256 "$NEW_C55_SHA"
   --placement /tmp/tesy-nvme-placement-20261124-01/receipt.json
   --c270 /tmp/tesy-c270-driver-20261125-r01/receipt.json
@@ -35,6 +40,7 @@ opts=(--repo "$FROZEN" --commit "$COMMIT" --unit-prefix "$NEW_UNIT_PREFIX"
   --fixture-sha256 625b0e50c920938e478ff5b2f2a8bd0c85bbe2fb1f78fa4278f0e040f2ea3759)
 
 python3 -IB "$D/test_family.py"
+python3 -IB "$D/test_bridge.py"
 python3 -IB "$D/family.py" "${opts[@]}" --new-output-dir "$PREPARED"
 python3 -IB "$D/family.py" "${opts[@]}" --prepared "$PREPARED/family.json" \
   --prepared-sha256 "$PREPARED_SHA" --execute --new-output-dir "$NEW_RAW"

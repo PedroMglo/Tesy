@@ -23,6 +23,8 @@ TRG = "TESY_PHASE_FD_TRIGGER"
 PROTOCOL = "577fc2911826870beef46ded88c52c4c2dc03d66df32f98ce0bd531f3cefb0ef"
 ADDENDUM = "b6fe810c89c413488388e47ae01f35609901ed21adadcacca41c3189fa5c9db3"
 C292_TREE = "3b1c13734120f430d779960e3e8123eb58ffeee1947a1844636743b1e3aa1f03"
+C292_FAILED = "a6bd01e79fef679a739195efbd102a0b40861d017f0fa063dac904fa5f72a306"
+C292_CONTROL_FDS = "5b113a33e9f6d4f16797ac6fe29aa2ff05593a6c621039ada27494932e737177"
 
 
 def with_globals(fn, **globals_):
@@ -65,6 +67,98 @@ def order_for(build, method):
     return ("BASE", "OFF", "ON") if build["control_exec_same"] else MODES
 
 
+def recovered_origins(a, row):
+    # The independent numerical reviewer reads every capture from its own source.
+    # Receipt digests allow the originals to be reopened after the private archive is moved.
+    need(
+        all((a.bridge_failed_dir, a.bridge_fds_dir, a.bridge_review, a.bridge_review_sha256)),
+        "reopened C292 requires failed family, live FD witness and independent review",
+    )
+    failed = pinned(a.bridge_failed_dir / "receipt.json", C292_FAILED)
+    proof = pinned(a.bridge_fds_dir / "receipt.json", C292_CONTROL_FDS)
+    review = pinned(a.bridge_review, a.bridge_review_sha256)
+    need(
+        failed["status"] == "FAIL_PRESERVED"
+        and failed["unexecuted_arms"] == ["overlay_off", "overlay_on"]
+        and failed["reason"] == "KeyError: 'startup_count'"
+        and failed["model_launch_receipts"] == 1
+        and set(failed["arms"]) == {"control_off"}
+        and failed["build_receipt_sha256"] == row["build_receipt_sha256"]
+        and row["model_launch_receipts"] == 2
+        and row["revalidated_prior_launch_receipts"] == 1
+        and row["unexecuted_arms"] == []
+        and proof["status"] == "PASS_LIVE_CONTROL_OFF_FD"
+        and sha(a.bridge_fds_dir / "samples.jsonl") == proof["sample_sha256"]
+        and review["status"] == "REPRODUCED_C292_PACK_OBSERVER_NUMERIC"
+        and review["family_sha256"] == a.bridge_sha256
+        and review["failed_family_sha256"] == C292_FAILED
+        and review["live_control_sha256"] == C292_CONTROL_FDS
+        and review["build_sha256"] == a.build_sha256
+        and review["model_launches_by_reviewer"] == 0
+        and review["gold_receipt_sha256"] == p.capture.C270
+        and review["original_family_sha256"] == p.screen.C292
+        and set(review["arms"]) == set(row["arms"]),
+        "C292 recovery provenance and launch counts",
+    )
+    old_folder = a.bridge_failed_dir / "control_off"
+    old = pinned(old_folder / "receipt.json", failed["arms"]["control_off"]["receipt_sha256"])
+    need(
+        old["status"] == "FAIL_PRESERVED"
+        and old["model_launch_receipts"] == 1
+        and old["reason"] == failed["reason"]
+        and len(list(a.bridge_failed_dir.glob("*/raw/*.launch.json"))) == 1
+        and len(list(a.bridge_dir.glob("*/raw/*.launch.json"))) == 2,
+        "C292 physical control must occur once",
+    )
+    pids = set()
+    for name, summary in row["arms"].items():
+        recovered = name == "control_off"
+        folder = a.bridge_dir / name
+        scoped = old_folder if recovered else folder
+        arm = pinned(folder / "receipt.json", summary["receipt_sha256"])
+        checked = review["arms"][name]
+        unit = arm["unit"]
+        need(Path(unit).name == unit and unit not in (".", ".."), "C292 unit name")
+        raw = scoped / "raw"
+        monitor = pinned(raw / (unit + ".json"), arm["monitor_sha256"])
+        launch = pinned(raw / (unit + ".launch.json"), arm["launch_sha256"])
+        pid = launch["process_identity"]["pid"]
+        need(
+            arm["mode"] == name
+            and arm["model_launch_receipts"] == int(not recovered)
+            and checked["processes"] == 1
+            and arm["cleanup"] is True
+            and monitor["returncode"] == 0
+            and monitor["stop_reason"] is None
+            and monitor["process_identity"] == launch["process_identity"]
+            and arm["loader"]["native_pid"] == pid
+            and sha(raw / ("loader." + str(pid))) == arm["loader"]["loader_sha256"]
+            and checked["startup_count"] == 18
+            and checked["image_sha256"] == arm["image_sha256"] == summary["image_sha256"]
+            and checked["capture_tree"] == arm["capture_tree"] == summary["capture_tree"]
+            and checked["numerical_sha256"] == arm["numerical_sha256"]
+            and sha(folder / "numerical.json") == arm["numerical_sha256"]
+            and sha(folder / "selected.json") == arm["c127_sha256"],
+            "C292 arm evidence",
+        )
+        if recovered:
+            need(
+                not (folder / "raw").exists()
+                and arm["reused_measured_control"] is True
+                and old["unit"] == unit
+                and arm["r01_family_sha256"] == C292_FAILED
+                and arm["live_fd_sha256"] == C292_CONTROL_FDS
+                and arm["scoped_wall_s"] is None
+                and proof["pack"] == arm["pack"]
+                and proof["samples"] == arm["pack"]["positive_samples"] == 4
+                and proof["process_identity"] == launch["process_identity"]
+                and proof["launch_sha256"] == arm["launch_sha256"],
+                "C292 control PID/FD provenance",
+            )
+        pids.add(pid)
+    need(len(pids) == 3, "three independent C292 processes")
+
+
 def bridge(a, build):
     need(a.bridge_dir is not None and a.bridge_sha256 is not None, "numeric bridge required")
     row = pinned(a.bridge_dir / "receipt.json", a.bridge_sha256)
@@ -98,7 +192,22 @@ def bridge(a, build):
             },
             "numeric arm identity",
         )
-        pinned(a.bridge_dir / name / "receipt.json", arm["receipt_sha256"])
+        raw = pinned(a.bridge_dir / name / "receipt.json", arm["receipt_sha256"])
+        need(all(raw[k] == v for k, v in arm.items() if k != "receipt_sha256"), "arm binding")
+    if "revalidated_prior_launch_receipts" in row:
+        recovered_origins(a, row)
+    else:
+        need(
+            row["model_launch_receipts"] == 3
+            and not any(
+                (a.bridge_failed_dir, a.bridge_fds_dir, a.bridge_review, a.bridge_review_sha256)
+            )
+            and all(
+                read(a.bridge_dir / name / "receipt.json")["model_launch_receipts"] == 1
+                for name in row["arms"]
+            ),
+            "C292 one launch per arm",
+        )
     return row
 
 

@@ -22,7 +22,7 @@ A partir da revisão R02 `5e84957dc4a7c24bed418db440f0cac5033c3b0a`, nesta pasta
 
 ```sh
 python3 -IB test_native.py
-python3 -IB test_audit.py
+python3 -B test_audit.py
 systemd-run --user --scope --quiet --unit="$UNIT" -p MemoryMax=1G -p MemoryHigh=1G -p MemorySwapMax=0 \
   /usr/bin/python3 -IB run.py --backend "$C291" --libs "$C269_LIBS" \
   --commit 5e84957dc4a7c24bed418db440f0cac5033c3b0a --scope-unit "$UNIT.scope" \

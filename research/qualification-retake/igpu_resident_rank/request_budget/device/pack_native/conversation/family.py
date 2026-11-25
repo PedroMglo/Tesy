@@ -53,6 +53,10 @@ def arguments():
     parser.add_argument("--method", choices=("exact", "toolchain"), default="exact")
     parser.add_argument("--bridge-dir", type=Path)
     parser.add_argument("--bridge-sha256")
+    parser.add_argument("--bridge-failed-dir", type=Path)
+    parser.add_argument("--bridge-fds-dir", type=Path)
+    parser.add_argument("--bridge-review", type=Path)
+    parser.add_argument("--bridge-review-sha256")
     parser.add_argument("--execute", action="store_true")
     parser.add_argument("--arm", choices=MODES, help=argparse.SUPPRESS)
     return parser.parse_args()
@@ -83,7 +87,19 @@ def identity(a):
         need(sha(HERE / "toolchain.md") == acquisition.ADDENDUM, "toolchain protocol")
         acquisition.bridge(a, b)
     else:
-        need(a.bridge_dir is None and a.bridge_sha256 is None, "unexpected bridge")
+        need(
+            not any(
+                (
+                    a.bridge_dir,
+                    a.bridge_sha256,
+                    a.bridge_failed_dir,
+                    a.bridge_fds_dir,
+                    a.bridge_review,
+                    a.bridge_review_sha256,
+                )
+            ),
+            "unexpected bridge",
+        )
     journal_auditor = HERE.parent / "natural_trace/analyse.py"
     order = p.conversation.window_order(a.window, a.window_sha256, fixture)
     need(order["start_unix_s"] >= build.stat().st_mtime, "C55 before production build")
@@ -105,6 +121,16 @@ def identity(a):
         "bridge_sha256": a.bridge_sha256,
         "toolchain_protocol_sha256": acquisition.ADDENDUM if a.method == "toolchain" else None,
         "bridge_dir": str(a.bridge_dir.resolve(strict=True)) if a.bridge_dir else None,
+        "bridge_recovery": {
+            "review_sha256": a.bridge_review_sha256,
+            "review": str(a.bridge_review.resolve(strict=True)),
+            "failed_dir": str(a.bridge_failed_dir.resolve(strict=True)),
+            "failed_sha256": acquisition.C292_FAILED,
+            "live_fd_dir": str(a.bridge_fds_dir.resolve(strict=True)),
+            "live_fd_sha256": acquisition.C292_CONTROL_FDS,
+        }
+        if a.bridge_review
+        else None,
         "c55_order": order,
         "order": list(labels),
     }
