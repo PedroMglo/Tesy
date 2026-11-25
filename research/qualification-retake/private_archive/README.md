@@ -26,3 +26,5 @@ O quarto lote conserva os raws completos dos quatro processos a 40 slots, com os
 O quinto lote preserva os dois pedidos do stock Aster, os onze ficheiros privados da sonda, o precheck e as falhas de preparação e reprodução. Para verificar os 27 ficheiros (1 826 567 B), usar o comando do primeiro lote com part-05.json. [Recibo do quinto lote](part-05.json)
 
 O sexto lote contém a sonda de oito saídas em E10, o stream privado, o precheck e os dois recibos. O verificador conferiu os nove ficheiros e os 739 444 B. [Recibo do sexto lote](part-06.json)
+
+O sétimo lote conserva o precheck e o FAIL da tentativa stock E20, incluindo a telemetria até à última amostra persistida. O arquivo contém sete ficheiros e 188 795 B. [Recibo do sétimo lote](part-07.json)
