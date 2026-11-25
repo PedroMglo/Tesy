@@ -2,7 +2,9 @@
 
 import argparse
 import functools
+import hashlib
 import importlib.util
+import inspect
 import resource
 import sys
 from pathlib import Path
@@ -12,6 +14,7 @@ import runner as guard
 HERE = Path(__file__).resolve().parent
 GUARD_SHA = "385556de0929051fb526c8f98012c461b318172844d9ec5c8f16fedc4d2b7ff4"
 PROTOCOL_SHA = "4629add191f8528d480431c53599a5354a0e14684e282ccba3f4fda403bd3c22"
+REPAIR_SHA = "7105602980904d892662ff06ff160ac70ace4c59c9d99cf4d3ddb7732e9e2b5e"
 R1_RECEIPT = "05791035d67b7597f10c6b2d8189b629f65f283183d56681e4873cf8196c07aa"
 R1_LOGITS = "aabc5c6e701c0df890d1fa21c9b590dcd4bf8a29f56390c1beb3f169848d1290"
 R1_STDOUT = "e67fa5dea374653b9fd4d7ba986a9886910e6a16fad5a6b076209b64f501b55c"
@@ -158,10 +161,30 @@ def extend_mapping_check(original, out, r, r1, libs):
     return check
 
 
+def repair_check_run(tiny):
+    """Retain the pinned function's globals, including the subsequently installed mmap check."""
+    source = Path(tiny.__file__)
+    guard.require(guard.sha(source) == guard.TINY_SHA, "upstream fixture SHA for replay")
+    original = inspect.getsource(tiny.check_run)
+    call = 'mapped(log, model.stat().st_size(), mode == "ON")'
+    guard.require(
+        original.count(call) == 1 and original.count("st_size()") == 1,
+        "unexpected fixture call site",
+    )
+    fixed = original.replace(call, call.replace(".st_size()", ".st_size"))
+    guard.require(
+        fixed.replace(call.replace(".st_size()", ".st_size"), call) == original,
+        "nonlocal parser change",
+    )
+    exec(compile(fixed, "<tesy-tiny-check-run-size-repair>", "exec"), tiny.__dict__)
+    return hashlib.sha256(fixed.encode()).hexdigest()
+
+
 def execute(a, out, r, r1):
     stock, overlay = a.stock_build_root.resolve(), a.overlay_root.resolve()
     source = guard.UPSTREAM / "tiny_fixture.py"
     guards = {
+        "repair_protocol_sha256": (HERE / "attribution-repair.md", REPAIR_SHA),
         "resident_runner_sha256": (HERE / "runner.py", GUARD_SHA),
         "protocol_sha256": (HERE / "attribution-protocol.md", PROTOCOL_SHA),
         "upstream_fixture_sha256": (source, guard.TINY_SHA),
@@ -192,6 +215,7 @@ def execute(a, out, r, r1):
         spec = importlib.util.spec_from_file_location("pinned_tiny_attribution", source)
         tiny = importlib.util.module_from_spec(spec)
         spec.loader.exec_module(tiny)
+        r["repaired_function_sha256"] = repair_check_run(tiny)
         tiny.bounded = guard.child_limits
         tiny.DRIVER = instrument(tiny.DRIVER)
         tiny.mapped = extend_mapping_check(tiny.mapped, out, r, r1, stock / "build/bin")
