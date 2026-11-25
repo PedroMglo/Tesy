@@ -166,7 +166,22 @@ def run(a, out, r):
             len(lines) == 1 and Path(lines[0].split()[2]).resolve() == lib_path,
             "actual DSO " + name,
         )
-    need(all(x not in loaded for x in ("cuda", "vulkan", "nvidia", "not found")), "CPU only")
+    allowed = {
+        "linux-vdso.so.1",
+        "ld-linux-x86-64.so.2",
+        "libggml-cpu.so.0",
+        "libggml-base.so.0",
+        "libstdc++.so.6",
+        "libm.so.6",
+        "libgcc_s.so.1",
+        "libc.so.6",
+        "libgomp.so.1",
+    }
+    sonames = [Path(row.split()[0]).name for row in loaded.splitlines() if row.strip()]
+    need(
+        len(sonames) == len(allowed) and set(sonames) == allowed and "not found" not in loaded,
+        "exact CPU dependency closure",
+    )
     r.update(
         backend=PIN,
         backend_tree=lib["TREE"],
