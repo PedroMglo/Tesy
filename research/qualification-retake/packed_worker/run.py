@@ -256,8 +256,21 @@ def compile_fixture(private, label, backend_lib, crypto, out, run):
     run(args, "build-" + label)
     log = run(["/usr/bin/ldd", exe], "loader-" + label)
     output = (log / "stdout").read_text()
+    # A CPU-only DSO may live in a CUDA-enabled build directory.
+    # Inspect library names and resolved filenames, never their parent directories.
+    libraries = {
+        Path(word).name.lower()
+        for line in output.splitlines()
+        for word in line.split()
+        if ".so" in word
+    }
     need(
-        not any(x in output.lower() for x in ("not found", "libllama", "cuda", "nvidia")),
+        "not found" not in output.lower()
+        and not any(
+            fragment in name
+            for name in libraries
+            for fragment in ("libllama", "cuda", "nvidia", "cublas", "nvrtc")
+        ),
         "unexpected loader",
     )
     load = {}
