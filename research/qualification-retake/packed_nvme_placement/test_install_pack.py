@@ -4,6 +4,7 @@ import tempfile
 import unittest
 from pathlib import Path
 from runpy import run_path
+from types import SimpleNamespace
 from unittest.mock import patch
 
 m = run_path(str(Path(__file__).with_name("install_pack.py")))
@@ -36,6 +37,81 @@ class Placement(unittest.TestCase):
             4096,
         )
         return result
+
+    def test_distinct_historical_readback_authorities(self):
+        index = self.parent / "index.json"
+        index.touch()
+        compact = self.parent / "readback-analysis.json"
+        raw = self.parent / "full-readback.json"
+        manifest = self.parent / "manifest.json"
+        values = {
+            manifest: (
+                m["MANIFEST"],
+                dict(
+                    schema="tesy-integral-expert-store-runtime-v1",
+                    index_sha256=m["INDEX"],
+                    full_readback_sha256=m["READBACK_ANALYSIS"],
+                    full_readback_result=str(compact),
+                    canonical_model_sha256="target",
+                    index_path=str(index),
+                    pack_sha256_write_stream=m["DIGEST"],
+                    component_count=27648,
+                    pack_bytes=m["SIZE"],
+                ),
+            ),
+            index: (
+                m["INDEX"],
+                dict(
+                    schema="tesy-expert-local-integral-store-v1",
+                    model_sha256_previous_verified="target",
+                    experts=[None] * 4608,
+                    store_scope="INTEGRAL_GPT_OSS120B_36x128",
+                    logical_bytes=61_073_326_080,
+                    pack_path=str(self.source),
+                    pack_bytes=m["SIZE"],
+                    pack_sha256_write_stream=m["DIGEST"],
+                ),
+            ),
+            raw: (
+                m["READBACK"],
+                dict(
+                    status="PASS_FULL_CANONICAL_PACK_READBACK",
+                    component_checks=27648,
+                    logical_bytes=61_073_326_080,
+                    source_fd_direct=True,
+                    pack_fd_direct=True,
+                    pack_identity={"size_bytes": m["SIZE"]},
+                    pack_sha256_write_stream=m["DIGEST"],
+                ),
+            ),
+            compact: (
+                m["READBACK_ANALYSIS"],
+                dict(
+                    status="PASS_INTEGRAL_STORE_BYTES",
+                    index_sha256=m["INDEX"],
+                    component_count=27648,
+                    pack_sha256_write_stream=m["DIGEST"],
+                ),
+            ),
+        }
+
+        def read(path, digest):
+            expected, data = values[path]
+            if digest != expected:
+                raise ValueError("digest")
+            return data
+
+        args = SimpleNamespace(
+            runtime_manifest=manifest, index=index, readback=raw, source=self.source
+        )
+        self.assertEqual(m["authorities"](args, read, "target"), self.source)
+        args.readback = compact
+        with self.assertRaisesRegex(ValueError, "digest"):
+            m["authorities"](args, read, "target")
+        args.readback = raw
+        values[manifest][1]["full_readback_sha256"] = m["READBACK"]
+        with self.assertRaisesRegex(ValueError, "authorities"):
+            m["authorities"](args, read, "target")
 
     def test_independent_readonly_publish(self):
         original = m["identity"](self.source.stat())

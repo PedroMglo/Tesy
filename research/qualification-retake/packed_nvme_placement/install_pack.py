@@ -27,6 +27,7 @@ DIGEST = "f17e9fbf6f6aed1ad60ca7da3431c5156a946d2e0bf119722afc1f934cbc6b11"
 MANIFEST = "4ff6825ccf8d18498c1f2323fd44eacd57c3a8d3278e3aab3adb973a409dd48b"
 INDEX = "f8961dcdaa58aa7774e63150b76d69add0dd080181493838528c8f36de543a57"
 READBACK = "54273ebffab1294357932b5c4ee6823be7cb9d9d7420b5582b7294c744b658a0"
+READBACK_ANALYSIS = "21e52d09ee51078cccd53a506bfa5d2f65273a6ceca3c46828f17dc2a0265d36"
 METHOD = "e5638dd00e118ddaf8480c4258cfa8ba5c4b0dfcceb7af04543311e712bc6fac"
 RESERVE = 32 * 2**30
 BLOCK = 8 * 2**20
@@ -179,6 +180,44 @@ def transfer(src, dest, dirfd, unit, size, digest, result, guard, block=BLOCK):
         result.update(destination_stat=final, size_bytes=size)
 
 
+def authorities(a, load, target):
+    """Validate four small metadata authorities without reading the pack or model."""
+    m = load(a.runtime_manifest, MANIFEST)
+    idx = load(a.index, INDEX)
+    rb = load(a.readback, READBACK)
+    summary_path = Path(m["full_readback_result"])
+    summary = load(summary_path, READBACK_ANALYSIS)
+    need(
+        m["schema"] == "tesy-integral-expert-store-runtime-v1"
+        and m["index_sha256"] == INDEX
+        and m["full_readback_sha256"] == READBACK_ANALYSIS
+        and summary["status"] == "PASS_INTEGRAL_STORE_BYTES"
+        and summary["index_sha256"] == INDEX
+        and m["canonical_model_sha256"] == idx["model_sha256_previous_verified"] == target
+        and idx["store_scope"] == "INTEGRAL_GPT_OSS120B_36x128"
+        and len(idx["experts"]) == 4608
+        and idx["schema"] == "tesy-expert-local-integral-store-v1"
+        and rb["source_fd_direct"] is True
+        and rb["pack_fd_direct"] is True
+        and rb["logical_bytes"] == idx["logical_bytes"] == 61_073_326_080
+        and m["pack_sha256_write_stream"]
+        == idx["pack_sha256_write_stream"]
+        == summary["pack_sha256_write_stream"]
+        == rb["pack_sha256_write_stream"]
+        == DIGEST
+        and rb["status"] == "PASS_FULL_CANONICAL_PACK_READBACK"
+        and rb["component_checks"] == summary["component_count"] == m["component_count"] == 27648
+        and rb["pack_identity"]["size_bytes"] == m["pack_bytes"] == idx["pack_bytes"] == SIZE,
+        "original C290 authorities",
+    )
+    src = a.source.resolve(strict=True)
+    need(
+        a.index.samefile(m["index_path"]) and Path(idx["pack_path"]).resolve(strict=True) == src,
+        "C290 metadata/source binding",
+    )
+    return src
+
+
 def execute(a, out, r):
     cold = run_path(str(QUAL / "phase_fd/integrated/cold_read_fixture/runner.py"))
     io = cold["io"]
@@ -208,37 +247,15 @@ def execute(a, out, r):
         index_sha256=INDEX,
         runtime_manifest_sha256=MANIFEST,
         readback_sha256=READBACK,
+        readback_analysis_sha256=READBACK_ANALYSIS,
     )
     start = CLOCK()
-    m = load(a.runtime_manifest, MANIFEST)
-    idx = load(a.index, INDEX)
-    rb = load(a.readback, READBACK)
-    need(
-        m["schema"] == "tesy-integral-expert-store-runtime-v1"
-        and m["index_sha256"] == INDEX
-        and m["full_readback_sha256"] == READBACK
-        and m["canonical_model_sha256"] == idx["model_sha256_previous_verified"] == io.TARGET
-        and idx["store_scope"] == "INTEGRAL_GPT_OSS120B_36x128"
-        and len(idx["experts"]) == 4608
-        and m["pack_sha256_write_stream"]
-        == idx["pack_sha256_write_stream"]
-        == rb["pack_sha256_write_stream"]
-        == DIGEST
-        and rb["status"] == "PASS_FULL_CANONICAL_PACK_READBACK"
-        and rb["component_checks"] == m["component_count"] == 27648
-        and rb["pack_identity"]["size_bytes"] == m["pack_bytes"] == idx["pack_bytes"] == SIZE,
-        "original C290 authorities",
-    )
-    src = a.source.resolve(strict=True)
+    src = authorities(a, load, io.TARGET)
     parent = a.destination.parent.resolve(strict=True)
     dest = parent / a.destination.name
     require_name = r"[A-Za-z0-9_.-]{1,100}"
     need(
-        re.fullmatch(require_name, a.unit)
-        and re.fullmatch(r"tesy-[A-Za-z0-9_-]+\.bin", dest.name)
-        and Path(idx["pack_path"]).resolve(strict=True) == src
-        and a.index.samefile(m["index_path"])
-        and a.readback.samefile(m["full_readback_result"]),
+        re.fullmatch(require_name, a.unit) and re.fullmatch(r"tesy-[A-Za-z0-9_-]+\.bin", dest.name),
         "canonical pack, metadata and destination names",
     )
     c55 = load(a.c55, a.c55_sha256)
