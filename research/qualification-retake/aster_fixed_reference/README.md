@@ -28,6 +28,8 @@ O cliente usou esforço medium, amostragem greedy, seed 42 e cap de 768 saídas.
 
 O contador do namespace abrange todos os processos no mesmo dispositivo. O io.stat regista a carga atribuída ao cgroup. O ensaio não integrou a energia do sistema. O limite de leitura era 5 TiB e o limite local de evidência privada 64 MiB. [Arquivo privado, lote 13](../private_archive/part-13.json)
 
+**Limite da intervenção no runtime.** Para este histórico fixo e este validador determinista, qualquer otimização que preserve toda a sequência de IDs confirmados de uma das execuções que omitiu Aster, a terminação e a descodificação em texto conserva a falha de conteúdo. Pode reduzir a latência dessa resposta. Uma nova sessão natural pode apresentar ao segundo turno um histórico diferente. A cobertura dos restantes 19 turnos e a qualificação conjunta pertencem à receita de produto.
+
 **Proveniência.** Pré-registo f3803c06, commit de medição `894c36c920b00e19b25a16bcf50cd396648b598e`, árvore `9ad98f9adb69adf8df5da806ee3bb1ee6dd7a4b0`. O primeiro precheck terminou antes de C118 e de arrancar o servidor, por faltar workloads/c133_diverse_session.json na checkout sparse. O segundo passou com os inputs da mesma revisão materializados. Os recibos publicados incluem o SHA-256 do original privado. [Precheck R01 conservado](precheck-r01/receipt.json) · [Precheck R02](precheck-r02/receipt.json)
 
 Para auditar os validadores sem modelo, executar na checkout de medição:
