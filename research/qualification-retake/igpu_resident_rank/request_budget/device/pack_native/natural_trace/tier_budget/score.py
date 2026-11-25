@@ -174,25 +174,29 @@ def scenario(prices, first_ns, dec_ns):
     }
 
 
+def packed_inputs(a):
+    chain = run_path(str(HERE.parent / "release/run.py"))["chain"]
+    _, binding, receipt, stored = chain(a.family, a.family_sha256)
+    check(stored["status"] == "PASS_PACK_NATURAL_TRACE", "incomplete journal")
+    raw = a.family / "ON/raw"
+    hashes = {"T2-result.json": a.result_sha256, "T2-request.jsonl": a.http_sha256}
+    check(all(sha(raw / name) == value for name, value in hashes.items()), "HTTP raw identity")
+    return binding, receipt, stored, {"family_sha256": a.family_sha256, "http_sha256": hashes}
+
+
 def assess(a):
     check(sha(HERE / "protocol.md") == METHOD, "protocol")
     pins = PINNED | {"src/llama-moe-stream.cpp": MANAGERS[a.arm]}
     check(all(sha(a.backend / f) == h for f, h in pins.items()), "backend source pin")
+    inputs = {}
     if a.arm == "C269":
         receipt_hash = C269
         where = a.arm_dir
+        receipt = checked(where / "receipt.json", receipt_hash)
     else:
-        family = checked(a.family / "receipt.json", a.family_sha256)
-        check(
-            family["status"] == "COMPLETED_PACK_NATURAL_OBSERVATION"
-            and family["journal_status"] == "PASS_PACK_NATURAL_TRACE",
-            "unaudited P family",
-        )
-        binding = family["arms"]["ON"]["arm"]
-        check(binding["status"] == "PASS_ONE_NATURAL_ARM", "natural ON result")
+        binding, receipt, stored, inputs = packed_inputs(a)
         receipt_hash = binding["receipt_sha256"]
         where = a.family / "ON"
-    receipt = checked(where / "receipt.json", receipt_hash)
     old = receipt["rows"][1]
     check(
         old["functional"] == "PASS"
@@ -220,7 +224,6 @@ def assess(a):
         )
         cut = ref["http_cut"]
     else:
-        stored = checked(where / "journal-audit.json", binding["journal_audit_sha256"])
         full = NATIVE["audit_arm"](where, receipt, receipt["pack_events"]["before_second_ns"])
         check(
             full["status"] == "PASS_PACK_NATURAL_TRACE"
@@ -252,6 +255,7 @@ def assess(a):
     return {
         "status": "TRACE_DERIVED_FIXED_EXTERIOR",
         "arm": a.arm,
+        **inputs,
         "arm_sha256": receipt_hash,
         "source_sha256": pins,
         "journal_sha256": header["journal_sha256"],
@@ -275,6 +279,8 @@ def main():
     for name in ("backend", "arm-dir", "family", "new-output-dir"):
         p.add_argument("--" + name, type=Path, required=name in ("backend", "new-output-dir"))
     p.add_argument("--family-sha256")
+    p.add_argument("--result-sha256")
+    p.add_argument("--http-sha256")
     a = p.parse_args()
     a.new_output_dir.mkdir(mode=0o700)
     try:

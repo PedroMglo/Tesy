@@ -1,6 +1,7 @@
 import unittest
 from pathlib import Path
 from runpy import run_path
+from tempfile import TemporaryDirectory
 from types import SimpleNamespace
 
 p = run_path(str(Path(__file__).with_name("score.py")))
@@ -17,6 +18,21 @@ class TierScore(unittest.TestCase):
         self.assertEqual(
             r["still_required_outside_both_ns"], {"first": 3, "decode": 2, "distinct_at_least": 3}
         )
+
+    def test_sealed_family_and_client_inputs(self):
+        fixture = run_path(str(Path(__file__).resolve().parents[1] / "release/test_run.py"))[
+            "family"
+        ]
+        with TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            family_hash, http, _ = fixture(root)
+            a = SimpleNamespace(
+                family=root, family_sha256=family_hash, result_sha256=http[0], http_sha256=http[1]
+            )
+            self.assertEqual(p["packed_inputs"](a)[0]["mode"], "ON")
+            (root / "ON/raw/T2-result.json").write_bytes(b"changed")
+            with self.assertRaisesRegex(ValueError, "HTTP raw identity"):
+                p["packed_inputs"](a)
 
     def test_distinct_and_causal_boundaries(self):
         calls = [{"number": i, "enter_ns": 10 * i, "return_ns": 10 * i + 9} for i in range(1, 49)]
