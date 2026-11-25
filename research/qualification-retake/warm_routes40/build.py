@@ -109,7 +109,10 @@ def build(parent, ggml, out, receipt):
         ggml_link = [f"-Wl,-rpath,{ggml}", ggml / "libggml-cpu.so", ggml / "libggml-base.so"]
         legacy = out / "r1"
         legacy.mkdir()
-        frozen = "1670fb44e9e012b3a387b753b306a7e6650ecb09:research/qualification-retake/warm_routes40/routed_witness.h"
+        frozen = (
+            "1670fb44e9e012b3a387b753b306a7e6650ecb09:"
+            "research/qualification-retake/warm_routes40/routed_witness.h"
+        )
         (legacy / "routed_witness.h").write_bytes(
             subprocess.check_output(["git", "-C", str(HERE), "show", frozen], timeout=5)
         )

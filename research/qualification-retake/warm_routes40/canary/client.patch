@@ -7,7 +7,7 @@
 +#include "routed_witness.h"
  #include "llama-model.h"
  #include "llama-moe-stream.h"
- 
+
 @@ -151,7 +152,12 @@
          if (enabled) audit = std::make_unique<prefix_routes>();
          const double model_load_s=seconds(started);
