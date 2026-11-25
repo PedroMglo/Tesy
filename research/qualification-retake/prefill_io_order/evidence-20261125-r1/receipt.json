@@ -1,0 +1,259 @@
+{
+  "aligned_bytes_per_arm": 423428096,
+  "arms": [
+    {
+      "demand_ns": 154222433,
+      "disk_delta": {
+        "busy_ms": 237,
+        "read_sectors_512B": 827008,
+        "write_sectors_512B": 0
+      },
+      "drain_ns": 237758850,
+      "mode": "fifo",
+      "read_worker_ns": 897159567,
+      "wall_ns": 737643387
+    },
+    {
+      "demand_ns": 127667168,
+      "disk_delta": {
+        "busy_ms": 210,
+        "read_sectors_512B": 827008,
+        "write_sectors_512B": 0
+      },
+      "drain_ns": 210620365,
+      "mode": "sorted",
+      "read_worker_ns": 787775143,
+      "wall_ns": 696868166
+    },
+    {
+      "demand_ns": 126062932,
+      "disk_delta": {
+        "busy_ms": 460,
+        "read_sectors_512B": 827008,
+        "write_sectors_512B": 0
+      },
+      "drain_ns": 200353878,
+      "mode": "sorted",
+      "read_worker_ns": 754542336,
+      "wall_ns": 651676263
+    },
+    {
+      "demand_ns": 122892270,
+      "disk_delta": {
+        "busy_ms": 197,
+        "read_sectors_512B": 827008,
+        "write_sectors_512B": 0
+      },
+      "drain_ns": 197353156,
+      "mode": "fifo",
+      "read_worker_ns": 742339839,
+      "wall_ns": 638942301
+    }
+  ],
+  "cgroup_peak_bytes": 327606272,
+  "classification": "MEDIDO_LOADER_ONLY",
+  "commit": "4551ca9b15553e0280bc1ee891a9372400feeff3",
+  "comparisons_per_component": 3,
+  "decision": "INCONCLUSIVE",
+  "demand_jobs": 17,
+  "energy_j": null,
+  "gpu_work": 0,
+  "group_layers": [
+    14,
+    25
+  ],
+  "logical_bytes_per_arm": 423014400,
+  "max_cpu_tctl_c": 56.875,
+  "max_gpu_temp_c": 43.09,
+  "max_nvme_composite_c": 36.85,
+  "min_mem_available_bytes": 26603159552,
+  "model_forwards": 0,
+  "pairs": [
+    {
+      "eligible": true,
+      "fifo_arm": 1,
+      "gains": {
+        "demand_ns": 0.17218808239135996,
+        "drain_ns": 0.11414290151554818,
+        "read_worker_ns": 0.12192304248147201
+      },
+      "group_demand_gains": [
+        0.26193373076461746,
+        0.012523514442178363
+      ],
+      "sorted_arm": 2
+    },
+    {
+      "eligible": false,
+      "fifo_arm": 4,
+      "gains": {
+        "demand_ns": -0.02580033715708896,
+        "drain_ns": -0.015204834119805,
+        "read_worker_ns": -0.016437885128781193
+      },
+      "group_demand_gains": [
+        -0.03232872073786219,
+        -0.01758431531766913
+      ],
+      "sorted_arm": 3
+    }
+  ],
+  "payload_manifest_sha256": "7564eaf86ae8b0b9940e56a75ef450daf31cfae26991d2b339c1a449245cdf7e",
+  "per_arm_groups": [
+    [
+      {
+        "demand_ns": 98728346,
+        "disk_delta": {
+          "busy_ms": 163,
+          "read_sectors_512B": 542768,
+          "write_sectors_512B": 0
+        },
+        "drain_ns": 163362355,
+        "layer": 14,
+        "read_union_ns": 163276803,
+        "read_worker_ns": 625723948,
+        "release_cost_ns": 5721
+      },
+      {
+        "demand_ns": 55494087,
+        "disk_delta": {
+          "busy_ms": 74,
+          "read_sectors_512B": 284240,
+          "write_sectors_512B": 0
+        },
+        "drain_ns": 74396495,
+        "layer": 25,
+        "read_union_ns": 74306315,
+        "read_worker_ns": 271435619,
+        "release_cost_ns": 7324
+      }
+    ],
+    [
+      {
+        "demand_ns": 72868062,
+        "disk_delta": {
+          "busy_ms": 137,
+          "read_sectors_512B": 542768,
+          "write_sectors_512B": 0
+        },
+        "drain_ns": 136403639,
+        "layer": 14,
+        "read_union_ns": 136269907,
+        "read_worker_ns": 518509641,
+        "release_cost_ns": 29306
+      },
+      {
+        "demand_ns": 54799106,
+        "disk_delta": {
+          "busy_ms": 73,
+          "read_sectors_512B": 284240,
+          "write_sectors_512B": 0
+        },
+        "drain_ns": 74216726,
+        "layer": 25,
+        "read_union_ns": 73749584,
+        "read_worker_ns": 269265502,
+        "release_cost_ns": 36038
+      }
+    ],
+    [
+      {
+        "demand_ns": 70693079,
+        "disk_delta": {
+          "busy_ms": 126,
+          "read_sectors_512B": 542768,
+          "write_sectors_512B": 0
+        },
+        "drain_ns": 126145738,
+        "layer": 14,
+        "read_union_ns": 126092798,
+        "read_worker_ns": 483683766,
+        "release_cost_ns": 18455
+      },
+      {
+        "demand_ns": 55369853,
+        "disk_delta": {
+          "busy_ms": 334,
+          "read_sectors_512B": 284240,
+          "write_sectors_512B": 0
+        },
+        "drain_ns": 74208140,
+        "layer": 25,
+        "read_union_ns": 74138469,
+        "read_worker_ns": 270858570,
+        "release_cost_ns": 14978
+      }
+    ],
+    [
+      {
+        "demand_ns": 68479233,
+        "disk_delta": {
+          "busy_ms": 124,
+          "read_sectors_512B": 542768,
+          "write_sectors_512B": 0
+        },
+        "drain_ns": 124086342,
+        "layer": 14,
+        "read_union_ns": 124036157,
+        "read_worker_ns": 475075835,
+        "release_cost_ns": 6472
+      },
+      {
+        "demand_ns": 54413037,
+        "disk_delta": {
+          "busy_ms": 73,
+          "read_sectors_512B": 284240,
+          "write_sectors_512B": 0
+        },
+        "drain_ns": 73266814,
+        "layer": 25,
+        "read_union_ns": 73229805,
+        "read_worker_ns": 267264004,
+        "release_cost_ns": 3326
+      }
+    ]
+  ],
+  "placement_sha256": "50a35a1e5c3fde78066d1378e13dfeb89867d9970528135ff3294c6aa5bd1bf7",
+  "policy_sha256": "7b372cf36a4c8ceb947bf93c86661cf3eb51f41437f669fdf7468f4a726480aa",
+  "preload_jobs": 15,
+  "protocol_sha256": "79bc2265ee1e2f78736a8977deb851a3d8a0779ed6536c6a1143b1e264d8fc4c",
+  "raw_manifest": {
+    "arm-1-fifo.json": {
+      "bytes": 24213,
+      "sha256": "9c75957779206dcdaf75989b0e8de532a97fbd767a31f74c83c8e19b2d2e874a"
+    },
+    "arm-2-sorted.json": {
+      "bytes": 24194,
+      "sha256": "0d41e64f1ae1beee6428c331d15103484d6a0127a2bf926d5ce519774fe79944"
+    },
+    "arm-3-sorted.json": {
+      "bytes": 24179,
+      "sha256": "7c00a82ffeb86c480662b1912e8b71341562691f08fb889d5ec61617d391caaf"
+    },
+    "arm-4-fifo.json": {
+      "bytes": 24168,
+      "sha256": "aef76330eb3d65eb92f30cad62256133ef2a343c9d27f1fb3f8062d3a2d51f67"
+    },
+    "freeze.json": {
+      "bytes": 692,
+      "sha256": "a1e53f9070a55c0a647661355aac63137e170f0cb3866c78fbc0126a138578e7"
+    },
+    "inventory-receipt.json": {
+      "bytes": 601,
+      "sha256": "093b261641d874f0971f5b14f9cb072537f68bcbeedba6764d734f63a013be59"
+    },
+    "raw/c135-prefill-io-order.start-inventory.jsonl": {
+      "bytes": 31067,
+      "sha256": "084690cff54ca7916b744deacb5cccf1e6ea2dc262a1e25e2dbbaee8f811bef6"
+    },
+    "receipt.json": {
+      "bytes": 2284,
+      "sha256": "6a6a487c4dce9c54ac10efa97fd7ee66b961a9d7db1ba71d03c28ce0875aaec8"
+    }
+  },
+  "schedule_sha256": "ee32fdcb24cb3144c85b16e35e1e0402d5048ff329d6729ae52226c51fa0dd51",
+  "scope": "two original prefill read cohorts on NVMe; no inference",
+  "start_inventory_duration_s": 60.18602410499989,
+  "start_inventory_samples": 61,
+  "tree": "f8646803512e34ddeeb5881ea3da6ace517c347a"
+}
