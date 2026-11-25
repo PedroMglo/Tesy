@@ -4,7 +4,7 @@ import argparse
 import hashlib
 import json
 import os
-from collections import Counter, defaultdict
+from collections import Counter, defaultdict, deque
 from pathlib import Path
 
 ORDER = (
@@ -186,6 +186,81 @@ def tickets(row, actual_spec, bindings):
     return consumed
 
 
+def queue(row, official):
+    pending = deque()
+    origin = {}
+    promoted, claimed, published = set(), set(), set()
+    skips = Counter()
+    skip_reasons = Counter()
+    for kind, layer, expert, slot, generation, detail in row["queue_events"]:
+        binding = layer, expert, slot, generation
+        require(binding in official, "unknown queue generation")
+        if kind == 4:
+            if detail == 1:
+                require(
+                    origin.get(binding) == 2 and binding not in published | promoted,
+                    "promotion requires one still-loading preload",
+                )
+                promoted.add(binding)
+            else:
+                require(detail in (0, 2) and binding not in origin, "primary enqueue origin")
+                origin[binding] = detail
+            pending.append(binding)
+        elif kind in (5, 64):
+            require(pending and pending.popleft() == binding, "arrival/pop FIFO order")
+            if kind == 5:
+                require(detail == -1 and binding not in claimed, "duplicate actual claim")
+                claimed.add(binding)
+            else:
+                require(
+                    binding in promoted and binding in claimed and 1 <= detail <= 15,
+                    "unexpected skip or missing skip reason",
+                )
+                skips[binding] += 1
+                skip_reasons[detail] += 1
+        else:
+            require(
+                kind == 10 and detail == -1 and binding in claimed - published,
+                "unknown event or unclaimed publication",
+            )
+            published.add(binding)
+    require(
+        not pending and set(origin) == claimed == published == official,
+        "undrained or incomplete queue generations",
+    )
+    require(
+        set(skips) == promoted
+        and all(n == 1 for n in skips.values())
+        and set(map(tuple, row["promoted_bindings"])) == promoted
+        and len(row["promoted_bindings"]) == len(promoted)
+        and row["queue_enqueues"] == len(origin) + len(promoted)
+        and row["queue_skips"] == len(promoted)
+        and sum(d == 2 for d in origin.values()) == row["preloads"],
+        "queue multiplicities",
+    )
+    return {
+        "enqueues": row["queue_enqueues"],
+        "pops": len(claimed) + len(promoted),
+        "unique_claims": len(claimed),
+        "publications": len(published),
+        "skip_reason_masks": dict(sorted(skip_reasons.items())),
+        "by_layer": {
+            str(layer): {
+                "enqueues": sum(b[0] == layer for b in origin)
+                + sum(b[0] == layer for b in promoted),
+                "pops": sum(b[0] == layer for b in claimed) + sum(b[0] == layer for b in skips),
+                "unique_claims": sum(b[0] == layer for b in claimed),
+                "publications": sum(b[0] == layer for b in published),
+                "first_demand": sum(b[0] == layer and d == 0 for b, d in origin.items()),
+                "first_preload": sum(b[0] == layer and d == 2 for b, d in origin.items()),
+                "promotions": sum(b[0] == layer for b in promoted),
+                "skips": sum(b[0] == layer for b in skips),
+            }
+            for layer in (0, 1)
+        },
+    }
+
+
 def arm(row, grade, mode):
     e = row["epochs_ns"]
     require(
@@ -326,6 +401,7 @@ def arm(row, grade, mode):
         staged_worker_lifetime=stage_residency(row["stage_events"], sources[0]),
         graph0_overlap=overlap(read[1, 1], sources[0], remaps[0], read[0, 0], sets[0]),
         stage=dict(row["stage"], wasted_reads=len(actual_spec) - len(consumed)),
+        queue=queue(row, binds),
         worker_peak_reads_or_sets=active,
         preloads=row["preloads"],
     )

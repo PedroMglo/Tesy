@@ -48,3 +48,55 @@ def test_microsecond_stage_quantization_does_not_grant_exact_completion():
     r = R["stage_residency"](events, (5000, 9500))
     assert (r["stage_in_graph0_wall_lower_ns"], r["stage_in_graph0_wall_upper_ns"]) == (2001, 3500)
     assert (r["completed_by_graph0_end_certain"], r["completed_by_graph0_end_possible"]) == (0, 1)
+
+
+def test_pending_promotion_preserves_fifo_and_claim_under_either_completion_order():
+    key = (1, 42, 3, 2)
+    other = (0, 11, 7, 1)
+
+    def ev(k, b, d):
+        return [k, *b, d]
+
+    events = [
+        ev(4, key, 2),
+        ev(4, other, 0),
+        ev(4, key, 1),
+        ev(5, key, -1),
+        ev(5, other, -1),
+        ev(64, key, 8),
+        ev(10, other, -1),
+        ev(10, key, -1),
+    ]
+    raw = {
+        "queue_events": events,
+        "queue_enqueues": 3,
+        "queue_skips": 1,
+        "preloads": 1,
+        "promoted_bindings": [key],
+    }
+    report = R["queue"](raw, {key, other})
+    assert report["by_layer"]["1"] == {
+        "first_demand": 0,
+        "first_preload": 1,
+        "promotions": 1,
+        "skips": 1,
+        "enqueues": 2,
+        "pops": 2,
+        "unique_claims": 1,
+        "publications": 1,
+    }
+    assert report["skip_reason_masks"] == {8: 1}
+    # The other worker can complete the first claim before polling its duplicate.
+    finished = events[:5] + [events[7], ev(64, key, 2), events[6]]
+    assert R["queue"](dict(raw, queue_events=finished), {key, other})["skip_reason_masks"] == {2: 1}
+    broken = events[:]
+    broken[3], broken[4] = broken[4], broken[3]
+    with pytest.raises(ValueError):
+        R["queue"](dict(raw, queue_events=broken), {key, other})
+    broken = events[:]
+    broken[5] = ev(5, key, -1)
+    with pytest.raises(ValueError):
+        R["queue"](dict(raw, queue_events=broken), {key, other})
+    duplicate = events[:2] + [ev(4, other, 0)] + events[2:]
+    with pytest.raises(ValueError):
+        R["queue"](dict(raw, queue_events=duplicate), {key, other})
