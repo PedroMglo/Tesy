@@ -10,6 +10,7 @@
 #include <fstream>
 #include <iomanip>
 #include <iostream>
+#include <latch>
 #include <memory>
 #include <sstream>
 #include <stdexcept>
@@ -152,12 +153,18 @@ struct Outcome {
     ssize_t returned = -1;
     int sys_errno = 0;
     bool published = false;
+    unsigned generation = 0;
     std::array<std::string, 4> hashes;
 };
 
+struct ReadGate {
+    std::latch claimed{1}, enter_syscall{1}, returned{1}, hand_back{1};
+};
+enum SlotState : unsigned { VACANT, LOADING, INVALID, RESIDENT };
+
 struct Arena {
     Map memory{arena_size, PROT_READ | PROT_WRITE, MAP_PRIVATE | MAP_ANONYMOUS | MAP_NORESERVE, -1};
-    std::array<std::atomic<bool>, count> ready{};
+    std::array<std::atomic<unsigned>, count> state{}, generation{};
     uint8_t *slot(size_t i) { return memory.bytes() + page + i * window; }
 
     Arena() {
@@ -169,53 +176,75 @@ struct Arena {
         std::memset(slot(count), guard, page);
     }
 
-    Outcome read(int fd, size_t slot_id, size_t entry, size_t file_offset, const Gold &expected) {
+    Outcome read(int fd, size_t slot_id, size_t entry, size_t file_offset, const Gold &expected,
+                 ReadGate *gate = nullptr) {
         Outcome r;
-        require(slot_id < count && !ready[slot_id].load(), "nonfresh_slot");
+        require(slot_id < count, "bad_slot");
         uint8_t *dst = slot(slot_id);
         if (entry > 2 || file_offset != entry * stride ||
             file_offset % page || reinterpret_cast<uintptr_t>(dst) % page) {
             r.status = "REJECT_OFFSET";
             return r;
         }
+        auto prior = state[slot_id].load(std::memory_order_acquire);
+        if ((prior != VACANT && prior != INVALID) ||
+            !state[slot_id].compare_exchange_strong(prior, LOADING)) {
+            r.status = "REJECT_OWNED";
+            return r;
+        }
+        r.generation = ++generation[slot_id];
+        if (gate) { gate->claimed.count_down(); gate->enter_syscall.wait(); }
         r.calls = 1;
         r.returned = pread(fd, dst, window, static_cast<off_t>(file_offset));
+        const int saved_errno = errno;
+        if (gate) { gate->returned.count_down(); gate->hand_back.wait(); }
         if (r.returned < 0) {
-            r.sys_errno = errno;
+            r.sys_errno = saved_errno;
             r.status = "REJECT_SYSCALL";
+            state[slot_id].store(INVALID, std::memory_order_release);
             return r;
         }
         if (r.returned != ssize_t(window)) {
             r.status = "REJECT_SHORT";
+            state[slot_id].store(INVALID, std::memory_order_release);
             return r;
         }
         for (size_t k = 0; k < 4; ++k) {
             r.hashes[k] = sha(dst + k * component, k < 3 ? component : tail);
             if (r.hashes[k] != expected[k]) {
                 r.status = "REJECT_DIGEST";
+                state[slot_id].store(INVALID, std::memory_order_release);
                 return r;
             }
         }
-        ready[slot_id].store(true, std::memory_order_release);
+        state[slot_id].store(RESIDENT, std::memory_order_release);
         r.status = "PUBLISHED";
         r.published = true;
         return r;
     }
 
+    static bool page_ok(const uint8_t *p) {
+        return std::all_of(p, p + page, [](uint8_t x){ return x == guard; });
+    }
     void guards() {
-        const auto page_ok = [](uint8_t *p) {
-            return std::all_of(p, p + page, [](uint8_t x){ return x == guard; });
-        };
         require(page_ok(memory.bytes()) && page_ok(slot(count)), "outer_guard");
-        // Slots 0,39,4,6 receive actual bytes. Slot 4's last 4 KiB survive its short read.
         for (size_t i = 0; i < count; ++i) {
-            if (i != 0 && i != 39 && i != 4 && i != 6)
+            if (i != 0 && i != 39 && i != 3 && i != 4 && i != 5 && i != 6)
                 require(page_ok(slot(i)) && page_ok(slot(i) + window - page), "neighbour_guard");
         }
-        require(page_ok(slot(4) + window - page), "short_tail_guard");
-        for (size_t i = 0; i < count; ++i)
-            require(ready[i].load(std::memory_order_acquire) == (i == 0 || i == 39),
-                    "publication_count_or_identity");
+    }
+    std::string live() {
+        // All bytes of both immediate neighbours and both original positive controls.
+        std::string out;
+        for (size_t i : {0, 3, 5, 39}) {
+            require(state[i].load(std::memory_order_acquire) == RESIDENT, "missing_live_slot");
+            out += sha(slot(i), window);
+        }
+        return sha(reinterpret_cast<const uint8_t*>(out.data()), out.size());
+    }
+    std::string checkpoint() {
+        guards();
+        return live();
     }
 };
 
@@ -277,14 +306,74 @@ void trial(int dir, bool physical) {
         after = resident_pages(direct.value);
         require(after == 0, "page_cache_populated_by_reads");
     }
+    Outcome left = a.read(direct.value, 3, 0, 0, reference[0]);
+    Outcome right = a.read(direct.value, 5, 1, stride, reference[1]);
+    require(left.published && right.published, "neighbours_not_live");
+    std::vector<std::string> live = {a.checkpoint()};
     Outcome wrong = a.read(direct.value, 3, 1, 0, reference[1]);
-    Outcome short_read = a.read(direct.value, 4, 2, 2 * stride, reference[0]);
-    Outcome failed = a.read(-1, 5, 0, 0, reference[0]);
+    live.push_back(a.checkpoint());
+    // The bad-fd destination is vacant. Slot 5 is now a live immediate neighbour.
+    Outcome failed = a.read(-1, 8, 0, 0, reference[0]);
+    live.push_back(a.checkpoint());
+    uint8_t *const failed_dst = a.slot(4);
+    std::memset(failed_dst, guard, window);
+    Outcome short_read;
+    ReadGate gate;
+    std::jthread short_worker([&] {
+        short_read = a.read(direct.value, 4, 2, 2 * stride, reference[0], &gate);
+    });
+    gate.claimed.wait();
+    Outcome denied_pre = a.read(-1, 4, 0, 0, reference[0]);
+    const auto gen_pre = a.generation[4].load();
+    const auto state_pre = a.state[4].load();
+    gate.enter_syscall.count_down();
+    gate.returned.wait();
+    Outcome denied_post = a.read(-1, 4, 0, 0, reference[0]);
+    const auto gen_post = a.generation[4].load();
+    const auto state_post = a.state[4].load();
+    gate.hand_back.count_down();
+    short_worker.join();
+    require(denied_pre.calls == 0 && denied_post.calls == 0 && !denied_pre.published &&
+            !denied_post.published && std::string(denied_pre.status) == "REJECT_OWNED" &&
+            std::string(denied_post.status) == "REJECT_OWNED" && gen_pre == 1 && gen_post == 1 &&
+            state_pre == LOADING && state_post == LOADING && short_read.generation == 1 &&
+            a.state[4].load() == INVALID && a.generation[4].load() == 1, "failed_slot_ownership");
+    live.push_back(a.checkpoint());
+    const uint8_t *const last_page = failed_dst + window - page;
+    std::array<size_t, 256> tail_counts{};
+    std::string tail_hex;
+    static constexpr char digits[] = "0123456789abcdef";
+    for (size_t i = 0; i < page; ++i) {
+        const auto byte = last_page[i];
+        ++tail_counts[byte]; tail_hex.push_back(digits[byte >> 4]); tail_hex.push_back(digits[byte & 15]);
+    }
+    const std::string tail_hash = sha(last_page, page);
     Outcome corrupt = a.read(direct.value, 6, 0, 0, reference[1]);
+    live.push_back(a.checkpoint());
     require(wrong.calls == 0 && !wrong.published && short_read.returned == ssize_t(window - page) &&
             !short_read.published && failed.sys_errno == EBADF && !failed.published &&
             !corrupt.published && corrupt.hashes[0] == reference[0][0], "faults_or_publication");
-    a.guards();
+    // Entry 2 was a truncated copy of expert 1. Expert 0 must replace every byte,
+    // including the padding, in the same slot before generation 2 can publish.
+    Outcome retry = a.read(direct.value, 4, 0, 0, reference[0]);
+    live.push_back(a.checkpoint());
+    require(std::all_of(live.begin(), live.end(), [&](const std::string &v){ return v == live[0]; }) &&
+            failed_dst == a.slot(4) && retry.published && retry.generation == 2 &&
+            retry.returned == ssize_t(window) && a.generation[4].load() == 2, "reassignment_or_live_bytes");
+    for (size_t i = 0; i < count; ++i)
+        require((a.state[i].load() == RESIDENT) == (i==0 || i==3 || i==4 || i==5 || i==39),
+                "publication_count_or_identity");
+    a.memory.bytes()[page-1] ^= 1;
+    bool caught_bad_guard = false;
+    try { a.guards(); } catch (const std::runtime_error &e) {
+        caught_bad_guard = std::string(e.what()) == "outer_guard";
+    }
+    a.memory.bytes()[page-1] ^= 1;
+    require(caught_bad_guard && a.checkpoint() == live[0], "guard_mutation_control");
+    a.slot(3)[window-1] ^= 1; // isolated control after the live-data checks, restored before exit
+    const bool caught_bad_neighbour = a.checkpoint() != live[0];
+    a.slot(3)[window-1] ^= 1;
+    require(caught_bad_neighbour && a.checkpoint() == live[0], "live_neighbour_mutation_control");
     require(unlinkat(dir, name, 0) == 0, "private_cleanup");
 
     std::cout << "{\"status\":\"" << (physical ? "PASS_BTRFS_NVME_DIRECT_FIXTURE" : "PASS_SYNTHETIC_ONLY")
@@ -301,7 +390,24 @@ void trial(int dir, bool physical) {
     emit_row("wrong_offset", wrong); std::cout << ",";
     emit_row("short_eof", short_read); std::cout << ",";
     emit_row("failed_fd", failed); std::cout << ",";
-    emit_row("wrong_content_digest", corrupt); std::cout << "}}\n";
+    emit_row("wrong_content_digest", corrupt);
+    std::cout << "},\"failed_generation\":{\"slot\":4,\"first_generation\":" << short_read.generation
+              << ",\"state_after_return\":\"INVALID\",\"generation_before_syscall\":" << gen_pre
+              << ",\"generation_after_syscall_before_return\":" << gen_post
+              << ",\"reassignment_generation\":" << retry.generation
+              << ",\"same_destination\":true,\"guard_mutation_detected\":true,\"published_slots\":[0,3,4,5,39],"
+              << "\"live_neighbour_mutation_detected\":true,\"tail_sha256\":\"" << tail_hash
+              << "\",\"tail_hex\":\"" << tail_hex << "\",\"tail_histogram\":{";
+    bool first_key = true;
+    for (size_t k=0; k<tail_counts.size(); ++k) if (tail_counts[k]) {
+        std::cout << (first_key ? "\"" : ",\"") << k << "\":" << tail_counts[k]; first_key = false;
+    }
+    std::cout << "},\"live_sha256_at_checkpoints\":[";
+    for (size_t i=0; i<live.size(); ++i) std::cout << (i ? ",\"" : "\"") << live[i] << "\"";
+    std::cout << "],"; emit_row("owned_before_syscall", denied_pre); std::cout << ",";
+    emit_row("owned_before_handback", denied_post); std::cout << ",";
+    emit_row("slot3_live", left); std::cout << ","; emit_row("slot5_live", right);
+    std::cout << ","; emit_row("slot4_reassigned", retry); std::cout << "}}\n";
 }
 } // namespace
 

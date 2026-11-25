@@ -7,6 +7,8 @@ import hashlib
 import json
 import re
 import unittest
+from collections import Counter
+from functools import cache
 from pathlib import Path
 
 COMPONENT = 4_406_400
@@ -59,14 +61,81 @@ def geometry(index):
     return INDEX_SHA
 
 
-def gold(expert):
+@cache
+def reference(expert):
     lengths = [COMPONENT] * 3 + [SLOT - PAYLOAD]
-    return [
-        hashlib.sha256(
-            hashlib.shake_256(f"Tesy-C290-direct-v1/expert{expert}/area{k}".encode()).digest(n)
-        ).hexdigest()
-        for k, n in enumerate(lengths)
-    ]
+    window = hashlib.sha256()
+    roles = []
+    for k, n in enumerate(lengths):
+        data = hashlib.shake_256(f"Tesy-C290-direct-v1/expert{expert}/area{k}".encode()).digest(n)
+        window.update(data)
+        roles.append(hashlib.sha256(data).hexdigest())
+    return tuple(roles), window.hexdigest()
+
+
+def gold(expert):
+    return list(reference(expert)[0])
+
+
+def live_gold():
+    joined = "".join(reference(i)[1] for i in (1, 0, 1, 0))
+    return hashlib.sha256(joined.encode("ascii")).hexdigest()
+
+
+def verify_generation(g):
+    need(
+        (
+            g["slot"],
+            g["first_generation"],
+            g["generation_before_syscall"],
+            g["generation_after_syscall_before_return"],
+            g["reassignment_generation"],
+        )
+        == (4, 1, 1, 1, 2)
+        and g["state_after_return"] == "INVALID"
+        and g["same_destination"] is True,
+        "invalid_generation_or_ownership",
+    )
+    for key in ("owned_before_syscall", "owned_before_handback"):
+        need(
+            g[key]
+            == dict(
+                status="REJECT_OWNED",
+                pread_calls=0,
+                return_bytes=-1,
+                errno=0,
+                published=False,
+                sha256=[],
+            ),
+            "inflight_claim_accepted",
+        )
+    need(
+        g["guard_mutation_detected"] is True
+        and g["live_neighbour_mutation_detected"] is True
+        and g["live_sha256_at_checkpoints"] == [live_gold()] * 6,
+        "live_neighbour_or_guard",
+    )
+    need(g["published_slots"] == [0, 3, 4, 5, 39], "terminal_publications")
+    for name, expert in (("slot3_live", 0), ("slot5_live", 1), ("slot4_reassigned", 0)):
+        need(
+            g[name]
+            == dict(
+                status="PUBLISHED",
+                pread_calls=1,
+                return_bytes=SLOT,
+                errno=0,
+                published=True,
+                sha256=gold(expert),
+            ),
+            "full_live_or_reassigned_bytes",
+        )
+    need(re.fullmatch(r"[0-9a-f]{8192}", g["tail_hex"]), "tail_extent")
+    values = bytes.fromhex(g["tail_hex"])
+    need(
+        g["tail_histogram"] == {str(b): n for b, n in Counter(values).items()}
+        and g["tail_sha256"] == hashlib.sha256(values).hexdigest(),
+        "tail_observation",
+    )
 
 
 def verify(row, physical):
@@ -144,12 +213,17 @@ def verify(row, physical):
         cases["wrong_content_digest"]["sha256"] == [cases["slot39_expert0"]["sha256"][0]],
         "misdirected_content",
     )
+    verify_generation(row["failed_generation"])
     return {
         "status": expected,
-        "verified_component_views": 6,
-        "verified_padding_regions": 2,
-        "terminal_publications": 2,
-        "rejected_cases": 4,
+        "verified_component_views": 15,
+        "verified_padding_regions": 5,
+        "terminal_publications": 5,
+        "rejected_cases": 6,
+        "live_slot_checkpoints": 6,
+        "reassigned_slot_generation": 2,
+        "failed_generation_tail_sha256": row["failed_generation"]["tail_sha256"],
+        "failed_generation_tail_histogram": row["failed_generation"]["tail_histogram"],
         "source_index_sha256": INDEX_SHA,
     }
 
@@ -188,6 +262,27 @@ class Schema(unittest.TestCase):
             "mincore_checked": True,
             "resident_before": 0,
             "resident_after_positives": 0,
+            "failed_generation": {
+                "slot": 4,
+                "first_generation": 1,
+                "generation_before_syscall": 1,
+                "generation_after_syscall_before_return": 1,
+                "reassignment_generation": 2,
+                "state_after_return": "INVALID",
+                "same_destination": True,
+                "owned_before_syscall": case("REJECT_OWNED", 0, -1, 0, []),
+                "owned_before_handback": case("REJECT_OWNED", 0, -1, 0, []),
+                "guard_mutation_detected": True,
+                "live_neighbour_mutation_detected": True,
+                "live_sha256_at_checkpoints": [live_gold()] * 6,
+                "published_slots": [0, 3, 4, 5, 39],
+                "slot3_live": case("PUBLISHED", 1, SLOT, 0, a),
+                "slot5_live": case("PUBLISHED", 1, SLOT, 0, b),
+                "slot4_reassigned": case("PUBLISHED", 1, SLOT, 0, a),
+                "tail_hex": "00" * PAGE,
+                "tail_histogram": {"0": PAGE},
+                "tail_sha256": hashlib.sha256(bytes(PAGE)).hexdigest(),
+            },
             "cases": {
                 "slot0_expert1": case("PUBLISHED", 1, SLOT, 0, b),
                 "slot39_expert0": case("PUBLISHED", 1, SLOT, 0, a),
@@ -199,7 +294,38 @@ class Schema(unittest.TestCase):
         }
 
     def test_independent_geometry_and_gold(self):
-        self.assertEqual(verify(self.r, True)["verified_component_views"], 6)
+        self.assertEqual(verify(self.r, True)["verified_component_views"], 15)
+
+    def test_tail_is_observed_and_never_assumed_zero(self):
+        row = copy.deepcopy(self.r)
+        g = row["failed_generation"]
+        data = bytes(range(256)) * 16
+        g.update(
+            tail_hex=data.hex(),
+            tail_sha256=hashlib.sha256(data).hexdigest(),
+            tail_histogram={str(i): 16 for i in range(256)},
+        )
+        self.assertEqual(verify(row, True)["terminal_publications"], 5)
+        g["tail_histogram"] = {"0": PAGE}
+        with self.assertRaisesRegex(ValueError, "tail_observation"):
+            verify(row, True)
+
+    def test_reject_misreported_ownership_or_corrupt_live_data(self):
+        for field, value in (
+            ("generation_before_syscall", 2),
+            ("generation_after_syscall_before_return", 2),
+            ("reassignment_generation", 1),
+            ("same_destination", False),
+            ("live_sha256_at_checkpoints", [live_gold()] * 5 + ["0" * 64]),
+            ("guard_mutation_detected", False),
+            ("live_neighbour_mutation_detected", False),
+            ("owned_before_handback", self.r["cases"]["slot0_expert1"]),
+            ("slot4_reassigned", self.r["cases"]["slot0_expert1"]),
+        ):
+            row = copy.deepcopy(self.r)
+            row["failed_generation"][field] = value
+            with self.subTest(field=field), self.assertRaises(ValueError):
+                verify(row, True)
 
     def test_reject_swapped_slot_or_role(self):
         bad = copy.deepcopy(self.r)

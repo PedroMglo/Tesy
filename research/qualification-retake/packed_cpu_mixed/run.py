@@ -18,7 +18,7 @@ PROTOCOL = "8bd267ff7756ddf54684c459f4f64544ce833692e6a8cc2bfdee0e1771f1df23"
 FROZEN = {
     "operator.cpp": "8bba9315cb8647f42e1cae68b5384195f67f5aa3f55f4ec9946cd28d1aa4ec23",
     "test_operator.py": "1fd218dc882717c4a877bdfbe519401749d00cf5e5eeab99e68ef8d980e74031",
-    "test_direct_io.py": "882ee990278e8dc770415ea9bca3814c6240c115c5242b373db7bd4a4b917f0f",
+    "test_direct_io.py": "c97ad4daa175b2f14c3532b1f968e47a6d04978da7bac356a1caf65a12b26d63",
 }
 LIBS = {
     **cpu.LIBS,
