@@ -26,6 +26,9 @@ class TestMixed(unittest.TestCase):
             text.index("ggml_backend_sched_synchronize(sched.get())"),
         )
         self.assertIn("if (packed && slot==39) continue", text)
+        self.assertIn("std::_Exit(14)", text)
+        self.assertIn("refill(epoch != 0, epoch);", text)
+        self.assertIn("differences(input)==0", text)
 
     def test_negative_must_localize(self):
         zero = bytes(review["COUNT"] * 8)
@@ -41,8 +44,9 @@ class TestMixed(unittest.TestCase):
         with tempfile.TemporaryDirectory() as tmp:
             path = Path(tmp) / "out"
             lines = [f"EPOCH {i + 1} {i % 2} 7 {int(i != 0)} 103680" for i in range(4)]
+            lines = [f"INPUT_DELTA {i} 0 0 0 0 0" for i in (2, 3, 4)] + lines
             path.write_text("\n".join(lines))
-            self.assertEqual(len(runner["parse_epochs"](path, "alias", None)), 4)
+            self.assertEqual(len(runner["parse_epochs"](path, "alias", None)["epochs"]), 4)
             path.write_text("\n".join(lines[:-1] + [lines[0]]))
             with self.assertRaises(ValueError):
                 runner["parse_epochs"](path, "alias", None)

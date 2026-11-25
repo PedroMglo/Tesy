@@ -63,6 +63,14 @@ def render():
     start = s.index(
         '    check(ggml_backend_sched_graph_compute(sched.get(),g)==GGML_STATUS_SUCCESS,"graph compute");'  # noqa: E501
     )
+    load = s.index("    ggml_backend_tensor_set(scores,")
+    s = s[:load] + (HERE / "inputs.inc").read_text() + s[start:]
+    replace(
+        'catch(const std::exception &e) { state.error=state.context()+": "+e.what(); return true; }',  # noqa: E501
+        'catch(const std::exception &e) { std::cerr<<state.context()<<": "<<e.what()<<std::endl; '
+        "std::_Exit(14); }",
+    )
+    start = s.index("    check(ggml_backend_sched_graph_compute(")
     end = s.index("\n}", start)
     s = s[:start] + (HERE / "observation.inc").read_text() + s[end:]
     start = s.index("int main(int argc,char **argv) try {")

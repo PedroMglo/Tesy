@@ -17,6 +17,7 @@
             stage.completed = {};
             stage.pre.clear();
         }
+        refill(epoch != 0, epoch);
         check(ggml_backend_sched_graph_compute(sched.get(),g)==GGML_STATUS_SUCCESS,"graph compute");
         ggml_backend_sched_synchronize(sched.get());
         if(!state.error.empty()) throw std::runtime_error(state.error);

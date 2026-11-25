@@ -93,14 +93,35 @@ def build(a, out, paths, files):
         headers_sha256=legacy["HEADERS"],
         local_inputs={
             k: sha(HERE / k)
-            for k in ("source.py", "alias.h", "observation.inc", "main.inc", "review.py", "run.py")
+            for k in (
+                "source.py",
+                "alias.h",
+                "observation.inc",
+                "inputs.inc",
+                "main.inc",
+                "review.py",
+                "run.py",
+            )
         },
     )
 
 
 def parse_epochs(stdout, arm, paths):
     del paths
-    fields = stdout.read_text().splitlines()
+    lines = stdout.read_text().splitlines()
+    delta = [line.split() for line in lines if line.startswith("INPUT_DELTA ")]
+    fields = [line for line in lines if not line.startswith("INPUT_DELTA ")]
+    need(len(delta) == 3, "postcompute input observations")
+    for epoch, row in enumerate(delta, start=2):
+        need(
+            len(row) == 7
+            and int(row[1]) == epoch
+            and all(
+                0 <= int(v) <= count
+                for v, count in zip(row[2:], (384, 12, 8640, 34560, 8640), strict=True)
+            ),
+            "input clobber counts",
+        )
     need(arm == "alias" and len(fields) == 4, "four native endpoints")
     values = []
     for i, line in enumerate(fields):
@@ -118,7 +139,10 @@ def parse_epochs(stdout, arm, paths):
                 "stale_rejected": bool(i),
             }
         )
-    return values
+    return {
+        "epochs": values,
+        "input_changes_before_resubmission": [list(map(int, x[2:])) for x in delta],
+    }
 
 
 def execute(a, out, r):
@@ -159,6 +183,7 @@ def execute(a, out, r):
     )
     r.update(
         protocol_sha256=PROTOCOL,
+        amended_protocol_sha256=sha(HERE / "input-lifetime.md"),
         model_forwards=0,
         provider=provider,
         acquisition_sha256=sha(SRC["NATIVE"] / "run.py"),
