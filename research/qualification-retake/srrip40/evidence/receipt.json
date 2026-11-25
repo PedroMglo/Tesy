@@ -1,0 +1,1317 @@
+{
+  "cases": {
+    "code153": {
+      "historical": {
+        "c294-code153-2-on": {
+          "P_sha256": "48387e0551ec3d6d160912e227da3c1afe9680e633d69a7be1cfa56048f186e1",
+          "R0": {
+            "CPU": {
+              "decode": 927,
+              "increment": 1668,
+              "repair_F": 0,
+              "total": 2595
+            },
+            "CUDA0": {
+              "decode": 381,
+              "increment": 438,
+              "repair_F": 0,
+              "total": 819
+            }
+          },
+          "R0_F_sha256": "6eee3c1c7683dcb49c60570c26ec9b574bb4ff1c30281804fdf91bad2ec35912",
+          "R0_decode_hits": 3300,
+          "R0_total": {
+            "decode": 1308,
+            "increment": 2106,
+            "repair_F": 0,
+            "total": 3414
+          },
+          "contrasts": {
+            "R0": {
+              "additional_loads_to_remove_for_10pct": 534,
+              "allowed_total": 3072,
+              "delta_loads": {
+                "decode": -69,
+                "increment": 90,
+                "repair_F": 171,
+                "total": 192
+              },
+              "delta_logical_bytes": {
+                "decode": -912124800,
+                "increment": 1189728000,
+                "repair_F": 2260483200,
+                "total": 2538086400
+              },
+              "gates": {
+                "decode_no_more": true,
+                "increment_no_more": false,
+                "restored_total_10pct_lower": false
+              },
+              "pass": false,
+              "tier_delta_loads": {
+                "CPU": {
+                  "decode": -62,
+                  "increment": 89,
+                  "repair_F": 120,
+                  "total": 147
+                },
+                "CUDA0": {
+                  "decode": -7,
+                  "increment": 1,
+                  "repair_F": 51,
+                  "total": 45
+                }
+              }
+            },
+            "lru": {
+              "additional_loads_to_remove_for_10pct": 329,
+              "allowed_total": 3277,
+              "delta_loads": {
+                "decode": -71,
+                "increment": -41,
+                "repair_F": 76,
+                "total": -36
+              },
+              "delta_logical_bytes": {
+                "decode": -938563200,
+                "increment": -541987200,
+                "repair_F": 1004659200,
+                "total": -475891200
+              },
+              "gates": {
+                "decode_no_more": true,
+                "increment_no_more": true,
+                "restored_total_10pct_lower": false
+              },
+              "pass": false,
+              "tier_delta_loads": {
+                "CPU": {
+                  "decode": -62,
+                  "increment": -17,
+                  "repair_F": 46,
+                  "total": -33
+                },
+                "CUDA0": {
+                  "decode": -9,
+                  "increment": -24,
+                  "repair_F": 30,
+                  "total": -3
+                }
+              }
+            }
+          },
+          "decode_ranks_sha256": "2045b1c9510432fb0f98d4941db07b3f5472ffa4e9adb0c8f45ad547089dcb2c",
+          "diagnostic_wave_disagreements": {
+            "decode": {
+              "CPU": {
+                "compared_waves": 800,
+                "different_miss_sets": 215,
+                "excess_lru_misses": 160,
+                "excess_srrip_misses": 98
+              },
+              "CUDA0": {
+                "compared_waves": 352,
+                "different_miss_sets": 71,
+                "excess_lru_misses": 48,
+                "excess_srrip_misses": 39
+              }
+            },
+            "increment": {
+              "CPU": {
+                "compared_waves": 265,
+                "different_miss_sets": 107,
+                "excess_lru_misses": 159,
+                "excess_srrip_misses": 142
+              },
+              "CUDA0": {
+                "compared_waves": 97,
+                "different_miss_sets": 35,
+                "excess_lru_misses": 69,
+                "excess_srrip_misses": 45
+              }
+            }
+          },
+          "input_sha256": {
+            "events.tsv": "e68a1bd22a6477a214cfbdd04ff9cfc3515d531e52e68c8b3dc41f317f536bf2",
+            "initial.json": "484bd61b14ae7f970e86e9df29b8e99334d89cb787cf8ffd82af4ce526b895b5",
+            "result.json": "2fc10b510a59e00595fe7a361e44d11e233ffc68c07862964c0cf20c65f8d45a"
+          },
+          "oracle": {
+            "CPU": {
+              "R0_increment_plus_decode": 2595,
+              "cardinality": 1214,
+              "cardinality_with_F": 1214,
+              "joint": 1628,
+              "joint_with_F": 1628
+            },
+            "CUDA0": {
+              "R0_increment_plus_decode": 819,
+              "cardinality": 490,
+              "cardinality_with_F": 490,
+              "joint": 544,
+              "joint_with_F": 544
+            }
+          },
+          "pass": false,
+          "policies": {
+            "lru": {
+              "F_membership_sha256": "e0fc14c30d55529a3388fd91c44cd15dc31716489a2525fb6807cf84db0a2b3c",
+              "loads": {
+                "decode": 1310,
+                "increment": 2237,
+                "repair_F": 95,
+                "total": 3642
+              },
+              "loads_by_tier": {
+                "CPU": {
+                  "decode": 927,
+                  "increment": 1774,
+                  "repair_F": 74,
+                  "total": 2775
+                },
+                "CUDA0": {
+                  "decode": 383,
+                  "increment": 463,
+                  "repair_F": 21,
+                  "total": 867
+                }
+              },
+              "payload_bytes": {
+                "decode": 17317152000,
+                "increment": 29571350400,
+                "repair_F": 1255824000,
+                "total": 48144326400
+              },
+              "phases": {
+                "decode": {
+                  "CPU": {
+                    "distinct_demands": 3200,
+                    "evictions": 927,
+                    "hits": 2273,
+                    "logical_load_bytes": 12254198400,
+                    "misses": 927,
+                    "parking_only_waves": 0,
+                    "rank_uses": 3200,
+                    "waves": 800
+                  },
+                  "CUDA0": {
+                    "distinct_demands": 1408,
+                    "evictions": 354,
+                    "hits": 1025,
+                    "logical_load_bytes": 5062953600,
+                    "misses": 383,
+                    "parking_only_waves": 0,
+                    "rank_uses": 1408,
+                    "waves": 352
+                  }
+                },
+                "increment": {
+                  "CPU": {
+                    "distinct_demands": 3542,
+                    "evictions": 1774,
+                    "hits": 1768,
+                    "logical_load_bytes": 23450860800,
+                    "misses": 1774,
+                    "parking_only_waves": 685,
+                    "rank_uses": 15300,
+                    "waves": 265
+                  },
+                  "CUDA0": {
+                    "distinct_demands": 1302,
+                    "evictions": 460,
+                    "hits": 839,
+                    "logical_load_bytes": 6120489600,
+                    "misses": 463,
+                    "parking_only_waves": 284,
+                    "rank_uses": 6124,
+                    "waves": 97
+                  }
+                }
+              }
+            },
+            "srrip": {
+              "F_membership_sha256": "f75a920b60236548e9682fa7c31eac971519d027c71087bb53ee83713a4a8d97",
+              "loads": {
+                "decode": 1239,
+                "increment": 2196,
+                "repair_F": 171,
+                "total": 3606
+              },
+              "loads_by_tier": {
+                "CPU": {
+                  "decode": 865,
+                  "increment": 1757,
+                  "repair_F": 120,
+                  "total": 2742
+                },
+                "CUDA0": {
+                  "decode": 374,
+                  "increment": 439,
+                  "repair_F": 51,
+                  "total": 864
+                }
+              },
+              "payload_bytes": {
+                "decode": 16378588800,
+                "increment": 29029363200,
+                "repair_F": 2260483200,
+                "total": 47668435200
+              },
+              "phases": {
+                "decode": {
+                  "CPU": {
+                    "distinct_demands": 3200,
+                    "evictions": 865,
+                    "hits": 2335,
+                    "logical_load_bytes": 11434608000,
+                    "misses": 865,
+                    "parking_only_waves": 0,
+                    "rank_uses": 3200,
+                    "waves": 800
+                  },
+                  "CUDA0": {
+                    "distinct_demands": 1408,
+                    "evictions": 345,
+                    "hits": 1034,
+                    "logical_load_bytes": 4943980800,
+                    "misses": 374,
+                    "parking_only_waves": 0,
+                    "rank_uses": 1408,
+                    "waves": 352
+                  }
+                },
+                "increment": {
+                  "CPU": {
+                    "distinct_demands": 3542,
+                    "evictions": 1757,
+                    "hits": 1785,
+                    "logical_load_bytes": 23226134400,
+                    "misses": 1757,
+                    "parking_only_waves": 685,
+                    "rank_uses": 15300,
+                    "waves": 265
+                  },
+                  "CUDA0": {
+                    "distinct_demands": 1302,
+                    "evictions": 436,
+                    "hits": 863,
+                    "logical_load_bytes": 5803228800,
+                    "misses": 439,
+                    "parking_only_waves": 284,
+                    "rank_uses": 6124,
+                    "waves": 97
+                  }
+                }
+              }
+            }
+          }
+        },
+        "c294-code153-3-on": {
+          "P_sha256": "48387e0551ec3d6d160912e227da3c1afe9680e633d69a7be1cfa56048f186e1",
+          "R0": {
+            "CPU": {
+              "decode": 927,
+              "increment": 1668,
+              "repair_F": 0,
+              "total": 2595
+            },
+            "CUDA0": {
+              "decode": 381,
+              "increment": 438,
+              "repair_F": 0,
+              "total": 819
+            }
+          },
+          "R0_F_sha256": "6eee3c1c7683dcb49c60570c26ec9b574bb4ff1c30281804fdf91bad2ec35912",
+          "R0_decode_hits": 3300,
+          "R0_total": {
+            "decode": 1308,
+            "increment": 2106,
+            "repair_F": 0,
+            "total": 3414
+          },
+          "contrasts": {
+            "R0": {
+              "additional_loads_to_remove_for_10pct": 534,
+              "allowed_total": 3072,
+              "delta_loads": {
+                "decode": -69,
+                "increment": 90,
+                "repair_F": 171,
+                "total": 192
+              },
+              "delta_logical_bytes": {
+                "decode": -912124800,
+                "increment": 1189728000,
+                "repair_F": 2260483200,
+                "total": 2538086400
+              },
+              "gates": {
+                "decode_no_more": true,
+                "increment_no_more": false,
+                "restored_total_10pct_lower": false
+              },
+              "pass": false,
+              "tier_delta_loads": {
+                "CPU": {
+                  "decode": -62,
+                  "increment": 89,
+                  "repair_F": 120,
+                  "total": 147
+                },
+                "CUDA0": {
+                  "decode": -7,
+                  "increment": 1,
+                  "repair_F": 51,
+                  "total": 45
+                }
+              }
+            },
+            "lru": {
+              "additional_loads_to_remove_for_10pct": 329,
+              "allowed_total": 3277,
+              "delta_loads": {
+                "decode": -71,
+                "increment": -41,
+                "repair_F": 76,
+                "total": -36
+              },
+              "delta_logical_bytes": {
+                "decode": -938563200,
+                "increment": -541987200,
+                "repair_F": 1004659200,
+                "total": -475891200
+              },
+              "gates": {
+                "decode_no_more": true,
+                "increment_no_more": true,
+                "restored_total_10pct_lower": false
+              },
+              "pass": false,
+              "tier_delta_loads": {
+                "CPU": {
+                  "decode": -62,
+                  "increment": -17,
+                  "repair_F": 46,
+                  "total": -33
+                },
+                "CUDA0": {
+                  "decode": -9,
+                  "increment": -24,
+                  "repair_F": 30,
+                  "total": -3
+                }
+              }
+            }
+          },
+          "decode_ranks_sha256": "2045b1c9510432fb0f98d4941db07b3f5472ffa4e9adb0c8f45ad547089dcb2c",
+          "diagnostic_wave_disagreements": {
+            "decode": {
+              "CPU": {
+                "compared_waves": 800,
+                "different_miss_sets": 215,
+                "excess_lru_misses": 160,
+                "excess_srrip_misses": 98
+              },
+              "CUDA0": {
+                "compared_waves": 352,
+                "different_miss_sets": 71,
+                "excess_lru_misses": 48,
+                "excess_srrip_misses": 39
+              }
+            },
+            "increment": {
+              "CPU": {
+                "compared_waves": 265,
+                "different_miss_sets": 107,
+                "excess_lru_misses": 159,
+                "excess_srrip_misses": 142
+              },
+              "CUDA0": {
+                "compared_waves": 97,
+                "different_miss_sets": 35,
+                "excess_lru_misses": 69,
+                "excess_srrip_misses": 45
+              }
+            }
+          },
+          "input_sha256": {
+            "events.tsv": "dc3ef0aba2d5c04f51512300a4202c07c3055db36e18e90f4e67646c5e7818f3",
+            "initial.json": "d00a8d5ed6efca5bf3b79bda041a665c6ec10a7ace6eb84f80dfe018ab219966",
+            "result.json": "47fc71ecb38a17ec3d8bfcc4c1249c4e3ac599d90c604ae88ca9c78661b0fd23"
+          },
+          "oracle": {
+            "CPU": {
+              "R0_increment_plus_decode": 2595,
+              "cardinality": 1214,
+              "cardinality_with_F": 1214,
+              "joint": 1628,
+              "joint_with_F": 1628
+            },
+            "CUDA0": {
+              "R0_increment_plus_decode": 819,
+              "cardinality": 490,
+              "cardinality_with_F": 490,
+              "joint": 544,
+              "joint_with_F": 544
+            }
+          },
+          "pass": false,
+          "policies": {
+            "lru": {
+              "F_membership_sha256": "e0fc14c30d55529a3388fd91c44cd15dc31716489a2525fb6807cf84db0a2b3c",
+              "loads": {
+                "decode": 1310,
+                "increment": 2237,
+                "repair_F": 95,
+                "total": 3642
+              },
+              "loads_by_tier": {
+                "CPU": {
+                  "decode": 927,
+                  "increment": 1774,
+                  "repair_F": 74,
+                  "total": 2775
+                },
+                "CUDA0": {
+                  "decode": 383,
+                  "increment": 463,
+                  "repair_F": 21,
+                  "total": 867
+                }
+              },
+              "payload_bytes": {
+                "decode": 17317152000,
+                "increment": 29571350400,
+                "repair_F": 1255824000,
+                "total": 48144326400
+              },
+              "phases": {
+                "decode": {
+                  "CPU": {
+                    "distinct_demands": 3200,
+                    "evictions": 927,
+                    "hits": 2273,
+                    "logical_load_bytes": 12254198400,
+                    "misses": 927,
+                    "parking_only_waves": 0,
+                    "rank_uses": 3200,
+                    "waves": 800
+                  },
+                  "CUDA0": {
+                    "distinct_demands": 1408,
+                    "evictions": 354,
+                    "hits": 1025,
+                    "logical_load_bytes": 5062953600,
+                    "misses": 383,
+                    "parking_only_waves": 0,
+                    "rank_uses": 1408,
+                    "waves": 352
+                  }
+                },
+                "increment": {
+                  "CPU": {
+                    "distinct_demands": 3542,
+                    "evictions": 1774,
+                    "hits": 1768,
+                    "logical_load_bytes": 23450860800,
+                    "misses": 1774,
+                    "parking_only_waves": 685,
+                    "rank_uses": 15300,
+                    "waves": 265
+                  },
+                  "CUDA0": {
+                    "distinct_demands": 1302,
+                    "evictions": 460,
+                    "hits": 839,
+                    "logical_load_bytes": 6120489600,
+                    "misses": 463,
+                    "parking_only_waves": 284,
+                    "rank_uses": 6124,
+                    "waves": 97
+                  }
+                }
+              }
+            },
+            "srrip": {
+              "F_membership_sha256": "f75a920b60236548e9682fa7c31eac971519d027c71087bb53ee83713a4a8d97",
+              "loads": {
+                "decode": 1239,
+                "increment": 2196,
+                "repair_F": 171,
+                "total": 3606
+              },
+              "loads_by_tier": {
+                "CPU": {
+                  "decode": 865,
+                  "increment": 1757,
+                  "repair_F": 120,
+                  "total": 2742
+                },
+                "CUDA0": {
+                  "decode": 374,
+                  "increment": 439,
+                  "repair_F": 51,
+                  "total": 864
+                }
+              },
+              "payload_bytes": {
+                "decode": 16378588800,
+                "increment": 29029363200,
+                "repair_F": 2260483200,
+                "total": 47668435200
+              },
+              "phases": {
+                "decode": {
+                  "CPU": {
+                    "distinct_demands": 3200,
+                    "evictions": 865,
+                    "hits": 2335,
+                    "logical_load_bytes": 11434608000,
+                    "misses": 865,
+                    "parking_only_waves": 0,
+                    "rank_uses": 3200,
+                    "waves": 800
+                  },
+                  "CUDA0": {
+                    "distinct_demands": 1408,
+                    "evictions": 345,
+                    "hits": 1034,
+                    "logical_load_bytes": 4943980800,
+                    "misses": 374,
+                    "parking_only_waves": 0,
+                    "rank_uses": 1408,
+                    "waves": 352
+                  }
+                },
+                "increment": {
+                  "CPU": {
+                    "distinct_demands": 3542,
+                    "evictions": 1757,
+                    "hits": 1785,
+                    "logical_load_bytes": 23226134400,
+                    "misses": 1757,
+                    "parking_only_waves": 685,
+                    "rank_uses": 15300,
+                    "waves": 265
+                  },
+                  "CUDA0": {
+                    "distinct_demands": 1302,
+                    "evictions": 436,
+                    "hits": 863,
+                    "logical_load_bytes": 5803228800,
+                    "misses": 439,
+                    "parking_only_waves": 284,
+                    "rank_uses": 6124,
+                    "waves": 97
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "pass": false,
+      "witness_pair": {
+        "OFF": {
+          "F": "6eee3c1c7683dcb49c60570c26ec9b574bb4ff1c30281804fdf91bad2ec35912",
+          "I": "49f3dc0f809ed4d60834820747c4790f9166cb5128fe0f0e8aacdacd9adf6b41",
+          "P": "48387e0551ec3d6d160912e227da3c1afe9680e633d69a7be1cfa56048f186e1",
+          "inputs": {
+            "all33.logits.f32": "6e5223faff42fdb9ff60a1b07ece78dae5b9e191f52c66cc98bcdf008b5e6115",
+            "boundary-i.json": "48e98bd5177939e992aa17c1a3d926e20f2d8e691a28c953df89f69d37441ea2",
+            "events.tsv": "e9a41df983ad0d262a82ad03720c7c73d72005285c2479e01f51f9e3c9991482",
+            "initial.json": "eb91d2c12de17defbb3b0298c1e0a6086ad337590bfcc1f4c20ef40e8b91c5c6",
+            "result.json": "4519fc25cd46846fc80328885e57fbaab4a6a6653fc5715fffb89532df20da0e",
+            "routed-witness.bin": "6c9a638bce6f120fc3c0d31a9e056136d26c99cbed5f339ccf87b7a7f6c7e7a3"
+          },
+          "run_id": "tesy-wrt40-p25-r01-4-code153-off"
+        },
+        "ON": {
+          "F": "6eee3c1c7683dcb49c60570c26ec9b574bb4ff1c30281804fdf91bad2ec35912",
+          "I": "49f3dc0f809ed4d60834820747c4790f9166cb5128fe0f0e8aacdacd9adf6b41",
+          "P": "48387e0551ec3d6d160912e227da3c1afe9680e633d69a7be1cfa56048f186e1",
+          "inputs": {
+            "all33.logits.f32": "6e5223faff42fdb9ff60a1b07ece78dae5b9e191f52c66cc98bcdf008b5e6115",
+            "boundary-i.json": "ba25f0d4233a8c792b75d1a2dcfcb4cefcfc85fc1181373674f41d8f2c46f1a9",
+            "events.tsv": "e9a41df983ad0d262a82ad03720c7c73d72005285c2479e01f51f9e3c9991482",
+            "initial.json": "c06a150b221b624dfb75d72d1a5167cf3fd405827e30b18b423079de6907cccf",
+            "prefix-routes.bin": "ca5897b6cc715257ca2792bf4b0cbdfd3ad1fee966855a72b31d0cf0db18dfba",
+            "result.json": "12551fc33b27c590ce7d55ff78c3341f937b875f805773c679b1fd3372485278",
+            "routed-witness.bin": "6c9a638bce6f120fc3c0d31a9e056136d26c99cbed5f339ccf87b7a7f6c7e7a3"
+          },
+          "run_id": "tesy-wrt40-p25-r01-3-code153-on"
+        }
+      }
+    },
+    "nominal153": {
+      "historical": {
+        "c294-nominal153-2-on": {
+          "P_sha256": "4af0997f62f3457b0e1e071d2ff6555080c7d4c9f9ce492e2114936084dcaa8f",
+          "R0": {
+            "CPU": {
+              "decode": 762,
+              "increment": 724,
+              "repair_F": 0,
+              "total": 1486
+            },
+            "CUDA0": {
+              "decode": 319,
+              "increment": 319,
+              "repair_F": 0,
+              "total": 638
+            }
+          },
+          "R0_F_sha256": "f4bc53c8916be028b162c190640ac9c4a3ad04dac806a537cf742910c24a92ca",
+          "R0_decode_hits": 3527,
+          "R0_total": {
+            "decode": 1081,
+            "increment": 1043,
+            "repair_F": 0,
+            "total": 2124
+          },
+          "contrasts": {
+            "R0": {
+              "additional_loads_to_remove_for_10pct": 404,
+              "allowed_total": 1911,
+              "delta_loads": {
+                "decode": 78,
+                "increment": -21,
+                "repair_F": 134,
+                "total": 191
+              },
+              "delta_logical_bytes": {
+                "decode": 1031097600,
+                "increment": -277603200,
+                "repair_F": 1771372800,
+                "total": 2524867200
+              },
+              "gates": {
+                "decode_no_more": false,
+                "increment_no_more": true,
+                "restored_total_10pct_lower": false
+              },
+              "pass": false,
+              "tier_delta_loads": {
+                "CPU": {
+                  "decode": 59,
+                  "increment": -14,
+                  "repair_F": 87,
+                  "total": 132
+                },
+                "CUDA0": {
+                  "decode": 19,
+                  "increment": -7,
+                  "repair_F": 47,
+                  "total": 59
+                }
+              }
+            },
+            "lru": {
+              "additional_loads_to_remove_for_10pct": 314,
+              "allowed_total": 2001,
+              "delta_loads": {
+                "decode": 68,
+                "increment": -49,
+                "repair_F": 72,
+                "total": 91
+              },
+              "delta_logical_bytes": {
+                "decode": 898905600,
+                "increment": -647740800,
+                "repair_F": 951782400,
+                "total": 1202947200
+              },
+              "gates": {
+                "decode_no_more": false,
+                "increment_no_more": true,
+                "restored_total_10pct_lower": false
+              },
+              "pass": false,
+              "tier_delta_loads": {
+                "CPU": {
+                  "decode": 54,
+                  "increment": -26,
+                  "repair_F": 35,
+                  "total": 63
+                },
+                "CUDA0": {
+                  "decode": 14,
+                  "increment": -23,
+                  "repair_F": 37,
+                  "total": 28
+                }
+              }
+            }
+          },
+          "decode_ranks_sha256": "62ff2da0c33e77847aaa56e4c802c2a4569fcd5f08d971b9bda04a0a4c65e17c",
+          "diagnostic_wave_disagreements": {
+            "decode": {
+              "CPU": {
+                "compared_waves": 800,
+                "different_miss_sets": 232,
+                "excess_lru_misses": 109,
+                "excess_srrip_misses": 163
+              },
+              "CUDA0": {
+                "compared_waves": 352,
+                "different_miss_sets": 65,
+                "excess_lru_misses": 31,
+                "excess_srrip_misses": 45
+              }
+            },
+            "increment": {
+              "CPU": {
+                "compared_waves": 200,
+                "different_miss_sets": 19,
+                "excess_lru_misses": 32,
+                "excess_srrip_misses": 6
+              },
+              "CUDA0": {
+                "compared_waves": 88,
+                "different_miss_sets": 24,
+                "excess_lru_misses": 44,
+                "excess_srrip_misses": 21
+              }
+            }
+          },
+          "input_sha256": {
+            "events.tsv": "3e735e0dcc1d4aeeb119ef48ad6e0c84ac6fd9a69e8544c27f95106df49e066c",
+            "initial.json": "4ad4a7767a3e6e4c25e5693ec206565dc039394a771ef2074f07f2dcd69a70ee",
+            "result.json": "cf7f22fde47fec4f319a19897a0118b05c1efeb5304b48ca73d94a5b0ef85606"
+          },
+          "oracle": {
+            "CPU": {
+              "R0_increment_plus_decode": 1486,
+              "cardinality": 824,
+              "cardinality_with_F": 824,
+              "joint": 903,
+              "joint_with_F": 904
+            },
+            "CUDA0": {
+              "R0_increment_plus_decode": 638,
+              "cardinality": 384,
+              "cardinality_with_F": 384,
+              "joint": 432,
+              "joint_with_F": 432
+            }
+          },
+          "pass": false,
+          "policies": {
+            "lru": {
+              "F_membership_sha256": "2d2dd18bdc9be2b6b3b78173b83aefe80772eb10b33d1907b8408311161fd7e1",
+              "loads": {
+                "decode": 1091,
+                "increment": 1071,
+                "repair_F": 62,
+                "total": 2224
+              },
+              "loads_by_tier": {
+                "CPU": {
+                  "decode": 767,
+                  "increment": 736,
+                  "repair_F": 52,
+                  "total": 1555
+                },
+                "CUDA0": {
+                  "decode": 324,
+                  "increment": 335,
+                  "repair_F": 10,
+                  "total": 669
+                }
+              },
+              "payload_bytes": {
+                "decode": 14422147200,
+                "increment": 14157763200,
+                "repair_F": 819590400,
+                "total": 29399500800
+              },
+              "phases": {
+                "decode": {
+                  "CPU": {
+                    "distinct_demands": 3200,
+                    "evictions": 767,
+                    "hits": 2433,
+                    "logical_load_bytes": 10139126400,
+                    "misses": 767,
+                    "parking_only_waves": 0,
+                    "rank_uses": 3200,
+                    "waves": 800
+                  },
+                  "CUDA0": {
+                    "distinct_demands": 1408,
+                    "evictions": 295,
+                    "hits": 1084,
+                    "logical_load_bytes": 4283020800,
+                    "misses": 324,
+                    "parking_only_waves": 0,
+                    "rank_uses": 1408,
+                    "waves": 352
+                  }
+                },
+                "increment": {
+                  "CPU": {
+                    "distinct_demands": 2373,
+                    "evictions": 736,
+                    "hits": 1637,
+                    "logical_load_bytes": 9729331200,
+                    "misses": 736,
+                    "parking_only_waves": 750,
+                    "rank_uses": 15300,
+                    "waves": 200
+                  },
+                  "CUDA0": {
+                    "distinct_demands": 1217,
+                    "evictions": 334,
+                    "hits": 882,
+                    "logical_load_bytes": 4428432000,
+                    "misses": 335,
+                    "parking_only_waves": 293,
+                    "rank_uses": 6124,
+                    "waves": 88
+                  }
+                }
+              }
+            },
+            "srrip": {
+              "F_membership_sha256": "18345c327874fceb98d540abf5520ce9134d37342e161d9953571cfbaa3c2af7",
+              "loads": {
+                "decode": 1159,
+                "increment": 1022,
+                "repair_F": 134,
+                "total": 2315
+              },
+              "loads_by_tier": {
+                "CPU": {
+                  "decode": 821,
+                  "increment": 710,
+                  "repair_F": 87,
+                  "total": 1618
+                },
+                "CUDA0": {
+                  "decode": 338,
+                  "increment": 312,
+                  "repair_F": 47,
+                  "total": 697
+                }
+              },
+              "payload_bytes": {
+                "decode": 15321052800,
+                "increment": 13510022400,
+                "repair_F": 1771372800,
+                "total": 30602448000
+              },
+              "phases": {
+                "decode": {
+                  "CPU": {
+                    "distinct_demands": 3200,
+                    "evictions": 821,
+                    "hits": 2379,
+                    "logical_load_bytes": 10852963200,
+                    "misses": 821,
+                    "parking_only_waves": 0,
+                    "rank_uses": 3200,
+                    "waves": 800
+                  },
+                  "CUDA0": {
+                    "distinct_demands": 1408,
+                    "evictions": 309,
+                    "hits": 1070,
+                    "logical_load_bytes": 4468089600,
+                    "misses": 338,
+                    "parking_only_waves": 0,
+                    "rank_uses": 1408,
+                    "waves": 352
+                  }
+                },
+                "increment": {
+                  "CPU": {
+                    "distinct_demands": 2373,
+                    "evictions": 710,
+                    "hits": 1663,
+                    "logical_load_bytes": 9385632000,
+                    "misses": 710,
+                    "parking_only_waves": 750,
+                    "rank_uses": 15300,
+                    "waves": 200
+                  },
+                  "CUDA0": {
+                    "distinct_demands": 1217,
+                    "evictions": 311,
+                    "hits": 905,
+                    "logical_load_bytes": 4124390400,
+                    "misses": 312,
+                    "parking_only_waves": 293,
+                    "rank_uses": 6124,
+                    "waves": 88
+                  }
+                }
+              }
+            }
+          }
+        },
+        "c294-nominal153-3-on": {
+          "P_sha256": "4af0997f62f3457b0e1e071d2ff6555080c7d4c9f9ce492e2114936084dcaa8f",
+          "R0": {
+            "CPU": {
+              "decode": 762,
+              "increment": 724,
+              "repair_F": 0,
+              "total": 1486
+            },
+            "CUDA0": {
+              "decode": 319,
+              "increment": 319,
+              "repair_F": 0,
+              "total": 638
+            }
+          },
+          "R0_F_sha256": "f4bc53c8916be028b162c190640ac9c4a3ad04dac806a537cf742910c24a92ca",
+          "R0_decode_hits": 3527,
+          "R0_total": {
+            "decode": 1081,
+            "increment": 1043,
+            "repair_F": 0,
+            "total": 2124
+          },
+          "contrasts": {
+            "R0": {
+              "additional_loads_to_remove_for_10pct": 404,
+              "allowed_total": 1911,
+              "delta_loads": {
+                "decode": 78,
+                "increment": -21,
+                "repair_F": 134,
+                "total": 191
+              },
+              "delta_logical_bytes": {
+                "decode": 1031097600,
+                "increment": -277603200,
+                "repair_F": 1771372800,
+                "total": 2524867200
+              },
+              "gates": {
+                "decode_no_more": false,
+                "increment_no_more": true,
+                "restored_total_10pct_lower": false
+              },
+              "pass": false,
+              "tier_delta_loads": {
+                "CPU": {
+                  "decode": 59,
+                  "increment": -14,
+                  "repair_F": 87,
+                  "total": 132
+                },
+                "CUDA0": {
+                  "decode": 19,
+                  "increment": -7,
+                  "repair_F": 47,
+                  "total": 59
+                }
+              }
+            },
+            "lru": {
+              "additional_loads_to_remove_for_10pct": 314,
+              "allowed_total": 2001,
+              "delta_loads": {
+                "decode": 68,
+                "increment": -49,
+                "repair_F": 72,
+                "total": 91
+              },
+              "delta_logical_bytes": {
+                "decode": 898905600,
+                "increment": -647740800,
+                "repair_F": 951782400,
+                "total": 1202947200
+              },
+              "gates": {
+                "decode_no_more": false,
+                "increment_no_more": true,
+                "restored_total_10pct_lower": false
+              },
+              "pass": false,
+              "tier_delta_loads": {
+                "CPU": {
+                  "decode": 54,
+                  "increment": -26,
+                  "repair_F": 35,
+                  "total": 63
+                },
+                "CUDA0": {
+                  "decode": 14,
+                  "increment": -23,
+                  "repair_F": 37,
+                  "total": 28
+                }
+              }
+            }
+          },
+          "decode_ranks_sha256": "62ff2da0c33e77847aaa56e4c802c2a4569fcd5f08d971b9bda04a0a4c65e17c",
+          "diagnostic_wave_disagreements": {
+            "decode": {
+              "CPU": {
+                "compared_waves": 800,
+                "different_miss_sets": 232,
+                "excess_lru_misses": 109,
+                "excess_srrip_misses": 163
+              },
+              "CUDA0": {
+                "compared_waves": 352,
+                "different_miss_sets": 65,
+                "excess_lru_misses": 31,
+                "excess_srrip_misses": 45
+              }
+            },
+            "increment": {
+              "CPU": {
+                "compared_waves": 200,
+                "different_miss_sets": 19,
+                "excess_lru_misses": 32,
+                "excess_srrip_misses": 6
+              },
+              "CUDA0": {
+                "compared_waves": 88,
+                "different_miss_sets": 24,
+                "excess_lru_misses": 44,
+                "excess_srrip_misses": 21
+              }
+            }
+          },
+          "input_sha256": {
+            "events.tsv": "a963af23de4f4dfd167ef53519d013ee12786d17dc67fba864cb4fe83875d797",
+            "initial.json": "19bf1c09a96e851440d104abbbb08cc062c2e602d7c686c84fd33d7236dbc269",
+            "result.json": "700c3afd93e5b7fe2d3aa8c2739dfa5e4af8da0081c1a0d3509f9f42ccd1d032"
+          },
+          "oracle": {
+            "CPU": {
+              "R0_increment_plus_decode": 1486,
+              "cardinality": 824,
+              "cardinality_with_F": 824,
+              "joint": 903,
+              "joint_with_F": 904
+            },
+            "CUDA0": {
+              "R0_increment_plus_decode": 638,
+              "cardinality": 384,
+              "cardinality_with_F": 384,
+              "joint": 432,
+              "joint_with_F": 432
+            }
+          },
+          "pass": false,
+          "policies": {
+            "lru": {
+              "F_membership_sha256": "2d2dd18bdc9be2b6b3b78173b83aefe80772eb10b33d1907b8408311161fd7e1",
+              "loads": {
+                "decode": 1091,
+                "increment": 1071,
+                "repair_F": 62,
+                "total": 2224
+              },
+              "loads_by_tier": {
+                "CPU": {
+                  "decode": 767,
+                  "increment": 736,
+                  "repair_F": 52,
+                  "total": 1555
+                },
+                "CUDA0": {
+                  "decode": 324,
+                  "increment": 335,
+                  "repair_F": 10,
+                  "total": 669
+                }
+              },
+              "payload_bytes": {
+                "decode": 14422147200,
+                "increment": 14157763200,
+                "repair_F": 819590400,
+                "total": 29399500800
+              },
+              "phases": {
+                "decode": {
+                  "CPU": {
+                    "distinct_demands": 3200,
+                    "evictions": 767,
+                    "hits": 2433,
+                    "logical_load_bytes": 10139126400,
+                    "misses": 767,
+                    "parking_only_waves": 0,
+                    "rank_uses": 3200,
+                    "waves": 800
+                  },
+                  "CUDA0": {
+                    "distinct_demands": 1408,
+                    "evictions": 295,
+                    "hits": 1084,
+                    "logical_load_bytes": 4283020800,
+                    "misses": 324,
+                    "parking_only_waves": 0,
+                    "rank_uses": 1408,
+                    "waves": 352
+                  }
+                },
+                "increment": {
+                  "CPU": {
+                    "distinct_demands": 2373,
+                    "evictions": 736,
+                    "hits": 1637,
+                    "logical_load_bytes": 9729331200,
+                    "misses": 736,
+                    "parking_only_waves": 750,
+                    "rank_uses": 15300,
+                    "waves": 200
+                  },
+                  "CUDA0": {
+                    "distinct_demands": 1217,
+                    "evictions": 334,
+                    "hits": 882,
+                    "logical_load_bytes": 4428432000,
+                    "misses": 335,
+                    "parking_only_waves": 293,
+                    "rank_uses": 6124,
+                    "waves": 88
+                  }
+                }
+              }
+            },
+            "srrip": {
+              "F_membership_sha256": "18345c327874fceb98d540abf5520ce9134d37342e161d9953571cfbaa3c2af7",
+              "loads": {
+                "decode": 1159,
+                "increment": 1022,
+                "repair_F": 134,
+                "total": 2315
+              },
+              "loads_by_tier": {
+                "CPU": {
+                  "decode": 821,
+                  "increment": 710,
+                  "repair_F": 87,
+                  "total": 1618
+                },
+                "CUDA0": {
+                  "decode": 338,
+                  "increment": 312,
+                  "repair_F": 47,
+                  "total": 697
+                }
+              },
+              "payload_bytes": {
+                "decode": 15321052800,
+                "increment": 13510022400,
+                "repair_F": 1771372800,
+                "total": 30602448000
+              },
+              "phases": {
+                "decode": {
+                  "CPU": {
+                    "distinct_demands": 3200,
+                    "evictions": 821,
+                    "hits": 2379,
+                    "logical_load_bytes": 10852963200,
+                    "misses": 821,
+                    "parking_only_waves": 0,
+                    "rank_uses": 3200,
+                    "waves": 800
+                  },
+                  "CUDA0": {
+                    "distinct_demands": 1408,
+                    "evictions": 309,
+                    "hits": 1070,
+                    "logical_load_bytes": 4468089600,
+                    "misses": 338,
+                    "parking_only_waves": 0,
+                    "rank_uses": 1408,
+                    "waves": 352
+                  }
+                },
+                "increment": {
+                  "CPU": {
+                    "distinct_demands": 2373,
+                    "evictions": 710,
+                    "hits": 1663,
+                    "logical_load_bytes": 9385632000,
+                    "misses": 710,
+                    "parking_only_waves": 750,
+                    "rank_uses": 15300,
+                    "waves": 200
+                  },
+                  "CUDA0": {
+                    "distinct_demands": 1217,
+                    "evictions": 311,
+                    "hits": 905,
+                    "logical_load_bytes": 4124390400,
+                    "misses": 312,
+                    "parking_only_waves": 293,
+                    "rank_uses": 6124,
+                    "waves": 88
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "pass": false,
+      "witness_pair": {
+        "OFF": {
+          "F": "f4bc53c8916be028b162c190640ac9c4a3ad04dac806a537cf742910c24a92ca",
+          "I": "671354649bd647f6e4cf20556bfda018bf68bde6c54112304ab33313f2638fbf",
+          "P": "4af0997f62f3457b0e1e071d2ff6555080c7d4c9f9ce492e2114936084dcaa8f",
+          "inputs": {
+            "all33.logits.f32": "cb89a303f2c811d3cb75cf6df457a7bf8dcfb6279b729b326baec519748239a2",
+            "boundary-i.json": "d8f61a91d14413fa074d9f6cdb577c8edd930c30b1d23a5a4d64d028f600e864",
+            "events.tsv": "e9a41df983ad0d262a82ad03720c7c73d72005285c2479e01f51f9e3c9991482",
+            "initial.json": "b62d9582be60866400d12e3777200d0c5dd9bf251676c52358aa1848088433a8",
+            "result.json": "79375017a394dca7af5e20f201bef2300a72e1cead22b320586319ca70b071b0",
+            "routed-witness.bin": "c82d9174488083132be2565799572804ae90436bd03f8c745ba34d3e7f136a9a"
+          },
+          "run_id": "tesy-wrt40-p25-r01-1-nominal153-off"
+        },
+        "ON": {
+          "F": "f4bc53c8916be028b162c190640ac9c4a3ad04dac806a537cf742910c24a92ca",
+          "I": "671354649bd647f6e4cf20556bfda018bf68bde6c54112304ab33313f2638fbf",
+          "P": "4af0997f62f3457b0e1e071d2ff6555080c7d4c9f9ce492e2114936084dcaa8f",
+          "inputs": {
+            "all33.logits.f32": "cb89a303f2c811d3cb75cf6df457a7bf8dcfb6279b729b326baec519748239a2",
+            "boundary-i.json": "8e8386cdff908608a2325d619e187aaa30c12095968cceb356ebc65a559a37fe",
+            "events.tsv": "e9a41df983ad0d262a82ad03720c7c73d72005285c2479e01f51f9e3c9991482",
+            "initial.json": "4a4c3451417fbeae9dfb4c7a63c5a47323b4e2be1cd71be9b8086f6788de55a8",
+            "prefix-routes.bin": "9d66f7ec95aa86e0009cf455092ad884dd99f100fb155651ac26f4159d4d3b46",
+            "result.json": "a3495db9280088f38d6aa48b05e2e91cfdecee39fca794d37deab7f8399b484f",
+            "routed-witness.bin": "c82d9174488083132be2565799572804ae90436bd03f8c745ba34d3e7f136a9a"
+          },
+          "run_id": "tesy-wrt40-p25-r01-2-nominal153-on"
+        }
+      }
+    }
+  },
+  "clean": true,
+  "code_sha256": {
+    "prefill_causal/plan.py": "7d67491c6289c478476f26292ee876d82d278a8b6a0333440434cc999ec9d6de",
+    "prefill_interval40/screen.py": "4e3f1253e997c9f27eb8d1767e135951104a391186eaf66e04d7ccc403c54755",
+    "srrip40/policy.py": "140f44d5a39c2bd456869dd22eeeb4b6b989031888809c825d17ab23e3cfd7d7",
+    "srrip40/protocol.md": "29058cf1e92521e74623e839ac079fecd33ddf6c43bb8e4416f97ae85f99de3e",
+    "srrip40/screen.py": "9054ee14b9793836a4cf8182e4a6cbf282f4f8583e7221dc4e683b07eb809247"
+  },
+  "commit": "fd80e3699d6ecc496e013124fee2abdca188bae8",
+  "family_sha256": "bd69474a52d58cf5e96e88099c20094d3fe98bb285fb14f8d82bcc516273e01a",
+  "full_receipts": {
+    "r01": {
+      "bytes": 341993,
+      "sha256": "fbfc12a0724444fef5a6083b197381f9cd7003dd058dd1499b1487168e6e36e3"
+    },
+    "r02": {
+      "bytes": 341993,
+      "sha256": "fbfc12a0724444fef5a6083b197381f9cd7003dd058dd1499b1487168e6e36e3"
+    }
+  },
+  "historical_receipt_sha256": "ef9234d7d5b811ec3897e1eb3e62a6d727984f07d98a54bdede74042f132b8f8",
+  "oracle_receipt_sha256": "d2f0912118512131cc6c5719947bb44b1bc1d651e21a7b5d0199eac84026b0cf",
+  "scope": "TRACE_DERIVED_CAUSAL_REPLACEMENT_FIXED_PHYSICAL_P_FREE_PARKING",
+  "status": "NO_GO",
+  "tree": "e1402004d3523dd5ea4f882cbabf16fd2900f8d2"
+}
