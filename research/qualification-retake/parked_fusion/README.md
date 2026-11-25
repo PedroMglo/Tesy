@@ -17,6 +17,8 @@
 
 O ensaio, incluindo compilação, levou 5,440 s na checkout limpa 9cf3a726fd6445bc37aa49325646825f01f2acc8, árvore 595b35879964d0217a126425a5f27b73cb4de20d. O pico do cgroup de 4 GiB foi 373 780 480 B. A entrega ao backend reservou 528 768 000 B para caches de pesos, 4 423 680 B de bias e 6 268 416 B no scheduler. Nenhum peso foi lido, nenhum worker arrancou e nenhum operador do grafo foi executado. As reservas virtuais e o pico residente têm denominadores distintos. As durações da conversa e da tile pertencem às campanhas que realmente executaram esses grafos. [Última comparação temporal da tile](../parked_mmid/README.md)
 
+No C135 nominal, mesmo concedendo execução instantânea a todo o FFN e aos restantes operadores, a agenda com quatro workers e as durações históricas das leituras ainda precisa de pelo menos 7,526 s de prefill. O orçamento condicional de 2,427 s naquela captura exigiria também intervenções na residência ou na entrega dos experts. A eficácia de um corte na CPU é uma questão separada e mensurável. [Piso de leitura e hipóteses](../prefill_read_floor/README.md)
+
 O comando reproduz a decisão a partir dos dois grafos arquivados. Cada execução exige um novo destino.
 
 ```sh
