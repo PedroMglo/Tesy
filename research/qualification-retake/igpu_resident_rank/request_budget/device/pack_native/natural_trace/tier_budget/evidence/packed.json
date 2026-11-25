@@ -1,0 +1,177 @@
+{
+  "arm": "P",
+  "arm_sha256": "dde539013b2be7f9ebd40c66c9ff49f90000edf103070aa0bfd8d74d7ecbc046",
+  "callback_count": 2987,
+  "family_sha256": "e5012e559a2403145abc6f5317bddc8b83f95f1e09b592eb83a6baa2c18980a9",
+  "first_final_sample": 45,
+  "http_sha256": {
+    "T2-request.jsonl": "d3f7cb28c8cec47d7f524876d6e1d8fce37bf73935d4fb2237946de0d14e8d96",
+    "T2-result.json": "f4f25c618bdf9168fe620eb897d5aee2fca9d4f406e4c22e535702a25b6b3882"
+  },
+  "journal_sha256": "05e32c2af753026e471fa61c9dcb43867ca6b9a3001045a2138bc96c422928dc",
+  "logged_cache_MiB": {
+    "CPU": "12606.81",
+    "CUDA0": "5547.00"
+  },
+  "method_sha256": "18330b89d99604b13248b186e3effb85f40c2d45d72b43330b668fb3e17349b3",
+  "necessary_ns": {
+    "decode": 1113292666,
+    "first": 8325560801
+  },
+  "observed_ns": {
+    "decode": 8946626000,
+    "first": 18325560801
+  },
+  "outputs": 47,
+  "post_first_calls": 46,
+  "route": {
+    "rows": 7012,
+    "sha256": "f7790121a33d6785d2347eb47091d30385a792c308403cdd3ed9f32813e5ca5f"
+  },
+  "sampled_ids_sha256": "4a8a47b3ec0a64220e9734237eae9fd7b886ce35ed81964408eacdc4034931f9",
+  "scenarios": {
+    "CPU": {
+      "decode": "HEADROOM_ONLY",
+      "exclusive_regions_ns": {
+        "decode_only": 76644761,
+        "first_only": 3760635716,
+        "intersection": 4655566424
+      },
+      "first": "HEADROOM_ONLY",
+      "free_max_ns": {
+        "decode": 4732211185,
+        "first": 8416202140
+      },
+      "if_this_tier_free": {
+        "minimum_distinct_other_ns": 0,
+        "minimum_fraction_of_other_decode": 0.0,
+        "minimum_fraction_of_other_first": 0.0,
+        "minimum_fraction_of_other_union": 0.0,
+        "other_regions_suffice": true,
+        "required_decode_ns": 0,
+        "required_first_ns": 0,
+        "still_required_outside_both_ns": {
+          "decode": 0,
+          "distinct_at_least": 0,
+          "first": 0
+        }
+      },
+      "joint": "HEADROOM_ONLY",
+      "remaining_floor_ns": {
+        "decode": 4214414815,
+        "first": 9909358661
+      },
+      "unmet_ns": {
+        "decode": 0,
+        "first": 0
+      }
+    },
+    "CUDA0": {
+      "decode": "HEADROOM_ONLY",
+      "exclusive_regions_ns": {
+        "decode_only": 75832484,
+        "first_only": 2138220737,
+        "intersection": 1860409974
+      },
+      "first": "NO_GO_FIXED_EXTERIOR",
+      "free_max_ns": {
+        "decode": 1936242458,
+        "first": 3998630711
+      },
+      "if_this_tier_free": {
+        "minimum_distinct_other_ns": 4326930090,
+        "minimum_fraction_of_other_decode": 0.0,
+        "minimum_fraction_of_other_first": 0.5141190786560647,
+        "minimum_fraction_of_other_union": 0.5094793466123263,
+        "other_regions_suffice": true,
+        "required_decode_ns": 0,
+        "required_first_ns": 4326930090,
+        "still_required_outside_both_ns": {
+          "decode": 0,
+          "distinct_at_least": 0,
+          "first": 0
+        }
+      },
+      "joint": "NO_GO_FIXED_EXTERIOR",
+      "remaining_floor_ns": {
+        "decode": 7010383542,
+        "first": 14326930090
+      },
+      "unmet_ns": {
+        "decode": 0,
+        "first": 4326930090
+      }
+    },
+    "both": {
+      "decode": "HEADROOM_ONLY",
+      "exclusive_regions_ns": {
+        "decode_only": 152477245,
+        "first_only": 5898856453,
+        "intersection": 6515976398
+      },
+      "first": "HEADROOM_ONLY",
+      "free_max_ns": {
+        "decode": 6668453643,
+        "first": 12414832851
+      },
+      "joint": "HEADROOM_ONLY",
+      "remaining_floor_ns": {
+        "decode": 2278172357,
+        "first": 5910727950
+      },
+      "unmet_ns": {
+        "decode": 0,
+        "first": 0
+      }
+    }
+  },
+  "source_sha256": {
+    "src/llama-model.cpp": "7af9ef3bb6dc9491f7280b3dbcc4f6605da7739b4288e7bee51881772f58f010",
+    "src/llama-moe-stream.cpp": "044d8879be19e5c22331a29bf7a273307756de10675b1341ee9d7077e2dabc62",
+    "tools/server/server-context.cpp": "657c331a707f0faf74615d19387088070c3dbd7559328619c9ef606a4ec8cc55"
+  },
+  "status": "TRACE_DERIVED_FIXED_EXTERIOR",
+  "stderr_sha256": "2b2bc07b9eced36e7272b67f1501ed0a733f948c7f68c8ad2e30cd45dbc7ddca",
+  "tier_layers": {
+    "CPU": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16,
+      17,
+      18,
+      19,
+      20,
+      21,
+      22,
+      23,
+      24
+    ],
+    "CUDA0": [
+      25,
+      26,
+      27,
+      28,
+      29,
+      30,
+      31,
+      32,
+      33,
+      34,
+      35
+    ]
+  }
+}

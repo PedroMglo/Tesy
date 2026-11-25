@@ -1,5 +1,7 @@
 # Admissão da observação do pack no cliente natural
 
+A medição completou os quatro braços e os oito pedidos. Os raws originais e a cópia arquivada produziram a mesma graduação dos turnos e o mesmo resultado do journal. [Resultados, custos e reprodução](review.md)
+
 A recompilação sem instrumentação diferiu do C291 original em 19 secções alocadas, incluindo `.text`. A regra prospetiva exige portanto **quatro servidores, pela ordem BASE, CONTROL, OFF, ON**. Em todos, o servidor original C281 usa o mesmo pack. O contraste CONTROL/BASE isola a recompilação, OFF/CONTROL inclui o código de observação inativo e ON/OFF ativa a escrita durante T2. As semelhanças e diferenças das bibliotecas foram verificadas no build estático. Os resultados da conversa dependem de uma fonte de dados separada. [Protocolo do cliente](protocol.md) · [Adenda da toolchain](toolchain.md) · [Protocolo do build](../dso/current-toolchain.md)
 
 O supervisor verificou offline as cinco execuções da fixture C291, os recibos de build e os seus fornecedores. A tentativa inicial da fixture nativa ficou preservada antes dos casos e a primeira tentativa do build DSO terminou antes da candidata. O build R02 e a fixture R02 passam os gates estáticos. O cliente exige ainda que os três braços do **C292 com pack** apontem aos mesmos ELF, aos originais por SHA e à árvore C127/C270 verificada de 3266 ficheiros, 88 704 231 B. A janela C55 de produto começa depois do fecho desse C292. [Ponte numérica e âmbito](../numeric/protocol.md)
