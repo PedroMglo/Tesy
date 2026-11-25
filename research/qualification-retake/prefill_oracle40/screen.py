@@ -34,6 +34,8 @@ HASHES = {
 }
 SOURCE_SHA = "b7ca5f9608f4c20140a51748f88ff64657c0d586f0edc527d4cabd5fd39f2d4c"
 GRAPH_SHA = "eab00ef87d7212708f3ac4ec4f643dfc1c640f9949633827ff5017e7c56c705c"
+MODEL_GRAPH_SHA = "239407aaa98f8b65eb280e4423588ba7cefc520371811b9c47d7457fc1f469d4"
+SERVER_SHA = "657c331a707f0faf74615d19387088070c3dbd7559328619c9ef606a4ec8cc55"
 CERT45 = "8bac276e0b9a0e65c7b6e7c54bc6680f88774fdd77431a2d614939c17cabdc57"
 
 
@@ -46,14 +48,14 @@ def sha(path):
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
-def demands_by_layer(rows, widths):
+def demands_by_layer(rows, widths, *, final_output):
     """Each wave emits its first-use union before testing for resident hits."""
     demand = [r for r in rows if r["kind"] == "DEMAND"]
     runs = [(layer, list(records)) for layer, records in groupby(demand, key=lambda r: r["layer"])]
     expected = [
         (tile, layer)
         for tile in range(len(widths))
-        for layer in range(36 if tile == len(widths) - 1 else 35)
+        for layer in range(36 if final_output and tile == len(widths) - 1 else 35)
     ]
     require([layer for layer, _ in runs] == [layer for _, layer in expected], "layer/tile coverage")
     groups = [[] for _ in range(36)]
@@ -82,14 +84,14 @@ def demands_by_layer(rows, widths):
 
 def solve(first, second, capacity=CACHE):
     """One layer with one initial warm grant. No extra grant at the call return."""
-    require(len(first) == 1, "one pin group in first call per layer")
+    require(len(first) <= 1, "first call has at most one pin group per layer")
     all_groups = first + second
     unique = set().union(*all_groups)
     distinct_floor = max(0, len(unique) - capacity)
     joint = cache_bound.minimum(all_groups, capacity)
     # This is the same earliest-first-use start used by the joint solver.
     # All of the only pin group in call 1 can be present for free.
-    require(len(first[0]) <= capacity, "first call pins")
+    require(all(len(group) <= capacity for group in first), "first call pins")
     require(cache_bound.minimum(first, capacity) == 0 and joint >= distinct_floor, "joint floor")
     return {
         "distinct": len(unique),
@@ -99,7 +101,7 @@ def solve(first, second, capacity=CACHE):
         "optimal_total": joint,
         "call5_waves": len(first),
         "call148_waves": len(second),
-        "call5_distinct": len(set(first[0])),
+        "call5_distinct": len(set().union(*first)),
         "call148_distinct": len(set().union(*second)),
     }
 
@@ -140,6 +142,11 @@ def run(trace, backend, pr45):
         require(sha(ROOT / name) == expected, name)
     source = backend / "src/llama-moe-stream.cpp"
     require(sha(backend / "src/llama-graph.cpp") == GRAPH_SHA, "C122 graph wave condition")
+    require(
+        sha(backend / "src/models/openai-moe.cpp") == MODEL_GRAPH_SHA,
+        "C122 FFN output row selection",
+    )
+    require(sha(backend / "tools/server/server-context.cpp") == SERVER_SHA, "C122 prompt outputs")
     prior = pr45 / "research/prefill-slot-proof/victim-evidence/receipt.json"
     require(commit(backend) == PIN and sha(source) == SOURCE_SHA, "C122 DEMAND emitter")
     require(commit(pr45) == PIN45 and sha(prior) == CERT45, "PR45 receipt")
@@ -160,14 +167,20 @@ def run(trace, backend, pr45):
     require(len(all_rows) == 58181, "journal length")
     by_call = []
     actual = []
-    for rows, widths in zip(parts, ([5], [32, 32, 32, 32, 20]), strict=True):
+    # The server requests output only on the last prompt token (position 2196).
+    calls = (([5], 2044, 2048, False), ([32, 32, 32, 32, 20], 2049, 2196, True))
+    for rows, (widths, start, end, output) in zip(parts, calls, strict=True):
+        require(
+            all((r["expert"], r["slot"]) == (start, end) for r in (rows[0], rows[-1])),
+            "C135 prompt positions",
+        )
         require(
             rows[0]["kind"] == "CALL_BEGIN"
             and rows[-1]["kind"] == "CALL_END"
             and rows[0]["n_tokens"] == sum(widths),
             "external prefill call",
         )
-        by_call.append(demands_by_layer(rows, widths))
+        by_call.append(demands_by_layer(rows, widths, final_output=output))
         actual.append(Counter(r["layer"] for r in rows if r["kind"] == "LOAD_BEGIN"))
     require([sum(counts.values()) for counts in actual] == [45, 1177], "historical loads")
     per_layer = []
@@ -223,6 +236,9 @@ def run(trace, backend, pr45):
         "backend_pin": PIN,
         "emitter_sha256": SOURCE_SHA,
         "graph_sha256": GRAPH_SHA,
+        "model_graph_sha256": MODEL_GRAPH_SHA,
+        "server_source_sha256": SERVER_SHA,
+        "ffn35_output_rows_by_call_and_tile": [[0], [0, 0, 0, 0, 1]],
         "pr45_pin": PIN45,
         "pr45_receipt_sha256": CERT45,
         "pr45_cross_tile_receipt_sha256": reload_sha,

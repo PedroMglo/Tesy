@@ -8,10 +8,10 @@ import screen
 from test_cache_bound import brute  # reuse the exhaustive independent paging reference
 
 
-def fixture(widths):
+def fixture(widths, *, final_output=True):
     rows = []
     for i, width in enumerate(widths):
-        for layer in range(36 if i == len(widths) - 1 else 35):
+        for layer in range(36 if final_output and i == len(widths) - 1 else 35):
             n = width if layer < 35 else 1
             for expert in range(min(n * 4, 20)):
                 rows.append(
@@ -46,9 +46,21 @@ class PrefillOracle(unittest.TestCase):
 
     def test_pass_includes_hits_and_output_pruning(self):
         rows = fixture([32, 20])
-        groups = screen.demands_by_layer(rows, [32, 20])
+        groups = screen.demands_by_layer(rows, [32, 20], final_output=True)
         self.assertEqual(list(map(len, groups[0])), [18, 2, 18, 2])
         self.assertEqual(groups[-1], [(0, 1, 2, 3)])
+
+    def test_no_output_at_first_server_return(self):
+        first = fixture([5], final_output=False)
+        parts = screen.demands_by_layer(first, [5], final_output=False)
+        self.assertEqual(parts[35], [])
+        self.assertEqual(screen.solve(parts[35], [(1, 2, 3, 4)])["call5_distinct"], 0)
+        with self.assertRaisesRegex(ValueError, "coverage"):
+            screen.demands_by_layer(fixture([5]), [5], final_output=False)
+        with self.assertRaisesRegex(ValueError, "coverage"):
+            screen.demands_by_layer(
+                fixture([32, 20], final_output=False), [32, 20], final_output=True
+            )
 
     def test_reject_geometry_changes(self):
         for change, reason in (
@@ -73,7 +85,7 @@ class PrefillOracle(unittest.TestCase):
                 else:
                     rows = [r for r in rows if r["layer"] != 7]
                 with self.assertRaisesRegex(ValueError, reason):
-                    screen.demands_by_layer(rows, [32, 20])
+                    screen.demands_by_layer(rows, [32, 20], final_output=True)
 
     def test_threshold_and_missing_raw(self):
         budget = Fraction("2.427104435")
