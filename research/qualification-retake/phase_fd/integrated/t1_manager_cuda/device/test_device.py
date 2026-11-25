@@ -60,6 +60,16 @@ class Device(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "deadline"):
             run(b"A", [[7]], (0.0, 2.1))
 
+    def test_independent_mxfp4_scale_and_nibble_order(self):
+        audit = run_path(str(HERE / "review.py"))
+        # Low nibbles fill columns 0..15, high nibbles 16..31.
+        row = bytes([126]) + bytes([0xB2]) * 16  # scale 1/2, low +1, high -1.5
+        self.assertEqual(audit["project"](row * 32, [1.0] * 16 + [2.0] * 16), [-16.0] * 32)
+        broken = bytes([127]) + row[1:] + row * 31
+        self.assertEqual(audit["project"](broken, [1.0] * 16 + [2.0] * 16), [-32.0] + [-16.0] * 31)
+        with self.assertRaisesRegex(ValueError, "geometry"):
+            audit["project"](row, [1.0] * 32)
+
     def test_passive_reference_identity(self):
         with TemporaryDirectory() as tmp:
             root = Path(tmp)

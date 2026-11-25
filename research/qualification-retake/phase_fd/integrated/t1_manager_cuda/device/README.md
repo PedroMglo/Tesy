@@ -1,6 +1,29 @@
 # Ordenação no consumidor CUDA
 
-**TESTADO sem GPU.** Os testes portáteis verificaram a aplicação da extensão ao source CPU autenticado, o encaminhamento dos nós, as verificações de providers e a rejeição de um evento ou de uma biblioteca obrigatória ausente. A primeira implementação gerou o source SHA-256 `feb6830bb037d8e4924afb33a2fe405036f0f62fc4b87a08727f632c633e0f31`. O freeze do protocolo é `9c543a25`. O comportamento do scheduler, a saída dos kernels e a transição CUDA→CPU exigem os processos físicos.
+**MEDIDO na RTX 4060 Laptop. PASS_CUDA_WAVE_FIXTURE_ONLY.** O observador CPU recebeu uma vista escalar produzida pelo FFN na CUDA0. Ao autorizar a substituição do slot nesse observador, a saída completa conservou os 32 valores da geração antiga, bitwise. O controlo com evento explícito no backend CUDA produziu o mesmo resultado. Quando autorizámos a substituição apenas pelos IDs e atrasámos o consumidor até aos três SET, o FFN devolveu exatamente a geração nova. Nos três braços, o banco continha os mesmos 1 632 B antigos e as doze componentes do primário terminavam com os mesmos 6 528 B. Esta é uma prova de ordenação da wave no operador. A integração na reserva real e a fronteira entre tiles continuam em aberto. [Recibo físico revisto](evidence/physical.json) · [Protocolo congelado em 9c543a25](protocol.md)
+
+| Processo | Geração usada no FFN | SHA-256 dos 32 F32 | Duração total do filho (s) |
+|---|---|---|---:|
+| OLD, gold isolado | Antiga | `1e1e6519…1b6981f` | 1,167 |
+| NEW, gold isolado | Nova | `6ebc5310…9ef77537` | 1,011 |
+| ORIGINAL, vista da wave | Antiga | `1e1e6519…1b6981f` | 1,145 |
+| EVENT, evento após submissão | Antiga | `1e1e6519…1b6981f` | 1,017 |
+| BROKEN, sobrescrita antes da leitura | Nova | `6ebc5310…9ef77537` | 1,102 |
+
+A revisão reconstruiu os pesos a partir dos nibbles e expoentes MXFP4 dos slots arquivados e avaliou up/gate/down, SwiGLU e o rank que sobrevive à máscara em float64. O maior erro absoluto em relação a esse oráculo foi 2,24×10⁻⁷ nos braços da geração antiga e 5,60×10⁻⁶ nos da nova, dentro da tolerância prospetiva de 10⁻⁴. As cinco saídas coincidiram também com as saídas CPU da mesma geração. O efeito temporal da captura continua por medir. Os tempos da tabela incluem inicialização, handoffs com o monitor e saída do filho.
+
+**Recursos.** Houve 305 amostras C118 em 300,869 s e 20 amostras de serviço. Nos cinco processos o monitor passou de zero proprietários na entrada para o único PID do filho no UUID esperado na fase ativa e no fim do FFN, e voltou a zero após a saída. As leituras de VRAM total foram 2 / 104 / 114 / 2 MiB. Cada handoff passou na primeira consulta. Foram verificados 16 objetos mapeados no arranque e 19 em cada um dos três pontos seguintes. O intervalo entre a primeira amostra de inventário e a última amostra de serviço foi 306,987 s. O pico do cgroup foi 218 189 824 B, sob o limite de 2 GiB e com swap zero no scope. Os máximos observados foram 51,75 °C na CPU, 38,87 °C na GPU e 33,85 °C no NVMe. Zero forwards de modelo e zero leituras de pesos 120B.
+
+**Proveniência.** R03 partiu de `b1b406eb4ee72e3296715a77fb1af0baaf4ea34e`, árvore `01123325dba08e683f56675d42addbb7dcd9c923`. O recibo de build tem SHA-256 `7fbd8b368bf617b9c364c82ab90d925d740701748451ea8f6ea6b1389f71bc0c` e o recibo físico `20d66fe68189cb44b6871089619a30c6850058e093dac77c4f28e981da366155`. A parte 53 preserva os 137 ficheiros e 1 281 816 B do manifesto `3beb53b8731ea7eb5dbbf491cdc8e2075898300c923df0e54104516fd58f9409`. Duas reanálises, uma com os diretórios locais de execução e outra diretamente na parte 53, produziram o mesmo compacto sanitizado SHA-256 `f589f6bd57667f8d985c1d4a854eef92a1df8fa629d235706adf892e892147c1`. R01 e R02 permanecem na secção de falhas abaixo.
+
+```sh
+unit=research/qualification-retake/phase_fd/integrated/t1_manager_cuda/device
+python3 -IB "$unit/review.py" --runs-root "$PART53" --manifest "$PART53/manifest.json" \
+  --map "$STATIC_MAP" --c55 "$C55_R02" --new-output-dir "$NOVA_REVISAO"
+cmp "$NOVA_REVISAO/receipt.json" "$unit/evidence/physical.json"
+```
+
+## Operador e reprodução física
 
 O ensaio usa o operador e o observador do antecessor CPU sob o scheduler misto. Em ORIGINAL, o segundo operando do CUSTOM CPU é a vista de quatro bytes do resultado mascarado que o backend CUDA produziu. O observador verifica o buffer host e lê a própria vista. No controlo EVENT, o pin expõe `ggml_backend_event_record` e `ggml_backend_event_synchronize`. O evento é gravado após a submissão no backend de computação. O worker recebe a conclusão e termina os três SET antes do drain global. Em BROKEN, o gate a montante só liberta o leitor após a sobrescrita terminada. Esse controlo força ordenação inversa sem acesso concorrente indefinido. O stream bruto e o join interno do CUDA não são exportados para a fixture. A identidade das bibliotecas fixa a implementação que liga estes eventos ao stream. Os prazos e garantias estão no [protocolo](protocol.md) e na [auditoria do pin](../../t1_manager_bank/cuda-consumers.md).
 
