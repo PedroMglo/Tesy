@@ -4,6 +4,7 @@
 #include "ggml-cpu.h"
 #include <openssl/sha.h>
 #include <dlfcn.h>
+#include <sys/resource.h>
 #include <time.h>
 #include <algorithm>
 #include <array>
@@ -28,6 +29,12 @@ constexpr std::array<const char*,3> roles{"gate","down","up"};
 static_assert(slab==Store::slab && sizeof(int32_t)==4);
 static void need(bool cond,const char *reason){if(!cond)throw std::runtime_error(reason);}
 static int64_t now(){timespec ts{}; if(clock_gettime(CLOCK_MONOTONIC_RAW,&ts))std::abort();return int64_t(ts.tv_sec)*1000000000+ts.tv_nsec;}
+static rusage process_usage() {
+    rusage out{};
+    need(getrusage(RUSAGE_SELF, &out) == 0, "process page fault counters");
+    need(out.ru_minflt >= 0 && out.ru_majflt >= 0, "negative process page fault counters");
+    return out;
+}
 static std::string digest(const void *data,size_t size){
     unsigned char bytes[SHA256_DIGEST_LENGTH];need(SHA256(static_cast<const unsigned char*>(data),size,bytes)!=nullptr,"SHA256");
     std::ostringstream text;for(auto c:bytes)text<<std::hex<<std::setfill('0')<<std::setw(2)<<unsigned(c);return text.str();
@@ -162,10 +169,14 @@ static json measure(const fs::path &in,const std::string&layout,const std::strin
     for(int i=0;i<5;++i){auto &e=store.entries[0][on_disk[i]];e.offset=i*stride;e.relative={0,slab,2*slab};}
     for(auto *v:s.views)need(v->data && v->nb[2]==s.pitch && (ggml_is_contiguous(v)==(layout=="DENSE")),"slot geometry");
     // Equal logical payload in slot/component order, plus the packed layout's private padding.
+    const auto faults_before=process_usage();
     const auto pre_start=now();
     for(int slot=0;slot<40;++slot){for(auto *v:s.views)std::memset(static_cast<char*>(v->data)+slot*s.pitch,0xa3,slab);
         if(layout!="DENSE")std::memset(static_cast<char*>(s.views[0]->data)+slot*s.pitch+3*slab,0xa3,window-3*slab);}
     const auto pre_end=now();
+    const auto faults_after=process_usage();
+    need(faults_after.ru_minflt >= faults_before.ru_minflt &&
+         faults_after.ru_majflt >= faults_before.ru_majflt, "regressing process page fault counters");
     auto *ids=ggml_new_tensor_2d(graph.get(),GGML_TYPE_I32,4,32);std::memcpy(ids->data,logical,128*sizeof(int32_t));
     ggml_tensor *args[]={ids};auto *wave=s.sl->wave_userdata(0,18);
     auto *out=ggml_custom_4d(graph.get(),GGML_TYPE_I32,4,32,1,1,args,1,llama_moe_stream_wave_ids,1,wave);
@@ -196,6 +207,11 @@ static json measure(const fs::path &in,const std::string&layout,const std::strin
         {"requested_bytes",count_bytes},{"logical_bytes",mgr.stats.n_store_read_bytes},{"set_count",total_sets},
         {"queue_empty",true},{"verified_payload",true},{"confirmed_slots",confirmed},{"events",rows(s)},
         {"prefault_bytes",40*(layout=="DENSE"?3*slab:window)},{"prefault_ns",pre_end-pre_start},
+        {"prefault_faults",{{"scope","RUSAGE_SELF"},
+            {"minflt_before",faults_before.ru_minflt},{"minflt_after",faults_after.ru_minflt},
+            {"minflt_delta",faults_after.ru_minflt-faults_before.ru_minflt},
+            {"majflt_before",faults_before.ru_majflt},{"majflt_after",faults_after.ru_majflt},
+            {"majflt_delta",faults_after.ru_majflt-faults_before.ru_majflt}}},
         {"providers",{{"cpu",provider(reinterpret_cast<void*>(&ggml_backend_cpu_init))},{"base",provider(reinterpret_cast<void*>(&ggml_backend_sched_graph_compute))}}}};
 }
 int main(int argc,char**argv){try{

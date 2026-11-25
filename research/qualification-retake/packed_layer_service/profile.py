@@ -377,6 +377,28 @@ def monitor_provider(prior):
     return receipt, unchanged
 
 
+def prefault_telemetry(native):
+    fields = native.get("prefault_faults")
+    need(
+        isinstance(fields, dict) and fields.get("scope") == "RUSAGE_SELF",
+        "missing_or_wrong_prefault_faults_scope",
+    )
+    required = {"scope"} | {
+        kind + "_" + key for kind in ("minflt", "majflt") for key in ("before", "after", "delta")
+    }
+    need(
+        set(fields) == required
+        and all(type(fields[k]) is int and fields[k] >= 0 for k in required - {"scope"}),
+        "prefault_faults_schema",
+    )
+    for kind in ("minflt", "majflt"):
+        need(
+            fields[kind + "_after"] - fields[kind + "_before"] == fields[kind + "_delta"],
+            "prefault_faults_conservation",
+        )
+    return dict(fields)
+
+
 def verify(a, prior, native, layout, mode):
     expected = {
         "status": "PASS_C291_FIVE_MISS_SERVICE",
@@ -423,6 +445,7 @@ def verify(a, prior, native, layout, mode):
         )
     need((mode == "MIN") == (native["events"] == []), "observer_mode")
     return dict(
+        prefault_faults=prefault_telemetry(native),
         publish_ns=ts[2] - ts[1],
         resume_ns=ts[3] - ts[1],
         post_publish_to_resume_ns=ts[3] - ts[2],
@@ -552,6 +575,7 @@ def scoped(a, r, start):
         n: frozen(a.checkout, here / n, a.expect_head)
         for n in (
             "protocol.md",
+            "r02.md",
             "profile.py",
             "decision.py",
             "review.py",

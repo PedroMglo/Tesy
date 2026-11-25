@@ -20,7 +20,17 @@ def union(intervals):
     return total
 
 
+def check_prefault(r):
+    faults = r.get("prefault_faults")
+    need(isinstance(faults, dict) and faults.get("scope") == "RUSAGE_SELF", "prefault scope")
+    for counter in ("minflt", "majflt"):
+        before, after, delta = (faults.get(f"{counter}_{k}") for k in ("before", "after", "delta"))
+        need(all(type(n) is int and n >= 0 for n in (before, after, delta)), "prefault counters")
+        need(after - before == delta, "prefault counter delta")
+
+
 def review_arm(r):
+    check_prefault(r)
     need(
         r["schema"] == "tesy-c291-five-misses-v1"
         and r["status"] == "PASS_C291_FIVE_MISS_SERVICE"

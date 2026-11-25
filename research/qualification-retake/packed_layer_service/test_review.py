@@ -29,6 +29,15 @@ def fixture(layout="STAGED", mode="DETAIL"):
         last_publication=140,
         resume=143,
         outer_end=147,
+        prefault_faults=dict(
+            scope="RUSAGE_SELF",
+            minflt_before=70,
+            minflt_after=195,
+            minflt_delta=125,
+            majflt_before=1,
+            majflt_after=1,
+            majflt_delta=0,
+        ),
         events=[],
     )
     if mode == "MIN":
@@ -106,6 +115,27 @@ class TestReview(unittest.TestCase):
         for i, f in enumerate(faults):
             with self.subTest(i=i), self.assertRaises(ValueError):
                 review_arm(f)
+
+    def test_prefault_accounting_required_in_both_modes(self):
+        for mode in ("MIN", "DETAIL"):
+            r = fixture(mode=mode)
+            del r["prefault_faults"]
+            with self.subTest(mode=mode), self.assertRaisesRegex(ValueError, "prefault scope"):
+                review_arm(r)
+            for field, value in (
+                ("scope", "RUSAGE_THREAD"),
+                ("minflt_before", -1),
+                ("majflt_before", 2),
+                ("majflt_delta", False),
+                ("minflt_delta", 124),
+                ("minflt_after", None),
+            ):
+                r = fixture(mode=mode)
+                r["prefault_faults"][field] = value
+                with self.subTest(mode=mode, field=field), self.assertRaisesRegex(
+                    ValueError, "prefault"
+                ):
+                    review_arm(r)
 
 
 if __name__ == "__main__":
