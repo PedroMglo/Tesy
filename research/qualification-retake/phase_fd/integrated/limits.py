@@ -102,6 +102,72 @@ def service_window(rows, calls):
     }
 
 
+def joint_clock(rows, calls, raw, public):
+    check(
+        abs(public["first_final_s"] - raw["stream_metrics"]["first_final_content_chunk_s"]) < 1e-6
+        and abs(public["valid_wall_s"] - raw["request_wall_s"]) < 0.01,
+        "client/receipt clocks",
+    )
+    start = math.floor(raw["request_started_monotonic"] * 1e9)
+    end = math.ceil(raw["request_ended_monotonic"] * 1e9)
+    first = math.ceil(start + raw["stream_metrics"]["first_final_content_chunk_s"] * 1e9)
+    check(
+        start <= calls[0]["start_ns"] < first <= end and calls[-1]["end_ns"] <= end + 10**6,
+        "native/POST ordering",
+    )
+    spans = collections.defaultdict(list)
+    begins = {}
+    events = {
+        9: ("remap", 1),
+        23: ("remap", 0),
+        19: ("barrier", 1),
+        20: ("barrier", 0),
+        21: ("victim", 1),
+        22: ("victim", 0),
+    }
+    for r in rows:
+        if r.kind not in events:
+            continue
+        key, opens = events[r.kind]
+        if key == "barrier" and not r.a:
+            continue
+        if opens:
+            check(key not in begins, "nested spans")
+            begins[key] = r.ns
+        else:
+            spans[key].append((r.call, begins.pop(key), r.ns))
+    check(not begins, "unclosed spans")
+    cuts = {}
+    for k, values in list(spans.items()) + [("wait", spans["barrier"] + spans["victim"])]:
+        client = [
+            (max(a, start - 10**6), min(b, first + 10**6))
+            for _, a, b in values
+            if max(a, start - 10**6) < min(b, first + 10**6)
+        ]
+        cuts[k] = {
+            "until_first_final_ns": pfj.union_ns(client),
+            "in_decode_ns": pfj.union_ns([(a, b) for call, a, b in values if call >= 3]),
+        }
+    to_final = max(0, first - start - 10**10 - 10**6)
+    to_rate = max(0, math.floor(public["decode_s"] * 1e9) - math.ceil(47 * 10**9 / 6))
+    required = {}
+    for k in ("remap", "wait"):
+        c = cuts[k]
+        a, b = c["until_first_final_ns"], c["in_decode_ns"]
+        check(a > 0 and b > 0, "missing required scope")
+        required[k] = {
+            "first_final_fraction": to_final / a,
+            "decode_fraction": to_rate / b,
+            "joint_minimum_fraction": max(to_final / a, to_rate / b),
+        }
+    return {
+        "unions": cuts,
+        "required_reduction_ns_until_final": to_final,
+        "required_reduction_ns_decode": to_rate,
+        "fractions": required,
+    }
+
+
 def execute(args):
     off = load(args.off_dir / "receipt.json", args.off_sha256)
     on = load(args.on_dir / "receipt.json", args.on_sha256)
@@ -122,6 +188,10 @@ def execute(args):
         "independent full replay",
     )
     result = service_window(records, grade["calls"])
+    archive = load(args.archive_manifest, args.archive_sha256)
+    raw_relative = args.on_dir.name + "/raw/T2-result.json"
+    raw = load(args.on_dir / "raw/T2-result.json", archive["files"][raw_relative]["sha256"])
+    result["client_clock"] = joint_clock(records, grade["calls"], raw, on["rows"][1])
     phase = grade["nominal_prefill"]
     check(
         result["relaxed"]["payload_floor"] == phase["relaxed_40slot_payload_floor"],
@@ -159,6 +229,8 @@ def execute(args):
             "on": args.on_sha256,
             "journal": header["journal_sha256"],
             "code": sha(Path(__file__)),
+            "client_protocol": sha(HERE / "cliente.md"),
+            "private_raw_manifest": args.archive_sha256,
             "wait_protocol": sha(HERE / "wait_bound.md"),
             "handoff_protocol": sha(HERE / "retorno.md"),
         },
@@ -171,6 +243,8 @@ if __name__ == "__main__":
     for opt in ("on", "off"):
         p.add_argument("--" + opt + "-dir", type=Path, required=True)
         p.add_argument("--" + opt + "-sha256", required=True)
+    p.add_argument("--archive-manifest", type=Path, required=True)
+    p.add_argument("--archive-sha256", required=True)
     p.add_argument("--model", type=Path, required=True)
     p.add_argument("--new-output-dir", type=Path, required=True)
     args = p.parse_args()
