@@ -1,0 +1,174 @@
+{
+  "measurement_commit": "642db2106f02aa9ec8f1b54f854040e4d0de24b0",
+  "model_loads": 0,
+  "native_forward_calls": 0,
+  "natural": [
+    {
+      "boundary_interruptions": 0,
+      "classes": {
+        "0": 4,
+        "1": 0,
+        "2": 3
+      },
+      "counts": {
+        "accepted_ids": 6,
+        "calls": 26,
+        "drafted_ids": 14,
+        "fewer_calls": 6,
+        "full_proposals": 3,
+        "ordinary": 19,
+        "ordinary_corrective_or_bonus": 26,
+        "outputs": 32,
+        "proposals": 7,
+        "rejections": 4
+      },
+      "logical_discarded_rows": 8,
+      "step_witness_sha256": "e9c39bf1ff0c0883e44136eaa1522244ccb990ccf6c5187c3184eae556fa4a79",
+      "window": 32
+    },
+    {
+      "boundary_interruptions": 0,
+      "classes": {
+        "0": 5,
+        "1": 0,
+        "2": 6
+      },
+      "counts": {
+        "accepted_ids": 12,
+        "calls": 34,
+        "drafted_ids": 22,
+        "fewer_calls": 12,
+        "full_proposals": 6,
+        "ordinary": 23,
+        "ordinary_corrective_or_bonus": 34,
+        "outputs": 46,
+        "proposals": 11,
+        "rejections": 5
+      },
+      "logical_discarded_rows": 10,
+      "step_witness_sha256": "aac79e5334aa11fd5fd12ec582c13d085415dcdb07e9cb4738c4a21130c9e493",
+      "window": 46
+    }
+  ],
+  "protocol_commit": "f1ba90fd33e21d7780cdfdfb24657f01a1168df3",
+  "rollbacks_on_real_kv": 0,
+  "same_except_elapsed": true,
+  "shared_private_archive": {
+    "bytes": 4309445,
+    "files": 83,
+    "manifest_sha256": "9eeb41dc68b93a71d4bca0adbe1c779416d5e9fae2e2ed353773edf94a3cc496",
+    "part": 30
+  },
+  "sources": {
+    "build-20261125-r01": {
+      "bytes": 2364,
+      "private_bytes": 1670203,
+      "receipt_sha256": "5de66a2b6062ecc08425c7e7c4ee86f717468b44e5181078477b897b83ba5892",
+      "status": "PASS_C269_B3_FIXTURE_BUILD"
+    },
+    "replay-20261125-r02": {
+      "bytes": 33095,
+      "private_bytes": 54637,
+      "receipt_sha256": "e877fc9b87e0f7efd51bfbe01185a76837f990aa6923720fec0498decb18076b",
+      "status": "PASS_C269_B3_NATIVE_CONTROL_ONLY"
+    },
+    "replay-20261125-r03": {
+      "bytes": 33095,
+      "private_bytes": 54637,
+      "receipt_sha256": "dc40aa799c4cd9731f25b75b7fad4b253724cf8393c3077e975297d01bb1f0a9",
+      "status": "PASS_C269_B3_NATIVE_CONTROL_ONLY"
+    }
+  },
+  "status": "PASS_C269_B3_NATIVE_CONTROL_ONLY",
+  "synthetic": [
+    {
+      "accepted_draft_by_call": {
+        "0": 0,
+        "1": 0,
+        "2": 0
+      },
+      "boundary_interruptions": 0,
+      "end": 2,
+      "label": "no_match",
+      "logical_discarded_rows": 0
+    },
+    {
+      "accepted_draft_by_call": {
+        "0": 1,
+        "1": 0,
+        "2": 0
+      },
+      "boundary_interruptions": 0,
+      "end": 3,
+      "label": "zero",
+      "logical_discarded_rows": 2
+    },
+    {
+      "accepted_draft_by_call": {
+        "0": 0,
+        "1": 1,
+        "2": 0
+      },
+      "boundary_interruptions": 0,
+      "end": 3,
+      "label": "one",
+      "logical_discarded_rows": 1
+    },
+    {
+      "accepted_draft_by_call": {
+        "0": 0,
+        "1": 0,
+        "2": 1
+      },
+      "boundary_interruptions": 0,
+      "end": 3,
+      "label": "both_bonus",
+      "logical_discarded_rows": 0
+    },
+    {
+      "accepted_draft_by_call": {
+        "0": 0,
+        "1": 1,
+        "2": 0
+      },
+      "boundary_interruptions": 1,
+      "end": 1,
+      "label": "cut_after_one",
+      "logical_discarded_rows": 1
+    },
+    {
+      "accepted_draft_by_call": {
+        "0": 0,
+        "1": 0,
+        "2": 1
+      },
+      "boundary_interruptions": 1,
+      "end": 2,
+      "label": "cut_before_bonus",
+      "logical_discarded_rows": 0
+    }
+  ],
+  "timing_gnu_time": {
+    "build": {
+      "returncode": 0,
+      "rss_kib": 249668,
+      "system_s": 0.19,
+      "user_s": 3.82,
+      "wall_s": 4.04
+    },
+    "replay02": {
+      "returncode": 0,
+      "rss_kib": 257620,
+      "system_s": 0.32,
+      "user_s": 0.22,
+      "wall_s": 0.53
+    },
+    "replay03": {
+      "returncode": 0,
+      "rss_kib": 257896,
+      "system_s": 0.29,
+      "user_s": 0.24,
+      "wall_s": 0.52
+    }
+  }
+}
