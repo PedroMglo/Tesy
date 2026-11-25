@@ -12,11 +12,8 @@ import time
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
-ROOT = HERE.parents[2]
 sys.path.insert(0, str(HERE.parent))
-sys.path.insert(0, str(ROOT / "tools"))
 import cache_boundary as boundary  # noqa: E402
-from expert_service_window_gate import events  # noqa: E402
 
 SHA = {
     "nominal153": "62ff2da0c33e77847aaa56e4c802c2a4569fcd5f08d971b9bda04a0a4c65e17c",
@@ -88,22 +85,31 @@ def geometry(d, case):
     }
 
 
-def witness_rows(rows, case):
+def witness_rows(path, case, expected_sha):
+    """Only the ordered router/select rows must survive the full generation/state replay."""
     ordered = []
     current = None
-    for x in rows:
-        if x["call"] < 1 or x["kind"] not in (2, 3):
-            continue
-        key = x["call"], x["layer"], x["route"]
-        if x["kind"] == 2:
-            if current is not None:
-                boundary.require(len(ordered[-1][3]) == 4, "missing previous ranks")
-            boundary.require(x["rows"] == 1 and x["route"] > 0, "multirow in decode")
-            current = key
-            ordered.append((x["call"], x["layer"], PROMPT[case] + x["call"] - 1, []))
-        else:
-            boundary.require(key == current, "select not linked to its route")
-            ordered[-1][3].append(x["expert"])
+    digest = hashlib.sha256()
+    with path.open("rb") as stream:
+        header = next(stream)
+        digest.update(header)
+        boundary.require(header.decode().strip() == boundary.HEADER, "C294 schema")
+        for line in stream:
+            digest.update(line)
+            kind, _, call, route, layer, expert, _, _, _, _, rows = map(int, line.split())
+            if call < 1 or kind not in (2, 3):
+                continue
+            key = (call, layer, route)
+            if kind == 2:
+                if current is not None:
+                    boundary.require(len(ordered[-1][3]) == 4, "missing previous ranks")
+                boundary.require(rows == 1 and route > 0, "multirow in decode")
+                current = key
+                ordered.append((call, layer, PROMPT[case] + call - 1, []))
+            else:
+                boundary.require(key == current, "select not linked to its route")
+                ordered[-1][3].append(expert)
+    boundary.require(digest.hexdigest() == expected_sha, "journal changed during stream")
     return ordered
 
 
@@ -140,9 +146,7 @@ def audit(raw):
         _, slot = boundary.audit_arm(raw, name)
         base = raw / (name + ".native")
         d = verified_json(base / "result.json", slot["source_sha256"]["result.json"])
-        rows = events(base / "events.tsv", True)
-        groups = witness_rows(rows, case)
-        del rows
+        groups = witness_rows(base / "events.tsv", case, slot["source_sha256"]["events.tsv"])
         ids = check_witness(case, groups)
         test_swap(case, groups)
         logits = base / "all33.logits.f32"
@@ -181,6 +185,8 @@ if __name__ == "__main__":
     ap.add_argument("--new-output-dir", type=Path, required=True)
     a = ap.parse_args()
     a.new_output_dir.mkdir()
+    cap = 256 * 1024**2
+    resource.setrlimit(resource.RLIMIT_AS, (cap, cap))
     start = time.monotonic()
     signal.signal(signal.SIGALRM, boundary.deadline)
     signal.alarm(60)
@@ -192,7 +198,7 @@ if __name__ == "__main__":
         "protocol_sha256": PROTOCOL,
         "sources_sha256": {
             p.name: hashlib.sha256(p.read_bytes()).hexdigest()
-            for p in (HERE / "protocol.md", Path(__file__))
+            for p in (HERE / "protocol.md", HERE / "repair.md", Path(__file__))
         },
     }
     try:
@@ -200,7 +206,7 @@ if __name__ == "__main__":
         result["status"] = "PASS_HISTORICAL_ORDERED_DECODE"
     except FileNotFoundError:
         result["status"] = "NOT_RUN_RAW_REQUIRED"
-    except (OSError, KeyError, ValueError, StopIteration) as exc:
+    except (OSError, KeyError, ValueError, StopIteration, MemoryError) as exc:
         result["error"] = type(exc).__name__
     finally:
         signal.alarm(0)
