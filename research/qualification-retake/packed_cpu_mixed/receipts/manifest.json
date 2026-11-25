@@ -1,0 +1,354 @@
+{
+  "arms": {
+    "v2-r01": {
+      "c118": {
+        "cap_bytes": 1073741824,
+        "duration_s": 60.17351130499446,
+        "expected_power": {
+          "profile": "performance",
+          "source": "AC"
+        },
+        "last_utc": "2026-11-25T06:05:36.399005+00:00",
+        "policy_sha256": "5c0174f82b46ac3dbc8792aaacdd83e85906442993e9079834a730f3489bad75",
+        "run_id": "tesy-packed-cpu-mixed-v2-20261125-r01",
+        "sample_count": 61,
+        "schema": "c118-per-arm-start-inventory-v2",
+        "sha256": "9725f52f1d3d576826f46b76843e18797a12ec0c09319bf1458a3307add5f1ea"
+      },
+      "cap_B": 1073741824,
+      "child_rc": 1,
+      "commit": "8e8dbfd236166e6a2ac39146118e55063aa5b426",
+      "family_scope_exit": 1,
+      "family_wall_s": 62.73532702800003,
+      "gates": {
+        "DIO_v2_arms_sha256": {
+          "r01": "87fb60fe9ff140b711cec9613ee5ee616dae1ff2a040643e9fa8274333ebb8ce",
+          "r02": "87fb60fe9ff140b711cec9613ee5ee616dae1ff2a040643e9fa8274333ebb8ce"
+        },
+        "cpu_sha256": "6bb9c4c7cb8c09fb0da05bb74f9454fee7bb68224d8aa874ae25c9f2fd0fcb1c",
+        "cpu_status": "PASS_CPU_MMID_SYNTHETIC_PACKED_VIEWS",
+        "io_sha256": "87fb60fe9ff140b711cec9613ee5ee616dae1ff2a040643e9fa8274333ebb8ce",
+        "io_status": "PASS_BTRFS_NVME_DIRECT_FIXTURE",
+        "original_cpu_arms_sha256": {
+          "r01": "9ec382f1b92c29fff9ef7ec8bbeabbe99788e0bbfbd6403901b44da41f7e3779",
+          "r02": "6bb9c4c7cb8c09fb0da05bb74f9454fee7bb68224d8aa874ae25c9f2fd0fcb1c"
+        }
+      },
+      "memory_events": [
+        "low 0",
+        "high 0",
+        "max 0",
+        "oom 0",
+        "oom_kill 0",
+        "oom_group_kill 0",
+        "sock_throttled 0"
+      ],
+      "model_forwards": 0,
+      "operator_wall_s": 1.9939968329999829,
+      "originals": {
+        "1.f32": {
+          "bytes": 276480,
+          "sha256": "e8534b76915510b4a10e94283228d312dddbbdb6edd7f19af7457d6aec8c407a"
+        },
+        "32.f32": {
+          "bytes": 8847360,
+          "sha256": "9b5d4dc83f3fce31a05573956f34d9fa010ad3fa27eeabc909aa7c31d0bd2525"
+        },
+        "detail.json": {
+          "bytes": 3202,
+          "sha256": "8ac3ba054c343164119c1ae25e5d98daa050b8fbc017e4e96cba38732f62cf67"
+        },
+        "native-run/receipt.json": {
+          "bytes": 1868,
+          "sha256": "0e75e128cf841e42aba4b6b86dc829e87bd66616200d029506c1057b0ddf3a64"
+        },
+        "native-run/stderr.txt": {
+          "bytes": 177,
+          "sha256": "1531966d940f2104129bdb3ce376f4cad42a446deabb3045678e6496ac6ec71d"
+        },
+        "native-run/stdout.txt": {
+          "bytes": 37,
+          "sha256": "d0f571836a314bfa491d3cc3e62b0f7f864d97bb4024d3fbef0f00701d079f80"
+        },
+        "per-arm-start-inventory": {
+          "bytes": 32036,
+          "sha256": "9725f52f1d3d576826f46b76843e18797a12ec0c09319bf1458a3307add5f1ea"
+        },
+        "raw/c118.json": {
+          "bytes": 625,
+          "sha256": "11b220cf9d21e5f2ac08db0d5980463bc429337e6c35dc1f753e964c4ccd46e5"
+        },
+        "raw/samples.jsonl": {
+          "bytes": 4670,
+          "sha256": "01158843571f610a4095a2abf7e4bab9d21b23057ea491ca38330ddd6f414bc9"
+        },
+        "receipt.json": {
+          "bytes": 3646,
+          "sha256": "89bcc9d0bbac800d5b048c2ba59e26c9c99fb559bb7b04a1f601bb93f619513c"
+        }
+      },
+      "peak_B": 525860864,
+      "policy_sha256": "90534c333b6be4be1fc53c5ade3877e61142261278b4e20113114ab341c98a8e",
+      "sampled_cpu_Tctl_C_max": 59.75,
+      "sampled_gpu_C_max": 44.27,
+      "sampled_gpu_used_MiB_max": 104.0,
+      "sampled_nvme_C_max": 34.85,
+      "samples": 7,
+      "scope_cpu_s": 2.609308,
+      "source_sha256": {
+        "packed_cpu_mixed/contract.md": "8bd267ff7756ddf54684c459f4f64544ce833692e6a8cc2bfdee0e1771f1df23",
+        "packed_cpu_mixed/mixed.cpp": "c57aeaf15886f903a5d6f85b1966d50b838154ffe7b323004e8d84292065b89d",
+        "packed_cpu_mixed/run.py": "83b076883e3841c7026a92cf0f3d0410fbe2a0b9cfc92ccf7f236c0cbf879217",
+        "packed_cpu_views/direct_io.cpp": "5fcfa49b11fd26cd8eef89c3817373c972cc4afd3f9e351872ef339094b54472",
+        "packed_cpu_views/protocol.md": "ac66fd3429f281aba2f90e21228ca9702a2f07b16650815a736667d3705c40a9",
+        "packed_cpu_views/short_read.md": "7344a876fe168cb19925d404142265729f87bb88abf73b87a26a096c5d97a7af",
+        "packed_cpu_views/test_direct_io.py": "c97ad4daa175b2f14c3532b1f968e47a6d04978da7bac356a1caf65a12b26d63"
+      },
+      "status": "FAIL_PRESERVED",
+      "supervisor_sha256": "209405f2d6801fc879ea807a8e3abc05d66d80f1907ef7473750f6ebc8451f78",
+      "swap_max_B": 0,
+      "swap_peak_B": 0,
+      "tree": "28dba400df41c4b613806c55d55329a649324520"
+    },
+    "v3-r01": {
+      "c118": {
+        "cap_bytes": 1073741824,
+        "duration_s": 60.16926487599994,
+        "expected_power": {
+          "profile": "performance",
+          "source": "AC"
+        },
+        "last_utc": "2026-11-25T06:13:02.267103+00:00",
+        "policy_sha256": "5c0174f82b46ac3dbc8792aaacdd83e85906442993e9079834a730f3489bad75",
+        "run_id": "tesy-packed-cpu-mixed-v3-20261125-r01",
+        "sample_count": 61,
+        "schema": "c118-per-arm-start-inventory-v2",
+        "sha256": "2c71f1fd990447b111cf5a3831f1777602a4fd368738539c157cfab26a06cdcc"
+      },
+      "cap_B": 1073741824,
+      "child_rc": 0,
+      "commit": "77861d099daf015fe18bb47e1f558dc08b0e0b68",
+      "family_scope_exit": 0,
+      "family_wall_s": 63.43013251999946,
+      "gates": {
+        "DIO_v2_arms_sha256": {
+          "r01": "87fb60fe9ff140b711cec9613ee5ee616dae1ff2a040643e9fa8274333ebb8ce",
+          "r02": "87fb60fe9ff140b711cec9613ee5ee616dae1ff2a040643e9fa8274333ebb8ce"
+        },
+        "cpu_sha256": "6bb9c4c7cb8c09fb0da05bb74f9454fee7bb68224d8aa874ae25c9f2fd0fcb1c",
+        "cpu_status": "PASS_CPU_MMID_SYNTHETIC_PACKED_VIEWS",
+        "io_sha256": "87fb60fe9ff140b711cec9613ee5ee616dae1ff2a040643e9fa8274333ebb8ce",
+        "io_status": "PASS_BTRFS_NVME_DIRECT_FIXTURE",
+        "original_cpu_arms_sha256": {
+          "r01": "9ec382f1b92c29fff9ef7ec8bbeabbe99788e0bbfbd6403901b44da41f7e3779",
+          "r02": "6bb9c4c7cb8c09fb0da05bb74f9454fee7bb68224d8aa874ae25c9f2fd0fcb1c"
+        }
+      },
+      "memory_events": [
+        "low 0",
+        "high 0",
+        "max 0",
+        "oom 0",
+        "oom_kill 0",
+        "oom_group_kill 0",
+        "sock_throttled 0"
+      ],
+      "model_forwards": 0,
+      "operator_wall_s": 2.6867904890023055,
+      "originals": {
+        "1.f32": {
+          "bytes": 276480,
+          "sha256": "e8534b76915510b4a10e94283228d312dddbbdb6edd7f19af7457d6aec8c407a"
+        },
+        "3.f32": {
+          "bytes": 829440,
+          "sha256": "66f39a5b85ebacf371e1164214263f351fb75012f2dafe5c4e9d8a81545d6ad8"
+        },
+        "32.f32": {
+          "bytes": 8847360,
+          "sha256": "9b5d4dc83f3fce31a05573956f34d9fa010ad3fa27eeabc909aa7c31d0bd2525"
+        },
+        "boundary.tsv": {
+          "bytes": 6423,
+          "sha256": "726a88018d633f18a695c0b2901efd618e52ac46217867f910e2c31b242312ac"
+        },
+        "detail.json": {
+          "bytes": 3467,
+          "sha256": "1646a1dc386f52a8943140a470321608239b65ca3b689f10820a68395796f877"
+        },
+        "native-run/receipt.json": {
+          "bytes": 18327,
+          "sha256": "26b2136d2bdb023f6126d7c4f8a80ac0e47e2d8a20a05a220615e12aad6f7825"
+        },
+        "native-run/stderr.txt": {
+          "bytes": 158,
+          "sha256": "6f78953e80453f0b2eb70183f189d2d1da1de2cfa717679acfaf427d9c31fa94"
+        },
+        "native-run/stdout.txt": {
+          "bytes": 55,
+          "sha256": "025a1a12efe765bc0365e47f68975c4285e52cfda4f74e5495600332a76b309e"
+        },
+        "per-arm-start-inventory": {
+          "bytes": 32034,
+          "sha256": "2c71f1fd990447b111cf5a3831f1777602a4fd368738539c157cfab26a06cdcc"
+        },
+        "raw/c118.json": {
+          "bytes": 625,
+          "sha256": "1b407276ed614e42d46d72cea2b886b11e7aeaed5c602754e636ce66481df574"
+        },
+        "raw/samples.jsonl": {
+          "bytes": 6667,
+          "sha256": "7c3c387b1b5abbede6c7e1e344c3dfdb9948d984a6095bb773c615307952d633"
+        },
+        "receipt.json": {
+          "bytes": 3889,
+          "sha256": "fbaf5c300ce12c92a405d737e9b8c7a9f635f88d78b50a8b4a4d508ac269ae20"
+        }
+      },
+      "peak_B": 333119488,
+      "policy_sha256": "90534c333b6be4be1fc53c5ade3877e61142261278b4e20113114ab341c98a8e",
+      "sampled_cpu_Tctl_C_max": 65.0,
+      "sampled_gpu_C_max": 43.0,
+      "sampled_gpu_used_MiB_max": 110.0,
+      "sampled_nvme_C_max": 33.85,
+      "samples": 10,
+      "scope_cpu_s": 3.729486,
+      "source_sha256": {
+        "packed_cpu_mixed/contract.md": "8bd267ff7756ddf54684c459f4f64544ce833692e6a8cc2bfdee0e1771f1df23",
+        "packed_cpu_mixed/mixed.cpp": "28fc0eafbfcb17bb9729fb17075523534366db25b303860192d711f31478a343",
+        "packed_cpu_mixed/observacao.md": "b7583e6e8b2d1940063512a2b0f6936b5c405bc199d12acd9ebb45d51a83900a",
+        "packed_cpu_mixed/run.py": "5c09ae1cc964859c7076231d0a2e71061f056f8b7e1ae01a46835f8fb46b6181",
+        "packed_cpu_views/direct_io.cpp": "5fcfa49b11fd26cd8eef89c3817373c972cc4afd3f9e351872ef339094b54472",
+        "packed_cpu_views/protocol.md": "ac66fd3429f281aba2f90e21228ca9702a2f07b16650815a736667d3705c40a9",
+        "packed_cpu_views/short_read.md": "7344a876fe168cb19925d404142265729f87bb88abf73b87a26a096c5d97a7af",
+        "packed_cpu_views/test_direct_io.py": "c97ad4daa175b2f14c3532b1f968e47a6d04978da7bac356a1caf65a12b26d63"
+      },
+      "status": "PASS_C269_MIXED_PACKED_MMID_POINTERS",
+      "supervisor_sha256": "9bf734ad044c1e39f1a90ee214613a3b895586b610c6a933410dd4150b873258",
+      "swap_max_B": 0,
+      "swap_peak_B": 0,
+      "tree": "ca66de1081c86f651d4839b544d2bb75dc34026a"
+    },
+    "v3-r02": {
+      "c118": {
+        "cap_bytes": 1073741824,
+        "duration_s": 60.14771245999873,
+        "expected_power": {
+          "profile": "performance",
+          "source": "AC"
+        },
+        "last_utc": "2026-11-25T06:14:22.941775+00:00",
+        "policy_sha256": "5c0174f82b46ac3dbc8792aaacdd83e85906442993e9079834a730f3489bad75",
+        "run_id": "tesy-packed-cpu-mixed-v3-20261125-r02",
+        "sample_count": 61,
+        "schema": "c118-per-arm-start-inventory-v2",
+        "sha256": "52b1d9da48f2bd1c8c9bb02851066d49770b11047e424c191f4ab5098a30255e"
+      },
+      "cap_B": 1073741824,
+      "child_rc": 0,
+      "commit": "77861d099daf015fe18bb47e1f558dc08b0e0b68",
+      "family_scope_exit": 0,
+      "family_wall_s": 63.38541021799756,
+      "gates": {
+        "DIO_v2_arms_sha256": {
+          "r01": "87fb60fe9ff140b711cec9613ee5ee616dae1ff2a040643e9fa8274333ebb8ce",
+          "r02": "87fb60fe9ff140b711cec9613ee5ee616dae1ff2a040643e9fa8274333ebb8ce"
+        },
+        "cpu_sha256": "6bb9c4c7cb8c09fb0da05bb74f9454fee7bb68224d8aa874ae25c9f2fd0fcb1c",
+        "cpu_status": "PASS_CPU_MMID_SYNTHETIC_PACKED_VIEWS",
+        "io_sha256": "87fb60fe9ff140b711cec9613ee5ee616dae1ff2a040643e9fa8274333ebb8ce",
+        "io_status": "PASS_BTRFS_NVME_DIRECT_FIXTURE",
+        "original_cpu_arms_sha256": {
+          "r01": "9ec382f1b92c29fff9ef7ec8bbeabbe99788e0bbfbd6403901b44da41f7e3779",
+          "r02": "6bb9c4c7cb8c09fb0da05bb74f9454fee7bb68224d8aa874ae25c9f2fd0fcb1c"
+        }
+      },
+      "memory_events": [
+        "low 0",
+        "high 0",
+        "max 0",
+        "oom 0",
+        "oom_kill 0",
+        "oom_group_kill 0",
+        "sock_throttled 0"
+      ],
+      "model_forwards": 0,
+      "operator_wall_s": 2.678137406001042,
+      "originals": {
+        "1.f32": {
+          "bytes": 276480,
+          "sha256": "e8534b76915510b4a10e94283228d312dddbbdb6edd7f19af7457d6aec8c407a"
+        },
+        "3.f32": {
+          "bytes": 829440,
+          "sha256": "66f39a5b85ebacf371e1164214263f351fb75012f2dafe5c4e9d8a81545d6ad8"
+        },
+        "32.f32": {
+          "bytes": 8847360,
+          "sha256": "9b5d4dc83f3fce31a05573956f34d9fa010ad3fa27eeabc909aa7c31d0bd2525"
+        },
+        "boundary.tsv": {
+          "bytes": 6423,
+          "sha256": "726a88018d633f18a695c0b2901efd618e52ac46217867f910e2c31b242312ac"
+        },
+        "detail.json": {
+          "bytes": 3466,
+          "sha256": "1c9e9f8484e213ead0cb70f70f2eb9323f79396dd71c7c90de0fab8e7295d083"
+        },
+        "native-run/receipt.json": {
+          "bytes": 18327,
+          "sha256": "633f12763a9eeeddf13935196efabc6d5c09a5578d7887b0e49874442ec8079d"
+        },
+        "native-run/stderr.txt": {
+          "bytes": 158,
+          "sha256": "6f78953e80453f0b2eb70183f189d2d1da1de2cfa717679acfaf427d9c31fa94"
+        },
+        "native-run/stdout.txt": {
+          "bytes": 55,
+          "sha256": "025a1a12efe765bc0365e47f68975c4285e52cfda4f74e5495600332a76b309e"
+        },
+        "per-arm-start-inventory": {
+          "bytes": 32029,
+          "sha256": "52b1d9da48f2bd1c8c9bb02851066d49770b11047e424c191f4ab5098a30255e"
+        },
+        "raw/c118.json": {
+          "bytes": 625,
+          "sha256": "8c597767c77e731ae4c4975ba68a3cd7cce826ea86271dd37851996b6ba73c5d"
+        },
+        "raw/samples.jsonl": {
+          "bytes": 6672,
+          "sha256": "bce1482ebababa4d68e97241d4069f68949f451cd15352ea145a2a8e093fe975"
+        },
+        "receipt.json": {
+          "bytes": 3888,
+          "sha256": "81c74ee57235aa1321460b6748a6a894a3989486b49084eebaf68bd6bd387446"
+        }
+      },
+      "peak_B": 335052800,
+      "policy_sha256": "90534c333b6be4be1fc53c5ade3877e61142261278b4e20113114ab341c98a8e",
+      "sampled_cpu_Tctl_C_max": 66.0,
+      "sampled_gpu_C_max": 43.57,
+      "sampled_gpu_used_MiB_max": 110.0,
+      "sampled_nvme_C_max": 33.85,
+      "samples": 10,
+      "scope_cpu_s": 3.759027,
+      "source_sha256": {
+        "packed_cpu_mixed/contract.md": "8bd267ff7756ddf54684c459f4f64544ce833692e6a8cc2bfdee0e1771f1df23",
+        "packed_cpu_mixed/mixed.cpp": "28fc0eafbfcb17bb9729fb17075523534366db25b303860192d711f31478a343",
+        "packed_cpu_mixed/observacao.md": "b7583e6e8b2d1940063512a2b0f6936b5c405bc199d12acd9ebb45d51a83900a",
+        "packed_cpu_mixed/run.py": "5c09ae1cc964859c7076231d0a2e71061f056f8b7e1ae01a46835f8fb46b6181",
+        "packed_cpu_views/direct_io.cpp": "5fcfa49b11fd26cd8eef89c3817373c972cc4afd3f9e351872ef339094b54472",
+        "packed_cpu_views/protocol.md": "ac66fd3429f281aba2f90e21228ca9702a2f07b16650815a736667d3705c40a9",
+        "packed_cpu_views/short_read.md": "7344a876fe168cb19925d404142265729f87bb88abf73b87a26a096c5d97a7af",
+        "packed_cpu_views/test_direct_io.py": "c97ad4daa175b2f14c3532b1f968e47a6d04978da7bac356a1caf65a12b26d63"
+      },
+      "status": "PASS_C269_MIXED_PACKED_MMID_POINTERS",
+      "supervisor_sha256": "9bf734ad044c1e39f1a90ee214613a3b895586b610c6a933410dd4150b873258",
+      "swap_max_B": 0,
+      "swap_peak_B": 0,
+      "tree": "ca66de1081c86f651d4839b544d2bb75dc34026a"
+    }
+  },
+  "private_batch": "qualification-20261124-nvme-01/part-14",
+  "schema": "tesy-c269-packed-mixed-confirmation-v1"
+}
