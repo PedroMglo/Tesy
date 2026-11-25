@@ -136,3 +136,23 @@ def test_live_cells_masks_equal_logits_and_distinct_components():
         B["agree"](receipt, delta)
     with pytest.raises(ValueError, match="non-finite"):
         B["logit_digest"](bytes(201087 * 4) + struct.pack("<f", float("nan")))
+
+
+@pytest.mark.parametrize("kind,fmt", [("f16", "<e"), ("f32", "<f")])
+def test_attention_mask_columns_and_slot_identity(kind, fmt):
+    import math
+
+    cells = [(0, i) for i in reversed(range(140))] + [(-1, -1), (1, 135)]
+    for bank, lo in [("global", 0), ("swa", 8)]:
+        data = bytearray().join(
+            struct.pack(fmt, 0.0 if owner == 0 and lo <= pos <= 135 else -math.inf)
+            for owner, pos in cells
+        )
+        check = B["verify_mask_row"]
+        assert check(data, cells, bank=bank, query=135, kind=kind) == [lo, 136]
+        with pytest.raises(ValueError, match="mask value"):
+            check(data, list(reversed(cells)), bank=bank, query=135, kind=kind)
+        where = struct.calcsize(fmt) * 4  # position 135 in physical column 4
+        data[where : where + struct.calcsize(fmt)] = struct.pack(fmt, -0.0)
+        with pytest.raises(ValueError, match="mask value"):
+            check(data, cells, bank=bank, query=135, kind=kind)

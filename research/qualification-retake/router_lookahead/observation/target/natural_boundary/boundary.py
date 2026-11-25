@@ -158,3 +158,25 @@ def agree(a, b):
     need(a["kv"].keys() == b["kv"].keys() and len(a["kv"]) == 72, "component census")
     for key in a["kv"]:
         need(a["kv"][key] == b["kv"][key], f"KV mismatch in {key}")
+
+
+def verify_mask_row(blob, cells, *, bank, query, kind):
+    """Check the pinned single-sequence, causal non-Alibi mask while its cell table is live."""
+    need(bank in ("global", "swa") and kind in ("f16", "f32"), "unknown attention mask")
+    lo, hi = visible(query)[bank == "swa"]
+    fmt = struct.Struct("<" + ("e" if kind == "f16" else "f"))
+    keep, drop = fmt.pack(+0.0), fmt.pack(-math.inf)
+    need(0 < len(cells) <= 8192 and len(blob) == len(cells) * fmt.size, "mask row extent")
+    kept = set()
+    for i, item in enumerate(cells):
+        owner, pos = item
+        allowed = owner == 0 and lo <= pos < hi
+        if allowed:
+            need(pos not in kept, "repeated visible key")
+            kept.add(pos)
+        need(
+            blob[i * fmt.size : (i + 1) * fmt.size] == (keep if allowed else drop),
+            "mask value at physical column",
+        )
+    need(kept == set(range(lo, hi)), "incomplete visible key set")
+    return [lo, hi]
