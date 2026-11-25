@@ -69,5 +69,65 @@ class NaturalPolicy(unittest.TestCase):
                         a["verify_sidecar"](f, e)
 
 
+class PortTransition(unittest.TestCase):
+    def run_wait(self, socket_states, errors, advance=1):
+        elapsed = [0]
+        checks = []
+        log = {}
+
+        def bind():
+            error = next(errors)
+            if error:
+                raise OSError(error, "fixture")
+
+        def wait(seconds):
+            elapsed[0] += seconds * advance
+
+        profile["interarm"]["transition"](
+            bind,
+            18442,
+            lambda: checks.append(1),
+            log,
+            lambda port: next(socket_states),
+            lambda: elapsed[0],
+            wait,
+        )
+        self.assertEqual(len(checks), len(log["samples"]))
+        return log
+
+    def test_wait_with_fresh_strict_bind(self):
+        from errno import EADDRINUSE
+
+        result = self.run_wait(iter([["06", "06"], ["06"], []]), iter([EADDRINUSE, EADDRINUSE, 0]))
+        self.assertTrue(result["bind_available"])
+        self.assertEqual(result["elapsed_s"], 2)
+        self.assertEqual(result["samples"][0]["tcp_states"], {"06": 2})
+
+    def test_reject_other_state_deadline_and_unexplained_bind(self):
+        from errno import EACCES, EADDRINUSE
+
+        with self.assertRaises(ValueError):
+            self.run_wait(iter([["06", "0A"]]), iter([]))
+        with self.assertRaises(TimeoutError):
+            self.run_wait(iter([["06"]]), iter([EADDRINUSE]), advance=76)
+        for states, error in (([], EADDRINUSE), (["06"], EACCES)):
+            with self.assertRaises(OSError):
+                self.run_wait(iter([states]), iter([error]))
+
+    def test_live_or_inactive_owner(self):
+        from unittest.mock import patch
+
+        verify = profile["interarm"]["verify_owner"]
+        with (
+            patch("subprocess.check_output", return_value="active\n"),
+            self.assertRaises(ValueError),
+        ):
+            verify("example", 1_000_000_000)
+        with patch("subprocess.check_output", return_value="inactive\n"):
+            with self.assertRaises(ValueError):
+                verify("example", os.getpid())
+            verify("example", 1_000_000_000)
+
+
 if __name__ == "__main__":
     unittest.main()

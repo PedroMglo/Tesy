@@ -9,6 +9,7 @@ from runpy import run_path
 
 HERE = Path(__file__).resolve().parent
 acq = run_path(HERE / "acquisition.py")
+interarm = run_path(HERE / "acquisition_port.py")
 conv, controller = acq["conv"], acq["controller"]
 need, sha, read, save = conv.need, conv.sha, conv.read, conv.save
 BUILD = "4762116405b6f4bf3fee225be62b4485c01228dccc647febdfd36b8515b5d5bc"
@@ -118,6 +119,8 @@ def run(a):
         "commit": a.commit,
         "profile_sha256": sha(__file__),
         "acquisition_sha256": sha(HERE / "acquisition.py"),
+        "interarm_program_sha256": sha(HERE / "acquisition_port.py"),
+        "interarm_protocol_sha256": sha(HERE / "interarm.md"),
         "protocol_sha256": sha(HERE / "protocol.md"),
         "candidate_sha256": IMAGE,
         "build_sha256": BUILD,
@@ -136,6 +139,24 @@ def run(a):
         resources = dependencies(a)
         off = None
         for mode in ("OFF", "ON"):
+            if mode == "ON" and a.execute:
+                gap = {
+                    "previous_unit": off["unit"],
+                    "previous_native_pid": off["native_ids"]["pid"],
+                }
+                result["interarm"] = gap
+                try:
+                    interarm["transition"](
+                        conv.source.idle_port,
+                        conv.post.contract.PORT,
+                        lambda gap=gap: interarm["verify_owner"](
+                            gap["previous_unit"], gap["previous_native_pid"]
+                        ),
+                        gap,
+                    )
+                finally:
+                    save(out / "interarm.json", gap)
+                    result["interarm_sha256"] = sha(out / "interarm.json")
             current = argparse.Namespace(
                 **(args | {"mode": mode, "unit": a.unit_prefix + "-" + mode.lower()})
             )
