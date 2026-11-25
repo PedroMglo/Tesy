@@ -47,3 +47,5 @@ timeout 120s prlimit --as=536870912 --cpu=120 --fsize=1048576 -- \
     --new-output-dir "$NEW"
 cmp "$NEW/receipt.json" "$STUDY/evidence/receipt.json"
 ```
+
+A [adenda com os dois preços de READ medidos no NVMe](nvme.md) obteve, para 353 entradas, um défice de 19,168 ms na primeira travessia e uma margem de apenas 6,596 ms na segunda.
