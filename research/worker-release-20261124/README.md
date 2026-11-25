@@ -33,6 +33,8 @@ O ensaio seguinte confirmou a mesma dependência na fila e no worker_loop do **m
 
 A [ablação nativa de continuação](continuacao/README.md) obteve GO funcional em CPU. Nos quatro processos B a thread libertada aceitou a procura direta antes de qualquer produtor concluir. Com o terceiro produtor tardio, o remap adiantou-se cerca de 280 ms mas o ganho desapareceu em finish. A latência da conversa continua INCONCLUSIVE.
 
+No [controlo da biblioteca original](controlo_dso/README.md), o scheduler GGML reproduziu os quatro ranks reais da camada 4 nominal e entregou as doze componentes sintéticas pela libllama histórica. Uma religação dos mesmos objetos alterou o SHA integral do ELF. O DSO original continua disponível como referência.
+
 ## C318 trace-OFF
 
 Os oito recibos confirmam a ordem ABBA, os relógios, os digests da matriz completa de 33 linhas de logits e os ganhos publicados. O custo fixado inclui predictor, cópias, cancelamentos e cleanup. O prefixo fica fora do total. Cada par usa o seu R0 como denominador.

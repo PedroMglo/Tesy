@@ -1,0 +1,203 @@
+{
+  "schema": "tesy-original-c305-ggml-edge-v1",
+  "status": "PASS_ORIGINAL_C305_SCHEDULER_EDGE",
+  "phases": {
+    "build": {
+      "elapsed_s": 1.578219,
+      "max_rss_kib": 369272,
+      "allocated_bytes": 55115776
+    },
+    "native": {
+      "wall_s": 0.166354,
+      "max_rss_kib": 321940
+    }
+  },
+  "tesy": {
+    "commit": "88278d4d16936e884093ff2647047b4318a92787",
+    "tree": "c4931be9a1cb5c6bbc32ea4a610df33a849844a0",
+    "clean": true,
+    "exploratory": false
+  },
+  "unit_files": {
+    "protocolo.md": "0136736cc8eeb846e5ee4146d481d51d986df325516b792880e9ea06cb43aadc",
+    "edge.cpp": "0aa5098a09ed46091f9cb9839f0870e03e6e2862da906d902ad05923279210ba",
+    "edge.py": "371b2c5c98521fc83b850246ae0cfa2149743e08f4b9286220cc907ae8e54541"
+  },
+  "historical_router": {
+    "arm": "c317-nominal153-2-trace.native",
+    "call": 1,
+    "layer": 4,
+    "row_index_zero_based": 2,
+    "row_sha256": "c2a65abc2a11c7e398e9ed0f863b2b67859ac2cd1740c7d3de4328e76361d3f2",
+    "sources": {
+      "true-routing-scores.f32": {
+        "sha256": "c238f4fb493bbb833c3cac569bb1890f59dd2fc7e876c0b5d4584a7b552e927b",
+        "size_bytes": 376832
+      },
+      "events.tsv": {
+        "sha256": "c6cf2327a8bd7ec2c7755979e594b33b72a5547826a2d2b057326be66039838e",
+        "size_bytes": 1783273
+      }
+    },
+    "historical_P3": [
+      {
+        "expert": 13,
+        "slot": -1,
+        "generation": 0,
+        "state": 0
+      },
+      {
+        "expert": 22,
+        "slot": 10,
+        "generation": 2,
+        "state": 2
+      },
+      {
+        "expert": 60,
+        "slot": 0,
+        "generation": 2,
+        "state": 2
+      },
+      {
+        "expert": 72,
+        "slot": 1,
+        "generation": 1,
+        "state": 2
+      }
+    ],
+    "historical_P4": [
+      {
+        "expert": 13,
+        "slot": 20,
+        "generation": 5
+      }
+    ],
+    "ranks": [
+      13,
+      22,
+      60,
+      72
+    ]
+  },
+  "source": {
+    "backend_commit": "c94780b12820c7b3fb20f2a9acf38bb27506c6ae",
+    "backend_tree": "e418713c063a33214d5bf75f3ff25b40090ab7a1",
+    "history": "623a5b97b6e14a39bc671f6d81e7a993a3efe7cb",
+    "manifest_blob": "8181c3a8f958300033da765518bb0d27e7a52539",
+    "protocol_blob": "fefdf5e92c8a7fd8446a39d57fe5e73fda60e4d8"
+  },
+  "input": {
+    "apparent_bytes": 1692061696,
+    "allocated_bytes": 52916224,
+    "written_slabs": 12
+  },
+  "headers_manifest_sha256": "5f1263dfc036d9079c917c089e86b2509067acb0166e5e16e5e20794ec406a73",
+  "compiler_sha256": "ca48a2d27d0796399adc3387225eec4be62974e26fa299710edfde0c1af5aa63",
+  "executable_sha256": "dcbbd5a2a0465f4cbafabc7a277d8c66194db2dc5bd126bb689b71ea8cbece79",
+  "raw_sha256": "6186a056f8ac0bc58f056b260445cf1051c5e2414f821a73d15e0a1c47a2a5cb",
+  "original_openmp_vs_local": [
+    {
+      "name": "libgomp.so.1.0.0",
+      "historical_sha256": "637b2ab4eedf3ce72173a9d34a4c41c480082d68662db3f0ef4998117df8f9b2",
+      "mapped_sha256": "1e20cd85608bdb5d1662f07988adad28a6473cd70f80de2d2b4dcf82c94eaa74",
+      "identical": false
+    }
+  ],
+  "result": {
+    "destinations": [
+      {
+        "rank": 0,
+        "expert": 13,
+        "slot": 0,
+        "generation": 1,
+        "components": [
+          "10487242c87efc65ed961aa37ba9ad776a3fbf6c35675e50a9b01337776e928a",
+          "aa2d90945f72aa4adc04ce920b365af4524a0be342f59c19b5cde0fbf97c057a",
+          "5ae10ceb238bf08f3c4fe14ce84b1995dc26c260c161efd66e4177759ab63940"
+        ]
+      },
+      {
+        "rank": 1,
+        "expert": 22,
+        "slot": 1,
+        "generation": 1,
+        "components": [
+          "a9fe30b6097216fb9ea7323d65858ddd5d54ba80bfa612751c44821aa47069ba",
+          "8f014c7ad825bee43afa52ef235c7456bb24590792499b5e2f9312ab2aa8a770",
+          "fa2542903cadea0c38c5f1f54211cefbbd33461e5047f22fdc3ccc68b72a800c"
+        ]
+      },
+      {
+        "rank": 2,
+        "expert": 60,
+        "slot": 2,
+        "generation": 1,
+        "components": [
+          "910061a62f7cfaa95da6ea39f0c20da1f7f2ac603a0a40d0b9f36b18d24b589c",
+          "f76fc8d767eef470a72891dd99b61bf29ce878ec744d344a458c3ae67d7bcaed",
+          "05f5bbf4a4afbf1f834bbb6019383971e8d4f760a5c6f3a6536a3d20e68074fe"
+        ]
+      },
+      {
+        "rank": 3,
+        "expert": 72,
+        "slot": 3,
+        "generation": 1,
+        "components": [
+          "1e9ea31df84485e99437d7481f8d8e6061516690bb01e23916bafdac8e2fbd59",
+          "3d0dd9e0168816d4a6d8caaabe806b0da476ddb5b371983a8040c5f6bf4af9e9",
+          "0b194bc0197d924cd2a383073d36c9c699cf7a3ac69ed06aaa7adda61be73f2f"
+        ]
+      }
+    ],
+    "scheduler": {
+      "backend": "CPU",
+      "id_shape": [
+        4,
+        1
+      ],
+      "ops": [
+        "ARGSORT",
+        "VIEW",
+        "CONT",
+        "MAP_CUSTOM1"
+      ],
+      "remap_tasks": 1,
+      "score_shape": [
+        128,
+        1
+      ],
+      "top_k": 4
+    },
+    "terminal": {
+      "claimed": 0,
+      "direct_primary": true,
+      "joins": 4,
+      "load_failed": false,
+      "queue": 0,
+      "workers": 4
+    },
+    "mapped_images_sha256": {
+      "ld-linux-x86-64.so.2": "4e5d39355699e90fa29313d3100e82af4a23290028c58c364d6a249ef6a78e5e",
+      "libc.so.6": "a5c5ad9d59d3c69eda93aa8f82930ba06cc4e893a113e66c85ad6e96243d53c8",
+      "libcublas.so.13.6.0.2": "01dd70979e68625846e9a5edcba531d3798498b866aa1c925cc25d60f63fe680",
+      "libcublasLt.so.13.6.0.2": "93c275af70b6d39fbd9b78cbc925ad9a9a0a81189aaec1521a951119ebe72da3",
+      "libcuda.so.620.70.06": "aa6bd5117c0c66bb804ec63b31b8b5d54130259b1079941b9e00e6b928e8ed71",
+      "libcudart.so.13.3.29": "9f92e4c3f7e14d0fed69ef876a45d4255a2dc88cb552a673a90ce881c26282fe",
+      "libdl.so.2": "54d56c0f10466a05cc92685f8062ee6a2eaf59c62fb6f724217e984fcfbb5031",
+      "libgcc_s-16-20261029.so.1": "5a52ae4a6f1b119aa092aa1483c967e19d9ba036b1b0c2133236a8a2ce826ebf",
+      "libggml-base.so.0.15.3": "6e27d9ecb86e4747177189d2d2f6390280a2ee1000221ad68a0404023ea72539",
+      "libggml-cpu.so.0.15.3": "9aabce5751c5d7ca19b50e4cabb1fcf484c1581d275141dae8aba8ed33060313",
+      "libggml-cuda.so.0.15.3": "ff43655b15df5f3de1d5e00b0da18469a14f118bd644eb4b6d7f1915c85a4493",
+      "libggml.so.0.15.3": "70f635b8ba22ddd751590ec1fe11c895ef88e2aff0f4a63a3af96314e6a77d65",
+      "libgomp.so.1.0.0": "1e20cd85608bdb5d1662f07988adad28a6473cd70f80de2d2b4dcf82c94eaa74",
+      "libllama.so.0.0.9884": "d8460ecec23274ebba145530a1aacdb2746ee94969aba40b8b2beb38e0bb90d4",
+      "libm.so.6": "16a03ce6d24c8a46742206d4a9c1d35bb6577ae2384f153dc6ef4a4b62b5357f",
+      "libpthread.so.0": "41cad1a2bda56ff226e0b08db7edfaf4ec47d876ab1414a979fd157467b6c39d",
+      "librt.so.1": "3a23e51370381b0ab993932341fd69643ade24869936e471e1dde2e62398d9f7",
+      "libstdc++.so.6.0.36": "49811507d8fc0283d8f8023546613774c673f876fe823b1b99d0c8d46039deda",
+      "libz.so.1.3.1.zlib-ng": "bbde8faec092a7c67b8bd76bbba4a826e61b05c171b97004ce6b308c5a090351"
+    }
+  },
+  "allocated_bytes_before_receipt": 55566336
+}
