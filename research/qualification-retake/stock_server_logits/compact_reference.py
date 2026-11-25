@@ -196,6 +196,8 @@ def main():
         "scope": "TRACE_DERIVED_STOCK_CROSS_CLIENT_POSITION_15",
         "protocol_sha256": PROTOCOL_SHA,
         "program_sha256": digest(Path(__file__).read_bytes()),
+        "compare_program_sha256": digest((HERE / "compare.py").read_bytes()),
+        "repair_protocol_sha256": digest((HERE / "compact-reference-repair.md").read_bytes()),
     }
     try:
         signal.signal(signal.SIGALRM, expired)
@@ -217,7 +219,15 @@ def main():
         MemoryError,
         subprocess.SubprocessError,
     ) as exc:
-        result["error"] = str(exc)
+        frame = exc.__traceback__
+        while frame.tb_next is not None:
+            frame = frame.tb_next
+        code = frame.tb_frame.f_code
+        result.update(
+            error=str(exc) or type(exc).__name__,
+            error_type=type(exc).__name__,
+            error_site=f"{Path(code.co_filename).name}:{frame.tb_lineno} {code.co_name}",
+        )
     finally:
         signal.alarm(0)
     contents = (json.dumps(result, indent=2, sort_keys=True, allow_nan=False) + "\n").encode()

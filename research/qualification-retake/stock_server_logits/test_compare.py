@@ -116,6 +116,27 @@ class Comparisons(unittest.TestCase):
         with self.assertRaises(ValueError):
             c.summarize(data[:-1], data, vocab=2)
 
+    def test_streamed_summary_matches_full_arithmetic(self):
+        a, b = (-0.0, 1.5, -999.0, 1.5), (0.0, 1.5, -998.75, -3.0)
+        reference, candidate = struct.pack("<4f", *a), struct.pack("<4f", *b)
+        diff = c.summarize(reference, candidate, vocab=4)
+        delta = [abs(x - y) for x, y in zip(a, b, strict=True)]
+        self.assertEqual(
+            (diff["max_abs"], diff["mean_abs"], diff["rmse"]),
+            (max(delta), math.fsum(delta) / 4, math.sqrt(math.fsum(x * x for x in delta) / 4)),
+        )
+        self.assertEqual(
+            (diff["gold_argmax"], diff["candidate_argmax"], diff["different_f32_bits"]), (1, 1, 3)
+        )
+        with tempfile.TemporaryDirectory() as temp:
+            p = Path(temp) / "blob"
+            for data in (b"", b"1234"):
+                p.write_bytes(data)
+                with self.assertRaises(ValueError):
+                    c.bounded(p, 3)
+            p.write_bytes(b"123")
+            self.assertEqual(c.bounded(p, 3), b"123")
+
     def test_bad_receipt_capture_and_http(self):
         with tempfile.TemporaryDirectory() as tmp:
             report, parent = make_arm(Path(tmp), "S")

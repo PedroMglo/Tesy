@@ -3,6 +3,7 @@
 import argparse
 import json
 import math
+import os
 import re
 import struct
 from pathlib import Path
@@ -16,17 +17,33 @@ CAND = "34ce470fac8b70d58602ba979f014616b9a8b7a9593b55a5e8436116f6ceb767"
 CALLER = "7cf9543328e80642d8c5d2212b1926fa5dc66f551d3d1e4cf04ab7900622c5e3"
 
 
+def finite_argmax(row):
+    """Match max(range(...), key=...) on finite little-endian values, including ties."""
+    best = -math.inf
+    best_id = None
+    for index, (value,) in enumerate(struct.iter_unpack("<f", row)):
+        if not math.isfinite(value):
+            return False, None
+        if value > best:
+            best, best_id = value, index
+    return True, best_id
+
+
 def summarize(reference, candidate, *, vocab=VOCAB):
     require(
         vocab > 0 and len(reference) == len(candidate) == 4 * vocab,
         "full little-endian F32 row size",
     )
-    x = struct.unpack(f"<{vocab}f", reference)
-    y = struct.unpack(f"<{vocab}f", candidate)
-    finite_x = all(map(math.isfinite, x))
-    finite_y = all(map(math.isfinite, y))
+    finite_x, gold_id = finite_argmax(reference)
+    finite_y, candidate_id = finite_argmax(candidate)
     both = finite_x and finite_y
-    distances = [abs(a - b) for a, b in zip(x, y, strict=True)] if both else []
+
+    def distances():
+        for (x,), (y,) in zip(
+            struct.iter_unpack("<f", reference), struct.iter_unpack("<f", candidate), strict=True
+        ):
+            yield abs(x - y)
+
     return dict(
         bitwise_equal=reference == candidate,
         different_f32_bits=sum(
@@ -39,21 +56,23 @@ def summarize(reference, candidate, *, vocab=VOCAB):
         ),
         finite_gold=finite_x,
         finite_candidate=finite_y,
-        gold_argmax=max(range(vocab), key=x.__getitem__) if finite_x else None,
-        candidate_argmax=max(range(vocab), key=y.__getitem__) if finite_y else None,
+        gold_argmax=gold_id,
+        candidate_argmax=candidate_id,
         gold_sha256=digest(reference),
         candidate_sha256=digest(candidate),
-        max_abs=max(distances) if both else None,
-        mean_abs=math.fsum(distances) / vocab if both else None,
-        rmse=math.sqrt(math.fsum(d * d for d in distances) / vocab) if both else None,
+        max_abs=max(distances()) if both else None,
+        mean_abs=math.fsum(distances()) / vocab if both else None,
+        rmse=math.sqrt(math.fsum(d * d for d in distances()) / vocab) if both else None,
     )
 
 
 def bounded(path, limit):
     require(path.is_file() and not path.is_symlink(), "missing or linked evidence: " + path.name)
     with path.open("rb") as f:
-        data = f.read(limit + 1)
-    require(0 < len(data) <= limit, "empty or oversized evidence: " + path.name)
+        size = os.fstat(f.fileno()).st_size
+        require(0 < size <= limit, "empty or oversized evidence: " + path.name)
+        data = f.read(size)
+        require(len(data) == size and not f.read(1), "changed evidence size: " + path.name)
     return data
 
 
@@ -157,14 +176,10 @@ def verified_row(report_dir, raw_parent):
         and capture["row_sha256"] == r["row_sha256"] == digest(row),
         "unqualified capture",
     )
-    vals = struct.unpack(f"<{VOCAB}f", row)
-    require(all(map(math.isfinite, vals)), "nonfinite row")
+    finite, greedy = finite_argmax(row)
+    require(finite, "nonfinite row")
     require(
-        max(range(VOCAB), key=vals.__getitem__)
-        == capture["argmax"]
-        == r["greedy_id"]
-        == r["sampled_id"],
-        "argmax/response mismatch",
+        greedy == capture["argmax"] == r["greedy_id"] == r["sampled_id"], "argmax/response mismatch"
     )
     return r, row
 

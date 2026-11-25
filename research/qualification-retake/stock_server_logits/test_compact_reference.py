@@ -1,9 +1,12 @@
 import struct
+import subprocess
+import sys
 import tempfile
 import unittest
 from pathlib import Path
 
 import compact_reference as c
+from test_compare import make_arm
 
 
 class CompactReference(unittest.TestCase):
@@ -21,6 +24,42 @@ class CompactReference(unittest.TestCase):
         self.assertEqual(stats["max_abs"], 0)
         self.assertEqual(stats["candidate_argmax"], stats["gold_argmax"])
         self.assertFalse(stats["bitwise_equal"])
+
+    def test_full_synthetic_post_exit_and_comparison_at_256_mib(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            report, raw = make_arm(root, "S")
+            row = (raw / "raw/row.f32").read_bytes()
+            triple = row + row + row
+            (root / "three.f32").write_bytes(triple)
+            script = """
+import resource, sys
+from pathlib import Path
+import compact_reference as c
+resource.setrlimit(resource.RLIMIT_AS, (256 << 20, 256 << 20))
+report, raw, hist = map(Path, sys.argv[1:4])
+record, server = c.verified_row(report, raw)
+three = c.bounded(hist, 3 * c.ROW_BYTES)
+client = c.select_first_row(three, sys.argv[4])
+del three
+result = c.summarize(client, server)
+assert result["bitwise_equal"] and result["candidate_argmax"] == 3
+"""
+            subprocess.run(
+                [
+                    sys.executable,
+                    "-B",
+                    "-c",
+                    script,
+                    str(report),
+                    str(raw),
+                    str(root / "three.f32"),
+                    c.digest(triple),
+                ],
+                cwd=c.HERE,
+                check=True,
+                timeout=30,
+            )
 
     def test_provenance_pins(self):
         c.pinned(c.OLD / "physical-r1/receipt.json", c.OLD_RECEIPT_SHA, 1 << 20)
