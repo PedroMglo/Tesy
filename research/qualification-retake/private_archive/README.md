@@ -24,3 +24,5 @@ O índice dentro de part-03 contém ainda SHA-256/tamanho de 3 314 ficheiros já
 O quarto lote conserva os raws completos dos quatro processos a 40 slots, com os dois journals de serviço ON e o witness comum em todos. Os 104 ficheiros no índice externo perfazem 14 078 041 B. Para rever ambos, repetir o comando do terceiro lote indicando `part-04.json` e a mesma raiz física do projeto. [Recibo do quarto lote](part-04.json)
 
 O quinto lote preserva os dois pedidos do stock Aster, os onze ficheiros privados da sonda, o precheck e as falhas de preparação e reprodução. Para verificar os 27 ficheiros (1 826 567 B), usar o comando do primeiro lote com part-05.json. [Recibo do quinto lote](part-05.json)
+
+O sexto lote contém a sonda de oito saídas em E10, o stream privado, o precheck e os dois recibos. O verificador conferiu os nove ficheiros e os 739 444 B. [Recibo do sexto lote](part-06.json)
