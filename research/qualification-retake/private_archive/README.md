@@ -38,3 +38,5 @@ O décimo lote preserva as duas janelas C55 e a respetiva falha, a pré-verifica
 O décimo primeiro lote preserva a janela C55, pré-verificações, telemetria, os quatro pedidos com o 120B e a interrupção anterior ao arranque do primeiro B20. O arquivo tem 57 ficheiros e 4 478 138 bytes. Os três braços E10 que serviram de referência à transferência E20 estão arquivados uma vez. [Recibo do décimo primeiro lote](part-11.json)
 
 O décimo segundo lote reúne 16 ficheiros (1 130 634 B) da fixture de entradas nominais, da janela C55 e da tentativa de conversa no derivado stock. Inclui o stream até aos 180 s, telemetria até ao encerramento e os recibos de falha. [Recibo do décimo segundo lote](part-12.json)
+
+O lote 13 conserva os dois pré-checks, as observações C55/C118, o stream e os dados de encerramento da referência stock para o segundo turno Aster. Foram conferidos 19 ficheiros e 9 283 907 B. [Índice do lote 13](part-13.json) · [Resultado do turno](../aster_fixed_reference/README.md)
