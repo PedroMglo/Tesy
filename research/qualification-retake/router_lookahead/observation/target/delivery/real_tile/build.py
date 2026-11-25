@@ -22,7 +22,7 @@ PARENT_OVERLAY = hashlib.sha256(
 ).hexdigest()
 
 
-def build(a, out, r):
+def build(a, out, r, variant=None):
     need(not git(ROOT, "status", "--porcelain"), "measurement checkout is dirty")
     r.update(
         commit=git(ROOT, "rev-parse", "HEAD").decode().strip(),
@@ -104,6 +104,9 @@ def build(a, out, r):
     helper.write_text(F["functions"](ROOT / "tools/block_expert_reuse_operator.cpp"))
     operator = PARENT.parent / "operator/operator.cpp"
     r["operator_sha256"] = sha(operator)
+    name, status, native = "real-tile", "PASS_REAL_TILE_BUILD", HERE / "native.cpp"
+    if variant is not None:
+        name, status, native = variant(src, out, r)
     r["source_sha256"] = {
         p.name: sha(p)
         for p in [
@@ -120,7 +123,7 @@ def build(a, out, r):
             src / "src/c305-cpu-stage.h",
         ]
     }
-    binary = out / "real-tile"
+    binary = out / name
     command = [
         "/usr/bin/c++",
         "-std=gnu++17",
@@ -136,7 +139,7 @@ def build(a, out, r):
         "-fdata-sections",
         "-I" + str(out),
         *["-I" + str(src / d) for d in ("src", "include", "ggml/include")],
-        HERE / "native.cpp",
+        native,
         operator,
         *[src / "src" / n for n in R["P"]["BUILD_INPUTS"]],
         "-Wl,--gc-sections",
@@ -179,7 +182,7 @@ def build(a, out, r):
         binary_sha256=sha(binary),
         providers=providers,
         compiler_sha256=R["COMPILER"],
-        status="PASS_REAL_TILE_BUILD",
+        status=status,
     )
 
 
