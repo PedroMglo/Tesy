@@ -46,11 +46,25 @@ def save(path, row):
 
 
 def seals():
+    repo = HERE.parents[2]
+
+    def git(*args):
+        return subprocess.check_output(
+            ["git", "-C", str(repo), *args],
+            text=True,
+            timeout=15,
+            env=os.environ | {"GIT_OPTIONAL_LOCKS": "0"},
+        ).strip()
+
+    commit, tree = git("rev-parse", "HEAD", "HEAD^{tree}").splitlines()
+    need(not git("status", "--porcelain"), "clean measurement checkout")
     need(sha(HERE / "protocol.md") == PROTOCOL, "protocol seal")
     for p, h in FILES.items():
         need(sha(p) == h, "installed driver/loader/ICD changed")
     need(json.loads(ICD.read_bytes())["ICD"]["library_path"] == str(DRIVER), "ICD provider")
     return {
+        "commit": commit,
+        "tree": tree,
         "protocol": PROTOCOL,
         "native": sha(HERE / "host_import.cpp"),
         "runner": sha(Path(__file__)),
