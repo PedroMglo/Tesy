@@ -1,5 +1,7 @@
 # O que uma política de vítimas pode acrescentar à conversa
 
+**Custo das 797 leituras que restam no decode.** Duas medições emparelhadas no NVMe interno deram 4,284 / 4,319 s de serviço com o pack, contra 5,617 / 5,598 s com o GGUF. Com as entregas comuns de R0, o pack conserva 716–749 ms para os trabalhos adicionais até 6 tok/s. Mesmo concedendo custo zero a esses trabalhos, a combinação precisa de reduzir o restante pedido em pelo menos 1,125–1,158 s no cenário de prefill a 4,5 GB/s. [Comparação da população inteira e condição de suficiência](replay/decode_clock/transport/service-result.md)
+
 **GO para conservar a política e o banco como combinação em testes de serviço. NO_GO para os adotar como solução suficiente no regime testado.** Com 353 vítimas recuperáveis mantidas em RAM, a prioridade de expulsão evitou mais 50 leituras de disco no prefill e 122 no decode deste pedido do 120B. Sem servir a partir do banco, essa prioridade aumentou o número de leituras. A identificação usa uma captura real de R0 e dois replays que reproduziram 2 987 decisões do manager, incluindo as 2 354 reservas. O benefício medido em quatro waves com o layout do pack continua uma evidência independente. A latência da nova política na conversa é **INCONCLUSIVE**, M3 **PARTIAL**, M4 **NOT_MET**. [Reprodução das escolhas nativas](replay/README.md) · [Quatro braços físicos de transporte e política](../../../t1_full_pack_service/README.md)
 
 | Tratamento dos pesos e da cache de T2 | Leituras de disco no prefill | Leituras de disco no decode |
