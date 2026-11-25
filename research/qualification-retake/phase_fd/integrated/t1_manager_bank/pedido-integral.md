@@ -1,0 +1,19 @@
+# Da captura de vítimas em T1 ao primeiro decode de T2
+
+**Próximo gate.** Testar a primeira wave de uma nova tile com o manager C291, um consumidor CUDA vivo e a reposição antes do primeiro decode. O manager já recuperou três vítimas em CPU. Na RTX 4060, o FFN de uma wave usou a geração antiga com a dependência original ou um evento explícito. A contraprova devolveu a geração nova apesar dos mesmos hashes finais de pesos. A reutilização entre tiles continua em aberto. [Manager](README.md) · [Prova na CUDA](../t1_manager_cuda/device/README.md)
+
+Nas quatro waves selecionadas, pack integral + prioridade às vítimas recuperáveis reduziu a janela de serviço em 47,91% e 47,34%. Todos os braços começaram com o banco pronto. No replay completo a prioridade poupou 50 leituras no prefill e 169 no decode face à LRU com banco. Esse replay só serve a procura. O C291 seleciona por frequência do router e idade, protege os slots em uso e pode reservar para a wave seguinte. Testar a prioridade entre vítimas admitidas pelo manager, mantendo o desempate original. [Medição](../t1_full_pack_service/README.md) · [Replay](../t1_primary_victim/README.md)
+
+| Obrigação | Custo conhecido no nominal |
+|---|---|
+| Capturar no sufixo observado de T1, começando vazio | 2 143 instalações, 20 225 376 000 B de CPU e 8 103 369 600 B de CUDA para RAM em 18,735 s de agenda original. O efeito na parede continua desconhecido. |
+| Conservar as últimas 353 vítimas distintas e protegê-las durante T2 | 4 666 377 600 B de payload; 4 720 263 168 B com reservas e metadados. A folga aritmética até ao stop E20 seria 497 360 896 B se o resto reproduzisse o pico observado. |
+| Repor os membros de R0 por camada antes do primeiro decode, na política prioritária simulada | 172 experts do disco + 88 da RAM, ou 3 436 992 000 B a entregar ao primário. Ainda faltam as eventuais deslocações entre slots de residentes já presentes, o transporte por tier e as esperas. |
+
+Materializar uma chave apenas na primeira falta excedeu ambos os orçamentos de leituras em T2. Capturar sob o mutex de reserva pode atrasar os quatro workers. Na implementação mínima, selar a cópia antes de alterar o vínculo e reter a entrada imutável até ao terceiro SET. [Custos e alternativas](../t1_bank_capture/README.md)
+
+**Fixture mínima.** Uma camada, duas tiles, quatro workers e uma procura de decode. Forçar a reutilização de uma geração da tile anterior, incluindo parking e preload. O primeiro SET depende da captura e do último leitor no backend de computação. No corte, repor um expert do pack, outro da RAM e trocar dois residentes de slot. Contar scratch, transferências por tier e esperas. Validar a saída completa dos consumidores antigo e novo contra golds, os vínculos, payloads, claims e rejeição de conclusão obsoleta. A contraprova liberta o leitor após a sobrescrita. [Arestas do C269/C291](cuda-consumers.md)
+
+O estado do braço R0 serve de gold. Na conversa, reconstruir a tabela a partir do prefixo e verificar no controlo os slots, preloads e pendências. Cada nova reserva recebe uma geração nova. Se a tabela depender de ordens inacessíveis à política, a reposição exata fica **INCONCLUSIVE**. Aceitar o estado produzido exigiria uma prova própria de KV, rotas e logits no primeiro decode.
+
+Para o produto, comparar R0 contemporâneo, pack sozinho, pack com banco e política R0, e combinação com prioridade. A ablação da fonte mantém as mesmas etiquetas, capturas, reservas e memória e serve as procuras pelo pack. Conservar 5+148, ub32 e os destinos. Medir T1, intervalo entre turnos, reposição, primeiro conteúdo final, conclusão e decode de T2, com o caso de proteção. O ganho na conversa permanece **INCONCLUSIVE**. [Caminho até ao endpoint](../t1_full_pack_service/product-path.md)
