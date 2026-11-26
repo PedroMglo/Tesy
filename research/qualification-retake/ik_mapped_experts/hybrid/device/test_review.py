@@ -1,16 +1,17 @@
 import json
-import sys
 import tempfile
 import unittest
 from datetime import UTC, datetime, timedelta
+from importlib.util import module_from_spec, spec_from_file_location
 from pathlib import Path
 from runpy import run_path
 from types import SimpleNamespace
 from unittest.mock import patch
 
 HERE = Path(__file__).resolve().parent
-sys.path.insert(0, str(HERE))
-import review as r  # noqa: E402
+spec = spec_from_file_location("tesy_ik_device_review", HERE / "review.py")
+r = module_from_spec(spec)
+spec.loader.exec_module(r)
 
 mock_trace = run_path(str(HERE.parent / "client/test_grade.py"))["artificial"]
 POL = dict(
