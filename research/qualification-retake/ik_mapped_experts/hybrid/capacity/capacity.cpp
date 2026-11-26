@@ -1,4 +1,5 @@
 // Project observer prefix is assembled from the tested tiny client, excluding its graph code.
+#define LLAMA_API_INTERNAL
 #include "observe_prefix.hpp"
 #include <sstream>
 #include <array>
@@ -50,6 +51,26 @@ static void census(llama_model *model,std::istream &plan) {
     must(plan.eof() && count==687,"plan cardinality");
 }
 
+// Public lookup returns one instance per name. The context map also contains the
+// alternate bias used by the GPT-OSS graph for narrow batches.
+static void bias_instances(llama_context *ctx) {
+    const std::string suffix = "_exps.bias";
+    for (const auto &[name, tensor] : llama_internal_get_tensor_map(ctx)) {
+        if (name.size() < suffix.size() || name.compare(name.size() - suffix.size(), suffix.size(), suffix)) {
+            continue;
+        }
+        must(tensor && tensor->buffer && tensor->data && tensor->type == GGML_TYPE_F32 &&
+             tensor->ne[0] == 2880 && tensor->ne[1] == 128 && tensor->ne[2] == 1 && tensor->ne[3] == 1,
+             "expert bias instance geometry");
+        const bool host = ggml_backend_buffer_is_host(tensor->buffer);
+        const size_t size = ggml_nbytes(tensor);
+        const int64_t file = host ? observe::file_offset(tensor->data, size) : -1;
+        std::printf("BIAS_INSTANCE %s %d %zu %d %" PRId64 " %zu %s\n", name.c_str(),
+                    tensor->type, size, int(host), file, uintptr_t(tensor->data),
+                    ggml_backend_buffer_name(tensor->buffer));
+    }
+}
+
 static int probe(int argc,char **argv) {
     must(argc==4,"capacity-client ORIGINAL.GGUF PLAN.TSV NEW_NATIVE_DIR");
     const auto env=[](const char *name,const char *value){
@@ -99,6 +120,7 @@ static int probe(int argc,char **argv) {
     must(ctx && llama_n_ctx(ctx)==8192 && llama_n_seq_max(ctx)==8192 && llama_n_batch(ctx)==256
         && llama_n_ubatch(ctx)==32 && !ggml_moe_prefetch_enabled() && !llama_get_kv_cache_token_count(ctx)
         && !llama_get_kv_cache_used_cells(ctx),"context geometry or nonempty KV");
+    bias_instances(ctx);
     const llama_context *contexts[]={ctx};
     const auto n=llama_memory_breakdown(contexts,1,nullptr,0,nullptr,0);
     must(n>=2 && n<=32,"memory rows");

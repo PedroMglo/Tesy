@@ -76,6 +76,13 @@ class CapacityTest(unittest.TestCase):
                 f"PLACE {name} {typ} 4 {int(host)} {offset if host else -1} {addr} "
                 f"{'CPU' if host else 'CUDA0'}"
             )
+            if name.endswith("_exps.bias"):
+                lines.extend(
+                    [
+                        f"BIAS_INSTANCE {name} {typ} 4 0 -1 {addr} CUDA0",
+                        f"BIAS_INSTANCE {name} {typ} 4 1 {offset} {source} CPU",
+                    ]
+                )
             if not host:
                 lines += [
                     f"SET 1 {i} 0 sync {name} {addr} 0 4 {source} {offset}",
@@ -104,8 +111,24 @@ class CapacityTest(unittest.TestCase):
                 ),
                 (108, 108, 0),
             )
+            cuda_lookup = next(r for r in lines if r.startswith("PLACE ") and "_exps.bias " in r)
+            twins = [
+                r
+                for r in lines
+                if r.startswith("BIAS_INSTANCE ") and cuda_lookup.split()[1] == r.split()[1]
+            ]
+            cpu_lookup = next(r for r in twins if r.endswith(" CPU")).replace(
+                "BIAS_INSTANCE", "PLACE", 1
+            )
+            self.assertEqual(
+                check(log.replace(cuda_lookup, cpu_lookup), msg, d, t)["first_lookup_bias_host"], 1
+            )
+            cuda_twin = next(r for r in twins if r.endswith(" CUDA0"))
             for stdout, stderr in (
                 (log, msg.replace("288", "287")),
+                (log.replace(twins[1], ""), msg),
+                (log.replace(cuda_twin, cuda_twin.replace(" CUDA0", "0 CUDA0")), msg),
+                (log.replace(cuda_twin, cuda_twin + "\n" + cuda_twin), msg),
                 (log, msg + " CPU-share bank rows"),
                 (log.replace("COPY 1 2 sync", "MISSING 1 2 sync"), msg),
                 (log.replace("KV_CELLS 8192", "KV_CELLS 1"), msg),
