@@ -81,10 +81,13 @@ def cold_source(plan, advice):
         if tensors is None:
             tensors = {"gate": dict(start=plan["tensor_start"], bytes=plan["tensor_bytes"])}
         regions = {}
+        eviction_alignment = 2 << 20 if "tensors" in plan else PAGE
         for role, t in tensors.items():
             start = t["start"] // PAGE * PAGE
             stop = (t["start"] + t["bytes"] + PAGE - 1) // PAGE * PAGE
-            os.posix_fadvise(fd, start, stop - start, os.POSIX_FADV_DONTNEED)
+            evict_start = start // eviction_alignment * eviction_alignment
+            evict_end = (stop + eviction_alignment - 1) // eviction_alignment * eviction_alignment
+            os.posix_fadvise(fd, evict_start, evict_end - evict_start, os.POSIX_FADV_DONTNEED)
             regions[role] = (start, stop - start, (ct.c_ubyte * ((stop - start) // PAGE))())
         os.posix_fadvise(fd, 0, 0, advice)
         base = file_map(None, size, mmap.PROT_READ, mmap.MAP_SHARED, fd, 0)

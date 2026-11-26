@@ -43,6 +43,15 @@ def run(a, out, r):
         bool(a.previous) == range_reads and bool(a.gate_reference) == layer, "previous study inputs"
     )
     if layer:
+        diagnostic_hash = "859f7566ceb2e61886ef238dae0ae0bc20531aba59fea92a0978664b9966cc2c"
+        diagnostic = load(a.cache_diagnostic, diagnostic_hash)
+        need(
+            diagnostic["status"] == "DIAGNOSTIC_ONLY"
+            and diagnostic["admits_new_family"]
+            and diagnostic["reference_sha256"] == ref_sha
+            and diagnostic["stat"] == ref["model_stat"],
+            "cache preparation diagnostic",
+        )
         old_hash = "5e352cfbcc56e1e7978e798384e9a8f1c7d18a366ab81e787540e3d2937d27a3"
         old = G["reopen"](a.previous, old_hash, a.gate_reference)
         need(
@@ -61,7 +70,18 @@ def run(a, out, r):
     observed = json.loads((a.c55.parent / "samples.jsonl").read_text().splitlines()[0])["utc"]
     frozen = int(
         subprocess.check_output(
-            ["git", "-C", HERE, "log", "-1", "--format=%ct", "--", protocol.name], text=True
+            [
+                "git",
+                "-C",
+                HERE,
+                "log",
+                "-1",
+                "--format=%ct",
+                "--",
+                protocol.name,
+                *(["layer-diagnostic.md"] if layer else []),
+            ],
+            text=True,
         )
     )
     stat = IO.stat_id(model)
@@ -129,6 +149,9 @@ def run(a, out, r):
         r["authority"]["previous_sha256"] = old_hash
     if layer:
         r["authority"]["sources"]["layer_plan.py"] = sha(HERE / "layer_plan.py")
+        r["authority"]["sources"]["layer-diagnostic.md"] = sha(HERE / "layer-diagnostic.md")
+        r["authority"]["cache_diagnostic_sha256"] = diagnostic_hash
+        r["authority"]["cold_eviction_alignment_B"] = 2 << 20
     if not a.execute:
         r["status"] = "PREPARED_ONLY"
         return
@@ -204,6 +227,7 @@ if __name__ == "__main__":
     parser.add_argument("--study", choices=G["SEQUENCES"], default="scratch")
     parser.add_argument("--previous", type=Path)
     parser.add_argument("--gate-reference", type=Path)
+    parser.add_argument("--cache-diagnostic", type=Path)
     args = parser.parse_args()
     os.umask(0o077)
     dest = args.new_output_dir.resolve()
