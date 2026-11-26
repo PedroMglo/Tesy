@@ -70,7 +70,7 @@ def deadlines(text, start, now, *, completed=False):
         (None, "prefill_begin", 180),
         ("prefill_begin", "teacher_begin", 90),
         ("teacher_begin", "cleanup_begin", 90),
-        ("cleanup_begin", None, 15),
+        ("cleanup_begin", None, 10),
     ):
         if begin is None or begin in d:
             lo = start if begin is None else d[begin]
@@ -491,6 +491,7 @@ def run(a, out, r):
             if proc is not None:
                 stock.bounded.stop_own_group(proc)
                 r.update(child_gone=proc.poll() is not None, returncode=proc.returncode)
+                r["native_status"] = re.findall(r"^STATUS (\w+)$", stdout.read_text(), re.M)
             end, _ = scope_state(a.unit, a.envelope)
             own_scope(cg)
             r.update(
@@ -506,6 +507,8 @@ def run(a, out, r):
     }
     first = r["comparison"]["C110"][NAMES[0]]
     need(first["top5"][0] == 3659 and first["ties"] == 1, "independent first greedy")
+    second = r["comparison"]["C110"][NAMES[1]]
+    need(second["top5"][0] == 3992 and second["ties"] == 1, "independent second greedy")
     if a.arm == "D1":
         need(sha_rows(capture) == d0["logits_sha256"], "D1 differs from D0")
     need(stock.identity(model) == model_id, "changed GGUF")

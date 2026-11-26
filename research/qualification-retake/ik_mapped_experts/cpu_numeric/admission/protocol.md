@@ -25,7 +25,7 @@ C55 e C118 de 60 s, AC/performance, NVML compatível de monitor, sem compute
 GPU. Após o sinal do coordenador, cada modo arranca em scope e raiz exclusivos,
 faz a sua C118 e valida-a no intervalo de 3 s. Arquivo privado até 64 MiB.
 Orçamento por processo de 180 s para carga/contexto, 90 s para a chamada de
-16 e 90 s para a chamada de 1, 15 s para encerramento. Uma infração termina
+16 e 90 s para a chamada de 1, 10 s para encerramento. Uma infração termina
 o grupo de processos e verifica a saída; conservar todos os recibos, inclusive
 interrupção e restart supervisionado com nova identidade.
 
@@ -39,7 +39,7 @@ Os dois vetores de 201 088 F32 LE nas posições 15 e 16 têm respetivamente SHA
 `da1de57d5c7f736a9156271f1f80669e040727347494b3ac3f7bba5b73e3be9b` e
 `c813e8fb7e6bb5401ae800c27171fd32e0da02977c678a494d4f8f7c32cf3a1e`.
 Apenas se a posição 15 for finita com máximo único 3659 pode o processo executar
-o teacher 976. Conservar valores e comparar posição 16 com gold (máximo 3992),
+o teacher 976. Conservar valores e comparar posição 16 com gold (máximo único 3992 obrigatório),
 top-5 ordenado, palavras diferentes, erro máximo, MAE e RMSE. Distinguir
 igualdade integral, ordem coincidente e diferenças numéricas sem limiar de
 equivalência. O smoke de 17 entradas CPU-only do fork é uma comparação ao
