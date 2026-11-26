@@ -79,7 +79,20 @@ def grade(cap, reference, work, mode):
     )
 
 
-def arm(a, root, mode, build, prior, policy, model_id, *, study=None, extra_flags=None, check=None):
+def arm(
+    a,
+    root,
+    mode,
+    build,
+    prior,
+    policy,
+    model_id,
+    *,
+    study=None,
+    extra_flags=None,
+    check=None,
+    reference=None,
+):
     root.mkdir()
     case, library, reserve = CASES[mode]
     unit = a.unit + "-" + root.name.lower()
@@ -197,7 +210,7 @@ def arm(a, root, mode, build, prior, policy, model_id, *, study=None, extra_flag
         (bool(widths) and set(widths) == {2304}) if mode == "ON" else not widths,
         "observed L25 KV width at dispatch",
     )
-    ref = root.parent / "P/raw" / (a.unit + "-p.capture")
+    ref = reference or root.parent / "P/raw" / (a.unit + "-p.capture")
     result = grade(cap, ref, read(work), mode)
     save(root / "grade.json", result)
     if check is None:
