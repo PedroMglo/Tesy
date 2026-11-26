@@ -1,0 +1,113 @@
+{
+  "commit": "7f2505d3dd07cc28342ab24d3ba0d99a19419e66",
+  "decision": "NO_GO",
+  "family_sha256": "232be642acd7b72e7ef50f86753410b33ac36d44304120e8548e59748aa60f97",
+  "integrated_energy_J": null,
+  "memory_peak_B": 842948608,
+  "model_forwards": 0,
+  "orders": {
+    "DIRECT_FIRST": {
+      "DIRECT": {
+        "drain_ns": 64661,
+        "loop_ns": 123395,
+        "reads": {
+          "namespace_B": 508153856,
+          "pid_B": 518524928,
+          "scope_B": 518524928
+        },
+        "source_ns": 31397,
+        "source_resident_pages_after": 124545,
+        "source_resident_pages_before": 0,
+        "submit_ns": 195963929,
+        "tensor_pages": 137701,
+        "total_ns": 196183382,
+        "verified_bytes": 215913600,
+        "verify_ns": 119085485
+      },
+      "STAGED": {
+        "drain_ns": 85280,
+        "loop_ns": 86274,
+        "reads": {
+          "namespace_B": 509923328,
+          "pid_B": 509923328,
+          "scope_B": 509923328
+        },
+        "source_ns": 205834137,
+        "source_resident_pages_after": 124493,
+        "source_resident_pages_before": 0,
+        "submit_ns": 16470953,
+        "tensor_pages": 137701,
+        "total_ns": 222476644,
+        "verified_bytes": 215913600,
+        "verify_ns": 106461004
+      }
+    },
+    "STAGED_FIRST": {
+      "DIRECT": {
+        "drain_ns": 35136,
+        "loop_ns": 108091,
+        "reads": {
+          "namespace_B": 508284928,
+          "pid_B": 518524928,
+          "scope_B": 518524928
+        },
+        "source_ns": 20983,
+        "source_resident_pages_after": 126534,
+        "source_resident_pages_before": 0,
+        "submit_ns": 201473782,
+        "tensor_pages": 137701,
+        "total_ns": 201637992,
+        "verified_bytes": 215913600,
+        "verify_ns": 112769553
+      },
+      "STAGED": {
+        "drain_ns": 84760,
+        "loop_ns": 120286,
+        "reads": {
+          "namespace_B": 509923328,
+          "pid_B": 509923328,
+          "scope_B": 509923328
+        },
+        "source_ns": 193440060,
+        "source_resident_pages_after": 124493,
+        "source_resident_pages_before": 0,
+        "submit_ns": 16463189,
+        "tensor_pages": 137701,
+        "total_ns": 210108295,
+        "verified_bytes": 215913600,
+        "verify_ns": 105815277
+      }
+    }
+  },
+  "pairs": [
+    {
+      "order": "DIRECT_FIRST",
+      "saved_ns": -26293262,
+      "scope_bytes_saved": 8601600
+    },
+    {
+      "order": "STAGED_FIRST",
+      "saved_ns": -8470303,
+      "scope_bytes_saved": 8601600
+    }
+  ],
+  "payload_B": 215913600,
+  "processes": {
+    "DIRECT_FIRST": {
+      "peak_vram_MiB": 308.0,
+      "wall_s": 1.6918333169996913
+    },
+    "STAGED_FIRST": {
+      "peak_vram_MiB": 308.0,
+      "wall_s": 1.7006157979994896
+    }
+  },
+  "product_requests": 0,
+  "reference_sha256": "2f47da616820c239441b4a94ad4f2344ddc7393d1dad8a6c7a4f05cbb4ec4deb",
+  "scope": "ONE_C110_GATE",
+  "scratch_B": 216051712,
+  "sets": 33,
+  "status": "MEASURED_COLD_GATE_TRANSFER",
+  "swap_peak_B": 0,
+  "tree": "e175b4c6ee0d449a805b1081f11938d3a22d2f42"
+}
