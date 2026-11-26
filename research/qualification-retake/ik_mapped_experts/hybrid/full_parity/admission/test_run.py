@@ -121,3 +121,19 @@ def test_ids_different_input_rejected(tmp_path):
     inp.write_bytes(b"\0" * 68)
     with pytest.raises(ValueError, match="IDs or teacher"):
         A["input_ids"](inp)
+
+
+@pytest.mark.parametrize("teacher,passes", [(976, True), (977, False)])
+def test_teacher_gate_with_known_prefix(tmp_path, monkeypatch, teacher, passes):
+    path = tmp_path / "ids.i32"
+    prefix = struct.pack("<16i", *range(16))
+    raw = prefix + struct.pack("<i", teacher)
+    path.write_bytes(raw)
+    gate = A["input_ids"]
+    monkeypatch.setitem(gate.__globals__, "PREFIX", hashlib.sha256(prefix).hexdigest())
+    monkeypatch.setitem(gate.__globals__, "IDS", hashlib.sha256(raw).hexdigest())
+    if passes:
+        assert gate(path) == hashlib.sha256(raw).hexdigest()
+    else:
+        with pytest.raises(ValueError, match="teacher"):
+            gate(path)

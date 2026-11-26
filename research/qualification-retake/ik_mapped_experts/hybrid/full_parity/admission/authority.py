@@ -81,12 +81,14 @@ def capacity_gate(a):
             reread["slots"],
             reread["matrix_mmap_count"],
             reread["bias_cuda_count"],
+            reread["bias_mapped_twins"],
+            reread["first_lookup_bias_host"],
             reread["group_layers"],
             reread["registrations"],
             reread["expert_H2D_request_bytes"],
             reread["forwards"],
         )
-        == (288, 108, 108, 36, 0, 0, 0),
+        == (288, 108, 108, 108, 108, 36, 0, 0, 0),
         "capacity grade or census",
     )
     return cap
@@ -98,7 +100,7 @@ def input_ids(path):
     need(
         hashlib.sha256(raw).hexdigest() == IDS
         and hashlib.sha256(raw[:64]).hexdigest() == PREFIX
-        and struct.unpack_from("<i", raw, 64) == 976,
+        and struct.unpack_from("<i", raw, 64)[0] == 976,
         "C110 IDs or teacher",
     )
     return IDS
