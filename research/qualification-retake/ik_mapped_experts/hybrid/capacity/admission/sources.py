@@ -146,7 +146,10 @@ def inputs(a, w, tiny, before):
     }
     required_sources["observe_prefix.hpp"] = a.client / "observe_prefix.hpp"
     required_sources.update(
-        {"client/" + n: HYBRID / "client" / n for n in ("copy.cpp", "hooks.hpp", "client.cpp")}
+        {
+            "client/" + n: HYBRID / "client" / n
+            for n in ("copy.cpp", "hooks.hpp", "client.cpp", "rank_view.hpp")
+        }
     )
     required_sources.update(
         {n: IK / n for n in ("tiny_loader/probe.cpp", "cpu_numeric/vma/inspect.hpp")}
