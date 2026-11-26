@@ -7,7 +7,7 @@
                         ggml_are_same_shape(k,v) && kq_mask && kq_mask->type == GGML_TYPE_F16 &&
                         kq_mask->ne[0] == 256 && kq_mask->ne[1] == 3 && kq_mask->ne[2] == 1 &&
                         kq_mask->ne[3] == 1 && sinks && sinks->ne[0] == 64 && kq_scale == 0.125f &&
-                        !hparams.attn_logit_softcapping && hparams.f_max_alibi_bias == 0.0f);
+                        !hparams.attn_soft_cap && hparams.f_max_alibi_bias == 0.0f);
             ggml_tensor *rows[3];
             for (int j = 0; j < 3; ++j) {
                 auto *qi = ggml_view_4d(ctx0, q, 64, 1, 64, 1, q->nb[1], q->nb[2], q->nb[3],
