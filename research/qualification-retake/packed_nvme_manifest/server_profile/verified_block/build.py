@@ -20,6 +20,9 @@ START = SC["OLD"]
 ABI = run_path(str(QUAL / "stock_prefault_build/build.py"))["abi"]
 need, sha = SC["need"], SC["sha"]
 METHOD = "68d736efc8a2c630e638b92a7d0bd839e967587477c60b3608dbdb8fff51462a"
+CURRENT_METHOD = "50f32d21151314422579747b58901b1cc79b2a45253b20b51c155df61974a246"
+FIRST_LINK = "b8a2236e1802e7b6b89c3d78c5ff1ae75d28b1519d55d6498f372d4892aa99f8"
+CURRENT_IMAGE = "1e21fef6703659839b5c7ce86a5c56e314c7b5fa05e5bbfbe9aea137c20c6bfb"
 STATIC = "0c50a2657aa1dd5ba53a862e0e3e5cf4c2e366eb4663109ce2f2c03c2557df3b"
 BUILD = "9b9625d808b09e017d99f69907db2cfb4f6a0603b3ba950c1fab32d5418aede6"
 NUMERIC = "9f384fe141eac5b8aa28128d778565870884f4f18c5105b4f7761c62548a3d86"
@@ -129,6 +132,16 @@ def loader(arm, image, out, key, env):
 def build(a, out, r):
     root = tree(REPO)
     need(root[0] == a.commit and sha(HERE / "protocol.md") == METHOD, "scientific protocol")
+    if a.current_control:
+        need(sha(HERE / "protocol-current.md") == CURRENT_METHOD, "current link protocol")
+        attempt = read(a.current_control / "receipt.json", FIRST_LINK)
+        need(
+            attempt["status"] == "FAIL_PRESERVED"
+            and attempt["arms"]["RELINK"]["image_sha256"] == CURRENT_IMAGE
+            and sha(a.current_control / "RELINK" / IMAGE) == CURRENT_IMAGE,
+            "first closed link",
+        )
+        r.update(current_protocol_sha256=CURRENT_METHOD, first_link_sha256=FIRST_LINK)
     cg = Path("/sys/fs/cgroup") / Path(
         next(
             s[3:] for s in Path("/proc/self/cgroup").read_text().splitlines() if s.startswith("0::")
@@ -264,7 +277,12 @@ def build(a, out, r):
         if name != "RELINK":
             record["object_sha256"] = sha(obj)
         r["arms"][name] = record
-        need(name != "RELINK" or record["image_sha256"] == PACK, "original link reproducibility")
+        if name == "RELINK":
+            expected = CURRENT_IMAGE if a.current_control else PACK
+            need(record["image_sha256"] == expected, "original link reproducibility")
+            if a.current_control:
+                compare = run_path(str(HERE / "link_images.py"))["compare"]
+                record["link_comparison"] = compare(binary, image)
         need(abi == refabi, "exported symbols or dynamic ABI")
         record["relocation"] = {
             k: loader(static["arms"][k], image, dest, k, env) for k in ("C270_PACK", "C281_PACK")
@@ -284,6 +302,7 @@ if __name__ == "__main__":
     for k in ("pack-source", "base-source", "static", "block", "numeric", "new-output-dir"):
         p.add_argument("--" + k, type=Path, required=True)
     p.add_argument("--commit", required=True)
+    p.add_argument("--current-control", type=Path)
     a = p.parse_args()
     os.umask(0o077)
     out = a.new_output_dir.resolve()
