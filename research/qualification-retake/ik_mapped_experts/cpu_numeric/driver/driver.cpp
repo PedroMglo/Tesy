@@ -161,19 +161,24 @@ static int execute(int argc, char **argv) {
     require(r.ctx, "context");
     std::printf("POOL %d %d %d\n", before, tasks(), int(ggml_moe_prefetch_enabled()));
     require(ggml_moe_prefetch_enabled() == prefetch && llama_n_ctx(r.ctx) == 8192 &&
-            llama_n_batch(r.ctx) == 256 && llama_n_ubatch(r.ctx) == 32 && llama_n_seq_max(r.ctx) == 1 &&
+            llama_n_batch(r.ctx) == 256 && llama_n_ubatch(r.ctx) == 32 && llama_n_seq_max(r.ctx) == 8192
+            && llama_get_kv_cache_used_cells(r.ctx) == 0 &&
             llama_n_threads(r.ctx) == 8 && llama_n_threads_batch(r.ctx) == 8, "effective geometry/pool");
     phase("context_end");
     phase("prefill_begin");
     require(!llama_decode(r.ctx, llama_batch_get_one(ids.data(), 16, 0, 0)), "prefill decode");
     llama_synchronize(r.ctx);
     phase("prefill_end");
+    require(llama_get_kv_cache_used_cells(r.ctx) == 16, "16 used KV cells");
+    std::printf("KV 15 16\n");
     const int first = row(r.ctx, 15, vocab, expected, out, reference);
     if (first) return first;
     phase("teacher_begin");
     require(!llama_decode(r.ctx, llama_batch_get_one(&ids[16], 1, 16, 0)), "teacher decode");
     llama_synchronize(r.ctx);
     phase("teacher_end");
+    require(llama_get_kv_cache_used_cells(r.ctx) == 17, "17 used KV cells");
+    std::printf("KV 16 17\n");
     return row(r.ctx, 16, vocab, expected, out, reference);
 }
 

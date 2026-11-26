@@ -30,7 +30,8 @@ STOPS = {
 
 def sources():
     return {
-        p.name: sha(p) for p in (HERE / "protocol.md", HERE / "driver.cpp", HERE / "run.py")
+        p.name: sha(p)
+        for p in (HERE / "protocol.md", HERE / "r02.md", HERE / "driver.cpp", HERE / "run.py")
     } | {
         "tiny_loader/probe.cpp": sha(pinned(TINY / "probe.cpp", OBSERVER)),
         "tiny_loader/run.py": sha(TINY / "run.py"),
@@ -147,6 +148,7 @@ def check_stdout(stdout, dest, expected_rc, reference, closure, mode):
         "prefill_end",
     ]
     with_teacher = expected_rc in (0, 44)
+    need(ints("KV") == ([(15, 16), (16, 17)] if with_teacher else [(15, 16)]), "used KV cells")
     if with_teacher:
         expected_phases += ["teacher_begin", "teacher_end"]
     expected_phases += ["cleanup_begin", "cleanup_end"]
