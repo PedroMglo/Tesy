@@ -48,9 +48,12 @@ def test_runtime_handoff_reaps_child(tmp_path, sequence):
     def monitor(policy, sample):
         return {"observation": sample()}
 
-    inv = SimpleNamespace(
-        POWER={}, collect=lambda *args, **kw: {}, require_inventory=lambda *args, **kw: None
-    )
+    def collect(root, run_id, **kw):
+        # The shared C118 collector opens its receipt inside raw/ with exclusive creation.
+        (root / "raw" / (run_id + ".start-inventory.jsonl")).touch(exist_ok=False)
+        return {}
+
+    inv = SimpleNamespace(POWER={}, collect=collect, require_inventory=lambda *args, **kw: None)
     env = dict(PATH="/usr/bin:/bin", TEST_HANDOFF=sequence)
     r = {"starts": 0}
     func = API["sample_arm"]
@@ -74,6 +77,7 @@ def test_runtime_handoff_reaps_child(tmp_path, sequence):
         else:
             with pytest.raises((RuntimeError, ValueError), match="handoff order"):
                 func(*args)
-    assert r["child_gone"]
+    assert r["child_gone"] and r["returncode"] is not None
+    assert r["stdout_sha256"] == API["sha"](tmp_path / "RESIDENT/stdout")
     with pytest.raises(ProcessLookupError):
         os.kill(r["pid"], 0)

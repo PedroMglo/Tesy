@@ -165,6 +165,7 @@ def sample_arm(mode, parent, args, policy, end, exe, tiny, env, paths, drivers, 
         need(obs["gpu"]["used_mib"] < VRAM, "idle GPU memory")
         return obs
 
+    (parent / "raw").mkdir(mode=0o700, exist_ok=True)
     inv = INV.collect(parent, run_id, **kw, sample=idle)
     INV.require_inventory(parent, run_id, inv, **kw, max_age_s=3)
     result["admission"] = inv
@@ -250,11 +251,13 @@ def sample_arm(mode, parent, args, policy, end, exe, tiny, env, paths, drivers, 
                 proc.wait(timeout=3)
             result.update(
                 child_gone=proc.poll() is not None,
+                returncode=proc.returncode,
+                stdout_sha256=sha(stdout),
+                stderr_sha256=sha(stderr),
                 observed_handoffs=stage,
                 sampled_vram_mib_max=max(probes, default=None),
             )
     mapped(native / "maps", paths, drivers)
-    result["stdout_sha256"], result["stderr_sha256"] = sha(stdout), sha(stderr)
     return native
 
 
@@ -267,6 +270,9 @@ def run(a, out, r):
     )
     r.update(
         commit=head,
+        tree=subprocess.check_output(
+            ["git", "-C", HERE, "rev-parse", "HEAD^{tree}"], text=True
+        ).strip(),
         client_sha256=a.client_sha256,
         cpu_sha256=a.cpu_sha256,
         dso_sha256=a.dso_sha256,
@@ -290,6 +296,8 @@ def run(a, out, r):
                     "client_sha256",
                     "dso_sha256",
                     "cpu_sha256",
+                    "c55_sha256",
+                    "tree",
                     "commit",
                     "model_sha256",
                     "protocol_sha256",
