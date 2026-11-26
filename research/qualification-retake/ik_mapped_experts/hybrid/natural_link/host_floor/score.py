@@ -130,7 +130,7 @@ def run(a):
     return {
         "status": "FORMAL_CONDITIONAL_POOLED_SOURCE_FLOOR",
         "sources": sources
-        | {"lru": sha(ref), "protocol": sha(HERE / "protocol.md"), "script": sha(__file__)},
+        | {"lru": sha(ref), "protocol": sha(HERE / "protocol.md"), "script": sha(Path(__file__))},
         "expert_B": PAYLOAD,
         "phases": result,
     }
