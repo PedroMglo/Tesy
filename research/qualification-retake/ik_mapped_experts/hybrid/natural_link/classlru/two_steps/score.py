@@ -16,7 +16,7 @@ BASE, PAGES, FULL = (PRE[k] for k in ("BASE", "PAGES", "FULL"))
 need, sha = PRE["need"], PRE["sha"]
 GRAPH = BASE["QUAL"]
 NATIVE = "5971a0a1d830158ff7ec41432c06cb067e7e2dd641387b88c9ac2622143aaf1f"
-POLICY = "3a5db71a2bdff977bfbc71d5974b79c2f1794f5391b14ff58cbe9926cd83aa6f"
+POLICY = "4c417f76d87c74841b7e8929a9a68c68faec71b9faefc11392c567d587e30cb5"
 LIBM = ctypes.CDLL("libm.so.6")
 for f in (LIBM.exp2f, LIBM.log2f):
     f.argtypes = (ctypes.c_float,)
@@ -111,9 +111,9 @@ def origin(current, last):
 
 
 def memory(policy):
-    stock_dir = GRAPH / "stock_server_logits/physical-r2/receipt.json"
+    stock_dir = GRAPH / "stock_nominal_conversation/physical-r01/receipt.json"
     need(
-        sha(stock_dir) == "4e7055d10ebc748164326d03dec6e7659a4d26bdf9b4e28b16483d58c8e25120",
+        sha(stock_dir) == "935ecfcd4ae6aa0d68d77e3d1b15cd85c1348cf1169373ab3dabfd33ef42cd16",
         "stock HTTP",
     )
     stock = json.loads(stock_dir.read_bytes())
@@ -129,9 +129,17 @@ def memory(policy):
     bias = json.loads(indexed.read_bytes())["indexed"]["bias"]["bytes"]
     required = {}
     for k in (161, 288):
-        n = 3 * ((((k + 1) * 4_406_400 + 127) // 128) * 128)
+        # Hook admission pads each logical bank to 128. The actual CUDA allocator adds
+        # one quantized-row tail of 192 / 32 * 17 bytes per tensor, then aligns to 128.
+        per_role = (k + 1) * 4_406_400
+        n = 3 * (-(-per_role // 128) * 128)
+        alloc = 3 * (-(-(per_role + 102) // 128) * 128)
         required[k] = dict(
-            real_slots=k, guard_slots=1, allocated_B=n, minimum_requested_MiB=-(-n // MIB)
+            real_slots=k,
+            guard_slots=1,
+            hook_budget_B=n,
+            allocated_B=alloc,
+            minimum_requested_MiB=-(-n // MIB),
         )
     peak = int(stock["sampled_peak_gpu_mib"]) * MIB
     delta = required[288]["allocated_B"] - required[161]["allocated_B"]
@@ -163,6 +171,7 @@ def study(a):
     need(
         BASE["IK"]["revision"](a.ik) == [BASE["IK"]["PIN"], BASE["IK"]["TREE"]], "wrong source pin"
     )
+    BASE["IK"]["require_clean"](a.ik)
     ranks, g, _, sources = PAGES["reopen"](a.p97, a.p106)
     path = a.p106 / "ON/observer/events.pfj"
     cut, _ = FULL["metadata"](path, True)
@@ -187,8 +196,8 @@ def study(a):
         coord = (turn, call, tile)
         demand = {128 * il + e for e in ids}
         misses = {}
-        for key, cache in banks.items():
-            absent, evictions = cache.plan(il, ids)
+        for key, bank in banks.items():
+            absent, evictions = bank.plan(il, ids)
             hits = len(demand) - len(absent)
             misses[key] = absent
             digests[key].update(f"{hits} {len(absent)} {evictions}\n".encode())
