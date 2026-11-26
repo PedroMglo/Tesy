@@ -99,7 +99,10 @@ def probe(a, out):
         "aborted before numerical capture",
     )
     cache = LoaderCache()
-    with CACHE.open("rb") as stream, mmap.mmap(stream.fileno(), 0, access=mmap.ACCESS_READ) as view:
+    with (
+        CACHE.open("rb") as stream,
+        mmap.mmap(stream.fileno(), 0, flags=mmap.MAP_PRIVATE, prot=mmap.PROT_READ) as view,
+    ):
         need(view[:20] == b"glibc-ld.so.cache1.1", "observed data mapping")
         maps = Path("/proc/self/maps").read_text().splitlines()
         rows = [s for s in maps if s.endswith(" " + str(CACHE)) and s.split()[1] == "r--p"]
