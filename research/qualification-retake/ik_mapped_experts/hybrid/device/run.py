@@ -184,6 +184,7 @@ def sample_arm(mode, parent, args, policy, end, exe, tiny, env, paths, drivers, 
         out = stack.enter_context(stdout.open("xb"))
         err = stack.enter_context(stderr.open("xb"))
         journal = stack.enter_context((target / "monitor.jsonl").open("x"))
+        result["launch_utc"] = datetime.now(UTC).isoformat()
         started = time.monotonic()
         try:
             proc = subprocess.Popen(
@@ -254,6 +255,8 @@ def sample_arm(mode, parent, args, policy, end, exe, tiny, env, paths, drivers, 
                 returncode=proc.returncode,
                 stdout_sha256=sha(stdout),
                 stderr_sha256=sha(stderr),
+                wall_s=time.monotonic() - started,
+                monitor_sha256=sha(target / "monitor.jsonl"),
                 observed_handoffs=stage,
                 sampled_vram_mib_max=max(probes, default=None),
             )
@@ -270,6 +273,7 @@ def run(a, out, r):
     )
     r.update(
         commit=head,
+        unit=a.unit,
         tree=subprocess.check_output(
             ["git", "-C", HERE, "rev-parse", "HEAD^{tree}"], text=True
         ).strip(),
@@ -391,6 +395,22 @@ def main():
     except Exception as error:
         r["reason"] = f"{type(error).__name__}: {error}"
     finally:
+        if a.execute:
+            try:
+                state = IO.cgroup_state()
+                need(state and Path(state["path"]).name == a.unit + ".scope", "exit scope identity")
+                cg = Path("/sys/fs/cgroup") / state["path"].lstrip("/")
+                r.update(
+                    max_scope_bytes=state["memory_peak"],
+                    swap_peak_bytes=int((cg / "memory.swap.peak").read_text()),
+                    memory_events_local=state["events_local"],
+                )
+                r["raw_sha256"] = {
+                    str(p.relative_to(out)): sha(p) for p in sorted(out.rglob("*")) if p.is_file()
+                }
+            except Exception as error:
+                r["status"] = "FAIL_PRESERVED"
+                r["final_inventory_error"] = str(error)
         save(out / "receipt.json", r)
     print(r["status"], r.get("reason", ""))
     return r["status"] == "FAIL_PRESERVED"
