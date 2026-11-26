@@ -1,0 +1,242 @@
+{
+  "commit": "a2b80549824eb14252cbf83785ffc008f56d058b",
+  "contrasts": {
+    "DIRECT_to_PREAD_RANDOM": {
+      "decision": "GO",
+      "pairs": [
+        {
+          "order": "RANGE_DIRECT_FIRST",
+          "saved_ns": 52052661,
+          "scope_bytes_saved": 302473216
+        },
+        {
+          "order": "RANGE_RANDOM_FIRST",
+          "saved_ns": 59246557,
+          "scope_bytes_saved": 302473216
+        }
+      ]
+    },
+    "DIRECT_to_PREAD_SEQ": {
+      "decision": "GO",
+      "pairs": [
+        {
+          "order": "RANGE_DIRECT_FIRST",
+          "saved_ns": 39505927,
+          "scope_bytes_saved": 176246784
+        },
+        {
+          "order": "RANGE_RANDOM_FIRST",
+          "saved_ns": 38953225,
+          "scope_bytes_saved": 176246784
+        }
+      ]
+    },
+    "PREAD_SEQ_to_PREAD_RANDOM": {
+      "decision": "GO",
+      "pairs": [
+        {
+          "order": "RANGE_DIRECT_FIRST",
+          "saved_ns": 12546734,
+          "scope_bytes_saved": 126226432
+        },
+        {
+          "order": "RANGE_RANDOM_FIRST",
+          "saved_ns": 20293332,
+          "scope_bytes_saved": 126226432
+        }
+      ]
+    }
+  },
+  "decision": "GO",
+  "family_sha256": "5e352cfbcc56e1e7978e798384e9a8f1c7d18a366ab81e787540e3d2937d27a3",
+  "integrated_energy_J": null,
+  "memory_peak_B": 862842880,
+  "model_forwards": 0,
+  "orders": {
+    "RANGE_DIRECT_FIRST": {
+      "DIRECT": {
+        "drain_ns": 35507,
+        "fd_advice": 2,
+        "late_reads": {
+          "namespace_B": 518524928,
+          "pid_B": 518524928,
+          "scope_B": 518524928
+        },
+        "late_since_drain_ns": 220098671,
+        "loop_ns": 128040,
+        "pread_calls": 0,
+        "reads": {
+          "namespace_B": 512626688,
+          "pid_B": 518524928,
+          "scope_B": 518524928
+        },
+        "source_ns": 57079,
+        "source_resident_pages_after": 126593,
+        "source_resident_pages_before": 0,
+        "submit_ns": 186842042,
+        "tensor_pages": 137701,
+        "total_ns": 187062668,
+        "verified_bytes": 215913600,
+        "verify_ns": 105862921
+      },
+      "PREAD_RANDOM": {
+        "drain_ns": 89769,
+        "fd_advice": 1,
+        "late_reads": {
+          "namespace_B": 216051712,
+          "pid_B": 216051712,
+          "scope_B": 216051712
+        },
+        "late_since_drain_ns": 219222831,
+        "loop_ns": 50846,
+        "pread_calls": 33,
+        "reads": {
+          "namespace_B": 216051712,
+          "pid_B": 216051712,
+          "scope_B": 216051712
+        },
+        "source_ns": 119475233,
+        "source_resident_pages_after": 52747,
+        "source_resident_pages_before": 0,
+        "submit_ns": 15394159,
+        "tensor_pages": 137701,
+        "total_ns": 135010007,
+        "verified_bytes": 215913600,
+        "verify_ns": 107705054
+      },
+      "PREAD_SEQ": {
+        "drain_ns": 85381,
+        "fd_advice": 2,
+        "late_reads": {
+          "namespace_B": 342327296,
+          "pid_B": 342278144,
+          "scope_B": 342278144
+        },
+        "late_since_drain_ns": 217599742,
+        "loop_ns": 76356,
+        "pread_calls": 33,
+        "reads": {
+          "namespace_B": 342278144,
+          "pid_B": 342278144,
+          "scope_B": 342278144
+        },
+        "source_ns": 131015517,
+        "source_resident_pages_after": 83564,
+        "source_resident_pages_before": 0,
+        "submit_ns": 16379487,
+        "tensor_pages": 137701,
+        "total_ns": 147556741,
+        "verified_bytes": 215913600,
+        "verify_ns": 105624752
+      }
+    },
+    "RANGE_RANDOM_FIRST": {
+      "DIRECT": {
+        "drain_ns": 44864,
+        "fd_advice": 2,
+        "late_reads": {
+          "namespace_B": 518524928,
+          "pid_B": 518524928,
+          "scope_B": 518524928
+        },
+        "late_since_drain_ns": 220639691,
+        "loop_ns": 134110,
+        "pread_calls": 0,
+        "reads": {
+          "namespace_B": 512102400,
+          "pid_B": 518524928,
+          "scope_B": 518524928
+        },
+        "source_ns": 41852,
+        "source_resident_pages_after": 126593,
+        "source_resident_pages_before": 0,
+        "submit_ns": 192379647,
+        "tensor_pages": 137701,
+        "total_ns": 192600473,
+        "verified_bytes": 215913600,
+        "verify_ns": 107172419
+      },
+      "PREAD_RANDOM": {
+        "drain_ns": 80431,
+        "fd_advice": 1,
+        "late_reads": {
+          "namespace_B": 216051712,
+          "pid_B": 216051712,
+          "scope_B": 216051712
+        },
+        "late_since_drain_ns": 218318006,
+        "loop_ns": 57879,
+        "pread_calls": 33,
+        "reads": {
+          "namespace_B": 216051712,
+          "pid_B": 216051712,
+          "scope_B": 216051712
+        },
+        "source_ns": 117571756,
+        "source_resident_pages_after": 52747,
+        "source_resident_pages_before": 0,
+        "submit_ns": 15643850,
+        "tensor_pages": 137701,
+        "total_ns": 133353916,
+        "verified_bytes": 215913600,
+        "verify_ns": 106644194
+      },
+      "PREAD_SEQ": {
+        "drain_ns": 86183,
+        "fd_advice": 2,
+        "late_reads": {
+          "namespace_B": 342278144,
+          "pid_B": 342278144,
+          "scope_B": 342278144
+        },
+        "late_since_drain_ns": 216675721,
+        "loop_ns": 60486,
+        "pread_calls": 33,
+        "reads": {
+          "namespace_B": 342278144,
+          "pid_B": 342278144,
+          "scope_B": 342278144
+        },
+        "source_ns": 137286587,
+        "source_resident_pages_after": 83564,
+        "source_resident_pages_before": 0,
+        "submit_ns": 16213992,
+        "tensor_pages": 137701,
+        "total_ns": 153647248,
+        "verified_bytes": 215913600,
+        "verify_ns": 105789413
+      }
+    }
+  },
+  "pairs": [
+    {
+      "order": "RANGE_DIRECT_FIRST",
+      "saved_ns": 52052661,
+      "scope_bytes_saved": 302473216
+    },
+    {
+      "order": "RANGE_RANDOM_FIRST",
+      "saved_ns": 59246557,
+      "scope_bytes_saved": 302473216
+    }
+  ],
+  "payload_B": 215913600,
+  "processes": {
+    "RANGE_DIRECT_FIRST": {
+      "peak_vram_MiB": 308.0,
+      "wall_s": 2.2280688279997776
+    },
+    "RANGE_RANDOM_FIRST": {
+      "peak_vram_MiB": 308.0,
+      "wall_s": 2.25381449500037
+    }
+  },
+  "product_requests": 0,
+  "reference_sha256": "2f47da616820c239441b4a94ad4f2344ddc7393d1dad8a6c7a4f05cbb4ec4deb",
+  "scope": "ONE_C110_GATE",
+  "scratch_B": 216051712,
+  "sets": 33,
+  "status": "MEASURED_COLD_RANGE_READ",
+  "swap_peak_B": 0,
+  "tree": "51167a8047142ec67f9f2b91796565d843624163"
+}
