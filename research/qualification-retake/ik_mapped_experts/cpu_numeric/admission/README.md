@@ -69,3 +69,13 @@ systemd-run --user --scope --quiet --unit="$UNIT" -p MemoryMax=10G \
     "${extra[@]}" --new-output-dir "$NEW_ARM"
 systemctl --user show "$UNIT.scope" -p ActiveState -p SubState -p Result
 ```
+
+A preparação R01 detectou uma mudança de HEAD concorrente na checkout partilhada
+antes de abrir as referências. A R02 no checkout destacado
+`3c394e8fcd66b18038efe07abadde9e783d26719` reabriu C110/stock, as identidades
+de 216 vistas previstas, os controlos sintéticos e toda a resolução ELF,
+obtendo PREPARED_ONLY sem C118 nem abertura do modelo. Os
+hashes externos por braço encontram-se no [compacto da preparação](preparation.json).
+O freeze de execução inclui as duas máximas únicas obrigatórias (3659 e 3992)
+e 10 segundos de cleanup. Uma falha conserva o código do filho, a marca
+terminal disponível, as linhas F32 já publicadas e os logs privados.
