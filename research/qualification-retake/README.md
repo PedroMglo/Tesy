@@ -1,5 +1,7 @@
 # Qualificação da conversa local com o GPT-OSS-120B
 
+**26 de novembro · NO_GO para o bloco exato no primeiro histórico natural.** No 120B, os dois controlos seriais coincidiram e o candidato confirmou os mesmos três IDs. Divergiram 603 263 dos 603 264 logits do bloco e 105 989 palavras de KV. A primeira camada com diferenças observadas foi a 1. O teste isolado da atenção CPU pode distinguir uma mudança de redução a partir de 512 células. [Resultados, braços e localização](packed_nvme_manifest/server_profile/verified_block/server_reserve/causal_server/http/kv_width/natural/README.md)
+
 **26 de novembro · a atenção corrigida passou o teste GPU com histórico longo.** As cinco larguras entre 256 e 8 192 reproduziram 61 440 F32 seriais e rejeitaram a troca de máscaras. A verificação do primeiro bloco completo de T1 no modelo é o próximo discriminante. [Operador testado e limites](packed_nvme_manifest/server_profile/verified_block/server_reserve/causal_server/http/kv_width/README.md)
 
 **26 de novembro · NO_GO para a primeira combinação HTTP de pack e verificação.** No T1 real, 20 IDs coincidiram antes da primeira proposta. O servidor abortou porque a atenção de L25 ainda exigia 256 células de KV. O T2 ficou por medir. A próxima fixture usa a largura do histórico e a referência serial independente. [Falha preservada, quatro braços previstos e critério de reabertura](packed_nvme_manifest/server_profile/verified_block/server_reserve/causal_server/http/README.md)
