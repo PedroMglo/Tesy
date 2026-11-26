@@ -1,6 +1,8 @@
 # Preço isolado do envio de um expert para a RTX 4060
 
-**PREPARADO.** O programa mede o intervalo entre o primeiro SET do gate e a
+**MEDIDO.** As duas ordens físicas deram medianas de 1,072303 e 1,074177 ms por expert de shmem residente (12,328 e 12,306 GB/s). Ambas excederam os quatro requisitos de transferência no replay ClassLRU a 161 e 288 slots. A 288, a composição serial deixaria 2,396–2,409 s até à primeira peça final para todo o restante trabalho. [Preços, pares, controlos e limites](physical/README.md)
+
+O programa mede o intervalo entre o primeiro SET do gate e a
 conclusão da stream após os SET do up e do down. Envia 13 219 200 B por
 repetição. A fonte principal é um ficheiro shmem selado, mapeado em modo de
 leitura, com as páginas residentes. O controlo usa um mapeamento anónimo com
@@ -8,7 +10,7 @@ os mesmos bytes e alinhamento. O lote alterna as ordens nos dois processos.
 A comparação inclui a submissão, a eventual cópia de staging feita pelo driver
 e a espera pela conclusão. [Contrato congelado](protocol.md)
 
-O cliente usa o pin ik 7a5d9000 e a mesma DSO que passar na fixture de
+O cliente usa o pin ik 7a5d9000 e a mesma DSO qualificada na fixture de
 residência e cache. Por papel, o offset módulo página é 2 080, 2 592 e
 2 080 B, a partir dos metadados do GGUF já autenticados. As chamadas vão
 para um slot interior em três tensores MXFP4 e o auditor CUDART partilhado
@@ -21,11 +23,10 @@ ligeiramente maior que o relógio de parede dos SETs, pois a sua leitura é
 exterior aos carimbos de parede. Os contadores por processo registam faltas
 e operações de leitura em blocos. [Geometria C283](../../result.json) · [Auditor CUDART](../client/copy.cpp)
 
-A unidade anterior não conserva o preço do mmap quente nas dimensões reais.
+O antecedente mediu outra geometria.
 O ensaio 20B de setembro usou buffers prontos contendo também os biases,
-com proveniência de execução incompleta. Uma medição aqui serviria para
-confrontar os requisitos de 10,483 e 7,942 GB/s de ClassLRU 161 em T2.
-O resultado dependeria da residência quente e repetida desta pequena amostra.
+com proveniência de execução incompleta. O contraste atual usa os requisitos de 10,483 e 7,942 GB/s de ClassLRU 161 em T2.
+O resultado depende da residência quente e repetida desta pequena amostra.
 O mmap do GGUF sob pressão em Btrfs, os fills contíguos que o hook consegue
 fundir, o serviço de outros tensores e o tempo de cliente requerem observações
 próprias. [Antecedente](../../../../EXPERT-CROSSOVER-RESULT-20260924.md) · [Limiares causais e denominadores](../natural_link/classlru/README.md)
@@ -44,7 +45,7 @@ python3 -IB build.py --help
 python3 -IB run.py --help
 ```
 
-Para a futura compilação admitida, a partir da checkout congelada, os
+Para reproduzir a compilação a partir da checkout congelada, os
 parâmetros são o pin do ik, a build SM89 e o seu SHA exterior, o mapa
 estático ENV49 e um diretório exclusivo. A preparação da família usa um
 novo diretório. A execução física acrescenta o diretório de saída exclusivo
