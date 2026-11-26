@@ -1,0 +1,105 @@
+{
+  "expected_payload_digest": "123e7ffda98c62e26a8579b616a6b2da2220d68ec63484ef5604c26aed86d589",
+  "explicit_device_B": 555206400,
+  "explicit_host_component_B": 1295481600,
+  "model_starts": 0,
+  "pairs": [
+    {
+      "A_ns": 31558447,
+      "B_ns": 34220935,
+      "by_tier_increment_ns": {
+        "CPU": 14736765,
+        "CUDA0": -12082677
+      },
+      "increment_ns": 2662488,
+      "order": "AB",
+      "partial_saving_s_at_rate": 0.10017441866666667,
+      "residual_budget_s": {
+        "context_filter_free_new_groups_first_ON": 0.05047520111111111,
+        "context_filter_free_new_groups_second_ON": 0.02012820111111111
+      }
+    },
+    {
+      "A_ns": 32367261,
+      "B_ns": 36292008,
+      "by_tier_increment_ns": {
+        "CPU": 16161257,
+        "CUDA0": -12286653
+      },
+      "increment_ns": 3924747,
+      "order": "BA",
+      "partial_saving_s_at_rate": 0.09891215966666667,
+      "residual_budget_s": {
+        "context_filter_free_new_groups_first_ON": 0.04921294211111111,
+        "context_filter_free_new_groups_second_ON": 0.018865942111111113
+      }
+    },
+    {
+      "A_ns": 31273561,
+      "B_ns": 34355197,
+      "by_tier_increment_ns": {
+        "CPU": 15411642,
+        "CUDA0": -12297002
+      },
+      "increment_ns": 3081636,
+      "order": "BA",
+      "partial_saving_s_at_rate": 0.09975527066666667,
+      "residual_budget_s": {
+        "context_filter_free_new_groups_first_ON": 0.05005605311111111,
+        "context_filter_free_new_groups_second_ON": 0.019709053111111114
+      }
+    },
+    {
+      "A_ns": 33514604,
+      "B_ns": 34819843,
+      "by_tier_increment_ns": {
+        "CPU": 13583347,
+        "CUDA0": -12269579
+      },
+      "increment_ns": 1305239,
+      "order": "AB",
+      "partial_saving_s_at_rate": 0.10153166766666667,
+      "residual_budget_s": {
+        "context_filter_free_new_groups_first_ON": 0.05183245011111111,
+        "context_filter_free_new_groups_second_ON": 0.021485450111111113
+      }
+    }
+  ],
+  "processes": [
+    {
+      "cpu_c": 56.5,
+      "energy_by_domain_uj": {
+        "intel-rapl:0": 70667198,
+        "intel-rapl:0:0": 3241287
+      },
+      "gpu_c": 42.34,
+      "gpu_used_MiB": 858.0,
+      "order": "ABBA",
+      "peak_cgroup_B": 1396105216,
+      "provider_count": 44,
+      "sha256": "95c07e8e9a0f3b0c5d0ae895da3b82e374a9f5d3afaf3ad5702c5f90835d42ea",
+      "wall_s": 4.725030424997385
+    },
+    {
+      "cpu_c": 62.0,
+      "energy_by_domain_uj": {
+        "intel-rapl:0": 85465185,
+        "intel-rapl:0:0": 4385561
+      },
+      "gpu_c": 43.46,
+      "gpu_used_MiB": 858.0,
+      "order": "BAAB",
+      "peak_cgroup_B": 1395650560,
+      "provider_count": 44,
+      "sha256": "a6bd788b780186a8565559dd73574c5527137bd32e90b7334c76a333f928f072",
+      "wall_s": 4.640532952005742
+    }
+  ],
+  "program_commit": "797cf8cdb9bb5a970917c2e82d312e4d660ba2e6",
+  "program_tree": "f588deaff0c021ba55cdd17d02dfc001766263f9",
+  "protocol_sha256": "b7807cac36a9514df15d366a5e048fea141d24351f794afd65894f8bad0facbc",
+  "requests": 0,
+  "schedule_sha256": "7d3e20f41f8e1c92add2e7bad358a1c61026950f2c145567f496c179d97c8063",
+  "status": "MEASURED_PAIRED_OPERATOR_COST",
+  "target_payloads": 105
+}
