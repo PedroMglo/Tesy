@@ -1,0 +1,394 @@
+{
+  "against_reference": {
+    "C110": {
+      "15": {
+        "bitwise_equal": false,
+        "candidate_argmax": 3659,
+        "candidate_sha256": "9f852c8fc45099c102052890634823b039c7dfd1a431d491ad70c6a9400ba933",
+        "different_f32_bits": 201088,
+        "finite_candidate": true,
+        "finite_gold": true,
+        "gold_argmax": 3659,
+        "gold_sha256": "da1de57d5c7f736a9156271f1f80669e040727347494b3ac3f7bba5b73e3be9b",
+        "max_abs": 1.856003761291504,
+        "mean_abs": 0.2418493400469733,
+        "rmse": 0.3061898959102174
+      },
+      "16": {
+        "bitwise_equal": false,
+        "candidate_argmax": 3992,
+        "candidate_sha256": "5fcc445f782af83b20ea4d0b2b1883a12fe9046b7e8e32bcc3accde88f08e8d7",
+        "different_f32_bits": 201088,
+        "finite_candidate": true,
+        "finite_gold": true,
+        "gold_argmax": 3992,
+        "gold_sha256": "c813e8fb7e6bb5401ae800c27171fd32e0da02977c678a494d4f8f7c32cf3a1e",
+        "max_abs": 1.3424368649721146,
+        "mean_abs": 0.1877768271136251,
+        "rmse": 0.23890645051704573
+      }
+    },
+    "stock_e95426f": {
+      "15": {
+        "bitwise_equal": false,
+        "candidate_argmax": 3659,
+        "candidate_sha256": "9f852c8fc45099c102052890634823b039c7dfd1a431d491ad70c6a9400ba933",
+        "different_f32_bits": 201088,
+        "finite_candidate": true,
+        "finite_gold": true,
+        "gold_argmax": 3659,
+        "gold_sha256": "e8b72125bb3709d556b5687577e13180258aa70ac7362ad9ffdfa105299f2e64",
+        "max_abs": 2.634153366088867,
+        "mean_abs": 0.2781589350951042,
+        "rmse": 0.35964183907355224
+      },
+      "16": {
+        "bitwise_equal": false,
+        "candidate_argmax": 3992,
+        "candidate_sha256": "5fcc445f782af83b20ea4d0b2b1883a12fe9046b7e8e32bcc3accde88f08e8d7",
+        "different_f32_bits": 201088,
+        "finite_candidate": true,
+        "finite_gold": true,
+        "gold_argmax": 3992,
+        "gold_sha256": "f262f31c4381a6493f4f20bf6fa51c30e4234cb4471ef1a00a42551f0fcaf5cd",
+        "max_abs": 0.8163900375366211,
+        "mean_abs": 0.11099697063809943,
+        "rmse": 0.14309691032398972
+      }
+    }
+  },
+  "archive": "part-131",
+  "arms": {
+    "D0": {
+      "arm": "D0",
+      "binary_sha256": "9176eeabd2497fffed6f7dcf592ceb2d88541496b7aa1f621d6eb29f3e1b00c2",
+      "build_sha256": "25179675325e8eca59567b930b76c756d81e1b0e69f7935fe678b464d5ac6e7a",
+      "c118": {
+        "cap_bytes": 10737418240,
+        "duration_s": 60.1660671520076,
+        "expected_power": {
+          "profile": "performance",
+          "source": "AC"
+        },
+        "last_utc": "2026-11-26T00:17:13.664689+00:00",
+        "policy_sha256": "12bdcdb799af0ebd04fe34893b2c4a20f19f8768e6deac24c41398e6780c1389",
+        "run_id": "tesy-ik-e10-c110-20261126-r02-d0",
+        "sample_count": 61,
+        "schema": "c118-per-arm-start-inventory-v2",
+        "sha256": "946919062db68daa6e34e3c2d34a4ab5d035c532eaddda207e37d0865002cd52"
+      },
+      "c55_sha256": "8dd4dbd14c5898f9768124d0cf238cc649cff9d59b3d308e737a5b85d47b70bd",
+      "census_resident_bytes": 3640356864,
+      "census_sha256": "d0a26556de8b47906d000b66deb32b92f011d954abe3b963fdeb6332282339c0",
+      "census_wall_s": 1.129087385,
+      "child_gone": true,
+      "commit": "ebc5687fca6ff673a34ba93f780ab54b5a29892c",
+      "cost_review_sha256": "04a4c77806246bf42f7bffd4d29ae73d1dd662794204b12c03c3ef07f92776f6",
+      "energy_j": null,
+      "http_requests": 0,
+      "input_sha256": "378eeb5ae41c80e16df38faad214c82e138727d2ddc1723a44f09c29c6e0f75c",
+      "io_by_device": {
+        "251:0": {},
+        "259:0": {
+          "dbytes": 0,
+          "dios": 0,
+          "rbytes": 46877532160,
+          "rios": 963134,
+          "wbytes": 851968,
+          "wios": 15
+        }
+      },
+      "logits_sha256": {
+        "pos15.f32": "9f852c8fc45099c102052890634823b039c7dfd1a431d491ad70c6a9400ba933",
+        "pos16.f32": "5fcc445f782af83b20ea4d0b2b1883a12fe9046b7e8e32bcc3accde88f08e8d7"
+      },
+      "memory_events": {
+        "high": 72107,
+        "low": 0,
+        "max": 0,
+        "oom": 0,
+        "oom_group_kill": 0,
+        "oom_kill": 0,
+        "sock_throttled": 0
+      },
+      "model_sha256": "582bd40f6886200101f4c4ed9f25f3fe80cc14c86e9e2b37746cd8904a0c622d",
+      "model_starts": 1,
+      "namespace_read_bytes": 46909845504,
+      "native_geometry": {
+        "drain": [
+          108,
+          0,
+          8
+        ],
+        "drop_ranges": 72,
+        "dropped_bytes": 61073031168,
+        "expert_views": 216,
+        "logical_expert_bytes": 61073326080,
+        "pool": [
+          1,
+          1,
+          0
+        ]
+      },
+      "native_seconds": {
+        "cleanup": 0.264083782,
+        "context": 0.079444179,
+        "load": 0.361883035,
+        "prefill": 33.772608048,
+        "teacher": 6.957988953
+      },
+      "native_vma_key": [
+        0,
+        56,
+        0,
+        38,
+        40127919
+      ],
+      "peak_cgroup_bytes": 10205163520,
+      "physical_sha256": "8343243f506088714e3c16e83d834e82c85faa30878010a8837815f678c90c37",
+      "returncode": 0,
+      "samples": 57,
+      "scope_exit": "inactive/dead",
+      "spawn_to_observed_exit_s": 41.655796622,
+      "status": "PASS_IK_CPU_NUMERIC_ARM",
+      "swap_peak": 0,
+      "synthetic_sha256": "793c115463a6609b51820d84f02a6dcde83b998c292e00d64ce7805b0e349866"
+    },
+    "D1": {
+      "arm": "D1",
+      "binary_sha256": "9176eeabd2497fffed6f7dcf592ceb2d88541496b7aa1f621d6eb29f3e1b00c2",
+      "build_sha256": "25179675325e8eca59567b930b76c756d81e1b0e69f7935fe678b464d5ac6e7a",
+      "c118": {
+        "cap_bytes": 10737418240,
+        "duration_s": 60.15707306600234,
+        "expected_power": {
+          "profile": "performance",
+          "source": "AC"
+        },
+        "last_utc": "2026-11-26T00:20:57.329644+00:00",
+        "policy_sha256": "12bdcdb799af0ebd04fe34893b2c4a20f19f8768e6deac24c41398e6780c1389",
+        "run_id": "tesy-ik-e10-c110-20261126-r03-d1",
+        "sample_count": 61,
+        "schema": "c118-per-arm-start-inventory-v2",
+        "sha256": "f20271ead78e88886d7d9e561b784d2c529ebe6d43d589b3a54d93ff5da3454a"
+      },
+      "c55_sha256": "8dd4dbd14c5898f9768124d0cf238cc649cff9d59b3d308e737a5b85d47b70bd",
+      "census_resident_bytes": 11626872832,
+      "census_sha256": "9e0c3d29dbe86136063396e1f60916f396c99088c3a68b4be4303eb073b74157",
+      "census_wall_s": 1.238891673,
+      "child_gone": true,
+      "commit": "ebc5687fca6ff673a34ba93f780ab54b5a29892c",
+      "cost_review_sha256": "b5829b7a0e2b55eb4c350eeba440f1a06f88d5ac3359f2d4c5599f991a348a29",
+      "energy_j": null,
+      "http_requests": 0,
+      "input_sha256": "378eeb5ae41c80e16df38faad214c82e138727d2ddc1723a44f09c29c6e0f75c",
+      "io_by_device": {
+        "251:0": {},
+        "259:0": {
+          "dbytes": 0,
+          "dios": 0,
+          "rbytes": 37133639680,
+          "rios": 630175,
+          "wbytes": 32768,
+          "wios": 7
+        },
+        "8:0": {
+          "dbytes": 0,
+          "dios": 0,
+          "rbytes": 458752,
+          "rios": 109,
+          "wbytes": 0,
+          "wios": 0
+        }
+      },
+      "logits_sha256": {
+        "pos15.f32": "9f852c8fc45099c102052890634823b039c7dfd1a431d491ad70c6a9400ba933",
+        "pos16.f32": "5fcc445f782af83b20ea4d0b2b1883a12fe9046b7e8e32bcc3accde88f08e8d7"
+      },
+      "memory_events": {
+        "high": 52510,
+        "low": 0,
+        "max": 0,
+        "oom": 0,
+        "oom_group_kill": 0,
+        "oom_kill": 0,
+        "sock_throttled": 0
+      },
+      "model_sha256": "582bd40f6886200101f4c4ed9f25f3fe80cc14c86e9e2b37746cd8904a0c622d",
+      "model_starts": 1,
+      "namespace_read_bytes": 37250641920,
+      "native_geometry": {
+        "drain": [
+          108,
+          0,
+          8
+        ],
+        "drop_ranges": 72,
+        "dropped_bytes": 61073031168,
+        "expert_views": 216,
+        "logical_expert_bytes": 61073326080,
+        "pool": [
+          1,
+          5,
+          1
+        ]
+      },
+      "native_seconds": {
+        "cleanup": 0.361083409,
+        "context": 0.096192211,
+        "load": 0.358939232,
+        "prefill": 25.744434042,
+        "teacher": 1.348701095
+      },
+      "native_vma_key": [
+        0,
+        56,
+        0,
+        38,
+        40127919
+      ],
+      "peak_cgroup_bytes": 10205822976,
+      "physical_sha256": "a55554e02a4312ea81e49c9cdf31ff22e3fa115439d11692f9caf0c5b042b9ee",
+      "returncode": 0,
+      "samples": 39,
+      "scope_exit": "inactive/dead",
+      "spawn_to_observed_exit_s": 28.107402092,
+      "status": "PASS_IK_CPU_NUMERIC_ARM",
+      "swap_peak": 0,
+      "synthetic_sha256": "793c115463a6609b51820d84f02a6dcde83b998c292e00d64ce7805b0e349866"
+    }
+  },
+  "candidate_rows": {
+    "15": {
+      "bytes": 804352,
+      "finite": true,
+      "max_ties": 1,
+      "nonfinite": 0,
+      "sha256": "9f852c8fc45099c102052890634823b039c7dfd1a431d491ad70c6a9400ba933",
+      "top5": [
+        3659,
+        3286,
+        2290,
+        3114,
+        3000
+      ]
+    },
+    "16": {
+      "bytes": 804352,
+      "finite": true,
+      "max_ties": 1,
+      "nonfinite": 0,
+      "sha256": "5fcc445f782af83b20ea4d0b2b1883a12fe9046b7e8e32bcc3accde88f08e8d7",
+      "top5": [
+        3992,
+        220,
+        279,
+        1825,
+        2550
+      ]
+    }
+  },
+  "decision": "GO_EXACT_TWO_CUTS_PREFETCH",
+  "failed_first_D1_admission": {
+    "model_starts": 0,
+    "reason": "ValueError: parallel model/compiler/transfer",
+    "scope_exit": "inactive/dead",
+    "sha256": "92157a765241e21cb43eaab727d9e9a21ac94566d2fcae9c230bbed7f7ccb1ff"
+  },
+  "independent_reference_rows": {
+    "C110": {
+      "15": {
+        "bytes": 804352,
+        "finite": true,
+        "max_ties": 1,
+        "nonfinite": 0,
+        "sha256": "da1de57d5c7f736a9156271f1f80669e040727347494b3ac3f7bba5b73e3be9b",
+        "top5": [
+          3659,
+          3114,
+          2290,
+          3286,
+          3000
+        ]
+      },
+      "16": {
+        "bytes": 804352,
+        "finite": true,
+        "max_ties": 1,
+        "nonfinite": 0,
+        "sha256": "c813e8fb7e6bb5401ae800c27171fd32e0da02977c678a494d4f8f7c32cf3a1e",
+        "top5": [
+          3992,
+          220,
+          2550,
+          1825,
+          279
+        ]
+      }
+    },
+    "stock_e95426f": {
+      "15": {
+        "bytes": 804352,
+        "finite": true,
+        "max_ties": 1,
+        "nonfinite": 0,
+        "sha256": "e8b72125bb3709d556b5687577e13180258aa70ac7362ad9ffdfa105299f2e64",
+        "top5": [
+          3659,
+          3114,
+          2290,
+          3286,
+          3000
+        ]
+      },
+      "16": {
+        "bytes": 804352,
+        "finite": true,
+        "max_ties": 1,
+        "nonfinite": 0,
+        "sha256": "f262f31c4381a6493f4f20bf6fa51c30e4234cb4471ef1a00a42551f0fcaf5cd",
+        "top5": [
+          3992,
+          220,
+          279,
+          5310,
+          2208
+        ]
+      }
+    }
+  },
+  "operational": "M3_PARTIAL_M4_NOT_MET",
+  "pair_review_twice_sha256": "63f4d7941ec449c21bc9e4a6ccabb11e5e08145428be98933f0f77ddf8f8fae8",
+  "prefetch_contrast": {
+    "15": {
+      "bitwise_equal": true,
+      "candidate_argmax": 3659,
+      "candidate_sha256": "9f852c8fc45099c102052890634823b039c7dfd1a431d491ad70c6a9400ba933",
+      "different_f32_bits": 0,
+      "finite_candidate": true,
+      "finite_gold": true,
+      "gold_argmax": 3659,
+      "gold_sha256": "9f852c8fc45099c102052890634823b039c7dfd1a431d491ad70c6a9400ba933",
+      "max_abs": 0.0,
+      "mean_abs": 0.0,
+      "rmse": 0.0
+    },
+    "16": {
+      "bitwise_equal": true,
+      "candidate_argmax": 3992,
+      "candidate_sha256": "5fcc445f782af83b20ea4d0b2b1883a12fe9046b7e8e32bcc3accde88f08e8d7",
+      "different_f32_bits": 0,
+      "finite_candidate": true,
+      "finite_gold": true,
+      "gold_argmax": 3992,
+      "gold_sha256": "5fcc445f782af83b20ea4d0b2b1883a12fe9046b7e8e32bcc3accde88f08e8d7",
+      "max_abs": 0.0,
+      "mean_abs": 0.0,
+      "rmse": 0.0
+    }
+  },
+  "schema": "tesy-ik-c110-physical-pair-v1",
+  "scope": "C110_SUPPLIED_16_PLUS_1_CPU_E10",
+  "target_parity": "FINITE_DIFFERENT_BITS_NO_PREDECLARED_TOLERANCE",
+  "timing_effect": "INCONCLUSIVE_SINGLE_ORDER_DIFFERENT_PAGE_CACHE"
+}
