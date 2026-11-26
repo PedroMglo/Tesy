@@ -1,0 +1,7 @@
+# O servidor ik carrega as duas bibliotecas qualificadas
+
+**REPRODUZIDO · GO_SERVER_ELF.** O mesmo executável HTTP do pin `7a5d90009b7ae55d3239cdd33244977c4eb10ff6` resolveu a biblioteca original e o hook nativo do Tesy. Os outros quinze fornecedores coincidiram em caminho e SHA-256 em ambos os testes de resolução. Os dois ensaios de versão reportaram `7a5d900`. O GGUF que servirá a conversa é o original já verificado no NVMe. O binário tem SHA-256 `3447f8b883d4bb2bd301e05ee7d3c71088e318a387da6e5c3c2906588365907c`. [Construção](build.py) · [Protocolo](protocol.md)
+
+A partir da configuração CUDA do portátil e de uma cópia limpa do pin, o Ninja compilou as 42 unidades do frontend, HTTP, common e mtmd. A build importou os dois DSOs SM89 verificados. Durou 110,058 s, escreveu 234 409 127 B, teve um pico de 2 432 364 544 B no scope e usou zero swap. O namespace de compilação não tinha rede, pesos ou dispositivos GPU. O commit da build é `c09204cd`. O arquivo conserva o ELF, mtmd, comandos, resolução, versão e recibo `3bad85a508f91896daee9c8ceb922f37e3acd495ab0213ea68fc30a80cfe43ec`. [Manifesto 159](../../../private_archive/part-159.json)
+
+A primeira sessão usa PREAD, a capacidade já provada e o cliente C281. No servidor do fork é necessário desligar explicitamente flash attention e as três fusões para reproduzir a geometria do C110. O contrato de cache cruza `usage.prompt_tokens_details.cached_tokens` com `timings.prompt_n` e os IDs oficiais. [Próxima medição](session-protocol.md) · [Frontend já verificado nos dois históricos](../README.md)
