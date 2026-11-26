@@ -138,6 +138,7 @@ def seal(a, prepared):
         LD_LIBRARY_PATH=native,
         CUDA_VISIBLE_DEVICES="0",
         CUDA_CACHE_DISABLE="1",
+        GGML_CUDA_NO_PINNED="1",
         OMP_NUM_THREADS="8",
         GGML_MOE_PREFETCH_AHEAD="0",
     )
@@ -313,6 +314,7 @@ def run(a, out, r):
         r["prepared_sha256"] = a.prepared_sha256
     exe, tiny, env, stats, paths, drivers, cpu = seal(a, prepared)
     r["provider_identity"] = stats
+    r["child_environment"] = env
     grade = run_path(str(HYBRID / "client/grade.py"))
     cpu_dir = a.cpu / "native"
     cpu_stdout, cpu_stderr = a.cpu / "stdout", a.cpu / "stderr"
