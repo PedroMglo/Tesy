@@ -1,5 +1,7 @@
 # Qualificação da conversa local com o GPT-OSS-120B
 
+**26 de novembro · o prefill serial de T2 tem pelo menos 14,306 GB de leituras atribuídas ao processo.** O relógio de encerramento já recolhido apertou a incerteza temporal e o piso ultrapassa em 224–360 MB a capacidade condicional mesmo com cinco verificações gratuitas. [Quatro braços, limites de I/O e condições que mudam a decisão](packed_nvme_manifest/server_profile/verified_block/server_reserve/causal_server/http/kv_width/natural/cpu_attention/target/http/io.md)
+
 **26 de novembro · um filtro causal reduz rejeições e deixa o prefill em aberto.** T2 passou de cinco rejeições imediatas a uma no replay. Cinco verificações inéditas e a alteração da cache teriam 0,828–0,858 s no total para 6 tok/s. Com o seu custo fixado em zero, o primeiro final ainda ficaria em 16,917–16,948 s. [O que foi observado, custos em falta e saldo do prefill](packed_nvme_manifest/server_profile/verified_block/server_reserve/causal_server/http/kv_width/natural/cpu_attention/target/http/context.md)
 
 **26 de novembro · NO_GO para a proposta fixa no nominal.** Os quatro servidores passaram os oito pedidos. Com o mesmo binário e pack, T2 fez 5,158 tok/s em serial e 4,754 tok/s com a proposta. As seis aceitações completas pouparam 0,455 s e as cinco rejeições custaram 1,323 s no relógio nativo. [Comparação completa, latência do cliente e custos por grupo](packed_nvme_manifest/server_profile/verified_block/server_reserve/causal_server/http/kv_width/natural/cpu_attention/target/http/family.md)
