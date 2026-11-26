@@ -1,0 +1,181 @@
+{
+  "build_receipt_sha256": "c19b653c8980a88bcc18495ca77fa7482d129bae6f215fd530a4f15dcdd4717f",
+  "c118": {
+    "cap_bytes": 10737418240,
+    "duration_s": 60.152607926998826,
+    "expected_power": {
+      "profile": "performance",
+      "source": "AC"
+    },
+    "last_utc": "2026-11-25T00:09:48.701480+00:00",
+    "policy_sha256": "4ffb965b82f52df1c4bc076d5e985f84d520edebe6736e3d8b43fe8623a161c9",
+    "run_id": "stock-c110-numeric",
+    "sample_count": 61,
+    "schema": "c118-per-arm-start-inventory-v2",
+    "sha256": "c4e72eb233989cc969a774ab26c02f822f3023ce5eb316dfe511c5f7a121274f"
+  },
+  "cgroup_peak_bytes": 10203516928,
+  "child_gone": true,
+  "client_elapsed_s": 56.5114,
+  "client_returncode": 0,
+  "client_sha256": "07b6572b967a7517340b6e3a67e0fea1b8b9cd6d1294ae6f5e55d27ac984eb43",
+  "client_starts": 1,
+  "elapsed_s": 117.0506,
+  "energy_j": null,
+  "events": {
+    "high": 242242,
+    "low": 0,
+    "max": 0,
+    "oom": 0,
+    "oom_group_kill": 0,
+    "oom_kill": 0,
+    "sock_throttled": 0
+  },
+  "input_sha256": "80536eadb97029b88c1d54a06a0ffb2f693c2a10029631f10e59e86745d73479",
+  "io_by_device": {
+    "251:0": {},
+    "259:0": {
+      "dbytes": 0,
+      "dios": 0,
+      "rbytes": 133284192256,
+      "rios": 1111123,
+      "wbytes": 0,
+      "wios": 0
+    },
+    "8:0": {
+      "dbytes": 0,
+      "dios": 0,
+      "rbytes": 15376384,
+      "rios": 305,
+      "wbytes": 1966080,
+      "wios": 33
+    }
+  },
+  "mapped": [
+    "libggml-base.so.0",
+    "libggml-cpu.so.0",
+    "libggml-cuda.so.0",
+    "libggml.so.0",
+    "libllama-common.so.0",
+    "libllama.so.0",
+    "numeric-client",
+    "target-gguf"
+  ],
+  "model_sha256": "582bd40f6886200101f4c4ed9f25f3fe80cc14c86e9e2b37746cd8904a0c622d",
+  "own_libs": [
+    "libggml-base.so.0",
+    "libggml-cpu.so.0",
+    "libggml-cuda.so.0",
+    "libggml.so.0",
+    "libllama-common.so.0",
+    "libllama.so.0"
+  ],
+  "policy_sha256": "7b372cf36a4c8ceb947bf93c86661cf3eb51f41437f669fdf7468f4a726480aa",
+  "protocol_sha256": "803d0b78a029ceaeb181fea81f43c7fe2255f046b12c4db6a9ac2f0fe4494841",
+  "raw_sha256": {
+    "candidate.logits.f32": "df15a25bfec9c498bbb8bdaf111b14228912d85c1cd4ebb053784cf77bfa05ec",
+    "client.log": "59bc2d0fc07d2a67782a4b37dcc9bbc2e7caa1e0bc3f1e1ec639b8bd85f0b54b",
+    "monitor.jsonl": "85f91c16696eba3161f750bf6f87ec72b4b2407da2d8da829210cfac788c6f20",
+    "stock-c110-numeric.start-inventory.jsonl": "c4e72eb233989cc969a774ab26c02f822f3023ce5eb316dfe511c5f7a121274f"
+  },
+  "reference_arms": [
+    "c109-a",
+    "c109-b",
+    "c109-c",
+    "c110-a",
+    "c110-b",
+    "c110-c"
+  ],
+  "rows": [
+    {
+      "all_finite": true,
+      "different_f32_bits_count": 201087,
+      "expected_top_ids": [
+        3659,
+        3114,
+        2290,
+        3286,
+        3000
+      ],
+      "greedy_equal": true,
+      "max_abs": 0.9379516839981079,
+      "mean_abs": 0.12128044260879361,
+      "nan": 0,
+      "neg_inf": 0,
+      "pos_inf": 0,
+      "position": 15,
+      "rmse": 0.1606975442832251,
+      "row": 0,
+      "sha256": "e8b72125bb3709d556b5687577e13180258aa70ac7362ad9ffdfa105299f2e64",
+      "stock_top_ids": [
+        3659,
+        3114,
+        2290,
+        3286,
+        3000
+      ]
+    },
+    {
+      "all_finite": true,
+      "different_f32_bits_count": 201088,
+      "expected_top_ids": [
+        3992,
+        220,
+        2550,
+        1825,
+        279
+      ],
+      "greedy_equal": true,
+      "max_abs": 1.013750970363617,
+      "mean_abs": 0.14845255166643576,
+      "nan": 0,
+      "neg_inf": 0,
+      "pos_inf": 0,
+      "position": 16,
+      "rmse": 0.19041216962958524,
+      "row": 1,
+      "sha256": "f262f31c4381a6493f4f20bf6fa51c30e4234cb4471ef1a00a42551f0fcaf5cd",
+      "stock_top_ids": [
+        3992,
+        220,
+        279,
+        5310,
+        2208
+      ]
+    },
+    {
+      "all_finite": true,
+      "different_f32_bits_count": 201088,
+      "expected_top_ids": [
+        1008,
+        25,
+        30,
+        2550,
+        364
+      ],
+      "greedy_equal": true,
+      "max_abs": 0.5940258502960205,
+      "mean_abs": 0.08512504725564922,
+      "nan": 0,
+      "neg_inf": 0,
+      "pos_inf": 0,
+      "position": 17,
+      "rmse": 0.11046422021763912,
+      "row": 2,
+      "sha256": "795eef217e064c3b10bf5e2ba907ab3e760a22f67294c30171d8a6df62c6f524",
+      "stock_top_ids": [
+        1008,
+        25,
+        30,
+        2550,
+        364
+      ]
+    }
+  ],
+  "runner_sha256": "92b1c4c47b5cd64896df39180bf3e382d8b0eef6039faf70b667d79c9e1ddeb7",
+  "sampled_gpu_peak_mib": 4106.0,
+  "scope": "SUPPLIED_C110_16_1_1",
+  "sha256": "df15a25bfec9c498bbb8bdaf111b14228912d85c1cd4ebb053784cf77bfa05ec",
+  "status": "FINITE_DIFFERENT_BITS_PARITY_INCONCLUSIVE",
+  "swap_current": 0
+}

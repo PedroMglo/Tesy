@@ -1,0 +1,185 @@
+{
+  "aligned_bytes_per_reservation": 13221888,
+  "assumed_rate_Bps": 4500000000,
+  "bank_capacity": 353,
+  "commit": "35bdff57a92047800311bd0e1223db364baca393",
+  "decision": "NO_GO_FIXED_OUTSIDE",
+  "eligible_keys": 2829,
+  "journals": {
+    "P106": {
+      "calls": [
+        {
+          "call": 1,
+          "callbacks": 35,
+          "gap_by_transition_ns": {
+            "between_layers / CPU / CPU": 144307668,
+            "between_layers / CPU / CUDA0": 5334754,
+            "between_layers / CUDA0 / CUDA0": 11409805
+          },
+          "gap_counts": {
+            "between_layers": 34,
+            "entry": 1,
+            "return": 1
+          },
+          "gap_ns": {
+            "between_layers": 161052227,
+            "entry": 2693972,
+            "return": 1208209
+          },
+          "outside_ns": 164954408,
+          "remap_union_ns": 301728593,
+          "span_ns": 466683001,
+          "tiles": [
+            5
+          ]
+        },
+        {
+          "call": 2,
+          "callbacks": 1296,
+          "gap_by_transition_ns": {
+            "between_layers / CPU / CPU": 1031545793,
+            "between_layers / CPU / CUDA0": 6622262,
+            "between_layers / CUDA0 / CUDA0": 48441802,
+            "between_tiles / CUDA0 / CPU": 32514303,
+            "within_layer / CPU / CPU": 2468471886,
+            "within_layer / CUDA0 / CUDA0": 284506721
+          },
+          "gap_counts": {
+            "between_layers": 171,
+            "between_tiles": 4,
+            "entry": 1,
+            "return": 1,
+            "within_layer": 1120
+          },
+          "gap_ns": {
+            "between_layers": 1086609857,
+            "between_tiles": 32514303,
+            "entry": 8251445,
+            "return": 76404,
+            "within_layer": 2752978607
+          },
+          "outside_ns": 3880430616,
+          "remap_union_ns": 5573835226,
+          "span_ns": 9454265842,
+          "tiles": [
+            32,
+            32,
+            32,
+            32,
+            20
+          ]
+        }
+      ],
+      "outside_ns": 4045385024
+    },
+    "P97": {
+      "calls": [
+        {
+          "call": 1,
+          "callbacks": 35,
+          "gap_by_transition_ns": {
+            "between_layers / CPU / CPU": 131396259,
+            "between_layers / CPU / CUDA0": 5073922,
+            "between_layers / CUDA0 / CUDA0": 11248572
+          },
+          "gap_counts": {
+            "between_layers": 34,
+            "entry": 1,
+            "return": 1
+          },
+          "gap_ns": {
+            "between_layers": 147718753,
+            "entry": 2961937,
+            "return": 1204202
+          },
+          "outside_ns": 151884892,
+          "remap_union_ns": 305433254,
+          "span_ns": 457318146,
+          "tiles": [
+            5
+          ]
+        },
+        {
+          "call": 2,
+          "callbacks": 1296,
+          "gap_by_transition_ns": {
+            "between_layers / CPU / CPU": 955775323,
+            "between_layers / CPU / CUDA0": 6240382,
+            "between_layers / CUDA0 / CUDA0": 46717346,
+            "between_tiles / CUDA0 / CPU": 22989036,
+            "within_layer / CPU / CPU": 2236289716,
+            "within_layer / CUDA0 / CUDA0": 282554388
+          },
+          "gap_counts": {
+            "between_layers": 171,
+            "between_tiles": 4,
+            "entry": 1,
+            "return": 1,
+            "within_layer": 1120
+          },
+          "gap_ns": {
+            "between_layers": 1008733051,
+            "between_tiles": 22989036,
+            "entry": 6197931,
+            "return": 76374,
+            "within_layer": 2518844104
+          },
+          "outside_ns": 3556840496,
+          "remap_union_ns": 5593423199,
+          "span_ns": 9150263695,
+          "tiles": [
+            32,
+            32,
+            32,
+            32,
+            20
+          ]
+        }
+      ],
+      "outside_ns": 3708725388
+    }
+  },
+  "maximum_early_credit_s": 1.2928068266666666,
+  "named_future_witness": {
+    "matched35": {
+      "lower_first_final_s": {
+        "P106": 11.595335367330154,
+        "P97": 11.258675731330156
+      },
+      "maximum_allowed_prefill_s": 2.4500496566698446
+    },
+    "no_rescue": {
+      "lower_first_final_s": {
+        "P106": 11.595335367330154,
+        "P97": 11.258675731330154
+      },
+      "maximum_allowed_prefill_s": 2.4500496566698455
+    }
+  },
+  "new_model_starts": 0,
+  "new_requests": 0,
+  "offers_sha256": "67981e087f60d99bb6991fca60b61721f70373749262b39e49902c3c2d9d3b90",
+  "per_graph": {
+    "all_observed_serial": {
+      "allowed_prefill_before_credit_s": 2.191624,
+      "lower_first_final_s": {
+        "P106": 10.560954197333333,
+        "P97": 10.224294561333334
+      },
+      "maximum_allowed_prefill_s": 3.484430826666667
+    },
+    "serial_reference": {
+      "allowed_prefill_before_credit_s": 1.855593,
+      "lower_first_final_s": {
+        "P106": 10.896985197333333,
+        "P97": 10.560325561333334
+      },
+      "maximum_allowed_prefill_s": 3.1483998266666666
+    }
+  },
+  "protocol_sha256": "26e0a2a73cf1c5b36ec45346c7500076dedc1dbd5d26301b706e521fb4380522",
+  "reservations_all_decode_top": 445,
+  "reservations_early_top": 440,
+  "status": "TRACE_DERIVED_OUTSIDE_REMAP",
+  "tree": "65a0b63a0206af8d2a29c9df0c0ef8b44fe101a3"
+}

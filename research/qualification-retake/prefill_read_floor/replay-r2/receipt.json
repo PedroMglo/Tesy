@@ -1,0 +1,44 @@
+{
+  "classification": "TRACE_DERIVED_FIXED_READ_SERVICE",
+  "protocol_sha256": "178dfd58bbf4df15964e8603cc7401189c182d97ced86770e346a8aedc987c15",
+  "trace_sha256": "91610b12291d5a42a12bba09f5d4ff188d25ee0001ab89e894bdd508005e82fb",
+  "analysis_sha256": "2a331bafe266decf08112fe5166c6801738fdb6666a3cfe0e26d59f2346bc056",
+  "pr45_head": "83146dade3f90235775e4a31a8d3d8ccae3476a7",
+  "pr45_source_sha256": {
+    "research/prefill-slot-proof/critical_intervals.py": "5621f4cba24ff3c2b493d45d9ce1598800dfcc167d341f331cd0d8748fc1d494",
+    "research/prefill-slot-proof/critical.py": "b7fd73abb2f6651d27f9fab13748f171c78206a88fd6e39f2e68fa64ad1454a7",
+    "tools/c122_trace_validate.py": "7de57a93f3ac9eb60ae2ae7bc4e1a712b695a4f4ae56fb5e21ce546d3ffb441c",
+    "tools/c123_analyze_trace.py": "f68f8f5126a33d0286355a664ccfb14292e1f4679a55629b06175fa8b26646ce",
+    "tools/c2_gate.py": "1e023e2e944907144d8a56a45262a848e7154e413c4d75ff1b089fc4ae2a6d99"
+  },
+  "dispatch_sha256": "23e701fec3d548a7b5faeb7ac854c4284830758f57a187b5db34e5a52b8b80c8",
+  "calls": [
+    {
+      "tokens": 5,
+      "jobs": 45,
+      "component_reads": 135,
+      "cpu_jobs": 37,
+      "scopes_with_reads": 27,
+      "observed_call_us": 497001,
+      "read_worker_us": 588884,
+      "global_capacity_floor_us": 147187.25,
+      "longest_serial_chain_us": 22435,
+      "summed_scope_floor_us": 324023.0
+    },
+    {
+      "tokens": 148,
+      "jobs": 1177,
+      "component_reads": 3531,
+      "cpu_jobs": 761,
+      "scopes_with_reads": 147,
+      "observed_call_us": 11205722,
+      "read_worker_us": 27623038,
+      "global_capacity_floor_us": 6904876.75,
+      "longest_serial_chain_us": 34330,
+      "summed_scope_floor_us": 7202220.25
+    }
+  ],
+  "server_prefill_us": 11706565,
+  "server_minus_call_sum_us": 3842,
+  "full_prefill_read_floor_us": 7526243.25
+}

@@ -1,0 +1,171 @@
+{
+  "arms": {
+    "c289-1-a": {
+      "raw": {
+        "bytes": 2439,
+        "path": "results/c289-lossless-service-resource-qualified-20261006/raw/c289-1-a-service.json",
+        "sha256": "34940311c38fcfcc3d42a5a934803b8879c58ab982fd53fd0e75dfdae984fdbc"
+      },
+      "tiers": {
+        "CPU": {
+          "aligned_request_bytes": 3387162624,
+          "bytes_passed_to_three_sets_per_expert": 3384115200,
+          "max_worker_read_s": 1.0253777660000005,
+          "pread_calls": 768,
+          "sum_worker_read_s": 4.052565197000001,
+          "sum_worker_set_s": 0.16174714899999998,
+          "wall_s": 1.183357675
+        },
+        "GPU": {
+          "aligned_request_bytes": 3387260928,
+          "bytes_passed_to_three_sets_per_expert": 3384115200,
+          "max_worker_read_s": 0.9906279709999992,
+          "pread_calls": 768,
+          "sum_worker_read_s": 3.861127022999999,
+          "sum_worker_set_s": 0.3120601049999999,
+          "wall_s": 1.179036879
+        }
+      }
+    },
+    "c289-2-b": {
+      "conditional_CPU_only": {
+        "CPU_wall_saving_upper_percent": 14.112160374337433,
+        "CPU_wall_saving_upper_s": 0.12504372400000008,
+        "serial_CPU_then_GPU_floor_s": 1.746622464,
+        "serial_CPU_then_GPU_upper_percent": 6.680877434325916
+      },
+      "raw": {
+        "bytes": 2468,
+        "path": "results/c289-lossless-service-resource-qualified-20261006/raw/c289-2-b-service.json",
+        "sha256": "b4ae1a37a758577fd4d4650d3984c5c15e46538f026f741e61f9939f2400fec2"
+      },
+      "tiers": {
+        "CPU": {
+          "aligned_request_bytes": 3384803328,
+          "bytes_passed_to_three_sets_per_expert": 3384115200,
+          "max_worker_read_s": 0.761027017,
+          "pread_calls": 256,
+          "sum_worker_read_s": 2.8757146240000004,
+          "sum_worker_set_s": 0.30948574399999995,
+          "wall_s": 0.886070741
+        },
+        "GPU": {
+          "aligned_request_bytes": 3384803328,
+          "bytes_passed_to_three_sets_per_expert": 3384115200,
+          "max_worker_read_s": 0.7703009540000001,
+          "pread_calls": 256,
+          "sum_worker_read_s": 2.9333992230000003,
+          "sum_worker_set_s": 0.579428294,
+          "wall_s": 0.985595447
+        }
+      }
+    },
+    "c289-3-b": {
+      "conditional_CPU_only": {
+        "CPU_wall_saving_upper_percent": 14.448524711575104,
+        "CPU_wall_saving_upper_s": 0.11888472699999997,
+        "serial_CPU_then_GPU_floor_s": 1.6021868490000002,
+        "serial_CPU_then_GPU_upper_percent": 6.907599233978632
+      },
+      "raw": {
+        "bytes": 2448,
+        "path": "results/c289-lossless-service-resource-qualified-20261006/raw/c289-3-b-service.json",
+        "sha256": "7183cda0006e6281b4ff68f671ac0a3d3ef779c8f9773b277d3a6ecf8318e91f"
+      },
+      "tiers": {
+        "CPU": {
+          "aligned_request_bytes": 3384803328,
+          "bytes_passed_to_three_sets_per_expert": 3384115200,
+          "max_worker_read_s": 0.703930954,
+          "pread_calls": 256,
+          "sum_worker_read_s": 2.7025996400000003,
+          "sum_worker_set_s": 0.3613442109999998,
+          "wall_s": 0.822815681
+        },
+        "GPU": {
+          "aligned_request_bytes": 3384803328,
+          "bytes_passed_to_three_sets_per_expert": 3384115200,
+          "max_worker_read_s": 0.6779086639999999,
+          "pread_calls": 256,
+          "sum_worker_read_s": 2.622019695,
+          "sum_worker_set_s": 0.5554065009999998,
+          "wall_s": 0.898255895
+        }
+      }
+    },
+    "c289-4-a": {
+      "raw": {
+        "bytes": 2452,
+        "path": "results/c289-lossless-service-resource-qualified-20261006/raw/c289-4-a-service.json",
+        "sha256": "7f3c1c89984a5d2aba29a6c7423c40f2b442fccc240ebda39aebef610aa5130d"
+      },
+      "tiers": {
+        "CPU": {
+          "aligned_request_bytes": 3387162624,
+          "bytes_passed_to_three_sets_per_expert": 3384115200,
+          "max_worker_read_s": 1.0582459820000003,
+          "pread_calls": 768,
+          "sum_worker_read_s": 4.101497462,
+          "sum_worker_set_s": 0.17652384899999998,
+          "wall_s": 1.201083123
+        },
+        "GPU": {
+          "aligned_request_bytes": 3387260928,
+          "bytes_passed_to_three_sets_per_expert": 3384115200,
+          "max_worker_read_s": 0.9929918210000005,
+          "pread_calls": 768,
+          "sum_worker_read_s": 3.9457750509999996,
+          "sum_worker_set_s": 0.316362849,
+          "wall_s": 1.200953288
+        }
+      }
+    }
+  },
+  "historical_control": {
+    "CPU": [
+      {
+        "arms": [
+          "c289-1-a",
+          "c289-2-b"
+        ],
+        "packed_vs_original_wall_reduction_percent": 25.122322716164412
+      },
+      {
+        "arms": [
+          "c289-4-a",
+          "c289-3-b"
+        ],
+        "packed_vs_original_wall_reduction_percent": 31.493860396205076
+      }
+    ],
+    "GPU": [
+      {
+        "arms": [
+          "c289-1-a",
+          "c289-2-b"
+        ],
+        "packed_vs_original_wall_reduction_percent": 16.406732939860824
+      },
+      {
+        "arms": [
+          "c289-4-a",
+          "c289-3-b"
+        ],
+        "packed_vs_original_wall_reduction_percent": 25.20475992068727
+      }
+    ]
+  },
+  "measurement_commit": "dbb8f9220dde64de546deb3b00732e3089bb7263",
+  "native_source_sha256": "e818d71a6f895d8721f1d30c43e40cf113c70884639123ca643867027789346d",
+  "new_expert_reads": 0,
+  "new_forwards": 0,
+  "sealed_sources": {
+    "family-receipt.json": "2d35df8fd64769f9460a56eb5fa8b9b759d199f7d41a4cecbcf09c3fcee7aeaa",
+    "paired-analysis.json": "eff57d29385d0b1c773fa3eba5a2296338680d5b6012b8e918345be01f0b30c2",
+    "protocol.json": "b4417a472ccdf57c93a9dc217599293104ad57b185593601df1d4f94f24f4b37",
+    "raw-manifest.json": "baf4782dbf3b1b909c8b81b1f55e50909e51661ca49bd9ff5a5ae68c1d27eefd"
+  },
+  "status": "REPRODUCED_CONDITIONAL_UPPER_BOUND_ACTUAL_GAIN_INCONCLUSIVE",
+  "timed_probe_suffix_sha256": "5ed0f6531f313205d2d3c74bf4988de004b70571a594d620428972f135399572",
+  "wall_saving_scope": "B CPU SET only, fixed reads, assignment and GPU wall"
+}

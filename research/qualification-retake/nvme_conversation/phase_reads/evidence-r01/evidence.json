@@ -1,0 +1,279 @@
+{
+  "backend_commit": "d0ebfbcc6c8f456bc1083027c1b08075a32824d8",
+  "boundary_margin_ns": 2000,
+  "common_epoch_width_ns": 4081682371,
+  "conditional": {
+    "assumed_Bps": 4500000000,
+    "available_bytes_rounded_up": 10909697859,
+    "minimum_required_Bps_floor": 5339469148,
+    "prompt_budget_ns_rounded_up": 2424377302,
+    "required_saving_min_bytes": 2035189949
+  },
+  "measurement_commit": "14b409d75eaa0e6a976fd9b6ebb4b80396ee1df3",
+  "raw_manifest_sha256": "812d10fc273688bab7abe78d06d8b172549dc5b2f63abc69fb78a79fd01fee2b",
+  "receipt_sha256": "cb191e31c2e3ee547a01228065a3c4253bdb312dd1e561d361f75365f065356a",
+  "sample_fd_counts": {
+    "0": 1,
+    "1": 155,
+    "2": 2
+  },
+  "sample_support_extra_ns": 500001,
+  "samples": 158,
+  "source_sha256": {
+    "ggml/src/ggml.c": "ef2a64f06c900993396612ab2bfb98238d5ea931abbc938ddb0c72d31a0bd043",
+    "tools/optin_integration_client.py": "2cca03a7262a0715338ffd73e7ec3ca4d129dfa5f03760fe36971b51d46d31b9",
+    "tools/run_bounded.py": "e6f404e06036ce9df9fcca048d193710e75b37729fc2df411bf417034a7d347b",
+    "tools/server/server-context.cpp": "657c331a707f0faf74615d19387088070c3dbd7559328619c9ef606a4ec8cc55"
+  },
+  "status": "NO_GO_SERVICE_FIXED",
+  "turns": [
+    {
+      "cache_n": 0,
+      "decode_ns": 19740508000,
+      "first_final_ns": 81074857883,
+      "phases": {
+        "client_first_final": {
+          "change_points": 27,
+          "counters": {
+            "rchar": {
+              "max": null,
+              "min": 73116906354
+            },
+            "read_bytes": {
+              "max": null,
+              "min": 73103085568
+            },
+            "syscr": {
+              "max": null,
+              "min": 16599
+            }
+          },
+          "definitely_inside_samples": [
+            119,
+            120
+          ],
+          "tested_offsets": 53
+        },
+        "client_transport": {
+          "change_points": 27,
+          "counters": {
+            "rchar": {
+              "max": null,
+              "min": 74104902514
+            },
+            "read_bytes": {
+              "max": null,
+              "min": 74091020288
+            },
+            "syscr": {
+              "max": null,
+              "min": 16823
+            }
+          },
+          "definitely_inside_samples": [
+            120,
+            121
+          ],
+          "tested_offsets": 53
+        },
+        "client_validated": {
+          "change_points": 27,
+          "counters": {
+            "rchar": {
+              "max": null,
+              "min": 74104902514
+            },
+            "read_bytes": {
+              "max": null,
+              "min": 74091020288
+            },
+            "syscr": {
+              "max": null,
+              "min": 16823
+            }
+          },
+          "definitely_inside_samples": [
+            120,
+            121
+          ],
+          "tested_offsets": 53
+        },
+        "native_decode": {
+          "change_points": 26,
+          "counters": {
+            "rchar": {
+              "max": 34084298752,
+              "min": 28566757376
+            },
+            "read_bytes": {
+              "max": 34084298752,
+              "min": 28566757376
+            },
+            "syscr": {
+              "max": 7728,
+              "min": 6477
+            }
+          },
+          "definitely_inside_samples": [
+            28,
+            29
+          ],
+          "tested_offsets": 51
+        },
+        "native_prompt": {
+          "change_points": 27,
+          "counters": {
+            "rchar": {
+              "max": null,
+              "min": 42435421050
+            },
+            "read_bytes": {
+              "max": null,
+              "min": 42434949120
+            },
+            "syscr": {
+              "max": null,
+              "min": 9705
+            }
+          },
+          "definitely_inside_samples": [
+            91,
+            92
+          ],
+          "tested_offsets": 53
+        }
+      },
+      "predicted_n": 78,
+      "prompt_n": 2043,
+      "prompt_ns": 61756238000,
+      "transport_minus_native_ns": 11303036,
+      "transport_ns": 81508049036,
+      "turn": 1,
+      "validated_ns": 81509292893
+    },
+    {
+      "cache_n": 2044,
+      "decode_ns": 9858674000,
+      "first_final_ns": 20385070365,
+      "phases": {
+        "client_first_final": {
+          "change_points": 26,
+          "counters": {
+            "rchar": {
+              "max": 32928649216,
+              "min": 28778278912
+            },
+            "read_bytes": {
+              "max": 32933056512,
+              "min": 28778278912
+            },
+            "syscr": {
+              "max": 7466,
+              "min": 6525
+            }
+          },
+          "definitely_inside_samples": [
+            29,
+            31
+          ],
+          "tested_offsets": 51
+        },
+        "client_transport": {
+          "change_points": 27,
+          "counters": {
+            "rchar": {
+              "max": null,
+              "min": 29761802240
+            },
+            "read_bytes": {
+              "max": null,
+              "min": 29766213632
+            },
+            "syscr": {
+              "max": null,
+              "min": 6748
+            }
+          },
+          "definitely_inside_samples": [
+            30,
+            31
+          ],
+          "tested_offsets": 53
+        },
+        "client_validated": {
+          "change_points": 27,
+          "counters": {
+            "rchar": {
+              "max": null,
+              "min": 29761802240
+            },
+            "read_bytes": {
+              "max": null,
+              "min": 29766213632
+            },
+            "syscr": {
+              "max": null,
+              "min": 6748
+            }
+          },
+          "definitely_inside_samples": [
+            30,
+            31
+          ],
+          "tested_offsets": 53
+        },
+        "native_decode": {
+          "change_points": 27,
+          "counters": {
+            "rchar": {
+              "max": null,
+              "min": 12847775744
+            },
+            "read_bytes": {
+              "max": null,
+              "min": 12843364352
+            },
+            "syscr": {
+              "max": null,
+              "min": 2913
+            }
+          },
+          "definitely_inside_samples": [
+            14,
+            15
+          ],
+          "tested_offsets": 53
+        },
+        "native_prompt": {
+          "change_points": 26,
+          "counters": {
+            "rchar": {
+              "max": 17897627648,
+              "min": 12949299200
+            },
+            "read_bytes": {
+              "max": 17897627648,
+              "min": 12944887808
+            },
+            "syscr": {
+              "max": 4058,
+              "min": 2936
+            }
+          },
+          "definitely_inside_samples": [
+            15,
+            16
+          ],
+          "tested_offsets": 51
+        }
+      },
+      "predicted_n": 47,
+      "prompt_n": 153,
+      "prompt_ns": 10784107000,
+      "transport_minus_native_ns": 11990768,
+      "transport_ns": 20654771768,
+      "turn": 2,
+      "validated_ns": 20655581175
+    }
+  ]
+}

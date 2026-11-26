@@ -1,0 +1,249 @@
+#!/usr/bin/python3 -I
+"""Serve the same cold, authenticated mmap ranges to the same CUDA slots in both orders."""
+
+import ctypes as ct
+import hashlib
+import json
+import mmap
+import os
+import sys
+import time
+from contextlib import contextmanager
+from pathlib import Path
+from runpy import run_path
+
+clock = time.monotonic_ns
+Pointer, Size, CInt = ct.c_void_p, ct.c_size_t, ct.c_int
+PAGE = 4096
+BLOCK = Path("/sys/class/block/nvme0n1")
+
+
+def require(ok, why):
+    if not ok:
+        raise ValueError(why)
+
+
+def bind(lib, name, args, returns):
+    fn = getattr(lib, name)
+    fn.argtypes = args
+    fn.restype = returns
+    return fn
+
+
+libc = ct.CDLL(None, use_errno=True)
+file_map = bind(libc, "mmap", [Pointer, Size, CInt, CInt, CInt, ct.c_long], Pointer)
+unmap = bind(libc, "munmap", [Pointer, Size], CInt)
+mincore = bind(libc, "mincore", [Pointer, Size, Pointer], CInt)
+copy = bind(libc, "memcpy", [Pointer, Pointer, Size], Pointer)
+read_at = bind(libc, "pread", [CInt, Pointer, Size, ct.c_long], ct.c_ssize_t)
+
+
+class Cuda:
+    def __init__(self, path):
+        self.lib = ct.CDLL(path)
+        for name, args in {
+            "cudaSetDevice": [CInt],
+            "cudaMalloc": [ct.POINTER(Pointer), Size],
+            "cudaFree": [Pointer],
+            "cudaStreamCreateWithFlags": [ct.POINTER(Pointer), ct.c_uint],
+            "cudaStreamDestroy": [Pointer],
+            "cudaStreamSynchronize": [Pointer],
+            "cudaMemsetAsync": [Pointer, CInt, Size, Pointer],
+            "cudaMemcpyAsync": [Pointer, Pointer, Size, CInt, Pointer],
+            "cudaMemcpy": [Pointer, Pointer, Size, CInt],
+            "cudaDeviceReset": [],
+        }.items():
+            bind(self.lib, name, args, CInt)
+
+    def __call__(self, name, *args):
+        rc = getattr(self.lib, name)(*args)
+        require(rc == 0, f"{name} returned {rc}")
+
+
+def handoff(marker):
+    require(os.write(int(os.environ["TESY_TEST_TX"]), marker) == 1, "handoff send")
+    require(os.read(int(os.environ["TESY_TEST_RX"]), 1) == marker, "handoff ack")
+
+
+def model_id(fd):
+    st = os.fstat(fd)
+    require(st.st_uid == os.getuid(), "source ownership")
+    return [st.st_dev, st.st_ino, st.st_size, st.st_mtime_ns, st.st_ctime_ns]
+
+
+@contextmanager
+def cold_source(plan, advice):
+    with open(plan["model"], "rb", buffering=0) as f:
+        fd = f.fileno()
+        require(model_id(fd) == plan["model_stat"], "source identity")
+        size = plan["model_stat"][2]
+        tensors = plan.get("tensors")
+        if tensors is None:
+            tensors = {"gate": dict(start=plan["tensor_start"], bytes=plan["tensor_bytes"])}
+        regions = {}
+        eviction_alignment = 2 << 20 if "tensors" in plan else PAGE
+        for role, t in tensors.items():
+            start = t["start"] // PAGE * PAGE
+            stop = (t["start"] + t["bytes"] + PAGE - 1) // PAGE * PAGE
+            evict_start = start // eviction_alignment * eviction_alignment
+            evict_end = (stop + eviction_alignment - 1) // eviction_alignment * eviction_alignment
+            os.posix_fadvise(fd, evict_start, evict_end - evict_start, os.POSIX_FADV_DONTNEED)
+            regions[role] = (start, stop - start, (ct.c_ubyte * ((stop - start) // PAGE))())
+        os.posix_fadvise(fd, 0, 0, advice)
+        base = file_map(None, size, mmap.PROT_READ, mmap.MAP_SHARED, fd, 0)
+        require(base not in (None, Pointer(-1).value), "read-only file mmap")
+        try:
+
+            def resident():
+                counts = {}
+                for role, (off, length, vec) in regions.items():
+                    require(mincore(base + off, length, vec) == 0, "mincore")
+                    counts[role] = sum(b & 1 for b in vec)
+                return counts
+
+            yield fd, base, resident, {role: len(v[2]) for role, v in regions.items()}
+            require(model_id(fd) == plan["model_stat"], "source changed")
+        finally:
+            require(unmap(base, size) == 0, "munmap")
+
+
+def counters(scope, dev):
+    sectors = int((BLOCK / "stat").read_text().split()[2])
+    lines = [
+        v
+        for line in (scope / "io.stat").read_text().splitlines()
+        if (v := line.split()) and v[0] == dev
+    ]
+    require(len(lines) <= 1, "scope NVMe identity")
+    scope_bytes = int(dict(k.split("=") for k in lines[0][1:])["rbytes"]) if lines else 0
+    pid = dict(line.split(": ") for line in Path("/proc/self/io").read_text().splitlines())
+    return dict(namespace_B=sectors * 512, scope_B=scope_bytes, pid_B=int(pid["read_bytes"]))
+
+
+def sample(mode, plan, gpu, banks, stream, scratch, scope, dev, late_cut):
+    ct.memset(scratch, 0, plan["scratch_B"])
+    for dst, payload in banks.values():
+        gpu("cudaMemsetAsync", dst - PAGE, 0xA5, payload + 2 * PAGE, stream)
+    gpu("cudaStreamSynchronize", stream)
+    advice = os.POSIX_FADV_RANDOM if mode == "PREAD_RANDOM" else os.POSIX_FADV_SEQUENTIAL
+    with cold_source(plan, advice) as (fd, base, resident, total):
+        initial = resident()
+        require(not any(initial.values()), f"cold weights have {initial}/{total} resident pages")
+        before = counters(scope, dev)
+        events = []
+        start = clock()
+        for row in plan["sets"]:
+            src = base + row["source"]
+            dst = banks[row.get("role", "gate")][0]
+            t0 = clock()
+            if mode == "STAGED":
+                addr = scratch + row["scratch"]
+                copy(addr, src, row["bytes"])
+                src = addr
+            elif mode in ("PREAD_SEQ", "PREAD_RANDOM"):
+                src = scratch + row["scratch"]
+                returned = read_at(fd, src, row["bytes"], row["source"])
+                require(returned == row["bytes"], f"short pread {returned} of {row['bytes']}")
+            t1 = clock()
+            gpu("cudaMemcpyAsync", dst + row["dest"], src, row["bytes"], 1, stream)
+            events.append([t0 - start, t1 - start, clock() - start])
+        issued = clock()
+        gpu("cudaStreamSynchronize", stream)
+        end = clock()
+        after = counters(scope, dev)
+        final = resident()
+    delta = {k: after[k] - v for k, v in before.items()}
+    require(
+        0 < delta["namespace_B"] <= 6 << 30 and delta["scope_B"] > 0 and delta["pid_B"] >= 0,
+        "physical cold reads or I/O budget",
+    )
+    verify_start = clock()
+    buf = ct.create_string_buffer(max(r["bytes"] for r in plan["sets"]))
+    observed = []
+    for row in plan["sets"]:
+        n = row["bytes"]
+        dst = banks[row.get("role", "gate")][0]
+        gpu("cudaMemcpy", buf, dst + row["dest"], n, 2)
+        observed.append(hashlib.sha256(memoryview(buf)[:n]).hexdigest())
+        require(observed[-1] == row["sha256"], "CUDA destination differs from independent pread")
+    for dst, payload in banks.values():
+        for addr in (dst - PAGE, dst + payload):
+            gpu("cudaMemcpy", buf, addr, PAGE, 2)
+            require(bytes(memoryview(buf)[:PAGE]) == b"\xa5" * PAGE, "GPU guard changed")
+    result = dict(
+        mode=mode,
+        total_ns=end - start,
+        events_ns=events,
+        issued_ns=issued - start,
+        drain_ns=end - issued,
+        before=before,
+        after=after,
+        delta=delta,
+        resident_before=sum(initial.values()),
+        resident_after=sum(final.values()),
+        tensor_pages=sum(total.values()),
+        check_ns=clock() - verify_start,
+        verified=observed,
+        guards_B=2 * PAGE * len(banks),
+    )
+    if len(banks) > 1:
+        result.update(pages_before=initial, pages_after=final, pages_per_tensor=total)
+    if late_cut:
+        time.sleep(0.1)
+        late = counters(scope, dev)
+        require(late["namespace_B"] - before["namespace_B"] <= 6 << 30, "late I/O budget")
+        result.update(
+            late=late,
+            late_since_drain_ns=clock() - end,
+            fd_advice=advice,
+            pread_calls=len(plan["sets"]) if mode.startswith("PREAD_") else 0,
+        )
+    return result
+
+
+def main():
+    order, p, out = sys.argv[1:]
+    grade = run_path(str(Path(__file__).with_name("grade.py")))
+    modes = (grade["ORDERS"] | grade["READ_ORDERS"] | grade["LAYER_ORDERS"])[order]
+    late_cut = order not in grade["ORDERS"]
+    out = Path(out)
+    out.mkdir(mode=0o700)
+    plan = json.loads(Path(p).read_bytes())
+    layer = order in grade["LAYER_ORDERS"]
+    require(
+        plan["status"] == ("SEALED_LAYER_BYTES" if layer else "SEALED_GATE_BYTES")
+        and os.sysconf("SC_PAGE_SIZE") == PAGE,
+        "plan",
+    )
+    scope = Path("/sys/fs/cgroup") / Path("/proc/self/cgroup").read_text().strip().split("::")[
+        1
+    ].lstrip("/")
+    dev = (BLOCK / "dev").read_text().strip()
+    handoff(b"E")
+    gpu = Cuda(os.environ["TESY_CUDART"])
+    gpu("cudaSetDevice", 0)
+    stream = Pointer()
+    gpu("cudaStreamCreateWithFlags", ct.byref(stream), 1)
+    tensors = plan["tensors"] if layer else {"gate": {"payload_B": plan["payload_B"]}}
+    banks = {}
+    for role, t in tensors.items():
+        device = Pointer()
+        gpu("cudaMalloc", ct.byref(device), t["payload_B"] + 2 * PAGE)
+        banks[role] = (device.value + PAGE, t["payload_B"])
+    with mmap.mmap(-1, plan["scratch_B"], flags=mmap.MAP_PRIVATE | mmap.MAP_ANONYMOUS) as scratch:
+        ptr = ct.addressof(ct.c_char.from_buffer(scratch))
+        require(ptr % PAGE == 0, "scratch alignment")
+        handoff(b"A")
+        for mode in modes:
+            r = sample(mode, plan, gpu, banks, stream, ptr, scope, dev, late_cut)
+            (out / (mode + ".json")).write_text(json.dumps(r, sort_keys=True) + "\n")
+        (out / "maps").write_bytes(Path("/proc/self/maps").read_bytes())
+        handoff(b"F")
+    gpu("cudaStreamDestroy", stream)
+    for ptr, _size in banks.values():
+        gpu("cudaFree", ptr - PAGE)
+    gpu("cudaDeviceReset")
+
+
+if __name__ == "__main__":
+    main()

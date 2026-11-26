@@ -1,0 +1,225 @@
+{
+  "after": {
+    "ac": 1,
+    "cgroup_peak_bytes": 212934656,
+    "cpu_mC": 62875,
+    "swap_bytes": 0
+  },
+  "bank": {
+    "authenticate_and_load_ns": 50882061,
+    "blas_persistent_scratch_bytes": 385024,
+    "cpu_tier_parameters_bytes": 37164800,
+    "cuda_tier_host_parameters_bytes": 16352512,
+    "cuda_tier_rounded_bank_bytes": 16220160,
+    "finite_checks_ns": 1797130,
+    "rounded_construction_ns": 3730878,
+    "scalar_header_lhs_bytes": 11520
+  },
+  "before": {
+    "ac": 1,
+    "cgroup_peak_bytes": 23060480,
+    "cpu_mC": 47875,
+    "swap_bytes": 0
+  },
+  "calibrated_shapes": [
+    1,
+    29,
+    32
+  ],
+  "calibration_rows": {
+    "0": 3400,
+    "1": 3303
+  },
+  "cpu": {
+    "cpuinfo_max_khz": 5157895,
+    "kernel": "7.3.4-200.fc44.x86_64",
+    "logical_cpu": 0,
+    "model": "AMD Ryzen AI 9 HX 370 w/ Radeon 890M"
+  },
+  "elapsed_s": 10.03,
+  "end_utc_ns": 1795645604994072958,
+  "first_due_budget": {
+    "decode/CPU": {
+      "blas_4500000000": 1,
+      "blas_8000000000": 39,
+      "free_4500000000": 1,
+      "free_8000000000": 39,
+      "scalar_4500000000": 1,
+      "scalar_8000000000": 19,
+      "sites": 96,
+      "sites_with_hit": 57
+    },
+    "decode/CUDA": {
+      "blas_4500000000": 3,
+      "blas_8000000000": 4,
+      "free_4500000000": 3,
+      "free_8000000000": 4,
+      "scalar_4500000000": 3,
+      "scalar_8000000000": 4,
+      "sites": 44,
+      "sites_with_hit": 26
+    },
+    "prefill/CPU": {
+      "blas_4500000000": 63,
+      "blas_8000000000": 71,
+      "free_4500000000": 71,
+      "free_8000000000": 71,
+      "scalar_4500000000": 11,
+      "scalar_8000000000": 11,
+      "sites": 72,
+      "sites_with_hit": 71
+    },
+    "prefill/CUDA": {
+      "blas_4500000000": 4,
+      "blas_8000000000": 5,
+      "free_4500000000": 4,
+      "free_8000000000": 7,
+      "scalar_4500000000": 4,
+      "scalar_8000000000": 4,
+      "sites": 31,
+      "sites_with_hit": 28
+    }
+  },
+  "gguf_bytes": 0,
+  "maxrss_KiB": 201400,
+  "method_sha256": "9db2b7049d863bc072ecfe8aa48665a21f43c6d901e46e188a8d58cf9bb0485b",
+  "model_forwards": 0,
+  "native": {
+    "blas_core": "SkylakeX",
+    "blas_sha256": "432e1c1739731468ba305771af96773939e43016643e2d630f58cb45b6670e96",
+    "compiler_sha256": "ca48a2d27d0796399adc3387225eec4be62974e26fa299710edfde0c1af5aa63",
+    "elf_sha256": "b37156455c25df12cb03cadbd1b82c8c5c01f5fa96221e38a8bf7be530f5b76c",
+    "source_sha256": "0e06a74a4745273c122e263aed83f969fe5eaa578d3dfc915b73e6161f1d90b7",
+    "threads": 1
+  },
+  "pairs": 1944,
+  "program_sha256": "cdcf4897094f51c9894fd21167be2959ab73cfc99b4bb5ec1863ecea62c8d094",
+  "raw_receipt_sha256": "ada7bd601df6f63b82f788b23dae62d9c935a06cca95576652f9dbda980fa55d",
+  "scope_after": [
+    "inactive",
+    "dead"
+  ],
+  "site_times_ns": {
+    "decode/CPU": {
+      "blas": {
+        "max": 17613.0,
+        "median": 16909.5,
+        "min": 15539.5,
+        "n": 96,
+        "p10": 15690.0,
+        "p90": 17262.5
+      },
+      "paired_scalar_minus_blas": {
+        "max": 200744.0,
+        "median": 199053.5,
+        "min": 198038.5,
+        "n": 96,
+        "p10": 198509.0,
+        "p90": 200213.0
+      },
+      "scalar": {
+        "max": 217415.5,
+        "median": 215870.5,
+        "min": 215411.5,
+        "n": 96,
+        "p10": 215567.5,
+        "p90": 216358.5
+      }
+    },
+    "decode/CUDA": {
+      "blas": {
+        "max": 17077.0,
+        "median": 16809.5,
+        "min": 15544.0,
+        "n": 44,
+        "p10": 15780.0,
+        "p90": 17012.0
+      },
+      "paired_scalar_minus_blas": {
+        "max": 200599.0,
+        "median": 199007.5,
+        "min": 198459.5,
+        "n": 44,
+        "p10": 198700.0,
+        "p90": 200158.5
+      },
+      "scalar": {
+        "max": 216559.0,
+        "median": 215735.0,
+        "min": 215402.0,
+        "n": 44,
+        "p10": 215562.5,
+        "p90": 216143.0
+      }
+    },
+    "prefill/CPU": {
+      "blas": {
+        "max": 311834.0,
+        "median": 306769.5,
+        "min": 289667.0,
+        "n": 72,
+        "p10": 290613.5,
+        "p90": 308402.5
+      },
+      "paired_scalar_minus_blas": {
+        "max": 6604067.0,
+        "median": 6597096.0,
+        "min": 5963347.0,
+        "n": 72,
+        "p10": 5968587.5,
+        "p90": 6600706.0
+      },
+      "scalar": {
+        "max": 6917153.0,
+        "median": 6904371.75,
+        "min": 6256004.5,
+        "n": 72,
+        "p10": 6259722.0,
+        "p90": 6908581.5
+      }
+    },
+    "prefill/CUDA": {
+      "blas": {
+        "max": 344460.5,
+        "median": 341775.5,
+        "min": 16070.0,
+        "n": 31,
+        "p10": 322254.0,
+        "p90": 343518.5
+      },
+      "paired_scalar_minus_blas": {
+        "max": 6579666.0,
+        "median": 6569511.5,
+        "min": 199712.5,
+        "n": 31,
+        "p10": 5946875.5,
+        "p90": 6575708.0
+      },
+      "scalar": {
+        "max": 6923826.0,
+        "median": 6912259.0,
+        "min": 215853.0,
+        "n": 31,
+        "p10": 6269645.0,
+        "p90": 6917509.0
+      }
+    }
+  },
+  "sites": 243,
+  "source_commit": "255315187f275951be06d26c9b11233233dc55ec",
+  "start_utc_ns": 1795645595050891226,
+  "status": "MEASURED_RESIDENT_ROUTER_OPERATORS",
+  "synthetic_checks": {
+    "cases": 3,
+    "modes": 2,
+    "nonselected_nan_skipped": true
+  },
+  "temperature_range_mC": [
+    47875,
+    62875
+  ],
+  "uncalibrated_shapes": [
+    5,
+    20
+  ]
+}

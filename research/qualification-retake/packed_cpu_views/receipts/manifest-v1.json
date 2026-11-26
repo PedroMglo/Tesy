@@ -1,0 +1,151 @@
+{
+  "originals": {
+    "dio-v1-build": {
+      "native": {
+        "bytes": 0,
+        "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+      },
+      "supervisor": {
+        "bytes": 2990,
+        "sha256": "7dbff8dc465eadb89ea13516b11084cfe541db58eac50019b7cee070775da733"
+      }
+    },
+    "dio-v1-r01": {
+      "native": {
+        "bytes": 56,
+        "sha256": "78259a44b9e2f927989a44b9b0ecb833f3ee3e5f0e71ee2a6e567ce3a54eb42f"
+      },
+      "supervisor": {
+        "bytes": 2325,
+        "sha256": "6f620051aba7e94a8a54d14d9a267c25c235d2f38634e1731e56ea3cd0a686ef"
+      }
+    },
+    "mmid-r01": {
+      "native": {
+        "bytes": 1914,
+        "sha256": "9ec382f1b92c29fff9ef7ec8bbeabbe99788e0bbfbd6403901b44da41f7e3779"
+      },
+      "supervisor": {
+        "bytes": 1024,
+        "sha256": "a4972ca94d49d02c31f84ca6f3e61705dfe8f7a6683310150bd14e816ee8ee9d"
+      }
+    },
+    "mmid-r02": {
+      "native": {
+        "bytes": 1914,
+        "sha256": "6bb9c4c7cb8c09fb0da05bb74f9454fee7bb68224d8aa874ae25c9f2fd0fcb1c"
+      },
+      "supervisor": {
+        "bytes": 1024,
+        "sha256": "4e0a9c0540766ff412a3d12765106a3f7e52b80e8535c87449ac3500d23884ec"
+      }
+    },
+    "same-inode-diagnostic": {
+      "receipt": {
+        "bytes": 9429,
+        "sha256": "e72feaf042922fb1e2ff71e5149e14d802cc072da320388362f9eb0d9042cb10"
+      }
+    }
+  },
+  "runs": {
+    "dio-v1-build": {
+      "cgroup_peak_B": 191565824,
+      "cgroup_swap_peak_B": 0,
+      "commit": "1a9ff0d9d67603a78f8224b0b80c32b2de18e0f5",
+      "executable_sha256": "9a7791cb110d830b86bd84a13ec9dfa2cf97e2bdfcd8478f7a788772449dbff9",
+      "kernel": "7.3.4-200.fc44.x86_64",
+      "launcher_sha256": "ad1c20e1086d374d099da80bc64134d47b3b0886b6ed7e3261b57bbf7e39aac5",
+      "max_rss_children_KiB": 199764,
+      "memory_events_delta": {
+        "high": 0,
+        "low": 0,
+        "max": 0,
+        "oom": 0,
+        "oom_group_kill": 0,
+        "oom_kill": 0,
+        "sock_throttled": 0
+      },
+      "providers_sha256": {
+        "ld-linux-x86-64.so.2": "4e5d39355699e90fa29313d3100e82af4a23290028c58c364d6a249ef6a78e5e",
+        "libc.so.6": "a5c5ad9d59d3c69eda93aa8f82930ba06cc4e893a113e66c85ad6e96243d53c8",
+        "libcrypto.so.3.5.9": "695648ac8dc5e6a2b70e5e72399940de0f84bf24fddb7dd18949ba40bc575c72",
+        "libgcc_s-16-20261029.so.1": "5a52ae4a6f1b119aa092aa1483c967e19d9ba036b1b0c2133236a8a2ce826ebf",
+        "libm.so.6": "16a03ce6d24c8a46742206d4a9c1d35bb6577ae2384f153dc6ef4a4b62b5357f",
+        "libstdc++.so.6.0.36": "49811507d8fc0283d8f8023546613774c673f876fe823b1b99d0c8d46039deda",
+        "libz.so.1.3.1.zlib-ng": "bbde8faec092a7c67b8bd76bbba4a826e61b05c171b97004ce6b308c5a090351"
+      },
+      "scope_exit": 0,
+      "source_sha256": {
+        "direct_io.cpp": "3ec94db4dcb32da5938196b40ecf867913370ffe959f439eaacbabec697ab0ed",
+        "integral-index.json": "f8961dcdaa58aa7774e63150b76d69add0dd080181493838528c8f36de543a57",
+        "protocol.md": "ac66fd3429f281aba2f90e21228ca9702a2f07b16650815a736667d3705c40a9",
+        "test_direct_io.py": "882ee990278e8dc770415ea9bca3814c6240c115c5242b373db7bd4a4b917f0f"
+      },
+      "status": "PASS_BUILD",
+      "supervisor_wall_s": 0.973537,
+      "tree": "0fdff3de7178f44c2ee1a0ad3ebf4ce46f94fb5f"
+    },
+    "dio-v1-r01": {
+      "cgroup_peak_B": 67502080,
+      "cgroup_swap_peak_B": 0,
+      "commit": "1a9ff0d9d67603a78f8224b0b80c32b2de18e0f5",
+      "kernel": "7.3.4-200.fc44.x86_64",
+      "launcher_sha256": "ad1c20e1086d374d099da80bc64134d47b3b0886b6ed7e3261b57bbf7e39aac5",
+      "max_rss_children_KiB": 59884,
+      "memory_events_delta": {
+        "high": 0,
+        "low": 0,
+        "max": 0,
+        "oom": 0,
+        "oom_group_kill": 0,
+        "oom_kill": 0,
+        "sock_throttled": 0
+      },
+      "scope_exit": 1,
+      "source_sha256": {
+        "direct_io.cpp": "3ec94db4dcb32da5938196b40ecf867913370ffe959f439eaacbabec697ab0ed",
+        "integral-index.json": "f8961dcdaa58aa7774e63150b76d69add0dd080181493838528c8f36de543a57",
+        "protocol.md": "ac66fd3429f281aba2f90e21228ca9702a2f07b16650815a736667d3705c40a9",
+        "test_direct_io.py": "882ee990278e8dc770415ea9bca3814c6240c115c5242b373db7bd4a4b917f0f"
+      },
+      "status": "FAIL_PRESERVED",
+      "supervisor_wall_s": 0.273061,
+      "tree": "0fdff3de7178f44c2ee1a0ad3ebf4ce46f94fb5f"
+    },
+    "mmid-r01": {
+      "cgroup_peak_B": 211243008,
+      "cgroup_swap_peak_B": 0,
+      "launcher_sha256": "fc4b1e2aebfad6f0d45ba0bc589ea19f78cbb0f74e83c9be001dd22af8e7d52c",
+      "memory_events_delta": {
+        "high": 0,
+        "low": 0,
+        "max": 0,
+        "oom": 0,
+        "oom_group_kill": 0,
+        "oom_kill": 0,
+        "sock_throttled": 0
+      },
+      "scope_exit": 0,
+      "status": "PASS_CPU_MMID_SYNTHETIC_PACKED_VIEWS",
+      "supervisor_wall_s": 1.082018
+    },
+    "mmid-r02": {
+      "cgroup_peak_B": 158814208,
+      "cgroup_swap_peak_B": 0,
+      "launcher_sha256": "fc4b1e2aebfad6f0d45ba0bc589ea19f78cbb0f74e83c9be001dd22af8e7d52c",
+      "memory_events_delta": {
+        "high": 0,
+        "low": 0,
+        "max": 0,
+        "oom": 0,
+        "oom_group_kill": 0,
+        "oom_kill": 0,
+        "sock_throttled": 0
+      },
+      "scope_exit": 0,
+      "status": "PASS_CPU_MMID_SYNTHETIC_PACKED_VIEWS",
+      "supervisor_wall_s": 0.872953
+    }
+  },
+  "schema": "tesy-packed-cpu-preliminary-receipts-v1"
+}

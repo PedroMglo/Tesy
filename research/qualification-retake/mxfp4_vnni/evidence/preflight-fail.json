@@ -1,0 +1,89 @@
+{
+  "abi_symbol": "ggml_vec_dot_mxfp4_q8_0",
+  "build_receipt_sha256": "05b42e7516cbbd2ce8b383f3e49efc2ad2c6e0049dedd84d66a8b499482dd5d8",
+  "c55_age_s_at_admission": 228.522647,
+  "c55_policy_sha256": "bcc49adfb58ff7edba35e75e2ccce017e6db4dd29988b4dfea784dce3c12360d",
+  "children": {},
+  "clockbench_sha256": "30d4fd3a14d10b47de3e88148c16cf71801973b253df524142e78bed96ad67d8",
+  "commit": "70ba0277017bee7dd155f000ed744d98c88b5d22",
+  "cpu_cache": {
+    "0": {
+      "cache": [
+        {
+          "level": "1",
+          "shared_cpu_list": "0,12",
+          "size": "48K",
+          "type": "Data"
+        },
+        {
+          "level": "1",
+          "shared_cpu_list": "0,12",
+          "size": "32K",
+          "type": "Instruction"
+        },
+        {
+          "level": "2",
+          "shared_cpu_list": "0,12",
+          "size": "1024K",
+          "type": "Unified"
+        },
+        {
+          "level": "3",
+          "shared_cpu_list": "0-3,12-15",
+          "size": "16384K",
+          "type": "Unified"
+        }
+      ],
+      "sibling_list": "0,12"
+    },
+    "4": {
+      "cache": [
+        {
+          "level": "1",
+          "shared_cpu_list": "4,16",
+          "size": "48K",
+          "type": "Data"
+        },
+        {
+          "level": "1",
+          "shared_cpu_list": "4,16",
+          "size": "32K",
+          "type": "Instruction"
+        },
+        {
+          "level": "2",
+          "shared_cpu_list": "4,16",
+          "size": "1024K",
+          "type": "Unified"
+        },
+        {
+          "level": "3",
+          "shared_cpu_list": "4-11,16-23",
+          "size": "8192K",
+          "type": "Unified"
+        }
+      ],
+      "sibling_list": "4,16"
+    }
+  },
+  "decision": "FAIL_PRESERVED",
+  "family_wall_s": 1.7486139930006175,
+  "frozen_elf_sha256": {
+    "base": "6e27d9ecb86e4747177189d2d2f6390280a2ee1000221ad68a0404023ea72539",
+    "candidate": "430fcbdea5b1ffdc0d7e50f2ea8b2312570ac233ca9840a5ebfdbffca7781453",
+    "clockbench": "30d4fd3a14d10b47de3e88148c16cf71801973b253df524142e78bed96ad67d8",
+    "control": "33e8ad1c458eaa657b2881534aa81165e63ab59a26f236d2398bd19bf94cb094",
+    "fallback": "de081a95a2d3508cbf49e099e73ab7cb54793f618012fbbd8f4b7bda9f27b418",
+    "r0": "9aabce5751c5d7ca19b50e4cabb1fcf484c1581d275141dae8aba8ed33060313"
+  },
+  "gcc_sha256": "14243f9ecbf08dfb3490eaca0c832055b8934ca0883f507cf951a5107fe7b36f",
+  "gpu_compute": 0,
+  "model_forwards": 0,
+  "placement_receipt_sha256": "50a35a1e5c3fde78066d1378e13dfeb89867d9970528135ff3294c6aa5bd1bf7",
+  "protocol_sha256": "9cbaebae5bc6755d9aa4f519daa0ccf6cda9116b67eaf6c3ce68b2f3f631df28",
+  "reason": "GateError: start inventory cadence gap",
+  "schema": "mxfp4-vnni-supervised-operator-v1",
+  "signal": "single-thread routed gate and up operand only",
+  "target_sha256": "582bd40f6886200101f4c4ed9f25f3fe80cc14c86e9e2b37746cd8904a0c622d",
+  "tree": "445fa9669038ccbbe22cee2d3da9bc1d37707ab5"
+}

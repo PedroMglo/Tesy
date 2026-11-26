@@ -1,0 +1,5 @@
+# Correção do supervisor antes do primeiro braço
+
+R01 terminou com FAIL_PRESERVED depois de 61 observações de C118 em 60,156 s. O primeiro pedido ao monitor falhou antes de Popen. O pai tinha aberto o pack para conferir os metadados do FD. Nenhum filho nem pread de payload do pack integral ocorreu. O recibo privado original tem SHA-256 `a7150479ed77e1812c79a60bea8d63dc637cd7895f1a620f1b95232ecbd1b9c5` e o inventário `9f22668ea1a9e4999be33e2cb4a72f88b62e5e972ba4d5e128e338db55775203`.
+
+A função de admissão da campanha anterior devolve, no segundo elemento, o módulo de guardas de recursos. A nova closure de frescura C55 capturou pelo nome a variável que inicialmente continha o dicionário selado. Depois da atribuição do módulo, a revalidação do primeiro tick tentou indexá-lo e interrompeu a campanha. Usar nomes distintos para o dicionário e o módulo, com um teste que exerça a revalidação após a atribuição. Repetir a janela C118 numa identidade nova, reutilizando o mesmo ELF qualificado e os mesmos limites; nenhuma leitura de resultado numérico orientou a correção.

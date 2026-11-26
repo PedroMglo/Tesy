@@ -1,0 +1,7 @@
+# Transferência para E20 após a interrupção do inventário
+
+O primeiro B20 parou no segundo ciclo de C118 por intervalo fora de (0, 1,5] s. Só ficou gravada a primeira amostra. Houve zero arranques e zero pedidos. A duração exata do intervalo rejeitado e a sua causa ficam desconhecidas. O recibo desta tentativa tem SHA-256 48af4cb6bc7bd940fe5b3950005ab474769ddf66ebf36a65fcfbaa0ddd868414.
+
+Congelado antes da segunda admissão. Executar os controlos sem modelo de C118. Se passarem, abrir um diretório de família R02 com cópias byte a byte dos seis diretórios de referência e evidência S, A e B de R01. Os três recibos originais têm SHA-256 4f20993fe15969cedea0ae78cb84da292f81244bd418f6ba3c80a3136a27fab3, 2215532538e53bfc492336508a9c23ae1f0bff7936b2ef23d7a1527bea7d3768 e 5ed2bd70e37f6c6122969d6452c06857ac3afaa8c37f56204af9bd4c1faddac9. O supervisor volta a autenticar as linhas. Estas cópias contam como três observações originais.
+
+Aplicar o mesmo executável de medição ebb7f3c4186f28c8f9b540296c2e8259f2ae22a7, C55 e janela familiar que acaba às 05:13:33 UTC. Uma admissão C118 nova, um único arranque adicional permitido, máximo total de quatro arranques físicos entre R01 e R02. Manter integralmente E20, o observador, pedido, geometria e os critérios numéricos do protocolo. Reservar 355 s e 64 MiB para R02. Nova falha conserva o seu recibo e encerra a transferência. Publicar o âmbito por identidade e comparar sempre com o mesmo S. [Protocolo por braço](physical-protocol.md)

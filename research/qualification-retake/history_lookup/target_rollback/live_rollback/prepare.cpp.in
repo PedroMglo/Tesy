@@ -1,0 +1,15 @@
+    auto prompt = ids_for(file, "log_medium", false);
+    check(prompt.size() == 189, "live prefix size");
+    auto memory = llama_get_memory(ctx.get());
+    llama_memory_clear(memory, true);
+    llama_synchronize(ctx.get());
+    decode(ctx.get(), prompt, 0, 0, 189);
+    llama_synchronize(ctx.get());
+    const float *prefix = llama_get_logits_ith(ctx.get(), -1);
+    write_row(out/"prefill.f32", prefix);
+    check(same_file(out/"prefill.f32", gold/"prefill_final.logits.f32"), "full live prefill");
+    const int anchor = choices(prefix)[0];
+    snapshot_kv(ctx.get(), 189, out/"entry.kv");
+    snapshot_pool(model.get(), out/"entry.pool");
+    check(same_file(out/"entry.kv", gold/"initial-kv.bin") &&
+          same_file(out/"entry.pool", gold/"initial-pool.bin"), "qualified live entry");

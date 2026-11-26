@@ -1,0 +1,62 @@
+{
+  "fixed_remainder": {
+    "host_unions": {
+      "callback_spans": {
+        "decode_ns": 7639291071,
+        "prefill_ns": 7027876723,
+        "through_first_final_ns": 14487645774
+      },
+      "wait_spans": {
+        "decode_ns": 7623268057,
+        "prefill_ns": 7016673403,
+        "through_first_final_ns": 14460930833
+      }
+    },
+    "independent_last_cuda_consumer": "UNKNOWN",
+    "min_outputs_per_s_if_all_prefill_remap_free": 7.17983412442349,
+    "observed_s": {
+      "decode": 10.003777,
+      "first_final": 20.485541488997114,
+      "prefill": 10.745846
+    },
+    "scenarios": {
+      "10": {
+        "coordination_budget_ns_if_all_remap_removed": 1846112235,
+        "decision": "HEADROOM_ONLY",
+        "free_remap_ns": 7027876723,
+        "required_prefill_saving_ns": 5181764488
+      },
+      "6": {
+        "coordination_budget_ns_if_all_remap_removed": -1287221099,
+        "decision": "NO_GO_FIXED_EXTERIOR",
+        "free_remap_ns": 7027876723,
+        "required_prefill_saving_ns": 8315097822
+      },
+      "8": {
+        "coordination_budget_ns_if_all_remap_removed": 671112235,
+        "decision": "HEADROOM_ONLY",
+        "free_remap_ns": 7027876723,
+        "required_prefill_saving_ns": 6356764488
+      }
+    }
+  },
+  "http_cut": {
+    "first_frame_minus_metric_ns": -102523,
+    "last_relevant_return_to_first_final_ns": 3272272,
+    "native_log_time_used": false,
+    "sample_call": 46,
+    "sample_number": 45,
+    "start_to_first_native_enter_ns": 10345936
+  },
+  "inputs": {
+    "raw/T2-result.json": "7d73bedd1a6e801655a4680ace7cc7a0e08a931e9b93e72fdfc7f15126211569",
+    "raw/events.pfj": "1a96cca8af0fd2dd0a4e4fd1ba2afc031320e6ff0be9b335cead5f5e0035f018",
+    "receipt.json": "78c3a5bb34353d2b880b14bfa80634cd06dfe465beec529446206a8728af3f43"
+  },
+  "journal_sha256": "1a96cca8af0fd2dd0a4e4fd1ba2afc031320e6ff0be9b335cead5f5e0035f018",
+  "route": {
+    "rows": 7012,
+    "sha256": "f7790121a33d6785d2347eb47091d30385a792c308403cdd3ed9f32813e5ca5f"
+  },
+  "source": "C269_NATIVE_T2_REFERENCE"
+}

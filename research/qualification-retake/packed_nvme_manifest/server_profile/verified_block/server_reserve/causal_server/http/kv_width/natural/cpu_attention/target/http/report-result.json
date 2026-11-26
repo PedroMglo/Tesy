@@ -1,0 +1,136 @@
+{
+  "absent_live_evidence": [
+    "FD cuts",
+    "signal timestamps"
+  ],
+  "failed_family_sha256": "bad233f91e4011d7be7caeaabec169356d0efc50512a3586ec848a0f7cb67915",
+  "failed_source": "b428afa59a48509176b9fb83cbc695a860346da2",
+  "family_status": "FAIL_PRESERVED",
+  "model_starts": 0,
+  "not_run": [
+    "OFF",
+    "P",
+    "R"
+  ],
+  "physical_http_requests": 2,
+  "physical_starts": 1,
+  "physical_wall_s": 162.35050548100116,
+  "prepare_sha256": "dee236dd49622f0135fb5d99d996b108af7603393e6d9b7267a8737fd5e4b07a",
+  "protocol_sha256": "93e082e65634b1178a8b9d0163028a0daca4052508ceaba9cf4e350e7005f37f",
+  "recomputed": {
+    "data_observer": {
+      "VMA_key": [
+        0,
+        38,
+        72950552
+      ],
+      "identity": {
+        "ctime_ns": 1795690619713893962,
+        "dev": 40,
+        "ino": 72950552,
+        "mtime_ns": 1795690619710893969,
+        "size": 147907
+      },
+      "mapped_length": 151552,
+      "observed_cuts": 0,
+      "path": "/etc/ld.so.cache",
+      "sha256": "6b735fd19e8fcb2d9f5b6e0523a260ccf8a497e5210d998e9acbcbd29baef21c"
+    },
+    "energy": {
+      "covered_s": 98.96799999999999,
+      "estimated_gpu_j": 1415.1423850000006,
+      "first_sample_s": 0.094,
+      "host_energy_j": null,
+      "largest_gap_s": 1.0399999999999991,
+      "last_sample_s": 99.062,
+      "missing_power_samples": 0,
+      "monitor_s": 99.711,
+      "samples": 148
+    },
+    "image_sha256": "45f509221f21188cd9d2b7808b08e47a7405e3c66ed82a68402bbad0f4af6b43",
+    "inventory": {
+      "age_at_spawn_s": 0.047784,
+      "count": 61,
+      "s": 60.13781400500011,
+      "sha256": "c958f01f2d479f7c02a5c81c28e7624e0fb7e74478621d902b064bbdd725c694"
+    },
+    "maxima": {
+      "buffered_model_fds": 0,
+      "cgroup_file_bytes": 1835732992,
+      "cgroup_memory_bytes": 16006373376,
+      "cgroup_peak_bytes": 16029073408,
+      "cpu_tctl_c": 83.5,
+      "direct_model_fds": 2,
+      "gpu_temperature_c": 58.81,
+      "gpu_used_mib": 6854.0,
+      "nvme_composite_c": 51.85,
+      "rss_bytes": 16020938752,
+      "swap_bytes": 0
+    },
+    "monitor_elapsed_s": 99.711,
+    "monitor_stop": "INTERRUPTED_BY_OWNER",
+    "rows": [
+      {
+        "cached": 0,
+        "decode_s": 17.840966,
+        "decode_tok_s": 4.3719605765741605,
+        "evaluated": 2043,
+        "first_final_s": 74.97333171900391,
+        "first_reasoning_s": 58.42345016600302,
+        "official_ids_sha256": "0946e5070c4bfcc945d584e0778e33fb544a46bc313201bfc26a5f72f547f7a0",
+        "output": 78,
+        "output_ids_authority": "NOT_EXPOSED_EMPTY_OR_ABSENT",
+        "predicted": 78,
+        "prefill_s": 57.767508,
+        "prompt": 2043,
+        "stop": "stop",
+        "transport_s": 75.61844967499928,
+        "valid_s": 75.62056816700351,
+        "validator": "PASS"
+      },
+      {
+        "cached": 2044,
+        "decode_s": 9.512117,
+        "decode_tok_s": 4.941066221115657,
+        "evaluated": 153,
+        "first_final_s": 19.00726164400112,
+        "first_reasoning_s": 10.559032274002675,
+        "official_ids_sha256": "cf7e9b19362c5aeaf5e54e2185048acac09ec55459fb4a6fc262ec434f037425",
+        "output": 47,
+        "output_ids_authority": "NOT_EXPOSED_EMPTY_OR_ABSENT",
+        "predicted": 47,
+        "prefill_s": 9.741235000000001,
+        "prompt": 2197,
+        "stop": "stop",
+        "transport_s": 19.271426311999676,
+        "valid_s": 19.279219877003925,
+        "validator": "PASS"
+      }
+    ],
+    "trajectories": {
+      "1": {
+        "accepted": 11,
+        "blocks": 9,
+        "eos": 1,
+        "proposed": 18,
+        "sampled": 78,
+        "sampled_sha256": "202698125db628161029f02774d9bf781614a9f551d2234cc07fa0a426f7c502",
+        "serial": 57,
+        "task": 0
+      },
+      "2": {
+        "accepted": 12,
+        "blocks": 11,
+        "eos": 1,
+        "proposed": 22,
+        "sampled": 47,
+        "sampled_sha256": "4a8a47b3ec0a64220e9734237eae9fd7b886ce35ed81964408eacdc4034931f9",
+        "serial": 23,
+        "task": 76
+      }
+    }
+  },
+  "report_sha256": "d0675ab2c63ee1e43a2cc9bcc385dfeaeea5fc423b38b1a3cbd738cc3c0a5795",
+  "reported_error": "AttributeError: module 'measure' has no attribute 'io'",
+  "status": "GO_REPORT_FIXTURE_ONLY"
+}

@@ -1,0 +1,25 @@
+diff --git a/common/ngram-map.cpp b/common/ngram-map.cpp
+--- a/common/ngram-map.cpp
++++ b/common/ngram-map.cpp
+@@ -5,6 +5,7 @@
+ #include <cinttypes>
+ #include <cstdint>
+ #include <cstdio>
++#include <cstdlib>
+ #include <sstream>
+ 
+ // prime number used for LCG hash function (32 bit), it is near (sqrt(5) - 1)/2 * 2^32.
+@@ -91,6 +92,13 @@
+     }
+     if (match_pos == 0) {
+         return draft_tokens;
++    }
++
++    if (n_draft_min == 2 && n_draft_max == 2) {
++        const char * gate = std::getenv("TESY_NGRAM_PREVIOUS_TOKEN");
++        if (gate && gate[0] == '1' && gate[1] == 0 && tokens[match_pos - 1] != tokens[cur_len - 2]) {
++            return draft_tokens;
++        }
+     }
+ 
+     const size_t copy_max = std::min(

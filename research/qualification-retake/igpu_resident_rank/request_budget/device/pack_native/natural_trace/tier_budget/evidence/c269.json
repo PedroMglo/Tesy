@@ -1,0 +1,172 @@
+{
+  "arm": "C269",
+  "arm_sha256": "78c3a5bb34353d2b880b14bfa80634cd06dfe465beec529446206a8728af3f43",
+  "callback_count": 2987,
+  "first_final_sample": 45,
+  "journal_sha256": "1a96cca8af0fd2dd0a4e4fd1ba2afc031320e6ff0be9b335cead5f5e0035f018",
+  "logged_cache_MiB": {
+    "CPU": "12606.81",
+    "CUDA0": "5547.00"
+  },
+  "method_sha256": "18330b89d99604b13248b186e3effb85f40c2d45d72b43330b668fb3e17349b3",
+  "necessary_ns": {
+    "decode": 2170443666,
+    "first": 10485541488
+  },
+  "observed_ns": {
+    "decode": 10003777000,
+    "first": 20485541488
+  },
+  "outputs": 47,
+  "post_first_calls": 46,
+  "route": {
+    "rows": 7012,
+    "sha256": "f7790121a33d6785d2347eb47091d30385a792c308403cdd3ed9f32813e5ca5f"
+  },
+  "sampled_ids_sha256": "4a8a47b3ec0a64220e9734237eae9fd7b886ce35ed81964408eacdc4034931f9",
+  "scenarios": {
+    "CPU": {
+      "decode": "HEADROOM_ONLY",
+      "exclusive_regions_ns": {
+        "decode_only": 92063104,
+        "first_only": 4388416381,
+        "intersection": 5298922626
+      },
+      "first": "NO_GO_FIXED_EXTERIOR",
+      "free_max_ns": {
+        "decode": 5390985730,
+        "first": 9687339007
+      },
+      "if_this_tier_free": {
+        "minimum_distinct_other_ns": 798202481,
+        "minimum_fraction_of_other_decode": 0.0,
+        "minimum_fraction_of_other_first": 0.16628155652203133,
+        "minimum_fraction_of_other_union": 0.16330620835123205,
+        "other_regions_suffice": true,
+        "required_decode_ns": 0,
+        "required_first_ns": 798202481,
+        "still_required_outside_both_ns": {
+          "decode": 0,
+          "distinct_at_least": 0,
+          "first": 0
+        }
+      },
+      "joint": "NO_GO_FIXED_EXTERIOR",
+      "remaining_floor_ns": {
+        "decode": 4612791270,
+        "first": 10798202481
+      },
+      "unmet_ns": {
+        "decode": 0,
+        "first": 798202481
+      }
+    },
+    "CUDA0": {
+      "decode": "HEADROOM_ONLY",
+      "exclusive_regions_ns": {
+        "decode_only": 87458916,
+        "first_only": 2639460342,
+        "intersection": 2160846425
+      },
+      "first": "NO_GO_FIXED_EXTERIOR",
+      "free_max_ns": {
+        "decode": 2248305341,
+        "first": 4800306767
+      },
+      "if_this_tier_free": {
+        "minimum_distinct_other_ns": 5685234721,
+        "minimum_fraction_of_other_decode": 0.0,
+        "minimum_fraction_of_other_first": 0.5868726919633855,
+        "minimum_fraction_of_other_union": 0.5813478836917007,
+        "other_regions_suffice": true,
+        "required_decode_ns": 0,
+        "required_first_ns": 5685234721,
+        "still_required_outside_both_ns": {
+          "decode": 0,
+          "distinct_at_least": 0,
+          "first": 0
+        }
+      },
+      "joint": "NO_GO_FIXED_EXTERIOR",
+      "remaining_floor_ns": {
+        "decode": 7755471659,
+        "first": 15685234721
+      },
+      "unmet_ns": {
+        "decode": 0,
+        "first": 5685234721
+      }
+    },
+    "both": {
+      "decode": "HEADROOM_ONLY",
+      "exclusive_regions_ns": {
+        "decode_only": 179522020,
+        "first_only": 7027876723,
+        "intersection": 7459769051
+      },
+      "first": "HEADROOM_ONLY",
+      "free_max_ns": {
+        "decode": 7639291071,
+        "first": 14487645774
+      },
+      "joint": "HEADROOM_ONLY",
+      "remaining_floor_ns": {
+        "decode": 2364485929,
+        "first": 5997895714
+      },
+      "unmet_ns": {
+        "decode": 0,
+        "first": 0
+      }
+    }
+  },
+  "source_sha256": {
+    "src/llama-model.cpp": "7af9ef3bb6dc9491f7280b3dbcc4f6605da7739b4288e7bee51881772f58f010",
+    "src/llama-moe-stream.cpp": "584aecb73900aa1164f00ec93126bc5b8b07c4d330d0f421641331b0c278d5a0",
+    "tools/server/server-context.cpp": "657c331a707f0faf74615d19387088070c3dbd7559328619c9ef606a4ec8cc55"
+  },
+  "status": "TRACE_DERIVED_FIXED_EXTERIOR",
+  "stderr_sha256": "8f457f1336bcccdeee2894c06c7a57f33a40ac03cb5b94bc69d1195aa357ee40",
+  "tier_layers": {
+    "CPU": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16,
+      17,
+      18,
+      19,
+      20,
+      21,
+      22,
+      23,
+      24
+    ],
+    "CUDA0": [
+      25,
+      26,
+      27,
+      28,
+      29,
+      30,
+      31,
+      32,
+      33,
+      34,
+      35
+    ]
+  }
+}

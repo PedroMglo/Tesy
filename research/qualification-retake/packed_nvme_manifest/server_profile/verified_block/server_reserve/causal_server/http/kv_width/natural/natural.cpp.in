@@ -1,0 +1,115 @@
+// Generated alongside the C291 fixture helpers and the model/context setup used in the packed gate.
+static std::string fingerprint(const std::vector<uint8_t> &bytes) {
+    unsigned char digest[32];
+    sha256_hash(digest, bytes.data(), bytes.size());
+    std::string hex;
+    for (auto b : digest) {
+        hex += "0123456789abcdef"[b>>4];
+        hex += "0123456789abcdef"[b&15];
+    }
+    return hex;
+}
+
+static json state(llama_context *ctx, int count, const fs::path &out, bool retain) {
+    llama_synchronize(ctx);
+    auto *mem=llama_get_memory(ctx);
+    const auto lo=llama_memory_seq_pos_min(mem,0), hi=llama_memory_seq_pos_max(mem,0);
+    check(hi==count-1 && lo>=0 && lo<=count-128,"live KV range");
+    const size_t n=llama_state_seq_get_size(ctx,0);
+    check(n>0 && n<=96U<<20,"encoded natural KV cap");
+    std::vector<uint8_t> bytes(n);
+    check(llama_state_seq_get_data(ctx,bytes.data(),n,0)==n,"serialized natural KV");
+    if (retain) {
+        const size_t shard=16U<<20;
+        for(size_t i=0;i<n;i+=shard)
+            write_new(out/("end-"+std::to_string(i/shard)+".kv"),bytes.data()+i,std::min(shard,n-i));
+    }
+    return {{"bytes",n},{"sha256",fingerprint(bytes)},{"public_min",lo},{"public_max",hi}};
+}
+
+static void prefill(llama_context *ctx,const std::vector<llama_token> &tokens,const std::vector<int>& ends) {
+    int start=0;
+    for (int end:ends) {
+        const int n=end-start;
+        check(n>0 && n<=256 && end<=int(tokens.size()),"external span");
+        check(llama_memory_seq_rm(llama_get_memory(ctx),0,start,-1),"server cache cut");
+        auto batch=llama_batch_init(n,0,1);
+        batch.n_tokens=n;
+        for(int j=0;j<n;++j) {
+            batch.token[j]=tokens[start+j]; batch.pos[j]=start+j;
+            batch.n_seq_id[j]=1; batch.seq_id[j][0]=0;
+            batch.logits[j]=(start+j+1)==int(tokens.size());
+        }
+        const int rc=llama_decode(ctx,batch);
+        llama_batch_free(batch);
+        check(rc==0,"T1 prefill");
+        start=end;
+    }
+    check(start==int(tokens.size()),"complete T1");
+    llama_synchronize(ctx);
+}
+
+void natural(const char *model_path,const fs::path &work,const std::string &mode,const fs::path &out) {
+    check(fs::create_directory(out),"exclusive natural capture");
+    std::ifstream file(work); json request; file>>request;
+    const auto prompt=request.at("prompt").get<std::vector<llama_token>>();
+    const auto cuts=request.at("ends").get<std::vector<int>>();
+    const auto prefix=request.at("prefix").get<std::vector<llama_token>>();
+    const auto proposal=request.at("proposal").get<std::vector<llama_token>>();
+    check(prompt.size()==2043 && prefix.size()==20 && proposal.size()==2,"first T1 draft");
+@MODEL_AND_CONTEXT@
+    auto *mem=llama_get_memory(ctx.get());
+    llama_memory_clear(mem,true);
+    std::array<llama_token,2> zero{0,0};
+    check(llama_decode(ctx.get(),llama_batch_get_one(zero.data(),2))==0,"startup probe");
+    check(llama_n_rs_seq(ctx.get())==0 && llama_memory_seq_rm(mem,0,1,-1),"partial removal");
+    llama_memory_clear(mem,true);
+    llama_synchronize(ctx.get());
+    prefill(ctx.get(),prompt,cuts);
+    using Sampler=std::unique_ptr<llama_sampler,decltype(&llama_sampler_free)>;
+    Sampler sampler(llama_sampler_init_greedy(),llama_sampler_free);
+    std::vector<llama_token> observed;
+    for(int j=0;j<20;++j) {
+        if(j) supplied(ctx.get(),int(prompt.size())+j-1,{observed.back()});
+        const float *row=llama_get_logits_ith(ctx.get(),-1);
+        check(finite_row(row,vocabulary),"prefix nonfinite");
+        if (j==0 || j==19) write_row(out/(j?"entry.f32":"prefill.f32"),row);
+        const auto id=llama_sampler_sample(sampler.get(),ctx.get(),-1);
+        observed.push_back(id);
+        check(id==choices(row)[0] && id==prefix[j],"natural prefix ID");
+    }
+    const int pos=int(prompt.size()+observed.size()-1);
+    const auto entry=state(ctx.get(),pos,out,false);
+    snapshot_pool(model.get(),out/"entry.pool");
+    const auto initial=completed_store(model.get());
+    std::vector<int> result;
+    if(mode=="ON") supplied(ctx.get(),pos,{observed.back(),proposal[0],proposal[1]});
+    for(int j=0;j<3;++j) {
+        if(mode!="ON") supplied(ctx.get(),pos+j,{j?result.back():observed.back()});
+        const auto rank=sampled(ctx.get(),sampler.get(),mode=="ON"?j:0,out/row_file(j));
+        result.push_back(rank[0]);
+        if(j<2) check(result[j]==proposal[j],"proposal rejected at the frozen cut");
+    }
+    const auto final=state(ctx.get(),pos+3,out,true);
+    snapshot_pool(model.get(),out/"end.pool");
+    json record={{"mode",mode},{"reserve",reserve},{"positions",pos},{"prefix",observed},
+                 {"verified",result},{"entry",entry},{"end",final},{"store_entry",initial},
+                 {"store_end",completed_store(model.get())}};
+    const std::string bytes=record.dump()+"\n";
+    write_new(out/"native.json",bytes.data(),bytes.size());
+}
+} // namespace
+
+int main(int argc,char **argv) try {
+    if(argc==2 && std::string(argv[1])=="--self-test") {
+        check(fingerprint({'a','b','c'})=="ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad",
+              "SHA256 control");
+        std::puts("PASS_NATURAL_HASH"); return 0;
+    }
+    check(argc==5,"client MODEL INPUT MODE OUT");
+    std::string mode=argv[3];
+    check(mode=="P" || mode=="OFF" || mode=="ON","mode");
+    natural(argv[1],argv[2],mode,argv[4]);return 0;
+} catch(const std::exception &e) {
+    std::fprintf(stderr,"NATURAL_FAIL %s\n",e.what());return 1;
+}

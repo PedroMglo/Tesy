@@ -1,0 +1,15 @@
+{
+  "classification": "FAIL_PRESERVED",
+  "unit": "zero-down-r01",
+  "measurement_commit": "5491680c8a62da292ae7138453d15121cf94232a",
+  "exit_code": 1,
+  "elapsed_s": 0.67,
+  "max_rss_KiB": 88520,
+  "virtual_address_limit_MiB": 384,
+  "terminal_error": "MemoryError; the attempt to serialize the exception in the same capped process also raised MemoryError",
+  "original_receipt_bytes": 0,
+  "original_receipt_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "evidence": "Sanitized supervisor transcription of the terminal command and file stat; the empty original remains at the first output identity.",
+  "witness_without_raw": {"locale_archive_mapping_KiB":227912,"virtual_size_after_C295_import_KiB":340188,"C_locale_virtual_size_after_C295_import_KiB":111748},
+  "reopening": "Only process locale changed for R02/R03: LC_ALL=C PYTHONCOERCECLOCALE=0 PYTHONUTF8=1. Inputs, code, limit and decision unchanged."
+}

@@ -1,0 +1,351 @@
+--- a/src/llama-context.cpp
++++ b/src/llama-context.cpp
+@@ -10,6 +10,7 @@
+ #include "llama-mmap.h"
+ #include "llama-model.h"
+ #include "llama-moe-stream.h"
++#include "phase-fd-integrated.h"
+ #include "llama-ext.h"
+ #include "llama.h"
+ 
+@@ -1396,7 +1397,13 @@
+         //LLAMA_LOG_INFO("graph set inputs time: %.3f ms\n", (ggml_time_us() - t_start_us)/1000.0);
+     }
+ 
++    if (pfj::journal) {
++        const bool positioned = ubatch.n_tokens > 0 && ubatch.pos != nullptr;
++        pfj::graph(model.moe_stream(), ubatch.n_tokens,
++                positioned ? ubatch.pos[0] : -1, positioned ? ubatch.pos[ubatch.n_tokens - 1] : -1);
++    }
+     const auto status = graph_compute(res->get_gf(), ubatch.n_tokens > 1);
++    if (pfj::journal) pfj::graph_return(status);
+     if (status != GGML_STATUS_SUCCESS) {
+         LLAMA_LOG_ERROR("%s: failed to compute graph, compute status: %d\n", __func__, status);
+         ret = status;
+@@ -4124,7 +4131,13 @@
+ int32_t llama_decode(
+         llama_context * ctx,
+           llama_batch   batch) {
++    if (pfj::journal) {
++        const bool positioned = batch.n_tokens > 0 && batch.pos != nullptr;
++        pfj::enter(ctx->get_model().moe_stream(), batch.n_tokens,
++                positioned ? batch.pos[0] : -1, positioned ? batch.pos[batch.n_tokens - 1] : -1);
++    }
+     const int ret = ctx->decode(batch);
++    if (pfj::journal) pfj::returned(ctx->get_model().moe_stream(), ret);
+     if (ret != 0 && ret != 1) {
+         LLAMA_LOG_ERROR("%s: failed to decode, ret = %d\n", __func__, ret);
+     }
+--- a/src/llama-moe-stream.cpp
++++ b/src/llama-moe-stream.cpp
+@@ -1,4 +1,5 @@
+ #include "llama-moe-stream.h"
++#include "phase-fd-integrated.h"
+ #include "c269-last-use-order.h"
+ #include "c291-expert-store.h"
+ 
+@@ -83,7 +84,7 @@
+         const size_t total = ((head + len + a - 1)/a)*a;
+         ssize_t r;
+         do {
+-            r = pread(fd, staging, total, aoffs);
++            r = pfj::read(fd, staging, total, aoffs);
+         } while (r < 0 && errno == EINTR);
+         if (r < 0 || (size_t) r < head + len) {
+             return nullptr;
+@@ -94,7 +95,7 @@
+     uint8_t * p    = staging;
+     size_t    left = len;
+     while (left > 0) {
+-        const ssize_t r = pread(fd, p, left, offs);
++        const ssize_t r = pfj::read(fd, p, left, offs);
+         if (r < 0) {
+             if (errno == EINTR) {
+                 continue;
+@@ -148,6 +149,7 @@
+ 
+     debug         = std::getenv("LLAMA_MOE_STREAM_DEBUG") != nullptr;
+     use_direct_io = direct;
++    pfj::install(this);
+ }
+ 
+ // stop and join the I/O workers before the cache buffers and files they use are destroyed
+@@ -155,12 +157,14 @@
+     {
+         std::lock_guard<std::mutex> lock(mtx);
+         shutting_down = true;
++        if (pfj::active()) pfj::queue(*this,pfj::CANCEL_QUEUED,pfj::Site{},0);
+         q_demand.clear();
+     }
+     cv_work.notify_all();
+     for (auto & w : workers) {
+         w.join();
+     }
++    if (pfj::journal) pfj::finish(this);
+ }
+ 
+ ggml_tensor * llama_moe_stream::create_cache_tensor(
+@@ -311,7 +315,10 @@
+     workers_started = true;
+     workers.reserve(n_io_threads);
+     for (int32_t i = 0; i < n_io_threads; i++) {
+-        workers.emplace_back([this]() { worker_loop(); });
++        workers.emplace_back([this,i]() {
++            if (pfj::journal) pfj::worker_id = i;
++            worker_loop();
++        });
+     }
+ }
+ 
+@@ -339,26 +346,37 @@
+             sl.slot_state[w.slot] != LLAMA_MOE_STREAM_SLOT_LOADING ||
+             sl.slot_expert[w.slot] != w.expert ||
+             sl.slot_claimed[w.slot]) {
++            if (pfj::journal) pfj::dispatched(w,false);
+             continue; // stale or duplicate item
+         }
+         sl.slot_claimed[w.slot] = 1;
++        if (pfj::journal) pfj::dispatched(w,true);
+ 
+         lk.unlock();
+ 
+         bool ok = true;
+         try {
+             if (expert_store) {
+-                const uint8_t *data=expert_store->read(sl.il,w.expert,staging);
++                const uint8_t *data=expert_store->read(sl.il,w.expert,staging,
++                    pfj::journal ? pfj::pack_read : ::pread);
+                 const auto &entry=expert_store->entries[sl.il][w.expert];
+                 for (size_t k=0;k<sl.weights.size();k++) {
+                     const auto &wt=sl.weights[k];
++                    if (pfj::journal) pfj::component(sl,k,expert_store->data.descriptor());
++                    const uint64_t begin=pfj::active()?pfj::now():0;
+                     ggml_backend_tensor_set(wt.cache,data+entry.relative[k],(size_t)w.slot*wt.nb_expert,wt.nb_expert);
++                    if (pfj::active()) pfj::emit(pfj::SET,pfj::current_component(),wt.nb_expert,
++                        (size_t)w.slot*wt.nb_expert,entry.relative[k],begin);
+                 }
+             } else {
+                 for (const auto &wt:sl.weights) {
++                    if (pfj::journal) pfj::component(sl,&wt-sl.weights.data(),files[wt.file_idx]->file_id());
+                     const uint8_t *data=llama_moe_stream_pread(*files[wt.file_idx],staging,wt.nb_expert,wt.offs+(size_t)w.expert*wt.nb_expert,use_direct_io);
+                     if (!data) {ok=false;break;}
++                    const uint64_t begin=pfj::active()?pfj::now():0;
+                     ggml_backend_tensor_set(wt.cache,data,(size_t)w.slot*wt.nb_expert,wt.nb_expert);
++                    if (pfj::active()) pfj::emit(pfj::SET,pfj::current_component(),wt.nb_expert,
++                        (size_t)w.slot*wt.nb_expert,0,begin);
+                 }
+             }
+         } catch (const std::exception &error) {
+@@ -373,10 +391,15 @@
+             sl.slot_state[w.slot]=LLAMA_MOE_STREAM_SLOT_RESIDENT;
+             if(expert_store){stats.n_store_loads++;stats.n_store_read_bytes+=tesy_expert_store::weights;}
+         }
++        if (pfj::journal) pfj::loaded(valid);
+         cv_done.notify_all();
+     }
+     lk.unlock();
+ 
++    if (pfj::active()) {
++        pfj::Site s; s.worker=pfj::worker_id;
++        pfj::emit(pfj::WORKER_EXIT,s);
++    }
+     moe_aligned_free(staging);
+ }
+ 
+@@ -409,6 +432,7 @@
+ // bind expert -> slot and mark it LOADING: evict the slot's prior occupant, bump slot_gen (so any
+ // in-flight load for the old occupant is recognized as stale), and update the expert_slot index
+ void llama_moe_stream::reserve_slot_locked(llama_moe_stream_layer & sl, int32_t expert, int32_t slot) {
++    const int prior = pfj::active() ? sl.slot_expert[slot] : -1;
+     if (sl.slot_expert[slot] >= 0) {
+         if (debug) {
+             LLAMA_LOG_DEBUG("%s: layer %d: evict expert %d from slot %d\n", __func__, sl.il, sl.slot_expert[slot], slot);
+@@ -422,6 +446,7 @@
+     sl.slot_last_use[slot] = ++sl.use_counter;
+     sl.expert_slot[expert] = slot;
+     sl.seen[expert] = 1;
++    if (pfj::active()) pfj::reserve(sl,slot,prior);
+ }
+ 
+ size_t llama_moe_stream::size_bufs() const {
+@@ -476,6 +501,7 @@
+         GGML_ABORT("MoE expert streaming: expert load failed (I/O error)");
+     }
+ 
++    if (pfj::active()) pfj::consumer(*sl,-1,ids,n,a->ne[0]);
+     mgr->stats.n_calls++;
+     mgr->start_workers_locked();
+ 
+@@ -522,6 +548,7 @@
+             const int32_t s = it->second;
+             if (sl->slot_state[s] == LLAMA_MOE_STREAM_SLOT_LOADING) {
+                 mgr->q_demand.push_back({ sl, e, s, sl->slot_gen[s] });
++                if (pfj::active()) pfj::enqueue(*sl,s,1);
+                 mgr->cv_work.notify_one();
+                 waited = true;
+             }
+@@ -532,7 +559,9 @@
+             int32_t v;
+             while ((v = mgr->pick_victim_locked(*sl, sl->keep.data())) < 0) {
+                 // every allowed slot is loading; wait for a commit and retry
++                if (pfj::active()) pfj::emit(pfj::VICTIM_WAIT,pfj::host);
+                 mgr->cv_done.wait(lk);
++                if (pfj::active()) pfj::emit(pfj::VICTIM_RESUME,pfj::host);
+                 if (mgr->load_failed) {
+                     GGML_ABORT("MoE expert streaming: expert load failed (I/O error)");
+                 }
+@@ -542,6 +571,7 @@
+             }
+             mgr->reserve_slot_locked(*sl, e, v);
+             mgr->q_demand.push_back({ sl, e, v, sl->slot_gen[v] });
++            if (pfj::active()) pfj::enqueue(*sl,v,0);
+             mgr->cv_work.notify_one();
+             mgr->stats.n_miss++;
+             waited = true;
+@@ -550,6 +580,10 @@
+         }
+     }
+ 
++    if (pfj::active()) {
++        pfj::demands(*sl);
++        pfj::emit(pfj::BARRIER_ENTER,pfj::host,waited);
++    }
+     if (waited) {
+         const int64_t t0 = ggml_time_us();
+         mgr->cv_done.wait(lk, [&]{
+@@ -568,12 +602,14 @@
+         }
+         mgr->stats.t_stall_us += ggml_time_us() - t0;
+     }
++    if (pfj::active()) pfj::emit(pfj::BARRIER_RETURN,pfj::host,waited);
+ 
+     for (int64_t i = 0; i < n; i++) {
+         const int32_t s = sl->expert_slot.at(ids[i]);
+         sl->slot_last_use[s] = ++sl->use_counter;
+         out[i] = s;
+     }
++    if (pfj::active()) pfj::finish_consumer();
+ }
+ 
+ // stable per-wave userdata; grows lazily and records the per-wave expert capacity (set at build)
+@@ -665,6 +701,7 @@
+                 const int32_t s = it->second;
+                 if (sl.slot_state[s] == LLAMA_MOE_STREAM_SLOT_LOADING) {
+                     q_demand.push_back({ &sl, e, s, sl.slot_gen[s] }); // promote to demand, wait for it
++                    if (pfj::active()) pfj::enqueue(sl,s,1);
+                     cv_work.notify_one();
+                     waited = true;
+                 } else {
+@@ -677,7 +714,9 @@
+                 // miss: evict a non-kept slot and queue the load
+                 int32_t v;
+                 while ((v = pick_victim_locked(sl, sl.keep.data())) < 0) {
++                    if (pfj::active()) pfj::emit(pfj::VICTIM_WAIT,pfj::host);
+                     cv_done.wait(lk);
++                    if (pfj::active()) pfj::emit(pfj::VICTIM_RESUME,pfj::host);
+                     if (load_failed) {
+                         GGML_ABORT("MoE expert streaming: expert load failed (I/O error)");
+                     }
+@@ -687,6 +726,7 @@
+                 }
+                 reserve_slot_locked(sl, e, v);
+                 q_demand.push_back({ &sl, e, v, sl.slot_gen[v] });
++                if (pfj::active()) pfj::enqueue(sl,v,0);
+                 cv_work.notify_one();
+                 stats.n_miss++;
+                 waited = true;
+@@ -714,11 +754,16 @@
+             reserve_slot_locked(sl, e, v);
+             sl.keep[v] = 1;
+             q_demand.push_back({ &sl, e, v, sl.slot_gen[v] });
++            if (pfj::active()) pfj::enqueue(sl,v,2);
+             cv_work.notify_one();
+             stats.n_preload_issued++;
+         }
+     }
+ 
++    if (pfj::active()) {
++        pfj::demands(sl);
++        pfj::emit(pfj::BARRIER_ENTER,pfj::host,waited);
++    }
+     if (waited) {
+         const int64_t t0 = ggml_time_us();
+         cv_done.wait(lk, [&]{
+@@ -737,6 +782,7 @@
+         }
+         stats.t_stall_wave_us += ggml_time_us() - t0;
+     }
++    if (pfj::active()) pfj::emit(pfj::BARRIER_RETURN,pfj::host,waited);
+ 
+     // parking pool: this wave's own resident slots plus the borrowed ones (all keep-protected;
+     //   the next same-layer reservation is ordered after this wave's GEMMs by the graph)
+@@ -819,6 +865,7 @@
+         GGML_ABORT("MoE expert streaming: expert load failed (I/O error)");
+     }
+ 
++    if (pfj::active()) pfj::consumer(*sl,w,ids,n,a->ne[0]);
+     mgr->stats.n_wave_calls++;
+ 
+     if (w == 0) {
+@@ -847,6 +894,7 @@
+         }
+     }
+ #endif
++    if (pfj::active()) pfj::finish_consumer();
+ }
+ 
+ // multi-pass prefill: 1.0 for pairs whose expert belongs to wave w, 0.0 otherwise; multiplied into
+--- a/src/phase-fd-integrated.h
++++ b/src/phase-fd-integrated.h
+@@ -1,6 +1,7 @@
+ // Private two-TU C269 overlay. Never add members to the shipped manager or work item.
+ #pragma once
+ #include "llama-moe-stream.h"
++#include "c291-expert-store.h"
+ 
+ #include <algorithm>
+ #include <array>
+@@ -22,7 +23,7 @@
+     ENTER=1, RETURN, TILE, TILE_RETURN, SLOT, QUEUED_AT_CUT, FILE_ID, WEIGHT,
+     REMAP_BEGIN, DEMAND, RESERVE, ENQUEUE, DISPATCH, SKIP, READ, SET, PUBLISH,
+     LOAD_FAIL, BARRIER_ENTER, BARRIER_RETURN, VICTIM_WAIT, VICTIM_RESUME,
+-    REMAP_END, WORKER_EXIT, END, PENDING_AT_RETURN, RANKS, CANCEL_QUEUED
++    REMAP_END, WORKER_EXIT, END, PENDING_AT_RETURN, RANKS, CANCEL_QUEUED, PACK_FILE, PACK_READ
+ };
+ constexpr size_t capacity = 262144;
+ struct Header {
+@@ -136,6 +137,14 @@
+ inline void snapshot(llama_moe_stream &mgr, Site boundary) {
+     if (mgr.layers.size()!=36 || mgr.n_slots!=40 || mgr.n_io_threads!=4 || !mgr.use_direct_io)
+         journal->invalid=true;
++    if (mgr.expert_store) {
++        auto s=boundary;
++        s.fd=mgr.expert_store->data.descriptor();
++        struct stat st{};
++        const int flags=fcntl(s.fd,F_GETFL);
++        if (fstat(s.fd,&st)!=0 || flags<0 || !(flags&O_DIRECT)) journal->invalid=true;
++        emit(PACK_FILE,s,st.st_dev,st.st_ino,flags);
++    }
+     for(const auto &f:mgr.files) {
+         struct stat st{};
+         auto s=boundary;
+@@ -270,6 +279,19 @@
+         emit(READ,s,offset,requested,n,begin,now(),n<0?error:0);
+     }
+     errno=error;
++    return n;
++}
++inline ssize_t pack_read(int fd, void *dst, size_t requested, off_t offset) {
++    const uint64_t start=active()?now():0;
++    const ssize_t n=::pread(fd,dst,requested,offset);
++    const int saved_errno=errno;
++    if (active()) {
++        Site s=job;
++        s.fd=fd; s.component=-1;
++        if (s.worker<0) journal->invalid=true;
++        emit(PACK_READ,s,offset,requested,n,start,now(),n<0?saved_errno:0);
++    }
++    errno=saved_errno;
+     return n;
+ }
+ inline void loaded(bool ok) {

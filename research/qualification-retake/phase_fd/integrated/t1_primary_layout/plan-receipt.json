@@ -1,0 +1,103 @@
+{
+  "bound_components": 87,
+  "distinct_records": 29,
+  "inputs": {
+    "causal": "5a98dfe45eae6900c68b8ca6bea899d3222c1769f3ca99ccf1ab79eddd53c796",
+    "index": "f8961dcdaa58aa7774e63150b76d69add0dd080181493838528c8f36de543a57",
+    "journal": "40d2ea8049ccee9213ffc3f317482d67ebbed85a887a933043a3f4e7bd132033",
+    "readback": "54273ebffab1294357932b5c4ee6823be7cb9d9d7420b5582b7294c744b658a0"
+  },
+  "missing_strata": [],
+  "partial_bytes": 383434752,
+  "plan_sha256": "761efff70fc046f5810974ab7656fe90f893e3a3a2af8461693103769d7f2b76",
+  "program_sha256": "192ef46b7c62473849c269bfa5300547175152b314878d3f487efd93c0a149cf",
+  "protocol_sha256": "1e67974fdecdee5345d7cca6b186414a4702d8726b8f02ee59f1bb393e95eb16",
+  "sample_counts": {
+    "148_cpu": {
+      "consumers": 12,
+      "origins": {
+        "evict_backed_first": {
+          "disk": 10,
+          "primary": 1,
+          "ram": 1
+        },
+        "lru_ram": {
+          "disk": 11,
+          "ram": 1
+        }
+      }
+    },
+    "148_cuda": {
+      "consumers": 9,
+      "origins": {
+        "evict_backed_first": {
+          "disk": 2,
+          "primary": 4,
+          "ram": 3
+        },
+        "lru_ram": {
+          "disk": 3,
+          "primary": 6
+        }
+      }
+    },
+    "decode_cpu": {
+      "consumers": 4,
+      "origins": {
+        "evict_backed_first": {
+          "disk": 2,
+          "primary": 2
+        },
+        "lru_ram": {
+          "disk": 3,
+          "primary": 1
+        }
+      }
+    },
+    "decode_cuda": {
+      "consumers": 4,
+      "origins": {
+        "evict_backed_first": {
+          "primary": 4
+        },
+        "lru_ram": {
+          "disk": 1,
+          "primary": 3
+        }
+      }
+    }
+  },
+  "status": "GO_PREPARE_ONLY",
+  "tallies": {
+    "148_cpu": {
+      "disk_candidate": 624,
+      "disk_lru": 653,
+      "eligible": 24,
+      "fewer": 24,
+      "nonempty_waves": 186
+    },
+    "148_cuda": {
+      "disk_candidate": 354,
+      "disk_lru": 362,
+      "eligible": 8,
+      "fewer": 8,
+      "nonempty_waves": 88
+    },
+    "decode_cpu": {
+      "disk_candidate": 661,
+      "disk_lru": 802,
+      "eligible": 124,
+      "fewer": 123,
+      "more": 1,
+      "nonempty_waves": 1150
+    },
+    "decode_cuda": {
+      "disk_candidate": 313,
+      "disk_lru": 341,
+      "eligible": 27,
+      "fewer": 26,
+      "more": 1,
+      "nonempty_waves": 506
+    }
+  }
+}

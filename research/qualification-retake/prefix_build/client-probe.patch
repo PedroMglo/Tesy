@@ -1,0 +1,60 @@
+--- a/tools/expert_service_window.cpp
++++ b/tools/expert_service_window.cpp
+@@ -3,6 +3,7 @@
+ #include "block_native_run.cpp"
+ #undef main
+ #include "llama-context.h"
++#include <link.h>
+
+ int chosen_mode(const std::string & profile) {
+     if(profile=="R0")return 0;
+@@ -31,7 +32,37 @@
+     if(selected)o.r->model->moe_stream()->window.record(1,layer,-1,-1,0,0,-1,0,(int)t->ne[1]);
+     return true;
+ }
++// Kept in this diagnostic client so the launcher cannot enable the observer.
++static void configure_prefix_observer(llama_moe_stream &service) {
++    if (const char *value = getenv("TESY_PREFIX_ROUTE_AUDIT")) {
++        check(std::string(value) == "1", "invalid prefix route audit option");
++        service.prefix_audit = std::make_unique<prefix_routes>();
++    }
++}
++
++static int probe_prefix_configuration() {
++    llama_moe_stream service(36, 40, 4, false);
++    const bool initially_off = !service.prefix_audit;
++    configure_prefix_observer(service);
++    check(initially_off && !service.workers_started && service.workers.empty() &&
++          service.q_demand.empty() && service.files.empty(), "startup probe opened work");
++    std::vector<std::string> mapped;
++    dl_iterate_phdr([](dl_phdr_info *info, size_t, void *data) {
++        if (info->dlpi_name && info->dlpi_name[0]) {
++            static_cast<std::vector<std::string> *>(data)->emplace_back(info->dlpi_name);
++        }
++        return 0;
++    }, &mapped);
++    std::cout << json({{"schema","tesy-prefix-build-probe-v1"},{"default_pointer_empty",initially_off},
++        {"enabled",bool(service.prefix_audit)},{"worker_count",service.workers.size()},
++        {"open_model_files",service.files.size()},{"mapped_objects",mapped}}).dump() << "\n";
++    return 0;
++}
++
+ int main(int argc,char ** argv){try{
++    if (argc == 2 && std::string(argv[1]) == "--prefix-config-probe") {
++        return probe_prefix_configuration();
++    }
+     if(argc==2&&std::string(argv[1])=="--self-test") {
+         check(chosen_mode("R0")==0&&chosen_mode("T")==1&&chosen_mode("E")==2,"mode selection changed");
+         bool bad=false;try{chosen_mode("B");}catch(const std::exception&){bad=true;}check(bad,"unknown mode accepted");
+@@ -76,10 +107,7 @@
+     window_observer observer;runtime r(argv[1],observe_window,&observer);observer.r=&r;
+     const bool trace=getenv("TESY_C294_WINDOW")!=nullptr;
+     auto & prefix_audit = r.model->moe_stream()->prefix_audit;
+-    if (const char * value = getenv("TESY_PREFIX_ROUTE_AUDIT")) {
+-        check(std::string(value) == "1", "invalid prefix route audit option");
+-        prefix_audit = std::make_unique<prefix_routes>();
+-    }
++    configure_prefix_observer(*r.model->moe_stream());
+     auto observed_call = [&](const std::vector<llama_token> & input, int pos, bool all) {
+         if (prefix_audit) check(prefix_audit->begin_call(input.size()), "incomplete route call");
+         return r.call(input, pos, all); // this harness already synchronizes before return

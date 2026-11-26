@@ -1,0 +1,779 @@
+{
+  "analysis_sha256": "e104fe51158cd4239934ba29c90c24c7cb402139ab0b87c7302df72c6a3e6012",
+  "backend_sources": {
+    "common/log.cpp": "be54107a3334c3e74439b4a3a694822e61cf918725fa401d9921a53e27d9a7fb",
+    "ggml/src/ggml.c": "ef2a64f06c900993396612ab2bfb98238d5ea931abbc938ddb0c72d31a0bd043",
+    "tools/server/server-context.cpp": "657c331a707f0faf74615d19387088070c3dbd7559328619c9ef606a4ec8cc55"
+  },
+  "commit": "4620e7ad4e23242d5ff7eef7644d18d1f7d42bae",
+  "gpu_used": false,
+  "inputs_sha256": {
+    "b3": "649bc3fe8f9e6469ab5cf7519ded4c5cb7d684cf36c792ca2a4b5eba018a7cbf",
+    "capture": "8825a62338b9aebf913b3dc676dfb5b17ffa98885604e5f12091a3d47cae5f3a",
+    "verified": "494101d84e2696670bf59589768c3a7208db1c6b0b5ac1f6f914d3d9f264f08d"
+  },
+  "model_forwards": 0,
+  "native_position_time": "INCONCLUSIVE",
+  "protocol_sha256": "782877946162e366aa53eddf93c7212af85182d42351dc2a299a34d287e73a3a",
+  "status": "REPRODUCED_DEBUG_PRODUCER_INTERVALS",
+  "target_B3_cost": "NOT_RUN",
+  "tree": "0a45349b4255347594029917f6d21cfbf8adcd32",
+  "turns": [
+    {
+      "feed_echoes": 77,
+      "native_predicted_us": 19692593,
+      "native_timed_counts_in_sse": [
+        78
+      ],
+      "producer_minus_native_us": 4,
+      "producer_span_us": 19692597,
+      "samples": 78,
+      "turn": "T1"
+    },
+    {
+      "feed_echoes": 46,
+      "native_predicted_us": 9919298,
+      "native_timed_counts_in_sse": [
+        47
+      ],
+      "producer_minus_native_us": -5,
+      "producer_span_us": 9919293,
+      "samples": 47,
+      "turn": "T2",
+      "windows": [
+        {
+          "boundary_proxies": {
+            "feed_terminal_sample": {
+              "parts": {
+                "ordinary": {
+                  "count": 19,
+                  "max_us": 362932,
+                  "mean_us": 226823.63157894736,
+                  "min_us": 107173,
+                  "same_count_permutation_max_us": 5113363,
+                  "same_count_permutation_min_us": 3376145,
+                  "sum_us": 4309649
+                },
+                "proposal_anchor": {
+                  "count": 7,
+                  "max_us": 307646,
+                  "mean_us": 204046.2857142857,
+                  "min_us": 141012,
+                  "same_count_permutation_max_us": 2197363,
+                  "same_count_permutation_min_us": 954982,
+                  "sum_us": 1428324
+                },
+                "skipped": {
+                  "count": 6,
+                  "max_us": 264685,
+                  "mean_us": 230278.66666666666,
+                  "min_us": 167859,
+                  "same_count_permutation_max_us": 1926666,
+                  "same_count_permutation_min_us": 801056,
+                  "sum_us": 1381672
+                }
+              },
+              "producer_proxy_prices": {
+                "reduce_15pct": {
+                  "headroom_if_b3_costs_its_anchor_us": [
+                    313725.25,
+                    313725.25
+                  ],
+                  "mean_per_proposal_us": [
+                    248864.17857142858,
+                    248864.17857142858
+                  ],
+                  "ratio_to_proposal_anchor_us": [
+                    1.2196457176382949,
+                    1.2196457176382949
+                  ],
+                  "total_verification_and_overhead_us": [
+                    1742049.25,
+                    1742049.25
+                  ]
+                }
+              },
+              "span_us": 7119645
+            },
+            "sample": {
+              "parts": {
+                "ordinary": {
+                  "count": 19,
+                  "max_us": 362930,
+                  "mean_us": 226823.05263157896,
+                  "min_us": 107169,
+                  "same_count_permutation_max_us": 5113356,
+                  "same_count_permutation_min_us": 3376151,
+                  "sum_us": 4309638
+                },
+                "proposal_anchor": {
+                  "count": 7,
+                  "max_us": 307641,
+                  "mean_us": 204046.85714285713,
+                  "min_us": 141017,
+                  "same_count_permutation_max_us": 2197349,
+                  "same_count_permutation_min_us": 954987,
+                  "sum_us": 1428328
+                },
+                "skipped": {
+                  "count": 6,
+                  "max_us": 264688,
+                  "mean_us": 230280.16666666666,
+                  "min_us": 167856,
+                  "same_count_permutation_max_us": 1926654,
+                  "same_count_permutation_min_us": 801057,
+                  "sum_us": 1381681
+                }
+              },
+              "producer_proxy_prices": {
+                "reduce_15pct": {
+                  "headroom_if_b3_costs_its_anchor_us": [
+                    313733.9500000002,
+                    313733.9500000002
+                  ],
+                  "mean_per_proposal_us": [
+                    248865.99285714288,
+                    248865.99285714288
+                  ],
+                  "ratio_to_proposal_anchor_us": [
+                    1.2196511935633834,
+                    1.2196511935633834
+                  ],
+                  "total_verification_and_overhead_us": [
+                    1742061.9500000002,
+                    1742061.9500000002
+                  ]
+                }
+              },
+              "span_us": 7119647
+            }
+          },
+          "position_count": 32,
+          "sensitivity": [
+            {
+              "compatible": false,
+              "endpoint_lag_us": 0,
+              "scale": 0.999
+            },
+            {
+              "compatible": false,
+              "endpoint_lag_us": 1000,
+              "scale": 0.999
+            },
+            {
+              "class_us": {
+                "ordinary": [
+                  4255308.362,
+                  4355348.362
+                ],
+                "proposal_anchor": [
+                  1366795.9649999999,
+                  1496927.672
+                ],
+                "skipped": [
+                  1350287.319,
+                  1410311.319
+                ]
+              },
+              "compatible": true,
+              "endpoint_lag_us": 10000,
+              "prices": {
+                "reduce_15pct": {
+                  "headroom_if_b3_costs_its_anchor_us": [
+                    193304.4650999999,
+                    432047.3230500007
+                  ],
+                  "mean_per_proposal_us": [
+                    241461.73387142856,
+                    256977.6125785715
+                  ],
+                  "ratio_to_proposal_anchor_us": [
+                    1.1291341383526778,
+                    1.316102281623286
+                  ],
+                  "total_verification_and_overhead_us": [
+                    1690232.1371,
+                    1798843.2880500006
+                  ]
+                }
+              },
+              "scale": 0.999,
+              "window_us": [
+                7112447.646,
+                7122531.353
+              ]
+            },
+            {
+              "compatible": false,
+              "endpoint_lag_us": 0,
+              "scale": 1
+            },
+            {
+              "class_us": {
+                "ordinary": [
+                  4304618,
+                  4314658
+                ],
+                "proposal_anchor": [
+                  1421305,
+                  1435356
+                ],
+                "skipped": [
+                  1378669,
+                  1384693
+                ]
+              },
+              "compatible": true,
+              "endpoint_lag_us": 1000,
+              "prices": {
+                "reduce_15pct": {
+                  "headroom_if_b3_costs_its_anchor_us": [
+                    300836.7999999998,
+                    326630.3499999996
+                  ],
+                  "mean_per_proposal_us": [
+                    248027.54285714283,
+                    249705.04999999996
+                  ],
+                  "ratio_to_proposal_anchor_us": [
+                    1.209590373398655,
+                    1.2298101744523515
+                  ],
+                  "total_verification_and_overhead_us": [
+                    1736192.7999999998,
+                    1747935.3499999996
+                  ]
+                }
+              },
+              "scale": 1,
+              "window_us": [
+                7118648,
+                7120651
+              ]
+            },
+            {
+              "class_us": {
+                "ordinary": [
+                  4259618,
+                  4359658
+                ],
+                "proposal_anchor": [
+                  1358305,
+                  1498356
+                ],
+                "skipped": [
+                  1351669,
+                  1411693
+                ]
+              },
+              "compatible": true,
+              "endpoint_lag_us": 10000,
+              "prices": {
+                "reduce_15pct": {
+                  "headroom_if_b3_costs_its_anchor_us": [
+                    185186.7999999998,
+                    442280.3499999996
+                  ],
+                  "mean_per_proposal_us": [
+                    240506.11428571425,
+                    257226.4785714285
+                  ],
+                  "ratio_to_proposal_anchor_us": [
+                    1.1235933249508125,
+                    1.3256119575500345
+                  ],
+                  "total_verification_and_overhead_us": [
+                    1683542.7999999998,
+                    1800585.3499999996
+                  ]
+                }
+              },
+              "scale": 1,
+              "window_us": [
+                7109648,
+                7129651
+              ]
+            },
+            {
+              "compatible": false,
+              "endpoint_lag_us": 0,
+              "scale": 1.001
+            },
+            {
+              "compatible": false,
+              "endpoint_lag_us": 1000,
+              "scale": 1.001
+            },
+            {
+              "class_us": {
+                "ordinary": [
+                  4263927.637999999,
+                  4363967.637999999
+                ],
+                "proposal_anchor": [
+                  1359728.3279999997,
+                  1489870.0350000001
+                ],
+                "skipped": [
+                  1353050.6809999999,
+                  1413074.6809999999
+                ]
+              },
+              "compatible": true,
+              "endpoint_lag_us": 10000,
+              "prices": {
+                "reduce_15pct": {
+                  "headroom_if_b3_costs_its_anchor_us": [
+                    195410.57694999967,
+                    434171.9349000007
+                  ],
+                  "mean_per_proposal_us": [
+                    240754.37313571427,
+                    256271.46612857148
+                  ],
+                  "ratio_to_proposal_anchor_us": [
+                    1.1311594785849892,
+                    1.319307854340739
+                  ],
+                  "total_verification_and_overhead_us": [
+                    1685280.6119499998,
+                    1793900.2629000004
+                  ]
+                }
+              },
+              "scale": 1.001,
+              "window_us": [
+                7116762.646999999,
+                7126856.354
+              ]
+            }
+          ],
+          "unconditional_proper_subset_native_us": [
+            0,
+            9919298
+          ]
+        },
+        {
+          "boundary_proxies": {
+            "feed_terminal_sample": {
+              "parts": {
+                "ordinary": {
+                  "count": 23,
+                  "max_us": 362932,
+                  "mean_us": 222059.8260869565,
+                  "min_us": 107173,
+                  "same_count_permutation_max_us": 6249768,
+                  "same_count_permutation_min_us": 3669506,
+                  "sum_us": 5107376
+                },
+                "proposal_anchor": {
+                  "count": 11,
+                  "max_us": 395047,
+                  "mean_us": 217395.81818181818,
+                  "min_us": 120856,
+                  "same_count_permutation_max_us": 3377064,
+                  "same_count_permutation_min_us": 1466871,
+                  "sum_us": 2391354
+                },
+                "skipped": {
+                  "count": 12,
+                  "max_us": 264685,
+                  "mean_us": 201712.0,
+                  "min_us": 99599,
+                  "same_count_permutation_max_us": 3632648,
+                  "same_count_permutation_min_us": 1623861,
+                  "sum_us": 2420544
+                }
+              },
+              "producer_proxy_prices": {
+                "reduce_15pct": {
+                  "headroom_if_b3_costs_its_anchor_us": [
+                    932652.9000000004,
+                    932652.9000000004
+                  ],
+                  "mean_per_proposal_us": [
+                    302182.4454545455,
+                    302182.4454545455
+                  ],
+                  "ratio_to_proposal_anchor_us": [
+                    1.390010387420683,
+                    1.390010387420683
+                  ],
+                  "total_verification_and_overhead_us": [
+                    3324006.9000000004,
+                    3324006.9000000004
+                  ]
+                },
+                "six_tps": {
+                  "headroom_if_b3_costs_its_anchor_us": [
+                    334603.333333333,
+                    334603.333333333
+                  ],
+                  "mean_per_proposal_us": [
+                    247814.303030303,
+                    247814.303030303
+                  ],
+                  "ratio_to_proposal_anchor_us": [
+                    1.1399221250109073,
+                    1.1399221250109073
+                  ],
+                  "total_verification_and_overhead_us": [
+                    2725957.333333333,
+                    2725957.333333333
+                  ]
+                }
+              },
+              "span_us": 9919274
+            },
+            "sample": {
+              "parts": {
+                "ordinary": {
+                  "count": 23,
+                  "max_us": 362930,
+                  "mean_us": 222059.30434782608,
+                  "min_us": 107169,
+                  "same_count_permutation_max_us": 6249752,
+                  "same_count_permutation_min_us": 3669541,
+                  "sum_us": 5107364
+                },
+                "proposal_anchor": {
+                  "count": 11,
+                  "max_us": 395046,
+                  "mean_us": 217396.72727272726,
+                  "min_us": 120873,
+                  "same_count_permutation_max_us": 3377055,
+                  "same_count_permutation_min_us": 1466901,
+                  "sum_us": 2391364
+                },
+                "skipped": {
+                  "count": 12,
+                  "max_us": 264688,
+                  "mean_us": 201713.75,
+                  "min_us": 99602,
+                  "same_count_permutation_max_us": 3632646,
+                  "same_count_permutation_min_us": 1623895,
+                  "sum_us": 2420565
+                }
+              },
+              "producer_proxy_prices": {
+                "reduce_15pct": {
+                  "headroom_if_b3_costs_its_anchor_us": [
+                    932671.0499999989,
+                    932671.0499999989
+                  ],
+                  "mean_per_proposal_us": [
+                    302185.00454545446,
+                    302185.00454545446
+                  ],
+                  "ratio_to_proposal_anchor_us": [
+                    1.3900163463195059,
+                    1.3900163463195059
+                  ],
+                  "total_verification_and_overhead_us": [
+                    3324035.049999999,
+                    3324035.049999999
+                  ]
+                },
+                "six_tps": {
+                  "headroom_if_b3_costs_its_anchor_us": [
+                    334605.333333333,
+                    334605.333333333
+                  ],
+                  "mean_per_proposal_us": [
+                    247815.39393939392,
+                    247815.39393939392
+                  ],
+                  "ratio_to_proposal_anchor_us": [
+                    1.1399223762393902,
+                    1.1399223762393902
+                  ],
+                  "total_verification_and_overhead_us": [
+                    2725969.333333333,
+                    2725969.333333333
+                  ]
+                }
+              },
+              "span_us": 9919293
+            }
+          },
+          "position_count": 46,
+          "sensitivity": [
+            {
+              "compatible": false,
+              "endpoint_lag_us": 0,
+              "scale": 0.999
+            },
+            {
+              "compatible": false,
+              "endpoint_lag_us": 1000,
+              "scale": 0.999
+            },
+            {
+              "class_us": {
+                "ordinary": [
+                  5042232.636,
+                  5162280.636
+                ],
+                "proposal_anchor": [
+                  2298856.9290000005,
+                  2498936.9290000005
+                ],
+                "skipped": [
+                  2358120.435,
+                  2478168.435
+                ]
+              },
+              "compatible": true,
+              "endpoint_lag_us": 10000,
+              "prices": {
+                "reduce_15pct": {
+                  "headroom_if_b3_costs_its_anchor_us": [
+                    770185.7349999985,
+                    1090313.7349999985
+                  ],
+                  "mean_per_proposal_us": [
+                    297192.96945454535,
+                    308106.4239999999
+                  ],
+                  "ratio_to_proposal_anchor_us": [
+                    1.3082053516685608,
+                    1.474285163746264
+                  ],
+                  "total_verification_and_overhead_us": [
+                    3269122.663999999,
+                    3389170.663999999
+                  ]
+                },
+                "six_tps": {
+                  "headroom_if_b3_costs_its_anchor_us": [
+                    172115.7683333326,
+                    492243.7683333326
+                  ],
+                  "mean_per_proposal_us": [
+                    242822.97248484846,
+                    253736.42703030302
+                  ],
+                  "ratio_to_proposal_anchor_us": [
+                    1.0688755951924758,
+                    1.2141254473576386
+                  ],
+                  "total_verification_and_overhead_us": [
+                    2671052.697333333,
+                    2791100.697333333
+                  ]
+                }
+              },
+              "scale": 0.999,
+              "window_us": [
+                9919298.0,
+                9919298
+              ]
+            },
+            {
+              "compatible": false,
+              "endpoint_lag_us": 0,
+              "scale": 1
+            },
+            {
+              "class_us": {
+                "ordinary": [
+                  5101340,
+                  5113388
+                ],
+                "proposal_anchor": [
+                  2381329,
+                  2401409
+                ],
+                "skipped": [
+                  2414541,
+                  2426589
+                ]
+              },
+              "compatible": true,
+              "endpoint_lag_us": 1000,
+              "prices": {
+                "reduce_15pct": {
+                  "headroom_if_b3_costs_its_anchor_us": [
+                    916606.2999999989,
+                    948734.2999999989
+                  ],
+                  "mean_per_proposal_us": [
+                    301637.75454545446,
+                    302733.02727272717
+                  ],
+                  "ratio_to_proposal_anchor_us": [
+                    1.3816952047735305,
+                    1.3984053862360046
+                  ],
+                  "total_verification_and_overhead_us": [
+                    3318015.299999999,
+                    3330063.299999999
+                  ]
+                },
+                "six_tps": {
+                  "headroom_if_b3_costs_its_anchor_us": [
+                    318536.333333333,
+                    350664.333333333
+                  ],
+                  "mean_per_proposal_us": [
+                    247267.75757575754,
+                    248363.03030303027
+                  ],
+                  "ratio_to_proposal_anchor_us": [
+                    1.1326455982022776,
+                    1.1472557270890889
+                  ],
+                  "total_verification_and_overhead_us": [
+                    2719945.333333333,
+                    2731993.333333333
+                  ]
+                }
+              },
+              "scale": 1,
+              "window_us": [
+                9919298,
+                9919298
+              ]
+            },
+            {
+              "class_us": {
+                "ordinary": [
+                  5047340,
+                  5167388
+                ],
+                "proposal_anchor": [
+                  2291329,
+                  2491409
+                ],
+                "skipped": [
+                  2360541,
+                  2480589
+                ]
+              },
+              "compatible": true,
+              "endpoint_lag_us": 10000,
+              "prices": {
+                "reduce_15pct": {
+                  "headroom_if_b3_costs_its_anchor_us": [
+                    772606.2999999989,
+                    1092734.2999999989
+                  ],
+                  "mean_per_proposal_us": [
+                    296728.6636363635,
+                    307642.1181818181
+                  ],
+                  "ratio_to_proposal_anchor_us": [
+                    1.3101081757350956,
+                    1.4768997817423857
+                  ],
+                  "total_verification_and_overhead_us": [
+                    3264015.299999999,
+                    3384063.299999999
+                  ]
+                },
+                "six_tps": {
+                  "headroom_if_b3_costs_its_anchor_us": [
+                    174536.33333333302,
+                    494664.333333333
+                  ],
+                  "mean_per_proposal_us": [
+                    242358.66666666663,
+                    253272.1212121212
+                  ],
+                  "ratio_to_proposal_anchor_us": [
+                    1.0700552712675169,
+                    1.2158853369958365
+                  ],
+                  "total_verification_and_overhead_us": [
+                    2665945.333333333,
+                    2785993.333333333
+                  ]
+                }
+              },
+              "scale": 1,
+              "window_us": [
+                9919298,
+                9919298
+              ]
+            },
+            {
+              "compatible": false,
+              "endpoint_lag_us": 0,
+              "scale": 1.001
+            },
+            {
+              "compatible": false,
+              "endpoint_lag_us": 1000,
+              "scale": 1.001
+            },
+            {
+              "class_us": {
+                "ordinary": [
+                  5052447.363999999,
+                  5172495.363999999
+                ],
+                "proposal_anchor": [
+                  2283801.0710000005,
+                  2483881.0710000005
+                ],
+                "skipped": [
+                  2362961.565,
+                  2483009.565
+                ]
+              },
+              "compatible": true,
+              "endpoint_lag_us": 10000,
+              "prices": {
+                "reduce_15pct": {
+                  "headroom_if_b3_costs_its_anchor_us": [
+                    775026.8649999993,
+                    1095154.8649999993
+                  ],
+                  "mean_per_proposal_us": [
+                    296264.3578181818,
+                    307177.81236363633
+                  ],
+                  "ratio_to_proposal_anchor_us": [
+                    1.3120225336263691,
+                    1.4795316364925197
+                  ],
+                  "total_verification_and_overhead_us": [
+                    3258907.9359999998,
+                    3378955.9359999998
+                  ]
+                },
+                "six_tps": {
+                  "headroom_if_b3_costs_its_anchor_us": [
+                    176956.89833333343,
+                    497084.89833333343
+                  ],
+                  "mean_per_proposal_us": [
+                    241894.3608484849,
+                    252807.81539393944
+                  ],
+                  "ratio_to_proposal_anchor_us": [
+                    1.0712420978602213,
+                    1.2176568286289824
+                  ],
+                  "total_verification_and_overhead_us": [
+                    2660837.969333334,
+                    2780885.969333334
+                  ]
+                }
+              },
+              "scale": 1.001,
+              "window_us": [
+                9919298.0,
+                9919298
+              ]
+            }
+          ],
+          "unconditional_proper_subset_native_us": [
+            0,
+            9919298
+          ]
+        }
+      ]
+    }
+  ]
+}

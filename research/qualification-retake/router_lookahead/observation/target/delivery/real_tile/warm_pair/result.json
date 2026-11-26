@@ -1,0 +1,999 @@
+{
+  "arms": [
+    {
+      "all_offer_overlap": {
+        "spec_read_in_graph0_outside_remaps_wall_ns": 0,
+        "spec_read_in_graph0_remap_wall_ns": 0,
+        "spec_read_in_graph0_summed_worker_ns": 0,
+        "spec_read_in_graph0_wall_ns": 0,
+        "spec_read_in_graph0_with_L0_primary_read_wall_ns": 0,
+        "spec_read_in_graph0_with_L0_primary_set_wall_ns": 0,
+        "spec_read_in_graph0_with_either_primary_service_wall_ns": 0,
+        "spec_read_summed_worker_ns": 0,
+        "spec_read_wall_union_ns": 0
+      },
+      "counters": {
+        "consumed": 0,
+        "expired_queued": 0,
+        "expired_ready": 0,
+        "expired_running": 0,
+        "issued": 0,
+        "reads": 0,
+        "waits": 0
+      },
+      "drain_ns": 3241395,
+      "elapsed_ns": 190112440,
+      "false_offer_overlap": {
+        "spec_read_in_graph0_outside_remaps_wall_ns": 0,
+        "spec_read_in_graph0_remap_wall_ns": 0,
+        "spec_read_in_graph0_summed_worker_ns": 0,
+        "spec_read_in_graph0_wall_ns": 0,
+        "spec_read_in_graph0_with_L0_primary_read_wall_ns": 0,
+        "spec_read_in_graph0_with_L0_primary_set_wall_ns": 0,
+        "spec_read_in_graph0_with_either_primary_service_wall_ns": 0,
+        "spec_read_summed_worker_ns": 0,
+        "spec_read_wall_union_ns": 0
+      },
+      "false_pread_bytes": 0,
+      "false_read_wall_union_ns": 0,
+      "false_read_worker_ns": 0,
+      "grade": "EXACT",
+      "host_package_process_uj": 25537742,
+      "layers": {
+        "L0": {
+          "ggml_wait_us": 112980,
+          "official_jobs": 28,
+          "primary_reads": 28,
+          "read_wall_union_ns": 122367259,
+          "read_worker_ns": 282539462,
+          "remap_wall_ns": 113101691,
+          "set_wall_union_ns": 19133060,
+          "set_worker_ns": 20095616,
+          "sets": 84,
+          "speculative_reads": 0
+        },
+        "L1": {
+          "ggml_wait_us": 24299,
+          "official_jobs": 4,
+          "primary_reads": 4,
+          "read_wall_union_ns": 17528856,
+          "read_worker_ns": 39511374,
+          "remap_wall_ns": 24366724,
+          "set_wall_union_ns": 2572604,
+          "set_worker_ns": 3103446,
+          "sets": 12,
+          "speculative_reads": 0
+        }
+      },
+      "measured_pread_bytes": 423100416,
+      "mode": "OFF",
+      "peak_active_workers": 4,
+      "phase_ns": {
+        "finish_stage": 6563,
+        "graph0": 139089763,
+        "graph1": 45983932,
+        "join_tail": 3234832,
+        "project_and_submit": 472381,
+        "verify0": 717423,
+        "verify1": 607546
+      },
+      "process_s": 1.3569883359887172,
+      "projector_raw_ns": 468975,
+      "queue": {
+        "by_layer": {
+          "0": {
+            "enqueues": 43,
+            "first_demand": 10,
+            "first_preload": 18,
+            "pops": 43,
+            "promotions": 15,
+            "publications": 28,
+            "skips": 15,
+            "unique_claims": 28
+          },
+          "1": {
+            "enqueues": 5,
+            "first_demand": 3,
+            "first_preload": 1,
+            "pops": 5,
+            "promotions": 1,
+            "publications": 4,
+            "skips": 1,
+            "unique_claims": 4
+          }
+        },
+        "enqueues": 48,
+        "pops": 48,
+        "publications": 32,
+        "skip_reason_masks": {
+          "2": 9,
+          "8": 7
+        },
+        "unique_claims": 32
+      },
+      "read_jobs": 32,
+      "restore": {
+        "pack_bytes": 1057751040,
+        "pread_ns": 399210411,
+        "primary_bytes": 1057536000,
+        "records": 80,
+        "remaining_wall_ns": 494394187,
+        "set_ns": 159070154,
+        "sets": 240,
+        "verified_sha_and_primary_slabs": 240,
+        "wall_ns": 1052674752,
+        "worker_acks": 4
+      },
+      "stderr_sha256": "609f3509dac2fb13645693ea0f6e4c181b586413475d6e2619e6a89b5dde1a01",
+      "stdout_sha256": "b3cdf0a384d4a8a4dd37b8a31a78eea0876c61da5925ceb5fd9f9c6b65c16f36",
+      "tickets": {}
+    },
+    {
+      "all_offer_overlap": {
+        "spec_read_in_graph0_outside_remaps_wall_ns": 1276608,
+        "spec_read_in_graph0_remap_wall_ns": 27195782,
+        "spec_read_in_graph0_summed_worker_ns": 53247003,
+        "spec_read_in_graph0_wall_ns": 28472390,
+        "spec_read_in_graph0_with_L0_primary_read_wall_ns": 27473696,
+        "spec_read_in_graph0_with_L0_primary_set_wall_ns": 1300894,
+        "spec_read_in_graph0_with_either_primary_service_wall_ns": 27473696,
+        "spec_read_summed_worker_ns": 53247003,
+        "spec_read_wall_union_ns": 28472390
+      },
+      "counters": {
+        "consumed": 1,
+        "expired_queued": 0,
+        "expired_ready": 3,
+        "expired_running": 0,
+        "issued": 4,
+        "reads": 4,
+        "waits": 0
+      },
+      "drain_ns": 2774874,
+      "elapsed_ns": 192814046,
+      "false_offer_overlap": {
+        "spec_read_in_graph0_outside_remaps_wall_ns": 1276608,
+        "spec_read_in_graph0_remap_wall_ns": 27195782,
+        "spec_read_in_graph0_summed_worker_ns": 40158624,
+        "spec_read_in_graph0_wall_ns": 28472390,
+        "spec_read_in_graph0_with_L0_primary_read_wall_ns": 27473696,
+        "spec_read_in_graph0_with_L0_primary_set_wall_ns": 1300894,
+        "spec_read_in_graph0_with_either_primary_service_wall_ns": 27473696,
+        "spec_read_summed_worker_ns": 40158624,
+        "spec_read_wall_union_ns": 28472390
+      },
+      "false_pread_bytes": 39665664,
+      "false_read_wall_union_ns": 28472390,
+      "false_read_worker_ns": 40158624,
+      "grade": "EXACT",
+      "host_package_process_uj": 25132291,
+      "layers": {
+        "L0": {
+          "ggml_wait_us": 119509,
+          "official_jobs": 28,
+          "primary_reads": 28,
+          "read_wall_union_ns": 134075745,
+          "read_worker_ns": 269128452,
+          "remap_wall_ns": 119629162,
+          "set_wall_union_ns": 20915807,
+          "set_worker_ns": 20915807,
+          "sets": 84,
+          "speculative_reads": 0
+        },
+        "L1": {
+          "ggml_wait_us": 19387,
+          "official_jobs": 4,
+          "primary_reads": 3,
+          "read_wall_union_ns": 41762460,
+          "read_worker_ns": 73962701,
+          "remap_wall_ns": 19444310,
+          "set_wall_union_ns": 2468266,
+          "set_worker_ns": 2468266,
+          "sets": 12,
+          "speculative_reads": 4
+        }
+      },
+      "measured_pread_bytes": 462766080,
+      "mode": "ON",
+      "peak_active_workers": 4,
+      "phase_ns": {
+        "finish_stage": 10489,
+        "graph0": 147713841,
+        "graph1": 40923527,
+        "join_tail": 2764385,
+        "project_and_submit": 480376,
+        "verify0": 515923,
+        "verify1": 405505
+      },
+      "process_s": 1.2692231089895358,
+      "projector_raw_ns": 464718,
+      "queue": {
+        "by_layer": {
+          "0": {
+            "enqueues": 42,
+            "first_demand": 10,
+            "first_preload": 18,
+            "pops": 42,
+            "promotions": 14,
+            "publications": 28,
+            "skips": 14,
+            "unique_claims": 28
+          },
+          "1": {
+            "enqueues": 5,
+            "first_demand": 3,
+            "first_preload": 1,
+            "pops": 5,
+            "promotions": 1,
+            "publications": 4,
+            "skips": 1,
+            "unique_claims": 4
+          }
+        },
+        "enqueues": 47,
+        "pops": 47,
+        "publications": 32,
+        "skip_reason_masks": {
+          "2": 9,
+          "8": 6
+        },
+        "unique_claims": 32
+      },
+      "read_jobs": 35,
+      "restore": {
+        "pack_bytes": 1057751040,
+        "pread_ns": 371540454,
+        "primary_bytes": 1057536000,
+        "records": 80,
+        "remaining_wall_ns": 462296275,
+        "set_ns": 152077418,
+        "sets": 240,
+        "verified_sha_and_primary_slabs": 240,
+        "wall_ns": 985914147,
+        "worker_acks": 4
+      },
+      "stderr_sha256": "609f3509dac2fb13645693ea0f6e4c181b586413475d6e2619e6a89b5dde1a01",
+      "stdout_sha256": "66e038f6c42e17db93b5c98acfd3279ae6e579beee07290a032e0e12985bfdd2",
+      "tickets": {
+        "6": {
+          "pack_bytes": 13221888,
+          "pread_ns": 19268057,
+          "result": "expired_ready",
+          "stage_kinds": [
+            1,
+            2,
+            3,
+            4
+          ],
+          "ticket": 1,
+          "truth": false,
+          "wait": null
+        },
+        "13": {
+          "pack_bytes": 13221888,
+          "pread_ns": 11686234,
+          "result": "expired_ready",
+          "stage_kinds": [
+            1,
+            2,
+            3,
+            4
+          ],
+          "ticket": 2,
+          "truth": false,
+          "wait": null
+        },
+        "20": {
+          "pack_bytes": 13221888,
+          "pread_ns": 13088379,
+          "result": "consumed_ready",
+          "stage_kinds": [
+            1,
+            2,
+            3,
+            6,
+            7,
+            11,
+            8
+          ],
+          "ticket": 3,
+          "truth": true,
+          "wait": null
+        },
+        "21": {
+          "pack_bytes": 13221888,
+          "pread_ns": 9204333,
+          "result": "expired_ready",
+          "stage_kinds": [
+            1,
+            2,
+            3,
+            4
+          ],
+          "ticket": 4,
+          "truth": false,
+          "wait": null
+        }
+      }
+    },
+    {
+      "all_offer_overlap": {
+        "spec_read_in_graph0_outside_remaps_wall_ns": 0,
+        "spec_read_in_graph0_remap_wall_ns": 0,
+        "spec_read_in_graph0_summed_worker_ns": 0,
+        "spec_read_in_graph0_wall_ns": 0,
+        "spec_read_in_graph0_with_L0_primary_read_wall_ns": 0,
+        "spec_read_in_graph0_with_L0_primary_set_wall_ns": 0,
+        "spec_read_in_graph0_with_either_primary_service_wall_ns": 0,
+        "spec_read_summed_worker_ns": 0,
+        "spec_read_wall_union_ns": 0
+      },
+      "counters": {
+        "consumed": 0,
+        "expired_queued": 0,
+        "expired_ready": 0,
+        "expired_running": 0,
+        "issued": 0,
+        "reads": 0,
+        "waits": 0
+      },
+      "drain_ns": 3883235,
+      "elapsed_ns": 168309432,
+      "false_offer_overlap": {
+        "spec_read_in_graph0_outside_remaps_wall_ns": 0,
+        "spec_read_in_graph0_remap_wall_ns": 0,
+        "spec_read_in_graph0_summed_worker_ns": 0,
+        "spec_read_in_graph0_wall_ns": 0,
+        "spec_read_in_graph0_with_L0_primary_read_wall_ns": 0,
+        "spec_read_in_graph0_with_L0_primary_set_wall_ns": 0,
+        "spec_read_in_graph0_with_either_primary_service_wall_ns": 0,
+        "spec_read_summed_worker_ns": 0,
+        "spec_read_wall_union_ns": 0
+      },
+      "false_pread_bytes": 0,
+      "false_read_wall_union_ns": 0,
+      "false_read_worker_ns": 0,
+      "grade": "TIME",
+      "host_package_process_uj": 23592209,
+      "layers": {
+        "L0": {
+          "ggml_wait_us": 99639,
+          "official_jobs": 28,
+          "primary_reads": 28,
+          "read_wall_union_ns": 119385724,
+          "read_worker_ns": 435823980,
+          "remap_wall_ns": 99770884,
+          "set_wall_union_ns": 21264296,
+          "set_worker_ns": 23879189,
+          "sets": 84,
+          "speculative_reads": 0
+        },
+        "L1": {
+          "ggml_wait_us": 13495,
+          "official_jobs": 4,
+          "primary_reads": 4,
+          "read_wall_union_ns": 17250020,
+          "read_worker_ns": 38091214,
+          "remap_wall_ns": 13543087,
+          "set_wall_union_ns": 3136618,
+          "set_worker_ns": 3136618,
+          "sets": 12,
+          "speculative_reads": 0
+        }
+      },
+      "measured_pread_bytes": 423100416,
+      "mode": "OFF",
+      "peak_active_workers": 4,
+      "phase_ns": {
+        "finish_stage": 5570,
+        "graph0": 127166661,
+        "graph1": 35873570,
+        "join_tail": 3877665,
+        "project_and_submit": 466290,
+        "verify0": 505434,
+        "verify1": 414242
+      },
+      "process_s": 1.2367797800106928,
+      "projector_raw_ns": 463224,
+      "queue": {
+        "by_layer": {
+          "0": {
+            "enqueues": 44,
+            "first_demand": 10,
+            "first_preload": 18,
+            "pops": 44,
+            "promotions": 16,
+            "publications": 28,
+            "skips": 16,
+            "unique_claims": 28
+          },
+          "1": {
+            "enqueues": 4,
+            "first_demand": 3,
+            "first_preload": 1,
+            "pops": 4,
+            "promotions": 0,
+            "publications": 4,
+            "skips": 0,
+            "unique_claims": 4
+          }
+        },
+        "enqueues": 48,
+        "pops": 48,
+        "publications": 32,
+        "skip_reason_masks": {
+          "2": 10,
+          "8": 6
+        },
+        "unique_claims": 32
+      },
+      "read_jobs": 32,
+      "restore": {
+        "pack_bytes": 1057751040,
+        "pread_ns": 371799171,
+        "primary_bytes": 1057536000,
+        "records": 80,
+        "remaining_wall_ns": 454711943,
+        "set_ns": 151310077,
+        "sets": 240,
+        "verified_sha_and_primary_slabs": 240,
+        "wall_ns": 977821191,
+        "worker_acks": 4
+      },
+      "stderr_sha256": "609f3509dac2fb13645693ea0f6e4c181b586413475d6e2619e6a89b5dde1a01",
+      "stdout_sha256": "41f621ee9fb5de85d943174117a43a5ccfb9568e621b1784317bd072a40173ab",
+      "tickets": {}
+    },
+    {
+      "all_offer_overlap": {
+        "spec_read_in_graph0_outside_remaps_wall_ns": 10853573,
+        "spec_read_in_graph0_remap_wall_ns": 23612432,
+        "spec_read_in_graph0_summed_worker_ns": 63390336,
+        "spec_read_in_graph0_wall_ns": 34466005,
+        "spec_read_in_graph0_with_L0_primary_read_wall_ns": 34376987,
+        "spec_read_in_graph0_with_L0_primary_set_wall_ns": 2344544,
+        "spec_read_in_graph0_with_either_primary_service_wall_ns": 34376987,
+        "spec_read_summed_worker_ns": 63390336,
+        "spec_read_wall_union_ns": 34466005
+      },
+      "counters": {
+        "consumed": 1,
+        "expired_queued": 0,
+        "expired_ready": 3,
+        "expired_running": 0,
+        "issued": 4,
+        "reads": 4,
+        "waits": 0
+      },
+      "drain_ns": 3010739,
+      "elapsed_ns": 181841488,
+      "false_offer_overlap": {
+        "spec_read_in_graph0_outside_remaps_wall_ns": 10853573,
+        "spec_read_in_graph0_remap_wall_ns": 23612432,
+        "spec_read_in_graph0_summed_worker_ns": 53113270,
+        "spec_read_in_graph0_wall_ns": 34466005,
+        "spec_read_in_graph0_with_L0_primary_read_wall_ns": 34376987,
+        "spec_read_in_graph0_with_L0_primary_set_wall_ns": 2344544,
+        "spec_read_in_graph0_with_either_primary_service_wall_ns": 34376987,
+        "spec_read_summed_worker_ns": 53113270,
+        "spec_read_wall_union_ns": 34466005
+      },
+      "false_pread_bytes": 39665664,
+      "false_read_wall_union_ns": 34466005,
+      "false_read_worker_ns": 53113270,
+      "grade": "TIME",
+      "host_package_process_uj": 23682644,
+      "layers": {
+        "L0": {
+          "ggml_wait_us": 117035,
+          "official_jobs": 28,
+          "primary_reads": 28,
+          "read_wall_union_ns": 135286779,
+          "read_worker_ns": 435805494,
+          "remap_wall_ns": 117155689,
+          "set_wall_union_ns": 20638701,
+          "set_worker_ns": 20638701,
+          "sets": 84,
+          "speculative_reads": 0
+        },
+        "L1": {
+          "ggml_wait_us": 12254,
+          "official_jobs": 4,
+          "primary_reads": 3,
+          "read_wall_union_ns": 50552110,
+          "read_worker_ns": 89500410,
+          "remap_wall_ns": 12313910,
+          "set_wall_union_ns": 3400293,
+          "set_worker_ns": 3400293,
+          "sets": 12,
+          "speculative_reads": 4
+        }
+      },
+      "measured_pread_bytes": 462766080,
+      "mode": "ON",
+      "peak_active_workers": 4,
+      "phase_ns": {
+        "finish_stage": 10750,
+        "graph0": 142406509,
+        "graph1": 35037643,
+        "join_tail": 2999989,
+        "project_and_submit": 478543,
+        "verify0": 496437,
+        "verify1": 411617
+      },
+      "process_s": 1.2379643739986932,
+      "projector_raw_ns": 469978,
+      "queue": {
+        "by_layer": {
+          "0": {
+            "enqueues": 42,
+            "first_demand": 10,
+            "first_preload": 18,
+            "pops": 42,
+            "promotions": 14,
+            "publications": 28,
+            "skips": 14,
+            "unique_claims": 28
+          },
+          "1": {
+            "enqueues": 4,
+            "first_demand": 3,
+            "first_preload": 1,
+            "pops": 4,
+            "promotions": 0,
+            "publications": 4,
+            "skips": 0,
+            "unique_claims": 4
+          }
+        },
+        "enqueues": 46,
+        "pops": 46,
+        "publications": 32,
+        "skip_reason_masks": {
+          "2": 9,
+          "8": 5
+        },
+        "unique_claims": 32
+      },
+      "read_jobs": 35,
+      "restore": {
+        "pack_bytes": 1057751040,
+        "pread_ns": 370777009,
+        "primary_bytes": 1057536000,
+        "records": 80,
+        "remaining_wall_ns": 452240298,
+        "set_ns": 148896460,
+        "sets": 240,
+        "verified_sha_and_primary_slabs": 240,
+        "wall_ns": 971913767,
+        "worker_acks": 4
+      },
+      "stderr_sha256": "609f3509dac2fb13645693ea0f6e4c181b586413475d6e2619e6a89b5dde1a01",
+      "stdout_sha256": "ba713d540eb97b9b7517c9045ee78d51f2fff4e5e674273f62c173f3a46758e0",
+      "tickets": {
+        "6": {
+          "pack_bytes": 13221888,
+          "pread_ns": 18658877,
+          "result": "expired_ready",
+          "stage_kinds": [
+            1,
+            2,
+            3,
+            4
+          ],
+          "ticket": 1,
+          "truth": false,
+          "wait": null
+        },
+        "13": {
+          "pack_bytes": 13221888,
+          "pread_ns": 18953072,
+          "result": "expired_ready",
+          "stage_kinds": [
+            1,
+            2,
+            3,
+            4
+          ],
+          "ticket": 2,
+          "truth": false,
+          "wait": null
+        },
+        "20": {
+          "pack_bytes": 13221888,
+          "pread_ns": 10277066,
+          "result": "consumed_ready",
+          "stage_kinds": [
+            1,
+            2,
+            3,
+            6,
+            7,
+            11,
+            8
+          ],
+          "ticket": 3,
+          "truth": true,
+          "wait": null
+        },
+        "21": {
+          "pack_bytes": 13221888,
+          "pread_ns": 15501321,
+          "result": "expired_ready",
+          "stage_kinds": [
+            1,
+            2,
+            3,
+            4
+          ],
+          "ticket": 4,
+          "truth": false,
+          "wait": null
+        }
+      }
+    },
+    {
+      "all_offer_overlap": {
+        "spec_read_in_graph0_outside_remaps_wall_ns": 3449607,
+        "spec_read_in_graph0_remap_wall_ns": 29732817,
+        "spec_read_in_graph0_summed_worker_ns": 66571327,
+        "spec_read_in_graph0_wall_ns": 33182424,
+        "spec_read_in_graph0_with_L0_primary_read_wall_ns": 28938699,
+        "spec_read_in_graph0_with_L0_primary_set_wall_ns": 2201121,
+        "spec_read_in_graph0_with_either_primary_service_wall_ns": 29656332,
+        "spec_read_summed_worker_ns": 66571327,
+        "spec_read_wall_union_ns": 33182424
+      },
+      "counters": {
+        "consumed": 1,
+        "expired_queued": 0,
+        "expired_ready": 3,
+        "expired_running": 0,
+        "issued": 4,
+        "reads": 4,
+        "waits": 0
+      },
+      "drain_ns": 3543825,
+      "elapsed_ns": 175752953,
+      "false_offer_overlap": {
+        "spec_read_in_graph0_outside_remaps_wall_ns": 3449607,
+        "spec_read_in_graph0_remap_wall_ns": 29435176,
+        "spec_read_in_graph0_summed_worker_ns": 47557901,
+        "spec_read_in_graph0_wall_ns": 32884783,
+        "spec_read_in_graph0_with_L0_primary_read_wall_ns": 28641058,
+        "spec_read_in_graph0_with_L0_primary_set_wall_ns": 2201121,
+        "spec_read_in_graph0_with_either_primary_service_wall_ns": 29358691,
+        "spec_read_summed_worker_ns": 47557901,
+        "spec_read_wall_union_ns": 32884783
+      },
+      "false_pread_bytes": 39665664,
+      "false_read_wall_union_ns": 32884783,
+      "false_read_worker_ns": 47557901,
+      "grade": "TIME",
+      "host_package_process_uj": 23918181,
+      "layers": {
+        "L0": {
+          "ggml_wait_us": 113629,
+          "official_jobs": 28,
+          "primary_reads": 28,
+          "read_wall_union_ns": 131424574,
+          "read_worker_ns": 430297163,
+          "remap_wall_ns": 113743273,
+          "set_wall_union_ns": 21583222,
+          "set_worker_ns": 22325322,
+          "sets": 84,
+          "speculative_reads": 0
+        },
+        "L1": {
+          "ggml_wait_us": 10398,
+          "official_jobs": 4,
+          "primary_reads": 3,
+          "read_wall_union_ns": 48586473,
+          "read_worker_ns": 90272768,
+          "remap_wall_ns": 10454110,
+          "set_wall_union_ns": 2857709,
+          "set_worker_ns": 3179306,
+          "sets": 12,
+          "speculative_reads": 4
+        }
+      },
+      "measured_pread_bytes": 462766080,
+      "mode": "ON",
+      "peak_active_workers": 4,
+      "phase_ns": {
+        "finish_stage": 7875,
+        "graph0": 138765972,
+        "graph1": 32052693,
+        "join_tail": 3535950,
+        "project_and_submit": 472802,
+        "verify0": 497128,
+        "verify1": 420533
+      },
+      "process_s": 1.2377527649950935,
+      "projector_raw_ns": 464066,
+      "queue": {
+        "by_layer": {
+          "0": {
+            "enqueues": 44,
+            "first_demand": 10,
+            "first_preload": 18,
+            "pops": 44,
+            "promotions": 16,
+            "publications": 28,
+            "skips": 16,
+            "unique_claims": 28
+          },
+          "1": {
+            "enqueues": 5,
+            "first_demand": 3,
+            "first_preload": 1,
+            "pops": 5,
+            "promotions": 1,
+            "publications": 4,
+            "skips": 1,
+            "unique_claims": 4
+          }
+        },
+        "enqueues": 49,
+        "pops": 49,
+        "publications": 32,
+        "skip_reason_masks": {
+          "2": 10,
+          "8": 7
+        },
+        "unique_claims": 32
+      },
+      "read_jobs": 35,
+      "restore": {
+        "pack_bytes": 1057751040,
+        "pread_ns": 368549617,
+        "primary_bytes": 1057536000,
+        "records": 80,
+        "remaining_wall_ns": 456851365,
+        "set_ns": 153412220,
+        "sets": 240,
+        "verified_sha_and_primary_slabs": 240,
+        "wall_ns": 978813202,
+        "worker_acks": 4
+      },
+      "stderr_sha256": "609f3509dac2fb13645693ea0f6e4c181b586413475d6e2619e6a89b5dde1a01",
+      "stdout_sha256": "17ec71aa82f6c11fe5378be9ce571abb61c1d27928b3919bc2f17b1da2ff9543",
+      "tickets": {
+        "6": {
+          "pack_bytes": 13221888,
+          "pread_ns": 14682596,
+          "result": "expired_ready",
+          "stage_kinds": [
+            1,
+            2,
+            3,
+            4
+          ],
+          "ticket": 1,
+          "truth": false,
+          "wait": null
+        },
+        "13": {
+          "pack_bytes": 13221888,
+          "pread_ns": 18753656,
+          "result": "expired_ready",
+          "stage_kinds": [
+            1,
+            2,
+            3,
+            4
+          ],
+          "ticket": 2,
+          "truth": false,
+          "wait": null
+        },
+        "20": {
+          "pack_bytes": 13221888,
+          "pread_ns": 19013426,
+          "result": "consumed_ready",
+          "stage_kinds": [
+            1,
+            2,
+            3,
+            6,
+            7,
+            11,
+            8
+          ],
+          "ticket": 3,
+          "truth": true,
+          "wait": null
+        },
+        "21": {
+          "pack_bytes": 13221888,
+          "pread_ns": 14121649,
+          "result": "expired_ready",
+          "stage_kinds": [
+            1,
+            2,
+            3,
+            4
+          ],
+          "ticket": 4,
+          "truth": false,
+          "wait": null
+        }
+      }
+    },
+    {
+      "all_offer_overlap": {
+        "spec_read_in_graph0_outside_remaps_wall_ns": 0,
+        "spec_read_in_graph0_remap_wall_ns": 0,
+        "spec_read_in_graph0_summed_worker_ns": 0,
+        "spec_read_in_graph0_wall_ns": 0,
+        "spec_read_in_graph0_with_L0_primary_read_wall_ns": 0,
+        "spec_read_in_graph0_with_L0_primary_set_wall_ns": 0,
+        "spec_read_in_graph0_with_either_primary_service_wall_ns": 0,
+        "spec_read_summed_worker_ns": 0,
+        "spec_read_wall_union_ns": 0
+      },
+      "counters": {
+        "consumed": 0,
+        "expired_queued": 0,
+        "expired_ready": 0,
+        "expired_running": 0,
+        "issued": 0,
+        "reads": 0,
+        "waits": 0
+      },
+      "drain_ns": 3071785,
+      "elapsed_ns": 169607290,
+      "false_offer_overlap": {
+        "spec_read_in_graph0_outside_remaps_wall_ns": 0,
+        "spec_read_in_graph0_remap_wall_ns": 0,
+        "spec_read_in_graph0_summed_worker_ns": 0,
+        "spec_read_in_graph0_wall_ns": 0,
+        "spec_read_in_graph0_with_L0_primary_read_wall_ns": 0,
+        "spec_read_in_graph0_with_L0_primary_set_wall_ns": 0,
+        "spec_read_in_graph0_with_either_primary_service_wall_ns": 0,
+        "spec_read_summed_worker_ns": 0,
+        "spec_read_wall_union_ns": 0
+      },
+      "false_pread_bytes": 0,
+      "false_read_wall_union_ns": 0,
+      "false_read_worker_ns": 0,
+      "grade": "TIME",
+      "host_package_process_uj": 24652107,
+      "layers": {
+        "L0": {
+          "ggml_wait_us": 103388,
+          "official_jobs": 28,
+          "primary_reads": 28,
+          "read_wall_union_ns": 120570880,
+          "read_worker_ns": 449047232,
+          "remap_wall_ns": 103521138,
+          "set_wall_union_ns": 21721116,
+          "set_worker_ns": 27529974,
+          "sets": 84,
+          "speculative_reads": 0
+        },
+        "L1": {
+          "ggml_wait_us": 13697,
+          "official_jobs": 4,
+          "primary_reads": 4,
+          "read_wall_union_ns": 17666436,
+          "read_worker_ns": 37359935,
+          "remap_wall_ns": 13758005,
+          "set_wall_union_ns": 3370399,
+          "set_worker_ns": 3370399,
+          "sets": 12,
+          "speculative_reads": 0
+        }
+      },
+      "measured_pread_bytes": 423100416,
+      "mode": "OFF",
+      "peak_active_workers": 4,
+      "phase_ns": {
+        "finish_stage": 6843,
+        "graph0": 128995331,
+        "graph1": 35923475,
+        "join_tail": 3064942,
+        "project_and_submit": 468093,
+        "verify0": 727392,
+        "verify1": 421214
+      },
+      "process_s": 1.2213314789987635,
+      "projector_raw_ns": 465138,
+      "queue": {
+        "by_layer": {
+          "0": {
+            "enqueues": 45,
+            "first_demand": 10,
+            "first_preload": 18,
+            "pops": 45,
+            "promotions": 17,
+            "publications": 28,
+            "skips": 17,
+            "unique_claims": 28
+          },
+          "1": {
+            "enqueues": 4,
+            "first_demand": 3,
+            "first_preload": 1,
+            "pops": 4,
+            "promotions": 0,
+            "publications": 4,
+            "skips": 0,
+            "unique_claims": 4
+          }
+        },
+        "enqueues": 49,
+        "pops": 49,
+        "publications": 32,
+        "skip_reason_masks": {
+          "2": 11,
+          "8": 6
+        },
+        "unique_claims": 32
+      },
+      "read_jobs": 32,
+      "restore": {
+        "pack_bytes": 1057751040,
+        "pread_ns": 369226511,
+        "primary_bytes": 1057536000,
+        "records": 80,
+        "remaining_wall_ns": 454801511,
+        "set_ns": 152557919,
+        "sets": 240,
+        "verified_sha_and_primary_slabs": 240,
+        "wall_ns": 976585941,
+        "worker_acks": 4
+      },
+      "stderr_sha256": "609f3509dac2fb13645693ea0f6e4c181b586413475d6e2619e6a89b5dde1a01",
+      "stdout_sha256": "f16e0fe8c163865454042f370cd382586c558863090275339b91c6d1b6c8bb3b",
+      "tickets": {}
+    }
+  ],
+  "binary_sha256": "e3c793efc904f19bf731ff832367437e279dda6958a4bb9c4ca6913bc9e667c6",
+  "build_sha256": "4eb786f93e25569bca42904b368dfc845d3ae58a59374a48cda051fc7bfc6ccf",
+  "c118": {
+    "cap_bytes": 4294967296,
+    "duration_s": 60.16856563701003,
+    "expected_power": {
+      "profile": "performance",
+      "source": "AC"
+    },
+    "last_utc": "2026-11-25T23:19:23.162212+00:00",
+    "policy_sha256": "53144d66eaa5595d10229e6f62a9e56568b5e4e74742e69986ac926215d7b0c0",
+    "run_id": "tesy-warm-tile-20261125-r01",
+    "sample_count": 61,
+    "schema": "c118-per-arm-start-inventory-v2",
+    "sha256": "a9c48ced9bbe3aca7ed4cbec7eb52edcc920a64ab8b3bbefc9ff4ff0ef19d7ae"
+  },
+  "c55_sha256": "52cfcdd0ce2b457fe50c7eb15b47831b8b25a20ed4a712d1904426af0cdfbfcf",
+  "clocks": {
+    "energy": "host package from before spawn to after exit if accessible",
+    "host_wait": "GGML microsecond durations",
+    "native": "steady_clock ns, source to end of worker joins",
+    "process": "spawn/poll/exit wall, includes setup, restore and cleanup",
+    "producer": "separate CLOCK_MONOTONIC_RAW duration",
+    "ticket": "steady_clock truncated to microseconds"
+  },
+  "commit": "8a6804ba38087c8e48e258cac40e90d8dbd5199f",
+  "decision": "NO_GO_TRAVERSAL_TIMING",
+  "elapsed_s": 68.37830115799443,
+  "input_sha256": "64c6b08357cc2c03bd0959f417a6e3f905977b5a13be99b70b4b488354b3aa03",
+  "paired_off_minus_on_ns": [
+    -13532056,
+    -6145663
+  ],
+  "resources": {
+    "cgroup_peak_bytes": 1367568384,
+    "max_cpu_c": 56.875,
+    "max_gap_s": 0.718658918995061,
+    "max_gpu_c": 42.23,
+    "max_gpu_w": 3.0,
+    "max_nvme_c": 36.85,
+    "monitor_samples": 12,
+    "samples_sha256": "971481f71733fee0841d63f638ae374540aa1a472138cfd9503447afa50ac78f",
+    "swap_peak_bytes": 0
+  },
+  "source_sha256": "45482afdb6a93914b3050da0bd8fe660b0b01ca8ab0a3ae5544e6a5f3ed29cff",
+  "status": "REPRODUCED_WARM_TILE_FAMILY",
+  "tree": "d294d3c3d132da8eea8264280992208f72ab0637"
+}

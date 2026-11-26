@@ -1,0 +1,599 @@
+{
+  "CUDA_processes": 1,
+  "build_s": 1.654046790998109,
+  "bytes": {
+    "bias": 345600,
+    "weight": 132192000
+  },
+  "cgroup_peak_B": 226312192,
+  "commit": "9ad04501b02778f18b1bb8625bb88ef6b8a65ceb",
+  "cuda_sha256": "ff43655b15df5f3de1d5e00b0da18469a14f118bd644eb4b6d7f1915c85a4493",
+  "decision": "GO_EXACT_FFN_OPERATOR",
+  "device": "NVIDIA GeForce RTX 4060 Laptop GPU, 620.73.04, 8.9",
+  "elf_sha256": "151358cabed97d243b1aa03561d31c1c3e73e640921df1e931a6b5ffd4a7a797",
+  "expert_union": 10,
+  "gpu_used_MiB": {
+    "admission": 2.0,
+    "after": 622.0,
+    "after_exit": 2.0,
+    "before": 612.0
+  },
+  "grade": {
+    "decision": "GO_EXACT_FFN_OPERATOR",
+    "matched_serial": [
+      "D",
+      "S",
+      "F"
+    ],
+    "mutation_coordinates": [
+      0
+    ],
+    "rows": {
+      "A": {
+        "AR": [
+          {
+            "different": 0,
+            "first": null,
+            "max_abs": 0.0,
+            "position": 189,
+            "sha256": "7eb13574898ef0b17dce6615ebf0bef764ab4e3c9f8cf0b05cc58d60d09c4a02"
+          },
+          {
+            "different": 0,
+            "first": null,
+            "max_abs": 0.0,
+            "position": 190,
+            "sha256": "c6eb3c97bb62308fe55299c5178fc94ceeee30097ad11e7e6363edffb0f2db94"
+          },
+          {
+            "different": 0,
+            "first": null,
+            "max_abs": 0.0,
+            "position": 191,
+            "sha256": "549b42a6d24391628b0a43211b8fdf0e5ad793b2fae47d9e13399d839fd1ae85"
+          }
+        ],
+        "B3": [
+          {
+            "different": 33,
+            "first": 95,
+            "max_abs": 0.00048828125,
+            "position": 189,
+            "sha256": "7eb13574898ef0b17dce6615ebf0bef764ab4e3c9f8cf0b05cc58d60d09c4a02"
+          },
+          {
+            "different": 29,
+            "first": 34,
+            "max_abs": 0.0001220703125,
+            "position": 190,
+            "sha256": "c6eb3c97bb62308fe55299c5178fc94ceeee30097ad11e7e6363edffb0f2db94"
+          },
+          {
+            "different": 109,
+            "first": 23,
+            "max_abs": 0.000244140625,
+            "position": 191,
+            "sha256": "549b42a6d24391628b0a43211b8fdf0e5ad793b2fae47d9e13399d839fd1ae85"
+          }
+        ]
+      },
+      "B": {
+        "AR": [
+          {
+            "different": 33,
+            "first": 95,
+            "max_abs": 0.00048828125,
+            "position": 189,
+            "sha256": "b7ea1135c2be50bfb696d446c89d46ce72c76ad2c60c6cedfa49fb4230d2bbc1"
+          },
+          {
+            "different": 29,
+            "first": 34,
+            "max_abs": 0.0001220703125,
+            "position": 190,
+            "sha256": "1c6256c71326cbc57617991faf256efa803ae6afb46b92ea47b11c3f31286cfa"
+          },
+          {
+            "different": 109,
+            "first": 23,
+            "max_abs": 0.000244140625,
+            "position": 191,
+            "sha256": "e58c4885926c342f98406b2f1bb6845f88dd307af251d14125d85c4e4141872a"
+          }
+        ],
+        "B3": [
+          {
+            "different": 0,
+            "first": null,
+            "max_abs": 0.0,
+            "position": 189,
+            "sha256": "b7ea1135c2be50bfb696d446c89d46ce72c76ad2c60c6cedfa49fb4230d2bbc1"
+          },
+          {
+            "different": 0,
+            "first": null,
+            "max_abs": 0.0,
+            "position": 190,
+            "sha256": "1c6256c71326cbc57617991faf256efa803ae6afb46b92ea47b11c3f31286cfa"
+          },
+          {
+            "different": 0,
+            "first": null,
+            "max_abs": 0.0,
+            "position": 191,
+            "sha256": "e58c4885926c342f98406b2f1bb6845f88dd307af251d14125d85c4e4141872a"
+          }
+        ]
+      },
+      "B-alt": {
+        "AR": [
+          {
+            "different": 33,
+            "first": 95,
+            "max_abs": 0.00048828125,
+            "position": 189,
+            "sha256": "b7ea1135c2be50bfb696d446c89d46ce72c76ad2c60c6cedfa49fb4230d2bbc1"
+          },
+          {
+            "different": 29,
+            "first": 34,
+            "max_abs": 0.0001220703125,
+            "position": 190,
+            "sha256": "1c6256c71326cbc57617991faf256efa803ae6afb46b92ea47b11c3f31286cfa"
+          },
+          {
+            "different": 109,
+            "first": 23,
+            "max_abs": 0.000244140625,
+            "position": 191,
+            "sha256": "e58c4885926c342f98406b2f1bb6845f88dd307af251d14125d85c4e4141872a"
+          }
+        ],
+        "B3": [
+          {
+            "different": 0,
+            "first": null,
+            "max_abs": 0.0,
+            "position": 189,
+            "sha256": "b7ea1135c2be50bfb696d446c89d46ce72c76ad2c60c6cedfa49fb4230d2bbc1"
+          },
+          {
+            "different": 0,
+            "first": null,
+            "max_abs": 0.0,
+            "position": 190,
+            "sha256": "1c6256c71326cbc57617991faf256efa803ae6afb46b92ea47b11c3f31286cfa"
+          },
+          {
+            "different": 0,
+            "first": null,
+            "max_abs": 0.0,
+            "position": 191,
+            "sha256": "e58c4885926c342f98406b2f1bb6845f88dd307af251d14125d85c4e4141872a"
+          }
+        ]
+      },
+      "D": {
+        "AR": [
+          {
+            "different": 0,
+            "first": null,
+            "max_abs": 0.0,
+            "position": 189,
+            "sha256": "7eb13574898ef0b17dce6615ebf0bef764ab4e3c9f8cf0b05cc58d60d09c4a02"
+          },
+          {
+            "different": 0,
+            "first": null,
+            "max_abs": 0.0,
+            "position": 190,
+            "sha256": "c6eb3c97bb62308fe55299c5178fc94ceeee30097ad11e7e6363edffb0f2db94"
+          },
+          {
+            "different": 0,
+            "first": null,
+            "max_abs": 0.0,
+            "position": 191,
+            "sha256": "549b42a6d24391628b0a43211b8fdf0e5ad793b2fae47d9e13399d839fd1ae85"
+          }
+        ],
+        "B3": [
+          {
+            "different": 33,
+            "first": 95,
+            "max_abs": 0.00048828125,
+            "position": 189,
+            "sha256": "7eb13574898ef0b17dce6615ebf0bef764ab4e3c9f8cf0b05cc58d60d09c4a02"
+          },
+          {
+            "different": 29,
+            "first": 34,
+            "max_abs": 0.0001220703125,
+            "position": 190,
+            "sha256": "c6eb3c97bb62308fe55299c5178fc94ceeee30097ad11e7e6363edffb0f2db94"
+          },
+          {
+            "different": 109,
+            "first": 23,
+            "max_abs": 0.000244140625,
+            "position": 191,
+            "sha256": "549b42a6d24391628b0a43211b8fdf0e5ad793b2fae47d9e13399d839fd1ae85"
+          }
+        ]
+      },
+      "F": {
+        "AR": [
+          {
+            "different": 0,
+            "first": null,
+            "max_abs": 0.0,
+            "position": 189,
+            "sha256": "7eb13574898ef0b17dce6615ebf0bef764ab4e3c9f8cf0b05cc58d60d09c4a02"
+          },
+          {
+            "different": 0,
+            "first": null,
+            "max_abs": 0.0,
+            "position": 190,
+            "sha256": "c6eb3c97bb62308fe55299c5178fc94ceeee30097ad11e7e6363edffb0f2db94"
+          },
+          {
+            "different": 0,
+            "first": null,
+            "max_abs": 0.0,
+            "position": 191,
+            "sha256": "549b42a6d24391628b0a43211b8fdf0e5ad793b2fae47d9e13399d839fd1ae85"
+          }
+        ],
+        "B3": [
+          {
+            "different": 33,
+            "first": 95,
+            "max_abs": 0.00048828125,
+            "position": 189,
+            "sha256": "7eb13574898ef0b17dce6615ebf0bef764ab4e3c9f8cf0b05cc58d60d09c4a02"
+          },
+          {
+            "different": 29,
+            "first": 34,
+            "max_abs": 0.0001220703125,
+            "position": 190,
+            "sha256": "c6eb3c97bb62308fe55299c5178fc94ceeee30097ad11e7e6363edffb0f2db94"
+          },
+          {
+            "different": 109,
+            "first": 23,
+            "max_abs": 0.000244140625,
+            "position": 191,
+            "sha256": "549b42a6d24391628b0a43211b8fdf0e5ad793b2fae47d9e13399d839fd1ae85"
+          }
+        ]
+      },
+      "F-alt": {
+        "AR": [
+          {
+            "different": 0,
+            "first": null,
+            "max_abs": 0.0,
+            "position": 189,
+            "sha256": "7eb13574898ef0b17dce6615ebf0bef764ab4e3c9f8cf0b05cc58d60d09c4a02"
+          },
+          {
+            "different": 0,
+            "first": null,
+            "max_abs": 0.0,
+            "position": 190,
+            "sha256": "c6eb3c97bb62308fe55299c5178fc94ceeee30097ad11e7e6363edffb0f2db94"
+          },
+          {
+            "different": 0,
+            "first": null,
+            "max_abs": 0.0,
+            "position": 191,
+            "sha256": "549b42a6d24391628b0a43211b8fdf0e5ad793b2fae47d9e13399d839fd1ae85"
+          }
+        ],
+        "B3": [
+          {
+            "different": 33,
+            "first": 95,
+            "max_abs": 0.00048828125,
+            "position": 189,
+            "sha256": "7eb13574898ef0b17dce6615ebf0bef764ab4e3c9f8cf0b05cc58d60d09c4a02"
+          },
+          {
+            "different": 29,
+            "first": 34,
+            "max_abs": 0.0001220703125,
+            "position": 190,
+            "sha256": "c6eb3c97bb62308fe55299c5178fc94ceeee30097ad11e7e6363edffb0f2db94"
+          },
+          {
+            "different": 109,
+            "first": 23,
+            "max_abs": 0.000244140625,
+            "position": 191,
+            "sha256": "549b42a6d24391628b0a43211b8fdf0e5ad793b2fae47d9e13399d839fd1ae85"
+          }
+        ]
+      },
+      "S": {
+        "AR": [
+          {
+            "different": 0,
+            "first": null,
+            "max_abs": 0.0,
+            "position": 189,
+            "sha256": "7eb13574898ef0b17dce6615ebf0bef764ab4e3c9f8cf0b05cc58d60d09c4a02"
+          },
+          {
+            "different": 0,
+            "first": null,
+            "max_abs": 0.0,
+            "position": 190,
+            "sha256": "c6eb3c97bb62308fe55299c5178fc94ceeee30097ad11e7e6363edffb0f2db94"
+          },
+          {
+            "different": 0,
+            "first": null,
+            "max_abs": 0.0,
+            "position": 191,
+            "sha256": "549b42a6d24391628b0a43211b8fdf0e5ad793b2fae47d9e13399d839fd1ae85"
+          }
+        ],
+        "B3": [
+          {
+            "different": 33,
+            "first": 95,
+            "max_abs": 0.00048828125,
+            "position": 189,
+            "sha256": "7eb13574898ef0b17dce6615ebf0bef764ab4e3c9f8cf0b05cc58d60d09c4a02"
+          },
+          {
+            "different": 29,
+            "first": 34,
+            "max_abs": 0.0001220703125,
+            "position": 190,
+            "sha256": "c6eb3c97bb62308fe55299c5178fc94ceeee30097ad11e7e6363edffb0f2db94"
+          },
+          {
+            "different": 109,
+            "first": 23,
+            "max_abs": 0.000244140625,
+            "position": 191,
+            "sha256": "549b42a6d24391628b0a43211b8fdf0e5ad793b2fae47d9e13399d839fd1ae85"
+          }
+        ]
+      },
+      "U": {
+        "AR": [
+          {
+            "different": 33,
+            "first": 95,
+            "max_abs": 0.00048828125,
+            "position": 189,
+            "sha256": "b7ea1135c2be50bfb696d446c89d46ce72c76ad2c60c6cedfa49fb4230d2bbc1"
+          },
+          {
+            "different": 29,
+            "first": 34,
+            "max_abs": 0.0001220703125,
+            "position": 190,
+            "sha256": "1c6256c71326cbc57617991faf256efa803ae6afb46b92ea47b11c3f31286cfa"
+          },
+          {
+            "different": 109,
+            "first": 23,
+            "max_abs": 0.000244140625,
+            "position": 191,
+            "sha256": "e58c4885926c342f98406b2f1bb6845f88dd307af251d14125d85c4e4141872a"
+          }
+        ],
+        "B3": [
+          {
+            "different": 0,
+            "first": null,
+            "max_abs": 0.0,
+            "position": 189,
+            "sha256": "b7ea1135c2be50bfb696d446c89d46ce72c76ad2c60c6cedfa49fb4230d2bbc1"
+          },
+          {
+            "different": 0,
+            "first": null,
+            "max_abs": 0.0,
+            "position": 190,
+            "sha256": "1c6256c71326cbc57617991faf256efa803ae6afb46b92ea47b11c3f31286cfa"
+          },
+          {
+            "different": 0,
+            "first": null,
+            "max_abs": 0.0,
+            "position": 191,
+            "sha256": "e58c4885926c342f98406b2f1bb6845f88dd307af251d14125d85c4e4141872a"
+          }
+        ]
+      },
+      "mutant": {
+        "AR": [
+          {
+            "different": 34,
+            "first": 0,
+            "max_abs": 0.411651611328125,
+            "position": 189,
+            "sha256": "83c3d6b241b618c13415a2c78bb5989242299b11693b6fd60c0ac556214c7402"
+          },
+          {
+            "different": 29,
+            "first": 34,
+            "max_abs": 0.0001220703125,
+            "position": 190,
+            "sha256": "1c6256c71326cbc57617991faf256efa803ae6afb46b92ea47b11c3f31286cfa"
+          },
+          {
+            "different": 109,
+            "first": 23,
+            "max_abs": 0.000244140625,
+            "position": 191,
+            "sha256": "e58c4885926c342f98406b2f1bb6845f88dd307af251d14125d85c4e4141872a"
+          }
+        ],
+        "B3": [
+          {
+            "different": 1,
+            "first": 0,
+            "max_abs": 0.411651611328125,
+            "position": 189,
+            "sha256": "83c3d6b241b618c13415a2c78bb5989242299b11693b6fd60c0ac556214c7402"
+          },
+          {
+            "different": 0,
+            "first": null,
+            "max_abs": 0.0,
+            "position": 190,
+            "sha256": "1c6256c71326cbc57617991faf256efa803ae6afb46b92ea47b11c3f31286cfa"
+          },
+          {
+            "different": 0,
+            "first": null,
+            "max_abs": 0.0,
+            "position": 191,
+            "sha256": "e58c4885926c342f98406b2f1bb6845f88dd307af251d14125d85c4e4141872a"
+          }
+        ]
+      }
+    }
+  },
+  "grade_sha256": "ecee23c061a83b1e0a82668a95656f6b9c3d7e1dc39f31a8e08a0d156d7a7f42",
+  "inputs": {
+    "block_sha256": "fb96dbf9d1874808dbfc2170778106e7fec41a09ed36dfabde630e88f843dc58",
+    "build_sha256": "717da62c518b9afe38eb05c0dd2d6224cf9aa401a3eaac6295f9a08d5935493a",
+    "serial_sha256": "72819fc1e0f5c31b688c81d554e22693b04ba29feb26d8303253bdc1ec9af777"
+  },
+  "model_forwards": 0,
+  "model_sha256": "582bd40f6886200101f4c4ed9f25f3fe80cc14c86e9e2b37746cd8904a0c622d",
+  "original_gguf_ranges": 60,
+  "physical_scope_s": 1.7278352350003843,
+  "physical_sha256": "6e2103047c068ab7258f5e2617bc6eba9f559efc84fed3e8658d6f7450c41fe9",
+  "protocol_sha256": "547fbea1a9f7d2cca1b43526e00fa1daee56ee4daf7c80644a618f8afc4c7c57",
+  "rows_ids": [
+    [
+      107,
+      63,
+      76,
+      66
+    ],
+    [
+      66,
+      39,
+      6,
+      86
+    ],
+    [
+      6,
+      105,
+      77,
+      95
+    ]
+  ],
+  "samples": {
+    "admission": {
+      "gpu": {
+        "bdf": "00000000:C4:00.0",
+        "power_w": 2.36,
+        "temperature_c": 42.14,
+        "used_mib": 2.0,
+        "uuid": "GPU-83d90c55-1d92-75da-fc30-7771a85f2521"
+      },
+      "mem_available_bytes": 27502555136,
+      "power": {
+        "online_sources": [
+          "AC0",
+          "ucsi-source-psy-USBC000:002"
+        ],
+        "profile": "performance",
+        "source": "AC"
+      },
+      "thermal": {
+        "cpu_tctl_c": 48.5,
+        "nvme_composite_by_sensor": {
+          "nvme-pci-c100": 33.85
+        }
+      }
+    },
+    "after_exit": {
+      "gpu": {
+        "bdf": "00000000:C4:00.0",
+        "power_w": 11.08,
+        "temperature_c": 43.26,
+        "used_mib": 2.0,
+        "uuid": "GPU-83d90c55-1d92-75da-fc30-7771a85f2521"
+      },
+      "mem_available_bytes": 27473522688,
+      "power": {
+        "online_sources": [
+          "AC0",
+          "ucsi-source-psy-USBC000:002"
+        ],
+        "profile": "performance",
+        "source": "AC"
+      },
+      "thermal": {
+        "cpu_tctl_c": 53.125,
+        "nvme_composite_by_sensor": {
+          "nvme-pci-c100": 33.85
+        }
+      }
+    },
+    "live": {
+      "after": {
+        "gpu": {
+          "bdf": "00000000:C4:00.0",
+          "power_w": 5.7,
+          "temperature_c": 43.89,
+          "used_mib": 622.0,
+          "uuid": "GPU-83d90c55-1d92-75da-fc30-7771a85f2521"
+        },
+        "mem_available_bytes": 27193262080,
+        "power": {
+          "online_sources": [
+            "AC0",
+            "ucsi-source-psy-USBC000:002"
+          ],
+          "profile": "performance",
+          "source": "AC"
+        },
+        "thermal": {
+          "cpu_tctl_c": 53.125,
+          "nvme_composite_by_sensor": {
+            "nvme-pci-c100": 33.85
+          }
+        }
+      },
+      "before": {
+        "gpu": {
+          "bdf": "00000000:C4:00.0",
+          "power_w": 3.12,
+          "temperature_c": 42.69,
+          "used_mib": 612.0,
+          "uuid": "GPU-83d90c55-1d92-75da-fc30-7771a85f2521"
+        },
+        "mem_available_bytes": 27242872832,
+        "power": {
+          "online_sources": [
+            "AC0",
+            "ucsi-source-psy-USBC000:002"
+          ],
+          "profile": "performance",
+          "source": "AC"
+        },
+        "thermal": {
+          "cpu_tctl_c": 49.625,
+          "nvme_composite_by_sensor": {
+            "nvme-pci-c100": 33.85
+          }
+        }
+      }
+    }
+  },
+  "tree": "bb6198bafef69fa0a743b6c7c5722b87b8d15b80"
+}

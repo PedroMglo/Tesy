@@ -1,0 +1,3 @@
+# Correção da referência antes das contagens
+
+O primeiro replay parou em «unqualified route history» antes de abrir o primeiro braço. O recibo de referência R1 estava marcado FAIL_BUDGET apesar dos quatro digests corretos. O validador paralelo passou depois na identidade R4 com leitura incremental e contabilidade de RSS de um processo novo. Usar exclusivamente a R4 (SHA-256 17f162d75013e04c6f47f776b264c5b7b3e9801cf206ed531434c75a45773ef0) e o seu leitor ordenado em modo streaming. Preservar o R1 do controlo e os resultados históricos. O protocolo original de vítimas/limiar/fixture e os dados C294 permanecem idênticos. Executar agora sob LC_ALL=C, limite duro de 256 MiB e prazo de 60 s, em nova saída. [Reparação da referência](../warm_route_reference/repair.md)

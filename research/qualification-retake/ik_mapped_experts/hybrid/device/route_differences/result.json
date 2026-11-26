@@ -1,0 +1,459 @@
+{
+  "family_status": "FAIL_PRESERVED",
+  "family_sha256": "2e83262ce3efb72136f2025d76db749f21e768bc78b8abbe55480648dd9fa27a",
+  "cpu_sha256": "95e0697e0c9d65c16a921fff06af57ddd2b43e22d4c3be39f256afe023dd5508",
+  "status": {
+    "CPU": "COMPLETE",
+    "RESIDENT": "COMPLETE",
+    "BANK9": "PARTIAL",
+    "BANK7": "NOT_RUN"
+  },
+  "evidence": {
+    "CPU": {
+      "grade_reproduced": true,
+      "logical_top4_rows": 66,
+      "scheduler_copy_rows_checked": 0,
+      "logit_rows": 33,
+      "stdout_sha256": "a88bc77f6c368cf8785abee6d2e86bfebe5f3df25a6e5282620ace1c4dfcb179",
+      "logit_sha256": {
+        "prefill": "8f771c8134416c9c2d74e0b4ad9164cef19b2647bc0c1acd40c6cf9223eee4fd",
+        "teacher": "fa3bb6fcec2dfc0282e23d340d46c969b723a255c0dca5032f18dd138678ce76"
+      }
+    },
+    "RESIDENT": {
+      "grade_reproduced": true,
+      "logical_top4_rows": 66,
+      "scheduler_copy_rows_checked": 0,
+      "logit_rows": 33,
+      "stdout_sha256": "318b014964ad88d39659f83bfc8b39c84c45f5174780db5f495a239f59b0d9e7",
+      "logit_sha256": {
+        "prefill": "aeb44670a33dca0cb230cb3aeecd697ac81918cee22a116a61e19c9109369edc",
+        "teacher": "6f923d911a67f2ec4792ce9e88065cc3b075685a883f710cf1b34d16120e2d2a"
+      }
+    },
+    "BANK9": {
+      "grade_reproduced": false,
+      "logical_top4_rows": 32,
+      "scheduler_copy_rows_checked": 32,
+      "logit_rows": 0,
+      "stdout_sha256": "a84e9ec20e85a3609a00979e6f899c5285ef8268860983b3bc1a16e1c528c8a8",
+      "logit_sha256": {}
+    }
+  },
+  "pairs": {
+    "CPU-RESIDENT": {
+      "compared_top4_rows_of_66": 66,
+      "route_groups": {
+        "prefill:L0": {
+          "positions": {
+            "ordered_equal": [
+              0,
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              8,
+              9,
+              10,
+              11,
+              12,
+              13,
+              14,
+              15,
+              16,
+              17,
+              18,
+              19,
+              20,
+              21,
+              22,
+              23,
+              24,
+              25,
+              26,
+              27,
+              28,
+              29,
+              30,
+              31
+            ],
+            "same_set_reordered": [
+              7
+            ],
+            "set_changed": []
+          },
+          "shared_experts_histogram": {
+            "4": 32
+          }
+        },
+        "prefill:L1": {
+          "positions": {
+            "ordered_equal": [
+              0,
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7,
+              8,
+              9,
+              10,
+              11,
+              12,
+              13,
+              14,
+              15,
+              16,
+              17,
+              18,
+              19,
+              20,
+              21,
+              22,
+              23,
+              24,
+              25,
+              26,
+              27,
+              28,
+              29,
+              30,
+              31
+            ],
+            "same_set_reordered": [],
+            "set_changed": []
+          },
+          "shared_experts_histogram": {
+            "4": 32
+          }
+        },
+        "teacher:L0": {
+          "positions": {
+            "ordered_equal": [
+              32
+            ],
+            "same_set_reordered": [],
+            "set_changed": []
+          },
+          "shared_experts_histogram": {
+            "4": 1
+          }
+        },
+        "teacher:L1": {
+          "positions": {
+            "ordered_equal": [
+              32
+            ],
+            "same_set_reordered": [],
+            "set_changed": []
+          },
+          "shared_experts_histogram": {
+            "4": 1
+          }
+        }
+      },
+      "different_quartets_by_position_layer": {
+        "7:0": [
+          [
+            0,
+            7,
+            6,
+            5
+          ],
+          [
+            0,
+            6,
+            7,
+            5
+          ]
+        ]
+      },
+      "word_counts": {
+        "prefill": {
+          "different_words": 1024,
+          "words": 1024
+        },
+        "teacher": {
+          "different_words": 32,
+          "words": 32
+        }
+      },
+      "strict_greedy_positions": {
+        "prefill": {
+          "same": [
+            0,
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            14,
+            15,
+            16,
+            17,
+            18,
+            19,
+            20,
+            21,
+            22,
+            23,
+            24,
+            26,
+            27,
+            28,
+            30,
+            31
+          ],
+          "changed": [
+            13,
+            25,
+            29
+          ],
+          "either_tied": []
+        },
+        "teacher": {
+          "same": [
+            32
+          ],
+          "changed": [],
+          "either_tied": []
+        }
+      },
+      "top_two_on_changed_tied_and_teacher": {
+        "13": [
+          {
+            "winners": [
+              9
+            ],
+            "two_ids_by_score_then_id": [
+              9,
+              28
+            ],
+            "two_scores": [
+              1.186072826385498,
+              1.180584192276001
+            ],
+            "margin": 0.00548863410949707
+          },
+          {
+            "winners": [
+              28
+            ],
+            "two_ids_by_score_then_id": [
+              28,
+              9
+            ],
+            "two_scores": [
+              1.1817463636398315,
+              1.170993447303772
+            ],
+            "margin": 0.01075291633605957
+          }
+        ],
+        "25": [
+          {
+            "winners": [
+              28
+            ],
+            "two_ids_by_score_then_id": [
+              28,
+              31
+            ],
+            "two_scores": [
+              1.107558250427246,
+              1.0997939109802246
+            ],
+            "margin": 0.007764339447021484
+          },
+          {
+            "winners": [
+              31
+            ],
+            "two_ids_by_score_then_id": [
+              31,
+              28
+            ],
+            "two_scores": [
+              1.1075246334075928,
+              1.0824413299560547
+            ],
+            "margin": 0.025083303451538086
+          }
+        ],
+        "29": [
+          {
+            "winners": [
+              28
+            ],
+            "two_ids_by_score_then_id": [
+              28,
+              31
+            ],
+            "two_scores": [
+              1.095618486404419,
+              1.077574372291565
+            ],
+            "margin": 0.018044114112854004
+          },
+          {
+            "winners": [
+              31
+            ],
+            "two_ids_by_score_then_id": [
+              31,
+              28
+            ],
+            "two_scores": [
+              1.09861159324646,
+              1.0824165344238281
+            ],
+            "margin": 0.016195058822631836
+          }
+        ],
+        "32": [
+          {
+            "winners": [
+              31
+            ],
+            "two_ids_by_score_then_id": [
+              31,
+              28
+            ],
+            "two_scores": [
+              1.0837764739990234,
+              1.0552849769592285
+            ],
+            "margin": 0.028491497039794922
+          },
+          {
+            "winners": [
+              31
+            ],
+            "two_ids_by_score_then_id": [
+              31,
+              28
+            ],
+            "two_scores": [
+              1.086292028427124,
+              1.054262399673462
+            ],
+            "margin": 0.03202962875366211
+          }
+        ]
+      },
+      "joint_L0_L1_greedy_counts": {
+        "ordered_equal,ordered_equal,changed": 3,
+        "ordered_equal,ordered_equal,same": 29,
+        "same_set_reordered,ordered_equal,same": 1
+      }
+    },
+    "RESIDENT-BANK9": {
+      "compared_top4_rows_of_66": 32,
+      "route_groups": {
+        "prefill:L0": {
+          "positions": {
+            "ordered_equal": [
+              0,
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7,
+              8,
+              9,
+              10,
+              11,
+              12,
+              13,
+              14,
+              15,
+              16,
+              17,
+              18,
+              19,
+              20,
+              21,
+              22,
+              23,
+              24,
+              25,
+              26,
+              27,
+              28,
+              29,
+              30,
+              31
+            ],
+            "same_set_reordered": [],
+            "set_changed": []
+          },
+          "shared_experts_histogram": {
+            "4": 32
+          }
+        },
+        "prefill:L1": {
+          "positions": {
+            "ordered_equal": [],
+            "same_set_reordered": [],
+            "set_changed": []
+          },
+          "shared_experts_histogram": {}
+        },
+        "teacher:L0": {
+          "positions": {
+            "ordered_equal": [],
+            "same_set_reordered": [],
+            "set_changed": []
+          },
+          "shared_experts_histogram": {}
+        },
+        "teacher:L1": {
+          "positions": {
+            "ordered_equal": [],
+            "same_set_reordered": [],
+            "set_changed": []
+          },
+          "shared_experts_histogram": {}
+        }
+      },
+      "different_quartets_by_position_layer": {},
+      "word_counts": {
+        "prefill": {
+          "different_words": 0,
+          "words": 0
+        },
+        "teacher": {
+          "different_words": 0,
+          "words": 0
+        }
+      },
+      "strict_greedy_positions": {
+        "prefill": {
+          "same": [],
+          "changed": [],
+          "either_tied": []
+        },
+        "teacher": {
+          "same": [],
+          "changed": [],
+          "either_tied": []
+        }
+      },
+      "top_two_on_changed_tied_and_teacher": {},
+      "joint_L0_L1_greedy_counts": {}
+    }
+  }
+}

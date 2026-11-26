@@ -1,0 +1,873 @@
+{
+  "arms": {
+    "c294-code153-2-on": {
+      "charged_nonwait_us": 1817114,
+      "entry_sha256": "49f3dc0f809ed4d60834820747c4790f9166cb5128fe0f0e8aacdacd9adf6b41",
+      "groups_by_misses": {
+        "0": {
+          "groups": 333,
+          "jobs": 0,
+          "nonwait_us": 484517,
+          "observed_wait_us": 0,
+          "parallel_floor_us": 0,
+          "payload_bytes": 0,
+          "read_union_outside_wait_us": 0,
+          "read_worker_us": 0,
+          "reads": 0,
+          "serial_floor_us": 0
+        },
+        "1": {
+          "groups": 447,
+          "jobs": 447,
+          "nonwait_us": 696468,
+          "observed_wait_us": 3495302,
+          "parallel_floor_us": 1170799,
+          "payload_bytes": 5908982400,
+          "read_union_outside_wait_us": 0,
+          "read_worker_us": 3150165,
+          "reads": 1341,
+          "serial_floor_us": 3150165
+        },
+        "2": {
+          "groups": 267,
+          "jobs": 534,
+          "nonwait_us": 438360,
+          "observed_wait_us": 3538807,
+          "parallel_floor_us": 1924114,
+          "payload_bytes": 7059052800,
+          "read_union_outside_wait_us": 0,
+          "read_worker_us": 6084093,
+          "reads": 1602,
+          "serial_floor_us": 3315274
+        },
+        "3": {
+          "groups": 93,
+          "jobs": 279,
+          "nonwait_us": 175285,
+          "observed_wait_us": 1827453,
+          "parallel_floor_us": 1205327,
+          "payload_bytes": 3688156800,
+          "read_union_outside_wait_us": 0,
+          "read_worker_us": 4643033,
+          "reads": 837,
+          "serial_floor_us": 1749016
+        },
+        "4": {
+          "groups": 12,
+          "jobs": 48,
+          "nonwait_us": 19036,
+          "observed_wait_us": 307461,
+          "parallel_floor_us": 264156,
+          "payload_bytes": 634521600,
+          "read_union_outside_wait_us": 0,
+          "read_worker_us": 1036331,
+          "reads": 144,
+          "serial_floor_us": 296313
+        }
+      },
+      "lanes_sha256": "5039b13d514a5919ecec80992869dd34a79bf2473085c15b236ba5495a97dca1",
+      "max_service_gain_us": 3946372,
+      "native_decode32_s": 10.98613745,
+      "native_window_journal_us": 10986137,
+      "observed_nonwait_including_tail_us": 1817114,
+      "observed_tail_us": 3448,
+      "ordered_rank_sha256": "2045b1c9510432fb0f98d4941db07b3f5472ffa4e9adb0c8f45ad547089dcb2c",
+      "parallel": {
+        "service": {
+          "fixed_us": 0,
+          "logical_payload_bytes": 17290713600,
+          "max_service_factor": 1.1684642027846255,
+          "read_floor_us": 4564396,
+          "required_payload_B_per_s": 3242008800,
+          "scales": {
+            "0.8": {
+              "additional_cost_allowed_s": 1.6818165333333333,
+              "excess_s": 0.0,
+              "reaches": true,
+              "seconds": 3.6515168
+            },
+            "1": {
+              "additional_cost_allowed_s": 0.7689373333333334,
+              "excess_s": 0.0,
+              "reaches": true,
+              "seconds": 4.564396
+            }
+          }
+        },
+        "with_fixed": {
+          "fixed_us": 1817114,
+          "logical_payload_bytes": 17290713600,
+          "max_service_factor": 0.7703580787761038,
+          "read_floor_us": 4564396,
+          "required_payload_B_per_s": 4917416112,
+          "scales": {
+            "0.8": {
+              "additional_cost_allowed_s": 0.0,
+              "excess_s": 0.13529746666666667,
+              "reaches": false,
+              "seconds": 5.4686308
+            },
+            "1": {
+              "additional_cost_allowed_s": 0.0,
+              "excess_s": 1.0481766666666668,
+              "reaches": false,
+              "seconds": 6.38151
+            }
+          }
+        }
+      },
+      "raw_sha256": {
+        "events.tsv": "e68a1bd22a6477a214cfbdd04ff9cfc3515d531e52e68c8b3dc41f317f536bf2",
+        "initial.json": "484bd61b14ae7f970e86e9df29b8e99334d89cb787cf8ffd82af4ce526b895b5",
+        "result.json": "2fc10b510a59e00595fe7a361e44d11e233ffc68c07862964c0cf20c65f8d45a"
+      },
+      "serial_control": {
+        "service": {
+          "fixed_us": 0,
+          "logical_payload_bytes": 17290713600,
+          "max_service_factor": 0.6266571164122126,
+          "read_floor_us": 8510768,
+          "required_payload_B_per_s": 3242008800,
+          "scales": {
+            "0.8": {
+              "additional_cost_allowed_s": 0.0,
+              "excess_s": 1.4752810666666667,
+              "reaches": false,
+              "seconds": 6.8086144
+            },
+            "1": {
+              "additional_cost_allowed_s": 0.0,
+              "excess_s": 3.1774346666666666,
+              "reaches": false,
+              "seconds": 8.510768
+            }
+          }
+        },
+        "with_fixed": {
+          "fixed_us": 1817114,
+          "logical_payload_bytes": 17290713600,
+          "max_service_factor": 0.4131494752686636,
+          "read_floor_us": 8510768,
+          "required_payload_B_per_s": 4917416112,
+          "scales": {
+            "0.8": {
+              "additional_cost_allowed_s": 0.0,
+              "excess_s": 3.292395066666667,
+              "reaches": false,
+              "seconds": 8.6257284
+            },
+            "1": {
+              "additional_cost_allowed_s": 0.0,
+              "excess_s": 4.994548666666667,
+              "reaches": false,
+              "seconds": 10.327882
+            }
+          }
+        }
+      },
+      "tiers": {
+        "CPU": {
+          "groups": 800,
+          "jobs": 927,
+          "nonwait_us": 1599137,
+          "observed_wait_us": 6468866,
+          "parallel_floor_us": 3307026,
+          "payload_bytes": 12254198400,
+          "read_union_outside_wait_us": 0,
+          "read_worker_us": 10779706,
+          "reads": 2781,
+          "serial_floor_us": 6118414
+        },
+        "CUDA": {
+          "groups": 352,
+          "jobs": 381,
+          "nonwait_us": 214529,
+          "observed_wait_us": 2700157,
+          "parallel_floor_us": 1257370,
+          "payload_bytes": 5036515200,
+          "read_union_outside_wait_us": 0,
+          "read_worker_us": 4133916,
+          "reads": 1143,
+          "serial_floor_us": 2392354
+        }
+      },
+      "total": {
+        "groups": 1152,
+        "jobs": 1308,
+        "nonwait_us": 1813666,
+        "observed_wait_us": 9169023,
+        "parallel_floor_us": 4564396,
+        "payload_bytes": 17290713600,
+        "read_worker_us": 14913622,
+        "reads": 3924,
+        "serial_floor_us": 8510768
+      }
+    },
+    "c294-code153-3-on": {
+      "charged_nonwait_us": 1829011,
+      "entry_sha256": "49f3dc0f809ed4d60834820747c4790f9166cb5128fe0f0e8aacdacd9adf6b41",
+      "groups_by_misses": {
+        "0": {
+          "groups": 333,
+          "jobs": 0,
+          "nonwait_us": 489417,
+          "observed_wait_us": 0,
+          "parallel_floor_us": 0,
+          "payload_bytes": 0,
+          "read_union_outside_wait_us": 0,
+          "read_worker_us": 0,
+          "reads": 0,
+          "serial_floor_us": 0
+        },
+        "1": {
+          "groups": 447,
+          "jobs": 447,
+          "nonwait_us": 696931,
+          "observed_wait_us": 3495283,
+          "parallel_floor_us": 1163927,
+          "payload_bytes": 5908982400,
+          "read_union_outside_wait_us": 0,
+          "read_worker_us": 3144944,
+          "reads": 1341,
+          "serial_floor_us": 3144944
+        },
+        "2": {
+          "groups": 267,
+          "jobs": 534,
+          "nonwait_us": 442509,
+          "observed_wait_us": 3539095,
+          "parallel_floor_us": 1931532,
+          "payload_bytes": 7059052800,
+          "read_union_outside_wait_us": 0,
+          "read_worker_us": 6073139,
+          "reads": 1602,
+          "serial_floor_us": 3308350
+        },
+        "3": {
+          "groups": 93,
+          "jobs": 279,
+          "nonwait_us": 176630,
+          "observed_wait_us": 1826683,
+          "parallel_floor_us": 1204510,
+          "payload_bytes": 3688156800,
+          "read_union_outside_wait_us": 0,
+          "read_worker_us": 4631481,
+          "reads": 837,
+          "serial_floor_us": 1745628
+        },
+        "4": {
+          "groups": 12,
+          "jobs": 48,
+          "nonwait_us": 20107,
+          "observed_wait_us": 319708,
+          "parallel_floor_us": 275164,
+          "payload_bytes": 634521600,
+          "read_union_outside_wait_us": 0,
+          "read_worker_us": 1079882,
+          "reads": 144,
+          "serial_floor_us": 308875
+        }
+      },
+      "lanes_sha256": "f6849cee1a59bf2c2f94387285d27c6a69a60e1cc16cf0ba16d436265e11fab4",
+      "max_service_gain_us": 3932664,
+      "native_decode32_s": 11.009780947,
+      "native_window_journal_us": 11009780,
+      "observed_nonwait_including_tail_us": 1829011,
+      "observed_tail_us": 3417,
+      "ordered_rank_sha256": "2045b1c9510432fb0f98d4941db07b3f5472ffa4e9adb0c8f45ad547089dcb2c",
+      "parallel": {
+        "service": {
+          "fixed_us": 0,
+          "logical_payload_bytes": 17290713600,
+          "max_service_factor": 1.1657220311045238,
+          "read_floor_us": 4575133,
+          "required_payload_B_per_s": 3242008800,
+          "scales": {
+            "0.8": {
+              "additional_cost_allowed_s": 1.6732269333333334,
+              "excess_s": 0.0,
+              "reaches": true,
+              "seconds": 3.6601064
+            },
+            "1": {
+              "additional_cost_allowed_s": 0.7582003333333334,
+              "excess_s": 0.0,
+              "reaches": true,
+              "seconds": 4.575133
+            }
+          }
+        },
+        "with_fixed": {
+          "fixed_us": 1829011,
+          "logical_payload_bytes": 17290713600,
+          "max_service_factor": 0.765949827760927,
+          "read_floor_us": 4575133,
+          "required_payload_B_per_s": 4934110495,
+          "scales": {
+            "0.8": {
+              "additional_cost_allowed_s": 0.0,
+              "excess_s": 0.15578406666666667,
+              "reaches": false,
+              "seconds": 5.4891174
+            },
+            "1": {
+              "additional_cost_allowed_s": 0.0,
+              "excess_s": 1.0708106666666666,
+              "reaches": false,
+              "seconds": 6.404144
+            }
+          }
+        }
+      },
+      "raw_sha256": {
+        "events.tsv": "dc3ef0aba2d5c04f51512300a4202c07c3055db36e18e90f4e67646c5e7818f3",
+        "initial.json": "d00a8d5ed6efca5bf3b79bda041a665c6ec10a7ace6eb84f80dfe018ab219966",
+        "result.json": "47fc71ecb38a17ec3d8bfcc4c1249c4e3ac599d90c604ae88ca9c78661b0fd23"
+      },
+      "serial_control": {
+        "service": {
+          "fixed_us": 0,
+          "logical_payload_bytes": 17290713600,
+          "max_service_factor": 0.6268759507700211,
+          "read_floor_us": 8507797,
+          "required_payload_B_per_s": 3242008800,
+          "scales": {
+            "0.8": {
+              "additional_cost_allowed_s": 0.0,
+              "excess_s": 1.4729042666666667,
+              "reaches": false,
+              "seconds": 6.8062376
+            },
+            "1": {
+              "additional_cost_allowed_s": 0.0,
+              "excess_s": 3.1744636666666666,
+              "reaches": false,
+              "seconds": 8.507797
+            }
+          }
+        },
+        "with_fixed": {
+          "fixed_us": 1829011,
+          "logical_payload_bytes": 17290713600,
+          "max_service_factor": 0.4118953864711785,
+          "read_floor_us": 8507797,
+          "required_payload_B_per_s": 4934110495,
+          "scales": {
+            "0.8": {
+              "additional_cost_allowed_s": 0.0,
+              "excess_s": 3.3019152666666667,
+              "reaches": false,
+              "seconds": 8.6352486
+            },
+            "1": {
+              "additional_cost_allowed_s": 0.0,
+              "excess_s": 5.0034746666666665,
+              "reaches": false,
+              "seconds": 10.336808
+            }
+          }
+        }
+      },
+      "tiers": {
+        "CPU": {
+          "groups": 800,
+          "jobs": 927,
+          "nonwait_us": 1606278,
+          "observed_wait_us": 6480092,
+          "parallel_floor_us": 3312480,
+          "payload_bytes": 12254198400,
+          "read_union_outside_wait_us": 0,
+          "read_worker_us": 10793906,
+          "reads": 2781,
+          "serial_floor_us": 6116287
+        },
+        "CUDA": {
+          "groups": 352,
+          "jobs": 381,
+          "nonwait_us": 219316,
+          "observed_wait_us": 2700677,
+          "parallel_floor_us": 1262653,
+          "payload_bytes": 5036515200,
+          "read_union_outside_wait_us": 0,
+          "read_worker_us": 4135540,
+          "reads": 1143,
+          "serial_floor_us": 2391510
+        }
+      },
+      "total": {
+        "groups": 1152,
+        "jobs": 1308,
+        "nonwait_us": 1825594,
+        "observed_wait_us": 9180769,
+        "parallel_floor_us": 4575133,
+        "payload_bytes": 17290713600,
+        "read_worker_us": 14929446,
+        "reads": 3924,
+        "serial_floor_us": 8507797
+      }
+    },
+    "c294-nominal153-2-on": {
+      "charged_nonwait_us": 1773408,
+      "entry_sha256": "671354649bd647f6e4cf20556bfda018bf68bde6c54112304ab33313f2638fbf",
+      "groups_by_misses": {
+        "0": {
+          "groups": 469,
+          "jobs": 0,
+          "nonwait_us": 651159,
+          "observed_wait_us": 0,
+          "parallel_floor_us": 0,
+          "payload_bytes": 0,
+          "read_union_outside_wait_us": 0,
+          "read_worker_us": 0,
+          "reads": 0,
+          "serial_floor_us": 0
+        },
+        "1": {
+          "groups": 402,
+          "jobs": 402,
+          "nonwait_us": 611533,
+          "observed_wait_us": 3168387,
+          "parallel_floor_us": 1070713,
+          "payload_bytes": 5314118400,
+          "read_union_outside_wait_us": 0,
+          "read_worker_us": 2868719,
+          "reads": 1206,
+          "serial_floor_us": 2868719
+        },
+        "2": {
+          "groups": 185,
+          "jobs": 370,
+          "nonwait_us": 305917,
+          "observed_wait_us": 2439057,
+          "parallel_floor_us": 1326667,
+          "payload_bytes": 4891104000,
+          "read_union_outside_wait_us": 0,
+          "read_worker_us": 4192211,
+          "reads": 1110,
+          "serial_floor_us": 2283258
+        },
+        "3": {
+          "groups": 75,
+          "jobs": 225,
+          "nonwait_us": 144061,
+          "observed_wait_us": 1444771,
+          "parallel_floor_us": 953799,
+          "payload_bytes": 2974320000,
+          "read_union_outside_wait_us": 0,
+          "read_worker_us": 3675340,
+          "reads": 675,
+          "serial_floor_us": 1380605
+        },
+        "4": {
+          "groups": 21,
+          "jobs": 84,
+          "nonwait_us": 57000,
+          "observed_wait_us": 555859,
+          "parallel_floor_us": 479072,
+          "payload_bytes": 1110412800,
+          "read_union_outside_wait_us": 0,
+          "read_worker_us": 1882526,
+          "reads": 252,
+          "serial_floor_us": 537596
+        }
+      },
+      "lanes_sha256": "ebcbb06e9e9f6fc1c2dac33d4d993896f1b511fbc343cdf25e2fcbe29891e173",
+      "max_service_gain_us": 3239927,
+      "native_decode32_s": 9.381482544,
+      "native_window_journal_us": 9381482,
+      "observed_nonwait_including_tail_us": 1773408,
+      "observed_tail_us": 3738,
+      "ordered_rank_sha256": "62ff2da0c33e77847aaa56e4c802c2a4569fcd5f08d971b9bda04a0a4c65e17c",
+      "parallel": {
+        "service": {
+          "fixed_us": 0,
+          "logical_payload_bytes": 14289955200,
+          "max_service_factor": 1.3924239777845717,
+          "read_floor_us": 3830251,
+          "required_payload_B_per_s": 2679366600,
+          "scales": {
+            "0.8": {
+              "additional_cost_allowed_s": 2.2691325333333334,
+              "excess_s": 0.0,
+              "reaches": true,
+              "seconds": 3.0642008
+            },
+            "1": {
+              "additional_cost_allowed_s": 1.5030823333333334,
+              "excess_s": 0.0,
+              "reaches": true,
+              "seconds": 3.830251
+            }
+          }
+        },
+        "with_fixed": {
+          "fixed_us": 1773408,
+          "logical_payload_bytes": 14289955200,
+          "max_service_factor": 0.9294235112355126,
+          "read_floor_us": 3830251,
+          "required_payload_B_per_s": 4014116551,
+          "scales": {
+            "0.8": {
+              "additional_cost_allowed_s": 0.49572453333333333,
+              "excess_s": 0.0,
+              "reaches": true,
+              "seconds": 4.8376088
+            },
+            "1": {
+              "additional_cost_allowed_s": 0.0,
+              "excess_s": 0.2703256666666667,
+              "reaches": false,
+              "seconds": 5.603659
+            }
+          }
+        }
+      },
+      "raw_sha256": {
+        "events.tsv": "3e735e0dcc1d4aeeb119ef48ad6e0c84ac6fd9a69e8544c27f95106df49e066c",
+        "initial.json": "4ad4a7767a3e6e4c25e5693ec206565dc039394a771ef2074f07f2dcd69a70ee",
+        "result.json": "cf7f22fde47fec4f319a19897a0118b05c1efeb5304b48ca73d94a5b0ef85606"
+      },
+      "serial_control": {
+        "service": {
+          "fixed_us": 0,
+          "logical_payload_bytes": 14289955200,
+          "max_service_factor": 0.7543421584765381,
+          "read_floor_us": 7070178,
+          "required_payload_B_per_s": 2679366600,
+          "scales": {
+            "0.8": {
+              "additional_cost_allowed_s": 0.0,
+              "excess_s": 0.32280906666666664,
+              "reaches": false,
+              "seconds": 5.6561424
+            },
+            "1": {
+              "additional_cost_allowed_s": 0.0,
+              "excess_s": 1.7368446666666666,
+              "reaches": false,
+              "seconds": 7.070178
+            }
+          }
+        },
+        "with_fixed": {
+          "fixed_us": 1773408,
+          "logical_payload_bytes": 14289955200,
+          "max_service_factor": 0.5035128299928705,
+          "read_floor_us": 7070178,
+          "required_payload_B_per_s": 4014116551,
+          "scales": {
+            "0.8": {
+              "additional_cost_allowed_s": 0.0,
+              "excess_s": 2.0962170666666666,
+              "reaches": false,
+              "seconds": 7.4295504
+            },
+            "1": {
+              "additional_cost_allowed_s": 0.0,
+              "excess_s": 3.5102526666666667,
+              "reaches": false,
+              "seconds": 8.843586
+            }
+          }
+        }
+      },
+      "tiers": {
+        "CPU": {
+          "groups": 800,
+          "jobs": 762,
+          "nonwait_us": 1557843,
+          "observed_wait_us": 5325424,
+          "parallel_floor_us": 2760797,
+          "payload_bytes": 10073030400,
+          "read_union_outside_wait_us": 0,
+          "read_worker_us": 9102100,
+          "reads": 2286,
+          "serial_floor_us": 5043368
+        },
+        "CUDA": {
+          "groups": 352,
+          "jobs": 319,
+          "nonwait_us": 211827,
+          "observed_wait_us": 2282650,
+          "parallel_floor_us": 1069454,
+          "payload_bytes": 4216924800,
+          "read_union_outside_wait_us": 0,
+          "read_worker_us": 3516696,
+          "reads": 957,
+          "serial_floor_us": 2026810
+        }
+      },
+      "total": {
+        "groups": 1152,
+        "jobs": 1081,
+        "nonwait_us": 1769670,
+        "observed_wait_us": 7608074,
+        "parallel_floor_us": 3830251,
+        "payload_bytes": 14289955200,
+        "read_worker_us": 12618796,
+        "reads": 3243,
+        "serial_floor_us": 7070178
+      }
+    },
+    "c294-nominal153-3-on": {
+      "charged_nonwait_us": 1830919,
+      "entry_sha256": "671354649bd647f6e4cf20556bfda018bf68bde6c54112304ab33313f2638fbf",
+      "groups_by_misses": {
+        "0": {
+          "groups": 469,
+          "jobs": 0,
+          "nonwait_us": 679041,
+          "observed_wait_us": 0,
+          "parallel_floor_us": 0,
+          "payload_bytes": 0,
+          "read_union_outside_wait_us": 0,
+          "read_worker_us": 0,
+          "reads": 0,
+          "serial_floor_us": 0
+        },
+        "1": {
+          "groups": 402,
+          "jobs": 402,
+          "nonwait_us": 634528,
+          "observed_wait_us": 3144705,
+          "parallel_floor_us": 1047781,
+          "payload_bytes": 5314118400,
+          "read_union_outside_wait_us": 0,
+          "read_worker_us": 2840928,
+          "reads": 1206,
+          "serial_floor_us": 2840928
+        },
+        "2": {
+          "groups": 185,
+          "jobs": 370,
+          "nonwait_us": 310949,
+          "observed_wait_us": 2458890,
+          "parallel_floor_us": 1333879,
+          "payload_bytes": 4891104000,
+          "read_union_outside_wait_us": 0,
+          "read_worker_us": 4220138,
+          "reads": 1110,
+          "serial_floor_us": 2300337
+        },
+        "3": {
+          "groups": 75,
+          "jobs": 225,
+          "nonwait_us": 145932,
+          "observed_wait_us": 1443343,
+          "parallel_floor_us": 947430,
+          "payload_bytes": 2974320000,
+          "read_union_outside_wait_us": 0,
+          "read_worker_us": 3660911,
+          "reads": 675,
+          "serial_floor_us": 1376921
+        },
+        "4": {
+          "groups": 21,
+          "jobs": 84,
+          "nonwait_us": 56728,
+          "observed_wait_us": 537124,
+          "parallel_floor_us": 459935,
+          "payload_bytes": 1110412800,
+          "read_union_outside_wait_us": 0,
+          "read_worker_us": 1807506,
+          "reads": 252,
+          "serial_floor_us": 519566
+        }
+      },
+      "lanes_sha256": "8d9cde6a88571c0cc01aa39be15e913da122203d1ccf75c09eb5779c4ff144bb",
+      "max_service_gain_us": 3248727,
+      "native_decode32_s": 9.414982381,
+      "native_window_journal_us": 9414981,
+      "observed_nonwait_including_tail_us": 1830919,
+      "observed_tail_us": 3741,
+      "ordered_rank_sha256": "62ff2da0c33e77847aaa56e4c802c2a4569fcd5f08d971b9bda04a0a4c65e17c",
+      "parallel": {
+        "service": {
+          "fixed_us": 0,
+          "logical_payload_bytes": 14289955200,
+          "max_service_factor": 1.4075740680869968,
+          "read_floor_us": 3789025,
+          "required_payload_B_per_s": 2679366600,
+          "scales": {
+            "0.8": {
+              "additional_cost_allowed_s": 2.3021133333333332,
+              "excess_s": 0.0,
+              "reaches": true,
+              "seconds": 3.03122
+            },
+            "1": {
+              "additional_cost_allowed_s": 1.5443083333333334,
+              "excess_s": 0.0,
+              "reaches": true,
+              "seconds": 3.789025
+            }
+          }
+        },
+        "with_fixed": {
+          "fixed_us": 1830919,
+          "logical_payload_bytes": 14289955200,
+          "max_service_factor": 0.9243576733680389,
+          "read_floor_us": 3789025,
+          "required_payload_B_per_s": 4080029900,
+          "scales": {
+            "0.8": {
+              "additional_cost_allowed_s": 0.4711943333333333,
+              "excess_s": 0.0,
+              "reaches": true,
+              "seconds": 4.862139
+            },
+            "1": {
+              "additional_cost_allowed_s": 0.0,
+              "excess_s": 0.2866106666666667,
+              "reaches": false,
+              "seconds": 5.619944
+            }
+          }
+        }
+      },
+      "raw_sha256": {
+        "events.tsv": "a963af23de4f4dfd167ef53519d013ee12786d17dc67fba864cb4fe83875d797",
+        "initial.json": "19bf1c09a96e851440d104abbbb08cc062c2e602d7c686c84fd33d7236dbc269",
+        "result.json": "700c3afd93e5b7fe2d3aa8c2739dfa5e4af8da0081c1a0d3509f9f42ccd1d032"
+      },
+      "serial_control": {
+        "service": {
+          "fixed_us": 0,
+          "logical_payload_bytes": 14289955200,
+          "max_service_factor": 0.7578177425594612,
+          "read_floor_us": 7037752,
+          "required_payload_B_per_s": 2679366600,
+          "scales": {
+            "0.8": {
+              "additional_cost_allowed_s": 0.0,
+              "excess_s": 0.29686826666666666,
+              "reaches": false,
+              "seconds": 5.6302016
+            },
+            "1": {
+              "additional_cost_allowed_s": 0.0,
+              "excess_s": 1.7044186666666667,
+              "reaches": false,
+              "seconds": 7.037752
+            }
+          }
+        },
+        "with_fixed": {
+          "fixed_us": 1830919,
+          "logical_payload_bytes": 14289955200,
+          "max_service_factor": 0.4976609481739813,
+          "read_floor_us": 7037752,
+          "required_payload_B_per_s": 4080029900,
+          "scales": {
+            "0.8": {
+              "additional_cost_allowed_s": 0.0,
+              "excess_s": 2.1277872666666666,
+              "reaches": false,
+              "seconds": 7.4611206
+            },
+            "1": {
+              "additional_cost_allowed_s": 0.0,
+              "excess_s": 3.5353376666666665,
+              "reaches": false,
+              "seconds": 8.868671
+            }
+          }
+        }
+      },
+      "tiers": {
+        "CPU": {
+          "groups": 800,
+          "jobs": 762,
+          "nonwait_us": 1615785,
+          "observed_wait_us": 5304545,
+          "parallel_floor_us": 2727025,
+          "payload_bytes": 10073030400,
+          "read_union_outside_wait_us": 0,
+          "read_worker_us": 9001808,
+          "reads": 2286,
+          "serial_floor_us": 5013592
+        },
+        "CUDA": {
+          "groups": 352,
+          "jobs": 319,
+          "nonwait_us": 211393,
+          "observed_wait_us": 2279517,
+          "parallel_floor_us": 1062000,
+          "payload_bytes": 4216924800,
+          "read_union_outside_wait_us": 0,
+          "read_worker_us": 3527675,
+          "reads": 957,
+          "serial_floor_us": 2024160
+        }
+      },
+      "total": {
+        "groups": 1152,
+        "jobs": 1081,
+        "nonwait_us": 1827178,
+        "observed_wait_us": 7584062,
+        "parallel_floor_us": 3789025,
+        "payload_bytes": 14289955200,
+        "read_worker_us": 12529483,
+        "reads": 3243,
+        "serial_floor_us": 7037752
+      }
+    }
+  },
+  "commit": "106f1bfb837e15892fedb0978abd0cc1f6ac8d68",
+  "controls_sha256": {
+    "component_ready_bound/evidence/receipt.json": "3473a9506fbb4d4e2e5051b243e9cbce04c76ecb96707a5c0fd3e1628d11eebe",
+    "primary_backing/evidence/receipt.json": "44ba456b19a1d4fcd44ecb7127a99db410344e304a4e51474d41dec1847fc9f5"
+  },
+  "decisions": {
+    "service": {
+      "0.8": {
+        "reaches": {
+          "c294-code153-2-on": true,
+          "c294-code153-3-on": true,
+          "c294-nominal153-2-on": true,
+          "c294-nominal153-3-on": true
+        },
+        "screen": "NOT_EXCLUDED_BY_READ_ONLY"
+      },
+      "1": {
+        "reaches": {
+          "c294-code153-2-on": true,
+          "c294-code153-3-on": true,
+          "c294-nominal153-2-on": true,
+          "c294-nominal153-3-on": true
+        },
+        "screen": "NOT_EXCLUDED_BY_READ_ONLY"
+      }
+    },
+    "with_fixed": {
+      "0.8": {
+        "reaches": {
+          "c294-code153-2-on": false,
+          "c294-code153-3-on": false,
+          "c294-nominal153-2-on": true,
+          "c294-nominal153-3-on": true
+        },
+        "screen": "NO_GO_IN_FAILING_ARMS"
+      },
+      "1": {
+        "reaches": {
+          "c294-code153-2-on": false,
+          "c294-code153-3-on": false,
+          "c294-nominal153-2-on": false,
+          "c294-nominal153-3-on": false
+        },
+        "screen": "NO_GO_IN_FAILING_ARMS"
+      }
+    }
+  },
+  "manifest_sha256": "5a689ed0c3e7e328973a12de229c3a6ff4e151c14d568d49e517ff7dee98fd84",
+  "program_sha256": "97689ce50629604a03ac96ba0e6526c10a74f60fe53a316b715b4e996d2c775b",
+  "protocol_sha256": "22a4e4f47cd2f88dfa6834cdd015df5635c343edbd6ba1f469cc64d5acd0f6b4",
+  "sources_sha256": {
+    "cache_boundary.py": "be5df42b7731dbb0c0cb2565a1d7b73dcb01a3ba5a5ccec101629ad2bbb267b2",
+    "component_ready_bound/screen.py": "aa9684f2179f3781e50d07eb6c4e22a00cd50439d21f1c7486a58480d5d7f9be",
+    "primary_backing/screen.py": "ec2290dda690bfc4a820675812586b01f5eac53fe32232cdab75ff5022181e4d"
+  },
+  "status": "PASS_FIXED_DURATION_COMPONENT_SCREEN",
+  "tree": "bb735a53e005e17cb6df3c77ad42b9e6ca399e28"
+}

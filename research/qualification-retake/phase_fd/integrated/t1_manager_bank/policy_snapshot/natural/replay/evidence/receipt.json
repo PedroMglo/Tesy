@@ -1,0 +1,954 @@
+{
+  "bank_capacity_bytes": 4666377600,
+  "carry": {
+    "comparison": {
+      "bank": {
+        "conditional_payload_margins_bytes": {
+          "10690306614": -3295606986,
+          "11440306616": -2545606984
+        },
+        "decision": "GO_COUNTS_FIXTURE_ONLY",
+        "disk_jobs_saved": {
+          "decode": 122,
+          "prefill": 50,
+          "prefill_including_restore": 50
+        }
+      },
+      "disk": {
+        "conditional_payload_margins_bytes": {
+          "10690306614": -6283146186,
+          "11440306616": -5533146184
+        },
+        "decision": "NO_GO_SIMULTANEOUS_COUNT_REDUCTION",
+        "disk_jobs_saved": {
+          "decode": -105,
+          "prefill": -21,
+          "prefill_including_restore": -21
+        }
+      }
+    },
+    "induction": {
+      "callbacks_with_potential_unfinished_preloads": 93,
+      "masked_cpu_sentinels": 97600,
+      "masked_cuda_parking_ranks": 39040,
+      "whole_manager_decays": 1
+    },
+    "inferred_slot_stream_sha256": "58cae900f0317fa10016677680e255083e2b15fb9223d1a726bc65176b6ddb35",
+    "r0_sites_checked": 0,
+    "repair": {},
+    "variants": {
+      "bank": {
+        "call148": {
+          "all": {
+            "admissions": 1225,
+            "bank_hits": 201,
+            "disk_jobs": 1024,
+            "gguf_pread_bytes": 13548785664,
+            "host_bank_delivered_bytes": 2657059200,
+            "host_to_primary_cpu_bytes": 10178784000,
+            "host_to_primary_cuda_bytes": 6014736000,
+            "packed_pread_bytes": 13539213312,
+            "primary_bytes": 16193520000
+          },
+          "cpu": {
+            "admissions": 770,
+            "bank_hits": 135,
+            "disk_jobs": 635,
+            "gguf_pread_bytes": 8401772544,
+            "host_bank_delivered_bytes": 1784592000,
+            "host_to_primary_cpu_bytes": 10178784000,
+            "packed_pread_bytes": 8395898880,
+            "primary_bytes": 10178784000
+          },
+          "cuda": {
+            "admissions": 455,
+            "bank_hits": 66,
+            "disk_jobs": 389,
+            "gguf_pread_bytes": 5147013120,
+            "host_bank_delivered_bytes": 872467200,
+            "host_to_primary_cuda_bytes": 6014736000,
+            "packed_pread_bytes": 5143314432,
+            "primary_bytes": 6014736000
+          }
+        },
+        "call5": {
+          "all": {
+            "admissions": 59,
+            "bank_hits": 25,
+            "disk_jobs": 34,
+            "gguf_pread_bytes": 449880064,
+            "host_bank_delivered_bytes": 330480000,
+            "host_to_primary_cpu_bytes": 634521600,
+            "host_to_primary_cuda_bytes": 145411200,
+            "packed_pread_bytes": 449544192,
+            "primary_bytes": 779932800
+          },
+          "cpu": {
+            "admissions": 48,
+            "bank_hits": 22,
+            "disk_jobs": 26,
+            "gguf_pread_bytes": 344018944,
+            "host_bank_delivered_bytes": 290822400,
+            "host_to_primary_cpu_bytes": 634521600,
+            "packed_pread_bytes": 343769088,
+            "primary_bytes": 634521600
+          },
+          "cuda": {
+            "admissions": 11,
+            "bank_hits": 3,
+            "disk_jobs": 8,
+            "gguf_pread_bytes": 105861120,
+            "host_bank_delivered_bytes": 39657600,
+            "host_to_primary_cuda_bytes": 145411200,
+            "packed_pread_bytes": 105775104,
+            "primary_bytes": 145411200
+          }
+        },
+        "decode": {
+          "all": {
+            "admissions": 1196,
+            "bank_hits": 399,
+            "disk_jobs": 797,
+            "gguf_pread_bytes": 10545446912,
+            "host_bank_delivered_bytes": 5274460800,
+            "host_to_primary_cpu_bytes": 11513923200,
+            "host_to_primary_cuda_bytes": 4296240000,
+            "packed_pread_bytes": 10537844736,
+            "primary_bytes": 15810163200
+          },
+          "cpu": {
+            "admissions": 871,
+            "bank_hits": 330,
+            "disk_jobs": 541,
+            "gguf_pread_bytes": 7158231040,
+            "host_bank_delivered_bytes": 4362336000,
+            "host_to_primary_cpu_bytes": 11513923200,
+            "packed_pread_bytes": 7153041408,
+            "primary_bytes": 11513923200
+          },
+          "cuda": {
+            "admissions": 325,
+            "bank_hits": 69,
+            "disk_jobs": 256,
+            "gguf_pread_bytes": 3387215872,
+            "host_bank_delivered_bytes": 912124800,
+            "host_to_primary_cuda_bytes": 4296240000,
+            "packed_pread_bytes": 3384803328,
+            "primary_bytes": 4296240000
+          }
+        },
+        "prefill": {
+          "all": {
+            "admissions": 1284,
+            "bank_hits": 226,
+            "disk_jobs": 1058,
+            "gguf_pread_bytes": 13998665728,
+            "host_bank_delivered_bytes": 2987539200,
+            "host_to_primary_cpu_bytes": 10813305600,
+            "host_to_primary_cuda_bytes": 6160147200,
+            "packed_pread_bytes": 13988757504,
+            "primary_bytes": 16973452800
+          },
+          "cpu": {
+            "admissions": 818,
+            "bank_hits": 157,
+            "disk_jobs": 661,
+            "gguf_pread_bytes": 8745791488,
+            "host_bank_delivered_bytes": 2075414400,
+            "host_to_primary_cpu_bytes": 10813305600,
+            "packed_pread_bytes": 8739667968,
+            "primary_bytes": 10813305600
+          },
+          "cuda": {
+            "admissions": 466,
+            "bank_hits": 69,
+            "disk_jobs": 397,
+            "gguf_pread_bytes": 5252874240,
+            "host_bank_delivered_bytes": 912124800,
+            "host_to_primary_cuda_bytes": 6160147200,
+            "packed_pread_bytes": 5249089536,
+            "primary_bytes": 6160147200
+          }
+        },
+        "restore": {
+          "all": {},
+          "cpu": {},
+          "cuda": {}
+        }
+      },
+      "disk": {
+        "call148": {
+          "all": {
+            "admissions": 1225,
+            "disk_jobs": 1225,
+            "gguf_pread_bytes": 16208310272,
+            "host_to_primary_cpu_bytes": 10178784000,
+            "host_to_primary_cuda_bytes": 6014736000,
+            "packed_pread_bytes": 16196812800,
+            "primary_bytes": 16193520000
+          },
+          "cpu": {
+            "admissions": 770,
+            "disk_jobs": 770,
+            "gguf_pread_bytes": 10188099584,
+            "host_to_primary_cpu_bytes": 10178784000,
+            "packed_pread_bytes": 10180853760,
+            "primary_bytes": 10178784000
+          },
+          "cuda": {
+            "admissions": 455,
+            "disk_jobs": 455,
+            "gguf_pread_bytes": 6020210688,
+            "host_to_primary_cuda_bytes": 6014736000,
+            "packed_pread_bytes": 6015959040,
+            "primary_bytes": 6014736000
+          }
+        },
+        "call5": {
+          "all": {
+            "admissions": 59,
+            "disk_jobs": 59,
+            "gguf_pread_bytes": 780685312,
+            "host_to_primary_cpu_bytes": 634521600,
+            "host_to_primary_cuda_bytes": 145411200,
+            "packed_pread_bytes": 780091392,
+            "primary_bytes": 779932800
+          },
+          "cpu": {
+            "admissions": 48,
+            "disk_jobs": 48,
+            "gguf_pread_bytes": 635125760,
+            "host_to_primary_cpu_bytes": 634521600,
+            "packed_pread_bytes": 634650624,
+            "primary_bytes": 634521600
+          },
+          "cuda": {
+            "admissions": 11,
+            "disk_jobs": 11,
+            "gguf_pread_bytes": 145559552,
+            "host_to_primary_cuda_bytes": 145411200,
+            "packed_pread_bytes": 145440768,
+            "primary_bytes": 145411200
+          }
+        },
+        "decode": {
+          "all": {
+            "admissions": 1196,
+            "disk_jobs": 1196,
+            "gguf_pread_bytes": 15824740352,
+            "host_to_primary_cpu_bytes": 11513923200,
+            "host_to_primary_cuda_bytes": 4296240000,
+            "packed_pread_bytes": 15813378048,
+            "primary_bytes": 15810163200
+          },
+          "cpu": {
+            "admissions": 871,
+            "disk_jobs": 871,
+            "gguf_pread_bytes": 11524558848,
+            "host_to_primary_cpu_bytes": 11513923200,
+            "packed_pread_bytes": 11516264448,
+            "primary_bytes": 11513923200
+          },
+          "cuda": {
+            "admissions": 325,
+            "disk_jobs": 325,
+            "gguf_pread_bytes": 4300181504,
+            "host_to_primary_cuda_bytes": 4296240000,
+            "packed_pread_bytes": 4297113600,
+            "primary_bytes": 4296240000
+          }
+        },
+        "prefill": {
+          "all": {
+            "admissions": 1284,
+            "disk_jobs": 1284,
+            "gguf_pread_bytes": 16988995584,
+            "host_to_primary_cpu_bytes": 10813305600,
+            "host_to_primary_cuda_bytes": 6160147200,
+            "packed_pread_bytes": 16976904192,
+            "primary_bytes": 16973452800
+          },
+          "cpu": {
+            "admissions": 818,
+            "disk_jobs": 818,
+            "gguf_pread_bytes": 10823225344,
+            "host_to_primary_cpu_bytes": 10813305600,
+            "packed_pread_bytes": 10815504384,
+            "primary_bytes": 10813305600
+          },
+          "cuda": {
+            "admissions": 466,
+            "disk_jobs": 466,
+            "gguf_pread_bytes": 6165770240,
+            "host_to_primary_cuda_bytes": 6160147200,
+            "packed_pread_bytes": 6161399808,
+            "primary_bytes": 6160147200
+          }
+        },
+        "restore": {
+          "all": {},
+          "cpu": {},
+          "cuda": {}
+        }
+      }
+    }
+  },
+  "family_receipt_sha256": "cb70c934dbbe0f1ca7452904718589b44fa906179208e7f95b0c934808d70a42",
+  "measurement_commit": "7a1e7914844720bf01badd23404e5f1450e6dc2c",
+  "observed": {
+    "DISPATCH": 2354,
+    "PUBLISH": 2354,
+    "READ": 7062,
+    "RESERVE": 2354,
+    "SET": 7062,
+    "SKIP": 332
+  },
+  "on_receipt_sha256": "8428c5ee301281ddeb1a7b1e2ed6883073e53578027139a67c2daef5b4eaaaf5",
+  "pfj_sha256": "5b4d1cb6827d518a72d418f0625c8ea3a6c90a2ac57ef46b9360e9a45613f311",
+  "policy_sha256": "7bce9841c3645247fbd850a8e89091610022cb38b5eb37922dd7f7167e596dad",
+  "prefix_sha256": "e3835f8fc9a633270a5238346da4fdd443e882e863b22ad3be4891fff1df5a2f",
+  "protocol_sha256": "1e7c839c4a0c0a48753e519b0603ba8b59f442e2dfa9b82343374fd4db65f3d8",
+  "r0": {
+    "induction": {
+      "callbacks_with_potential_unfinished_preloads": 93,
+      "masked_cpu_sentinels": 97600,
+      "masked_cuda_parking_ranks": 39040,
+      "whole_manager_decays": 1
+    },
+    "inferred_slot_stream_sha256": "51761a17b8740df90fa883905a02aec75e0dda995ef216208cecd2e422e3c83d",
+    "r0_sites_checked": 2987,
+    "repair": {},
+    "variants": {
+      "bank": {
+        "call148": {
+          "all": {
+            "admissions": 1212,
+            "bank_hits": 138,
+            "disk_jobs": 1074,
+            "gguf_pread_bytes": 14210396160,
+            "host_bank_delivered_bytes": 1824249600,
+            "host_to_primary_cpu_bytes": 10152345600,
+            "host_to_primary_cuda_bytes": 5869324800,
+            "packed_pread_bytes": 14200307712,
+            "primary_bytes": 16021670400
+          },
+          "cpu": {
+            "admissions": 768,
+            "bank_hits": 96,
+            "disk_jobs": 672,
+            "gguf_pread_bytes": 8891375616,
+            "host_bank_delivered_bytes": 1269043200,
+            "host_to_primary_cpu_bytes": 10152345600,
+            "packed_pread_bytes": 8885108736,
+            "primary_bytes": 10152345600
+          },
+          "cuda": {
+            "admissions": 444,
+            "bank_hits": 42,
+            "disk_jobs": 402,
+            "gguf_pread_bytes": 5319020544,
+            "host_bank_delivered_bytes": 555206400,
+            "host_to_primary_cuda_bytes": 5869324800,
+            "packed_pread_bytes": 5315198976,
+            "primary_bytes": 5869324800
+          }
+        },
+        "call5": {
+          "all": {
+            "admissions": 51,
+            "bank_hits": 17,
+            "disk_jobs": 34,
+            "gguf_pread_bytes": 449880064,
+            "host_bank_delivered_bytes": 224726400,
+            "host_to_primary_cpu_bytes": 528768000,
+            "host_to_primary_cuda_bytes": 145411200,
+            "packed_pread_bytes": 449544192,
+            "primary_bytes": 674179200
+          },
+          "cpu": {
+            "admissions": 40,
+            "bank_hits": 14,
+            "disk_jobs": 26,
+            "gguf_pread_bytes": 344018944,
+            "host_bank_delivered_bytes": 185068800,
+            "host_to_primary_cpu_bytes": 528768000,
+            "packed_pread_bytes": 343769088,
+            "primary_bytes": 528768000
+          },
+          "cuda": {
+            "admissions": 11,
+            "bank_hits": 3,
+            "disk_jobs": 8,
+            "gguf_pread_bytes": 105861120,
+            "host_bank_delivered_bytes": 39657600,
+            "host_to_primary_cuda_bytes": 145411200,
+            "packed_pread_bytes": 105775104,
+            "primary_bytes": 145411200
+          }
+        },
+        "decode": {
+          "all": {
+            "admissions": 1091,
+            "bank_hits": 172,
+            "disk_jobs": 919,
+            "gguf_pread_bytes": 12159705088,
+            "host_bank_delivered_bytes": 2273702400,
+            "host_to_primary_cpu_bytes": 10390291200,
+            "host_to_primary_cuda_bytes": 4031856000,
+            "packed_pread_bytes": 12150915072,
+            "primary_bytes": 14422147200
+          },
+          "cpu": {
+            "admissions": 786,
+            "bank_hits": 143,
+            "disk_jobs": 643,
+            "gguf_pread_bytes": 8507842560,
+            "host_bank_delivered_bytes": 1890345600,
+            "host_to_primary_cpu_bytes": 10390291200,
+            "packed_pread_bytes": 8501673984,
+            "primary_bytes": 10390291200
+          },
+          "cuda": {
+            "admissions": 305,
+            "bank_hits": 29,
+            "disk_jobs": 276,
+            "gguf_pread_bytes": 3651862528,
+            "host_bank_delivered_bytes": 383356800,
+            "host_to_primary_cuda_bytes": 4031856000,
+            "packed_pread_bytes": 3649241088,
+            "primary_bytes": 4031856000
+          }
+        },
+        "prefill": {
+          "all": {
+            "admissions": 1263,
+            "bank_hits": 155,
+            "disk_jobs": 1108,
+            "gguf_pread_bytes": 14660276224,
+            "host_bank_delivered_bytes": 2048976000,
+            "host_to_primary_cpu_bytes": 10681113600,
+            "host_to_primary_cuda_bytes": 6014736000,
+            "packed_pread_bytes": 14649851904,
+            "primary_bytes": 16695849600
+          },
+          "cpu": {
+            "admissions": 808,
+            "bank_hits": 110,
+            "disk_jobs": 698,
+            "gguf_pread_bytes": 9235394560,
+            "host_bank_delivered_bytes": 1454112000,
+            "host_to_primary_cpu_bytes": 10681113600,
+            "packed_pread_bytes": 9228877824,
+            "primary_bytes": 10681113600
+          },
+          "cuda": {
+            "admissions": 455,
+            "bank_hits": 45,
+            "disk_jobs": 410,
+            "gguf_pread_bytes": 5424881664,
+            "host_bank_delivered_bytes": 594864000,
+            "host_to_primary_cuda_bytes": 6014736000,
+            "packed_pread_bytes": 5420974080,
+            "primary_bytes": 6014736000
+          }
+        },
+        "restore": {
+          "all": {},
+          "cpu": {},
+          "cuda": {}
+        }
+      },
+      "disk": {
+        "call148": {
+          "all": {
+            "admissions": 1212,
+            "disk_jobs": 1212,
+            "gguf_pread_bytes": 16036343808,
+            "host_to_primary_cpu_bytes": 10152345600,
+            "host_to_primary_cuda_bytes": 5869324800,
+            "packed_pread_bytes": 16024928256,
+            "primary_bytes": 16021670400
+          },
+          "cpu": {
+            "admissions": 768,
+            "disk_jobs": 768,
+            "gguf_pread_bytes": 10161643520,
+            "host_to_primary_cpu_bytes": 10152345600,
+            "packed_pread_bytes": 10154409984,
+            "primary_bytes": 10152345600
+          },
+          "cuda": {
+            "admissions": 444,
+            "disk_jobs": 444,
+            "gguf_pread_bytes": 5874700288,
+            "host_to_primary_cuda_bytes": 5869324800,
+            "packed_pread_bytes": 5870518272,
+            "primary_bytes": 5869324800
+          }
+        },
+        "call5": {
+          "all": {
+            "admissions": 51,
+            "disk_jobs": 51,
+            "gguf_pread_bytes": 674832384,
+            "host_to_primary_cpu_bytes": 528768000,
+            "host_to_primary_cuda_bytes": 145411200,
+            "packed_pread_bytes": 674316288,
+            "primary_bytes": 674179200
+          },
+          "cpu": {
+            "admissions": 40,
+            "disk_jobs": 40,
+            "gguf_pread_bytes": 529272832,
+            "host_to_primary_cpu_bytes": 528768000,
+            "packed_pread_bytes": 528875520,
+            "primary_bytes": 528768000
+          },
+          "cuda": {
+            "admissions": 11,
+            "disk_jobs": 11,
+            "gguf_pread_bytes": 145559552,
+            "host_to_primary_cuda_bytes": 145411200,
+            "packed_pread_bytes": 145440768,
+            "primary_bytes": 145411200
+          }
+        },
+        "decode": {
+          "all": {
+            "admissions": 1091,
+            "disk_jobs": 1091,
+            "gguf_pread_bytes": 14435532800,
+            "host_to_primary_cpu_bytes": 10390291200,
+            "host_to_primary_cuda_bytes": 4031856000,
+            "packed_pread_bytes": 14425079808,
+            "primary_bytes": 14422147200
+          },
+          "cpu": {
+            "admissions": 786,
+            "disk_jobs": 786,
+            "gguf_pread_bytes": 10399969280,
+            "host_to_primary_cpu_bytes": 10390291200,
+            "packed_pread_bytes": 10392403968,
+            "primary_bytes": 10390291200
+          },
+          "cuda": {
+            "admissions": 305,
+            "disk_jobs": 305,
+            "gguf_pread_bytes": 4035563520,
+            "host_to_primary_cuda_bytes": 4031856000,
+            "packed_pread_bytes": 4032675840,
+            "primary_bytes": 4031856000
+          }
+        },
+        "prefill": {
+          "all": {
+            "admissions": 1263,
+            "disk_jobs": 1263,
+            "gguf_pread_bytes": 16711176192,
+            "host_to_primary_cpu_bytes": 10681113600,
+            "host_to_primary_cuda_bytes": 6014736000,
+            "packed_pread_bytes": 16699244544,
+            "primary_bytes": 16695849600
+          },
+          "cpu": {
+            "admissions": 808,
+            "disk_jobs": 808,
+            "gguf_pread_bytes": 10690916352,
+            "host_to_primary_cpu_bytes": 10681113600,
+            "packed_pread_bytes": 10683285504,
+            "primary_bytes": 10681113600
+          },
+          "cuda": {
+            "admissions": 455,
+            "disk_jobs": 455,
+            "gguf_pread_bytes": 6020259840,
+            "host_to_primary_cuda_bytes": 6014736000,
+            "packed_pread_bytes": 6015959040,
+            "primary_bytes": 6014736000
+          }
+        },
+        "restore": {
+          "all": {},
+          "cpu": {},
+          "cuda": {}
+        }
+      }
+    }
+  },
+  "restored": {
+    "comparison": {
+      "bank": {
+        "conditional_payload_margins_bytes": {
+          "10690306614": -3295606986,
+          "11440306616": -2545606984
+        },
+        "decision": "GO_COUNTS_FIXTURE_ONLY",
+        "disk_jobs_saved": {
+          "decode": 120,
+          "prefill": 50,
+          "prefill_including_restore": 50
+        }
+      },
+      "disk": {
+        "conditional_payload_margins_bytes": {
+          "10690306614": -6534310986,
+          "11440306616": -5784310984
+        },
+        "decision": "NO_GO_SIMULTANEOUS_COUNT_REDUCTION",
+        "disk_jobs_saved": {
+          "decode": -99,
+          "prefill": -21,
+          "prefill_including_restore": -40
+        }
+      }
+    },
+    "induction": {
+      "callbacks_with_potential_unfinished_preloads": 93,
+      "masked_cpu_sentinels": 97600,
+      "masked_cuda_parking_ranks": 39040,
+      "whole_manager_decays": 1
+    },
+    "inferred_slot_stream_sha256": "feb5bfdcfb3eb09bcec946d08cc56a7b76fda42dce8b75d412dcf6332408bb6d",
+    "r0_sites_checked": 0,
+    "repair": {
+      "cycles": 44,
+      "different_age_words": 968,
+      "different_bindings": 447,
+      "different_generation_words": 270,
+      "different_heat_words": 0,
+      "different_layer_clocks": 27,
+      "missing_members": 19,
+      "removed_members": 19,
+      "same_tier_slot_moves_cpu": 306,
+      "same_tier_slot_moves_cuda": 122,
+      "slot_move_payload_bytes_cpu": 4045075200,
+      "slot_move_payload_bytes_cuda": 1612742400
+    },
+    "variants": {
+      "bank": {
+        "call148": {
+          "all": {
+            "admissions": 1225,
+            "bank_hits": 201,
+            "disk_jobs": 1024,
+            "gguf_pread_bytes": 13548785664,
+            "host_bank_delivered_bytes": 2657059200,
+            "host_to_primary_cpu_bytes": 10178784000,
+            "host_to_primary_cuda_bytes": 6014736000,
+            "packed_pread_bytes": 13539213312,
+            "primary_bytes": 16193520000
+          },
+          "cpu": {
+            "admissions": 770,
+            "bank_hits": 135,
+            "disk_jobs": 635,
+            "gguf_pread_bytes": 8401772544,
+            "host_bank_delivered_bytes": 1784592000,
+            "host_to_primary_cpu_bytes": 10178784000,
+            "packed_pread_bytes": 8395898880,
+            "primary_bytes": 10178784000
+          },
+          "cuda": {
+            "admissions": 455,
+            "bank_hits": 66,
+            "disk_jobs": 389,
+            "gguf_pread_bytes": 5147013120,
+            "host_bank_delivered_bytes": 872467200,
+            "host_to_primary_cuda_bytes": 6014736000,
+            "packed_pread_bytes": 5143314432,
+            "primary_bytes": 6014736000
+          }
+        },
+        "call5": {
+          "all": {
+            "admissions": 59,
+            "bank_hits": 25,
+            "disk_jobs": 34,
+            "gguf_pread_bytes": 449880064,
+            "host_bank_delivered_bytes": 330480000,
+            "host_to_primary_cpu_bytes": 634521600,
+            "host_to_primary_cuda_bytes": 145411200,
+            "packed_pread_bytes": 449544192,
+            "primary_bytes": 779932800
+          },
+          "cpu": {
+            "admissions": 48,
+            "bank_hits": 22,
+            "disk_jobs": 26,
+            "gguf_pread_bytes": 344018944,
+            "host_bank_delivered_bytes": 290822400,
+            "host_to_primary_cpu_bytes": 634521600,
+            "packed_pread_bytes": 343769088,
+            "primary_bytes": 634521600
+          },
+          "cuda": {
+            "admissions": 11,
+            "bank_hits": 3,
+            "disk_jobs": 8,
+            "gguf_pread_bytes": 105861120,
+            "host_bank_delivered_bytes": 39657600,
+            "host_to_primary_cuda_bytes": 145411200,
+            "packed_pread_bytes": 105775104,
+            "primary_bytes": 145411200
+          }
+        },
+        "decode": {
+          "all": {
+            "admissions": 1190,
+            "bank_hits": 391,
+            "disk_jobs": 799,
+            "gguf_pread_bytes": 10571919360,
+            "host_bank_delivered_bytes": 5168707200,
+            "host_to_primary_cpu_bytes": 11421388800,
+            "host_to_primary_cuda_bytes": 4309459200,
+            "packed_pread_bytes": 10564288512,
+            "primary_bytes": 15730848000
+          },
+          "cpu": {
+            "admissions": 864,
+            "bank_hits": 322,
+            "disk_jobs": 542,
+            "gguf_pread_bytes": 7171461120,
+            "host_bank_delivered_bytes": 4256582400,
+            "host_to_primary_cpu_bytes": 11421388800,
+            "packed_pread_bytes": 7166263296,
+            "primary_bytes": 11421388800
+          },
+          "cuda": {
+            "admissions": 326,
+            "bank_hits": 69,
+            "disk_jobs": 257,
+            "gguf_pread_bytes": 3400458240,
+            "host_bank_delivered_bytes": 912124800,
+            "host_to_primary_cuda_bytes": 4309459200,
+            "packed_pread_bytes": 3398025216,
+            "primary_bytes": 4309459200
+          }
+        },
+        "prefill": {
+          "all": {
+            "admissions": 1284,
+            "bank_hits": 226,
+            "disk_jobs": 1058,
+            "gguf_pread_bytes": 13998665728,
+            "host_bank_delivered_bytes": 2987539200,
+            "host_to_primary_cpu_bytes": 10813305600,
+            "host_to_primary_cuda_bytes": 6160147200,
+            "packed_pread_bytes": 13988757504,
+            "primary_bytes": 16973452800
+          },
+          "cpu": {
+            "admissions": 818,
+            "bank_hits": 157,
+            "disk_jobs": 661,
+            "gguf_pread_bytes": 8745791488,
+            "host_bank_delivered_bytes": 2075414400,
+            "host_to_primary_cpu_bytes": 10813305600,
+            "packed_pread_bytes": 8739667968,
+            "primary_bytes": 10813305600
+          },
+          "cuda": {
+            "admissions": 466,
+            "bank_hits": 69,
+            "disk_jobs": 397,
+            "gguf_pread_bytes": 5252874240,
+            "host_bank_delivered_bytes": 912124800,
+            "host_to_primary_cuda_bytes": 6160147200,
+            "packed_pread_bytes": 5249089536,
+            "primary_bytes": 6160147200
+          }
+        },
+        "restore": {
+          "all": {
+            "admissions": 19,
+            "bank_hits": 19,
+            "host_bank_delivered_bytes": 251164800,
+            "host_to_primary_cpu_bytes": 211507200,
+            "host_to_primary_cuda_bytes": 39657600,
+            "primary_bytes": 251164800
+          },
+          "cpu": {
+            "admissions": 16,
+            "bank_hits": 16,
+            "host_bank_delivered_bytes": 211507200,
+            "host_to_primary_cpu_bytes": 211507200,
+            "primary_bytes": 211507200
+          },
+          "cuda": {
+            "admissions": 3,
+            "bank_hits": 3,
+            "host_bank_delivered_bytes": 39657600,
+            "host_to_primary_cuda_bytes": 39657600,
+            "primary_bytes": 39657600
+          }
+        }
+      },
+      "disk": {
+        "call148": {
+          "all": {
+            "admissions": 1225,
+            "disk_jobs": 1225,
+            "gguf_pread_bytes": 16208310272,
+            "host_to_primary_cpu_bytes": 10178784000,
+            "host_to_primary_cuda_bytes": 6014736000,
+            "packed_pread_bytes": 16196812800,
+            "primary_bytes": 16193520000
+          },
+          "cpu": {
+            "admissions": 770,
+            "disk_jobs": 770,
+            "gguf_pread_bytes": 10188099584,
+            "host_to_primary_cpu_bytes": 10178784000,
+            "packed_pread_bytes": 10180853760,
+            "primary_bytes": 10178784000
+          },
+          "cuda": {
+            "admissions": 455,
+            "disk_jobs": 455,
+            "gguf_pread_bytes": 6020210688,
+            "host_to_primary_cuda_bytes": 6014736000,
+            "packed_pread_bytes": 6015959040,
+            "primary_bytes": 6014736000
+          }
+        },
+        "call5": {
+          "all": {
+            "admissions": 59,
+            "disk_jobs": 59,
+            "gguf_pread_bytes": 780685312,
+            "host_to_primary_cpu_bytes": 634521600,
+            "host_to_primary_cuda_bytes": 145411200,
+            "packed_pread_bytes": 780091392,
+            "primary_bytes": 779932800
+          },
+          "cpu": {
+            "admissions": 48,
+            "disk_jobs": 48,
+            "gguf_pread_bytes": 635125760,
+            "host_to_primary_cpu_bytes": 634521600,
+            "packed_pread_bytes": 634650624,
+            "primary_bytes": 634521600
+          },
+          "cuda": {
+            "admissions": 11,
+            "disk_jobs": 11,
+            "gguf_pread_bytes": 145559552,
+            "host_to_primary_cuda_bytes": 145411200,
+            "packed_pread_bytes": 145440768,
+            "primary_bytes": 145411200
+          }
+        },
+        "decode": {
+          "all": {
+            "admissions": 1190,
+            "disk_jobs": 1190,
+            "gguf_pread_bytes": 15745384448,
+            "host_to_primary_cpu_bytes": 11421388800,
+            "host_to_primary_cuda_bytes": 4309459200,
+            "packed_pread_bytes": 15734046720,
+            "primary_bytes": 15730848000
+          },
+          "cpu": {
+            "admissions": 864,
+            "disk_jobs": 864,
+            "gguf_pread_bytes": 11431956480,
+            "host_to_primary_cpu_bytes": 11421388800,
+            "packed_pread_bytes": 11423711232,
+            "primary_bytes": 11421388800
+          },
+          "cuda": {
+            "admissions": 326,
+            "disk_jobs": 326,
+            "gguf_pread_bytes": 4313427968,
+            "host_to_primary_cuda_bytes": 4309459200,
+            "packed_pread_bytes": 4310335488,
+            "primary_bytes": 4309459200
+          }
+        },
+        "prefill": {
+          "all": {
+            "admissions": 1284,
+            "disk_jobs": 1284,
+            "gguf_pread_bytes": 16988995584,
+            "host_to_primary_cpu_bytes": 10813305600,
+            "host_to_primary_cuda_bytes": 6160147200,
+            "packed_pread_bytes": 16976904192,
+            "primary_bytes": 16973452800
+          },
+          "cpu": {
+            "admissions": 818,
+            "disk_jobs": 818,
+            "gguf_pread_bytes": 10823225344,
+            "host_to_primary_cpu_bytes": 10813305600,
+            "packed_pread_bytes": 10815504384,
+            "primary_bytes": 10813305600
+          },
+          "cuda": {
+            "admissions": 466,
+            "disk_jobs": 466,
+            "gguf_pread_bytes": 6165770240,
+            "host_to_primary_cuda_bytes": 6160147200,
+            "packed_pread_bytes": 6161399808,
+            "primary_bytes": 6160147200
+          }
+        },
+        "restore": {
+          "all": {
+            "admissions": 19,
+            "disk_jobs": 19,
+            "gguf_pread_bytes": 251387904,
+            "host_to_primary_cpu_bytes": 211507200,
+            "host_to_primary_cuda_bytes": 39657600,
+            "packed_pread_bytes": 251215872,
+            "primary_bytes": 251164800
+          },
+          "cpu": {
+            "admissions": 16,
+            "disk_jobs": 16,
+            "gguf_pread_bytes": 211697664,
+            "host_to_primary_cpu_bytes": 211507200,
+            "packed_pread_bytes": 211550208,
+            "primary_bytes": 211507200
+          },
+          "cuda": {
+            "admissions": 3,
+            "disk_jobs": 3,
+            "gguf_pread_bytes": 39690240,
+            "host_to_primary_cuda_bytes": 39657600,
+            "packed_pread_bytes": 39665664,
+            "primary_bytes": 39657600
+          }
+        }
+      }
+    }
+  },
+  "status": "PASS_OBSERVED_R0_AND_CAUSAL_SCREEN",
+  "t1_candidates_sha256": "27c15095be9af23ccaa997556dc650aafac2f22002fafd6f933f1e1073400fab",
+  "t1_distinct_victims": 1698,
+  "t1_prefix": {
+    "capacity": 353,
+    "cold_start_copies_by_tier": {
+      "cpu": 1530,
+      "cuda": 613
+    },
+    "cold_start_copy_bytes_by_tier": {
+      "cpu": 20225376000,
+      "cuda": 8103369600
+    },
+    "identified": true,
+    "minimum_copies_over_unknown_start_by_tier": {
+      "cpu": 1272,
+      "cuda": 518
+    },
+    "minimum_copy_bytes_over_unknown_start_by_tier": {
+      "cpu": 16814822400,
+      "cuda": 6847545600
+    },
+    "ordered_keys_sha256": "ce1114203187fcee91c3884441ef73eb460445d7c278e69a95946a7dfb135cc7",
+    "retained_by_tier": {
+      "cpu": 263,
+      "cuda": 90
+    }
+  },
+  "t1_victim_offers": 2156
+}

@@ -1,0 +1,168 @@
+{
+  "boundary_fixture": {
+    "mutex_busy_rejected": true,
+    "queue_claim_generation_tested": true,
+    "reserved_object_bytes": 23064,
+    "slots": 1440
+  },
+  "client_sha256": "a831c1831acf7e5dd17cc2e04b57863ab07d2c05db44d3b554331464819277eb",
+  "common_libs_sha256": {
+    "libggml-base.so.0.15.3": "6e27d9ecb86e4747177189d2d2f6390280a2ee1000221ad68a0404023ea72539",
+    "libggml-cpu.so.0.15.3": "9aabce5751c5d7ca19b50e4cabb1fcf484c1581d275141dae8aba8ed33060313",
+    "libggml-cuda.so.0.15.3": "ff43655b15df5f3de1d5e00b0da18469a14f118bd644eb4b6d7f1915c85a4493",
+    "libggml.so.0.15.3": "70f635b8ba22ddd751590ec1fe11c895ef88e2aff0f4a63a3af96314e6a77d65",
+    "libllama.so.0.0.9884": "23bc41af61d232a552d79fa1048b3afa0d7250f8451983ce220465f89dadef44"
+  },
+  "elapsed_s": 8.28,
+  "fixture": {
+    "normal": {
+      "graphs": 2,
+      "rows": 176,
+      "sha256": "acf82ea63074ccd0792f4f03be229c3a1b52bdd7285c051dcfffdae8bc35ff1a"
+    },
+    "pruned-entirely": {
+      "graphs": 2,
+      "rows": 176,
+      "sha256": "acf82ea63074ccd0792f4f03be229c3a1b52bdd7285c051dcfffdae8bc35ff1a"
+    },
+    "swapped-ranks": "REJECTED_BY_INDEPENDENT_RANK_REFERENCE",
+    "swapped-rows": "REJECTED_BY_INDEPENDENT_RANK_REFERENCE"
+  },
+  "fixture_executable_sha256": "bf3403b8608a5038c9e559dbf34434c88a1ede5474c826a1b05507626a0aed95",
+  "gpu_work": 0,
+  "max_child_rss_kib": 591704,
+  "model_forwards": 0,
+  "parent_receipt_sha256": "b5bccd6b296d9d12ebd92cbfb9cb1404495b62f742b59d0473e29fae288f8604",
+  "private_files_bytes": 608291,
+  "source_hashes": {
+    "boundary-protocol.md": "c704470366bb630707f894df7bceb39b5fb5b5398d1976e9d20e09b3ffe04613",
+    "boundary.patch": "7b910c9ffbbee25a558e6a8228a19f2995a813aa898b44eb59a274dc4f14217f",
+    "boundary.py": "a46964219acfc1aefd9c2eb8a67c4f5319ecb0fdbff443f0d649b4102a7257f4",
+    "boundary_fixture.cpp": "ccf79902f976cf86ec0813a0158a4ce383619cc9c2021766cf0a3451297c960a",
+    "boundary_i.h": "6e15375d700e1443d441076ab9eace6be84b6f34beee73dbee0d7178d5a4bdf6",
+    "build.py": "c5755f7f56441c961c57dbc671b694d289feff90370475c506aa2848489b3359",
+    "canary/alias-repair.md": "dc4a7e6daa8585969030cb276c0cd3a4823bcd5b78517eedbc815a70f3f43546",
+    "client.patch": "d9f4e0c1567c80b36cd034b4625b73b825f266cd49d93f65b0ec491623ddad95",
+    "graph_fixture.cpp": "7fa94b9c37bc7c21ce3eac343a6347cf9b883c06417e25055e365e78f20785ec",
+    "protocol.md": "b05bae00d4c639f421838cadcb7d1907520585990d727237a8ac64355b5c38d0",
+    "routed_witness.h": "1fcbb8540d1ca9e0777862c608f917a6b73fdc9dfea59bd530fd0174e2c43746",
+    "witness.py": "51a8a71eaf84693fc261a25c686694e8361f6a6bda5d68c4c60890aba55dc058"
+  },
+  "stages": [
+    {
+      "log_sha256": "365c61a24468c154d065a275fc334d859d638723fb1634138d64fcbdcdff27e6",
+      "name": "patch",
+      "returncode": 0,
+      "seconds": 0.0032
+    },
+    {
+      "log_sha256": "365c61a24468c154d065a275fc334d859d638723fb1634138d64fcbdcdff27e6",
+      "name": "boundary-overlay",
+      "returncode": 0,
+      "seconds": 0.0019
+    },
+    {
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "name": "r1-fixture-compile",
+      "returncode": 0,
+      "seconds": 0.4267
+    },
+    {
+      "log_sha256": "b70678911b295b077abc383ec588bdf3cb9b7d512b382f618220358e5d4c3e88",
+      "name": "r1-real-cont-counterexample",
+      "returncode": 1,
+      "seconds": 0.0045
+    },
+    {
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "name": "fixture-compile",
+      "returncode": 0,
+      "seconds": 0.4508
+    },
+    {
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "name": "fixture-normal",
+      "returncode": 0,
+      "seconds": 0.0062
+    },
+    {
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "name": "fixture-pruned-entirely",
+      "returncode": 0,
+      "seconds": 0.0047
+    },
+    {
+      "log_sha256": "2351938f96e5b8a12931ff4b002ff287d162a9657074f79533cc63c15f222cdb",
+      "name": "fixture-omit-layer",
+      "returncode": 1,
+      "seconds": 0.0041
+    },
+    {
+      "log_sha256": "4ee29575b1536838e89efa2d435d32aa4522da2a031aedf465c58ec855c33f7b",
+      "name": "fixture-alias-only",
+      "returncode": 1,
+      "seconds": 0.0042
+    },
+    {
+      "log_sha256": "b248620368447dc4178fff3e1b70263410549ce8d6e481c255e0c5faf6076bd9",
+      "name": "fixture-wrong-position",
+      "returncode": 1,
+      "seconds": 0.0038
+    },
+    {
+      "log_sha256": "70366b90220686d49e7839c700cc7acb60738e8f7aed424e4d0fb31ddd6b9d42",
+      "name": "fixture-wrong-output",
+      "returncode": 1,
+      "seconds": 0.0045
+    },
+    {
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "name": "fixture-swapped-ranks",
+      "returncode": 0,
+      "seconds": 0.0045
+    },
+    {
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "name": "fixture-swapped-rows",
+      "returncode": 0,
+      "seconds": 0.0039
+    },
+    {
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "name": "boundary-compile",
+      "returncode": 0,
+      "seconds": 1.7338
+    },
+    {
+      "log_sha256": "5da2a76d904d2b6316c07bfd72b150ac281c1211720b46057fc065088b45db91",
+      "name": "boundary-fixture",
+      "returncode": 0,
+      "seconds": 0.0528
+    },
+    {
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "name": "client-compile",
+      "returncode": 0,
+      "seconds": 5.3812
+    },
+    {
+      "log_sha256": "1d81a78cb08a05efd863c136a80e21baf5e769b753bdbe71e38637c5455bfdf6",
+      "name": "client-ldd",
+      "returncode": 0,
+      "seconds": 0.0067
+    },
+    {
+      "log_sha256": "50538b7322c8f1aa06ab24883c5dbe991c5f2dcafba39f6e41d837c5455f6187",
+      "name": "selftest",
+      "returncode": 0,
+      "seconds": 0.0556
+    },
+    {
+      "log_sha256": "328a73d087a534ca7ec073ee8b506c2de442e415cc2fa969d6bbb89a14ac01a8",
+      "name": "no-model-probe",
+      "returncode": 0,
+      "seconds": 0.0511
+    }
+  ],
+  "status": "PASS_GGML_CPU_FIXTURE_AND_CLIENT_ONLY"
+}

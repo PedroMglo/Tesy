@@ -1,0 +1,119 @@
+--- a/layer.cpp
++++ b/layer.cpp
+@@ -15,4 +15,5 @@
+ #include <set>
+ #include <type_traits>
++#include <unistd.h>
+ #ifndef TESY_C47_CPU_SKIP_PARKED
+ #error Build the manager and use a CPU runtime with the R0 parked-row implementation
+@@ -68,8 +69,35 @@
+     return fs::canonical(info.dli_fname).string();
+ }
++
++// Resolve the getter in the CPU provider already selected by this process.
++// R0 has no getter. The supervisor verifies presence against the provider SHA.
++struct RegionCounter {
++    using getter_t=uint64_t (*)();
++    std::string path;
++    void *handle=nullptr;
++    getter_t getter=nullptr;
++
++    RegionCounter() : path(provider(reinterpret_cast<void *>(&ggml_backend_cpu_init))) {
++        handle=dlopen(path.c_str(),RTLD_NOW|RTLD_NOLOAD);
++        need(handle!=nullptr,"CPU provider no longer loaded");
++        dlerror();
++        void *symbol=dlsym(handle,"tesy_parked_fusion_count");
++        const char *error=dlerror();
++        if (error) {
++            need(symbol==nullptr,"inconsistent getter lookup");
++        } else {
++            need(symbol!=nullptr && provider(symbol)==path,"wrong fusion counter provider");
++            getter=reinterpret_cast<getter_t>(symbol);
++        }
++    }
++    RegionCounter(const RegionCounter &)=delete;
++    RegionCounter &operator=(const RegionCounter &)=delete;
++    ~RegionCounter(){if(handle) dlclose(handle);}
++};
++
+ template<class T> static std::vector<T> tile(const std::vector<T>&v,size_t per_position){
+     return {v.begin()+first*per_position,v.begin()+(first+nt)*per_position};
+ }
+-static json run(const fs::path &p,const std::string &mode,const fs::path &output){
++static json run(const fs::path &p,const std::string &mode,const fs::path &output,RegionCounter &counter){
+     static_assert(sizeof(int)==4 && sizeof(float)==4);
+     need(mode=="OFF" || mode=="ON","invalid timing arm");
+@@ -118,9 +146,23 @@
+     need(ggml_backend_sched_alloc_graph(scheduler.get(),g),"FFN graph allocation");
+     put(x,tile(in.activation,width));put(r,ids);put(mix,tile(in.weights,4));
++    const uint64_t before=counter.getter?counter.getter():0;
+     const int64_t start_ns=monotonic_ns();
+     need(ggml_backend_sched_graph_compute(scheduler.get(),g)==GGML_STATUS_SUCCESS,"FFN compute");ggml_backend_sched_synchronize(scheduler.get());
+     const int64_t end_ns=monotonic_ns();
++    const uint64_t after=counter.getter?counter.getter():0;
++    need(after>=before,"counter went backwards");
+     need(valid_boundary(marked,wave_clock,start_ns,end_ns),"unqualified wave-return clock");
+-    const auto found=values<float>(out);equal(found,tile(read<float>(p/"ffn_moe_out-0.bin",all*width),width),"full FFN tile");
++    const auto found=values<float>(out);
++    {std::ofstream f(output/"tile.f32",std::ios::binary);need(bool(f.write(reinterpret_cast<const char*>(found.data()),found.size()*4)),"output write");}
++    const json counter_info={
++        {"providers",{{"cpu",counter.path},{"base",provider(reinterpret_cast<void *>(&ggml_backend_sched_graph_compute))}}},
++        {"counter_pid",getpid()},{"counter_present",counter.getter!=nullptr},
++        {"counter_provider",counter.getter?json(counter.path):json(nullptr)},
++        {"counter_before",counter.getter?json(before):json(nullptr)},
++        {"counter_after",counter.getter?json(after):json(nullptr)},
++        {"counter_delta",counter.getter?json(after-before):json(nullptr)}
++    };
++    std::cerr<<"PARKED_PROVIDERS "<<counter_info.dump()<<'\n';
++    equal(found,tile(read<float>(p/"ffn_moe_out-0.bin",all*width),width),"full FFN tile");
+     {std::lock_guard<std::mutex> lock(manager.mtx);need(!manager.load_failed && manager.q_demand.empty() && manager.workers.size()==4 && observed.layer->expert_slot.size()==5 &&
+         manager.stats.n_store_loads==5 && manager.stats.n_store_read_bytes==5*3*int64_t(slab) && manager.stats.n_wave_calls==8 && manager.stats.n_waves_run==1,"final manager counters");
+@@ -132,6 +174,5 @@
+         }
+     }
+-    {std::ofstream f(output/"tile.f32",std::ios::binary);need(bool(f.write(reinterpret_cast<const char*>(found.data()),found.size()*4)),"output write");}
+-    return {{"arm","DENSE"},{"mode",mode},{"router_positions",153},{"ffn_positions",32},
++    json receipt={{"arm","DENSE"},{"mode",mode},{"router_positions",153},{"ffn_positions",32},
+         {"full_ffn_values",found.size()},{"graph_waves",8},{"active_waves",1},{"wave_calls",8},
+         {"cb_eval_registered",false},{"wave_markers",wave_clock.calls},{"marked_graph_threads",wave_clock.graph_team_size},{"graph_mmid_nodes",observed.mmids.size()},
+@@ -141,14 +182,37 @@
+         {"unique_loads",5},{"expected_weight_sets",15},{"compute_backend","CPU"},
+         {"roles",{"gate","down","up"}},{"expected_pread_bytes",5*window},{"logical_weight_bytes",5*3*slab},
+-        {"dio_offset_alignment",store.data.offset_alignment()},{"workers_before_destructor",manager.workers.size()},
+-        {"providers",{{"cpu",provider(reinterpret_cast<void *>(&ggml_backend_cpu_init))},{"base",provider(reinterpret_cast<void *>(&ggml_backend_sched_graph_compute))}}}};
++        {"dio_offset_alignment",store.data.offset_alignment()},{"workers_before_destructor",manager.workers.size()}};
++    receipt.update(counter_info);
++    return receipt;
+ }
+ int main(int argc,char **argv){try{
+     if(argc==2 && std::string(argv[1])=="--self-test"){counterexamples();std::cout<<"PASS_C291_SUFFIX_COUNTEREXAMPLES\n";return 0;}
+     need(argc==4,"usage: suffix-layer INPUT_DIR OFF|ON NEW_OUTPUT_DIR");
+-    fs::path out(argv[3]);need(fs::create_directory(out),"exclusive output");auto receipt=run(argv[1],argv[2],out);
++    fs::path out(argv[3]);need(fs::create_directory(out),"exclusive output");
++    RegionCounter counter; // hold the same loaded CPU DSO until both witnesses close
++    auto receipt=run(argv[1],argv[2],out,counter);
+     // In the sealed C291 destructor every one of its four std::threads joins before run returns.
+     receipt["manager_destructor_returned"]=true;
+     receipt["joined_workers"]=receipt.at("workers_before_destructor");
++    need(receipt.at("joined_workers")==4 && receipt.at("counter_pid")==getpid() &&
++         receipt.at("providers").at("cpu")==counter.path &&
++         receipt.at("counter_present")==bool(counter.getter),"counter process/provider/joins");
++    const json graph_end=receipt.at("counter_after");
++    if (counter.getter) {
++        need(provider(reinterpret_cast<void *>(counter.getter))==counter.path &&
++             receipt.at("counter_provider")==counter.path,"post-join getter identity");
++        const uint64_t joined=counter.getter();
++        const uint64_t before=receipt.at("counter_before").get<uint64_t>();
++        need(graph_end==joined && joined>=before,"counter changed during validation or join");
++        receipt["counter_after"]=joined;
++        receipt["counter_delta"]=joined-before;
++    } else {
++        dlerror();
++        void *symbol=dlsym(counter.handle,"tesy_parked_fusion_count");
++        need(symbol==nullptr && dlerror()!=nullptr && graph_end.is_null() &&
++             receipt.at("counter_provider").is_null(),"R0 counter reappeared after join");
++    }
++    receipt["counter_after_graph"]=graph_end;
++    receipt["counter_after_join_verified"]=true;
+     receipt["status"]="PASS_C291_CPU0_SUFFIX";std::cout<<receipt.dump()<<'\n';return 0;
+ }catch(const std::exception &e){std::cerr<<"FAIL_C291_CPU0_TILE "<<e.what()<<'\n';return 1;}}

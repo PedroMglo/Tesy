@@ -1,0 +1,58 @@
+--- a/src/llama-moe-stream.h
++++ b/src/llama-moe-stream.h
+@@ -2,6 +2,7 @@
+
+ #include "llama-mmap.h"
+ #include "c294-service-window.h"
++#include "prefix_routes.h"
+
+ #include "ggml-cpp.h"
+
+@@ -169,6 +170,7 @@
+
+     bool debug = false;
+     c294_window window;
++    std::unique_ptr<prefix_routes> prefix_audit; // opt-in only in the diagnostic client
+     int64_t active_route=0; // manager mutex, current authoritative router event
+     void enqueue_locked(llama_moe_stream_layer *sl,int expert,int slot,uint64_t gen) {
+         const auto owner=window.call.load();
+--- a/src/llama-context.cpp
++++ b/src/llama-context.cpp
+@@ -1396,6 +1396,15 @@
+         //LLAMA_LOG_INFO("graph set inputs time: %.3f ms\n", (ggml_time_us() - t_start_us)/1000.0);
+     }
+
++    if (auto * mgr = model.moe_stream(); mgr && mgr->prefix_audit) {
++        // As in C284, finish the preceding graph before replacing its ubatch metadata.
++        ggml_backend_sched_synchronize(sched.get());
++        GGML_ASSERT(ubatch.n_tokens <= 32 && ubatch.n_seq_id && ubatch.seq_id && ubatch.n_pos == 1);
++        for (uint32_t i = 0; i < ubatch.n_tokens; ++i) {
++            GGML_ASSERT(ubatch.n_seq_id[i] == 1 && ubatch.seq_id[i] && ubatch.seq_id[i][0] == 0);
++        }
++        GGML_ASSERT(mgr->prefix_audit->begin_ubatch(ubatch.n_tokens, ubatch.pos, ubatch.output));
++    }
+     const auto status = graph_compute(res->get_gf(), ubatch.n_tokens > 1);
+     if (status != GGML_STATUS_SUCCESS) {
+         LLAMA_LOG_ERROR("%s: failed to compute graph, compute status: %d\n", __func__, status);
+--- a/src/llama-moe-stream.cpp
++++ b/src/llama-moe-stream.cpp
+@@ -479,6 +479,9 @@
+
+     mgr->window.record(13,sl->il);
+     std::unique_lock<std::mutex> lk(mgr->mtx);
++    if (mgr->prefix_audit) {
++        GGML_ASSERT(mgr->prefix_audit->route(sl->il, false, a->ne[1], a->ne[0], ids));
++    }
+     mgr->active_route=++mgr->window.next_route;
+     mgr->window.record(2,sl->il,-1,-1,0,mgr->active_route,-1,0,(int)a->ne[1]);
+
+@@ -841,6 +844,9 @@
+     mgr->stats.n_wave_calls++;
+
+     if (w == 0) {
++        if (mgr->prefix_audit) {
++            GGML_ASSERT(mgr->prefix_audit->route(sl->il, true, a->ne[1], a->ne[0], ids));
++        }
+         mgr->plan_waves_locked(*sl, ids, n);
+     }
+     mgr->active_route=sl->trace_route;

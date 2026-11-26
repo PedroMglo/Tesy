@@ -1,0 +1,181 @@
+{
+  "abi": [
+    "--load-mode",
+    "--lazy-mode",
+    "--no-repack",
+    "--no-host",
+    "--fit",
+    "--gpu-layers",
+    "--cpu-moe",
+    "--moe-cache-mib",
+    "--moe-cache-cpu-share",
+    "--ctx-size",
+    "--parallel",
+    "--batch-size",
+    "--ubatch-size",
+    "--cache-type-k",
+    "--cache-type-v",
+    "--no-warmup"
+  ],
+  "available_initial_bytes": 16523501568,
+  "cmake_flags": [
+    "-DCMAKE_BUILD_TYPE=Release",
+    "-DCMAKE_CUDA_ARCHITECTURES=89-real",
+    "-DCMAKE_CUDA_HOST_COMPILER=/usr/bin/g++-15",
+    "-DCMAKE_CUDA_COMPILER=/usr/local/cuda/bin/nvcc",
+    "-DCMAKE_CXX_COMPILER=/usr/bin/g++-15",
+    "-DCMAKE_C_COMPILER=/usr/bin/gcc-15",
+    "-DBUILD_SHARED_LIBS=ON",
+    "-DGGML_CUDA=ON",
+    "-DGGML_CUDA_NCCL=OFF",
+    "-DGGML_CUDA_FA=ON",
+    "-DGGML_CUDA_FA_QUANTS=f16-f16",
+    "-DGGML_CCACHE=OFF",
+    "-DLLAMA_BUILD_TESTS=OFF",
+    "-DLLAMA_BUILD_EXAMPLES=OFF",
+    "-DLLAMA_BUILD_APP=OFF",
+    "-DLLAMA_BUILD_UI=OFF",
+    "-DLLAMA_USE_PREBUILT_UI=OFF",
+    "-DLLAMA_OPENSSL=OFF",
+    "-DFETCHCONTENT_FULLY_DISCONNECTED=ON"
+  ],
+  "decision": "PASS_STOCK_BUILD_AND_MODEL_FREE_CLI",
+  "elapsed_s": 488.968,
+  "hardware_scope": "COMPILER_AND_MODEL_FREE_CLI",
+  "jobs": 5,
+  "memory_events": {
+    "high": "0",
+    "low": "0",
+    "max": "0",
+    "oom": "0",
+    "oom_group_kill": "0",
+    "oom_kill": "0",
+    "sock_throttled": "0"
+  },
+  "own_libs_sha256": {
+    "libggml-base.so.0": "c58db87a08edfe5d499f24c1bdbd3efd844c40368f030282ef750c4e56b52c4d",
+    "libggml-cpu.so.0": "8e05100cf1a6711d4a3ef86e0d4a2551cd96269735e46851eb83f7b39bcc3ad5",
+    "libggml-cuda.so.0": "7f8c73e8e038a444a96252a1b79f1b83484fadadc2371c118c65f36d44ccd835",
+    "libggml.so.0": "13765192ba66ecd55305167bd37fcfb8070843318a6a05aa00e738e9d6fe15ea",
+    "libllama-common.so.0": "7cf9543328e80642d8c5d2212b1926fa5dc66f551d3d1e4cf04ab7900622c5e3",
+    "libllama-server-impl.so": "b92b87f15be6e302bc9444252edd4cf8cfb7376cad8820179442dd10978e28e9",
+    "libllama.so.0": "717a7e3dc18ae58585c6df1af2454c5b441c171258b7100ae7e11530e02265b8",
+    "libmtmd.so.0": "8aee3b7efe43fffc38b5d988f38f2618330891ee78a5e6699e5a102c3f665dfb"
+  },
+  "pin": "e95426f16982054c379ca7bdc8186996dd22f0fe",
+  "protocol_sha256": "0971951ed5b1eecbbfa551609f7f29d392300279dd7912894b35cfa96dfa0479",
+  "scope_peak_bytes": 3059544064,
+  "server_sha256": "2396cc20738e1c2b7d8bfbe209b89098874683c424518d4bf139f7f51e9cfe00",
+  "sm89_elf_entries": 144,
+  "source_clean_after": true,
+  "stage": "libraries",
+  "started_utc": "2026-11-24T23:19:07.714449+00:00",
+  "steps": {
+    "checkout": {
+      "returncode": 0,
+      "s": 0.318
+    },
+    "compile": {
+      "returncode": 0,
+      "s": 484.881
+    },
+    "configure": {
+      "returncode": 0,
+      "s": 2.535
+    },
+    "gpu_elf": {
+      "returncode": 0,
+      "s": 0.189
+    },
+    "help": {
+      "returncode": 0,
+      "s": 0.075
+    },
+    "init": {
+      "returncode": 0,
+      "s": 0.005
+    },
+    "libraries": {
+      "returncode": 0,
+      "s": 0.012
+    },
+    "version": {
+      "returncode": 0,
+      "s": 0.176
+    }
+  },
+  "telemetry": {
+    "peak_sampled_new_disk_bytes": 431939584,
+    "peak_sampled_scope_bytes": 2644340736,
+    "peak_sampled_tctl_c": 83.25
+  },
+  "toolchain": {
+    "cc": {
+      "sha256": "14243f9ecbf08dfb3490eaca0c832055b8934ca0883f507cf951a5107fe7b36f",
+      "version": [
+        "gcc-15 (GCC) 15.3.1 20260722 (Red Hat 15.3.1-1)",
+        "Copyright (C) 2025 Free Software Foundation, Inc.",
+        "This is free software; see the source for copying conditions.  There is NO",
+        "warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE."
+      ]
+    },
+    "cmake": {
+      "sha256": "6ada98c4f457916b95b0a9b3fdd1d5618b3fbe0ee777c6c5aee8203763eb4068",
+      "version": [
+        "cmake version 4.3.0",
+        "",
+        "CMake suite maintained and supported by Kitware (kitware.com/cmake)."
+      ]
+    },
+    "cuobjdump": {
+      "sha256": "2498659e83ab63ffd63b560caf3078e2c8d2839aa331780d2861cdf485070485",
+      "version": [
+        "cuobjdump: NVIDIA (R) fat binary listing tool",
+        "Copyright (c) 2005-2026 NVIDIA Corporation",
+        "Built on Tue_Jun_09_02:43:40_PM_PDT_2026",
+        "Cuda compilation tools, release 13.3, V13.3.73",
+        "Build cuda_13.3.r13.3/compiler.38244171_0"
+      ]
+    },
+    "cxx": {
+      "sha256": "cef5002fbce633104c81b24e9fd935251ab653234c8dce8758d3c963d6123c8a",
+      "version": [
+        "g++-15 (GCC) 15.3.1 20260722 (Red Hat 15.3.1-1)",
+        "Copyright (C) 2025 Free Software Foundation, Inc.",
+        "This is free software; see the source for copying conditions.  There is NO",
+        "warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE."
+      ]
+    },
+    "ninja": {
+      "sha256": "0108fce2fda36061dd0b1b3c35ba14f28a5034abfbaee54799abcfc9fff29826",
+      "version": [
+        "1.13.2"
+      ]
+    },
+    "nvcc": {
+      "sha256": "0d3511aa5fe86ae6565618aeebbdd2a7e4fe8affa1980787071199e1cdae07dc",
+      "version": [
+        "nvcc: NVIDIA (R) Cuda compiler driver",
+        "Copyright (c) 2005-2026 NVIDIA Corporation",
+        "Built on Tue_Jun_09_02:43:40_PM_PDT_2026",
+        "Cuda compilation tools, release 13.3, V13.3.73",
+        "Build cuda_13.3.r13.3/compiler.38244171_0"
+      ]
+    },
+    "ptxas": {
+      "sha256": "afd8d1e1fa6e310f7faee44f6621e4c1315fb7fd6da7d4d87414358e12a651dc",
+      "version": [
+        "ptxas: NVIDIA (R) Ptx optimizing assembler",
+        "Copyright (c) 2005-2026 NVIDIA Corporation",
+        "Built on Tue_Jun_09_02:43:40_PM_PDT_2026",
+        "Cuda compilation tools, release 13.3, V13.3.73",
+        "Build cuda_13.3.r13.3/compiler.38244171_0"
+      ]
+    }
+  },
+  "tree": "3c5105435231a5095af520b352396d526d483dab",
+  "version_lines": [
+    "version: 0.9.0-dev (build 1001, commit e95426f)",
+    "built with GNU 15.3.1 for Linux x86_64"
+  ]
+}

@@ -1,0 +1,986 @@
+{
+  "P106": {
+    "modes": {
+      "retain_evictions_and_reads": {
+        "deliveries": {
+          "decode_first": {
+            "CPU/bank": 40,
+            "CPU/pack": 215,
+            "CPU/staging": 518,
+            "CUDA0/bank": 30,
+            "CUDA0/pack": 85,
+            "CUDA0/staging": 179
+          },
+          "decode_tail": {
+            "CPU/bank": 1,
+            "CPU/pack": 2,
+            "CPU/staging": 10,
+            "CUDA0/bank": 5,
+            "CUDA0/pack": 2,
+            "CUDA0/staging": 4
+          },
+          "prefill": {
+            "CPU/bank": 171,
+            "CPU/pack": 432,
+            "CPU/staging": 205,
+            "CUDA0/bank": 126,
+            "CUDA0/pack": 210,
+            "CUDA0/staging": 119
+          }
+        },
+        "margins_ns": {
+          "earliest_outer/4/4500000000": [
+            1666720757,
+            4519405965,
+            2135252017,
+            4987407898,
+            920500063,
+            3768632650
+          ],
+          "earliest_outer/4/8000000000": [
+            1797550449,
+            4519405965,
+            2661042523,
+            5177841952,
+            1792166407,
+            4514021923
+          ],
+          "earliest_outer/unlimited/4500000000": [
+            1709576237,
+            4519405965,
+            2178107497,
+            4987407898,
+            963355543,
+            3768632650
+          ],
+          "earliest_outer/unlimited/8000000000": [
+            1797550449,
+            4519405965,
+            2674237241,
+            5177841952,
+            1792166407,
+            4514021923
+          ],
+          "ranks_observed/0/4500000000": [
+            336739240,
+            4267162019,
+            424768428,
+            4364434716,
+            -1622738772,
+            2275801116
+          ],
+          "ranks_observed/0/8000000000": [
+            1311241816,
+            4495650651,
+            1556342372,
+            4755135516,
+            404619572,
+            3580279116
+          ],
+          "ranks_observed/4/4500000000": [
+            1529760002,
+            4490640948,
+            1785096727,
+            4758504863,
+            395224951,
+            3345303881
+          ],
+          "ranks_observed/4/8000000000": [
+            1797550449,
+            4519405965,
+            2501502902,
+            5100096803,
+            1737465960,
+            4459321476
+          ]
+        },
+        "storage": {
+          "decode_first": {
+            "cumulative_acquisitions": {
+              "disk/CPU": 647,
+              "disk/CUDA0": 295,
+              "victim/CPU": 457,
+              "victim/CUDA0": 209
+            },
+            "extra_payload_bytes": 21256473600,
+            "extra_records": 1608
+          },
+          "decode_tail": {
+            "cumulative_acquisitions": {
+              "disk/CPU": 649,
+              "disk/CUDA0": 297,
+              "victim/CPU": 457,
+              "victim/CUDA0": 210
+            },
+            "extra_payload_bytes": 21322569600,
+            "extra_records": 1613
+          },
+          "prefill": {
+            "cumulative_acquisitions": {
+              "disk/CPU": 432,
+              "disk/CUDA0": 210,
+              "victim/CPU": 432,
+              "victim/CUDA0": 196
+            },
+            "extra_payload_bytes": 16788384000,
+            "extra_records": 1270
+          }
+        }
+      },
+      "retain_reads": {
+        "deliveries": {
+          "decode_first": {
+            "CPU/bank": 40,
+            "CPU/pack": 449,
+            "CPU/staging": 284,
+            "CUDA0/bank": 30,
+            "CUDA0/pack": 193,
+            "CUDA0/staging": 71
+          },
+          "decode_tail": {
+            "CPU/bank": 1,
+            "CPU/pack": 5,
+            "CPU/staging": 7,
+            "CUDA0/bank": 5,
+            "CUDA0/pack": 6
+          },
+          "prefill": {
+            "CPU/bank": 171,
+            "CPU/pack": 561,
+            "CPU/staging": 76,
+            "CUDA0/bank": 126,
+            "CUDA0/pack": 263,
+            "CUDA0/staging": 66
+          }
+        },
+        "margins_ns": {
+          "earliest_outer/4/4500000000": [
+            1054342899,
+            4271000329,
+            1230822283,
+            4438598444,
+            554570303,
+            3768632650
+          ],
+          "earliest_outer/4/8000000000": [
+            1797550449,
+            4519405965,
+            2386734006,
+            5004270929,
+            1792166407,
+            4514021923
+          ],
+          "earliest_outer/unlimited/4500000000": [
+            1099030610,
+            4271000329,
+            1275509994,
+            4438598444,
+            599258014,
+            3768632650
+          ],
+          "earliest_outer/unlimited/8000000000": [
+            1797550449,
+            4519405965,
+            2415104855,
+            5004270929,
+            1792166407,
+            4514021923
+          ],
+          "ranks_observed/0/4500000000": [
+            -1037510480,
+            3337756353,
+            -1036946084,
+            3339212316,
+            -2079794084,
+            2275801116
+          ],
+          "ranks_observed/0/8000000000": [
+            735992732,
+            4141666324,
+            766741957,
+            4178447916,
+            180139957,
+            3580279116
+          ],
+          "ranks_observed/4/4500000000": [
+            697210386,
+            4037360457,
+            736308075,
+            4080633394,
+            10650725,
+            3345303881
+          ],
+          "ranks_observed/4/8000000000": [
+            1750905204,
+            4507332636,
+            2091939779,
+            4840805066,
+            1702894044,
+            4459321476
+          ]
+        },
+        "storage": {
+          "decode_first": {
+            "cumulative_acquisitions": {
+              "disk/CPU": 1010,
+              "disk/CUDA0": 456
+            },
+            "extra_payload_bytes": 19379347200,
+            "extra_records": 1466
+          },
+          "decode_tail": {
+            "cumulative_acquisitions": {
+              "disk/CPU": 1015,
+              "disk/CUDA0": 462
+            },
+            "extra_payload_bytes": 19524758400,
+            "extra_records": 1477
+          },
+          "prefill": {
+            "cumulative_acquisitions": {
+              "disk/CPU": 561,
+              "disk/CUDA0": 263
+            },
+            "extra_payload_bytes": 10892620800,
+            "extra_records": 824
+          }
+        }
+      },
+      "transient": {
+        "deliveries": {
+          "decode_first": {
+            "CPU/bank": 40,
+            "CPU/pack": 733,
+            "CUDA0/bank": 30,
+            "CUDA0/pack": 264
+          },
+          "decode_tail": {
+            "CPU/bank": 1,
+            "CPU/pack": 12,
+            "CUDA0/bank": 5,
+            "CUDA0/pack": 6
+          },
+          "prefill": {
+            "CPU/bank": 171,
+            "CPU/pack": 637,
+            "CUDA0/bank": 126,
+            "CUDA0/pack": 329
+          }
+        },
+        "margins_ns": {
+          "earliest_outer/4/4500000000": [
+            262364832,
+            3786646604,
+            279875450,
+            3793949987,
+            244350878,
+            3768632650
+          ],
+          "earliest_outer/4/8000000000": [
+            1779722322,
+            4516891619,
+            2082536203,
+            4811233663,
+            1776852626,
+            4514021923
+          ],
+          "earliest_outer/unlimited/4500000000": [
+            324581576,
+            3786646604,
+            342092194,
+            3793949987,
+            306567622,
+            3768632650
+          ],
+          "earliest_outer/unlimited/8000000000": [
+            1795036103,
+            4516891619,
+            2131457670,
+            4811233663,
+            1792166407,
+            4514021923
+          ],
+          "ranks_observed/0/4500000000": [
+            -2475474198,
+            2275801116,
+            -2475474198,
+            2275801116,
+            -2475474198,
+            2275801116
+          ],
+          "ranks_observed/0/8000000000": [
+            -31030917,
+            3580279116,
+            -31030917,
+            3580279116,
+            -31030917,
+            3580279116
+          ],
+          "ranks_observed/4/4500000000": [
+            -325788687,
+            3345303881,
+            -323690607,
+            3347211920,
+            -325788687,
+            3345303881
+          ],
+          "ranks_observed/4/8000000000": [
+            1548452841,
+            4459321476,
+            1648576228,
+            4549951813,
+            1548452841,
+            4459321476
+          ]
+        },
+        "storage": {
+          "decode_first": {
+            "cumulative_acquisitions": {},
+            "extra_payload_bytes": 0,
+            "extra_records": 0
+          },
+          "decode_tail": {
+            "cumulative_acquisitions": {},
+            "extra_payload_bytes": 0,
+            "extra_records": 0
+          },
+          "prefill": {
+            "cumulative_acquisitions": {},
+            "extra_payload_bytes": 0,
+            "extra_records": 0
+          }
+        }
+      },
+      "worker4": {
+        "deliveries": {
+          "decode_first": {
+            "CPU/bank": 40,
+            "CPU/pack": 733,
+            "CUDA0/bank": 30,
+            "CUDA0/pack": 264
+          },
+          "decode_tail": {
+            "CPU/bank": 1,
+            "CPU/pack": 12,
+            "CUDA0/bank": 5,
+            "CUDA0/pack": 6
+          },
+          "prefill": {
+            "CPU/bank": 171,
+            "CPU/pack": 637,
+            "CUDA0/bank": 126,
+            "CUDA0/pack": 329
+          }
+        },
+        "margins_ns": {
+          "earliest_outer/4/4500000000": [
+            262364832,
+            3786646604,
+            279875450,
+            3793949987,
+            244350878,
+            3768632650
+          ],
+          "earliest_outer/4/8000000000": [
+            1779722322,
+            4516891619,
+            2082536203,
+            4811233663,
+            1776852626,
+            4514021923
+          ],
+          "earliest_outer/unlimited/4500000000": [
+            324581576,
+            3786646604,
+            342092194,
+            3793949987,
+            306567622,
+            3768632650
+          ],
+          "earliest_outer/unlimited/8000000000": [
+            1795036103,
+            4516891619,
+            2131457670,
+            4811233663,
+            1792166407,
+            4514021923
+          ],
+          "ranks_observed/0/4500000000": [
+            -2475474198,
+            2275801116,
+            -2475474198,
+            2275801116,
+            -2475474198,
+            2275801116
+          ],
+          "ranks_observed/0/8000000000": [
+            -31030917,
+            3580279116,
+            -31030917,
+            3580279116,
+            -31030917,
+            3580279116
+          ],
+          "ranks_observed/4/4500000000": [
+            -325788687,
+            3345303881,
+            -323690607,
+            3347211920,
+            -325788687,
+            3345303881
+          ],
+          "ranks_observed/4/8000000000": [
+            1548452841,
+            4459321476,
+            1648576228,
+            4549951813,
+            1548452841,
+            4459321476
+          ]
+        },
+        "storage": {
+          "decode_first": {
+            "cumulative_acquisitions": {},
+            "extra_payload_bytes": 0,
+            "extra_records": 0
+          },
+          "decode_tail": {
+            "cumulative_acquisitions": {},
+            "extra_payload_bytes": 0,
+            "extra_records": 0
+          },
+          "prefill": {
+            "cumulative_acquisitions": {},
+            "extra_payload_bytes": 0,
+            "extra_records": 0
+          }
+        }
+      }
+    },
+    "population": {
+      "decode_first/CPU/bank": 40,
+      "decode_first/CPU/pack": 733,
+      "decode_first/CUDA0/bank": 30,
+      "decode_first/CUDA0/pack": 264,
+      "decode_first/demand": 1067,
+      "decode_tail/CPU/bank": 1,
+      "decode_tail/CPU/pack": 12,
+      "decode_tail/CUDA0/bank": 5,
+      "decode_tail/CUDA0/pack": 6,
+      "decode_tail/demand": 24,
+      "prefill/demand": 827,
+      "prefill/initial": 199,
+      "prefill/new": 852,
+      "prefill/preload": 436,
+      "prefill/repeated": 212,
+      "previously_omitted/CPU/bank": 70,
+      "previously_omitted/CPU/pack": 363,
+      "previously_omitted/CUDA0/bank": 77,
+      "previously_omitted/CUDA0/pack": 186,
+      "strict/CPU/bank": 101,
+      "strict/CPU/pack": 274,
+      "strict/CUDA0/bank": 49,
+      "strict/CUDA0/pack": 143
+    },
+    "reservation_first_use_sha256": "fc6a9f9c80199ee31df9d1ef5dbf9a781dbcad3b574174b76bfbe022efc616f2"
+  },
+  "P97": {
+    "modes": {
+      "retain_evictions_and_reads": {
+        "deliveries": {
+          "decode_first": {
+            "CPU/bank": 40,
+            "CPU/pack": 215,
+            "CPU/staging": 518,
+            "CUDA0/bank": 30,
+            "CUDA0/pack": 85,
+            "CUDA0/staging": 179
+          },
+          "decode_tail": {
+            "CPU/bank": 1,
+            "CPU/pack": 2,
+            "CPU/staging": 10,
+            "CUDA0/bank": 5,
+            "CUDA0/pack": 2,
+            "CUDA0/staging": 4
+          },
+          "prefill": {
+            "CPU/bank": 171,
+            "CPU/pack": 432,
+            "CPU/staging": 205,
+            "CUDA0/bank": 126,
+            "CUDA0/pack": 210,
+            "CUDA0/staging": 119
+          }
+        },
+        "margins_ns": {
+          "earliest_outer/4/4500000000": [
+            2934189968,
+            4882974513,
+            3303702991,
+            5254814569,
+            2000692686,
+            3941942360
+          ],
+          "earliest_outer/4/8000000000": [
+            3148645520,
+            4889596962,
+            3905864178,
+            5472570762,
+            3115904324,
+            4856855766
+          ],
+          "earliest_outer/unlimited/4500000000": [
+            2979224279,
+            4882974513,
+            3348737302,
+            5254814569,
+            2045726997,
+            3941942360
+          ],
+          "earliest_outer/unlimited/8000000000": [
+            3148645520,
+            4889596962,
+            3919512522,
+            5472570762,
+            3115904324,
+            4856855766
+          ],
+          "ranks_observed/0/4500000000": [
+            1587298675,
+            4585276016,
+            1656628923,
+            4662130576,
+            -390878277,
+            2573496976
+          ],
+          "ranks_observed/0/8000000000": [
+            2601736184,
+            4845801832,
+            2796132194,
+            5052831376,
+            1644409394,
+            3877974976
+          ],
+          "ranks_observed/4/4500000000": [
+            2775374277,
+            4817691256,
+            2959964237,
+            5013905304,
+            1495634789,
+            3523159665
+          ],
+          "ranks_observed/4/8000000000": [
+            3148645520,
+            4889596962,
+            3728363178,
+            5383335461,
+            2998817811,
+            4739432247
+          ]
+        },
+        "storage": {
+          "decode_first": {
+            "cumulative_acquisitions": {
+              "disk/CPU": 647,
+              "disk/CUDA0": 295,
+              "victim/CPU": 457,
+              "victim/CUDA0": 209
+            },
+            "extra_payload_bytes": 21256473600,
+            "extra_records": 1608
+          },
+          "decode_tail": {
+            "cumulative_acquisitions": {
+              "disk/CPU": 649,
+              "disk/CUDA0": 297,
+              "victim/CPU": 457,
+              "victim/CUDA0": 210
+            },
+            "extra_payload_bytes": 21322569600,
+            "extra_records": 1613
+          },
+          "prefill": {
+            "cumulative_acquisitions": {
+              "disk/CPU": 432,
+              "disk/CUDA0": 210,
+              "victim/CPU": 432,
+              "victim/CUDA0": 196
+            },
+            "extra_payload_bytes": 16788384000,
+            "extra_records": 1270
+          }
+        }
+      },
+      "retain_reads": {
+        "deliveries": {
+          "decode_first": {
+            "CPU/bank": 40,
+            "CPU/pack": 449,
+            "CPU/staging": 284,
+            "CUDA0/bank": 30,
+            "CUDA0/pack": 193,
+            "CUDA0/staging": 71
+          },
+          "decode_tail": {
+            "CPU/bank": 1,
+            "CPU/pack": 5,
+            "CPU/staging": 7,
+            "CUDA0/bank": 5,
+            "CUDA0/pack": 6
+          },
+          "prefill": {
+            "CPU/bank": 171,
+            "CPU/pack": 561,
+            "CPU/staging": 76,
+            "CUDA0/bank": 126,
+            "CUDA0/pack": 263,
+            "CUDA0/staging": 66
+          }
+        },
+        "margins_ns": {
+          "earliest_outer/4/4500000000": [
+            2209980625,
+            4540155264,
+            2334255551,
+            4659232911,
+            1614662026,
+            3941942360
+          ],
+          "earliest_outer/4/8000000000": [
+            3141773197,
+            4882724639,
+            3582449084,
+            5278867628,
+            3115904324,
+            4856855766
+          ],
+          "earliest_outer/unlimited/4500000000": [
+            2256066486,
+            4540155264,
+            2380341412,
+            4659232911,
+            1660747887,
+            3941942360
+          ],
+          "earliest_outer/unlimited/8000000000": [
+            3141773197,
+            4882724639,
+            3614805549,
+            5278867628,
+            3115904324,
+            4856855766
+          ],
+          "ranks_observed/0/4500000000": [
+            182264314,
+            3636575437,
+            182597053,
+            3636908176,
+            -860250947,
+            2573496976
+          ],
+          "ranks_observed/0/8000000000": [
+            1981488622,
+            4454766000,
+            1997757176,
+            4476143776,
+            1411155176,
+            3877974976
+          ],
+          "ranks_observed/4/4500000000": [
+            1846215338,
+            4279577797,
+            1859658323,
+            4297120558,
+            1097298254,
+            3523159665
+          ],
+          "ranks_observed/4/8000000000": [
+            3025696928,
+            4851965796,
+            3287290322,
+            5105166495,
+            2913500385,
+            4739432247
+          ]
+        },
+        "storage": {
+          "decode_first": {
+            "cumulative_acquisitions": {
+              "disk/CPU": 1010,
+              "disk/CUDA0": 456
+            },
+            "extra_payload_bytes": 19379347200,
+            "extra_records": 1466
+          },
+          "decode_tail": {
+            "cumulative_acquisitions": {
+              "disk/CPU": 1015,
+              "disk/CUDA0": 462
+            },
+            "extra_payload_bytes": 19524758400,
+            "extra_records": 1477
+          },
+          "prefill": {
+            "cumulative_acquisitions": {
+              "disk/CPU": 561,
+              "disk/CUDA0": 263
+            },
+            "extra_payload_bytes": 10892620800,
+            "extra_records": 824
+          }
+        }
+      },
+      "transient": {
+        "deliveries": {
+          "decode_first": {
+            "CPU/bank": 40,
+            "CPU/pack": 733,
+            "CUDA0/bank": 30,
+            "CUDA0/pack": 264
+          },
+          "decode_tail": {
+            "CPU/bank": 1,
+            "CPU/pack": 12,
+            "CUDA0/bank": 5,
+            "CUDA0/pack": 6
+          },
+          "prefill": {
+            "CPU/bank": 171,
+            "CPU/pack": 637,
+            "CUDA0/bank": 126,
+            "CUDA0/pack": 329
+          }
+        },
+        "margins_ns": {
+          "earliest_outer/4/4500000000": [
+            1315099399,
+            3954331235,
+            1327875336,
+            3959049411,
+            1302710524,
+            3941942360
+          ],
+          "earliest_outer/4/8000000000": [
+            3033540141,
+            4859952218,
+            3239334113,
+            5056435964,
+            3030443689,
+            4856855766
+          ],
+          "earliest_outer/unlimited/4500000000": [
+            1373784167,
+            3954331235,
+            1386560104,
+            3959049411,
+            1361395292,
+            3941942360
+          ],
+          "earliest_outer/unlimited/8000000000": [
+            3070864905,
+            4859952218,
+            3276658877,
+            5056435964,
+            3067768453,
+            4856855766
+          ],
+          "ranks_observed/0/4500000000": [
+            -1256215752,
+            2573496976,
+            -1256215752,
+            2573496976,
+            -1256215752,
+            2573496976
+          ],
+          "ranks_observed/0/8000000000": [
+            1197502594,
+            3877974976,
+            1197502594,
+            3877974976,
+            1197502594,
+            3877974976
+          ],
+          "ranks_observed/4/4500000000": [
+            759615765,
+            3523159665,
+            759615765,
+            3523159665,
+            759615765,
+            3523159665
+          ],
+          "ranks_observed/4/8000000000": [
+            2754654519,
+            4739432247,
+            2811495434,
+            4785519926,
+            2754654519,
+            4739432247
+          ]
+        },
+        "storage": {
+          "decode_first": {
+            "cumulative_acquisitions": {},
+            "extra_payload_bytes": 0,
+            "extra_records": 0
+          },
+          "decode_tail": {
+            "cumulative_acquisitions": {},
+            "extra_payload_bytes": 0,
+            "extra_records": 0
+          },
+          "prefill": {
+            "cumulative_acquisitions": {},
+            "extra_payload_bytes": 0,
+            "extra_records": 0
+          }
+        }
+      },
+      "worker4": {
+        "deliveries": {
+          "decode_first": {
+            "CPU/bank": 40,
+            "CPU/pack": 733,
+            "CUDA0/bank": 30,
+            "CUDA0/pack": 264
+          },
+          "decode_tail": {
+            "CPU/bank": 1,
+            "CPU/pack": 12,
+            "CUDA0/bank": 5,
+            "CUDA0/pack": 6
+          },
+          "prefill": {
+            "CPU/bank": 171,
+            "CPU/pack": 637,
+            "CUDA0/bank": 126,
+            "CUDA0/pack": 329
+          }
+        },
+        "margins_ns": {
+          "earliest_outer/4/4500000000": [
+            1315099399,
+            3954331235,
+            1327875336,
+            3959049411,
+            1302710524,
+            3941942360
+          ],
+          "earliest_outer/4/8000000000": [
+            3033540141,
+            4859952218,
+            3239334113,
+            5056435964,
+            3030443689,
+            4856855766
+          ],
+          "earliest_outer/unlimited/4500000000": [
+            1373784167,
+            3954331235,
+            1386560104,
+            3959049411,
+            1361395292,
+            3941942360
+          ],
+          "earliest_outer/unlimited/8000000000": [
+            3070864905,
+            4859952218,
+            3276658877,
+            5056435964,
+            3067768453,
+            4856855766
+          ],
+          "ranks_observed/0/4500000000": [
+            -1256215752,
+            2573496976,
+            -1256215752,
+            2573496976,
+            -1256215752,
+            2573496976
+          ],
+          "ranks_observed/0/8000000000": [
+            1197502594,
+            3877974976,
+            1197502594,
+            3877974976,
+            1197502594,
+            3877974976
+          ],
+          "ranks_observed/4/4500000000": [
+            759615765,
+            3523159665,
+            759615765,
+            3523159665,
+            759615765,
+            3523159665
+          ],
+          "ranks_observed/4/8000000000": [
+            2754654519,
+            4739432247,
+            2811495434,
+            4785519926,
+            2754654519,
+            4739432247
+          ]
+        },
+        "storage": {
+          "decode_first": {
+            "cumulative_acquisitions": {},
+            "extra_payload_bytes": 0,
+            "extra_records": 0
+          },
+          "decode_tail": {
+            "cumulative_acquisitions": {},
+            "extra_payload_bytes": 0,
+            "extra_records": 0
+          },
+          "prefill": {
+            "cumulative_acquisitions": {},
+            "extra_payload_bytes": 0,
+            "extra_records": 0
+          }
+        }
+      }
+    },
+    "population": {
+      "decode_first/CPU/bank": 40,
+      "decode_first/CPU/pack": 733,
+      "decode_first/CUDA0/bank": 30,
+      "decode_first/CUDA0/pack": 264,
+      "decode_first/demand": 1067,
+      "decode_tail/CPU/bank": 1,
+      "decode_tail/CPU/pack": 12,
+      "decode_tail/CUDA0/bank": 5,
+      "decode_tail/CUDA0/pack": 6,
+      "decode_tail/demand": 24,
+      "prefill/demand": 827,
+      "prefill/initial": 199,
+      "prefill/new": 852,
+      "prefill/preload": 436,
+      "prefill/repeated": 212,
+      "previously_omitted/CPU/bank": 70,
+      "previously_omitted/CPU/pack": 363,
+      "previously_omitted/CUDA0/bank": 77,
+      "previously_omitted/CUDA0/pack": 186,
+      "strict/CPU/bank": 101,
+      "strict/CPU/pack": 274,
+      "strict/CUDA0/bank": 49,
+      "strict/CUDA0/pack": 143
+    },
+    "reservation_first_use_sha256": "fc6a9f9c80199ee31df9d1ef5dbf9a781dbcad3b574174b76bfbe022efc616f2"
+  },
+  "code_sha256": "8c7de037b3242e7e8951bcced7a04375aca491ff7a9782923758305493c43370",
+  "full_receipt_sha256": "ed035fcfa6a98e12ec7bbef29343256caa7c857f942d3ffa689e4bb562974147",
+  "margin_columns_ns": [
+    "priced_first",
+    "priced_decode",
+    "free_first",
+    "free_decode",
+    "only_prefill_changed_priced_first",
+    "only_prefill_changed_priced_decode"
+  ],
+  "previous_sha256": "2c8b361af5ecf04e09643040841ea4d7f59cb0796153b10545367b8f17deacf3",
+  "protocol_sha256": "914572faf4acb8745b8187690fbc3d85bb0e2bef5eb5ef524b5672464dd1d914",
+  "status": "REPRODUCED_ALL_PREFILL_DELIVERIES",
+  "worker_source_sha256": "044d8879be19e5c22331a29bf7a273307756de10675b1341ee9d7077e2dabc62"
+}

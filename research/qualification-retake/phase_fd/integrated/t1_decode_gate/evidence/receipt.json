@@ -1,0 +1,542 @@
+{
+  "archive_sha256": "4907245d68f604c31918d48d50259a60476ef76c1bfc0f848d98db659606b513",
+  "capacity": 353,
+  "captured_session_status": "FAIL_PRESERVED",
+  "clock": {
+    "decode_callbacks": 1656,
+    "decode_remap_union_ns": 7660238334,
+    "evaluations": 46,
+    "first_decode_enter_to_last_return_ns": 9990656346,
+    "fixed_decode_ns": 2333730666,
+    "predicted_ns": 9993970000,
+    "predicted_tokens": 47,
+    "quantization_concession_ns": 1000
+  },
+  "conservation": {
+    "first_content": {
+      "by_phase_tier": {
+        "decode_cpu": {
+          "first_read_jobs": 221,
+          "first_read_worker_ns": 2214907271,
+          "granted_repeat_read_worker_ns": 5720351756,
+          "jobs": 773,
+          "set_events": 2319,
+          "set_payload_bytes": 10218441600,
+          "set_worker_ns": 419161775
+        },
+        "decode_cuda": {
+          "first_read_jobs": 87,
+          "first_read_worker_ns": 810808402,
+          "granted_repeat_read_worker_ns": 1830180697,
+          "jobs": 294,
+          "set_events": 882,
+          "set_payload_bytes": 3886444800,
+          "set_worker_ns": 352033838
+        },
+        "prefill_cpu": {
+          "first_read_jobs": 375,
+          "first_read_worker_ns": 7146628427,
+          "granted_repeat_read_worker_ns": 3105084663,
+          "jobs": 532,
+          "set_events": 1596,
+          "set_payload_bytes": 7032614400,
+          "set_worker_ns": 315144184
+        },
+        "prefill_cuda": {
+          "first_read_jobs": 192,
+          "first_read_worker_ns": 3695971197,
+          "granted_repeat_read_worker_ns": 2091077404,
+          "jobs": 295,
+          "set_events": 885,
+          "set_payload_bytes": 3899664000,
+          "set_worker_ns": 349937153
+        }
+      },
+      "counts": {
+        "excluded_outside_or_crossing_callback": 24,
+        "excluded_preload": 436,
+        "first_reads_charged": 875,
+        "included": 1894,
+        "published_during_barrier": 1894,
+        "repeat_reads_granted_free": 1019
+      },
+      "groups": 937,
+      "reservations": 2354
+    },
+    "full": {
+      "by_phase_tier": {
+        "decode_cpu": {
+          "first_read_jobs": 223,
+          "first_read_worker_ns": 2227591157,
+          "granted_repeat_read_worker_ns": 5810575728,
+          "jobs": 786,
+          "set_events": 2358,
+          "set_payload_bytes": 10390291200,
+          "set_worker_ns": 426483568
+        },
+        "decode_cuda": {
+          "first_read_jobs": 89,
+          "first_read_worker_ns": 826257865,
+          "granted_repeat_read_worker_ns": 1897283169,
+          "jobs": 305,
+          "set_events": 915,
+          "set_payload_bytes": 4031856000,
+          "set_worker_ns": 364887646
+        },
+        "prefill_cpu": {
+          "first_read_jobs": 375,
+          "first_read_worker_ns": 7146628427,
+          "granted_repeat_read_worker_ns": 3105084663,
+          "jobs": 532,
+          "set_events": 1596,
+          "set_payload_bytes": 7032614400,
+          "set_worker_ns": 315144184
+        },
+        "prefill_cuda": {
+          "first_read_jobs": 192,
+          "first_read_worker_ns": 3695971197,
+          "granted_repeat_read_worker_ns": 2091077404,
+          "jobs": 295,
+          "set_events": 885,
+          "set_payload_bytes": 3899664000,
+          "set_worker_ns": 349937153
+        }
+      },
+      "counts": {
+        "excluded_preload": 436,
+        "first_reads_charged": 879,
+        "included": 1918,
+        "published_during_barrier": 1918,
+        "repeat_reads_granted_free": 1039
+      },
+      "groups": 958,
+      "reservations": 2354
+    },
+    "group_counts": [
+      176,
+      761,
+      21
+    ]
+  },
+  "eligible": 1698,
+  "first_control_sha256": "3402d411f6baf85cfe82067bf106730776939b4822317e11dee40b3a654d0029",
+  "first_fixed_ns": 6008451991,
+  "journal_sha256": "40d2ea8049ccee9213ffc3f317482d67ebbed85a887a933043a3f4e7bd132033",
+  "local_sha256": "eb08c93c08201a8074a996a2f898505a452be38f20c03b345df77f9a7a04638a",
+  "new_forwards": 0,
+  "prefill_volume_budgets": {
+    "46": 11440306616,
+    "47": 10690306614
+  },
+  "program_sha256": "85e96c73751c7d0cbab54d3c3bd74b9331f85fc0994420b2af29bdd029fc10a5",
+  "protocol_sha256": "63ddd5f0d3f4613327643221d6d2c6bb3cf694099b33532caca86f099919e2a5",
+  "scenarios": {
+    "1/1": {
+      "allocations": 396,
+      "decision": "NO_GO_TWO_CLOCKS",
+      "temporal_passing_allocations": 0,
+      "witnesses": {
+        "minimum_decode": {
+          "decode_floor_ns": 3939055214,
+          "decode_margin_ns": 3894278119,
+          "decode_pass": true,
+          "decode_rate_ceiling": 11.93179517589773,
+          "first_floor_ns": 10147396078,
+          "first_margin_ns": -147396079,
+          "first_pass": false,
+          "prefill_volume_bytes": 9094809600,
+          "prefill_volume_pass": {
+            "46": true,
+            "47": true
+          },
+          "regions": {
+            "both": {
+              "first_reads": 308,
+              "free_first_read_worker_ns": 1890195986,
+              "jobs": 1067,
+              "paid_first_read_worker_ns_unscaled": 1135519687,
+              "selected_first_reads": 188,
+              "service_num": 6271174356,
+              "set_worker_ns": 771195613,
+              "waves": 761
+            },
+            "decode_only": {
+              "first_reads": 4,
+              "free_first_read_worker_ns": 8475357,
+              "jobs": 24,
+              "paid_first_read_worker_ns_unscaled": 19657992,
+              "selected_first_reads": 1,
+              "service_num": 150123836,
+              "set_worker_ns": 20175601,
+              "waves": 21
+            },
+            "first_only": {
+              "first_reads": 567,
+              "free_first_read_worker_ns": 3038594601,
+              "jobs": 827,
+              "paid_first_read_worker_ns_unscaled": 7804005023,
+              "selected_first_reads": 164,
+              "service_num": 10284601994,
+              "set_worker_ns": 665081337,
+              "waves": 176
+            }
+          },
+          "selected": 353,
+          "service_den": 4,
+          "sha256": "b06fd929f8fd1651cdec714152488d4c660e288c68cc0f08b1c9c453c27c571b"
+        },
+        "minimum_first": {
+          "decode_floor_ns": 3966270844,
+          "decode_margin_ns": 3867062489,
+          "decode_pass": true,
+          "decode_rate_ceiling": 11.849921966650243,
+          "first_floor_ns": 10128998595,
+          "first_margin_ns": -128998596,
+          "first_pass": false,
+          "prefill_volume_bytes": 9002275200,
+          "prefill_volume_pass": {
+            "46": true,
+            "47": true
+          },
+          "regions": {
+            "both": {
+              "first_reads": 308,
+              "free_first_read_worker_ns": 1815563522,
+              "jobs": 1067,
+              "paid_first_read_worker_ns_unscaled": 1210152151,
+              "selected_first_reads": 182,
+              "service_num": 6346135448,
+              "set_worker_ns": 771195613,
+              "waves": 761
+            },
+            "decode_only": {
+              "first_reads": 4,
+              "free_first_read_worker_ns": 0,
+              "jobs": 24,
+              "paid_first_read_worker_ns_unscaled": 28133349,
+              "selected_first_reads": 0,
+              "service_num": 184025264,
+              "set_worker_ns": 20175601,
+              "waves": 21
+            },
+            "first_only": {
+              "first_reads": 567,
+              "free_first_read_worker_ns": 3163718743,
+              "jobs": 827,
+              "paid_first_read_worker_ns_unscaled": 7678880881,
+              "selected_first_reads": 171,
+              "service_num": 10136050971,
+              "set_worker_ns": 665081337,
+              "waves": 176
+            }
+          },
+          "selected": 353,
+          "service_den": 4,
+          "sha256": "0f18d2f1569151aa54ee824859fe37300278a7baddca828b84ad1226be7f4b3e"
+        },
+        "minimum_joint": {
+          "decode_floor_ns": 3966270844,
+          "decode_margin_ns": 3867062489,
+          "decode_pass": true,
+          "decode_rate_ceiling": 11.849921966650243,
+          "first_floor_ns": 10128998595,
+          "first_margin_ns": -128998596,
+          "first_pass": false,
+          "prefill_volume_bytes": 9002275200,
+          "prefill_volume_pass": {
+            "46": true,
+            "47": true
+          },
+          "regions": {
+            "both": {
+              "first_reads": 308,
+              "free_first_read_worker_ns": 1815563522,
+              "jobs": 1067,
+              "paid_first_read_worker_ns_unscaled": 1210152151,
+              "selected_first_reads": 182,
+              "service_num": 6346135448,
+              "set_worker_ns": 771195613,
+              "waves": 761
+            },
+            "decode_only": {
+              "first_reads": 4,
+              "free_first_read_worker_ns": 0,
+              "jobs": 24,
+              "paid_first_read_worker_ns_unscaled": 28133349,
+              "selected_first_reads": 0,
+              "service_num": 184025264,
+              "set_worker_ns": 20175601,
+              "waves": 21
+            },
+            "first_only": {
+              "first_reads": 567,
+              "free_first_read_worker_ns": 3163718743,
+              "jobs": 827,
+              "paid_first_read_worker_ns_unscaled": 7678880881,
+              "selected_first_reads": 171,
+              "service_num": 10136050971,
+              "set_worker_ns": 665081337,
+              "waves": 176
+            }
+          },
+          "selected": 353,
+          "service_den": 4,
+          "sha256": "0f18d2f1569151aa54ee824859fe37300278a7baddca828b84ad1226be7f4b3e"
+        },
+        "original_first": {
+          "decode_floor_ns": 3966270844,
+          "decode_margin_ns": 3867062489,
+          "decode_pass": true,
+          "decode_rate_ceiling": 11.849921966650243,
+          "first_floor_ns": 10128998595,
+          "first_margin_ns": -128998596,
+          "first_pass": false,
+          "prefill_volume_bytes": 9002275200,
+          "prefill_volume_pass": {
+            "46": true,
+            "47": true
+          },
+          "regions": {
+            "both": {
+              "first_reads": 308,
+              "free_first_read_worker_ns": 1815563522,
+              "jobs": 1067,
+              "paid_first_read_worker_ns_unscaled": 1210152151,
+              "selected_first_reads": 182,
+              "service_num": 6346135448,
+              "set_worker_ns": 771195613,
+              "waves": 761
+            },
+            "decode_only": {
+              "first_reads": 4,
+              "free_first_read_worker_ns": 0,
+              "jobs": 24,
+              "paid_first_read_worker_ns_unscaled": 28133349,
+              "selected_first_reads": 0,
+              "service_num": 184025264,
+              "set_worker_ns": 20175601,
+              "waves": 21
+            },
+            "first_only": {
+              "first_reads": 567,
+              "free_first_read_worker_ns": 3163718743,
+              "jobs": 827,
+              "paid_first_read_worker_ns_unscaled": 7678880881,
+              "selected_first_reads": 171,
+              "service_num": 10136050971,
+              "set_worker_ns": 665081337,
+              "waves": 176
+            }
+          },
+          "selected": 353,
+          "service_den": 4,
+          "sha256": "0f18d2f1569151aa54ee824859fe37300278a7baddca828b84ad1226be7f4b3e"
+        }
+      }
+    },
+    "4/5": {
+      "allocations": 396,
+      "decision": "HEADROOM_ONLY",
+      "temporal_passing_allocations": 326,
+      "witnesses": {
+        "minimum_decode": {
+          "decode_floor_ns": 3732354822,
+          "decode_margin_ns": 4100978510,
+          "decode_pass": true,
+          "decode_rate_ceiling": 12.592586244182636,
+          "first_floor_ns": 9466183670,
+          "first_margin_ns": 533816329,
+          "first_pass": true,
+          "prefill_volume_bytes": 9094809600,
+          "prefill_volume_pass": {
+            "46": true,
+            "47": true
+          },
+          "regions": {
+            "both": {
+              "first_reads": 308,
+              "free_first_read_worker_ns": 1890195986,
+              "jobs": 1067,
+              "paid_first_read_worker_ns_unscaled": 1135519687,
+              "selected_first_reads": 188,
+              "service_num": 27300495924,
+              "set_worker_ns": 771195613,
+              "waves": 761
+            },
+            "decode_only": {
+              "first_reads": 4,
+              "free_first_read_worker_ns": 8475357,
+              "jobs": 24,
+              "paid_first_read_worker_ns_unscaled": 19657992,
+              "selected_first_reads": 1,
+              "service_num": 671987212,
+              "set_worker_ns": 20175601,
+              "waves": 21
+            },
+            "first_only": {
+              "first_reads": 567,
+              "free_first_read_worker_ns": 3042413292,
+              "jobs": 827,
+              "paid_first_read_worker_ns_unscaled": 7800186332,
+              "selected_first_reads": 164,
+              "service_num": 41854137664,
+              "set_worker_ns": 665081337,
+              "waves": 176
+            }
+          },
+          "selected": 353,
+          "service_den": 20,
+          "sha256": "3d0981183b16416ef97ab340c7e71783466faf6af58c796191c5bcbf64a9b056"
+        },
+        "minimum_first": {
+          "decode_floor_ns": 3754171879,
+          "decode_margin_ns": 4079161454,
+          "decode_pass": true,
+          "decode_rate_ceiling": 12.519405480714305,
+          "first_floor_ns": 9451458876,
+          "first_margin_ns": 548541123,
+          "first_pass": true,
+          "prefill_volume_bytes": 9002275200,
+          "prefill_volume_pass": {
+            "46": true,
+            "47": true
+          },
+          "regions": {
+            "both": {
+              "first_reads": 308,
+              "free_first_read_worker_ns": 1815563522,
+              "jobs": 1067,
+              "paid_first_read_worker_ns_unscaled": 1210152151,
+              "selected_first_reads": 182,
+              "service_num": 27601231340,
+              "set_worker_ns": 771195613,
+              "waves": 761
+            },
+            "decode_only": {
+              "first_reads": 4,
+              "free_first_read_worker_ns": 0,
+              "jobs": 24,
+              "paid_first_read_worker_ns_unscaled": 28133349,
+              "selected_first_reads": 0,
+              "service_num": 807592924,
+              "set_worker_ns": 20175601,
+              "waves": 21
+            },
+            "first_only": {
+              "first_reads": 567,
+              "free_first_read_worker_ns": 3191399359,
+              "jobs": 827,
+              "paid_first_read_worker_ns_unscaled": 7651200265,
+              "selected_first_reads": 171,
+              "service_num": 41258906361,
+              "set_worker_ns": 665081337,
+              "waves": 176
+            }
+          },
+          "selected": 353,
+          "service_den": 20,
+          "sha256": "b7e5a21b39e6893ad4781fded955be7b5c8fba166361966437cad2f5262bf7cf"
+        },
+        "minimum_joint": {
+          "decode_floor_ns": 3754171879,
+          "decode_margin_ns": 4079161454,
+          "decode_pass": true,
+          "decode_rate_ceiling": 12.519405480714305,
+          "first_floor_ns": 9451458876,
+          "first_margin_ns": 548541123,
+          "first_pass": true,
+          "prefill_volume_bytes": 9002275200,
+          "prefill_volume_pass": {
+            "46": true,
+            "47": true
+          },
+          "regions": {
+            "both": {
+              "first_reads": 308,
+              "free_first_read_worker_ns": 1815563522,
+              "jobs": 1067,
+              "paid_first_read_worker_ns_unscaled": 1210152151,
+              "selected_first_reads": 182,
+              "service_num": 27601231340,
+              "set_worker_ns": 771195613,
+              "waves": 761
+            },
+            "decode_only": {
+              "first_reads": 4,
+              "free_first_read_worker_ns": 0,
+              "jobs": 24,
+              "paid_first_read_worker_ns_unscaled": 28133349,
+              "selected_first_reads": 0,
+              "service_num": 807592924,
+              "set_worker_ns": 20175601,
+              "waves": 21
+            },
+            "first_only": {
+              "first_reads": 567,
+              "free_first_read_worker_ns": 3191399359,
+              "jobs": 827,
+              "paid_first_read_worker_ns_unscaled": 7651200265,
+              "selected_first_reads": 171,
+              "service_num": 41258906361,
+              "set_worker_ns": 665081337,
+              "waves": 176
+            }
+          },
+          "selected": 353,
+          "service_den": 20,
+          "sha256": "b7e5a21b39e6893ad4781fded955be7b5c8fba166361966437cad2f5262bf7cf"
+        },
+        "original_first": {
+          "decode_floor_ns": 3754171879,
+          "decode_margin_ns": 4079161454,
+          "decode_pass": true,
+          "decode_rate_ceiling": 12.519405480714305,
+          "first_floor_ns": 9451458876,
+          "first_margin_ns": 548541123,
+          "first_pass": true,
+          "prefill_volume_bytes": 9002275200,
+          "prefill_volume_pass": {
+            "46": true,
+            "47": true
+          },
+          "regions": {
+            "both": {
+              "first_reads": 308,
+              "free_first_read_worker_ns": 1815563522,
+              "jobs": 1067,
+              "paid_first_read_worker_ns_unscaled": 1210152151,
+              "selected_first_reads": 182,
+              "service_num": 27601231340,
+              "set_worker_ns": 771195613,
+              "waves": 761
+            },
+            "decode_only": {
+              "first_reads": 4,
+              "free_first_read_worker_ns": 0,
+              "jobs": 24,
+              "paid_first_read_worker_ns_unscaled": 28133349,
+              "selected_first_reads": 0,
+              "service_num": 807592924,
+              "set_worker_ns": 20175601,
+              "waves": 21
+            },
+            "first_only": {
+              "first_reads": 567,
+              "free_first_read_worker_ns": 3191399359,
+              "jobs": 827,
+              "paid_first_read_worker_ns_unscaled": 7651200265,
+              "selected_first_reads": 171,
+              "service_num": 41258906361,
+              "set_worker_ns": 665081337,
+              "waves": 176
+            }
+          },
+          "selected": 353,
+          "service_den": 20,
+          "sha256": "b7e5a21b39e6893ad4781fded955be7b5c8fba166361966437cad2f5262bf7cf"
+        }
+      }
+    }
+  },
+  "status": "PASS_NATIVE_DECODE_GATE"
+}

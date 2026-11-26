@@ -1,0 +1,102 @@
+{
+  "arms": {
+    "BANK161": {
+      "single_read": {
+        "prefill": {
+          "matrix_copy_calls": 2544,
+          "payload_B": 14752627200,
+          "scope_nvme_read_B": 39437164544,
+          "scope_read_B_beyond_scenario": {
+            "4096": 24674385920,
+            "131072": 24351301632,
+            "2097152": 19331768320
+          },
+          "sum_single_cold_read_B": {
+            "4096": 14762778624,
+            "131072": 15085862912,
+            "2097152": 20105396224
+          }
+        },
+        "teacher": {
+          "matrix_copy_calls": 411,
+          "payload_B": 1837468800,
+          "scope_nvme_read_B": 7017160704,
+          "scope_read_B_beyond_scenario": {
+            "4096": 5178081280,
+            "131072": 5128019968,
+            "2097152": 4313931776
+          },
+          "sum_single_cold_read_B": {
+            "4096": 1839079424,
+            "131072": 1889140736,
+            "2097152": 2703228928
+          }
+        }
+      },
+      "transport": {
+        "expected_sha256": "c30449e82c6e0192fe478aef8d41039be266e539335ac131dce816aa3aa718d7",
+        "extra_slices": 0,
+        "first_extra": null,
+        "first_missing": null,
+        "match": true,
+        "matrix_requests_B": {
+          "prefill": 14752627200,
+          "teacher": 1837468800
+        },
+        "missing_slices": 0,
+        "observed_sha256": "c30449e82c6e0192fe478aef8d41039be266e539335ac131dce816aa3aa718d7"
+      }
+    },
+    "BANK288": {
+      "single_read": {
+        "prefill": {
+          "matrix_copy_calls": 2547,
+          "payload_B": 14752627200,
+          "scope_nvme_read_B": 39229030400,
+          "scope_read_B_beyond_scenario": {
+            "4096": 24466239488,
+            "131072": 24142774272,
+            "2097152": 19117342720
+          },
+          "sum_single_cold_read_B": {
+            "4096": 14762790912,
+            "131072": 15086256128,
+            "2097152": 20111687680
+          }
+        },
+        "teacher": {
+          "matrix_copy_calls": 378,
+          "payload_B": 1692057600,
+          "scope_nvme_read_B": 7328997376,
+          "scope_read_B_beyond_scenario": {
+            "4096": 5635481600,
+            "131072": 5590327296,
+            "2097152": 4835483648
+          },
+          "sum_single_cold_read_B": {
+            "4096": 1693515776,
+            "131072": 1738670080,
+            "2097152": 2493513728
+          }
+        }
+      },
+      "transport": {
+        "expected_sha256": "fe8a2d9587d99f03807236cda9410556cf303b2215de8643c364f6f7ab3093da",
+        "extra_slices": 0,
+        "first_extra": null,
+        "first_missing": null,
+        "match": true,
+        "matrix_requests_B": {
+          "prefill": 14752627200,
+          "teacher": 1692057600
+        },
+        "missing_slices": 0,
+        "observed_sha256": "fe8a2d9587d99f03807236cda9410556cf303b2215de8643c364f6f7ab3093da"
+      }
+    }
+  },
+  "callback_off_physical": "NOT_RUN",
+  "model_starts": 0,
+  "original_sha256": "1d18c701fa45e8fac072ff73059f7f2415a765e0ff4e6247ceee5d9947c2747e",
+  "status": "REPRODUCED_ON_TRANSPORT"
+}

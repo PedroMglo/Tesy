@@ -1,0 +1,175 @@
+--- layer.cpp
++++ topology.cpp
+@@ -27,78 +27,42 @@
+ constexpr std::array<int,5> selected{45,49,57,60,98};
+ static void need(bool x,const char *reason){if(!x) throw std::runtime_error(reason);}
+ static ggml_context_ptr context(){ggml_context_ptr ctx(ggml_init({16ULL<<20,nullptr,true})); need(bool(ctx),"GGML context");return ctx;}
+-template<class T> static std::vector<T> read(const fs::path &p,size_t count){
+-    need(fs::file_size(p)==count*sizeof(T),"input length"); std::ifstream f(p,std::ios::binary);std::vector<T> v(count);
+-    need(bool(f.read(reinterpret_cast<char *>(v.data()),count*sizeof(T))),"input read");return v;
+-}
+-template<class T> static std::vector<T> values(ggml_tensor *t){
+-    need(ggml_is_contiguous(t),"expected complete contiguous output"); std::vector<T> v(ggml_nelements(t));
+-    need(v.size()*sizeof(T)==ggml_nbytes(t),"output type/bytes"); ggml_backend_tensor_get(t,v.data(),0,ggml_nbytes(t));return v;
+-}
+-template<class T> static void equal(const std::vector<T>&observed,const std::vector<T>&expected,const char *reason){
+-    need(observed.size()==expected.size() && !std::memcmp(observed.data(),expected.data(),observed.size()*sizeof(T)),reason);
+-    if constexpr(std::is_floating_point_v<T>) for(T x:observed)need(std::isfinite(x),"nonfinite");
+-}
+-template<class T> static void put(ggml_tensor *tensor,const std::vector<T> &v){
+-    need(ggml_nbytes(tensor)==v.size()*sizeof(T),"input tensor type/bytes");ggml_backend_tensor_set(tensor,v.data(),0,ggml_nbytes(tensor));
+-}
+ // Exact two functions copied from the SHA-pinned block_expert_reuse_operator.cpp at build time.
+ #include "pairs-finish.inc"
+ #include "suffix-clock.h"
+-struct Inputs {std::vector<float> activation,weights;std::vector<int> ids;};
+-static Inputs routing(const fs::path &p,ggml_backend_t cpu){
+-    auto ctx=context();auto *c=ctx.get(); auto *x=ggml_new_tensor_2d(c,GGML_TYPE_F32,width,all);
+-    auto *router=ggml_new_tensor_2d(c,GGML_TYPE_F32,width,128);auto *bias=ggml_new_tensor_1d(c,GGML_TYPE_F32,128);
+-    auto *logits=ggml_mul_mat(c,router,x);auto *biased=ggml_add(c,logits,bias);
+-    auto *ids=ggml_cont(c,ggml_argsort_top_k(c,biased,4)); auto *w=ggml_get_rows(c,ggml_reshape_3d(c,biased,1,128,all),ids);
+-    w=ggml_cont(c,ggml_reshape_3d(c,ggml_soft_max(c,ggml_reshape_2d(c,w,4,all)),1,4,all));
+-    auto *g=ggml_new_graph(c); ggml_build_forward_expand(g,ids); ggml_build_forward_expand(g,w);
+-    ggml_backend_buffer_ptr memory(ggml_backend_alloc_ctx_tensors(c,cpu));need(bool(memory),"router allocation");
+-    Inputs in;in.activation=read<float>(p/"attn_post_norm-0.bin",width*all);put(x,in.activation);
+-    put(router,read<float>(p/"router.weight",width*128));put(bias,read<float>(p/"router.bias",128));
+-    need(ggml_backend_graph_compute(cpu,g)==GGML_STATUS_SUCCESS,"router compute");ggml_backend_synchronize(cpu);
+-    equal(values<float>(logits),read<float>(p/"ffn_moe_logits-0.bin",128*all),"all pre-bias router logits");
+-    equal(values<float>(biased),read<float>(p/"ffn_moe_logits_biased-0.bin",128*all),"all biased router logits");
+-    in.ids=values<int>(ids);in.weights=values<float>(w);
+-    equal(in.ids,read<int>(p/"ffn_moe_topk-0.bin",4*all),"all ordered IDs");
+-    equal(in.weights,read<float>(p/"ffn_moe_weights_softmax-0.bin",4*all),"all routing weights");return in;
++
++static fs::path provider(const void *symbol) {
++    Dl_info info{};
++    need(dladdr(symbol,&info) && info.dli_fname,"runtime provider");
++    return fs::canonical(info.dli_fname);
+ }
+-static std::string provider(void *symbol) {
+-    Dl_info info{}; need(dladdr(symbol,&info) && info.dli_fname,"missing runtime provider");
+-    return fs::canonical(info.dli_fname).string();
+-}
+-template<class T> static std::vector<T> tile(const std::vector<T>&v,size_t per_position){
+-    return {v.begin()+first*per_position,v.begin()+(first+nt)*per_position};
+-}
+-static json run(const fs::path &p,const std::string &mode,const fs::path &output){
+-    static_assert(sizeof(int)==4 && sizeof(float)==4);
+-    need(mode=="OFF" || mode=="ON","invalid timing arm");
+-    const bool marked = mode=="ON";
+-    need(std::getenv("TESY_PACKED_CPU_SLOTS")==nullptr,"DENSE original required");
+-    need(std::getenv("TESY_CPU_WAVE_SKIP_PARKED") && std::string(std::getenv("TESY_CPU_WAVE_SKIP_PARKED"))=="1","parked CPU mode");
++static json topology(bool post, const fs::path &seam) {
++    const bool marked=false;
++    using observe_fn=int (*)(ggml_cgraph *);
++    auto observe=reinterpret_cast<observe_fn>(dlsym(RTLD_DEFAULT,"tesy_parked_fusion_observe"));
++    auto *entry=dlsym(RTLD_DEFAULT,"ggml_graph_compute");
++    need(observe && entry && provider(reinterpret_cast<void *>(observe))==seam &&
++         provider(entry)==seam, "both graph inspection entry points must be interposed");
+     ggml_backend_ptr backend(ggml_backend_cpu_init());need(bool(backend),"CPU init");ggml_backend_cpu_set_n_threads(backend.get(),8);
+-    auto in=routing(p,backend.get());const auto ids=tile(in.ids,4);
+-    const std::set<int> union_ids(ids.begin(),ids.end());need(union_ids==std::set<int>(selected.begin(),selected.end()),"selected union");
+-    std::set<std::array<int,4>> tuples;for(int i=0;i<nt;++i){std::array<int,4> r;std::copy_n(ids.begin()+4*i,4,r.begin());tuples.insert(r);}
+-    need(tuples.size()==7,"rank pattern count");
+     auto meta=context(); auto biases=context();std::array<ggml_tensor*,6> t{};
+     // pairs() takes gate,up,down; native layer registration and on-disk components are gate,down,up.
+     const int order[]={0,2,1};const char *roles[]={"gate","up","down"}; GraphInputs observed;
+-    json info;{std::ifstream f(p/"prepare.json");f>>info;need(bool(f)&&info.at("status")=="PASS_PREPARED_REAL_TILE","input receipt");}
+     llama_moe_stream manager(1,40,4,true);
+     for(int k=0;k<3;++k){const int i=order[k];auto *m=ggml_new_tensor_3d(meta.get(),GGML_TYPE_MXFP4,width,width,128);
+-        ggml_format_name(m,"blk.0.ffn_%s_exps.weight",roles[i]);t[i]=manager.create_cache_tensor(0,ggml_backend_cpu_buffer_type(),m,0,info.at("weight_bases").at(k).get<size_t>());
++        ggml_format_name(m,"blk.0.ffn_%s_exps.weight",roles[i]);t[i]=manager.create_cache_tensor(0,ggml_backend_cpu_buffer_type(),m,0,0);
+         observed.weights[k]=t[i];t[i+3]=ggml_new_tensor_2d(biases.get(),GGML_TYPE_F32,width,128);}
+-    manager.alloc_bufs(false);observed.layer=manager.layer(0);
+-    ggml_backend_buffer_ptr biasmem(ggml_backend_alloc_ctx_tensors(biases.get(),backend.get()));need(bool(biasmem),"bias buffers");
+-    for(int k=0;k<3;++k){auto *w=observed.weights[k];
+-        need(w->nb[2]==slab && ggml_is_contiguous(w), "dense weight geometry");
+-        put(t[3+order[k]],read<float>(p/(std::string(roles[order[k]])+".bias"),width*128));}
+-    manager.expert_store=std::make_unique<tesy_expert_store>();auto &store=*manager.expert_store;
+-    store.data.open_file((p/"pack.bin").c_str());need(store.data.file_size()==selected.size()*stride,"pack size");
+-    for(auto &entry:store.entries[0])entry.offset=UINT64_MAX;
+-    for(size_t i=0;i<selected.size();++i){auto &e=store.entries[0][selected[i]];e.offset=i*stride;e.relative={0,slab,2*slab};}
+-    need(manager.workers.empty() && manager.q_demand.empty() && observed.layer->expert_slot.empty(),"cold entry");
++
++    observed.layer=manager.layer(0);
++    ggml_backend_buffer_ptr biasmem;
++    size_t cache_bytes=0, bias_bytes=0, scheduler_bytes=0;
++    for (auto *weight : t) need(weight->data==nullptr && weight->buffer==nullptr,"metadata only");
++    if (post) {
++        manager.alloc_bufs(false);
++        biasmem.reset(ggml_backend_alloc_ctx_tensors(biases.get(),backend.get()));
++        need(bool(biasmem),"bias buffers");
++        for (const auto &buf : manager.bufs) cache_bytes+=ggml_backend_buffer_get_size(buf.get());
++        bias_bytes=ggml_backend_buffer_get_size(biasmem.get());
++    }
+     auto ctx=context();auto *c=ctx.get();auto *g=ggml_new_graph_custom(c,1024,false);
+     auto *x=ggml_new_tensor_2d(c,GGML_TYPE_F32,width,nt);auto *r=ggml_new_tensor_2d(c,GGML_TYPE_I32,4,nt);auto *mix=ggml_new_tensor_3d(c,GGML_TYPE_F32,1,4,nt);
+     for(auto *l:{x,r,mix})ggml_set_input(l);ggml_tensor *sum=nullptr;
+@@ -115,40 +79,33 @@
+     auto *cpu=backend.get();ggml_backend_sched_ptr scheduler(ggml_backend_sched_new(&cpu,nullptr,1,1024,false,false));need(bool(scheduler),"scheduler");
+     const auto graph_signature=fingerprint(g,observed);
+     const int graph_nodes=ggml_graph_n_nodes(g);
+-    need(ggml_backend_sched_alloc_graph(scheduler.get(),g),"FFN graph allocation");
+-    put(x,tile(in.activation,width));put(r,ids);put(mix,tile(in.weights,4));
+-    const int64_t start_ns=monotonic_ns();
+-    need(ggml_backend_sched_graph_compute(scheduler.get(),g)==GGML_STATUS_SUCCESS,"FFN compute");ggml_backend_sched_synchronize(scheduler.get());
+-    const int64_t end_ns=monotonic_ns();
+-    need(valid_boundary(marked,wave_clock,start_ns,end_ns),"unqualified wave-return clock");
+-    const auto found=values<float>(out);equal(found,tile(read<float>(p/"ffn_moe_out-0.bin",all*width),width),"full FFN tile");
+-    {std::lock_guard<std::mutex> lock(manager.mtx);need(!manager.load_failed && manager.q_demand.empty() && manager.workers.size()==4 && observed.layer->expert_slot.size()==5 &&
+-        manager.stats.n_store_loads==5 && manager.stats.n_store_read_bytes==5*3*int64_t(slab) && manager.stats.n_wave_calls==8 && manager.stats.n_waves_run==1,"final manager counters");
+-        for(int e:selected){
+-            const int slot=observed.layer->expert_slot.at(e);
+-            need(slot>=0 && slot<40 && observed.layer->slot_expert.at(slot)==e &&
+-                 observed.layer->expert_wave.at(e)==0 && observed.layer->slot_state.at(slot)==LLAMA_MOE_STREAM_SLOT_RESIDENT &&
+-                 !observed.layer->slot_claimed.at(slot) && observed.layer->slot_gen.at(slot)==1,"wave and slot identity");
+-        }
++
++    need(graph_nodes==110 && graph_signature=="e569253a2f984a84","historical graph identity");
++    const size_t metadata_used=ggml_used_mem(c)+ggml_used_mem(meta.get())+ggml_used_mem(biases.get());
++    if (post) {
++        need(ggml_backend_sched_alloc_graph(scheduler.get(),g),"FFN graph allocation");
++        scheduler_bytes=ggml_backend_sched_get_buffer_size(scheduler.get(),cpu);
++        need(ggml_backend_sched_graph_compute(scheduler.get(),g)==GGML_STATUS_SUCCESS,"interposed compute");
++        ggml_backend_sched_synchronize(scheduler.get());
++    } else {
++        need(observe(g)==0,"observe metadata graph");
+     }
+-    {std::ofstream f(output/"tile.f32",std::ios::binary);need(bool(f.write(reinterpret_cast<const char*>(found.data()),found.size()*4)),"output write");}
+-    return {{"arm","DENSE"},{"mode",mode},{"router_positions",153},{"ffn_positions",32},
+-        {"full_ffn_values",found.size()},{"graph_waves",8},{"active_waves",1},{"wave_calls",8},
+-        {"cb_eval_registered",false},{"wave_markers",wave_clock.calls},{"marked_graph_threads",wave_clock.graph_team_size},{"graph_mmid_nodes",observed.mmids.size()},
+-        {"graph_nodes",graph_nodes},{"backend_splits",ggml_backend_sched_get_n_splits(scheduler.get())},{"graph_fingerprint",graph_signature},
+-        {"clock","CLOCK_MONOTONIC"},{"graph_start_ns",start_ns},{"graph_end_ns",end_ns},{"graph_ns",end_ns-start_ns},
+-        {"wave_return_ns",marked?json(wave_clock.end_ns):json(nullptr)},{"suffix_ns",marked?json(end_ns-wave_clock.end_ns):json(nullptr)},
+-        {"unique_loads",5},{"expected_weight_sets",15},{"compute_backend","CPU"},
+-        {"roles",{"gate","down","up"}},{"expected_pread_bytes",5*window},{"logical_weight_bytes",5*3*slab},
+-        {"dio_offset_alignment",store.data.offset_alignment()},{"workers_before_destructor",manager.workers.size()},
+-        {"providers",{{"cpu",provider(reinterpret_cast<void *>(&ggml_backend_cpu_init))},{"base",provider(reinterpret_cast<void *>(&ggml_backend_sched_graph_compute))}}}};
++    need(manager.workers.empty() && manager.q_demand.empty() && !manager.expert_store &&
++         manager.stats.n_wave_calls==0 && manager.stats.n_store_loads==0 &&
++         manager.stats.n_store_read_bytes==0 && wave_clock.calls==0, "no manager activity");
++    need(!out->data || post,"unexpected allocation pre scheduling");
++    return {{"phase",post?"cpu_graph_compute":"before_scheduler"},{"graph_nodes",graph_nodes},
++        {"graph_mmid_nodes",observed.mmids.size()},{"graph_fingerprint",graph_signature},
++        {"backend_splits",post?ggml_backend_sched_get_n_splits(scheduler.get()):0},
++        {"weight_cache_reserved_bytes",cache_bytes},{"bias_reserved_bytes",bias_bytes},
++        {"scheduler_reserved_bytes",scheduler_bytes},{"descriptor_context_used_bytes",metadata_used},
++        {"weight_payload_input_bytes",0},{"workers",manager.workers.size()},
++        {"wave_calls",manager.stats.n_wave_calls},{"seam_path",seam.string()},
++        {"status","PASS_C269_TOPOLOGY_FRONTEND"}};
+ }
+-int main(int argc,char **argv){try{
+-    if(argc==2 && std::string(argv[1])=="--self-test"){counterexamples();std::cout<<"PASS_C291_SUFFIX_COUNTEREXAMPLES\n";return 0;}
+-    need(argc==4,"usage: suffix-layer INPUT_DIR OFF|ON NEW_OUTPUT_DIR");
+-    fs::path out(argv[3]);need(fs::create_directory(out),"exclusive output");auto receipt=run(argv[1],argv[2],out);
+-    // In the sealed C291 destructor every one of its four std::threads joins before run returns.
+-    receipt["manager_destructor_returned"]=true;
+-    receipt["joined_workers"]=receipt.at("workers_before_destructor");
+-    receipt["status"]="PASS_C291_CPU0_SUFFIX";std::cout<<receipt.dump()<<'\n';return 0;
+-}catch(const std::exception &e){std::cerr<<"FAIL_C291_CPU0_TILE "<<e.what()<<'\n';return 1;}}
++int main(int argc,char **argv) { try {
++    need(argc==3 && (std::string(argv[1])=="pre" || std::string(argv[1])=="post"),
++         "usage: topology-native pre|post LOADED_SEAM");
++    auto r=topology(std::string(argv[1])=="post",fs::canonical(argv[2]));
++    std::cout<<r.dump()<<'\n';return 0;
++} catch(const std::exception &e) { std::cerr<<e.what()<<'\n'; return 1; } }

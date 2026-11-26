@@ -1,0 +1,205 @@
+{
+  "commit": "db782057b1ed11f772fe914de07e9d193066619f",
+  "decision": "GO",
+  "family_sha256": "07270ab2dc885128493e386a65a689f35f9dc915fa216ace2628c66c45956561",
+  "integrated_energy_J": null,
+  "memory_peak_B": 2315829248,
+  "model_forwards": 0,
+  "orders": {
+    "LAYER_DIRECT_FIRST": {
+      "DIRECT": {
+        "drain_ns": 61216,
+        "fd_advice": 2,
+        "late_reads": {
+          "namespace_B": 1554010112,
+          "pid_B": 1553981440,
+          "scope_B": 1553981440
+        },
+        "late_since_drain_ns": 447954871,
+        "loop_ns": 698495,
+        "pages_after": {
+          "down": 126399,
+          "gate": 126473,
+          "up": 126398
+        },
+        "pages_before": {
+          "down": 0,
+          "gate": 0,
+          "up": 0
+        },
+        "pages_per_tensor": {
+          "down": 137701,
+          "gate": 137701,
+          "up": 137701
+        },
+        "pread_calls": 0,
+        "reads": {
+          "namespace_B": 1547722752,
+          "pid_B": 1553981440,
+          "scope_B": 1553981440
+        },
+        "source_ns": 170007,
+        "source_resident_pages_after": 379270,
+        "source_resident_pages_before": 0,
+        "submit_ns": 616136823,
+        "tensor_pages": 413103,
+        "total_ns": 617066541,
+        "verified_bytes": 647740800,
+        "verify_ns": 312975041
+      },
+      "PREAD_RANDOM": {
+        "drain_ns": 81464,
+        "fd_advice": 1,
+        "late_reads": {
+          "namespace_B": 648155136,
+          "pid_B": 648155136,
+          "scope_B": 648155136
+        },
+        "late_since_drain_ns": 443209379,
+        "loop_ns": 205746,
+        "pages_after": {
+          "down": 52747,
+          "gate": 52747,
+          "up": 52747
+        },
+        "pages_before": {
+          "down": 0,
+          "gate": 0,
+          "up": 0
+        },
+        "pages_per_tensor": {
+          "down": 137701,
+          "gate": 137701,
+          "up": 137701
+        },
+        "pread_calls": 99,
+        "reads": {
+          "namespace_B": 648155136,
+          "pid_B": 648155136,
+          "scope_B": 648155136
+        },
+        "source_ns": 346144606,
+        "source_resident_pages_after": 158241,
+        "source_resident_pages_before": 0,
+        "submit_ns": 45355431,
+        "tensor_pages": 413103,
+        "total_ns": 391787247,
+        "verified_bytes": 647740800,
+        "verify_ns": 313541358
+      }
+    },
+    "LAYER_RANDOM_FIRST": {
+      "DIRECT": {
+        "drain_ns": 46428,
+        "fd_advice": 2,
+        "late_reads": {
+          "namespace_B": 1553981440,
+          "pid_B": 1553981440,
+          "scope_B": 1553981440
+        },
+        "late_since_drain_ns": 453648270,
+        "loop_ns": 532119,
+        "pages_after": {
+          "down": 126399,
+          "gate": 126593,
+          "up": 126398
+        },
+        "pages_before": {
+          "down": 0,
+          "gate": 0,
+          "up": 0
+        },
+        "pages_per_tensor": {
+          "down": 137701,
+          "gate": 137701,
+          "up": 137701
+        },
+        "pread_calls": 0,
+        "reads": {
+          "namespace_B": 1548099584,
+          "pid_B": 1553981440,
+          "scope_B": 1553981440
+        },
+        "source_ns": 137859,
+        "source_resident_pages_after": 379390,
+        "source_resident_pages_before": 0,
+        "submit_ns": 568627214,
+        "tensor_pages": 413103,
+        "total_ns": 569343620,
+        "verified_bytes": 647740800,
+        "verify_ns": 314807323
+      },
+      "PREAD_RANDOM": {
+        "drain_ns": 89749,
+        "fd_advice": 1,
+        "late_reads": {
+          "namespace_B": 648155136,
+          "pid_B": 648155136,
+          "scope_B": 648155136
+        },
+        "late_since_drain_ns": 442360990,
+        "loop_ns": 250193,
+        "pages_after": {
+          "down": 52747,
+          "gate": 52747,
+          "up": 52747
+        },
+        "pages_before": {
+          "down": 0,
+          "gate": 0,
+          "up": 0
+        },
+        "pages_per_tensor": {
+          "down": 137701,
+          "gate": 137701,
+          "up": 137701
+        },
+        "pread_calls": 99,
+        "reads": {
+          "namespace_B": 648155136,
+          "pid_B": 648155136,
+          "scope_B": 648155136
+        },
+        "source_ns": 355052103,
+        "source_resident_pages_after": 158241,
+        "source_resident_pages_before": 0,
+        "submit_ns": 45827136,
+        "tensor_pages": 413103,
+        "total_ns": 401219181,
+        "verified_bytes": 647740800,
+        "verify_ns": 312298747
+      }
+    }
+  },
+  "pairs": [
+    {
+      "order": "LAYER_DIRECT_FIRST",
+      "saved_ns": 225279294,
+      "scope_bytes_saved": 905826304
+    },
+    {
+      "order": "LAYER_RANDOM_FIRST",
+      "saved_ns": 168124439,
+      "scope_bytes_saved": 905826304
+    }
+  ],
+  "payload_B": 647740800,
+  "processes": {
+    "LAYER_DIRECT_FIRST": {
+      "peak_vram_MiB": 720.0,
+      "wall_s": 3.1063662019996627
+    },
+    "LAYER_RANDOM_FIRST": {
+      "peak_vram_MiB": 720.0,
+      "wall_s": 3.4937980509994304
+    }
+  },
+  "product_requests": 0,
+  "reference_sha256": "4a52e83b2bc55a9fd266fb769c44673ea5a60856db4d4b1f898d225be661d143",
+  "scope": "THREE_C110_BANKS",
+  "scratch_B": 648155136,
+  "sets": 99,
+  "status": "MEASURED_COLD_LAYER_READ",
+  "swap_peak_B": 0,
+  "tree": "3ee41c7fd59debb40d50baaa170f1497aa033b56"
+}

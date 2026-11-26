@@ -1,0 +1,247 @@
+diff --git a/src/c291-expert-store.h b/src/c291-expert-store.h
+--- a/src/c291-expert-store.h
++++ b/src/c291-expert-store.h
+@@ -10,6 +10,11 @@
+ struct tesy_expert_store {
+     using json=nlohmann::json;
+     static constexpr size_t slab=4406400, weights=3*slab, staging_bytes=16*1024*1024;
++    static constexpr size_t window = 13221888, record_stride = 13258752;
++    static std::string component_name(size_t layer, size_t k, const char * suffix) {
++        static const std::array<const char *, 3> roles = {"gate", "down", "up"};
++        return "blk." + std::to_string(layer) + ".ffn_" + roles.at(k) + "_exps." + suffix;
++    }
+     struct record {uint64_t offset=0;std::array<size_t,3> relative{};};
+     std::array<std::array<record,128>,36> entries{};
+     tesy_witness::direct_reader data;
+@@ -21,7 +26,8 @@
+     #ifdef TESY_STORE_TESTING
+     tesy_expert_store()=default; // synthetic reader fixture only, absent from production build
+     #endif
+-    tesy_expert_store(const char *manifest,const std::string &original,const std::vector<std::unique_ptr<llama_moe_stream_layer>>& layers):original_path(original){
++    tesy_expert_store(const char *manifest,const std::string &original,const std::vector<std::unique_ptr<llama_moe_stream_layer>>& layers,
++                      bool packed_cpu = false):original_path(original){
+         const auto m=metadata(manifest);require(m.at("schema")=="tesy-integral-expert-store-runtime-v1" && m.at("canonical_model_sha256")=="582bd40f6886200101f4c4ed9f25f3fe80cc14c86e9e2b37746cd8904a0c622d","store model/manifest identity");
+         const std::string index_path=m.at("index_path");require(identity(index_path.c_str())==m.at("index_stat"),"store index stat changed");const auto index=metadata(index_path);require(identity(index_path.c_str())==m.at("index_stat"),"store index changed during parse");
+         require(index.at("store_scope")=="INTEGRAL_GPT_OSS120B_36x128" && index.at("experts").size()==4608 && layers.size()==36,"integral store layer/expert scope");
+@@ -30,19 +36,48 @@
+         struct stat st{};require(stat(path.c_str(),&st)==0 && !(st.st_mode&0222),"store payload must be readonly");data.open_file(path.c_str());
+         require(data.memory_alignment()<=4096 && data.offset_alignment()<=4096 && 4096%data.memory_alignment()==0 && 4096%data.offset_alignment()==0,"store DIO requirement exceeds qualified worker alignment");
+         const uint64_t stride=index.at("stride");require(stride>=weights && stride%data.offset_alignment()==0 && stride*4608==data.file_size() && data.file_size()<=80ull*1024*1024*1024,"integral store size/alignment");
++        if (packed_cpu) {
++            const int flags = fcntl(data.descriptor(), F_GETFL);
++            require(flags >= 0 && (flags & O_DIRECT) && stride == record_stride &&
++                    index.at("weight_window") == window && index.at("alignment") == 4096,
++                    "packed CPU store requires the qualified direct window and record stride");
++        }
+         for(size_t l=0;l<36;l++){
+             require(layers[l] && layers[l]->n_expert==128 && layers[l]->n_slots==40 && layers[l]->weights.size()==3,"unsupported store primary pools");
+             const auto &sl=*layers[l];
++            if (packed_cpu) require((sl.packed_owner != nullptr) == (l < 25), "packed CPU layer placement");
++            const size_t slot_stride = sl.packed_owner ? window : slab;
+             for(size_t e=0;e<128;e++){
+                 const auto &row=index.at("experts").at(l*128+e);require(row.at("layer")==l && row.at("expert")==e && row.at("components").size()==6 && row.at("pack_offset")==stride*(l*128+e),"store expert mapping changed");
+                 auto &entry=entries[l][e];entry.offset=row.at("pack_offset");data.validate_range(entry.offset,weights);
+                 for(size_t k=0;k<3;k++){
+                     const auto &wt=sl.weights[k];const auto &c=row.at("components").at(k);std::string name=ggml_get_name(wt.cache);const std::string suffix=".stream_cache";
+                     require(name.size()>suffix.size() && name.substr(name.size()-suffix.size())==suffix,"store cache tensor name");name.resize(name.size()-suffix.size());
+-                    require(wt.file_idx==0 && wt.nb_expert==slab && wt.cache->type==GGML_TYPE_MXFP4 && wt.cache->ne[0]==2880 && wt.cache->ne[1]==2880 && wt.cache->nb[2]==slab && c.at("name")==name && c.at("type")=="mxfp4" && c.at("size_bytes")==slab && c.at("source_offset")==wt.offs+e*slab && c.at("packed_relative_offset")==k*slab,"store component/native tensor mapping changed");entry.relative[k]=c.at("packed_relative_offset");
++                    require(wt.file_idx==0 && wt.nb_expert==slab && wt.cache->type==GGML_TYPE_MXFP4 && wt.cache->ne[0]==2880 && wt.cache->ne[1]==2880 && wt.cache->nb[2]==slot_stride && c.at("name")==name && c.at("type")=="mxfp4" && c.at("size_bytes")==slab && c.at("source_offset")==wt.offs+e*slab && c.at("packed_relative_offset")==k*slab,"store component/native tensor mapping changed");entry.relative[k]=c.at("packed_relative_offset");
++                    if (packed_cpu) {
++                        const auto & bias = row.at("components").at(k + 3);
++                        require(name == component_name(l, k, "weight") && row.at("tier") == (l < 25 ? "CPU" : "GPU") &&
++                                bias.at("name") == component_name(l, k, "bias") && bias.at("type") == "f32" &&
++                                bias.at("size_bytes") == 11520 && bias.at("packed_relative_offset") == window + k*11520,
++                                "packed CPU component order or store window changed");
++                    }
+                 }
+             }
+         }
++    }
++    void read_window(size_t layer, size_t expert, uint8_t * destination) const {
++        require(layer < 25 && expert < 128 && destination, "packed CPU request identity");
++        const auto offset = entries[layer][expert].offset;
++        const auto memory_align = data.memory_alignment(), offset_align = data.offset_alignment();
++        require(data.descriptor() >= 0 && memory_align && offset_align &&
++                uintptr_t(destination) % memory_align == 0 && offset % offset_align == 0 &&
++                window % offset_align == 0, "packed CPU direct read alignment");
++        data.validate_range(offset, window);
++        ssize_t count;
++        do {
++            count = ::pread(data.descriptor(), destination, window, static_cast<off_t>(offset));
++        } while (count < 0 && errno == EINTR);
++        require(count == ssize_t(window), "packed CPU direct window incomplete");
+     }
+     const uint8_t *read(size_t layer,size_t expert,uint8_t *staging,tesy_witness::direct_reader::read_fn fn=::pread)const{
+         require(layer<36 && expert<128 && staging,"store request identity");const auto &r=entries[layer][expert];data.validate_range(r.offset,weights);const uint64_t a=data.offset_alignment();require(r.offset%a==0,"store expert alignment");const size_t amount=(weights+a-1)/a*a;require(amount<=staging_bytes,"store staging bound");ssize_t n;do{n=fn(data.descriptor(),staging,amount,off_t(r.offset));}while(n<0&&errno==EINTR);require(n>=0 && size_t(n)>=weights,"store read failed/short; no buffered fallback");return staging;
+diff --git a/src/llama-moe-stream.cpp b/src/llama-moe-stream.cpp
+--- a/src/llama-moe-stream.cpp
++++ b/src/llama-moe-stream.cpp
+@@ -148,6 +148,14 @@
+
+     debug         = std::getenv("LLAMA_MOE_STREAM_DEBUG") != nullptr;
+     use_direct_io = direct;
++    if (const char * mode = std::getenv("TESY_PACKED_CPU_SLOTS")) {
++        if (std::strcmp(mode, "staged") == 0) cpu_slots = packed_mode::staged;
++        else if (std::strcmp(mode, "direct") == 0) cpu_slots = packed_mode::direct;
++        else throw std::runtime_error("TESY_PACKED_CPU_SLOTS requires staged or direct");
++        if (!direct || n_slots != 40 || this->n_io_threads != 4) {
++            throw std::runtime_error("packed CPU slots require direct I/O, 40 slots and four workers");
++        }
++    }
+ }
+
+ // stop and join the I/O workers before the cache buffers and files they use are destroyed
+@@ -194,10 +202,6 @@
+         }
+         ctxs.emplace_back(buft, ctx);
+     }
+-
+-    ggml_tensor * cache = ggml_new_tensor_3d(ctx, meta->type, meta->ne[0], meta->ne[1], n_slots);
+-    ggml_format_name(cache, "%s.stream_cache", meta->name);
+-    GGML_ASSERT(ggml_nbytes(cache) == nb_expert * n_slots);
+
+     auto & sl = layers[il];
+     if (!sl) {
+@@ -217,6 +221,35 @@
+     }
+     GGML_ASSERT(sl->n_expert == n_expert);
+
++    ggml_tensor * cache;
++    if (cpu_slots != packed_mode::disabled && il < 25) {
++        using store = tesy_expert_store;
++        const size_t role = sl->weights.size();
++        store::require(buft == ggml_backend_cpu_buffer_type() && role < 3 &&
++                       meta->type == GGML_TYPE_MXFP4 && meta->ne[0] == 2880 && meta->ne[1] == 2880 &&
++                       n_expert == 128 && file_idx == 0 && nb_expert == store::slab &&
++                       store::component_name(il, role, "weight") == meta->name, "packed CPU tensor geometry or order");
++        if (!sl->packed_owner) {
++            const size_t bytes = n_slots * store::window;
++            const size_t block_bytes = ggml_type_size(meta->type);
++            const size_t blocks = (bytes + block_bytes - 1) / block_bytes;
++            sl->packed_owner = ggml_new_tensor_1d(ctx, meta->type, blocks * ggml_blck_size(meta->type));
++            ggml_format_name(sl->packed_owner, "blk.%d.packed_cpu_slots", il);
++        }
++        cache = ggml_view_3d(ctx, sl->packed_owner, 2880, 2880, n_slots,
++                             meta->nb[1], store::window, role * store::slab);
++        store::require(cache->view_offs + ggml_nbytes(cache) <= ggml_nbytes(sl->packed_owner),
++                       "packed CPU view exceeds its owner");
++    } else {
++        if (cpu_slots != packed_mode::disabled) {
++            const auto dev = ggml_backend_buft_get_device(buft);
++            tesy_expert_store::require(dev && ggml_backend_dev_type(dev) == GGML_BACKEND_DEVICE_TYPE_GPU,
++                                       "expected GPU experts above layer 24");
++        }
++        cache = ggml_new_tensor_3d(ctx, meta->type, meta->ne[0], meta->ne[1], n_slots);
++        GGML_ASSERT(ggml_nbytes(cache) == nb_expert * n_slots);
++    }
++    ggml_format_name(cache, "%s.stream_cache", meta->name);
+     sl->weights.push_back({ cache, file_idx, offs, nb_expert });
+
+     max_nb_expert = std::max(max_nb_expert, nb_expert);
+@@ -225,6 +258,30 @@
+ }
+
+ void llama_moe_stream::alloc_bufs(bool no_alloc) {
++    if (!no_alloc && cpu_slots != packed_mode::disabled) {
++        for (const auto & sl : layers) {
++            if (!sl || !sl->packed_owner) continue;
++            tesy_expert_store::require(sl->weights.size() == 3, "packed CPU layer missing a view");
++            auto * owner = sl->packed_owner;
++            const auto bytes = ggml_nbytes(owner);
++            ggml_backend_buffer_ptr arena(ggml_backend_buft_alloc_buffer(ggml_backend_cpu_buffer_type(),
++                                                                         bytes + MOE_STREAM_DIRECT_ALIGN - 1));
++            if (!arena) throw std::runtime_error("unable to allocate packed CPU arena");
++            void * base = ggml_backend_buffer_get_base(arena.get());
++            size_t capacity = ggml_backend_buffer_get_size(arena.get());
++            void * aligned = std::align(MOE_STREAM_DIRECT_ALIGN, bytes, base, capacity);
++            if (!aligned || ggml_backend_tensor_alloc(arena.get(), owner, aligned) != GGML_STATUS_SUCCESS) {
++                throw std::runtime_error("unable to bind aligned packed CPU owner");
++            }
++            ggml_backend_buffer_set_usage(arena.get(), GGML_BACKEND_BUFFER_USAGE_WEIGHTS);
++            for (const auto & weight : sl->weights) {
++                if (ggml_backend_view_init(weight.cache) != GGML_STATUS_SUCCESS) {
++                    throw std::runtime_error("unable to bind packed CPU view");
++                }
++            }
++            bufs.emplace_back(std::move(arena));
++        }
++    }
+     for (auto & [buft, ctx_ptr] : ctxs) {
+         ggml_context * ctx = ctx_ptr.get();
+         if (ggml_get_first_tensor(ctx) == nullptr) {
+@@ -238,6 +295,11 @@
+                 t->buffer = buf;
+             }
+         } else {
++            if (cpu_slots != packed_mode::disabled) {
++                auto * t = ggml_get_first_tensor(ctx);
++                while (t && t->buffer) t = ggml_get_next_tensor(ctx, t);
++                if (!t) continue; // the generic allocator returns null for an entirely prebound context
++            }
+             buf = ggml_backend_alloc_ctx_tensors_from_buft(ctx, buft);
+         }
+         if (buf == nullptr) {
+@@ -299,7 +361,9 @@
+     hot_decay_interval = MOE_STREAM_HOT_DECAY_TOKENS * n_streamed;
+     if (const char *manifest=std::getenv("TESY_EXPERT_STORE_MANIFEST")) {
+         if (!use_direct_io || paths.size()!=1) throw std::runtime_error("expert store requires original single-file direct streaming");
+-        expert_store=std::make_unique<tesy_expert_store>(manifest,paths[0],layers);
++        expert_store=std::make_unique<tesy_expert_store>(manifest,paths[0],layers,cpu_slots != packed_mode::disabled);
++    } else if (cpu_slots != packed_mode::disabled) {
++        throw std::runtime_error("packed CPU slots require the integral expert store");
+     }
+ }
+
+@@ -307,6 +371,9 @@
+ void llama_moe_stream::start_workers_locked() {
+     if (workers_started) {
+         return;
++    }
++    if (cpu_slots != packed_mode::disabled && !expert_store) {
++        throw std::runtime_error("packed CPU slots require the integral expert store before starting workers");
+     }
+     workers_started = true;
+     workers.reserve(n_io_threads);
+@@ -347,7 +414,21 @@
+
+         bool ok = true;
+         try {
+-            if (expert_store) {
++            if (sl.packed_owner) {
++                auto * first = sl.weights.front().cache;
++                const size_t slot_offset = size_t(w.slot) * first->nb[2];
++                auto * address = static_cast<uint8_t *>(first->data) + slot_offset;
++                const bool direct = cpu_slots == packed_mode::direct;
++                expert_store->read_window(sl.il, w.expert, direct ? address : staging);
++                if (!direct) {
++                    const auto & record = expert_store->entries[sl.il][w.expert];
++                    for (size_t k = 0; k < sl.weights.size(); ++k) {
++                        const auto & wt = sl.weights[k];
++                        ggml_backend_tensor_set(wt.cache, staging + record.relative[k],
++                                                size_t(w.slot) * wt.cache->nb[2], wt.nb_expert);
++                    }
++                }
++            } else if (expert_store) {
+                 const uint8_t *data=expert_store->read(sl.il,w.expert,staging);
+                 const auto &entry=expert_store->entries[sl.il][w.expert];
+                 for (size_t k=0;k<sl.weights.size();k++) {
+diff --git a/src/llama-moe-stream.h b/src/llama-moe-stream.h
+--- a/src/llama-moe-stream.h
++++ b/src/llama-moe-stream.h
+@@ -65,6 +65,7 @@
+     uint32_t n_slots  = 0;
+
+     std::vector<llama_moe_stream_weight> weights; // 2 (fused gate_up + down) or 3 entries
++    ggml_tensor * packed_owner = nullptr; // non-owning descriptor, storage belongs to mgr->bufs
+
+     // residency state, guarded by mgr->mtx
+     std::vector<int32_t>                 slot_expert;   // [n_slots] expert id or -1
+@@ -142,6 +143,8 @@
+     void print_stats() const;
+
+     bool use_direct_io = false; // O_DIRECT streaming reads (LLAMA_MOE_STREAM_DIRECT), no page cache
++    enum class packed_mode { disabled, staged, direct };
++    packed_mode cpu_slots = packed_mode::disabled;
+
+     std::unique_ptr<tesy_expert_store> expert_store; // opt-in immutable byte source, no additional primary experts
+     llama_files files; // privately reopened GGUF files, same indices as the loader's

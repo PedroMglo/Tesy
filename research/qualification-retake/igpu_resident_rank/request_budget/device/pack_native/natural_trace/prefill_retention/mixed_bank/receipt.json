@@ -1,0 +1,679 @@
+{
+  "T1": {
+    "lru": {
+      "acquisition_B": {
+        "CPU": 42803769600,
+        "CUDA0": 16761945600
+      },
+      "copies": {
+        "CPU": 3238,
+        "CUDA0": 1268
+      },
+      "evictions": 4153,
+      "first_use_hits": {
+        "CPU": 65,
+        "CUDA0": 21
+      },
+      "held": 353,
+      "offers": 4548,
+      "rejected": 0,
+      "repeated": 42,
+      "selected_sha256": "ce1114203187fcee91c3884441ef73eb460445d7c278e69a95946a7dfb135cc7"
+    },
+    "mixed": {
+      "acquisition_B": {
+        "CPU": 41931302400,
+        "CUDA0": 16206739200
+      },
+      "copies": {
+        "CPU": 3172,
+        "CUDA0": 1226
+      },
+      "evictions": 4045,
+      "first_use_hits": {
+        "CPU": 94,
+        "CUDA0": 31
+      },
+      "held": 353,
+      "offers": 4548,
+      "rejected": 0,
+      "repeated": 150,
+      "selected_sha256": "0cda6228b5d82166f0a9b82307c3d8eaafe53fc8c3b8b99207968cf608362fe9"
+    },
+    "prefill": {
+      "acquisition_B": {
+        "CPU": 14884819200,
+        "CUDA0": 5591721600
+      },
+      "copies": {
+        "CPU": 1126,
+        "CUDA0": 423
+      },
+      "evictions": 1196,
+      "first_use_hits": {
+        "CPU": 101,
+        "CUDA0": 49
+      },
+      "held": 353,
+      "offers": 4548,
+      "rejected": 2724,
+      "repeated": 275,
+      "selected_sha256": "99b3d8e32f594c053447c28845e31247df325b65d2c1296972c3a29709974e63"
+    }
+  },
+  "T2": {
+    "P106": {
+      "lru": {
+        "costs": {
+          "drained": {
+            "1x": {
+              "joint": "NO_GO_FIXED_SCENARIO",
+              "margin_decode_ns": -807307132,
+              "margin_first_ns": -7275435126,
+              "remaining_decode_ns": 8640640466,
+              "remaining_first_ns": 17275435126
+            },
+            "free": {
+              "joint": "NO_GO_FIXED_SCENARIO",
+              "margin_decode_ns": 268692305,
+              "margin_first_ns": -4167822302,
+              "remaining_decode_ns": 7564641029,
+              "remaining_first_ns": 14167822302
+            },
+            "half": {
+              "joint": "NO_GO_FIXED_SCENARIO",
+              "margin_decode_ns": -269307394,
+              "margin_first_ns": -5721628676,
+              "remaining_decode_ns": 8102640728,
+              "remaining_first_ns": 15721628676
+            }
+          },
+          "persistent": {
+            "1x": {
+              "joint": "NO_GO_FIXED_SCENARIO",
+              "margin_decode_ns": -767376197,
+              "margin_first_ns": -6757977195,
+              "remaining_decode_ns": 8600709531,
+              "remaining_first_ns": 16757977195
+            },
+            "free": {
+              "joint": "HEADROOM_ONLY",
+              "margin_decode_ns": 5257465117,
+              "margin_first_ns": 2828897967,
+              "remaining_decode_ns": 2575868217,
+              "remaining_first_ns": 7171102033
+            },
+            "half": {
+              "joint": "NO_GO_FIXED_SCENARIO",
+              "margin_decode_ns": 2245044640,
+              "margin_first_ns": -1964539397,
+              "remaining_decode_ns": 5588288694,
+              "remaining_first_ns": 11964539397
+            }
+          }
+        },
+        "volumes": {
+          "decode_first": {
+            "CPU": {
+              "bank_payload_B": 1890345600,
+              "hits": 143,
+              "reservations": 773,
+              "source_payload_B": 8328096000
+            },
+            "CUDA0": {
+              "bank_payload_B": 370137600,
+              "hits": 28,
+              "reservations": 294,
+              "source_payload_B": 3516307200
+            }
+          },
+          "decode_tail": {
+            "CPU": {
+              "bank_payload_B": 0,
+              "hits": 0,
+              "reservations": 13,
+              "source_payload_B": 171849600
+            },
+            "CUDA0": {
+              "bank_payload_B": 13219200,
+              "hits": 1,
+              "reservations": 11,
+              "source_payload_B": 132192000
+            }
+          },
+          "prefill": {
+            "CPU": {
+              "bank_payload_B": 1454112000,
+              "hits": 110,
+              "reservations": 808,
+              "source_payload_B": 9227001600
+            },
+            "CUDA0": {
+              "bank_payload_B": 594864000,
+              "hits": 45,
+              "reservations": 455,
+              "source_payload_B": 5419872000
+            }
+          }
+        }
+      },
+      "mixed": {
+        "costs": {
+          "drained": {
+            "1x": {
+              "joint": "NO_GO_FIXED_SCENARIO",
+              "margin_decode_ns": -981745892,
+              "margin_first_ns": -7085066495,
+              "remaining_decode_ns": 8815079226,
+              "remaining_first_ns": 17085066495
+            },
+            "free": {
+              "joint": "NO_GO_FIXED_SCENARIO",
+              "margin_decode_ns": -179438534,
+              "margin_first_ns": -3779723381,
+              "remaining_decode_ns": 8012771868,
+              "remaining_first_ns": 13779723381
+            },
+            "half": {
+              "joint": "NO_GO_FIXED_SCENARIO",
+              "margin_decode_ns": -580592199,
+              "margin_first_ns": -5432394900,
+              "remaining_decode_ns": 8413925533,
+              "remaining_first_ns": 15432394900
+            }
+          },
+          "persistent": {
+            "1x": {
+              "joint": "NO_GO_FIXED_SCENARIO",
+              "margin_decode_ns": -938961473,
+              "margin_first_ns": -6718135270,
+              "remaining_decode_ns": 8772294807,
+              "remaining_first_ns": 16718135270
+            },
+            "free": {
+              "joint": "HEADROOM_ONLY",
+              "margin_decode_ns": 5257465117,
+              "margin_first_ns": 2828897967,
+              "remaining_decode_ns": 2575868217,
+              "remaining_first_ns": 7171102033
+            },
+            "half": {
+              "joint": "NO_GO_FIXED_SCENARIO",
+              "margin_decode_ns": 2159252005,
+              "margin_first_ns": -1944618435,
+              "remaining_decode_ns": 5674081329,
+              "remaining_first_ns": 11944618435
+            }
+          }
+        },
+        "volumes": {
+          "decode_first": {
+            "CPU": {
+              "bank_payload_B": 1255824000,
+              "hits": 95,
+              "reservations": 773,
+              "source_payload_B": 8962617600
+            },
+            "CUDA0": {
+              "bank_payload_B": 343699200,
+              "hits": 26,
+              "reservations": 294,
+              "source_payload_B": 3542745600
+            }
+          },
+          "decode_tail": {
+            "CPU": {
+              "bank_payload_B": 0,
+              "hits": 0,
+              "reservations": 13,
+              "source_payload_B": 171849600
+            },
+            "CUDA0": {
+              "bank_payload_B": 13219200,
+              "hits": 1,
+              "reservations": 11,
+              "source_payload_B": 132192000
+            }
+          },
+          "prefill": {
+            "CPU": {
+              "bank_payload_B": 2088633600,
+              "hits": 158,
+              "reservations": 808,
+              "source_payload_B": 8592480000
+            },
+            "CUDA0": {
+              "bank_payload_B": 859248000,
+              "hits": 65,
+              "reservations": 455,
+              "source_payload_B": 5155488000
+            }
+          }
+        }
+      },
+      "prefill": {
+        "costs": {
+          "drained": {
+            "1x": {
+              "joint": "NO_GO_FIXED_SCENARIO",
+              "margin_decode_ns": -1121976226,
+              "margin_first_ns": -7478616054,
+              "remaining_decode_ns": 8955309560,
+              "remaining_first_ns": 17478616054
+            },
+            "free": {
+              "joint": "NO_GO_FIXED_SCENARIO",
+              "margin_decode_ns": -618327327,
+              "margin_first_ns": -4667772403,
+              "remaining_decode_ns": 8451660661,
+              "remaining_first_ns": 14667772403
+            },
+            "half": {
+              "joint": "NO_GO_FIXED_SCENARIO",
+              "margin_decode_ns": -870151765,
+              "margin_first_ns": -6073194190,
+              "remaining_decode_ns": 8703485099,
+              "remaining_first_ns": 16073194190
+            }
+          },
+          "persistent": {
+            "1x": {
+              "joint": "NO_GO_FIXED_SCENARIO",
+              "margin_decode_ns": -1076410079,
+              "margin_first_ns": -6790447884,
+              "remaining_decode_ns": 8909743413,
+              "remaining_first_ns": 16790447884
+            },
+            "free": {
+              "joint": "HEADROOM_ONLY",
+              "margin_decode_ns": 5257465117,
+              "margin_first_ns": 2776759767,
+              "remaining_decode_ns": 2575868217,
+              "remaining_first_ns": 7223240233
+            },
+            "half": {
+              "joint": "NO_GO_FIXED_SCENARIO",
+              "margin_decode_ns": 2090527709,
+              "margin_first_ns": -2006843833,
+              "remaining_decode_ns": 5742805625,
+              "remaining_first_ns": 12006843833
+            }
+          }
+        },
+        "volumes": {
+          "decode_first": {
+            "CPU": {
+              "bank_payload_B": 528768000,
+              "hits": 40,
+              "reservations": 773,
+              "source_payload_B": 9689673600
+            },
+            "CUDA0": {
+              "bank_payload_B": 396576000,
+              "hits": 30,
+              "reservations": 294,
+              "source_payload_B": 3489868800
+            }
+          },
+          "decode_tail": {
+            "CPU": {
+              "bank_payload_B": 13219200,
+              "hits": 1,
+              "reservations": 13,
+              "source_payload_B": 158630400
+            },
+            "CUDA0": {
+              "bank_payload_B": 66096000,
+              "hits": 5,
+              "reservations": 11,
+              "source_payload_B": 79315200
+            }
+          },
+          "prefill": {
+            "CPU": {
+              "bank_payload_B": 2260483200,
+              "hits": 171,
+              "reservations": 808,
+              "source_payload_B": 8420630400
+            },
+            "CUDA0": {
+              "bank_payload_B": 1665619200,
+              "hits": 126,
+              "reservations": 455,
+              "source_payload_B": 4349116800
+            }
+          }
+        }
+      }
+    },
+    "P97": {
+      "lru": {
+        "costs": {
+          "drained": {
+            "1x": {
+              "joint": "NO_GO_FIXED_SCENARIO",
+              "margin_decode_ns": -533536770,
+              "margin_first_ns": -5994348474,
+              "remaining_decode_ns": 8366870104,
+              "remaining_first_ns": 15994348474
+            },
+            "free": {
+              "joint": "NO_GO_FIXED_SCENARIO",
+              "margin_decode_ns": 529262319,
+              "margin_first_ns": -2904556058,
+              "remaining_decode_ns": 7304071015,
+              "remaining_first_ns": 12904556058
+            },
+            "half": {
+              "joint": "NO_GO_FIXED_SCENARIO",
+              "margin_decode_ns": -2137207,
+              "margin_first_ns": -4449452230,
+              "remaining_decode_ns": 7835470541,
+              "remaining_first_ns": 14449452230
+            }
+          },
+          "persistent": {
+            "1x": {
+              "joint": "NO_GO_FIXED_SCENARIO",
+              "margin_decode_ns": -475679363,
+              "margin_first_ns": -5482125121,
+              "remaining_decode_ns": 8309012697,
+              "remaining_first_ns": 15482125121
+            },
+            "free": {
+              "joint": "HEADROOM_ONLY",
+              "margin_decode_ns": 5555160977,
+              "margin_first_ns": 4089272050,
+              "remaining_decode_ns": 2278172357,
+              "remaining_first_ns": 5910727950
+            },
+            "half": {
+              "joint": "NO_GO_FIXED_SCENARIO",
+              "margin_decode_ns": 2539740978,
+              "margin_first_ns": -696426333,
+              "remaining_decode_ns": 5293592356,
+              "remaining_first_ns": 10696426333
+            }
+          }
+        },
+        "volumes": {
+          "decode_first": {
+            "CPU": {
+              "bank_payload_B": 1890345600,
+              "hits": 143,
+              "reservations": 773,
+              "source_payload_B": 8328096000
+            },
+            "CUDA0": {
+              "bank_payload_B": 370137600,
+              "hits": 28,
+              "reservations": 294,
+              "source_payload_B": 3516307200
+            }
+          },
+          "decode_tail": {
+            "CPU": {
+              "bank_payload_B": 0,
+              "hits": 0,
+              "reservations": 13,
+              "source_payload_B": 171849600
+            },
+            "CUDA0": {
+              "bank_payload_B": 13219200,
+              "hits": 1,
+              "reservations": 11,
+              "source_payload_B": 132192000
+            }
+          },
+          "prefill": {
+            "CPU": {
+              "bank_payload_B": 1454112000,
+              "hits": 110,
+              "reservations": 808,
+              "source_payload_B": 9227001600
+            },
+            "CUDA0": {
+              "bank_payload_B": 594864000,
+              "hits": 45,
+              "reservations": 455,
+              "source_payload_B": 5419872000
+            }
+          }
+        }
+      },
+      "mixed": {
+        "costs": {
+          "drained": {
+            "1x": {
+              "joint": "NO_GO_FIXED_SCENARIO",
+              "margin_decode_ns": -703835059,
+              "margin_first_ns": -5826689556,
+              "remaining_decode_ns": 8537168393,
+              "remaining_first_ns": 15826689556
+            },
+            "free": {
+              "joint": "NO_GO_FIXED_SCENARIO",
+              "margin_decode_ns": 93087415,
+              "margin_first_ns": -2518772301,
+              "remaining_decode_ns": 7740245919,
+              "remaining_first_ns": 12518772301
+            },
+            "half": {
+              "joint": "NO_GO_FIXED_SCENARIO",
+              "margin_decode_ns": -305373809,
+              "margin_first_ns": -4172730892,
+              "remaining_decode_ns": 8138707143,
+              "remaining_first_ns": 14172730892
+            }
+          },
+          "persistent": {
+            "1x": {
+              "joint": "NO_GO_FIXED_SCENARIO",
+              "margin_decode_ns": -643438346,
+              "margin_first_ns": -5469681453,
+              "remaining_decode_ns": 8476771680,
+              "remaining_first_ns": 15469681453
+            },
+            "free": {
+              "joint": "HEADROOM_ONLY",
+              "margin_decode_ns": 5555160977,
+              "margin_first_ns": 4089272050,
+              "remaining_decode_ns": 2278172357,
+              "remaining_first_ns": 5910727950
+            },
+            "half": {
+              "joint": "NO_GO_FIXED_SCENARIO",
+              "margin_decode_ns": 2455861489,
+              "margin_first_ns": -690204496,
+              "remaining_decode_ns": 5377471845,
+              "remaining_first_ns": 10690204496
+            }
+          }
+        },
+        "volumes": {
+          "decode_first": {
+            "CPU": {
+              "bank_payload_B": 1255824000,
+              "hits": 95,
+              "reservations": 773,
+              "source_payload_B": 8962617600
+            },
+            "CUDA0": {
+              "bank_payload_B": 343699200,
+              "hits": 26,
+              "reservations": 294,
+              "source_payload_B": 3542745600
+            }
+          },
+          "decode_tail": {
+            "CPU": {
+              "bank_payload_B": 0,
+              "hits": 0,
+              "reservations": 13,
+              "source_payload_B": 171849600
+            },
+            "CUDA0": {
+              "bank_payload_B": 13219200,
+              "hits": 1,
+              "reservations": 11,
+              "source_payload_B": 132192000
+            }
+          },
+          "prefill": {
+            "CPU": {
+              "bank_payload_B": 2088633600,
+              "hits": 158,
+              "reservations": 808,
+              "source_payload_B": 8592480000
+            },
+            "CUDA0": {
+              "bank_payload_B": 859248000,
+              "hits": 65,
+              "reservations": 455,
+              "source_payload_B": 5155488000
+            }
+          }
+        }
+      },
+      "prefill": {
+        "costs": {
+          "drained": {
+            "1x": {
+              "joint": "NO_GO_FIXED_SCENARIO",
+              "margin_decode_ns": -850917931,
+              "margin_first_ns": -6262159465,
+              "remaining_decode_ns": 8684251265,
+              "remaining_first_ns": 16262159465
+            },
+            "free": {
+              "joint": "NO_GO_FIXED_SCENARIO",
+              "margin_decode_ns": -345247058,
+              "margin_first_ns": -3423271702,
+              "remaining_decode_ns": 8178580392,
+              "remaining_first_ns": 13423271702
+            },
+            "half": {
+              "joint": "NO_GO_FIXED_SCENARIO",
+              "margin_decode_ns": -598082484,
+              "margin_first_ns": -4842715551,
+              "remaining_decode_ns": 8431415818,
+              "remaining_first_ns": 14842715551
+            }
+          },
+          "persistent": {
+            "1x": {
+              "joint": "NO_GO_FIXED_SCENARIO",
+              "margin_decode_ns": -787654348,
+              "margin_first_ns": -5538850103,
+              "remaining_decode_ns": 8620987682,
+              "remaining_first_ns": 15538850103
+            },
+            "free": {
+              "joint": "HEADROOM_ONLY",
+              "margin_decode_ns": 5555160977,
+              "margin_first_ns": 4040040851,
+              "remaining_decode_ns": 2278172357,
+              "remaining_first_ns": 5959959149
+            },
+            "half": {
+              "joint": "NO_GO_FIXED_SCENARIO",
+              "margin_decode_ns": 2383753493,
+              "margin_first_ns": -749404415,
+              "remaining_decode_ns": 5449579841,
+              "remaining_first_ns": 10749404415
+            }
+          }
+        },
+        "volumes": {
+          "decode_first": {
+            "CPU": {
+              "bank_payload_B": 528768000,
+              "hits": 40,
+              "reservations": 773,
+              "source_payload_B": 9689673600
+            },
+            "CUDA0": {
+              "bank_payload_B": 396576000,
+              "hits": 30,
+              "reservations": 294,
+              "source_payload_B": 3489868800
+            }
+          },
+          "decode_tail": {
+            "CPU": {
+              "bank_payload_B": 13219200,
+              "hits": 1,
+              "reservations": 13,
+              "source_payload_B": 158630400
+            },
+            "CUDA0": {
+              "bank_payload_B": 66096000,
+              "hits": 5,
+              "reservations": 11,
+              "source_payload_B": 79315200
+            }
+          },
+          "prefill": {
+            "CPU": {
+              "bank_payload_B": 2260483200,
+              "hits": 171,
+              "reservations": 808,
+              "source_payload_B": 8420630400
+            },
+            "CUDA0": {
+              "bank_payload_B": 1665619200,
+              "hits": 126,
+              "reservations": 455,
+              "source_payload_B": 4349116800
+            }
+          }
+        }
+      }
+    }
+  },
+  "code_sha256": "f704f3ef9c54c909ff13ab6966dde00d52cf8c77e61acfdc82c9e6e2a9e73bb3",
+  "control_sha256": "340b3dfa3d0e3979c83875f309873c8f42b554fb6c7b11f27a6de275a978ef19",
+  "decision": "NO_GO_FIXED_QUOTA",
+  "evidence": "TRACE_DERIVED",
+  "gates": {
+    "at_least_83_prefill_cpu_first_uses": true,
+    "at_least_92_decode_cpu_hits": true,
+    "less_T1_acquisition_than_recency": true,
+    "positive_decode_margin_both_drained_free": false
+  },
+  "generation_requests": 0,
+  "jobs": 2354,
+  "model_starts": 0,
+  "payload_B": 13219200,
+  "protocol_sha256": "101f9a0abb2bcf2cd124529759f8778442bbd1d379f7d299109761ec07731045",
+  "route": {
+    "rows": 7012,
+    "sha256": "f7790121a33d6785d2347eb47091d30385a792c308403cdd3ed9f32813e5ca5f"
+  },
+  "source": {
+    "audit_sha256": "a981be3450c0260cf44789c918bd2bb704ffd129ce01ab05a48e33cbac8e23f6",
+    "before_t2_sha256": "c25153fdb39d7776088645f0f9c10ca848fe99d45f1ed2092a17663c79615845",
+    "family_sha256": "90750b0ccf87d7f5ceb6d89b6b320e1bf9cf07c0082c1961a31f14b67326aee9",
+    "journal_sha256": "cb13ff990afb3164bb61086e57a6caeff14187b66a1784c88e79cd3d521121bd",
+    "prefix_sha256": "16574f71e2a697479d1be118ddd5d5a103b3218c1f48b428ee32ebbb355fe259",
+    "selection_sha256": "19d4a2502b41eb96d84017677c2dbdf876b479c247f49134cec0af82ae48eeb8",
+    "t1_positions": [
+      0,
+      2119
+    ],
+    "t1_prefill_calls": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9
+    ],
+    "t1_records": 87736,
+    "t1_routed_rows": 74278,
+    "t2_records": 50647
+  }
+}

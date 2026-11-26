@@ -1,0 +1,327 @@
+{
+  "arms": {
+    "PR": {
+      "P": {
+        "calls": [
+          {
+            "elapsed_ns_at_n_inflight_preads": [
+              112132,
+              3839312,
+              199707,
+              6868075,
+              163136905
+            ],
+            "jobs": 34,
+            "payload_bytes": 449452800,
+            "requested_bytes": 449544192,
+            "service_ns": 174156131,
+            "tokens": 5,
+            "useful_bytes_per_s": 2580746353.3971133
+          },
+          {
+            "elapsed_ns_at_n_inflight_preads": [
+              73658,
+              2155607,
+              1809423,
+              23976826,
+              5118873512
+            ],
+            "jobs": 1024,
+            "payload_bytes": 13536460800,
+            "requested_bytes": 13539213312,
+            "service_ns": 5146889026,
+            "tokens": 148,
+            "useful_bytes_per_s": 2630027718.0291395
+          }
+        ],
+        "service_ns": 5321045157,
+        "useful_bytes_per_s": 2628414754.496322
+      },
+      "R": {
+        "calls": [
+          {
+            "elapsed_ns_at_n_inflight_preads": [
+              56687,
+              2368177,
+              8502930,
+              2860583,
+              220186383
+            ],
+            "jobs": 34,
+            "payload_bytes": 449452800,
+            "requested_bytes": 449880064,
+            "service_ns": 233974760,
+            "tokens": 5,
+            "useful_bytes_per_s": 1920945660.9764233
+          },
+          {
+            "elapsed_ns_at_n_inflight_preads": [
+              32902,
+              2387174,
+              4483047,
+              17140850,
+              6810052942
+            ],
+            "jobs": 1024,
+            "payload_bytes": 13536460800,
+            "requested_bytes": 13548785664,
+            "service_ns": 6834096915,
+            "tokens": 148,
+            "useful_bytes_per_s": 1980724149.5638053
+          }
+        ],
+        "service_ns": 7068071675,
+        "useful_bytes_per_s": 1978745299.0139635
+      }
+    },
+    "RP": {
+      "P": {
+        "calls": [
+          {
+            "elapsed_ns_at_n_inflight_preads": [
+              850204,
+              5892234,
+              4024713,
+              11411759,
+              185595036
+            ],
+            "jobs": 34,
+            "payload_bytes": 449452800,
+            "requested_bytes": 449544192,
+            "service_ns": 207773946,
+            "tokens": 5,
+            "useful_bytes_per_s": 2163181710.9542694
+          },
+          {
+            "elapsed_ns_at_n_inflight_preads": [
+              460148,
+              3837960,
+              3365959,
+              14279278,
+              5315568424
+            ],
+            "jobs": 1024,
+            "payload_bytes": 13536460800,
+            "requested_bytes": 13539213312,
+            "service_ns": 5337511769,
+            "tokens": 148,
+            "useful_bytes_per_s": 2536099475.9054365
+          }
+        ],
+        "service_ns": 5545285715,
+        "useful_bytes_per_s": 2522126779.1789517
+      },
+      "R": {
+        "calls": [
+          {
+            "elapsed_ns_at_n_inflight_preads": [
+              125236,
+              2366465,
+              8807224,
+              6148526,
+              207217077
+            ],
+            "jobs": 34,
+            "payload_bytes": 449452800,
+            "requested_bytes": 449880064,
+            "service_ns": 224664528,
+            "tokens": 5,
+            "useful_bytes_per_s": 2000550794.5606794
+          },
+          {
+            "elapsed_ns_at_n_inflight_preads": [
+              83909,
+              2198828,
+              4432711,
+              20899612,
+              6766363608
+            ],
+            "jobs": 1024,
+            "payload_bytes": 13536460800,
+            "requested_bytes": 13548785664,
+            "service_ns": 6793978668,
+            "tokens": 148,
+            "useful_bytes_per_s": 1992420268.223309
+          }
+        ],
+        "service_ns": 7018643196,
+        "useful_bytes_per_s": 1992680523.7756953
+      }
+    }
+  },
+  "budget_sha256": "c1561d73b2f72301df28fa195c729ad256f4c40e92a643421655b8d0bc222297",
+  "conditional": {
+    "all_gaps_free": {
+      "decision": "NO_GO_FIXED_PRICES",
+      "greatest_margin_ns": -2187298061,
+      "least_margin_ns": -2443789869,
+      "pairs": {
+        "PR_PR": {
+          "decision": "NO_GO_FIXED_PRICES",
+          "decode_price_ns": 7116859370,
+          "gap_ns": 0,
+          "margin_ns": -2219549311,
+          "observed_phase_budget_ns": 10218355216,
+          "payload_budget_at_this_mean_rate_bytes": 8152017442,
+          "prefill_read_service_ns": 5321045157,
+          "projected_first_final_ns": 12219549311,
+          "useful_bytes_per_s": 2628414754.496322
+        },
+        "PR_RP": {
+          "decision": "NO_GO_FIXED_PRICES",
+          "decode_price_ns": 7084608120,
+          "gap_ns": 0,
+          "margin_ns": -2187298061,
+          "observed_phase_budget_ns": 10218355216,
+          "payload_budget_at_this_mean_rate_bytes": 8236787103,
+          "prefill_read_service_ns": 5321045157,
+          "projected_first_final_ns": 12187298061,
+          "useful_bytes_per_s": 2628414754.496322
+        },
+        "RP_PR": {
+          "decision": "NO_GO_FIXED_PRICES",
+          "decode_price_ns": 7116859370,
+          "gap_ns": 0,
+          "margin_ns": -2443789869,
+          "observed_phase_budget_ns": 10218355216,
+          "payload_budget_at_this_mean_rate_bytes": 7822365728,
+          "prefill_read_service_ns": 5545285715,
+          "projected_first_final_ns": 12443789869,
+          "useful_bytes_per_s": 2522126779.1789517
+        },
+        "RP_RP": {
+          "decision": "NO_GO_FIXED_PRICES",
+          "decode_price_ns": 7084608120,
+          "gap_ns": 0,
+          "margin_ns": -2411538619,
+          "observed_phase_budget_ns": 10218355216,
+          "payload_budget_at_this_mean_rate_bytes": 7903707469,
+          "prefill_read_service_ns": 5545285715,
+          "projected_first_final_ns": 12411538619,
+          "useful_bytes_per_s": 2522126779.1789517
+        }
+      }
+    },
+    "ideal_two_tiles": {
+      "decision": "NO_GO_FIXED_PRICES",
+      "greatest_margin_ns": -2546782941,
+      "least_margin_ns": -2803274749,
+      "pairs": {
+        "PR_PR": {
+          "decision": "NO_GO_FIXED_PRICES",
+          "decode_price_ns": 7116859370,
+          "gap_ns": 359484880,
+          "margin_ns": -2579034191,
+          "observed_phase_budget_ns": 10218355216,
+          "payload_budget_at_this_mean_rate_bytes": 7207142080,
+          "prefill_read_service_ns": 5321045157,
+          "projected_first_final_ns": 12579034191,
+          "useful_bytes_per_s": 2628414754.496322
+        },
+        "PR_RP": {
+          "decision": "NO_GO_FIXED_PRICES",
+          "decode_price_ns": 7084608120,
+          "gap_ns": 359484880,
+          "margin_ns": -2546782941,
+          "observed_phase_budget_ns": 10218355216,
+          "payload_budget_at_this_mean_rate_bytes": 7291911741,
+          "prefill_read_service_ns": 5321045157,
+          "projected_first_final_ns": 12546782941,
+          "useful_bytes_per_s": 2628414754.496322
+        },
+        "RP_PR": {
+          "decision": "NO_GO_FIXED_PRICES",
+          "decode_price_ns": 7116859370,
+          "gap_ns": 359484880,
+          "margin_ns": -2803274749,
+          "observed_phase_budget_ns": 10218355216,
+          "payload_budget_at_this_mean_rate_bytes": 6915699286,
+          "prefill_read_service_ns": 5545285715,
+          "projected_first_final_ns": 12803274749,
+          "useful_bytes_per_s": 2522126779.1789517
+        },
+        "RP_RP": {
+          "decision": "NO_GO_FIXED_PRICES",
+          "decode_price_ns": 7084608120,
+          "gap_ns": 359484880,
+          "margin_ns": -2771023499,
+          "observed_phase_budget_ns": 10218355216,
+          "payload_budget_at_this_mean_rate_bytes": 6997041027,
+          "prefill_read_service_ns": 5545285715,
+          "projected_first_final_ns": 12771023499,
+          "useful_bytes_per_s": 2522126779.1789517
+        }
+      }
+    },
+    "serial": {
+      "decision": "NO_GO_FIXED_PRICES",
+      "greatest_margin_ns": -3338449379,
+      "least_margin_ns": -3594941187,
+      "pairs": {
+        "PR_PR": {
+          "decision": "NO_GO_FIXED_PRICES",
+          "decode_price_ns": 7116859370,
+          "gap_ns": 1151151318,
+          "margin_ns": -3370700629,
+          "observed_phase_budget_ns": 10218355216,
+          "payload_budget_at_this_mean_rate_bytes": 5126314333,
+          "prefill_read_service_ns": 5321045157,
+          "projected_first_final_ns": 13370700629,
+          "useful_bytes_per_s": 2628414754.496322
+        },
+        "PR_RP": {
+          "decision": "NO_GO_FIXED_PRICES",
+          "decode_price_ns": 7084608120,
+          "gap_ns": 1151151318,
+          "margin_ns": -3338449379,
+          "observed_phase_budget_ns": 10218355216,
+          "payload_budget_at_this_mean_rate_bytes": 5211083995,
+          "prefill_read_service_ns": 5321045157,
+          "projected_first_final_ns": 13338449379,
+          "useful_bytes_per_s": 2628414754.496322
+        },
+        "RP_PR": {
+          "decision": "NO_GO_FIXED_PRICES",
+          "decode_price_ns": 7116859370,
+          "gap_ns": 1151151318,
+          "margin_ns": -3594941187,
+          "observed_phase_budget_ns": 10218355216,
+          "payload_budget_at_this_mean_rate_bytes": 4919016162,
+          "prefill_read_service_ns": 5545285715,
+          "projected_first_final_ns": 13594941187,
+          "useful_bytes_per_s": 2522126779.1789517
+        },
+        "RP_RP": {
+          "decision": "NO_GO_FIXED_PRICES",
+          "decode_price_ns": 7084608120,
+          "gap_ns": 1151151318,
+          "margin_ns": -3562689937,
+          "observed_phase_budget_ns": 10218355216,
+          "payload_budget_at_this_mean_rate_bytes": 5000357903,
+          "prefill_read_service_ns": 5545285715,
+          "projected_first_final_ns": 13562689937,
+          "useful_bytes_per_s": 2522126779.1789517
+        }
+      }
+    }
+  },
+  "frontier_sha256": "5225590f4a5ea17f7faa1d13fede10dc9abc771d53dbc388333709a4d86765c2",
+  "paired": {
+    "PR": {
+      "fraction": 0.24717159054559248,
+      "service_saved_ns": 1747026518
+    },
+    "RP": {
+      "fraction": 0.20992055584755787,
+      "service_saved_ns": 1473357481
+    }
+  },
+  "plan_sha256": "f54b60d5389d4ff503c978e9eed6065e87e0c08a3a245de17d1f59f58e3a152f",
+  "program_sha256": "7ffa141c8bcfc5b95cf79f60a120059a317c24421c3eb2b0075a167acc8e617f",
+  "protocol_sha256": "055e7c52dc72d60e00d39ed7293aea051c88373b2847243403c4402944701c34",
+  "raw_receipt_sha256": [
+    "d966d8ac66a437c87e87d20cec270a490745e59f3ec9f7893b240943cc29aa18",
+    "6a3c34118447a38d6047725b98ace54591b9d9e1be96789d0dd4d794a9398b92"
+  ],
+  "status": "REPRODUCED_PREFILL_TRANSPORT_AND_PHASE_COSTS"
+}

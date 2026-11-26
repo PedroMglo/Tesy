@@ -1,0 +1,39 @@
+--- a/src/llama-moe-cache.cpp
++++ b/src/llama-moe-cache.cpp
+@@ -6,0 +7 @@
++#include "native_input.hpp"
+@@ -83,0 +85 @@
++        std::vector<uint64_t> source_offsets;
+@@ -122,0 +125 @@
++    std::unique_ptr<tesy::NativeInput> input;
+@@ -188,0 +192,4 @@
++        const char *source = std::getenv("TESY_IK_BANK_INPUT");
++        if (source && (devices.size()!=1 || groups.size()!=1 || cpu_share_q16 ||
++                groups.front().layers.size()!=layers.size()))
++            throw std::invalid_argument("native input requires one complete share-zero cache group");
+@@ -350,0 +358,8 @@
++        if (source) {
++            if (groups.front().n_slots<=0) throw std::runtime_error("no native expert slots");
++            input=std::make_unique<tesy::NativeInput>(source,model,devices.front().backend);
++            for (auto &l : layers) {
++                if (l.experts.size()!=3) throw std::runtime_error("native gate/up/down geometry");
++                for (auto *w : l.experts) l.source_offsets.push_back(input->bind(w));
++            }
++        }
+@@ -355 +370 @@
+-    ~impl() { log_stats(); }
++    ~impl() { input.reset(); log_stats(); }
+@@ -767 +782,2 @@
+-        ggml_backend_synchronize(backend);
++        if (input) input->ids(backend,il,ids.data(),ids.size());
++        else ggml_backend_synchronize(backend);
+@@ -784,2 +800,7 @@
+-                ggml_backend_tensor_set_async(backend, bank, (const uint8_t *) w->data + fills[i].expert*expert_size,
+-                        fills[i].slot*expert_size, n*expert_size);
++                if (input) {
++                    input->send(il,w,l.source_offsets[ip],fills[i].expert*expert_size,
++                                bank,fills[i].slot*expert_size,n*expert_size);
++                } else {
++                    ggml_backend_tensor_set_async(backend, bank, (const uint8_t *) w->data + fills[i].expert*expert_size,
++                            fills[i].slot*expert_size, n*expert_size);
++                }

@@ -1,0 +1,50 @@
+{
+  "evidence": "CONDITIONAL_FORMAL_EXACT_SAME_READS_ON_USB",
+  "input_mismatch_c276_positions": [
+    35
+  ],
+  "link_bytes_s": 1250000000,
+  "maximum_complete_3role_loads_in_10s": 945,
+  "off": {
+    "cap_bytes": 19327352832,
+    "gguf_direct_fd_samples": 18,
+    "warm_client_first_final_s": 20.87149629299529,
+    "warm_decode_s": 10.206325000000001,
+    "warm_prefill_s": 10.906051999999999
+  },
+  "off_prefill_expert_bytes": "UNIDENTIFIED",
+  "on": {
+    "cap_bytes": 19327352832,
+    "gguf_direct_fd_samples": 19,
+    "warm_client_first_final_s": 22.619140231981874,
+    "warm_decode_s": 11.173013000000001,
+    "warm_prefill_s": 11.706565000000001
+  },
+  "proof": {
+    "calls": [
+      {
+        "bytes": 594864000,
+        "call": 1,
+        "loads": 45,
+        "tokens": 5,
+        "wire_floor_s": 0.4758912
+      },
+      {
+        "bytes": 15558998400,
+        "call": 2,
+        "loads": 1177,
+        "tokens": 148,
+        "wire_floor_s": 12.44719872
+      }
+    ],
+    "cross_tile_candidates": {
+      "CPU": 102,
+      "CUDA0": 82
+    },
+    "verified_consumed_generations": 1222,
+    "wire_floor_after_removing_all_candidates_s": 10.97722368,
+    "wire_floor_s": 12.92308992
+  },
+  "source_sha256": "b7ca5f9608f4c20140a51748f88ff64657c0d586f0edc527d4cabd5fd39f2d4c",
+  "trace_sha256": "91610b12291d5a42a12bba09f5d4ff188d25ee0001ab89e894bdd508005e82fb"
+}

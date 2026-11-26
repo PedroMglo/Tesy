@@ -1,0 +1,15 @@
+# A redução de atenção CPU recuperou o primeiro bloco natural do 120B
+
+**GO para o diagnóstico da conversa.** Em T1, com a sequência viva e o KV de 2 304 células, o mesmo ELF reproduziu a divergência ao desligar a nova opção e recuperou o resultado serial ao ligá-la. Mantivemos o modelo original, o pack, as três posições de cálculo (um token confirmado e dois propostos), a geometria, a atenção CUDA e as restantes operações. A intervenção seleciona a redução de uma consulta nas camadas CPU 0–24 com pelo menos 512 células de KV. [Protocolo](protocol.md) · [Observações e comparação por camada](result.json)
+
+| Braço físico | Camadas com vistas por consulta | Logits diferentes de P nas três posições | Palavras de K/V diferentes | Cargas | Bytes lógicos |
+|---|---|---|---:|---:|---:|
+| P, C291 serial | nenhuma | referência | 0 | 141 | 1 863 907 200 |
+| B, opção CPU desligada | 25–35 | 201 087 / 201 088 / 201 088 | 105 989 | 140 | 1 850 688 000 |
+| ROWS, opção CPU ligada | 0–35 | 0 / 0 / 0 | 0 | 137 | 1 811 030 400 |
+
+P e B reproduziram todos os 13 ficheiros das respetivas execuções da parte 180, até aos pools e contadores finais. Os dois braços B/ROWS usaram o mesmo ELF, reserva 3, prefixo, pack e ordinal de verificação. As cinco distribuições finitas de ROWS coincidiram integralmente com P, 1 005 440 palavras F32 ao todo. O KV de entrada tinha 80 759 344 B, o final 80 869 972 B. Todas as 78 732 linhas de K/V de prefixo e as 216 do bloco coincidiam. O target aceitou as duas propostas e confirmou o terceiro ID. A redução de quatro cargas lógicas face ao serial corresponde a 52 876 800 B neste despacho. O pool final de ROWS divergiu do serial. A conversa com mais tokens, rejeições e limpeza terá de pagar esse estado.
+
+A reconstrução repetiu o objeto e o ELF WIDE anteriores. O novo ELF tem SHA-256 `45f509221f21188cd9d2b7808b08e47a7405e3c66ed82a68402bbad0f4af6b43` com a ABI original e os restantes 165 objetos fixos. Os 18 providers do cliente e 24 do servidor passaram a verificação. O portátil correu os três processos em 392,308 s, com 6 848 MiB de pico na RTX, cap de 20 GiB, zero swap e C118 com 61 amostras por processo. Os processos do cliente nativo demoraram 69,383 / 69,126 / 69,323 s, incluindo prefill, validação e serialização. A energia estimada da GPU na cobertura do monitor foi 1 008,9 / 991,5 / 986,7 J. Não foi medido o consumo energético total do portátil.
+
+O gate é bitwise para o primeiro bloco real de T1. Os contratos de desempenho e utilidade aguardam uma sessão de cliente, que tem protocolo próprio, seguida dos ensaios de adoção se houver margem. O melhor T2 emparelhado anterior tem 18,313 s até ao primeiro final e 5,361 tok/s. A revisão dos originais e da parte 182 coincidiu no SHA-256 `5399daaf7fadc1a7027500be5a52699dcdf9c71f3ce95f84ad02d131f6089caa`. O arquivo privado contém 118 ficheiros, 267 327 035 B. [Build](build.py) · [Supervisor](family.py) · [Revisor sem modelo](review.py) · [Manifesto privado](../../../../../../../../../../private_archive/part-182.json) · [Prova de conversa](http/protocol.md)

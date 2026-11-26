@@ -1,0 +1,250 @@
+{
+  "status": "REPRODUCED_CONDITIONAL_FIXED_REMAINING_READS",
+  "protocol_sha256": "9cdf384fdfaadde16989183d118f72537be10c07fc0bd2ccf38e170a538a733c",
+  "program_sha256": "7910d617c105e9dfb34812a6073b3241a6151d8aadcac6671c5fa6a1eb92992c",
+  "prefill": {
+    "calls": [
+      {
+        "call": 1,
+        "tokens": 5,
+        "jobs": 45,
+        "all_read_worker_us_by_component": [
+          217720,
+          161100,
+          210064
+        ],
+        "remaining_worker_us_by_tier": {
+          "CPU": 305668,
+          "CUDA0": 46289
+        },
+        "floor_us": 87989.25
+      },
+      {
+        "call": 2,
+        "tokens": 148,
+        "jobs": 1177,
+        "all_read_worker_us_by_component": [
+          10133429,
+          8123496,
+          9366113
+        ],
+        "remaining_worker_us_by_tier": {
+          "CPU": 11135250,
+          "CUDA0": 5876780
+        },
+        "floor_us": 4253007.5
+      }
+    ],
+    "floor_us": 4340996.75,
+    "budget_us": 2427104,
+    "exceeds_budget": true,
+    "trace_sha256": "91610b12291d5a42a12bba09f5d4ff188d25ee0001ab89e894bdd508005e82fb",
+    "payload": 16153862400,
+    "down_payload": 5384620800,
+    "allowed_bytes_at_4_5_GB_s": 10921968000,
+    "required_fraction_down": 0.9716365542398083
+  },
+  "decode_budget_us": 5333333.333333333,
+  "decode": {
+    "c294-nominal153-2-on": {
+      "tiers": {
+        "CPU": {
+          "jobs": 762,
+          "pure_floor_us": 3135638,
+          "R0_pure_floor_us": 5043368,
+          "remaining_logical_bytes": 6715353600
+        },
+        "CUDA": {
+          "jobs": 319,
+          "pure_floor_us": 1250434,
+          "R0_pure_floor_us": 2026810,
+          "remaining_logical_bytes": 2811283200
+        }
+      },
+      "all_read_worker_us_by_component": [
+        4711931,
+        3549385,
+        4360723
+      ],
+      "C295_fixed_nonservice_us": 1773408,
+      "scales": [
+        {
+          "scale": 0.8,
+          "pure_floor_us": 3508857.6,
+          "fixed_plus_read_us": 5282265.599999996,
+          "pure_exceeds_budget": false,
+          "fixed_plus_read_exceeds_budget": false
+        },
+        {
+          "scale": 1.0,
+          "pure_floor_us": 4386072.0,
+          "fixed_plus_read_us": 6159480.0,
+          "pure_exceeds_budget": false,
+          "fixed_plus_read_exceeds_budget": true
+        },
+        {
+          "scale": 1.2,
+          "pure_floor_us": 5263286.399999999,
+          "fixed_plus_read_us": 7036694.400000004,
+          "pure_exceeds_budget": false,
+          "fixed_plus_read_exceeds_budget": true
+        }
+      ],
+      "raw_sha256": {
+        "events.tsv": "3e735e0dcc1d4aeeb119ef48ad6e0c84ac6fd9a69e8544c27f95106df49e066c",
+        "initial.json": "4ad4a7767a3e6e4c25e5693ec206565dc039394a771ef2074f07f2dcd69a70ee",
+        "result.json": "cf7f22fde47fec4f319a19897a0118b05c1efeb5304b48ca73d94a5b0ef85606"
+      }
+    },
+    "c294-nominal153-3-on": {
+      "tiers": {
+        "CPU": {
+          "jobs": 762,
+          "pure_floor_us": 3134821,
+          "R0_pure_floor_us": 5013592,
+          "remaining_logical_bytes": 6715353600
+        },
+        "CUDA": {
+          "jobs": 319,
+          "pure_floor_us": 1248724,
+          "R0_pure_floor_us": 2024160,
+          "remaining_logical_bytes": 2811283200
+        }
+      },
+      "all_read_worker_us_by_component": [
+        4724040,
+        3483498,
+        4325188
+      ],
+      "C295_fixed_nonservice_us": 1830919,
+      "scales": [
+        {
+          "scale": 0.8,
+          "pure_floor_us": 3506836.0,
+          "fixed_plus_read_us": 5337754.999999999,
+          "pure_exceeds_budget": false,
+          "fixed_plus_read_exceeds_budget": true
+        },
+        {
+          "scale": 1.0,
+          "pure_floor_us": 4383545.0,
+          "fixed_plus_read_us": 6214464.0,
+          "pure_exceeds_budget": false,
+          "fixed_plus_read_exceeds_budget": true
+        },
+        {
+          "scale": 1.2,
+          "pure_floor_us": 5260254.0,
+          "fixed_plus_read_us": 7091173.000000002,
+          "pure_exceeds_budget": false,
+          "fixed_plus_read_exceeds_budget": true
+        }
+      ],
+      "raw_sha256": {
+        "events.tsv": "a963af23de4f4dfd167ef53519d013ee12786d17dc67fba864cb4fe83875d797",
+        "initial.json": "19bf1c09a96e851440d104abbbb08cc062c2e602d7c686c84fd33d7236dbc269",
+        "result.json": "700c3afd93e5b7fe2d3aa8c2739dfa5e4af8da0081c1a0d3509f9f42ccd1d032"
+      }
+    },
+    "c294-code153-2-on": {
+      "tiers": {
+        "CPU": {
+          "jobs": 927,
+          "pure_floor_us": 3807389,
+          "R0_pure_floor_us": 6118414,
+          "remaining_logical_bytes": 8169465600
+        },
+        "CUDA": {
+          "jobs": 381,
+          "pure_floor_us": 1481876,
+          "R0_pure_floor_us": 2392354,
+          "remaining_logical_bytes": 3357676800
+        }
+      },
+      "all_read_worker_us_by_component": [
+        5574537,
+        4167514,
+        5175495
+      ],
+      "C295_fixed_nonservice_us": 1817114,
+      "scales": [
+        {
+          "scale": 0.8,
+          "pure_floor_us": 4231412.0,
+          "fixed_plus_read_us": 6048525.9999999935,
+          "pure_exceeds_budget": false,
+          "fixed_plus_read_exceeds_budget": true
+        },
+        {
+          "scale": 1.0,
+          "pure_floor_us": 5289265.0,
+          "fixed_plus_read_us": 7106379.0,
+          "pure_exceeds_budget": false,
+          "fixed_plus_read_exceeds_budget": true
+        },
+        {
+          "scale": 1.2,
+          "pure_floor_us": 6347118.0,
+          "fixed_plus_read_us": 8164232.000000011,
+          "pure_exceeds_budget": true,
+          "fixed_plus_read_exceeds_budget": true
+        }
+      ],
+      "raw_sha256": {
+        "events.tsv": "e68a1bd22a6477a214cfbdd04ff9cfc3515d531e52e68c8b3dc41f317f536bf2",
+        "initial.json": "484bd61b14ae7f970e86e9df29b8e99334d89cb787cf8ffd82af4ce526b895b5",
+        "result.json": "2fc10b510a59e00595fe7a361e44d11e233ffc68c07862964c0cf20c65f8d45a"
+      }
+    },
+    "c294-code153-3-on": {
+      "tiers": {
+        "CPU": {
+          "jobs": 927,
+          "pure_floor_us": 3826673,
+          "R0_pure_floor_us": 6116287,
+          "remaining_logical_bytes": 8169465600
+        },
+        "CUDA": {
+          "jobs": 381,
+          "pure_floor_us": 1477427,
+          "R0_pure_floor_us": 2391510,
+          "remaining_logical_bytes": 3357676800
+        }
+      },
+      "all_read_worker_us_by_component": [
+        5624707,
+        4172489,
+        5136174
+      ],
+      "C295_fixed_nonservice_us": 1829011,
+      "scales": [
+        {
+          "scale": 0.8,
+          "pure_floor_us": 4243280.0,
+          "fixed_plus_read_us": 6072291.0,
+          "pure_exceeds_budget": false,
+          "fixed_plus_read_exceeds_budget": true
+        },
+        {
+          "scale": 1.0,
+          "pure_floor_us": 5304100.0,
+          "fixed_plus_read_us": 7133111.0,
+          "pure_exceeds_budget": false,
+          "fixed_plus_read_exceeds_budget": true
+        },
+        {
+          "scale": 1.2,
+          "pure_floor_us": 6364920.0,
+          "fixed_plus_read_us": 8193930.999999997,
+          "pure_exceeds_budget": true,
+          "fixed_plus_read_exceeds_budget": true
+        }
+      ],
+      "raw_sha256": {
+        "events.tsv": "dc3ef0aba2d5c04f51512300a4202c07c3055db36e18e90f4e67646c5e7818f3",
+        "initial.json": "d00a8d5ed6efca5bf3b79bda041a665c6ec10a7ace6eb84f80dfe018ab219966",
+        "result.json": "47fc71ecb38a17ec3d8bfcc4c1249c4e3ac599d90c604ae88ca9c78661b0fd23"
+      }
+    }
+  }
+}

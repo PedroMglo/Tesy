@@ -1,0 +1,105 @@
+{
+  "artifact_bytes_before_receipt": 1486205,
+  "c269": "d0ebfbcc6c8f456bc1083027c1b08075a32824d8",
+  "c291": "c89c88b342054223e3f27a17fbfd0954803147ac",
+  "c291_tree": "3962daa588dfa89971c60c95ce4c5054bc27fd3f",
+  "commit": "2acbe46173ddb0e58a3b01b88f6c305acde061ec",
+  "executable_sha256": "73399cc80dcd31887e82f25cdd1de3443c207a6147e7f7f336d47019fc779f37",
+  "graph_source_sha256": "d1a2ce42e649305416665091ecee4523c1638721d42cca34b51a03bbcfce3288",
+  "libs": {
+    "libggml-base.so.0.15.3": "6e27d9ecb86e4747177189d2d2f6390280a2ee1000221ad68a0404023ea72539",
+    "libggml-cpu.so.0.15.3": "9aabce5751c5d7ca19b50e4cabb1fcf484c1581d275141dae8aba8ed33060313"
+  },
+  "memory_events": "low 0\nhigh 0\nmax 0\noom 0\noom_kill 0\noom_group_kill 0\nsock_throttled 0\n",
+  "memory_peak_bytes": 410632192,
+  "own_sha256": {
+    "fixture.cpp": "c67bd1bf27dfc641b4c2742caa13ebbd07e1938cc7bc558dfbf18818f555e9c6",
+    "run.py": "1a83c554a3e0ce981e67ece13385782753ff2afaff3d70000686ad4a771d8384",
+    "tap.cpp": "c39ff6e60f8a05ea81c25ed937fccaabfc1229be869caf36b699b91d4c0646c5",
+    "tap.h": "8733f065f6faf0626371ff3352fe26d9755acc76c763ad97d708ef6fbdd114e9"
+  },
+  "protocol_sha256": "2498c8e6264d69f89dd0aacdea048d2a70b36d57985890ff0a5e95f218477eab",
+  "raw_receipt_sha256": "73ce8e067d2a71a4f367a56ed91d13388d2d47277793e73840b0d7b8ed10fef1",
+  "status": "PASS_CPU_READY_MARKER",
+  "tap_sha256": "29aec468c42548b18ea4ee00879872ee75ea24d6b7d39ada8c916c87852384ef",
+  "tiles": [
+    {
+      "backend_splits": 1,
+      "distinct_resident_hits": 14,
+      "graph": "RESHAPE,ARGSORT,VIEW,GET_ROWS,RESHAPE,SOFT_MAX,RESHAPE,CONT,MAP_CUSTOM1",
+      "ids": 20,
+      "misses": 0,
+      "mode_sha256": {
+        "BASE": "33a69d277705b8ea2d8aa6885f7e17d2c932cf6c5ba13b3535ee5655ab15012a",
+        "OFF": "33a69d277705b8ea2d8aa6885f7e17d2c932cf6c5ba13b3535ee5655ab15012a",
+        "ON": "33a69d277705b8ea2d8aa6885f7e17d2c932cf6c5ba13b3535ee5655ab15012a",
+        "WRONG": "33a69d277705b8ea2d8aa6885f7e17d2c932cf6c5ba13b3535ee5655ab15012a"
+      },
+      "on_clock_resolution_ns": 1,
+      "on_different": 0,
+      "on_min_positive_ns": 20,
+      "on_span": {
+        "copy_ns": 70,
+        "entry_to_remap_ns": 30518,
+        "ready_to_remap_ns": 30448,
+        "resolved": true
+      },
+      "results_sha256": "33a69d277705b8ea2d8aa6885f7e17d2c932cf6c5ba13b3535ee5655ab15012a",
+      "threads": 8,
+      "tokens": 5,
+      "wrong_different": 16
+    },
+    {
+      "backend_splits": 1,
+      "distinct_resident_hits": 16,
+      "graph": "RESHAPE,ARGSORT,VIEW,GET_ROWS,RESHAPE,SOFT_MAX,RESHAPE,CONT,CUSTOM",
+      "ids": 80,
+      "misses": 0,
+      "mode_sha256": {
+        "BASE": "be15f20a99bd2b525d3a9a88cde6bbf2155c6215b63c9367f37a063b444d724a",
+        "OFF": "be15f20a99bd2b525d3a9a88cde6bbf2155c6215b63c9367f37a063b444d724a",
+        "ON": "be15f20a99bd2b525d3a9a88cde6bbf2155c6215b63c9367f37a063b444d724a",
+        "WRONG": "be15f20a99bd2b525d3a9a88cde6bbf2155c6215b63c9367f37a063b444d724a"
+      },
+      "on_clock_resolution_ns": 1,
+      "on_different": 0,
+      "on_min_positive_ns": 20,
+      "on_span": {
+        "copy_ns": 80,
+        "entry_to_remap_ns": 55254,
+        "ready_to_remap_ns": 55174,
+        "resolved": true
+      },
+      "results_sha256": "be15f20a99bd2b525d3a9a88cde6bbf2155c6215b63c9367f37a063b444d724a",
+      "threads": 8,
+      "tokens": 20,
+      "wrong_different": 76
+    },
+    {
+      "backend_splits": 1,
+      "distinct_resident_hits": 16,
+      "graph": "RESHAPE,ARGSORT,VIEW,GET_ROWS,RESHAPE,SOFT_MAX,RESHAPE,CONT,CUSTOM",
+      "ids": 128,
+      "misses": 0,
+      "mode_sha256": {
+        "BASE": "68b1cb60cbce3dc5b14339d32c0616504a74e97a25aebadaa39b230139eb134f",
+        "OFF": "68b1cb60cbce3dc5b14339d32c0616504a74e97a25aebadaa39b230139eb134f",
+        "ON": "68b1cb60cbce3dc5b14339d32c0616504a74e97a25aebadaa39b230139eb134f",
+        "WRONG": "68b1cb60cbce3dc5b14339d32c0616504a74e97a25aebadaa39b230139eb134f"
+      },
+      "on_clock_resolution_ns": 1,
+      "on_different": 0,
+      "on_min_positive_ns": 20,
+      "on_span": {
+        "copy_ns": 110,
+        "entry_to_remap_ns": 28604,
+        "ready_to_remap_ns": 28494,
+        "resolved": true
+      },
+      "results_sha256": "68b1cb60cbce3dc5b14339d32c0616504a74e97a25aebadaa39b230139eb134f",
+      "threads": 8,
+      "tokens": 32,
+      "wrong_different": 124
+    }
+  ]
+}

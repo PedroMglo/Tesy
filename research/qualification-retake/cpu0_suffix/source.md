@@ -1,0 +1,5 @@
+# Fronteira nativa do marcador
+
+O cliente pede uma tarefa em cada nó custom de remap. No backend C269, ggml-cpu.c:3044–3050 e 3076 passa as coordenadas da equipa do grafo ao kernel. Em ops.cpp:11102, o kernel custom encaminha ith/nth. Em C291, llama-moe-stream.cpp:794–842, apenas ith=0 adquire o mutex, prepara a wave e emite as posições; os outros participantes regressam imediatamente. O wrapper preserva estas chamadas e apenas o participante que emite posições regista o retorno. A equipa efetiva está no campo marked_graph_threads, zero no OFF. Exige-se um único retorno marcado, o plano com cinco experts na wave zero, a contagem 8/1 e o gold completo.
+
+No C269, ggml-backend.cpp:1677–1714 executa fatias do grafo e sincroniza os nós pedidos por cb_eval. A fixture anterior subscrevia 40 nós e lia alguns tensores para provar os operandos. Aqui o scheduler continua a executar a mesma matemática, e nenhum modo subscreve nós. O término inclui o regresso síncrono de graph_compute e o synchronize já existente na referência histórica. O estado final do manager, o digest estrutural do grafo e o número de splits são verificados fora destes relógios.

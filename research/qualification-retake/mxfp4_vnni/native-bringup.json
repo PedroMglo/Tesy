@@ -1,0 +1,95 @@
+{
+  "evidence": "EXPLORATORY_BUILD_AND_SYNTHETIC_EXACTNESS",
+  "protocol_commit": "6c741e67d323104a6cc26e9453ff746a97f8f231",
+  "r1": {
+    "status": "FAIL_DISASSEMBLY_PARSER",
+    "receipt_sha256": "62de41dfb60800e1431c294b5be8e3f8391bcb62706bebce124c40dbe3071f4a",
+    "cause": "objdump annotated both VPDPBUSD instructions with {vex}; the initial mnemonic parser skipped them"
+  },
+  "r2": {
+    "status": "PASS_BUILD_DISASSEMBLY_ONLY",
+    "receipt_sha256": "ce4a51771b31890495f63fabe4000a186a0bd05870b340fd144825c4cb013f1a",
+    "fallback_isa": "native without VNNI"
+  },
+  "r3": {
+    "status": "PASS_BUILD_DISASSEMBLY_ONLY",
+    "receipt_sha256": "dc373b52b21a21185ca171fb36d50292a2ef4d82fd5fe84b86778e23a27c4f97",
+    "backend": "d0ebfbcc6c8f456bc1083027c1b08075a32824d8",
+    "gcc": "gcc-15 (GCC) 15.3.1 20260722 (Red Hat 15.3.1-1)",
+    "gcc_sha256": "14243f9ecbf08dfb3490eaca0c832055b8934ca0883f507cf951a5107fe7b36f",
+    "source_sha256": "3c489fdc77e3ab484a5f188bff9c60c0e9483c951ed65c1a562a04c249d5628e",
+    "compile_database_sha256": "2582285bc2b5b7af91570e5c9f4ca326c34bdc6da2ec7aef53ce87c393f6fb6c",
+    "fallback_isa": "Haswell AVX2/FMA; no VNNI and no EVEX in dot symbol",
+    "patch_sha256": "fd7b0052421441816d217589a90a68e6c9dba832c8eb60a99f9bd63e9ad89dbc",
+    "functions": {
+      "r0": {
+        "elf_sha256": "9aabce5751c5d7ca19b50e4cabb1fcf484c1581d275141dae8aba8ed33060313",
+        "length": 1228,
+        "sha256": "1960f5bb03191402a2a2ffdc2ca59d13dbb66fcd34129a8bd09c257faa296fa2",
+        "mnemonics_sha256": "ecca436914d88f58c9f867b19ca303a33d3599e16e973468f33cf98e4bce8bab",
+        "count": 316,
+        "vpshufb": 4,
+        "vpsignb": 4,
+        "vcvtdq2ps": 2,
+        "vpdpbusd": 0,
+        "vpmaddubsw": 2,
+        "vpmaddwd": 2,
+        "vector_fma": 2
+      },
+      "control": {
+        "elf_sha256": "33e8ad1c458eaa657b2881534aa81165e63ab59a26f236d2398bd19bf94cb094",
+        "length": 1228,
+        "sha256": "99494a62dbc2880d3e2a2d629fc4a4c4d1dc222162b5e6c3c8f8fec732979e0c",
+        "mnemonics_sha256": "ecca436914d88f58c9f867b19ca303a33d3599e16e973468f33cf98e4bce8bab",
+        "count": 316,
+        "vpshufb": 4,
+        "vpsignb": 4,
+        "vcvtdq2ps": 2,
+        "vpdpbusd": 0,
+        "vpmaddubsw": 2,
+        "vpmaddwd": 2,
+        "vector_fma": 2
+      },
+      "candidate": {
+        "elf_sha256": "430fcbdea5b1ffdc0d7e50f2ea8b2312570ac233ca9840a5ebfdbffca7781453",
+        "length": 1211,
+        "sha256": "9e070e6d1bbad15ea16d1f2a9fa24f3f9d0d83d0756ef102fc3fe755b68490eb",
+        "mnemonics_sha256": "c18d6db1b95e51c6981eb328fa10f360ab50c52d57a91dcf840a919336d105f4",
+        "count": 313,
+        "vpshufb": 4,
+        "vpsignb": 4,
+        "vcvtdq2ps": 2,
+        "vpdpbusd": 2,
+        "vpmaddubsw": 0,
+        "vpmaddwd": 0,
+        "vector_fma": 2
+      },
+      "fallback": {
+        "elf_sha256": "de081a95a2d3508cbf49e099e73ab7cb54793f618012fbbd8f4b7bda9f27b418",
+        "length": 1239,
+        "sha256": "bee11613fab03a5b86baf78e58b6b253665bc8fc7b816ecebb441e91fb33dcee",
+        "mnemonics_sha256": "12739e3c839538fca6dffd3630aeb284aa050d53bc016cf46762b5257afb87e0",
+        "count": 315,
+        "vpshufb": 4,
+        "vpsignb": 4,
+        "vcvtdq2ps": 2,
+        "vpdpbusd": 0,
+        "vpmaddubsw": 2,
+        "vpmaddwd": 2,
+        "vector_fma": 2
+      }
+    }
+  },
+  "integer_oracle": {
+    "status": "PASS_INDEPENDENT_INTEGER_ORACLE",
+    "rows": 8192,
+    "implementations": [
+      "r0",
+      "control",
+      "candidate",
+      "fallback"
+    ],
+    "gold_f32le_sha256": "7f19889911e14fb27e33e6e85a327646f648528ac4546297d3dfebebe32128fc",
+    "build_receipt_sha256": "dc373b52b21a21185ca171fb36d50292a2ef4d82fd5fe84b86778e23a27c4f97"
+  }
+}

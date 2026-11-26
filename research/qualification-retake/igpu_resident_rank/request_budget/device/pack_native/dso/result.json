@@ -1,0 +1,100 @@
+{
+  "C281_providers": 24,
+  "C292_providers": 18,
+  "R01": {
+    "changed_sections": [
+      ".comment",
+      ".note.gnu.build-id"
+    ],
+    "elapsed_s": 0.410419,
+    "intact_bytes": 4173656,
+    "original_bytes": 4173608,
+    "scope_peak_bytes": 62431232,
+    "stage": "intact",
+    "status": "FAIL_PRESERVED"
+  },
+  "R02": {
+    "build_variant": "current_compiler_control",
+    "c281_closure_sha256": "9e553bcfa3dd8889100c8836bc3b873491248567672f93e7859e7f8b76e35116",
+    "c292_closure_sha256": "7b0ca3bcc778f527dfc4cdfab3aaa3f93687045cba5e12d5a74b8310aeb7b670",
+    "candidate_export_changes_vs_control": {
+      "_ZNSt3mapINSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEN8nlohmann16json_abi_v3_12_010basic_jsonIS_St6vectorS5_blmdSaNS7_14adl_serializerES9_IhSaIhEEvEESt4lessIvESaISt4pairIKS5_SD_EEEixERSH_": [
+        null,
+        [
+          "W",
+          null
+        ]
+      ]
+    },
+    "candidate_sha256": "9cfa88074e7ca6fa0723f9529aa72b70cea82f2a4bcca53e993733b0f393a0c5",
+    "commit": "70ce8c21b9fb8a0e1a28f0995c6a845552c6d0d4",
+    "consumers": [
+      "libllama-server-impl.so",
+      "libllama-common.so.0",
+      "libmtmd.so.0",
+      "server"
+    ],
+    "control_alloc_differences": [
+      ".data",
+      ".data.rel.ro",
+      ".dynamic",
+      ".dynstr",
+      ".dynsym",
+      ".eh_frame",
+      ".eh_frame_hdr",
+      ".fini",
+      ".gcc_except_table",
+      ".gnu.hash",
+      ".gnu.version",
+      ".gnu.version_r",
+      ".got.plt",
+      ".note.gnu.property",
+      ".plt",
+      ".rela.dyn",
+      ".rela.plt",
+      ".rodata",
+      ".text"
+    ],
+    "control_exec_same": false,
+    "control_export_changes": {
+      "_ZN8nlohmann16json_abi_v3_12_06detail6parserINS0_10basic_jsonISt3mapSt6vectorNSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEEblmdSaNS0_14adl_serializerES5_IhSaIhEEvEENS1_20input_stream_adapterEE5parseEbRSF_": [
+        null,
+        [
+          "W",
+          null
+        ]
+      ]
+    },
+    "control_section_delta_sha256": "b7549a47ad6138449146c1314e0476f1f085e6b112ff42e512a78528f944751c",
+    "control_sha256": "772740127a1227afae0b0325d0b186f35e1c7e428d6929181019bb8c455b6b25",
+    "elapsed_s": 14.259759,
+    "final_scope": {
+      "memory.high": 2147483648,
+      "memory.max": 2147483648,
+      "memory.peak": 476041216,
+      "memory.swap.max": 0
+    },
+    "header_sha256": "bc622a0ab63c8270a2701be138b64c8286f39a6e48528e02726dd48a4d93ba1a",
+    "inputs_sha256": "0297f936aa60f11acb9688e43c358fd692d56250b96a7fb13cab3b3203ff12ec",
+    "intact_sha256": "1e21fef6703659839b5c7ce86a5c56e314c7b5fa05e5bbfbe9aea137c20c6bfb",
+    "model_forwards": 0,
+    "original_sha256": "04af70ea943b816769e2c6d62873ded11f00603df6c3be42340b3785aa880819",
+    "patch_sha256": "44d8dbccb38711a645b0398b4cc73c8cdc19f6c29a77fa31f0f08f111c49700c",
+    "server_starts": 0,
+    "static_preflight_sha256": "2508e245fcde7ff411c93474919c3701ac95e98c1f76505d74a248d34a6aff16",
+    "tree": "f432cf11a785a1005d21c81e2ae9e3c1aa3f21ed"
+  },
+  "loader_queries": {
+    "capture_queries": 2,
+    "control_capture_queries": 2,
+    "control_queries": 9,
+    "queries": 53
+  },
+  "receipt_sha256": {
+    "R01": "6526d401ab30ee3db1f72c23608eb2f0987a385c3be295b3aa4967b7fbf360c4",
+    "R02": "cfd616fda7fcdac7aaf6774f9b6d2aac7ea5186a5629fa33eb1bff58a00b34c8"
+  },
+  "required_next": "numerical control and candidate",
+  "status": "PASS_C291_PACK_PFJ_DSO_STATIC_C281",
+  "verified_logs": 132
+}

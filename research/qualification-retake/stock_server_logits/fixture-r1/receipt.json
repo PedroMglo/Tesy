@@ -1,0 +1,157 @@
+{
+  "binary_sha256": {
+    "driver": "8e5a9e3c9c2476fd12bed295820149ac4bf195a8a1f37543128e50c882d86c77",
+    "libfixture-caller.so": "3eaff8fc7aa597a354bd31e09b4497063609af3c6e5f5a87f4ea1f281e2f484a",
+    "libfixture-provider.so": "e9cc255f3c499540977140713a6d2db60f94a05e93b60a38f3b40f5f8ea73634",
+    "observer.so": "9db495bdca8d60b1a14d162b5475dbd83b26d7c3574a29f5790c3f9d465d2b50"
+  },
+  "cases": [
+    {
+      "case": "off",
+      "status": "OFF"
+    },
+    {
+      "argmax": 4567,
+      "case": "normal",
+      "row_sha256": "2f0126426ba7c7bde2eb2bea27e1dc34f8229bc0ecc9cdaef10eeb121b307a13",
+      "status": "PASS"
+    },
+    {
+      "argmax": 4567,
+      "case": "same_argmax",
+      "row_sha256": "11ad71bcbe4a437de84e7cde3894112621fd0d463cc6d8bc418bfe074fdf7f00",
+      "status": "PASS"
+    },
+    {
+      "case": "short_vocab",
+      "reason": "vocab_shape",
+      "status": "EXPECTED_FAIL"
+    },
+    {
+      "case": "wrong_model",
+      "reason": "model_shape",
+      "status": "EXPECTED_FAIL"
+    },
+    {
+      "case": "wrong_provider",
+      "reason": "image_digest",
+      "status": "EXPECTED_FAIL"
+    },
+    {
+      "case": "wrong_index",
+      "reason": "row_or_index",
+      "status": "EXPECTED_FAIL"
+    },
+    {
+      "case": "wrong_caller",
+      "reason": "wrong_caller",
+      "status": "EXPECTED_FAIL"
+    },
+    {
+      "case": "null",
+      "reason": "row_or_index",
+      "status": "EXPECTED_FAIL"
+    },
+    {
+      "case": "two_rows",
+      "reason": "multiple_rows_or_nonraw",
+      "status": "EXPECTED_FAIL"
+    },
+    {
+      "case": "not_base",
+      "reason": "multiple_rows_or_nonraw",
+      "status": "EXPECTED_FAIL"
+    },
+    {
+      "case": "sampled_probs",
+      "reason": "backend_sampled",
+      "status": "EXPECTED_FAIL"
+    },
+    {
+      "case": "sampled_logits",
+      "reason": "backend_sampled",
+      "status": "EXPECTED_FAIL"
+    },
+    {
+      "case": "sampled_token",
+      "reason": "backend_sampled",
+      "status": "EXPECTED_FAIL"
+    },
+    {
+      "case": "last_sampled",
+      "reason": "backend_sampled",
+      "status": "EXPECTED_FAIL"
+    },
+    {
+      "case": "nonfinite",
+      "reason": "nonfinite",
+      "status": "EXPECTED_FAIL"
+    },
+    {
+      "case": "duplicate",
+      "reason": "invalid_arm_or_duplicate",
+      "status": "EXPECTED_FAIL"
+    },
+    {
+      "case": "concurrent",
+      "reason": "invalid_arm_or_duplicate",
+      "status": "EXPECTED_FAIL"
+    },
+    {
+      "case": "lost_arm",
+      "reason": "invalid_seal_arm",
+      "status": "EXPECTED_FAIL"
+    },
+    {
+      "case": "missing",
+      "reason": "missing_complete_capture",
+      "status": "EXPECTED_FAIL"
+    },
+    {
+      "case": "no_arm",
+      "reason": "missing_complete_capture",
+      "status": "EXPECTED_FAIL"
+    },
+    {
+      "case": "collision",
+      "reason": "publish_collision",
+      "status": "EXPECTED_FAIL"
+    },
+    {
+      "case": "early_arm",
+      "status": "REJECTED_BEFORE_MAIN"
+    },
+    {
+      "case": "crash",
+      "status": "INCOMPLETE_REJECTED"
+    },
+    {
+      "case": "stock_rejects_mock",
+      "status": "REJECTED_BEFORE_MAIN"
+    }
+  ],
+  "compiler_sha256": "ca48a2d27d0796399adc3387225eec4be62974e26fa299710edfde0c1af5aa63",
+  "finished_utc": "2026-11-25T04:40:58.177862Z",
+  "flags": [
+    "-std=c++17",
+    "-O2",
+    "-Wall",
+    "-Wextra",
+    "-Werror",
+    "-fPIC",
+    "-fno-optimize-sibling-calls"
+  ],
+  "gpu_used": false,
+  "measurement_commit": "53083ebfc0c762a31eeb88fd710aec1c01ff3410",
+  "measurement_tree": "91a4dee40df2192d27bd6a0984214361a094250b",
+  "model_forwards": 0,
+  "observer_sha256": "9db495bdca8d60b1a14d162b5475dbd83b26d7c3574a29f5790c3f9d465d2b50",
+  "private_bytes": 5732410,
+  "program_sha256": "3451ec8a2689e50a453c2ca3d0f76399a89a86fd0bdc3b2444045967ae1d715c",
+  "sources_sha256": {
+    "capture.cpp": "7ab06808ecde052b89137bd6627ed986c21b1726a385ea090e70ae4cdb044650",
+    "fixture.py": "3451ec8a2689e50a453c2ca3d0f76399a89a86fd0bdc3b2444045967ae1d715c",
+    "test_fixture.py": "c23202301fd42f1861298ff3d2309058f520a1025af55f5d1da21f97b47486ba"
+  },
+  "status": "PASS_SYNTHETIC_SERVER_LOGIT_OBSERVER"
+}

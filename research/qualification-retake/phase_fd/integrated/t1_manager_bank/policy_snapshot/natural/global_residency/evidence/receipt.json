@@ -1,0 +1,1458 @@
+{
+  "archive_manifests": {
+    "63": "f46876468215957504f27d593081142a99d46220cf9ab42782965833eab1da7f",
+    "65": "1713b1e73b8e59c34b1f12fc268a9d6caafba09d5c82707476ec9a0febd0069b",
+    "66": "de926e27af098ac21015917772c36f5357496c3e1604b121b371e1ec5e2979e7",
+    "69": "019d46de75a0742e1704001aed05b124c37eb53151a8083413b3b2cb8ab3a89d",
+    "71": "6e6b4ca1bd6f41477f8928c7cab6b72432cf3c47d923ede8be20e71231f05646"
+  },
+  "arms": {
+    "P1000": {
+      "capacity": 1000,
+      "continuous": {
+        "call148": {
+          "cpu_bank_read": 184,
+          "cpu_bank_to_backing_bytes": 2432332800,
+          "cpu_disk": 436,
+          "cpu_logical_hit_bank_read": 102,
+          "cpu_logical_hit_disk": 152,
+          "cpu_required_pages": 2202,
+          "cpu_resident_consumptions": 1582,
+          "cuda_bank": 66,
+          "cuda_disk": 389,
+          "disk_pack_bytes": 10908057600,
+          "disk_payload_bytes": 10905840000,
+          "gpu_primary_set_payload_bytes": 6014736000,
+          "total_disk": 825
+        },
+        "call5": {
+          "cpu_bank_read": 14,
+          "cpu_bank_to_backing_bytes": 185068800,
+          "cpu_disk": 26,
+          "cpu_logical_hit_bank_read": 0,
+          "cpu_logical_hit_disk": 0,
+          "cpu_required_pages": 341,
+          "cpu_resident_consumptions": 301,
+          "cuda_bank": 3,
+          "cuda_disk": 8,
+          "disk_pack_bytes": 449544192,
+          "disk_payload_bytes": 449452800,
+          "gpu_primary_set_payload_bytes": 145411200,
+          "total_disk": 34
+        },
+        "decode": {
+          "cpu_bank_read": 138,
+          "cpu_bank_to_backing_bytes": 1824249600,
+          "cpu_disk": 203,
+          "cpu_logical_hit_bank_read": 2,
+          "cpu_logical_hit_disk": 7,
+          "cpu_required_pages": 4600,
+          "cpu_resident_consumptions": 4259,
+          "cuda_bank": 69,
+          "cuda_disk": 256,
+          "disk_pack_bytes": 6068846592,
+          "disk_payload_bytes": 6067612800,
+          "gpu_primary_set_payload_bytes": 4296240000,
+          "total_disk": 459
+        },
+        "prefill": {
+          "cpu_bank_read": 198,
+          "cpu_bank_to_backing_bytes": 2617401600,
+          "cpu_disk": 462,
+          "cpu_logical_hit_bank_read": 102,
+          "cpu_logical_hit_disk": 152,
+          "cpu_required_pages": 2543,
+          "cpu_resident_consumptions": 1883,
+          "cuda_bank": 69,
+          "cuda_disk": 397,
+          "disk_pack_bytes": 11357601792,
+          "disk_payload_bytes": 11355292800,
+          "gpu_primary_set_payload_bytes": 6160147200,
+          "total_disk": 859
+        }
+      },
+      "continuous_cross": {
+        "PR_PR": {
+          "pipeline": {
+            "margin_ns": 335546938.4678639,
+            "max_disk_jobs": 925,
+            "min_useful_GBs": 2.438981044446516
+          },
+          "serial": {
+            "margin_ns": -456119499.5321361,
+            "max_disk_jobs": 768,
+            "min_useful_GBs": 2.9386747004402025
+          },
+          "six_tok_s_margin_ns": 2630215786,
+          "zero": {
+            "margin_ns": 695031818.4678639,
+            "max_disk_jobs": 997,
+            "min_useful_GBs": 2.2641584605628786
+          }
+        },
+        "PR_RP": {
+          "pipeline": {
+            "margin_ns": 358320360.4678639,
+            "max_disk_jobs": 930,
+            "min_useful_GBs": 2.427108941551252
+          },
+          "serial": {
+            "margin_ns": -433346077.5321361,
+            "max_disk_jobs": 772,
+            "min_useful_GBs": 2.921456770547611
+          },
+          "six_tok_s_margin_ns": 2652989208,
+          "zero": {
+            "margin_ns": 717805240.4678639,
+            "max_disk_jobs": 1001,
+            "min_useful_GBs": 2.253923739922946
+          }
+        },
+        "RP_PR": {
+          "pipeline": {
+            "margin_ns": 153483952.34120983,
+            "max_disk_jobs": 888,
+            "min_useful_GBs": 2.438981044446516
+          },
+          "serial": {
+            "margin_ns": -638182485.6587901,
+            "max_disk_jobs": 737,
+            "min_useful_GBs": 2.9386747004402025
+          },
+          "six_tok_s_margin_ns": 2630215786,
+          "zero": {
+            "margin_ns": 512968832.3412098,
+            "max_disk_jobs": 956,
+            "min_useful_GBs": 2.2641584605628786
+          }
+        },
+        "RP_RP": {
+          "pipeline": {
+            "margin_ns": 176257374.34120983,
+            "max_disk_jobs": 892,
+            "min_useful_GBs": 2.427108941551252
+          },
+          "serial": {
+            "margin_ns": -615409063.6587901,
+            "max_disk_jobs": 741,
+            "min_useful_GBs": 2.921456770547611
+          },
+          "six_tok_s_margin_ns": 2652989208,
+          "zero": {
+            "margin_ns": 535742254.3412098,
+            "max_disk_jobs": 961,
+            "min_useful_GBs": 2.253923739922946
+          }
+        }
+      },
+      "continuous_decode_prices": {
+        "PR": {
+          "cpu_read_dropped_at_site": 345,
+          "cpu_read_only_callback_ns": 1294068960,
+          "cpu_read_priced": 196,
+          "cpu_read_unpriced": 7,
+          "cuda_callback_ns": 1590807311,
+          "decode_cuda_only_ns": 3909048587,
+          "decode_witness_ns": 5203117547,
+          "upper_46_evaluations_s": 8.840853504553738,
+          "upper_47_tokens_s": 9.033045972044038
+        },
+        "RP": {
+          "cpu_read_dropped_at_site": 345,
+          "cpu_read_only_callback_ns": 1272481757,
+          "cpu_read_priced": 196,
+          "cpu_read_unpriced": 7,
+          "cuda_callback_ns": 1589621092,
+          "decode_cuda_only_ns": 3907862368,
+          "decode_witness_ns": 5180344125,
+          "upper_46_evaluations_s": 8.879718970407202,
+          "upper_47_tokens_s": 9.072756339329098
+        }
+      },
+      "continuous_total_disk": 1318,
+      "cpu_initial_distinct": 1000,
+      "fixed_cpu_bank": 263,
+      "optimistic_cross": {
+        "PR_PR": {
+          "pipeline": {
+            "margin_ns": 1629615898.4678638,
+            "max_disk_jobs": 1183,
+            "min_useful_GBs": 1.9085097468522498
+          },
+          "serial": {
+            "margin_ns": 837949460.4678639,
+            "max_disk_jobs": 1025,
+            "min_useful_GBs": 2.2014251443310213
+          },
+          "six_tok_s_margin_ns": 3924284746,
+          "zero": {
+            "margin_ns": 1989100778.4678638,
+            "max_disk_jobs": 1254,
+            "min_useful_GBs": 1.799768733351254
+          }
+        },
+        "PR_RP": {
+          "pipeline": {
+            "margin_ns": 1630802117.4678638,
+            "max_disk_jobs": 1183,
+            "min_useful_GBs": 1.9081293221350295
+          },
+          "serial": {
+            "margin_ns": 839135679.4678639,
+            "max_disk_jobs": 1025,
+            "min_useful_GBs": 2.2009189998321355
+          },
+          "six_tok_s_margin_ns": 3925470965,
+          "zero": {
+            "margin_ns": 1990286997.4678638,
+            "max_disk_jobs": 1254,
+            "min_useful_GBs": 1.7994304206523046
+          }
+        },
+        "RP_PR": {
+          "pipeline": {
+            "margin_ns": 1447552912.34121,
+            "max_disk_jobs": 1135,
+            "min_useful_GBs": 1.9085097468522498
+          },
+          "serial": {
+            "margin_ns": 655886474.3412099,
+            "max_disk_jobs": 984,
+            "min_useful_GBs": 2.2014251443310213
+          },
+          "six_tok_s_margin_ns": 3924284746,
+          "zero": {
+            "margin_ns": 1807037792.34121,
+            "max_disk_jobs": 1203,
+            "min_useful_GBs": 1.799768733351254
+          }
+        },
+        "RP_RP": {
+          "pipeline": {
+            "margin_ns": 1448739131.34121,
+            "max_disk_jobs": 1135,
+            "min_useful_GBs": 1.9081293221350295
+          },
+          "serial": {
+            "margin_ns": 657072693.3412099,
+            "max_disk_jobs": 984,
+            "min_useful_GBs": 2.2009189998321355
+          },
+          "six_tok_s_margin_ns": 3925470965,
+          "zero": {
+            "margin_ns": 1808224011.34121,
+            "max_disk_jobs": 1203,
+            "min_useful_GBs": 1.7994304206523046
+          }
+        }
+      },
+      "prefill_free_exit": {
+        "cpu_bank_read": 96,
+        "cpu_bank_to_backing_bytes": 1269043200,
+        "cpu_disk": 462,
+        "cpu_logical_hit_bank_read": 31,
+        "cpu_logical_hit_disk": 152,
+        "cpu_required_pages": 2543,
+        "cpu_resident_consumptions": 1985,
+        "cuda_bank": 69,
+        "cuda_disk": 397,
+        "disk_pack_bytes": 11357601792,
+        "disk_payload_bytes": 11355292800,
+        "gpu_primary_set_payload_bytes": 6160147200,
+        "total_disk": 859
+      },
+      "restore": {
+        "duplicated_payload_bytes_to_separate_if_unified": 0,
+        "last_group": {
+          "bank": 0,
+          "disk": 0
+        },
+        "minimum_disk_including_restore": 859,
+        "prices": {
+          "PR_PR": {
+            "pipeline": {
+              "margin_ns": -1578194884.5321362,
+              "max_disk_jobs": 545,
+              "min_useful_GBs": 4.141228077057953
+            },
+            "serial": {
+              "margin_ns": -2369861322.532136,
+              "max_disk_jobs": 387,
+              "min_useful_GBs": 5.822198404937407
+            },
+            "six_tok_s_margin_ns": 716473963,
+            "zero": {
+              "margin_ns": -1218710004.5321362,
+              "max_disk_jobs": 616,
+              "min_useful_GBs": 3.6612310200721128
+            }
+          },
+          "PR_RP": {
+            "pipeline": {
+              "margin_ns": -1545943634.5321362,
+              "max_disk_jobs": 551,
+              "min_useful_GBs": 4.093085626337204
+            },
+            "serial": {
+              "margin_ns": -2337610072.532136,
+              "max_disk_jobs": 394,
+              "min_useful_GBs": 5.727487633134665
+            },
+            "six_tok_s_margin_ns": 748725213,
+            "zero": {
+              "margin_ns": -1186458754.5321362,
+              "max_disk_jobs": 623,
+              "min_useful_GBs": 3.623551120157145
+            }
+          },
+          "RP_PR": {
+            "pipeline": {
+              "margin_ns": -1760257870.65879,
+              "max_disk_jobs": 523,
+              "min_useful_GBs": 4.141228077057953
+            },
+            "serial": {
+              "margin_ns": -2551924308.65879,
+              "max_disk_jobs": 372,
+              "min_useful_GBs": 5.822198404937407
+            },
+            "six_tok_s_margin_ns": 716473963,
+            "zero": {
+              "margin_ns": -1400772990.65879,
+              "max_disk_jobs": 591,
+              "min_useful_GBs": 3.6612310200721128
+            }
+          },
+          "RP_RP": {
+            "pipeline": {
+              "margin_ns": -1728006620.65879,
+              "max_disk_jobs": 529,
+              "min_useful_GBs": 4.093085626337204
+            },
+            "serial": {
+              "margin_ns": -2519673058.65879,
+              "max_disk_jobs": 378,
+              "min_useful_GBs": 5.727487633134665
+            },
+            "six_tok_s_margin_ns": 748725213,
+            "zero": {
+              "margin_ns": -1368521740.65879,
+              "max_disk_jobs": 597,
+              "min_useful_GBs": 3.623551120157145
+            }
+          }
+        },
+        "reads_in_witness": {
+          "cpu_bank_read": 96,
+          "cpu_bank_to_backing_bytes": 1269043200,
+          "cpu_disk": 462,
+          "cpu_logical_hit_bank_read": 31,
+          "cpu_logical_hit_disk": 152,
+          "cpu_required_pages": 2543,
+          "cpu_resident_consumptions": 1985,
+          "cuda_bank": 69,
+          "cuda_disk": 397,
+          "disk_pack_bytes": 11357601792,
+          "disk_payload_bytes": 11355292800,
+          "gpu_primary_set_payload_bytes": 6160147200,
+          "total_disk": 859
+        },
+        "status": "MEMBERS_ONLY_WITH_FREE_PERMUTATIONS"
+      },
+      "serial_decision": "NO_GO_WITNESS_SERIAL_AT_ASSUMED_PRICES"
+    },
+    "P40": {
+      "capacity": 40,
+      "continuous": {
+        "call148": {
+          "cpu_bank_read": 115,
+          "cpu_bank_to_backing_bytes": 1520208000,
+          "cpu_disk": 441,
+          "cpu_logical_hit_bank_read": 51,
+          "cpu_logical_hit_disk": 157,
+          "cpu_required_pages": 2202,
+          "cpu_resident_consumptions": 1646,
+          "cuda_bank": 66,
+          "cuda_disk": 389,
+          "disk_pack_bytes": 10974167040,
+          "disk_payload_bytes": 10971936000,
+          "gpu_primary_set_payload_bytes": 6014736000,
+          "total_disk": 830
+        },
+        "call5": {
+          "cpu_bank_read": 14,
+          "cpu_bank_to_backing_bytes": 185068800,
+          "cpu_disk": 26,
+          "cpu_logical_hit_bank_read": 0,
+          "cpu_logical_hit_disk": 0,
+          "cpu_required_pages": 341,
+          "cpu_resident_consumptions": 301,
+          "cuda_bank": 3,
+          "cuda_disk": 8,
+          "disk_pack_bytes": 449544192,
+          "disk_payload_bytes": 449452800,
+          "gpu_primary_set_payload_bytes": 145411200,
+          "total_disk": 34
+        },
+        "decode": {
+          "cpu_bank_read": 133,
+          "cpu_bank_to_backing_bytes": 1758153600,
+          "cpu_disk": 345,
+          "cpu_logical_hit_bank_read": 0,
+          "cpu_logical_hit_disk": 53,
+          "cpu_required_pages": 4600,
+          "cpu_resident_consumptions": 4122,
+          "cuda_bank": 69,
+          "cuda_disk": 256,
+          "disk_pack_bytes": 7946354688,
+          "disk_payload_bytes": 7944739200,
+          "gpu_primary_set_payload_bytes": 4296240000,
+          "total_disk": 601
+        },
+        "prefill": {
+          "cpu_bank_read": 129,
+          "cpu_bank_to_backing_bytes": 1705276800,
+          "cpu_disk": 467,
+          "cpu_logical_hit_bank_read": 51,
+          "cpu_logical_hit_disk": 157,
+          "cpu_required_pages": 2543,
+          "cpu_resident_consumptions": 1947,
+          "cuda_bank": 69,
+          "cuda_disk": 397,
+          "disk_pack_bytes": 11423711232,
+          "disk_payload_bytes": 11421388800,
+          "gpu_primary_set_payload_bytes": 6160147200,
+          "total_disk": 864
+        }
+      },
+      "continuous_cross": {
+        "PR_PR": {
+          "pipeline": {
+            "margin_ns": -160141470.77504727,
+            "max_disk_jobs": 832,
+            "min_useful_GBs": 2.728987508160807
+          },
+          "serial": {
+            "margin_ns": -951807908.7750473,
+            "max_disk_jobs": 674,
+            "min_useful_GBs": 3.3656220710327247
+          },
+          "six_tok_s_margin_ns": 2159674093,
+          "zero": {
+            "margin_ns": 199343409.22495273,
+            "max_disk_jobs": 903,
+            "min_useful_GBs": 2.5131249395592135
+          }
+        },
+        "PR_RP": {
+          "pipeline": {
+            "margin_ns": -126742533.77504726,
+            "max_disk_jobs": 838,
+            "min_useful_GBs": 2.7073819837947557
+          },
+          "serial": {
+            "margin_ns": -918408971.7750473,
+            "max_disk_jobs": 681,
+            "min_useful_GBs": 3.3328207726161887
+          },
+          "six_tok_s_margin_ns": 2193073030,
+          "zero": {
+            "margin_ns": 232742346.22495273,
+            "max_disk_jobs": 910,
+            "min_useful_GBs": 2.494790740918831
+          }
+        },
+        "RP_PR": {
+          "pipeline": {
+            "margin_ns": -343264194.8884688,
+            "max_disk_jobs": 798,
+            "min_useful_GBs": 2.728987508160807
+          },
+          "serial": {
+            "margin_ns": -1134930632.8884687,
+            "max_disk_jobs": 647,
+            "min_useful_GBs": 3.3656220710327247
+          },
+          "six_tok_s_margin_ns": 2159674093,
+          "zero": {
+            "margin_ns": 16220685.11153119,
+            "max_disk_jobs": 867,
+            "min_useful_GBs": 2.5131249395592135
+          }
+        },
+        "RP_RP": {
+          "pipeline": {
+            "margin_ns": -309865257.8884688,
+            "max_disk_jobs": 804,
+            "min_useful_GBs": 2.7073819837947557
+          },
+          "serial": {
+            "margin_ns": -1101531695.8884687,
+            "max_disk_jobs": 653,
+            "min_useful_GBs": 3.3328207726161887
+          },
+          "six_tok_s_margin_ns": 2193073030,
+          "zero": {
+            "margin_ns": 49619622.11153119,
+            "max_disk_jobs": 873,
+            "min_useful_GBs": 2.494790740918831
+          }
+        }
+      },
+      "continuous_decode_prices": {
+        "PR": {
+          "cpu_read_dropped_at_site": 249,
+          "cpu_read_only_callback_ns": 1764610653,
+          "cpu_read_priced": 292,
+          "cpu_read_unpriced": 53,
+          "cuda_callback_ns": 1590807311,
+          "decode_cuda_only_ns": 3909048587,
+          "decode_witness_ns": 5673659240,
+          "upper_46_evaluations_s": 8.107642361686846,
+          "upper_47_tokens_s": 8.283895456506126
+        },
+        "RP": {
+          "cpu_read_dropped_at_site": 249,
+          "cpu_read_only_callback_ns": 1732397935,
+          "cpu_read_priced": 292,
+          "cpu_read_unpriced": 53,
+          "cuda_callback_ns": 1589621092,
+          "decode_cuda_only_ns": 3907862368,
+          "decode_witness_ns": 5640260303,
+          "upper_46_evaluations_s": 8.155651960873692,
+          "upper_47_tokens_s": 8.332948742631817
+        }
+      },
+      "continuous_total_disk": 1465,
+      "cpu_initial_distinct": 1000,
+      "fixed_cpu_bank": 263,
+      "optimistic_cross": {
+        "PR_PR": {
+          "pipeline": {
+            "margin_ns": 1604469182.2249527,
+            "max_disk_jobs": 1183,
+            "min_useful_GBs": 1.9196186510830544
+          },
+          "serial": {
+            "margin_ns": 812802744.2249527,
+            "max_disk_jobs": 1025,
+            "min_useful_GBs": 2.2142390275925523
+          },
+          "six_tok_s_margin_ns": 3924284746,
+          "zero": {
+            "margin_ns": 1963954062.2249527,
+            "max_disk_jobs": 1254,
+            "min_useful_GBs": 1.810244686397536
+          }
+        },
+        "PR_RP": {
+          "pipeline": {
+            "margin_ns": 1605655401.2249527,
+            "max_disk_jobs": 1183,
+            "min_useful_GBs": 1.9192360120194012
+          },
+          "serial": {
+            "margin_ns": 813988963.2249527,
+            "max_disk_jobs": 1025,
+            "min_useful_GBs": 2.2137299369673635
+          },
+          "six_tok_s_margin_ns": 3925470965,
+          "zero": {
+            "margin_ns": 1965140281.2249527,
+            "max_disk_jobs": 1254,
+            "min_useful_GBs": 1.809904404474495
+          }
+        },
+        "RP_PR": {
+          "pipeline": {
+            "margin_ns": 1421346458.1115313,
+            "max_disk_jobs": 1135,
+            "min_useful_GBs": 1.9196186510830544
+          },
+          "serial": {
+            "margin_ns": 629680020.1115311,
+            "max_disk_jobs": 984,
+            "min_useful_GBs": 2.2142390275925523
+          },
+          "six_tok_s_margin_ns": 3924284746,
+          "zero": {
+            "margin_ns": 1780831338.1115313,
+            "max_disk_jobs": 1203,
+            "min_useful_GBs": 1.810244686397536
+          }
+        },
+        "RP_RP": {
+          "pipeline": {
+            "margin_ns": 1422532677.1115313,
+            "max_disk_jobs": 1135,
+            "min_useful_GBs": 1.9192360120194012
+          },
+          "serial": {
+            "margin_ns": 630866239.1115311,
+            "max_disk_jobs": 984,
+            "min_useful_GBs": 2.2137299369673635
+          },
+          "six_tok_s_margin_ns": 3925470965,
+          "zero": {
+            "margin_ns": 1782017557.1115313,
+            "max_disk_jobs": 1203,
+            "min_useful_GBs": 1.809904404474495
+          }
+        }
+      },
+      "prefill_free_exit": {
+        "cpu_bank_read": 100,
+        "cpu_bank_to_backing_bytes": 1321920000,
+        "cpu_disk": 467,
+        "cpu_logical_hit_bank_read": 34,
+        "cpu_logical_hit_disk": 157,
+        "cpu_required_pages": 2543,
+        "cpu_resident_consumptions": 1976,
+        "cuda_bank": 69,
+        "cuda_disk": 397,
+        "disk_pack_bytes": 11423711232,
+        "disk_payload_bytes": 11421388800,
+        "gpu_primary_set_payload_bytes": 6160147200,
+        "total_disk": 864
+      },
+      "restore": {
+        "duplicated_payload_bytes_to_separate_if_unified": 0,
+        "last_group": {
+          "bank": 0,
+          "disk": 24
+        },
+        "minimum_disk_including_restore": 888,
+        "prices": {
+          "PR_PR": {
+            "pipeline": {
+              "margin_ns": -1724045838.7410207,
+              "max_disk_jobs": 545,
+              "min_useful_GBs": 4.281036708297395
+            },
+            "serial": {
+              "margin_ns": -2515712276.7410207,
+              "max_disk_jobs": 387,
+              "min_useful_GBs": 6.018756907548798
+            },
+            "six_tok_s_margin_ns": 716473963,
+            "zero": {
+              "margin_ns": -1364560958.7410207,
+              "max_disk_jobs": 616,
+              "min_useful_GBs": 3.784834861261974
+            }
+          },
+          "PR_RP": {
+            "pipeline": {
+              "margin_ns": -1691794588.7410207,
+              "max_disk_jobs": 551,
+              "min_useful_GBs": 4.231268959473152
+            },
+            "serial": {
+              "margin_ns": -2483461026.7410207,
+              "max_disk_jobs": 394,
+              "min_useful_GBs": 5.920848682448874
+            },
+            "six_tok_s_margin_ns": 748725213,
+            "zero": {
+              "margin_ns": -1332309708.7410207,
+              "max_disk_jobs": 623,
+              "min_useful_GBs": 3.7458828809075024
+            }
+          },
+          "RP_PR": {
+            "pipeline": {
+              "margin_ns": -1912255305.1909263,
+              "max_disk_jobs": 523,
+              "min_useful_GBs": 4.281036708297395
+            },
+            "serial": {
+              "margin_ns": -2703921743.190926,
+              "max_disk_jobs": 372,
+              "min_useful_GBs": 6.018756907548798
+            },
+            "six_tok_s_margin_ns": 716473963,
+            "zero": {
+              "margin_ns": -1552770425.1909263,
+              "max_disk_jobs": 591,
+              "min_useful_GBs": 3.784834861261974
+            }
+          },
+          "RP_RP": {
+            "pipeline": {
+              "margin_ns": -1880004055.1909263,
+              "max_disk_jobs": 529,
+              "min_useful_GBs": 4.231268959473152
+            },
+            "serial": {
+              "margin_ns": -2671670493.190926,
+              "max_disk_jobs": 378,
+              "min_useful_GBs": 5.920848682448874
+            },
+            "six_tok_s_margin_ns": 748725213,
+            "zero": {
+              "margin_ns": -1520519175.1909263,
+              "max_disk_jobs": 597,
+              "min_useful_GBs": 3.7458828809075024
+            }
+          }
+        },
+        "reads_in_witness": {
+          "cpu_bank_read": 108,
+          "cpu_bank_to_backing_bytes": 1427673600,
+          "cpu_disk": 467,
+          "cpu_logical_hit_bank_read": 38,
+          "cpu_logical_hit_disk": 157,
+          "cpu_required_pages": 2543,
+          "cpu_resident_consumptions": 1968,
+          "cuda_bank": 69,
+          "cuda_disk": 397,
+          "disk_pack_bytes": 11423711232,
+          "disk_payload_bytes": 11421388800,
+          "gpu_primary_set_payload_bytes": 6160147200,
+          "total_disk": 864
+        },
+        "status": "MEMBERS_ONLY_WITH_FREE_PERMUTATIONS"
+      },
+      "serial_decision": "NO_GO_WITNESS_SERIAL_AT_ASSUMED_PRICES"
+    },
+    "U1263": {
+      "capacity": 1263,
+      "continuous": {
+        "call148": {
+          "cpu_bank_read": 0,
+          "cpu_bank_to_backing_bytes": 0,
+          "cpu_disk": 436,
+          "cpu_logical_hit_bank_read": 0,
+          "cpu_logical_hit_disk": 152,
+          "cpu_required_pages": 2202,
+          "cpu_resident_consumptions": 1766,
+          "cuda_bank": 66,
+          "cuda_disk": 389,
+          "disk_pack_bytes": 10908057600,
+          "disk_payload_bytes": 10905840000,
+          "gpu_primary_set_payload_bytes": 6014736000,
+          "total_disk": 825
+        },
+        "call5": {
+          "cpu_bank_read": 0,
+          "cpu_bank_to_backing_bytes": 0,
+          "cpu_disk": 26,
+          "cpu_logical_hit_bank_read": 0,
+          "cpu_logical_hit_disk": 0,
+          "cpu_required_pages": 341,
+          "cpu_resident_consumptions": 315,
+          "cuda_bank": 3,
+          "cuda_disk": 8,
+          "disk_pack_bytes": 449544192,
+          "disk_payload_bytes": 449452800,
+          "gpu_primary_set_payload_bytes": 145411200,
+          "total_disk": 34
+        },
+        "decode": {
+          "cpu_bank_read": 0,
+          "cpu_bank_to_backing_bytes": 0,
+          "cpu_disk": 158,
+          "cpu_logical_hit_bank_read": 0,
+          "cpu_logical_hit_disk": 0,
+          "cpu_required_pages": 4600,
+          "cpu_resident_consumptions": 4442,
+          "cuda_bank": 69,
+          "cuda_disk": 256,
+          "disk_pack_bytes": 5473861632,
+          "disk_payload_bytes": 5472748800,
+          "gpu_primary_set_payload_bytes": 4296240000,
+          "total_disk": 414
+        },
+        "prefill": {
+          "cpu_bank_to_backing_bytes": 0,
+          "cpu_disk": 462,
+          "cpu_logical_hit_disk": 152,
+          "cpu_required_pages": 2543,
+          "cpu_resident_consumptions": 2081,
+          "cuda_bank": 69,
+          "cuda_disk": 397,
+          "disk_pack_bytes": 11357601792,
+          "disk_payload_bytes": 11355292800,
+          "gpu_primary_set_payload_bytes": 6160147200,
+          "total_disk": 859
+        }
+      },
+      "continuous_cross": {
+        "PR_PR": {
+          "pipeline": {
+            "margin_ns": 547940660.4678639,
+            "max_disk_jobs": 967,
+            "min_useful_GBs": 2.3325700601536394
+          },
+          "serial": {
+            "margin_ns": -243725777.5321361,
+            "max_disk_jobs": 810,
+            "min_useful_GBs": 2.785563181140074
+          },
+          "six_tok_s_margin_ns": 2842609508,
+          "zero": {
+            "margin_ns": 907425540.4678639,
+            "max_disk_jobs": 1039,
+            "min_useful_GBs": 2.1721678425050226
+          }
+        },
+        "PR_RP": {
+          "pipeline": {
+            "margin_ns": 558310071.4678639,
+            "max_disk_jobs": 970,
+            "min_useful_GBs": 2.327612122529422
+          },
+          "serial": {
+            "margin_ns": -233356366.5321361,
+            "max_disk_jobs": 812,
+            "min_useful_GBs": 2.7784954754159474
+          },
+          "six_tok_s_margin_ns": 2852978919,
+          "zero": {
+            "margin_ns": 917794951.4678639,
+            "max_disk_jobs": 1041,
+            "min_useful_GBs": 2.167867709310824
+          }
+        },
+        "RP_PR": {
+          "pipeline": {
+            "margin_ns": 365877674.3412098,
+            "max_disk_jobs": 928,
+            "min_useful_GBs": 2.3325700601536394
+          },
+          "serial": {
+            "margin_ns": -425788763.6587902,
+            "max_disk_jobs": 777,
+            "min_useful_GBs": 2.785563181140074
+          },
+          "six_tok_s_margin_ns": 2842609508,
+          "zero": {
+            "margin_ns": 725362554.3412099,
+            "max_disk_jobs": 997,
+            "min_useful_GBs": 2.1721678425050226
+          }
+        },
+        "RP_RP": {
+          "pipeline": {
+            "margin_ns": 376247085.3412098,
+            "max_disk_jobs": 930,
+            "min_useful_GBs": 2.327612122529422
+          },
+          "serial": {
+            "margin_ns": -415419352.6587902,
+            "max_disk_jobs": 779,
+            "min_useful_GBs": 2.7784954754159474
+          },
+          "six_tok_s_margin_ns": 2852978919,
+          "zero": {
+            "margin_ns": 735731965.3412099,
+            "max_disk_jobs": 999,
+            "min_useful_GBs": 2.167867709310824
+          }
+        }
+      },
+      "continuous_decode_prices": {
+        "PR": {
+          "cpu_read_dropped_at_site": 383,
+          "cpu_read_only_callback_ns": 1081675238,
+          "cpu_read_priced": 158,
+          "cpu_read_unpriced": 0,
+          "cuda_callback_ns": 1590807311,
+          "decode_cuda_only_ns": 3909048587,
+          "decode_witness_ns": 4990723825,
+          "upper_46_evaluations_s": 9.217099886307574,
+          "upper_47_tokens_s": 9.417471622966435
+        },
+        "RP": {
+          "cpu_read_dropped_at_site": 383,
+          "cpu_read_only_callback_ns": 1072492046,
+          "cpu_read_priced": 158,
+          "cpu_read_unpriced": 0,
+          "cuda_callback_ns": 1589621092,
+          "decode_cuda_only_ns": 3907862368,
+          "decode_witness_ns": 4980354414,
+          "upper_46_evaluations_s": 9.236290467740996,
+          "upper_47_tokens_s": 9.437079390952759
+        }
+      },
+      "continuous_total_disk": 1273,
+      "cpu_initial_distinct": 1227,
+      "fixed_cpu_bank": 0,
+      "optimistic_cross": {
+        "PR_PR": {
+          "pipeline": {
+            "margin_ns": 1629615898.4678638,
+            "max_disk_jobs": 1183,
+            "min_useful_GBs": 1.9085097468522498
+          },
+          "serial": {
+            "margin_ns": 837949460.4678639,
+            "max_disk_jobs": 1025,
+            "min_useful_GBs": 2.2014251443310213
+          },
+          "six_tok_s_margin_ns": 3924284746,
+          "zero": {
+            "margin_ns": 1989100778.4678638,
+            "max_disk_jobs": 1254,
+            "min_useful_GBs": 1.799768733351254
+          }
+        },
+        "PR_RP": {
+          "pipeline": {
+            "margin_ns": 1630802117.4678638,
+            "max_disk_jobs": 1183,
+            "min_useful_GBs": 1.9081293221350295
+          },
+          "serial": {
+            "margin_ns": 839135679.4678639,
+            "max_disk_jobs": 1025,
+            "min_useful_GBs": 2.2009189998321355
+          },
+          "six_tok_s_margin_ns": 3925470965,
+          "zero": {
+            "margin_ns": 1990286997.4678638,
+            "max_disk_jobs": 1254,
+            "min_useful_GBs": 1.7994304206523046
+          }
+        },
+        "RP_PR": {
+          "pipeline": {
+            "margin_ns": 1447552912.34121,
+            "max_disk_jobs": 1135,
+            "min_useful_GBs": 1.9085097468522498
+          },
+          "serial": {
+            "margin_ns": 655886474.3412099,
+            "max_disk_jobs": 984,
+            "min_useful_GBs": 2.2014251443310213
+          },
+          "six_tok_s_margin_ns": 3924284746,
+          "zero": {
+            "margin_ns": 1807037792.34121,
+            "max_disk_jobs": 1203,
+            "min_useful_GBs": 1.799768733351254
+          }
+        },
+        "RP_RP": {
+          "pipeline": {
+            "margin_ns": 1448739131.34121,
+            "max_disk_jobs": 1135,
+            "min_useful_GBs": 1.9081293221350295
+          },
+          "serial": {
+            "margin_ns": 657072693.3412099,
+            "max_disk_jobs": 984,
+            "min_useful_GBs": 2.2009189998321355
+          },
+          "six_tok_s_margin_ns": 3925470965,
+          "zero": {
+            "margin_ns": 1808224011.34121,
+            "max_disk_jobs": 1203,
+            "min_useful_GBs": 1.7994304206523046
+          }
+        }
+      },
+      "prefill_free_exit": {
+        "cpu_bank_to_backing_bytes": 0,
+        "cpu_disk": 462,
+        "cpu_logical_hit_disk": 152,
+        "cpu_required_pages": 2543,
+        "cpu_resident_consumptions": 2081,
+        "cuda_bank": 69,
+        "cuda_disk": 397,
+        "disk_pack_bytes": 11357601792,
+        "disk_payload_bytes": 11355292800,
+        "gpu_primary_set_payload_bytes": 6160147200,
+        "total_disk": 859
+      },
+      "restore": {
+        "duplicated_payload_bytes_to_separate_if_unified": 1057536000,
+        "last_group": {
+          "bank": 0,
+          "disk": 0
+        },
+        "minimum_disk_including_restore": 859,
+        "prices": {
+          "PR_PR": {
+            "pipeline": {
+              "margin_ns": -1578194884.5321362,
+              "max_disk_jobs": 545,
+              "min_useful_GBs": 4.141228077057953
+            },
+            "serial": {
+              "margin_ns": -2369861322.532136,
+              "max_disk_jobs": 387,
+              "min_useful_GBs": 5.822198404937407
+            },
+            "six_tok_s_margin_ns": 716473963,
+            "zero": {
+              "margin_ns": -1218710004.5321362,
+              "max_disk_jobs": 616,
+              "min_useful_GBs": 3.6612310200721128
+            }
+          },
+          "PR_RP": {
+            "pipeline": {
+              "margin_ns": -1545943634.5321362,
+              "max_disk_jobs": 551,
+              "min_useful_GBs": 4.093085626337204
+            },
+            "serial": {
+              "margin_ns": -2337610072.532136,
+              "max_disk_jobs": 394,
+              "min_useful_GBs": 5.727487633134665
+            },
+            "six_tok_s_margin_ns": 748725213,
+            "zero": {
+              "margin_ns": -1186458754.5321362,
+              "max_disk_jobs": 623,
+              "min_useful_GBs": 3.623551120157145
+            }
+          },
+          "RP_PR": {
+            "pipeline": {
+              "margin_ns": -1760257870.65879,
+              "max_disk_jobs": 523,
+              "min_useful_GBs": 4.141228077057953
+            },
+            "serial": {
+              "margin_ns": -2551924308.65879,
+              "max_disk_jobs": 372,
+              "min_useful_GBs": 5.822198404937407
+            },
+            "six_tok_s_margin_ns": 716473963,
+            "zero": {
+              "margin_ns": -1400772990.65879,
+              "max_disk_jobs": 591,
+              "min_useful_GBs": 3.6612310200721128
+            }
+          },
+          "RP_RP": {
+            "pipeline": {
+              "margin_ns": -1728006620.65879,
+              "max_disk_jobs": 529,
+              "min_useful_GBs": 4.093085626337204
+            },
+            "serial": {
+              "margin_ns": -2519673058.65879,
+              "max_disk_jobs": 378,
+              "min_useful_GBs": 5.727487633134665
+            },
+            "six_tok_s_margin_ns": 748725213,
+            "zero": {
+              "margin_ns": -1368521740.65879,
+              "max_disk_jobs": 597,
+              "min_useful_GBs": 3.623551120157145
+            }
+          }
+        },
+        "reads_in_witness": {
+          "cpu_bank_to_backing_bytes": 0,
+          "cpu_disk": 462,
+          "cpu_logical_hit_disk": 152,
+          "cpu_required_pages": 2543,
+          "cpu_resident_consumptions": 2081,
+          "cuda_bank": 69,
+          "cuda_disk": 397,
+          "disk_pack_bytes": 11357601792,
+          "disk_payload_bytes": 11355292800,
+          "gpu_primary_set_payload_bytes": 6160147200,
+          "total_disk": 859
+        },
+        "status": "MEMBERS_ONLY_WITH_FREE_PERMUTATIONS"
+      },
+      "serial_decision": "NO_GO_WITNESS_SERIAL_AT_ASSUMED_PRICES"
+    },
+    "U_aligned": {
+      "capacity": 1262,
+      "continuous": {
+        "call148": {
+          "cpu_bank_read": 0,
+          "cpu_bank_to_backing_bytes": 0,
+          "cpu_disk": 436,
+          "cpu_logical_hit_bank_read": 0,
+          "cpu_logical_hit_disk": 152,
+          "cpu_required_pages": 2202,
+          "cpu_resident_consumptions": 1766,
+          "cuda_bank": 66,
+          "cuda_disk": 389,
+          "disk_pack_bytes": 10908057600,
+          "disk_payload_bytes": 10905840000,
+          "gpu_primary_set_payload_bytes": 6014736000,
+          "total_disk": 825
+        },
+        "call5": {
+          "cpu_bank_read": 0,
+          "cpu_bank_to_backing_bytes": 0,
+          "cpu_disk": 26,
+          "cpu_logical_hit_bank_read": 0,
+          "cpu_logical_hit_disk": 0,
+          "cpu_required_pages": 341,
+          "cpu_resident_consumptions": 315,
+          "cuda_bank": 3,
+          "cuda_disk": 8,
+          "disk_pack_bytes": 449544192,
+          "disk_payload_bytes": 449452800,
+          "gpu_primary_set_payload_bytes": 145411200,
+          "total_disk": 34
+        },
+        "decode": {
+          "cpu_bank_read": 0,
+          "cpu_bank_to_backing_bytes": 0,
+          "cpu_disk": 158,
+          "cpu_logical_hit_bank_read": 0,
+          "cpu_logical_hit_disk": 0,
+          "cpu_required_pages": 4600,
+          "cpu_resident_consumptions": 4442,
+          "cuda_bank": 69,
+          "cuda_disk": 256,
+          "disk_pack_bytes": 5473861632,
+          "disk_payload_bytes": 5472748800,
+          "gpu_primary_set_payload_bytes": 4296240000,
+          "total_disk": 414
+        },
+        "prefill": {
+          "cpu_bank_to_backing_bytes": 0,
+          "cpu_disk": 462,
+          "cpu_logical_hit_disk": 152,
+          "cpu_required_pages": 2543,
+          "cpu_resident_consumptions": 2081,
+          "cuda_bank": 69,
+          "cuda_disk": 397,
+          "disk_pack_bytes": 11357601792,
+          "disk_payload_bytes": 11355292800,
+          "gpu_primary_set_payload_bytes": 6160147200,
+          "total_disk": 859
+        }
+      },
+      "continuous_cross": {
+        "PR_PR": {
+          "pipeline": {
+            "margin_ns": 547940660.4678639,
+            "max_disk_jobs": 967,
+            "min_useful_GBs": 2.3325700601536394
+          },
+          "serial": {
+            "margin_ns": -243725777.5321361,
+            "max_disk_jobs": 810,
+            "min_useful_GBs": 2.785563181140074
+          },
+          "six_tok_s_margin_ns": 2842609508,
+          "zero": {
+            "margin_ns": 907425540.4678639,
+            "max_disk_jobs": 1039,
+            "min_useful_GBs": 2.1721678425050226
+          }
+        },
+        "PR_RP": {
+          "pipeline": {
+            "margin_ns": 558310071.4678639,
+            "max_disk_jobs": 970,
+            "min_useful_GBs": 2.327612122529422
+          },
+          "serial": {
+            "margin_ns": -233356366.5321361,
+            "max_disk_jobs": 812,
+            "min_useful_GBs": 2.7784954754159474
+          },
+          "six_tok_s_margin_ns": 2852978919,
+          "zero": {
+            "margin_ns": 917794951.4678639,
+            "max_disk_jobs": 1041,
+            "min_useful_GBs": 2.167867709310824
+          }
+        },
+        "RP_PR": {
+          "pipeline": {
+            "margin_ns": 365877674.3412098,
+            "max_disk_jobs": 928,
+            "min_useful_GBs": 2.3325700601536394
+          },
+          "serial": {
+            "margin_ns": -425788763.6587902,
+            "max_disk_jobs": 777,
+            "min_useful_GBs": 2.785563181140074
+          },
+          "six_tok_s_margin_ns": 2842609508,
+          "zero": {
+            "margin_ns": 725362554.3412099,
+            "max_disk_jobs": 997,
+            "min_useful_GBs": 2.1721678425050226
+          }
+        },
+        "RP_RP": {
+          "pipeline": {
+            "margin_ns": 376247085.3412098,
+            "max_disk_jobs": 930,
+            "min_useful_GBs": 2.327612122529422
+          },
+          "serial": {
+            "margin_ns": -415419352.6587902,
+            "max_disk_jobs": 779,
+            "min_useful_GBs": 2.7784954754159474
+          },
+          "six_tok_s_margin_ns": 2852978919,
+          "zero": {
+            "margin_ns": 735731965.3412099,
+            "max_disk_jobs": 999,
+            "min_useful_GBs": 2.167867709310824
+          }
+        }
+      },
+      "continuous_decode_prices": {
+        "PR": {
+          "cpu_read_dropped_at_site": 383,
+          "cpu_read_only_callback_ns": 1081675238,
+          "cpu_read_priced": 158,
+          "cpu_read_unpriced": 0,
+          "cuda_callback_ns": 1590807311,
+          "decode_cuda_only_ns": 3909048587,
+          "decode_witness_ns": 4990723825,
+          "upper_46_evaluations_s": 9.217099886307574,
+          "upper_47_tokens_s": 9.417471622966435
+        },
+        "RP": {
+          "cpu_read_dropped_at_site": 383,
+          "cpu_read_only_callback_ns": 1072492046,
+          "cpu_read_priced": 158,
+          "cpu_read_unpriced": 0,
+          "cuda_callback_ns": 1589621092,
+          "decode_cuda_only_ns": 3907862368,
+          "decode_witness_ns": 4980354414,
+          "upper_46_evaluations_s": 9.236290467740996,
+          "upper_47_tokens_s": 9.437079390952759
+        }
+      },
+      "continuous_total_disk": 1273,
+      "cpu_initial_distinct": 1227,
+      "fixed_cpu_bank": 0,
+      "optimistic_cross": {
+        "PR_PR": {
+          "pipeline": {
+            "margin_ns": 1629615898.4678638,
+            "max_disk_jobs": 1183,
+            "min_useful_GBs": 1.9085097468522498
+          },
+          "serial": {
+            "margin_ns": 837949460.4678639,
+            "max_disk_jobs": 1025,
+            "min_useful_GBs": 2.2014251443310213
+          },
+          "six_tok_s_margin_ns": 3924284746,
+          "zero": {
+            "margin_ns": 1989100778.4678638,
+            "max_disk_jobs": 1254,
+            "min_useful_GBs": 1.799768733351254
+          }
+        },
+        "PR_RP": {
+          "pipeline": {
+            "margin_ns": 1630802117.4678638,
+            "max_disk_jobs": 1183,
+            "min_useful_GBs": 1.9081293221350295
+          },
+          "serial": {
+            "margin_ns": 839135679.4678639,
+            "max_disk_jobs": 1025,
+            "min_useful_GBs": 2.2009189998321355
+          },
+          "six_tok_s_margin_ns": 3925470965,
+          "zero": {
+            "margin_ns": 1990286997.4678638,
+            "max_disk_jobs": 1254,
+            "min_useful_GBs": 1.7994304206523046
+          }
+        },
+        "RP_PR": {
+          "pipeline": {
+            "margin_ns": 1447552912.34121,
+            "max_disk_jobs": 1135,
+            "min_useful_GBs": 1.9085097468522498
+          },
+          "serial": {
+            "margin_ns": 655886474.3412099,
+            "max_disk_jobs": 984,
+            "min_useful_GBs": 2.2014251443310213
+          },
+          "six_tok_s_margin_ns": 3924284746,
+          "zero": {
+            "margin_ns": 1807037792.34121,
+            "max_disk_jobs": 1203,
+            "min_useful_GBs": 1.799768733351254
+          }
+        },
+        "RP_RP": {
+          "pipeline": {
+            "margin_ns": 1448739131.34121,
+            "max_disk_jobs": 1135,
+            "min_useful_GBs": 1.9081293221350295
+          },
+          "serial": {
+            "margin_ns": 657072693.3412099,
+            "max_disk_jobs": 984,
+            "min_useful_GBs": 2.2009189998321355
+          },
+          "six_tok_s_margin_ns": 3925470965,
+          "zero": {
+            "margin_ns": 1808224011.34121,
+            "max_disk_jobs": 1203,
+            "min_useful_GBs": 1.7994304206523046
+          }
+        }
+      },
+      "prefill_free_exit": {
+        "cpu_bank_to_backing_bytes": 0,
+        "cpu_disk": 462,
+        "cpu_logical_hit_disk": 152,
+        "cpu_required_pages": 2543,
+        "cpu_resident_consumptions": 2081,
+        "cuda_bank": 69,
+        "cuda_disk": 397,
+        "disk_pack_bytes": 11357601792,
+        "disk_payload_bytes": 11355292800,
+        "gpu_primary_set_payload_bytes": 6160147200,
+        "total_disk": 859
+      },
+      "restore": {
+        "duplicated_payload_bytes_to_separate_if_unified": 1057536000,
+        "last_group": {
+          "bank": 0,
+          "disk": 0
+        },
+        "minimum_disk_including_restore": 859,
+        "prices": {
+          "PR_PR": {
+            "pipeline": {
+              "margin_ns": -1578194884.5321362,
+              "max_disk_jobs": 545,
+              "min_useful_GBs": 4.141228077057953
+            },
+            "serial": {
+              "margin_ns": -2369861322.532136,
+              "max_disk_jobs": 387,
+              "min_useful_GBs": 5.822198404937407
+            },
+            "six_tok_s_margin_ns": 716473963,
+            "zero": {
+              "margin_ns": -1218710004.5321362,
+              "max_disk_jobs": 616,
+              "min_useful_GBs": 3.6612310200721128
+            }
+          },
+          "PR_RP": {
+            "pipeline": {
+              "margin_ns": -1545943634.5321362,
+              "max_disk_jobs": 551,
+              "min_useful_GBs": 4.093085626337204
+            },
+            "serial": {
+              "margin_ns": -2337610072.532136,
+              "max_disk_jobs": 394,
+              "min_useful_GBs": 5.727487633134665
+            },
+            "six_tok_s_margin_ns": 748725213,
+            "zero": {
+              "margin_ns": -1186458754.5321362,
+              "max_disk_jobs": 623,
+              "min_useful_GBs": 3.623551120157145
+            }
+          },
+          "RP_PR": {
+            "pipeline": {
+              "margin_ns": -1760257870.65879,
+              "max_disk_jobs": 523,
+              "min_useful_GBs": 4.141228077057953
+            },
+            "serial": {
+              "margin_ns": -2551924308.65879,
+              "max_disk_jobs": 372,
+              "min_useful_GBs": 5.822198404937407
+            },
+            "six_tok_s_margin_ns": 716473963,
+            "zero": {
+              "margin_ns": -1400772990.65879,
+              "max_disk_jobs": 591,
+              "min_useful_GBs": 3.6612310200721128
+            }
+          },
+          "RP_RP": {
+            "pipeline": {
+              "margin_ns": -1728006620.65879,
+              "max_disk_jobs": 529,
+              "min_useful_GBs": 4.093085626337204
+            },
+            "serial": {
+              "margin_ns": -2519673058.65879,
+              "max_disk_jobs": 378,
+              "min_useful_GBs": 5.727487633134665
+            },
+            "six_tok_s_margin_ns": 748725213,
+            "zero": {
+              "margin_ns": -1368521740.65879,
+              "max_disk_jobs": 597,
+              "min_useful_GBs": 3.623551120157145
+            }
+          }
+        },
+        "reads_in_witness": {
+          "cpu_bank_to_backing_bytes": 0,
+          "cpu_disk": 462,
+          "cpu_logical_hit_disk": 152,
+          "cpu_required_pages": 2543,
+          "cpu_resident_consumptions": 2081,
+          "cuda_bank": 69,
+          "cuda_disk": 397,
+          "disk_pack_bytes": 11357601792,
+          "disk_payload_bytes": 11355292800,
+          "gpu_primary_set_payload_bytes": 6160147200,
+          "total_disk": 859
+        },
+        "status": "MEMBERS_ONLY_WITH_FREE_PERMUTATIONS"
+      },
+      "serial_decision": "NO_GO_WITNESS_SERIAL_AT_ASSUMED_PRICES"
+    }
+  },
+  "commit": "ac6b91048c1db43ac5eb3c4b7c8da50a6766f3fc",
+  "decode_plan_sha256": "aed09397a16ed706365d73e0d2535427528476b41d66e3d5e43ad90da345d79a",
+  "initial": {
+    "cpu_bank": 263,
+    "cpu_overlap": 36,
+    "cpu_primaries": 1000,
+    "cpu_primary_and_bank_budget_bytes": 16696556544,
+    "cuda_bank": 90,
+    "cuda_primaries": 440,
+    "t1_capture_bounds": {
+      "capacity": 353,
+      "cold_start_copies_by_tier": {
+        "cpu": 1530,
+        "cuda": 613
+      },
+      "cold_start_copy_bytes_by_tier": {
+        "cpu": 20225376000,
+        "cuda": 8103369600
+      },
+      "identified": true,
+      "minimum_copies_over_unknown_start_by_tier": {
+        "cpu": 1272,
+        "cuda": 518
+      },
+      "minimum_copy_bytes_over_unknown_start_by_tier": {
+        "cpu": 16814822400,
+        "cuda": 6847545600
+      },
+      "ordered_keys_sha256": "ce1114203187fcee91c3884441ef73eb460445d7c278e69a95946a7dfb135cc7",
+      "retained_by_tier": {
+        "cpu": 263,
+        "cuda": 90
+      }
+    }
+  },
+  "joint_prices_sha256": "78a53e6d93fed1ad9a9236d74b60b234546d32041f5e572998240b243b82fb7e",
+  "model_forwards": 0,
+  "original_commit": "aca7553d7f6d62da38e87517ccc1b888ee3b6e2e",
+  "prefill_plan_sha256": "f54b60d5389d4ff503c978e9eed6065e87e0c08a3a245de17d1f59f58e3a152f",
+  "prior_oracle_sha256": "991fb5d4804b207e96e190101a0a0d68cad3a46cc1abb766fee47567fab39e9b",
+  "program_sha256": "ff314dedaafbdda22b8984d035df227a3ac738cf08cc621024b9f3bf59a8ab18",
+  "protocol_sha256": "eb115fadae6a39fdb25b396c252c6c9dad08fd7f7402ae44c1173e5fe6492930",
+  "status": "REPRODUCED_GLOBAL_CPU_RESIDENCY_R02"
+}

@@ -1,0 +1,776 @@
+{
+  "P106": {
+    "callbacks": 2987,
+    "client_tail_max_ns": 3594941,
+    "decode_ns": 9213847000,
+    "drained_ends": 2896,
+    "drained_starts": 2916,
+    "first_final_ns": 19528568213,
+    "jobs": 2354,
+    "policies": {
+      "all_jobs": {
+        "drained": {
+          "before_client_in_tail_ns": 0,
+          "distinct_hit_keys": 1721,
+          "phases": null,
+          "scenarios": {
+            "1x": {
+              "credit_decode_ns": 6635651552,
+              "credit_first_ns": 12352790073,
+              "joint": "HEADROOM_ONLY",
+              "margin_decode_ns": 5255137886,
+              "margin_first_ns": 2824221860,
+              "shared_credit_ns": 6479692871
+            },
+            "free": {
+              "credit_decode_ns": 6635651552,
+              "credit_first_ns": 12352790073,
+              "joint": "HEADROOM_ONLY",
+              "margin_decode_ns": 5255137886,
+              "margin_first_ns": 2824221860,
+              "shared_credit_ns": 6479692871
+            },
+            "half": {
+              "credit_decode_ns": 6635651552,
+              "credit_first_ns": 12352790073,
+              "joint": "HEADROOM_ONLY",
+              "margin_decode_ns": 5255137886,
+              "margin_first_ns": 2824221860,
+              "shared_credit_ns": 6479692871
+            }
+          }
+        },
+        "persistent": {
+          "before_client_in_tail_ns": 0,
+          "distinct_hit_keys": 1721,
+          "phases": null,
+          "scenarios": {
+            "1x": {
+              "credit_decode_ns": 6637978783,
+              "credit_first_ns": 12357466180,
+              "joint": "HEADROOM_ONLY",
+              "margin_decode_ns": 5257465117,
+              "margin_first_ns": 2828897967,
+              "shared_credit_ns": 6481902361
+            },
+            "free": {
+              "credit_decode_ns": 6637978783,
+              "credit_first_ns": 12357466180,
+              "joint": "HEADROOM_ONLY",
+              "margin_decode_ns": 5257465117,
+              "margin_first_ns": 2828897967,
+              "shared_credit_ns": 6481902361
+            },
+            "half": {
+              "credit_decode_ns": 6637978783,
+              "credit_first_ns": 12357466180,
+              "joint": "HEADROOM_ONLY",
+              "margin_decode_ns": 5257465117,
+              "margin_first_ns": 2828897967,
+              "shared_credit_ns": 6481902361
+            }
+          }
+        }
+      },
+      "empty": {
+        "drained": {
+          "before_client_in_tail_ns": 0,
+          "distinct_hit_keys": 0,
+          "phases": null,
+          "scenarios": {
+            "1x": {
+              "credit_decode_ns": 0,
+              "credit_first_ns": 0,
+              "joint": "NO_GO_FIXED_SCENARIO",
+              "margin_decode_ns": -1380513666,
+              "margin_first_ns": -9528568213,
+              "shared_credit_ns": 0
+            },
+            "free": {
+              "credit_decode_ns": 0,
+              "credit_first_ns": 0,
+              "joint": "NO_GO_FIXED_SCENARIO",
+              "margin_decode_ns": -1380513666,
+              "margin_first_ns": -9528568213,
+              "shared_credit_ns": 0
+            },
+            "half": {
+              "credit_decode_ns": 0,
+              "credit_first_ns": 0,
+              "joint": "NO_GO_FIXED_SCENARIO",
+              "margin_decode_ns": -1380513666,
+              "margin_first_ns": -9528568213,
+              "shared_credit_ns": 0
+            }
+          }
+        },
+        "persistent": {
+          "before_client_in_tail_ns": 0,
+          "distinct_hit_keys": 0,
+          "phases": null,
+          "scenarios": {
+            "1x": {
+              "credit_decode_ns": 0,
+              "credit_first_ns": 0,
+              "joint": "NO_GO_FIXED_SCENARIO",
+              "margin_decode_ns": -1380513666,
+              "margin_first_ns": -9528568213,
+              "shared_credit_ns": 0
+            },
+            "free": {
+              "credit_decode_ns": 0,
+              "credit_first_ns": 0,
+              "joint": "NO_GO_FIXED_SCENARIO",
+              "margin_decode_ns": -1380513666,
+              "margin_first_ns": -9528568213,
+              "shared_credit_ns": 0
+            },
+            "half": {
+              "credit_decode_ns": 0,
+              "credit_first_ns": 0,
+              "joint": "NO_GO_FIXED_SCENARIO",
+              "margin_decode_ns": -1380513666,
+              "margin_first_ns": -9528568213,
+              "shared_credit_ns": 0
+            }
+          }
+        }
+      },
+      "lru": {
+        "drained": {
+          "before_client_in_tail_ns": 0,
+          "distinct_hit_keys": 233,
+          "phases": {
+            "decode_first": {
+              "callback_ns": 1643417934,
+              "callbacks": 1584,
+              "direct_callbacks": 154,
+              "direct_ns": 1643417934,
+              "floor_1x_ns": 1075999437,
+              "floor_half_ns": 537999699,
+              "hits_CPU": 143,
+              "hits_CUDA0": 28,
+              "jobs_CPU": 773,
+              "jobs_CUDA0": 294,
+              "required_jobs_CPU": 81,
+              "required_jobs_CUDA0": 21
+            },
+            "decode_tail": {
+              "callback_ns": 5788037,
+              "callbacks": 72,
+              "direct_callbacks": 1,
+              "direct_ns": 5788037,
+              "floor_1x_ns": 0,
+              "floor_half_ns": 0,
+              "hits_CPU": 0,
+              "hits_CUDA0": 1,
+              "jobs_CPU": 13,
+              "jobs_CUDA0": 11,
+              "required_jobs_CUDA0": 0
+            },
+            "prefill": {
+              "callback_ns": 3717327977,
+              "callbacks": 1331,
+              "direct_callbacks": 91,
+              "direct_ns": 2874066124,
+              "floor_1x_ns": 2031613387,
+              "floor_half_ns": 1015806675,
+              "hits_CPU": 110,
+              "hits_CUDA0": 45,
+              "jobs_CPU": 808,
+              "jobs_CUDA0": 455,
+              "propagated_callbacks": 46,
+              "propagated_ns": 843261853,
+              "required_jobs_CPU": 259,
+              "required_jobs_CUDA0": 130
+            }
+          },
+          "scenarios": {
+            "1x": {
+              "credit_decode_ns": 573206534,
+              "credit_first_ns": 2253133087,
+              "joint": "NO_GO_FIXED_SCENARIO",
+              "margin_decode_ns": -807307132,
+              "margin_first_ns": -7275435126,
+              "shared_credit_ns": 567418497
+            },
+            "free": {
+              "credit_decode_ns": 1649205971,
+              "credit_first_ns": 5360745911,
+              "joint": "NO_GO_FIXED_SCENARIO",
+              "margin_decode_ns": 268692305,
+              "margin_first_ns": -4167822302,
+              "shared_credit_ns": 1643417934
+            },
+            "half": {
+              "credit_decode_ns": 1111206272,
+              "credit_first_ns": 3806939537,
+              "joint": "NO_GO_FIXED_SCENARIO",
+              "margin_decode_ns": -269307394,
+              "margin_first_ns": -5721628676,
+              "shared_credit_ns": 1105418235
+            }
+          }
+        },
+        "persistent": {
+          "before_client_in_tail_ns": 0,
+          "distinct_hit_keys": 233,
+          "phases": null,
+          "scenarios": {
+            "1x": {
+              "credit_decode_ns": 613137469,
+              "credit_first_ns": 2770591018,
+              "joint": "NO_GO_FIXED_SCENARIO",
+              "margin_decode_ns": -767376197,
+              "margin_first_ns": -6757977195,
+              "shared_credit_ns": 606182386
+            },
+            "free": {
+              "credit_decode_ns": 6637978783,
+              "credit_first_ns": 12357466180,
+              "joint": "HEADROOM_ONLY",
+              "margin_decode_ns": 5257465117,
+              "margin_first_ns": 2828897967,
+              "shared_credit_ns": 6481902361
+            },
+            "half": {
+              "credit_decode_ns": 3625558306,
+              "credit_first_ns": 7564028816,
+              "joint": "NO_GO_FIXED_SCENARIO",
+              "margin_decode_ns": 2245044640,
+              "margin_first_ns": -1964539397,
+              "shared_credit_ns": 3544042548
+            }
+          }
+        }
+      },
+      "prefill": {
+        "drained": {
+          "before_client_in_tail_ns": 0,
+          "distinct_hit_keys": 244,
+          "phases": {
+            "decode_first": {
+              "callback_ns": 720996291,
+              "callbacks": 1584,
+              "direct_callbacks": 69,
+              "direct_ns": 720996291,
+              "floor_1x_ns": 503648899,
+              "floor_half_ns": 251824438,
+              "hits_CPU": 40,
+              "hits_CUDA0": 30,
+              "jobs_CPU": 773,
+              "jobs_CUDA0": 294,
+              "required_jobs_CPU": 34,
+              "required_jobs_CUDA0": 16
+            },
+            "decode_tail": {
+              "callback_ns": 41190048,
+              "callbacks": 72,
+              "direct_callbacks": 5,
+              "direct_ns": 41190048,
+              "floor_1x_ns": 0,
+              "floor_half_ns": 0,
+              "hits_CPU": 1,
+              "hits_CUDA0": 5,
+              "jobs_CPU": 13,
+              "jobs_CUDA0": 11,
+              "required_jobs_CPU": 0,
+              "required_jobs_CUDA0": 0
+            },
+            "prefill": {
+              "callback_ns": 4139799519,
+              "callbacks": 1331,
+              "direct_callbacks": 119,
+              "direct_ns": 3461272756,
+              "floor_1x_ns": 2307194752,
+              "floor_half_ns": 1153597349,
+              "hits_CPU": 171,
+              "hits_CUDA0": 126,
+              "jobs_CPU": 808,
+              "jobs_CUDA0": 455,
+              "propagated_callbacks": 41,
+              "propagated_ns": 678526763,
+              "required_jobs_CPU": 249,
+              "required_jobs_CUDA0": 164
+            }
+          },
+          "scenarios": {
+            "1x": {
+              "credit_decode_ns": 258537440,
+              "credit_first_ns": 2049952159,
+              "joint": "NO_GO_FIXED_SCENARIO",
+              "margin_decode_ns": -1121976226,
+              "margin_first_ns": -7478616054,
+              "shared_credit_ns": 217347392
+            },
+            "free": {
+              "credit_decode_ns": 762186339,
+              "credit_first_ns": 4860795810,
+              "joint": "NO_GO_FIXED_SCENARIO",
+              "margin_decode_ns": -618327327,
+              "margin_first_ns": -4667772403,
+              "shared_credit_ns": 720996291
+            },
+            "half": {
+              "credit_decode_ns": 510361901,
+              "credit_first_ns": 3455374023,
+              "joint": "NO_GO_FIXED_SCENARIO",
+              "margin_decode_ns": -870151765,
+              "margin_first_ns": -6073194190,
+              "shared_credit_ns": 469171853
+            }
+          }
+        },
+        "persistent": {
+          "before_client_in_tail_ns": 0,
+          "distinct_hit_keys": 244,
+          "phases": null,
+          "scenarios": {
+            "1x": {
+              "credit_decode_ns": 304103587,
+              "credit_first_ns": 2738120329,
+              "joint": "NO_GO_FIXED_SCENARIO",
+              "margin_decode_ns": -1076410079,
+              "margin_first_ns": -6790447884,
+              "shared_credit_ns": 261936360
+            },
+            "free": {
+              "credit_decode_ns": 6637978783,
+              "credit_first_ns": 12305327980,
+              "joint": "HEADROOM_ONLY",
+              "margin_decode_ns": 5257465117,
+              "margin_first_ns": 2776759767,
+              "shared_credit_ns": 6481902361
+            },
+            "half": {
+              "credit_decode_ns": 3471041375,
+              "credit_first_ns": 7521724380,
+              "joint": "NO_GO_FIXED_SCENARIO",
+              "margin_decode_ns": 2090527709,
+              "margin_first_ns": -2006843833,
+              "shared_credit_ns": 3371919546
+            }
+          }
+        }
+      }
+    },
+    "pre_stream_allowance_ns": 646428255,
+    "route": {
+      "rows": 7012,
+      "sha256": "f7790121a33d6785d2347eb47091d30385a792c308403cdd3ed9f32813e5ca5f"
+    }
+  },
+  "P97": {
+    "callbacks": 2987,
+    "client_tail_max_ns": 3665174,
+    "decode_ns": 8946626000,
+    "drained_ends": 2896,
+    "drained_starts": 2918,
+    "first_final_ns": 18325560801,
+    "jobs": 2354,
+    "policies": {
+      "all_jobs": {
+        "drained": {
+          "before_client_in_tail_ns": 0,
+          "distinct_hit_keys": 1721,
+          "phases": null,
+          "scenarios": {
+            "1x": {
+              "credit_decode_ns": 6663137455,
+              "credit_first_ns": 12405093841,
+              "joint": "HEADROOM_ONLY",
+              "margin_decode_ns": 5549844789,
+              "margin_first_ns": 4079533040,
+              "shared_credit_ns": 6510885785
+            },
+            "free": {
+              "credit_decode_ns": 6663137455,
+              "credit_first_ns": 12405093841,
+              "joint": "HEADROOM_ONLY",
+              "margin_decode_ns": 5549844789,
+              "margin_first_ns": 4079533040,
+              "shared_credit_ns": 6510885785
+            },
+            "half": {
+              "credit_decode_ns": 6663137455,
+              "credit_first_ns": 12405093841,
+              "joint": "HEADROOM_ONLY",
+              "margin_decode_ns": 5549844789,
+              "margin_first_ns": 4079533040,
+              "shared_credit_ns": 6510885785
+            }
+          }
+        },
+        "persistent": {
+          "before_client_in_tail_ns": 0,
+          "distinct_hit_keys": 1721,
+          "phases": null,
+          "scenarios": {
+            "1x": {
+              "credit_decode_ns": 6668453643,
+              "credit_first_ns": 12414832851,
+              "joint": "HEADROOM_ONLY",
+              "margin_decode_ns": 5555160977,
+              "margin_first_ns": 4089272050,
+              "shared_credit_ns": 6515976398
+            },
+            "free": {
+              "credit_decode_ns": 6668453643,
+              "credit_first_ns": 12414832851,
+              "joint": "HEADROOM_ONLY",
+              "margin_decode_ns": 5555160977,
+              "margin_first_ns": 4089272050,
+              "shared_credit_ns": 6515976398
+            },
+            "half": {
+              "credit_decode_ns": 6668453643,
+              "credit_first_ns": 12414832851,
+              "joint": "HEADROOM_ONLY",
+              "margin_decode_ns": 5555160977,
+              "margin_first_ns": 4089272050,
+              "shared_credit_ns": 6515976398
+            }
+          }
+        }
+      },
+      "empty": {
+        "drained": {
+          "before_client_in_tail_ns": 0,
+          "distinct_hit_keys": 0,
+          "phases": null,
+          "scenarios": {
+            "1x": {
+              "credit_decode_ns": 0,
+              "credit_first_ns": 0,
+              "joint": "NO_GO_FIXED_SCENARIO",
+              "margin_decode_ns": -1113292666,
+              "margin_first_ns": -8325560801,
+              "shared_credit_ns": 0
+            },
+            "free": {
+              "credit_decode_ns": 0,
+              "credit_first_ns": 0,
+              "joint": "NO_GO_FIXED_SCENARIO",
+              "margin_decode_ns": -1113292666,
+              "margin_first_ns": -8325560801,
+              "shared_credit_ns": 0
+            },
+            "half": {
+              "credit_decode_ns": 0,
+              "credit_first_ns": 0,
+              "joint": "NO_GO_FIXED_SCENARIO",
+              "margin_decode_ns": -1113292666,
+              "margin_first_ns": -8325560801,
+              "shared_credit_ns": 0
+            }
+          }
+        },
+        "persistent": {
+          "before_client_in_tail_ns": 0,
+          "distinct_hit_keys": 0,
+          "phases": null,
+          "scenarios": {
+            "1x": {
+              "credit_decode_ns": 0,
+              "credit_first_ns": 0,
+              "joint": "NO_GO_FIXED_SCENARIO",
+              "margin_decode_ns": -1113292666,
+              "margin_first_ns": -8325560801,
+              "shared_credit_ns": 0
+            },
+            "free": {
+              "credit_decode_ns": 0,
+              "credit_first_ns": 0,
+              "joint": "NO_GO_FIXED_SCENARIO",
+              "margin_decode_ns": -1113292666,
+              "margin_first_ns": -8325560801,
+              "shared_credit_ns": 0
+            },
+            "half": {
+              "credit_decode_ns": 0,
+              "credit_first_ns": 0,
+              "joint": "NO_GO_FIXED_SCENARIO",
+              "margin_decode_ns": -1113292666,
+              "margin_first_ns": -8325560801,
+              "shared_credit_ns": 0
+            }
+          }
+        }
+      },
+      "lru": {
+        "drained": {
+          "before_client_in_tail_ns": 0,
+          "distinct_hit_keys": 233,
+          "phases": {
+            "decode_first": {
+              "callback_ns": 1634950380,
+              "callbacks": 1584,
+              "direct_callbacks": 154,
+              "direct_ns": 1634950380,
+              "floor_1x_ns": 1062799089,
+              "floor_half_ns": 531399526,
+              "hits_CPU": 143,
+              "hits_CUDA0": 28,
+              "jobs_CPU": 773,
+              "jobs_CUDA0": 294,
+              "required_jobs_CPU": 81,
+              "required_jobs_CUDA0": 21
+            },
+            "decode_tail": {
+              "callback_ns": 7604605,
+              "callbacks": 72,
+              "direct_callbacks": 1,
+              "direct_ns": 7604605,
+              "floor_1x_ns": 0,
+              "floor_half_ns": 0,
+              "hits_CPU": 0,
+              "hits_CUDA0": 1,
+              "jobs_CPU": 13,
+              "jobs_CUDA0": 11,
+              "required_jobs_CUDA0": 0
+            },
+            "prefill": {
+              "callback_ns": 3786054363,
+              "callbacks": 1331,
+              "direct_callbacks": 91,
+              "direct_ns": 2932983508,
+              "floor_1x_ns": 2026993327,
+              "floor_half_ns": 1013496646,
+              "hits_CPU": 110,
+              "hits_CUDA0": 45,
+              "jobs_CPU": 808,
+              "jobs_CUDA0": 455,
+              "propagated_callbacks": 44,
+              "propagated_ns": 853070855,
+              "required_jobs_CPU": 259,
+              "required_jobs_CUDA0": 130
+            }
+          },
+          "scenarios": {
+            "1x": {
+              "credit_decode_ns": 579755896,
+              "credit_first_ns": 2331212327,
+              "joint": "NO_GO_FIXED_SCENARIO",
+              "margin_decode_ns": -533536770,
+              "margin_first_ns": -5994348474,
+              "shared_credit_ns": 572151291
+            },
+            "free": {
+              "credit_decode_ns": 1642554985,
+              "credit_first_ns": 5421004743,
+              "joint": "NO_GO_FIXED_SCENARIO",
+              "margin_decode_ns": 529262319,
+              "margin_first_ns": -2904556058,
+              "shared_credit_ns": 1634950380
+            },
+            "half": {
+              "credit_decode_ns": 1111155459,
+              "credit_first_ns": 3876108571,
+              "joint": "NO_GO_FIXED_SCENARIO",
+              "margin_decode_ns": -2137207,
+              "margin_first_ns": -4449452230,
+              "shared_credit_ns": 1103550854
+            }
+          }
+        },
+        "persistent": {
+          "before_client_in_tail_ns": 0,
+          "distinct_hit_keys": 233,
+          "phases": null,
+          "scenarios": {
+            "1x": {
+              "credit_decode_ns": 637613303,
+              "credit_first_ns": 2843435680,
+              "joint": "NO_GO_FIXED_SCENARIO",
+              "margin_decode_ns": -475679363,
+              "margin_first_ns": -5482125121,
+              "shared_credit_ns": 627785360
+            },
+            "free": {
+              "credit_decode_ns": 6668453643,
+              "credit_first_ns": 12414832851,
+              "joint": "HEADROOM_ONLY",
+              "margin_decode_ns": 5555160977,
+              "margin_first_ns": 4089272050,
+              "shared_credit_ns": 6515976398
+            },
+            "half": {
+              "credit_decode_ns": 3653033644,
+              "credit_first_ns": 7629134468,
+              "joint": "NO_GO_FIXED_SCENARIO",
+              "margin_decode_ns": 2539740978,
+              "margin_first_ns": -696426333,
+              "shared_credit_ns": 3571881045
+            }
+          }
+        }
+      },
+      "prefill": {
+        "drained": {
+          "before_client_in_tail_ns": 0,
+          "distinct_hit_keys": 244,
+          "phases": {
+            "decode_first": {
+              "callback_ns": 727556442,
+              "callbacks": 1584,
+              "direct_callbacks": 69,
+              "direct_ns": 727556442,
+              "floor_1x_ns": 505670873,
+              "floor_half_ns": 252835426,
+              "hits_CPU": 40,
+              "hits_CUDA0": 30,
+              "jobs_CPU": 773,
+              "jobs_CUDA0": 294,
+              "required_jobs_CPU": 34,
+              "required_jobs_CUDA0": 16
+            },
+            "decode_tail": {
+              "callback_ns": 40489166,
+              "callbacks": 72,
+              "direct_callbacks": 5,
+              "direct_ns": 40489166,
+              "floor_1x_ns": 0,
+              "floor_half_ns": 0,
+              "hits_CPU": 1,
+              "hits_CUDA0": 5,
+              "jobs_CPU": 13,
+              "jobs_CUDA0": 11,
+              "required_jobs_CPU": 0,
+              "required_jobs_CUDA0": 0
+            },
+            "prefill": {
+              "callback_ns": 4174732657,
+              "callbacks": 1331,
+              "direct_callbacks": 119,
+              "direct_ns": 3490361737,
+              "floor_1x_ns": 2333216890,
+              "floor_half_ns": 1166608423,
+              "hits_CPU": 171,
+              "hits_CUDA0": 126,
+              "jobs_CPU": 808,
+              "jobs_CUDA0": 455,
+              "propagated_callbacks": 42,
+              "propagated_ns": 684370920,
+              "required_jobs_CPU": 249,
+              "required_jobs_CUDA0": 164
+            }
+          },
+          "scenarios": {
+            "1x": {
+              "credit_decode_ns": 262374735,
+              "credit_first_ns": 2063401336,
+              "joint": "NO_GO_FIXED_SCENARIO",
+              "margin_decode_ns": -850917931,
+              "margin_first_ns": -6262159465,
+              "shared_credit_ns": 221885569
+            },
+            "free": {
+              "credit_decode_ns": 768045608,
+              "credit_first_ns": 4902289099,
+              "joint": "NO_GO_FIXED_SCENARIO",
+              "margin_decode_ns": -345247058,
+              "margin_first_ns": -3423271702,
+              "shared_credit_ns": 727556442
+            },
+            "half": {
+              "credit_decode_ns": 515210182,
+              "credit_first_ns": 3482845250,
+              "joint": "NO_GO_FIXED_SCENARIO",
+              "margin_decode_ns": -598082484,
+              "margin_first_ns": -4842715551,
+              "shared_credit_ns": 474721016
+            }
+          }
+        },
+        "persistent": {
+          "before_client_in_tail_ns": 0,
+          "distinct_hit_keys": 244,
+          "phases": null,
+          "scenarios": {
+            "1x": {
+              "credit_decode_ns": 325638318,
+              "credit_first_ns": 2786710698,
+              "joint": "NO_GO_FIXED_SCENARIO",
+              "margin_decode_ns": -787654348,
+              "margin_first_ns": -5538850103,
+              "shared_credit_ns": 283493734
+            },
+            "free": {
+              "credit_decode_ns": 6668453643,
+              "credit_first_ns": 12365601652,
+              "joint": "HEADROOM_ONLY",
+              "margin_decode_ns": 5555160977,
+              "margin_first_ns": 4040040851,
+              "shared_credit_ns": 6515976398
+            },
+            "half": {
+              "credit_decode_ns": 3497046159,
+              "credit_first_ns": 7576156386,
+              "joint": "NO_GO_FIXED_SCENARIO",
+              "margin_decode_ns": 2383753493,
+              "margin_first_ns": -749404415,
+              "shared_credit_ns": 3399735241
+            }
+          }
+        }
+      }
+    },
+    "pre_stream_allowance_ns": 0,
+    "route": {
+      "rows": 7012,
+      "sha256": "f7790121a33d6785d2347eb47091d30385a792c308403cdd3ed9f32813e5ca5f"
+    }
+  },
+  "P97_journal_sha256": "05e32c2af753026e471fa61c9dcb43867ca6b9a3001045a2138bc96c422928dc",
+  "full_receipt_sha256": "8c7d2c73abbe81bf3214f3f79cb7fd30fb21ec6c85078e93c42701730dbe0299",
+  "measurement_commit": "7f0212e174a9fb25d4db69410d974ce45a8c66bc",
+  "protocol_sha256": "9bfa2a760e8c5b605b3d70e8e84f9bb2ce5d85ee316e586aba533d2589aea3e3",
+  "provenance": {
+    "P106": {
+      "family_sha256": "90750b0ccf87d7f5ceb6d89b6b320e1bf9cf07c0082c1961a31f14b67326aee9",
+      "manifest_sha256": "d54f29ed903b5dbc772af42be9bd489dc15b2e9819de8cb8ac8b4dea7988a89d"
+    },
+    "P97": {
+      "family_sha256": "e5012e559a2403145abc6f5317bddc8b83f95f1e09b592eb83a6baa2c18980a9",
+      "manifest_sha256": "a649b2e520fcbcc9c8897e4465f85fa6bb38504ab11a5189e71ded47a2ba9309"
+    }
+  },
+  "reproductions": [
+    {
+      "elapsed_s": 1.42,
+      "maxrss_kib": 62164
+    },
+    {
+      "elapsed_s": 1.45,
+      "maxrss_kib": 60840
+    }
+  ],
+  "selection": {
+    "audit_sha256": "a981be3450c0260cf44789c918bd2bb704ffd129ce01ab05a48e33cbac8e23f6",
+    "before_t2_sha256": "c25153fdb39d7776088645f0f9c10ca848fe99d45f1ed2092a17663c79615845",
+    "family_sha256": "90750b0ccf87d7f5ceb6d89b6b320e1bf9cf07c0082c1961a31f14b67326aee9",
+    "journal_sha256": "cb13ff990afb3164bb61086e57a6caeff14187b66a1784c88e79cd3d521121bd",
+    "prefix_sha256": "16574f71e2a697479d1be118ddd5d5a103b3218c1f48b428ee32ebbb355fe259",
+    "selection_sha256": "19d4a2502b41eb96d84017677c2dbdf876b479c247f49134cec0af82ae48eeb8",
+    "t1_positions": [
+      0,
+      2119
+    ],
+    "t1_prefill_calls": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9
+    ],
+    "t1_records": 87736,
+    "t1_routed_rows": 74278,
+    "t2_records": 50647
+  },
+  "source_sha256": "bdd8a06f8694efccbd5282db0b73b222768d328f8263e431c694dcbadddb991c",
+  "status": "TRACE_DERIVED_FIXED_RESERVATIONS"
+}

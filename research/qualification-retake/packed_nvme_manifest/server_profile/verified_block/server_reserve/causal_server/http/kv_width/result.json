@@ -1,0 +1,64 @@
+{
+  "candidate_image_builds": 1,
+  "images": {
+    "CONTROL": {
+      "image_sha256": "7994ef4a79c68e524e0df17ffc135a74ca2bdc6711faa0a552496a9a6885d273",
+      "providers": {
+        "C270_PACK": 18,
+        "C281_PACK": 24
+      },
+      "source_sha256": "13bf19e28515b81100fe95ef6e66e2975cdd79cf0431fee4bc874008b65b469b"
+    },
+    "WIDE": {
+      "image_sha256": "2b930a88b72983695ce7c1d467a26d37cec5b49c584080568e8dabcc4c426539",
+      "providers": {
+        "C270_PACK": 18,
+        "C281_PACK": 24
+      },
+      "source_sha256": "b04257b70329181f98455ac4796cce65241ea96b8343a127f8a77b2ab1349e07"
+    }
+  },
+  "initial_attempt": "ValueError: competing CUDA process or footprint",
+  "model_starts": 0,
+  "observed_vram_MiB": {
+    "after": 114.0,
+    "before": 104.0
+  },
+  "operator_s": 1.943367310002941,
+  "positive_operator_processes": 1,
+  "receipts_sha256": [
+    "2600bbaf6fc77dcf32731f25cd4a0e72425dc4187533085f31e5d5766716debf",
+    "c8362dd37d178f68351228341b3a6bf2c94e0a8149f01428a348c8b8f851d181",
+    "000dd9c705f4e21279b66ec83fc6fda6eb492178c5b8110a1ea7edab848d6579",
+    "fedce434aa0098ff4b3701260bdb0b41586f6c642a863003e1ec339e81c74978"
+  ],
+  "status": "GO_CUDA_WIDE_ATTENTION_OPERATOR",
+  "total_finite_equal_F32": 61440,
+  "wrong_mask_different_by_row": {
+    "2048": [
+      4096,
+      0,
+      4096
+    ],
+    "2304": [
+      4096,
+      0,
+      4096
+    ],
+    "256": [
+      4096,
+      0,
+      4096
+    ],
+    "512": [
+      4096,
+      0,
+      4096
+    ],
+    "8192": [
+      4096,
+      0,
+      4096
+    ]
+  }
+}

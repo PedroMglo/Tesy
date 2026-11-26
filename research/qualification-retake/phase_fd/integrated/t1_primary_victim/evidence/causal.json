@@ -1,0 +1,263 @@
+{
+  "R0": {
+    "decode": 1091,
+    "prefill": 1263
+  },
+  "arms": {
+    "evict_backed_first": {
+      "carry": {
+        "compulsory_cold_keys": 726,
+        "decode": {
+          "disk": 1061,
+          "disk_cpu": 702,
+          "disk_cuda": 359,
+          "primary": 5150,
+          "ram": 413,
+          "ram_cpu": 342,
+          "ram_cuda": 71
+        },
+        "decode_read_gate": false,
+        "prefill": {
+          "disk": 1012,
+          "disk_cpu": 650,
+          "disk_cuda": 362,
+          "primary": 2585,
+          "ram": 229,
+          "ram_cpu": 152,
+          "ram_cuda": 77
+        },
+        "prefill_disk_bytes": 13377830400,
+        "restore": {},
+        "restore_required": false,
+        "scenario": {
+          "46": {
+            "excess_bytes": 1937523784,
+            "joint": false,
+            "min_useful_GBps": 5.262117425752044,
+            "volume_gate": false
+          },
+          "47": {
+            "excess_bytes": 2687523786,
+            "joint": false,
+            "min_useful_GBps": 5.6312918771817,
+            "volume_gate": false
+          }
+        }
+      },
+      "restore": {
+        "compulsory_cold_keys": 726,
+        "decode": {
+          "disk": 974,
+          "disk_cpu": 661,
+          "disk_cuda": 313,
+          "primary": 5264,
+          "ram": 386,
+          "ram_cpu": 318,
+          "ram_cuda": 68
+        },
+        "decode_read_gate": false,
+        "prefill": {
+          "disk": 1012,
+          "disk_cpu": 650,
+          "disk_cuda": 362,
+          "primary": 2585,
+          "ram": 229,
+          "ram_cpu": 152,
+          "ram_cuda": 77
+        },
+        "prefill_disk_bytes": 15651532800,
+        "restore": {
+          "disk": 172,
+          "disk_cpu": 113,
+          "disk_cuda": 59,
+          "ram": 88,
+          "ram_cpu": 70,
+          "ram_cuda": 18
+        },
+        "restore_required": true,
+        "scenario": {
+          "46": {
+            "excess_bytes": 4211226184,
+            "joint": false,
+            "min_useful_GBps": 6.156469399298834,
+            "volume_gate": false
+          },
+          "47": {
+            "excess_bytes": 4961226186,
+            "joint": false,
+            "min_useful_GBps": 6.5883889155959805,
+            "volume_gate": false
+          }
+        }
+      }
+    },
+    "lru": {
+      "carry": {
+        "compulsory_cold_keys": 852,
+        "decode": {
+          "disk": 1411,
+          "disk_cpu": 983,
+          "disk_cuda": 428,
+          "primary": 5213
+        },
+        "decode_read_gate": false,
+        "prefill": {
+          "disk": 1184,
+          "disk_cpu": 780,
+          "disk_cuda": 404,
+          "primary": 2642
+        },
+        "prefill_disk_bytes": 15651532800,
+        "restore": {},
+        "restore_required": false,
+        "scenario": {
+          "46": {
+            "excess_bytes": 4211226184,
+            "joint": false,
+            "min_useful_GBps": 6.156469399298834,
+            "volume_gate": false
+          },
+          "47": {
+            "excess_bytes": 4961226186,
+            "joint": false,
+            "min_useful_GBps": 6.5883889155959805,
+            "volume_gate": false
+          }
+        }
+      },
+      "restore": {
+        "compulsory_cold_keys": 852,
+        "decode": {
+          "disk": 1333,
+          "disk_cpu": 958,
+          "disk_cuda": 375,
+          "primary": 5291
+        },
+        "decode_read_gate": false,
+        "prefill": {
+          "disk": 1184,
+          "disk_cpu": 780,
+          "disk_cuda": 404,
+          "primary": 2642
+        },
+        "prefill_disk_bytes": 18149961600,
+        "restore": {
+          "disk": 189,
+          "disk_cpu": 126,
+          "disk_cuda": 63
+        },
+        "restore_required": true,
+        "scenario": {
+          "46": {
+            "excess_bytes": 6709654984,
+            "joint": false,
+            "min_useful_GBps": 7.139216626045016,
+            "volume_gate": false
+          },
+          "47": {
+            "excess_bytes": 7459654986,
+            "joint": false,
+            "min_useful_GBps": 7.64008275431865,
+            "volume_gate": false
+          }
+        }
+      }
+    },
+    "lru_ram": {
+      "carry": {
+        "compulsory_cold_keys": 726,
+        "decode": {
+          "disk": 1225,
+          "disk_cpu": 831,
+          "disk_cuda": 394,
+          "primary": 5213,
+          "ram": 186,
+          "ram_cpu": 152,
+          "ram_cuda": 34
+        },
+        "decode_read_gate": false,
+        "prefill": {
+          "disk": 1049,
+          "disk_cpu": 679,
+          "disk_cuda": 370,
+          "primary": 2642,
+          "ram": 135,
+          "ram_cpu": 101,
+          "ram_cuda": 34
+        },
+        "prefill_disk_bytes": 13866940800,
+        "restore": {},
+        "restore_required": false,
+        "scenario": {
+          "46": {
+            "excess_bytes": 2426634184,
+            "joint": false,
+            "min_useful_GBps": 5.454507094480133,
+            "volume_gate": false
+          },
+          "47": {
+            "excess_bytes": 3176634186,
+            "joint": false,
+            "min_useful_GBps": 5.837179030794074,
+            "volume_gate": false
+          }
+        }
+      },
+      "restore": {
+        "compulsory_cold_keys": 726,
+        "decode": {
+          "disk": 1143,
+          "disk_cpu": 802,
+          "disk_cuda": 341,
+          "primary": 5291,
+          "ram": 190,
+          "ram_cpu": 156,
+          "ram_cuda": 34
+        },
+        "decode_read_gate": false,
+        "prefill": {
+          "disk": 1049,
+          "disk_cpu": 679,
+          "disk_cuda": 370,
+          "primary": 2642,
+          "ram": 135,
+          "ram_cpu": 101,
+          "ram_cuda": 34
+        },
+        "prefill_disk_bytes": 16312492800,
+        "restore": {
+          "disk": 185,
+          "disk_cpu": 123,
+          "disk_cuda": 62,
+          "ram": 4,
+          "ram_cpu": 3,
+          "ram_cuda": 1
+        },
+        "restore_required": true,
+        "scenario": {
+          "46": {
+            "excess_bytes": 4872186184,
+            "joint": false,
+            "min_useful_GBps": 6.416455438120575,
+            "volume_gate": false
+          },
+          "47": {
+            "excess_bytes": 5622186186,
+            "joint": false,
+            "min_useful_GBps": 6.866614798855946,
+            "volume_gate": false
+          }
+        }
+      }
+    }
+  },
+  "budgets": {
+    "46": 11440306616,
+    "47": 10690306614
+  },
+  "journal_sha256": "40d2ea8049ccee9213ffc3f317482d67ebbed85a887a933043a3f4e7bd132033",
+  "program_sha256": "6dd24db84953b9d9f32421d8b8491af73fa9b886256b9412abe4efb19dd10032",
+  "protocol_sha256": "87edb0477b04b758377a2cdc44bde245065b4f37220898572601eca0105593a3",
+  "r0_receipt_sha256": "37f068e20acc7734492aa2d9524e7f0e69ca79f1488582acf7b986bb76a84765",
+  "status": "NO_GO_CONDITIONAL"
+}

@@ -1,0 +1,293 @@
+{
+  "before_compute_results": 0,
+  "build_s": 1.1468068750000384,
+  "cgroup_peak_B": 208633856,
+  "commit": "16846f6773a676af3c618d5e503b44c82ced3af2",
+  "decision": "GO_EXACT_ROW_ATTENTION_OPERATOR",
+  "elf_sha256": "9e85795e8a2326d9651aee508fd8b3c3c3720bc6ebf96cb58f572b0b71709bcc",
+  "first_failure": "ValueError: provider device/inode",
+  "inputs_sha256": {
+    "AR.gold": "463d903924c41f5e34dfbadc3316aa66e14a6fc1a7d52b9944a578dad3c09352",
+    "B3.gold": "ae0488f2079ff7592a4d2731a5c232a511af40e822719e88a53b7e490a0748b8",
+    "k.f16": "b7ced05593140d4593b179c4d0830ee3c1792112954082ce6a339145c20471ec",
+    "mask.f16": "64cd68dd73dca4c1ed8cff3fe9ada339db4c38666625bba2dfea28f6669ffc75",
+    "q.f32": "dcf2b8651c5f7324e19d15d00ef098db65c980b42012459b8f8a01a0013cfb69",
+    "sinks.f32": "27da933f8af8b4f0dfc6c7709dbd3180ba6727fd9e754958533d636b2918a2dc",
+    "v.f16": "2da34a78a685fa5dd495e59ad2b4941713f8d54f7318c4f9df05b379f20b7d5b"
+  },
+  "model_forwards": 0,
+  "parts": {
+    "build": "cebf96f41ae3423a24679d445bc1e07e73b344ce66ef61bdac075465adb286ea",
+    "first_build": "fe6b48d59f1f27466de306198376d21e1c77ea8184106138ffabf3b21c18c37e",
+    "first_run": "0f139cb27a4b764c657347d8f04924facbba67c0661f237a9ca6fe95b9173b4e",
+    "physical": "b9838874fa71098d28d3f1f0f0d273f1e805f3540289ccbbd0fd9b60e16ee4fb",
+    "target": "72819fc1e0f5c31b688c81d554e22693b04ba29feb26d8303253bdc1ec9af777"
+  },
+  "process_scope_s": 1.4754275490013242,
+  "protocol_sha256": "ef12c164140e4ee4b7d21d314282c928d553088ec1e1a8023b723e7053c0a535",
+  "resources": {
+    "admission": {
+      "gpu": {
+        "bdf": "00000000:C4:00.0",
+        "power_w": 2.38,
+        "temperature_c": 43.72,
+        "used_mib": 2.0,
+        "uuid": "GPU-83d90c55-1d92-75da-fc30-7771a85f2521"
+      },
+      "mem_available_bytes": 27630415872,
+      "power": {
+        "online_sources": [
+          "AC0",
+          "ucsi-source-psy-USBC000:002"
+        ],
+        "profile": "performance",
+        "source": "AC"
+      },
+      "thermal": {
+        "cpu_tctl_c": 49.875,
+        "nvme_composite_by_sensor": {
+          "nvme-pci-c100": 34.85
+        }
+      }
+    },
+    "after_exit": {
+      "gpu": {
+        "bdf": "00000000:C4:00.0",
+        "power_w": 8.14,
+        "temperature_c": 44.67,
+        "used_mib": 2.0,
+        "uuid": "GPU-83d90c55-1d92-75da-fc30-7771a85f2521"
+      },
+      "mem_available_bytes": 27596283904,
+      "power": {
+        "online_sources": [
+          "AC0",
+          "ucsi-source-psy-USBC000:002"
+        ],
+        "profile": "performance",
+        "source": "AC"
+      },
+      "thermal": {
+        "cpu_tctl_c": 54.375,
+        "nvme_composite_by_sensor": {
+          "nvme-pci-c100": 34.85
+        }
+      }
+    },
+    "device_free_min_B": 8103460864,
+    "live": {
+      "after": {
+        "gpu": {
+          "bdf": "00000000:C4:00.0",
+          "power_w": 7.31,
+          "temperature_c": 44.46,
+          "used_mib": 112.0,
+          "uuid": "GPU-83d90c55-1d92-75da-fc30-7771a85f2521"
+        },
+        "mem_available_bytes": 27359477760,
+        "power": {
+          "online_sources": [
+            "AC0",
+            "ucsi-source-psy-USBC000:002"
+          ],
+          "profile": "performance",
+          "source": "AC"
+        },
+        "thermal": {
+          "cpu_tctl_c": 54.5,
+          "nvme_composite_by_sensor": {
+            "nvme-pci-c100": 33.85
+          }
+        }
+      },
+      "before": {
+        "gpu": {
+          "bdf": "00000000:C4:00.0",
+          "power_w": 2.91,
+          "temperature_c": 43.78,
+          "used_mib": 102.0,
+          "uuid": "GPU-83d90c55-1d92-75da-fc30-7771a85f2521"
+        },
+        "mem_available_bytes": 27375247360,
+        "power": {
+          "online_sources": [
+            "AC0",
+            "ucsi-source-psy-USBC000:002"
+          ],
+          "profile": "performance",
+          "source": "AC"
+        },
+        "thermal": {
+          "cpu_tctl_c": 50.75,
+          "nvme_composite_by_sensor": {
+            "nvme-pci-c100": 33.85
+          }
+        }
+      }
+    }
+  },
+  "rows": {
+    "A": [
+      {
+        "different": 0,
+        "first": null,
+        "position": 189,
+        "reference_sha256": "4652bc03429a7c9516ef29a97b418dcef8a1818d03af89c01c6f83786ccbc276",
+        "sha256": "4652bc03429a7c9516ef29a97b418dcef8a1818d03af89c01c6f83786ccbc276",
+        "zeros": 0
+      },
+      {
+        "different": 0,
+        "first": null,
+        "position": 190,
+        "reference_sha256": "01e73fe43f3c3873a478528afe01e8f6d44c6e9c96e3d569eb8953541e8c0dc9",
+        "sha256": "01e73fe43f3c3873a478528afe01e8f6d44c6e9c96e3d569eb8953541e8c0dc9",
+        "zeros": 0
+      },
+      {
+        "different": 0,
+        "first": null,
+        "position": 191,
+        "reference_sha256": "94cdeb60c9a5ee0802da11e107aa6b633a10f5c960fd40f1b97dbaa998e4518b",
+        "sha256": "94cdeb60c9a5ee0802da11e107aa6b633a10f5c960fd40f1b97dbaa998e4518b",
+        "zeros": 0
+      }
+    ],
+    "B": [
+      {
+        "different": 0,
+        "first": null,
+        "position": 189,
+        "reference_sha256": "caa76709689d1d155e2cb8d2c5afaca419a5776fd0b21db3dbadca0037dcec8e",
+        "sha256": "caa76709689d1d155e2cb8d2c5afaca419a5776fd0b21db3dbadca0037dcec8e",
+        "zeros": 0
+      },
+      {
+        "different": 0,
+        "first": null,
+        "position": 190,
+        "reference_sha256": "be2186f6fbb9d84a99eb90e141b57bd358addf17b9abb36175890baf6c7592e2",
+        "sha256": "be2186f6fbb9d84a99eb90e141b57bd358addf17b9abb36175890baf6c7592e2",
+        "zeros": 0
+      },
+      {
+        "different": 0,
+        "first": null,
+        "position": 191,
+        "reference_sha256": "d24e4d3b94161cb0e1d7ecc2499c2af6366fd42fe7759fb700e50f8c18b11648",
+        "sha256": "d24e4d3b94161cb0e1d7ecc2499c2af6366fd42fe7759fb700e50f8c18b11648",
+        "zeros": 0
+      }
+    ],
+    "B-alt": [
+      {
+        "different": 0,
+        "first": null,
+        "position": 189,
+        "reference_sha256": "caa76709689d1d155e2cb8d2c5afaca419a5776fd0b21db3dbadca0037dcec8e",
+        "sha256": "caa76709689d1d155e2cb8d2c5afaca419a5776fd0b21db3dbadca0037dcec8e",
+        "zeros": 0
+      },
+      {
+        "different": 0,
+        "first": null,
+        "position": 190,
+        "reference_sha256": "be2186f6fbb9d84a99eb90e141b57bd358addf17b9abb36175890baf6c7592e2",
+        "sha256": "be2186f6fbb9d84a99eb90e141b57bd358addf17b9abb36175890baf6c7592e2",
+        "zeros": 0
+      },
+      {
+        "different": 0,
+        "first": null,
+        "position": 191,
+        "reference_sha256": "d24e4d3b94161cb0e1d7ecc2499c2af6366fd42fe7759fb700e50f8c18b11648",
+        "sha256": "d24e4d3b94161cb0e1d7ecc2499c2af6366fd42fe7759fb700e50f8c18b11648",
+        "zeros": 0
+      }
+    ],
+    "S": [
+      {
+        "different": 0,
+        "first": null,
+        "position": 189,
+        "reference_sha256": "4652bc03429a7c9516ef29a97b418dcef8a1818d03af89c01c6f83786ccbc276",
+        "sha256": "4652bc03429a7c9516ef29a97b418dcef8a1818d03af89c01c6f83786ccbc276",
+        "zeros": 0
+      },
+      {
+        "different": 0,
+        "first": null,
+        "position": 190,
+        "reference_sha256": "01e73fe43f3c3873a478528afe01e8f6d44c6e9c96e3d569eb8953541e8c0dc9",
+        "sha256": "01e73fe43f3c3873a478528afe01e8f6d44c6e9c96e3d569eb8953541e8c0dc9",
+        "zeros": 0
+      },
+      {
+        "different": 0,
+        "first": null,
+        "position": 191,
+        "reference_sha256": "94cdeb60c9a5ee0802da11e107aa6b633a10f5c960fd40f1b97dbaa998e4518b",
+        "sha256": "94cdeb60c9a5ee0802da11e107aa6b633a10f5c960fd40f1b97dbaa998e4518b",
+        "zeros": 0
+      }
+    ],
+    "S-alt": [
+      {
+        "different": 0,
+        "first": null,
+        "position": 189,
+        "reference_sha256": "4652bc03429a7c9516ef29a97b418dcef8a1818d03af89c01c6f83786ccbc276",
+        "sha256": "4652bc03429a7c9516ef29a97b418dcef8a1818d03af89c01c6f83786ccbc276",
+        "zeros": 0
+      },
+      {
+        "different": 0,
+        "first": null,
+        "position": 190,
+        "reference_sha256": "01e73fe43f3c3873a478528afe01e8f6d44c6e9c96e3d569eb8953541e8c0dc9",
+        "sha256": "01e73fe43f3c3873a478528afe01e8f6d44c6e9c96e3d569eb8953541e8c0dc9",
+        "zeros": 0
+      },
+      {
+        "different": 0,
+        "first": null,
+        "position": 191,
+        "reference_sha256": "94cdeb60c9a5ee0802da11e107aa6b633a10f5c960fd40f1b97dbaa998e4518b",
+        "sha256": "94cdeb60c9a5ee0802da11e107aa6b633a10f5c960fd40f1b97dbaa998e4518b",
+        "zeros": 0
+      }
+    ],
+    "mutant": [
+      {
+        "different": 4096,
+        "first": 0,
+        "position": 189,
+        "reference_sha256": "caa76709689d1d155e2cb8d2c5afaca419a5776fd0b21db3dbadca0037dcec8e",
+        "sha256": "4fe7b59af6de3b665b67788cc2f99892ab827efae3a467342b3bb4e3bc8e5bfe",
+        "zeros": 4096
+      },
+      {
+        "different": 4096,
+        "first": 0,
+        "position": 190,
+        "reference_sha256": "be2186f6fbb9d84a99eb90e141b57bd358addf17b9abb36175890baf6c7592e2",
+        "sha256": "4fe7b59af6de3b665b67788cc2f99892ab827efae3a467342b3bb4e3bc8e5bfe",
+        "zeros": 4096
+      },
+      {
+        "different": 4096,
+        "first": 0,
+        "position": 191,
+        "reference_sha256": "d24e4d3b94161cb0e1d7ecc2499c2af6366fd42fe7759fb700e50f8c18b11648",
+        "sha256": "4fe7b59af6de3b665b67788cc2f99892ab827efae3a467342b3bb4e3bc8e5bfe",
+        "zeros": 4096
+      }
+    ]
+  },
+  "sampled_GPU_MiB": {
+    "after": 112.0,
+    "before": 102.0
+  },
+  "successful_operator_processes": 1,
+  "tree": "03da31a7a0ea858539abfb6bf1bb41bef172966f"
+}

@@ -1,0 +1,160 @@
+{
+  "status": "REPRODUCED_C135_CONDITIONAL_FLOORS",
+  "trace_sha256": "91610b12291d5a42a12bba09f5d4ff188d25ee0001ab89e894bdd508005e82fb",
+  "protocol_sha256": "d02a1541f496d8c6ed1bb70bb9d2851669bb41484f4cf7539852ebe7e014c482",
+  "program_sha256": "53e9d8bdbac790a2657ccaed4b4ee2821c391b23680d627ea9b3292d70813fb7",
+  "entry_receipt_sha256": "16291c82a97afeb320d537e7be81dddf8833b583add98ffcf868666dd1ce4901",
+  "service_receipt_sha256": "f2cd36d9b060e4864de620aab05013fe462b9a581b86474a3d127abd1b66c8cf",
+  "pr45": "83146dade3f90235775e4a31a8d3d8ccae3476a7",
+  "distinct_demands": 1759,
+  "known_primary": 1424,
+  "unknown_primary": 16,
+  "outside_known_by_tier": {
+    "CPU": 567,
+    "CUDA0": 288
+  },
+  "distinct_cold_after_unknown_grant_by_tier": {
+    "CPU": 553,
+    "CUDA0": 287
+  },
+  "keys_without_measured_generation_granted_zero": {
+    "CPU": 0,
+    "CUDA0": 0
+  },
+  "baseline_calls": [
+    {
+      "tokens": 5,
+      "jobs": 45,
+      "components": 135,
+      "read_worker_us": 588884
+    },
+    {
+      "tokens": 148,
+      "jobs": 1177,
+      "components": 3531,
+      "read_worker_us": 27623038
+    }
+  ],
+  "budget_s": 2.427104435,
+  "by_capacity": {
+    "0": {
+      "additional_payload_bytes": 0,
+      "minimum_cold_reads": 840,
+      "minimum_read_payload_bytes": 11104128000,
+      "byte_floor_at_4_5_GB_s": 2.467584
+    },
+    "243": {
+      "additional_payload_bytes": 3212265600,
+      "minimum_cold_reads": 597,
+      "minimum_read_payload_bytes": 7891862400,
+      "byte_floor_at_4_5_GB_s": 1.7537472
+    },
+    "378": {
+      "additional_payload_bytes": 4996857600,
+      "minimum_cold_reads": 462,
+      "minimum_read_payload_bytes": 6107270400,
+      "byte_floor_at_4_5_GB_s": 1.3571712
+    }
+  },
+  "byte_scenario_min_additional_entries": 14,
+  "byte_scenario_cutoff_payload_bytes": 185068800,
+  "four_worker_volume": {
+    "0.8": {
+      "by_capacity": {
+        "0": {
+          "floor_s": 3.7912562000000003,
+          "slack_s": -1.3641517650000001,
+          "decision": "NO_GO_CONDITIONAL"
+        },
+        "243": {
+          "floor_s": 2.4551498000000005,
+          "slack_s": -0.028045365000000225,
+          "decision": "NO_GO_CONDITIONAL"
+        },
+        "378": {
+          "floor_s": 1.7835636000000001,
+          "slack_s": 0.6435408349999999,
+          "decision": "INCONCLUSIVE"
+        }
+      },
+      "min_additional_entries": 249,
+      "min_additional_payload_bytes": 3291580800,
+      "floor_at_cutoff_s": 2.4242756,
+      "floor_one_fewer_s": 2.4294176000000003
+    },
+    "1.0": {
+      "by_capacity": {
+        "0": {
+          "floor_s": 4.73907025,
+          "slack_s": -2.3119658149999998,
+          "decision": "NO_GO_CONDITIONAL"
+        },
+        "243": {
+          "floor_s": 3.06893725,
+          "slack_s": -0.6418328149999999,
+          "decision": "NO_GO_CONDITIONAL"
+        },
+        "378": {
+          "floor_s": 2.2294545,
+          "slack_s": 0.19764993500000005,
+          "decision": "INCONCLUSIVE"
+        }
+      },
+      "min_additional_entries": 346,
+      "min_additional_payload_bytes": 4573843200,
+      "floor_at_cutoff_s": 2.4225145,
+      "floor_one_fewer_s": 2.42862325
+    }
+  },
+  "strict_layer_major": {
+    "0.8": {
+      "by_capacity": {
+        "0": {
+          "floor_s": 3.9252966000000002,
+          "slack_s": -1.498192165,
+          "decision": "NO_GO_CONDITIONAL"
+        },
+        "243": {
+          "floor_s": 2.5688488000000005,
+          "slack_s": -0.14174436500000023,
+          "decision": "NO_GO_CONDITIONAL"
+        },
+        "378": {
+          "floor_s": 1.883897,
+          "slack_s": 0.543207435,
+          "decision": "INCONCLUSIVE"
+        }
+      },
+      "min_additional_entries": 271,
+      "min_additional_payload_bytes": 3582403200,
+      "floor_at_cutoff_s": 2.4232328,
+      "floor_one_fewer_s": 2.4283998
+    },
+    "1.0": {
+      "by_capacity": {
+        "0": {
+          "floor_s": 4.90662075,
+          "slack_s": -2.479516315,
+          "decision": "NO_GO_CONDITIONAL"
+        },
+        "243": {
+          "floor_s": 3.211061,
+          "slack_s": -0.783956565,
+          "decision": "NO_GO_CONDITIONAL"
+        },
+        "378": {
+          "floor_s": 2.35487125,
+          "slack_s": 0.07223318500000006,
+          "decision": "INCONCLUSIVE"
+        }
+      },
+      "min_additional_entries": 367,
+      "min_additional_payload_bytes": 4851446400,
+      "floor_at_cutoff_s": 2.4224465,
+      "floor_one_fewer_s": 2.428605
+    }
+  },
+  "forwards": 0,
+  "weight_reads": 0,
+  "gpu_used": false
+}

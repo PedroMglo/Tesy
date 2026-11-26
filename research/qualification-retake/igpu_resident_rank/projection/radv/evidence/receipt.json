@@ -1,0 +1,110 @@
+{
+  "build_sha256": "65a34219018b3e856ed18bebf9d3fe03b0ec5a8d5ed9cfd0b28bc50fc615d58e",
+  "cpu_q8_sha256": "2a8187b4c60ab35286840ce35ba28d8671ff7a6a07149cf59abfdf4009cea6ef",
+  "cpu_sha256": "34f504b177c8878290513a8aa45d725cf54eae5915ba9f351579f503b5dd2ca7",
+  "files": {
+    "actual.q8_1": "c26244654f971c944790a667a90cbadf1955f01b8eefa4df8bda9044cfd32f23",
+    "after.json": "a923b5665d9edc9f7141d6ac1e084c5be5c0396b1abe1b9517ece9a94640b320",
+    "before.json": "0db654b1927c536ed48ef327b83ed4088c7929f70e086ce947472f6bb955deb2",
+    "correct.f32": "c862d62375c16009cfbd50ca51d4657af7652085f01bfe4d40845b59a7948879",
+    "native.stderr": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "native.tsv": "5413a0d94d5b596ee39a7aeda7f5adc87014b4a1c5fcc0e8ed6dd27ca6de543d",
+    "wrong.f32": "2ddbd07ddfda5d4f9b1c44c8ff16f7e38027d275af6bf57f317b136060d695a9"
+  },
+  "gold_sha256": "756c8384a4cda89c62040a81d3e45dd06e0707121dcbadecc73d45ecec0e1db3",
+  "gpu_forwards": 0,
+  "input_sha256": "f4b7b1fc1595244c263e292a8cd2d6c1d3c939e00b56e151c5c5d48fc403092e",
+  "proof": {
+    "bound_ids": [
+      [
+        3,
+        14,
+        6,
+        35
+      ],
+      [
+        2,
+        14,
+        6,
+        35
+      ]
+    ],
+    "dispatches": 3,
+    "heap_types": [
+      [
+        65536,
+        16,
+        32,
+        1965,
+        5,
+        0,
+        14
+      ],
+      [
+        65536,
+        16,
+        32,
+        1965,
+        5,
+        0,
+        14
+      ],
+      [
+        17629184,
+        16,
+        32,
+        1965,
+        5,
+        0,
+        14
+      ],
+      [
+        65536,
+        16,
+        32,
+        1965,
+        5,
+        0,
+        14
+      ],
+      [
+        65536,
+        16,
+        32,
+        1965,
+        5,
+        0,
+        14
+      ]
+    ],
+    "rhs": "q8_1_x4-subgroup",
+    "rows_per_group": 2,
+    "scope_peak_bytes": 30498816,
+    "subgroup": 64,
+    "variant": "mmvq-subgroup-no-shmem",
+    "workgroups": [
+      1440,
+      1,
+      1
+    ]
+  },
+  "scope_after": [
+    "ActiveState=inactive",
+    "SubState=dead"
+  ],
+  "score": {
+    "decision": "NO_GO_BITWISE_STOCK_PROJECTION",
+    "finite": 2880,
+    "first_code_coordinate": null,
+    "first_scale_block": null,
+    "first_unequal": 2,
+    "max_abs": 2.384185791015625e-07,
+    "max_ulp": 1024,
+    "q8_codes_mismatch": 0,
+    "q8_scale_mismatch": 0,
+    "unequal_rows": 1323,
+    "wrong_exact_zeros": 2880
+  },
+  "status": "MEASURED_RADV_E28_PROJECTION",
+  "wall_ns": 115322129
+}

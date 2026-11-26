@@ -1,0 +1,94 @@
+{
+  "decode": {
+    "PR": {
+      "additional_link_floor_ns": 224392871,
+      "bytes_without_known_chain": 1790324736,
+      "callbacks_without_known_chain": 142,
+      "histogram": {
+        "1": 193,
+        "2": 26,
+        "3": 3
+      },
+      "link_floor_ns_alone": 223790592,
+      "unknown_bytes": 2860015616,
+      "unknown_callbacks": 222,
+      "unknown_jobs": 254
+    },
+    "RP": {
+      "additional_link_floor_ns": 224531392,
+      "bytes_without_known_chain": 1790324736,
+      "callbacks_without_known_chain": 142,
+      "histogram": {
+        "1": 193,
+        "2": 26,
+        "3": 3
+      },
+      "link_floor_ns_alone": 223790592,
+      "unknown_bytes": 2860015616,
+      "unknown_callbacks": 222,
+      "unknown_jobs": 254
+    }
+  },
+  "encoded_bytes_per_job": 11259904,
+  "host_transport_ceiling_Bps": 8000000000,
+  "link_observation_sha256": "5e134a1d7edbf4e5257d9dc6dc8d57b127be9244128866e823ed6a1f0a54f992",
+  "model_forwards": 0,
+  "orders": {
+    "PR_PR": {
+      "after_joint_margin_ns_floor": -207581415,
+      "after_six_margin_ns_floor": 1896026346,
+      "before_joint_margin_ns_floor": 16811456,
+      "before_six_margin_ns_floor": 2120419218,
+      "max_byte_fraction_ppm": 419355,
+      "max_bytes_via_link": 1199364297,
+      "new_decode_floor_ns": 5937306986,
+      "required_minimum_Bps": 106494324306
+    },
+    "PR_RP": {
+      "after_joint_margin_ns_floor": -182861120,
+      "after_six_margin_ns_floor": 1920746641,
+      "before_joint_margin_ns_floor": 41670272,
+      "before_six_margin_ns_floor": 2145278033,
+      "max_byte_fraction_ppm": 488503,
+      "max_bytes_via_link": 1397126657,
+      "new_decode_floor_ns": 5912586691,
+      "required_minimum_Bps": 42964075754
+    },
+    "RP_PR": {
+      "after_joint_margin_ns_floor": -396742151,
+      "after_six_margin_ns_floor": 1896026346,
+      "before_joint_margin_ns_floor": -172349279,
+      "before_six_margin_ns_floor": 2120419218,
+      "max_byte_fraction_ppm": null,
+      "max_bytes_via_link": null,
+      "new_decode_floor_ns": 5937306986,
+      "required_minimum_Bps": null
+    },
+    "RP_RP": {
+      "after_joint_margin_ns_floor": -372021856,
+      "after_six_margin_ns_floor": 1920746641,
+      "before_joint_margin_ns_floor": -147490464,
+      "before_six_margin_ns_floor": 2145278033,
+      "max_byte_fraction_ppm": null,
+      "max_bytes_via_link": null,
+      "new_decode_floor_ns": 5912586691,
+      "required_minimum_Bps": null
+    }
+  },
+  "placement": {
+    "device": "nvme0n1",
+    "family_receipts": [
+      "1ac4bb4e666b61898cbb655cddb24d771529e71d66515e56862b989434b76e57",
+      "acd29327feb616f130f9518e67f39d1bc69e692f896352706dd4ed2a13a49e98"
+    ],
+    "filesystem": "btrfs",
+    "pack_sha256": "f17e9fbf6f6aed1ad60ca7da3431c5156a946d2e0bf119722afc1f934cbc6b11",
+    "placement_sha256": "adc58125a13aa286371c127f41bf67b0ed4756e9ec2dc08bd2cb6e7ed754a000",
+    "source_bytes": 61096329216
+  },
+  "previous_sha256": "08c4f7fe5c8487202be6a24bb0b47e21a0f3bad155fd6dfc225f5b552ff389d3",
+  "program_sha256": "0b7b8985d28519a54d2a28d5f2782a594e51003fa51cfe1d956db54a5f0a8428",
+  "protocol_sha256": "c274d8aee8fb9e0645812e3f22961fe821b36e82c297a0f2011169a686b01dc1",
+  "status": "FORMAL_CONDITIONAL_NVME_LINK_FLOOR",
+  "weight_bytes_read": 0
+}

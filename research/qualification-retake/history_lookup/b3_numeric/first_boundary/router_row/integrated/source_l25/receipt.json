@@ -1,0 +1,156 @@
+{
+  "AR": {
+    "189.attn_post_norm": "974d54278fb515e1599edaf4a461ceef08c96b0cc6edeca15cef74520fb94cfa",
+    "189.ffn_moe_logits": "1e81205cc1f96f039abbedc865d8ee2a840241f53a1b46100d9eeef873c0974e",
+    "190.attn_post_norm": "b49a8146e39bc990998a55dc8ff191525b520834105dbf74c007bed0cfadd038",
+    "190.ffn_moe_logits": "18a87fa53b97c10ffde0666a15366420e804af4d83bde9b6b997efc84a95429d"
+  },
+  "C127_ON_OFF_reproduce_AR_subset": true,
+  "archive_manifests": {
+    "23": "d79d180a18cf6c0f0767d02307904e679c0edd4fa10c12a3256b87a398dd8002",
+    "32": "94b255e1cf05ea527cc08eb938b125f4ecd96699be53de6c5b9feb627db05461",
+    "102": "8baed0c5fe6f89d234107cf40e84fcb25bb2f77a7a682e3fac69be04bb7d7dfd",
+    "108": "b01d71b4518191bc4c44bf1ecc8542d06379c62eea4103160b574eac190ec08b"
+  },
+  "integrated_prebias": {
+    "OFF": {
+      "189": {
+        "hash": "a527973050428ff8c46a8412a267e9d094167d32bcc30ab92d7f283685c44ee7",
+        "unequal_words_vs_AR": 128
+      },
+      "190": {
+        "hash": "d51bafcab44493e374d409abfbac5c2f24b7c5b6132a1232ef2962d2090da8a4",
+        "unequal_words_vs_AR": 128
+      },
+      "191": {
+        "hash": "9a0e108f37fcb33253d5c7698d47349ea9daa395ce30666f101bf24fdff29986"
+      }
+    },
+    "ON": {
+      "189": {
+        "hash": "ea9ea9e15bd4477c9c0d4605578269c75dbe9c8112b5cfb1342821b936f474f7",
+        "unequal_words_vs_AR": 128
+      },
+      "190": {
+        "hash": "ff1bc6fc093ee4993cc6de6140a2eb2bf09e1010bc33a278a71c07ab53bf5ff6",
+        "unequal_words_vs_AR": 128
+      },
+      "191": {
+        "hash": "2fc8d4fee9051300e2017f5ee1bdafd6a0ecfee7d743e4594fa06e47e94d6ff3"
+      }
+    }
+  },
+  "inventory": {
+    "blk.25.attn_k.bias": {
+      "data_offset": 44399007520,
+      "n_bytes": 2048,
+      "shape": [
+        512
+      ],
+      "tensor_type": "f32"
+    },
+    "blk.25.attn_k.weight": {
+      "data_offset": 44399009568,
+      "n_bytes": 1566720,
+      "shape": [
+        2880,
+        512
+      ],
+      "tensor_type": "q8_0"
+    },
+    "blk.25.attn_norm.weight": {
+      "data_offset": 44400576288,
+      "n_bytes": 11520,
+      "shape": [
+        2880
+      ],
+      "tensor_type": "f32"
+    },
+    "blk.25.attn_output.bias": {
+      "data_offset": 44400587808,
+      "n_bytes": 11520,
+      "shape": [
+        2880
+      ],
+      "tensor_type": "f32"
+    },
+    "blk.25.attn_output.weight": {
+      "data_offset": 44400599328,
+      "n_bytes": 12533760,
+      "shape": [
+        4096,
+        2880
+      ],
+      "tensor_type": "q8_0"
+    },
+    "blk.25.attn_q.bias": {
+      "data_offset": 44413133088,
+      "n_bytes": 16384,
+      "shape": [
+        4096
+      ],
+      "tensor_type": "f32"
+    },
+    "blk.25.attn_q.weight": {
+      "data_offset": 44413149472,
+      "n_bytes": 12533760,
+      "shape": [
+        2880,
+        4096
+      ],
+      "tensor_type": "q8_0"
+    },
+    "blk.25.attn_sinks.weight": {
+      "data_offset": 44425683232,
+      "n_bytes": 256,
+      "shape": [
+        64
+      ],
+      "tensor_type": "f32"
+    },
+    "blk.25.attn_v.bias": {
+      "data_offset": 44425683488,
+      "n_bytes": 2048,
+      "shape": [
+        512
+      ],
+      "tensor_type": "f32"
+    },
+    "blk.25.attn_v.weight": {
+      "data_offset": 44425685536,
+      "n_bytes": 1566720,
+      "shape": [
+        2880,
+        512
+      ],
+      "tensor_type": "q8_0"
+    },
+    "blk.25.ffn_gate_inp.bias": {
+      "data_offset": 45558239776,
+      "n_bytes": 512,
+      "shape": [
+        128
+      ],
+      "tensor_type": "f32"
+    },
+    "blk.25.ffn_gate_inp.weight": {
+      "data_offset": 45558240288,
+      "n_bytes": 1474560,
+      "shape": [
+        2880,
+        128
+      ],
+      "tensor_type": "f32"
+    },
+    "blk.25.post_attention_norm.weight": {
+      "data_offset": 46125208608,
+      "n_bytes": 11520,
+      "shape": [
+        2880
+      ],
+      "tensor_type": "f32"
+    }
+  },
+  "status": "AR_ROUTER_OPERAND_PRESENT_B3_OPERAND_UNOBSERVED",
+  "worker_commit": "d0ebfbcc6c8f456bc1083027c1b08075a32824d8"
+}

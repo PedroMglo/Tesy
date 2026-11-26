@@ -1,0 +1,69 @@
+{
+  "c281": {
+    "--moe-stream-io-threads": 4,
+    "-np": 1,
+    "-t": 8,
+    "-tb": 8
+  },
+  "class": "REPRODUCED_STATIC_AND_ESTIMATED_PLACEMENT",
+  "new_forwards": 0,
+  "parallel_runtime": {
+    "unset": [
+      "OMP_WAIT_POLICY",
+      "OMP_NUM_THREADS",
+      "OMP_DYNAMIC",
+      "OMP_PROC_BIND",
+      "OMP_PLACES",
+      "GOMP_SPINCOUNT",
+      "GOMP_CPU_AFFINITY",
+      "KMP_BLOCKTIME",
+      "KMP_AFFINITY"
+    ],
+    "values": {}
+  },
+  "single_thread_scenarios": {
+    "hot": {
+      "ideal_four_plus_four_vs_eight_compact_gain_fraction": 0.19593416446730083,
+      "median_native_ns": {
+        "0": 20807775.5,
+        "4": 30948622.0
+      },
+      "raw_native_ns": {
+        "0": [
+          21307389,
+          20308162
+        ],
+        "4": [
+          31064486,
+          30832758
+        ]
+      },
+      "zen5_to_zen5c_rate": 1.4873585117255808
+    },
+    "stream": {
+      "ideal_four_plus_four_vs_eight_compact_gain_fraction": 0.19714735933548322,
+      "median_native_ns": {
+        "0": 22654638.5,
+        "4": 33780720.5
+      },
+      "raw_native_ns": {
+        "0": [
+          22736117,
+          22573160
+        ],
+        "4": [
+          34297832,
+          33263609
+        ]
+      },
+      "zen5_to_zen5c_rate": 1.4911171723177132
+    }
+  },
+  "source_sha256": {
+    "argv.json": "1a8425b306951a2029ddf3a0656e7565b17bb7f884dccdcc0fe61af214443646",
+    "arms.tsv": "880024dfede16b7f93529983b8c12345a44428fb503b9fec6dc203c74256430d",
+    "receipt.json": "cb191e31c2e3ee547a01228065a3c4253bdb312dd1e561d361f75365f065356a",
+    "resource-protocol.json": "fb5cfb14db7f4dd72c5d3688ba850e5b2650b0f02925fcb2a490d13915b8c358"
+  },
+  "tid_cpu_placement": "UNKNOWN"
+}

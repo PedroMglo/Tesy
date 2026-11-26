@@ -2,6 +2,10 @@
 
 **23 de novembro de 2026.** O projeto demonstrou inferência do GPT-OSS-120B acima da RAM no portátil e ganhos de mecanismos específicos. O último controlo operacional publicado é R0 `slots40-persistent`, opt-in. **M3 PARTIAL, M4 NOT_MET.** O último fecho experimental é C320, de 7 de outubro. C321 regista a publicação e o estado para retomar. A branch da tese, de 17 de outubro, acrescenta documentação. A decisão desta revisão é investir primeiro na análise de filas do decode e estudar a possibilidade de reutilização no prefill mantendo a geometria de R0. [Decisão de arquitetura e responsabilidades](../../docs/architecture/0004-servico-exato-de-experts.md) · [Literatura e comparadores](literatura.md) · [Inventário Git](repositorio.md)
 
+## Qualificação de produto em 24 de novembro
+
+M3 PARTIAL e M4 NOT_MET. A reanálise da sessão de 20 turnos localizou uma falha de conteúdo ainda sem referência independente para aquela entrada. O replay C322 fecha o fallback que duplica a leitura. A auditoria atual confirma integralmente o GGUF e documenta as condições de RAM, armazenamento e dependências para retomar no portátil. Na colocação USB escolhida pelo Pedro, o limite de transporte dos 32 passos C294 e a reconstrução dos quatro estados de cache excluem atingir seis só escolhendo outras vítimas em R0. A triagem do MoEStream inclui o cabeçalho real e uma fixture de leitura incompleta. [Decisões, recibos e comandos](../qualification-retake/README.md)
+
 ## O que sustenta a decisão
 
 As linhas `MEDIDO` abaixo remetem para medições históricas no target, tal como foram publicadas. Nesta revisão foram lidos fontes, patches, fechos, protocolos e recibos compactos. `REPRODUZIDO_MODEL_FREE` designa os cálculos refeitos nesta revisão com esses recibos. Raw físico, GGUF, binários do portátil, sensores atuais, full logits e geração livre não foram reexecutados. O inventário identifica as linhas examinadas e os limites de cobertura.

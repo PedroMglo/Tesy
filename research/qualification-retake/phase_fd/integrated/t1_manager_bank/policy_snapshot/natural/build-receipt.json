@@ -1,0 +1,125 @@
+{
+  "abi_exports": 4629,
+  "abi_exports_sha256": "8059080092819ae40d3d82a87c5e76fff69a8b4cd741b2b1d5693aabcdccf8df",
+  "build_receipt_sha256": "4762116405b6f4bf3fee225be62b4485c01228dccc647febdfd36b8515b5d5bc",
+  "candidate_cases": {
+    "age-a": {
+      "choices": {
+        "backed": 1,
+        "r0": 0
+      },
+      "records": 1552,
+      "sidecar_bytes": 48800,
+      "sidecar_sha256": "5227f44ceb428474a4c77c64fa17c4a52c1d370ac5a62907c81290048d27db5e",
+      "status": 1
+    },
+    "age-b": {
+      "choices": {
+        "backed": 2,
+        "r0": 0
+      },
+      "records": 1552,
+      "sidecar_bytes": 48800,
+      "sidecar_sha256": "ad35d1d2e2fde5decd53367329be20031e0d89d787cb782610d1331b1fc470db",
+      "status": 1
+    },
+    "duplicate": {
+      "choices": {
+        "backed": 1,
+        "r0": 0
+      },
+      "records": 1554,
+      "sidecar_bytes": 128,
+      "sidecar_sha256": "6f8dfa6e56fb43e12b400a5bf1079010e9a909f7e88fb93613fd5e6c8d66c569",
+      "status": 3
+    },
+    "heat-a": {
+      "choices": {
+        "backed": 1,
+        "r0": 0
+      },
+      "records": 1552,
+      "sidecar_bytes": 48800,
+      "sidecar_sha256": "a15f66447a08f4c67d10a5fcf57bb9ede331e3415051e932a0035948a778ca55",
+      "status": 1
+    },
+    "heat-b": {
+      "choices": {
+        "backed": 2,
+        "r0": 0
+      },
+      "records": 1552,
+      "sidecar_bytes": 48800,
+      "sidecar_sha256": "be0a4f3be7bae07e346b12602a5380e078e7c74836582aeeeaaf744138f50ac9",
+      "status": 1
+    },
+    "missing": {
+      "choices": {
+        "backed": 1,
+        "r0": 0
+      },
+      "records": 1552,
+      "sidecar_bytes": 128,
+      "sidecar_sha256": "7f2f0334feb734b14094619d7825375d3080937c54012874e1b3880cecd9e780",
+      "status": 0
+    },
+    "off": {
+      "choices": {
+        "backed": 1,
+        "r0": 0
+      },
+      "records": 1552,
+      "sidecar_bytes": 0,
+      "sidecar_sha256": null,
+      "status": null
+    },
+    "pending": {
+      "choices": {
+        "backed": 0,
+        "r0": 0
+      },
+      "records": 1558,
+      "sidecar_bytes": 128,
+      "sidecar_sha256": "c0f176edc2ce4d2c9e530ebd5b01821628039b2642bca488704c29fac6d917ca",
+      "status": 2
+    }
+  },
+  "commit": "cbd0540df6b36ccb9ed0683931c1c8a622ef9ac6",
+  "cpu_objects": {
+    "cpu-candidate": {
+      "executable_sha256": "f73ed522969c8feac290bf2f97bd5499a6cd12c061e114c49ed090da44bf3eac",
+      "manager_sha256": "f6f98598cad576249b9d96a291964403fce22beb11497bc370b6338018f8608d"
+    },
+    "cpu-pfj1": {
+      "executable_sha256": "0ff200ccfe4ae18a2d31aaa66a9342406a7c25f3f6a6ef18e72faf30a6513fad",
+      "manager_sha256": "9e7bc3ea8ef074c71f7a222b4be48d3294ffb648cf9ed5f38ea54d3ec074c44d"
+    }
+  },
+  "elapsed_s": 5.811430910005583,
+  "gpu_calls": 0,
+  "image_hashes": {
+    "candidate": "a9920fb2a683bd8912ef2a823fdec2aee305f2c09809693c065a76930b7b5d5b",
+    "gold": "347267b2e9cbf920dbf912d6aaf1884e5eff4cccc41c349e93c42bd6403a658f",
+    "pfj_control": "911b3be5b529d8e07409c12cf600ca9f7f6182f7a397fc6de265e5ea4be254eb"
+  },
+  "inputs_sha256": "550fc4cec9270d2681080ebad66ff037c5c23997b3adfb7f467363b93e1f338e",
+  "model_forwards": 0,
+  "objects": {
+    "src/llama-context.cpp": "d8b2a572a7a437559d2cd5faff08c5cfaa8dc448bc4ec68fc2c690bd06b16d0d",
+    "src/llama-moe-stream.cpp": "f6f98598cad576249b9d96a291964403fce22beb11497bc370b6338018f8608d"
+  },
+  "output_bytes_before_receipt": 10641055,
+  "pfj_control_cases": 2,
+  "policy_header_sha256": "1724f3e69de20afc2ba1233378046f5a2f83510af569b9fa397819012cd14c0f",
+  "prior_build_sha256": "e5042bfb23527a1763b28ca2098c0a00700383d07ff403a97d52da4bcdf422a6",
+  "protocol_sha256": "faeda8fc46a3085b156bf60f2faa45d227a508f224c1edfffba1a98d797bef04",
+  "scope_peak": 350949376,
+  "server_starts": 0,
+  "startup_objects": {
+    "C270": 18,
+    "C281": 24
+  },
+  "static_preflight_sha256": "2508e245fcde7ff411c93474919c3701ac95e98c1f76505d74a248d34a6aff16",
+  "status": "PASS_POLICY_DSO_CPU_BUILD_ONLY",
+  "tree": "47a88af4757b73973e06c1e26520f4f6c5389707"
+}

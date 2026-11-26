@@ -1,0 +1,66 @@
+#version 450
+
+// The host dispatches two output rows per workgroup with the original MMVQ bindings.
+layout(local_size_x_id=0, local_size_y=1, local_size_z=1) in;
+layout(constant_id=1) const uint rows_per_group = 2u;
+layout(std430, binding=0) readonly buffer Weights { uint w[]; };
+layout(std430, binding=1) readonly buffer Activation { uint q[]; };
+layout(std430, binding=2) writeonly buffer Output { float y[]; };
+layout(std430, binding=5) readonly buffer SlotIDs { uint ids[]; };
+shared float partial[16];
+const int levels[16] = int[16](0,1,2,3,4,6,8,12,0,-1,-2,-3,-4,-6,-8,-12);
+
+uint weight_byte(uint pos) {
+    return bitfieldExtract(w[pos / 4u], int((pos % 4u) * 8u), 8);
+}
+
+float half_e8m0(uint exponent) {
+    uint bits = exponent < 2u ? 0x00200000u << exponent : (exponent - 1u) << 23u;
+    return uintBitsToFloat(bits);
+}
+
+void main() {
+    uint id = gl_LocalInvocationID.x;
+    uint lane = id % 8u;
+    uint local_row = id / 8u;
+    uint row = gl_WorkGroupID.x * rows_per_group + local_row;
+    if (local_row < rows_per_group) {
+        uint base = (ids[0] * 2880u + row) * (90u * 17u);
+        precise float even = 0.0;
+        precise float odd = 0.0;
+        for (uint b = 0u; b < 90u; ++b) {
+            uint block = base + 17u * b;
+            uint group = 36u * (b / 4u);
+            uint part = b % 4u;
+            precise float scale = half_e8m0(weight_byte(block)) * unpackHalf2x16(q[group + part]).x;
+            int codes = int(q[group + 4u + 8u * part + lane]);
+            int subtotal = 0;
+            for (uint j = 0u; j < 4u; ++j) {
+                uint packed = weight_byte(block + 1u + (lane % 4u) * 4u + j);
+                int value = levels[(packed >> (4u * (lane / 4u))) & 15u];
+                int code = bitfieldExtract(codes, int(j * 8u), 8);
+                // VPSIGNB on the x86 reference wraps when it negates -128.
+                subtotal += value < 0 && code == -128 ? value * 128 : value * code;
+            }
+            if ((b & 1u) == 0u) {
+                even = fma(scale, float(subtotal), even);
+            } else {
+                odd = fma(scale, float(subtotal), odd);
+            }
+        }
+        precise float pair = even + odd;
+        partial[id] = pair;
+    }
+    barrier();
+    if (local_row < rows_per_group && lane == 0u) {
+        // Fold the high and low halves, then MOVEHL, then MOVEHDUP as in C269.
+        precise float a = partial[id + 4u] + partial[id];
+        precise float b = partial[id + 5u] + partial[id + 1u];
+        precise float c = partial[id + 6u] + partial[id + 2u];
+        precise float d = partial[id + 7u] + partial[id + 3u];
+        precise float ac = a + c;
+        precise float bd = b + d;
+        precise float result = ac + bd;
+        y[row] = result;
+    }
+}

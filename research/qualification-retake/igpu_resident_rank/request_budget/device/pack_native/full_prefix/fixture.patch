@@ -1,0 +1,60 @@
+--- a/fixture.cpp
++++ b/fixture.cpp
+@@ -37,7 +37,7 @@
+ extern "C" ssize_t __wrap_pread(int fd,void *dst,size_t n,off_t off) {
+     if (fd!=tracked) return __real_pread(fd,dst,n,off);
+     ++attempts;asked+=n;
+-    if (packed && !short_case && off==0 && interruptions.fetch_add(1)==0) {errno=EINTR;return -1;}
++    // The positive full-prefix fixture uses successful reads only.
+     ++kernel_reads;
+     ssize_t result=__real_pread(fd,dst,n,off);
+     const int saved=errno;
+@@ -115,14 +115,32 @@
+             tracked=s.data.descriptor();report["pack_fd"]=tracked;report["pack_stat"]=stat_fd(tracked);
+             need(s.data.offset_alignment()==4096,"fixture requires qualified 4096 byte pack alignment");
+         }else {tracked=fd;report["pack_fd"]=-1;report["pack_stat"]=nullptr;}
+-        int32_t positions[2]{0,1};
+-        ContextLike c{{m},[&](){
+-            if(short_case){int32_t pos=0;auto step=[&](int,bool){setup_failure(m);return 0;};
+-                need(borrowed_graph(ModelLike{m},TestBatch{1,&pos},step)==0,"short seam");
+-            }else for(int ti=1;ti<=2;++ti)routes.push_back(graph(m,ti));
+-            return 0;
+-        }};
+-        need(borrowed_call(&c,TestBatch{short_case?1:2,positions})==0,"call");
++        const std::string fault=std::getenv("TESY_FIX_CUT_FAULT") ? std::getenv("TESY_FIX_CUT_FAULT") : "";
++        // Only this small fixture uses no-op graphs in external calls 2..86.
++        // The production cut, pack worker and both non-empty graphs are unmodified.
++        for (int c=1; c<=87; ++c) {
++            int32_t pos = c==86 ? (fault=="position" ? 2118 : 2119) : c-1;
++            ContextLike ctx{{m},[&](){
++                if (c==1 || c==87) routes.push_back(graph(m,c==1 ? 1 : 2));
++                else {
++                    auto noop=[](int,bool){return 0;};
++                    need(borrowed_graph(ModelLike{m},TestBatch{1,&pos},noop)==0,"fixture cut graph");
++                }
++                if (c==86 && fault=="retry")
++                    pfj::emit(pfj::PACK_READ,pfj::Site{},0,13221888,-1,0,0,EINTR);
++                return 0;
++            }};
++            need(borrowed_call(&ctx,TestBatch{1,&pos})==0,"external call");
++            if (c==86 && pfj::journal) {
++                uint64_t cut=0;
++                need(::pread(pfj::journal->file,&cut,sizeof(cut),offsetof(pfj::Header,reserved))==sizeof(cut),
++                     "read the fixed cut from the FD");
++                report["cut_before_suffix"]=cut;
++                need(fault.empty() ? cut>0 : cut==0, "wrong published cut");
++                if (!fault.empty()) break;
++            }
++        }
++        if (fault.empty()) {
+         auto &l=*m.layer(0);
+         std::vector<uint8_t> buf(slab);
+         if(!short_case){
+@@ -139,6 +157,7 @@
+         }else need(m.load_failed && l.expert_slot.at(5)==5 && !m.stats.n_store_loads,"short state");
+         need(m.workers.size()==4 && m.q_demand.empty() &&
+              m.stats.n_store_loads==(packed && !short_case?5:0),"worker pool and publications");
++        }
+         report["store_loads"]=m.stats.n_store_loads;report["load_failed"]=m.load_failed;
+     }
+     report.update(json{{"status","PASS_PACK_NATIVE_CASE"},{"transport",packed?"pack":"gguf"},{"short",short_case},

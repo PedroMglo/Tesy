@@ -1,0 +1,166 @@
+{
+  "arms": {
+    "BANK7": {
+      "launches": 0,
+      "status": "NOT_RUN"
+    },
+    "BANK9": {
+      "C118": {
+        "complete": true,
+        "cpu_tctl_c_max": 54.0,
+        "duration_s": 60.18459769099718,
+        "first_sample_after_c55_end_s": 177.119396,
+        "gpu_power_w_max_sampled": 10.53,
+        "gpu_temperature_c_max": 46.56,
+        "gpu_used_mib_max": 2.0,
+        "mem_available_bytes_min": 23718506496,
+        "nvme_temperature_c_max_by_sensor": {
+          "nvme-pci-c100": 33.85
+        },
+        "sample_count": 61,
+        "sha256": "9471da1c43acccd11fca600487c2bc2b4dab4a95066576072ec3fc16a861842e"
+      },
+      "child_gone": true,
+      "coverage": {
+        "after_exit": false,
+        "covered": 2,
+        "last_sample_elapsed_s": 0.6520454990095459,
+        "samples_by_phase": {
+          "active": 1,
+          "entry": 1
+        },
+        "scope_peak_bytes_sampled": 598810624
+      },
+      "issues": [
+        "grade: native closure"
+      ],
+      "launches": 1,
+      "monitor": {
+        "cpu_tctl_c_max": 50.375,
+        "gpu_power_w_max_sampled": 11.13,
+        "gpu_temperature_c_max": 45.3,
+        "gpu_used_mib_max": 106.0,
+        "mem_available_bytes_min": 23550959616,
+        "nvme_temperature_c_max_by_sensor": {
+          "nvme-pci-c100": 33.85
+        },
+        "sample_count": 2,
+        "sha256": "56bc82166057cb919cc47a2e6e4b70a1928b09ead3e22027ac0fbf11cb95c649"
+      },
+      "returncode": 1,
+      "status": "STARTED_BEFORE_FAIL",
+      "wall_s_including_handoffs": 0.8761970580089837
+    },
+    "RESIDENT": {
+      "C118": {
+        "complete": true,
+        "cpu_tctl_c_max": 58.375,
+        "duration_s": 60.176999016999616,
+        "first_sample_after_c55_end_s": 115.59993,
+        "gpu_power_w_max_sampled": 2.96,
+        "gpu_temperature_c_max": 45.12,
+        "gpu_used_mib_max": 2.0,
+        "mem_available_bytes_min": 23732957184,
+        "nvme_temperature_c_max_by_sensor": {
+          "nvme-pci-c100": 32.85
+        },
+        "sample_count": 61,
+        "sha256": "5e3914447b63931e114848be3f4df0264592404c7b85c96e5ebff1520d628632"
+      },
+      "child_gone": true,
+      "consumers": 24,
+      "coverage": {
+        "after_exit": true,
+        "covered": 3,
+        "last_sample_elapsed_s": 1.1968970129964873,
+        "samples_by_phase": {
+          "active": 1,
+          "after_exit": 1,
+          "entry": 1,
+          "finish": 1
+        },
+        "scope_peak_bytes_sampled": 598810624
+      },
+      "cpu_comparison": {
+        "bitwise": false,
+        "candidate": "RESIDENT",
+        "ordered_route_agreement": {
+          "3:0": false,
+          "3:1": true,
+          "4:0": true,
+          "4:1": true
+        },
+        "reference": "CPU",
+        "routes_equal": false,
+        "rows": {
+          "prefill.f32": {
+            "bitwise": false,
+            "columns": 32,
+            "different_first_argmax": 3,
+            "different_rows": 32,
+            "different_words": 1024,
+            "max_abs": 0.04200166463851929,
+            "rmse": 0.011717514355975239,
+            "rows": 32,
+            "tied_rows_either": 0
+          },
+          "teacher.f32": {
+            "bitwise": false,
+            "columns": 32,
+            "different_first_argmax": 0,
+            "different_rows": 1,
+            "different_words": 32,
+            "max_abs": 0.022933244705200195,
+            "rmse": 0.009478623837046458,
+            "rows": 1,
+            "tied_rows_either": 0
+          }
+        }
+      },
+      "host_registration_events": 0,
+      "issues": [],
+      "launches": 1,
+      "monitor": {
+        "cpu_tctl_c_max": 53.5,
+        "gpu_power_w_max_sampled": 10.91,
+        "gpu_temperature_c_max": 45.96,
+        "gpu_used_mib_max": 134.0,
+        "mem_available_bytes_min": 23285104640,
+        "nvme_temperature_c_max_by_sensor": {
+          "nvme-pci-c100": 32.85
+        },
+        "sample_count": 4,
+        "sha256": "38305eafc99a73a66d096d913ea2b360ecb15a7e6e3492d24588da10cc1e14ec"
+      },
+      "returncode": 0,
+      "startup_matrix_H2D_bytes": 1671168,
+      "status": "REPRODUCED_ARM",
+      "wall_s_including_handoffs": 1.1971554899937473
+    }
+  },
+  "commit": "489e873770de6ebbe07051e0516129d16378e53a",
+  "energy_j": null,
+  "family_scope": {
+    "max_scope_bytes": 598810624,
+    "memory_events_local": {
+      "high": 0,
+      "low": 0,
+      "max": 0,
+      "oom": 0,
+      "oom_group_kill": 0,
+      "oom_kill": 0,
+      "sock_throttled": 0
+    },
+    "swap_peak_bytes": 0
+  },
+  "family_sha256": "2e83262ce3efb72136f2025d76db749f21e768bc78b8abbe55480648dd9fa27a",
+  "family_status": "FAIL_PRESERVED",
+  "launches": 2,
+  "raw_bytes": 168143,
+  "raw_files": 12,
+  "reason": "ValueError: child or handoff failed",
+  "review_sha256": "aa45e2d66642aa0a94ec4b1cbe7d779cecacb2e3fd1270e8f289854057d2a861",
+  "status": "REVIEWED_PRESERVED_FAILURE",
+  "tree": "2caca72719a176e3d78b92cfb937624cbbecf685",
+  "unit": "tesy-ik-hybrid-device-20261126-r02"
+}

@@ -1,0 +1,197 @@
+{
+  "capacity_sha256": "40606cf47c0442fdf046272a0c85a1599f59997e5feab86fc15754c46ac7bb70",
+  "decode": {
+    "PR": {
+      "baseline_ns": 7116859370,
+      "candidate_ns": 7100765170,
+      "constant_outside_ns": 2318241276,
+      "delta_ns": 16094200,
+      "sites": [
+        {
+          "call": 80,
+          "critical_delta_ns": 1487105,
+          "layer": 32,
+          "prior_critical_ns": 13956487,
+          "removed_worker_ns": 12832426,
+          "retained_same_site_set_ns": 1124061,
+          "saved_jobs": 1,
+          "step": 4
+        },
+        {
+          "call": 82,
+          "critical_delta_ns": 4579759,
+          "layer": 19,
+          "prior_critical_ns": 5376182,
+          "removed_worker_ns": 4579759,
+          "retained_same_site_set_ns": 796423,
+          "saved_jobs": 1,
+          "step": 6
+        },
+        {
+          "call": 91,
+          "critical_delta_ns": 4446097,
+          "layer": 26,
+          "prior_critical_ns": 5632235,
+          "removed_worker_ns": 4446097,
+          "retained_same_site_set_ns": 1186138,
+          "saved_jobs": 1,
+          "step": 15
+        },
+        {
+          "call": 101,
+          "critical_delta_ns": 5581239,
+          "layer": 32,
+          "prior_critical_ns": 6759392,
+          "removed_worker_ns": 5581239,
+          "retained_same_site_set_ns": 1178153,
+          "saved_jobs": 1,
+          "step": 25
+        }
+      ]
+    },
+    "RP": {
+      "baseline_ns": 7084608120,
+      "candidate_ns": 7068991261,
+      "constant_outside_ns": 2318241276,
+      "delta_ns": 15616859,
+      "sites": [
+        {
+          "call": 80,
+          "critical_delta_ns": 1430780,
+          "layer": 32,
+          "prior_critical_ns": 13790675,
+          "removed_worker_ns": 12666614,
+          "retained_same_site_set_ns": 1124061,
+          "saved_jobs": 1,
+          "step": 4
+        },
+        {
+          "call": 82,
+          "critical_delta_ns": 4534373,
+          "layer": 19,
+          "prior_critical_ns": 5330796,
+          "removed_worker_ns": 4534373,
+          "retained_same_site_set_ns": 796423,
+          "saved_jobs": 1,
+          "step": 6
+        },
+        {
+          "call": 91,
+          "critical_delta_ns": 5127632,
+          "layer": 26,
+          "prior_critical_ns": 6313770,
+          "removed_worker_ns": 5127632,
+          "retained_same_site_set_ns": 1186138,
+          "saved_jobs": 1,
+          "step": 15
+        },
+        {
+          "call": 101,
+          "critical_delta_ns": 4524074,
+          "layer": 32,
+          "prior_critical_ns": 5702227,
+          "removed_worker_ns": 4524074,
+          "retained_same_site_set_ns": 1178153,
+          "saved_jobs": 1,
+          "step": 25
+        }
+      ]
+    }
+  },
+  "decode_authority_sha256": "27832256db8ae629ece5c8d95f1ce5e0d285c24cfddf3b7e110b92154ad4cbc1",
+  "joint_sha256": "78a53e6d93fed1ad9a9236d74b60b234546d32041f5e572998240b243b82fb7e",
+  "model_forwards": 0,
+  "pairs": {
+    "PR_PR": {
+      "breakeven_fixed_service_ceiling_ns": 265486753,
+      "breakeven_model_ns": 78445411,
+      "initial_deficit_ns": 2219549311,
+      "remaining_deficit_even_at_ceiling_ns": 1954062558
+    },
+    "PR_RP": {
+      "breakeven_fixed_service_ceiling_ns": 265009412,
+      "breakeven_model_ns": 77968070,
+      "initial_deficit_ns": 2187298061,
+      "remaining_deficit_even_at_ceiling_ns": 1922288649
+    },
+    "RP_PR": {
+      "breakeven_fixed_service_ceiling_ns": 291569706,
+      "breakeven_model_ns": 85273082,
+      "initial_deficit_ns": 2443789869,
+      "remaining_deficit_even_at_ceiling_ns": 2152220163
+    },
+    "RP_RP": {
+      "breakeven_fixed_service_ceiling_ns": 291092365,
+      "breakeven_model_ns": 84795741,
+      "initial_deficit_ns": 2411538619,
+      "remaining_deficit_even_at_ceiling_ns": 2120446254
+    }
+  },
+  "prefill": {
+    "PR": [
+      {
+        "call_tokens": 5,
+        "dq4_ns": 163136905,
+        "measured_dispatch_to_drain_ns": 174156131,
+        "measured_read_union_ns": 174043999,
+        "measured_read_worker_ns": 677390571,
+        "model_baseline_ns": 173901981,
+        "model_candidate_ns": 170018525,
+        "model_delta_ns": 3883456,
+        "original_jobs": 34,
+        "removed_exclusive_union_ns": 0,
+        "removed_read_worker_ns": 14569413,
+        "saved_jobs": 1
+      },
+      {
+        "call_tokens": 148,
+        "dq4_ns": 5118873512,
+        "measured_dispatch_to_drain_ns": 5146889026,
+        "measured_read_union_ns": 5146815368,
+        "measured_read_worker_ns": 20553198979,
+        "model_baseline_ns": 5144177252,
+        "model_candidate_ns": 5085709497,
+        "model_delta_ns": 58467755,
+        "original_jobs": 1024,
+        "removed_exclusive_union_ns": 0,
+        "removed_read_worker_ns": 234823140,
+        "saved_jobs": 13
+      }
+    ],
+    "RP": [
+      {
+        "call_tokens": 5,
+        "dq4_ns": 185595036,
+        "measured_dispatch_to_drain_ns": 207773946,
+        "measured_read_union_ns": 206923742,
+        "measured_read_worker_ns": 790557081,
+        "model_baseline_ns": 206798795,
+        "model_candidate_ns": 201368332,
+        "model_delta_ns": 5430463,
+        "original_jobs": 34,
+        "removed_exclusive_union_ns": 0,
+        "removed_read_worker_ns": 22993194,
+        "saved_jobs": 1
+      },
+      {
+        "call_tokens": 148,
+        "dq4_ns": 5315568424,
+        "measured_dispatch_to_drain_ns": 5337511769,
+        "measured_read_union_ns": 5337051621,
+        "measured_read_worker_ns": 21315681408,
+        "model_baseline_ns": 5333642358,
+        "model_candidate_ns": 5269893939,
+        "model_delta_ns": 63748419,
+        "original_jobs": 1024,
+        "removed_exclusive_union_ns": 0,
+        "removed_read_worker_ns": 252482312,
+        "saved_jobs": 13
+      }
+    ]
+  },
+  "program_sha256": "ea6ceb45022a5d8bf7b19c1e913db63affed26b7df5d6d763c71516ac3015386",
+  "protocol_sha256": "a6d3f5094b3bf4bbfddfc6d8597db5047cea7356257b90749221b1564e31c91e",
+  "saved_sites_sha256": "eb0d1b221941f5cf50e8c44bda8ba98b928a9d3bf2e0f2d49e0ec79bb62368ae",
+  "status": "TRACE_DERIVED_MARGINAL_SERVICE_PRICES",
+  "weight_bytes_read": 0
+}

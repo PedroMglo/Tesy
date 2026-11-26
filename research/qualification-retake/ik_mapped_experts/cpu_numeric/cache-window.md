@@ -1,0 +1,5 @@
+# Residência do GGUF fora das chamadas C110
+
+Diagnóstico auxiliar definido antes da primeira abertura de inferência do ik. Medir o número de páginas já residentes no inode autenticado do NVMe e o tempo do censo antes de D0 e, se admitido, antes de D1. Usar a implementação C147 da árvore integrada. Abrir o ficheiro só para leitura, fazer mmap privado em chunks de 256 MiB e mincore, sem dereferenciar os pesos, pedir DONTNEED, preencher páginas ou esvaziar caches. Conservar o tempo monotónico da função, tamanho de página, número de chunks e de páginas residentes, inode e SHA do recibo privado. Reler identidade e tamanho após o censo. O custo deste observador fica fora do relógio do forward e da C118.
+
+As páginas podem mudar antes do arranque, durante os 60 s de C118 e entre chunks. A contagem abrange o ficheiro inteiro. O total por chunk não identifica as páginas que os experts vão usar, o proprietário memcg, a causa de uma espera nem a equivalência da cache inicial entre braços. Uma diferença de custo numa única ordem continua diagnóstica. Preservar falhas do censo como dado ausente; esta observação exterior não altera os gates numéricos congelados.

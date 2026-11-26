@@ -1,0 +1,81 @@
+{
+  "alignment": {
+    "memory": 4096,
+    "method": "btrfs-ioctl-sectorsize",
+    "offset": 4096
+  },
+  "atime_unchanged": true,
+  "classification": "TAIL_ZERO",
+  "elapsed_s": 0.148694,
+  "fd_flags_unchanged": true,
+  "inode_unchanged": true,
+  "kernel": "7.3.4-200.fc44.x86_64",
+  "maxrss_KiB": 650912,
+  "model_forwards": 0,
+  "positive": {
+    "all_prefix_bytes_match": true,
+    "expected_prefix_sha256": "4cee0f8cc0b8e9fb686d08125e0e4c82f26f0c87869a07b42379cb789bedd9d0",
+    "first_tail_difference_from_sentinel": 0,
+    "guard_bytes_changed": {
+      "after": {
+        "after": 0,
+        "before": 0
+      },
+      "before": {
+        "after": 0,
+        "before": 0
+      }
+    },
+    "observed_prefix_sha256": "4cee0f8cc0b8e9fb686d08125e0e4c82f26f0c87869a07b42379cb789bedd9d0",
+    "requested": 13221888,
+    "returned": 13221888,
+    "tail_bytes_matching_sentinel": 14,
+    "tail_sha256": "0e13506aae34d3742eb5ab8808cf34a2dce1f13230dfc6064c6bb8555878f58f",
+    "tail_zero_bytes": 18,
+    "whole_destination_sha256": "4cee0f8cc0b8e9fb686d08125e0e4c82f26f0c87869a07b42379cb789bedd9d0"
+  },
+  "positive_unchanged_after_short": true,
+  "program_sha256": "3807867ef858e4e1f12dc19b2d8624f39bf471ef78f98e8f71388d20d05c8703",
+  "protocol_commit": "63d2308d",
+  "r01_native_sha256": "78259a44b9e2f927989a44b9b0ecb833f3ee3e5f0e71ee2a6e567ce3a54eb42f",
+  "r01_receipt_sha256": "6f620051aba7e94a8a54d14d9a267c25c235d2f38634e1731e56ea3cd0a686ef",
+  "schema": "c290-r01-short-read-diagnostic-v1",
+  "scope_after": {
+    "memory.max": 268435456,
+    "memory.peak": 64909312,
+    "memory.swap.current": 0,
+    "memory.swap.max": 0,
+    "memory.swap.peak": 0,
+    "oom": {
+      "oom": 0,
+      "oom_group_kill": 0,
+      "oom_kill": 0
+    }
+  },
+  "short": {
+    "all_prefix_bytes_match": true,
+    "expected_prefix_sha256": "8237445c08896a2acf12c791f21d83d393de57573d2dc404fa9a647dfa89c088",
+    "first_tail_difference_from_sentinel": 0,
+    "guard_bytes_changed": {
+      "after": {
+        "after": 0,
+        "before": 0
+      },
+      "before": {
+        "after": 0,
+        "before": 0
+      }
+    },
+    "observed_prefix_sha256": "8237445c08896a2acf12c791f21d83d393de57573d2dc404fa9a647dfa89c088",
+    "requested": 13221888,
+    "returned": 13217792,
+    "tail_bytes_matching_sentinel": 0,
+    "tail_histogram": {
+      "0": 4096
+    },
+    "tail_sha256": "ad7facb2586fc6e966c004d7d1d16b024f5805ff7cb47c7a85dabd8b48892ca7",
+    "tail_zero_bytes": 4096,
+    "whole_destination_sha256": "b1a7e3ad3d1d8628b219e54bf4efd0e21440123e660447c35f99806586bc2743"
+  },
+  "status": "OBSERVED_SHORT_READ"
+}

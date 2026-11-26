@@ -1,0 +1,129 @@
+--- a/layer.cpp
++++ b/layer.cpp
+@@ -45,5 +45,5 @@
+ // Exact two functions copied from the SHA-pinned block_expert_reuse_operator.cpp at build time.
+ #include "pairs-finish.inc"
+-#include "slot_witness.h"
++#include "suffix-clock.h"
+ struct Inputs {std::vector<float> activation,weights;std::vector<int> ids;};
+ static Inputs routing(const fs::path &p,ggml_backend_t cpu){
+@@ -68,16 +68,4 @@
+     return fs::canonical(info.dli_fname).string();
+ }
+-static void counterexamples(){
+-    int tensor,copy,buffer,other; std::array<uint8_t,64> data{};
+-    auto source=[&](int *t,const void *ptr,int *buf,size_t pitch){
+-        return same_operand(t,&tensor,ptr,data.data(),buf,&buffer,pitch,window);};
+-    need(source(&tensor,data.data(),&buffer,window),"positive operand");
+-    need(!source(&copy,data.data(),&buffer,window) && !source(&tensor,data.data()+1,&buffer,window) &&
+-         !source(&tensor,data.data(),&other,window) && !source(&tensor,data.data(),&buffer,slab),"missed copy/stride mutation");
+-    Audit a;a.seen_ids.fill(1);a.seen_masks.fill(1);for(auto &seen:a.seen_mm)seen.fill(1);
+-    need(complete(a),"positive wave coverage");a.seen_mm[7][2]=0;need(!complete(a),"missed final parked projection");
+-    std::vector<int> ids{45,49,57,60},reordered{49,45,57,60};bool rejected=false;
+-    try{equal(ids,reordered,"wrong rank");}catch(const std::runtime_error&){rejected=true;}need(rejected,"rank order mutation");
+-}
+ template<class T> static std::vector<T> tile(const std::vector<T>&v,size_t per_position){
+     return {v.begin()+first*per_position,v.begin()+(first+nt)*per_position};
+@@ -85,7 +73,7 @@
+ static json run(const fs::path &p,const std::string &mode,const fs::path &output){
+     static_assert(sizeof(int)==4 && sizeof(float)==4);
+-    need(mode=="DENSE"||mode=="STAGED"||mode=="DIRECT","invalid arm");
+-    const char *env=std::getenv("TESY_PACKED_CPU_SLOTS");
+-    need(mode=="DENSE"?!env:(env && env==std::string(mode=="DIRECT"?"direct":"staged")),"layout environment");
++    need(mode=="OFF" || mode=="ON","invalid timing arm");
++    const bool marked = mode=="ON";
++    need(std::getenv("TESY_PACKED_CPU_SLOTS")==nullptr,"DENSE original required");
+     need(std::getenv("TESY_CPU_WAVE_SKIP_PARKED") && std::string(std::getenv("TESY_CPU_WAVE_SKIP_PARKED"))=="1","parked CPU mode");
+     ggml_backend_ptr backend(ggml_backend_cpu_init());need(bool(backend),"CPU init");ggml_backend_cpu_set_n_threads(backend.get(),8);
+@@ -96,9 +84,7 @@
+     auto meta=context(); auto biases=context();std::array<ggml_tensor*,6> t{};
+     // pairs() takes gate,up,down; native layer registration and on-disk components are gate,down,up.
+-    const int order[]={0,2,1};const char *roles[]={"gate","up","down"}; Audit observed; observed.cpu=backend.get();
+-    observed.slot_stride=mode=="DENSE"?slab:window;observed.direct=mode=="DIRECT";observed.slots.fill(-1);
+-    std::copy(ids.begin(),ids.end(),observed.logical.begin());
++    const int order[]={0,2,1};const char *roles[]={"gate","up","down"}; GraphInputs observed;
+     json info;{std::ifstream f(p/"prepare.json");f>>info;need(bool(f)&&info.at("status")=="PASS_PREPARED_REAL_TILE","input receipt");}
+-    llama_moe_stream manager(1,40,4,true);observed.manager=&manager;
++    llama_moe_stream manager(1,40,4,true);
+     for(int k=0;k<3;++k){const int i=order[k];auto *m=ggml_new_tensor_3d(meta.get(),GGML_TYPE_MXFP4,width,width,128);
+         ggml_format_name(m,"blk.0.ffn_%s_exps.weight",roles[i]);t[i]=manager.create_cache_tensor(0,ggml_backend_cpu_buffer_type(),m,0,info.at("weight_bases").at(k).get<size_t>());
+@@ -106,11 +92,9 @@
+     manager.alloc_bufs(false);observed.layer=manager.layer(0);
+     ggml_backend_buffer_ptr biasmem(ggml_backend_alloc_ctx_tensors(biases.get(),backend.get()));need(bool(biasmem),"bias buffers");
+-    for(int k=0;k<3;++k){auto *w=observed.weights[k];observed.addresses[k]=static_cast<uint8_t *>(w->data);observed.buffers[k]=w->buffer;
+-        need(w->nb[2]==observed.slot_stride && ggml_is_contiguous(w)==(mode=="DENSE"),"weight geometry");
+-        if(mode!="DENSE") need(w->view_src==observed.weights[0]->view_src && w->view_src && w->buffer==observed.buffers[0] &&
+-            observed.addresses[k]==observed.addresses[0]+k*slab && uintptr_t(observed.addresses[0])%4096==0,"aligned bank geometry");
++    for(int k=0;k<3;++k){auto *w=observed.weights[k];
++        need(w->nb[2]==slab && ggml_is_contiguous(w), "dense weight geometry");
+         put(t[3+order[k]],read<float>(p/(std::string(roles[order[k]])+".bias"),width*128));}
+     manager.expert_store=std::make_unique<tesy_expert_store>();auto &store=*manager.expert_store;
+-    store.data.open_file((p/"pack.bin").c_str());observed.fd=store.data.descriptor();need(store.data.file_size()==selected.size()*stride,"pack size");
++    store.data.open_file((p/"pack.bin").c_str());need(store.data.file_size()==selected.size()*stride,"pack size");
+     for(auto &entry:store.entries[0])entry.offset=UINT64_MAX;
+     for(size_t i=0;i<selected.size();++i){auto &e=store.entries[0][selected[i]];e.offset=i*stride;e.relative={0,slab,2*slab};}
+@@ -120,7 +104,8 @@
+     for(auto *l:{x,r,mix})ggml_set_input(l);ggml_tensor *sum=nullptr;
+     for(int w=0;w<8;++w){ggml_tensor *args[]={r,sum?ggml_view_1d(c,sum,1,0):nullptr};auto *ud=observed.layer->wave_userdata(w,18);
+-        auto *physical=ggml_custom_4d(c,GGML_TYPE_I32,4,nt,1,1,args,sum?2:1,llama_moe_stream_wave_ids,1,ud);observed.wave_ids.emplace(physical,w);
++        auto remap = marked && w==0 ? timed_wave_ids : llama_moe_stream_wave_ids;
++        auto *physical=ggml_custom_4d(c,GGML_TYPE_I32,4,nt,1,1,args,sum?2:1,remap,1,ud);
+         auto *value=pairs(c,t,x,r,physical);ggml_tensor *mo[]={r,physical};
+-        auto *mask=ggml_custom_4d(c,GGML_TYPE_F32,1,4,nt,1,mo,2,llama_moe_stream_wave_mask,1,ud);observed.masks.emplace(mask,w);
++        auto *mask=ggml_custom_4d(c,GGML_TYPE_F32,1,4,nt,1,mo,2,llama_moe_stream_wave_mask,1,ud);
+         value=ggml_mul(c,value,mask);sum=sum?ggml_add(c,sum,value):value;ggml_build_forward_expand(g,sum);
+         for(int n=0;n<ggml_graph_n_nodes(g);++n){auto *node=ggml_graph_node(g,n);if(node->op!=GGML_OP_MUL_MAT_ID||node->src[2]!=physical)continue;
+@@ -129,29 +114,41 @@
+     auto *out=finish(c,g,sum,mix);need(observed.mmids.size()==24,"graph MMID coverage");
+     auto *cpu=backend.get();ggml_backend_sched_ptr scheduler(ggml_backend_sched_new(&cpu,nullptr,1,1024,false,false));need(bool(scheduler),"scheduler");
+-    observed.sched=scheduler.get();ggml_backend_sched_set_eval_callback(scheduler.get(),observe,&observed);
++    const auto graph_signature=fingerprint(g,observed);
++    const int graph_nodes=ggml_graph_n_nodes(g);
+     need(ggml_backend_sched_alloc_graph(scheduler.get(),g),"FFN graph allocation");
+-    put(x,tile(in.activation,width));put(r,ids);put(mix,tile(in.weights,4));audit=&observed;
++    put(x,tile(in.activation,width));put(r,ids);put(mix,tile(in.weights,4));
++    const int64_t start_ns=monotonic_ns();
+     need(ggml_backend_sched_graph_compute(scheduler.get(),g)==GGML_STATUS_SUCCESS,"FFN compute");ggml_backend_sched_synchronize(scheduler.get());
++    const int64_t end_ns=monotonic_ns();
++    need(valid_boundary(marked,wave_clock,start_ns,end_ns),"unqualified wave-return clock");
+     const auto found=values<float>(out);equal(found,tile(read<float>(p/"ffn_moe_out-0.bin",all*width),width),"full FFN tile");
+-    need(complete(observed),"incomplete wave or projection");
+     {std::lock_guard<std::mutex> lock(manager.mtx);need(!manager.load_failed && manager.q_demand.empty() && manager.workers.size()==4 && observed.layer->expert_slot.size()==5 &&
+         manager.stats.n_store_loads==5 && manager.stats.n_store_read_bytes==5*3*int64_t(slab) && manager.stats.n_wave_calls==8 && manager.stats.n_waves_run==1,"final manager counters");
+-        for(int e:selected){int s=observed.slots[e];need(s>=0 && observed.reads[e]==1 && observed.copies[e]==(observed.direct?0:3) &&
+-            observed.layer->slot_state[s]==LLAMA_MOE_STREAM_SLOT_RESIDENT && !observed.layer->slot_claimed[s] && observed.layer->slot_gen[s]==1,"final slot identity");}}
+-    need(!observed.invalid,"observer rejected source/slot/worker identity");audit=nullptr;
++        for(int e:selected){
++            const int slot=observed.layer->expert_slot.at(e);
++            need(slot>=0 && slot<40 && observed.layer->slot_expert.at(slot)==e &&
++                 observed.layer->expert_wave.at(e)==0 && observed.layer->slot_state.at(slot)==LLAMA_MOE_STREAM_SLOT_RESIDENT &&
++                 !observed.layer->slot_claimed.at(slot) && observed.layer->slot_gen.at(slot)==1,"wave and slot identity");
++        }
++    }
+     {std::ofstream f(output/"tile.f32",std::ios::binary);need(bool(f.write(reinterpret_cast<const char*>(found.data()),found.size()*4)),"output write");}
+-    return {{"arm",mode},{"router_positions",153},{"ffn_positions",32},{"full_ffn_values",found.size()},{"graph_waves",8},{"active_waves",1},
+-        {"mmid_nodes_observed",24},{"unique_loads",5},{"weight_sets",observed.direct?0:15},{"compute_backend","CPU"},
+-        {"roles",{"gate","down","up"}},{"pread_bytes",observed.pread_bytes},{"logical_weight_bytes",5*3*slab},
++    return {{"arm","DENSE"},{"mode",mode},{"router_positions",153},{"ffn_positions",32},
++        {"full_ffn_values",found.size()},{"graph_waves",8},{"active_waves",1},{"wave_calls",8},
++        {"cb_eval_registered",false},{"wave_markers",wave_clock.calls},{"marked_graph_threads",wave_clock.graph_team_size},{"graph_mmid_nodes",observed.mmids.size()},
++        {"graph_nodes",graph_nodes},{"backend_splits",ggml_backend_sched_get_n_splits(scheduler.get())},{"graph_fingerprint",graph_signature},
++        {"clock","CLOCK_MONOTONIC"},{"graph_start_ns",start_ns},{"graph_end_ns",end_ns},{"graph_ns",end_ns-start_ns},
++        {"wave_return_ns",marked?json(wave_clock.end_ns):json(nullptr)},{"suffix_ns",marked?json(end_ns-wave_clock.end_ns):json(nullptr)},
++        {"unique_loads",5},{"expected_weight_sets",15},{"compute_backend","CPU"},
++        {"roles",{"gate","down","up"}},{"expected_pread_bytes",5*window},{"logical_weight_bytes",5*3*slab},
+         {"dio_offset_alignment",store.data.offset_alignment()},{"workers_before_destructor",manager.workers.size()},
+         {"providers",{{"cpu",provider(reinterpret_cast<void *>(&ggml_backend_cpu_init))},{"base",provider(reinterpret_cast<void *>(&ggml_backend_sched_graph_compute))}}}};
+ }
+ int main(int argc,char **argv){try{
+-    if(argc==2 && std::string(argv[1])=="--self-test"){counterexamples();std::cout<<"PASS_C291_TILE_COUNTEREXAMPLES\n";return 0;}
+-    need(argc==4,"usage: layer INPUT_DIR DENSE|STAGED|DIRECT NEW_OUTPUT_DIR");
++    if(argc==2 && std::string(argv[1])=="--self-test"){counterexamples();std::cout<<"PASS_C291_SUFFIX_COUNTEREXAMPLES\n";return 0;}
++    need(argc==4,"usage: suffix-layer INPUT_DIR OFF|ON NEW_OUTPUT_DIR");
+     fs::path out(argv[3]);need(fs::create_directory(out),"exclusive output");auto receipt=run(argv[1],argv[2],out);
+     // In the sealed C291 destructor every one of its four std::threads joins before run returns.
+     receipt["manager_destructor_returned"]=true;
+     receipt["joined_workers"]=receipt.at("workers_before_destructor");
+-    receipt["status"]="PASS_C291_CPU0_ROUTED_TILE";std::cout<<receipt.dump()<<'\n';return 0;
++    receipt["status"]="PASS_C291_CPU0_SUFFIX";std::cout<<receipt.dump()<<'\n';return 0;
+ }catch(const std::exception &e){std::cerr<<"FAIL_C291_CPU0_TILE "<<e.what()<<'\n';return 1;}}

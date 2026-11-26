@@ -1,0 +1,98 @@
+{
+  "status": "PASS_SINGLE_CUDA35_ROUTED_REFERENCE",
+  "operator_calls": 1,
+  "generation": 0,
+  "operator_exit_code": 0,
+  "protocol_sha256": "637b9788f675fb397aecf83828f8dcc9af0f575147a7306b24496fef4ec33ed7",
+  "runner_sha256": "a5018675b9de9ca98e2be39f7f0a65d9126ed5978fcb580c004777b0658163a4",
+  "vma_verifier_sha256": "73ed7835ffb4572d7d81437e50872bcc24a7c67fe4c62c6e89e780f84137781f",
+  "model_sha256_previously_verified": "582bd40f6886200101f4c4ed9f25f3fe80cc14c86e9e2b37746cd8904a0c622d",
+  "inputs": {
+    "block-prefill-reference": "e198927ced892322ea3ba699e27022a1869bbfd263dcf607b42c6a8d291f9b92",
+    "block_prefill_reference.cpp": "5f94b2a4be765ccf74f6ee34ab23d0df418df964cb356f0b6c38949df0fc46ab",
+    "c7_layer_reference.cpp": "8e2cea78501bc1889fc99cada9613a60288a71e2014b8d2a201308cceabb21a9",
+    "c210_direct_reader.h": "cb386577d0b424d531a484d81619e29887b2419dd03c05578004b0878f601af6",
+    "result.json": "857b693e07432b873844cc5fec35e068d81d1bc08a7d75e804f2e1adc9647e84",
+    "attn_post_norm-35.bin": "9866843e535698535f4740cf1d8d49564f6ca026cfe7d5382d6db7b871a6aa52",
+    "ffn_moe_logits-35.bin": "e7f4d462da48ccf14e9715db634dbfdb81f05ac5889fe120704bcf401a1a7522",
+    "ffn_moe_logits_biased-35.bin": "d2630cc3fb3ce2155473b491be6a1d3d10e7ffffa9b4a776a2b6a4a90ce539e5",
+    "ffn_moe_topk-35.bin": "962691c0021ba6086fe24a405f551a7c7944b7ca12d32589082041456f4bda37",
+    "ffn_moe_weights_softmax-35.bin": "2600a6f81d23bea668049d5b4f6be39229fad07d9cacbdd3820cc4f648d9cd77",
+    "ffn_moe_out-35.bin": "f8816e0591420bcc44b937908cce593ce602ff18c9058e3fffb66ba4cae8facf"
+  },
+  "resolved_elf_sha256": {
+    "libcuda.so.1": "aa6bd5117c0c66bb804ec63b31b8b5d54130259b1079941b9e00e6b928e8ed71",
+    "libgcc_s.so.1": "5a52ae4a6f1b119aa092aa1483c967e19d9ba036b1b0c2133236a8a2ce826ebf",
+    "libggml-base.so.0": "6e27d9ecb86e4747177189d2d2f6390280a2ee1000221ad68a0404023ea72539",
+    "libggml-cpu.so.0": "9aabce5751c5d7ca19b50e4cabb1fcf484c1581d275141dae8aba8ed33060313",
+    "libggml-cuda.so.0": "ff43655b15df5f3de1d5e00b0da18469a14f118bd644eb4b6d7f1915c85a4493",
+    "libggml.so.0": "70f635b8ba22ddd751590ec1fe11c895ef88e2aff0f4a63a3af96314e6a77d65",
+    "libgomp.so.1": "1e20cd85608bdb5d1662f07988adad28a6473cd70f80de2d2b4dcf82c94eaa74",
+    "libllama.so.0": "347267b2e9cbf920dbf912d6aaf1884e5eff4cccc41c349e93c42bd6403a658f",
+    "libstdc++.so.6": "49811507d8fc0283d8f8023546613774c673f876fe823b1b99d0c8d46039deda"
+  },
+  "mapped_elf": [
+    "libcuda.so.1",
+    "libgcc_s.so.1",
+    "libggml-base.so.0",
+    "libggml-cpu.so.0",
+    "libggml-cuda.so.0",
+    "libggml.so.0",
+    "libgomp.so.1",
+    "libllama.so.0",
+    "libstdc++.so.6"
+  ],
+  "stdout_sha256": "42d283785c363c9bb313c35bdd1d5e6b913439bf904d44d25f9574baf05785a2",
+  "raw_receipt_sha256": "a7787ab4fa9edd11472ddf1283640dd7d5e10c78712cc1ded900ff5cf72d5df0",
+  "operator_stdout": [
+    "CANONICAL_R2_TILE first=0 n=1 bitwise=1 nonfinite=0 max_abs=0",
+    "PASS_NATIVE_CANONICAL_R2_LAYER layer=35 device=cuda logical_bytes_read=54490112 O_DIRECT=1"
+  ],
+  "cuda_stderr": [
+    "ggml_cuda_init: found 1 CUDA devices (Total VRAM: 7857 MiB):",
+    "  Device 0: NVIDIA GeForce RTX 4060 Laptop GPU, compute capability 8.9, VMM: yes, VRAM: 7857 MiB"
+  ],
+  "scope": "one selected CUDA35 router and FFN output, no full decode/server",
+  "host": {
+    "cpu": "AMD Ryzen AI 9 HX 370 w/ Radeon 890M",
+    "kernel": "7.3.4-200.fc44.x86_64",
+    "target_mount": "ext4/USB",
+    "driver": "620.70.06",
+    "driver_cuda_compatibility": "13.5"
+  },
+  "preflight": {
+    "duration_s": 60.18111890599994,
+    "sample_count": 61,
+    "sha256": "4eaf3b3547ee468739be69f42b31ed6e52f7e5ef277e7880e7709ff8f7463c04",
+    "policy_sha256": "8e2e89789c843b7993435505229fb60c596b99279a1e961a61f81cb9720839f8",
+    "last_utc": "2026-11-24T22:57:41.090127+00:00"
+  },
+  "preflight_min_available_bytes": 17351770112,
+  "resource": {
+    "cgroup_memory_high_bytes": 4294967296,
+    "cgroup_memory_max_bytes": 4294967296,
+    "cgroup_memory_peak_bytes": 300474368,
+    "cgroup_swapmax_bytes": 0,
+    "cgroup_swap_current_bytes_at_end": 0,
+    "cgroup_events": {
+      "low": 0,
+      "high": 0,
+      "max": 0,
+      "oom": 0,
+      "oom_kill": 0,
+      "oom_group_kill": 0,
+      "sock_throttled": 0
+    },
+    "live_samples": 5,
+    "max_observed_total_gpu_mib": 1734.0,
+    "max_observed_gpu_c": 49.8,
+    "max_observed_cpu_tctl_c": 66.5,
+    "max_observed_nvme_c": 42.85,
+    "post_gpu_used_mib": 2.0,
+    "power_source": "AC",
+    "power_profile": "performance",
+    "integrated_energy_j": null,
+    "transient_unit_s": 61.914,
+    "physical_storage_wire_bytes": null
+  }
+}

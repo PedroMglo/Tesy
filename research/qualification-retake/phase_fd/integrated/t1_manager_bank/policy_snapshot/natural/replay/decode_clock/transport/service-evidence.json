@@ -1,0 +1,618 @@
+{
+  "arms": {
+    "PR": {
+      "P": {
+        "all": {
+          "bank_jobs": 399,
+          "common_set_floor": 4798618094,
+          "disk_groups": 632,
+          "disk_jobs": 797,
+          "groups": 1656,
+          "hash_ns": 4369490116,
+          "isolated_drain": 4318643158,
+          "payload_bytes": 10535702400,
+          "preads": 797,
+          "read_floor": 4285660849,
+          "requested_bytes": 10537844736,
+          "set_only": 522063311,
+          "union_ns": 4287989565,
+          "worker_ns": 5984666283
+        },
+        "by_tier": {
+          "CPU": {
+            "bank_jobs": 330,
+            "common_set_floor": 3207810783,
+            "disk_groups": 430,
+            "disk_jobs": 541,
+            "groups": 1150,
+            "hash_ns": 2966322510,
+            "isolated_drain": 2972221731,
+            "payload_bytes": 7151587200,
+            "preads": 541,
+            "read_floor": 2949344739,
+            "requested_bytes": 7153041408,
+            "set_only": 264434110,
+            "union_ns": 2950793287,
+            "worker_ns": 4124539973
+          },
+          "CUDA0": {
+            "bank_jobs": 69,
+            "common_set_floor": 1590807311,
+            "disk_groups": 202,
+            "disk_jobs": 256,
+            "groups": 506,
+            "hash_ns": 1403167606,
+            "isolated_drain": 1346421427,
+            "payload_bytes": 3384115200,
+            "preads": 256,
+            "read_floor": 1336316110,
+            "requested_bytes": 3384803328,
+            "set_only": 257629201,
+            "union_ns": 1337196278,
+            "worker_ns": 1860126310
+          }
+        },
+        "conditional": {
+          "common_set_floor": {
+            "inside_ns": 4798618094,
+            "margin_ns": {
+              "joint": -1157636271,
+              "six": 716473964
+            },
+            "margin_ns_per_admission": {
+              "joint": -967923.3035117057,
+              "six": 599058.4983277592
+            },
+            "max_tokens_s": 6.604036634209901,
+            "total_ns": 7116859370
+          },
+          "isolated_drain": {
+            "inside_ns": 4318643158,
+            "margin_ns": {
+              "joint": -677661335,
+              "six": 1196448900
+            },
+            "margin_ns_per_admission": {
+              "joint": -566606.4673913043,
+              "six": 1000375.3344481605
+            },
+            "max_tokens_s": 7.08163603982983,
+            "total_ns": 6636884434
+          },
+          "read_floor": {
+            "inside_ns": 4285660849,
+            "margin_ns": {
+              "joint": -644679026,
+              "six": 1229431209
+            },
+            "margin_ns_per_admission": {
+              "joint": -539029.2859531773,
+              "six": 1027952.5158862877
+            },
+            "max_tokens_s": 7.117004327195415,
+            "total_ns": 6603902125
+          }
+        },
+        "envelope_ns": 10688126515,
+        "expected_data_sha256": "c363ea13eddbfff672087980856e9af347da5808507b7092dcec26e896be0b1a",
+        "monitor_ns": 1853750909,
+        "per_step_drain_distribution": {
+          "max_ns": 209343578,
+          "mean_ns": 93883546.91304348,
+          "median_ns": 86253444.5,
+          "min_ns": 20433393,
+          "n": 46,
+          "p05_ns": 35572342,
+          "p95_ns": 193827735
+        },
+        "read_group_drain_distribution": {
+          "max_ns": 33491206,
+          "mean_ns": 6833296.136075949,
+          "median_ns": 6160806.5,
+          "min_ns": 3006831,
+          "n": 632,
+          "p05_ns": 4300382,
+          "p95_ns": 12900415
+        },
+        "residual_ns": 146242332,
+        "whole_device_delta": {
+          "busy_ms": 4232,
+          "read_sectors_512B": 20581728,
+          "write_sectors_512B": 344
+        },
+        "workers_with_disk_jobs": 4
+      },
+      "R": {
+        "all": {
+          "bank_jobs": 399,
+          "common_set_floor": 6076248680,
+          "disk_groups": 632,
+          "disk_jobs": 797,
+          "groups": 1656,
+          "hash_ns": 4392610151,
+          "isolated_drain": 5598015364,
+          "payload_bytes": 10535702400,
+          "preads": 2391,
+          "read_floor": 5563959865,
+          "requested_bytes": 10545446912,
+          "set_only": 522063311,
+          "union_ns": 5566814072,
+          "worker_ns": 7695715227
+        },
+        "by_tier": {
+          "CPU": {
+            "bank_jobs": 330,
+            "common_set_floor": 4035965249,
+            "disk_groups": 430,
+            "disk_jobs": 541,
+            "groups": 1150,
+            "hash_ns": 2991498810,
+            "isolated_drain": 3801682204,
+            "payload_bytes": 7151587200,
+            "preads": 1623,
+            "read_floor": 3777695197,
+            "requested_bytes": 7158231040,
+            "set_only": 264434110,
+            "union_ns": 3779628907,
+            "worker_ns": 5233723238
+          },
+          "CUDA0": {
+            "bank_jobs": 69,
+            "common_set_floor": 2040283431,
+            "disk_groups": 202,
+            "disk_jobs": 256,
+            "groups": 506,
+            "hash_ns": 1401111341,
+            "isolated_drain": 1796333160,
+            "payload_bytes": 3384115200,
+            "preads": 768,
+            "read_floor": 1786264668,
+            "requested_bytes": 3387215872,
+            "set_only": 257629201,
+            "union_ns": 1787185165,
+            "worker_ns": 2461991989
+          }
+        },
+        "conditional": {
+          "common_set_floor": {
+            "inside_ns": 6076248680,
+            "margin_ns": {
+              "joint": -2435266857,
+              "six": -561156622
+            },
+            "margin_ns_per_admission": {
+              "joint": -2036176.3018394648,
+              "six": -469194.5
+            },
+            "max_tokens_s": 5.598910743398595,
+            "total_ns": 8394489956
+          },
+          "isolated_drain": {
+            "inside_ns": 5598015364,
+            "margin_ns": {
+              "joint": -1957033541,
+              "six": -82923306
+            },
+            "margin_ns_per_admission": {
+              "joint": -1636315.6697324414,
+              "six": -69333.86789297659
+            },
+            "max_tokens_s": 5.937149607115314,
+            "total_ns": 7916256640
+          },
+          "read_floor": {
+            "inside_ns": 5563959865,
+            "margin_ns": {
+              "joint": -1922978042,
+              "six": -48867807
+            },
+            "margin_ns_per_admission": {
+              "joint": -1607841.1722408028,
+              "six": -40859.370401337794
+            },
+            "max_tokens_s": 5.962801400172998,
+            "total_ns": 7882201141
+          }
+        },
+        "envelope_ns": 12334874430,
+        "expected_data_sha256": "3fde47c151f0dd5a1d6af5f9e58030ff904305c2f2c5367f8469821a990e7afe",
+        "monitor_ns": 2193520214,
+        "per_step_drain_distribution": {
+          "max_ns": 269836727,
+          "mean_ns": 121695986.17391305,
+          "median_ns": 112532130.0,
+          "min_ns": 29445405,
+          "n": 46,
+          "p05_ns": 50165239,
+          "p95_ns": 232843847
+        },
+        "read_group_drain_distribution": {
+          "max_ns": 26849337,
+          "mean_ns": 8857619.246835442,
+          "median_ns": 7257330.0,
+          "min_ns": 6406414,
+          "n": 632,
+          "p05_ns": 6821167,
+          "p95_ns": 13813797
+        },
+        "residual_ns": 150728701,
+        "whole_device_delta": {
+          "busy_ms": 5416,
+          "read_sectors_512B": 20596576,
+          "write_sectors_512B": 7800
+        },
+        "workers_with_disk_jobs": 4
+      }
+    },
+    "RP": {
+      "P": {
+        "all": {
+          "bank_jobs": 399,
+          "common_set_floor": 4766366844,
+          "disk_groups": 632,
+          "disk_jobs": 797,
+          "groups": 1656,
+          "hash_ns": 4388251378,
+          "isolated_drain": 4283907453,
+          "payload_bytes": 10535702400,
+          "preads": 797,
+          "read_floor": 4253466015,
+          "requested_bytes": 10537844736,
+          "set_only": 522063311,
+          "union_ns": 4256887385,
+          "worker_ns": 5916650027
+        },
+        "by_tier": {
+          "CPU": {
+            "bank_jobs": 330,
+            "common_set_floor": 3176745752,
+            "disk_groups": 430,
+            "disk_jobs": 541,
+            "groups": 1150,
+            "hash_ns": 2997572278,
+            "isolated_drain": 2938369402,
+            "payload_bytes": 7151587200,
+            "preads": 541,
+            "read_floor": 2917553842,
+            "requested_bytes": 7153041408,
+            "set_only": 264434110,
+            "union_ns": 2919839212,
+            "worker_ns": 4077923187
+          },
+          "CUDA0": {
+            "bank_jobs": 69,
+            "common_set_floor": 1589621092,
+            "disk_groups": 202,
+            "disk_jobs": 256,
+            "groups": 506,
+            "hash_ns": 1390679100,
+            "isolated_drain": 1345538051,
+            "payload_bytes": 3384115200,
+            "preads": 256,
+            "read_floor": 1335912173,
+            "requested_bytes": 3384803328,
+            "set_only": 257629201,
+            "union_ns": 1337048173,
+            "worker_ns": 1838726840
+          }
+        },
+        "conditional": {
+          "common_set_floor": {
+            "inside_ns": 4766366844,
+            "margin_ns": {
+              "joint": -1125385021,
+              "six": 748725214
+            },
+            "margin_ns_per_admission": {
+              "joint": -940957.3754180602,
+              "six": 626024.4264214047
+            },
+            "max_tokens_s": 6.634100179418251,
+            "total_ns": 7084608120
+          },
+          "isolated_drain": {
+            "inside_ns": 4283907453,
+            "margin_ns": {
+              "joint": -642925630,
+              "six": 1231184605
+            },
+            "margin_ns_per_admission": {
+              "joint": -537563.2357859532,
+              "six": 1029418.5660535117
+            },
+            "max_tokens_s": 7.118894458337793,
+            "total_ns": 6602148729
+          },
+          "read_floor": {
+            "inside_ns": 4253466015,
+            "margin_ns": {
+              "joint": -612484192,
+              "six": 1261626043
+            },
+            "margin_ns_per_admission": {
+              "joint": -512110.52842809365,
+              "six": 1054871.2734113713
+            },
+            "max_tokens_s": 7.151870574693251,
+            "total_ns": 6571707291
+          }
+        },
+        "envelope_ns": 10594162856,
+        "expected_data_sha256": "b0c019237df16133c9c764e08355c8742eebe714d13b3facd05df4042ab23fa8",
+        "monitor_ns": 1780961811,
+        "per_step_drain_distribution": {
+          "max_ns": 206434611,
+          "mean_ns": 93128422.89130434,
+          "median_ns": 84830324.5,
+          "min_ns": 18127134,
+          "n": 46,
+          "p05_ns": 35960635,
+          "p95_ns": 197258933
+        },
+        "read_group_drain_distribution": {
+          "max_ns": 24940376,
+          "mean_ns": 6778334.577531646,
+          "median_ns": 6151143.5,
+          "min_ns": 3043992,
+          "n": 632,
+          "p05_ns": 4296234,
+          "p95_ns": 12645704
+        },
+        "residual_ns": 141042214,
+        "whole_device_delta": {
+          "busy_ms": 4178,
+          "read_sectors_512B": 20582528,
+          "write_sectors_512B": 0
+        },
+        "workers_with_disk_jobs": 4
+      },
+      "R": {
+        "all": {
+          "bank_jobs": 399,
+          "common_set_floor": 6096123730,
+          "disk_groups": 632,
+          "disk_jobs": 797,
+          "groups": 1656,
+          "hash_ns": 4391063238,
+          "isolated_drain": 5616923176,
+          "payload_bytes": 10535702400,
+          "preads": 2391,
+          "read_floor": 5583535586,
+          "requested_bytes": 10545446912,
+          "set_only": 522063311,
+          "union_ns": 5586539437,
+          "worker_ns": 7720038867
+        },
+        "by_tier": {
+          "CPU": {
+            "bank_jobs": 330,
+            "common_set_floor": 4058057373,
+            "disk_groups": 430,
+            "disk_jobs": 541,
+            "groups": 1150,
+            "hash_ns": 2984595028,
+            "isolated_drain": 3822243174,
+            "payload_bytes": 7151587200,
+            "preads": 1623,
+            "read_floor": 3799115040,
+            "requested_bytes": 7158231040,
+            "set_only": 264434110,
+            "union_ns": 3801183132,
+            "worker_ns": 5265680958
+          },
+          "CUDA0": {
+            "bank_jobs": 69,
+            "common_set_floor": 2038066357,
+            "disk_groups": 202,
+            "disk_jobs": 256,
+            "groups": 506,
+            "hash_ns": 1406468210,
+            "isolated_drain": 1794680002,
+            "payload_bytes": 3384115200,
+            "preads": 768,
+            "read_floor": 1784420546,
+            "requested_bytes": 3387215872,
+            "set_only": 257629201,
+            "union_ns": 1785356305,
+            "worker_ns": 2454357909
+          }
+        },
+        "conditional": {
+          "common_set_floor": {
+            "inside_ns": 6096123730,
+            "margin_ns": {
+              "joint": -2455141907,
+              "six": -581031672
+            },
+            "margin_ns_per_admission": {
+              "joint": -2052794.2366220737,
+              "six": -485812.4347826087
+            },
+            "max_tokens_s": 5.585685903390914,
+            "total_ns": 8414365006
+          },
+          "isolated_drain": {
+            "inside_ns": 5616923176,
+            "margin_ns": {
+              "joint": -1975941353,
+              "six": -101831118
+            },
+            "margin_ns_per_admission": {
+              "joint": -1652124.877090301,
+              "six": -85143.07525083612
+            },
+            "max_tokens_s": 5.923002640248242,
+            "total_ns": 7935164452
+          },
+          "read_floor": {
+            "inside_ns": 5583535586,
+            "margin_ns": {
+              "joint": -1942553763,
+              "six": -68443528
+            },
+            "margin_ns_per_admission": {
+              "joint": -1624208.8319397992,
+              "six": -57227.03010033445
+            },
+            "max_tokens_s": 5.948029262383391,
+            "total_ns": 7901776862
+          }
+        },
+        "envelope_ns": 12268019068,
+        "expected_data_sha256": "6b97ac514850dda30b43999260289391bf388990099f10173808d4070c4dd50a",
+        "monitor_ns": 2097506880,
+        "per_step_drain_distribution": {
+          "max_ns": 269230620,
+          "mean_ns": 122107025.56521739,
+          "median_ns": 113867201.5,
+          "min_ns": 30846026,
+          "n": 46,
+          "p05_ns": 49830219,
+          "p95_ns": 234290143
+        },
+        "read_group_drain_distribution": {
+          "max_ns": 26663908,
+          "mean_ns": 8887536.670886075,
+          "median_ns": 7279707.0,
+          "min_ns": 6509780,
+          "n": 632,
+          "p05_ns": 6848990,
+          "p95_ns": 14202351
+        },
+        "residual_ns": 162525774,
+        "whole_device_delta": {
+          "busy_ms": 5443,
+          "read_sectors_512B": 20596608,
+          "write_sectors_512B": 17984
+        },
+        "workers_with_disk_jobs": 4
+      }
+    }
+  },
+  "gates": {
+    "P": {
+      "common_set_floor": {
+        "joint": "NO_GO_FIXED_PRICES",
+        "six": "HEADROOM_ONLY"
+      },
+      "isolated_drain": {
+        "joint": "NO_GO_FIXED_PRICES",
+        "six": "HEADROOM_ONLY"
+      },
+      "read_floor": {
+        "joint": "NO_GO_FIXED_PRICES",
+        "six": "HEADROOM_ONLY"
+      }
+    },
+    "R": {
+      "common_set_floor": {
+        "joint": "NO_GO_FIXED_PRICES",
+        "six": "NO_GO_FIXED_PRICES"
+      },
+      "isolated_drain": {
+        "joint": "NO_GO_FIXED_PRICES",
+        "six": "NO_GO_FIXED_PRICES"
+      },
+      "read_floor": {
+        "joint": "NO_GO_FIXED_PRICES",
+        "six": "NO_GO_FIXED_PRICES"
+      }
+    }
+  },
+  "paired": [
+    {
+      "by_tier_drain_saved_ns": {
+        "CPU": 883873772,
+        "CUDA0": 449141951
+      },
+      "drain_saved_ns": 1333015723,
+      "faster_populated_groups": 621,
+      "faster_steps": 46,
+      "order": "RP",
+      "populated_group_delta": {
+        "max_ns": 8691816,
+        "mean_ns": 2109202.0933544305,
+        "median_ns": 2286197.0,
+        "min_ns": -2164002,
+        "n": 632,
+        "p05_ns": 464837,
+        "p95_ns": 4572095
+      },
+      "relative_drain_saving": 0.2373213378982486,
+      "step_delta": {
+        "max_ns": 62796009,
+        "mean_ns": 28978602.673913043,
+        "median_ns": 27849128.5,
+        "min_ns": 12718892,
+        "n": 46,
+        "p05_ns": 13323102,
+        "p95_ns": 51899871
+      }
+    },
+    {
+      "by_tier_drain_saved_ns": {
+        "CPU": 829460473,
+        "CUDA0": 449911733
+      },
+      "drain_saved_ns": 1279372206,
+      "faster_populated_groups": 617,
+      "faster_steps": 46,
+      "order": "PR",
+      "populated_group_delta": {
+        "max_ns": 7588974,
+        "mean_ns": 2024323.1107594937,
+        "median_ns": 2299933.5,
+        "min_ns": -24319425,
+        "n": 632,
+        "p05_ns": 373775,
+        "p95_ns": 4633771
+      },
+      "relative_drain_saving": 0.22854031702511057,
+      "step_delta": {
+        "max_ns": 60493149,
+        "mean_ns": 27812439.260869566,
+        "median_ns": 26361791.5,
+        "min_ns": 1457883,
+        "n": 46,
+        "p05_ns": 12245730,
+        "p95_ns": 54476652
+      }
+    }
+  ],
+  "plan_sha256": "aed09397a16ed706365d73e0d2535427528476b41d66e3d5e43ad90da345d79a",
+  "program_sha256": "b09d9da0b01bda1a515397d640982c1fd21f10c440fe99318a111447b189daa2",
+  "protocol_sha256": "cac37655b2480dfd4057e40ecd9551f8324d419d1e2cc430445221f4d1f47e4e",
+  "raw_receipt_sha256": [
+    "1ac4bb4e666b61898cbb655cddb24d771529e71d66515e56862b989434b76e57",
+    "acd29327feb616f130f9518e67f39d1bc69e692f896352706dd4ed2a13a49e98"
+  ],
+  "resources": {
+    "PR": {
+      "cgroup_peak_bytes": 106627072,
+      "cleanup_ns": 5435042,
+      "inventory_s": 60.19850894001138,
+      "max_cpu_temperature_c": 57.0,
+      "max_gpu_temperature_c": 45.61,
+      "max_monitor_gap_s": 0.98635,
+      "monitor_samples": 26,
+      "source_sha256": {
+        "P": "f17e9fbf6f6aed1ad60ca7da3431c5156a946d2e0bf119722afc1f934cbc6b11",
+        "R": "582bd40f6886200101f4c4ed9f25f3fe80cc14c86e9e2b37746cd8904a0c622d"
+      }
+    },
+    "RP": {
+      "cgroup_peak_bytes": 107134976,
+      "cleanup_ns": 6086291,
+      "inventory_s": 60.18197908900038,
+      "max_cpu_temperature_c": 58.25,
+      "max_gpu_temperature_c": 45.61,
+      "max_monitor_gap_s": 0.974211,
+      "monitor_samples": 26,
+      "source_sha256": {
+        "P": "f17e9fbf6f6aed1ad60ca7da3431c5156a946d2e0bf119722afc1f934cbc6b11",
+        "R": "582bd40f6886200101f4c4ed9f25f3fe80cc14c86e9e2b37746cd8904a0c622d"
+      }
+    }
+  },
+  "status": "REPRODUCED_FOUR_TRANSPORT_ARMS"
+}

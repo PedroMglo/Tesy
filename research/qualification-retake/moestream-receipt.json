@@ -1,0 +1,55 @@
+{
+  "device_budget_bytes": 8053063680,
+  "evidence": "FORMAL",
+  "expert_role_bytes": 4406400,
+  "lazy_host_staging_bytes": 423014400,
+  "one_arena_bytes": 1692057600,
+  "other_encoded_bytes": 2460250368,
+  "per_slot_all_layers_bytes": 475891200,
+  "slab_floor": [
+    {
+      "all_gpu_slabs_exceed_cap": false,
+      "headroom_after_all_fixed_on_gpu_bytes": 1309792512,
+      "max_ubatch": 1,
+      "slab_bytes": 4283020800,
+      "usable_slots": 8,
+      "worst_case_union": 4
+    },
+    {
+      "all_gpu_slabs_exceed_cap": false,
+      "headroom_after_all_fixed_on_gpu_bytes": -1069663488,
+      "max_ubatch": 2,
+      "slab_bytes": 6662476800,
+      "usable_slots": 13,
+      "worst_case_union": 8
+    },
+    {
+      "all_gpu_slabs_exceed_cap": true,
+      "headroom_after_all_fixed_on_gpu_bytes": -41044524288,
+      "max_ubatch": 32,
+      "slab_bytes": 46637337600,
+      "usable_slots": 97,
+      "worst_case_union": 128
+    }
+  ],
+  "source_commit": "cfec450c1772a832fba57b41b0c0686416eaf304",
+  "verified": {
+    "expert_ranges_verified": 13824,
+    "header_sha256": "ab931ef553e32c03e325cb2c7b322b2f52dcb231b6cda088797e515467cfec2c",
+    "other_encoded_bytes": 2460250368,
+    "source_sha256": {
+      ".env.example": "f407a8a352363f69fe043820ab0d4afd02d3a4366132dcbd7c2ad0be7ce591e9",
+      "Dockerfile": "40dfd381f85bfbe15240fbd3fa36d4d23ca4179b8f13a1d43522599304a86b29",
+      "docs/findings/S40-header-sizing.md": "747822f31fcc85314bedd777d1a5982e36a6c2a605a88f3adbc81df196e976c3",
+      "docs/findings/S41-frac-curve.md": "9d015d297ea3ba82a74557c6e430b837a5f967901d3820ba716442d8f9ed06c1",
+      "docs/findings/S47-every-model-verified.md": "3806ff4a3badef56ba6afc19be4202e347e7c37971ba3a92edecbde235c3e6a0",
+      "research/tools/analysis/gguf_inspect.py": "1182b7a664b0469882a90154c83ee32edb88f417c1f93f6f797a835ad80b7308",
+      "src/apply.py": "5a53260e56265c91ee3afe12d4d0bd08deb1d2b60af57b7b94f134922dcb7a15",
+      "src/entrypoint.sh": "9199d09ceea9c001144f067a9387d67c4454a1833a4c98c0beb081750ca4030b",
+      "src/expert_cache.cpp": "059e859ae4455f877ec3c8e447cf8a97c731e5d96c37541788ad5bb0cddf4cc3",
+      "src/expert_cache.hpp": "42c2a4ce86fe8741fff0938093e7ca2a957d7466feac95b57969e978c6c679fc",
+      "src/llama-moestream.cpp": "9dea569987cae54cecaaf8ab6e3404fc22b8f2f2bfee8718329f7966e2094fa2"
+    },
+    "tensor_count": 687
+  }
+}

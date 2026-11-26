@@ -1,0 +1,3012 @@
+{
+  "clocks": {
+    "decode_callbacks": 1656,
+    "decode_remap_union_ns": 7800218724,
+    "evaluations": 46,
+    "first_decode_enter_to_last_return_ns": 10115476733,
+    "fixed_decode_ns": 2318241276,
+    "predicted_ns": 10118461000,
+    "predicted_tokens": 47,
+    "quantization_concession_ns": 1000
+  },
+  "commit": "0e83277d874c591bf4fceda379cd2c3598ed7085",
+  "cost_sha256": "19e326bc467aa5c6403a29cb3fc05357706f7d23f33bf598928352b02b00592e",
+  "family_sha256": "cb70c934dbbe0f1ca7452904718589b44fa906179208e7f95b0c934808d70a42",
+  "manager_sha256": "ceaa386d3d5994dd02ebc98d148378405bbf0fa46e98e06fd46a3cd48d44a05f",
+  "native_clock_program_sha256": "85e96c73751c7d0cbab54d3c3bd74b9331f85fc0994420b2af29bdd029fc10a5",
+  "pair_sha256": "bb6e2b508bf35af6001ccbb5bec655ae3235bf69d1a8d74af84b4382b640b889",
+  "pfj_sha256": "5b4d1cb6827d518a72d418f0625c8ea3a6c90a2ac57ef46b9360e9a45613f311",
+  "policy_sha256": "7bce9841c3645247fbd850a8e89091610022cb38b5eb37922dd7f7167e596dad",
+  "program_sha256": "99f49bbdf91e7261a0c6b0b5d29c5b58f07520e1d582fc9fe905576e29110a78",
+  "protocol_sha256": "3df337266b4c0c63b8527f1de6ea99f9a7bd067e79958edd8bc70aebbf39b95a",
+  "r0_full_service_lower_ns": 7716360613,
+  "r0_unpriced_callback_ns": 83858111,
+  "replay_program_sha256": "c60861939a385fa6ff85d38840ca5255ea64bce4fbca45d195fe876de07ddd51",
+  "replay_sha256": "494bb5d2e73b4e129b020118e1bcf2110f253b1c2b565b5d110023129516aa54",
+  "results": {
+    "carry": {
+      "bank": {
+        "gguf_0p8_same_slot": {
+          "by_tier": {
+            "all": {
+              "admissions": 1196,
+              "charged_gguf_read_at_unit_worker_ns": 7895946377,
+              "charged_set_worker_ns": 61004479,
+              "common_jobs": 969,
+              "common_same_binding_and_gen_jobs": 39,
+              "common_same_slot_jobs": 71,
+              "disk_gguf_requested_bytes": 10545446912,
+              "disk_jobs": 797,
+              "disk_pack_requested_bytes": 10537844736,
+              "disk_payload_bytes": 10535702400,
+              "host_bank_jobs": 399,
+              "host_bank_payload_bytes": 5274460800,
+              "new_host_bank_jobs": 227,
+              "new_jobs": 227,
+              "new_primary_delivery_bytes": 3000758400,
+              "primary_delivery_bytes": 15810163200,
+              "r0_only_jobs": 122
+            },
+            "cpu": {
+              "admissions": 871,
+              "charged_gguf_read_at_unit_worker_ns": 5478914945,
+              "charged_set_worker_ns": 18951307,
+              "common_jobs": 684,
+              "common_same_binding_and_gen_jobs": 13,
+              "common_same_slot_jobs": 35,
+              "disk_gguf_requested_bytes": 7158231040,
+              "disk_jobs": 541,
+              "disk_pack_requested_bytes": 7153041408,
+              "disk_payload_bytes": 7151587200,
+              "host_bank_jobs": 330,
+              "host_bank_payload_bytes": 4362336000,
+              "new_host_bank_jobs": 187,
+              "new_jobs": 187,
+              "new_primary_delivery_bytes": 2471990400,
+              "primary_delivery_bytes": 11513923200,
+              "r0_only_jobs": 102
+            },
+            "cuda": {
+              "admissions": 325,
+              "charged_gguf_read_at_unit_worker_ns": 2417031432,
+              "charged_set_worker_ns": 42053172,
+              "common_jobs": 285,
+              "common_same_binding_and_gen_jobs": 26,
+              "common_same_slot_jobs": 36,
+              "disk_gguf_requested_bytes": 3387215872,
+              "disk_jobs": 256,
+              "disk_pack_requested_bytes": 3384803328,
+              "disk_payload_bytes": 3384115200,
+              "host_bank_jobs": 69,
+              "host_bank_payload_bytes": 912124800,
+              "new_host_bank_jobs": 40,
+              "new_jobs": 40,
+              "new_primary_delivery_bytes": 528768000,
+              "primary_delivery_bytes": 4296240000,
+              "r0_only_jobs": 20
+            }
+          },
+          "decode_lower_ns": 7038367899,
+          "fixed_exterior_ns": 2318241276,
+          "gates": {
+            "cross_46": {
+              "budget_ns": 5959223099,
+              "ceiling_ns_per_admission": null,
+              "classification": "NO_GO_FIXED_PRICES",
+              "margin_ns": -1079144800,
+              "maximum_fraction_of_r0_unpriced_callback_ns": null
+            },
+            "cross_47": {
+              "budget_ns": 5959223099,
+              "ceiling_ns_per_admission": null,
+              "classification": "NO_GO_FIXED_PRICES",
+              "margin_ns": -1079144800,
+              "maximum_fraction_of_r0_unpriced_callback_ns": null
+            },
+            "native_6_47": {
+              "budget_ns": 7833333334,
+              "ceiling_ns_per_admission": 664686.8185618729,
+              "classification": "HEADROOM_ONLY",
+              "margin_ns": 794965435,
+              "maximum_fraction_of_r0_unpriced_callback_ns": 9.479887222835249
+            }
+          },
+          "inside_lower_ns": 4720126623,
+          "maximum_gain_vs_measured_r0_ns": 3080093101,
+          "upper_native_tokens_s": 6.677684468110524
+        },
+        "gguf_0p8_same_tier": {
+          "by_tier": {
+            "all": {
+              "admissions": 1196,
+              "charged_gguf_read_at_unit_worker_ns": 7895946377,
+              "charged_set_worker_ns": 701341130,
+              "common_jobs": 969,
+              "common_same_binding_and_gen_jobs": 39,
+              "common_same_slot_jobs": 71,
+              "disk_gguf_requested_bytes": 10545446912,
+              "disk_jobs": 797,
+              "disk_pack_requested_bytes": 10537844736,
+              "disk_payload_bytes": 10535702400,
+              "host_bank_jobs": 399,
+              "host_bank_payload_bytes": 5274460800,
+              "new_host_bank_jobs": 227,
+              "new_jobs": 227,
+              "new_primary_delivery_bytes": 3000758400,
+              "primary_delivery_bytes": 15810163200,
+              "r0_only_jobs": 122
+            },
+            "cpu": {
+              "admissions": 871,
+              "charged_gguf_read_at_unit_worker_ns": 5478914945,
+              "charged_set_worker_ns": 362756881,
+              "common_jobs": 684,
+              "common_same_binding_and_gen_jobs": 13,
+              "common_same_slot_jobs": 35,
+              "disk_gguf_requested_bytes": 7158231040,
+              "disk_jobs": 541,
+              "disk_pack_requested_bytes": 7153041408,
+              "disk_payload_bytes": 7151587200,
+              "host_bank_jobs": 330,
+              "host_bank_payload_bytes": 4362336000,
+              "new_host_bank_jobs": 187,
+              "new_jobs": 187,
+              "new_primary_delivery_bytes": 2471990400,
+              "primary_delivery_bytes": 11513923200,
+              "r0_only_jobs": 102
+            },
+            "cuda": {
+              "admissions": 325,
+              "charged_gguf_read_at_unit_worker_ns": 2417031432,
+              "charged_set_worker_ns": 338584249,
+              "common_jobs": 285,
+              "common_same_binding_and_gen_jobs": 26,
+              "common_same_slot_jobs": 36,
+              "disk_gguf_requested_bytes": 3387215872,
+              "disk_jobs": 256,
+              "disk_pack_requested_bytes": 3384803328,
+              "disk_payload_bytes": 3384115200,
+              "host_bank_jobs": 69,
+              "host_bank_payload_bytes": 912124800,
+              "new_host_bank_jobs": 40,
+              "new_jobs": 40,
+              "new_primary_delivery_bytes": 528768000,
+              "primary_delivery_bytes": 4296240000,
+              "r0_only_jobs": 20
+            }
+          },
+          "decode_lower_ns": 7509400918,
+          "fixed_exterior_ns": 2318241276,
+          "gates": {
+            "cross_46": {
+              "budget_ns": 5959223099,
+              "ceiling_ns_per_admission": null,
+              "classification": "NO_GO_FIXED_PRICES",
+              "margin_ns": -1550177819,
+              "maximum_fraction_of_r0_unpriced_callback_ns": null
+            },
+            "cross_47": {
+              "budget_ns": 5959223099,
+              "ceiling_ns_per_admission": null,
+              "classification": "NO_GO_FIXED_PRICES",
+              "margin_ns": -1550177819,
+              "maximum_fraction_of_r0_unpriced_callback_ns": null
+            },
+            "native_6_47": {
+              "budget_ns": 7833333334,
+              "ceiling_ns_per_admission": 270846.5016722408,
+              "classification": "HEADROOM_ONLY",
+              "margin_ns": 323932416,
+              "maximum_fraction_of_r0_unpriced_callback_ns": 3.862863259583799
+            }
+          },
+          "inside_lower_ns": 5191159642,
+          "maximum_gain_vs_measured_r0_ns": 2609060082,
+          "upper_native_tokens_s": 6.258821510959844
+        },
+        "gguf_1_same_slot": {
+          "by_tier": {
+            "all": {
+              "admissions": 1196,
+              "charged_gguf_read_at_unit_worker_ns": 7895946377,
+              "charged_set_worker_ns": 61004479,
+              "common_jobs": 969,
+              "common_same_binding_and_gen_jobs": 39,
+              "common_same_slot_jobs": 71,
+              "disk_gguf_requested_bytes": 10545446912,
+              "disk_jobs": 797,
+              "disk_pack_requested_bytes": 10537844736,
+              "disk_payload_bytes": 10535702400,
+              "host_bank_jobs": 399,
+              "host_bank_payload_bytes": 5274460800,
+              "new_host_bank_jobs": 227,
+              "new_jobs": 227,
+              "new_primary_delivery_bytes": 3000758400,
+              "primary_delivery_bytes": 15810163200,
+              "r0_only_jobs": 122
+            },
+            "cpu": {
+              "admissions": 871,
+              "charged_gguf_read_at_unit_worker_ns": 5478914945,
+              "charged_set_worker_ns": 18951307,
+              "common_jobs": 684,
+              "common_same_binding_and_gen_jobs": 13,
+              "common_same_slot_jobs": 35,
+              "disk_gguf_requested_bytes": 7158231040,
+              "disk_jobs": 541,
+              "disk_pack_requested_bytes": 7153041408,
+              "disk_payload_bytes": 7151587200,
+              "host_bank_jobs": 330,
+              "host_bank_payload_bytes": 4362336000,
+              "new_host_bank_jobs": 187,
+              "new_jobs": 187,
+              "new_primary_delivery_bytes": 2471990400,
+              "primary_delivery_bytes": 11513923200,
+              "r0_only_jobs": 102
+            },
+            "cuda": {
+              "admissions": 325,
+              "charged_gguf_read_at_unit_worker_ns": 2417031432,
+              "charged_set_worker_ns": 42053172,
+              "common_jobs": 285,
+              "common_same_binding_and_gen_jobs": 26,
+              "common_same_slot_jobs": 36,
+              "disk_gguf_requested_bytes": 3387215872,
+              "disk_jobs": 256,
+              "disk_pack_requested_bytes": 3384803328,
+              "disk_payload_bytes": 3384115200,
+              "host_bank_jobs": 69,
+              "host_bank_payload_bytes": 912124800,
+              "new_host_bank_jobs": 40,
+              "new_jobs": 40,
+              "new_primary_delivery_bytes": 528768000,
+              "primary_delivery_bytes": 4296240000,
+              "r0_only_jobs": 20
+            }
+          },
+          "decode_lower_ns": 8206584700,
+          "fixed_exterior_ns": 2318241276,
+          "gates": {
+            "cross_46": {
+              "budget_ns": 5959223099,
+              "ceiling_ns_per_admission": null,
+              "classification": "NO_GO_FIXED_PRICES",
+              "margin_ns": -2247361601,
+              "maximum_fraction_of_r0_unpriced_callback_ns": null
+            },
+            "cross_47": {
+              "budget_ns": 5959223099,
+              "ceiling_ns_per_admission": null,
+              "classification": "NO_GO_FIXED_PRICES",
+              "margin_ns": -2247361601,
+              "maximum_fraction_of_r0_unpriced_callback_ns": null
+            },
+            "native_6_47": {
+              "budget_ns": 7833333334,
+              "ceiling_ns_per_admission": null,
+              "classification": "NO_GO_FIXED_PRICES",
+              "margin_ns": -373251366,
+              "maximum_fraction_of_r0_unpriced_callback_ns": null
+            }
+          },
+          "inside_lower_ns": 5888343424,
+          "maximum_gain_vs_measured_r0_ns": 1911876300,
+          "upper_native_tokens_s": 5.727108379201886
+        },
+        "gguf_1_same_tier": {
+          "by_tier": {
+            "all": {
+              "admissions": 1196,
+              "charged_gguf_read_at_unit_worker_ns": 7895946377,
+              "charged_set_worker_ns": 701341130,
+              "common_jobs": 969,
+              "common_same_binding_and_gen_jobs": 39,
+              "common_same_slot_jobs": 71,
+              "disk_gguf_requested_bytes": 10545446912,
+              "disk_jobs": 797,
+              "disk_pack_requested_bytes": 10537844736,
+              "disk_payload_bytes": 10535702400,
+              "host_bank_jobs": 399,
+              "host_bank_payload_bytes": 5274460800,
+              "new_host_bank_jobs": 227,
+              "new_jobs": 227,
+              "new_primary_delivery_bytes": 3000758400,
+              "primary_delivery_bytes": 15810163200,
+              "r0_only_jobs": 122
+            },
+            "cpu": {
+              "admissions": 871,
+              "charged_gguf_read_at_unit_worker_ns": 5478914945,
+              "charged_set_worker_ns": 362756881,
+              "common_jobs": 684,
+              "common_same_binding_and_gen_jobs": 13,
+              "common_same_slot_jobs": 35,
+              "disk_gguf_requested_bytes": 7158231040,
+              "disk_jobs": 541,
+              "disk_pack_requested_bytes": 7153041408,
+              "disk_payload_bytes": 7151587200,
+              "host_bank_jobs": 330,
+              "host_bank_payload_bytes": 4362336000,
+              "new_host_bank_jobs": 187,
+              "new_jobs": 187,
+              "new_primary_delivery_bytes": 2471990400,
+              "primary_delivery_bytes": 11513923200,
+              "r0_only_jobs": 102
+            },
+            "cuda": {
+              "admissions": 325,
+              "charged_gguf_read_at_unit_worker_ns": 2417031432,
+              "charged_set_worker_ns": 338584249,
+              "common_jobs": 285,
+              "common_same_binding_and_gen_jobs": 26,
+              "common_same_slot_jobs": 36,
+              "disk_gguf_requested_bytes": 3387215872,
+              "disk_jobs": 256,
+              "disk_pack_requested_bytes": 3384803328,
+              "disk_payload_bytes": 3384115200,
+              "host_bank_jobs": 69,
+              "host_bank_payload_bytes": 912124800,
+              "new_host_bank_jobs": 40,
+              "new_jobs": 40,
+              "new_primary_delivery_bytes": 528768000,
+              "primary_delivery_bytes": 4296240000,
+              "r0_only_jobs": 20
+            }
+          },
+          "decode_lower_ns": 8677617719,
+          "fixed_exterior_ns": 2318241276,
+          "gates": {
+            "cross_46": {
+              "budget_ns": 5959223099,
+              "ceiling_ns_per_admission": null,
+              "classification": "NO_GO_FIXED_PRICES",
+              "margin_ns": -2718394620,
+              "maximum_fraction_of_r0_unpriced_callback_ns": null
+            },
+            "cross_47": {
+              "budget_ns": 5959223099,
+              "ceiling_ns_per_admission": null,
+              "classification": "NO_GO_FIXED_PRICES",
+              "margin_ns": -2718394620,
+              "maximum_fraction_of_r0_unpriced_callback_ns": null
+            },
+            "native_6_47": {
+              "budget_ns": 7833333334,
+              "ceiling_ns_per_admission": null,
+              "classification": "NO_GO_FIXED_PRICES",
+              "margin_ns": -844284385,
+              "maximum_fraction_of_r0_unpriced_callback_ns": null
+            }
+          },
+          "inside_lower_ns": 6359376443,
+          "maximum_gain_vs_measured_r0_ns": 1440843281,
+          "upper_native_tokens_s": 5.416233063262464
+        },
+        "unidentified_pack_same_slot": {
+          "by_tier": {
+            "all": {
+              "admissions": 1196,
+              "charged_set_worker_ns": 61004479,
+              "common_jobs": 969,
+              "common_same_binding_and_gen_jobs": 39,
+              "common_same_slot_jobs": 71,
+              "disk_gguf_requested_bytes": 10545446912,
+              "disk_jobs": 797,
+              "disk_pack_requested_bytes": 10537844736,
+              "disk_payload_bytes": 10535702400,
+              "host_bank_jobs": 399,
+              "host_bank_payload_bytes": 5274460800,
+              "new_host_bank_jobs": 227,
+              "new_jobs": 227,
+              "new_primary_delivery_bytes": 3000758400,
+              "primary_delivery_bytes": 15810163200,
+              "r0_only_jobs": 122
+            },
+            "cpu": {
+              "admissions": 871,
+              "charged_gguf_read_at_unit_worker_ns": 0,
+              "charged_set_worker_ns": 18951307,
+              "common_jobs": 684,
+              "common_same_binding_and_gen_jobs": 13,
+              "common_same_slot_jobs": 35,
+              "disk_gguf_requested_bytes": 7158231040,
+              "disk_jobs": 541,
+              "disk_pack_requested_bytes": 7153041408,
+              "disk_payload_bytes": 7151587200,
+              "host_bank_jobs": 330,
+              "host_bank_payload_bytes": 4362336000,
+              "new_host_bank_jobs": 187,
+              "new_jobs": 187,
+              "new_primary_delivery_bytes": 2471990400,
+              "primary_delivery_bytes": 11513923200,
+              "r0_only_jobs": 102
+            },
+            "cuda": {
+              "admissions": 325,
+              "charged_gguf_read_at_unit_worker_ns": 0,
+              "charged_set_worker_ns": 42053172,
+              "common_jobs": 285,
+              "common_same_binding_and_gen_jobs": 26,
+              "common_same_slot_jobs": 36,
+              "disk_gguf_requested_bytes": 3387215872,
+              "disk_jobs": 256,
+              "disk_pack_requested_bytes": 3384803328,
+              "disk_payload_bytes": 3384115200,
+              "host_bank_jobs": 69,
+              "host_bank_payload_bytes": 912124800,
+              "new_host_bank_jobs": 40,
+              "new_jobs": 40,
+              "new_primary_delivery_bytes": 528768000,
+              "primary_delivery_bytes": 4296240000,
+              "r0_only_jobs": 20
+            }
+          },
+          "decode_lower_ns": 2374680043,
+          "fixed_exterior_ns": 2318241276,
+          "gates": {
+            "cross_46": {
+              "budget_ns": 5959223099,
+              "ceiling_ns_per_admission": 2997109.578595318,
+              "classification": "HEADROOM_ONLY",
+              "margin_ns": 3584543056,
+              "maximum_fraction_of_r0_unpriced_callback_ns": 42.745335105390105
+            },
+            "cross_47": {
+              "budget_ns": 5959223099,
+              "ceiling_ns_per_admission": 2997109.578595318,
+              "classification": "HEADROOM_ONLY",
+              "margin_ns": 3584543056,
+              "maximum_fraction_of_r0_unpriced_callback_ns": 42.745335105390105
+            },
+            "native_6_47": {
+              "budget_ns": 7833333334,
+              "ceiling_ns_per_admission": 4564091.380434782,
+              "classification": "HEADROOM_ONLY",
+              "margin_ns": 5458653291,
+              "maximum_fraction_of_r0_unpriced_callback_ns": 65.09392145740082
+            }
+          },
+          "inside_lower_ns": 56438767,
+          "maximum_gain_vs_measured_r0_ns": 7743780957,
+          "upper_native_tokens_s": 19.792140056318317
+        },
+        "unidentified_pack_same_tier": {
+          "by_tier": {
+            "all": {
+              "admissions": 1196,
+              "charged_set_worker_ns": 701341130,
+              "common_jobs": 969,
+              "common_same_binding_and_gen_jobs": 39,
+              "common_same_slot_jobs": 71,
+              "disk_gguf_requested_bytes": 10545446912,
+              "disk_jobs": 797,
+              "disk_pack_requested_bytes": 10537844736,
+              "disk_payload_bytes": 10535702400,
+              "host_bank_jobs": 399,
+              "host_bank_payload_bytes": 5274460800,
+              "new_host_bank_jobs": 227,
+              "new_jobs": 227,
+              "new_primary_delivery_bytes": 3000758400,
+              "primary_delivery_bytes": 15810163200,
+              "r0_only_jobs": 122
+            },
+            "cpu": {
+              "admissions": 871,
+              "charged_gguf_read_at_unit_worker_ns": 0,
+              "charged_set_worker_ns": 362756881,
+              "common_jobs": 684,
+              "common_same_binding_and_gen_jobs": 13,
+              "common_same_slot_jobs": 35,
+              "disk_gguf_requested_bytes": 7158231040,
+              "disk_jobs": 541,
+              "disk_pack_requested_bytes": 7153041408,
+              "disk_payload_bytes": 7151587200,
+              "host_bank_jobs": 330,
+              "host_bank_payload_bytes": 4362336000,
+              "new_host_bank_jobs": 187,
+              "new_jobs": 187,
+              "new_primary_delivery_bytes": 2471990400,
+              "primary_delivery_bytes": 11513923200,
+              "r0_only_jobs": 102
+            },
+            "cuda": {
+              "admissions": 325,
+              "charged_gguf_read_at_unit_worker_ns": 0,
+              "charged_set_worker_ns": 338584249,
+              "common_jobs": 285,
+              "common_same_binding_and_gen_jobs": 26,
+              "common_same_slot_jobs": 36,
+              "disk_gguf_requested_bytes": 3387215872,
+              "disk_jobs": 256,
+              "disk_pack_requested_bytes": 3384803328,
+              "disk_payload_bytes": 3384115200,
+              "host_bank_jobs": 69,
+              "host_bank_payload_bytes": 912124800,
+              "new_host_bank_jobs": 40,
+              "new_jobs": 40,
+              "new_primary_delivery_bytes": 528768000,
+              "primary_delivery_bytes": 4296240000,
+              "r0_only_jobs": 20
+            }
+          },
+          "decode_lower_ns": 2840304587,
+          "fixed_exterior_ns": 2318241276,
+          "gates": {
+            "cross_46": {
+              "budget_ns": 5959223099,
+              "ceiling_ns_per_admission": 2607791.397993311,
+              "classification": "HEADROOM_ONLY",
+              "margin_ns": 3118918512,
+              "maximum_fraction_of_r0_unpriced_callback_ns": 37.192806692247096
+            },
+            "cross_47": {
+              "budget_ns": 5959223099,
+              "ceiling_ns_per_admission": 2607791.397993311,
+              "classification": "HEADROOM_ONLY",
+              "margin_ns": 3118918512,
+              "maximum_fraction_of_r0_unpriced_callback_ns": 37.192806692247096
+            },
+            "native_6_47": {
+              "budget_ns": 7833333334,
+              "ceiling_ns_per_admission": 4174773.199832776,
+              "classification": "HEADROOM_ONLY",
+              "margin_ns": 4993028747,
+              "maximum_fraction_of_r0_unpriced_callback_ns": 59.541393044257816
+            }
+          },
+          "inside_lower_ns": 522063311,
+          "maximum_gain_vs_measured_r0_ns": 7278156413,
+          "upper_native_tokens_s": 16.547521070492852
+        }
+      },
+      "disk": {
+        "gguf_0p8_same_slot": {
+          "by_tier": {
+            "all": {
+              "admissions": 1196,
+              "charged_gguf_read_at_unit_worker_ns": 9812321088,
+              "charged_set_worker_ns": 61004479,
+              "common_jobs": 969,
+              "common_same_binding_and_gen_jobs": 39,
+              "common_same_slot_jobs": 71,
+              "disk_gguf_requested_bytes": 15824740352,
+              "disk_jobs": 1196,
+              "disk_pack_requested_bytes": 15813378048,
+              "disk_payload_bytes": 15810163200,
+              "new_disk_jobs": 227,
+              "new_jobs": 227,
+              "new_primary_delivery_bytes": 3000758400,
+              "primary_delivery_bytes": 15810163200,
+              "r0_only_jobs": 122
+            },
+            "cpu": {
+              "admissions": 871,
+              "charged_gguf_read_at_unit_worker_ns": 7103412976,
+              "charged_set_worker_ns": 18951307,
+              "common_jobs": 684,
+              "common_same_binding_and_gen_jobs": 13,
+              "common_same_slot_jobs": 35,
+              "disk_gguf_requested_bytes": 11524558848,
+              "disk_jobs": 871,
+              "disk_pack_requested_bytes": 11516264448,
+              "disk_payload_bytes": 11513923200,
+              "new_disk_jobs": 187,
+              "new_jobs": 187,
+              "new_primary_delivery_bytes": 2471990400,
+              "primary_delivery_bytes": 11513923200,
+              "r0_only_jobs": 102
+            },
+            "cuda": {
+              "admissions": 325,
+              "charged_gguf_read_at_unit_worker_ns": 2708908112,
+              "charged_set_worker_ns": 42053172,
+              "common_jobs": 285,
+              "common_same_binding_and_gen_jobs": 26,
+              "common_same_slot_jobs": 36,
+              "disk_gguf_requested_bytes": 4300181504,
+              "disk_jobs": 325,
+              "disk_pack_requested_bytes": 4297113600,
+              "disk_payload_bytes": 4296240000,
+              "new_disk_jobs": 40,
+              "new_jobs": 40,
+              "new_primary_delivery_bytes": 528768000,
+              "primary_delivery_bytes": 4296240000,
+              "r0_only_jobs": 20
+            }
+          },
+          "decode_lower_ns": 7635605655,
+          "fixed_exterior_ns": 2318241276,
+          "gates": {
+            "cross_46": {
+              "budget_ns": 5295325499,
+              "ceiling_ns_per_admission": null,
+              "classification": "NO_GO_FIXED_PRICES",
+              "margin_ns": -2340280156,
+              "maximum_fraction_of_r0_unpriced_callback_ns": null
+            },
+            "cross_47": {
+              "budget_ns": 5295325499,
+              "ceiling_ns_per_admission": null,
+              "classification": "NO_GO_FIXED_PRICES",
+              "margin_ns": -2340280156,
+              "maximum_fraction_of_r0_unpriced_callback_ns": null
+            },
+            "native_6_47": {
+              "budget_ns": 7833333334,
+              "ceiling_ns_per_admission": 165324.14632107023,
+              "classification": "HEADROOM_ONLY",
+              "margin_ns": 197727679,
+              "maximum_fraction_of_r0_unpriced_callback_ns": 2.357883771076122
+            }
+          },
+          "inside_lower_ns": 5317364379,
+          "maximum_gain_vs_measured_r0_ns": 2482855345,
+          "upper_native_tokens_s": 6.155372883776828
+        },
+        "gguf_0p8_same_tier": {
+          "by_tier": {
+            "all": {
+              "admissions": 1196,
+              "charged_gguf_read_at_unit_worker_ns": 9812321088,
+              "charged_set_worker_ns": 701341130,
+              "common_jobs": 969,
+              "common_same_binding_and_gen_jobs": 39,
+              "common_same_slot_jobs": 71,
+              "disk_gguf_requested_bytes": 15824740352,
+              "disk_jobs": 1196,
+              "disk_pack_requested_bytes": 15813378048,
+              "disk_payload_bytes": 15810163200,
+              "new_disk_jobs": 227,
+              "new_jobs": 227,
+              "new_primary_delivery_bytes": 3000758400,
+              "primary_delivery_bytes": 15810163200,
+              "r0_only_jobs": 122
+            },
+            "cpu": {
+              "admissions": 871,
+              "charged_gguf_read_at_unit_worker_ns": 7103412976,
+              "charged_set_worker_ns": 362756881,
+              "common_jobs": 684,
+              "common_same_binding_and_gen_jobs": 13,
+              "common_same_slot_jobs": 35,
+              "disk_gguf_requested_bytes": 11524558848,
+              "disk_jobs": 871,
+              "disk_pack_requested_bytes": 11516264448,
+              "disk_payload_bytes": 11513923200,
+              "new_disk_jobs": 187,
+              "new_jobs": 187,
+              "new_primary_delivery_bytes": 2471990400,
+              "primary_delivery_bytes": 11513923200,
+              "r0_only_jobs": 102
+            },
+            "cuda": {
+              "admissions": 325,
+              "charged_gguf_read_at_unit_worker_ns": 2708908112,
+              "charged_set_worker_ns": 338584249,
+              "common_jobs": 285,
+              "common_same_binding_and_gen_jobs": 26,
+              "common_same_slot_jobs": 36,
+              "disk_gguf_requested_bytes": 4300181504,
+              "disk_jobs": 325,
+              "disk_pack_requested_bytes": 4297113600,
+              "disk_payload_bytes": 4296240000,
+              "new_disk_jobs": 40,
+              "new_jobs": 40,
+              "new_primary_delivery_bytes": 528768000,
+              "primary_delivery_bytes": 4296240000,
+              "r0_only_jobs": 20
+            }
+          },
+          "decode_lower_ns": 8108646594,
+          "fixed_exterior_ns": 2318241276,
+          "gates": {
+            "cross_46": {
+              "budget_ns": 5295325499,
+              "ceiling_ns_per_admission": null,
+              "classification": "NO_GO_FIXED_PRICES",
+              "margin_ns": -2813321095,
+              "maximum_fraction_of_r0_unpriced_callback_ns": null
+            },
+            "cross_47": {
+              "budget_ns": 5295325499,
+              "ceiling_ns_per_admission": null,
+              "classification": "NO_GO_FIXED_PRICES",
+              "margin_ns": -2813321095,
+              "maximum_fraction_of_r0_unpriced_callback_ns": null
+            },
+            "native_6_47": {
+              "budget_ns": 7833333334,
+              "ceiling_ns_per_admission": null,
+              "classification": "NO_GO_FIXED_PRICES",
+              "margin_ns": -275313260,
+              "maximum_fraction_of_r0_unpriced_callback_ns": null
+            }
+          },
+          "inside_lower_ns": 5790405318,
+          "maximum_gain_vs_measured_r0_ns": 2009814406,
+          "upper_native_tokens_s": 5.796281716701982
+        },
+        "gguf_1_same_slot": {
+          "by_tier": {
+            "all": {
+              "admissions": 1196,
+              "charged_gguf_read_at_unit_worker_ns": 9812321088,
+              "charged_set_worker_ns": 61004479,
+              "common_jobs": 969,
+              "common_same_binding_and_gen_jobs": 39,
+              "common_same_slot_jobs": 71,
+              "disk_gguf_requested_bytes": 15824740352,
+              "disk_jobs": 1196,
+              "disk_pack_requested_bytes": 15813378048,
+              "disk_payload_bytes": 15810163200,
+              "new_disk_jobs": 227,
+              "new_jobs": 227,
+              "new_primary_delivery_bytes": 3000758400,
+              "primary_delivery_bytes": 15810163200,
+              "r0_only_jobs": 122
+            },
+            "cpu": {
+              "admissions": 871,
+              "charged_gguf_read_at_unit_worker_ns": 7103412976,
+              "charged_set_worker_ns": 18951307,
+              "common_jobs": 684,
+              "common_same_binding_and_gen_jobs": 13,
+              "common_same_slot_jobs": 35,
+              "disk_gguf_requested_bytes": 11524558848,
+              "disk_jobs": 871,
+              "disk_pack_requested_bytes": 11516264448,
+              "disk_payload_bytes": 11513923200,
+              "new_disk_jobs": 187,
+              "new_jobs": 187,
+              "new_primary_delivery_bytes": 2471990400,
+              "primary_delivery_bytes": 11513923200,
+              "r0_only_jobs": 102
+            },
+            "cuda": {
+              "admissions": 325,
+              "charged_gguf_read_at_unit_worker_ns": 2708908112,
+              "charged_set_worker_ns": 42053172,
+              "common_jobs": 285,
+              "common_same_binding_and_gen_jobs": 26,
+              "common_same_slot_jobs": 36,
+              "disk_gguf_requested_bytes": 4300181504,
+              "disk_jobs": 325,
+              "disk_pack_requested_bytes": 4297113600,
+              "disk_payload_bytes": 4296240000,
+              "new_disk_jobs": 40,
+              "new_jobs": 40,
+              "new_primary_delivery_bytes": 528768000,
+              "primary_delivery_bytes": 4296240000,
+              "r0_only_jobs": 20
+            }
+          },
+          "decode_lower_ns": 8953377015,
+          "fixed_exterior_ns": 2318241276,
+          "gates": {
+            "cross_46": {
+              "budget_ns": 5295325499,
+              "ceiling_ns_per_admission": null,
+              "classification": "NO_GO_FIXED_PRICES",
+              "margin_ns": -3658051516,
+              "maximum_fraction_of_r0_unpriced_callback_ns": null
+            },
+            "cross_47": {
+              "budget_ns": 5295325499,
+              "ceiling_ns_per_admission": null,
+              "classification": "NO_GO_FIXED_PRICES",
+              "margin_ns": -3658051516,
+              "maximum_fraction_of_r0_unpriced_callback_ns": null
+            },
+            "native_6_47": {
+              "budget_ns": 7833333334,
+              "ceiling_ns_per_admission": null,
+              "classification": "NO_GO_FIXED_PRICES",
+              "margin_ns": -1120043681,
+              "maximum_fraction_of_r0_unpriced_callback_ns": null
+            }
+          },
+          "inside_lower_ns": 6635135739,
+          "maximum_gain_vs_measured_r0_ns": 1165083985,
+          "upper_native_tokens_s": 5.249415937836502
+        },
+        "gguf_1_same_tier": {
+          "by_tier": {
+            "all": {
+              "admissions": 1196,
+              "charged_gguf_read_at_unit_worker_ns": 9812321088,
+              "charged_set_worker_ns": 701341130,
+              "common_jobs": 969,
+              "common_same_binding_and_gen_jobs": 39,
+              "common_same_slot_jobs": 71,
+              "disk_gguf_requested_bytes": 15824740352,
+              "disk_jobs": 1196,
+              "disk_pack_requested_bytes": 15813378048,
+              "disk_payload_bytes": 15810163200,
+              "new_disk_jobs": 227,
+              "new_jobs": 227,
+              "new_primary_delivery_bytes": 3000758400,
+              "primary_delivery_bytes": 15810163200,
+              "r0_only_jobs": 122
+            },
+            "cpu": {
+              "admissions": 871,
+              "charged_gguf_read_at_unit_worker_ns": 7103412976,
+              "charged_set_worker_ns": 362756881,
+              "common_jobs": 684,
+              "common_same_binding_and_gen_jobs": 13,
+              "common_same_slot_jobs": 35,
+              "disk_gguf_requested_bytes": 11524558848,
+              "disk_jobs": 871,
+              "disk_pack_requested_bytes": 11516264448,
+              "disk_payload_bytes": 11513923200,
+              "new_disk_jobs": 187,
+              "new_jobs": 187,
+              "new_primary_delivery_bytes": 2471990400,
+              "primary_delivery_bytes": 11513923200,
+              "r0_only_jobs": 102
+            },
+            "cuda": {
+              "admissions": 325,
+              "charged_gguf_read_at_unit_worker_ns": 2708908112,
+              "charged_set_worker_ns": 338584249,
+              "common_jobs": 285,
+              "common_same_binding_and_gen_jobs": 26,
+              "common_same_slot_jobs": 36,
+              "disk_gguf_requested_bytes": 4300181504,
+              "disk_jobs": 325,
+              "disk_pack_requested_bytes": 4297113600,
+              "disk_payload_bytes": 4296240000,
+              "new_disk_jobs": 40,
+              "new_jobs": 40,
+              "new_primary_delivery_bytes": 528768000,
+              "primary_delivery_bytes": 4296240000,
+              "r0_only_jobs": 20
+            }
+          },
+          "decode_lower_ns": 9426440636,
+          "fixed_exterior_ns": 2318241276,
+          "gates": {
+            "cross_46": {
+              "budget_ns": 5295325499,
+              "ceiling_ns_per_admission": null,
+              "classification": "NO_GO_FIXED_PRICES",
+              "margin_ns": -4131115137,
+              "maximum_fraction_of_r0_unpriced_callback_ns": null
+            },
+            "cross_47": {
+              "budget_ns": 5295325499,
+              "ceiling_ns_per_admission": null,
+              "classification": "NO_GO_FIXED_PRICES",
+              "margin_ns": -4131115137,
+              "maximum_fraction_of_r0_unpriced_callback_ns": null
+            },
+            "native_6_47": {
+              "budget_ns": 7833333334,
+              "ceiling_ns_per_admission": null,
+              "classification": "NO_GO_FIXED_PRICES",
+              "margin_ns": -1593107302,
+              "maximum_fraction_of_r0_unpriced_callback_ns": null
+            }
+          },
+          "inside_lower_ns": 7108199360,
+          "maximum_gain_vs_measured_r0_ns": 692020364,
+          "upper_native_tokens_s": 4.985975281115641
+        },
+        "unidentified_pack_same_slot": {
+          "by_tier": {
+            "all": {
+              "admissions": 1196,
+              "charged_set_worker_ns": 61004479,
+              "common_jobs": 969,
+              "common_same_binding_and_gen_jobs": 39,
+              "common_same_slot_jobs": 71,
+              "disk_gguf_requested_bytes": 15824740352,
+              "disk_jobs": 1196,
+              "disk_pack_requested_bytes": 15813378048,
+              "disk_payload_bytes": 15810163200,
+              "new_disk_jobs": 227,
+              "new_jobs": 227,
+              "new_primary_delivery_bytes": 3000758400,
+              "primary_delivery_bytes": 15810163200,
+              "r0_only_jobs": 122
+            },
+            "cpu": {
+              "admissions": 871,
+              "charged_gguf_read_at_unit_worker_ns": 0,
+              "charged_set_worker_ns": 18951307,
+              "common_jobs": 684,
+              "common_same_binding_and_gen_jobs": 13,
+              "common_same_slot_jobs": 35,
+              "disk_gguf_requested_bytes": 11524558848,
+              "disk_jobs": 871,
+              "disk_pack_requested_bytes": 11516264448,
+              "disk_payload_bytes": 11513923200,
+              "new_disk_jobs": 187,
+              "new_jobs": 187,
+              "new_primary_delivery_bytes": 2471990400,
+              "primary_delivery_bytes": 11513923200,
+              "r0_only_jobs": 102
+            },
+            "cuda": {
+              "admissions": 325,
+              "charged_gguf_read_at_unit_worker_ns": 0,
+              "charged_set_worker_ns": 42053172,
+              "common_jobs": 285,
+              "common_same_binding_and_gen_jobs": 26,
+              "common_same_slot_jobs": 36,
+              "disk_gguf_requested_bytes": 4300181504,
+              "disk_jobs": 325,
+              "disk_pack_requested_bytes": 4297113600,
+              "disk_payload_bytes": 4296240000,
+              "new_disk_jobs": 40,
+              "new_jobs": 40,
+              "new_primary_delivery_bytes": 528768000,
+              "primary_delivery_bytes": 4296240000,
+              "r0_only_jobs": 20
+            }
+          },
+          "decode_lower_ns": 2374680043,
+          "fixed_exterior_ns": 2318241276,
+          "gates": {
+            "cross_46": {
+              "budget_ns": 5295325499,
+              "ceiling_ns_per_admission": 2442011.2508361205,
+              "classification": "HEADROOM_ONLY",
+              "margin_ns": 2920645456,
+              "maximum_fraction_of_r0_unpriced_callback_ns": 34.82841935230332
+            },
+            "cross_47": {
+              "budget_ns": 5295325499,
+              "ceiling_ns_per_admission": 2442011.2508361205,
+              "classification": "HEADROOM_ONLY",
+              "margin_ns": 2920645456,
+              "maximum_fraction_of_r0_unpriced_callback_ns": 34.82841935230332
+            },
+            "native_6_47": {
+              "budget_ns": 7833333334,
+              "ceiling_ns_per_admission": 4564091.380434782,
+              "classification": "HEADROOM_ONLY",
+              "margin_ns": 5458653291,
+              "maximum_fraction_of_r0_unpriced_callback_ns": 65.09392145740082
+            }
+          },
+          "inside_lower_ns": 56438767,
+          "maximum_gain_vs_measured_r0_ns": 7743780957,
+          "upper_native_tokens_s": 19.792140056318317
+        },
+        "unidentified_pack_same_tier": {
+          "by_tier": {
+            "all": {
+              "admissions": 1196,
+              "charged_set_worker_ns": 701341130,
+              "common_jobs": 969,
+              "common_same_binding_and_gen_jobs": 39,
+              "common_same_slot_jobs": 71,
+              "disk_gguf_requested_bytes": 15824740352,
+              "disk_jobs": 1196,
+              "disk_pack_requested_bytes": 15813378048,
+              "disk_payload_bytes": 15810163200,
+              "new_disk_jobs": 227,
+              "new_jobs": 227,
+              "new_primary_delivery_bytes": 3000758400,
+              "primary_delivery_bytes": 15810163200,
+              "r0_only_jobs": 122
+            },
+            "cpu": {
+              "admissions": 871,
+              "charged_gguf_read_at_unit_worker_ns": 0,
+              "charged_set_worker_ns": 362756881,
+              "common_jobs": 684,
+              "common_same_binding_and_gen_jobs": 13,
+              "common_same_slot_jobs": 35,
+              "disk_gguf_requested_bytes": 11524558848,
+              "disk_jobs": 871,
+              "disk_pack_requested_bytes": 11516264448,
+              "disk_payload_bytes": 11513923200,
+              "new_disk_jobs": 187,
+              "new_jobs": 187,
+              "new_primary_delivery_bytes": 2471990400,
+              "primary_delivery_bytes": 11513923200,
+              "r0_only_jobs": 102
+            },
+            "cuda": {
+              "admissions": 325,
+              "charged_gguf_read_at_unit_worker_ns": 0,
+              "charged_set_worker_ns": 338584249,
+              "common_jobs": 285,
+              "common_same_binding_and_gen_jobs": 26,
+              "common_same_slot_jobs": 36,
+              "disk_gguf_requested_bytes": 4300181504,
+              "disk_jobs": 325,
+              "disk_pack_requested_bytes": 4297113600,
+              "disk_payload_bytes": 4296240000,
+              "new_disk_jobs": 40,
+              "new_jobs": 40,
+              "new_primary_delivery_bytes": 528768000,
+              "primary_delivery_bytes": 4296240000,
+              "r0_only_jobs": 20
+            }
+          },
+          "decode_lower_ns": 2840304587,
+          "fixed_exterior_ns": 2318241276,
+          "gates": {
+            "cross_46": {
+              "budget_ns": 5295325499,
+              "ceiling_ns_per_admission": 2052693.0702341136,
+              "classification": "HEADROOM_ONLY",
+              "margin_ns": 2455020912,
+              "maximum_fraction_of_r0_unpriced_callback_ns": 29.275890939160316
+            },
+            "cross_47": {
+              "budget_ns": 5295325499,
+              "ceiling_ns_per_admission": 2052693.0702341136,
+              "classification": "HEADROOM_ONLY",
+              "margin_ns": 2455020912,
+              "maximum_fraction_of_r0_unpriced_callback_ns": 29.275890939160316
+            },
+            "native_6_47": {
+              "budget_ns": 7833333334,
+              "ceiling_ns_per_admission": 4174773.199832776,
+              "classification": "HEADROOM_ONLY",
+              "margin_ns": 4993028747,
+              "maximum_fraction_of_r0_unpriced_callback_ns": 59.541393044257816
+            }
+          },
+          "inside_lower_ns": 522063311,
+          "maximum_gain_vs_measured_r0_ns": 7278156413,
+          "upper_native_tokens_s": 16.547521070492852
+        }
+      }
+    },
+    "r0": {
+      "bank": {
+        "gguf_0p8_same_slot": {
+          "by_tier": {
+            "all": {
+              "admissions": 1091,
+              "charged_gguf_read_at_unit_worker_ns": 9074605764,
+              "charged_set_worker_ns": 779234614,
+              "common_jobs": 1091,
+              "common_same_binding_and_gen_jobs": 1091,
+              "common_same_slot_jobs": 1091,
+              "disk_gguf_requested_bytes": 12159705088,
+              "disk_jobs": 919,
+              "disk_pack_requested_bytes": 12150915072,
+              "disk_payload_bytes": 12148444800,
+              "host_bank_jobs": 172,
+              "host_bank_payload_bytes": 2273702400,
+              "primary_delivery_bytes": 14422147200
+            },
+            "cpu": {
+              "admissions": 786,
+              "charged_gguf_read_at_unit_worker_ns": 6491575805,
+              "charged_set_worker_ns": 417198761,
+              "common_jobs": 786,
+              "common_same_binding_and_gen_jobs": 786,
+              "common_same_slot_jobs": 786,
+              "disk_gguf_requested_bytes": 8507842560,
+              "disk_jobs": 643,
+              "disk_pack_requested_bytes": 8501673984,
+              "disk_payload_bytes": 8499945600,
+              "host_bank_jobs": 143,
+              "host_bank_payload_bytes": 1890345600,
+              "primary_delivery_bytes": 10390291200,
+              "r0_only_jobs": 0
+            },
+            "cuda": {
+              "admissions": 305,
+              "charged_gguf_read_at_unit_worker_ns": 2583029959,
+              "charged_set_worker_ns": 362035853,
+              "common_jobs": 305,
+              "common_same_binding_and_gen_jobs": 305,
+              "common_same_slot_jobs": 305,
+              "disk_gguf_requested_bytes": 3651862528,
+              "disk_jobs": 276,
+              "disk_pack_requested_bytes": 3649241088,
+              "disk_payload_bytes": 3648499200,
+              "host_bank_jobs": 29,
+              "host_bank_payload_bytes": 383356800,
+              "primary_delivery_bytes": 4031856000,
+              "r0_only_jobs": 0
+            }
+          },
+          "decode_lower_ns": 8072866245,
+          "fixed_exterior_ns": 2318241276,
+          "gates": {
+            "cross_46": {
+              "budget_ns": 5812343099,
+              "ceiling_ns_per_admission": null,
+              "classification": "NO_GO_FIXED_PRICES",
+              "margin_ns": -2260523146,
+              "maximum_fraction_of_r0_unpriced_callback_ns": null
+            },
+            "cross_47": {
+              "budget_ns": 5812343099,
+              "ceiling_ns_per_admission": null,
+              "classification": "NO_GO_FIXED_PRICES",
+              "margin_ns": -2260523146,
+              "maximum_fraction_of_r0_unpriced_callback_ns": null
+            },
+            "native_6_47": {
+              "budget_ns": 7833333334,
+              "ceiling_ns_per_admission": null,
+              "classification": "NO_GO_FIXED_PRICES",
+              "margin_ns": -239532911,
+              "maximum_fraction_of_r0_unpriced_callback_ns": null
+            }
+          },
+          "inside_lower_ns": 5754624969,
+          "maximum_gain_vs_measured_r0_ns": 2045594755,
+          "upper_native_tokens_s": 5.821971846630044
+        },
+        "gguf_0p8_same_tier": {
+          "by_tier": {
+            "all": {
+              "admissions": 1091,
+              "charged_gguf_read_at_unit_worker_ns": 9074605764,
+              "charged_set_worker_ns": 779234614,
+              "common_jobs": 1091,
+              "common_same_binding_and_gen_jobs": 1091,
+              "common_same_slot_jobs": 1091,
+              "disk_gguf_requested_bytes": 12159705088,
+              "disk_jobs": 919,
+              "disk_pack_requested_bytes": 12150915072,
+              "disk_payload_bytes": 12148444800,
+              "host_bank_jobs": 172,
+              "host_bank_payload_bytes": 2273702400,
+              "primary_delivery_bytes": 14422147200
+            },
+            "cpu": {
+              "admissions": 786,
+              "charged_gguf_read_at_unit_worker_ns": 6491575805,
+              "charged_set_worker_ns": 417198761,
+              "common_jobs": 786,
+              "common_same_binding_and_gen_jobs": 786,
+              "common_same_slot_jobs": 786,
+              "disk_gguf_requested_bytes": 8507842560,
+              "disk_jobs": 643,
+              "disk_pack_requested_bytes": 8501673984,
+              "disk_payload_bytes": 8499945600,
+              "host_bank_jobs": 143,
+              "host_bank_payload_bytes": 1890345600,
+              "primary_delivery_bytes": 10390291200,
+              "r0_only_jobs": 0
+            },
+            "cuda": {
+              "admissions": 305,
+              "charged_gguf_read_at_unit_worker_ns": 2583029959,
+              "charged_set_worker_ns": 362035853,
+              "common_jobs": 305,
+              "common_same_binding_and_gen_jobs": 305,
+              "common_same_slot_jobs": 305,
+              "disk_gguf_requested_bytes": 3651862528,
+              "disk_jobs": 276,
+              "disk_pack_requested_bytes": 3649241088,
+              "disk_payload_bytes": 3648499200,
+              "host_bank_jobs": 29,
+              "host_bank_payload_bytes": 383356800,
+              "primary_delivery_bytes": 4031856000,
+              "r0_only_jobs": 0
+            }
+          },
+          "decode_lower_ns": 8072866245,
+          "fixed_exterior_ns": 2318241276,
+          "gates": {
+            "cross_46": {
+              "budget_ns": 5812343099,
+              "ceiling_ns_per_admission": null,
+              "classification": "NO_GO_FIXED_PRICES",
+              "margin_ns": -2260523146,
+              "maximum_fraction_of_r0_unpriced_callback_ns": null
+            },
+            "cross_47": {
+              "budget_ns": 5812343099,
+              "ceiling_ns_per_admission": null,
+              "classification": "NO_GO_FIXED_PRICES",
+              "margin_ns": -2260523146,
+              "maximum_fraction_of_r0_unpriced_callback_ns": null
+            },
+            "native_6_47": {
+              "budget_ns": 7833333334,
+              "ceiling_ns_per_admission": null,
+              "classification": "NO_GO_FIXED_PRICES",
+              "margin_ns": -239532911,
+              "maximum_fraction_of_r0_unpriced_callback_ns": null
+            }
+          },
+          "inside_lower_ns": 5754624969,
+          "maximum_gain_vs_measured_r0_ns": 2045594755,
+          "upper_native_tokens_s": 5.821971846630044
+        },
+        "gguf_1_same_slot": {
+          "by_tier": {
+            "all": {
+              "admissions": 1091,
+              "charged_gguf_read_at_unit_worker_ns": 9074605764,
+              "charged_set_worker_ns": 779234614,
+              "common_jobs": 1091,
+              "common_same_binding_and_gen_jobs": 1091,
+              "common_same_slot_jobs": 1091,
+              "disk_gguf_requested_bytes": 12159705088,
+              "disk_jobs": 919,
+              "disk_pack_requested_bytes": 12150915072,
+              "disk_payload_bytes": 12148444800,
+              "host_bank_jobs": 172,
+              "host_bank_payload_bytes": 2273702400,
+              "primary_delivery_bytes": 14422147200
+            },
+            "cpu": {
+              "admissions": 786,
+              "charged_gguf_read_at_unit_worker_ns": 6491575805,
+              "charged_set_worker_ns": 417198761,
+              "common_jobs": 786,
+              "common_same_binding_and_gen_jobs": 786,
+              "common_same_slot_jobs": 786,
+              "disk_gguf_requested_bytes": 8507842560,
+              "disk_jobs": 643,
+              "disk_pack_requested_bytes": 8501673984,
+              "disk_payload_bytes": 8499945600,
+              "host_bank_jobs": 143,
+              "host_bank_payload_bytes": 1890345600,
+              "primary_delivery_bytes": 10390291200,
+              "r0_only_jobs": 0
+            },
+            "cuda": {
+              "admissions": 305,
+              "charged_gguf_read_at_unit_worker_ns": 2583029959,
+              "charged_set_worker_ns": 362035853,
+              "common_jobs": 305,
+              "common_same_binding_and_gen_jobs": 305,
+              "common_same_slot_jobs": 305,
+              "disk_gguf_requested_bytes": 3651862528,
+              "disk_jobs": 276,
+              "disk_pack_requested_bytes": 3649241088,
+              "disk_payload_bytes": 3648499200,
+              "host_bank_jobs": 29,
+              "host_bank_payload_bytes": 383356800,
+              "primary_delivery_bytes": 4031856000,
+              "r0_only_jobs": 0
+            }
+          },
+          "decode_lower_ns": 9370780938,
+          "fixed_exterior_ns": 2318241276,
+          "gates": {
+            "cross_46": {
+              "budget_ns": 5812343099,
+              "ceiling_ns_per_admission": null,
+              "classification": "NO_GO_FIXED_PRICES",
+              "margin_ns": -3558437839,
+              "maximum_fraction_of_r0_unpriced_callback_ns": null
+            },
+            "cross_47": {
+              "budget_ns": 5812343099,
+              "ceiling_ns_per_admission": null,
+              "classification": "NO_GO_FIXED_PRICES",
+              "margin_ns": -3558437839,
+              "maximum_fraction_of_r0_unpriced_callback_ns": null
+            },
+            "native_6_47": {
+              "budget_ns": 7833333334,
+              "ceiling_ns_per_admission": null,
+              "classification": "NO_GO_FIXED_PRICES",
+              "margin_ns": -1537447604,
+              "maximum_fraction_of_r0_unpriced_callback_ns": null
+            }
+          },
+          "inside_lower_ns": 7052539662,
+          "maximum_gain_vs_measured_r0_ns": 747680062,
+          "upper_native_tokens_s": 5.015590515984378
+        },
+        "gguf_1_same_tier": {
+          "by_tier": {
+            "all": {
+              "admissions": 1091,
+              "charged_gguf_read_at_unit_worker_ns": 9074605764,
+              "charged_set_worker_ns": 779234614,
+              "common_jobs": 1091,
+              "common_same_binding_and_gen_jobs": 1091,
+              "common_same_slot_jobs": 1091,
+              "disk_gguf_requested_bytes": 12159705088,
+              "disk_jobs": 919,
+              "disk_pack_requested_bytes": 12150915072,
+              "disk_payload_bytes": 12148444800,
+              "host_bank_jobs": 172,
+              "host_bank_payload_bytes": 2273702400,
+              "primary_delivery_bytes": 14422147200
+            },
+            "cpu": {
+              "admissions": 786,
+              "charged_gguf_read_at_unit_worker_ns": 6491575805,
+              "charged_set_worker_ns": 417198761,
+              "common_jobs": 786,
+              "common_same_binding_and_gen_jobs": 786,
+              "common_same_slot_jobs": 786,
+              "disk_gguf_requested_bytes": 8507842560,
+              "disk_jobs": 643,
+              "disk_pack_requested_bytes": 8501673984,
+              "disk_payload_bytes": 8499945600,
+              "host_bank_jobs": 143,
+              "host_bank_payload_bytes": 1890345600,
+              "primary_delivery_bytes": 10390291200,
+              "r0_only_jobs": 0
+            },
+            "cuda": {
+              "admissions": 305,
+              "charged_gguf_read_at_unit_worker_ns": 2583029959,
+              "charged_set_worker_ns": 362035853,
+              "common_jobs": 305,
+              "common_same_binding_and_gen_jobs": 305,
+              "common_same_slot_jobs": 305,
+              "disk_gguf_requested_bytes": 3651862528,
+              "disk_jobs": 276,
+              "disk_pack_requested_bytes": 3649241088,
+              "disk_payload_bytes": 3648499200,
+              "host_bank_jobs": 29,
+              "host_bank_payload_bytes": 383356800,
+              "primary_delivery_bytes": 4031856000,
+              "r0_only_jobs": 0
+            }
+          },
+          "decode_lower_ns": 9370780938,
+          "fixed_exterior_ns": 2318241276,
+          "gates": {
+            "cross_46": {
+              "budget_ns": 5812343099,
+              "ceiling_ns_per_admission": null,
+              "classification": "NO_GO_FIXED_PRICES",
+              "margin_ns": -3558437839,
+              "maximum_fraction_of_r0_unpriced_callback_ns": null
+            },
+            "cross_47": {
+              "budget_ns": 5812343099,
+              "ceiling_ns_per_admission": null,
+              "classification": "NO_GO_FIXED_PRICES",
+              "margin_ns": -3558437839,
+              "maximum_fraction_of_r0_unpriced_callback_ns": null
+            },
+            "native_6_47": {
+              "budget_ns": 7833333334,
+              "ceiling_ns_per_admission": null,
+              "classification": "NO_GO_FIXED_PRICES",
+              "margin_ns": -1537447604,
+              "maximum_fraction_of_r0_unpriced_callback_ns": null
+            }
+          },
+          "inside_lower_ns": 7052539662,
+          "maximum_gain_vs_measured_r0_ns": 747680062,
+          "upper_native_tokens_s": 5.015590515984378
+        },
+        "unidentified_pack_same_slot": {
+          "by_tier": {
+            "all": {
+              "admissions": 1091,
+              "charged_set_worker_ns": 779234614,
+              "common_jobs": 1091,
+              "common_same_binding_and_gen_jobs": 1091,
+              "common_same_slot_jobs": 1091,
+              "disk_gguf_requested_bytes": 12159705088,
+              "disk_jobs": 919,
+              "disk_pack_requested_bytes": 12150915072,
+              "disk_payload_bytes": 12148444800,
+              "host_bank_jobs": 172,
+              "host_bank_payload_bytes": 2273702400,
+              "primary_delivery_bytes": 14422147200
+            },
+            "cpu": {
+              "admissions": 786,
+              "charged_gguf_read_at_unit_worker_ns": 0,
+              "charged_set_worker_ns": 417198761,
+              "common_jobs": 786,
+              "common_same_binding_and_gen_jobs": 786,
+              "common_same_slot_jobs": 786,
+              "disk_gguf_requested_bytes": 8507842560,
+              "disk_jobs": 643,
+              "disk_pack_requested_bytes": 8501673984,
+              "disk_payload_bytes": 8499945600,
+              "host_bank_jobs": 143,
+              "host_bank_payload_bytes": 1890345600,
+              "primary_delivery_bytes": 10390291200,
+              "r0_only_jobs": 0
+            },
+            "cuda": {
+              "admissions": 305,
+              "charged_gguf_read_at_unit_worker_ns": 0,
+              "charged_set_worker_ns": 362035853,
+              "common_jobs": 305,
+              "common_same_binding_and_gen_jobs": 305,
+              "common_same_slot_jobs": 305,
+              "disk_gguf_requested_bytes": 3651862528,
+              "disk_jobs": 276,
+              "disk_pack_requested_bytes": 3649241088,
+              "disk_payload_bytes": 3648499200,
+              "host_bank_jobs": 29,
+              "host_bank_payload_bytes": 383356800,
+              "primary_delivery_bytes": 4031856000,
+              "r0_only_jobs": 0
+            }
+          },
+          "decode_lower_ns": 2886095317,
+          "fixed_exterior_ns": 2318241276,
+          "gates": {
+            "cross_46": {
+              "budget_ns": 5812343099,
+              "ceiling_ns_per_admission": 2682170.2859761687,
+              "classification": "HEADROOM_ONLY",
+              "margin_ns": 2926247782,
+              "maximum_fraction_of_r0_unpriced_callback_ns": 34.89522655715438
+            },
+            "cross_47": {
+              "budget_ns": 5812343099,
+              "ceiling_ns_per_admission": 2682170.2859761687,
+              "classification": "HEADROOM_ONLY",
+              "margin_ns": 2926247782,
+              "maximum_fraction_of_r0_unpriced_callback_ns": 34.89522655715438
+            },
+            "native_6_47": {
+              "budget_ns": 7833333334,
+              "ceiling_ns_per_admission": 4534590.299725023,
+              "classification": "HEADROOM_ONLY",
+              "margin_ns": 4947238017,
+              "maximum_fraction_of_r0_unpriced_callback_ns": 58.99534294303386
+            }
+          },
+          "inside_lower_ns": 567854041,
+          "maximum_gain_vs_measured_r0_ns": 7232365683,
+          "upper_native_tokens_s": 16.28497843545061
+        },
+        "unidentified_pack_same_tier": {
+          "by_tier": {
+            "all": {
+              "admissions": 1091,
+              "charged_set_worker_ns": 779234614,
+              "common_jobs": 1091,
+              "common_same_binding_and_gen_jobs": 1091,
+              "common_same_slot_jobs": 1091,
+              "disk_gguf_requested_bytes": 12159705088,
+              "disk_jobs": 919,
+              "disk_pack_requested_bytes": 12150915072,
+              "disk_payload_bytes": 12148444800,
+              "host_bank_jobs": 172,
+              "host_bank_payload_bytes": 2273702400,
+              "primary_delivery_bytes": 14422147200
+            },
+            "cpu": {
+              "admissions": 786,
+              "charged_gguf_read_at_unit_worker_ns": 0,
+              "charged_set_worker_ns": 417198761,
+              "common_jobs": 786,
+              "common_same_binding_and_gen_jobs": 786,
+              "common_same_slot_jobs": 786,
+              "disk_gguf_requested_bytes": 8507842560,
+              "disk_jobs": 643,
+              "disk_pack_requested_bytes": 8501673984,
+              "disk_payload_bytes": 8499945600,
+              "host_bank_jobs": 143,
+              "host_bank_payload_bytes": 1890345600,
+              "primary_delivery_bytes": 10390291200,
+              "r0_only_jobs": 0
+            },
+            "cuda": {
+              "admissions": 305,
+              "charged_gguf_read_at_unit_worker_ns": 0,
+              "charged_set_worker_ns": 362035853,
+              "common_jobs": 305,
+              "common_same_binding_and_gen_jobs": 305,
+              "common_same_slot_jobs": 305,
+              "disk_gguf_requested_bytes": 3651862528,
+              "disk_jobs": 276,
+              "disk_pack_requested_bytes": 3649241088,
+              "disk_payload_bytes": 3648499200,
+              "host_bank_jobs": 29,
+              "host_bank_payload_bytes": 383356800,
+              "primary_delivery_bytes": 4031856000,
+              "r0_only_jobs": 0
+            }
+          },
+          "decode_lower_ns": 2886095317,
+          "fixed_exterior_ns": 2318241276,
+          "gates": {
+            "cross_46": {
+              "budget_ns": 5812343099,
+              "ceiling_ns_per_admission": 2682170.2859761687,
+              "classification": "HEADROOM_ONLY",
+              "margin_ns": 2926247782,
+              "maximum_fraction_of_r0_unpriced_callback_ns": 34.89522655715438
+            },
+            "cross_47": {
+              "budget_ns": 5812343099,
+              "ceiling_ns_per_admission": 2682170.2859761687,
+              "classification": "HEADROOM_ONLY",
+              "margin_ns": 2926247782,
+              "maximum_fraction_of_r0_unpriced_callback_ns": 34.89522655715438
+            },
+            "native_6_47": {
+              "budget_ns": 7833333334,
+              "ceiling_ns_per_admission": 4534590.299725023,
+              "classification": "HEADROOM_ONLY",
+              "margin_ns": 4947238017,
+              "maximum_fraction_of_r0_unpriced_callback_ns": 58.99534294303386
+            }
+          },
+          "inside_lower_ns": 567854041,
+          "maximum_gain_vs_measured_r0_ns": 7232365683,
+          "upper_native_tokens_s": 16.28497843545061
+        }
+      },
+      "disk": {
+        "gguf_0p8_same_slot": {
+          "by_tier": {
+            "all": {
+              "admissions": 1091,
+              "charged_gguf_read_at_unit_worker_ns": 10990980475,
+              "charged_set_worker_ns": 779234614,
+              "common_jobs": 1091,
+              "common_same_binding_and_gen_jobs": 1091,
+              "common_same_slot_jobs": 1091,
+              "disk_gguf_requested_bytes": 14435532800,
+              "disk_jobs": 1091,
+              "disk_pack_requested_bytes": 14425079808,
+              "disk_payload_bytes": 14422147200,
+              "primary_delivery_bytes": 14422147200
+            },
+            "cpu": {
+              "admissions": 786,
+              "charged_gguf_read_at_unit_worker_ns": 8116073836,
+              "charged_set_worker_ns": 417198761,
+              "common_jobs": 786,
+              "common_same_binding_and_gen_jobs": 786,
+              "common_same_slot_jobs": 786,
+              "disk_gguf_requested_bytes": 10399969280,
+              "disk_jobs": 786,
+              "disk_pack_requested_bytes": 10392403968,
+              "disk_payload_bytes": 10390291200,
+              "primary_delivery_bytes": 10390291200,
+              "r0_only_jobs": 0
+            },
+            "cuda": {
+              "admissions": 305,
+              "charged_gguf_read_at_unit_worker_ns": 2874906639,
+              "charged_set_worker_ns": 362035853,
+              "common_jobs": 305,
+              "common_same_binding_and_gen_jobs": 305,
+              "common_same_slot_jobs": 305,
+              "disk_gguf_requested_bytes": 4035563520,
+              "disk_jobs": 305,
+              "disk_pack_requested_bytes": 4032675840,
+              "disk_payload_bytes": 4031856000,
+              "primary_delivery_bytes": 4031856000,
+              "r0_only_jobs": 0
+            }
+          },
+          "decode_lower_ns": 8604204013,
+          "fixed_exterior_ns": 2318241276,
+          "gates": {
+            "cross_46": {
+              "budget_ns": 5357015099,
+              "ceiling_ns_per_admission": null,
+              "classification": "NO_GO_FIXED_PRICES",
+              "margin_ns": -3247188914,
+              "maximum_fraction_of_r0_unpriced_callback_ns": null
+            },
+            "cross_47": {
+              "budget_ns": 5357015099,
+              "ceiling_ns_per_admission": null,
+              "classification": "NO_GO_FIXED_PRICES",
+              "margin_ns": -3247188914,
+              "maximum_fraction_of_r0_unpriced_callback_ns": null
+            },
+            "native_6_47": {
+              "budget_ns": 7833333334,
+              "ceiling_ns_per_admission": null,
+              "classification": "NO_GO_FIXED_PRICES",
+              "margin_ns": -770870679,
+              "maximum_fraction_of_r0_unpriced_callback_ns": null
+            }
+          },
+          "inside_lower_ns": 6285962737,
+          "maximum_gain_vs_measured_r0_ns": 1514256987,
+          "upper_native_tokens_s": 5.462446023942273
+        },
+        "gguf_0p8_same_tier": {
+          "by_tier": {
+            "all": {
+              "admissions": 1091,
+              "charged_gguf_read_at_unit_worker_ns": 10990980475,
+              "charged_set_worker_ns": 779234614,
+              "common_jobs": 1091,
+              "common_same_binding_and_gen_jobs": 1091,
+              "common_same_slot_jobs": 1091,
+              "disk_gguf_requested_bytes": 14435532800,
+              "disk_jobs": 1091,
+              "disk_pack_requested_bytes": 14425079808,
+              "disk_payload_bytes": 14422147200,
+              "primary_delivery_bytes": 14422147200
+            },
+            "cpu": {
+              "admissions": 786,
+              "charged_gguf_read_at_unit_worker_ns": 8116073836,
+              "charged_set_worker_ns": 417198761,
+              "common_jobs": 786,
+              "common_same_binding_and_gen_jobs": 786,
+              "common_same_slot_jobs": 786,
+              "disk_gguf_requested_bytes": 10399969280,
+              "disk_jobs": 786,
+              "disk_pack_requested_bytes": 10392403968,
+              "disk_payload_bytes": 10390291200,
+              "primary_delivery_bytes": 10390291200,
+              "r0_only_jobs": 0
+            },
+            "cuda": {
+              "admissions": 305,
+              "charged_gguf_read_at_unit_worker_ns": 2874906639,
+              "charged_set_worker_ns": 362035853,
+              "common_jobs": 305,
+              "common_same_binding_and_gen_jobs": 305,
+              "common_same_slot_jobs": 305,
+              "disk_gguf_requested_bytes": 4035563520,
+              "disk_jobs": 305,
+              "disk_pack_requested_bytes": 4032675840,
+              "disk_payload_bytes": 4031856000,
+              "primary_delivery_bytes": 4031856000,
+              "r0_only_jobs": 0
+            }
+          },
+          "decode_lower_ns": 8604204013,
+          "fixed_exterior_ns": 2318241276,
+          "gates": {
+            "cross_46": {
+              "budget_ns": 5357015099,
+              "ceiling_ns_per_admission": null,
+              "classification": "NO_GO_FIXED_PRICES",
+              "margin_ns": -3247188914,
+              "maximum_fraction_of_r0_unpriced_callback_ns": null
+            },
+            "cross_47": {
+              "budget_ns": 5357015099,
+              "ceiling_ns_per_admission": null,
+              "classification": "NO_GO_FIXED_PRICES",
+              "margin_ns": -3247188914,
+              "maximum_fraction_of_r0_unpriced_callback_ns": null
+            },
+            "native_6_47": {
+              "budget_ns": 7833333334,
+              "ceiling_ns_per_admission": null,
+              "classification": "NO_GO_FIXED_PRICES",
+              "margin_ns": -770870679,
+              "maximum_fraction_of_r0_unpriced_callback_ns": null
+            }
+          },
+          "inside_lower_ns": 6285962737,
+          "maximum_gain_vs_measured_r0_ns": 1514256987,
+          "upper_native_tokens_s": 5.462446023942273
+        },
+        "gguf_1_same_slot": {
+          "by_tier": {
+            "all": {
+              "admissions": 1091,
+              "charged_gguf_read_at_unit_worker_ns": 10990980475,
+              "charged_set_worker_ns": 779234614,
+              "common_jobs": 1091,
+              "common_same_binding_and_gen_jobs": 1091,
+              "common_same_slot_jobs": 1091,
+              "disk_gguf_requested_bytes": 14435532800,
+              "disk_jobs": 1091,
+              "disk_pack_requested_bytes": 14425079808,
+              "disk_payload_bytes": 14422147200,
+              "primary_delivery_bytes": 14422147200
+            },
+            "cpu": {
+              "admissions": 786,
+              "charged_gguf_read_at_unit_worker_ns": 8116073836,
+              "charged_set_worker_ns": 417198761,
+              "common_jobs": 786,
+              "common_same_binding_and_gen_jobs": 786,
+              "common_same_slot_jobs": 786,
+              "disk_gguf_requested_bytes": 10399969280,
+              "disk_jobs": 786,
+              "disk_pack_requested_bytes": 10392403968,
+              "disk_payload_bytes": 10390291200,
+              "primary_delivery_bytes": 10390291200,
+              "r0_only_jobs": 0
+            },
+            "cuda": {
+              "admissions": 305,
+              "charged_gguf_read_at_unit_worker_ns": 2874906639,
+              "charged_set_worker_ns": 362035853,
+              "common_jobs": 305,
+              "common_same_binding_and_gen_jobs": 305,
+              "common_same_slot_jobs": 305,
+              "disk_gguf_requested_bytes": 4035563520,
+              "disk_jobs": 305,
+              "disk_pack_requested_bytes": 4032675840,
+              "disk_payload_bytes": 4031856000,
+              "primary_delivery_bytes": 4031856000,
+              "r0_only_jobs": 0
+            }
+          },
+          "decode_lower_ns": 10034601889,
+          "fixed_exterior_ns": 2318241276,
+          "gates": {
+            "cross_46": {
+              "budget_ns": 5357015099,
+              "ceiling_ns_per_admission": null,
+              "classification": "NO_GO_FIXED_PRICES",
+              "margin_ns": -4677586790,
+              "maximum_fraction_of_r0_unpriced_callback_ns": null
+            },
+            "cross_47": {
+              "budget_ns": 5357015099,
+              "ceiling_ns_per_admission": null,
+              "classification": "NO_GO_FIXED_PRICES",
+              "margin_ns": -4677586790,
+              "maximum_fraction_of_r0_unpriced_callback_ns": null
+            },
+            "native_6_47": {
+              "budget_ns": 7833333334,
+              "ceiling_ns_per_admission": null,
+              "classification": "NO_GO_FIXED_PRICES",
+              "margin_ns": -2201268555,
+              "maximum_fraction_of_r0_unpriced_callback_ns": null
+            }
+          },
+          "inside_lower_ns": 7716360613,
+          "maximum_gain_vs_measured_r0_ns": 83859111,
+          "upper_native_tokens_s": 4.683793190791328
+        },
+        "gguf_1_same_tier": {
+          "by_tier": {
+            "all": {
+              "admissions": 1091,
+              "charged_gguf_read_at_unit_worker_ns": 10990980475,
+              "charged_set_worker_ns": 779234614,
+              "common_jobs": 1091,
+              "common_same_binding_and_gen_jobs": 1091,
+              "common_same_slot_jobs": 1091,
+              "disk_gguf_requested_bytes": 14435532800,
+              "disk_jobs": 1091,
+              "disk_pack_requested_bytes": 14425079808,
+              "disk_payload_bytes": 14422147200,
+              "primary_delivery_bytes": 14422147200
+            },
+            "cpu": {
+              "admissions": 786,
+              "charged_gguf_read_at_unit_worker_ns": 8116073836,
+              "charged_set_worker_ns": 417198761,
+              "common_jobs": 786,
+              "common_same_binding_and_gen_jobs": 786,
+              "common_same_slot_jobs": 786,
+              "disk_gguf_requested_bytes": 10399969280,
+              "disk_jobs": 786,
+              "disk_pack_requested_bytes": 10392403968,
+              "disk_payload_bytes": 10390291200,
+              "primary_delivery_bytes": 10390291200,
+              "r0_only_jobs": 0
+            },
+            "cuda": {
+              "admissions": 305,
+              "charged_gguf_read_at_unit_worker_ns": 2874906639,
+              "charged_set_worker_ns": 362035853,
+              "common_jobs": 305,
+              "common_same_binding_and_gen_jobs": 305,
+              "common_same_slot_jobs": 305,
+              "disk_gguf_requested_bytes": 4035563520,
+              "disk_jobs": 305,
+              "disk_pack_requested_bytes": 4032675840,
+              "disk_payload_bytes": 4031856000,
+              "primary_delivery_bytes": 4031856000,
+              "r0_only_jobs": 0
+            }
+          },
+          "decode_lower_ns": 10034601889,
+          "fixed_exterior_ns": 2318241276,
+          "gates": {
+            "cross_46": {
+              "budget_ns": 5357015099,
+              "ceiling_ns_per_admission": null,
+              "classification": "NO_GO_FIXED_PRICES",
+              "margin_ns": -4677586790,
+              "maximum_fraction_of_r0_unpriced_callback_ns": null
+            },
+            "cross_47": {
+              "budget_ns": 5357015099,
+              "ceiling_ns_per_admission": null,
+              "classification": "NO_GO_FIXED_PRICES",
+              "margin_ns": -4677586790,
+              "maximum_fraction_of_r0_unpriced_callback_ns": null
+            },
+            "native_6_47": {
+              "budget_ns": 7833333334,
+              "ceiling_ns_per_admission": null,
+              "classification": "NO_GO_FIXED_PRICES",
+              "margin_ns": -2201268555,
+              "maximum_fraction_of_r0_unpriced_callback_ns": null
+            }
+          },
+          "inside_lower_ns": 7716360613,
+          "maximum_gain_vs_measured_r0_ns": 83859111,
+          "upper_native_tokens_s": 4.683793190791328
+        },
+        "unidentified_pack_same_slot": {
+          "by_tier": {
+            "all": {
+              "admissions": 1091,
+              "charged_set_worker_ns": 779234614,
+              "common_jobs": 1091,
+              "common_same_binding_and_gen_jobs": 1091,
+              "common_same_slot_jobs": 1091,
+              "disk_gguf_requested_bytes": 14435532800,
+              "disk_jobs": 1091,
+              "disk_pack_requested_bytes": 14425079808,
+              "disk_payload_bytes": 14422147200,
+              "primary_delivery_bytes": 14422147200
+            },
+            "cpu": {
+              "admissions": 786,
+              "charged_gguf_read_at_unit_worker_ns": 0,
+              "charged_set_worker_ns": 417198761,
+              "common_jobs": 786,
+              "common_same_binding_and_gen_jobs": 786,
+              "common_same_slot_jobs": 786,
+              "disk_gguf_requested_bytes": 10399969280,
+              "disk_jobs": 786,
+              "disk_pack_requested_bytes": 10392403968,
+              "disk_payload_bytes": 10390291200,
+              "primary_delivery_bytes": 10390291200,
+              "r0_only_jobs": 0
+            },
+            "cuda": {
+              "admissions": 305,
+              "charged_gguf_read_at_unit_worker_ns": 0,
+              "charged_set_worker_ns": 362035853,
+              "common_jobs": 305,
+              "common_same_binding_and_gen_jobs": 305,
+              "common_same_slot_jobs": 305,
+              "disk_gguf_requested_bytes": 4035563520,
+              "disk_jobs": 305,
+              "disk_pack_requested_bytes": 4032675840,
+              "disk_payload_bytes": 4031856000,
+              "primary_delivery_bytes": 4031856000,
+              "r0_only_jobs": 0
+            }
+          },
+          "decode_lower_ns": 2886095317,
+          "fixed_exterior_ns": 2318241276,
+          "gates": {
+            "cross_46": {
+              "budget_ns": 5357015099,
+              "ceiling_ns_per_admission": 2264821.06507791,
+              "classification": "HEADROOM_ONLY",
+              "margin_ns": 2470919782,
+              "maximum_fraction_of_r0_unpriced_callback_ns": 29.465483452161234
+            },
+            "cross_47": {
+              "budget_ns": 5357015099,
+              "ceiling_ns_per_admission": 2264821.06507791,
+              "classification": "HEADROOM_ONLY",
+              "margin_ns": 2470919782,
+              "maximum_fraction_of_r0_unpriced_callback_ns": 29.465483452161234
+            },
+            "native_6_47": {
+              "budget_ns": 7833333334,
+              "ceiling_ns_per_admission": 4534590.299725023,
+              "classification": "HEADROOM_ONLY",
+              "margin_ns": 4947238017,
+              "maximum_fraction_of_r0_unpriced_callback_ns": 58.99534294303386
+            }
+          },
+          "inside_lower_ns": 567854041,
+          "maximum_gain_vs_measured_r0_ns": 7232365683,
+          "upper_native_tokens_s": 16.28497843545061
+        },
+        "unidentified_pack_same_tier": {
+          "by_tier": {
+            "all": {
+              "admissions": 1091,
+              "charged_set_worker_ns": 779234614,
+              "common_jobs": 1091,
+              "common_same_binding_and_gen_jobs": 1091,
+              "common_same_slot_jobs": 1091,
+              "disk_gguf_requested_bytes": 14435532800,
+              "disk_jobs": 1091,
+              "disk_pack_requested_bytes": 14425079808,
+              "disk_payload_bytes": 14422147200,
+              "primary_delivery_bytes": 14422147200
+            },
+            "cpu": {
+              "admissions": 786,
+              "charged_gguf_read_at_unit_worker_ns": 0,
+              "charged_set_worker_ns": 417198761,
+              "common_jobs": 786,
+              "common_same_binding_and_gen_jobs": 786,
+              "common_same_slot_jobs": 786,
+              "disk_gguf_requested_bytes": 10399969280,
+              "disk_jobs": 786,
+              "disk_pack_requested_bytes": 10392403968,
+              "disk_payload_bytes": 10390291200,
+              "primary_delivery_bytes": 10390291200,
+              "r0_only_jobs": 0
+            },
+            "cuda": {
+              "admissions": 305,
+              "charged_gguf_read_at_unit_worker_ns": 0,
+              "charged_set_worker_ns": 362035853,
+              "common_jobs": 305,
+              "common_same_binding_and_gen_jobs": 305,
+              "common_same_slot_jobs": 305,
+              "disk_gguf_requested_bytes": 4035563520,
+              "disk_jobs": 305,
+              "disk_pack_requested_bytes": 4032675840,
+              "disk_payload_bytes": 4031856000,
+              "primary_delivery_bytes": 4031856000,
+              "r0_only_jobs": 0
+            }
+          },
+          "decode_lower_ns": 2886095317,
+          "fixed_exterior_ns": 2318241276,
+          "gates": {
+            "cross_46": {
+              "budget_ns": 5357015099,
+              "ceiling_ns_per_admission": 2264821.06507791,
+              "classification": "HEADROOM_ONLY",
+              "margin_ns": 2470919782,
+              "maximum_fraction_of_r0_unpriced_callback_ns": 29.465483452161234
+            },
+            "cross_47": {
+              "budget_ns": 5357015099,
+              "ceiling_ns_per_admission": 2264821.06507791,
+              "classification": "HEADROOM_ONLY",
+              "margin_ns": 2470919782,
+              "maximum_fraction_of_r0_unpriced_callback_ns": 29.465483452161234
+            },
+            "native_6_47": {
+              "budget_ns": 7833333334,
+              "ceiling_ns_per_admission": 4534590.299725023,
+              "classification": "HEADROOM_ONLY",
+              "margin_ns": 4947238017,
+              "maximum_fraction_of_r0_unpriced_callback_ns": 58.99534294303386
+            }
+          },
+          "inside_lower_ns": 567854041,
+          "maximum_gain_vs_measured_r0_ns": 7232365683,
+          "upper_native_tokens_s": 16.28497843545061
+        }
+      }
+    },
+    "restored": {
+      "bank": {
+        "gguf_0p8_same_slot": {
+          "by_tier": {
+            "all": {
+              "admissions": 1190,
+              "charged_gguf_read_at_unit_worker_ns": 7896044733,
+              "charged_set_worker_ns": 57792214,
+              "common_jobs": 971,
+              "common_same_binding_and_gen_jobs": 43,
+              "common_same_slot_jobs": 60,
+              "disk_gguf_requested_bytes": 10571919360,
+              "disk_jobs": 799,
+              "disk_pack_requested_bytes": 10564288512,
+              "disk_payload_bytes": 10562140800,
+              "host_bank_jobs": 391,
+              "host_bank_payload_bytes": 5168707200,
+              "new_host_bank_jobs": 219,
+              "new_jobs": 219,
+              "new_primary_delivery_bytes": 2895004800,
+              "primary_delivery_bytes": 15730848000,
+              "r0_only_jobs": 120
+            },
+            "cpu": {
+              "admissions": 864,
+              "charged_gguf_read_at_unit_worker_ns": 5478431202,
+              "charged_set_worker_ns": 10857129,
+              "common_jobs": 685,
+              "common_same_binding_and_gen_jobs": 11,
+              "common_same_slot_jobs": 20,
+              "disk_gguf_requested_bytes": 7171461120,
+              "disk_jobs": 542,
+              "disk_pack_requested_bytes": 7166263296,
+              "disk_payload_bytes": 7164806400,
+              "host_bank_jobs": 322,
+              "host_bank_payload_bytes": 4256582400,
+              "new_host_bank_jobs": 179,
+              "new_jobs": 179,
+              "new_primary_delivery_bytes": 2366236800,
+              "primary_delivery_bytes": 11421388800,
+              "r0_only_jobs": 101
+            },
+            "cuda": {
+              "admissions": 326,
+              "charged_gguf_read_at_unit_worker_ns": 2417613531,
+              "charged_set_worker_ns": 46935085,
+              "common_jobs": 286,
+              "common_same_binding_and_gen_jobs": 32,
+              "common_same_slot_jobs": 40,
+              "disk_gguf_requested_bytes": 3400458240,
+              "disk_jobs": 257,
+              "disk_pack_requested_bytes": 3398025216,
+              "disk_payload_bytes": 3397334400,
+              "host_bank_jobs": 69,
+              "host_bank_payload_bytes": 912124800,
+              "new_host_bank_jobs": 40,
+              "new_jobs": 40,
+              "new_primary_delivery_bytes": 528768000,
+              "primary_delivery_bytes": 4309459200,
+              "r0_only_jobs": 19
+            }
+          },
+          "decode_lower_ns": 7052327009,
+          "fixed_exterior_ns": 2318241276,
+          "gates": {
+            "cross_46": {
+              "budget_ns": 5959223099,
+              "ceiling_ns_per_admission": null,
+              "classification": "NO_GO_FIXED_PRICES",
+              "margin_ns": -1093103910,
+              "maximum_fraction_of_r0_unpriced_callback_ns": null
+            },
+            "cross_47": {
+              "budget_ns": 5959223099,
+              "ceiling_ns_per_admission": null,
+              "classification": "NO_GO_FIXED_PRICES",
+              "margin_ns": -1093103910,
+              "maximum_fraction_of_r0_unpriced_callback_ns": null
+            },
+            "native_6_47": {
+              "budget_ns": 7833333334,
+              "ceiling_ns_per_admission": 656307.8361344538,
+              "classification": "HEADROOM_ONLY",
+              "margin_ns": 781006325,
+              "maximum_fraction_of_r0_unpriced_callback_ns": 9.313426163391636
+            }
+          },
+          "inside_lower_ns": 4734085733,
+          "maximum_gain_vs_measured_r0_ns": 3066133991,
+          "upper_native_tokens_s": 6.66446691142084
+        },
+        "gguf_0p8_same_tier": {
+          "by_tier": {
+            "all": {
+              "admissions": 1190,
+              "charged_gguf_read_at_unit_worker_ns": 7896044733,
+              "charged_set_worker_ns": 702725081,
+              "common_jobs": 971,
+              "common_same_binding_and_gen_jobs": 43,
+              "common_same_slot_jobs": 60,
+              "disk_gguf_requested_bytes": 10571919360,
+              "disk_jobs": 799,
+              "disk_pack_requested_bytes": 10564288512,
+              "disk_payload_bytes": 10562140800,
+              "host_bank_jobs": 391,
+              "host_bank_payload_bytes": 5168707200,
+              "new_host_bank_jobs": 219,
+              "new_jobs": 219,
+              "new_primary_delivery_bytes": 2895004800,
+              "primary_delivery_bytes": 15730848000,
+              "r0_only_jobs": 120
+            },
+            "cpu": {
+              "admissions": 864,
+              "charged_gguf_read_at_unit_worker_ns": 5478431202,
+              "charged_set_worker_ns": 362943774,
+              "common_jobs": 685,
+              "common_same_binding_and_gen_jobs": 11,
+              "common_same_slot_jobs": 20,
+              "disk_gguf_requested_bytes": 7171461120,
+              "disk_jobs": 542,
+              "disk_pack_requested_bytes": 7166263296,
+              "disk_payload_bytes": 7164806400,
+              "host_bank_jobs": 322,
+              "host_bank_payload_bytes": 4256582400,
+              "new_host_bank_jobs": 179,
+              "new_jobs": 179,
+              "new_primary_delivery_bytes": 2366236800,
+              "primary_delivery_bytes": 11421388800,
+              "r0_only_jobs": 101
+            },
+            "cuda": {
+              "admissions": 326,
+              "charged_gguf_read_at_unit_worker_ns": 2417613531,
+              "charged_set_worker_ns": 339781307,
+              "common_jobs": 286,
+              "common_same_binding_and_gen_jobs": 32,
+              "common_same_slot_jobs": 40,
+              "disk_gguf_requested_bytes": 3400458240,
+              "disk_jobs": 257,
+              "disk_pack_requested_bytes": 3398025216,
+              "disk_payload_bytes": 3397334400,
+              "host_bank_jobs": 69,
+              "host_bank_payload_bytes": 912124800,
+              "new_host_bank_jobs": 40,
+              "new_jobs": 40,
+              "new_primary_delivery_bytes": 528768000,
+              "primary_delivery_bytes": 4309459200,
+              "r0_only_jobs": 19
+            }
+          },
+          "decode_lower_ns": 7527283520,
+          "fixed_exterior_ns": 2318241276,
+          "gates": {
+            "cross_46": {
+              "budget_ns": 5959223099,
+              "ceiling_ns_per_admission": null,
+              "classification": "NO_GO_FIXED_PRICES",
+              "margin_ns": -1568060421,
+              "maximum_fraction_of_r0_unpriced_callback_ns": null
+            },
+            "cross_47": {
+              "budget_ns": 5959223099,
+              "ceiling_ns_per_admission": null,
+              "classification": "NO_GO_FIXED_PRICES",
+              "margin_ns": -1568060421,
+              "maximum_fraction_of_r0_unpriced_callback_ns": null
+            },
+            "native_6_47": {
+              "budget_ns": 7833333334,
+              "ceiling_ns_per_admission": 257184.71764705883,
+              "classification": "HEADROOM_ONLY",
+              "margin_ns": 306049814,
+              "maximum_fraction_of_r0_unpriced_callback_ns": 3.6496149311066644
+            }
+          },
+          "inside_lower_ns": 5209042244,
+          "maximum_gain_vs_measured_r0_ns": 2591177480,
+          "upper_native_tokens_s": 6.2439523999754964
+        },
+        "gguf_1_same_slot": {
+          "by_tier": {
+            "all": {
+              "admissions": 1190,
+              "charged_gguf_read_at_unit_worker_ns": 7896044733,
+              "charged_set_worker_ns": 57792214,
+              "common_jobs": 971,
+              "common_same_binding_and_gen_jobs": 43,
+              "common_same_slot_jobs": 60,
+              "disk_gguf_requested_bytes": 10571919360,
+              "disk_jobs": 799,
+              "disk_pack_requested_bytes": 10564288512,
+              "disk_payload_bytes": 10562140800,
+              "host_bank_jobs": 391,
+              "host_bank_payload_bytes": 5168707200,
+              "new_host_bank_jobs": 219,
+              "new_jobs": 219,
+              "new_primary_delivery_bytes": 2895004800,
+              "primary_delivery_bytes": 15730848000,
+              "r0_only_jobs": 120
+            },
+            "cpu": {
+              "admissions": 864,
+              "charged_gguf_read_at_unit_worker_ns": 5478431202,
+              "charged_set_worker_ns": 10857129,
+              "common_jobs": 685,
+              "common_same_binding_and_gen_jobs": 11,
+              "common_same_slot_jobs": 20,
+              "disk_gguf_requested_bytes": 7171461120,
+              "disk_jobs": 542,
+              "disk_pack_requested_bytes": 7166263296,
+              "disk_payload_bytes": 7164806400,
+              "host_bank_jobs": 322,
+              "host_bank_payload_bytes": 4256582400,
+              "new_host_bank_jobs": 179,
+              "new_jobs": 179,
+              "new_primary_delivery_bytes": 2366236800,
+              "primary_delivery_bytes": 11421388800,
+              "r0_only_jobs": 101
+            },
+            "cuda": {
+              "admissions": 326,
+              "charged_gguf_read_at_unit_worker_ns": 2417613531,
+              "charged_set_worker_ns": 46935085,
+              "common_jobs": 286,
+              "common_same_binding_and_gen_jobs": 32,
+              "common_same_slot_jobs": 40,
+              "disk_gguf_requested_bytes": 3400458240,
+              "disk_jobs": 257,
+              "disk_pack_requested_bytes": 3398025216,
+              "disk_payload_bytes": 3397334400,
+              "host_bank_jobs": 69,
+              "host_bank_payload_bytes": 912124800,
+              "new_host_bank_jobs": 40,
+              "new_jobs": 40,
+              "new_primary_delivery_bytes": 528768000,
+              "primary_delivery_bytes": 4309459200,
+              "r0_only_jobs": 19
+            }
+          },
+          "decode_lower_ns": 8224414279,
+          "fixed_exterior_ns": 2318241276,
+          "gates": {
+            "cross_46": {
+              "budget_ns": 5959223099,
+              "ceiling_ns_per_admission": null,
+              "classification": "NO_GO_FIXED_PRICES",
+              "margin_ns": -2265191180,
+              "maximum_fraction_of_r0_unpriced_callback_ns": null
+            },
+            "cross_47": {
+              "budget_ns": 5959223099,
+              "ceiling_ns_per_admission": null,
+              "classification": "NO_GO_FIXED_PRICES",
+              "margin_ns": -2265191180,
+              "maximum_fraction_of_r0_unpriced_callback_ns": null
+            },
+            "native_6_47": {
+              "budget_ns": 7833333334,
+              "ceiling_ns_per_admission": null,
+              "classification": "NO_GO_FIXED_PRICES",
+              "margin_ns": -391080945,
+              "maximum_fraction_of_r0_unpriced_callback_ns": null
+            }
+          },
+          "inside_lower_ns": 5906173003,
+          "maximum_gain_vs_measured_r0_ns": 1894046721,
+          "upper_native_tokens_s": 5.714692670578201
+        },
+        "gguf_1_same_tier": {
+          "by_tier": {
+            "all": {
+              "admissions": 1190,
+              "charged_gguf_read_at_unit_worker_ns": 7896044733,
+              "charged_set_worker_ns": 702725081,
+              "common_jobs": 971,
+              "common_same_binding_and_gen_jobs": 43,
+              "common_same_slot_jobs": 60,
+              "disk_gguf_requested_bytes": 10571919360,
+              "disk_jobs": 799,
+              "disk_pack_requested_bytes": 10564288512,
+              "disk_payload_bytes": 10562140800,
+              "host_bank_jobs": 391,
+              "host_bank_payload_bytes": 5168707200,
+              "new_host_bank_jobs": 219,
+              "new_jobs": 219,
+              "new_primary_delivery_bytes": 2895004800,
+              "primary_delivery_bytes": 15730848000,
+              "r0_only_jobs": 120
+            },
+            "cpu": {
+              "admissions": 864,
+              "charged_gguf_read_at_unit_worker_ns": 5478431202,
+              "charged_set_worker_ns": 362943774,
+              "common_jobs": 685,
+              "common_same_binding_and_gen_jobs": 11,
+              "common_same_slot_jobs": 20,
+              "disk_gguf_requested_bytes": 7171461120,
+              "disk_jobs": 542,
+              "disk_pack_requested_bytes": 7166263296,
+              "disk_payload_bytes": 7164806400,
+              "host_bank_jobs": 322,
+              "host_bank_payload_bytes": 4256582400,
+              "new_host_bank_jobs": 179,
+              "new_jobs": 179,
+              "new_primary_delivery_bytes": 2366236800,
+              "primary_delivery_bytes": 11421388800,
+              "r0_only_jobs": 101
+            },
+            "cuda": {
+              "admissions": 326,
+              "charged_gguf_read_at_unit_worker_ns": 2417613531,
+              "charged_set_worker_ns": 339781307,
+              "common_jobs": 286,
+              "common_same_binding_and_gen_jobs": 32,
+              "common_same_slot_jobs": 40,
+              "disk_gguf_requested_bytes": 3400458240,
+              "disk_jobs": 257,
+              "disk_pack_requested_bytes": 3398025216,
+              "disk_payload_bytes": 3397334400,
+              "host_bank_jobs": 69,
+              "host_bank_payload_bytes": 912124800,
+              "new_host_bank_jobs": 40,
+              "new_jobs": 40,
+              "new_primary_delivery_bytes": 528768000,
+              "primary_delivery_bytes": 4309459200,
+              "r0_only_jobs": 19
+            }
+          },
+          "decode_lower_ns": 8699370790,
+          "fixed_exterior_ns": 2318241276,
+          "gates": {
+            "cross_46": {
+              "budget_ns": 5959223099,
+              "ceiling_ns_per_admission": null,
+              "classification": "NO_GO_FIXED_PRICES",
+              "margin_ns": -2740147691,
+              "maximum_fraction_of_r0_unpriced_callback_ns": null
+            },
+            "cross_47": {
+              "budget_ns": 5959223099,
+              "ceiling_ns_per_admission": null,
+              "classification": "NO_GO_FIXED_PRICES",
+              "margin_ns": -2740147691,
+              "maximum_fraction_of_r0_unpriced_callback_ns": null
+            },
+            "native_6_47": {
+              "budget_ns": 7833333334,
+              "ceiling_ns_per_admission": null,
+              "classification": "NO_GO_FIXED_PRICES",
+              "margin_ns": -866037456,
+              "maximum_fraction_of_r0_unpriced_callback_ns": null
+            }
+          },
+          "inside_lower_ns": 6381129514,
+          "maximum_gain_vs_measured_r0_ns": 1419090210,
+          "upper_native_tokens_s": 5.402689589231775
+        },
+        "unidentified_pack_same_slot": {
+          "by_tier": {
+            "all": {
+              "admissions": 1190,
+              "charged_set_worker_ns": 57792214,
+              "common_jobs": 971,
+              "common_same_binding_and_gen_jobs": 43,
+              "common_same_slot_jobs": 60,
+              "disk_gguf_requested_bytes": 10571919360,
+              "disk_jobs": 799,
+              "disk_pack_requested_bytes": 10564288512,
+              "disk_payload_bytes": 10562140800,
+              "host_bank_jobs": 391,
+              "host_bank_payload_bytes": 5168707200,
+              "new_host_bank_jobs": 219,
+              "new_jobs": 219,
+              "new_primary_delivery_bytes": 2895004800,
+              "primary_delivery_bytes": 15730848000,
+              "r0_only_jobs": 120
+            },
+            "cpu": {
+              "admissions": 864,
+              "charged_gguf_read_at_unit_worker_ns": 0,
+              "charged_set_worker_ns": 10857129,
+              "common_jobs": 685,
+              "common_same_binding_and_gen_jobs": 11,
+              "common_same_slot_jobs": 20,
+              "disk_gguf_requested_bytes": 7171461120,
+              "disk_jobs": 542,
+              "disk_pack_requested_bytes": 7166263296,
+              "disk_payload_bytes": 7164806400,
+              "host_bank_jobs": 322,
+              "host_bank_payload_bytes": 4256582400,
+              "new_host_bank_jobs": 179,
+              "new_jobs": 179,
+              "new_primary_delivery_bytes": 2366236800,
+              "primary_delivery_bytes": 11421388800,
+              "r0_only_jobs": 101
+            },
+            "cuda": {
+              "admissions": 326,
+              "charged_gguf_read_at_unit_worker_ns": 0,
+              "charged_set_worker_ns": 46935085,
+              "common_jobs": 286,
+              "common_same_binding_and_gen_jobs": 32,
+              "common_same_slot_jobs": 40,
+              "disk_gguf_requested_bytes": 3400458240,
+              "disk_jobs": 257,
+              "disk_pack_requested_bytes": 3398025216,
+              "disk_payload_bytes": 3397334400,
+              "host_bank_jobs": 69,
+              "host_bank_payload_bytes": 912124800,
+              "new_host_bank_jobs": 40,
+              "new_jobs": 40,
+              "new_primary_delivery_bytes": 528768000,
+              "primary_delivery_bytes": 4309459200,
+              "r0_only_jobs": 19
+            }
+          },
+          "decode_lower_ns": 2370334322,
+          "fixed_exterior_ns": 2318241276,
+          "gates": {
+            "cross_46": {
+              "budget_ns": 5959223099,
+              "ceiling_ns_per_admission": 3015872.9218487395,
+              "classification": "HEADROOM_ONLY",
+              "margin_ns": 3588888777,
+              "maximum_fraction_of_r0_unpriced_callback_ns": 42.79715741510085
+            },
+            "cross_47": {
+              "budget_ns": 5959223099,
+              "ceiling_ns_per_admission": 3015872.9218487395,
+              "classification": "HEADROOM_ONLY",
+              "margin_ns": 3588888777,
+              "maximum_fraction_of_r0_unpriced_callback_ns": 42.79715741510085
+            },
+            "native_6_47": {
+              "budget_ns": 7833333334,
+              "ceiling_ns_per_admission": 4590755.472268907,
+              "classification": "HEADROOM_ONLY",
+              "margin_ns": 5462999012,
+              "maximum_fraction_of_r0_unpriced_callback_ns": 65.14574376711157
+            }
+          },
+          "inside_lower_ns": 52093046,
+          "maximum_gain_vs_measured_r0_ns": 7748126678,
+          "upper_native_tokens_s": 19.82842654885204
+        },
+        "unidentified_pack_same_tier": {
+          "by_tier": {
+            "all": {
+              "admissions": 1190,
+              "charged_set_worker_ns": 702725081,
+              "common_jobs": 971,
+              "common_same_binding_and_gen_jobs": 43,
+              "common_same_slot_jobs": 60,
+              "disk_gguf_requested_bytes": 10571919360,
+              "disk_jobs": 799,
+              "disk_pack_requested_bytes": 10564288512,
+              "disk_payload_bytes": 10562140800,
+              "host_bank_jobs": 391,
+              "host_bank_payload_bytes": 5168707200,
+              "new_host_bank_jobs": 219,
+              "new_jobs": 219,
+              "new_primary_delivery_bytes": 2895004800,
+              "primary_delivery_bytes": 15730848000,
+              "r0_only_jobs": 120
+            },
+            "cpu": {
+              "admissions": 864,
+              "charged_gguf_read_at_unit_worker_ns": 0,
+              "charged_set_worker_ns": 362943774,
+              "common_jobs": 685,
+              "common_same_binding_and_gen_jobs": 11,
+              "common_same_slot_jobs": 20,
+              "disk_gguf_requested_bytes": 7171461120,
+              "disk_jobs": 542,
+              "disk_pack_requested_bytes": 7166263296,
+              "disk_payload_bytes": 7164806400,
+              "host_bank_jobs": 322,
+              "host_bank_payload_bytes": 4256582400,
+              "new_host_bank_jobs": 179,
+              "new_jobs": 179,
+              "new_primary_delivery_bytes": 2366236800,
+              "primary_delivery_bytes": 11421388800,
+              "r0_only_jobs": 101
+            },
+            "cuda": {
+              "admissions": 326,
+              "charged_gguf_read_at_unit_worker_ns": 0,
+              "charged_set_worker_ns": 339781307,
+              "common_jobs": 286,
+              "common_same_binding_and_gen_jobs": 32,
+              "common_same_slot_jobs": 40,
+              "disk_gguf_requested_bytes": 3400458240,
+              "disk_jobs": 257,
+              "disk_pack_requested_bytes": 3398025216,
+              "disk_payload_bytes": 3397334400,
+              "host_bank_jobs": 69,
+              "host_bank_payload_bytes": 912124800,
+              "new_host_bank_jobs": 40,
+              "new_jobs": 40,
+              "new_primary_delivery_bytes": 528768000,
+              "primary_delivery_bytes": 4309459200,
+              "r0_only_jobs": 19
+            }
+          },
+          "decode_lower_ns": 2843154554,
+          "fixed_exterior_ns": 2318241276,
+          "gates": {
+            "cross_46": {
+              "budget_ns": 5959223099,
+              "ceiling_ns_per_admission": 2618544.995798319,
+              "classification": "HEADROOM_ONLY",
+              "margin_ns": 3116068545,
+              "maximum_fraction_of_r0_unpriced_callback_ns": 37.15882110676211
+            },
+            "cross_47": {
+              "budget_ns": 5959223099,
+              "ceiling_ns_per_admission": 2618544.995798319,
+              "classification": "HEADROOM_ONLY",
+              "margin_ns": 3116068545,
+              "maximum_fraction_of_r0_unpriced_callback_ns": 37.15882110676211
+            },
+            "native_6_47": {
+              "budget_ns": 7833333334,
+              "ceiling_ns_per_admission": 4193427.5462184874,
+              "classification": "HEADROOM_ONLY",
+              "margin_ns": 4990178780,
+              "maximum_fraction_of_r0_unpriced_callback_ns": 59.50740745877283
+            }
+          },
+          "inside_lower_ns": 524913278,
+          "maximum_gain_vs_measured_r0_ns": 7275306446,
+          "upper_native_tokens_s": 16.530933900120296
+        }
+      },
+      "disk": {
+        "gguf_0p8_same_slot": {
+          "by_tier": {
+            "all": {
+              "admissions": 1190,
+              "charged_gguf_read_at_unit_worker_ns": 9812419444,
+              "charged_set_worker_ns": 57792214,
+              "common_jobs": 971,
+              "common_same_binding_and_gen_jobs": 43,
+              "common_same_slot_jobs": 60,
+              "disk_gguf_requested_bytes": 15745384448,
+              "disk_jobs": 1190,
+              "disk_pack_requested_bytes": 15734046720,
+              "disk_payload_bytes": 15730848000,
+              "new_disk_jobs": 219,
+              "new_jobs": 219,
+              "new_primary_delivery_bytes": 2895004800,
+              "primary_delivery_bytes": 15730848000,
+              "r0_only_jobs": 120
+            },
+            "cpu": {
+              "admissions": 864,
+              "charged_gguf_read_at_unit_worker_ns": 7102929233,
+              "charged_set_worker_ns": 10857129,
+              "common_jobs": 685,
+              "common_same_binding_and_gen_jobs": 11,
+              "common_same_slot_jobs": 20,
+              "disk_gguf_requested_bytes": 11431956480,
+              "disk_jobs": 864,
+              "disk_pack_requested_bytes": 11423711232,
+              "disk_payload_bytes": 11421388800,
+              "new_disk_jobs": 179,
+              "new_jobs": 179,
+              "new_primary_delivery_bytes": 2366236800,
+              "primary_delivery_bytes": 11421388800,
+              "r0_only_jobs": 101
+            },
+            "cuda": {
+              "admissions": 326,
+              "charged_gguf_read_at_unit_worker_ns": 2709490211,
+              "charged_set_worker_ns": 46935085,
+              "common_jobs": 286,
+              "common_same_binding_and_gen_jobs": 32,
+              "common_same_slot_jobs": 40,
+              "disk_gguf_requested_bytes": 4313427968,
+              "disk_jobs": 326,
+              "disk_pack_requested_bytes": 4310335488,
+              "disk_payload_bytes": 4309459200,
+              "new_disk_jobs": 40,
+              "new_jobs": 40,
+              "new_primary_delivery_bytes": 528768000,
+              "primary_delivery_bytes": 4309459200,
+              "r0_only_jobs": 19
+            }
+          },
+          "decode_lower_ns": 7652833885,
+          "fixed_exterior_ns": 2318241276,
+          "gates": {
+            "cross_46": {
+              "budget_ns": 5239511099,
+              "ceiling_ns_per_admission": null,
+              "classification": "NO_GO_FIXED_PRICES",
+              "margin_ns": -2413322786,
+              "maximum_fraction_of_r0_unpriced_callback_ns": null
+            },
+            "cross_47": {
+              "budget_ns": 5239511099,
+              "ceiling_ns_per_admission": null,
+              "classification": "NO_GO_FIXED_PRICES",
+              "margin_ns": -2413322786,
+              "maximum_fraction_of_r0_unpriced_callback_ns": null
+            },
+            "native_6_47": {
+              "budget_ns": 7833333334,
+              "ceiling_ns_per_admission": 151680.2092436975,
+              "classification": "HEADROOM_ONLY",
+              "margin_ns": 180499449,
+              "maximum_fraction_of_r0_unpriced_callback_ns": 2.1524387664778186
+            }
+          },
+          "inside_lower_ns": 5334592609,
+          "maximum_gain_vs_measured_r0_ns": 2465627115,
+          "upper_native_tokens_s": 6.1415157713174375
+        },
+        "gguf_0p8_same_tier": {
+          "by_tier": {
+            "all": {
+              "admissions": 1190,
+              "charged_gguf_read_at_unit_worker_ns": 9812419444,
+              "charged_set_worker_ns": 702725081,
+              "common_jobs": 971,
+              "common_same_binding_and_gen_jobs": 43,
+              "common_same_slot_jobs": 60,
+              "disk_gguf_requested_bytes": 15745384448,
+              "disk_jobs": 1190,
+              "disk_pack_requested_bytes": 15734046720,
+              "disk_payload_bytes": 15730848000,
+              "new_disk_jobs": 219,
+              "new_jobs": 219,
+              "new_primary_delivery_bytes": 2895004800,
+              "primary_delivery_bytes": 15730848000,
+              "r0_only_jobs": 120
+            },
+            "cpu": {
+              "admissions": 864,
+              "charged_gguf_read_at_unit_worker_ns": 7102929233,
+              "charged_set_worker_ns": 362943774,
+              "common_jobs": 685,
+              "common_same_binding_and_gen_jobs": 11,
+              "common_same_slot_jobs": 20,
+              "disk_gguf_requested_bytes": 11431956480,
+              "disk_jobs": 864,
+              "disk_pack_requested_bytes": 11423711232,
+              "disk_payload_bytes": 11421388800,
+              "new_disk_jobs": 179,
+              "new_jobs": 179,
+              "new_primary_delivery_bytes": 2366236800,
+              "primary_delivery_bytes": 11421388800,
+              "r0_only_jobs": 101
+            },
+            "cuda": {
+              "admissions": 326,
+              "charged_gguf_read_at_unit_worker_ns": 2709490211,
+              "charged_set_worker_ns": 339781307,
+              "common_jobs": 286,
+              "common_same_binding_and_gen_jobs": 32,
+              "common_same_slot_jobs": 40,
+              "disk_gguf_requested_bytes": 4313427968,
+              "disk_jobs": 326,
+              "disk_pack_requested_bytes": 4310335488,
+              "disk_payload_bytes": 4309459200,
+              "new_disk_jobs": 40,
+              "new_jobs": 40,
+              "new_primary_delivery_bytes": 528768000,
+              "primary_delivery_bytes": 4309459200,
+              "r0_only_jobs": 19
+            }
+          },
+          "decode_lower_ns": 8128287333,
+          "fixed_exterior_ns": 2318241276,
+          "gates": {
+            "cross_46": {
+              "budget_ns": 5239511099,
+              "ceiling_ns_per_admission": null,
+              "classification": "NO_GO_FIXED_PRICES",
+              "margin_ns": -2888776234,
+              "maximum_fraction_of_r0_unpriced_callback_ns": null
+            },
+            "cross_47": {
+              "budget_ns": 5239511099,
+              "ceiling_ns_per_admission": null,
+              "classification": "NO_GO_FIXED_PRICES",
+              "margin_ns": -2888776234,
+              "maximum_fraction_of_r0_unpriced_callback_ns": null
+            },
+            "native_6_47": {
+              "budget_ns": 7833333334,
+              "ceiling_ns_per_admission": null,
+              "classification": "NO_GO_FIXED_PRICES",
+              "margin_ns": -294953999,
+              "maximum_fraction_of_r0_unpriced_callback_ns": null
+            }
+          },
+          "inside_lower_ns": 5810046057,
+          "maximum_gain_vs_measured_r0_ns": 1990173667,
+          "upper_native_tokens_s": 5.782275905673868
+        },
+        "gguf_1_same_slot": {
+          "by_tier": {
+            "all": {
+              "admissions": 1190,
+              "charged_gguf_read_at_unit_worker_ns": 9812419444,
+              "charged_set_worker_ns": 57792214,
+              "common_jobs": 971,
+              "common_same_binding_and_gen_jobs": 43,
+              "common_same_slot_jobs": 60,
+              "disk_gguf_requested_bytes": 15745384448,
+              "disk_jobs": 1190,
+              "disk_pack_requested_bytes": 15734046720,
+              "disk_payload_bytes": 15730848000,
+              "new_disk_jobs": 219,
+              "new_jobs": 219,
+              "new_primary_delivery_bytes": 2895004800,
+              "primary_delivery_bytes": 15730848000,
+              "r0_only_jobs": 120
+            },
+            "cpu": {
+              "admissions": 864,
+              "charged_gguf_read_at_unit_worker_ns": 7102929233,
+              "charged_set_worker_ns": 10857129,
+              "common_jobs": 685,
+              "common_same_binding_and_gen_jobs": 11,
+              "common_same_slot_jobs": 20,
+              "disk_gguf_requested_bytes": 11431956480,
+              "disk_jobs": 864,
+              "disk_pack_requested_bytes": 11423711232,
+              "disk_payload_bytes": 11421388800,
+              "new_disk_jobs": 179,
+              "new_jobs": 179,
+              "new_primary_delivery_bytes": 2366236800,
+              "primary_delivery_bytes": 11421388800,
+              "r0_only_jobs": 101
+            },
+            "cuda": {
+              "admissions": 326,
+              "charged_gguf_read_at_unit_worker_ns": 2709490211,
+              "charged_set_worker_ns": 46935085,
+              "common_jobs": 286,
+              "common_same_binding_and_gen_jobs": 32,
+              "common_same_slot_jobs": 40,
+              "disk_gguf_requested_bytes": 4313427968,
+              "disk_jobs": 326,
+              "disk_pack_requested_bytes": 4310335488,
+              "disk_payload_bytes": 4309459200,
+              "new_disk_jobs": 40,
+              "new_jobs": 40,
+              "new_primary_delivery_bytes": 528768000,
+              "primary_delivery_bytes": 4309459200,
+              "r0_only_jobs": 19
+            }
+          },
+          "decode_lower_ns": 8974887311,
+          "fixed_exterior_ns": 2318241276,
+          "gates": {
+            "cross_46": {
+              "budget_ns": 5239511099,
+              "ceiling_ns_per_admission": null,
+              "classification": "NO_GO_FIXED_PRICES",
+              "margin_ns": -3735376212,
+              "maximum_fraction_of_r0_unpriced_callback_ns": null
+            },
+            "cross_47": {
+              "budget_ns": 5239511099,
+              "ceiling_ns_per_admission": null,
+              "classification": "NO_GO_FIXED_PRICES",
+              "margin_ns": -3735376212,
+              "maximum_fraction_of_r0_unpriced_callback_ns": null
+            },
+            "native_6_47": {
+              "budget_ns": 7833333334,
+              "ceiling_ns_per_admission": null,
+              "classification": "NO_GO_FIXED_PRICES",
+              "margin_ns": -1141553977,
+              "maximum_fraction_of_r0_unpriced_callback_ns": null
+            }
+          },
+          "inside_lower_ns": 6656646035,
+          "maximum_gain_vs_measured_r0_ns": 1143573689,
+          "upper_native_tokens_s": 5.236834555281248
+        },
+        "gguf_1_same_tier": {
+          "by_tier": {
+            "all": {
+              "admissions": 1190,
+              "charged_gguf_read_at_unit_worker_ns": 9812419444,
+              "charged_set_worker_ns": 702725081,
+              "common_jobs": 971,
+              "common_same_binding_and_gen_jobs": 43,
+              "common_same_slot_jobs": 60,
+              "disk_gguf_requested_bytes": 15745384448,
+              "disk_jobs": 1190,
+              "disk_pack_requested_bytes": 15734046720,
+              "disk_payload_bytes": 15730848000,
+              "new_disk_jobs": 219,
+              "new_jobs": 219,
+              "new_primary_delivery_bytes": 2895004800,
+              "primary_delivery_bytes": 15730848000,
+              "r0_only_jobs": 120
+            },
+            "cpu": {
+              "admissions": 864,
+              "charged_gguf_read_at_unit_worker_ns": 7102929233,
+              "charged_set_worker_ns": 362943774,
+              "common_jobs": 685,
+              "common_same_binding_and_gen_jobs": 11,
+              "common_same_slot_jobs": 20,
+              "disk_gguf_requested_bytes": 11431956480,
+              "disk_jobs": 864,
+              "disk_pack_requested_bytes": 11423711232,
+              "disk_payload_bytes": 11421388800,
+              "new_disk_jobs": 179,
+              "new_jobs": 179,
+              "new_primary_delivery_bytes": 2366236800,
+              "primary_delivery_bytes": 11421388800,
+              "r0_only_jobs": 101
+            },
+            "cuda": {
+              "admissions": 326,
+              "charged_gguf_read_at_unit_worker_ns": 2709490211,
+              "charged_set_worker_ns": 339781307,
+              "common_jobs": 286,
+              "common_same_binding_and_gen_jobs": 32,
+              "common_same_slot_jobs": 40,
+              "disk_gguf_requested_bytes": 4313427968,
+              "disk_jobs": 326,
+              "disk_pack_requested_bytes": 4310335488,
+              "disk_payload_bytes": 4309459200,
+              "new_disk_jobs": 40,
+              "new_jobs": 40,
+              "new_primary_delivery_bytes": 528768000,
+              "primary_delivery_bytes": 4309459200,
+              "r0_only_jobs": 19
+            }
+          },
+          "decode_lower_ns": 9450340759,
+          "fixed_exterior_ns": 2318241276,
+          "gates": {
+            "cross_46": {
+              "budget_ns": 5239511099,
+              "ceiling_ns_per_admission": null,
+              "classification": "NO_GO_FIXED_PRICES",
+              "margin_ns": -4210829660,
+              "maximum_fraction_of_r0_unpriced_callback_ns": null
+            },
+            "cross_47": {
+              "budget_ns": 5239511099,
+              "ceiling_ns_per_admission": null,
+              "classification": "NO_GO_FIXED_PRICES",
+              "margin_ns": -4210829660,
+              "maximum_fraction_of_r0_unpriced_callback_ns": null
+            },
+            "native_6_47": {
+              "budget_ns": 7833333334,
+              "ceiling_ns_per_admission": null,
+              "classification": "NO_GO_FIXED_PRICES",
+              "margin_ns": -1617007425,
+              "maximum_fraction_of_r0_unpriced_callback_ns": null
+            }
+          },
+          "inside_lower_ns": 7132099483,
+          "maximum_gain_vs_measured_r0_ns": 668120241,
+          "upper_native_tokens_s": 4.973365638190317
+        },
+        "unidentified_pack_same_slot": {
+          "by_tier": {
+            "all": {
+              "admissions": 1190,
+              "charged_set_worker_ns": 57792214,
+              "common_jobs": 971,
+              "common_same_binding_and_gen_jobs": 43,
+              "common_same_slot_jobs": 60,
+              "disk_gguf_requested_bytes": 15745384448,
+              "disk_jobs": 1190,
+              "disk_pack_requested_bytes": 15734046720,
+              "disk_payload_bytes": 15730848000,
+              "new_disk_jobs": 219,
+              "new_jobs": 219,
+              "new_primary_delivery_bytes": 2895004800,
+              "primary_delivery_bytes": 15730848000,
+              "r0_only_jobs": 120
+            },
+            "cpu": {
+              "admissions": 864,
+              "charged_gguf_read_at_unit_worker_ns": 0,
+              "charged_set_worker_ns": 10857129,
+              "common_jobs": 685,
+              "common_same_binding_and_gen_jobs": 11,
+              "common_same_slot_jobs": 20,
+              "disk_gguf_requested_bytes": 11431956480,
+              "disk_jobs": 864,
+              "disk_pack_requested_bytes": 11423711232,
+              "disk_payload_bytes": 11421388800,
+              "new_disk_jobs": 179,
+              "new_jobs": 179,
+              "new_primary_delivery_bytes": 2366236800,
+              "primary_delivery_bytes": 11421388800,
+              "r0_only_jobs": 101
+            },
+            "cuda": {
+              "admissions": 326,
+              "charged_gguf_read_at_unit_worker_ns": 0,
+              "charged_set_worker_ns": 46935085,
+              "common_jobs": 286,
+              "common_same_binding_and_gen_jobs": 32,
+              "common_same_slot_jobs": 40,
+              "disk_gguf_requested_bytes": 4313427968,
+              "disk_jobs": 326,
+              "disk_pack_requested_bytes": 4310335488,
+              "disk_payload_bytes": 4309459200,
+              "new_disk_jobs": 40,
+              "new_jobs": 40,
+              "new_primary_delivery_bytes": 528768000,
+              "primary_delivery_bytes": 4309459200,
+              "r0_only_jobs": 19
+            }
+          },
+          "decode_lower_ns": 2370334322,
+          "fixed_exterior_ns": 2318241276,
+          "gates": {
+            "cross_46": {
+              "budget_ns": 5239511099,
+              "ceiling_ns_per_admission": 2411072.9218487395,
+              "classification": "HEADROOM_ONLY",
+              "margin_ns": 2869176777,
+              "maximum_fraction_of_r0_unpriced_callback_ns": 34.21466024914394
+            },
+            "cross_47": {
+              "budget_ns": 5239511099,
+              "ceiling_ns_per_admission": 2411072.9218487395,
+              "classification": "HEADROOM_ONLY",
+              "margin_ns": 2869176777,
+              "maximum_fraction_of_r0_unpriced_callback_ns": 34.21466024914394
+            },
+            "native_6_47": {
+              "budget_ns": 7833333334,
+              "ceiling_ns_per_admission": 4590755.472268907,
+              "classification": "HEADROOM_ONLY",
+              "margin_ns": 5462999012,
+              "maximum_fraction_of_r0_unpriced_callback_ns": 65.14574376711157
+            }
+          },
+          "inside_lower_ns": 52093046,
+          "maximum_gain_vs_measured_r0_ns": 7748126678,
+          "upper_native_tokens_s": 19.82842654885204
+        },
+        "unidentified_pack_same_tier": {
+          "by_tier": {
+            "all": {
+              "admissions": 1190,
+              "charged_set_worker_ns": 702725081,
+              "common_jobs": 971,
+              "common_same_binding_and_gen_jobs": 43,
+              "common_same_slot_jobs": 60,
+              "disk_gguf_requested_bytes": 15745384448,
+              "disk_jobs": 1190,
+              "disk_pack_requested_bytes": 15734046720,
+              "disk_payload_bytes": 15730848000,
+              "new_disk_jobs": 219,
+              "new_jobs": 219,
+              "new_primary_delivery_bytes": 2895004800,
+              "primary_delivery_bytes": 15730848000,
+              "r0_only_jobs": 120
+            },
+            "cpu": {
+              "admissions": 864,
+              "charged_gguf_read_at_unit_worker_ns": 0,
+              "charged_set_worker_ns": 362943774,
+              "common_jobs": 685,
+              "common_same_binding_and_gen_jobs": 11,
+              "common_same_slot_jobs": 20,
+              "disk_gguf_requested_bytes": 11431956480,
+              "disk_jobs": 864,
+              "disk_pack_requested_bytes": 11423711232,
+              "disk_payload_bytes": 11421388800,
+              "new_disk_jobs": 179,
+              "new_jobs": 179,
+              "new_primary_delivery_bytes": 2366236800,
+              "primary_delivery_bytes": 11421388800,
+              "r0_only_jobs": 101
+            },
+            "cuda": {
+              "admissions": 326,
+              "charged_gguf_read_at_unit_worker_ns": 0,
+              "charged_set_worker_ns": 339781307,
+              "common_jobs": 286,
+              "common_same_binding_and_gen_jobs": 32,
+              "common_same_slot_jobs": 40,
+              "disk_gguf_requested_bytes": 4313427968,
+              "disk_jobs": 326,
+              "disk_pack_requested_bytes": 4310335488,
+              "disk_payload_bytes": 4309459200,
+              "new_disk_jobs": 40,
+              "new_jobs": 40,
+              "new_primary_delivery_bytes": 528768000,
+              "primary_delivery_bytes": 4309459200,
+              "r0_only_jobs": 19
+            }
+          },
+          "decode_lower_ns": 2843154554,
+          "fixed_exterior_ns": 2318241276,
+          "gates": {
+            "cross_46": {
+              "budget_ns": 5239511099,
+              "ceiling_ns_per_admission": 2013744.9957983193,
+              "classification": "HEADROOM_ONLY",
+              "margin_ns": 2396356545,
+              "maximum_fraction_of_r0_unpriced_callback_ns": 28.576323940805203
+            },
+            "cross_47": {
+              "budget_ns": 5239511099,
+              "ceiling_ns_per_admission": 2013744.9957983193,
+              "classification": "HEADROOM_ONLY",
+              "margin_ns": 2396356545,
+              "maximum_fraction_of_r0_unpriced_callback_ns": 28.576323940805203
+            },
+            "native_6_47": {
+              "budget_ns": 7833333334,
+              "ceiling_ns_per_admission": 4193427.5462184874,
+              "classification": "HEADROOM_ONLY",
+              "margin_ns": 4990178780,
+              "maximum_fraction_of_r0_unpriced_callback_ns": 59.50740745877283
+            }
+          },
+          "inside_lower_ns": 524913278,
+          "maximum_gain_vs_measured_r0_ns": 7275306446,
+          "upper_native_tokens_s": 16.530933900120296
+        }
+      }
+    }
+  },
+  "status": "REPRODUCED_CONDITIONAL_DECODE_SERVICE",
+  "tree": "ee45e1ae03be8788483d9f9f7ff5765f13813dbf"
+}

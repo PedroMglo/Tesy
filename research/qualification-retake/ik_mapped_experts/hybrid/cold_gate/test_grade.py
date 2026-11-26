@@ -1,0 +1,124 @@
+import json
+from copy import deepcopy
+from pathlib import Path
+from runpy import run_path
+
+import pytest
+
+G = run_path(str(Path(__file__).with_name("grade.py")))
+
+
+@pytest.mark.parametrize(
+    ("times", "io", "decision"),
+    [
+        ((9, 9), (20, 20), "GO"),
+        ((9, 9), (20, 21), "INCONCLUSIVE"),
+        ((9, 11), (20, 20), "INCONCLUSIVE"),
+        ((10, 11), (20, 19), "NO_GO"),
+    ],
+)
+def test_thresholds(times, io, decision):
+    orders = {
+        name: {
+            "DIRECT": {"total_ns": 10, "reads": {"scope_B": 20}},
+            "STAGED": {"total_ns": t, "reads": {"scope_B": b}},
+        }
+        for name, t, b in zip(G["ORDERS"], times, io, strict=True)
+    }
+    assert G["decide"](orders)[0] == decision
+
+
+def test_reference_coldness_and_last_fence(tmp_path):
+    ref = dict(sets=[dict(sha256=str(i)) for i in range(33)], payload_B=33)
+    before = dict(namespace_B=0, scope_B=0, pid_B=0)
+    after = dict(namespace_B=512, scope_B=512, pid_B=512)
+    base = dict(
+        mode="DIRECT",
+        verified=[str(i) for i in range(33)],
+        guards_B=8192,
+        resident_before=0,
+        resident_after=1,
+        tensor_pages=2,
+        check_ns=30,
+        events_ns=[[i * 3, i * 3 + 1, i * 3 + 2] for i in range(33)],
+        issued_ns=100,
+        drain_ns=5,
+        total_ns=105,
+        before=before,
+        after=after,
+        delta=after,
+    )
+    file = tmp_path / "native.json"
+    file.write_text(json.dumps(base))
+    assert G["one"](file, "DIRECT", ref)["loop_ns"] == 34
+    for key, value in (
+        ("resident_before", 1),
+        ("drain_ns", 4),
+        ("verified", []),
+        ("guards_B", 4096),
+        ("delta", before),
+        ("events_ns", [[0, 0, 1]]),
+    ):
+        bad = deepcopy(base)
+        bad[key] = value
+        file.write_text(json.dumps(bad))
+        with pytest.raises(ValueError):
+            G["one"](file, "DIRECT", ref)
+
+
+def test_new_budget_requires_actual_io_reduction_in_each_order():
+    def row(t, n):
+        return {"total_ns": t, "reads": {"scope_B": n}}
+
+    arms = {
+        order: {"DIRECT": row(10, 20), "PREAD_SEQ": row(9, 20), "PREAD_RANDOM": row(8, 19)}
+        for order in G["READ_ORDERS"]
+    }
+    comparisons = G["read_contrasts"](arms)
+    assert comparisons["DIRECT_to_PREAD_RANDOM"]["decision"] == "GO"
+    assert comparisons["DIRECT_to_PREAD_SEQ"]["decision"] == "INCONCLUSIVE"
+    assert comparisons["PREAD_SEQ_to_PREAD_RANDOM"]["decision"] == "GO"
+    arms["RANGE_RANDOM_FIRST"]["PREAD_RANDOM"] = row(10, 19)
+    assert G["read_contrasts"](arms)["DIRECT_to_PREAD_RANDOM"]["decision"] == "INCONCLUSIVE"
+
+
+def test_each_layer_bank_must_start_cold_and_have_guards(tmp_path):
+    roles = ("gate", "up", "down")
+    ref = dict(
+        sets=[dict(sha256=str(i)) for i in range(99)],
+        payload_B=99,
+        tensors={r: dict(start=4096 * i, bytes=4096) for i, r in enumerate(roles)},
+    )
+    zero = {r: 0 for r in roles}
+    each = {r: 1 for r in roles}
+    counters = dict(namespace_B=512, scope_B=512, pid_B=512)
+    v = dict(
+        mode="DIRECT",
+        verified=[str(i) for i in range(99)],
+        guards_B=3 * 8192,
+        resident_before=0,
+        resident_after=3,
+        tensor_pages=3,
+        pages_before=zero,
+        pages_after=each,
+        pages_per_tensor=each,
+        events_ns=[[i, i, i + 1] for i in range(99)],
+        issued_ns=100,
+        drain_ns=1,
+        total_ns=101,
+        check_ns=1,
+        before={k: 0 for k in counters},
+        after=counters,
+        delta=counters,
+    )
+    f = tmp_path / "native.json"
+    f.write_text(json.dumps(v))
+    assert G["one"](f, "DIRECT", ref)["pages_after"] == each
+    for field, value in (
+        ("pages_before", zero | {"up": 1}),
+        ("guards_B", 2 * 8192),
+        ("pages_after", {"gate": 2, "up": 1, "down": 0}),
+    ):
+        f.write_text(json.dumps(v | {field: value}))
+        with pytest.raises(ValueError):
+            G["one"](f, "DIRECT", ref)
