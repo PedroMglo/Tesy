@@ -1,5 +1,7 @@
 # Qualificação da conversa local com o GPT-OSS-120B
 
+**26 de novembro · o operador CPU explica uma diferença dependente da largura.** Na janela de 128 posições do Ryzen, agrupar três consultas mudou 12 287 das 12 288 saídas com 2 304 células. Três vistas separadas recuperaram integralmente o controlo em dois processos. A fixture abre a comparação no target e o melhor turno nominal medido mantém 18,313 s e 5,361 tok/s. [Atenção CPU por largura e máscara](packed_nvme_manifest/server_profile/verified_block/server_reserve/causal_server/http/kv_width/natural/cpu_attention/README.md)
+
 **26 de novembro · NO_GO para o bloco exato no primeiro histórico natural.** No 120B, os dois controlos seriais coincidiram e o candidato confirmou os mesmos três IDs. Divergiram 603 263 dos 603 264 logits do bloco e 105 989 palavras de KV. A primeira camada com diferenças observadas foi a 1. O teste isolado da atenção CPU pode distinguir uma mudança de redução a partir de 512 células. [Resultados, braços e localização](packed_nvme_manifest/server_profile/verified_block/server_reserve/causal_server/http/kv_width/natural/README.md)
 
 **26 de novembro · a atenção corrigida passou o teste GPU com histórico longo.** As cinco larguras entre 256 e 8 192 reproduziram 61 440 F32 seriais e rejeitaram a troca de máscaras. A verificação do primeiro bloco completo de T1 no modelo é o próximo discriminante. [Operador testado e limites](packed_nvme_manifest/server_profile/verified_block/server_reserve/causal_server/http/kv_width/README.md)
