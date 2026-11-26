@@ -1,0 +1,52 @@
+static void receipt(const fs::path &root, const char *tag) {
+    std::ifstream group("/proc/self/cgroup");
+    std::string line;
+    check(bool(std::getline(group,line)) && line.rfind("0::/",0) == 0,"unified cgroup");
+    fs::path path = fs::path("/sys/fs/cgroup") / line.substr(4);
+    std::ofstream out(root / (std::string(tag) + ".resource"));
+    out << line << "\n";
+    for (auto name : {"memory.max","memory.swap.max","memory.peak","memory.swap.current","memory.events"}) {
+        std::ifstream file(path/name);
+        check(file.good(),"cgroup counter");
+        out << name << "\n" << file.rdbuf();
+    }
+    check(out.good(),"resource receipt");
+}
+
+int main(int argc, char **argv) try {
+    check(argc==2,"fixture NEW_DIR");
+    fs::path root(argv[1]);
+    check(fs::create_directory(root),"exclusive destination");
+    auto cpu=ggml_backend_cpu_init();
+    check(cpu && ggml_backend_is_cpu(cpu),"CPU");
+    ggml_backend_cpu_set_n_threads(cpu,8);
+    receipt(root,"start");
+    {
+        std::ifstream maps("/proc/self/maps");
+        std::ofstream copy(root/"maps");
+        copy << maps.rdbuf();
+        check(copy.good(),"ELF map");
+    }
+    for (const auto [width,position] : {std::pair{256,189}, {512,382}, {2304,2062}}) {
+        for(int window : {0,128}) {
+            Inputs inputs(width,position,window);
+            fs::path out=root/(std::to_string(width)+"-"+std::to_string(window));
+            check(fs::create_directory(out),"exclusive case");
+            std::vector<float> serial;
+            for(int j=0;j<3;++j) {
+                const auto row=evaluate(cpu, inputs, j, Mode::Serial);
+                serial.insert(serial.end(),row.begin(),row.end());
+            }
+            save(out/"serial.f32",serial);
+            save(out/"block.f32",evaluate(cpu,inputs,0,Mode::Block));
+            save(out/"rows.f32",evaluate(cpu,inputs,0,Mode::Split));
+            save(out/"wrong.f32",evaluate(cpu,inputs,0,Mode::WrongMask));
+        }
+    }
+    ggml_backend_free(cpu);
+    receipt(root,"end");
+    return 0;
+} catch(const std::exception &error) {
+    std::fprintf(stderr,"CPU_FIXTURE_FAIL %s\n",error.what());
+    return 1;
+}
