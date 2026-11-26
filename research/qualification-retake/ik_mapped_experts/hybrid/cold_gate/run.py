@@ -30,13 +30,20 @@ def run(a, out, r):
     pair = load(a.family / "receipt.json", P["PAIR"])
     prior = pair["authority"]
     ref = load(a.reference, G["REFERENCE"])
+    range_reads = a.study == "pread"
+    protocol = HERE / ("read-protocol.md" if range_reads else "protocol.md")
+    need(bool(a.previous) == range_reads, "previous cold study required for pread")
+    if range_reads:
+        old_hash = "232be642acd7b72e7ef50f86753410b33ac36d44304120e8548e59748aa60f97"
+        old = G["reopen"](a.previous, old_hash, a.reference)
+        need(old["decision"] == "NO_GO", "previous cold service")
     model = Path(ref["model"])
     w = load(a.c55, a.c55_sha256)
     policy, end = D["c55"](a)
     observed = json.loads((a.c55.parent / "samples.jsonl").read_text().splitlines()[0])["utc"]
     frozen = int(
         subprocess.check_output(
-            ["git", "-C", HERE, "log", "-1", "--format=%ct", "--", "protocol.md"], text=True
+            ["git", "-C", HERE, "log", "-1", "--format=%ct", "--", protocol.name], text=True
         )
     )
     stat = IO.stat_id(model)
@@ -76,6 +83,7 @@ def run(a, out, r):
     r["authority"] = dict(
         commit=commit,
         tree=tree,
+        study=a.study,
         reference_sha256=G["REFERENCE"],
         pair_sha256=P["PAIR"],
         c55_sha256=a.c55_sha256,
@@ -92,10 +100,13 @@ def run(a, out, r):
                 HERE / "plan.py",
                 HERE / "run.py",
                 HERE / "grade.py",
+                protocol,
             )
         },
         monitor_source_sha256=sha(HERE.parent / "device/run.py"),
     )
+    if range_reads:
+        r["authority"]["previous_sha256"] = old_hash
     if not a.execute:
         r["status"] = "PREPARED_ONLY"
         return
@@ -116,7 +127,8 @@ def run(a, out, r):
     )
     drivers = {p for p in paths if "libnvidia-" in p and "nvidia-ml" not in p}
     orders = {}
-    for order, modes in G["ORDERS"].items():
+    sequence = G["READ_ORDERS"] if range_reads else G["ORDERS"]
+    for order, modes in sequence.items():
         unchanged()
         arm = r["arms"][order] = {"starts": 0}
         native = D["sample_arm"](
@@ -132,7 +144,9 @@ def run(a, out, r):
             drivers,
             arm,
         )
-        arm["measurements"] = {m: G["one"](native / (m + ".json"), m, ref) for m in modes}
+        arm["measurements"] = {
+            m: G["one"](native / (m + ".json"), m, ref, late_cut=range_reads) for m in modes
+        }
         orders[order] = arm["measurements"]
     unchanged()
     IO.scope()
@@ -141,8 +155,13 @@ def run(a, out, r):
         and all(IO.stat_id(Path(p)) == v["stat"] for p, v in paths.items()),
         "model or provider drift",
     )
-    r["decision"], r["pairs"] = G["decide"](orders)
-    r["status"] = "MEASURED_COLD_GATE_TRANSFER"
+    if range_reads:
+        r["contrasts"] = G["read_contrasts"](orders)
+        primary = r["contrasts"]["DIRECT_to_PREAD_RANDOM"]
+        r["decision"], r["pairs"] = primary["decision"], primary["pairs"]
+    else:
+        r["decision"], r["pairs"] = G["decide"](orders)
+    r["status"] = G["STATUS"][a.study]
 
 
 if __name__ == "__main__":
@@ -155,6 +174,8 @@ if __name__ == "__main__":
     parser.add_argument("--prepared", type=Path)
     parser.add_argument("--prepared-sha256")
     parser.add_argument("--unit", default="")
+    parser.add_argument("--study", choices=("scratch", "pread"), default="scratch")
+    parser.add_argument("--previous", type=Path)
     args = parser.parse_args()
     os.umask(0o077)
     dest = args.new_output_dir.resolve()

@@ -3,9 +3,15 @@
 import argparse
 import hashlib
 import json
+import os
 from pathlib import Path
 
 ORDERS = {"DIRECT_FIRST": ("DIRECT", "STAGED"), "STAGED_FIRST": ("STAGED", "DIRECT")}
+READ_ORDERS = {
+    "RANGE_DIRECT_FIRST": ("DIRECT", "PREAD_SEQ", "PREAD_RANDOM"),
+    "RANGE_RANDOM_FIRST": ("PREAD_RANDOM", "PREAD_SEQ", "DIRECT"),
+}
+STATUS = {"scratch": "MEASURED_COLD_GATE_TRANSFER", "pread": "MEASURED_COLD_RANGE_READ"}
 REFERENCE = "2f47da616820c239441b4a94ad4f2344ddc7393d1dad8a6c7a4f05cbb4ec4deb"
 
 
@@ -19,7 +25,7 @@ def digest(p):
         return hashlib.file_digest(f, "sha256").hexdigest()
 
 
-def one(path, mode, ref):
+def one(path, mode, ref, *, late_cut=False):
     v = json.loads(path.read_bytes())
     expected = [x["sha256"] for x in ref["sets"]]
     require(
@@ -54,7 +60,7 @@ def one(path, mode, ref):
         and delta["pid_B"] >= 0,
         "read evidence",
     )
-    return dict(
+    result = dict(
         total_ns=total,
         source_ns=acquisition,
         submit_ns=submission,
@@ -67,12 +73,31 @@ def one(path, mode, ref):
         verify_ns=v["check_ns"],
         verified_bytes=ref["payload_B"],
     )
+    if late_cut:
+        advice = os.POSIX_FADV_RANDOM if mode == "PREAD_RANDOM" else os.POSIX_FADV_SEQUENTIAL
+        late = {k: v["late"][k] - v["before"][k] for k in delta}
+        require(
+            v["fd_advice"] == advice
+            and v["pread_calls"] == (33 if mode.startswith("PREAD_") else 0)
+            and v["late_since_drain_ns"] >= 100_000_000 + v["check_ns"]
+            and all(late[k] >= delta[k] for k in delta)
+            and late["namespace_B"] <= 6 << 30,
+            "wrong range read or missing late window",
+        )
+        result.update(
+            late_reads=late,
+            late_since_drain_ns=v["late_since_drain_ns"],
+            pread_calls=v["pread_calls"],
+            fd_advice=advice,
+        )
+    return result
 
 
-def decide(orders):
+def decide(orders, baseline="DIRECT", candidate="STAGED", *, minimum_bytes_saved=0):
     pairs = []
-    for order in ORDERS:
-        d, s = (orders[order][mode] for mode in ("DIRECT", "STAGED"))
+    require(len(orders) == 2, "two orders required")
+    for order, rows in orders.items():
+        d, s = rows[baseline], rows[candidate]
         pairs.append(
             dict(
                 order=order,
@@ -80,13 +105,25 @@ def decide(orders):
                 scope_bytes_saved=d["reads"]["scope_B"] - s["reads"]["scope_B"],
             )
         )
-    if all(p["saved_ns"] > 0 and p["scope_bytes_saved"] >= 0 for p in pairs):
+    if all(p["saved_ns"] > 0 and p["scope_bytes_saved"] >= minimum_bytes_saved for p in pairs):
         decision = "GO"
     elif all(p["saved_ns"] <= 0 for p in pairs):
         decision = "NO_GO"
     else:
         decision = "INCONCLUSIVE"
     return decision, pairs
+
+
+def read_contrasts(orders):
+    result = {}
+    for base, candidate in (
+        ("DIRECT", "PREAD_RANDOM"),
+        ("DIRECT", "PREAD_SEQ"),
+        ("PREAD_SEQ", "PREAD_RANDOM"),
+    ):
+        decision, pairs = decide(orders, base, candidate, minimum_bytes_saved=1)
+        result[base + "_to_" + candidate] = dict(decision=decision, pairs=pairs)
+    return result
 
 
 def reopen(family, family_sha, reference):
@@ -96,13 +133,16 @@ def reopen(family, family_sha, reference):
     )
     ref = json.loads(reference.read_bytes())
     r = json.loads((family / "receipt.json").read_bytes())
+    study = r["authority"].get("study", "scratch")
+    sequence = READ_ORDERS if study == "pread" else ORDERS
     raw = {
         str(p.relative_to(family)): digest(p)
         for p in sorted(family.rglob("*"))
         if p.is_file() and p != family / "receipt.json"
     }
     require(
-        r["status"] == "MEASURED_COLD_GATE_TRANSFER"
+        r["status"] == STATUS[study]
+        and set(r["arms"]) == set(sequence)
         and r["raw_sha256"] == raw
         and r["authority"]["reference_sha256"] == REFERENCE
         and r["swap_peak_B"] == 0
@@ -110,7 +150,7 @@ def reopen(family, family_sha, reference):
         "family integrity or resources",
     )
     orders, life = {}, {}
-    for order, modes in ORDERS.items():
+    for order, modes in sequence.items():
         arm = r["arms"][order]
         require(
             arm["observed_handoffs"] == 3
@@ -120,13 +160,23 @@ def reopen(family, family_sha, reference):
             and arm["sampled_vram_mib_max"] < 1536,
             "child lifecycle",
         )
-        orders[order] = {m: one(family / order / "native" / (m + ".json"), m, ref) for m in modes}
+        orders[order] = {
+            m: one(family / order / "native" / (m + ".json"), m, ref, late_cut=study == "pread")
+            for m in modes
+        }
         require(orders[order] == arm["measurements"], "recorded cut differs")
         life[order] = dict(wall_s=arm["wall_s"], peak_vram_MiB=arm["sampled_vram_mib_max"])
-    decision, pairs = decide(orders)
+    contrasts = {}
+    if study == "pread":
+        contrasts = read_contrasts(orders)
+        require(contrasts == r["contrasts"], "secondary contrasts differ")
+        primary = contrasts["DIRECT_to_PREAD_RANDOM"]
+        decision, pairs = primary["decision"], primary["pairs"]
+    else:
+        decision, pairs = decide(orders)
     require((decision, pairs) == (r["decision"], r["pairs"]), "recorded decision differs")
-    return dict(
-        status="MEASURED_COLD_GATE_TRANSFER",
+    report = dict(
+        status=STATUS[study],
         decision=decision,
         scope="ONE_C110_GATE",
         family_sha256=family_sha,
@@ -145,6 +195,9 @@ def reopen(family, family_sha, reference):
         product_requests=0,
         integrated_energy_J=None,
     )
+    if contrasts:
+        report["contrasts"] = contrasts
+    return report
 
 
 if __name__ == "__main__":

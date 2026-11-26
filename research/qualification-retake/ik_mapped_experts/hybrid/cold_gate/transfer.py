@@ -10,6 +10,7 @@ import sys
 import time
 from contextlib import contextmanager
 from pathlib import Path
+from runpy import run_path
 
 clock = time.monotonic_ns
 Pointer, Size, CInt = ct.c_void_p, ct.c_size_t, ct.c_int
@@ -34,6 +35,7 @@ file_map = bind(libc, "mmap", [Pointer, Size, CInt, CInt, CInt, ct.c_long], Poin
 unmap = bind(libc, "munmap", [Pointer, Size], CInt)
 mincore = bind(libc, "mincore", [Pointer, Size, Pointer], CInt)
 copy = bind(libc, "memcpy", [Pointer, Pointer, Size], Pointer)
+read_at = bind(libc, "pread", [CInt, Pointer, Size, ct.c_long], ct.c_ssize_t)
 
 
 class Cuda:
@@ -70,7 +72,7 @@ def model_id(fd):
 
 
 @contextmanager
-def cold_source(plan):
+def cold_source(plan, advice):
     with open(plan["model"], "rb", buffering=0) as f:
         fd = f.fileno()
         require(model_id(fd) == plan["model_stat"], "source identity")
@@ -78,7 +80,7 @@ def cold_source(plan):
         start = plan["tensor_start"] // PAGE * PAGE
         stop = (plan["tensor_start"] + plan["tensor_bytes"] + PAGE - 1) // PAGE * PAGE
         os.posix_fadvise(fd, start, stop - start, os.POSIX_FADV_DONTNEED)
-        os.posix_fadvise(fd, 0, 0, os.POSIX_FADV_SEQUENTIAL)
+        os.posix_fadvise(fd, 0, 0, advice)
         base = file_map(None, size, mmap.PROT_READ, mmap.MAP_SHARED, fd, 0)
         require(base not in (None, Pointer(-1).value), "read-only file mmap")
         try:
@@ -88,7 +90,7 @@ def cold_source(plan):
                 require(mincore(base + start, stop - start, vec) == 0, "mincore")
                 return sum(b & 1 for b in vec)
 
-            yield base, resident, len(vec)
+            yield fd, base, resident, len(vec)
             require(model_id(fd) == plan["model_stat"], "source changed")
         finally:
             require(unmap(base, size) == 0, "munmap")
@@ -107,12 +109,13 @@ def counters(scope, dev):
     return dict(namespace_B=sectors * 512, scope_B=scope_bytes, pid_B=int(pid["read_bytes"]))
 
 
-def sample(mode, plan, gpu, dst, stream, scratch, scope, dev):
+def sample(mode, plan, gpu, dst, stream, scratch, scope, dev, late_cut):
     payload = plan["payload_B"]
     ct.memset(scratch, 0, plan["scratch_B"])
     gpu("cudaMemsetAsync", dst - PAGE, 0xA5, payload + 2 * PAGE, stream)
     gpu("cudaStreamSynchronize", stream)
-    with cold_source(plan) as (base, resident, total):
+    advice = os.POSIX_FADV_RANDOM if mode == "PREAD_RANDOM" else os.POSIX_FADV_SEQUENTIAL
+    with cold_source(plan, advice) as (fd, base, resident, total):
         initial = resident()
         require(initial == 0, f"cold gate has {initial}/{total} resident pages")
         before = counters(scope, dev)
@@ -125,6 +128,10 @@ def sample(mode, plan, gpu, dst, stream, scratch, scope, dev):
                 addr = scratch + row["scratch"]
                 copy(addr, src, row["bytes"])
                 src = addr
+            elif mode in ("PREAD_SEQ", "PREAD_RANDOM"):
+                src = scratch + row["scratch"]
+                returned = read_at(fd, src, row["bytes"], row["source"])
+                require(returned == row["bytes"], f"short pread {returned} of {row['bytes']}")
             t1 = clock()
             gpu("cudaMemcpyAsync", dst + row["dest"], src, row["bytes"], 1, stream)
             events.append([t0 - start, t1 - start, clock() - start])
@@ -136,7 +143,7 @@ def sample(mode, plan, gpu, dst, stream, scratch, scope, dev):
     delta = {k: after[k] - v for k, v in before.items()}
     require(
         0 < delta["namespace_B"] <= 6 << 30 and delta["scope_B"] > 0 and delta["pid_B"] >= 0,
-        "physical cold reads or CInt/O budget",
+        "physical cold reads or I/O budget",
     )
     verify_start = clock()
     buf = ct.create_string_buffer(max(r["bytes"] for r in plan["sets"]))
@@ -149,7 +156,7 @@ def sample(mode, plan, gpu, dst, stream, scratch, scope, dev):
     for addr in (dst - PAGE, dst + payload):
         gpu("cudaMemcpy", buf, addr, PAGE, 2)
         require(bytes(memoryview(buf)[:PAGE]) == b"\xa5" * PAGE, "GPU guard changed")
-    return dict(
+    result = dict(
         mode=mode,
         total_ns=end - start,
         events_ns=events,
@@ -165,12 +172,24 @@ def sample(mode, plan, gpu, dst, stream, scratch, scope, dev):
         verified=observed,
         guards_B=2 * PAGE,
     )
+    if late_cut:
+        time.sleep(0.1)
+        late = counters(scope, dev)
+        require(late["namespace_B"] - before["namespace_B"] <= 6 << 30, "late I/O budget")
+        result.update(
+            late=late,
+            late_since_drain_ns=clock() - end,
+            fd_advice=advice,
+            pread_calls=len(plan["sets"]) if mode.startswith("PREAD_") else 0,
+        )
+    return result
 
 
 def main():
     order, p, out = sys.argv[1:]
-    orders = {"DIRECT_FIRST": ("DIRECT", "STAGED"), "STAGED_FIRST": ("STAGED", "DIRECT")}
-    modes = orders[order]
+    grade = run_path(str(Path(__file__).with_name("grade.py")))
+    late_cut = order in grade["READ_ORDERS"]
+    modes = (grade["READ_ORDERS"] if late_cut else grade["ORDERS"])[order]
     out = Path(out)
     out.mkdir(mode=0o700)
     plan = json.loads(Path(p).read_bytes())
@@ -191,7 +210,7 @@ def main():
         require(ptr % PAGE == 0, "scratch alignment")
         handoff(b"A")
         for mode in modes:
-            r = sample(mode, plan, gpu, device.value + PAGE, stream, ptr, scope, dev)
+            r = sample(mode, plan, gpu, device.value + PAGE, stream, ptr, scope, dev, late_cut)
             (out / (mode + ".json")).write_text(json.dumps(r, sort_keys=True) + "\n")
         (out / "maps").write_bytes(Path("/proc/self/maps").read_bytes())
         handoff(b"F")

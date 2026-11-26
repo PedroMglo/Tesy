@@ -64,3 +64,19 @@ def test_reference_coldness_and_last_fence(tmp_path):
         file.write_text(json.dumps(bad))
         with pytest.raises(ValueError):
             G["one"](file, "DIRECT", ref)
+
+
+def test_new_budget_requires_actual_io_reduction_in_each_order():
+    def row(t, n):
+        return {"total_ns": t, "reads": {"scope_B": n}}
+
+    arms = {
+        order: {"DIRECT": row(10, 20), "PREAD_SEQ": row(9, 20), "PREAD_RANDOM": row(8, 19)}
+        for order in G["READ_ORDERS"]
+    }
+    comparisons = G["read_contrasts"](arms)
+    assert comparisons["DIRECT_to_PREAD_RANDOM"]["decision"] == "GO"
+    assert comparisons["DIRECT_to_PREAD_SEQ"]["decision"] == "INCONCLUSIVE"
+    assert comparisons["PREAD_SEQ_to_PREAD_RANDOM"]["decision"] == "GO"
+    arms["RANGE_RANDOM_FIRST"]["PREAD_RANDOM"] = row(10, 19)
+    assert G["read_contrasts"](arms)["DIRECT_to_PREAD_RANDOM"]["decision"] == "INCONCLUSIVE"
