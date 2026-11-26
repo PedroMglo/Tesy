@@ -155,7 +155,9 @@ def study(args):
     need(sha(args.ik / "src/llama-moe-cache-policy.h") == BASE["HDR"], "policy")
     prior_file = PARENT / "result.json"
     need(sha(prior_file) == STATE_RECEIPT, "two-step control")
-    prior = json.loads(prior_file.read_bytes())
+    compact = json.loads(prior_file.read_bytes())
+    need(sha(args.previous) == compact["receipt_sha256"], "full per-tile census")
+    prior = json.loads(args.previous.read_bytes())
     sites = load_sites(args.p97, args.p106, prior)
     results = {}
     with (args.new_output / "sites.jsonl").open("x") as records:
@@ -214,7 +216,7 @@ def study(args):
 
 def main():
     p = argparse.ArgumentParser(description=__doc__)
-    for name in ("p97", "p106", "ik", "new-output"):
+    for name in ("p97", "p106", "ik", "previous", "new-output"):
         p.add_argument("--" + name, type=Path, required=True)
     args = p.parse_args()
     args.new_output.mkdir(mode=0o700, exist_ok=False)
