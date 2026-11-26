@@ -16,6 +16,7 @@ K, F, P, R, need, read, save, sha = (
 )
 METHOD = "76d709eef5f1ca9b5a00e94c909459a073120703e2399580f5ac95641f59207e"
 SWA_METHOD = "7c08321001fdc0981888c6c4d53b627fc9d90620092ac1de467760140da98b8a"
+LIVE_METHOD = "cc746ab0a9eb0331f7537f8290d5446bf13dff6a6d8151fab284bd64ad85bdd7"
 PARENT = "a233656bdb9a74a2494bc669ec0b8138c2e780ce6580eefbf45d960c1863c888"
 RECIPE = "2e9e106e3518d3d9629259e76e6fc9d12e495c8edd05686a6648b16820acfb7f"
 
@@ -25,31 +26,37 @@ def section(text, start, end):
     return text[text.index(start) : text.index(end)]
 
 
-def contract(swa_restore):
+def contract(swa_restore, live_prefix=False):
+    if live_prefix:
+        return "live_prefix/protocol.md", LIVE_METHOD
     return ("swa-restore-protocol.md", SWA_METHOD) if swa_restore else ("protocol.md", METHOD)
 
 
-def source(swa_restore=False):
+def source(swa_restore=False, live_prefix=False):
     text = F["M"]["observer"]().decode()
     helpers = section(text, "bool same_file(", "void prefix_agreement(") + section(
         text, "bool finite_row(", "std::vector<int> batch_rows("
     )
-    if swa_restore:
+    if swa_restore or live_prefix:
         guard = (
             "    check(llama_memory_seq_pos_min(mem,0)==0 && "
             'llama_memory_seq_pos_max(mem,0)==n-1, "KV positions");'
         )
         need(helpers.count(guard) == 1, "original full-prefix range check")
-        helpers = helpers.replace(guard, (HERE / "swa-bounds.cpp.in").read_text().rstrip())
+        bounds = "live_prefix/bounds.cpp.in" if live_prefix else "swa-bounds.cpp.in"
+        helpers = helpers.replace(guard, (HERE / bounds).read_text().rstrip())
     ctx = section(text, "    llama_backend_init();", "    cp.cb_eval=Observer::callback;")
     code = (HERE / "rollback.cpp.in").read_text()
+    if live_prefix:
+        common = section(code, "#define main c127_capture_main", "std::array<int,2> sampled(")
+        code = common + (HERE / "live_prefix/client.cpp.in").read_text()
     need(code.count("@SERIALIZED_HELPERS@") == code.count("@MODEL_CONTEXT@") == 1, "template")
     return code.replace("@SERIALIZED_HELPERS@", helpers).replace("@MODEL_CONTEXT@", ctx)
 
 
 def build(a, out):
     git = P["prepare"].git
-    protocol, method = contract(a.swa_restore)
+    protocol, method = contract(a.swa_restore, a.live_prefix)
     need(
         git(HERE, "rev-parse", "HEAD") == a.commit
         and not git(HERE, "status", "--porcelain")
@@ -68,7 +75,7 @@ def build(a, out):
         "qualified capture and target",
     )
     src = out / "rollback.cpp"
-    src.write_text(source(a.swa_restore))
+    src.write_text(source(a.swa_restore, a.live_prefix))
     exe = out / "b3-numeric"
     cmd = read(a.observer / "client-compile.json")
     for before, after in (
@@ -105,10 +112,11 @@ def build(a, out):
         timeout=20,
     )
     (out / "self-test.log").write_bytes(test.stdout + test.stderr)
-    need(test.stdout == b"PASS_ROLLBACK_ROW_PLAN\n", "fault test")
+    expected = b"PASS_LIVE_PREFIX_PLAN\n" if a.live_prefix else b"PASS_ROLLBACK_ROW_PLAN\n"
+    need(test.stdout == expected, "client self-test")
     deps = (out / "headers.d").read_text().replace(chr(92) + "\n", " ").split(":", 1)[1].split()
     return dict(
-        status="GO_ROLLBACK_AR_CONTROL",
+        status="GO_LIVE_AR_CONTROL" if a.live_prefix else "GO_ROLLBACK_AR_CONTROL",
         commit=a.commit,
         tree=git(HERE, "rev-parse", "HEAD^{tree}"),
         protocol_sha256=method,
@@ -128,7 +136,9 @@ if __name__ == "__main__":
     for k in ("target", "observer", "static", "new-output-dir"):
         p.add_argument("--" + k, type=Path, required=True)
     p.add_argument("--commit", required=True)
-    p.add_argument("--swa-restore", action="store_true")
+    modes = p.add_mutually_exclusive_group()
+    modes.add_argument("--swa-restore", action="store_true")
+    modes.add_argument("--live-prefix", action="store_true")
     a = p.parse_args()
     out = a.new_output_dir.resolve()
     out.mkdir(mode=0o700)

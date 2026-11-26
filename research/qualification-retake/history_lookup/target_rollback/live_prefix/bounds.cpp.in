@@ -1,0 +1,5 @@
+    const auto first = llama_memory_seq_pos_min(mem, 0);
+    const auto last = llama_memory_seq_pos_max(mem, 0);
+    std::cout << "LIVE_KV " << path.filename().string() << " " << n << " "
+              << first << " " << last << "\n" << std::flush;
+    check(first >= 0 && first <= n-128 && last == n-1, "required live KV coverage");

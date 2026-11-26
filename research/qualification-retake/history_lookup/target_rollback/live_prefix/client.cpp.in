@@ -1,0 +1,86 @@
+void live(const char *model_path, const char *file, const std::string &mode, const fs::path &out) {
+    check(fs::create_directory(out), "exclusive capture");
+    auto prompt = ids_for(file, "log_medium", false);
+    auto teacher = ids_for(file, "log_medium", true);
+    check(prompt.size() == 189 && teacher.size() == 43, "frozen live workload");
+    for (const auto &[key,value] : {std::pair{"TESY_CPU_WAVE_SKIP_PARKED","1"},
+            {"TESY_B3_GPU_REPAIR","CUDA"}, {"TESY_B3_ROUTER_ROW","1"}, {"TESY_B3_ATTN25_ROWS","1"}}) {
+        check(std::getenv(key) && std::string(std::getenv(key)) == value, "qualified graph");
+    }
+@MODEL_CONTEXT@
+    cp.cb_eval = nullptr;
+    cp.cb_eval_user_data = nullptr;
+    using Context = std::unique_ptr<llama_context, decltype(&llama_free)>;
+    Context ctx(llama_init_from_model(model.get(), cp), llama_free);
+    check(ctx != nullptr, "native context");
+    std::cout << "C80_CONTEXT_READY ngl=12 case=log_medium ctx=8192 preload=on kv_unified=1\n"
+              << std::flush;
+    auto memory = llama_get_memory(ctx.get());
+    llama_memory_clear(memory, true);
+    llama_synchronize(ctx.get());
+    decode(ctx.get(), prompt, 0, 0, 189);
+    llama_synchronize(ctx.get());
+    write_row(out/"prefill.f32", llama_get_logits_ith(ctx.get(), -1));
+    check(llama_memory_seq_pos_min(memory, 0) == 0, "live SWA minimum");
+    snapshot_kv(ctx.get(), 189, out/"initial.kv");
+    snapshot_pool(model.get(), out/"initial.pool");
+    if (mode == "RESTORE") {
+        auto raw = input<uint8_t>(out/"initial.kv", fs::file_size(out/"initial.kv"));
+        llama_memory_clear(memory, true);
+        check(llama_state_seq_set_data(ctx.get(), raw.data(), raw.size(), 0) == raw.size(),
+              "warm sequence import");
+    }
+    check(llama_memory_seq_pos_min(memory, 0) == (mode == "RESTORE" ? 61 : 0), "entry minimum");
+    snapshot_kv(ctx.get(), 189, out/"entry.kv");
+    snapshot_pool(model.get(), out/"entry.pool");
+    check(same_file(out/"entry.kv", out/"initial.kv") &&
+          same_file(out/"entry.pool", out/"initial.pool"), "prepared state");
+    if (mode != "AR") {
+        const char *ar = std::getenv("TESY_ROLLBACK_AR");
+        check(ar && *ar, "serial control path");
+        for (const char *name : {"prefill.f32", "entry.kv", "entry.pool"}) {
+            check(same_file(out/name, fs::path(ar)/name), "common prefill and resident experts");
+        }
+    }
+    auto row = [&](int step, int index) {
+        write_row(out/("step-" + std::to_string(step) + ".f32"), llama_get_logits_ith(ctx.get(), index));
+    };
+    if (mode == "AR") {
+        for (int i=0; i<3; ++i) {
+            supplied(ctx.get(), 189+i, {teacher.at(i)});
+            row(i, 0);
+        }
+    } else {
+        supplied(ctx.get(), 189, {teacher.at(0), teacher.at(1), teacher.at(2)});
+        for (int i=0; i<3; ++i) row(i, i);
+    }
+    snapshot_kv(ctx.get(), 192, out/"post3.kv");
+    snapshot_pool(model.get(), out/"post3.pool");
+    supplied(ctx.get(), 192, {teacher.at(3)});
+    row(3, 0);
+    snapshot_pool(model.get(), out/"final.pool");
+    const json receipt = {{"mode",mode},{"prefill_positions",189},{"prefill_ubatch",32},
+                          {"callback_installed",false},{"restored",mode=="RESTORE"},
+                          {"ids",{teacher[0],teacher[1],teacher[2],teacher[3]}}};
+    const auto bytes = receipt.dump() + "\n";
+    write_new(out/"native.json", bytes.data(), bytes.size());
+}
+}
+
+int main(int argc, char **argv) try {
+    if (argc == 2 && std::string(argv[1]) == "--self-test") {
+        std::vector<float> test(vocabulary, -1.0f);
+        test[3] = 1.0f;
+        check(choices(test.data())[0] == 3, "complete test row");
+        std::cout << "PASS_LIVE_PREFIX_PLAN\n";
+        return 0;
+    }
+    check(argc == 6, "live-prefix MODEL IDS REFERENCE AR|B3|RESTORE NEW-OUTPUT");
+    const std::string mode = argv[4];
+    check(mode == "AR" || mode == "B3" || mode == "RESTORE", "live mode");
+    live(argv[1], argv[2], mode, argv[5]);
+    return 0;
+} catch (const std::exception &e) {
+    std::fprintf(stderr, "LIVE_PREFIX_FAIL %s\n", e.what());
+    return 1;
+}
