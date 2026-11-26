@@ -33,7 +33,8 @@ static json replay(const json &input, common_params &params) {
             auto &slot = common_speculative_get_draft_params(engine.get(), 0);
             slot = {true, room, llama_pos(past.size()), last, &past, &draft};
             common_speculative_draft(engine.get());
-            auto direct = common_ngram_simple_draft({2, 2}, past, last);
+            const auto & config = params.speculative.ngram_simple;
+            auto direct = common_ngram_simple_draft({uint16_t(config.size_n), uint16_t(config.size_m)}, past, last);
             if (int(direct.size()) > room) direct.resize(room);
             require(draft == direct, "server and helper propose different IDs");
         }
@@ -69,7 +70,8 @@ int main(int argc, char **argv) try {
     const std::vector<common_speculative_type> parsed{COMMON_SPECULATIVE_TYPE_NONE,
                                                      COMMON_SPECULATIVE_TYPE_NGRAM_SIMPLE};
     require(params.speculative.types == parsed &&
-            params.speculative.ngram_simple.size_n == 2 && params.speculative.ngram_simple.size_m == 2 &&
+            (params.speculative.ngram_simple.size_n == 2 || params.speculative.ngram_simple.size_n == 3) &&
+            params.speculative.ngram_simple.size_m == 2 &&
             params.speculative.ngram_simple.min_hits == 1 && common_speculative_n_max(&params.speculative) == 2,
             "public ngram settings");
     const json inputs = json::parse(std::cin);
