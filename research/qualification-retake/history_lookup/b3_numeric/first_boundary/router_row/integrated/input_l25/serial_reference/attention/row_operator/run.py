@@ -1,7 +1,6 @@
 """Freeze the native operator ELF and operands, then compare one bounded CUDA process."""
 
 import argparse
-import os
 import subprocess
 import sys
 import time
@@ -142,20 +141,18 @@ def sampled(policy, pid, baseline):
 
 def loaded(pid, build, cache):
     observed = {}
+    authority = P["N"]["AU"]
     for line in Path(f"/proc/{pid}/maps").read_text().splitlines():
         fields = line.split(maxsplit=5)
         if len(fields) != 6 or not fields[-1].startswith("/") or ".so" not in Path(fields[-1]).name:
             continue
         path = Path(fields[-1])
         inode = path.stat()
-        maj, minr = (int(x, 16) for x in fields[3].split(":"))
-        need(
-            (inode.st_dev, inode.st_ino) == (os.makedev(maj, minr), int(fields[4])),
-            "provider device/inode",
-        )
         if str(path) not in cache:
-            cache[str(path)] = D["stat_id"](inode), sha(path)
-        stamp, digest = cache[str(path)]
+            key = authority["reference_key"](str(path), authority["identity"](path))
+            cache[str(path)] = D["stat_id"](inode), sha(path), key
+        stamp, digest, key = cache[str(path)]
+        need(key == authority["mapping_key"](fields), "live VMA of " + path.name)
         need(
             stamp == D["stat_id"](inode) and build["permitted_providers"].get(path.name) == digest,
             "foreign or replaced provider " + path.name,
