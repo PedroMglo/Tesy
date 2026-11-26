@@ -21,6 +21,8 @@ O protocolo do controlo foi congelado em `6f0ab337` e a construção em `d74e880
 
 No arranque do portátil de 26 de novembro às 10:56 UTC, o kernel carregou o módulo 620.70.06. O journal registou ENOENT para `gsp_ga10x.bin` e `ucodes_ga10x.bin` dessa release e falha de inicialização da RTX. O módulo e os dois ficheiros instalados em disco são 620.73.04. A NVML que corresponde ao módulo carregado devolveu zero dispositivos. A sessão gráfica usava a AMD. A recuperação transitória requer autenticação administrativa local. A construção e a reanálise deste lote fizeram zero forwards, zero pedidos HTTP e zero downloads de pesos.
 
+Às 11:59 UTC, a recarga transitória dos módulos instalados recuperou a GPU com o driver 620.73.04. A API CUDA de sistema obteve `CUDA_SUCCESS` e enumerou a RTX no PCI `0000:c4:00.0`. A NVML confirmou 8 188 MiB e 2 MiB em uso. O diagnóstico anterior fica preservado, com erros CUDA 803 e 999 antes da recuperação. A confirmação desta sessão cobre apenas este arranque. [Protocolo numérico do novo driver](../../driver_62073/protocol.md)
+
 Com o driver original, o supervisor reutiliza o C55, C118, o scope, a telemetria, a prova de colocação e as verificações de cleanup da família. Autentica ambos os braços ON e lança primeiro OFF288. Só o PASS dos dois vetores e do serviço abre OFF161. Para uma release de driver diferente, o protocolo começa pela fixture pequena e capacidade seguidas de controlos ON contemporâneos. O próximo discriminante após a paridade é reproduzir a mesma sequência de offsets com um destino CPU e comparar com o staging CUDA sob a mesma política de memória. A medição de produto no portátil continua dependente de pedidos naturais validados. [Admissão](run.py) · [Revisão numérica](grade.py)
 
 ```sh
