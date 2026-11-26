@@ -1,5 +1,7 @@
 # Qualificação da conversa local com o GPT-OSS-120B
 
+**26 de novembro · NO_GO para a primeira combinação HTTP de pack e verificação.** No T1 real, 20 IDs coincidiram antes da primeira proposta. O servidor abortou porque a atenção de L25 ainda exigia 256 células de KV. O T2 ficou por medir. A próxima fixture usa a largura do histórico e a referência serial independente. [Falha preservada, quatro braços previstos e critério de reabertura](packed_nvme_manifest/server_profile/verified_block/server_reserve/causal_server/http/README.md)
+
 **26 de novembro · o dispatcher reproduziu os dois turnos naturais.** A política bigrama acionou nove blocos no primeiro turno, com três aceitações parciais. No segundo acertou ambos os tokens em seis dos onze blocos e rejeitou logo o primeiro em cinco. O custo dessas combinações na conversa passa a ser a pergunta física. [Limites por turno e reprodução independente](packed_nvme_manifest/server_profile/verified_block/server_reserve/causal_server/README.md)
 
 **26 de novembro · o pack e a verificação de três posições passaram juntos no 120B.** Sete processos confirmaram os logits, as decisões e o KV na reserva usada pelo servidor. Na rejeição imediata, o bloco pagou 103 cargas a mais à mesma profundidade, 60 ainda após duas continuações. Aceitar as duas propostas poupou duas cargas. Estes custos reproduziram uma previsão selada antes dos blocos. O melhor T2 medido mantém 18,313 s e 5,361 tok/s. [Comparação, custo e limites](packed_nvme_manifest/server_profile/verified_block/server_reserve/README.md)
