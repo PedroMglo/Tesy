@@ -56,9 +56,11 @@ def decision(rows, service_match):
     return "PASS_CALLBACK_OFF_TWO_CUTS" if service_match else "INCONCLUSIVE_SERVICE_CONTRAST"
 
 
-def grade(mode, folder, plan, family, on):
+def grade(mode, folder, plan, family, on, *, logical_stdout=None):
     native = folder / "native"
-    lines = (folder / "raw/stdout").read_text().splitlines()
+    # A caller using staged sources first authenticates the physical CUDA copies.
+    text = (folder / "raw/stdout").read_text() if logical_stdout is None else logical_stdout
+    lines = text.splitlines()
     log = (folder / "raw/stderr").read_text()
     need(
         [r for r in lines if r.startswith("CB_EVAL ")] == ["CB_EVAL OFF"]

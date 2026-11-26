@@ -30,20 +30,35 @@ struct Matrix {
 class Session;
 inline thread_local Session *active = nullptr;
 
+struct Layout {
+    unsigned layers = 2;
+    size_t capacity = 1u << 20;
+    unsigned prefill_width = 32;
+    bool output_only_last_layer = false;
+    bool compare_host_bytes = true;
+
+    size_t selected_bytes(int phase, unsigned layer) const {
+        const bool full = phase == 3 && !(output_only_last_layer && layer + 1 == layers);
+        return (full ? prefill_width : 1) * 4 * sizeof(int32_t);
+    }
+};
+
 class Session {
     std::vector<Matrix> matrices;
     ggml_backend_t backend{};
     std::unique_ptr<tesy::BankInput> input;
     tesy::Source source;
+    const Layout layout;
     int fd = -1;
     unsigned generation = 0, fills = 0;
     const int32_t *ids = nullptr;
     size_t id_count = 0;
 
 public:
-    explicit Session(const char *path, const std::string &mode)
-        : source(mode == "DIRECT" ? tesy::Source::mapped : tesy::Source::ranges) {
-        must(!active && (mode == "DIRECT" || mode == "PREAD_RANDOM"), "single bank context/mode");
+    explicit Session(const char *path, const std::string &mode, Layout geometry = {})
+        : source(mode == "DIRECT" ? tesy::Source::mapped : tesy::Source::ranges), layout(geometry) {
+        must(!active && layout.layers > 0 && (mode == "DIRECT" || mode == "PREAD_RANDOM"),
+             "single bank context/mode");
         fd = open(path, O_RDONLY | O_CLOEXEC);
         struct stat s{};
         if (fd < 0 || fstat(fd, &s) || s.st_dev != file_id.st_dev || s.st_ino != file_id.st_ino ||
@@ -62,6 +77,7 @@ public:
 
     void add(int layer, const char *role, const char *kind, const ggml_tensor *w) {
         if (std::strcmp(kind, "weight") != 0) return;
+        must(w && w->data && w->buffer, "missing original weight");
         auto off = observe::file_offset(w->data, ggml_nbytes(w));
         must(off >= 0 && w->nb[2] && w->type == GGML_TYPE_MXFP4, "original mapped matrix");
         matrices.push_back({std::string(".ffn_") + role + "_exps.weight", uintptr_t(w->data),
@@ -70,12 +86,13 @@ public:
     void got_ids(ggml_backend_t b, const ggml_tensor *t, void *buf, size_t off, size_t n,
                  uintptr_t caller) {
         if (!caller || t->type != GGML_TYPE_I32) return;
-        must(!ids && off == 0 && n == ggml_nbytes(t) && n == (observe::phase == 3 ? 512u : 16u),
+        must(!ids && off == 0 && n == ggml_nbytes(t) &&
+             n == layout.selected_bytes(observe::phase, generation % layout.layers),
              "unexpected libllama rank read");
         if (!backend) {
             must(std::string(ggml_backend_name(b)) == "CUDA0", "ID backend");
             backend = b;
-            input = std::make_unique<tesy::BankInput>(fd, 1u << 20, source,
+            input = std::make_unique<tesy::BankInput>(fd, layout.capacity, source,
                                                       [this]() { original_fence()(backend); });
         }
         must(backend == b, "changed ID backend");
@@ -99,7 +116,8 @@ public:
     bool send(ggml_backend_t b, ggml_tensor *t, const void *src, size_t off, size_t n, Submit real) {
         const std::string name(t->name);
         if (name.rfind("moe_cache.", 0) != 0 || name.find("_exps.weight") == name.npos) return false;
-        must(backend && backend == b && !ids && generation && matrices.size() == 6, "bank context");
+        must(backend && backend == b && !ids && generation && matrices.size() == 3 * layout.layers,
+             "bank context");
         auto ptr = uintptr_t(src);
         const Matrix *selected = nullptr;
         for (const auto &m : matrices) {
@@ -115,7 +133,8 @@ public:
         auto file = observe::file_offset(src,n);
         must(file >= 0 && uint64_t(file-selected->offset) == ptr-selected->address, "GGUF interval");
         input->send(file, src, n, [&](const void *effective, size_t bytes) {
-            must(bytes == n && std::memcmp(src, effective, bytes) == 0, "source bytes differ");
+            must(bytes == n && (!layout.compare_host_bytes || std::memcmp(src, effective, bytes) == 0),
+                 "source bytes differ");
             std::printf("BANK_SOURCE %d %lu %u %zu %d %zu %lld %zu %lld %zu\n",
                         observe::phase, observe::owner, generation, uintptr_t(b), selected->layer,
                         ptr, (long long)file, uintptr_t(effective),
@@ -126,7 +145,7 @@ public:
         return true;
     }
     void finish() {
-        must(input && generation == 4 && !ids, "incomplete bank graph");
+        must(input && generation == 2 * layout.layers && !ids, "incomplete bank graph");
         input.reset();
         std::printf("BANK_END %u %u\n", generation, fills);
         active = nullptr;

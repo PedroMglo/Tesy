@@ -37,11 +37,27 @@ def schedule(raw):
     return sets, nodes
 
 
-def audit(raw, mode, native, tiny):
+def audit(
+    raw,
+    mode,
+    native,
+    model,
+    *,
+    sites=None,
+    capacity=CAP,
+    weight_slice=None,
+    vma_files=None,
+    expected_bytes=None,
+    reference_routes=None,
+):
     need(mode in ("DIRECT", "PREAD_RANDOM"), "bank arm")
     ranges = mode == "PREAD_RANDOM"
-    vmas = maps(native / "maps")
-    stat = tiny.stat()
+    if sites is None:
+        sites = [(3, 0, 512), (3, 1, 512), (4, 0, 16), (4, 1, 16)]
+    weight_slice = weight_slice or G["weight_slice"]
+    vmas = {p: maps(native / f) for p, f in (vma_files or {3: "maps", 4: "maps"}).items()}
+    expected_bytes = expected_bytes or {3: 1044480, 4: 104448}
+    stat = model.stat()
     sets, sources, copied, physical_h2d = {}, {}, {}, []
     phase_bytes = {3: 0, 4: 0}
     gets, fences, routes = [], [], {}
@@ -55,16 +71,21 @@ def audit(raw, mode, native, tiny):
             continue
         tag = w[0]
         if tag == "ROUTE":
-            routes[int(w[1]), int(w[2].rsplit("-", 1)[1])] = w[3]
+            key = int(w[1]), int(w[2].rsplit("-", 1)[1])
+            need(
+                key not in routes and (reference_routes is None or reference_routes[key] == w[3]),
+                "unexpected router IDs",
+            )
+            routes[key] = w[3]
         elif tag == "BANK_GET":
             phase, gen, b, pc, n = map(int, w[1:])
             need(
                 not ended
                 and len(gets) == len(fences)
-                and gen == generation + 1 <= 4
-                and phase == (3 if gen <= 2 else 4)
+                and gen == generation + 1 <= len(sites)
+                and phase == sites[gen - 1][0]
                 and pc > 0
-                and n == (512 if phase == 3 else 16)
+                and n == sites[gen - 1][2]
                 and b > 0
                 and backend in (None, b),
                 "ID get",
@@ -80,7 +101,10 @@ def audit(raw, mode, native, tiny):
                 and gen == generation + 1
                 and pc > 0
                 and count == pending
-                and routes.get((phase, (gen - 1) % 2)) == w[6],
+                and (routes if reference_routes is None else reference_routes).get(
+                    tuple(sites[gen - 1][:2])
+                )
+                == w[6],
                 "synchronized ordered ID values or outstanding SETs",
             )
             fences.append(pc)
@@ -105,29 +129,30 @@ def audit(raw, mode, native, tiny):
                 "source owner/order",
             )
             p, dst, destoff, size, original, file = sets[ticket]
-            sliced = G["weight_slice"](off, n)
+            sliced = weight_slice(off, n)
             need(
                 (phase, orig, off, n) == (p, original, file, size)
                 and sliced
-                and sliced[0][0] == layer == (gen - 1) % 2
+                and 1 <= gen <= len(sites)
+                and sliced[0][0] == layer == sites[gen - 1][1]
                 and gen == generation
                 and len(fences) == len(gets) == gen
                 and b == backend,
                 "source identity",
             )
-            v = region(vmas, orig, n)
+            v = region(vmas[phase], orig, n)
             device = tuple(int(x, 16) for x in v[4].split(":"))
             need(
                 v[2].startswith("r-")
                 and v[5] == stat.st_ino
-                and v[6] == [str(tiny)]
+                and v[6] == [str(model)]
                 and device == (os.major(stat.st_dev), os.minor(stat.st_dev))
                 and v[3] + orig - v[0] == off,
                 "original GGUF VMA",
             )
             head = cursor + off % 4096
             if ranges:
-                v = region(vmas, eff, n)
+                v = region(vmas[phase], eff, n)
                 need(
                     effoff == -1
                     and eff != orig
@@ -144,7 +169,7 @@ def audit(raw, mode, native, tiny):
                 need((eff, effoff) == (orig, off), "direct must use GGUF address")
             cursor = ((head + n + 4095) // 4096) * 4096
             peak = max(peak, cursor)
-            need(peak <= CAP, "scratch capacity")
+            need(peak <= capacity, "scratch capacity")
             sources[ticket] = (phase, gen, orig, off, eff, effoff, dst + destoff, n)
             copied[ticket] = []
             phase_bytes[phase] += n
@@ -177,8 +202,8 @@ def audit(raw, mode, native, tiny):
             need(
                 not ended
                 and list(map(int, w[1:])) == [generation, pending]
-                and generation == 4
-                and len(gets) == len(fences) == 4,
+                and generation == len(sites)
+                and len(gets) == len(fences) == len(sites),
                 "cleanup",
             )
             ended = True
@@ -201,17 +226,19 @@ def audit(raw, mode, native, tiny):
         need(
             arena is not None
             and all(
-                bound for src, n, bound in physical_h2d if src < arena + CAP and arena < src + n
+                bound
+                for src, n, bound in physical_h2d
+                if src < arena + capacity and arena < src + n
             ),
             "unbound H2D from scratch",
         )
-    need(phase_bytes == {3: 1044480, 4: 104448}, "payload conservation")
+    need(phase_bytes == expected_bytes, "payload conservation")
     summary = dict(
         source=mode,
         bank_sets=len(sets),
         physical_copies=sum(map(len, copied.values())),
         phase_bytes=phase_bytes,
-        scratch_reserved_B=CAP,
+        scratch_reserved_B=capacity,
         scratch_high_water_B=peak,
         id_fences=len(fences),
         fills_at_cleanup=pending,
