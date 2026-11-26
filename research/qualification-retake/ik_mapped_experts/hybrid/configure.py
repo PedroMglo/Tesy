@@ -5,12 +5,12 @@ import collections
 import hashlib
 import json
 import os
-from pathlib import Path
 import re
 import shutil
 import signal
 import subprocess
 import time
+from pathlib import Path
 
 REV = '7a5d90009b7ae55d3239cdd33244977c4eb10ff6'
 TREE = 'a1706c85dc11d32b0fc34e20d699066a88b56201'
@@ -37,7 +37,10 @@ def require(ok, error):
 def pin(src):
     def git(*args):
         return subprocess.check_output(['git', '-C', str(src), *args], text=True).strip()
-    require((git('rev-parse', 'HEAD'), git('rev-parse', 'HEAD^{tree}')) == (REV, TREE), 'ik revision')
+
+    require(
+        (git("rev-parse", "HEAD"), git("rev-parse", "HEAD^{tree}")) == (REV, TREE), "ik revision"
+    )
     require(not git('status', '--porcelain', '--untracked-files=all'), 'ik tree dirty')
 
 
@@ -55,11 +58,28 @@ def size(root):
 def limited(out, log, command, seconds, space):
     env = {'PATH': '/usr/bin:/bin', 'LC_ALL': 'C', 'HOME': str(out / 'tmp'),
            'TMPDIR': str(out / 'tmp'), 'CUDA_VISIBLE_DEVICES': '', 'GIT_OPTIONAL_LOCKS': '0'}
-    box = ['/usr/bin/bwrap', '--die-with-parent', '--unshare-net', '--ro-bind', '/', '/',
-           '--dev', '/dev', '--proc', '/proc', '--bind', str(out), str(out), '--', *map(str, command)]
+    box = [
+        "/usr/bin/bwrap",
+        "--die-with-parent",
+        "--unshare-net",
+        "--ro-bind",
+        "/",
+        "/",
+        "--dev",
+        "/dev",
+        "--proc",
+        "/proc",
+        "--bind",
+        str(out),
+        str(out),
+        "--",
+        *map(str, command),
+    ]
     start = time.monotonic()
     with log.open('xb') as f:
-        proc = subprocess.Popen(box, env=env, stdout=f, stderr=subprocess.STDOUT, start_new_session=True)
+        proc = subprocess.Popen(
+            box, env=env, stdout=f, stderr=subprocess.STDOUT, start_new_session=True
+        )
         try:
             while proc.poll() is None:
                 require(time.monotonic() - start < seconds, 'wall limit')
@@ -87,8 +107,11 @@ def providers(map_path):
     for name, path in selected.items():
         st = Path(path).stat()
         sealed = m['files'][path]
-        require([st.st_dev, st.st_ino, st.st_size, st.st_mtime_ns, st.st_ctime_ns] ==
-                [sealed[k] for k in ('dev', 'ino', 'size', 'mtime_ns', 'ctime_ns')], f'provider drift {name}')
+        require(
+            [st.st_dev, st.st_ino, st.st_size, st.st_mtime_ns, st.st_ctime_ns]
+            == [sealed[k] for k in ("dev", "ino", "size", "mtime_ns", "ctime_ns")],
+            f"provider drift {name}",
+        )
         report[name] = {'path': path, **sealed}
     return report
 
@@ -121,27 +144,73 @@ def configure(src, out, map_path):
     require(cu, 'no CUDA commands in actual target')
     for c in cu:
         require(str(cubin) in c and '-ccbin=/usr/bin/g++-15' in c, 'nvcc/host compiler')
-        require(re.findall(r'arch=compute_(\d+),code=\[?([^\] ]+)', c) == [('89', 'sm_89')], 'CUDA arch')
-        require('--allow-unsupported-compiler' not in c and '-allow-unsupported-compiler' not in c, 'unsupported override')
-    links = [c for c in commands if ' -shared ' in c and re.search(r' -o [^ ]*lib(ggml|llama)\.so', c)]
-    require(len(links) == 2 and all(any(x in c for c in links) for x in
-            ('/libcudart.so', '/libcublas.so', '/libcublasLt.so', '/stubs/libcuda.so')), 'CUDA shared linking')
+        require(
+            re.findall(r"arch=compute_(\d+),code=\[?([^\] ]+)", c) == [("89", "sm_89")], "CUDA arch"
+        )
+        require(
+            "--allow-unsupported-compiler" not in c and "-allow-unsupported-compiler" not in c,
+            "unsupported override",
+        )
+    links = [
+        c for c in commands if " -shared " in c and re.search(r" -o [^ ]*lib(ggml|llama)\.so", c)
+    ]
+    require(
+        len(links) == 2
+        and all(
+            any(x in c for c in links)
+            for x in ("/libcudart.so", "/libcublas.so", "/libcublasLt.so", "/stubs/libcuda.so")
+        ),
+        "CUDA shared linking",
+    )
     require(not list(obj.glob('**/*.cu.o')), 'project CUDA object compiled in configure')
     steps = [s for s in (out / 'steps.log').read_text().splitlines() if re.match(r'^\[\d+/\d+]', s)]
-    require(steps and int(steps[-1].split('/')[1].split(']')[0]) == len(steps), 'Ninja step accounting')
-    ids = {p: checksum(p) for p in ('/usr/bin/gcc-15', '/usr/bin/g++-15', '/usr/bin/cmake', '/usr/bin/ninja',
-                                     str(cubin), str(TOOLKIT / 'include/crt/host_config.h'),
-                                     str(TOOLKIT / 'lib64/stubs/libcuda.so'))}
-    return {'status': 'PASS_IK_SM89_CONFIGURE_ONLY', 'source': str(src), 'revision': REV, 'tree': TREE,
-            'configure_seconds': elapsed, 'ninja_steps': len(steps), 'cuda_translation_units': len(cu),
-            'step_kinds': dict(collections.Counter(s.split('] ')[1].split(' object ')[0].split(' library ')[0]
-                                                   for s in steps)),
-            'provider_provenance': 'sealed ENV49 SHA; full current stat matched, no bulk provider reread',
-            'providers': p, 'env49_sha256': ENV49, 'tools_sha256': ids, 'plan_sha256': {f: checksum(obj/f) for f in PLAN_FILES},
-            'logs_sha256': {f: checksum(out/f) for f in ('configure.log','steps.log','commands.log','cmake-argv.json')},
-            'protocol_sha256': checksum(Path(__file__).with_name('protocol.md')), 'script_sha256': checksum(__file__),
-            'output': str(out), 'output_bytes_before_receipt': size(out), 'project_cuda_objects': 0,
-            'model_loads': 0, 'gpu_device_nodes_visible': False}
+    require(
+        steps and int(steps[-1].split("/")[1].split("]")[0]) == len(steps), "Ninja step accounting"
+    )
+    ids = {
+        p: checksum(p)
+        for p in (
+            "/usr/bin/gcc-15",
+            "/usr/bin/g++-15",
+            "/usr/bin/cmake",
+            "/usr/bin/ninja",
+            str(cubin),
+            str(TOOLKIT / "include/crt/host_config.h"),
+            str(TOOLKIT / "lib64/stubs/libcuda.so"),
+        )
+    }
+    return {
+        "status": "PASS_IK_SM89_CONFIGURE_ONLY",
+        "source": str(src),
+        "revision": REV,
+        "tree": TREE,
+        "configure_seconds": elapsed,
+        "ninja_steps": len(steps),
+        "cuda_translation_units": len(cu),
+        "step_kinds": dict(
+            collections.Counter(
+                s.split("] ")[1].split(" object ")[0].split(" library ")[0] for s in steps
+            )
+        ),
+        "provider_provenance": (
+            "sealed ENV49 SHA; full current stat matched, no bulk provider reread"
+        ),
+        "providers": p,
+        "env49_sha256": ENV49,
+        "tools_sha256": ids,
+        "plan_sha256": {f: checksum(obj / f) for f in PLAN_FILES},
+        "logs_sha256": {
+            f: checksum(out / f)
+            for f in ("configure.log", "steps.log", "commands.log", "cmake-argv.json")
+        },
+        "protocol_sha256": checksum(Path(__file__).with_name("protocol.md")),
+        "script_sha256": checksum(__file__),
+        "output": str(out),
+        "output_bytes_before_receipt": size(out),
+        "project_cuda_objects": 0,
+        "model_loads": 0,
+        "gpu_device_nodes_visible": False,
+    }
 
 
 def main():
