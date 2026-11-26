@@ -117,7 +117,7 @@ def account(rows, tiers):
     )
 
 
-def read_arm(a, label, tiers, data, steps):
+def trace_arm(a, label, tiers, data, steps):
     ref = C["SOURCES"][label]
     part = "part-" + label[1:]
     receipt = H["read"](H["Q"] / "private_archive" / (part + ".json"))
@@ -148,6 +148,11 @@ def read_arm(a, label, tiers, data, steps):
         len(tiers) == 36 and all(tiers[i] == ("CPU" if i < 25 else "CUDA0") for i in range(36)),
         "tier placement",
     )
+    return rows, tiers, ids
+
+
+def read_arm(a, label, tiers, data, steps):
+    rows, tiers, ids = trace_arm(a, label, tiers, data, steps)
     return account(rows, tiers), tiers, ids
 
 
