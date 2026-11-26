@@ -1,0 +1,212 @@
+{
+  "D0_minus_D1_bytes": {
+    "namespace_nvme0n1": {
+      "cleanup": [
+        -509988864,
+        953290752
+      ],
+      "context": [
+        -1111814144,
+        708362240
+      ],
+      "load": [
+        -1116585984,
+        708526080
+      ],
+      "prefill": [
+        1461329920,
+        6668038144
+      ],
+      "teacher": [
+        3149688832,
+        7999500288
+      ]
+    },
+    "scope_259:0": {
+      "cleanup": [
+        -509968384,
+        945958912
+      ],
+      "context": [
+        -1127301120,
+        725045248
+      ],
+      "load": [
+        -1130475520,
+        725045248
+      ],
+      "prefill": [
+        1538220032,
+        6756175872
+      ],
+      "teacher": [
+        3169058816,
+        7990595584
+      ]
+    }
+  },
+  "arms": {
+    "D0": {
+      "first_native_mark_after_supervisor_start_ns": [
+        0,
+        216410032
+      ],
+      "max_counter_sampling_window_ns": 2086806670,
+      "monitor_sha256": "3d204264c4955a3d9c1152e639ffa5bccadf5ed02dffb78d1e5492f86be513da",
+      "native_first_to_last_ns": 41439386590,
+      "streams": {
+        "namespace_nvme0n1": {
+          "before_spawn_to_after_child_bytes": 46909845504,
+          "observations": 57,
+          "phase_bytes": {
+            "cleanup": [
+              0,
+              953290752
+            ],
+            "context": [
+              0,
+              708362240
+            ],
+            "load": [
+              0,
+              708526080
+            ],
+            "prefill": [
+              38201982976,
+              40610918400
+            ],
+            "teacher": [
+              5345636352,
+              7999500288
+            ]
+          }
+        },
+        "scope_259:0": {
+          "before_spawn_to_after_child_bytes": 46877532160,
+          "observations": 57,
+          "phase_bytes": {
+            "cleanup": [
+              0,
+              945958912
+            ],
+            "context": [
+              0,
+              725045248
+            ],
+            "load": [
+              0,
+              725045248
+            ],
+            "prefill": [
+              38161891328,
+              40585580544
+            ],
+            "teacher": [
+              5345992704,
+              7990595584
+            ]
+          }
+        },
+        "scope_8:0": {
+          "observations": 0,
+          "status": "NO_REPORTED_COUNTER"
+        }
+      },
+      "supervisor_lifetime_ns": 41655796622,
+      "terminal_sha256": "8343243f506088714e3c16e83d834e82c85faa30878010a8837815f678c90c37"
+    },
+    "D1": {
+      "first_native_mark_after_supervisor_start_ns": [
+        0,
+        196486204
+      ],
+      "max_counter_sampling_window_ns": 1079063352,
+      "monitor_sha256": "48ed85130344728f9d7949cdada2bedc7b7a8ecfd57833c1f53c7af43338ca6b",
+      "native_first_to_last_ns": 27910915888,
+      "streams": {
+        "namespace_nvme0n1": {
+          "before_spawn_to_after_child_bytes": 37250641920,
+          "observations": 39,
+          "phase_bytes": {
+            "cleanup": [
+              0,
+              509988864
+            ],
+            "context": [
+              0,
+              1111814144
+            ],
+            "load": [
+              0,
+              1116585984
+            ],
+            "prefill": [
+              33942880256,
+              36740653056
+            ],
+            "teacher": [
+              0,
+              2195947520
+            ]
+          }
+        },
+        "scope_259:0": {
+          "before_spawn_to_after_child_bytes": 37133639680,
+          "observations": 39,
+          "phase_bytes": {
+            "cleanup": [
+              0,
+              509968384
+            ],
+            "context": [
+              0,
+              1127301120
+            ],
+            "load": [
+              0,
+              1130475520
+            ],
+            "prefill": [
+              33829404672,
+              36623671296
+            ],
+            "teacher": [
+              0,
+              2176933888
+            ]
+          }
+        },
+        "scope_8:0": {
+          "before_spawn_to_after_child_bytes": 458752,
+          "observations": 36,
+          "phase_bytes": {
+            "cleanup": [
+              0,
+              458752
+            ],
+            "context": [
+              0,
+              4096
+            ],
+            "load": [
+              0,
+              4096
+            ],
+            "prefill": [
+              0,
+              4096
+            ],
+            "teacher": [
+              0,
+              458752
+            ]
+          }
+        }
+      },
+      "supervisor_lifetime_ns": 28107402092,
+      "terminal_sha256": "a55554e02a4312ea81e49c9cdf31ff22e3fa115439d11692f9caf0c5b042b9ee"
+    }
+  },
+  "source_sha256": "6f526bf78bf243836af65ba0a418e6f2300f4469a783bd29a927258efc9b2c16",
+  "status": "REPRODUCED_C110_CPU_COUNTER_BOUNDS"
+}
