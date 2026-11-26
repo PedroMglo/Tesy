@@ -62,7 +62,7 @@ static bool parked(const std::vector<int32_t> &physical, const std::vector<int32
     return true;
 }
 
-static void finite(const std::vector<float> &v) {
+static void require_finite(const std::vector<float> &v) {
     require(std::all_of(v.begin(), v.end(), [](float x){ return std::isfinite(x); }), "nonfinite input or output");
 }
 
@@ -91,7 +91,7 @@ static json run(const fs::path &input) {
     require(!parked(bad_physical, logical, mask) && !parked(physical, bad_logical, mask)
             && !parked(physical, logical, bad_mask), "mixed or invalid wave");
     bool rejected = false;
-    try { finite({std::numeric_limits<float>::quiet_NaN()}); }
+    try { require_finite(std::vector<float>{std::numeric_limits<float>::quiet_NaN()}); }
     catch (const std::runtime_error &) { rejected = true; }
     require(rejected, "nonfinite control");
 
@@ -126,7 +126,7 @@ static json run(const fs::path &input) {
     json tests = json::object();
     for (bool synthetic : {false, true}) {
         const auto &b = synthetic ? artificial : real;
-        finite(b); finite(previous);
+        require_finite(b); require_finite(previous);
         put(bias, b);
         require(ggml_backend_graph_compute(cpu, graph) == GGML_STATUS_SUCCESS, "native graph");
         ggml_backend_synchronize(cpu);
@@ -134,7 +134,7 @@ static json run(const fs::path &input) {
         ggml_backend_tensor_get(down, prod.data(), 0, ggml_nbytes(down));
         require(std::all_of(prod.begin(), prod.end(), [](float x){ return std::bit_cast<uint32_t>(x)==0; }), "parked down output");
         ggml_backend_tensor_get(out, ref.data(), 0, ggml_nbytes(out));
-        finite(ref);
+        require_finite(ref);
         int mismatches = 0, changed = 0;
         for (int row = 0; row < rows; ++row) {
             for (int col = 0; col < width; ++col) {
@@ -145,7 +145,7 @@ static json run(const fs::path &input) {
                 changed += std::bit_cast<uint32_t>(previous[i]) != expected;
             }
         }
-        finite(candidate);
+        require_finite(candidate);
         tests[synthetic ? "adversarial_bias" : "C266_bias"] = {
             {"values",values},{"parked_positive_zeros",values},{"copy_differences",changed},
             {"candidate_differences",mismatches},{"reference_sha256",digest(ref)},{"candidate_sha256",digest(candidate)}
