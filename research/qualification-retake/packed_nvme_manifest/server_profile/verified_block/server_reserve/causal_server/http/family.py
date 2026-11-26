@@ -336,9 +336,11 @@ def arm(
         orig.__closure__,
     )
     result = scoped(a, out, rt)
-    reader = run_path(str(Q / "ik_mapped_experts/frontend/server/session.py"))["summarize"]
+    if input_check is not None:
+        save(out / "closed-session.json", result)
+    reader = run_path(str(Q / "nvme_conversation/client_rows.py"))["summarize"]
     rows = [
-        reader(row, out / "raw", i)
+        reader(row, out / "raw", i, ids_hash=SESSION.ids_hash)
         for i, row in enumerate(read(out / "client-receipt.json")["rows"], 1)
     ]
     for i, row in enumerate(rows, 1):
