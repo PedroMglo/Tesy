@@ -111,6 +111,10 @@ class Evidence(unittest.TestCase):
             text.replace("0,1,2,3", "0,1,2,2", 1),
             "\n".join(line for line in lines if not line.startswith("COPY 3 1 ")),
             text.replace(" 4,5,6,7", " 4,5,6,3", 1),
+            text.replace(
+                "NODE 4 0 mm ffn_moe_gate-0 moe_cache.blk.0.ffn_gate_exps.weight 30000000",
+                "NODE 4 0 mm ffn_moe_gate-0 moe_cache.blk.0.ffn_gate_exps.weight 31000001",
+            ),
             "COPY 2 0 async 1 10 12 64 -1 0\n" + text,
             text.replace(
                 "STATUS COMPLETED_TINY_HYBRID_CLIENT",
@@ -133,7 +137,7 @@ class Evidence(unittest.TestCase):
         lines = text.splitlines()
         ci = next(i for i, row in enumerate(lines) if row.startswith("COPY "))
         lines.insert(-1, lines.pop(ci))
-        with self.assertRaisesRegex(ValueError, "after consumer"):
+        with self.assertRaisesRegex(ValueError, "routed site|after consumer"):
             g.check_arm("BANK9", "\n".join(lines), log, self.d)
         with self.assertRaisesRegex(ValueError, "overlapping"):
             g.coverage([(0, 2), (1, 2)], 4)

@@ -79,13 +79,15 @@ def transfer_order(text):
     finished = {}
     routed = {}
     bank_calls = []
+    site = None
     for index, line in enumerate(text.splitlines()):
         words = line.split()
         if not words:
             continue
         tag = words[0]
         if tag == "ROUTE":
-            routed[int(words[1]), int(words[2].rsplit("-", 1)[1])] = index
+            site = (int(words[1]), int(words[2].rsplit("-", 1)[1]))
+            routed[site] = index
         elif tag == "SET":
             sets[int(words[2])] = (int(words[1]), words[5])
         elif tag == "COPY":
@@ -97,7 +99,7 @@ def transfer_order(text):
             part = weight_slice(off, n)
             if part and owner and sets[owner][1].startswith("moe_cache."):
                 (layer, role), _ = part
-                need((p, layer) in routed, "bank transfer before routed site")
+                need(site == (p, layer), "bank transfer outside current routed site")
                 bank_calls.append((index, p, layer, role))
         elif tag == "SUBMIT":
             submitted[words[1], words[2]] = index
@@ -108,9 +110,11 @@ def transfer_order(text):
                 (p, ptr) in submitted and (int(p), layer) in routed,
                 "consumer before submit or route",
             )
+            need(site == (int(p), layer), "consumer outside its routed site")
             if words[3] == "mm":
                 role = words[4].split("_")[2].rsplit("-", 1)[0]
                 finished[int(p), layer, role] = submitted[p, ptr]
+    need(list(routed) == [(3, 0), (3, 1), (4, 0), (4, 1)], "routed site order")
     for index, phase, layer, role in bank_calls:
         need(index < finished.get((phase, layer, role), -1), "bank copy after consumer submission")
 
@@ -300,6 +304,7 @@ def check_arm(mode, text, log, folder):
     if mode == "BANK7":
         skip = re.search(r"skipped (\d+) large-batch and (\d+) ineligible layer accesses", log)
         need(skip and int(skip[2]) >= 2, "missing conservative skip in stock")
+    bank_base = {}
     bindings = {}
     prices = {}
     fallback = {}
@@ -335,6 +340,10 @@ def check_arm(mode, text, log, folder):
                     }
                     continue
                 need(m["extent"] == slots and m["stride"] == SLAB, "real cache view")
+                need(
+                    bank_base.setdefault(role, m["ptr"]) == m["ptr"],
+                    "changed storage for shared bank",
+                )
                 if physical is None:
                     physical = m["ids"]
                 need(physical == m["ids"], "different physical IDs among roles")
@@ -374,6 +383,12 @@ def check_arm(mode, text, log, folder):
                 "stock counters",
             )
     if slots:
+        starts = sorted(bank_base.values())
+        need(
+            len(starts) == 3
+            and all(a + (slots + 1) * SLAB <= b for a, b in zip(starts, starts[1:], strict=False)),
+            "overlapping bank roles including guard",
+        )
         need(any(v["fills"] for v in prices.values()), "unobserved cache fills")
         need(
             not any(
