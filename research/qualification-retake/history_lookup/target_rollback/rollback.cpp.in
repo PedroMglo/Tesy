@@ -1,0 +1,195 @@
+#define main c127_capture_main
+#include TESY_B3_PARENT_CAPTURE
+#undef main
+#include "llama-model.h"
+#include "json.hpp"
+#include <chrono>
+#include <memory>
+
+namespace {
+namespace fs = std::filesystem;
+using json = nlohmann::json;
+constexpr size_t vocabulary = 201088;
+constexpr size_t kv_limit = 32U<<20;
+
+@SERIALIZED_HELPERS@
+
+template<typename T> std::vector<T> input(const fs::path &file,size_t bytes) {
+    check(bytes>0 && bytes%sizeof(T)==0 && fs::file_size(file)==bytes,"input shape");
+    std::vector<T> values(bytes/sizeof(T));
+    std::ifstream stream(file,std::ios::binary);
+    check(bool(stream.read(reinterpret_cast<char *>(values.data()),bytes)),"read input");
+    return values;
+}
+
+std::array<int,2> choices(const float *row) {
+    check(finite_row(row,vocabulary),"finite vocabulary");
+    int first=0,second=1;
+    if (row[second]>row[first]) std::swap(first,second);
+    for (size_t j=2;j<vocabulary;++j) {
+        if (row[j]>row[first]) {second=first;first=int(j);}
+        else if (row[j]>row[second]) second=int(j);
+    }
+    check(row[first]>row[second],"unique greedy token");
+    return {first,second};
+}
+
+void supplied(llama_context *ctx,int pos,const std::vector<llama_token> &tokens) {
+    check(!tokens.empty() && tokens.size()<=3,"batch width");
+    auto b=llama_batch_init(int(tokens.size()),0,1);
+    b.n_tokens=int(tokens.size());
+    for (int j=0;j<b.n_tokens;++j) {
+        check(tokens[j]>=0 && size_t(tokens[j])<vocabulary,"token range");
+        b.token[j]=tokens[j]; b.pos[j]=pos+j; b.n_seq_id[j]=1; b.seq_id[j][0]=0; b.logits[j]=1;
+    }
+    int rc=llama_decode(ctx,b);
+    llama_batch_free(b);
+    check(rc==0,"target decode");
+    llama_synchronize(ctx);
+}
+
+std::array<int,2> sampled(llama_context *ctx,llama_sampler *sam,int line,const fs::path &file) {
+    const float *row=llama_get_logits_ith(ctx,line);
+    write_row(file,row);
+    auto ids=choices(row);
+    check(llama_sampler_sample(sam,ctx,line)==ids[0],"target greedy vs full vector");
+    return ids;
+}
+
+void restore(llama_context *ctx,const std::vector<uint8_t>&kv,const fs::path &reference,const fs::path &saved) {
+    llama_memory_clear(llama_get_memory(ctx),true);
+    check(llama_state_seq_set_data(ctx,kv.data(),kv.size(),0)==kv.size(),"sequence import");
+    snapshot_kv(ctx,189,saved);
+    check(same_file(reference,saved),"imported prefix bytes");
+}
+
+std::string row_file(int step) {return "step-"+std::to_string(step)+".f32";}
+std::string kv_file(int kept) {return "keep-"+std::to_string(kept)+".kv";}
+
+void calibrated(llama_context *ctx,const std::vector<llama_token> &teacher,const fs::path &ref,
+                const fs::path &out) {
+    supplied(ctx,189,{teacher.at(0),teacher.at(1),teacher.at(2)});
+    auto row=[&](int index,int step) {
+        auto name="decode"+std::to_string(step)+".logits.f32";
+        auto dest=out/("cal-"+name);
+        write_row(dest,llama_get_logits_ith(ctx,index));
+        check(same_file(dest,ref/name),"calibration logits");
+    };
+    for (int j=0;j<3;++j) row(j,j);
+    snapshot_kv(ctx,192,out/"cal-post3.kv");
+    check(same_file(out/"cal-post3.kv",ref/"post3-kv.bin"),"calibration KV");
+    supplied(ctx,192,{teacher.at(3)});
+    row(0,3);
+}
+
+json serial(llama_context *ctx,llama_sampler *sam,int anchor,const fs::path &out) {
+    std::vector<int> stream{anchor};
+    std::vector<std::array<int,2>> ranks;
+    for (int i=0;i<5;++i) {
+        supplied(ctx,189+i,{stream.back()});
+        auto ids=sampled(ctx,sam,0,out/row_file(i));
+        stream.push_back(ids[0]); ranks.push_back(ids);
+        snapshot_kv(ctx,190+i,out/kv_file(i+1));
+    }
+    return {{"mode","AR"},{"tokens",stream},{"ranks",ranks},{"single_calls",5}};
+}
+
+json verify(llama_context *ctx,llama_sampler *sam,int anchor,int expected,const fs::path &ar,const fs::path &out) {
+    std::ifstream reference(ar/"native.json");
+    const auto src=json::parse(reference);
+    const auto tokens=src.at("tokens").get<std::vector<int>>();
+    const auto ranks=src.at("ranks").get<std::vector<std::array<int,2>>>();
+    check(src.at("mode")=="AR" && tokens.size()==6 && ranks.size()==5 && tokens[0]==anchor,"AR controls");
+    check(same_file(out/"entry.pool",ar/"entry.pool") && same_file(out/"entry.kv",ar/"entry.kv"),"common entry");
+    std::array<int,2> proposal{tokens[1],tokens[2]};
+    if (expected<2) proposal[expected]=ranks[expected][1];
+    supplied(ctx,189,{anchor,proposal[0],proposal[1]});
+    int accepted=0,confirmed=-1;
+    std::vector<int> used;
+    for (int line=0;line<3;++line) {
+        auto file=out/("decision-"+std::to_string(line)+".f32");
+        auto ids=sampled(ctx,sam,line,file);
+        check(same_file(file,ar/row_file(line)),"consulted full target distribution");
+        used.push_back(line);
+        if (line==2 || ids[0]!=proposal[line]) {confirmed=ids[0];break;}
+        ++accepted;
+    }
+    int kept=1+accepted;
+    check(accepted==expected && confirmed==tokens[kept],"accepted prefix and confirmed ID");
+    if (accepted<2) check(llama_memory_seq_rm(llama_get_memory(ctx),0,189+kept,-1),"suffix removal");
+    snapshot_kv(ctx,189+kept,out/"trim.kv");
+    check(same_file(out/"trim.kv",ar/kv_file(kept)),"trimmed KV vs serial");
+    std::array<int,2> next{};
+    for (int i=0;i<2;++i) {
+        const int step=kept+i;
+        supplied(ctx,189+step,{i?next[0]:confirmed});
+        auto file=out/("next-"+std::to_string(i)+".f32");
+        next[i]=sampled(ctx,sam,0,file)[0];
+        check(same_file(file,ar/row_file(step)) && next[i]==tokens[step+1],"post-rollback next distribution");
+        auto state=out/("next-"+std::to_string(i)+".kv");
+        snapshot_kv(ctx,190+step,state);
+        check(same_file(state,ar/kv_file(step+1)),"post-rollback next KV");
+    }
+    return {{"mode","R"+std::to_string(expected)},{"anchor",anchor},{"proposal",proposal},{"consulted",used},
+            {"accepted",accepted},{"discarded",2-accepted},{"kept",kept},{"confirmed",confirmed},
+            {"subsequent_tokens",next},{"seq_rm_calls",accepted<2?1:0}};
+}
+
+void execute(const char *model_path,const char *file,const fs::path &gold,const std::string &mode,const fs::path &out) {
+    check(fs::create_directory(out),"exclusive native output");
+    auto teacher=ids_for(file,"log_medium",true);
+    check(teacher.size()==43 && std::getenv("TESY_CPU_WAVE_SKIP_PARKED") &&
+          std::string(std::getenv("TESY_CPU_WAVE_SKIP_PARKED"))=="1","workload/CPU mode");
+    for (const auto &flag: {std::pair{"TESY_B3_GPU_REPAIR","CUDA"}, {"TESY_B3_ROUTER_ROW","1"},
+                            {"TESY_B3_ATTN25_ROWS","1"}})
+        check(std::getenv(flag.first) && std::string(std::getenv(flag.first))==flag.second,"qualified graph flags");
+@MODEL_CONTEXT@
+    cp.cb_eval=nullptr; cp.cb_eval_user_data=nullptr;
+    using Context=std::unique_ptr<llama_context,decltype(&llama_free)>;
+    Context ctx(llama_init_from_model(model.get(),cp),llama_free);
+    check(ctx!=nullptr,"context");
+    std::cout<<"C80_CONTEXT_READY ngl=12 case=log_medium ctx=8192 preload=on kv_unified=1\n"<<std::flush;
+    auto path=gold/"initial-kv.bin";
+    auto size=fs::file_size(path);
+    check(size>0 && size<=kv_limit,"input KV bound");
+    auto kv=input<uint8_t>(path,size);
+    restore(ctx.get(),kv,path,out/"initial.kv");
+    calibrated(ctx.get(),teacher,gold,out);
+    restore(ctx.get(),kv,path,out/"entry.kv");
+    snapshot_pool(model.get(),out/"entry.pool");
+    auto prefix=input<float>(gold/"prefill_final.logits.f32",vocabulary*sizeof(float));
+    int anchor=choices(prefix.data())[0];
+    using Sampler=std::unique_ptr<llama_sampler,decltype(&llama_sampler_free)>;
+    Sampler sampler(llama_sampler_init_greedy(),llama_sampler_free);
+    check(sampler!=nullptr,"greedy sampler");
+    const char *ref=std::getenv("TESY_ROLLBACK_AR");
+    check(ref && *ref,"independent AR path");
+    json receipt=mode=="AR"?serial(ctx.get(),sampler.get(),anchor,out)
+                           :verify(ctx.get(),sampler.get(),anchor,mode.at(1)-'0',ref,out);
+    snapshot_pool(model.get(),out/"final.pool");
+    receipt["anchor"]=anchor;
+    receipt["callback_installed"]=false;
+    receipt["restored_prefix"]=189;
+    const std::string text=receipt.dump()+"\n";
+    write_new(out/"native.json",text.data(),text.size());
+}
+}
+
+int main(int argc,char **argv) try {
+    if (argc==2 && std::string(argv[1])=="--self-test") {
+        std::vector<float> toy(vocabulary,-2.0f);
+        toy[4]=3; toy[7]=1;
+        check(choices(toy.data())==std::array<int,2>{4,7},"greedy ranks");
+        toy[7]=3;bool rejected=false;
+        try{(void)choices(toy.data());}catch(const std::exception&){rejected=true;}
+        check(rejected,"tied greedy rejected");
+        std::cout<<"PASS_ROLLBACK_ROW_PLAN\n"; return 0;
+    }
+    check(argc==6,"rollback MODEL IDS BASE AR|R0|R1|R2 NEW-OUTPUT");
+    const std::string mode=argv[4];
+    check(mode=="AR"||mode=="R0"||mode=="R1"||mode=="R2","mode");
+    execute(argv[1],argv[2],argv[3],mode,argv[5]);
+    return 0;
+} catch(const std::exception &e) {
+    std::fprintf(stderr,"ROLLBACK_FAIL %s\n",e.what()); return 1;
+}
