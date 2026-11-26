@@ -79,10 +79,10 @@ def grade(cap, reference, work, mode):
     )
 
 
-def arm(a, root, mode, build, prior, policy, model_id):
+def arm(a, root, mode, build, prior, policy, model_id, *, study=None, extra_flags=None, check=None):
     root.mkdir()
     case, library, reserve = CASES[mode]
-    unit = a.unit + "-" + mode.lower()
+    unit = a.unit + "-" + root.name.lower()
     ctl = S["Authority"](a, root, build, library)
     src = case + "/packed-resource.json"
     old = G["read"](a.previous / src, prior["raw_sha256"][src])
@@ -117,7 +117,7 @@ def arm(a, root, mode, build, prior, policy, model_id):
         pinned=sealed,
         measurement_commit=a.commit,
         output_reserve=reserve,
-        scientific_protocol_sha256=C["METHOD"],
+        scientific_protocol_sha256=study or C["METHOD"],
         model_stat=model_id,
         resources=F["SESSION"].freeze_protocol_resource_limits(
             policy, cgroup_memory_max_bytes=20 << 30
@@ -147,6 +147,9 @@ def arm(a, root, mode, build, prior, policy, model_id):
     }
     if mode == "ON":
         extra.update(S["RB"]["T"]["flags"]("CUDA"))
+    if extra_flags:
+        need(mode == "ON" and not extra.keys() & extra_flags.keys(), "new block-only switches")
+        extra.update(extra_flags)
     expected = {"TESY_CPU_WAVE_SKIP_PARKED": "1"} | loader | extra
     for k, v in expected.items():
         cmd += ["--env", k + "=" + v]
@@ -197,11 +200,14 @@ def arm(a, root, mode, build, prior, policy, model_id):
     ref = root.parent / "P/raw" / (a.unit + "-p.capture")
     result = grade(cap, ref, read(work), mode)
     save(root / "grade.json", result)
-    need(
-        result["passed"],
-        "full-state or logits mismatch: "
-        + str([k for k, v in result["comparison"].items() if not v]),
-    )
+    if check is None:
+        need(
+            result["passed"],
+            "full-state or logits mismatch: "
+            + str([k for k, v in result["comparison"].items() if not v]),
+        )
+    else:
+        check(cap, result)
     return dict(
         status="PASS_NATURAL_T1_" + mode,
         grade_sha256=sha(root / "grade.json"),
