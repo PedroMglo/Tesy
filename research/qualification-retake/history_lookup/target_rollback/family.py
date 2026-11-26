@@ -17,6 +17,8 @@ B, need, read, sha = (G[k] for k in ("B", "need", "read", "sha"))
 T, K, P, R, F, save = (B[k] for k in ("T", "K", "P", "R", "F", "save"))
 N, SC, PF, OLD, prepare, measure = (T[k] for k in ("N", "SC", "PF", "OLD", "prepare", "measure"))
 BUILD = "8c662cb41b24b675ef28acfd5b1f0938897b09b185ea7949811d62cee636a053"
+SWA_BUILD = "68d0e701b7698a07d7a70f810303e8a47613f24dafac611ab34e02c6f2279669"
+SWA = run_path(str(HERE / "swa.py"))
 
 
 def capture(root, unit, mode):
@@ -120,7 +122,7 @@ def arm(a, out, mode, b, auth, serial, target, ctrl, gold, pins, spec):
         native_variant=mode,
         runner_sha256=sha(P["MONITOR"]),
         original_sha256=sha(root / "protocol.json"),
-        scientific_protocol_sha256=B["METHOD"],
+        scientific_protocol_sha256=b["protocol_sha256"],
     )
     config = root / "rollback-resource.json"
     save(config, cfg)
@@ -155,6 +157,8 @@ def arm(a, out, mode, b, auth, serial, target, ctrl, gold, pins, spec):
     linkage = auth.audit(raw, identity["pid"])
     need({Path(path).name for path in mapped} <= linkage["initialized"].keys(), "observed runtime")
     g = G["compare"](capture(out, a.unit, mode), mode, target, serial, ar)
+    if a.swa_restore:
+        g["kv_ranges"] = SWA["snapshots"](capture(out, a.unit, mode), mode)
     save(root / "grade.json", g)
     return dict(
         status=g["status"],
@@ -172,8 +176,10 @@ def arm(a, out, mode, b, auth, serial, target, ctrl, gold, pins, spec):
 
 
 def run(a, out, r):
+    protocol, method = B["contract"](a.swa_restore)
+    build = SWA_BUILD if a.swa_restore else BUILD
     need(
-        sha(a.build / "receipt.json") == BUILD
+        sha(a.build / "receipt.json") == build
         and re.fullmatch(r"tesy-rollback-[a-z0-9-]+", a.unit)
         and prepare.git(HERE, "rev-parse", "HEAD") == a.commit
         and not prepare.git(HERE, "status", "--porcelain"),
@@ -182,10 +188,10 @@ def run(a, out, r):
     b = read(a.build / "receipt.json")
     need(
         b["status"] == "GO_ROLLBACK_AR_CONTROL"
-        and b["protocol_sha256"] == B["METHOD"] == sha(HERE / "protocol.md")
+        and b["protocol_sha256"] == method == sha(HERE / protocol)
         and all(sha(Path(k)) == v for k, v in b["headers_sha256"].items())
         and sha(a.build / "rollback.cpp") == b["source_sha256"]
-        and (a.build / "rollback.cpp").read_text() == B["source"](),
+        and (a.build / "rollback.cpp").read_text() == B["source"](a.swa_restore),
         "exact client/header closure",
     )
     auth = K["OLD"]["Authority"](a.static, a.build, b["elf_sha256"], b["image_sha256"])
@@ -197,17 +203,20 @@ def run(a, out, r):
         and win["status"] == "PASS_RESOURCE_WINDOW_ONLY"
         and sha(a.window / "samples.jsonl") == win["window_sha256"]
         and datetime.fromisoformat(initial).timestamp()
-        >= int(prepare.git(HERE, "log", "-1", "--format=%ct", "--", "protocol.md"))
+        >= int(prepare.git(HERE, "log", "-1", "--format=%ct", "--", protocol))
         and win["gpu_driver"] == auth.kernel["release"],
         "runtime and C55",
     )
     src = sources(a)
+    if a.swa_restore:
+        target = src[1]
+        r["input_KV"] = SWA["contents"](target / "initial-kv.bin", 189, SWA["banks"](target))
     r.update(
         commit=a.commit,
         tree=prepare.git(HERE, "rev-parse", "HEAD^{tree}"),
         unit=a.unit,
-        build_sha256=BUILD,
-        protocol_sha256=B["METHOD"],
+        build_sha256=build,
+        protocol_sha256=method,
         runner_sha256=sha(Path(__file__)),
         grader_sha256=sha(HERE / "grade.py"),
         target_sha256=B["PARENT"],
@@ -238,6 +247,7 @@ if __name__ == "__main__":
         p.add_argument("--" + k, type=Path, required=True)
     for k in ("unit", "window-sha256", "commit"):
         p.add_argument("--" + k, required=True)
+    p.add_argument("--swa-restore", action="store_true")
     a = p.parse_args()
     os.umask(0o077)
     out = a.new_output_dir.resolve()
