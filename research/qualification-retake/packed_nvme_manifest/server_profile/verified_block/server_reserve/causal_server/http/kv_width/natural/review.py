@@ -98,9 +98,10 @@ def localize_kv(candidate, reference, count, cut):
     )
 
 
-def process(root, mode, reference, work, unit):
-    folder = root / mode
-    unit += "-" + mode.lower()
+def process(root, mode, reference, work, unit, *, label=None):
+    label = label or mode
+    folder = root / label
+    unit += "-" + label.lower()
     raw = folder / "raw"
     launch = read(raw / (unit + ".launch.json"))
     monitor = read(raw / (unit + ".json"))
