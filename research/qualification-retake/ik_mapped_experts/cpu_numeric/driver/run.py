@@ -31,7 +31,13 @@ STOPS = {
 def sources():
     return {
         p.name: sha(p)
-        for p in (HERE / "protocol.md", HERE / "r02.md", HERE / "driver.cpp", HERE / "run.py")
+        for p in (
+            HERE / "protocol.md",
+            HERE / "r02.md",
+            HERE / "r03.md",
+            HERE / "driver.cpp",
+            HERE / "run.py",
+        )
     } | {
         "tiny_loader/probe.cpp": sha(pinned(TINY / "probe.cpp", OBSERVER)),
         "tiny_loader/run.py": sha(TINY / "run.py"),
@@ -72,6 +78,9 @@ def build(a, out, result):
         "-O1",
         "-pthread",
         "-rdynamic",
+        "-fPIC",
+        "-pie",
+        "-fno-plt",
         *(f"-I{src / d}" for d in ("include", "ggml/include", "ggml/src")),
         str(HERE / "driver.cpp"),
         *(str(obj / name) for name in prior["BASE"]),
