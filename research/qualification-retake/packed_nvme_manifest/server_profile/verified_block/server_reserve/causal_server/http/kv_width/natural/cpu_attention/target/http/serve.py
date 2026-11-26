@@ -14,6 +14,8 @@ H = OFF["F"]["F"]
 G, need, sha, save = (H[k] for k in ("G", "need", "sha", "save"))
 SERIAL = "8ba42406e1ebd8e81b7cde38df0ab723b812e6e92286e9f132e1d922843c23e3"
 METHOD = OFF["METHOD"]
+REPORT_FIXTURE = "1625bd50519896b2c6214c5ea664571cf8fec41eaa53f46c17335ea3bc17d714"
+REPORT_PROTOCOL = "93e082e65634b1178a8b9d0163028a0daca4052508ceaba9cf4e350e7005f37f"
 
 
 class Runtime(H["Runtime"]):
@@ -42,6 +44,7 @@ class Runtime(H["Runtime"]):
     def finish(self, ident, monitor, out, rid):
         proof = super().finish(ident, monitor, out, rid)
         proof["loader_data"] = self.auth.loader_cache.receipt()
+        save(out / "runtime-proof.json", proof)
         save(out / "loader-data-after.json", proof["loader_data"])
         return proof
 
@@ -155,6 +158,7 @@ def main():
         "qualified",
         "off",
         "loader-probe",
+        "report-fixture",
         "static",
         "capture",
         "verified",
@@ -189,9 +193,19 @@ def main():
         long_gate_sha256=OFF["QUALIFIED"],
         serial_gate_sha256=SERIAL,
         loader_probe_sha256=OFF["PROBE"],
+        report_fixture_sha256=REPORT_FIXTURE,
+        report_protocol_sha256=REPORT_PROTOCOL,
         arms={},
     )
     try:
+        fixture = G["read"](a.report_fixture / "receipt.json", REPORT_FIXTURE)
+        need(
+            fixture["status"] == "GO_REPORT_FIXTURE_ONLY"
+            and fixture["protocol_sha256"] == sha(HERE / "report_protocol.md") == REPORT_PROTOCOL
+            and fixture["physical_http_requests"] == 2
+            and fixture["model_starts"] == 0,
+            "recovered client reports",
+        )
         window = G["read"](a.window / "receipt.json", a.window_sha256)
         need(
             window["status"] == "PASS_RESOURCE_WINDOW_ONLY"
