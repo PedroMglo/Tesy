@@ -110,6 +110,10 @@ def build(a, out, r):
             },
         )
     check_objects()
+    compile_fixture(a, out, r, fixed, static)
+
+
+def compile_fixture(a, out, r, fixed, static):
     start = fixed.index("            ggml_tensor *rows[3];", fixed.index(NEW_GUARD))
     stop = fixed.index("            cb(cur, LLAMA_TENSOR_NAME_FATTN, il);", start)
     expr = fixed[start:stop]
@@ -175,6 +179,22 @@ def build(a, out, r):
     )
 
 
+def fixture_only(a, out, r):
+    pin = "2600bbaf6fc77dcf32731f25cd4a0e72425dc4187533085f31e5d5766716debf"
+    parent = G["read"](a.build / "receipt.json", pin)
+    need(parent["status"] == "GO_STATIC_WIDE_KV" and a.build_sha256 == pin, "parent link")
+    image = a.build / "WIDE" / G["IMAGE"]
+    code = a.build / "WIDE/llama-graph.cpp"
+    need(
+        sha(image) == parent["arms"]["WIDE"]["image_sha256"]
+        and sha(code) == parent["arms"]["WIDE"]["source_sha256"],
+        "unchanged candidate",
+    )
+    static = G["read"](a.static / "receipt.json", G["STATIC"])
+    r.update(arms=parent["arms"], parent_build_sha256=pin)
+    compile_fixture(a, out, r, code.read_text(), static)
+
+
 def execute(a, out, r):
     b = G["read"](a.build / "receipt.json", a.build_sha256)
     need(
@@ -213,6 +233,14 @@ def execute(a, out, r):
                     need(child.poll() is None and time.monotonic() < limit, "missing " + point)
                     time.sleep(0.01)
                 need(flag.read_text() == point, "checkpoint")
+                owners = P["shell"](
+                    [
+                        "nvidia-smi",
+                        "--query-compute-apps=pid,gpu_uuid,used_memory",
+                        "--format=csv,noheader,nounits",
+                    ]
+                )
+                save(out / (point + "-owners.json"), dict(fixture_pid=child.pid, observed=owners))
                 obs = P["sampled"](policy, child.pid, r["admission"]["gpu"]["used_mib"])
                 r["live"][point] = dict(gpu=obs["gpu"], providers=P["loaded"](child.pid, known, {}))
                 (data / (point + ".ack")).touch(exist_ok=False)
@@ -256,7 +284,7 @@ def execute(a, out, r):
 
 if __name__ == "__main__":
     p = argparse.ArgumentParser(description=__doc__)
-    p.add_argument("mode", choices=("build", "run"))
+    p.add_argument("mode", choices=("build", "fixture", "run"))
     for k in ("old", "failed", "static", "backend", "window", "build", "new-output-dir"):
         p.add_argument(
             "--" + k,
@@ -289,7 +317,7 @@ if __name__ == "__main__":
         )
         head, r["tree"] = G["tree"](G["REPO"])
         need(head == a.commit and sha(HERE / "protocol.md") == METHOD, "clean technical gate")
-        (build if a.mode == "build" else execute)(a, out, r)
+        {"build": build, "fixture": fixture_only, "run": execute}[a.mode](a, out, r)
     except Exception as err:
         r.update(status="FAIL_PRESERVED", error=f"{type(err).__name__}: {err}")
     r.update(

@@ -138,6 +138,9 @@ int main(int argc, char **argv) try {
     check(ggml_backend_cuda_get_device_count()==1,"one GPU");
     auto gpu=ggml_backend_cuda_init(0);
     check(gpu && ggml_backend_is_cuda(gpu),"CUDA");
+    // Keep a real device allocation alive while the supervisor checks the CUDA owner.
+    auto marker=ggml_backend_alloc_buffer(gpu,4096);
+    check(marker && ggml_backend_buffer_get_base(marker), "live CUDA allocation");
     stage(root,"before");
     for (int n : {256,512,2048,2304,8192}) {
         Inputs a(n);
@@ -155,6 +158,7 @@ int main(int argc, char **argv) try {
         check(std::memcmp(ref.data(),mutant.data(),ref.size()*4)!=0,"mask mutation not detected");
     }
     stage(root,"after");
+    ggml_backend_buffer_free(marker);
     ggml_backend_free(gpu);
     return 0;
 } catch(const std::exception &e) {
