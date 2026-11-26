@@ -90,7 +90,13 @@ def run(a, out, r):
     for label, (source, selection) in C["SOURCES"].items():
         folder = out / label
         folder.mkdir(mode=0o700)
-        arm = dict(status="FAIL_PRESERVED", model_starts=0, source=source, callback=selection)
+        arm = dict(
+            status="FAIL_PRESERVED",
+            model_starts=0,
+            plan_sha256=state["profile"]["plan_sha256"],
+            source=source,
+            callback=selection,
+        )
         try:
             local_env = env | {"TESY_C110_CALLBACK": selection}
             if source:
