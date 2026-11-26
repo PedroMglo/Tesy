@@ -144,8 +144,7 @@ def auth(root, backend):
     return observed
 
 
-def analyze(root, backend):
-    reference = auth(root, backend)
+def phase_observations(root, *, verified_cleanup_ns=None):
     raw = root / "raw"
     preset = read(root / "preset.json")
     require(preset["model_sha256"] == MODEL, "model identity")
@@ -158,6 +157,11 @@ def analyze(root, backend):
     require(sha(raw / (stem + ".launch.json")) == client["launch_sha256"], "launch identity")
     start = launch["start_inventory"]["popen_invoked_monotonic_ns"]
     max_shift = ns(client["ready_monotonic"], ROUND_CEILING) + MARGIN - start
+    if verified_cleanup_ns is not None:
+        # The controller reads the finished manifest before taking this timestamp.
+        elapsed_lower_ns = ns(monitor["elapsed_s"]) - 500_001
+        max_shift = min(max_shift, verified_cleanup_ns - elapsed_lower_ns - start)
+        require(max_shift >= 0, "empty monitor epoch intersection")
     samples = []
     fds = Counter()
     for row in lines(raw / (stem + ".samples.jsonl")):
@@ -210,7 +214,21 @@ def analyze(root, backend):
                 phases=bounded,
             )
         )
-    n = turns[1]
+    return dict(
+        backend_commit=monitor["backend_sha"],
+        samples=len(samples),
+        sample_fd_counts=dict(fds),
+        common_epoch_width_ns=max_shift,
+        sample_support_extra_ns=500_001,
+        boundary_margin_ns=MARGIN,
+        turns=turns,
+    )
+
+
+def analyze(root, backend):
+    reference = auth(root, backend)
+    observed = phase_observations(root)
+    n = observed["turns"][1]
     # Ceiling is optimistic by <1 ns, including the exact rational predicted_n / 6.
     budget_ns = (
         n["prompt_ns"]
@@ -235,13 +253,7 @@ def analyze(root, backend):
         raw_manifest_sha256=reference["files_sha256"],
         source_sha256={**SOURCE, **NATIVE},
         measurement_commit=reference["measurement_commit"],
-        backend_commit=monitor["backend_sha"],
-        samples=len(samples),
-        sample_fd_counts=dict(fds),
-        common_epoch_width_ns=max_shift,
-        sample_support_extra_ns=500_001,
-        boundary_margin_ns=MARGIN,
-        turns=turns,
+        **observed,
         conditional=dict(
             prompt_budget_ns_rounded_up=budget_ns,
             assumed_Bps=4_500_000_000,
