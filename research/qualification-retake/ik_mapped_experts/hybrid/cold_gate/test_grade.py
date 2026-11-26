@@ -80,3 +80,45 @@ def test_new_budget_requires_actual_io_reduction_in_each_order():
     assert comparisons["PREAD_SEQ_to_PREAD_RANDOM"]["decision"] == "GO"
     arms["RANGE_RANDOM_FIRST"]["PREAD_RANDOM"] = row(10, 19)
     assert G["read_contrasts"](arms)["DIRECT_to_PREAD_RANDOM"]["decision"] == "INCONCLUSIVE"
+
+
+def test_each_layer_bank_must_start_cold_and_have_guards(tmp_path):
+    roles = ("gate", "up", "down")
+    ref = dict(
+        sets=[dict(sha256=str(i)) for i in range(99)],
+        payload_B=99,
+        tensors={r: dict(start=4096 * i, bytes=4096) for i, r in enumerate(roles)},
+    )
+    zero = {r: 0 for r in roles}
+    each = {r: 1 for r in roles}
+    counters = dict(namespace_B=512, scope_B=512, pid_B=512)
+    v = dict(
+        mode="DIRECT",
+        verified=[str(i) for i in range(99)],
+        guards_B=3 * 8192,
+        resident_before=0,
+        resident_after=3,
+        tensor_pages=3,
+        pages_before=zero,
+        pages_after=each,
+        pages_per_tensor=each,
+        events_ns=[[i, i, i + 1] for i in range(99)],
+        issued_ns=100,
+        drain_ns=1,
+        total_ns=101,
+        check_ns=1,
+        before={k: 0 for k in counters},
+        after=counters,
+        delta=counters,
+    )
+    f = tmp_path / "native.json"
+    f.write_text(json.dumps(v))
+    assert G["one"](f, "DIRECT", ref)["pages_after"] == each
+    for field, value in (
+        ("pages_before", zero | {"up": 1}),
+        ("guards_B", 2 * 8192),
+        ("pages_after", {"gate": 2, "up": 1, "down": 0}),
+    ):
+        f.write_text(json.dumps(v | {field: value}))
+        with pytest.raises(ValueError):
+            G["one"](f, "DIRECT", ref)

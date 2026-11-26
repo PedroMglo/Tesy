@@ -36,7 +36,7 @@ TINY = "3771d5de5067095852a0132324c16b01e39c2b999082d4a3b6165e13aff90644"
 ENV49 = "7e9d0efb4c9bac6ef88d0de0003e8643fc14f4f9942c72a8101e2c166b8b1729"
 
 
-def c55(a):
+def c55(a, *, cap_bytes=CAP):
     witness = load(a.c55, a.c55_sha256)
     policy = load(a.c55.parent / "resource-policy.json", witness["canonical_policy_sha256"])
     snap = json.loads((a.c55.parent / "snapshot.json").read_bytes())
@@ -59,7 +59,9 @@ def c55(a):
         and reasons <= {"HOST_CAP_PLUS_RESERVE_UNAVAILABLE", "C55_CAP_UNAVAILABLE"}
     )
     caps = [witness[k]["cap_max_bytes"] for k in ("memory", "canonical_memory")]
-    need((admitted or capacity_only) and min(caps) >= CAP, "fixture capacity or resource gate")
+    need(
+        (admitted or capacity_only) and min(caps) >= cap_bytes, "fixture capacity or resource gate"
+    )
     return policy, datetime.fromisoformat(rows[-1]["utc"])
 
 
@@ -153,13 +155,15 @@ def seal(a, prepared):
     )
 
 
-def sample_arm(mode, parent, args, policy, end, exe, tiny, env, paths, drivers, result):
+def sample_arm(
+    mode, parent, args, policy, end, exe, tiny, env, paths, drivers, result, *, cap_bytes=CAP
+):
     age = (datetime.now(UTC) - end).total_seconds()
     need(0 <= age < 3300, "stale C55 before C118")
     run_id = args.unit + "-" + mode.lower()
     target = parent / mode
     target.mkdir(mode=0o700)
-    kw = dict(policy=policy, cap_bytes=CAP, expected_power=INV.POWER)
+    kw = dict(policy=policy, cap_bytes=cap_bytes, expected_power=INV.POWER)
 
     def idle():
         obs = IO.monitor(policy)["observation"]

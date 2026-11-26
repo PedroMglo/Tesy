@@ -29,17 +29,35 @@ def run(a, out, r):
     need(require_pre == a.execute, "preflight identity")
     pair = load(a.family / "receipt.json", P["PAIR"])
     prior = pair["authority"]
-    ref = load(a.reference, G["REFERENCE"])
-    range_reads = a.study == "pread"
-    protocol = HERE / ("read-protocol.md" if range_reads else "protocol.md")
-    need(bool(a.previous) == range_reads, "previous cold study required for pread")
-    if range_reads:
+    layer = a.study == "layer"
+    range_reads = a.study != "scratch"
+    ref_sha = G["LAYER_REFERENCE"] if layer else G["REFERENCE"]
+    ref = load(a.reference, ref_sha)
+    protocol = (
+        HERE
+        / {"scratch": "protocol.md", "pread": "read-protocol.md", "layer": "layer-protocol.md"}[
+            a.study
+        ]
+    )
+    need(
+        bool(a.previous) == range_reads and bool(a.gate_reference) == layer, "previous study inputs"
+    )
+    if layer:
+        old_hash = "5e352cfbcc56e1e7978e798384e9a8f1c7d18a366ab81e787540e3d2937d27a3"
+        old = G["reopen"](a.previous, old_hash, a.gate_reference)
+        need(
+            old["decision"] == "GO" and ref["gate_reference_sha256"] == G["REFERENCE"],
+            "single gate was not admitted",
+        )
+    elif range_reads:
         old_hash = "232be642acd7b72e7ef50f86753410b33ac36d44304120e8548e59748aa60f97"
         old = G["reopen"](a.previous, old_hash, a.reference)
         need(old["decision"] == "NO_GO", "previous cold service")
     model = Path(ref["model"])
     w = load(a.c55, a.c55_sha256)
-    policy, end = D["c55"](a)
+    cap = (4 << 30) if layer else D["CAP"]
+    stop = (3584 << 20) if layer else D["STOP"]
+    policy, end = D["c55"](a, cap_bytes=cap)
     observed = json.loads((a.c55.parent / "samples.jsonl").read_text().splitlines()[0])["utc"]
     frozen = int(
         subprocess.check_output(
@@ -49,7 +67,7 @@ def run(a, out, r):
     stat = IO.stat_id(model)
     need(
         pair["status"] == "PASS_CALLBACK_OFF_TWO_CUTS"
-        and ref["status"] == "SEALED_GATE_BYTES"
+        and ref["status"] == ("SEALED_LAYER_BYTES" if layer else "SEALED_GATE_BYTES")
         and ref["pair_sha256"] == P["PAIR"]
         and ref["model_sha256"] == prior["model_sha256"]
         and ref["model_stat"] == w["selected_stat"] == prior["model_stat"] == stat
@@ -84,7 +102,9 @@ def run(a, out, r):
         commit=commit,
         tree=tree,
         study=a.study,
-        reference_sha256=G["REFERENCE"],
+        reference_sha256=ref_sha,
+        scope_cap_B=cap,
+        scope_stop_B=stop,
         pair_sha256=P["PAIR"],
         c55_sha256=a.c55_sha256,
         monitor=monitor,
@@ -107,6 +127,8 @@ def run(a, out, r):
     )
     if range_reads:
         r["authority"]["previous_sha256"] = old_hash
+    if layer:
+        r["authority"]["sources"]["layer_plan.py"] = sha(HERE / "layer_plan.py")
     if not a.execute:
         r["status"] = "PREPARED_ONLY"
         return
@@ -115,7 +137,7 @@ def run(a, out, r):
         pre["status"] == "PREPARED_ONLY" and pre["authority"] == r["authority"], "preflight changed"
     )
     r["prepared_sha256"] = a.prepared_sha256
-    IO.CAP, IO.STOPS = D["CAP"], D["STOP"]
+    IO.CAP, IO.STOPS = cap, stop
     IO.scope()
     cg = Path("/sys/fs/cgroup") / IO.cgroup_state()["path"].lstrip("/")
     need(
@@ -127,7 +149,7 @@ def run(a, out, r):
     )
     drivers = {p for p in paths if "libnvidia-" in p and "nvidia-ml" not in p}
     orders = {}
-    sequence = G["READ_ORDERS"] if range_reads else G["ORDERS"]
+    sequence = G["SEQUENCES"][a.study]
     for order, modes in sequence.items():
         unchanged()
         arm = r["arms"][order] = {"starts": 0}
@@ -143,6 +165,7 @@ def run(a, out, r):
             {runtime, driver},
             drivers,
             arm,
+            cap_bytes=cap,
         )
         arm["measurements"] = {
             m: G["one"](native / (m + ".json"), m, ref, late_cut=range_reads) for m in modes
@@ -155,7 +178,11 @@ def run(a, out, r):
         and all(IO.stat_id(Path(p)) == v["stat"] for p, v in paths.items()),
         "model or provider drift",
     )
-    if range_reads:
+    if layer:
+        r["decision"], r["pairs"] = G["decide"](
+            orders, "DIRECT", "PREAD_RANDOM", minimum_bytes_saved=1
+        )
+    elif range_reads:
         r["contrasts"] = G["read_contrasts"](orders)
         primary = r["contrasts"]["DIRECT_to_PREAD_RANDOM"]
         r["decision"], r["pairs"] = primary["decision"], primary["pairs"]
@@ -174,8 +201,9 @@ if __name__ == "__main__":
     parser.add_argument("--prepared", type=Path)
     parser.add_argument("--prepared-sha256")
     parser.add_argument("--unit", default="")
-    parser.add_argument("--study", choices=("scratch", "pread"), default="scratch")
+    parser.add_argument("--study", choices=G["SEQUENCES"], default="scratch")
     parser.add_argument("--previous", type=Path)
+    parser.add_argument("--gate-reference", type=Path)
     args = parser.parse_args()
     os.umask(0o077)
     dest = args.new_output_dir.resolve()
@@ -202,7 +230,7 @@ if __name__ == "__main__":
                     scope.name == args.unit + ".scope"
                     and not result["swap_peak_B"]
                     and not any(result["events"][k] for k in ("high", "max", "oom", "oom_kill"))
-                    and result["memory_peak_B"] < D["STOP"],
+                    and result["memory_peak_B"] < IO.STOPS,
                     "final resource state",
                 )
             except Exception as exc:
