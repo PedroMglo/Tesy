@@ -7,6 +7,7 @@
 #include <atomic>
 #include <cinttypes>
 #include <filesystem>
+#include <poll.h>
 #include <vector>
 
 namespace fs = std::filesystem;
@@ -137,6 +138,17 @@ static void census(llama_model *model) {
     }
 }
 
+static void handoff(bool cpu, char expected) {
+    if (cpu) return;
+    const char *tx=std::getenv("TESY_TEST_TX"), *rx=std::getenv("TESY_TEST_RX");
+    must(tx && rx,"GPU monitor missing");
+    const int w=std::stoi(tx), r=std::stoi(rx);
+    must(w!=r && w>2 && r>2 && write(w,&expected,1)==1,"notify monitor");
+    pollfd wait{r,POLLIN,0};
+    char ack=0;
+    must(poll(&wait,1,3000)==1 && (wait.revents & POLLIN) && read(r,&ack,1)==1 && ack==expected,
+         "GPU monitor acknowledgement");
+}
 static int run(int argc,char **argv) {
     must(argc==4,"client CPU|RESIDENT|BANK9|BANK7 TINY.GGUF NEW_DIR");
     auto mode=std::string(argv[1]);
@@ -149,6 +161,7 @@ static int run(int argc,char **argv) {
     must(mkdir(argv[3],0700)==0,"new raw directory");
     fs::path dst(argv[3]);
     observe::witness=ik_vma::Inspect::capture(argv[2], file_id);
+    handoff(cpu,'E');
     observe::phase=1;
     llama_backend_init();
     auto m=llama_model_default_params();
@@ -172,6 +185,7 @@ static int run(int argc,char **argv) {
     p.offload_kqv=!cpu; p.cb_eval=callback; p.logits_all=true;
     auto *ctx=llama_init_from_model(model,p);
     must(ctx && llama_n_ctx(ctx)==256 && llama_n_ubatch(ctx)==32 && !ggml_moe_prefetch_enabled(),"context");
+    handoff(cpu,'A');
     for (int n : {32,1}) {
         observe::phase=n==32 ? 3 : 4;
         auto batch=llama_batch_init(n,0,1);
@@ -187,6 +201,7 @@ static int run(int argc,char **argv) {
     }
     {std::ifstream maps("/proc/self/maps"); std::ofstream snap(dst/"maps");
      snap<<maps.rdbuf(); snap.close(); must(bool(snap),"maps");}
+    handoff(cpu,'F');
     observe::phase=5;
     llama_free(ctx); llama_free_model(model); llama_backend_free();
     observe::phase=0;
