@@ -45,6 +45,8 @@ def artificial(mode, folder):
         active = slots and (slots == 9 or width == 1)
         for layer in range(2):
             tok = ",".join(map(str, [0, 1, 2, 3] * width))
+            layout = f"26 4 {width} 1 1 4 16 {width * 16} {width * 16} {width * 16}"
+            event.append(f"RANK_VIEW {phase} logical ffn_moe_topk-{layer} {layout}")
             event.append(f"ROUTE {phase} ffn_moe_topk-{layer} {tok}")
             start = 0 if layer == 0 else min(4, slots - 4)
             canonical = ",".join(map(str, list(range(start, start + 4)) * width)) if active else tok
@@ -67,6 +69,10 @@ def artificial(mode, folder):
                     backend = "CUDA0" if mode == "RESIDENT" or active else "CPU"
                     weight = ("moe_cache." if active and op == "mm" else "") + name
                     suffix = "_biased" if op == "bias" else ""
+                    kind = "physical" if op == "mm" else "bias"
+                    event.append(
+                        f"RANK_VIEW {phase} {kind} ffn_moe_{role}{suffix}-{layer} {layout}"
+                    )
                     event.append(f"SUBMIT {phase} {ident} {backend} 0")
                     event.append(
                         f"NODE {phase} {ident} {op} ffn_moe_{role}{suffix}-{layer} "

@@ -101,7 +101,16 @@ def build(a, out, r):
         pin(obj / name, libs[name])
     source = {
         name: sha(HERE / name)
-        for name in ("client.cpp", "hooks.hpp", "copy.cpp", "build.py", "grade.py", "protocol.md")
+        for name in (
+            "client.cpp",
+            "rank_view.hpp",
+            "hooks.hpp",
+            "copy.cpp",
+            "build.py",
+            "grade.py",
+            "protocol.md",
+            "observer-r03.md",
+        )
     }
     for f in ("tiny_loader/probe.cpp", "cpu_numeric/vma/inspect.hpp", "hybrid/protocol.md"):
         source[f] = sha(HERE.parents[1] / f)

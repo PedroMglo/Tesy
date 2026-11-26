@@ -232,6 +232,35 @@ def sites(text):
     return logical, nodes
 
 
+def rank_views(text, logical, nodes):
+    expected = {(phase, f"ffn_moe_topk-{layer}"): "logical" for phase, layer in logical}
+    for p, layer, op, role in nodes:
+        suffix = "_biased" if op == "bias" else ""
+        expected[p, f"ffn_moe_{role}{suffix}-{layer}"] = "bias" if op == "bias" else "physical"
+    shapes = {}
+    pitches = defaultdict(set)
+    for p, kind, name, dtype, *layout in records(text, "RANK_VIEW"):
+        phase = int(p)
+        ne0, ne1, ne2, ne3, s0, s1, s2, s3, size = map(int, layout)
+        need(
+            expected.get((phase, name)) == kind and (phase, name) not in shapes, "rank witness site"
+        )
+        need(
+            int(dtype) == 26
+            and (ne0, ne1, ne2, ne3) == (4, WIDTHS[phase], 1, 1)
+            and s0 == 4
+            and s1 >= 16
+            and s1 % 4 == 0
+            and min(s2, s3) > 0
+            and size == 16 + (ne1 - 1) * s1,
+            "rank witness dtype/shape/strides",
+        )
+        shapes[phase, name] = True
+        pitches[f"{phase}:{kind}"].add(s1)
+    need(set(shapes) == set(expected), "incomplete exact rank-view witness")
+    return {k: sorted(v) for k, v in sorted(pitches.items())}
+
+
 def bank_step(routes, bound, fills, state, nslots):
     need(len(routes) == len(bound) and all(0 <= s < nslots for s in bound), "physical slot range")
     mapping = {}
@@ -274,6 +303,7 @@ def check_arm(mode, text, log, folder):
         )
         need(unknown == 0, "INCONCLUSIVE unattributed H2D before ranks")
     route, nodes = sites(text)
+    view_pitches = rank_views(text, route, nodes)
     orig = {}
     for name, ptr, size, offset, typ, buf in records(text, "ORIG"):
         need(name not in orig, "duplicate original")
@@ -411,6 +441,7 @@ def check_arm(mode, text, log, folder):
     return dict(
         mode=mode,
         slots=slots,
+        rank_pitch_bytes=view_pitches,
         logits_sha256=outputs,
         ordered_top4_sha256=route_sha,
         reconciled=prices,

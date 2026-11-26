@@ -4,6 +4,7 @@
 #include "../../cpu_numeric/vma/inspect.hpp"
 #include "ggml-backend.h"
 #include "hooks.hpp"
+#include "rank_view.hpp"
 #include <atomic>
 #include <cinttypes>
 #include <filesystem>
@@ -82,9 +83,14 @@ extern "C" ggml_status ggml_backend_graph_compute_async(ggml_backend_t b, ggml_c
     return rc;
 }
 
-static std::string rank_ids(const ggml_tensor *ids) {
-    must(ids && ids->type == GGML_TYPE_I32 && ids->ne[0] == 4 && ids->ne[1] >= 1
-         && ids->ne[1] <= 32 && ids->ne[2] == 1 && ids->ne[3] == 1 && ids->nb[0] == 4, "rank shape");
+static std::string rank_ids(const ggml_tensor *ids, const ggml_tensor *node, const char *kind) {
+    must(ids && node, "rank operand missing");
+    std::printf("RANK_VIEW %d %s %s %d %lld %lld %lld %lld %zu %zu %zu %zu %zu\n",
+                observe::phase, kind, node->name, int(ids->type),
+                (long long)ids->ne[0], (long long)ids->ne[1], (long long)ids->ne[2], (long long)ids->ne[3],
+                ids->nb[0], ids->nb[1], ids->nb[2], ids->nb[3], ggml_nbytes(ids));
+    must(tiny_rank::valid(ids, observe::phase == 3 ? 32 : 1), "rank shape/stride/extent");
+
     std::string arg;
     for (int i=0; i<ids->ne[1]; ++i) {
         int32_t v[4]{};
@@ -97,11 +103,11 @@ static std::string rank_ids(const ggml_tensor *ids) {
     return arg;
 }
 static int callback(ggml_tensor *t, bool ask, void *) {
-    const bool route = !std::strncmp(t->name,"ffn_moe_topk-",13);
+    const bool route = tiny_rank::router(t->name);
     if (!interest(t) && !route) return false;
     if (ask) return 1; // stock scheduler synchronizes before reading this node
     if (route) {
-        std::printf("ROUTE %d %s %s\n",observe::phase,t->name,rank_ids(t).c_str());
+        std::printf("ROUTE %d %s %s\n",observe::phase,t->name,rank_ids(t,t,"logical").c_str());
         return 1;
     }
     const bool mm = multiply(t);
@@ -109,7 +115,7 @@ static int callback(ggml_tensor *t, bool ask, void *) {
     must(w, "consumer weight");
     auto *buf = w->view_src ? w->view_src->buffer : w->buffer;
     must(buf && t->buffer, "materialized operand");
-    const auto arg = rank_ids(t->src[2]);
+    const auto arg = rank_ids(t->src[2],t,mm?"physical":"bias");
     std::printf("NODE %d %zu %s %s %s %zu %lld %zu %s %s %s\n",observe::phase,uintptr_t(t),
                 mm ? "mm" : "bias",t->name,w->name,uintptr_t(w->data),(long long)w->ne[2],
                 w->nb[2],ggml_backend_buffer_name(buf),ggml_backend_buffer_name(t->buffer),arg.c_str());
