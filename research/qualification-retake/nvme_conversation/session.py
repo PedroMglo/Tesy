@@ -69,6 +69,13 @@ def validate_c270(path):
     return p, sha256(path)
 
 
+def require_session_id(rid):
+    check(
+        rid.startswith("tesy-c281-nvme-") and rid.replace("-", "").isalnum(),
+        "invalid session identity",
+    )
+
+
 def campaign(a, out, runtime=None):
     frozen = sources() if runtime is None else sources(runtime.selection)
     historical = frozen if runtime is None else runtime.historical_projection(frozen)
@@ -100,10 +107,7 @@ def campaign(a, out, runtime=None):
     check(shutil.disk_usage(out).free >= 11 * 2**30, "11 GiB destination reserve unavailable")
     idle_port()
     rid = a.unit
-    check(
-        rid.startswith("tesy-c281-nvme-") and rid.replace("-", "").isalnum(),
-        "invalid session identity",
-    )
+    require_session_id(rid)
     check(
         subprocess.check_output(
             ["systemctl", "--user", "show", rid + ".service", "-p", "LoadState", "--value"],

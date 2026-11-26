@@ -14,6 +14,7 @@ MODES = {"FILTER": "ON", "FIXED": "ON", "SERIAL": "OFF", "R": "R"}
 
 class Runtime(S["Runtime"]):
     def __init__(self, a, root, mode):
+        H["SESSION"].require_session_id(a.unit)
         super().__init__(a, root, mode)
         reviewed = G["read"](HERE / "result.json", REVIEW)
         pin = sha(a.lookup_run / "result.json")
