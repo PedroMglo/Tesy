@@ -1,0 +1,6 @@
+    const llama_pos first = llama_memory_seq_pos_min(mem, 0);
+    const llama_pos last = llama_memory_seq_pos_max(mem, 0);
+    std::cout << "SWA_KV " << path.filename().string() << " " << n << " "
+              << first << " " << last << "\n" << std::flush;
+    check(n >= 189 && n <= 194 && first >= 61 && first <= n-128 && last == n-1,
+          "imported sliding-window positions");
