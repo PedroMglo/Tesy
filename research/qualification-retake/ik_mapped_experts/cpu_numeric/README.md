@@ -16,6 +16,8 @@
 | Pico de RAM cobrado ao cgroup (GiB) | 9,504 | 9,505 |
 | Eventos high / max / OOM, swap de pico (B) | 72 107 / 0 / 0 / 0 | 52 510 / 0 / 0 / 0 |
 
+As 57 e 39 amostras registaram máximos CPU/GPU/NVMe de 70,75/47,99/42,85 °C em D0 e 57,00/43,98/41,85 °C em D1. A VRAM total amostrada foi 2 MiB em ambos os braços. O PSS máximo amostrado do processo foi 8,639/10,997 GB; estas vistas de ficheiro podem incluir páginas partilhadas cobradas fora do scope.
+
 D1 registou ainda 458 752 B lidos pelo cgroup em 8:0. Os pesos do modelo estavam no NVMe em ambos. As leituras do namespace incluem outros utilizadores, as páginas residentes podem estar cobradas a outro cgroup e o censo não identifica a interseção com os experts pedidos. As quatro threads adicionais foram observadas no D1. O seu tempo de serviço, as páginas que anteciparam e a poupança causal permanecem desconhecidos. A ordem fixa, a diferença inicial de 7,987 GB na cache e uma observação por braço impedem usar a diferença de tempos como ganho M4. A energia em joules permanece desconhecida.
 
 A reanálise dos contadores monotónicos por fase também encontrou uma diferença estritamente positiva. Durante a chamada de um teacher, o cgroup contabilizou **3,169 a 7,991 GB mais leituras no NVMe interno em D0 do que em D1**. Para a chamada de 16, o intervalo foi 1,538 a 6,756 GB. Os limites cobrem o erro de alinhamento e de recolha das amostras. Uma leitura emitida numa fase pode ser contabilizada noutra. [Limites por fase, namespace e controlos](phase_io/README.md)
