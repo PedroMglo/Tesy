@@ -2,8 +2,8 @@
 
 import argparse
 import hashlib
-import os
 import json
+import os
 import re
 import subprocess
 from pathlib import Path
@@ -22,7 +22,10 @@ TINY_SHA = "b10222365dec972020668e3e9a9874018f8af2a7170ddef2c9f97ff60018cd92"
 def imported(lib):
     text = subprocess.check_output(["/usr/bin/nm", "-Du", lib], text=True)
     return sorted(
-        {m[1].split("@")[0] for m in re.finditer(r"\bU (cuda(?:Memcpy|HostRegister)\S*)", text)}
+        {
+            m[1].split("@")[0]
+            for m in re.finditer(r"\bU (cuda(?:Memcpy|Memset|HostRegister)\S*)", text)
+        }
     )
 
 
@@ -157,6 +160,8 @@ def build(a, out, r):
             "cudaMemcpy2D",
             "cudaMemcpy2DAsync",
             "cudaHostRegister",
+            "cudaMemset",
+            "cudaMemsetAsync",
             "cudaMemcpyPeerAsync",
             "cudaMemcpy3DPeerAsync",
         }

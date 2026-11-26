@@ -56,6 +56,65 @@ def coverage(spans, expected):
     need(end == expected, "missing transfer extent")
 
 
+def nonmatrix_source(offset, size, enclosing):
+    if offset >= 0:
+        for (layer, role), base in WEIGHTS.items():
+            if base + TENSOR <= offset < offset + size <= base + TENSOR + 8192:
+                return f"mapped_bias_L{layer}_{role}"
+        return "other_mapped_GGUF"
+    name = enclosing["name"] if enclosing else ""
+    if name and ("slot_map" in name or "inp_pos" in name or "inp_tokens" in name):
+        return "ids_or_positions"
+    if name and "_exps.weight" in name:
+        return "unknown_staged_expert"
+    if name and name != "-":
+        return "other_named_host"
+    return "unattributed_host"
+
+
+def transfer_order(text):
+    """SET IDs precede their calls, and a bank fill lies between route and consumer."""
+    sets = {}
+    submitted = {}
+    finished = {}
+    routed = {}
+    bank_calls = []
+    for index, line in enumerate(text.splitlines()):
+        words = line.split()
+        if not words:
+            continue
+        tag = words[0]
+        if tag == "ROUTE":
+            routed[int(words[1]), int(words[2].rsplit("-", 1)[1])] = index
+        elif tag == "SET":
+            sets[int(words[2])] = (int(words[1]), words[5])
+        elif tag == "COPY":
+            p, owner, kind, n, off = map(int, (words[1], words[2], words[4], words[7], words[8]))
+            if not (kind == 1 and n):
+                continue
+            if owner:
+                need(owner in sets and sets[owner][0] == p, "copy before enclosing SET")
+            part = weight_slice(off, n)
+            if part and owner and sets[owner][1].startswith("moe_cache."):
+                (layer, role), _ = part
+                need((p, layer) in routed, "bank transfer before routed site")
+                bank_calls.append((index, p, layer, role))
+        elif tag == "SUBMIT":
+            submitted[words[1], words[2]] = index
+        elif tag == "NODE":
+            p, ptr = words[1], words[2]
+            layer = int(words[4].rsplit("-", 1)[1])
+            need(
+                (p, ptr) in submitted and (int(p), layer) in routed,
+                "consumer before submit or route",
+            )
+            if words[3] == "mm":
+                role = words[4].split("_")[2].rsplit("-", 1)[0]
+                finished[int(p), layer, role] = submitted[p, ptr]
+    for index, phase, layer, role in bank_calls:
+        need(index < finished.get((phase, layer, role), -1), "bank copy after consumer submission")
+
+
 def evidence(text):
     sets = {}
     for p, idx, parent, api, name, dst, off, n, src, fo in records(text, "SET"):
@@ -84,7 +143,7 @@ def evidence(text):
             continue
         match = weight_slice(offset, n)
         if not match:
-            other[phase, "unlinked_host" if offset < 0 else "mapped_bias_or_other"] += n
+            other[phase, nonmatrix_source(offset, n, sets.get(owner))] += n
             continue
         need(owner in sets, "H2D from matrix has no enclosing SET")
         event = sets[owner]
@@ -195,7 +254,21 @@ def check_arm(mode, text, log, folder):
         mode in MODES and records(text, "STATUS") == [["COMPLETED_TINY_HYBRID_CLIENT"]],
         "native closure",
     )
+    transfer_order(text)
     uploads, total_bytes, other = evidence(text)
+    memset_bytes = Counter()
+    for p, api, _dst, _value, n, rc in records(text, "MEMSET"):
+        need(api in ("sync", "async") and int(n) >= 0 and int(rc) == 0, "CUDA memset")
+        memset_bytes[p] += int(n)
+    peer = records(text, "PEER")
+    need(not peer, "unexpected peer transfer with a single visible device")
+    if mode != "CPU":
+        unknown = sum(
+            other.get(f"{p}:{src}", 0)
+            for p in (1, 2)
+            for src in ("unattributed_host", "unknown_staged_expert")
+        )
+        need(unknown == 0, "INCONCLUSIVE unattributed H2D before ranks")
     route, nodes = sites(text)
     orig = {}
     for name, ptr, size, offset, typ, buf in records(text, "ORIG"):
@@ -331,5 +404,54 @@ def check_arm(mode, text, log, folder):
         startup_matrix_H2D_bytes=sum(x["size"] for x in startup),
         cuda_copy_request_bytes=total_bytes,
         other_H2D_bytes=other,
+        device_memset_bytes=dict(memset_bytes),
+        peer_copy_events=len(peer),
         host_registration_events=len(records(text, "REG")),
+    )
+
+
+def compare_arms(reference_dir, reference_grade, candidate_dir, candidate_grade):
+    """Reopen both full files. Compare ordered routes and logits as separate contracts."""
+    routes = [g["ordered_top4_sha256"] for g in (reference_grade, candidate_grade)]
+    keys = {"3:0", "3:1", "4:0", "4:1"}
+    need(all(set(r) == keys for r in routes), "complete per-layer route identities")
+    rows = {}
+    for name, count in (("prefill.f32", 32), ("teacher.f32", 1)):
+        data = []
+        values = []
+        for path, g in ((reference_dir, reference_grade), (candidate_dir, candidate_grade)):
+            buf = (path / name).read_bytes()
+            need(len(buf) == 128 * count and sha(buf) == g["logits_sha256"][name], "logit identity")
+            data.append(buf)
+            vals = struct.unpack(f"<{count * 32}f", buf)
+            need(all(map(math.isfinite, vals)), "nonfinite logits")
+            values.append(vals)
+        a, b = values
+        delta = [x - y for x, y in zip(a, b, strict=True)]
+        words = [struct.unpack(f"<{count * 32}I", v) for v in data]
+        diff = [x != y for x, y in zip(*words, strict=True)]
+        argmax_unequal = tied = 0
+        for i in range(0, count * 32, 32):
+            left, right = a[i : i + 32], b[i : i + 32]
+            ml, mr = max(left), max(right)
+            tied += left.count(ml) > 1 or right.count(mr) > 1
+            argmax_unequal += left.index(ml) != right.index(mr)
+        rows[name] = dict(
+            rows=count,
+            columns=32,
+            different_words=sum(diff),
+            different_rows=sum(any(diff[i : i + 32]) for i in range(0, len(diff), 32)),
+            different_first_argmax=argmax_unequal,
+            tied_rows_either=tied,
+            max_abs=max(map(abs, delta)),
+            rmse=math.sqrt(sum(x * x for x in delta) / len(delta)),
+            bitwise=data[0] == data[1],
+        )
+    return dict(
+        reference=reference_grade["mode"],
+        candidate=candidate_grade["mode"],
+        routes_equal=routes[0] == routes[1],
+        ordered_route_agreement={k: routes[0][k] == routes[1][k] for k in sorted(keys)},
+        bitwise=all(r["bitwise"] for r in rows.values()),
+        rows=rows,
     )
