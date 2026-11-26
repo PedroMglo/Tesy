@@ -19,12 +19,12 @@ def identity(st):
     return [st.st_dev, st.st_ino, st.st_size, st.st_mtime_ns, st.st_ctime_ns]
 
 
-def geometry(lines, start, size):
+def geometry(lines, start, size, name=NAME):
     rows = []
     cursor = scratch = 0
     for line in lines:
         v = line.split()
-        if len(v) != 11 or v[:2] != ["SET", "3"] or v[5] != "moe_cache." + NAME:
+        if len(v) != 11 or v[:2] != ["SET", "3"] or v[5] != "moe_cache." + name:
             continue
         offset, dest, n = map(int, (v[10], v[7], v[8]))
         if not start <= offset < start + size:
