@@ -18,6 +18,8 @@ T, K, P, R, F, save = (B[k] for k in ("T", "K", "P", "R", "F", "save"))
 N, SC, PF, OLD, prepare, measure = (T[k] for k in ("N", "SC", "PF", "OLD", "prepare", "measure"))
 BUILD = "8c662cb41b24b675ef28acfd5b1f0938897b09b185ea7949811d62cee636a053"
 SWA_BUILD = "68d0e701b7698a07d7a70f810303e8a47613f24dafac611ab34e02c6f2279669"
+LIVE_BUILD = "e62c3d6470ddd7cb53e971d56b08028a175ee46ced547540b83e2f24af0255a4"
+COLD_IMPORT = "d3d6cdd5a26ffcc26be4097bf7db627a658f3b1fbac126e914345af0ebbd2ed6"
 SWA = run_path(str(HERE / "swa.py"))
 
 
@@ -59,6 +61,7 @@ def audit(root, unit, mode, cfg, cmd):
         need(cmd[j] == "--env" and key not in vars, "explicit environment")
         vars[key] = value
     run_unit = unit.rsplit("-", 1)[0]
+    label = "C269-live189-" if cfg["schema"] == "tesy-live-prefix-v1" else "C269-rollback189-"
     original_root = Path(cmd[-1]).parents[2]
     extra = T["flags"]("CUDA") | {"TESY_ROLLBACK_AR": str(capture(original_root, run_unit, "AR"))}
     need(
@@ -67,7 +70,7 @@ def audit(root, unit, mode, cfg, cmd):
         and m["command"] == cmd[-6:]
         and cmd[-2] == mode
         and cfg["native_variant"] == mode
-        and m["variant"] == "C269-rollback189-" + mode
+        and m["variant"] == label + mode
         and m["process_identity"] == launch["process_identity"]
         and sha(root / "rollback-resource.json")
         == m["limits"]["resource_protocol_sha256"]
@@ -117,7 +120,7 @@ def arm(a, out, mode, b, auth, serial, target, ctrl, gold, pins, spec):
         },
     )
     cfg = read(root / "protocol.json") | dict(
-        schema="tesy-rollback-restored-v1",
+        schema="tesy-live-prefix-v1" if a.live_prefix else "tesy-rollback-restored-v1",
         pinned=sealed,
         native_variant=mode,
         runner_sha256=sha(P["MONITOR"]),
@@ -132,7 +135,8 @@ def arm(a, out, mode, b, auth, serial, target, ctrl, gold, pins, spec):
         base, exe.resolve(strict=True), auth.exe, target, "B3", unit, config
     )
     cmd[-2] = mode
-    cmd[cmd.index("--variant") + 1] = "C269-rollback189-" + mode
+    label = "C269-live189-" if a.live_prefix else "C269-rollback189-"
+    cmd[cmd.index("--variant") + 1] = label + mode
     ar = capture(out, a.unit, "AR")
     extra = T["flags"]("CUDA") | {"TESY_ROLLBACK_AR": str(ar)}
     j = cmd.index("--", cmd.index("--env"))
@@ -156,7 +160,12 @@ def arm(a, out, mode, b, auth, serial, target, ctrl, gold, pins, spec):
     )
     linkage = auth.audit(raw, identity["pid"])
     need({Path(path).name for path in mapped} <= linkage["initialized"].keys(), "observed runtime")
-    g = G["compare"](capture(out, a.unit, mode), mode, target, serial, ar)
+    cap = capture(out, a.unit, mode)
+    if a.live_prefix:
+        grade = run_path(str(HERE / "live_prefix/grade.py"))["grade"]
+        g = grade(cap, mode, target, ar, a.cold_import)
+    else:
+        g = G["compare"](cap, mode, target, serial, ar)
     if a.swa_restore:
         g["kv_ranges"] = SWA["snapshots"](capture(out, a.unit, mode), mode)
     save(root / "grade.json", g)
@@ -176,8 +185,8 @@ def arm(a, out, mode, b, auth, serial, target, ctrl, gold, pins, spec):
 
 
 def run(a, out, r):
-    protocol, method = B["contract"](a.swa_restore)
-    build = SWA_BUILD if a.swa_restore else BUILD
+    protocol, method = B["contract"](a.swa_restore, a.live_prefix)
+    build = LIVE_BUILD if a.live_prefix else SWA_BUILD if a.swa_restore else BUILD
     need(
         sha(a.build / "receipt.json") == build
         and re.fullmatch(r"tesy-rollback-[a-z0-9-]+", a.unit)
@@ -187,11 +196,11 @@ def run(a, out, r):
     )
     b = read(a.build / "receipt.json")
     need(
-        b["status"] == "GO_ROLLBACK_AR_CONTROL"
+        b["status"] == ("GO_LIVE_AR_CONTROL" if a.live_prefix else "GO_ROLLBACK_AR_CONTROL")
         and b["protocol_sha256"] == method == sha(HERE / protocol)
         and all(sha(Path(k)) == v for k, v in b["headers_sha256"].items())
         and sha(a.build / "rollback.cpp") == b["source_sha256"]
-        and (a.build / "rollback.cpp").read_text() == B["source"](a.swa_restore),
+        and (a.build / "rollback.cpp").read_text() == B["source"](a.swa_restore, a.live_prefix),
         "exact client/header closure",
     )
     auth = K["OLD"]["Authority"](a.static, a.build, b["elf_sha256"], b["image_sha256"])
@@ -208,6 +217,10 @@ def run(a, out, r):
         "runtime and C55",
     )
     src = sources(a)
+    if a.live_prefix:
+        cold = R["reopen"](a.cold_import, COLD_IMPORT)
+        need(cold["status"] == "FAIL_PRESERVED" and cold["model_starts"] == 1, "cold contrast")
+        r["cold_import_sha256"] = COLD_IMPORT
     if a.swa_restore:
         target = src[1]
         r["input_KV"] = SWA["contents"](target / "initial-kv.bin", 189, SWA["banks"](target))
@@ -218,7 +231,7 @@ def run(a, out, r):
         build_sha256=build,
         protocol_sha256=method,
         runner_sha256=sha(Path(__file__)),
-        grader_sha256=sha(HERE / "grade.py"),
+        grader_sha256=sha(HERE / ("live_prefix/grade.py" if a.live_prefix else "grade.py")),
         target_sha256=B["PARENT"],
         serial_sha256=K["D"]["SERIAL"],
         window_sha256=a.window_sha256,
@@ -226,10 +239,16 @@ def run(a, out, r):
         driver=auth.kernel,
         arms={},
     )
-    for mode in G["CASES"]:
+    for mode in ("AR", "B3", "RESTORE") if a.live_prefix else G["CASES"]:
         r["stage"] = mode
         r["arms"][mode] = arm(a, out, mode, b, auth, *src)
-    r["status"] = "GO_GREEDY_ROLLBACK_AND_CONTINUATION"
+        outcome = r["arms"][mode]["status"]
+        if outcome.startswith("NO_GO_"):
+            r["status"] = outcome
+            return
+    r["status"] = (
+        "GO_LIVE_AND_WARM_CALIBRATION" if a.live_prefix else "GO_GREEDY_ROLLBACK_AND_CONTINUATION"
+    )
 
 
 if __name__ == "__main__":
@@ -247,7 +266,10 @@ if __name__ == "__main__":
         p.add_argument("--" + k, type=Path, required=True)
     for k in ("unit", "window-sha256", "commit"):
         p.add_argument("--" + k, required=True)
-    p.add_argument("--swa-restore", action="store_true")
+    modes = p.add_mutually_exclusive_group()
+    modes.add_argument("--swa-restore", action="store_true")
+    modes.add_argument("--live-prefix", action="store_true")
+    p.add_argument("--cold-import", type=Path)
     a = p.parse_args()
     os.umask(0o077)
     out = a.new_output_dir.resolve()
@@ -255,10 +277,10 @@ if __name__ == "__main__":
     r = dict(status="FAIL_PRESERVED", generation_requests=0)
 
     def expire(*_):
-        raise TimeoutError("25 minute family cap")
+        raise TimeoutError("family time cap")
 
     signal.signal(signal.SIGALRM, expire)
-    signal.alarm(1500)
+    signal.alarm(1080 if a.live_prefix else 1500)
     try:
         with (Path("/run/user") / str(os.getuid()) / "tesy-c110-callback.lock").open("a") as lock:
             fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
