@@ -353,6 +353,7 @@ def run(a, out, r):
             mode, (parent / "stdout").read_text(), (parent / "stderr").read_text(), folder
         )
         s["grade"] = current
+        need(current["host_registration_events"] == 0, "observable CUDA host registration")
         if mode == "RESIDENT":
             resident, resident_grade = folder, current
             s["cpu_comparison"] = grade["compare_arms"](cpu_dir, cpu_grade, folder, current)
