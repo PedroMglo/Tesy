@@ -1,5 +1,7 @@
 # Qualificação da conversa local com o GPT-OSS-120B
 
+**26 de novembro · um filtro causal reduz rejeições e deixa o prefill em aberto.** T2 passou de cinco rejeições imediatas a uma no replay. Cinco verificações inéditas e a alteração da cache teriam 0,828–0,858 s no total para 6 tok/s. Com o seu custo fixado em zero, o primeiro final ainda ficaria em 16,917–16,948 s. [O que foi observado, custos em falta e saldo do prefill](packed_nvme_manifest/server_profile/verified_block/server_reserve/causal_server/http/kv_width/natural/cpu_attention/target/http/context.md)
+
 **26 de novembro · NO_GO para a proposta fixa no nominal.** Os quatro servidores passaram os oito pedidos. Com o mesmo binário e pack, T2 fez 5,158 tok/s em serial e 4,754 tok/s com a proposta. As seis aceitações completas pouparam 0,455 s e as cinco rejeições custaram 1,323 s no relógio nativo. [Comparação completa, latência do cliente e custos por grupo](packed_nvme_manifest/server_profile/verified_block/server_reserve/causal_server/http/kv_width/natural/cpu_attention/target/http/family.md)
 
 **26 de novembro · dois turnos naturais completos com proposta de dois tokens.** Em T2 o cliente validou a resposta em 19,279 s, com primeiro final em 19,007 s e 4,941 tok/s. A comparação com os três controlos ficou pendente após uma falha no relatório, reproduzida e corrigida sem modelo. [Tempos, aceitação e limites](packed_nvme_manifest/server_profile/verified_block/server_reserve/causal_server/http/kv_width/natural/cpu_attention/target/http/first-session.md)
