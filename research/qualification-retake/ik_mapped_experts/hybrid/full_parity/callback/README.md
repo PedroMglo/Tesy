@@ -1,6 +1,6 @@
 # Controlo sem callback e custo de leitura do prefill
 
-**REPRODUZIDO.** Ao reler os dois braços ON do GPT-OSS-120B, o verificador passivo reconstruiu cada triplo de camada/expert/slot para os três pesos, nas duas fases. De cada SET seguiu os offsets de ficheiro e de destino até à conclusão das cópias CUDA. A comparação com o ledger independente do callback encontrou zero fatias em excesso e zero em falta. O marcador OFF e a saída precoce por IDs inválidos passaram num ELF novo. Os dois forwards físicos OFF têm estado **NOT_RUN_GPU_REQUIRED**. [Critérios congelados](protocol.md) · [Prova de transporte por braço](rounding.json)
+**REPRODUZIDO.** Ao reler os dois braços ON do GPT-OSS-120B, o verificador passivo reconstruiu cada triplo de camada/expert/slot para os três pesos, nas duas fases. De cada SET seguiu os offsets de ficheiro e de destino até à conclusão das cópias CUDA. A comparação com o ledger independente do callback encontrou zero fatias em excesso e zero em falta. O marcador OFF e a saída precoce por IDs inválidos passaram num ELF novo. O lote 142 encerrou em **NOT_RUN_GPU_REQUIRED** para os forwards OFF. Após a recuperação da RTX, o lote 144 executou esses forwards com os dois bancos e os respetivos controlos ON. [Critérios congelados](protocol.md) · [Prova de transporte por braço](rounding.json) · [Resultado físico posterior](../../driver_62073/README.md)
 
 ## Que parte das leituras cabe nas matrizes?
 
