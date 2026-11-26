@@ -21,4 +21,4 @@ python3 -IB "$HTTP/prefill_io.py" --family "$AR/part-185/tesy-c281-cpu-rows-http
   --commit "$MEASUREMENT_COMMIT" --new-output-dir "$NEW_IO_REVIEW"
 ```
 
-Para distinguir recargas evitáveis de primeiros acessos obrigatórios, a observação seguinte é a identidade camada/expert e a geração de cada reserva nas cinco tiles da mesma chamada de 148. A contagem estabelece se eliminar todas as recargas observadas daria sequer o volume necessário antes de alterar o scheduler.
+O cruzamento por camada, expert e geração identificou as leituras repetidas nas cinco tiles da mesma chamada de 148. [Teto de volume das recargas](reloads.md)
