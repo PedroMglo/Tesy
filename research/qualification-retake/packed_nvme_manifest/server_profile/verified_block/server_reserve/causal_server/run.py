@@ -143,7 +143,17 @@ def run(a, out, r):
     cmd = [driver, "-O0", "-g0", "-std=c++17", "-MMD", "-MF", out / "headers.d"]
     for folder in ("common", "include", "ggml/include", "vendor", "vendor/nlohmann"):
         cmd += ["-I", a.backend / folder]
-    cmd += [HERE / "server_plan.cpp", dso, "-Wl,-rpath-link," + str(dso.parent), "-o", exe]
+    # common_params constructs device lists through the public llama_max_devices symbol.
+    target_lib = Path(static["closure"]["libllama.so.0"]["file"])
+    need(sha(target_lib) == GRAPH["PACK"], "direct CLI dependency from product closure")
+    cmd += [
+        HERE / "server_plan.cpp",
+        dso,
+        target_lib,
+        "-Wl,-rpath-link," + str(dso.parent),
+        "-o",
+        exe,
+    ]
     GRAPH["command"](cmd, out, out, "compile", env)
     deps = shlex.split(
         (out / "headers.d").read_text().replace(chr(92) + "\n", " ").split(":", 1)[1]
