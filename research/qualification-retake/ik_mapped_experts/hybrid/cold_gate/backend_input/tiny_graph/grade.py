@@ -1,6 +1,8 @@
 """Bind the two physical source paths before replaying the archived bank grader."""
 
+import ctypes
 import hashlib
+import mmap
 import os
 from pathlib import Path
 from runpy import run_path
@@ -24,6 +26,30 @@ def region(vmas, address, size):
     hits = [v for v in vmas if v[0] <= address < address + size <= v[1]]
     need(len(hits) == 1, "physical source VMA")
     return hits[0]
+
+
+def mapped_device(path):
+    # Linux can expose a Btrfs subvolume through st_dev and the superblock through maps.
+    # Bind those namespaces using a read-only VMA of the authenticated fd, as in inspect.hpp.
+    api = run_path(str(HERE.parents[1] / "transfer.py"))
+    page = mmap.PAGESIZE
+    with path.open("rb") as f:
+        st = os.fstat(f.fileno())
+        need(os.path.samestat(path.stat(), st), "original witness descriptor")
+        address = api["file_map"](None, page, mmap.PROT_READ, mmap.MAP_SHARED, f.fileno(), 0)
+        need(address not in (None, ctypes.c_void_p(-1).value), "map original witness")
+        try:
+            v = region(maps(Path("/proc/self/maps")), address, page)
+            need(
+                v[2] == "r--s"
+                and v[5] == st.st_ino
+                and v[6] == [str(path.resolve())]
+                and v[3] + address - v[0] == 0,
+                "original witness VMA",
+            )
+            return tuple(int(x, 16) for x in v[4].split(":"))
+        finally:
+            need(api["unmap"](address, page) == 0, "unmap original witness")
 
 
 def schedule(raw):
@@ -58,6 +84,7 @@ def audit(
     vmas = {p: maps(native / f) for p, f in (vma_files or {3: "maps", 4: "maps"}).items()}
     expected_bytes = expected_bytes or {3: 1044480, 4: 104448}
     stat = model.stat()
+    expected_device = mapped_device(model)
     sets, sources, copied, physical_h2d = {}, {}, {}, []
     phase_bytes = {3: 0, 4: 0}
     gets, fences, routes = [], [], {}
@@ -146,7 +173,7 @@ def audit(
                 v[2].startswith("r-")
                 and v[5] == stat.st_ino
                 and v[6] == [str(model)]
-                and device == (os.major(stat.st_dev), os.minor(stat.st_dev))
+                and device == expected_device
                 and v[3] + orig - v[0] == off,
                 "original GGUF VMA",
             )

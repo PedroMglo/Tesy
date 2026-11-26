@@ -1,6 +1,5 @@
 """Independent, deliberately small journals for the physical-to-logical source join."""
 
-import os
 from pathlib import Path
 from runpy import run_path
 
@@ -13,10 +12,11 @@ def example(folder, mode):
     tiny = folder / "example.gguf"
     tiny.write_bytes(b"fixture")
     s = tiny.stat()
+    major, minor = A["mapped_device"](tiny)
     model, arena, dst = 0x10000000, 0x20000000, 0x30000000
     (folder / "maps").write_text(
         f"{model:x}-{model + 3390592:x} r--s 00000000 "
-        f"{os.major(s.st_dev):x}:{os.minor(s.st_dev):x} "
+        f"{major:x}:{minor:x} "
         f"{s.st_ino} {tiny}\n{arena:x}-{arena + (1 << 20):x} rw-p 00000000 00:00 0\n"
     )
     lines = []
@@ -60,6 +60,21 @@ def test_physical_sources(tmp_path, mode):
     assert receipt["bank_sets"] == receipt["physical_copies"] == 9
     assert receipt["id_fences"] == 4
     assert all(int(w[7]) >= 0 for w in A["G"]["records"](logical, "COPY"))
+
+
+def test_require_device_of_authenticated_mapping(tmp_path, monkeypatch):
+    lines, tiny = example(tmp_path, "DIRECT")
+    raw = "\n".join(lines)
+    vm = tmp_path / "maps"
+    rows = vm.read_text().splitlines()
+    words = rows[0].split()
+    words[3] = "0a:ee"
+    vm.write_text(" ".join(words) + "\n" + rows[1] + "\n")
+    monkeypatch.setitem(A["audit"].__globals__, "mapped_device", lambda _: (10, 238))
+    assert A["audit"](raw, "DIRECT", tmp_path, tiny)[1]["bank_sets"] == 9
+    monkeypatch.setitem(A["audit"].__globals__, "mapped_device", lambda _: (10, 239))
+    with pytest.raises(ValueError, match="original GGUF VMA"):
+        A["audit"](raw, "DIRECT", tmp_path, tiny)
 
 
 @pytest.mark.parametrize(
