@@ -17,6 +17,8 @@ Em cada braço, as 216 multiplicações por experts foram submetidas à GPU. As 
 
 ## Reproduzir sem modelo
 
+A reanálise das chamadas de cópia permite quantificar a parte das leituras que uma passagem pelos intervalos de matriz poderia explicar. [Limites por fase e cliente com seleção ON/OFF](callback/README.md)
+
 O commit físico do Tesy é `69ca7a9f7fd9e7a54cb29cb00fcf7c607f9aefb8`, árvore `ce8116399015833d0f8ad08c521ac793c1f8aab6`. O fork ik é `7a5d90009b7ae55d3239cdd33244977c4eb10ff6`. Os dois arranques físicos antecedem este revisor. Depois do reinício, a cópia temporária do revisor anterior ficou indisponível. Este revisor relê os recibos originais, os journals, os logits de referência e as cópias por braço com o avaliador do commit físico. O arquivo contém 43 ficheiros e 6 677 095 B. [Manifesto público](../../../private_archive/part-141.json) · [Código da reanálise](review.py)
 
 ```sh
