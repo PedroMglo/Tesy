@@ -1,5 +1,7 @@
 # Qualificação da conversa local com o GPT-OSS-120B
 
+**26 de novembro · NO_GO para a proposta fixa no nominal.** Os quatro servidores passaram os oito pedidos. Com o mesmo binário e pack, T2 fez 5,158 tok/s em serial e 4,754 tok/s com a proposta. As seis aceitações completas pouparam 0,455 s e as cinco rejeições custaram 1,323 s no relógio nativo. [Comparação completa, latência do cliente e custos por grupo](packed_nvme_manifest/server_profile/verified_block/server_reserve/causal_server/http/kv_width/natural/cpu_attention/target/http/family.md)
+
 **26 de novembro · dois turnos naturais completos com proposta de dois tokens.** Em T2 o cliente validou a resposta em 19,279 s, com primeiro final em 19,007 s e 4,941 tok/s. A comparação com os três controlos ficou pendente após uma falha no relatório, reproduzida e corrigida sem modelo. [Tempos, aceitação e limites](packed_nvme_manifest/server_profile/verified_block/server_reserve/causal_server/http/kv_width/natural/cpu_attention/target/http/first-session.md)
 
 **26 de novembro · controlo serial do novo binário qualificado.** No 120B, os cinco vetores de logits, o KV completo, os IDs e a cache de experts coincidiram com a referência independente. Um primeiro arranque foi interrompido pelo supervisor antes da geração. A fixture do observador e o novo arranque permitem passar à conversa HTTP de dois turnos. [Controlo serial e falhas preservadas](packed_nvme_manifest/server_profile/verified_block/server_reserve/causal_server/http/kv_width/natural/cpu_attention/target/http/README.md)
