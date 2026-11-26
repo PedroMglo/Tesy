@@ -1,5 +1,7 @@
 # Qualificação da conversa local com o GPT-OSS-120B
 
+**26 de novembro · NO_GO para ativar o filtro de contexto no nominal.** Nos oito pedidos válidos, o filtro recuperou 0,391 s de decode contra a proposta fixa em T2. O serial com o mesmo binário e pack fez 5,332 tok/s e chegou ao primeiro final em 18,271 s. O filtro fez 5,213 tok/s e chegou em 18,514 s. Os cinco grupos novos custaram 2,351 s. [Comparação por turno, custos individuais e recursos](packed_nvme_manifest/server_profile/verified_block/server_reserve/causal_server/http/kv_width/natural/cpu_attention/target/http/lookup/http.md)
+
 **26 de novembro · filtro de decode implementado no proposer nativo.** A opção N3/M2 do pin deu zero propostas. O novo ELF comum com filtro N2/M2 reproduziu os sete blocos de cada turno e todos os IDs confirmados no replay. [Dois builds, controlo OFF e critérios de integração](packed_nvme_manifest/server_profile/verified_block/server_reserve/causal_server/http/kv_width/natural/cpu_attention/target/http/lookup/README.md)
 
 **26 de novembro · a primeira regra causal de empréstimo perdeu 13 leituras.** Acertou em 15 reservas, mas precisou de 11 reparações antes dos leitores e 17 para devolver o estado de entrada no decode. Fecha esta regra de prefill. [Dois traces, ablação e comparação com a agenda offline](packed_nvme_manifest/server_profile/verified_block/server_reserve/causal_server/http/kv_width/natural/cpu_attention/target/http/loan.md)
