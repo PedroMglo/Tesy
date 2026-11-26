@@ -480,6 +480,16 @@ def run(a, out, r):
                 "STATUS PASS_IK_CPU_NUMERIC_ROWS\n" in transcript and observed == set(held),
                 "native status or VMA",
             )
+            # fstat and /proc/maps use different device numbers on some Btrfs mounts.
+            dev = model_id[0]
+            witness = [os.major(dev), os.minor(dev), *placed_fd.key]
+            native_keys = [
+                list(map(int, line.split()[1:]))
+                for line in transcript.splitlines()
+                if line.startswith("VMA_KEY ")
+            ]
+            need(native_keys == [witness], "native and supervisor FD witnesses differ")
+            r["native_vma_key"] = witness
             r["native_geometry"] = native_geometry(transcript, a.arm, views, b["closure"])
             for ref in held.values():
                 ref.verify()
