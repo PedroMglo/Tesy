@@ -1,6 +1,6 @@
 # Capacidade de carga do cliente ik
 
-O cliente foi ligado às DSOs CUDA sm89 do ik e o inventário das 687 entradas do GGUF foi preparado. Esta etapa executou três testes Python, o compilador e a verificação de símbolos e relocações do ELF. O cliente de capacidade teve **zero execuções**. A capacidade efetiva de criar o contexto 8192 e manter 288 slots na RTX depende da admissão física. [Protocolo da sonda](protocol.md) · [Admissão](admission/protocol.md)
+**R02 qualificou a carga e um contexto vazio de 8 192 posições com ClassLRU de 288 slots.** As 108 matrizes de experts, com 60 914 073 600 B, permaneceram mapeadas no GGUF. O censo de contexto identificou uma vista CPU e uma instância CUDA para cada um dos 108 biases. O máximo de VRAM observado foi 6 150 MiB, com regresso a 2 MiB após o exit. A R01 permanece FAIL porque a pesquisa por nome só identificou a ocorrência CPU. Os dois ensaios terminaram com zero forwards. [Resultados e reprodução](physical/README.md) · [Protocolo da sonda](protocol.md) · [Admissão](admission/protocol.md)
 
 | Identidade | SHA-256 |
 | --- | --- |

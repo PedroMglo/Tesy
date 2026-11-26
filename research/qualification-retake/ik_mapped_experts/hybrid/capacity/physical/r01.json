@@ -1,0 +1,130 @@
+{
+  "family_sha256": "35abb80c85446c4754b6602fb258d2a0841021e8524290ab48d2ecd4ec9bbd00",
+  "family_status": "FAIL_PRESERVED",
+  "geometry": {
+    "bytes": {
+      "bias_first_lookup_CPU": 159252480,
+      "bias_upload": 159252480,
+      "first_lookup_CUDA": 1685668608,
+      "matrix_CPU": 60914073600,
+      "other_CPU": 615329280
+    },
+    "context_bias_instances": 0,
+    "copy_calls": 578,
+    "copy_or_memset_request_bytes": {
+      "1:cudaMemcpyKind1": 1844921088,
+      "1:memset": 22236,
+      "2:memset": 4424329266
+    },
+    "first_lookup_counts": {
+      "bias_first_lookup_CPU": 108,
+      "bias_upload_distinct_from_first_CPU": 108,
+      "first_lookup_CUDA": 470,
+      "matrix_CPU": 108,
+      "other_CPU": 1
+    },
+    "graph_submissions": 0,
+    "matrix_H2D_bytes": 0,
+    "matrix_registrations": 0,
+    "memory": {
+      "CUDA0": {
+        "compute": 71156352,
+        "context": 4424328960,
+        "device": 1,
+        "free": 1791033344,
+        "mmproj": 0,
+        "model": 1844948992,
+        "total": 8238792704
+      },
+      "Host": {
+        "compute": 2466208,
+        "context": 822848,
+        "device": 0,
+        "free": 0,
+        "mmproj": 0,
+        "model": 62758971648,
+        "total": 0
+      }
+    },
+    "mmap_ranges": {
+      "context": 2,
+      "freed": 0,
+      "load": 2
+    },
+    "set_calls": 578
+  },
+  "raw_sha256": {
+    "native/context.maps": "155489839ec399080f6897a6eff358f72b792953369d121c29d90be6deefd663",
+    "native/freed.maps": "4dd99414334f418b32c905b536cda9c06c4e6f0d9e874b85a0a31344e40b3db2",
+    "native/load.maps": "9ea0d753e342b201a87f2884b2af36cab6fed1f69e00ee36e1906769853ef9be",
+    "raw/monitor.jsonl": "02ac9e897a8fef58ee019553a01fa3b76b0f335b967368fd909e0760c2d5e7ce",
+    "raw/stderr": "8a5d31107fccd6c369b063c15c298bf77d9a4212ddfcfb92819c30136f345866",
+    "raw/stdout": "ef3f24c263384e20d6a8f6a47daa889cc824801bf4e7bb79f6322651069d29ab",
+    "raw/tesy-ik-e10-capacity-20261126-r01.start-inventory.jsonl": "0722c223667919e6a386fa795c302bb6546ffb5c3f384c7182785abd0f533fb5"
+  },
+  "reason": "ValueError: bias/output placement",
+  "resources": {
+    "ack_elapsed_s": {
+      "C": 2.47943997499533,
+      "E": 0.2962180949980393,
+      "F": 2.88392688400927,
+      "L": 2.1786957520089345
+    },
+    "c118_s": 60.18107646801218,
+    "c118_samples": 61,
+    "cgroup_events_local": {
+      "high": 0,
+      "low": 0,
+      "max": 0,
+      "oom": 0,
+      "oom_group_kill": 0,
+      "oom_kill": 0,
+      "sock_throttled": 0
+    },
+    "cgroup_high_B": 10200547328,
+    "cgroup_io": {
+      "259:0": {
+        "dbytes": 0,
+        "dios": 0,
+        "rbytes": 1008361472,
+        "rios": 10401,
+        "wbytes": 32768,
+        "wios": 5
+      }
+    },
+    "cgroup_max_B": 10737418240,
+    "child_gone": true,
+    "context_free_s": 0.40448690901394,
+    "entry_load_s": 1.8824776570108952,
+    "load_context_s": 0.30074422298639547,
+    "namespace_read_B": 1008771072,
+    "namespace_read_B_through_final_sample": 1008771072,
+    "peak_cgroup_B": 1349709824,
+    "restored": true,
+    "returncode": 0,
+    "swap_peak_B": 0,
+    "telemetry_samples": 8,
+    "through_child_exit_s": 3.034882595995441,
+    "vram_mib_at_handoff": {
+      "C": 6150.0,
+      "E": 2.0,
+      "F": 102.0,
+      "L": 1862.0,
+      "before_launch": 2.0,
+      "exit": 2.0
+    },
+    "vram_mib_max_sampled": 6150.0
+  },
+  "reviewer_sha256": "5205fcc35739371e0b7f2d7bffd89e68d94dcecacf38b1c9478737e84eae4f81",
+  "sources": {
+    "c55_sha256": "b7289a7242e503820e63dd01b05f76f6acbb3ee156dd12b67d96690238dded6d",
+    "client_sha256": "aa1a4de30a776cf5918ae62daa23da3735fbbf278eb0a04c88f8621bf9f88d17",
+    "commit": "ac8fcbfd21d0b2c9fef27afbe67055750ed9d392",
+    "dso_sha256": "5c648c09e18d29bc47d57af018053f5251f67f85bdd56cfe8f1b954c95470753",
+    "input_sha256": "0c5a1e8b6f0155857b45336a1f8e6df6c3c0e6338415c3db943ddff7652e3a8a",
+    "plan_sha256": "4c60c7ad261c4f61e85c576a08866dd71abb3d1003369bb2876ed3669f9f5730",
+    "prepared_sha256": "59010907f55c366c6956c7be2c9d2b05b3c068cd925744b8a8030b3170ebb84e",
+    "tiny_sha256": "2d165f3e9c8f8108a04e758a5496e610cdbe0051afaee1fe1da35123b8373bfd"
+  },
+  "status": "REPRODUCED_R01_PLACEMENT_FAILURE"
+}
