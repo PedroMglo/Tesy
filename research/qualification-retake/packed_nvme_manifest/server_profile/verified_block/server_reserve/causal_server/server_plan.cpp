@@ -63,7 +63,12 @@ int main(int argc, char **argv) try {
     common_params params;
     require(common_speculative_n_max(&params.speculative) == 0, "plain server reserve");
     require(common_params_parse(argc, argv, params, LLAMA_EXAMPLE_SERVER), "server CLI parse");
-    require(params.speculative.types == std::vector<common_speculative_type>{COMMON_SPECULATIVE_TYPE_NGRAM_SIMPLE} &&
+    // The CLI appends the explicit method to the default NONE entry; NONE registers no engine.
+    std::cerr << "PLAN_CONFIG " << common_speculative_type_name_str(params.speculative.types)
+              << " max=" << common_speculative_n_max(&params.speculative) << '\n';
+    const std::vector<common_speculative_type> parsed{COMMON_SPECULATIVE_TYPE_NONE,
+                                                     COMMON_SPECULATIVE_TYPE_NGRAM_SIMPLE};
+    require(params.speculative.types == parsed &&
             params.speculative.ngram_simple.size_n == 2 && params.speculative.ngram_simple.size_m == 2 &&
             params.speculative.ngram_simple.min_hits == 1 && common_speculative_n_max(&params.speculative) == 2,
             "public ngram settings");
