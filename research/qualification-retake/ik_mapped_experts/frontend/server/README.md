@@ -13,6 +13,21 @@ O driver era 620.73.04. O pico foi 6 206 MiB de VRAM e 16 105 648 128 B no cgrou
 
 Execução em `6ec35dbf`, árvore `1f30cb18957d21e8f76c54b1c623ea719cf69151`. O auditor reconstituiu os dois conteúdos a partir dos deltas SSE, as suas primeiras aparições no relógio do cliente, o histórico e os dois validadores. Os 35 ficheiros privados somam 1 464 169 B. Os originais e o arquivo produziram recibos públicos idênticos com `python3 -IB review.py --family "$FAMILY" --family-sha256 8fc33c06313d1a5888fb1bbb75c9c95cef361382fc6bfd127b0781b4962d602b --new-output-dir "$NEW"`. [Auditor](review.py) · [Manifesto 160](../../../private_archive/part-160.json)
 
+## O que tem de mudar antes do primeiro final
+
+**NO_GO condicional para manter o volume de leitura no prefill a 4,5 GB/s e chegar a exatamente 6 tok/s.** As 223 amostras do processo limitam o prefill de T2 a **17,169–19,997 GB** de `read_bytes`. Mesmo atribuindo ao primeiro final toda a poupança dos 51 tokens de decode a 6 tok/s, só ficam **2,504 s** de prefill, que comportam 11,268 GB. Seria preciso evitar ou antecipar pelo menos **5,901 GB**, ou servir o piso a 6,857 GB/s. Com decode instantâneo e o restante trabalho fixo, o primeiro final ainda demoraria pelo menos 16,174 s. Com prefill instantâneo e o resto fixo, o piso é 29,069 s. Uma combinação pode atuar em ambas as fases. [Protocolo congelado em 52355de7](phase-protocol.md) · [Intervalos e cenários](phase-bounds.json)
+
+| Escopo do processo | T1 GB, mínimo–máximo | T2 GB, mínimo–máximo |
+|---|---:|---:|
+| Prefill do servidor | 53,450–55,689 | 17,169–19,997 |
+| Decode do servidor | 51,135–53,487 | ≥35,040 |
+| Pedido até ao primeiro final | 105,169–107,702 | 51,790–54,294 |
+| Pedido até à validação | 106,099–108,391 | ≥53,429 |
+
+**Corolário exploratório para o pedido inteiro.** Aos mesmos 4,5 GB/s, os dez segundos comportam 45 GB. Se o piso de 51,790 GB até ao primeiro final tiver de atravessar o dispositivo durante o pedido, mesmo com cálculo gratuito faltam 6,790 GB, ou 1,509 s de serviço. A conta do prefill isolado com decode instantâneo admite os bytes observados num orçamento de 11,004 s. O relógio do pedido inteiro cobra também as leituras posteriores ao prefill.
+
+Os limites incluem todos os desvios admissíveis de 0 a 3,032 s entre a marca de Popen e a época do monitor. Sem amostra exterior para cada desvio, o teto fica desconhecido. O kernel atribui `read_bytes` a todos os ficheiros lidos pelo processo, incluindo eventuais leituras antecipadas. A experiência não identifica bytes indispensáveis de experts nem o momento de cada comando no NVMe. O limite muda se o trabalho for colocado antes do pedido, ficar em RAM/VRAM, a trajetória mudar ou o débito efetivo superar o cenário. Os 291,126 GB de payload do backend cobrem uma fronteira e um intervalo diferentes. A reprodução nos originais e no arquivo foi idêntica. Usar `python3 -IB phase_bounds.py --family "$FAMILY" --backend "$IK_PIN" --new-output-dir "$NEW"`. [Algoritmo](phase_bounds.py) · [Método dos extremos em C281](../../../nvme_conversation/phase_reads/README.md)
+
 ## Binário do servidor
 
 **REPRODUZIDO · GO_SERVER_ELF.** O mesmo executável HTTP do pin `7a5d90009b7ae55d3239cdd33244977c4eb10ff6` resolveu a biblioteca original e o hook nativo do Tesy. Os outros quinze fornecedores coincidiram em caminho e SHA-256 em ambos os testes de resolução. Os dois ensaios de versão reportaram `7a5d900`. O GGUF que servirá a conversa é o original já verificado no NVMe. O binário tem SHA-256 `3447f8b883d4bb2bd301e05ee7d3c71088e318a387da6e5c3c2906588365907c`. [Construção](build.py) · [Protocolo](protocol.md)
