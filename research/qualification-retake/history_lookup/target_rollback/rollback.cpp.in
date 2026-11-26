@@ -82,7 +82,7 @@ void calibrated(llama_context *ctx,const std::vector<llama_token> &teacher,const
     row(0,3);
 }
 
-json serial(llama_context *ctx,llama_sampler *sam,int anchor,const fs::path &out) {
+json serial(llama_context *ctx,llama_model *model,llama_sampler *sam,int anchor,const fs::path &out) {
     std::vector<int> stream{anchor};
     std::vector<std::array<int,2>> ranks;
     for (int i=0;i<5;++i) {
@@ -90,11 +90,12 @@ json serial(llama_context *ctx,llama_sampler *sam,int anchor,const fs::path &out
         auto ids=sampled(ctx,sam,0,out/row_file(i));
         stream.push_back(ids[0]); ranks.push_back(ids);
         snapshot_kv(ctx,190+i,out/kv_file(i+1));
+        snapshot_pool(model,out/("keep-"+std::to_string(i+1)+".pool"));
     }
     return {{"mode","AR"},{"tokens",stream},{"ranks",ranks},{"single_calls",5}};
 }
 
-json verify(llama_context *ctx,llama_sampler *sam,int anchor,int expected,const fs::path &ar,const fs::path &out) {
+json verify(llama_context *ctx,llama_model *model,llama_sampler *sam,int anchor,int expected,const fs::path &ar,const fs::path &out) {
     std::ifstream reference(ar/"native.json");
     const auto src=json::parse(reference);
     const auto tokens=src.at("tokens").get<std::vector<int>>();
@@ -119,6 +120,7 @@ json verify(llama_context *ctx,llama_sampler *sam,int anchor,int expected,const 
     if (accepted<2) check(llama_memory_seq_rm(llama_get_memory(ctx),0,189+kept,-1),"suffix removal");
     snapshot_kv(ctx,189+kept,out/"trim.kv");
     check(same_file(out/"trim.kv",ar/kv_file(kept)),"trimmed KV vs serial");
+    snapshot_pool(model,out/"trim.pool");
     std::array<int,2> next{};
     for (int i=0;i<2;++i) {
         const int step=kept+i;
@@ -129,6 +131,7 @@ json verify(llama_context *ctx,llama_sampler *sam,int anchor,int expected,const 
         auto state=out/("next-"+std::to_string(i)+".kv");
         snapshot_kv(ctx,190+step,state);
         check(same_file(state,ar/kv_file(step+1)),"post-rollback next KV");
+        snapshot_pool(model,out/("next-"+std::to_string(i)+".pool"));
     }
     return {{"mode","R"+std::to_string(expected)},{"anchor",anchor},{"proposal",proposal},{"consulted",used},
             {"accepted",accepted},{"discarded",2-accepted},{"kept",kept},{"confirmed",confirmed},
@@ -164,8 +167,8 @@ void execute(const char *model_path,const char *file,const fs::path &gold,const 
     check(sampler!=nullptr,"greedy sampler");
     const char *ref=std::getenv("TESY_ROLLBACK_AR");
     check(ref && *ref,"independent AR path");
-    json receipt=mode=="AR"?serial(ctx.get(),sampler.get(),anchor,out)
-                           :verify(ctx.get(),sampler.get(),anchor,mode.at(1)-'0',ref,out);
+    json receipt=mode=="AR"?serial(ctx.get(),model.get(),sampler.get(),anchor,out)
+                           :verify(ctx.get(),model.get(),sampler.get(),anchor,mode.at(1)-'0',ref,out);
     snapshot_pool(model.get(),out/"final.pool");
     receipt["anchor"]=anchor;
     receipt["callback_installed"]=false;
