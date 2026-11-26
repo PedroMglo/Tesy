@@ -20,11 +20,36 @@ BUILD = "8c662cb41b24b675ef28acfd5b1f0938897b09b185ea7949811d62cee636a053"
 SWA_BUILD = "68d0e701b7698a07d7a70f810303e8a47613f24dafac611ab34e02c6f2279669"
 LIVE_BUILD = "e62c3d6470ddd7cb53e971d56b08028a175ee46ced547540b83e2f24af0255a4"
 COLD_IMPORT = "d3d6cdd5a26ffcc26be4097bf7db627a658f3b1fbac126e914345af0ebbd2ed6"
+LIVE_CONTROL = "aa9c70514463e4477dd298ccb5284a0d4c6aaf1e951d2d9982d57d95910578a9"
+LIVE_ROLLBACK_BUILD = "d1826b5eb78e608aebe9d59101d9b0832ac5dbd0d064a0262988f2c4ce671d13"
+LABELS = {
+    "tesy-live-prefix-v1": "C269-live189-",
+    "tesy-live-rollback-v1": "C269-live-rollback189-",
+    "tesy-rollback-restored-v1": "C269-rollback189-",
+}
+SCHEMAS = {
+    B["METHOD"]: "tesy-rollback-restored-v1",
+    B["SWA_METHOD"]: "tesy-rollback-restored-v1",
+    B["LIVE_METHOD"]: "tesy-live-prefix-v1",
+    B["LIVE_ROLLBACK_METHOD"]: "tesy-live-rollback-v1",
+}
 SWA = run_path(str(HERE / "swa.py"))
 
 
 def capture(root, unit, mode):
     return root / mode / "raw" / (unit + "-" + mode.lower() + ".capture")
+
+
+def live_coverage(cap, mode):
+    if mode == "AR":
+        states = {f"keep-{i}.kv": 189 + i for i in range(1, 6)}
+    else:
+        n = 190 + int(mode[1])
+        states = {"trim.kv": n, "next-0.kv": n + 1, "next-1.kv": n + 2}
+    states["entry.kv"] = 189
+    need({p.name for p in cap.glob("*.kv")} == set(states), "all live rollback states")
+    banks = SWA["banks"](cap)
+    return {k: SWA["contents"](cap / k, n, banks) for k, n in states.items()}
 
 
 def sources(a):
@@ -61,7 +86,7 @@ def audit(root, unit, mode, cfg, cmd):
         need(cmd[j] == "--env" and key not in vars, "explicit environment")
         vars[key] = value
     run_unit = unit.rsplit("-", 1)[0]
-    label = "C269-live189-" if cfg["schema"] == "tesy-live-prefix-v1" else "C269-rollback189-"
+    label = LABELS[cfg["schema"]]
     original_root = Path(cmd[-1]).parents[2]
     extra = T["flags"]("CUDA") | {"TESY_ROLLBACK_AR": str(capture(original_root, run_unit, "AR"))}
     need(
@@ -120,7 +145,7 @@ def arm(a, out, mode, b, auth, serial, target, ctrl, gold, pins, spec):
         },
     )
     cfg = read(root / "protocol.json") | dict(
-        schema="tesy-live-prefix-v1" if a.live_prefix else "tesy-rollback-restored-v1",
+        schema=SCHEMAS[b["protocol_sha256"]],
         pinned=sealed,
         native_variant=mode,
         runner_sha256=sha(P["MONITOR"]),
@@ -135,7 +160,7 @@ def arm(a, out, mode, b, auth, serial, target, ctrl, gold, pins, spec):
         base, exe.resolve(strict=True), auth.exe, target, "B3", unit, config
     )
     cmd[-2] = mode
-    label = "C269-live189-" if a.live_prefix else "C269-rollback189-"
+    label = LABELS[cfg["schema"]]
     cmd[cmd.index("--variant") + 1] = label + mode
     ar = capture(out, a.unit, "AR")
     extra = T["flags"]("CUDA") | {"TESY_ROLLBACK_AR": str(ar)}
@@ -165,7 +190,9 @@ def arm(a, out, mode, b, auth, serial, target, ctrl, gold, pins, spec):
         grade = run_path(str(HERE / "live_prefix/grade.py"))["grade"]
         g = grade(cap, mode, target, ar, a.cold_import)
     else:
-        g = G["compare"](cap, mode, target, serial, ar)
+        g = G["compare"](cap, mode, target, serial, ar, live=a.live_rollback)
+        if a.live_rollback:
+            g["kv_coverage"] = live_coverage(cap, mode)
     if a.swa_restore:
         g["kv_ranges"] = SWA["snapshots"](capture(out, a.unit, mode), mode)
     save(root / "grade.json", g)
@@ -185,8 +212,13 @@ def arm(a, out, mode, b, auth, serial, target, ctrl, gold, pins, spec):
 
 
 def run(a, out, r):
-    protocol, method = B["contract"](a.swa_restore, a.live_prefix)
-    build = LIVE_BUILD if a.live_prefix else SWA_BUILD if a.swa_restore else BUILD
+    protocol, method = B["contract"](a.swa_restore, a.live_prefix, a.live_rollback)
+    build = {
+        B["METHOD"]: BUILD,
+        B["SWA_METHOD"]: SWA_BUILD,
+        B["LIVE_METHOD"]: LIVE_BUILD,
+        B["LIVE_ROLLBACK_METHOD"]: LIVE_ROLLBACK_BUILD,
+    }[method]
     need(
         sha(a.build / "receipt.json") == build
         and re.fullmatch(r"tesy-rollback-[a-z0-9-]+", a.unit)
@@ -200,7 +232,8 @@ def run(a, out, r):
         and b["protocol_sha256"] == method == sha(HERE / protocol)
         and all(sha(Path(k)) == v for k, v in b["headers_sha256"].items())
         and sha(a.build / "rollback.cpp") == b["source_sha256"]
-        and (a.build / "rollback.cpp").read_text() == B["source"](a.swa_restore, a.live_prefix),
+        and (a.build / "rollback.cpp").read_text()
+        == B["source"](a.swa_restore, a.live_prefix, a.live_rollback),
         "exact client/header closure",
     )
     auth = K["OLD"]["Authority"](a.static, a.build, b["elf_sha256"], b["image_sha256"])
@@ -217,6 +250,22 @@ def run(a, out, r):
         "runtime and C55",
     )
     src = sources(a)
+    if a.live_rollback:
+        prior = R["reopen"](a.live_control, LIVE_CONTROL)
+        need(
+            prior["arms"]["AR"]["status"] == "PASS_AR"
+            and prior["arms"]["B3"]["status"] == "PASS_B3",
+            "live corroboration",
+        )
+        for case in ("AR", "B3"):
+            cap = capture(a.live_control, prior["unit"], case)
+            for actual, reference in (
+                ("entry.kv", "initial-kv.bin"),
+                ("entry.pool", "initial-pool.bin"),
+                ("prefill.f32", "prefill_final.logits.f32"),
+            ):
+                need(sha(cap / actual) == sha(src[1] / reference), "bitwise live reference")
+        r["live_control_sha256"] = LIVE_CONTROL
     if a.live_prefix:
         cold = R["reopen"](a.cold_import, COLD_IMPORT)
         need(cold["status"] == "FAIL_PRESERVED" and cold["model_starts"] == 1, "cold contrast")
@@ -269,7 +318,9 @@ if __name__ == "__main__":
     modes = p.add_mutually_exclusive_group()
     modes.add_argument("--swa-restore", action="store_true")
     modes.add_argument("--live-prefix", action="store_true")
+    modes.add_argument("--live-rollback", action="store_true")
     p.add_argument("--cold-import", type=Path)
+    p.add_argument("--live-control", type=Path)
     a = p.parse_args()
     os.umask(0o077)
     out = a.new_output_dir.resolve()
