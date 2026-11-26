@@ -80,7 +80,7 @@ def build(a, out, r):
     end = code.index("    std::cout<<", begin)
     body = (HERE / "natural.cpp.in").read_text().replace("@MODEL_AND_CONTEXT@", code[begin:end])
     native = out / "natural.cpp"
-    native.write_text('#include "sha256/sha256.c"\n' + prefix + body)
+    native.write_text('extern "C" {\n#include "sha256/sha256.h"\n}\n' + prefix + body)
     exe = out / "b3-numeric"
     argv = json.loads((a.previous / "compile.json").read_bytes())
     need(
@@ -93,11 +93,36 @@ def build(a, out, r):
     argv[argv.index("-o") + 1] = str(exe)
     argv[1:1] = ["-I", str(include)]
     env = dict(PATH="/usr/bin:/bin", LANG="C", LC_ALL="C", CUDA_VISIBLE_DEVICES="", TMPDIR=str(out))
+    obj = out / "sha256.o"
+    G["command"](
+        [
+            argv[0],
+            "-x",
+            "c",
+            "-std=c11",
+            "-O2",
+            "-I",
+            include,
+            "-MMD",
+            "-MF",
+            out / "sha256.d",
+            "-c",
+            include / sources[0],
+            "-o",
+            obj,
+        ],
+        out,
+        out,
+        "digest",
+        env,
+    )
+    argv.insert(argv.index("-o"), str(obj))
     G["command"](argv, out, out, "compile", env)
     dependencies = shlex.split(
         (out / "headers.d").read_text().replace(chr(92) + "\n", " ").split(":", 1)[1]
     )
     actual = {str(Path(v).resolve(strict=True)): sha(Path(v)) for v in dependencies}
+    actual.update(G["headers"](out / "sha256.d", out))
     expected = dict(prev["headers"])
     del expected[str(a.previous / "reserve.cpp")]
     expected.update({str((include / k).resolve()): sha(include / k) for k in sources})
