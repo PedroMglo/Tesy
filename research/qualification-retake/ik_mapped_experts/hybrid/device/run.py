@@ -325,6 +325,11 @@ def run(a, out, r):
     cpu_grade = grade["check_arm"]("CPU", cpu_stdout.read_text(), cpu_stderr.read_text(), cpu_dir)
     need(cpu_grade == cpu["grade"], "CPU control changed")
     policy, end = c55(a)
+    profile = run_path(str(QUAL / "packed_layer_service/profile.py"))
+    provider, unchanged = profile["monitor_provider"](SimpleNamespace(token=IO.stat_id))
+    r["monitor_provider"] = provider
+    if prepared is not None:
+        need(provider == prepared["monitor_provider"], "monitor differs from preflight")
     if not a.execute:
         r["status"] = "PREPARED_ONLY"
         return
@@ -339,9 +344,6 @@ def run(a, out, r):
         and set((cg / "cgroup.procs").read_text().split()) == {str(os.getpid())},
         "scope identity",
     )
-    profile = run_path(str(QUAL / "packed_layer_service/profile.py"))
-    provider, unchanged = profile["monitor_provider"](SimpleNamespace(token=IO.stat_id))
-    r["monitor_provider"] = provider
     resident = resident_grade = None
     for mode in MODES:
         unchanged()
