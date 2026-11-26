@@ -329,6 +329,36 @@ def arm(a, out, r, bound, w, policy, resource_limits, expiry, monitor):
     return (out / "native", stdout, stderr)
 
 
+MONITOR_RECEIPT = "58aa72dfb873e951ac49ed35e6da534b18870fcf1d845ed520c030d82ee23260"
+
+
+def monitor_authority(prior, probe):
+    override = os.environ.get("LD_LIBRARY_PATH", "")
+    need(override and ":" not in override, "private NVML monitor directory required")
+    alias_dir = Path(override)
+    need(
+        alias_dir.is_absolute() and alias_dir.resolve(strict=True) == alias_dir,
+        "private NVML monitor path",
+    )
+    receipt = alias_dir.parent / "receipt.json"
+    need(sha(receipt) == MONITOR_RECEIPT, "wrong packed-service NVML authority")
+    provider, unchanged = probe(SimpleNamespace(token=DEVICE["IO"].stat_id))
+    need(
+        provider.get("mode") == "PRIVATE_MATCHED_NVML"
+        and provider.get("monitor_receipt_sha256") == MONITOR_RECEIPT,
+        "active monitor authority",
+    )
+    if prior is not None:
+        need(provider == prior["monitor_provider"], "monitor differs from preflight")
+
+    def verify():
+        unchanged()
+        need(sha(receipt) == MONITOR_RECEIPT, "monitor receipt changed")
+
+    verify()
+    return provider, verify
+
+
 def run(a, out, r):
     prior = S["bind"](a, r)
     tiny = S["tiny_gate"](a.tiny, a.tiny_sha256, a.tiny_review, a.tiny_review_sha256)
@@ -344,12 +374,11 @@ def run(a, out, r):
         child_env=env,
         resource_policy_sha256=w["canonical_policy_sha256"],
     )
+    probe = run_path(str(CPU["Q"] / "packed_layer_service/profile.py"))["monitor_provider"]
+    r["monitor_provider"], unchanged = monitor_authority(prior, probe)
     if not a.execute:
         r["status"] = "PREPARED_ONLY"
         return
-    r["monitor"], unchanged = run_path(str(CPU["Q"] / "packed_layer_service/profile.py"))[
-        "monitor_provider"
-    ](SimpleNamespace(token=DEVICE["IO"].stat_id))
     native, stdout, stderr = arm(a, out, r, bound, w, policy, frozen, end, unchanged)
     r["grade"] = run_path(str(S["CAPACITY"] / "grade.py"))["check_arm"](
         stdout.read_text(), stderr.read_text(), native, plan

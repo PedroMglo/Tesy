@@ -76,3 +76,82 @@ def test_endpoint_enforces_both_vram_comparators():
         f([7675, 7676], 7676)
     with pytest.raises(ValueError):
         f([7677], 7700)
+
+
+def test_monitor_receipt_identity_even_with_identical_library(tmp_path, monkeypatch):
+    gate = API["monitor_authority"]
+    provider = tmp_path / "real-NVML.so"
+    provider.write_bytes(b"same-library")
+    right, wrong = (tmp_path / n for n in ("qualified", "different"))
+    for parent in (right, wrong):
+        (parent / "lib").mkdir(parents=True)
+        (parent / "lib/libnvidia-ml.so.1").symlink_to(provider)
+    (right / "receipt.json").write_text('{"status":"PASS_CPU_CAMPAIGN_MONITOR"}')
+    (wrong / "receipt.json").write_text('{"status":"PASS_STATIC_C270_C281_DRIVER_SELECTION"}')
+    expected = hashlib.sha256((right / "receipt.json").read_bytes()).hexdigest()
+    monkeypatch.setitem(gate.__globals__, "MONITOR_RECEIPT", expected)
+    calls = []
+
+    def probe(_):
+        calls.append("probe")
+        return {
+            "mode": "PRIVATE_MATCHED_NVML",
+            "monitor_receipt_sha256": expected,
+            "kernel_driver": "pin",
+        }, lambda: calls.append("stat")
+
+    monkeypatch.setenv("LD_LIBRARY_PATH", str(wrong / "lib"))
+    with pytest.raises(ValueError, match="wrong packed-service"):
+        gate(None, probe)
+    assert calls == []
+    monkeypatch.setenv("LD_LIBRARY_PATH", str(right / "lib"))
+    pre, _ = gate(None, probe)
+    actual, unchanged = gate({"monitor_provider": pre}, probe)
+    assert actual == pre
+    assert calls.count("probe") == 2
+    with pytest.raises(ValueError, match="differs from preflight"):
+        gate({"monitor_provider": pre | {"kernel_driver": "foreign"}}, probe)
+    (right / "receipt.json").write_text('{"status":"changed"}')
+    with pytest.raises(ValueError, match="receipt changed"):
+        unchanged()
+
+
+@pytest.mark.parametrize("valid", [False, True])
+def test_prepared_receipt_waits_for_monitor(valid, tmp_path, monkeypatch):
+    from types import SimpleNamespace
+
+    run = API["run"]
+    plan = tmp_path / "fixture"
+    plan.touch()
+    bound = (plan, None, (1,), plan, None, {}, {}, None, None)
+    fake = {
+        "bind": lambda *args: None,
+        "tiny_gate": lambda *args: {},
+        "c55": lambda *args: ({"canonical_policy_sha256": "h"}, {}, {"cgroup": {}}, None),
+        "inputs": lambda *args: bound,
+    }
+    monkeypatch.setitem(run.__globals__, "S", fake)
+    monkeypatch.setitem(run.__globals__, "run_path", lambda *args: {"monitor_provider": object()})
+    tested = []
+
+    def monitor(prior, probe):
+        tested.append(prior)
+        if not valid:
+            raise ValueError("monitor rejected")
+        return {"mode": "TEST"}, None
+
+    monkeypatch.setitem(run.__globals__, "monitor_authority", monitor)
+    a = SimpleNamespace(
+        tiny=None, tiny_sha256=None, tiny_review=None, tiny_review_sha256=None, execute=False
+    )
+    terminal = {"status": "FAIL_PRESERVED"}
+    if valid:
+        run(a, tmp_path, terminal)
+        assert terminal["status"] == "PREPARED_ONLY" and terminal["monitor_provider"] == {
+            "mode": "TEST"
+        }
+    else:
+        with pytest.raises(ValueError, match="monitor rejected"):
+            run(a, tmp_path, terminal)
+        assert terminal["status"] == "FAIL_PRESERVED"
+    assert tested == [None]
