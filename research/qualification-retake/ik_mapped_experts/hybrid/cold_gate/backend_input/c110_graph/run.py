@@ -19,7 +19,7 @@ sha, receipt = A["sha"], A["receipt"]
 SMALL = "d0973e97224a3136c168184c1715fe2e4e32acf664036a8a71728699fae6438d"
 
 
-def freeze(a):
+def freeze(a, *, build_commit=None):
     prior_args = SimpleNamespace(
         **(vars(a) | dict(stage="parity", execute=False, prepared=None, prepared_sha256=None))
     )
@@ -38,7 +38,7 @@ def freeze(a):
     candidate = a.build / "c110-bank-input"
     need(
         build["status"] == "PASS_C110_INPUT_BUILD"
-        and build["commit"] == a.commit
+        and build["commit"] == (build_commit or a.commit)
         and build["original_build"] == a.client_sha256 == B["HIST"]
         and sha(candidate) == build["binary_sha256"],
         "candidate/client identity",
@@ -75,19 +75,30 @@ def freeze(a):
     )
 
 
-def run(a, out, r):
-    state, bound, args, compare = freeze(a)
+def run(
+    a,
+    out,
+    r,
+    *,
+    prepare=freeze,
+    sources=C["SOURCES"],
+    evaluate=C["evaluate"],
+    prefix="tesy-ik-e10-input-",
+    status="PASS_C110_BANK_INPUT_NUMERIC",
+    arm_status="PASS_C110_BANK_INPUT_ARM",
+):
+    state, bound, args, compare = prepare(a)
     r["authority"] = state
     if a.prepared is None:
         r["status"] = "PREPARED_ONLY"
         return
     prior = receipt(a.prepared / "receipt.json", a.prepared_sha256)
     need(prior["status"] == "PREPARED_ONLY" and prior["authority"] == state, "changed preflight")
-    need(a.unit.startswith("tesy-ik-e10-input-"), "scope name")
+    need(a.unit.startswith(prefix), "scope name")
     r["prepared_sha256"] = a.prepared_sha256
     exe, candidate, model, identity, plan, build, env, tracked, paths, drivers = bound
     deadline = time.monotonic() + 36 * 60
-    for label, (source, selection) in C["SOURCES"].items():
+    for label, (source, selection) in sources.items():
         folder = out / label
         folder.mkdir(mode=0o700)
         arm = dict(
@@ -115,7 +126,7 @@ def run(a, out, r):
             FR["OPS"]["arm"](C["BANK"], a, folder, arm, ctx, *args)
             FR["scope_end"](a, arm)
             REAL["complete"](arm)
-            grade = C["evaluate"](label, folder, a.sys73, model, plan, *compare)
+            grade = evaluate(label, folder, a.sys73, model, plan, *compare)
             arm.update(grade)
             need(
                 time.monotonic() < deadline
@@ -135,15 +146,15 @@ def run(a, out, r):
             r["arms"][label] = dict(
                 status=arm["status"], receipt_sha256=sha(folder / "receipt.json")
             )
-        if arm["status"] != "PASS_C110_BANK_INPUT_ARM":
+        if arm["status"] != arm_status:
             r.update(stop_arm=label, reason=arm.get("reason", arm.get("final_error")))
             return
     args[-1]()
     A["S"]["same_files"](tracked)
-    r["status"] = "PASS_C110_BANK_INPUT_NUMERIC"
+    r["status"] = status
 
 
-def main():
+def main(run_family=run, extra_paths=(), extra_hashes=()):
     p = argparse.ArgumentParser(description=__doc__)
     for k in (
         "client",
@@ -164,6 +175,7 @@ def main():
         "sys73",
         "build",
         "new-output-dir",
+        *extra_paths,
     ):
         p.add_argument("--" + k, type=Path, required=True)
     for k in (
@@ -173,6 +185,7 @@ def main():
         "tiny-sha256",
         "capacity-sha256",
         "build-sha256",
+        *extra_hashes,
     ):
         p.add_argument("--" + k, required=True)
     p.add_argument("--prepared", type=Path)
@@ -190,9 +203,9 @@ def main():
                 "a"
             ) as lock:
                 fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
-                run(a, out, r)
+                run_family(a, out, r)
         else:
-            run(a, out, r)
+            run_family(a, out, r)
     except Exception as exc:
         r.update(status="FAIL_PRESERVED", reason=f"{type(exc).__name__}: {exc}")
     finally:
