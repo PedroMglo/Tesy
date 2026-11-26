@@ -1,0 +1,23 @@
+int product_reserve() {
+    const char *raw = std::getenv("TESY_TEST_OUTPUT_RESERVE");
+    check(raw && (std::string(raw) == "1" || std::string(raw) == "3"), "server output reserve");
+    const bool block = raw[0] == '3';
+    for (const auto &flag : {std::pair{"TESY_B3_GPU_REPAIR", "CUDA"},
+                             {"TESY_B3_ROUTER_ROW", "1"}, {"TESY_B3_ATTN25_ROWS", "1"}}) {
+        const char *actual = std::getenv(flag.first);
+        check(block ? actual && std::string(actual) == flag.second : actual == nullptr,
+              "graph profile differs from frozen arm");
+    }
+    return block ? 3 : 1;
+}
+
+json completed_store(llama_model *model) {
+    auto *manager = model->moe_stream();
+    check(manager != nullptr, "expert manager");
+    std::lock_guard<std::mutex> held(manager->mtx);
+    check(manager->expert_store && !manager->load_failed, "integral store");
+    const auto loads = manager->stats.n_store_loads;
+    const auto bytes = manager->stats.n_store_read_bytes;
+    check(loads > 0 && bytes == loads * (3LL * 4406400LL), "logical bytes of completed loads");
+    return {{"loads", loads}, {"logical_weight_bytes", bytes}};
+}
