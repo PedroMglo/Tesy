@@ -153,7 +153,7 @@ def check_stdout(stdout, dest, expected_rc, reference, closure, mode):
     stamps = [int(stamp) for _, stamp in phases]
     need(
         [key for key, _ in phases] == expected_phases
-        and all(x < y for x, y in zip(stamps, stamps[1:])),
+        and all(x < y for x, y in zip(stamps[:-1], stamps[1:], strict=True)),
         "phase gates",
     )
     rows = {}
