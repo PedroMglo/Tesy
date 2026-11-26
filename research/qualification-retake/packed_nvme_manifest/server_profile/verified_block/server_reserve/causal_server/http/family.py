@@ -314,7 +314,7 @@ def arm(
         numerical_gate=h,
         protocol_sha256=method,
         driver=rt.monitor_proof,
-        plan_sha256=PLAN_PIN,
+        plan_sha256=getattr(rt, "plan_sha256", PLAN_PIN),
         window_sha256=a.window_sha256,
     )
     save(out / "arm-inputs.json", record)

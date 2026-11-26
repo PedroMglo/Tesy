@@ -152,7 +152,17 @@ def check_input(a, root, actual):
     )
 
 
-def main():
+def main(
+    *,
+    runtime=Runtime,
+    modes=None,
+    protocol=HERE / "protocol.md",
+    method=METHOD,
+    program=__file__,
+    extra_paths=(),
+):
+    if modes is None:
+        modes = {name: name for name in H["MODES"]}
     p = argparse.ArgumentParser(description=__doc__)
     for k in (
         "qualified",
@@ -171,11 +181,12 @@ def main():
         "placement",
         "c270",
         "new-output-dir",
+        *extra_paths,
     ):
         p.add_argument("--" + k, type=Path, required=True)
     for k in ("commit", "window-sha256", "unit"):
         p.add_argument("--" + k, required=True)
-    p.add_argument("--mode", choices=H["MODES"])
+    p.add_argument("--mode", choices=modes)
     p.add_argument("--prepare-only", action="store_true")
     p.add_argument("--prepared", type=Path)
     p.add_argument("--prepared-sha256")
@@ -189,7 +200,7 @@ def main():
         commit=a.commit,
         mode=a.mode,
         unit=a.unit,
-        protocol_sha256=METHOD,
+        protocol_sha256=method,
         long_gate_sha256=OFF["QUALIFIED"],
         serial_gate_sha256=SERIAL,
         loader_probe_sha256=OFF["PROBE"],
@@ -218,17 +229,17 @@ def main():
                 H["arm"](
                     a,
                     root,
-                    a.mode,
-                    runtime=Runtime,
-                    method=METHOD,
-                    protocol=HERE / "protocol.md",
+                    modes[a.mode],
+                    runtime=runtime,
+                    method=method,
+                    protocol=protocol,
                     input_check=lambda record: check_input(a, root, record),
                 )
             )
         else:
-            for i, mode in enumerate(H["MODES"]):
+            for i, mode in enumerate(modes):
                 if i and not a.prepare_only:
-                    prev = H["MODES"][i - 1]
+                    prev = list(modes)[i - 1]
                     wait_port(root, prev, r["arms"][prev]["sha256"])
                 args = sys.argv[1:].copy()
                 args[args.index("--new-output-dir") + 1] = str(root / mode)
@@ -236,7 +247,7 @@ def main():
                 remaining = 2700 - (time.monotonic() - t)
                 need(remaining > 0, "family deadline")
                 child = subprocess.run(
-                    [sys.executable, "-IB", __file__, *args, "--mode", mode],
+                    [sys.executable, "-IB", program, *args, "--mode", mode],
                     timeout=min(650, remaining),
                 )
                 item = H["read"](root / mode / "receipt.json")
@@ -248,6 +259,7 @@ def main():
     except Exception as exc:
         r.update(status="FAIL_PRESERVED", error=f"{type(exc).__name__}: {exc}")
     r.update(
+        arm_label=a.mode,
         wall_s=time.monotonic() - t,
         model_starts=len(list(root.rglob("*.launch.json"))),
         started_requests=len(list(root.rglob("T*-request.jsonl"))),
