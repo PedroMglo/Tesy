@@ -86,6 +86,7 @@ def run(
     prefix="tesy-ik-e10-input-",
     status="PASS_C110_BANK_INPUT_NUMERIC",
     arm_status="PASS_C110_BANK_INPUT_ARM",
+    arm_environment=None,
 ):
     state, bound, args, compare = prepare(a)
     r["authority"] = state
@@ -110,7 +111,9 @@ def run(
         )
         try:
             local_env = env | {"TESY_C110_CALLBACK": selection}
-            if source:
+            if arm_environment:
+                local_env.update(arm_environment(source, model))
+            elif source:
                 local_env["TESY_C110_SOURCE"] = source
             ctx = (
                 candidate if source else exe,

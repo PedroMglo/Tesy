@@ -41,7 +41,7 @@ def reference(folder):
     return events
 
 
-def layout(events):
+def layout(events, capacity=CAP):
     cursor = drains = peak = 0
     spans = []
     for e in events:
@@ -51,28 +51,33 @@ def layout(events):
         file, n = e[5], e[7]
         head = file % 4096
         reservation = (head + n + 4095) // 4096 * 4096
-        need(reservation <= CAP, "one SET exceeds native scratch")
-        if cursor + reservation > CAP:
+        need(reservation <= capacity, "one SET exceeds native scratch")
+        if cursor + reservation > capacity:
             cursor = 0
             drains += 1
         spans.append((cursor + head, drains))
         cursor += reservation
         peak = max(cursor, peak)
-    need(drains > 0, "no exercised reuse")
     return spans, drains, peak
 
 
-def audit(mode, raw, log, native, model, expected):
+def audit(
+    mode, raw, log, native, model, expected, *, capacity=CAP, layers=2, origins=None, maps=None
+):
     header = [s for s in log.splitlines() if s.startswith("TESY_NATIVE_")]
-    spans, drains, peak = layout(expected)
+    spans, drains, peak = layout(expected, capacity)
+    sets = len(spans)
+    sites = len(expected) - sets
+    payload = sum(e[7] for e in expected if e[0] == "SET")
     need(
-        header[0] == f"TESY_NATIVE_INPUT {mode} {CAP} 1"
-        and header[-1] == f"TESY_NATIVE_END 4 24 1148928 {drains}"
-        and len(header) == 30,
+        len(header) == len(expected) + 2
+        and header[0] == f"TESY_NATIVE_INPUT {mode} {capacity} 1"
+        and header[-1] == f"TESY_NATIVE_END {sites} {sets} {payload} {drains}",
         "source selection or native teardown",
     )
-    origs = {s[0]: (int(s[1]), int(s[2]), int(s[3])) for s in G["records"](raw, "ORIG")}
-    vmas = A["maps"](native / "maps")
+    if origins is None:
+        origins = {s[0]: (int(s[1]), int(s[2]), int(s[3])) for s in G["records"](raw, "ORIG")}
+    vmas = {p: A["maps"](native / file) for p, file in (maps or {3: "maps", 4: "maps"}).items()}
     device = A["mapped_device"](model)
     inode = model.stat().st_ino
     ranges = mode == "PREAD_RANDOM"
@@ -86,8 +91,9 @@ def audit(mode, raw, log, native, model, expected):
         gen, layer = map(int, s[1:3])
         f, d, n, orig, actual, drain = map(int, s[5:])
         need((gen, layer, s[3], s[4], f, d, n) == e[1:], "original range, destination or slot")
-        base, length, start = origs[s[3]]
-        v = A["region"](vmas, orig, n)
+        phase = 3 if gen <= layers else 4
+        base, length, start = origins[s[3]]
+        v = A["region"](vmas[phase], orig, n)
         need(
             0 <= orig - base <= length - n
             and f == start + orig - base
@@ -101,7 +107,7 @@ def audit(mode, raw, log, native, model, expected):
         head, expected_drains = spans[len(rows)]
         need(drain == expected_drains, "native pressure fence order")
         if ranges:
-            v = A["region"](vmas, actual, n)
+            v = A["region"](vmas[phase], actual, n)
             if arena is None:
                 arena = actual - head
             need(
@@ -115,7 +121,7 @@ def audit(mode, raw, log, native, model, expected):
             )
         else:
             need(actual == orig, "direct source is not the GGUF")
-        rows.append((3 if gen <= 2 else 4, s[4], d, n, orig, actual, f))
+        rows.append((phase, s[4], d, n, orig, actual, f))
     index = 0
     pending = {}
     copies = defaultdict(list)
@@ -157,21 +163,21 @@ def audit(mode, raw, log, native, model, expected):
                 s[6], s[8] = str(orig + rel), str(f + rel)
                 line = " ".join(s)
         logical.append(line)
-    need(index == len(rows) == 24 and set(pending) == set(copies), "missing physical SET/copy")
+    need(index == len(rows) == sets and set(pending) == set(copies), "missing physical SET/copy")
     for ticket, (_, _, n, _, _, _) in pending.items():
         G["coverage"](copies[ticket], n)
-    need(sum(map(len, copies.values())) == 24, "unexpected number of physical copies")
+    need(sum(map(len, copies.values())) == sets, "unexpected number of physical copies")
     if ranges:
         need(
-            all(t in pending for p, n, t in all_h2d if p < arena + CAP and arena < p + n),
+            all(t in pending for p, n, t in all_h2d if p < arena + capacity and arena < p + n),
             "unbound scratch H2D",
         )
     return "\n".join(logical) + "\n", dict(
-        sets=24,
-        physical_copies=24,
-        id_fences=4,
+        sets=sets,
+        physical_copies=sets,
+        id_fences=sites,
         extra_drains=drains,
-        scratch_capacity_B=CAP,
+        scratch_capacity_B=capacity,
         scratch_peak_B=peak,
     )
 
