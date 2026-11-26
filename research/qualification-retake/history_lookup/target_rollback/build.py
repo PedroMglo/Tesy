@@ -17,6 +17,7 @@ K, F, P, R, need, read, save, sha = (
 METHOD = "76d709eef5f1ca9b5a00e94c909459a073120703e2399580f5ac95641f59207e"
 SWA_METHOD = "7c08321001fdc0981888c6c4d53b627fc9d90620092ac1de467760140da98b8a"
 LIVE_METHOD = "cc746ab0a9eb0331f7537f8290d5446bf13dff6a6d8151fab284bd64ad85bdd7"
+LIVE_ROLLBACK_METHOD = "259839b62adfe0a17ae9412375a5f7a8e4cd6a173d1f7c1737817c17e558b100"
 PARENT = "a233656bdb9a74a2494bc669ec0b8138c2e780ce6580eefbf45d960c1863c888"
 RECIPE = "2e9e106e3518d3d9629259e76e6fc9d12e495c8edd05686a6648b16820acfb7f"
 
@@ -26,13 +27,15 @@ def section(text, start, end):
     return text[text.index(start) : text.index(end)]
 
 
-def contract(swa_restore, live_prefix=False):
+def contract(swa_restore, live_prefix=False, live_rollback=False):
+    if live_rollback:
+        return "live_rollback/protocol.md", LIVE_ROLLBACK_METHOD
     if live_prefix:
         return "live_prefix/protocol.md", LIVE_METHOD
     return ("swa-restore-protocol.md", SWA_METHOD) if swa_restore else ("protocol.md", METHOD)
 
 
-def source(swa_restore=False, live_prefix=False):
+def source(swa_restore=False, live_prefix=False, live_rollback=False):
     text = F["M"]["observer"]().decode()
     helpers = section(text, "bool same_file(", "void prefix_agreement(") + section(
         text, "bool finite_row(", "std::vector<int> batch_rows("
@@ -50,13 +53,22 @@ def source(swa_restore=False, live_prefix=False):
     if live_prefix:
         common = section(code, "#define main c127_capture_main", "std::array<int,2> sampled(")
         code = common + (HERE / "live_prefix/client.cpp.in").read_text()
+    if live_rollback:
+        for start, end in (
+            ("void restore(", "std::string row_file("),
+            ("void calibrated(", "json serial("),
+        ):
+            code = code.replace(section(code, start, end), "")
+        before = section(code, '    auto path=gold/"initial-kv.bin";', "    using Sampler=")
+        code = code.replace(before, (HERE / "live_rollback/prepare.cpp.in").read_text())
+        code = code.replace('receipt["restored_prefix"]', 'receipt["live_prefix"]')
     need(code.count("@SERIALIZED_HELPERS@") == code.count("@MODEL_CONTEXT@") == 1, "template")
     return code.replace("@SERIALIZED_HELPERS@", helpers).replace("@MODEL_CONTEXT@", ctx)
 
 
 def build(a, out):
     git = P["prepare"].git
-    protocol, method = contract(a.swa_restore, a.live_prefix)
+    protocol, method = contract(a.swa_restore, a.live_prefix, a.live_rollback)
     need(
         git(HERE, "rev-parse", "HEAD") == a.commit
         and not git(HERE, "status", "--porcelain")
@@ -75,7 +87,7 @@ def build(a, out):
         "qualified capture and target",
     )
     src = out / "rollback.cpp"
-    src.write_text(source(a.swa_restore, a.live_prefix))
+    src.write_text(source(a.swa_restore, a.live_prefix, a.live_rollback))
     exe = out / "b3-numeric"
     cmd = read(a.observer / "client-compile.json")
     for before, after in (
@@ -139,6 +151,7 @@ if __name__ == "__main__":
     modes = p.add_mutually_exclusive_group()
     modes.add_argument("--swa-restore", action="store_true")
     modes.add_argument("--live-prefix", action="store_true")
+    modes.add_argument("--live-rollback", action="store_true")
     a = p.parse_args()
     out = a.new_output_dir.resolve()
     out.mkdir(mode=0o700)

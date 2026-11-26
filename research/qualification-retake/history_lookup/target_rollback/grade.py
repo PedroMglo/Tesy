@@ -22,12 +22,12 @@ def choices(path):
     return [first, second]
 
 
-def compare(cap, mode, official, serial, ar):
+def compare(cap, mode, official, serial, ar, *, live=False):
     proof = read(cap / "native.json")
     need(
         proof["mode"] == mode
         and proof["callback_installed"] is False
-        and proof["restored_prefix"] == 189,
+        and proof["live_prefix" if live else "restored_prefix"] == 189,
         "native mode",
     )
 
@@ -36,15 +36,23 @@ def compare(cap, mode, official, serial, ar):
         need(signature == sha(right), "mismatch " + left.name)
         return signature
 
-    prefix = match(cap / "initial.kv", serial / "initial-kv.bin")
-    need(match(cap / "entry.kv", official / "initial-kv.bin") == prefix, "entry twice")
-    post = match(cap / "cal-post3.kv", official / "post3-kv.bin")
-    need(sha(serial / "post3-kv.bin") == post, "integrated/serial bridge")
-    calibrated = {}
-    for j in range(4):
-        f = f"decode{j}.logits.f32"
-        calibrated[f] = match(cap / ("cal-" + f), official / f)
-        need(calibrated[f] == sha(serial / f), "calibration and serial")
+    prefix = match(cap / "entry.kv", official / "initial-kv.bin")
+    need(prefix == sha(serial / "initial-kv.bin"), "serial entry")
+    if live:
+        calibration = dict(
+            live_prefill_sha256=match(cap / "prefill.f32", official / "prefill_final.logits.f32"),
+            live_pool_sha256=match(cap / "entry.pool", official / "initial-pool.bin"),
+        )
+    else:
+        need(match(cap / "initial.kv", serial / "initial-kv.bin") == prefix, "entry twice")
+        post = match(cap / "cal-post3.kv", official / "post3-kv.bin")
+        need(sha(serial / "post3-kv.bin") == post, "integrated/serial bridge")
+        calibrated = {}
+        for j in range(4):
+            f = f"decode{j}.logits.f32"
+            calibrated[f] = match(cap / ("cal-" + f), official / f)
+            need(calibrated[f] == sha(serial / f), "calibration and serial")
+        calibration = dict(calibration_logits=calibrated, calibration_kv=post)
     anchor = choices(official / "prefill_final.logits.f32")[0]
     need(proof["anchor"] == anchor and anchor not in EOG, "anchor")
     record = read(ar / "native.json")
@@ -121,8 +129,7 @@ def compare(cap, mode, official, serial, ar):
         status="PASS_ROLLBACK_" + mode,
         mode=mode,
         anchor=anchor,
-        calibration_logits=calibrated,
-        calibration_kv=post,
+        **calibration,
         prefix_kv=prefix,
         entry_pool=entry,
         final_pool=final,
