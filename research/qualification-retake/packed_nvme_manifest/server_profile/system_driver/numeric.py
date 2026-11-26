@@ -38,6 +38,7 @@ class Current:
             "preflight program",
         )
         self.kernel = s["kernel"]
+        self.loader_cache = None
         nvml = str(Path("/usr/lib64/libnvidia-ml.so.1").resolve(strict=True))
         self.monitor = SimpleNamespace(
             pre=dict(
@@ -86,7 +87,10 @@ class Current:
     def live(self, pid):
         root = Path("/proc", str(pid))
         need((root / "exe").resolve(strict=True) == self.exe, "foreign executable")
-        return AU["check_maps"]((root / "maps").read_text(), self.allowed, self.keys)
+        mappings = (root / "maps").read_text()
+        if self.loader_cache is not None:
+            mappings = self.loader_cache.providers(mappings)
+        return AU["check_maps"](mappings, self.allowed, self.keys)
 
     def audit(self, raw, pid):
         self.recheck()

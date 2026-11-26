@@ -12,6 +12,27 @@ N = run_path(str(HERE.parent / "family.py"))
 F, G, need, sha, save = (N[k] for k in ("F", "G", "need", "sha", "save"))
 QUALIFIED = "aba8a61c990d7cfb699015e6fc4ee3d6d57b656415858c3e0a8642d2c45391bb"
 METHOD = "72d1c32beabb4e256a4452084fea0bd06eeb57e65f3d28869302c43b4f157c9f"
+PROBE = "38956dcde60941131fb37ad3bc20c3f280591cc70a61ffd29fd712f4895c7c71"
+
+
+def qualified_cache(path):
+    loader = run_path(str(HERE / "loader_data.py"))
+    receipt = G["read"](path / "receipt.json", PROBE)
+    need(
+        receipt["status"] == "GO_LOADER_DATA_OBSERVER_ONLY"
+        and receipt["model_starts"] == 0
+        and len(receipt["rejected"]) == 10
+        and all(receipt["rejected"].values())
+        and receipt["protocol_sha256"] == sha(HERE / "loader_protocol.md") == loader["METHOD"]
+        and sha(path / "observed-maps.txt") == receipt["files"]["observed-maps.txt"],
+        "loader fixture",
+    )
+    cache = loader["LoaderCache"]()
+    need(
+        receipt["cache"] == cache.receipt() | {"observed_cuts": 1},
+        "loader data identity since qualification",
+    )
+    return cache
 
 
 def validate(a, out, r):
@@ -52,9 +73,26 @@ def validate(a, out, r):
         len(actual) == 13 and all(base["files"][k] == v for k, v in actual.items()),
         "independent serial witness",
     )
-    arm = F["arm"](
-        a, out / "OFF", "OFF", combo, prior, policy, model_id, study=METHOD, reference=ref
-    )
+    cache = qualified_cache(a.loader_probe) if a.loader_probe else None
+    if cache is not None:
+        r["loader_probe_sha256"] = PROBE
+        save(out / "loader-data-before.json", cache.receipt())
+    try:
+        arm = F["arm"](
+            a,
+            out / "OFF",
+            "OFF",
+            combo,
+            prior,
+            policy,
+            model_id,
+            study=METHOD,
+            reference=ref,
+            loader_cache=cache,
+        )
+    finally:
+        if cache is not None:
+            save(out / "loader-data-after.json", cache.receipt())
     r.update(
         arm=arm,
         qualified_sha256=QUALIFIED,
@@ -82,6 +120,7 @@ if __name__ == "__main__":
         p.add_argument("--" + k, type=Path, required=True)
     for k in ("commit", "unit", "window-sha256"):
         p.add_argument("--" + k, required=True)
+    p.add_argument("--loader-probe", type=Path)
     a = p.parse_args()
     os.umask(0o077)
     out = a.new_output_dir.resolve()

@@ -92,11 +92,13 @@ def arm(
     extra_flags=None,
     check=None,
     reference=None,
+    loader_cache=None,
 ):
     root.mkdir()
     case, library, reserve = CASES[mode]
     unit = a.unit + "-" + root.name.lower()
     ctl = S["Authority"](a, root, build, library)
+    ctl.loader_cache = loader_cache
     src = case + "/packed-resource.json"
     old = G["read"](a.previous / src, prior["raw_sha256"][src])
     key = case + "/argv-packed.json"

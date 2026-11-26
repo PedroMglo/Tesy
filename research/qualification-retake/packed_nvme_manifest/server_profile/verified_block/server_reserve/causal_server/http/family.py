@@ -102,7 +102,7 @@ class Runtime:
         need(Path(self.command[self.command.index("-m") + 1]).samefile(self.paths["model"]), "GGUF")
         self.closure = dict(ctl.verified["closure"])
         if mode in {"ON", "OFF"}:
-            built = G["read"](a.client / "receipt.json", S["CLIENT"])["arms"]["BLOCK"]
+            built = self.block_image()
             name = "libllama.so.0"
             path, h = built["image"], built["image_sha256"]
             image = Path(path)
@@ -123,7 +123,7 @@ class Runtime:
         if mode != "R":
             self.expected[LIVE.STORE_ENV] = str(manifest)
         if mode == "ON":
-            self.expected.update(S["RB"]["T"]["flags"]("CUDA"))
+            self.expected.update(self.block_flags())
         self.loader = dict(
             LD_LIBRARY_PATH=ctl.search, LD_DEBUG="libs", LD_DEBUG_OUTPUT=str(root / "raw/loader")
         )
@@ -144,6 +144,12 @@ class Runtime:
         self.signalled = None
         self.monitor_proof = AU["Authority"].monitor_proof(ctl.monitor)
         self.recheck()
+
+    def block_image(self):
+        return G["read"](self.a.client / "receipt.json", S["CLIENT"])["arms"]["BLOCK"]
+
+    def block_flags(self):
+        return S["RB"]["T"]["flags"]("CUDA")
 
     def recheck(self):
         self.auth.recheck()
@@ -282,14 +288,19 @@ class Runtime:
         )
 
 
-def arm(a, out, mode):
-    rt = Runtime(a, out, mode)
+def arm(
+    a, out, mode, *, runtime=Runtime, method=METHOD, protocol=HERE / "protocol.md", input_check=None
+):
+    rt = runtime(a, out, mode)
     cfg, h = rt.numeric(a.c270)
     rt.bind_c270(a, cfg, h)
     _, model = POST.contract.placement(a.window, a.placement)
     need(cfg["model_stat"] == model, "model placement")
     need(
-        sha(HERE / "protocol.md") == METHOD and G["tree"](G["REPO"])[0] == a.commit, "frozen study"
+        sha(HERE / "protocol.md") == METHOD
+        and sha(protocol) == method
+        and G["tree"](G["REPO"])[0] == a.commit,
+        "frozen study",
     )
     record = dict(
         mode=mode,
@@ -301,12 +312,14 @@ def arm(a, out, mode):
         dso=rt.dso,
         env=rt.expected | rt.loader,
         numerical_gate=h,
-        protocol_sha256=METHOD,
+        protocol_sha256=method,
         driver=rt.monitor_proof,
         plan_sha256=PLAN_PIN,
         window_sha256=a.window_sha256,
     )
     save(out / "arm-inputs.json", record)
+    if input_check is not None:
+        input_check(record)
     if a.prepare_only:
         return dict(status="PREPARED_ONLY", mode=mode, model_starts=0)
     orig = SESSION.campaign
