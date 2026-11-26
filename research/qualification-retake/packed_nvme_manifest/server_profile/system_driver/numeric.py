@@ -29,7 +29,7 @@ read, save = prepare.load, prepare.save
 
 
 class Current:
-    def __init__(self, static):
+    def __init__(self, static, *, selection="C270_R0", capture=None):
         need(sha(static / "receipt.json") == STATIC, "preflight digest")
         s = read(static / "receipt.json")
         need(
@@ -51,9 +51,12 @@ class Current:
             ),
             recheck=self.recheck,
         )
-        self.verified = s["arms"]["C270_R0"]
-        self.arm = dict(executable_sha256=self.verified["binary_sha256"])
-        self.exe = Path(self.verified["binary"])
+        self.verified = s["arms"][selection]
+        self.exe, binary_sha = capture or (
+            Path(self.verified["binary"]),
+            self.verified["binary_sha256"],
+        )
+        self.arm = dict(executable_sha256=binary_sha)
         self.search = os.pathsep.join(self.verified["search"])
         self.initial = {v["file"] for v in self.verified["closure"].values()}
         self.files = {v["file"]: v["sha256"] for v in self.verified["closure"].values()}
