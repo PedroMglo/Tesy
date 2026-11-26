@@ -1,5 +1,7 @@
 # Qualificação da conversa local com o GPT-OSS-120B
 
+**26 de novembro · a primeira regra causal de empréstimo perdeu 13 leituras.** Acertou em 15 reservas, mas precisou de 11 reparações antes dos leitores e 17 para devolver o estado de entrada no decode. Fecha esta regra de prefill. [Dois traces, ablação e comparação com a agenda offline](packed_nvme_manifest/server_profile/verified_block/server_reserve/causal_server/http/kv_width/natural/cpu_attention/target/http/loan.md)
+
 **26 de novembro · na RTX e no Ryzen, as 35 recuperações custaram mais 1,305–3,925 ms que a entrega a partir de RAM.** Os quatro pares validaram as 105 componentes completas. A cópia adicional na CPU e a poupança de transferência RAM→RTX têm sinais opostos. O ganho no pedido ainda depende da escolha causal dos slots e do tempo exposto. [Todos os pares e orçamento restante](packed_nvme_manifest/server_profile/verified_block/server_reserve/causal_server/http/kv_width/natural/cpu_attention/target/http/slot_copy/README.md)
 
 **26 de novembro · prova de 35 recargas simultaneamente evitáveis nos 40 slots.** Manter os payloads em slots com o último uso concluído preservou as 7 497 posições consultadas e o estado de todos os slots ao primeiro decode no replay. A agenda troca 463 MB de leituras por 925 MB de cópias entre slots. Restam 23–53 ms para os custos expostos no cenário favorável. [Agenda, certificado do máximo sob a regra e preços](packed_nvme_manifest/server_profile/verified_block/server_reserve/causal_server/http/kv_width/natural/cpu_attention/target/http/slots.md)
