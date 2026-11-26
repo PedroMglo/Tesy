@@ -1,0 +1,211 @@
+{
+  "commit": "51f1e6aae9cf9448b194d5daef2f75ab87110183",
+  "decision": {
+    "CPU": "HEADROOM_ONLY",
+    "both": "HEADROOM_ONLY"
+  },
+  "journals": {
+    "P106": {
+      "calls": [
+        {
+          "call": 1,
+          "classes": {
+            "CPU_active": {
+              "gap_ns": 149642422,
+              "ranks": 500,
+              "reservations": 40,
+              "waves": 25
+            },
+            "CUDA0_active": {
+              "gap_ns": 12618014,
+              "ranks": 200,
+              "reservations": 11,
+              "waves": 10
+            }
+          },
+          "entry_ns": 2693972
+        },
+        {
+          "call": 2,
+          "classes": {
+            "CPU_active": {
+              "gap_ns": 2165517443,
+              "ranks": 14800,
+              "reservations": 768,
+              "waves": 186
+            },
+            "CPU_empty": {
+              "gap_ns": 1341122498,
+              "ranks": 0,
+              "reservations": 0,
+              "waves": 739
+            },
+            "CUDA0_active": {
+              "gap_ns": 141374307,
+              "ranks": 5924,
+              "reservations": 444,
+              "waves": 88
+            },
+            "CUDA0_empty": {
+              "gap_ns": 224164923,
+              "ranks": 0,
+              "reservations": 0,
+              "waves": 283
+            }
+          },
+          "entry_ns": 8251445
+        }
+      ],
+      "gap_after_empty_ns": {
+        "CPU": 1341122498,
+        "CUDA0": 224164923
+      },
+      "scenarios": {
+        "CPU": {
+          "all_observed_serial": {
+            "exposed_fraction_needed": 0.418272154982022,
+            "missing_s": 0.0,
+            "new_first_final_floor_s": 9.219831699333332,
+            "prior_deficit_s": 0.5609541973333325
+          },
+          "named_future": {
+            "exposed_fraction_needed": null,
+            "missing_s": 0.2542128693301542,
+            "new_first_final_floor_s": 10.254212869330154,
+            "prior_deficit_s": 1.5953353673301542
+          },
+          "serial_reference": {
+            "exposed_fraction_needed": 0.6688316680027335,
+            "missing_s": 0.0,
+            "new_first_final_floor_s": 9.555862699333332,
+            "prior_deficit_s": 0.8969851973333327
+          }
+        },
+        "both": {
+          "all_observed_serial": {
+            "exposed_fraction_needed": 0.3583713698887078,
+            "missing_s": 0.0,
+            "new_first_final_floor_s": 8.995666776333332,
+            "prior_deficit_s": 0.5609541973333325
+          },
+          "named_future": {
+            "exposed_fraction_needed": null,
+            "missing_s": 0.030047946330154174,
+            "new_first_final_floor_s": 10.030047946330154,
+            "prior_deficit_s": 1.5953353673301542
+          },
+          "serial_reference": {
+            "exposed_fraction_needed": 0.5730482372114665,
+            "missing_s": 0.0,
+            "new_first_final_floor_s": 9.331697776333332,
+            "prior_deficit_s": 0.8969851973333327
+          }
+        }
+      }
+    },
+    "P97": {
+      "calls": [
+        {
+          "call": 1,
+          "classes": {
+            "CPU_active": {
+              "gap_ns": 136470181,
+              "ranks": 500,
+              "reservations": 40,
+              "waves": 25
+            },
+            "CUDA0_active": {
+              "gap_ns": 12452774,
+              "ranks": 200,
+              "reservations": 11,
+              "waves": 10
+            }
+          },
+          "entry_ns": 2961937
+        },
+        {
+          "call": 2,
+          "classes": {
+            "CPU_active": {
+              "gap_ns": 1965625163,
+              "ranks": 14800,
+              "reservations": 768,
+              "waves": 186
+            },
+            "CPU_empty": {
+              "gap_ns": 1232680258,
+              "ranks": 0,
+              "reservations": 0,
+              "waves": 739
+            },
+            "CUDA0_active": {
+              "gap_ns": 140076424,
+              "ranks": 5924,
+              "reservations": 444,
+              "waves": 88
+            },
+            "CUDA0_empty": {
+              "gap_ns": 212260720,
+              "ranks": 0,
+              "reservations": 0,
+              "waves": 283
+            }
+          },
+          "entry_ns": 6197931
+        }
+      ],
+      "gap_after_empty_ns": {
+        "CPU": 1232680258,
+        "CUDA0": 212260720
+      },
+      "scenarios": {
+        "CPU": {
+          "all_observed_serial": {
+            "exposed_fraction_needed": 0.1819568050008748,
+            "missing_s": 0.0,
+            "new_first_final_floor_s": 8.991614303333334,
+            "prior_deficit_s": 0.22429456133333403
+          },
+          "named_future": {
+            "exposed_fraction_needed": null,
+            "missing_s": 0.02599547333015395,
+            "new_first_final_floor_s": 10.025995473330154,
+            "prior_deficit_s": 1.258675731330154
+          },
+          "serial_reference": {
+            "exposed_fraction_needed": 0.45455872088229243,
+            "missing_s": 0.0,
+            "new_first_final_floor_s": 9.327645303333334,
+            "prior_deficit_s": 0.5603255613333342
+          }
+        },
+        "both": {
+          "all_observed_serial": {
+            "exposed_fraction_needed": 0.15522749008322057,
+            "missing_s": 0.0,
+            "new_first_final_floor_s": 8.779353583333334,
+            "prior_deficit_s": 0.22429456133333403
+          },
+          "named_future": {
+            "exposed_fraction_needed": 0.8710914497506582,
+            "missing_s": 0.0,
+            "new_first_final_floor_s": 9.813734753330154,
+            "prior_deficit_s": 1.258675731330154
+          },
+          "serial_reference": {
+            "exposed_fraction_needed": 0.38778439387116215,
+            "missing_s": 0.0,
+            "new_first_final_floor_s": 9.115384583333334,
+            "prior_deficit_s": 0.5603255613333342
+          }
+        }
+      }
+    }
+  },
+  "new_model_starts": 0,
+  "new_requests": 0,
+  "outside_sha256": "168a3bf6ad5fcda1550c835334a902cd410bf544245fbbbb23718226e1f91052",
+  "protocol_sha256": "5c8784c29fe3c71f70a37552d8b4ba2ddea478b23034992621e78564995289cb",
+  "status": "TRACE_DERIVED_EMPTY_WAVE_GAPS",
+  "tree": "d0074dee6e3421421f44a6ac0dc9458e651ac18f"
+}
