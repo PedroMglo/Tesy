@@ -4,6 +4,7 @@ import argparse
 import json
 import os
 import platform
+import shutil
 import statistics
 import subprocess
 import sys
@@ -166,6 +167,10 @@ def build(a, out, record, libs, env):
             command, env=env, stdout=f, stderr=subprocess.STDOUT, check=True, timeout=120
         )
     subprocess.run([out / "fixture", "--self-test"], env=env, check=True, timeout=5)
+    stock = out / "stock"
+    shutil.copyfile(parent / "stock", stock)
+    stock.chmod(0o700)
+    need(sha(stock) == proof["executables"]["stock"], "private copy of stock ELF")
     record.update(
         binary_sha256=sha(out / "fixture"),
         stock_sha256=proof["executables"]["stock"],
@@ -254,7 +259,7 @@ def run(a, out, record):
         frozen["commit"] == a.commit and frozen["status"] == "BUILT_C266_PARKED_TILE",
         "fixture build",
     )
-    stock = a.archive / "part-122/tesy-resident-team-build-20261125-r01/stock"
+    stock = a.build / "stock"
     exe = a.build / "fixture"
     need(sha(stock) == frozen["stock_sha256"] and sha(exe) == frozen["binary_sha256"], "exact ELF")
     for label, binary in (("stock", stock), ("fixture", exe)):
