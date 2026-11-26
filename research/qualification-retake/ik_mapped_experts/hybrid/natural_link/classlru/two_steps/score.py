@@ -1,11 +1,11 @@
 """Replay one larger share-zero bank and verify the 161-slot bridge at every decision site."""
 
 import argparse
-from collections import Counter, OrderedDict
 import ctypes
-from functools import lru_cache
 import hashlib
 import json
+from collections import Counter, OrderedDict
+from functools import cache
 from pathlib import Path
 from runpy import run_path
 from struct import pack, unpack
@@ -29,7 +29,7 @@ def f32(x):
     return unpack("f", pack("f", x))[0]
 
 
-@lru_cache(maxsize=None)
+@cache
 def decay(age):
     return LIBM.exp2f(-age / 128)
 
