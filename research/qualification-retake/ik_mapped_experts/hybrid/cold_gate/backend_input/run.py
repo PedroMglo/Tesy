@@ -39,6 +39,7 @@ def run(out, commit):
         "-Wextra",
         "-Werror",
         "-fsanitize=undefined",
+        "-fsanitize-undefined-trap-on-error",
         "-fno-sanitize-recover=all",
         str(HERE / "fixture.cpp"),
         "-o",
