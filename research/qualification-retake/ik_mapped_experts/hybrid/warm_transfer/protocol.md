@@ -55,3 +55,5 @@ A distribuição dos fills, aritmética e custos críticos reais do ik, cache
 de disco file-backed sob pressão, source faults e concorrência externa
 continuam fora da fixture. O memfd é um ficheiro shmem residente, com
 contabilidade de residência e readahead distintas de um GGUF no Btrfs.
+
+Aditamento prospetivo para o candidato de 288 slots, antes de qualquer medição desta fixture. Usar exatamente as mesmas duas ordens, amostras, alocação e denominadores já definidos. No replay de ClassLRU a 288, a janela até ao primeiro final requer 7 079 fills (93 578 716 800 B em 10 s). O decode requer 3 987 (52 704 950 400 B em 47/6 s). Se cada fill pagasse um drain isolado ao preço observado, os tetos médios seriam 1,412629 e 1,964719 ms/fill, respetivamente. Publicar os quatro contrastes pré-registados, incluindo os dois a 161. A taxa é condicional à cadência de submissão e às páginas residentes. [Cálculo dos 288 slots](../natural_link/classlru/two_steps/README.md)
