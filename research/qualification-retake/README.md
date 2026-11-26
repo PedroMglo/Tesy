@@ -1,5 +1,7 @@
 # Qualificação da conversa local com o GPT-OSS-120B
 
+**26 de novembro · o leitor C++ conservou os dados até à barreira e ao cleanup.** As origens mapeada e por leitura explícita passaram a mesma fixture com consumo diferido, incluindo uma falha a meio da submissão. A etapa seguinte verifica as rotas e logits do pequeno grafo CUDA com este leitor. O último ganho físico foi de 168–225 ms no serviço de três pesos frios de uma camada. [Leitor e próximo corte](ik_mapped_experts/hybrid/cold_gate/backend_input/README.md)
+
 **26 de novembro · a leitura seletiva dos três pesos da camada poupou 225,279 e 168,124 ms na RTX.** Para os mesmos 647,741 MB de dados e 99 destinos, o NVMe do cgroup passou de 1 553,981 para 648,155 MB nas duas ordens. GO para integração experimental com o grafo. A parte da poupança que chega à conversa está por medir. No melhor pedido nominal, faltam 8,313 s ao primeiro conteúdo final e 0,639 tok/s de decode. M3 PARTIAL e M4 NOT_MET. [Quatro braços físicos, falha preservada e reprodução](ik_mapped_experts/hybrid/cold_gate/layer-result.md)
 
 **26 de novembro · ler os intervalos exatos antecipou a entrega do gate à RTX em 52,053 e 59,247 ms.** O cgroup leu 216,052 MB face a 518,525 MB pelo mmap direto para os mesmos 215,914 MB úteis. A mudança de API e o conselho do fd contribuíram nas duas ordens. Os seis braços passaram a verificação integral. GO para uma camada com os três pesos. O melhor pedido nominal de produto continua em 18,313 s e 5,361 tok/s. [Comparação e limites](ik_mapped_experts/hybrid/cold_gate/read-result.md)

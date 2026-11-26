@@ -15,6 +15,8 @@ Cada braço começou com as 413 103 páginas das três matrizes frias. Os 99 des
 
 ## Prova física e reprodução
 
+A etapa de integração começou por um leitor C++ que mantém a origem válida até à barreira de cada backend. O teste de um consumidor diferido passou nos dois modos, incluindo falha após submissão e cleanup. O próximo discriminante é a paridade no grafo CUDA BANK9 com a origem de cópia alterada. [Implementação e resultado sem modelo](backend_input/README.md)
+
 No portátil, o commit físico de R02 foi `db782057b1ed11f772fe914de07e9d193066619f`, em árvore limpa. O GGUF foi o original do NVMe interno e o driver da RTX 4060 foi o 620.73.04. Os dois C118 contaram 61 amostras em 60,160 e 60,150 s. A vida dos filhos incluindo cleanup foi 3,106 e 3,494 s. Pico no scope 2 315 829 248 B, VRAM 720 MiB e swap zero. Nos monitores dos filhos a CPU chegou a 58,25 °C, a GPU a 44,67 °C e o NVMe a 36,85 °C. O scope encerrou e a RTX regressou a 2 MiB. Energia integrada DESCONHECIDA. R01 fica preservado, com um arranque e zero SET cronometrados. Na família R02 houve dois arranques, quatro provas de bytes, zero forwards do modelo e zero pedidos HTTP. Os relatórios calculados sobre os originais e o arquivo coincidiram. [R01, diagnóstico e condição de reabertura](layer-diagnostic.md) · [Lote privado 148, 22 ficheiros e 256 666 B](../../../private_archive/part-148.json)
 
 ```sh
