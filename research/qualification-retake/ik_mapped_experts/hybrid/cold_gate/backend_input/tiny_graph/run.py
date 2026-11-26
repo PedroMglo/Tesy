@@ -159,9 +159,18 @@ def run(a, out, r):
     r["status"] = "PASS_TINY_GRAPH_BANK_INPUT"
 
 
-def main():
+def main(run_family=run, extra_paths=()):
     p = argparse.ArgumentParser(description=__doc__)
-    for k in ("client", "dso", "tiny", "historical", "build", "c55", "new-output-dir"):
+    for k in (
+        "client",
+        "dso",
+        "tiny",
+        "historical",
+        "build",
+        "c55",
+        "new-output-dir",
+        *extra_paths,
+    ):
         p.add_argument("--" + k, type=Path, required=True)
     for k in ("c55-sha256", "build-sha256", "commit"):
         p.add_argument("--" + k, required=True)
@@ -180,9 +189,9 @@ def main():
                 "a"
             ) as lock:
                 fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
-                run(a, out, r)
+                run_family(a, out, r)
         else:
-            run(a, out, r)
+            run_family(a, out, r)
     except Exception as exc:
         r.update(status="FAIL_PRESERVED", reason=f"{type(exc).__name__}: {exc}")
     finally:

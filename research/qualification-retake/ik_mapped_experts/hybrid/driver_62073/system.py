@@ -40,11 +40,12 @@ def rpm_files(paths):
     return out
 
 
-def system_loader(exe, old, obj):
+def system_loader(exe, old, obj, *, llama_dir=None):
     driver_dir = Path("/usr/lib64")
     cuda = (driver_dir / "libcuda.so.1").resolve(strict=True)
     need(cuda.name == "libcuda.so." + VERSION and sha(cuda) == DRIVER, "system CUDA")
-    search = [str(obj / "ggml/src"), str(obj / "src"), "/usr/local/cuda-13.3/lib64"]
+    llama_dir = obj / "src" if llama_dir is None else llama_dir
+    search = [str(obj / "ggml/src"), str(llama_dir), "/usr/local/cuda-13.3/lib64"]
     env = dict(
         PATH="/usr/bin:/bin",
         LC_ALL="C",
@@ -77,7 +78,15 @@ def system_loader(exe, old, obj):
         need(path == exp["file"] and sha(Path(path)) == exp["sha256"], "loader identity " + n)
         paths[path] = exp["sha256"]
     need(
-        all(now[Path(n).name] == str((obj / n).resolve(strict=True)) for n in old["libraries"]),
+        all(
+            now[Path(n).name]
+            == str(
+                ((llama_dir / "libllama.so") if n == "src/libllama.so" else obj / n).resolve(
+                    strict=True
+                )
+            )
+            for n in old["libraries"]
+        ),
         "ik provider",
     )
     aux = [

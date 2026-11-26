@@ -156,7 +156,20 @@ def seal(a, prepared):
 
 
 def sample_arm(
-    mode, parent, args, policy, end, exe, tiny, env, paths, drivers, result, *, cap_bytes=CAP
+    mode,
+    parent,
+    args,
+    policy,
+    end,
+    exe,
+    tiny,
+    env,
+    paths,
+    drivers,
+    result,
+    *,
+    cap_bytes=CAP,
+    client_mode=None,
 ):
     age = (datetime.now(UTC) - end).total_seconds()
     need(0 <= age < 3300, "stale C55 before C118")
@@ -193,7 +206,7 @@ def sample_arm(
         started = time.monotonic()
         try:
             proc = subprocess.Popen(
-                [exe, mode, tiny, native],
+                [exe, mode if client_mode is None else client_mode, tiny, native],
                 env=env | dict(TESY_TEST_TX=str(tx), TESY_TEST_RX=str(ack_rx)),
                 pass_fds=(tx, ack_rx),
                 stdout=out,
