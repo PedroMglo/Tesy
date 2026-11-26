@@ -4,6 +4,7 @@
 #undef main
 
 #include "ggml-backend.h"
+#include "../vma/inspect.hpp"
 #include <array>
 #include <cerrno>
 #include <chrono>
@@ -133,12 +134,20 @@ static int execute(int argc, char **argv) {
     loading = false;
     require(r.model && llama_n_vocab(r.model) == vocab && llama_n_layer(r.model) == layers &&
             llama_model_n_embd(r.model) == hidden, "model geometry");
+    require(base != 0 && length == size_t(file_id.st_size), "intercepted full model map");
+    const auto witness = ik_vma::Inspect::capture(argv[3], file_id);
+    std::printf("VMA_KEY %u %u %u %u %" PRIu64 "\n",
+                major(file_id.st_dev), minor(file_id.st_dev), witness.key.major,
+                witness.key.minor, witness.key.inode);
     for (int layer = 0; layer < layers; ++layer) {
         for (const auto role : {"gate", "up", "down"}) {
             for (const auto kind : {std::string("weight"), std::string("bias")}) {
                 const auto name = "blk."+std::to_string(layer)+".ffn_"+role+"_exps."+kind;
-                inspect(r.model, name);
                 const auto *t = llama_get_model_tensor(r.model, name.c_str());
+                require(t && t->buffer && t->data, "missing tensor or buffer");
+                const auto bytes = ggml_nbytes(t);
+                const auto offset = witness.offset(name, base, length, uintptr_t(t->data), bytes);
+                std::printf("VIEW %s %" PRIu64 " %zu %d\n", name.c_str(), offset, bytes, int(t->type));
                 const bool weight = kind == "weight";
                 require(t->type == (weight ? GGML_TYPE_MXFP4 : GGML_TYPE_F32) && t->ne[0] == hidden &&
                         t->ne[1] == (weight ? hidden : experts) && t->ne[2] == (weight ? experts : 1)

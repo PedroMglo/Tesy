@@ -39,6 +39,8 @@ def sources():
             HERE / "run.py",
         )
     } | {
+        "vma/inspect.hpp": sha(HERE.parent / "vma/inspect.hpp"),
+        "vma/protocol.md": sha(HERE.parent / "vma/protocol.md"),
         "tiny_loader/probe.cpp": sha(pinned(TINY / "probe.cpp", OBSERVER)),
         "tiny_loader/run.py": sha(TINY / "run.py"),
         "frontend/run.py": sha(TINY.parent / "frontend/run.py"),
@@ -136,6 +138,8 @@ def check_stdout(stdout, dest, expected_rc, reference, closure, mode):
     )
     for key in ("MAP", "MAD", "POSIX"):
         need(observations(stdout, key) == observations(reference, key), "loader " + key)
+    key, = ints("VMA_KEY")
+    need(len(key) == 5 and key[-1] > 0, "native VMA witness")
     providers = dict(observations(stdout, "PROVIDER"))
     need(
         providers == {name: closure["lib" + name + ".so"]["file"] for name in ("llama", "ggml")},
