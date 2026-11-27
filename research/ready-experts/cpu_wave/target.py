@@ -30,6 +30,7 @@ BUILD = "2f96cecf56ab5e949f9385343219d21741532b63ca129f0e7bc531694e6004ec"
 LAYER = "5a544db3e987960ff264ce8689072929986000ffc1e50413c5622f166a43f642"
 CPU = "libggml-cpu.so.0"
 MODES = ("ORIGINAL", "OFF", "ON")
+STOPPED = "26eb500b4d17fe624378317376c1f5bd491afc016358af0ed32def090d22398c"
 
 
 def files(a, out):
@@ -95,7 +96,9 @@ def files(a, out):
 
 
 class Provider(PK["Pack"]):
-    def __init__(self, a, out, mode, exe, expected_elf, audit):
+    def __init__(
+        self, a, out, mode, exe, expected_elf, digest, *, selection="C270_PACK", kind="AUDIT"
+    ):
         constructor = a.archive / "part-52/tesy-pack-manifest-constructor-20261125-r02/receipt.json"
         manifest, meta = live.static.metadata(
             SimpleNamespace(
@@ -115,11 +118,11 @@ class Provider(PK["Pack"]):
         self.data_stats = {k: meta[k + "_stat"] for k in self.data_paths}
         self.pack_seen, self.pack_observations, self.env_checked = 0, set(), False
         path = a.archive / "part-161/tesy-pack-sys73-static-files-20261126-r01"
-        N["Current"].__init__(self, path, selection="C270_PACK", capture=(exe, expected_elf))
+        N["Current"].__init__(self, path, selection=selection, capture=(exe, expected_elf))
         closure = self.verified["closure"].copy()
         old = closure[CPU]["file"]
-        new = Path(old) if mode == "ORIGINAL" else a.build_dir / "AUDIT" / Path(old).name
-        image = closure[CPU]["sha256"] if mode == "ORIGINAL" else audit
+        new = Path(old) if mode == "ORIGINAL" else a.build_dir / kind / Path(old).name
+        image = closure[CPU]["sha256"] if mode == "ORIGINAL" else digest
         need(sha(new) == image, "numerical CPU identity")
         self.initial.remove(old)
         for table in (self.files, self.stats, self.keys):
@@ -180,7 +183,10 @@ def numerical(cap, grade, original):
 
 def process(a, out, mode, data, build):
     exe, family, grade, original, target, independent = data
-    ctl = Provider(a, out, mode, exe, family["pinned"]["capture_sha256"], build["arms"]["AUDIT"])
+    kind = "PRICE" if mode == "PRICE" else "AUDIT"
+    ctl = Provider(
+        a, out, mode, exe, family["pinned"]["capture_sha256"], build["arms"][kind], kind=kind
+    )
     unit = a.unit + "-" + mode.lower()
     req = SimpleNamespace(
         window=a.window,
@@ -243,7 +249,9 @@ def process(a, out, mode, data, build):
         "TESY_ROLLBACK_AR": str(cap),
     }
     if mode != "ORIGINAL":
-        extra.update(TESY_NATIVE_CPU_WAVE=str(int(mode == "ON")), TESY_WAVE_REPORT="1")
+        extra["TESY_NATIVE_CPU_WAVE"] = str(int(mode != "OFF"))
+        if mode != "PRICE":
+            extra["TESY_WAVE_REPORT"] = "1"
     cmd = PF["qualified_command"](read(out / "argv.json")["monitor"], Path("/usr/lib64"), loader)
     cmd[cmd.index(str(ROOT / "tools/run_bounded.py"))] = str(monitor)
     cmd[cmd.index("LimitFSIZE=8388608")] = "LimitFSIZE=41943040"
@@ -310,8 +318,44 @@ def process(a, out, mode, data, build):
     if mode == "ON":
         need(len(counts) == 1, "one process fusion count")
     else:
-        need(counts == ([] if mode == "ORIGINAL" else [0]), "control fusion count")
+        need(counts == ([0] if mode == "OFF" else []), "control/uncounted fusion count")
     return result
+
+
+def reopen(controls, data):
+    need(
+        sha(controls / "receipt.json") == STOPPED
+        and sha(controls / "ON/scope.log")
+        == "9c51540013e5933d02254775d76591e16d2eae030c79ce8ba031ddf3e46fcab3"
+        and not list((controls / "ON/raw").glob("*.launch.json")),
+        "stopped before ON launch",
+    )
+    _, _, grade, original, _, _ = data
+    seals = {
+        "ORIGINAL": "6337a4b2c9cfb41f07642fcca81f32807838f151166cf75fde9292addc133997",
+        "OFF": "10056db683f7480c3e06833528fccecb99703272bd267b3e5a384d7f9f979c6d",
+    }
+    for mode, digest in seals.items():
+        d = controls / mode
+        need(sha(d / "checked.json") == digest, "closed control")
+        row = read(d / "checked.json")
+        raw = d / "raw"
+        unit = row["unit"]
+        numerical(raw / (unit + ".capture"), grade, original)
+        mon = read(raw / (unit + ".json"))
+        need(
+            mon["returncode"] == 0
+            and mon["stop_reason"] is None
+            and row["files"] == grade["serial_matches"]
+            and row["counts"] == ([0] if mode == "OFF" else []),
+            "control status",
+        )
+        launch = read(raw / (unit + ".launch.json"))
+        inv = PK["PK"]["compact"].validate_inventory(
+            d, unit, {"native_explicit_env": mon["explicit_env"]}, launch
+        )
+        need(inv == row["inventory"], "original inventory")
+    return seals
 
 
 def run(a, out, r):
@@ -337,7 +381,11 @@ def run(a, out, r):
     first = json.loads((a.window / "samples.jsonl").read_bytes().splitlines()[0])["utc"]
     need(
         datetime.fromisoformat(first).timestamp()
-        >= int(prepare.git(HERE, "log", "-1", "--format=%ct", "--", "target.md")),
+        >= int(
+            prepare.git(
+                HERE, "log", "-1", "--format=%ct", "--", "retoma.md" if a.controls else "target.md"
+            )
+        ),
         "C55 after protocol",
     )
     data = files(a, out)
@@ -351,7 +399,15 @@ def run(a, out, r):
         archive_manifests=SEALS,
         arms=[],
     )
-    for mode in MODES:
+    modes = MODES
+    if a.controls:
+        r.update(
+            prior_controls=reopen(a.controls, data),
+            prior_sha256=STOPPED,
+            recovery_protocol=sha(HERE / "retoma.md"),
+        )
+        modes = ("ON", "PRICE")
+    for mode in modes:
         r["stage"] = mode
         folder = out / mode
         folder.mkdir()
@@ -363,9 +419,11 @@ def run(a, out, r):
                 if k not in ("files", "kv", "loader", "monitor", "inventory")
             }
         )
-    active = r["arms"][-1]["counts"][0]
+        if mode == "ON" and result["counts"] == [0]:
+            r.update(status="MEASURED", decision="INCONCLUSIVE_ZERO_FUSIONS")
+            return
     r.update(
-        status="MEASURED", decision="GO_NATURAL_CLIENT" if active else "INCONCLUSIVE_ZERO_FUSIONS"
+        status="MEASURED", decision="GO_UNCOUNTED_CLIENT" if a.controls else "GO_NATURAL_CLIENT"
     )
 
 
@@ -375,6 +433,7 @@ if __name__ == "__main__":
         p.add_argument("--" + k, type=lambda s: Path(s).resolve(), required=True)
     for k in ("commit", "unit", "window-sha256"):
         p.add_argument("--" + k, required=True)
+    p.add_argument("--controls", type=lambda s: Path(s).resolve())
     a = p.parse_args()
     need(re.fullmatch(r"tesy-native-wave-target-[a-z0-9-]+", a.unit), "unit identity")
     os.umask(0o077)
