@@ -1,0 +1,113 @@
+{
+  "model_loads": 0,
+  "plan_sha256": "3200d48de0811e27a87cad3e446cb22e7bbcb36d8e69ea40dcdf095fc5799a92",
+  "protocol_sha256": "42673170dcc4668adb9f35df4eee79c7b700064d962b355fbd91997f47b53cb7",
+  "source_sha256": "6877a074b8f79d4aa7846772a957c4b249ec09149dad7ed767be5ed03c691618",
+  "status": "TRACE_DERIVED_ORACLE_AND_CAUSAL_BOUNDS",
+  "traces": {
+    "P106": {
+      "clocks_ns": {
+        "current": {
+          "decode": 6727161332,
+          "first_final": 13067913888
+        },
+        "direct_cpu": {
+          "decode": 4495680226,
+          "first_final": 10394466457
+        },
+        "free_sets": {
+          "decode": 4263938562,
+          "first_final": 9998771445
+        },
+        "one": {
+          "decode": 4818698140,
+          "first_final": 10920997741
+        },
+        "t1_four": {
+          "decode": 6604895037,
+          "first_final": 12726130431
+        },
+        "two": {
+          "decode": 3955788594,
+          "first_final": 10025982097
+        },
+        "two_schedule": {
+          "decode": 4192471135,
+          "first_final": 10339022756
+        }
+      },
+      "counts": {
+        "cpu_generations": 1594,
+        "early_buffer_peak": 3,
+        "generations": 2354,
+        "parked_buffer_peak": 3,
+        "schedule_early_payload_bytes": 16510780800,
+        "schedule_early_reads": 1249,
+        "schedule_generations": 2354,
+        "schedule_ready_before_route": 356,
+        "schedule_worker_parked_ns": 1385612591,
+        "t1_eligible_generations": 106,
+        "t1_eligible_payload_bytes": 1401235200
+      },
+      "decision": {
+        "direct_cpu": "NO_GO",
+        "t1_four": "NO_GO",
+        "two": "NO_GO"
+      },
+      "journal_sha256": "cb13ff990afb3164bb61086e57a6caeff14187b66a1784c88e79cd3d521121bd",
+      "schedule_sha256": "95f0e0b04bfd05d71f573ee940edb86442c91d6605067340ba8a174b0f24917f"
+    },
+    "P97": {
+      "clocks_ns": {
+        "current": {
+          "decode": 6741016760,
+          "first_final": 12436154766
+        },
+        "direct_cpu": {
+          "decode": 4541675163,
+          "first_final": 9810337781
+        },
+        "free_sets": {
+          "decode": 4323832192,
+          "first_final": 9431936897
+        },
+        "one": {
+          "decode": 4829193954,
+          "first_final": 10285249152
+        },
+        "t1_four": {
+          "decode": 6625703237,
+          "first_final": 12113158332
+        },
+        "two": {
+          "decode": 3944198606,
+          "first_final": 9375758180
+        },
+        "two_schedule": {
+          "decode": 4189663435,
+          "first_final": 9692901306
+        }
+      },
+      "counts": {
+        "cpu_generations": 1594,
+        "early_buffer_peak": 3,
+        "generations": 2354,
+        "parked_buffer_peak": 2,
+        "schedule_early_payload_bytes": 16510780800,
+        "schedule_early_reads": 1249,
+        "schedule_generations": 2354,
+        "schedule_ready_before_route": 332,
+        "schedule_worker_parked_ns": 1219476219,
+        "t1_eligible_generations": 106,
+        "t1_eligible_payload_bytes": 1401235200
+      },
+      "decision": {
+        "direct_cpu": "NECESSARY_FLOOR_FITS",
+        "t1_four": "NO_GO",
+        "two": "GO_TEMPORAL_FIXTURE_ONLY"
+      },
+      "journal_sha256": "05e32c2af753026e471fa61c9dcb43867ca6b9a3001045a2138bc96c422928dc",
+      "schedule_sha256": "14879f90be6429d08973cb5417a4354673ca02168b0e5e37660f1743e8ad99f8"
+    }
+  }
+}
