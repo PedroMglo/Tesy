@@ -1,6 +1,7 @@
 // Test three physical expert projections with the original CPU scheduler and MXFP4 kernels.
 #include "ggml-cpp.h"
 #include "ggml-cpu.h"
+#include "c291-direct-reader.h"
 #include <array>
 #include <cmath>
 #include <cstdio>
@@ -95,12 +96,12 @@ void calculate(const Matrix &w, ggml_backend_t cpu, int n, bool mutant, FILE *ou
 int run(const std::string &role, const char *input, const char *path) {
     const bool planar = role == "A", direct = role == "C" || role == "MUTANT";
     check(planar || role == "B" || direct, "unknown layout");
-    int fd = open(input, O_RDONLY | O_DIRECT | O_CLOEXEC);
-    struct statx sx{};
-    check(fd >= 0 && (fcntl(fd, F_GETFL) & O_DIRECT) &&
-          statx(fd, "", AT_EMPTY_PATH, STATX_DIOALIGN, &sx) == 0 && (sx.stx_mask & STATX_DIOALIGN) &&
-          sx.stx_dio_mem_align && sx.stx_dio_offset_align && 4096 % sx.stx_dio_mem_align == 0 &&
-          4096 % sx.stx_dio_offset_align == 0, "direct NVMe alignment");
+    tesy_witness::direct_reader source;
+    source.open_file(input);
+    int fd = source.descriptor();
+    check((fcntl(fd, F_GETFL) & O_DIRECT) && source.file_size() == 5 * stride &&
+          4096 % source.memory_alignment() == 0 && 4096 % source.offset_alignment() == 0,
+          "direct NVMe alignment and extent");
     Mapping pool(stride * slots);
     ggml_context_ptr ctx(ggml_init({2u << 20, nullptr, true}));
     ggml_backend_ptr cpu(ggml_backend_cpu_init());
@@ -143,9 +144,9 @@ int run(const std::string &role, const char *input, const char *path) {
         if (generation) serve(4, slot_ids[1]);
         for (int n : {1,20,32}) calculate(w, cpu.get(), n, role == "MUTANT", out.get());
     }
-    check(fflush(out.get()) == 0 && close(fd) == 0, "drain");
-    printf("%s %zu %zu %u %u 5 %d\n", role.c_str(), slab, stride, sx.stx_dio_mem_align,
-           sx.stx_dio_offset_align, direct ? 0 : 15);
+    check(fflush(out.get()) == 0, "drain");
+    printf("%s %zu %zu %zu %zu 5 %d\n", role.c_str(), slab, stride, source.memory_alignment(),
+           source.offset_alignment(), direct ? 0 : 15);
     return 0;
 }
 

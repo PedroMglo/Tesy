@@ -52,6 +52,15 @@ def run(a, out, rec):
     )
     disk = G["disk"](out, "nvme")
     sources = {k: sha(HERE / k) for k in ("slot_layout.cpp", "slot_layout.py")}
+    reader_file = a.reader / "src/c291-direct-reader.h"
+    reader_sha = sha(reader_file)
+    need(
+        mm.git(a.reader, "rev-parse", "HEAD") == "c89c88b342054223e3f27a17fbfd0954803147ac"
+        and not mm.git(a.reader, "status", "--porcelain")
+        and reader_sha == "cb386577d0b424d531a484d81619e29887b2419dd03c05578004b0878f601af6",
+        "C291 reader source",
+    )
+    rec.update(reader_sha256=reader_sha, retake_protocol_sha256=sha(HERE / "slot-retake.md"))
     pins = {name: sha(libs / name) for name in (mm.BASE, mm.CPU)}
     cc = "/usr/bin/g++-15"
     need(
@@ -136,6 +145,7 @@ def run(a, out, rec):
             "-O2",
             "-pthread",
             "-I" + str(a.backend / "ggml/include"),
+            "-I" + str(reader_file.parent),
             HERE / "slot_layout.cpp",
             libs / mm.CPU,
             libs / mm.BASE,
@@ -205,7 +215,7 @@ def run(a, out, rec):
 
 if __name__ == "__main__":
     p = argparse.ArgumentParser(description=__doc__)
-    for key in ("window", "backend", "new-output-dir"):
+    for key in ("window", "backend", "reader", "new-output-dir"):
         p.add_argument("--" + key, type=Path, required=True)
     p.add_argument("--commit", required=True)
     a = p.parse_args()
