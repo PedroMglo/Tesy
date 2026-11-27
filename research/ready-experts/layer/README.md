@@ -4,6 +4,8 @@
 
 ## Cálculo e leitura no portátil
 
+A [unidade seguinte](../renewal/README.md) executou o teste de renovação aqui proposto. Identificou os consumidores posteriores de todas as 436 leituras antecipadas, verificou a capacidade de 353 lugares, cruzou o desconto das waves vazias com o mesmo caminho crítico e mediu o leitor alternativo no NVMe do portátil.
+
 **MEDIDO** em CPU0, no primeiro decode de C270, posição 189. O router do target reproduziu os 128 logits, o vetor após bias, os IDs [28,24,8,16] e os pesos dos quatro ranks. No instante capturado, e28, e8 e e16 estavam residentes e faltava e24. O protótipo mantém os slots físicos [3,14,6,35], lê a janela de e24 com um único `pread` O_DIRECT de 13 221 888 B e faz três SET, somando 13 219 200 B. Os três modos usam os mesmos bytes MXFP4, oito threads GGML e quatro workers de serviço persistentes. A variante READY usa um serviço especializado nesta única falta, com publicação por geração. O ensaio cobre a fronteira desde a emissão da procura já encaminhada até à soma na ordem lógica e ao drain dessa procura. As equipas e os grafos já existem no início de cada intervalo. [Referência independente das contribuições](../../qualification-retake/igpu_resident_rank/projection/rank_cpu/README.md) · [Código nativo](native.cpp)
 
 | 7 triplos por bloco, mediana em ms | FULL espera e calcula 4 | WAIT espera e calcula 3+1 | READY começa pelos 3 | FULL − READY emparelhado | WAIT − READY emparelhado | Interseção entre o grafo dos 3 e o READ |
