@@ -1,3 +1,4 @@
+import itertools
 import json
 from pathlib import Path
 from runpy import run_path
@@ -12,6 +13,7 @@ PRICE = run_path(STUDY / "service_price.py")
 FRONT = run_path(STUDY / "frontier.py")
 LIFE = run_path(STUDY / "slot_lifetime.py")
 BANK = run_path(STUDY / "slot_bank.py")
+PACK = run_path(STUDY / "slot_packing.py")
 
 
 def family(first, second):
@@ -235,3 +237,28 @@ def test_required_disk_discount_is_bracketed_by_adjacent_percentages():
         BANK["read_cut"](lambda _: {"first_final": 10**12, "decode": 0})["min_saving_percent"]
         is None
     )
+
+
+def test_independent_four_bin_checks_against_all_small_worker_assignments():
+    for costs in ((5, 5, 5, 5, 5), (7, 7, 6, 5, 4, 4), (9, 8, 7, 6, 5, 3, 2)):
+        best = sum(costs)
+        for choices in itertools.product(range(4), repeat=len(costs) - 1):
+            loads = [costs[0], 0, 0, 0]
+            for i, lane in enumerate(choices, 1):
+                loads[lane] += costs[i]
+            best = min(best, max(loads))
+        assert PACK["exact_four"](costs) == best
+        assert PACK["fits_in_four"](costs, best)
+        assert not PACK["fits_in_four"](costs, best - 1)
+
+
+def test_stronger_certificate_rejects_an_invalid_extra_nanosecond():
+    job = LIFE["Job"]
+    jobs = [job(i, (0, i, 1, i), 0, 0, 0, 0, -1, -1, 4, 1) for i in range(5)]
+    base, floor, path = PACK["path_floor"](jobs, 0, [0])
+    assert (base, floor) == (7, 10)
+    assert PACK["verify_call"](1, path) == (10, 1)
+    bad = [list(step) for step in path]
+    bad[0][3] += 1
+    with pytest.raises(ValueError, match="impossible interval"):
+        PACK["verify_call"](1, bad)
