@@ -1,6 +1,6 @@
 # Uma mudança no backend CPU chega à conversa?
 
-**GO como componente para o nominal desta conversa. NO_GO para financiar um backend novo com este mecanismo.** O executor atual serviu o modelo com a nova fusão e obteve primeiro conteúdo final e conclusão válida mais cedo em 4/4 contrastes. O melhor turno ON combinou **17,689 s** até ao primeiro final, **17,938 s** até à validação e **5,357 tok/s** no mesmo pedido. M3 continua PARTIAL e M4 NOT_MET. A unidade seguinte qualificou o custo do trabalho fornecido nominal e de código contra R0 independente. A resposta natural de código e a sessão sustentada desta combinação ainda exigem medição. [Comparação emparelhada e teste de destino CPU](supplied/README.md)
+**GO como componente para o nominal desta conversa. NO_GO para financiar um backend novo com este mecanismo.** O executor atual serviu o modelo com a nova fusão e obteve primeiro conteúdo final e conclusão válida mais cedo em 4/4 contrastes. O melhor turno ON combinou **17,689 s** até ao primeiro final, **17,938 s** até à validação e **5,357 tok/s** no mesmo pedido. M3 continua PARTIAL e M4 NOT_MET. As unidades seguintes qualificaram o custo do trabalho fornecido e a função Python gerada numa conversa com histórico contra R0 independente. O comparador de código gerou 256 IDs e passou o validador nos seis processos. A sessão sustentada desta combinação ainda exige medição. [Comparação de custo e destino CPU](supplied/README.md) · [Conversa de código e teste de um executor independente](code_chat/README.md)
 
 ## O que correu no portátil
 
