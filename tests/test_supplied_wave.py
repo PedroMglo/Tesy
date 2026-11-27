@@ -6,6 +6,7 @@ import pytest
 STUDY = Path(__file__).resolve().parents[1] / "research/ready-experts/cpu_wave/supplied"
 REVIEW = run_path(STUDY / "review.py")
 BOUND = run_path(STUDY / "executor_bound.py")
+LOOK = run_path(STUDY / "lookahead.py")
 
 
 def family(first, second):
@@ -58,3 +59,28 @@ def test_one_prefix_and_two_decode_intervals_do_not_double_credit_the_tail():
     )
     with pytest.raises(ValueError, match="exceeds"):
         BOUND["price"](observed, dict(phase, prefill=20_000_000_000), exterior)
+
+
+def test_future_read_owns_the_lane_and_waits_for_the_authoritative_region():
+    job = LOOK["Job"]
+    groups = [[job(0, 0, 4, 5)], [job(1, 1, 2, 3)]]
+    assert LOOK["floor"](groups, 0) == LOOK["schedule"](groups, 0)[0] == 14
+    end, info, (opening, packed) = LOOK["schedule"](groups, 1)
+    assert LOOK["floor"](groups, 1) == end == 12
+    assert opening == [0, 9, 12]
+    assert (info["early_reads"], info["parked_buffer_peak"], info["worker_parked_ns"]) == (1, 1, 7)
+    events = {i: data for i, *data in packed}
+    events[1][3:] = [8, 11]
+    with pytest.raises(ValueError, match="dependency"):
+        LOOK["audit"](groups, 1, opening, events)
+
+
+def test_empty_regions_and_four_occupied_workers():
+    job = LOOK["Job"]
+    groups = [[], [job(i, 1, 5, 2) for i in range(4)], [job(4, 2, 7, 3)], []]
+    for lead in (0, 1):
+        end, info, (opening, _) = LOOK["schedule"](groups, lead)
+        assert end == 17
+        assert LOOK["floor"](groups, lead) == (10 if lead else 17)
+        assert opening == [0, 0, 7, 17, 17]
+        assert info["early_reads"] == 0 and info["generations"] == 5
