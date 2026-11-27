@@ -236,6 +236,10 @@ def arm(a, out, name, cfg, expected_logits, generations, build):
     policy = read(out / "resource-policy.json")
     PK["PK"]["age"](policy, datetime.now(UTC))
     monitor_proof = T["AU"]["Authority"].monitor_proof(ctl.monitor)
+    if a.prepare_only:
+        return dict(
+            name=name, role=role, model_launches=0, argv_sha256=sha(out / "argv-supplied.json")
+        )
     ident, samples, mapped, wall = PF["guarded_run"](
         cmd, out, unit, ctl, measure, T["N"]["run_bounded"]
     )
@@ -326,7 +330,7 @@ def main(a, out, receipt):
         commit=a.commit,
         tree=prepare.git(ROOT, "rev-parse", "HEAD^{tree}"),
         protocol_sha256=sha(HERE / "protocol.md"),
-        runner_sha256=sha(__file__),
+        runner_sha256=sha(Path(__file__)),
         window_sha256=a.window_sha256,
         input_sha256=sha(info["R"]["fixture"]),
         source_protocols=[BASE, PACK],
@@ -336,19 +340,19 @@ def main(a, out, receipt):
     )
     save(out / "provenance.json", dict(receipt, order=list(ORDER)))
     start = time.monotonic()
-    for i, role in enumerate(ORDER, 1):
+    for i, role in enumerate("RGPW" if a.prepare_only else ORDER, 1):
         name = str(i) + role
         receipt["stage"] = name
         folder = out / name
         folder.mkdir()
         row = arm(a, folder, name, info["R" if role == "R" else "G"], logits, loads, build)
         receipt["arms"].append(row)
-        print(name, "PASS_FULL33", flush=True)
+        print(name, "PREPARED_ONLY" if a.prepare_only else "PASS_FULL33", flush=True)
         need(
             time.monotonic() - start <= 46 * 60 and measure.file_bytes(out) <= 1 << 30,
             "case budget",
         )
-    receipt["status"] = "COMPLETE_SUPPLIED_CASE"
+    receipt["status"] = "PREPARED_ONLY" if a.prepare_only else "COMPLETE_SUPPLIED_CASE"
 
 
 if __name__ == "__main__":
@@ -358,6 +362,7 @@ if __name__ == "__main__":
     for key in ("commit", "unit", "window-sha256"):
         p.add_argument("--" + key, required=True)
     p.add_argument("--case", choices=CASES, required=True)
+    p.add_argument("--prepare-only", action="store_true")
     a = p.parse_args()
     os.umask(0o077)
     out = a.new_output_dir
@@ -373,4 +378,4 @@ if __name__ == "__main__":
     receipt["elapsed_s"] = time.monotonic() - start
     save(out / "receipt.json", receipt)
     print(receipt["status"], receipt.get("reason", ""), flush=True)
-    raise SystemExit(int(receipt["status"] != "COMPLETE_SUPPLIED_CASE"))
+    raise SystemExit(int(receipt["status"] not in {"COMPLETE_SUPPLIED_CASE", "PREPARED_ONLY"}))
