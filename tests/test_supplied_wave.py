@@ -1,3 +1,4 @@
+import gzip
 import itertools
 import json
 from pathlib import Path
@@ -262,3 +263,27 @@ def test_stronger_certificate_rejects_an_invalid_extra_nanosecond():
     bad[0][3] += 1
     with pytest.raises(ValueError, match="impossible interval"):
         PACK["verify_call"](1, bad)
+
+
+def test_published_four_worker_certificate_prices_the_same_jobs_and_clocks():
+    receipt = json.loads((STUDY / "slot-packing.json").read_bytes())
+    parent = json.loads((STUDY / "slot-bank.json").read_bytes())
+    proof_path = STUDY / "packing-paths.json.gz"
+    for name, digest in (
+        ("slot_packing.py", receipt["source_sha256"]),
+        ("slot-packing.md", receipt["protocol_sha256"]),
+        ("slot-bank.json", receipt["parent_sha256"]),
+        ("slot-lifetime.json", parent["parent_sha256"]),
+        (proof_path.name, receipt["certificate_sha256"]),
+    ):
+        assert BOUND["sha"](STUDY / name) == digest
+    PACK["verify"](json.loads(gzip.decompress(proof_path.read_bytes())), receipt)
+    for label, trace in receipt["traces"].items():
+        original = parent["traces"][label]
+        oracle = original["regimes"]["frequency"]["two_oracle"]["empty_wave_grant"]
+        assert trace["journal_sha256"] == original["journal_sha256"]
+        assert trace["original_floor_ns"] == oracle["floor"]
+        assert trace["schedule_ns"] == oracle["schedule"]
+        assert oracle["floor"]["first_final"] < trace["floor_ns"]["first_final"]
+        assert trace["floor_ns"]["first_final"] < BOUND["LIMITS"]["first_final"]
+        assert BOUND["LIMITS"]["first_final"] < trace["schedule_ns"]["first_final"]

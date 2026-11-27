@@ -113,17 +113,39 @@ O piso permite sobrepor serviço às lacunas entre callbacks e disponibiliza a v
 
 O primeiro processo encerrou ao verificar a árvore Git. Os destinos exclusivos `outputs/ready-slot-lifetime-20261127-02` e `-03` deram recibos e quatro ficheiros de horário comprimidos idênticos byte a byte. Durações 7,54 / 7,57 s, máximo 188 132 KiB de RSS, zero cálculos de modelo ou GPU. Recibo SHA-256 `b024b4dbcb93690fe17864815a591f7a508b0c2d0e55c45f2af6be9b9bd48739`. [Falha preservada e retoma](slot-lifetime-retake.md)
 
+## Que parte das esperas desaparece com um banco secundário de RAM?
+
+**NO_GO para a seleção causal testada, mesmo com entrega CPU direta e o crédito máximo à fusão.** O replay isolou a contribuição da retenção ao executar cada braço com os mesmos quatro workers, slots primários e capacidade de RAM. Cada coluna mostra o tempo até ao primeiro conteúdo final em P97 / P106, dois processos da mesma conversa nominal. O piso é uma condição necessária. O horário construído respeita a posse dos slots sob os custos assumidos. [Protocolo](slot-bank.md) · [Todos os braços, horários, relógios de decode e selos](slot-bank.json)
+
+| Uso da RAM | Quando uma falta pode iniciar a leitura | Piso com grafo observado (s) | Piso com crédito à fusão (s) | Horário com crédito à fusão (s) |
+|---|---|---:|---:|---:|
+| Reservada, sem reuso | Entrada da região | 17,084 / 18,210 | 15,868 / 16,887 | 16,440 / 17,500 |
+| Reservada, sem reuso | Quatro favoritos de T1 podem começar duas regiões antes | 16,787 / 17,900 | 15,577 / 16,583 | 16,286 / 17,328 |
+| Reservada, sem reuso | Previsão perfeita duas regiões antes | 11,408 / 12,373 | 10,753 / 11,604 | 11,301 / 12,222 |
+| Retenção por frequência | Entrada da região | 14,753 / 15,917 | 13,537 / 14,594 | 14,034 / 15,115 |
+| Retenção por frequência | Quatro favoritos de T1 podem começar duas regiões antes | 14,705 / 15,868 | **13,489 / 14,545** | 14,014 / 15,093 |
+| Retenção por frequência | Previsão perfeita duas regiões antes | 9,885 / 10,901 | 9,024 / 9,959 | **10,646 / 11,670** |
+
+A política aprendeu no primeiro turno, começou o segundo com 305 registos secundários e podia ocupar 353 (4 667 326 464 B antes de metadata). A sequência de gerações reproduziu 474 hits CPU e 217 CUDA, retirando **691 das 2 354 leituras** em cada replay. Ficaram 880 no prefill, 763 na parte do decode anterior ao primeiro final e 20 na cauda. A retenção requer 1 367 capturas CPU e 615 CUDA. São 26 200 454 400 B de pesos capturados e 9 134 467 200 B promovidos, antes de qualquer amplificação física. O limite oferece as capturas, a promoção CPU e as previsões desperdiçadas. Cada entrega CUDA continua a cobrar os seus três SET. O crédito integral às 711 lacunas após waves CPU elegíveis vale 1,216 / 1,323 s de trabalho no journal. A fração efetivamente exposta na biblioteca com fusão precisa de medição. No braço que conhece a rota à entrada da região, atingir sequer a condição necessária exige encurtar de forma uniforme o tempo dos READ restantes em **41% / 54%**, ao ponto percentual inteiro. A 40% / 53% o primeiro final ainda excede 10 s.
+
+**INCONCLUSIVE para o horário ótimo com previsão perfeita, retenção e crédito integral à fusão.** Uma leitura tem de caber inteira num worker. Em cada intervalo, a nova prova distribui exatamente pelos quatro workers as doze maiores obrigações, ou todas se houver menos. Um segundo algoritmo confirma os limites das arestas por chamada. O piso do primeiro final sobe para **9,053665138 / 9,992784952 s**, e o do decode de 47 IDs para 4,628532093 / 4,819613299 s. Em P106, qualquer custo adicional inevitavelmente exposto acima de **7,215048 ms** até à primeira peça fecha a combinação nesses preços. A existência de um horário dentro do prazo continua por demonstrar. O horário construído mais rápido desta unidade para este braço dá 10,645585851 / 11,670407779 s. O caso de código e uma segunda trajetória natural não entraram nesta projeção. [Protocolo e critério de saída](slot-packing.md) · [Recibo](slot-packing.json) · [Certificado compacto verificável em CPU](packing-paths.json.gz)
+
+Uma nova arquitetura merece teste se conseguir mudar o preço de servir as faltas críticas ou a informação disponível para as antecipar. Para reabrir a mesma combinação a observação discriminante é um horário causal dentro dos 10 s com preços contemporâneos do caminho crítico, incluindo o serviço entre waves com a fusão ativa, a movimentação do banco, as previsões desperdiçadas e o drain no relógio aplicável. O replay atual exclui as variantes causais da tabela aos preços estudados. A prova inteira confere o limite exclusivamente no braço com informação futura perfeita.
+
 ## Proveniência das saídas
+
+Os três protocolos acima foram congelados antes das respetivas execuções. As duas reproduções da composição com banco demoraram 6,12 / 6,10 s e as do certificado inteiro 5,43 / 5,44 s. Em cada par, o conteúdo integral das duas saídas coincidiu byte a byte. Os sete destinos exclusivos incluem a falha inicial de proveniência. O ficheiro comprimido público contém os custos das arestas em nanossegundos e a identificação criptográfica dos dois journals. Os journals e os horários por geração continuam no arquivo privado. A verificação pública abaixo confere a aritmética das arestas. A conferência da extração das obrigações exige os journals privados. [Inventário, commits, árvores, ficheiros e comandos de cada execução](slot-campaigns.json)
 
 O arquivo exclusivo `ready-supplied-wave-20261127-01` contém 538 ficheiros, 593 951 255 B. A reabertura das famílias a partir desse arquivo reproduziu `decision.json` byte a byte. Os replays duplicados do limite do executor duraram 4,06 / 3,99 s, os de uma região 3,96 / 3,98 s, os de preço de READ 1,02 / 1,02 s, o treino 0,47 / 0,42 s e os de duas regiões 4,48 / 4,46 s. O horário, os quatro ficheiros de testemunhas de uma região e os dois de duas regiões conferiram por SHA-256 nas duas reproduções. A composição repetiu em 4,64 / 4,60 s, máximo de 136 972 KiB RSS, com o mesmo SHA-256 `02beb453cbc65d6d481a45c5f7faae51cc39f27dcfc64a5539735c1a6ea0bdc8`. O segundo arquivo `ready-record-slot-20261127-01` contém 26 ficheiros, 190 968 235 B, incluindo a tentativa que falhou. Todos os recibos indicam o commit, a fonte ou o seu protocolo congelado. [Manifesto físico e dos replays](archive.json) · [Manifesto da composição e da fixture](slot-archive.json)
 
 ## Reprodução
 
-Na raiz do clone, a conferência do resultado compacto e os testes de conservação usam CPU, sem pesos. Para reabrir os journals do portátil, `TESY_PFJ_ARCHIVE` aponta à cópia privada `qualification-20261124-nvme-01`. Para repetir a avaliação nativa a partir das capturas, `TESY_SUPPLIED_PART` aponta à `part-01` do arquivo desta unidade. Ficheiros e destinos dos lançamentos físicos constam do registo de comandos. [Comandos originais](commands.json) · [Falha no pré-voo de código](preflight.md) · [Retoma nominal](nominal-retake.md)
+Na raiz do clone, a conferência do resultado compacto e os testes de conservação usam CPU, sem pesos. `TESY_PFJ_ARCHIVE` aponta à cópia privada `qualification-20261124-nvme-01`, e `TESY_RENEWAL_ARCHIVE` a `ready-renewal-20261127-01`. Para repetir a avaliação nativa a partir das capturas, `TESY_SUPPLIED_PART` aponta à `part-01` do arquivo da unidade física. [Comandos físicos](commands.json) · [Comandos e hashes dos replays](slot-campaigns.json) · [Falha no pré-voo de código](preflight.md) · [Retoma nominal](nominal-retake.md)
 
 ```sh
 s=research/ready-experts/cpu_wave/supplied
 python3 -IB "$s/review.py" --check "$s/decision.json"
+python3 -IB "$s/slot_packing.py" --certificate "$s/packing-paths.json.gz" --receipt "$s/slot-packing.json"
 python3 -m pytest -q tests/test_supplied_wave.py
 out=$(mktemp -d)
 python3 -IB "$s/executor_bound.py" --archive "$TESY_PFJ_ARCHIVE" --new-output-dir "$out/bound"
@@ -136,6 +158,10 @@ python3 -IB "$s/frontier.py" score --archive "$TESY_PFJ_ARCHIVE" --lookahead "$o
   --plan-sha256 "$plan_sha" --new-output-dir "$out/frontier"
 python3 -IB "$s/composition.py" --archive "$TESY_PFJ_ARCHIVE" --plan "$out/plan/plan.json" --new-output-dir "$out/composition"
 python3 -IB "$s/slot_lifetime.py" --archive "$TESY_PFJ_ARCHIVE" --new-output-dir "$out/slots"
+python3 -IB "$s/slot_bank.py" --archive "$TESY_PFJ_ARCHIVE" --renewal "$TESY_RENEWAL_ARCHIVE" \
+  --plan "$out/plan/plan.json" --new-output-dir "$out/bank"
+python3 -IB "$s/slot_packing.py" --archive "$TESY_PFJ_ARCHIVE" --renewal "$TESY_RENEWAL_ARCHIVE" \
+  --new-output-dir "$out/packing"
 python3 -IB "$s/review.py" --code "$TESY_SUPPLIED_PART/tesy-wave-supplied-code153-20261127-r02" \
   --nominal "$TESY_SUPPLIED_PART/tesy-wave-supplied-nominal153-20261127-r02" \
   --code-window "$TESY_SUPPLIED_PART/tesy-wave-supplied-c55-code-20261127-r01" \
