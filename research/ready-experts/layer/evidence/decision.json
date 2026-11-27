@@ -1,0 +1,537 @@
+{
+  "all_fixed_banks": {
+    "addendum_sha256": "455b7dfe89acdfeb8914ac26ffe7c3387e16f095f19fe8c3978464f44889bd26",
+    "arms": {
+      "P106": {
+        "copied": {
+          "decode": {
+            "first_capacity_not_excluded_by_this_certificate": 0,
+            "floor_ns": 4932887688
+          },
+          "first_final": {
+            "first_capacity_not_excluded_by_this_certificate": 414,
+            "floor_ns": 10366801361
+          }
+        },
+        "direct": {
+          "decode": {
+            "first_capacity_not_excluded_by_this_certificate": 0,
+            "floor_ns": 4708021608
+          },
+          "first_final": {
+            "first_capacity_not_excluded_by_this_certificate": 370,
+            "floor_ns": 10104750168
+          }
+        }
+      },
+      "P97": {
+        "copied": {
+          "decode": {
+            "first_capacity_not_excluded_by_this_certificate": 0,
+            "floor_ns": 4773540406
+          },
+          "first_final": {
+            "first_capacity_not_excluded_by_this_certificate": 248,
+            "floor_ns": 9344883503
+          }
+        },
+        "direct": {
+          "decode": {
+            "first_capacity_not_excluded_by_this_certificate": 0,
+            "floor_ns": 4570583059
+          },
+          "first_final": {
+            "first_capacity_not_excluded_by_this_certificate": 219,
+            "floor_ns": 9098602645
+          }
+        }
+      }
+    },
+    "capacity": 353,
+    "certificate_sha256": "e91c6111ac87eff1af42ac7db3ab47564f4930e9e3e572321a262dddf5adc05f",
+    "clock_unit": "ns",
+    "decisions": {
+      "copied": "NO_GO_ALL_FIXED_BANKS",
+      "direct": "NO_GO_ALL_FIXED_BANKS"
+    },
+    "denominator": 1000000,
+    "protocol_sha256": "bd5a38d4226a85aa3169e2119a087fc4f3096a6deb68a6b40145993a0bdbcc97",
+    "schema": "tesy.layer_bank_certificate.v1",
+    "source_sha256": "bd9a93f97a0c31d3cccf224c1caeecabcf0d3028ef80a582c5b96f21f1776669",
+    "status": "FORMAL_CONDITIONAL_ON_TRACE_PRICES"
+  },
+  "archive_manifest_sha256": "36257ad557533044a2dd29fab83fe759ac9d8cfe4d26f995c9d76d4087359c07",
+  "causal_controls": {
+    "credit_ns": 646428255,
+    "decisions": {
+      "lru": "NO_GO",
+      "prefill": "NO_GO",
+      "publication": "NO_GO"
+    },
+    "results": {
+      "lru": {
+        "fits_with_grant": false,
+        "keys_sha256": "a6aa1e42bf85585dcc421820e4ccc6de4114eadfc71abacb684359c5e67435c0",
+        "other_three_clocks_pass": false,
+        "p106_first_needed_credit_ns": 2687894202,
+        "p106_full_grant_first_ns": 12041465947,
+        "with_full_client_cost_ns": {
+          "P106": {
+            "decode": 7019134393,
+            "first_final": 12687894202
+          },
+          "P97": {
+            "decode": 6891680418,
+            "first_final": 11710283075
+          }
+        }
+      },
+      "prefill": {
+        "fits_with_grant": false,
+        "keys_sha256": "fca2bb4815942fe132b70cac5d9b39d1fa549818c67d364d1267f892e21f212f",
+        "other_three_clocks_pass": false,
+        "p106_first_needed_credit_ns": 2831284369,
+        "p106_full_grant_first_ns": 12184856114,
+        "with_full_client_cost_ns": {
+          "P106": {
+            "decode": 7259237151,
+            "first_final": 12831284369
+          },
+          "P97": {
+            "decode": 7145655298,
+            "first_final": 11856651661
+          }
+        }
+      },
+      "publication": {
+        "fits_with_grant": false,
+        "keys_sha256": "f89ff5163a993e891e32b68d2d63d0be65b40cdee4e4095f2dade2443c82ef54",
+        "other_three_clocks_pass": false,
+        "p106_first_needed_credit_ns": 2823456129,
+        "p106_full_grant_first_ns": 12177027874,
+        "with_full_client_cost_ns": {
+          "P106": {
+            "decode": 7099885661,
+            "first_final": 12823456129
+          },
+          "P97": {
+            "decode": 6982676288,
+            "first_final": 11871044086
+          }
+        }
+      }
+    },
+    "schema": "tesy.ready_t1_controls.v1",
+    "source_sha256": "aa84aa2c5ec4a025499021147df0b06b029c049a28bd9d4883f22015b046debc",
+    "status": "TRACE_DERIVED"
+  },
+  "fixed_parent_bank": {
+    "arms": {
+      "P106": {
+        "clocks": {
+          "decode": {
+            "all_banks_certificate_ns": 3866582260,
+            "global_ns": 5249444419,
+            "local_ns": 6121496048
+          },
+          "first_final": {
+            "all_banks_certificate_ns": 8883155195,
+            "global_ns": 9863648142,
+            "local_ns": 11803156496
+          }
+        },
+        "peak_before_final": {
+          "jobs": 11,
+          "service_quarter_ns": 212772298,
+          "site_call_tile_layer": [
+            2,
+            1,
+            15
+          ]
+        },
+        "phases": {
+          "decode_before_final": {
+            "calls": 44,
+            "global_ns": 4954393094,
+            "groups": 1584,
+            "local_ns": 5763351662
+          },
+          "decode_tail": {
+            "calls": 2,
+            "global_ns": 154857307,
+            "groups": 72,
+            "local_ns": 217950368
+          },
+          "prefill": {
+            "calls": 2,
+            "global_ns": 4116213732,
+            "groups": 211,
+            "local_ns": 5246763518
+          }
+        }
+      },
+      "P97": {
+        "clocks": {
+          "decode": {
+            "all_banks_certificate_ns": 3667266199,
+            "global_ns": 5447489024,
+            "local_ns": 6190623884
+          },
+          "first_final": {
+            "all_banks_certificate_ns": 7894786161,
+            "global_ns": 9117618708,
+            "local_ns": 11029631771
+          }
+        },
+        "peak_before_final": {
+          "jobs": 11,
+          "service_quarter_ns": 230833702,
+          "site_call_tile_layer": [
+            2,
+            1,
+            32
+          ]
+        },
+        "phases": {
+          "decode_before_final": {
+            "calls": 44,
+            "global_ns": 5155966906,
+            "groups": 1584,
+            "local_ns": 5848119424
+          },
+          "decode_tail": {
+            "calls": 2,
+            "global_ns": 150113743,
+            "groups": 72,
+            "local_ns": 201096085
+          },
+          "prefill": {
+            "calls": 2,
+            "global_ns": 3810981135,
+            "groups": 211,
+            "local_ns": 5030841680
+          }
+        }
+      }
+    },
+    "bank_sha256": "abe9b92b7c093c2e0fd41ae5022670f237ad93c90eccf01ec02f8a1f126f2d56",
+    "decision": "NO_GO_WITNESS",
+    "parent_sha256": "babccc24a5f1e767e738d9fcca36088e5e49cff14267c58a31b09a9ec0fbf5b6",
+    "protocol_sha256": "bd5a38d4226a85aa3169e2119a087fc4f3096a6deb68a6b40145993a0bdbcc97",
+    "schema": "tesy.layer_causality.v1",
+    "script_sha256": "75aa3a7cfe2858b38ec062ffa43c1894268928684fdc5f99c7c65ce95c65ed7d",
+    "status": "TRACE_DERIVED"
+  },
+  "hypothetical_client_credit": {
+    "credit_ns": 646428255,
+    "decisions": {
+      "copied": "INCONCLUSIVE",
+      "direct": "EXISTS_WITH_HYPOTHETICAL_CREDIT"
+    },
+    "protocol_sha256": "4554241880ba678857c93f3a5f477164eb475c66d026723e925076662644b1d1",
+    "results": {
+      "copied": {
+        "integer": {
+          "bank_sha256": "d6796346f5aef490c058f150f1221a54e7ef97d96b43a5f7ef9e0b6c3de768f5",
+          "fits_with_grant": false,
+          "other_three_clocks_pass": true,
+          "p106_first_needed_credit_ns": 650060087,
+          "p106_full_grant_first_ns": 10003631832,
+          "with_full_client_cost_ns": {
+            "P106": {
+              "decode": 5431111454,
+              "first_final": 10650060087
+            },
+            "P97": {
+              "decode": 5388236972,
+              "first_final": 9783504501
+            }
+          }
+        },
+        "rounded": {
+          "bank_sha256": "1e1a525315a684b33b1dc0c956930d663ce7330b73a01d434697713d430ef1a4",
+          "fits_with_grant": false,
+          "other_three_clocks_pass": true,
+          "p106_first_needed_credit_ns": 735229426,
+          "p106_full_grant_first_ns": 10088801171,
+          "with_full_client_cost_ns": {
+            "P106": {
+              "decode": 5488884853,
+              "first_final": 10735229426
+            },
+            "P97": {
+              "decode": 5444558535,
+              "first_final": 9865150884
+            }
+          }
+        }
+      },
+      "direct": {
+        "integer": {
+          "bank_sha256": "3756480b6b516c637f0549bb77e02aa3db03de510a7dfabe9794136c8a8e4ef3",
+          "fits_with_grant": true,
+          "other_three_clocks_pass": true,
+          "p106_first_needed_credit_ns": 516436159,
+          "p106_full_grant_first_ns": 9870007904,
+          "with_full_client_cost_ns": {
+            "P106": {
+              "decode": 5297963245,
+              "first_final": 10516436159
+            },
+            "P97": {
+              "decode": 5253182640,
+              "first_final": 9644971205
+            }
+          }
+        },
+        "rounded": {
+          "bank_sha256": "5467377a3b27eb172a2fde3d7ea75fc0c72be81e39bbc9b6f2ad9a7e67a20e93",
+          "fits_with_grant": true,
+          "other_three_clocks_pass": true,
+          "p106_first_needed_credit_ns": 617367950,
+          "p106_full_grant_first_ns": 9970939695,
+          "with_full_client_cost_ns": {
+            "P106": {
+              "decode": 5372830358,
+              "first_final": 10617367950
+            },
+            "P97": {
+              "decode": 5355851240,
+              "first_final": 9771730227
+            }
+          }
+        }
+      }
+    },
+    "schema": "tesy.ready_client_cost.v1",
+    "source_sha256": "cf872eeabd1aaf28a1e971293f8b1ec48e07dffff18838ed954bbdaed8b9af03",
+    "status": "TRACE_DERIVED"
+  },
+  "operator": {
+    "binary_sha256": "dc1298ec0fc8fbfba6b18d2039b835241d25607dd5bb315412d0ca4e0743915b",
+    "build_sha256": "b3a55c45459ffb483d5fcdbdf56371d9e0c3b3947cc54d3a9e8c0cd4b49446f2",
+    "c118": {
+      "cap_bytes": 4294967296,
+      "duration_s": 60.1760019659996,
+      "expected_power": {
+        "profile": "performance",
+        "source": "AC"
+      },
+      "last_utc": "2026-11-27T16:19:59.381384+00:00",
+      "policy_sha256": "c1f360ddf1fae6ec190eb417ead431a83ce0cbb988bdfdbcb14c55c78a3820b7",
+      "run_id": "tesy-ready-layer-20261127-r02",
+      "sample_count": 61,
+      "schema": "c118-per-arm-start-inventory-v2",
+      "sha256": "280d464b3ccb38366eb6e61ccdfc16eca92250fa8e2bfde659fd7f07401a6e1e"
+    },
+    "c55_sha256": "3b4ccc46e5e08c32ae4dd3d5a138ad9cad9680b5678c4382df24e168afd641cf",
+    "cgroup_cap_bytes": 4294967296,
+    "cgroup_peak_bytes": 132476928,
+    "child_wall_s": 0.4031128770002397,
+    "commit": "adcbbd49bab352499527f129a1b9adbed652b44a",
+    "elapsed_s": 61.199636616000134,
+    "energy_j": null,
+    "full_model_requests": 0,
+    "gpu_compute": 0,
+    "host": {
+      "concurrent": [],
+      "cpu": "AMD Ryzen AI 9 HX 370 w/ Radeon 890M",
+      "cpu_c_max": 61.25,
+      "gpu_c_max": 45.64,
+      "gpu_compute_max": 0,
+      "gpu_driver": "620.73.04",
+      "gpu_name": "NVIDIA GeForce RTX 4060 Laptop GPU",
+      "gpu_total_mib": 8188.0,
+      "memory": {
+        "ancestor_headroom_bytes": 32696000512,
+        "available_max_bytes": 24298094592,
+        "available_min_bytes": 24015044608,
+        "cap_max_bytes": 21743271936,
+        "external_variation_bytes": 283049984,
+        "reserve_bytes": 2147483648,
+        "total_bytes": 32696000512
+      },
+      "model_device": "/dev/nvme0n1p3[/home]",
+      "model_fs": "btrfs",
+      "nvme_c_max": {
+        "nvme-pci-c100": 37.85
+      }
+    },
+    "input_sha256": "a3a6028b45719ee0a1c63f689a2e6896b5a401ee394d5aa9d3188d98e72dc269",
+    "monitor": {
+      "actual_nvml_sha256": "1a23a2e34c2a06403e52c0afad43453322f4bf6c3e7bb12565e2ce4391956585",
+      "kernel_driver": "620.73.04",
+      "mode": "SYSTEM_NVML",
+      "nvidia_smi_sha256": "616dd34c46398fdd01b73eea69bef30d1388698d494a6e2bc187857f38a938ea"
+    },
+    "monitor_sha256": "442d28ff8ab64b95c54a0b1045a7bf2dc5492c7986be669c4a01b4bfff58268b",
+    "placement_sha256": "adc58125a13aa286371c127f41bf67b0ed4756e9ec2dc08bd2cb6e7ed754a000",
+    "plan_sha256": "1f1caaba34f4581f253691feee436358a8e3bcb2c67b5fd489418f52176510f1",
+    "prestate_sha256": "9bc5d91831e50f4f8cacc73f5b34b02542c2c8b5010cb1e620f7ddb7d2101ec6",
+    "protocol_sha256": "bd5a38d4226a85aa3169e2119a087fc4f3096a6deb68a6b40145993a0bdbcc97",
+    "rank_receipt_sha256": "3ef107129e6d4c7afb755ac5836c9099b37a37f3eb3ab87f25fed3e9ba28dd53",
+    "rchar_bytes": 649601684,
+    "reference_sha256": "8f9b7bb692c9974eac9bca2cb8a4d08436ef83a1e245ba2bbe37442430c6e10f",
+    "result": {
+      "blocks": [
+        {
+          "block": 0,
+          "elapsed_ns": {
+            "FULL": [
+              6277949,
+              6006688,
+              5987171,
+              5817181,
+              6006317,
+              5688188,
+              6123608
+            ],
+            "READY": [
+              5949970,
+              5699499,
+              5276953,
+              5562561,
+              5626020,
+              5696995,
+              5557772
+            ],
+            "WAIT": [
+              6365674,
+              6273660,
+              5886862,
+              6023599,
+              5912059,
+              5679341,
+              6195233
+            ]
+          },
+          "median_saving_ns": {
+            "FULL": 327979,
+            "WAIT": 461038
+          },
+          "paired_saving_ns": {
+            "FULL": [
+              327979,
+              307189,
+              710218,
+              254620,
+              380297,
+              -8807,
+              565836
+            ],
+            "WAIT": [
+              415704,
+              574161,
+              609909,
+              461038,
+              286039,
+              -17654,
+              637461
+            ]
+          },
+          "ready_read_group_overlap_ns": [
+            692044,
+            676835,
+            621091,
+            602375,
+            548644,
+            575665,
+            679360
+          ]
+        },
+        {
+          "block": 1,
+          "elapsed_ns": {
+            "FULL": [
+              5775081,
+              5973575,
+              6224058,
+              6312504,
+              6157371,
+              6341609,
+              6025252
+            ],
+            "READY": [
+              5729906,
+              5739905,
+              5532925,
+              5799357,
+              5634076,
+              5547913,
+              5924152
+            ],
+            "WAIT": [
+              6106225,
+              6337421,
+              6032947,
+              6093090,
+              6286955,
+              6218707,
+              6576892
+            ]
+          },
+          "median_saving_ns": {
+            "FULL": 513147,
+            "WAIT": 597516
+          },
+          "paired_saving_ns": {
+            "FULL": [
+              45175,
+              233670,
+              691133,
+              513147,
+              523295,
+              793696,
+              101100
+            ],
+            "WAIT": [
+              376319,
+              597516,
+              500022,
+              293733,
+              652879,
+              670794,
+              652740
+            ]
+          },
+          "ready_read_group_overlap_ns": [
+            705439,
+            662689,
+            656527,
+            658872,
+            675924,
+            663670,
+            452332
+          ]
+        }
+      ],
+      "decision": "GO_LOCAL",
+      "exact_arms": 45,
+      "finite_exact_words_per_arm": 14400,
+      "mutant_unequal_ffn": 720,
+      "pack_read_bytes": 648019968,
+      "storage_bytes": 533191680,
+      "timed_set_bytes": 555206400
+    },
+    "samples": 2,
+    "source_sha256": "45011a17072f6c122d4ed146940aef3b59fdfac7c4ba50cfbe3b3560707e1f20",
+    "status": "MEASURED",
+    "stdout_sha256": "cbed21bb07eb69971b163b7ca527eb3161a50ce3ed2106e87f41d69ee2588b5c",
+    "swap_cap_bytes": 0,
+    "tree": "1eccfd8f6fe1a64a14c09db84f335921219d2599"
+  },
+  "preserved_failures": {
+    "physical-r01-fail": {
+      "elapsed_s": 0.0710396619997482,
+      "reason": "ValueError('identity:router.weight')",
+      "status": "FAIL_PRESERVED"
+    },
+    "proof-r01-fail": {
+      "reason": "No module named 'numpy'",
+      "status": "FAIL"
+    }
+  },
+  "private_files": 27,
+  "raw_bytes_before_manifest": 501460,
+  "schema": "tesy.ready_layer.decision.v1"
+}

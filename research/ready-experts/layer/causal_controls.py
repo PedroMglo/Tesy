@@ -1,4 +1,4 @@
-"""Price all three previously frozen T1-only selectors, granting free hit SET and all pre-stream time."""
+"""Price three frozen T1 selectors with free hit SET and a free pre-stream interval."""
 
 import argparse
 import hashlib

@@ -1,6 +1,6 @@
 # Começar o cálculo quando cada expert está pronto
 
-**Há uma escolha de 353 experts que deixa ambos os pisos dentro dos alvos com 4,35 GiB adicionais.** Essa escolha usa conhecimento de T2. O menor saldo é 136 ms, antes de cobrar a obtenção dessa informação e de demonstrar a sobreposição. A política implementável com o primeiro turno falhou e o despacho por expert pronto, por si só, conserva o NO_GO. M3 PARTIAL e M4 NOT_MET. [Proposta para o produto em diferentes máquinas](../../docs/architecture/0005-execucao-local-por-perfil.md)
+**NO_GO para construir um backend com base nesta sobreposição e num banco fixo de 353 experts, aos custos observados.** O novo operador produziu um ganho exato numa camada do portátil. No pedido completo, restringir o serviço às camadas que já podem conhecer a sua rota elimina a folga de 136 ms da primeira projeção. Mesmo uma escolha retrospetiva com acesso direto aos pesos tem um piso de 10,105 s em P106. Combinar mudanças pode reabrir a hipótese. A testemunha combinada precisa de recuperar 516,436 ms no cliente e de antecipar uma seleção que as três políticas causais ensaiadas ainda não produzem. M3 PARTIAL e M4 NOT_MET. [Experiência física, limites e próxima decisão](layer/README.md) · [Proposta por perfil de hardware](../../docs/architecture/0005-execucao-local-por-perfil.md)
 
 ## O que a mudança teria de vencer
 
