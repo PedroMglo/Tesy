@@ -101,7 +101,7 @@ def measure(a):
     r = F["H"]["G"]["read"](a.review, a.review_sha256)
     REVIEW["compact"](r)
     family = F["H"]["G"]["read"](a.family / "receipt.json", r["family_sha256"])
-    replay_hash = read(HERE.parents[2] / "lookup.json")["steps_sha256"]
+    replay_hash = read(F["CHAT"] / "lookup.json")["steps_sha256"]
     steps = F["H"]["G"]["read"](a.replay / "steps.json", replay_hash)["T2"]
     results = {}
     digest = None
