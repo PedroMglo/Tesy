@@ -141,3 +141,39 @@ def test_public_natural_bounds_have_the_original_service_population_and_cuts():
         paid = price["traces"][label]["1"]["original_sets"]
         assert all(v <= BOUND["LIMITS"][k] for k, v in paid["at_cut_ns"].items())
         assert any(v > BOUND["LIMITS"][k] for k, v in paid["one_ppm_less_ns"].items())
+
+
+def test_direct_slot_removes_only_the_copy_and_rejects_the_projection_permutation():
+    receipt = json.loads((STUDY / "slot-result.json").read_bytes())
+    assert receipt["status"] == "GO_CPU_RECORD_SLOT_FIXTURE_ONLY"
+    assert receipt["model_forwards"] == receipt["gpu_forwards"] == 0
+    for name, digest in receipt["sources"].items():
+        assert BOUND["sha"](STUDY / name) == digest
+    assert receipt["protocol_sha256"] == BOUND["sha"](STUDY / "slot-layout.md")
+    assert receipt["retake_protocol_sha256"] == BOUND["sha"](STUDY / "slot-retake.md")
+
+    arms = receipt["arms"]
+    original = arms["A"]
+    assert len(set(original["generation_sha256"])) == 2
+    for role in ("A", "B", "C", "MUTANT"):
+        row = arms[role]
+        assert row["direct_reads"] == 5 and row["requested_bytes"] == 66109440
+        assert row["bytes"] == 2 * (1 + 20 + 32) * 4 * 2880 * 3 * 4
+        if role == "MUTANT":
+            assert row["sha256"] != original["sha256"]
+            assert set(row["generation_sha256"]).isdisjoint(original["generation_sha256"])
+        else:
+            assert row["sha256"] == original["sha256"]
+            assert row["generation_sha256"] == original["generation_sha256"]
+        expected_copies = (15, 66096000) if role in ("A", "B") else (0, 0)
+        assert (row["weight_sets"], row["weight_set_payload_bytes"]) == expected_copies
+
+    oracle = json.loads((STUDY / "composition.json").read_bytes())
+    assert oracle["parent_sha256"] == BOUND["sha"](STUDY / "frontier.json")
+    assert oracle["decision"] == "GO_TEMPORAL_FIXTURE_ONLY"
+    for trace in oracle["traces"].values():
+        for clock, budget in BOUND["LIMITS"].items():
+            slack = budget - trace["near_free_cpu_set_schedule_ns"][clock]
+            assert 0 < slack == trace["maximum_extra_schedule_ns"][clock]
+        causal_floor = trace["four_t1_free_cpu_set_floor_ns"]["first_final"]
+        assert causal_floor > BOUND["LIMITS"]["first_final"]
