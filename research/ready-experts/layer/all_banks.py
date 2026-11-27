@@ -70,14 +70,11 @@ def verify(calls, offered, exterior, proof, *, direct, limit):
     }
 
 
-def propose(calls, offered, direct):
+def linear_model(calls, active, direct):
     # Unknowns are fractional bank membership, per-group wall and the share of
     # each external boundary assigned to its left neighbour. Time units here are ms.
-    import numpy as np
-    from scipy.optimize import linprog
     from scipy.sparse import coo_matrix
 
-    active = sorted(offered & {j.expert for _, gs, _ in calls for g in gs for j in g.jobs})
     key_index = {k: i for i, k in enumerate(active)}
     c = [0.0] * len(active)
     bounds = [(0, 1)] * len(active)
@@ -129,7 +126,15 @@ def propose(calls, offered, direct):
             order.append((start, len(rhs)))
         sites.append((tag, order))
     A = coo_matrix((values, (ii, jj)), shape=(len(rhs), len(c))).tocsc()
-    solution = linprog(np.asarray(c), A_ub=A, b_ub=rhs, bounds=bounds, method="highs")
+    return c, A, rhs, bounds, sites
+
+
+def propose(calls, offered, direct):
+    from scipy.optimize import linprog
+
+    active = sorted(offered & {j.expert for _, gs, _ in calls for g in gs for j in g.jobs})
+    c, A, rhs, bounds, sites = linear_model(calls, active, direct)
+    solution = linprog(c, A_ub=A, b_ub=rhs, bounds=bounds, method="highs")
     need(solution.success, "LP proposal unavailable")
     dual = solution.ineqlin.marginals
     return [[tag, [weights(dual[lo:hi]) for lo, hi in order]] for tag, order in sites]
