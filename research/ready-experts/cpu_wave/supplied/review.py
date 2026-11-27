@@ -43,6 +43,12 @@ def read(p):
 
 def check_cases(cases):
     need(set(cases) == set(CASES), "both workloads required")
+    historical = ROOT / "results/c280-r2-three-way-causal-cost-20261005/compact.json"
+    need(
+        sha(historical) == "1318e94fa5a6e897d84bfeff2b8b8874e120e8979181b67bde425669577aa187",
+        "independent C280 receipt",
+    )
+    originals = read(historical)["arms"]
     for case, family in cases.items():
         rows = family["arms"]
         need(
@@ -51,6 +57,17 @@ def check_cases(cases):
             "fixed independent processes and order",
         )
         ref = rows[0]
+        controls = [a for a in originals if a["case"] == case and a["profile"] == "R0"]
+        need(
+            len(controls) == 2
+            and all(
+                a["measurement_valid"]
+                and a["full_logits_sha256"] == ref["full_logits_sha256"]
+                and a["logical_load_generations"] == ref["logical_loads"]
+                for a in controls
+            ),
+            "independent logits or workload",
+        )
         for a in rows:
             role = a["role"]
             image = "R" if role == "R" else "G"
@@ -154,7 +171,7 @@ def decide(cases):
         status="GO_SUPPLIED_COMBINATION" if accepted else "NO_GO_SUPPLIED_COMBINATION",
         qualified_cases=accepted,
         comparisons=comparisons,
-        backend="NO_GO_FULL_REWRITE_FOR_THESE_MECHANISMS",
+        backend="EXISTING_EXECUTOR_DEMONSTRATED" if accepted else "EXECUTOR_LIMIT_UNIDENTIFIED",
         m3="PARTIAL",
         m4="NOT_MET",
     )
@@ -292,8 +309,19 @@ if __name__ == "__main__":
     a = p.parse_args()
     if a.check:
         report = read(a.check)
+        decision = decide(report["cases"])
+
+        def status(result):
+            if result["global_cases"]:
+                return "GO_INTEGRATED_EXPERT_SERVICE_COST"
+            if result["phase_survivors"]:
+                return "PHASE_SURVIVOR_EXPERT_SERVICE"
+            return "NO_GO_INTEGRATED_EXPERT_SERVICE_COST"
+
         need(
-            report["decision"] == decide(report["cases"])
+            report["decision"] == decision
+            and report["official_status"]
+            == {k: status(decision["comparisons"][k]) for k in ("G/P", "G/W")}
             and report["protocol_sha256"] == sha(HERE / "protocol.md")
             and report["official_evaluator_sha256"]
             == sha(ROOT / "tools/expert_store_cost_gate.py")
