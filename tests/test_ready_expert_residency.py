@@ -14,11 +14,13 @@ class ResidentWeights(unittest.TestCase):
         overlap = json.loads((folder / "overlap-result.json").read_text())
         residency = json.loads((folder / "residency-result.json").read_text())
         selection = json.loads((folder / "selection-result.json").read_text())
+        existence = json.loads((folder / "existence-result.json").read_text())
         for label, arm in overlap["arms"].items():
             charged = sum(s["charged"] for s in arm["phases"].values())
             self.assertEqual(charged + arm["free_jobs"], arm["jobs"])
             cases = list(residency["arms"][label]["cases"].values())
             cases.extend(selection["arms"][label].values())
+            cases.append(existence["arms"][label]["witness"])
             for row in cases:
                 phases = row["phases"]
                 before = phases["decode_before_final"]["floor_ns"]
@@ -33,6 +35,9 @@ class ResidentWeights(unittest.TestCase):
         for cap in residency["uniform_minima"].values():
             self.assertGreaterEqual(min(cap["margin_ns_at_min"].values()), 0)
             self.assertLess(min(cap["margin_ns_at_one_less"].values()), 0)
+        common = min(min(a["witness"]["margin_ns"].values()) for a in existence["arms"].values())
+        self.assertEqual(common, existence["common_joint_margin_ns"])
+        self.assertGreater(common, 0)
 
     def test_credit_goes_to_the_critical_job_only(self):
         calls = [Call(1, 16, 13, 0, 3, 3)]

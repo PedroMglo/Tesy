@@ -4,7 +4,7 @@
 
 ## 27 de novembro · produto em hardware com diferentes capacidades
 
-Uma arquitetura de execução por expert pronto foi confrontada com os dois pedidos nominais do pack. Com sobreposição ideal e serviço medido, os pisos de primeiro conteúdo final são 10,658 e 11,416 s. O executor e a política causal de residência não atingem os dois alvos nos dois processos. O resultado delimita o preço de serviço e a memória adicional de que a colocação uniforme precisaria. [Arquitetura de produto](../../docs/architecture/0005-execucao-local-por-perfil.md) · [Comparação por braço, código e recibos](../ready-experts/README.md)
+Uma arquitetura de execução por expert pronto foi confrontada com os dois pedidos nominais do pack. Com sobreposição ideal e serviço medido, os pisos de primeiro conteúdo final são 10,658 e 11,416 s. O executor e a política causal de residência não atingem os dois alvos nos dois processos. Uma seleção retrospetiva de 353 experts com a mesma RAM reduz esses pisos para 9,118 e 9,864 s, com uma margem mínima de 136 ms. A capacidade de encontrar essa seleção antes da mensagem e realizar a sobreposição continua em aberto. [Arquitetura de produto](../../docs/architecture/0005-execucao-local-por-perfil.md) · [Comparação por braço, código e recibos](../ready-experts/README.md)
 
 ## Qualificação de produto em 24 de novembro
 
