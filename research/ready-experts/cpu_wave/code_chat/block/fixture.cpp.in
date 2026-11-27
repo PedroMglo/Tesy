@@ -1,0 +1,144 @@
+// The generator inserts the authenticated C291 context construction from the tested client.
+using Tokens = std::vector<llama_token>;
+
+static int greedy(llama_context *ctx, int row, const fs::path &save_to = {}) {
+    const float *logits = llama_get_logits_ith(ctx, row);
+    if (!save_to.empty()) write_row(save_to, logits);
+    return choices(logits)[0];
+}
+
+static void expect_id(int actual, int expected, int index, const char *phase) {
+    if (actual != expected) {
+        std::fprintf(stderr, "code_cut_mismatch %s index=%d actual=%d expected=%d\n",
+                     phase, index, actual, expected);
+        throw std::runtime_error("target ID mismatch");
+    }
+}
+
+static void prompt_span(llama_context *ctx, const Tokens &tokens, int start, const std::vector<int> &ends) {
+    for (int end : ends) {
+        const int n = end - start;
+        check(n > 0 && n <= 256 && end <= int(tokens.size()), "external prompt boundary");
+        check(llama_memory_seq_rm(llama_get_memory(ctx), 0, start, -1), "server cache cut");
+        auto batch = llama_batch_init(n, 0, 1);
+        batch.n_tokens = n;
+        for (int j = 0; j < n; ++j) {
+            batch.token[j] = tokens[start + j];
+            batch.pos[j] = start + j;
+            batch.n_seq_id[j] = 1;
+            batch.seq_id[j][0] = 0;
+            batch.logits[j] = (start + j + 1 == int(tokens.size()));
+        }
+        const int rc = llama_decode(ctx, batch);
+        llama_batch_free(batch);
+        check(rc == 0, "target prefill");
+        start = end;
+    }
+    check(start == int(tokens.size()), "complete prompt");
+    llama_synchronize(ctx);
+}
+
+static void record(const fs::path &path, const json &value) {
+    const std::string data = value.dump() + "\n";
+    write_new(path, data.data(), data.size());
+}
+
+static void run_cut(const char *model_path, const fs::path &work, const std::string &role,
+                    const fs::path &out) {
+    check(fs::create_directory(out), "exclusive native output");
+    std::ifstream input(work);
+    const json w = json::parse(input);
+    const auto t1 = w.at("t1").get<Tokens>(), t2 = w.at("t2").get<Tokens>();
+    const auto first = w.at("first").get<Tokens>(), target = w.at("target").get<Tokens>();
+@MODEL_AND_CONTEXT@
+    check(reserve == (role == "ON" ? 3 : 1), "reserve and role");
+    prompt_span(ctx.get(), t1, 0, w.at("t1_ends").get<std::vector<int>>());
+    int last = -1;
+    for (int i = 0; i < int(first.size()); ++i) {
+        if (i) supplied(ctx.get(), int(t1.size()) + i - 1, {last});
+        last = greedy(ctx.get(), -1);
+        expect_id(last, first.at(i), i, "T1");
+    }
+    check(llama_vocab_is_eog(llama_model_get_vocab(model.get()), last), "T1 natural EOG");
+    check(llama_memory_seq_pos_max(mem, 0) == int(t1.size()+first.size()-2), "T1 last applied position");
+    prompt_span(ctx.get(), t2, w.at("cached"), w.at("t2_ends").get<std::vector<int>>());
+    last = greedy(ctx.get(), -1, out/"T2-start.f32");
+    expect_id(last, target.at(0), 0, "T2");
+    int confirmed = 1;
+    for (const auto &cut : w.at("cases")) {
+        const int at = cut.at("confirmed");
+        while (confirmed < at) {
+            supplied(ctx.get(), int(t2.size()) + confirmed - 1, {last});
+            last = greedy(ctx.get(), -1);
+            expect_id(last, target.at(confirmed), confirmed, "bridge");
+            ++confirmed;
+        }
+        check(confirmed == at, "ordered non-overlapping cuts");
+        const auto inputs = cut.at("inputs").get<Tokens>();
+        const int pos = int(t2.size()) + at - 1;
+        const int expected = cut.at("accepted");
+        check(inputs.size() == 3 && inputs.front() == last && pos == cut.at("position"),
+              "genuine cut and anchor");
+        const auto prefix = std::to_string(at) + "-";
+        json entry = state(ctx.get(), pos, out, false);
+        record(out/(prefix+"entry.json"), entry);
+        if (role != "R") snapshot_pool(model.get(), out/(prefix+"entry.pool"));
+        const bool teacher = role == "ON" || role == "R";
+        const int scheduled = teacher ? 3 : 1+expected;
+        if (role == "ON") supplied(ctx.get(), pos, inputs);
+        Tokens decisions;
+        int accepted = 0;
+        for (int j = 0; j < scheduled; ++j) {
+            if (role != "ON") {
+                const int token = teacher ? inputs[j] : last;
+                supplied(ctx.get(), pos+j, {token});
+            }
+            const int id = greedy(ctx.get(), role == "ON" ? j : 0, out/(prefix+"row-"+std::to_string(j)+".f32"));
+            decisions.push_back(id);
+            if (j == accepted) {
+                last = id;
+                expect_id(last, target.at(at+j), at+j, "consulted");
+                if (j < 2 && last == inputs[j+1]) ++accepted;
+            }
+        }
+        check(accepted == expected, "proposal acceptance");
+        const int keep = 1+accepted;
+        record(out/(prefix+"branch.json"), state(ctx.get(), pos+scheduled, out, false));
+        if (scheduled > keep) check(llama_memory_seq_rm(mem, 0, pos+keep, -1), "rollback");
+        record(out/(prefix+"keep.json"), state(ctx.get(), pos+keep, out, false));
+        if (role != "R") {
+            snapshot_pool(model.get(), out/(prefix+"keep.pool"));
+            record(out/(prefix+"store.json"), completed_store(model.get()));
+        }
+        confirmed += keep;
+        for (int j = 0; j < 2; ++j) {
+            supplied(ctx.get(), int(t2.size()) + confirmed - 1, {last});
+            last = greedy(ctx.get(), 0, out/(prefix+"next-"+std::to_string(j)+".f32"));
+            expect_id(last, target.at(confirmed), confirmed, "repaired continuation");
+            ++confirmed;
+            record(out/(prefix+"next-"+std::to_string(j)+".json"), state(ctx.get(), int(t2.size())+confirmed-1, out, false));
+        }
+        record(out/(prefix+"decision.json"), {{"accepted",accepted},{"scheduled",scheduled},
+               {"decisions",decisions},{"kept",keep},{"next_confirmed",confirmed}});
+    }
+    record(out/"native.json", {{"role",role},{"reserve",reserve},{"T1_samples",first.size()},
+           {"T2_samples",confirmed},{"T1_ends",w.at("t1_ends")},{"T2_ends",w.at("t2_ends")}});
+}
+} // namespace
+
+int main(int argc, char **argv) try {
+    if (argc == 2 && std::string(argv[1]) == "--self-test") {
+        check(fingerprint({'a','b','c'}) == "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad",
+              "KV SHA-256 oracle");
+        std::puts("PASS_CODE_CUT_HASH");
+        return 0;
+    }
+    check(argc == 5, "client MODEL WORK ROLE NEW_OUT");
+    const std::string role = argv[3];
+    check(role == "R" || role == "W" || role == "OFF" || role == "ON", "role");
+    run_cut(argv[1], argv[2], role, argv[4]);
+    return 0;
+} catch (const std::exception &e) {
+    std::fprintf(stderr, "CODE_CUT_FAIL %s\n", e.what());
+    return 1;
+}
