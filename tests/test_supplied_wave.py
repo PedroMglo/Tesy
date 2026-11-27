@@ -7,6 +7,7 @@ STUDY = Path(__file__).resolve().parents[1] / "research/ready-experts/cpu_wave/s
 REVIEW = run_path(STUDY / "review.py")
 BOUND = run_path(STUDY / "executor_bound.py")
 LOOK = run_path(STUDY / "lookahead.py")
+PRICE = run_path(STUDY / "service_price.py")
 
 
 def family(first, second):
@@ -84,3 +85,19 @@ def test_empty_regions_and_four_occupied_workers():
         assert LOOK["floor"](groups, lead) == (10 if lead else 17)
         assert opening == [0, 0, 7, 17, 17]
         assert info["early_reads"] == 0 and info["generations"] == 5
+
+
+def test_required_read_price_obeys_both_integer_deadlines():
+    limits = BOUND["LIMITS"]
+
+    def cost(saving):
+        return {
+            "first_final": limits["first_final"] + 12 - saving,
+            "decode": limits["decode"] + 41 - saving,
+        }
+
+    cut = PRICE["threshold"](cost)
+    assert cut["min_read_reduction_ppm"] == 41
+    assert cut["one_ppm_less_ns"]["decode"] == limits["decode"] + 1
+    assert PRICE["threshold"](lambda _: limits)["min_read_reduction_ppm"] == 0
+    assert PRICE["threshold"](lambda _: cost(40))["min_read_reduction_ppm"] is None
