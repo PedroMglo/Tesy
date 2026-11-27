@@ -212,6 +212,7 @@ def run(a, out, r, start):
     )
     P["live_admission"](policy, window)
     check_provider()
+    (out / "raw").mkdir()
     guard, dynamic, bounded, group = svc.admit(a, prior, Q / "packed_real_layer", r, out)
     mon = P["with_live_admission"](svc.Monitor, policy, window)(
         guard, dynamic, bounded, group, out / "monitor.jsonl", start, elapsed_limit=360
