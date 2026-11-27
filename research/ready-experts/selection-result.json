@@ -1,0 +1,178 @@
+{
+  "arms": {
+    "P106": {
+      "copied": {
+        "decode": 6344317367,
+        "first_final": 11012706442,
+        "first_gain_over_control_ns": {
+          "empty": 402858722,
+          "frequency": 186876325,
+          "lru": -158492063
+        },
+        "margin_ns": {
+          "decode": 1489015966,
+          "first_final": -1012706442
+        },
+        "phases": {
+          "decode_before_final": {
+            "floor_ns": 6054337939,
+            "full_hits": 131,
+            "partial_hits": 0
+          },
+          "decode_tail": {
+            "floor_ns": 149785410,
+            "full_hits": 2,
+            "partial_hits": 0
+          },
+          "prefill": {
+            "floor_ns": 4165327187,
+            "full_hits": 89,
+            "partial_hits": 0
+          }
+        }
+      },
+      "direct": {
+        "decode": 6300826778,
+        "first_final": 10968511997,
+        "first_gain_over_control_ns": {
+          "empty": 447053167,
+          "frequency": 197335767,
+          "lru": -180607823
+        },
+        "margin_ns": {
+          "decode": 1532506555,
+          "first_final": -968511997
+        },
+        "phases": {
+          "decode_before_final": {
+            "floor_ns": 6011519619,
+            "full_hits": 131,
+            "partial_hits": 0
+          },
+          "decode_tail": {
+            "floor_ns": 149113141,
+            "full_hits": 2,
+            "partial_hits": 0
+          },
+          "prefill": {
+            "floor_ns": 4163951062,
+            "full_hits": 89,
+            "partial_hits": 0
+          }
+        }
+      }
+    },
+    "P97": {
+      "copied": {
+        "decode": 6350712740,
+        "first_final": 10067071368,
+        "first_gain_over_control_ns": {
+          "empty": 590623951,
+          "frequency": 174070685,
+          "lru": -173641382
+        },
+        "margin_ns": {
+          "decode": 1482620593,
+          "first_final": -67071368
+        },
+        "phases": {
+          "decode_before_final": {
+            "floor_ns": 6066986537,
+            "full_hits": 131,
+            "partial_hits": 0
+          },
+          "decode_tail": {
+            "floor_ns": 142317828,
+            "full_hits": 2,
+            "partial_hits": 0
+          },
+          "prefill": {
+            "floor_ns": 3849414164,
+            "full_hits": 89,
+            "partial_hits": 0
+          }
+        }
+      },
+      "direct": {
+        "decode": 6308838541,
+        "first_final": 10024463305,
+        "first_gain_over_control_ns": {
+          "empty": 633232014,
+          "frequency": 184453364,
+          "lru": -191924692
+        },
+        "margin_ns": {
+          "decode": 1524494792,
+          "first_final": -24463305
+        },
+        "phases": {
+          "decode_before_final": {
+            "floor_ns": 6025802640,
+            "full_hits": 131,
+            "partial_hits": 0
+          },
+          "decode_tail": {
+            "floor_ns": 141627526,
+            "full_hits": 2,
+            "partial_hits": 0
+          },
+          "prefill": {
+            "floor_ns": 3847989998,
+            "full_hits": 89,
+            "partial_hits": 0
+          }
+        }
+      }
+    }
+  },
+  "decision": "NO_GO_THIS_POLICY_AND_BUDGET",
+  "plan_sha256": "4564ea13caa0aa4d5c5d7da2da3d47906726a83bc3416b11f93baed39476e3df",
+  "residency_results_sha256": "82230ddf6d1527b4fc5d3a540afe91a8aeda5f11c671ca7f97c24ead37a9fb8a",
+  "schema": "tesy.causal_bank_test.v1",
+  "selection": {
+    "acquired_payload_bytes": 13510022400,
+    "acquisition": {
+      "copies": {
+        "CPU": 802,
+        "CUDA0": 220
+      },
+      "evictions": 669,
+      "held": 353,
+      "offers": 4548,
+      "rejected": 3133,
+      "repeated": 393
+    },
+    "keys_sha256": "f89ff5163a993e891e32b68d2d63d0be65b40cdee4e4095f2dade2443c82ef54",
+    "prefix_event_counts": {
+      "1": 86,
+      "11": 5727,
+      "17": 5727,
+      "2": 86,
+      "27": 74278,
+      "29": 1,
+      "3": 141,
+      "4": 141,
+      "5": 1440,
+      "7": 1,
+      "8": 108
+    },
+    "prefix_sha256": "16574f71e2a697479d1be118ddd5d5a103b3218c1f48b428ee32ebbb355fe259",
+    "protocol_sha256": "fb5ee465f813f2116762250f42ab61567bf9fa02ec06db3e905de6272d463247",
+    "records_read": 87736,
+    "schema": "tesy.causal_publication_bank.v1",
+    "source_sha256": "335b403a2fdb1ef689fac2a99ebd01360ab2f9bc2a2218b89c09a47228d0406a",
+    "status": "CAUSAL_PLAN_SEALED",
+    "wave_cost_policy": {
+      "missing_observations": [
+        "wave_begin",
+        "demand",
+        "dispatch",
+        "set",
+        "wave_end",
+        "read"
+      ],
+      "status": "NOT_RUN_RAW_REQUIRED"
+    }
+  },
+  "status": "TRACE_DERIVED"
+}
