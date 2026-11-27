@@ -102,3 +102,21 @@ def test_independent_gemv_native_receipt_keeps_both_controls_and_the_real_failur
             assert arm["cases"][kind]["gemv"]["numerical_mismatches"] > 0
             assert arm["cases"][kind]["gemv_permuted_input"]["numerical_mismatches"] == 0
     assert result["decision"] == "NO_GO_AS_SHIPPED_EXPERT_GEMV"
+
+
+def test_code_prefixes_separate_rejection_and_acceptance_from_the_first_unfed_position():
+    fixture = run_path(HERE / "prefixes.py")
+    record = fixture["read"](HERE / "prefixes.json")
+    assert record["program_sha256"] == fixture["sha"](HERE / "prefixes.py")
+    assert record["kv_snapshot"] == record["full_block_logits"] == "NOT_CAPTURED"
+    assert record["files"]["T2-prompt"]["ids"] == record["t2_cached"] + record["t2_evaluated"]
+    assert [(c["confirmed"], c["accepted"], c["observed_emitted"]) for c in record["cases"]] == [
+        (1, 0, 1),
+        (9, 2, 3),
+    ]
+    for case in record["cases"]:
+        assert case["verifier_inputs"]["ids"] == 3
+        assert (
+            case["first_model_input_position"]
+            == record["files"]["T2-prompt"]["ids"] + case["confirmed"] - 1
+        )

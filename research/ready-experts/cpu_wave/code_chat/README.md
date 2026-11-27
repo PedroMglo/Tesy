@@ -69,6 +69,8 @@ A experiência de menor custo para a proposta em código é capturar o primeiro 
 
 ## Proveniência e reprodução
 
+Preparámos já as duas primeiras situações reais que distinguem rejeição e aceitação integral. Logo após **1 ID** confirmado, o verificador recebe três entradas a partir da posição absoluta **2 105** e o serial rejeita o primeiro ID proposto. Após **9 IDs**, começa na posição **2 113** e a trajetória serial coincide com os dois IDs propostos e fornece o bónus. A escolha exploratória é o primeiro exemplo de cada extremo no replay anterior. O gerador conserva os 2 043/78 IDs do primeiro turno, o prompt de 2 105 do segundo, o prefixo confirmado, os três inputs e as decisões seriais. O original e o arquivo produziram vetores idênticos nos dois casos. A fixture privada ocupa 38 665 B nas duas cópias. Para testar o ramo rejeitado será ainda preciso observar logits nas posições divergentes com uma referência serial alimentada com essas propostas, bem como KV e continuação depois de repor o estado. Os dois prefixos estão prontos para esse ensaio. [Geometria e hashes](prefixes.json) · [Gerador](prefixes.py) · [Selo privado](prefix-archive.json)
+
 A família física partiu do PR #52 sobre o #51, com base integrada `293f5b18`. O pré-registo HTTP foi `53fa8ba4`, e a medição usou `1be14958`, árvore `6a0e2a22fee469ed0c02ef376c56b5bf41e47a53`. O protocolo do replay foi selado às 22:15 UTC, durante T1 do primeiro R e antes de qualquer T2. O campo histórico `measurement_tree` desse selo contém o commit físico. O protocolo e os programas de comparação foram registados em `1eb616c4`. O compilador C11 da fixture externa precisou do cabeçalho padrão de alinhamento em `0c16ed49`. [Selo antes de T2](lookup-freeze.json) · [Comandos, versões, custos e falhas](commands.json)
 
 Os seis processos HTTP usaram AC, perfil performance, RTX 4060 Laptop de 8 188 MiB, driver 620.73.04 e GGUF original no NVMe interno. A janela C55 registou 61 amostras e pelo menos 26 563 227 648 B disponíveis. Os seis inventários C118 duraram mais de 60 s cada. A família demorou **1 475,383 s**, sob orçamento de 3 900 s. O máximo foi 15 771 541 504 B no cgroup com cap de 20 GiB e zero swap, 6 848 MiB de VRAM, 95,625 °C na CPU, 64,77 °C na GPU e 57,85 °C no NVMe. A integral da potência da GPU estima **12 980,5 J em 900,704 s** cobertos. A energia total da máquina e os bytes físicos do NVMe por token ficaram desconhecidos nesta campanha.
@@ -84,6 +86,8 @@ family="$part/tesy-wave-code-chat-20261127-r01"
 scratch=$(mktemp -d)
 python3 -IB "$unit/review.py" --family "$family" --family-sha256 ff8cea095dfb1be9d322c1842b571d15009a0aaae55fdbdf0f71df24429152a3 --new-output-dir "$scratch/review"
 cmp "$unit/code-chat.json" "$scratch/review/code-chat.json"
+python3 -IB "$unit/prefixes.py" --family "$family" --replay "$part/lookup-r01" --new-output-dir "$scratch/prefixes"
+cmp "$unit/prefixes.json" "$scratch/prefixes/receipt.json"
 ```
 
 No portátil, os argumentos dos dois testes de arquitetura estão no registo de comandos. Usar uma identidade de scope e um diretório novos em cada repetição. A fonte externa autenticada está em `$part/independent-source`. A verificação pública em CI usa os recibos compactos e as fixtures sem modelo.
