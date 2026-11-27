@@ -1,3 +1,4 @@
+import json
 from pathlib import Path
 from runpy import run_path
 
@@ -114,3 +115,29 @@ def test_two_regions_and_mixed_release_with_independent_scheduler():
     puts = {0: 5, 1: 3, 2: 1}
     mixed = FRONT["lower"](groups, {0: 0, 1: 1, 2: 0}, puts)
     assert FRONT["lower"](groups, {0: 0, 1: 0, 2: 0}, puts) == 13 < mixed == 15
+
+
+def test_public_natural_bounds_have_the_original_service_population_and_cuts():
+    prior, one, price = (
+        json.loads((STUDY / p).read_bytes())
+        for p in ("bound.json", "lookahead.json", "service-price.json")
+    )
+    assert BOUND["sha"](STUDY / "bound.json") == one["parent_sha256"] == LOOK["PARENT"]
+    assert BOUND["sha"](STUDY / "lookahead.json") == price["parent_sha256"] == FRONT["LOOK"]
+    assert BOUND["sha"](STUDY / "service-price.json") == FRONT["PRICE"]
+    for label, trace in prior["traces"].items():
+        assert sum(trace["generations_by_consumer"].values()) == 2354
+        for metric, phases in BOUND["PHASES"].items():
+            assert (
+                sum(trace["phases"][p]["span_ns"] for p in phases) + trace["outside_ns"][metric]
+                == trace["observed_ns"][metric]
+            )
+            a = one["traces"][label]["1"]["clocks"][metric]
+            assert a["lower_full_client_ns"] <= a["schedule_full_client_ns"]
+            assert (
+                price["traces"][label]["1"]["original_sets"]["current_floor_ns"][metric]
+                == a["lower_full_client_ns"]
+            )
+        paid = price["traces"][label]["1"]["original_sets"]
+        assert all(v <= BOUND["LIMITS"][k] for k, v in paid["at_cut_ns"].items())
+        assert any(v > BOUND["LIMITS"][k] for k, v in paid["one_ppm_less_ns"].items())
