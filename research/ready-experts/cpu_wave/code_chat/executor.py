@@ -142,6 +142,8 @@ def run(args, out):
     flags = [
         "-O2",
         "-std=gnu11",
+        "-include",
+        "stdalign.h",
         "-fno-fast-math",
         "-g0",
         "-fPIC",
@@ -162,7 +164,8 @@ def run(args, out):
             "-o",
             str(dest),
         ]
-        subprocess.run(cmd, check=True, timeout=30, capture_output=True)
+        with (out / (name + ".build.log")).open("xb") as log:
+            subprocess.run(cmd, check=True, timeout=30, stdout=log, stderr=subprocess.STDOUT)
         lib = ct.CDLL(str(dest))
         vector = lib.dequant_mxfp4_row
         vector.argtypes = [BYTE_PTR, FLOAT_PTR, ct.c_uint32]
