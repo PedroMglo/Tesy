@@ -11,6 +11,7 @@ LOOK = run_path(STUDY / "lookahead.py")
 PRICE = run_path(STUDY / "service_price.py")
 FRONT = run_path(STUDY / "frontier.py")
 LIFE = run_path(STUDY / "slot_lifetime.py")
+BANK = run_path(STUDY / "slot_bank.py")
 
 
 def family(first, second):
@@ -212,3 +213,25 @@ def test_staged_cuda_read_can_overlap_the_old_use_and_the_cpu_parking_fence():
     path = LIFE["schedule"](jobs, 0, [0])
     assert path[0][-1] == 10
     assert LIFE["graph_floor"](0, [0], LIFE["interval_edges"](jobs, 1), 0) == 7
+
+
+def test_resident_hit_waits_for_reserve_and_only_a_known_miss_gets_earlier_release():
+    job = LIFE["Job"]
+    jobs = [job(i, (0, i, 1, i + 7), 2, 0, 5, 6, -1, -1, 11, 1) for i in range(3)]
+    fixed = BANK["intervention"](jobs, {2: 4}, {1}, [[8]], "history_four", 50)
+    assert [(j.read, j.horizon) for j in fixed] == [(0, 5), (6, 0), (6, 4)]
+    assert [j.key for j in fixed] == [j.key for j in jobs]
+    assert all(j.put == 1 and j.due == 6 for j in fixed)
+
+
+def test_required_disk_discount_is_bracketed_by_adjacent_percentages():
+    limits = BOUND["LIMITS"]
+    cut = BANK["read_cut"](lambda pct: {k: limit - 64 + pct for k, limit in limits.items()})
+    assert cut["min_saving_percent"] == 36
+    assert cut["fits_ns"] == limits
+    assert cut["one_percent_less_saving_ns"]["first_final"] == limits["first_final"] + 1
+    assert BANK["read_cut"](lambda _: limits)["min_saving_percent"] == 0
+    assert (
+        BANK["read_cut"](lambda _: {"first_final": 10**12, "decode": 0})["min_saving_percent"]
+        is None
+    )
