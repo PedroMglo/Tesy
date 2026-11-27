@@ -8,6 +8,7 @@ REVIEW = run_path(STUDY / "review.py")
 BOUND = run_path(STUDY / "executor_bound.py")
 LOOK = run_path(STUDY / "lookahead.py")
 PRICE = run_path(STUDY / "service_price.py")
+FRONT = run_path(STUDY / "frontier.py")
 
 
 def family(first, second):
@@ -101,3 +102,15 @@ def test_required_read_price_obeys_both_integer_deadlines():
     assert cut["one_ppm_less_ns"]["decode"] == limits["decode"] + 1
     assert PRICE["threshold"](lambda _: limits)["min_read_reduction_ppm"] == 0
     assert PRICE["threshold"](lambda _: cost(40))["min_read_reduction_ppm"] is None
+
+
+def test_two_regions_and_mixed_release_with_independent_scheduler():
+    job = LOOK["Job"]
+    groups = [[job(0, 0, 4, 5)], [job(1, 1, 2, 3)], [job(2, 2, 7, 1)]]
+    for lead in (0, 1):
+        assert FRONT["schedule"](groups, lead) == LOOK["schedule"](groups, lead)
+    end, counts, _ = FRONT["schedule"](groups, 2)
+    assert end == 13 and counts["early_reads"] == 2
+    puts = {0: 5, 1: 3, 2: 1}
+    mixed = FRONT["lower"](groups, {0: 0, 1: 1, 2: 0}, puts)
+    assert FRONT["lower"](groups, {0: 0, 1: 0, 2: 0}, puts) == 13 < mixed == 15
