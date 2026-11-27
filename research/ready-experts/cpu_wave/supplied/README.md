@@ -98,6 +98,21 @@ A primeira tentativa parou antes da primeira carga do controlo por exigir que `s
 
 **Decisão de investimento.** Conservar o pack e a fusão como componentes medidos. Continuar o trabalho de colocação na extensão do backend atual. Só se justifica um executor dedicado se o Tesy identificar um impedimento concreto na gestão dos destinos e demonstrar tempo suficiente no cliente depois de cobrar a solução. A melhor conversa natural desta composição de pack e fusão ficou a 7,689 s do primeiro final e a 0,643 tok/s do decode pedidos. A escolha do controlo operacional e a qualificação de outros perfis de hardware dependem dos contratos de produto.
 
+## O grafo e a vida do slot no caminho do cliente
+
+**NO_GO para duas regiões de previsão perfeita e destino CPU direto, conservando o custo dos intervalos do grafo observados.** Ao reabrir as 2 987 waves em cada journal, as **853 e 854** leituras CPU começadas antes da respetiva região puderam respeitar a última utilização da vítima. Em 40 reservas CPU a vítima foi usada na mesma região, incluindo 18 sucessões entre cargas novas do mesmo slot. Nenhuma dessas leituras foi adiantada antes do uso anterior no horário testado. Com grafo gratuito, as barreiras por wave e a proteção do parking reproduziram **9,257 / 9,856 s** ao nanossegundo. Este resultado é um horário condicional para os pesos e não estabelece que o target conhece o destino antes do router. [Pré-registo e regra de posse](slot-lifetime.md) · [Horários, pisos e contagens](slot-lifetime.json)
+
+| Dois processos da mesma conversa | Primeiro final P97 / P106 (s) | Decode de 47 IDs P97 / P106 (s) |
+|---|---:|---:|
+| Piso, intervalos do grafo gratuitos | 8,958 / 9,566 | 3,710 / 3,695 |
+| Horário validado, intervalos gratuitos | 9,257 / 9,856 | 3,944 / 3,915 |
+| Piso, intervalos do grafo ao preço observado | **11,408 / 12,373** | 4,914 / 5,092 |
+| Horário validado, intervalos ao preço observado | 12,259 / 13,317 | 5,157 / 5,331 |
+
+O piso permite sobrepor serviço às lacunas entre callbacks e disponibiliza a vítima assim que estão presentes os pesos dos seus últimos consumidores. O horário construído espera pela fronteira que encerra a wave. Em cada processo contam-se 1 440 slots iniciais, 10 450 procuras, 2 354 READ, 7 062 SET originais e 2 354 publicações, com zero cancelamentos. Em P97 o piso já falha a 50% das durações de grafo originais, e em P106 já falha a 21%. A 49% e a 20%, respetivamente, cabe apenas a condição necessária. Os preços vêm de dois processos do pack com trace ligado e incluem trabalho fora do manager. A hipótese de escalamento uniforme serve para quantificar a diferença. O ganho de fusão medido na conversa tem o seu próprio relógio. As restrições de predição e cópias de uma arquitetura com outro conjunto de faltas exigem avaliação própria.
+
+O primeiro processo encerrou ao verificar a árvore Git. Os destinos exclusivos `outputs/ready-slot-lifetime-20261127-02` e `-03` deram recibos e quatro ficheiros de horário comprimidos idênticos byte a byte. Durações 7,54 / 7,57 s, máximo 188 132 KiB de RSS, zero cálculos de modelo ou GPU. Recibo SHA-256 `b024b4dbcb93690fe17864815a591f7a508b0c2d0e55c45f2af6be9b9bd48739`. [Falha preservada e retoma](slot-lifetime-retake.md)
+
 ## Proveniência das saídas
 
 O arquivo exclusivo `ready-supplied-wave-20261127-01` contém 538 ficheiros, 593 951 255 B. A reabertura das famílias a partir desse arquivo reproduziu `decision.json` byte a byte. Os replays duplicados do limite do executor duraram 4,06 / 3,99 s, os de uma região 3,96 / 3,98 s, os de preço de READ 1,02 / 1,02 s, o treino 0,47 / 0,42 s e os de duas regiões 4,48 / 4,46 s. O horário, os quatro ficheiros de testemunhas de uma região e os dois de duas regiões conferiram por SHA-256 nas duas reproduções. A composição repetiu em 4,64 / 4,60 s, máximo de 136 972 KiB RSS, com o mesmo SHA-256 `02beb453cbc65d6d481a45c5f7faae51cc39f27dcfc64a5539735c1a6ea0bdc8`. O segundo arquivo `ready-record-slot-20261127-01` contém 26 ficheiros, 190 968 235 B, incluindo a tentativa que falhou. Todos os recibos indicam o commit, a fonte ou o seu protocolo congelado. [Manifesto físico e dos replays](archive.json) · [Manifesto da composição e da fixture](slot-archive.json)
@@ -120,6 +135,7 @@ python3 -IB "$s/frontier.py" score --archive "$TESY_PFJ_ARCHIVE" --lookahead "$o
   --bound "$out/bound/bound.json" --price "$out/price/service-price.json" --plan "$out/plan/plan.json" \
   --plan-sha256 "$plan_sha" --new-output-dir "$out/frontier"
 python3 -IB "$s/composition.py" --archive "$TESY_PFJ_ARCHIVE" --plan "$out/plan/plan.json" --new-output-dir "$out/composition"
+python3 -IB "$s/slot_lifetime.py" --archive "$TESY_PFJ_ARCHIVE" --new-output-dir "$out/slots"
 python3 -IB "$s/review.py" --code "$TESY_SUPPLIED_PART/tesy-wave-supplied-code153-20261127-r02" \
   --nominal "$TESY_SUPPLIED_PART/tesy-wave-supplied-nominal153-20261127-r02" \
   --code-window "$TESY_SUPPLIED_PART/tesy-wave-supplied-c55-code-20261127-r01" \
