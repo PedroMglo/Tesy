@@ -204,7 +204,7 @@ if __name__ == "__main__":
     a.new_output_dir.mkdir()
     try:
         receipt = run(a.raw_dir)
-    except (ValueError, OSError, KeyError) as exc:
+    except (ValueError, OSError, KeyError, ImportError) as exc:
         receipt = dict(classification="FAIL_PRESERVED", reason=str(exc))
     with (a.new_output_dir / "composition.json").open("x") as f:
         json.dump(receipt, f, indent=2, sort_keys=True, allow_nan=False)
