@@ -470,9 +470,9 @@ if __name__ == "__main__":
     try:
 
         def git(*args):
-            return subprocess.check_output(["git", *args], cwd=HERE, text=True).strip()
+            cmd = ["git", "-c", "core.preloadIndex=false", "-c", "index.threads=1", *args]
+            return subprocess.check_output(cmd, cwd=HERE, text=True).strip()
 
-        need(not git("status", "--porcelain"), "unclean measurement tree")
         provenance = dict(
             commit=git("rev-parse", "HEAD"),
             tree=git("rev-parse", "HEAD^{tree}"),
@@ -482,6 +482,7 @@ if __name__ == "__main__":
         (args.new_output_dir / "provenance.json").write_text(
             json.dumps(provenance, indent=2) + "\n"
         )
+        need(not git("status", "--porcelain"), "unclean measurement tree")
         result = run(args.archive, args.new_output_dir)
     except Exception as exc:
         missing = (
