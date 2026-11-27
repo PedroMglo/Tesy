@@ -2,7 +2,7 @@ import unittest
 from pathlib import Path
 from runpy import run_path
 
-S = run_path(str(Path(__file__).with_name("selection.py")))
+S = run_path(str(Path(__file__).resolve().parents[1] / "research/ready-experts/selection.py"))
 
 
 class CausalPlacement(unittest.TestCase):

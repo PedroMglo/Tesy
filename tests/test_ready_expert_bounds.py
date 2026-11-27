@@ -5,7 +5,7 @@ from pathlib import Path
 from runpy import run_path
 from types import SimpleNamespace
 
-M = run_path(str(Path(__file__).with_name("screen.py")))
+M = run_path(str(Path(__file__).resolve().parents[1] / "research/ready-experts/screen.py"))
 Call = M["Call"]
 
 
