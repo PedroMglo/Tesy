@@ -88,3 +88,23 @@ def test_swap_cost_matches_reference_and_preserves_region_boundaries():
     assert groups[0].internal == 9 and edges == [4, 7, 6]
     with pytest.raises(ValueError):
         COMPOSE["discount"](data, {"P106": {groups[0].site: {"edge": 8}}})
+
+
+def test_later_wave_deadline_tracks_generation_and_paid_publication():
+    deadlines = run_path(Path(INTERVALS["HERE"]) / "deadlines.py")
+    wave = deadlines["SRC"]["Wave"]
+    a, b, c, d = [(0, 1, gen, 42) for gen in range(4)]
+    waves = [
+        wave((1, 0, 0, 0), 1, True, 4, False, {a, b, c, d}, {a}),
+        wave((1, 0, 0, 1), 5, False, 7, True, set(), {b}),
+        wave((1, 1, 0, 0), 9, True, 12, True, set(), {c}),
+    ]
+    stamps = {a: (1, 4), b: (2, 6), c: (2, 8), d: (3, 10)}
+    assert deadlines["consumers"](waves, stamps) == {
+        a: "same_wave",
+        b: "later_wave_same_tile_layer",
+        c: "later_region",
+        d: "no_consumer",
+    }
+    with pytest.raises(ValueError):
+        deadlines["consumers"](waves, {**stamps, b: (2, 8)})
