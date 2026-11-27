@@ -1,5 +1,7 @@
 # O que justifica mudar o backend da conversa?
 
+**O 120B do portátil já verificou os dois prefixos reais de código.** O cálculo de três posições no executor atual passou as 57 comparações com os controlos na rejeição, na aceitação completa e na continuação. A decisão é GO para medir o custo no cliente. [Cortes, estados e recursos](block/README.md)
+
 **NO_GO para uma reescrita integral com as hipóteses avaliadas. GO para conservar o pack de experts e a fusão CPU no executor Tesy para esta tarefa.** Em seis processos do portátil, o GPT-OSS-120B original completou doze pedidos com o mesmo histórico e os mesmos IDs. A função de código passou o validador nas seis execuções. Contra R0, a combinação adiantou o primeiro conteúdo da função em **4,075 e 3,862 s** nas duas ordens. Contra a mesma biblioteca com a fusão desligada, adiantou-o em **0,140 e 0,534 s**. Um executor C independente que anuncia suporte ao GGUF do target falhou a comparação de valores dos pesos. R0 `slots40-persistent` continua operacional. M3 PARTIAL e M4 NOT_MET. [Protocolo da conversa](protocol.md) · [Resultados físicos](code-chat.json) · [Operador independente](executor-result.json)
 
 ## O que recebeu a pessoa
