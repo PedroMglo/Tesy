@@ -10,6 +10,7 @@ BOUND = run_path(STUDY / "executor_bound.py")
 LOOK = run_path(STUDY / "lookahead.py")
 PRICE = run_path(STUDY / "service_price.py")
 FRONT = run_path(STUDY / "frontier.py")
+LIFE = run_path(STUDY / "slot_lifetime.py")
 
 
 def family(first, second):
@@ -177,3 +178,37 @@ def test_direct_slot_removes_only_the_copy_and_rejects_the_projection_permutatio
             assert 0 < slack == trace["maximum_extra_schedule_ns"][clock]
         causal_floor = trace["four_t1_free_cpu_set_floor_ns"]["first_final"]
         assert causal_floor > BOUND["LIMITS"]["first_final"]
+
+
+def test_slot_read_waits_for_prior_consumer_and_covers_the_measured_wave_gap():
+    job = LIFE["Job"]
+    jobs = [
+        job(0, (0, 3, 1, 5), 0, 0, 0, 0, -1, -1, 3, 1),
+        job(1, (0, 3, 2, 8), 0, 0, 1, 1, 0, 0, 2, 1),
+    ]
+    for gaps, expected in (([0, 0], 7), ([5, 0], 12)):
+        witness = LIFE["schedule"](jobs, 0, gaps)
+        LIFE["audit"](jobs, 0, gaps, witness)
+        assert witness[0][-1] == expected
+        edges = LIFE["interval_edges"](jobs, len(gaps))
+        assert LIFE["graph_floor"](0, gaps, edges, 100) <= expected
+    steps = witness[2]
+    assert steps[1][2] == witness[0][1] == 9
+    steps[1][2:4] = [7, 9]
+    with pytest.raises(ValueError, match="victim still pinned"):
+        LIFE["audit"](jobs, 0, [5, 0], witness)
+
+
+def test_staged_cuda_read_can_overlap_the_old_use_and_the_cpu_parking_fence():
+    job = LIFE["Job"]
+    cpu = job(0, (0, 0, 3, 7), 1, 0, 1, 1, -1, 0, 7, 1)
+    gpu = job(1, (25, 0, 3, 7), 1, 0, 1, 1, 0, 0, 7, 2)
+    # FIFO within a deadline makes the parked CPU head a deliberate limit of the constructor.
+    for jobs, expected_start in (([gpu], 0), ([cpu], 5)):
+        path = LIFE["schedule"](jobs, 0, [5, 0])
+        LIFE["audit"](jobs, 0, [5, 0], path)
+        assert path[2][0][2] == expected_start
+    jobs = [job(i, (0, i, 1, i), 0, 0, 0, 0, -1, -1, 4, 1) for i in range(5)]
+    path = LIFE["schedule"](jobs, 0, [0])
+    assert path[0][-1] == 10
+    assert LIFE["graph_floor"](0, [0], LIFE["interval_edges"](jobs, 1), 0) == 7
