@@ -8,6 +8,9 @@ import pytest
 INTERVALS = run_path(
     Path(__file__).resolve().parents[1] / "research/ready-experts/renewal/intervals.py"
 )
+COMPOSE = run_path(
+    Path(__file__).resolve().parents[1] / "research/ready-experts/renewal/composition.py"
+)
 
 
 def test_equal_price_selection_maximizes_cardinality_with_half_open_boundaries():
@@ -55,3 +58,33 @@ def test_causal_frequency_may_decline_a_victim_and_pays_unused_captures():
     assert not recent and recent_bytes["CPU"]["captures"] == 2
     assert frequent == {2} and peak == 1
     assert frequency_bytes["CPU"] == {"captures": 1, "promotions": 1}
+
+
+def test_swap_cost_matches_reference_and_preserves_region_boundaries():
+    reg, job = COMPOSE["RE"]["Region"], COMPOSE["RE"]["Job"]
+    groups = [
+        reg((1, 0, 0), 9, [job(1, 20, 5), job(2, 40, 2)]),
+        reg((1, 0, 1), 12, [job(3, 31, 1)]),
+    ]
+    edges = [4, 7, 6]
+    data = {"P106": ([(1, groups, edges)], {"first_final": 10, "decode": 1})}
+    prices = COMPOSE["Prices"](data["P106"][0], {1})
+    ref = COMPOSE["INTERVAL"]["C"]["cuts"]
+    for n in range(4):
+        for toggled in combinations((1, 2, 3), n):
+            hits = {1} ^ set(toggled)
+            service = [
+                COMPOSE["B"]["layer_fourths"](
+                    [j.set_ns + (0 if j.expert in hits else j.read_ns) for j in g.jobs]
+                )
+                for g in groups
+            ]
+            wall, _ = ref([4 * g.internal for g in groups], [4 * e for e in edges], service)
+            assert prices.base[1] + prices.delta(set(toggled)) == (wall + 3) // 4
+    adjusted, _ = COMPOSE["discount"](data, {"P106": {groups[0].site: {"inside": 3, "edge": 5}}})[
+        "P106"
+    ]
+    assert adjusted[0][1][0].internal == 6 and adjusted[0][2] == [4, 2, 6]
+    assert groups[0].internal == 9 and edges == [4, 7, 6]
+    with pytest.raises(ValueError):
+        COMPOSE["discount"](data, {"P106": {groups[0].site: {"edge": 8}}})
