@@ -1,7 +1,6 @@
 """Freeze actual server inputs and build a direct verifier from the pinned numerical client."""
 
 import argparse
-import json
 import os
 import re
 import struct
@@ -68,7 +67,10 @@ def work(prefix, family):
         and [len(t1), len(t2)] == [2043, 2105],
         "external boundaries",
     )
-    common = sum(1 for _ in takewhile(lambda pair: pair[0] == pair[1], zip(t1 + first[:-1], t2)))
+    common = sum(
+        1
+        for _ in takewhile(lambda pair: pair[0] == pair[1], zip(t1 + first[:-1], t2, strict=False))
+    )
     need(common == public["t2_cached"] == starts[1][0], "true cache cut")
     cuts = []
     for c in public["cases"]:
