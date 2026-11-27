@@ -235,6 +235,17 @@ def reopen(physical, window, case, program):
             folder, unit, {"native_explicit_env": argv["expected"]}, launch
         )
         need(inv == row["c118"], "reopened C118")
+        if "loader_probe_sha256" in r:
+            loader = run_path(HERE / "loader.py")
+            before = read(folder / "loader-data-before.json")
+            after = row["loader_data"]
+            need(
+                r["retake_protocol_sha256"] == loader["METHOD"]
+                and before["sha256"] == loader["DATA_SHA"]
+                and before == dict(after, observed_cuts=0)
+                and after["observed_cuts"] >= 0,
+                "authenticated loader data throughout the arm",
+            )
         native[row["name"]] = read(cap / "result.json")
     keep = (
         "cpu",
@@ -257,6 +268,8 @@ def reopen(physical, window, case, program):
         window_sha256=r["window_sha256"],
         window={k: win[k] for k in keep},
         elapsed_s=r["elapsed_s"],
+        retake_protocol_sha256=r.get("retake_protocol_sha256"),
+        loader_probe_sha256=r.get("loader_probe_sha256"),
     ), native
 
 

@@ -144,6 +144,9 @@ def setup(a, cfg, out, role, build):
         kind="PRICE",
     )
     ctl.mode = "ON" if role in "PW" else "OFF"
+    if getattr(a, "loader_probe", None):
+        ctl.loader_cache = run_path(HERE / "loader.py")["checked"](a.loader_probe, a.loader_sha256)
+        save(out / "loader-data-before.json", ctl.loader_cache.receipt())
     env = {"PATH": "/usr/bin:/bin", "LC_ALL": "C", "LD_LIBRARY_PATH": ctl.search}
     test = subprocess.run(
         [cfg["exe"], "--self-test"], env=env, capture_output=True, text=True, timeout=20, check=True
@@ -292,6 +295,8 @@ def arm(a, out, name, cfg, expected_logits, generations, build):
         monitor_sha256=sha(raw / (unit + ".json")),
     )
     save(out / "authority.json", dict(loader=audit, monitor=monitor_proof, fd=fd))
+    if ctl.loader_cache is not None:
+        result["loader_data"] = ctl.loader_cache.receipt()
     save(out / "checked.json", result)
     return result
 
@@ -338,6 +343,16 @@ def main(a, out, receipt):
         client_sha256=HTTP,
         arms=[],
     )
+    if a.loader_probe:
+        loader = run_path(HERE / "loader.py")
+        need(
+            a.case == "nominal153"
+            and sha(a.loader_probe) == a.loader_sha256
+            and datetime.fromisoformat(first).timestamp()
+            >= int(prepare.git(HERE, "log", "-1", "--format=%ct", "--", "nominal-retake.md")),
+            "fresh nominal retake",
+        )
+        receipt.update(loader_probe_sha256=a.loader_sha256, retake_protocol_sha256=loader["METHOD"])
     save(out / "provenance.json", dict(receipt, order=list(ORDER)))
     start = time.monotonic()
     for i, role in enumerate("RGPW" if a.prepare_only else ORDER, 1):
@@ -363,6 +378,8 @@ if __name__ == "__main__":
         p.add_argument("--" + key, required=True)
     p.add_argument("--case", choices=CASES, required=True)
     p.add_argument("--prepare-only", action="store_true")
+    p.add_argument("--loader-probe", type=Path)
+    p.add_argument("--loader-sha256")
     a = p.parse_args()
     os.umask(0o077)
     out = a.new_output_dir
