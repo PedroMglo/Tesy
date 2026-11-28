@@ -1,5 +1,7 @@
 # O ganho da fila chega à conversa e justifica um backend novo?
 
+**Seguimento com renovação da reserva.** Dividir 353 lugares entre os dois estágios tornou a seleção independente da ordem entre tiles. Os hits de prefill subiram de 155 para 371. O melhor piso de primeiro final que resultou foi 10,669 / 11,622 s. [Decisão atualizada e comparação por braço](tier-result.md)
+
 **NO_GO para financiar um backend dedicado à junção de leituras, ao pipeline de duas tiles e ao banco fixo aqui avaliados no portátil.** Promover um expert na fila adiantou o consumidor de uma wave real. A disposição aprendida em T1 também aproximou mais experts que o segundo turno viria a pedir. A melhor composição ensaiada ainda tem pisos de **12,213 s e 13,165 s** até ao primeiro conteúdo final, dando de graça as cópias dos hits do banco. Estes são limites condicionais sobre dois processos com o mesmo histórico nominal. O melhor resultado efetivamente medido numa conversa continua a ser **17,689 s e 5,357 tok/s no mesmo turno**, com o pack e a fusão CPU. R0 slots40-persistent, ub32 e contexto 8 192 continua como controlo operacional. M3 PARTIAL e M4 NOT_MET. [Medição no cliente](../../../cpu_wave/README.md) · [Decisão de arquitetura](../../../../../docs/architecture/0005-execucao-local-por-perfil.md)
 
 ## MEDIDO no portátil, quatro leitores e um consumidor

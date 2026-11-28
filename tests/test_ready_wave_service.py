@@ -1,5 +1,7 @@
 import gzip
+import hashlib
 import json
+from collections import Counter
 from itertools import pairwise
 from pathlib import Path
 from runpy import run_path
@@ -67,3 +69,32 @@ def test_ram_source_breaks_a_disk_run():
     assert hits == {1, 2} and paired == {3, 4} and (after, before) == (1, 4)
     with pytest.raises(ValueError, match="duplicate"):
         study["K"]["sources"]([*jobs, jobs[0]], list(range(6)), {1, 2})
+
+
+def test_renewable_pool_promotes_before_recycling_a_slot():
+    tier = run_path(HERE / "tier_bank.py")
+    a, b, c = (0, 0), (0, 1), (0, 2)
+    pool = tier["Pool"](1, [a], Counter({a: 4, b: 3, c: 1}))
+    assert pool.reserve(a, b) == (0, 0)
+    assert pool.reserve(a, c) == (None, None)
+    assert pool.held == {b: 0}
+    assert pool.reserve(b, c) == (0, 0)
+    assert pool.held == {c: 0} and pool.peak == 1
+
+
+def test_partition_replays_all_owners_and_prices():
+    tier = run_path(HERE / "tier_bank.py")
+    root = HERE / "evidence-tier-20261128-r01"
+    receipt = json.loads((root / "receipt.json").read_bytes())
+    raw = (root / "transactions.json.gz").read_bytes()
+    assert hashlib.sha256(raw).hexdigest() == receipt["transactions_sha256"]
+    assert tier["SRC"]["digest"](HERE / "tier_bank.py") == receipt["source_sha256"]
+    assert tier["SRC"]["digest"](HERE / "tier-bank.md") == receipt["protocol_sha256"]
+    w = json.loads(gzip.decompress(raw))
+    result = tier["assess"](w)
+    assert result == receipt["result"]
+    assert result["caps"] == [252, 101] and result["different_global_hit_decisions"] == 17
+    assert result["partition"]["hits"] == dict(prefill=371, early_decode=299, tail=4)
+    w["reservations"][0][4] += 1
+    with pytest.raises(ValueError, match="primary generation"):
+        tier["assess"](w)
