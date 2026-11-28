@@ -1,0 +1,5 @@
+# Controlo B0b independente após uma recusa de admissão
+
+No commit `4e6d96f266fe84032eea3974d26768f4c1b9b080` a família r01 encerrou em FAIL_PRESERVED. S, B0a e B1 passaram integralmente. O inventário C118 do quarto braço parou após a primeira amostra, com `start inventory cadence gap` e sem lançamento do modelo. O limite entre amostras é 1,5 s. Preservar a família e os quatro diretórios exatamente como ficaram.
+
+Recolher só B0b em processo e destino novos, após uma C55 nova e a C118 habitual. Usar o mesmo ELF, o mesmo work.json, as mesmas bibliotecas, os mesmos pesos e todos os cortes e critérios do protocolo original. Orçamento de um arranque e 320 s com os limites E20 existentes. Autenticar os três recibos anteriores e a ausência de recibo de lançamento do quarto. Exigir todas as comparações numéricas entre os quatro processos. O controlo adicional ocorre após a pausa de admissão. Reportar o intervalo entre campanhas e a neutralidade dos preços de B1 contra cada observação B0. Uma segunda recusa preserva o novo FAIL; o preço transferível permanece por qualificar.
