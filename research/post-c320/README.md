@@ -1,5 +1,9 @@
 # Reavaliação do Tesy após C320
 
+## 28 de novembro · até quando um expert continua a ser lido
+
+**MEDIDO.** Na camada CPU0 do 120B, libertar os pesos depois da projeção down preservou todos os bits em duas tiles reais. Antecipar a substituição para antes de down alterou 92 160 valores F32 numa tile e 2 880 na outra. A entrega por ID poupou 0,857 e 0,751 ms nos pares com 66 experts. Com cinco experts os sinais mudaram com a ordem. A exatidão permite continuar no backend atual. O ganho de tempo na camada é INCONCLUSIVE, e o melhor primeiro final do produto continua em 17,689 s. [Braços, custos do produtor e prova numérica](../ready-experts/cpu_wave/frame_lease/README.md)
+
 ## 28 de novembro · até onde chega uma mudança de backend no portátil
 
 **MEDIDO.** O GGML existente consumiu pesos MXFP4 de uma arena CPU protegida de 1 252 frames. Uma mudança de proprietário por ID reproduziu os 3 663 360 valores F32 do controlo, bit a bit. O mutante que reteve o ID antigo divergiu na segunda geração. Há GO para esta interface e NO_GO para uma reescrita integral com a evidência deste perfil. O próximo discriminante é a última utilização por uma camada routed. [Operador, contas e condição de reabertura](../ready-experts/verifier_wait/forecast/retention/eviction/late_owner/contention/sampling/operator-result.md)

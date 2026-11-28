@@ -1,5 +1,7 @@
 # O operador atual consegue promover um expert CPU sem copiar os pesos?
 
+**Seguimento na camada CPU0 do target.** A última projeção down identificou a fronteira segura de libertação. Os preços nos dois casos dão INCONCLUSIVE para um hit isolado. [Teste de camada com quatro produtores](../../../../../../../cpu_wave/frame_lease/README.md)
+
 **MEDIDO no Ryzen AI 9 HX 370. GO para usar IDs físicos nas projeções do backend atual.** Proteger a arena contra escrita e trocar apenas um identificador reproduziu, byte a byte, os 14 653 440 B do controlo. A referência independente, produzida antes desta unidade com staging e o leitor C291, tem o mesmo SHA-256 integral e por geração. Deixar o identificador antigo produziu o erro previsto. A dependência de endereçamento das matrizes ficou resolvida no GGML pinado. [Pré-registo](operator-protocol.md) · [Recibo nativo](evidence-operator-20261128-r01/operator.json)
 
 | Braço no mesmo backend CPU | Frames endereçáveis | SET de pesos | ID físico do rank 1 na segunda geração | Resultado em relação ao controlo |
