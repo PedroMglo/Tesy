@@ -7,6 +7,7 @@ import json
 import os
 from bisect import bisect_left
 from collections import deque
+from functools import partial
 from pathlib import Path
 from runpy import run_path
 
@@ -231,7 +232,7 @@ def deadline(jobs, base, target):
     )
 
 
-def evaluate(*, on_jobs=None):
+def evaluate(*, on_jobs=None, site_floor=None):
     need(sha(HERE / "windows-protocol.md") == METHOD, "protocol")
     old = S["M"]["verified"](HERE / "evidence-pipeline-20261128-r01/pipeline.json", PRIOR)
     rates = {s: v[1] for s, v in old["rates_ppm"].items()}
@@ -266,9 +267,11 @@ def evaluate(*, on_jobs=None):
                 layout[tag],
                 tag,
                 on_stages=lambda *args, batch=batch: batch.append(jobs_in_stages(*args)),
+                site_floor=partial(site_floor, tag, mode) if site_floor is not None else None,
             )
             need(
-                row == old["arms"][tag]["trained"]["high"][mode] and len(batch) == 1,
+                (site_floor is not None or row == old["arms"][tag]["trained"]["high"][mode])
+                and len(batch) == 1,
                 "published prices",
             )
             jobs, base = batch[0]
@@ -278,7 +281,8 @@ def evaluate(*, on_jobs=None):
             )
             price = row["speeds"]["8000000000"]["pipeline"]
             floor = price["phases_ns"]["call148"]
-            need(price["decode_ns"] <= 47 * 10**9 // 6, "other client clock")
+            if site_floor is None:
+                need(price["decode_ns"] <= 47 * 10**9 // 6, "other client clock")
             integral = floor + 10**10 - price["first_final_ns"]
             credited = floor + 10**10 - price["credited_first_ns"]
             # Reuse identical deadlines (the two client clocks coincide in P97).
@@ -294,6 +298,8 @@ def evaluate(*, on_jobs=None):
                     for k, t in (("floor", floor), ("integral", integral), ("credited", credited))
                 },
             )
+            if site_floor is not None:
+                modes[mode]["speeds"] = row["speeds"]
         arms[tag] = modes
     weak = [a["direct"]["budgets"]["credited"]["status"] for a in arms.values()]
     strict = [a["copied"]["budgets"]["integral"]["status"] for a in arms.values()]

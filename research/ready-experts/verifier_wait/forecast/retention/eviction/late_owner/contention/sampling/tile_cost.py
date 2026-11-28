@@ -61,7 +61,19 @@ def tile_clocks(stages, link_ns, workers_ns):
 
 
 def scenarios(
-    data, jobs, hits, weights, paths, rates, direct, markers, previous, tag, *, on_stages=None
+    data,
+    jobs,
+    hits,
+    weights,
+    paths,
+    rates,
+    direct,
+    markers,
+    previous,
+    tag,
+    *,
+    on_stages=None,
+    site_floor=None,
 ):
     lookup = {(*row[1][:3], row[0][3]): i for i, row in enumerate(jobs, 1)}
     need(len(lookup) == len(jobs) == 2354, "distinct source per site and generation")
@@ -96,6 +108,10 @@ def scenarios(
         else:
             removed[c].append((lo, hi))
             floor = max(max(durations), P["ceil_div"](sum(durations), 4))
+            if site_floor is not None:
+                tighter = site_floor(c, tile, layer, durations)
+                need(tighter >= floor, "local bound weaker than control")
+                floor = tighter
             need(floor <= end - start, "service exceeds observed window")
             clocks[c].append((start, end, floor))
         work[c] += sum(durations)

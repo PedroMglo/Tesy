@@ -1,12 +1,30 @@
 import unittest
+from itertools import product
 from pathlib import Path
 from runpy import run_path
 
 P = run_path(Path(__file__).with_name("tile_cost.py"))
 L = run_path(Path(__file__).with_name("tile_lanes.py"))
+PACKING = run_path(Path(__file__).with_name("indivisible.py"))
 
 
 class TileTests(unittest.TestCase):
+    def test_indivisible_optimum_against_an_independent_enumeration(self):
+        for jobs in ((0,), (3, 3, 3, 3, 3), (8, 7, 6, 3, 2, 2, 0), (9, 7, 7, 6, 5, 4, 3)):
+
+            def makespan(assignment, jobs=jobs):
+                totals = [0] * 4
+                for lane, cost in zip(assignment, jobs, strict=True):
+                    totals[lane] += cost
+                return max(totals)
+
+            expected = min(map(makespan, product(range(4), repeat=len(jobs))))
+            low, high, _, _ = PACKING["pack"](jobs)
+            self.assertEqual((low, high), (expected, expected))
+        low, high, nodes, _ = PACKING["pack"](tuple(range(10, 1, -1)), limit=0)
+        self.assertEqual(nodes, 0)
+        self.assertLess(low, high)
+
     def test_cut_counts_global_capacity_and_each_single_reader(self):
         five = [(i, 10, 0, 10) for i in range(5)]
         cut = L["max_service"](five)
