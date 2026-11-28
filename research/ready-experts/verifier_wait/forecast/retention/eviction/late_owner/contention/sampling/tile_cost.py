@@ -60,13 +60,16 @@ def tile_clocks(stages, link_ns, workers_ns):
     return max(serial, link_ns, workers_ns), max(pipeline, link_ns, workers_ns)
 
 
-def scenarios(data, jobs, hits, weights, paths, rates, direct, markers, previous, tag):
+def scenarios(
+    data, jobs, hits, weights, paths, rates, direct, markers, previous, tag, *, on_stages=None
+):
     lookup = {(*row[1][:3], row[0][3]): i for i, row in enumerate(jobs, 1)}
     need(len(lookup) == len(jobs) == 2354, "distinct source per site and generation")
     clocks = defaultdict(list)
     discarded, applied, cold, work, census = (Counter() for _ in range(5))
     removed = defaultdict(list)
     seen = set()
+    tile_jobs = []
     for c, tile, layer, lo, start, end, hi, group in data["groups"]:
         ordinals = {e: lookup[c, tile, layer, e] for e, _, _ in group}
         sources = {e for e, i in ordinals.items() if i in hits}
@@ -96,6 +99,10 @@ def scenarios(data, jobs, hits, weights, paths, rates, direct, markers, previous
             need(floor <= end - start, "service exceeds observed window")
             clocks[c].append((start, end, floor))
         work[c] += sum(durations)
+        if on_stages is not None and c == 2 and group:
+            tile_jobs.append(
+                (tile, layer, start, end, list(zip(ordinals.values(), durations, strict=True)))
+            )
         cold[c] += len(group) - len(local)
         census.update(
             hits=len(local),
@@ -123,6 +130,8 @@ def scenarios(data, jobs, hits, weights, paths, rates, direct, markers, previous
     calls = {c: region(c, lo, hi) for c, (lo, hi) in enumerate(data["calls"], 1)}
     stages = [[region(2, a, b), region(2, f, g)] for _, a, b, f, g, _ in markers["tiles"]]
     need(len(stages) == 5 and len(calls) == 48, "external returns or geometry")
+    if on_stages is not None:
+        on_stages(tile_jobs, stages, markers["tiles"], region)
     result, legacy = {}, {}
     credit = F["C"]["CC"]["CREDIT"] if tag == "P106" else 0
     ext = previous["outside_calls_ns"]
