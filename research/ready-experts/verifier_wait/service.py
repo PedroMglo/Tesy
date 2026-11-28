@@ -75,13 +75,18 @@ def groups(journal, tx, effects, physical, actual):
             )
         modes["secondary"].append((at, jobs))
         modes["primary"].append((at, [(rd, st, False) for rd, st, _ in jobs]))
+    # The sealed time table stores only layers that reserved a generation.
+    # An omitted layer contributes zero service iff the complete ledger has no
+    # reservation at that site. S independently executed 36 remaps each time.
+    expected_sites = {(call - 2, layer) for call, _, layer, _ in hits if call > 2}
     need(
         keys == {k for k in hits if k[0] > 2}
-        and len(sites) == 46 * 36
+        and sites == expected_sites
+        and all(r["counts"][0] == 36 for r in physical["decode"])
         and [by_call[at] for at in range(1, 47)] == [r["counts"][2] for r in physical["decode"]],
         "all single-token loads",
     )
-    return modes, dict(demand, nonempty_layers=len(modes["primary"]))
+    return modes, dict(demand, nonempty_layers=len(sites), resident_only_layers=46 * 36 - len(sites))
 
 
 def price_group(jobs, rate, ppm):
