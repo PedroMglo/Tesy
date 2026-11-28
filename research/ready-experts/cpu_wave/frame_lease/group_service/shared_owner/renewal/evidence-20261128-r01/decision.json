@@ -1,0 +1,587 @@
+{
+  "F32_per_complete_exact_arm": 138240,
+  "HTTP_requests": 0,
+  "M3": "PARTIAL",
+  "M4": "NOT_MET",
+  "correctness": "GO_NATIVE_RENEWAL_LEASE",
+  "directions": [
+    {
+      "direction": 0,
+      "medians": {
+        "COPY": {
+          "cleanup_after_phases_ns": 7930802,
+          "formation_and_hits_ns": 60264329,
+          "formation_result_ns": 51271727,
+          "old_compute_ns": 1077189,
+          "promotion_publish_ns": 6924806,
+          "promotions_ready_ns": 6935707,
+          "promotions_result_ns": 8908845,
+          "setup_ns": 1358450,
+          "through_teardown_ns": 70105340
+        },
+        "DISK": {
+          "cleanup_after_phases_ns": 4086028,
+          "formation_and_hits_ns": 89663697,
+          "formation_result_ns": 48052021,
+          "old_compute_ns": 514359,
+          "promotion_publish_ns": 39869416,
+          "promotions_ready_ns": 39950869,
+          "promotions_result_ns": 42047400,
+          "setup_ns": 1347970,
+          "through_teardown_ns": 94927195
+        },
+        "ID": {
+          "cleanup_after_phases_ns": 5799016,
+          "formation_and_hits_ns": 54026397,
+          "formation_result_ns": 51995561,
+          "old_compute_ns": 483231,
+          "promotion_publish_ns": 28284,
+          "promotions_ready_ns": 507386,
+          "promotions_result_ns": 2078396,
+          "setup_ns": 1371383,
+          "through_teardown_ns": 61391473
+        }
+      },
+      "paired_control_minus_ID": {
+        "COPY": {
+          "cleanup_after_phases_ns": {
+            "median_ns": 2533674,
+            "ns": [
+              3476039,
+              2533674,
+              2228859,
+              4160679,
+              1434842,
+              1350663,
+              4072122
+            ],
+            "positive": 7
+          },
+          "formation_and_hits_ns": {
+            "median_ns": 5259158,
+            "ns": [
+              5259158,
+              7773445,
+              7697661,
+              7642268,
+              5159329,
+              4229238,
+              4926132
+            ],
+            "positive": 7
+          },
+          "formation_result_ns": {
+            "median_ns": -936805,
+            "ns": [
+              -936805,
+              557341,
+              1007798,
+              496676,
+              -1358581,
+              -2402767,
+              -1578935
+            ],
+            "positive": 3
+          },
+          "old_compute_ns": {
+            "median_ns": 593958,
+            "ns": [
+              206789,
+              716209,
+              593958,
+              735394,
+              228710,
+              707693,
+              456150
+            ],
+            "positive": 7
+          },
+          "promotion_publish_ns": {
+            "median_ns": 6874361,
+            "ns": [
+              6725841,
+              7119232,
+              6636945,
+              6874361,
+              6983115,
+              7001791,
+              6526055
+            ],
+            "positive": 7
+          },
+          "promotions_ready_ns": {
+            "median_ns": 6475991,
+            "ns": [
+              6269351,
+              6663073,
+              6162419,
+              6510807,
+              6489006,
+              6475991,
+              6101576
+            ],
+            "positive": 7
+          },
+          "promotions_result_ns": {
+            "median_ns": 6632005,
+            "ns": [
+              6195963,
+              7216104,
+              6689863,
+              7145592,
+              6517910,
+              6632005,
+              6505067
+            ],
+            "positive": 7
+          },
+          "setup_ns": {
+            "median_ns": -11852,
+            "ns": [
+              -19516,
+              -11852,
+              333919,
+              -128772,
+              -2725,
+              -7514,
+              -32242
+            ],
+            "positive": 1
+          },
+          "through_teardown_ns": {
+            "median_ns": 8985108,
+            "ns": [
+              8713867,
+              10324161,
+              10214664,
+              11700605,
+              6606165,
+              5629696,
+              8985108
+            ],
+            "positive": 7
+          }
+        },
+        "DISK": {
+          "cleanup_after_phases_ns": {
+            "median_ns": -1712988,
+            "ns": [
+              -825054,
+              -218732,
+              -1940065,
+              -1712988,
+              -1584285,
+              -2557269,
+              -3377654
+            ],
+            "positive": 0
+          },
+          "formation_and_hits_ns": {
+            "median_ns": 36271126,
+            "ns": [
+              34838056,
+              38976340,
+              36481129,
+              37558951,
+              33254592,
+              34240893,
+              36271126
+            ],
+            "positive": 7
+          },
+          "formation_result_ns": {
+            "median_ns": -3563383,
+            "ns": [
+              -3563383,
+              -1996392,
+              -3259402,
+              -2711518,
+              -5759301,
+              -5399452,
+              -3943540
+            ],
+            "positive": 0
+          },
+          "old_compute_ns": {
+            "median_ns": 53259,
+            "ns": [
+              -40106,
+              114455,
+              78817,
+              53259,
+              38343,
+              -57269,
+              63630
+            ],
+            "positive": 5
+          },
+          "promotion_publish_ns": {
+            "median_ns": 39851001,
+            "ns": [
+              38643805,
+              40992480,
+              39631817,
+              40011582,
+              39303508,
+              39851001,
+              40211018
+            ],
+            "positive": 7
+          },
+          "promotions_ready_ns": {
+            "median_ns": 39383510,
+            "ns": [
+              38189198,
+              40557551,
+              39187129,
+              39682373,
+              38821039,
+              39383510,
+              39785017
+            ],
+            "positive": 7
+          },
+          "promotions_result_ns": {
+            "median_ns": 39740531,
+            "ns": [
+              38401439,
+              40972732,
+              39740531,
+              40270469,
+              39013893,
+              39640345,
+              40214666
+            ],
+            "positive": 7
+          },
+          "setup_ns": {
+            "median_ns": -20378,
+            "ns": [
+              -467189,
+              -20378,
+              14778,
+              -123752,
+              -23413,
+              -13736,
+              41328
+            ],
+            "positive": 2
+          },
+          "through_teardown_ns": {
+            "median_ns": 33524641,
+            "ns": [
+              33524641,
+              38782747,
+              34548610,
+              35735567,
+              31673193,
+              31719039,
+              32945560
+            ],
+            "positive": 7
+          }
+        }
+      }
+    },
+    {
+      "direction": 1,
+      "medians": {
+        "COPY": {
+          "cleanup_after_phases_ns": 7588416,
+          "formation_and_hits_ns": 59596590,
+          "formation_result_ns": 50707604,
+          "old_compute_ns": 867975,
+          "promotion_publish_ns": 6817945,
+          "promotions_ready_ns": 6860395,
+          "promotions_result_ns": 8874680,
+          "setup_ns": 1339404,
+          "through_teardown_ns": 69507644
+        },
+        "DISK": {
+          "cleanup_after_phases_ns": 4631706,
+          "formation_and_hits_ns": 89185458,
+          "formation_result_ns": 48500536,
+          "old_compute_ns": 534076,
+          "promotion_publish_ns": 38457053,
+          "promotions_ready_ns": 38685114,
+          "promotions_result_ns": 40684922,
+          "setup_ns": 1368338,
+          "through_teardown_ns": 95539318
+        },
+        "ID": {
+          "cleanup_after_phases_ns": 5442834,
+          "formation_and_hits_ns": 53027465,
+          "formation_result_ns": 50593569,
+          "old_compute_ns": 438747,
+          "promotion_publish_ns": 27362,
+          "promotions_ready_ns": 474775,
+          "promotions_result_ns": 1918816,
+          "setup_ns": 1333943,
+          "through_teardown_ns": 59370415
+        }
+      },
+      "paired_control_minus_ID": {
+        "COPY": {
+          "cleanup_after_phases_ns": {
+            "median_ns": 2154909,
+            "ns": [
+              2731386,
+              565967,
+              2154909,
+              1950736,
+              4044320,
+              1479818,
+              2711459
+            ],
+            "positive": 7
+          },
+          "formation_and_hits_ns": {
+            "median_ns": 6766978,
+            "ns": [
+              7389681,
+              8524780,
+              5287394,
+              6063974,
+              10587958,
+              6131413,
+              6766978
+            ],
+            "positive": 7
+          },
+          "formation_result_ns": {
+            "median_ns": -248369,
+            "ns": [
+              379003,
+              1496619,
+              -1326508,
+              -366401,
+              4160900,
+              -683296,
+              -248369
+            ],
+            "positive": 3
+          },
+          "old_compute_ns": {
+            "median_ns": 429228,
+            "ns": [
+              560906,
+              856183,
+              414210,
+              193535,
+              180550,
+              429228,
+              497958
+            ],
+            "positive": 7
+          },
+          "promotion_publish_ns": {
+            "median_ns": 6787568,
+            "ns": [
+              6899669,
+              6785093,
+              6596788,
+              6959061,
+              6721873,
+              6787568,
+              7056524
+            ],
+            "positive": 7
+          },
+          "promotions_ready_ns": {
+            "median_ns": 6428281,
+            "ns": [
+              6525474,
+              6428281,
+              6193559,
+              6475640,
+              6189881,
+              6385620,
+              6593933
+            ],
+            "positive": 7
+          },
+          "promotions_result_ns": {
+            "median_ns": 6814709,
+            "ns": [
+              7010678,
+              7028161,
+              6613902,
+              6430375,
+              6427058,
+              6814709,
+              7015347
+            ],
+            "positive": 7
+          },
+          "setup_ns": {
+            "median_ns": 6533,
+            "ns": [
+              -14368,
+              6533,
+              389284,
+              14778,
+              -470346,
+              161284,
+              -2183
+            ],
+            "positive": 4
+          },
+          "through_teardown_ns": {
+            "median_ns": 9203360,
+            "ns": [
+              10137229,
+              9203360,
+              7893691,
+              8022515,
+              14159027,
+              7804174,
+              9530646
+            ],
+            "positive": 7
+          }
+        },
+        "DISK": {
+          "cleanup_after_phases_ns": {
+            "median_ns": -1402572,
+            "ns": [
+              -1750278,
+              -1661349,
+              -801801,
+              -1691727,
+              -1402572,
+              -590664,
+              -1204118
+            ],
+            "positive": 0
+          },
+          "formation_and_hits_ns": {
+            "median_ns": 37303393,
+            "ns": [
+              36153484,
+              38045588,
+              36385452,
+              37303393,
+              34249126,
+              38824526,
+              45186521
+            ],
+            "positive": 7
+          },
+          "formation_result_ns": {
+            "median_ns": -2267400,
+            "ns": [
+              -2737648,
+              -886561,
+              -2267400,
+              -2445627,
+              -3369077,
+              227339,
+              2020916
+            ],
+            "positive": 2
+          },
+          "old_compute_ns": {
+            "median_ns": 63500,
+            "ns": [
+              177573,
+              63500,
+              137778,
+              -12754,
+              -85422,
+              108253,
+              38974
+            ],
+            "positive": 5
+          },
+          "promotion_publish_ns": {
+            "median_ns": 38424081,
+            "ns": [
+              38656810,
+              38348559,
+              38424081,
+              39941421,
+              37954427,
+              38299998,
+              42937575
+            ],
+            "positive": 7
+          },
+          "promotions_ready_ns": {
+            "median_ns": 38274079,
+            "ns": [
+              38274079,
+              38385849,
+              38062190,
+              39443764,
+              37415672,
+              37884926,
+              42512064
+            ],
+            "positive": 7
+          },
+          "promotions_result_ns": {
+            "median_ns": 38891132,
+            "ns": [
+              38891132,
+              38932149,
+              38652852,
+              39749020,
+              37618203,
+              38597187,
+              43165605
+            ],
+            "positive": 7
+          },
+          "setup_ns": {
+            "median_ns": 34395,
+            "ns": [
+              31258,
+              63710,
+              440480,
+              34395,
+              -52999,
+              182925,
+              -462581
+            ],
+            "positive": 5
+          },
+          "through_teardown_ns": {
+            "median_ns": 36083091,
+            "ns": [
+              34452950,
+              36573205,
+              36083091,
+              35671476,
+              32806700,
+              38501137,
+              43518039
+            ],
+            "positive": 7
+          }
+        }
+      }
+    }
+  ],
+  "evidence": "MEASURED_COMPONENT_LAPTOP",
+  "gpu_compute": false,
+  "integrated_product_gain_ns": null,
+  "measured_trials": 42,
+  "model_forwards": 0,
+  "pack_requested_B": 7404257280,
+  "status": "GO_MEASURED_RENEWAL_PRICE",
+  "warmup_trials": 6,
+  "wrong_F32_per_projection": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    11520,
+    11520,
+    11520
+  ]
+}
