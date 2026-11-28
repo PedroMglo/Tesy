@@ -6,6 +6,7 @@ from runpy import run_path
 
 F = run_path(Path(__file__).with_name("frontier.py"))
 DEVICE = run_path(Path(__file__).with_name("device.py"))
+VICTIMS = run_path(Path(__file__).with_name("victims.py"))
 
 
 def job(i, start, end, region=(2, 5, 14), layer=14):
@@ -75,6 +76,29 @@ class DeviceTests(unittest.TestCase):
             edited[index] = changed
             with self.assertRaises(ValueError):
                 DEVICE["parse"](edited, spec)
+
+
+class VictimTests(unittest.TestCase):
+    def test_exact_four_and_mixed_are_different(self):
+        rows = [job(0, 1, 6), job(1, 2, 7), job(2, 3, 8), job(3, 4, 9), job(4, 9, 12)]
+        sets, work = VICTIMS["eligible"](rows, {1, 5})
+        self.assertEqual(sets["clipped"], {2: 2, 3: 2, 4: 2})
+        self.assertEqual(sets["whole_quartet"], {2: 5, 3: 5, 4: 5})
+        self.assertEqual(work["any_mixed_wall_ns"], 4)
+        rows[3][1] = [2, 4, 14]
+        sets, work = VICTIMS["eligible"](rows, {1, 5})
+        self.assertFalse(sets["clipped"])
+        self.assertEqual(sets["any_peer"], {2: 5, 3: 5, 4: 5})
+
+    def test_break_even_requires_both_clocks(self):
+        def first_and_decode(ppm):
+            return {
+                "granted_first_ns": 10**10 + 172 - ppm,
+                "decode": VICTIMS["C"]["B"]["DECODE_LIMIT"] + 187 - ppm,
+            }
+
+        result = VICTIMS["line"](first_and_decode)
+        self.assertEqual((result["min_reduction_ppm"], result["preceding_margin_ns"]), (187, -1))
 
 
 if __name__ == "__main__":
