@@ -238,6 +238,7 @@ def physical(a, out, rec, start):
     )
     rec["monitor_provider"], check_provider = svc.monitor_provider(prior)
     check_provider()
+    (out / "raw").mkdir()
     guard, dynamic, bounded, group = svc.admit(a, prior, Q / "packed_real_layer", rec, out)
     mon = P["with_live_admission"](svc.Monitor, policy, window)(
         guard, dynamic, bounded, group, out / "monitor.jsonl", start, elapsed_limit=240
@@ -334,7 +335,7 @@ def main():
         else:
             physical(a, out, rec, start)
     except Exception as e:
-        rec.update(status="FAIL_PRESERVED", reason=repr(e))
+        rec.update(status="FAIL_PRESERVED", reason=repr(e), detail=str(e))
     rec["elapsed_s"] = time.monotonic() - start
     save(out / ".receipt.tmp", rec)
     (out / ".receipt.tmp").rename(out / "receipt.json")
