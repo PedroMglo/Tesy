@@ -104,10 +104,8 @@ def regroup(obs, chosen, words):
     return result
 
 
-def layer_prices(obs, times):
+def layer_windows(obs):
     groups = sites(obs)
-    gains = {k: Counter(dict.fromkeys(R["PHASES"], 0)) for k in ("last_barrier", "next_router")}
-    exposed = {k: Counter(dict.fromkeys(R["PHASES"], 0)) for k in gains}
     for i, (site, items) in enumerate(groups):
         call = site[0]
         phase = R["phase"](call)
@@ -119,9 +117,15 @@ def layer_prices(obs, times):
         last = items[-1][1][3]
         waits = sum(row[3] - row[2] for _, row in items)
         need(start <= last <= stop and 0 <= waits <= last - start, "disjoint router window")
+        yield group, phase, waits, last - start - waits, stop - start - waits
+
+
+def layer_prices(obs, times):
+    gains = {k: Counter(dict.fromkeys(R["PHASES"], 0)) for k in ("last_barrier", "next_router")}
+    exposed = {k: Counter(dict.fromkeys(R["PHASES"], 0)) for k in gains}
+    for group, phase, waits, strict_rest, late_rest in layer_windows(obs):
         service = times.get(group, 0)
-        for name, end in (("last_barrier", last), ("next_router", stop)):
-            rest = end - start - waits
+        for name, rest in (("last_barrier", strict_rest), ("next_router", late_rest)):
             debt = max(0, service - rest)
             gains[name][phase] += waits - debt
             exposed[name][phase] += debt
