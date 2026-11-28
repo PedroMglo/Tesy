@@ -62,3 +62,24 @@ def test_recorded_projection_references_and_causal_prices_are_bound_to_their_inp
         v["filter_gain_ns"] > 0 for pair in selected["comparison"].values() for v in pair.values()
     )
     assert selected["decision"] == ("GO_SELECTIVE_FIXTURE" if positive else "NO_GO_THIS_FILTER")
+
+
+def test_partial_pages_and_quartet_decision_reproduce_without_the_model():
+    run_path(STUDY / "observed_rank/review_delivery.py")["verify"]()
+
+
+def test_a_reversed_drain_sign_does_not_turn_early_rows_into_a_service_gain():
+    grade = run_path(STUDY / "observed_rank/quartet.py")["outcome"]
+    arms = [
+        dict(mode=m, all_ready_ns=20 if m == "E" else 80, join_ns=95 if m == "E" else 100)
+        for m in "FLE" * 4 + "ELF" * 3
+    ]
+    assert grade(arms)["decision"] == "GO_SUCCESSOR_FIXTURE"
+    for row in arms[12:]:
+        if row["mode"] == "E":
+            row["join_ns"] = 110
+    assert grade(arms)["decision"] == "INCONCLUSIVE"
+    for row in arms[:12]:
+        if row["mode"] == "E":
+            row["join_ns"] = 110
+    assert grade(arms)["decision"] == "NO_GO_ISOLATED_DRAIN"

@@ -1,5 +1,7 @@
 # Um motor independente reproduz um expert escolhido pelo 120B?
 
+A entrega das primeiras linhas ao kernel atual foi ensaiada em seguida com quatro leitores e os quatro experts da rota. [Leitura parcial, ablação e join](delivery.md)
+
 **MEDIDO · NO_GO como substituto bit a bit do operador CPU observado neste portátil.** No primeiro rank do primeiro decode capturado à posição 189, o target escolheu o expert 28 da camada 0, slot 3 e geração 6. Ao corrigir a ordem dos pesos, ambas as compilações do executor independente ainda divergiram em **8 640 de 8 640** resultados pré-bias. Converter também as ativações para a representação Q8_0 do target baixou substancialmente o erro e deixou **7 189 de 8 640** resultados com bits diferentes. [Protocolo](protocol.md) · [Resultados e hashes por projeção](result.json)
 
 | Projeção | Saídas | Diferentes após corrigir a ordem | Erro absoluto máximo | Diferentes aplicando também Q8_0 | Erro absoluto máximo |
