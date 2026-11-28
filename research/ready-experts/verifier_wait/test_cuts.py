@@ -8,6 +8,7 @@ from runpy import run_path
 
 HERE = Path(__file__).resolve().parent
 GRADE = run_path(HERE / "grade.py")
+SERVICE = run_path(HERE / "service.py")
 COMBINED = json.loads(
     (HERE.parent / "draft20/joint/evidence-20261128-r01/combined.json").read_bytes()
 )
@@ -50,6 +51,19 @@ class VerifierCuts(unittest.TestCase):
         self.assertEqual(verdicts, {True, False})
         self.assertTrue(p["observer_neutral"])
         self.assertEqual(p["decision"], "INCONCLUSIVE")
+
+    def test_reader_keeps_its_copy_and_aggregate_bandwidth(self):
+        jobs = [(5_000_000, 600_000, False), (4_000_000, 700_000, False)]
+        self.assertEqual(SERVICE["price_group"](jobs, 8_000_000_000, 1_000_000), 5_600_000)
+        floor = (2 * SERVICE["ALIGNED"] * 10**9 + 4_500_000_000 - 1) // 4_500_000_000
+        self.assertEqual(SERVICE["price_group"](jobs, 4_500_000_000, 0), floor)
+        hits = [(rd, st, True) for rd, st, _ in jobs]
+        self.assertEqual(SERVICE["price_group"](hits, 4_500_000_000, 0), 700_000)
+
+    def test_infeasible_and_boundary_read_prices(self):
+        self.assertIsNone(SERVICE["largest_scale"](lambda ppm: -1))
+        self.assertEqual(SERVICE["largest_scale"](lambda ppm: 0), 1_000_000)
+        self.assertEqual(SERVICE["largest_scale"](lambda ppm: 624_485 - ppm), 624_485)
 
 
 if __name__ == "__main__":

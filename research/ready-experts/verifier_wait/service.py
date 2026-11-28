@@ -86,7 +86,9 @@ def groups(journal, tx, effects, physical, actual):
         and [by_call[at] for at in range(1, 47)] == [r["counts"][2] for r in physical["decode"]],
         "all single-token loads",
     )
-    return modes, dict(demand, nonempty_layers=len(sites), resident_only_layers=46 * 36 - len(sites))
+    return modes, dict(
+        demand, nonempty_layers=len(sites), resident_only_layers=46 * 36 - len(sites)
+    )
 
 
 def price_group(jobs, rate, ppm):
