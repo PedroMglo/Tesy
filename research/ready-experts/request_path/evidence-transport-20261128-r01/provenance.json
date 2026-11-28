@@ -1,0 +1,49 @@
+{
+  "artifacts": {
+    "decision.json": {
+      "bytes": 6495,
+      "sha256": "5b94916b360ad87483aed544d0888f171849f02f98d83fe51172b5947883d5f6"
+    },
+    "reads.json.gz": {
+      "bytes": 24628,
+      "sha256": "b8ef3b2fe9a4a14c0756c9a32f627e80e4bee3e61b5414ddda586c4427078d8c"
+    }
+  },
+  "caps": {
+    "child_s": 134,
+    "physical_ram_B": 268435456,
+    "physical_swap_B": 0,
+    "requested_B": 128849018880,
+    "supervisor_s": 144
+  },
+  "commands": {
+    "build": "systemd-run --user --scope --quiet --unit=tesy-request-path-build-20261128-r01 --slice=app.slice -p MemoryHigh=768M -p MemoryMax=768M -p MemorySwapMax=0 -p RuntimeMaxSec=90 /usr/bin/env GIT_CONFIG_COUNT=2 GIT_CONFIG_KEY_0=core.preloadIndex GIT_CONFIG_VALUE_0=false GIT_CONFIG_KEY_1=index.threads GIT_CONFIG_VALUE_1=1 /usr/bin/python3 -IB research/ready-experts/request_path/transport.py build --previous /var/tmp/tesy-ready-reader-build-20261127-r01 --rpm /tmp/tesy-uring-devel-20261127-01/liburing-devel-2.13-2.fc44.x86_64.rpm --new-output-dir /var/tmp/tesy-request-path-build-20261128-r01",
+    "grade": "/usr/bin/time -v -o /tmp/tesy-request-path-20261128-r01/transport-grade.time /usr/bin/timeout 120 /usr/bin/prlimit --as=805306368 -- /usr/bin/python3 -IB research/ready-experts/request_path/transport_grade.py --physical /var/tmp/tesy-request-path-transport-20261128-r01 --plan /var/tmp/tesy-request-path-plan-20261128-r01 --new-output-dir /tmp/tesy-request-path-20261128-r01/transport-r01",
+    "physical": "systemd-run --user --scope --quiet --unit=tesy-request-path-transport-20261128-r01 --slice=app.slice -p MemoryHigh=256M -p MemoryMax=256M -p MemorySwapMax=0 -p TasksMax=64 -p RuntimeMaxSec=150 /usr/bin/env GIT_CONFIG_COUNT=2 GIT_CONFIG_KEY_0=core.preloadIndex GIT_CONFIG_VALUE_0=false GIT_CONFIG_KEY_1=index.threads GIT_CONFIG_VALUE_1=1 /usr/bin/python3 -IB research/ready-experts/request_path/transport.py physical --plan /var/tmp/tesy-request-path-plan-20261128-r01 --plan-sha256 2cf15989a3e5f4f534a918212e9bf9c663909b208a60f751b3f40d96cd4c020f --build /var/tmp/tesy-request-path-build-20261128-r01 --build-sha256 7cd69c35c9614003be77b557d170441a794ba47bc15fe129b0d8d6c569c4a36c --c55 /var/tmp/tesy-request-path-c55-20261128-r01 --c55-sha256 ceecd057b88009325d5790a59aa6b05c62d5b30694864b96663d6e1a9959b57f --new-output-dir /var/tmp/tesy-request-path-transport-20261128-r01",
+    "plan": "systemd-run --user --scope --quiet --unit=tesy-request-path-plan-20261128-r01 --slice=app.slice -p MemoryHigh=768M -p MemoryMax=768M -p MemorySwapMax=0 -p RuntimeMaxSec=90 /usr/bin/env GIT_CONFIG_COUNT=2 GIT_CONFIG_KEY_0=core.preloadIndex GIT_CONFIG_VALUE_0=false GIT_CONFIG_KEY_1=index.threads GIT_CONFIG_VALUE_1=1 /usr/bin/python3 -IB research/ready-experts/request_path/transport.py plan --manifest /home/pmglo/models/tesy-gpt-oss-120b-nvme/tesy-c291-manifest-20261125-r02 --new-output-dir /var/tmp/tesy-request-path-plan-20261128-r01",
+    "window": "/usr/bin/python3 -IB research/qualification-retake/nvme_admission/window.py --nvme-model /home/pmglo/models/gpt-oss-120b-gguf/gpt-oss-120b-MXFP4.gguf --new-output-dir /var/tmp/tesy-request-path-c55-20261128-r01"
+  },
+  "energy_J": null,
+  "freeze": "7e8c6c44966f84921fc9396809730f925146483a",
+  "main": "293f5b184da9439771cce361cd33fc4068d749f4",
+  "program_commit": "aa2199953c86e6de0782a365285271ac34a205a1",
+  "receipts": {
+    "build": {
+      "bytes": 1683,
+      "sha256": "7cd69c35c9614003be77b557d170441a794ba47bc15fe129b0d8d6c569c4a36c"
+    },
+    "physical": {
+      "bytes": 46788,
+      "sha256": "184c1cda3c3a9dff47881236d7557fe7bfb3b48f44f2a469999d08ecda1748b6"
+    },
+    "plan": {
+      "bytes": 8318,
+      "sha256": "2cf15989a3e5f4f534a918212e9bf9c663909b208a60f751b3f40d96cd4c020f"
+    },
+    "window": {
+      "bytes": 2727,
+      "sha256": "ceecd057b88009325d5790a59aa6b05c62d5b30694864b96663d6e1a9959b57f"
+    }
+  },
+  "tree": "7b59e964d251cd6a6e0dbe99f209b80c82e85ad0"
+}
