@@ -30,7 +30,7 @@ std::vector<Row> schedule() {
 void execute(int fd, int id, const Group &group) {
     auto rows = schedule();
     const int q = group.q, misses = q-group.hits;
-    std::array<Buffer,4> staging, dest;
+    std::vector<Buffer> staging(q), dest(q);
     std::vector<Buffer> retained(group.hits);
     std::array<unsigned,4> requested{}, checked{};
     size_t ix = 0;

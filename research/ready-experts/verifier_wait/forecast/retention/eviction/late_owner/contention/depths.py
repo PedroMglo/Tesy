@@ -6,20 +6,26 @@ import math
 import os
 from collections import Counter, defaultdict
 from fractions import Fraction
+from functools import cache
 from pathlib import Path
 from runpy import run_path
 from statistics import median
 
 HERE = Path(__file__).resolve().parent
-X = run_path(HERE / "mixed.py")
 DEV = run_path(HERE / "device.py")
-V, F, C, need, sha, save = (X[k] for k in ("V", "F", "C", "need", "sha", "save"))
+need, sha, save = (DEV[k] for k in ("need", "sha", "save"))
 M, IO = (DEV[k] for k in ("M", "IO"))
 METHOD = "0f5858305039757c553fd6d1c1fdce1ead45f9e433ba0a84d46ed13974c51ef1"
 MIXED = "c171c3a67263c143bf1eb303f38f398eac131f12a073dbc1964192af68b12ebb"
 PRELUDE = "8b01fc7cd63f5621c97766ca7f9cd3b298230f82736f4735c6ece1bcf54a0cb6"
 SHAPES = [f"{q}/{k}" for q in range(2, 5) for k in range(1, q)]
-PPM = V["PPM"]
+PPM = 1_000_000
+
+
+@cache
+def replay():
+    # Physical acquisition only needs the registered records and the native clock parser.
+    return run_path(HERE / "mixed.py")
 
 
 def classify(rows, hits):
@@ -36,7 +42,7 @@ def classify(rows, hits):
         if len({tuple(rows[i - 1][1][:3]) for i in live}) == 1:
             cohorts[name].add(tuple([*misses, *sorted(live & hits)]))
 
-    credits, _ = X["split"](rows, hits, on_interval=collect)
+    credits, _ = replay()["split"](rows, hits, on_interval=collect)
     need(
         {i: sum(c.values()) for i, c in amounts.items()} == credits["simultaneous"],
         "interval accounting",
@@ -45,6 +51,8 @@ def classify(rows, hits):
 
 
 def inputs():
+    X = replay()
+    V, F = X["V"], X["F"]
     tx, effect = V["sources"]()
     hits = {i for i, e in enumerate(effect, 1) if e[1] is not None}
     raw = F["unpack"](X["ORIGINAL"] / "service.json.gz")
@@ -80,7 +88,7 @@ def inputs():
 def plan(a):
     old = M["verified"](a.mixed, MIXED)
     need(
-        old["method"] == X["METHOD"]
+        old["method"] == replay()["METHOD"]
         and old["joint"]["favorable"]["simultaneous"]["full_margin_ns"] >= 0,
         "physical gate",
     )
@@ -237,6 +245,8 @@ def parse(lines, plan):
 
 
 def project(timing, plan, previous):
+    X = replay()
+    V, F = X["V"], X["F"]
     candidates, by_arm, hits = inputs()
     need(candidates == plan["groups"] and previous["method"] == X["METHOD"], "same chosen cohorts")
     basis, _, _ = F["freeze"]()
