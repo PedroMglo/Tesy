@@ -1,0 +1,122 @@
+{
+  "C55": {
+    "bytes": 2726,
+    "sha256": "267477bef1b55aead09ac154427b4559095fd107b460cf682dd34299078da2af"
+  },
+  "F32": {
+    "SHARED": {
+      "bytes": 414720,
+      "sha256": "60285d51d49dd43f94cd57ae99e016f65b39ad3300d092c0253e33abd995661c"
+    },
+    "STAGED": {
+      "bytes": 414720,
+      "sha256": "60285d51d49dd43f94cd57ae99e016f65b39ad3300d092c0253e33abd995661c"
+    },
+    "WRONG": {
+      "bytes": 414720,
+      "sha256": "83f7d5bdd99b38dfd92876e32c7522d705529472b2158572b27788ea02c66ae3"
+    }
+  },
+  "artifacts": {
+    "archive.json": {
+      "bytes": 262,
+      "sha256": "28a43575b1368b70d63f597998c8e7702b038cb029a1b0f1b8f949a471bb8bc3"
+    },
+    "build.json": {
+      "bytes": 10072,
+      "sha256": "2dd1a2d4d106a7aaa1e3d5a5544282b1828a40b338717ee1a11599359a785653"
+    },
+    "decision.json": {
+      "bytes": 7389,
+      "sha256": "e76fa7596c7354db03d9715e4544304e34d3c0c1f35c573cba182d1139b45031"
+    },
+    "failed-attempts.json": {
+      "bytes": 1034,
+      "sha256": "96c06c1bb644c987162516b2ccf13329fa96e4df49c6ed1a9c59b25cfdb569b4"
+    },
+    "physical.json": {
+      "bytes": 6017,
+      "sha256": "80c0fe63981ce369230386e78458d9cd177175ccd03dad4ca06f09e46eaa5487"
+    }
+  },
+  "base": "93d74018b7c8be72a8365c073fd6d6aff77e85b2",
+  "base_tree": "addc9820356490ac888715606d5d59ceba977e74",
+  "bounds": {
+    "memory_B": 4294967296,
+    "output_B": 67108864,
+    "pack_B": 1073741824,
+    "stop_B": 3758096384,
+    "swap_B": 0,
+    "wall_s": 240
+  },
+  "branch": "research/ready-layer",
+  "claim": "MEASURED native address and projection equality. Fixed disjoint maps in three visits, eight authenticated experts, bound storage. Live bank renewal and product timing were not run.",
+  "commands": {
+    "admission_failed": "systemd-run --user --scope --quiet --unit=tesy-shared-owner-run-20261128-r01 --slice=app.slice -p MemoryHigh=4G -p MemoryMax=4G -p MemorySwapMax=0 -p RuntimeMaxSec=240 /usr/bin/prlimit --core=0:0 -- /usr/bin/python3 -IB research/ready-experts/cpu_wave/frame_lease/group_service/shared_owner/run.py physical --commit f47c5aedb57d05a22ff724577ecdd7b9b6553106 --backend /mnt/sdisk-ssd-ext/Tesy/repo/c7-native-placement-screen-20260927-1117utc/backends/c269-layer-last-use --build-dir /var/tmp/tesy-shared-owner-build-20261128-r02 --build-sha256 0966581ef006a2c5218d361456180d21778666c798b8544f7a072150f1de457f --manifest /home/pmglo/models/tesy-gpt-oss-120b-nvme/tesy-c291-manifest-20261125-r02 --c55-receipt /var/tmp/tesy-shared-owner-c55-20261128-r01/receipt.json --c55-sha256 267477bef1b55aead09ac154427b4559095fd107b460cf682dd34299078da2af --unit tesy-shared-owner-run-20261128-r01 --new-output-dir /var/tmp/tesy-shared-owner-run-20261128-r01",
+    "archive": "python3 -IB /tmp/tesy-late-owner-20261128-01/archive.py research/qualification-retake/private_archive/verify.py /mnt/sdisk-ssd-ext/Tesy/outputs/native-shared-owner-20261128-r01 /tmp/tesy-native-owner-public-20261128-r01/archive.json /var/tmp/tesy-shared-owner-c55-20261128-r01 /var/tmp/tesy-shared-owner-build-20261128-r01 /var/tmp/tesy-shared-owner-build-20261128-r02 /var/tmp/tesy-shared-owner-run-20261128-r01 /var/tmp/tesy-shared-owner-build-20261128-r03 /var/tmp/tesy-shared-owner-run-20261128-r02",
+    "build": "systemd-run --user --scope --quiet --unit=tesy-shared-owner-build-20261128-r03 --slice=app.slice -p MemoryHigh=2G -p MemoryMax=2G -p MemorySwapMax=0 -p RuntimeMaxSec=120 /usr/bin/prlimit --core=0:0 -- /usr/bin/python3 -IB research/ready-experts/cpu_wave/frame_lease/group_service/shared_owner/run.py build --commit 7c61eb27c16221281800587feaa9732e6de00b11 --backend /mnt/sdisk-ssd-ext/Tesy/repo/c7-native-placement-screen-20260927-1117utc/backends/c269-layer-last-use --new-output-dir /var/tmp/tesy-shared-owner-build-20261128-r03",
+    "build2": "systemd-run --user --scope --quiet --unit=tesy-shared-owner-build-20261128-r02 --slice=app.slice -p MemoryHigh=2G -p MemoryMax=2G -p MemorySwapMax=0 -p RuntimeMaxSec=120 /usr/bin/prlimit --core=0:0 -- /usr/bin/python3 -IB research/ready-experts/cpu_wave/frame_lease/group_service/shared_owner/run.py build --commit f47c5aedb57d05a22ff724577ecdd7b9b6553106 --backend /mnt/sdisk-ssd-ext/Tesy/repo/c7-native-placement-screen-20260927-1117utc/backends/c269-layer-last-use --new-output-dir /var/tmp/tesy-shared-owner-build-20261128-r02",
+    "build_failed": "systemd-run --user --scope --quiet --unit=tesy-shared-owner-build-20261128-r01 --slice=app.slice -p MemoryHigh=2G -p MemoryMax=2G -p MemorySwapMax=0 -p RuntimeMaxSec=120 /usr/bin/prlimit --core=0:0 -- /usr/bin/python3 -IB research/ready-experts/cpu_wave/frame_lease/group_service/shared_owner/run.py build --commit f9a5d2dfc708d48e1e7b890e8be4c714b6e9ea39 --backend /mnt/sdisk-ssd-ext/Tesy/repo/c7-native-placement-screen-20260927-1117utc/backends/c269-layer-last-use --new-output-dir /var/tmp/tesy-shared-owner-build-20261128-r01",
+    "c55": "python3 -IB research/qualification-retake/nvme_admission/window.py --nvme-model /home/pmglo/models/gpt-oss-120b-gguf/gpt-oss-120b-MXFP4.gguf --new-output-dir /var/tmp/tesy-shared-owner-c55-20261128-r01",
+    "physical": "systemd-run --user --scope --quiet --unit=tesy-shared-owner-run-20261128-r02 --slice=app.slice -p MemoryHigh=4G -p MemoryMax=4G -p MemorySwapMax=0 -p RuntimeMaxSec=240 /usr/bin/prlimit --core=0:0 -- /usr/bin/python3 -IB research/ready-experts/cpu_wave/frame_lease/group_service/shared_owner/run.py physical --commit 7c61eb27c16221281800587feaa9732e6de00b11 --backend /mnt/sdisk-ssd-ext/Tesy/repo/c7-native-placement-screen-20260927-1117utc/backends/c269-layer-last-use --build-dir /var/tmp/tesy-shared-owner-build-20261128-r03 --build-sha256 2dd1a2d4d106a7aaa1e3d5a5544282b1828a40b338717ee1a11599359a785653 --manifest /home/pmglo/models/tesy-gpt-oss-120b-nvme/tesy-c291-manifest-20261125-r02 --c55-receipt /var/tmp/tesy-shared-owner-c55-20261128-r01/receipt.json --c55-sha256 267477bef1b55aead09ac154427b4559095fd107b460cf682dd34299078da2af --unit tesy-shared-owner-run-20261128-r02 --new-output-dir /var/tmp/tesy-shared-owner-run-20261128-r02"
+  },
+  "commit": "7c61eb27c16221281800587feaa9732e6de00b11",
+  "intermediate_verified_build": {
+    "bytes": 10072,
+    "sha256": "0966581ef006a2c5218d361456180d21778666c798b8544f7a072150f1de457f"
+  },
+  "main": "293f5b184da9439771cce361cd33fc4068d749f4",
+  "native_commit": "c89c88b342054223e3f27a17fbfd0954803147ac",
+  "parents": {
+    "address": {
+      "bytes": 33896,
+      "sha256": "ad468b3c7518db113f3c4daee87ad88228feb124a37ea51e9a6528b2ee996695"
+    },
+    "physical_group": {
+      "bytes": 52040,
+      "sha256": "7b2cc2a4d79ff223cbe4ce1968eea82f0c62a9bca610cf6d63ac27c82995f9cc"
+    }
+  },
+  "protocol_commit": "24a66590a0eef5a5b9e2801aeffa14509d9c3268",
+  "remote": "PedroMglo/Tesy",
+  "resources": {
+    "HTTP_requests": 0,
+    "build_s": [
+      4.355125855014194,
+      5.508183814003132,
+      5.539097453991417
+    ],
+    "c55_s": 60.04772142300499,
+    "energy_J": null,
+    "full_model_forwards": 0,
+    "gpu_compute": false,
+    "max_sampled_cpu_C": 52.625,
+    "max_sampled_gpu_C": 41.86,
+    "max_sampled_nvme_C": 33.85,
+    "monitor_max_gap_s": 0.3508676880010171,
+    "monitor_samples": 2,
+    "physical_peak_B": 225550336,
+    "physical_s": 61.210285952998674,
+    "requested_pack_B": 317325312,
+    "swap_peak_B": 0
+  },
+  "sources": {
+    "fixture.cpp": {
+      "bytes": 10741,
+      "sha256": "674cb0dc26e76e723fc3044d909f9f1c422e4ab48ebd143f8708b75efb6fb17d"
+    },
+    "protocol.md": {
+      "bytes": 3223,
+      "sha256": "8c6a35f763449eccce7eec665d2fb71402f70eac7d8f6cdeb89cf5782e50376a"
+    },
+    "run.py": {
+      "bytes": 12710,
+      "sha256": "16731f4c9eafb2a6bdf573ef0035ef57fe1792abf778e128a41a29bb13e0f0ae"
+    },
+    "runtime.patch": {
+      "bytes": 8874,
+      "sha256": "be0dc68ace1bc9f35023942048f7e44d3bf1721f1ea4485d0ddf789b7be9e8a3"
+    }
+  },
+  "tree": "80e85b84382c2766c71f55071a38d73c971a0e9a"
+}

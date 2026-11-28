@@ -1,5 +1,7 @@
 # Quantos lugares deve cada camada CPU poder endereçar?
 
+A integração posterior criou as 75 vistas de matrizes sobre uma única alocação. Os quatro workers e o escalonador do C291 reproduziram bit a bit as projeções das duas camadas, incluindo a revisita. [Prova no portátil e condição de reabertura da decisão de backend](shared_owner/README.md)
+
 **Prosseguir com um banco de pesos partilhado entre as 25 camadas CPU.** A soma das ocupações máximas de cada camada é 416, para reproduzir tudo o que a política partilhada reteve com 252 lugares. Se uma seleção perfeita guardasse apenas as capturas e as sementes que conduziram a um hit observado, bastariam 162. Há 90 lugares de folga nesse oráculo. A distribuição igual e a distribuição determinada pelas reservas do turno anterior falharam o critério congelado para reproduzir a entrega em grupo. A segunda melhorou um dos indicadores de latência. A ideia de escolher o que reter com base no valor para o consumidor continua aberta. [Critérios anteriores ao cálculo](address-protocol.md) · [Resultados e quotas das 25 camadas](evidence-address-20261128-r01/decision.json)
 
 | Seleção com 252 lugares CPU | Hits até ao primeiro final / turno inteiro | Hits no grupo de decode / controlo prefill | Crédito ao retirar READ e SET até ao primeiro final P97 / P106, ms | Crédito só de SET P97 / P106, ms |
