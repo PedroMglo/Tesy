@@ -2,7 +2,6 @@
 
 import argparse
 import hashlib
-import json
 import os
 from pathlib import Path
 from runpy import run_path
@@ -54,19 +53,32 @@ def prepare(nominal, code, out):
                     files[path.name] = hashlib.sha256(raw).hexdigest()
             need(fixed == entry, "different supplied IDs across W controls")
             log = (arm / "raw" / (trial["unit"] + ".stderr")).read_bytes()
-            start = [clock for clock, _, event in S["NATIVE"]["events"](log) if event == ("start",)][1]
+            start = [
+                clock for clock, _, event in S["NATIVE"]["events"](log) if event == ("start",)
+            ][1]
             minutes, sec, ms, us = start
             start_ns = (((minutes * 60 + sec) * 1000 + ms) * 1000 + us) * 1000
             feed_ns = interior + start_ns - ticks[0]
-            need(ticks[cut - 1] - ticks[0] <= feed_ns <= ticks[cut] - ticks[0], "first-final ordering")
-            obs.append(dict(
-                arm=i, session_sha256=session_sha, family_sha256=seal,
-                prompt_sha256=prompt_hash, target_sha256=trial["target_ids"]["2"]["sampled_sha256"],
-                cut=cut, feed_ns=feed_ns, ticks_ns=[n - ticks[0] for n in ticks],
-                prefill_ns=round(turn["prefill_s"] * 1e9),
-                first_final_ns=round(turn["first_final_s"] * 1e9),
-                decode_ns=round(turn["decode_s"] * 1e9), valid_ns=round(turn["valid_s"] * 1e9),
-            ))
+            need(
+                ticks[cut - 1] - ticks[0] <= feed_ns <= ticks[cut] - ticks[0],
+                "first-final ordering",
+            )
+            obs.append(
+                dict(
+                    arm=i,
+                    session_sha256=session_sha,
+                    family_sha256=seal,
+                    prompt_sha256=prompt_hash,
+                    target_sha256=trial["target_ids"]["2"]["sampled_sha256"],
+                    cut=cut,
+                    feed_ns=feed_ns,
+                    ticks_ns=[n - ticks[0] for n in ticks],
+                    prefill_ns=round(turn["prefill_s"] * 1e9),
+                    first_final_ns=round(turn["first_final_s"] * 1e9),
+                    decode_ns=round(turn["decode_s"] * 1e9),
+                    valid_ns=round(turn["valid_s"] * 1e9),
+                )
+            )
         witnesses[name] = obs
     return dict(files=files, cases=witnesses, status="REPRODUCED_TARGET_INPUTS")
 
