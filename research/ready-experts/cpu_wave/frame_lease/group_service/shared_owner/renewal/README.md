@@ -50,6 +50,17 @@ Na quinta tile da chamada de 148, o binário já qualificado do serviço em grup
 
 **INCONCLUSIVE para acrescentar as outras doze referências à de 63 neste regime.** Contra COPY, servir os treze por referência adiantou o consumidor nos 28 pares com medianas de 0,708–0,992 ms. Contra DISK as medianas foram de 6,272–10,041 ms. O scope durou 79,249 s incluindo 60,170 s de C118, com pico de 758 583 296 B, zero swap e 10 577 510 400 B pedidos ao pack. As duas reservas obrigatórias, a contenção e a barreira fazem parte do preço. O ensaio conserva a hora de despacho de cada producer da observação anterior. Todas as reservas foram aceites nos primeiros 20 µs, e o despacho do expert 63 só se tornou permitido aos 121,295 ms em P97 e 95,527 ms em P106. [Amostras](evidence-mixed-20261128-r01/samples.json.gz) · [Recursos e proveniência](evidence-mixed-20261128-r01/provenance.json) · [Arquivo privado](evidence-mixed-20261128-r01/archive.json)
 
+## Quanto esconde a hora fixa de despacho?
+
+No início da reserva, cada execução tinha quatro leituras em curso e oito trabalhos anteriores por despachar. Havia também 12 entradas duplicadas que o manager retirou da fila sem novo serviço. A primeira reconstrução parou ao assumir uma entrada por leitura. Os PFJ contêm 334 SKIP em P97 e 325 em P106. A versão corrigida emparelha cada ENQUEUE com o seu pop FIFO e reproduz **todos os despachos, publicações e o retorno da barreira** do controlo em ambos os recortes. Preserva o worker atribuído e as quatro disponibilidades que herda do trabalho anterior. Nenhum SKIP ocorre entre o primeiro e o último claim útil dos 15. [Protocolo da fila](queue-protocol.md) · [Primeira tentativa preservada](evidence-queue-20261128-r02/failed-r01.json) · [Tempos e custo da correção](evidence-queue-20261128-r02/provenance.json)
+
+| Prefill desde a primeira reserva, ms | DISK reproduzido | COPY, projeção | Melhor hit individual, projeção | ID dos 13, projeção | Maior custo extra uniforme por promoção adicional |
+|---|---:|---:|---:|---:|---:|
+| P97 | 134,489 | 86,033 | 85,862 (63) | 84,532 | 691 715 ns |
+| P106 | 117,944 | 72,440 | 72,198 (27) | 70,858 | 675 182 ns |
+
+**GO para a fixture de despacho após libertação dos workers.** Conservando o serviço medido das faltas, o ganho adicional projetado sobre o melhor peso individual foi 1,330 / 1,340 ms. Ultrapassou os 58 851 ns do critério. O orçamento da última coluna é a maior penalização inteira que ainda vence o melhor individual em cada relógio. A sensibilidade mantém esse expert isento do custo adicional e conserva o preço das outras operações. No decode, o expert 52 continua a prender a mesma barreira nos dois regimes de despacho. Os valores do prefill são TRACE_DERIVED e dependem da contenção, dos preços das cópias e do trabalho anterior à coorte. [Dependências e todas as escolhas individuais](evidence-queue-20261128-r02/decision.json)
+
 A partir da raiz do checkout, a validação pública usa apenas CPU e um compilador C++20.
 
 ```sh
@@ -57,4 +68,5 @@ D=research/ready-experts/cpu_wave/frame_lease/group_service/shared_owner/renewal
 python3 -IB "$D/run.py" check "$D/evidence-20261128-r01"
 python3 -IB "$D/entry.py" --check "$D/evidence-entry-20261128-r01"
 python3 -IB "$D/mixed.py" check "$D/evidence-mixed-20261128-r01"
+python3 -IB "$D/queue.py" --check "$D/evidence-queue-20261128-r02"
 ```

@@ -1,5 +1,7 @@
 # Um único banco de pesos no loader e no escalonador do Tesy
 
+A medição posterior exercitou as reservas e a publicação concorrentes no manager nativo, cobrou a formação do banco desde o primeiro turno e mediu a barreira de 13 hits com dois misses reais. [Decisão após a renovação e a reconstrução da fila](renewal/README.md)
+
 **GO para o endereçamento partilhado no C291 existente.** No portátil, 75 descritores de matrizes das 25 camadas CPU referiram um único buffer. Os quatro workers nativos serviram os oito registos originais das camadas 0 e 24. Os callbacks de remap e wave emitiram os frames corretos, preservaram o parking −1 e a revisita a CPU0 consumiu os pesos já publicados. As nove projeções produziram os mesmos 103 680 valores F32 que o controlo, bit a bit. Trocar apenas o endereço da camada na revisita alterou os 34 560 valores dessa visita. [Protocolo](protocol.md) · [Patch do manager de experts](runtime.patch) · [Resultados por braço e por projeção](evidence-20261128-r01/decision.json)
 
 | Braço | Buffers / descritores CPU | Frames de CPU0, depois CPU24 | Leituras / SET de pesos | F32 divergentes em CPU0, CPU24, revisita CPU0 |
