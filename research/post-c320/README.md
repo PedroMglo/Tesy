@@ -6,6 +6,8 @@
 
 Na mesma conversa do 120B, o percurso serial de decode com os pesos do passo nos slots custou 2,004–2,059 s, e o verificador por blocos 2,110–2,175 s. Os 160 forwards de repetição passaram o controlo numérico e tiveram zero faltas. Mesmo com esses preços, o prefill W original deixa o primeiro final acima de 11 s. A investigação passa a precificar a aquisição causal dos pesos e o prefill em conjunto. O melhor pedido nominal de produto mantém 17,689 s e 5,357 tok/s. M3 PARTIAL e M4 NOT_MET. [Experiência, limites e comandos](../ready-experts/verifier_wait/README.md)
 
+Um serviço que aguarda os READ e SET em cada camada, mesmo com o banco causal de 353 registos, ainda deixaria 11,433–11,770 s até à primeira peça. Para reabrir essa arquitetura é preciso identificar como retirar 1,433–1,770 s do caminho crítico. [Limite da entrega por camada](../ready-experts/verifier_wait/service.md)
+
 ## 28 de novembro · proponente 20B e decisão sobre o backend
 
 O GPT-OSS-20B previu 30 de 32 IDs do nominal no primeiro ensaio com dois tokens de avanço e história real do 120B. A CPU do portátil teria de produzir essas propostas em menos tempo do que o medido, mesmo concedendo a verificação do target e a seleção ideal dos blocos. Mantendo os 40 slots primários, o 20B inteiramente residente também excederia o orçamento de memória combinado. **NO_GO para a adoção desta configuração.** O registo fixa a redução de prefill necessária para combinar ambas as vias. [Medição do proponente](../ready-experts/draft20/README.md) · [Combinação com o prefill, correção EOG e decisão por braço](../ready-experts/draft20/joint/README.md)
