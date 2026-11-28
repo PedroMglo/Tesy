@@ -148,7 +148,10 @@ def verify_public(receipt):
         need(n == 47 and (seq == schedule if role != "S" else len(seq) == 46), "frozen work")
         final += n
     need(final == 4 * 47, "four arms")
-    return G["price"](receipt["evidence"], read(COMBINED))
+    # JSON object order may differ between the raw family and the portable copy.
+    order = ("S", "B0a", "B1", "B0b")
+    need(set(receipt["evidence"]) == set(order), "four distinct arms")
+    return G["price"]({k: receipt["evidence"][k] for k in order}, read(COMBINED))
 
 
 if __name__ == "__main__":

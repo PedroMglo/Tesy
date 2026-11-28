@@ -76,7 +76,9 @@ def price(e):
     wdata = read(STUDY)["evidence"]["clocks"]["nominal"]
     joint = [r for r in read(COMBINED)["result"]["N2"]["arms"] if r["case"] == "nominal"]
     result = []
-    for role, rows in e["arms"].items():
+    need(set(e["arms"]) == {"S", "B1"}, "serial and proposal schedules")
+    for role in ("S", "B1"):
+        rows = e["arms"][role]
         at = 1
         for r in rows:
             need(
@@ -90,6 +92,11 @@ def price(e):
             )
             at += r["keep"]
         need(at == 47 and len(rows) == (46 if role == "S" else 34), "complete schedule")
+        early = [r for r in rows if r["at"] <= 44]
+        prime_first = sum(r["ordinary_ns"] for r in early)
+        prime_decode = sum(r["ordinary_ns"] for r in rows)
+        aligned_first = sum(r["ordinary_loads"] for r in early) * G["ALIGNED"]
+        aligned_decode = sum(r["ordinary_loads"] for r in rows) * G["ALIGNED"]
         for rep in (0, 1):
 
             def service(cut, blocks=False, rows=rows, rep=rep):
@@ -134,7 +141,27 @@ def price(e):
                         block_only_decode_ns=block_decode,
                         all_hot_first_range_ns=ff,
                         all_hot_decode_ns=d,
+                        original_prefill_first_range_ns=[
+                            v + w["prefill_ns"] - j["prefill_ns"] for v in ff
+                        ],
+                        with_full_prime_first_range_ns=[v + prime_first for v in ff],
+                        with_full_prime_decode_ns=d + prime_decode,
+                        aligned_first_B=aligned_first,
+                        aligned_decode_B=aligned_decode,
+                        # At 4.5 decimal GB/s, 9 bytes cost 2 ns of device service.
+                        # This is a common exposed fraction for both cuts under fixed bytes.
+                        max_io_exposed_fraction_at_4p5GBps=min(
+                            (10**10 - ff[1]) * 9 / (2 * aligned_first),
+                            (47 * 10**9 // 6 - d) * 9 / (2 * aligned_decode),
+                        ),
                         common_extra_ns=[firm, optimistic],
+                        max_prefill_ns_with_resident_decode=10**10 - ff[1] + j["prefill_ns"],
+                        max_remaining_fraction_of_observed_cold_penalty=min(
+                            (10**10 - ff[1]) / (prime_first - first),
+                            (47 * 10**9 // 6 - d) / (prime_decode - decode),
+                        )
+                        if prime_first > first and prime_decode > decode
+                        else None,
                         first_target_ns=first,
                         decode_target_ns=decode,
                     )

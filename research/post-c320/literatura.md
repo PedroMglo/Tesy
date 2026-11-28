@@ -1,5 +1,9 @@
 # Literatura, implementações e comparadores
 
+## 28 de novembro de 2026 · especulação e residência em condições diferentes
+
+SpecMoEOff verifica propostas EAGLE com Mixtral-8x7B FP16, usa streams CUDA distintos para cálculo e transferências e escolhe o maior batch admitido pela memória. A avaliação de APPS e CNN/DailyMail compara throughput com offloading e destina 190 ou 250 GB de RAM aos sistemas 4090D e A30. O modelo completo de 87 GB cabe na RAM desses sistemas. No Tesy, uma conversa individual ativa experts no NVMe e a GPU tem 8 GiB. O teste de residência mediu o mesmo trabalho autoritativo serial e com propostas. O custo das propostas rejeitadas e o prazo da primeira peça final decidem se essa forma de paralelismo ajuda o utilizador. A comparação permite escolher uma intervenção de engenharia. [SpecMoEOff v1, §§5.3 e 6](https://arxiv.org/html/2508.21706v1#S6.SS1) · [Medição no target](../ready-experts/verifier_wait/README.md)
+
 ## 28 de novembro de 2026 · empacotar experts e sobrepor tiles
 
 SSD-LLaMA organiza os componentes do mesmo expert num registo que o executor pode ler em bloco e avalia a entrega numa máquina com RTX 5090. No Tesy, o registo de cada expert já existe. A nova intervenção juntou dois registos procurados no mesmo prefill e mediu o consumidor depois das outras cinco leituras. A permuta da fila teve ganho nas duas ordens. A leitura única mudou de sinal. [SSD-LLaMA, §§4.1 e 5.1](https://arxiv.org/html/2609.18110v1#S4.SS1) · [Braços emparelhados do Tesy](../ready-experts/layer/prefix/wave/README.md)
