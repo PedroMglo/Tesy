@@ -14,7 +14,7 @@ METHOD = "09d49dd67c8d59fc42e938ea5b0024f9521fc1ab53e5f7e3a9597ad96d27351f"
 ORIGINAL = HERE / "evidence-20261128-r01"
 
 
-def split(rows, hits):
+def split(rows, hits, *, on_interval=None):
     boundaries = defaultdict(lambda: (set(), set()))
     for i, row in enumerate(rows, 1):
         boundaries[row[5]][1].add(i)
@@ -31,6 +31,8 @@ def split(rows, hits):
             q, k = len(live), len(live & hits)
             need(q <= 4, "four reader maximum")
             width = right - left
+            if on_interval is not None:
+                on_interval(live, q, k, width)
             shape = f"{q}/{k}"
             group = area[shape]
             same = len({tuple(rows[i - 1][1][:3]) for i in live}) == 1

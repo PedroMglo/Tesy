@@ -66,11 +66,12 @@ def plan(a):
     )
 
 
-def build(a):
+def build(a, *, reader_source=None):
     old = verified(a.previous / "receipt.json", M["HISTORIC_BUILD"])
     cxx = "/usr/bin/g++"
     need(sha(cxx) == old["compiler_sha256"], "pinned compiler")
-    src, exe = HERE / "peer.cpp", a.new_output_dir / "reader"
+    src = HERE / "peer.cpp" if reader_source is None else reader_source
+    exe = a.new_output_dir / "reader"
     cmd = [
         cxx,
         "-std=c++20",
