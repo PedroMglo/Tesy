@@ -1,5 +1,7 @@
 # Quanto ganha o cliente com outro backend de experts?
 
+**Fecho da medição com os sete pedidos da wave.** Promover 48 sem juntar leituras adiantou o consumidor nas duas ordens. A junção mudou de sinal. O estudo seguinte cobrou também a contenção, aplicou o layout ao segundo turno e compôs-o com prefill em duas tiles e retenção causal. [Medições locais, pisos no cliente e decisão de investimento](wave/README.md)
+
 **NO_GO para financiar uma reescrita integral neste perfil.** O backend atual consumiu pesos parciais e reproduziu a camada completa bit a bit. As duas variantes fizeram trabalho útil durante a leitura e perderam para o controlo que já executa os três experts residentes. Um segundo ensaio encontrou um ganho de transporte aproveitável num par real do prefill. No decode o ganho mudou de sinal. Conservar a junção como candidata de prefill e o pack com fusão CPU como componente já medido na conversa. A receita operacional continua em R0 slots40-persistent, M3 PARTIAL e M4 NOT_MET. [Decisão de arquitetura](../../../../docs/architecture/0005-execucao-local-por-perfil.md) · [Medições anteriores no cliente](../../cpu_wave/README.md)
 
 ## MEDIDO no FFN completo do portátil
