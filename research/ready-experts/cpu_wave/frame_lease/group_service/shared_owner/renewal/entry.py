@@ -36,7 +36,7 @@ def snapshot(rows):
         [r.layer, r.slot, r.expert, r.gen] for r in rows if r.kind == 5 and r.layer < 25
     )
     need(
-        len(initial) == 1000 and len({(l, s) for l, s, _, _ in initial}) == 1000,
+        len(initial) == 1000 and len({(layer, s) for layer, s, _, _ in initial}) == 1000,
         "CPU primary cardinality",
     )
     return initial
@@ -58,7 +58,7 @@ def capture(archive):
     need(all((r.a, r.b) in ((0, 0), (2, 0)) for r in rows if r.kind == 5), "pending at entry")
     initial, prefix = snapshot(rows), [tx(r) for r in rows if r.kind == 11]
     final_t1 = sorted(
-        [l, s, e, g] for (l, s), (e, g, state) in end.items() if l < 25 and state == 2
+        [layer, s, e, g] for (layer, s), (e, g, state) in end.items() if layer < 25 and state == 2
     )
     tail = list(pf["iter_rows"](new, cut, count - cut))
     old_rows, header = pf["PFJ"]["read_journal"](old)
@@ -70,11 +70,11 @@ def capture(archive):
     need(tx2 == [tx(r) for r in old_rows if r.kind == 11], "two T2 reservation orders")
 
     def end_state(raw):
-        slots = {(l, s): (e, g) for l, s, e, g in final_t1}
+        slots = {(layer, s): (e, g) for layer, s, e, g in final_t1}
         for r in raw:
             if r.kind == 17 and r.layer < 25:
                 slots[r.layer, r.slot] = (r.expert, r.gen)
-        return sorted([l, s, e, g] for (l, s), (e, g) in slots.items())
+        return sorted([layer, s, e, g] for (layer, s), (e, g) in slots.items())
 
     final = end_state(tail)
     need(final == end_state(old_rows), "different published final T2")
@@ -112,23 +112,23 @@ def reserve(pool, frequency, serial, layer, expert, victim):
 
 
 def execute(exe, w, second):
-    slots = {(l, s): (e, g) for l, s, e, g in w["initial"]}
-    lines = [f"S {l} {s} {g} {e}" for l, s, e, g in w["initial"]]
+    slots = {(layer, s): (e, g) for layer, s, e, g in w["initial"]}
+    lines = [f"S {layer} {s} {g} {e}" for layer, s, e, g in w["initial"]]
     pool, frequency, expected, groups = {}, Counter(), {}, {}
     offset = len(w["prefix"])
 
     def frozen():
-        return sorted([l, s, e, g] for (l, s), (e, g) in slots.items())
+        return sorted([layer, s, e, g] for (layer, s), (e, g) in slots.items())
 
     for turn, rows in enumerate((w["prefix"], second), 1):
-        for i, (call, tile, l, s, g, e, old) in enumerate(rows):
-            if l >= 25:
+        for i, (call, _tile, layer, s, g, e, old) in enumerate(rows):
+            if layer >= 25:
                 continue
             ix = i if turn == 1 else offset + i
-            need(slots[l, s] == (old, g - 1), "reference lineage")
-            slots[l, s] = e, g
-            lines.append(f"R {ix} {l} {s} {g} {e} {old}")
-            h, c = reserve(pool, frequency, ix, l, e, old)
+            need(slots[layer, s] == (old, g - 1), "reference lineage")
+            slots[layer, s] = e, g
+            lines.append(f"R {ix} {layer} {s} {g} {e} {old}")
+            h, c = reserve(pool, frequency, ix, layer, e, old)
             expected[ix] = (int(h), int(c), len(pool))
             groups[ix] = (
                 ("T1_prefill" if call <= 9 else "T1_decode") if turn == 1 else L["phase"](call)
@@ -249,8 +249,8 @@ def assess(exe, w):
         status="GO_OBSERVED_DECODE_QUARTET" if go else "NO_GO_TRANSFER_REGISTERED_QUARTET",
         evidence="TRACE_DERIVED_SERIAL_POLICY_FIXED_JOURNAL_CLOCKS",
         **bank,
-        initial_ready=sum(e >= 0 for l, s, e, g in w["initial"]),
-        initial_empty=sum(e < 0 for l, s, e, g in w["initial"]),
+        initial_ready=sum(e >= 0 for layer, s, e, g in w["initial"]),
+        initial_empty=sum(e < 0 for layer, s, e, g in w["initial"]),
         seed_hits=len(seed_hits),
         continuous_hits=len(hits),
         common_hits=len(hits & seed_hits),
