@@ -1,5 +1,7 @@
 # Chega alguma escrita antes de a CPU acabar de ler?
 
+**Seguimento de latência.** Duas das 90 waves obtêm em ambos os registos um ganho adicional se as cópias de vários hits forem suprimidas juntas. Com as leituras do pack igualmente dispensadas há 35. [Custo condicional por barreira](group-result.md)
+
 **TRACE_DERIVED.** A agenda CPU observada nos dois PFJ admite a entrega por ID sem esperar por um consumidor anterior dentro do segundo turno. Das 1 125 escritas num frame, 684 sucederam a uma utilização observada da geração física anterior. Em todas, até a reserva sob mutex chegou depois da operação que delimita superiormente o fim do leitor. Nas 441 restantes, a conversa observada nunca consumiu essa geração física. Os resultados valem para os relógios e a ordem dos dois registos. Antecipar as reservas ou sobrepor duas tiles CPU exige verificar outra vez a vida dos frames. [Protocolo](lifetime-protocol.md) · [Resultados, controlos de falha e testemunhos por wave](evidence-lifetime-20261128-r01/decision.json)
 
 | Mesmo trabalho nominal em cada journal | Prefill 5 | Prefill 148 | Decode até ao primeiro final | Cauda |
