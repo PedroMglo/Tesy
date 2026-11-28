@@ -1,0 +1,234 @@
+{
+  "command": [
+    "/usr/bin/g++-15",
+    "-std=c++20",
+    "-O1",
+    "-g0",
+    "-fno-fast-math",
+    "-ffp-contract=off",
+    "-DTESY_STORE_TESTING",
+    "-DTESY_C47_CPU_SKIP_PARKED",
+    "-pthread",
+    "-ffunction-sections",
+    "-fdata-sections",
+    "-I/var/tmp/tesy-shared-owner-build-20261128-r03/source/src",
+    "-I/var/tmp/tesy-shared-owner-build-20261128-r03/source/include",
+    "-I/var/tmp/tesy-shared-owner-build-20261128-r03/source/ggml/include",
+    "/mnt/sdisk-ssd-ext/Tesy/repo/build/tesy-ready-layer-20261127/research/ready-experts/cpu_wave/frame_lease/group_service/shared_owner/fixture.cpp",
+    "/var/tmp/tesy-shared-owner-build-20261128-r03/source/src/llama-moe-stream.cpp",
+    "/var/tmp/tesy-shared-owner-build-20261128-r03/source/src/llama-impl.cpp",
+    "/var/tmp/tesy-shared-owner-build-20261128-r03/source/src/llama-mmap.cpp",
+    "-Wl,--gc-sections",
+    "-Wl,--wrap=pread",
+    "-Wl,--wrap=ggml_backend_tensor_set",
+    "/mnt/sdisk-ssd-ext/Tesy/repo/c7-native-placement-screen-20260927-1117utc/backends/c269-layer-last-use/build-c269-cuda/bin/libggml-cpu.so.0.15.3",
+    "/mnt/sdisk-ssd-ext/Tesy/repo/c7-native-placement-screen-20260927-1117utc/backends/c269-layer-last-use/build-c269-cuda/bin/libggml-base.so.0.15.3",
+    "/usr/lib64/libcrypto.so.3",
+    "-ldl",
+    "-o",
+    "/var/tmp/tesy-shared-owner-build-20261128-r03/owner"
+  ],
+  "commit": "7c61eb27c16221281800587feaa9732e6de00b11",
+  "compiler": "cef5002fbce633104c81b24e9fd935251ab653234c8dce8758d3c963d6123c8a",
+  "crypto": "695648ac8dc5e6a2b70e5e72399940de0f84bf24fddb7dd18949ba40bc575c72",
+  "elapsed_s": 5.539097453991417,
+  "elf": "28b2f5ea9aa876bd52c2c92052a47858f032b36cfdae57b9da035871361a4774",
+  "native_commit": "c89c88b342054223e3f27a17fbfd0954803147ac",
+  "native_tree": "3962daa588dfa89971c60c95ce4c5054bc27fd3f",
+  "original_files": {
+    "ggml/include/ggml-alloc.h": {
+      "bytes": 3753,
+      "oid": "a7926a21a9a20f37a4b75cf19fbca5d8d88b7779",
+      "sha256": "94e4cd069b9313b2ceb35dacec901981e0bb478d8bb31035b7126be091998c23"
+    },
+    "ggml/include/ggml-backend.h": {
+      "bytes": 25306,
+      "oid": "2924fdbe9884df40abf505fd89d277f5281a835b",
+      "sha256": "a620e815b43a44cc72d5f216629a3a91980335b61bc37eb6b2d0813368c3704f"
+    },
+    "ggml/include/ggml-blas.h": {
+      "bytes": 586,
+      "oid": "87a81b36348b8eec067427216c1988277ec3b8f7",
+      "sha256": "e76cb8594dc9866d99e7d63191b9fff6ab8b50244b4a28ce3af0f962964a6b5b"
+    },
+    "ggml/include/ggml-cann.h": {
+      "bytes": 4553,
+      "oid": "74af465337a53101d583177254faa9c6147e8445",
+      "sha256": "2cdb134f27fe5c4ec19d52f1eb58f5355aa42b8f54bf385f0e487501c5df7362"
+    },
+    "ggml/include/ggml-cpp.h": {
+      "bytes": 1652,
+      "oid": "48aa79682b65d9a0ec12f7d937ebc7f0840dc6b8",
+      "sha256": "bc15ba002c68685df23faae42df0d2b3d58032011f88b649021ab92485862c72"
+    },
+    "ggml/include/ggml-cpu.h": {
+      "bytes": 7696,
+      "oid": "e3e067c916f14e785da031beea50743bb6644636",
+      "sha256": "1aafe97e576ea38c0da57517fb2492955d0b69c1a799842481fc069d6d9d28ef"
+    },
+    "ggml/include/ggml-cuda.h": {
+      "bytes": 1768,
+      "oid": "5436c7ef579ccfef8891b77a8905c093d71b71b7",
+      "sha256": "84122bf381c24709eab9e888034956eafc1dfe436f9d826c10fa0e1a695f8a5e"
+    },
+    "ggml/include/ggml-hexagon.h": {
+      "bytes": 351,
+      "oid": "6e079004103933a284e4292adfd24b4564026e78",
+      "sha256": "b2c12bac390f14707b16bdd27c8c75ce4f075ed509c729ee28fd4f03b17e7375"
+    },
+    "ggml/include/ggml-metal.h": {
+      "bytes": 2141,
+      "oid": "433838f0d6d68d1fffabbe18a23e3c2bca3ee2fc",
+      "sha256": "322f36cd30f3e9e7aad7b5b9bc63078012fd0b7706ac4e24f5721b604f3d8980"
+    },
+    "ggml/include/ggml-opencl.h": {
+      "bytes": 581,
+      "oid": "6b61771358f875be2f1b5ce584d4e30b7c2450b4",
+      "sha256": "8e443e1aa9c8bc6e0cf116c4cc3f42f4858938fa15e65b06bc07b26686e1233a"
+    },
+    "ggml/include/ggml-openvino.h": {
+      "bytes": 1034,
+      "oid": "c43beb07b6a6e384b58cd91b5a4a97c6f194c0e1",
+      "sha256": "c2e3f301e28ad815b4285888aad6130808a77e6acb4e8b558de63a648cf9743e"
+    },
+    "ggml/include/ggml-opt.h": {
+      "bytes": 14040,
+      "oid": "1c2ed79b77420e74fd3b81b83367109164380853",
+      "sha256": "3586de1bc8a934b5c72339e2b6937b0641e8f149b512231e666f67de0736eea2"
+    },
+    "ggml/include/ggml-rpc.h": {
+      "bytes": 1183,
+      "oid": "5ad121ae57f19d31e7d86fe0261d74b0e850f465",
+      "sha256": "0b53277745826cd2dc8fe6c6fe7b3617fc57074b343bfd61597369edf2860331"
+    },
+    "ggml/include/ggml-sycl.h": {
+      "bytes": 2312,
+      "oid": "418a7ba978b478aba3ffbcd824104a6e9f75e12e",
+      "sha256": "58429f8045b335f5e740faa2198caf72ba3beb04df0eb970103b932340daca8b"
+    },
+    "ggml/include/ggml-virtgpu.h": {
+      "bytes": 194,
+      "oid": "faaba8f246d1f97237f45378982ad46c96796a77",
+      "sha256": "ed231e7db3f0f58b84073f5ee67f9ec9d63046d1a7ed091c36a6cfe9f685a463"
+    },
+    "ggml/include/ggml-vulkan.h": {
+      "bytes": 952,
+      "oid": "ed5ea5f798cb5b0ce6801689d43fc2ef15e5fa35",
+      "sha256": "7eae5dad2cc7bb4d3eca828539f441816d5fd59fdc7b224d49aa229fc7b7248c"
+    },
+    "ggml/include/ggml-webgpu.h": {
+      "bytes": 328,
+      "oid": "65b8ed9bb66443573fad7cdc1ebec41f20faf981",
+      "sha256": "a91d855313a9e85e75ba597ff869a267247dea936a2c0faef03aeb7f1ea6e79c"
+    },
+    "ggml/include/ggml-zdnn.h": {
+      "bytes": 292,
+      "oid": "fbf45b6e1c34c84104931acec570afb73b7d02a7",
+      "sha256": "ee1d79c95ade45ba195a6b71f59a05c18617de4a596d2b2b03ecf38975a9a448"
+    },
+    "ggml/include/ggml-zendnn.h": {
+      "bytes": 498,
+      "oid": "a30a3a980883524be05e884a7d67f8d9f5f8b528",
+      "sha256": "2cb034b842438281616ce647232d922fb224450323f0d422d2af567c334aa8ff"
+    },
+    "ggml/include/ggml.h": {
+      "bytes": 108877,
+      "oid": "d6807b6dd47a3b8e97cb5946234788a4b1a0d319",
+      "sha256": "98c5fcf96279e16c09d42dcba482be1b03434839db723bba4b65518e424ba181"
+    },
+    "ggml/include/gguf.h": {
+      "bytes": 11162,
+      "oid": "67851ba6f16b041d17530637a6e9b8062c6f9b16",
+      "sha256": "2ddb276a5bece743433160ad863279473431c9d4c171d468bf860a3cda3fbf3f"
+    },
+    "include/llama-cpp.h": {
+      "bytes": 900,
+      "oid": "8f6368177de0918e67daa4059e34519eecb42a78",
+      "sha256": "c48fd31095d2403a3bf7cbe98333ba0e61a398ee6e83b56f9d8b7237143b9877"
+    },
+    "include/llama.h": {
+      "bytes": 82993,
+      "oid": "573a4ad38d67965b1bd0ff985c9be01a6d270312",
+      "sha256": "f0698f3ed8dc61df66bec8e198061a0c40175d3f2b62ed276c389b7a71286a04"
+    },
+    "src/c269-last-use-order.h": {
+      "bytes": 1181,
+      "oid": "ea3ed0bcecb8533b63cdbe0f9767125e956e7fa4",
+      "sha256": "cb80df1111f7ccf67dbd6ffd148ebb024ed6cf53a88693c6e02cb0c41ee2ecb2"
+    },
+    "src/c291-direct-reader.h": {
+      "bytes": 4084,
+      "oid": "f315c543f9aef9e5041fb122953beb4409d7eda3",
+      "sha256": "cb386577d0b424d531a484d81619e29887b2419dd03c05578004b0878f601af6"
+    },
+    "src/c291-expert-store.h": {
+      "bytes": 5918,
+      "oid": "1bbcb11b0c94970512b8ed591c1cc53fd13134a4",
+      "sha256": "3f2d786a2188f178655a8ed708e9c3a972b4919318aa4224c839ca13d83961a1"
+    },
+    "src/llama-impl.cpp": {
+      "bytes": 6131,
+      "oid": "b3a94b946d2866940763901a8b2cc014827799e7",
+      "sha256": "b01ad5b5ec7b314a73205ff7a7168769d72bb2e200b87bc39c48dcb9dc712ee8"
+    },
+    "src/llama-impl.h": {
+      "bytes": 2637,
+      "oid": "7923c3f7ed55a1f5ffd52e7c13f5b4d1e55a4154",
+      "sha256": "83004de4fc7f23139cbcad772600391a1a4517a9191773fa0b00b1207127be36"
+    },
+    "src/llama-mmap.cpp": {
+      "bytes": 25152,
+      "oid": "ed572da7fb5450e3cd4a7446b137b0e92d2895f5",
+      "sha256": "0673e5273594690a1a7b81010b18f158f5b153f502fed161a595c941e8e5808a"
+    },
+    "src/llama-mmap.h": {
+      "bytes": 1663,
+      "oid": "b7d5c61e95ffbaf19c347dadcb062de9664f93a3",
+      "sha256": "778d279d36bdbcf55b22480ebf8a4d16cc78db66780e33234ed08a496a66295d"
+    },
+    "src/llama-moe-stream.cpp": {
+      "bytes": 34177,
+      "oid": "b942e11892da915a7bfdb58d38649e5b60db9cea",
+      "sha256": "044d8879be19e5c22331a29bf7a273307756de10675b1341ee9d7077e2dabc62"
+    },
+    "src/llama-moe-stream.h": {
+      "bytes": 9450,
+      "oid": "39087a151030cf164421a959ffa37f026652d50e",
+      "sha256": "387c9f6ff17dbf74cf2ff4e280854760a1cfad39cabe0a245312564a7763ced4"
+    },
+    "vendor/nlohmann/json.hpp": {
+      "bytes": 953436,
+      "oid": "82d69f7c5d044c9887c96b90c97f5639083ecd14",
+      "sha256": "aaf127c04cb31c406e5b04a63f1ae89369fccde6d8fa7cdda1ed4f32dfc5de63"
+    },
+    "vendor/nlohmann/json_fwd.hpp": {
+      "bytes": 6656,
+      "oid": "9429171390a41654a73b1fd63d6048712a4893a2",
+      "sha256": "fb6aa70cbece087f37ab4685c182b287c53be54f785f981b9db9d30d2d028b37"
+    }
+  },
+  "patches": {
+    "research/qualification-retake/packed_worker/arena.patch": "636a88a0ec71a4fc78608145e884a06132c67f45c9f23f56a9fca135f9f47684",
+    "research/ready-experts/cpu_wave/frame_lease/group_service/shared_owner/runtime.patch": "be0dc68ace1bc9f35023942048f7e44d3bf1721f1ea4485d0ddf789b7be9e8a3"
+  },
+  "peak_B": 409489408,
+  "providers": {
+    "libggml-base.so.0": {
+      "path": "/mnt/sdisk-ssd-ext/Tesy/repo/c7-native-placement-screen-20260927-1117utc/backends/c269-layer-last-use/build-c269-cuda/bin/libggml-base.so.0.15.3",
+      "sha256": "6e27d9ecb86e4747177189d2d2f6390280a2ee1000221ad68a0404023ea72539"
+    },
+    "libggml-cpu.so.0": {
+      "path": "/mnt/sdisk-ssd-ext/Tesy/repo/c7-native-placement-screen-20260927-1117utc/backends/c269-layer-last-use/build-c269-cuda/bin/libggml-cpu.so.0.15.3",
+      "sha256": "9aabce5751c5d7ca19b50e4cabb1fcf484c1581d275141dae8aba8ed33060313"
+    }
+  },
+  "sources": {
+    "fixture.cpp": "674cb0dc26e76e723fc3044d909f9f1c422e4ab48ebd143f8708b75efb6fb17d",
+    "protocol.md": "8c6a35f763449eccce7eec665d2fb71402f70eac7d8f6cdeb89cf5782e50376a",
+    "run.py": "16731f4c9eafb2a6bdf573ef0035ef57fe1792abf778e128a41a29bb13e0f0ae",
+    "runtime.patch": "be0dc68ace1bc9f35023942048f7e44d3bf1721f1ea4485d0ddf789b7be9e8a3"
+  },
+  "status": "BUILT_SHARED_OWNER",
+  "swap_peak_B": 0,
+  "tree": "80e85b84382c2766c71f55071a38d73c971a0e9a"
+}

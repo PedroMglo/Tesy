@@ -1,0 +1,452 @@
+{
+  "artifacts": {
+    "archive.json": {
+      "sha256": "8b47aeff9ec5ecd54e9ee3cc282f8dd021cf522a222d5d1022fac7855a516d6c",
+      "size_B": 257
+    },
+    "device.json": {
+      "sha256": "4f30d79ed83dc5107c51752cde43d5961a1de62cf3325d741a95d1bcfb366c8a",
+      "size_B": 7525
+    },
+    "frontier.json": {
+      "sha256": "c718059d4b27f09282457bf59a29d0784f0f62f6e7c67fcf433c16c7530e7296",
+      "size_B": 18993
+    },
+    "service.json.gz": {
+      "sha256": "2793888c234dd8f096c8d434b09d8de43042794370d232d4727a5f7fa2ea6dc2",
+      "size_B": 312301
+    },
+    "service.txt": {
+      "sha256": "b0ae054c1d0b1d4c2e0a485cff7041177fb74f1f6fa9db01b00ff4e298495f57",
+      "size_B": 8395
+    },
+    "victims.json": {
+      "sha256": "bb7fb13cebbdeab7c4573f3ae02c2061a3eb6a0ef5d443a518c9ea8d6a418ec6",
+      "size_B": 8498
+    }
+  },
+  "branch": "research/ready-layer",
+  "commands": {
+    "build": "systemd-run --user --scope --quiet --unit=tesy-peer-service-build-20261128-r01 --slice=app.slice -p MemoryHigh=768M -p MemoryMax=768M -p MemorySwapMax=0 -p RuntimeMaxSec=60 /usr/bin/python3 -IB research/ready-experts/verifier_wait/forecast/retention/eviction/late_owner/contention/device.py build --previous /var/tmp/tesy-ready-reader-build-20261127-r01 --new-output-dir /var/tmp/tesy-peer-service-build-20261128-r01",
+    "c55": "python3 -IB research/qualification-retake/nvme_admission/window.py --nvme-model /home/pmglo/models/gpt-oss-120b-gguf/gpt-oss-120b-MXFP4.gguf --new-output-dir /var/tmp/tesy-peer-service-c55-20261128-r01",
+    "composition": "/usr/bin/prlimit --as=1073741824 --fsize=8388608 -- /usr/bin/timeout 180 /usr/bin/python3 -IB research/ready-experts/verifier_wait/forecast/retention/eviction/late_owner/contention/victims.py --service /tmp/tesy-peer-service-20261128-01/frontier-01 --new-output-dir /tmp/tesy-peer-service-20261128-01/victims-01",
+    "physical": "systemd-run --user --scope --quiet --unit=tesy-peer-service-physical-20261128-r01 --slice=app.slice -p MemoryHigh=256M -p MemoryMax=256M -p MemorySwapMax=0 -p RuntimeMaxSec=145 /usr/bin/python3 -IB research/ready-experts/verifier_wait/forecast/retention/eviction/late_owner/contention/physical.py --plan /tmp/tesy-peer-service-20261128-01/plan-01 --plan-sha256 0a81d432b6b710987e87fc2507c69f3c1d12b17b3105488b2ff353d6bb4425e0 --build /var/tmp/tesy-peer-service-build-20261128-r01 --build-sha256 36aff6ab17bc4df8195a2f7ebee02fbbbb55c34c7aad57dc4efe863683865778 --c55 /var/tmp/tesy-peer-service-c55-20261128-r01 --c55-sha256 d83cf278feb31935ccacbc91d4f537e3b8aa810bb0fe2200ba0effffcc300a2e --new-output-dir /var/tmp/tesy-peer-service-physical-20261128-r01",
+    "plan": "python3 -IB research/ready-experts/verifier_wait/forecast/retention/eviction/late_owner/contention/device.py plan --manifest /home/pmglo/models/tesy-gpt-oss-120b-nvme/tesy-c291-manifest-20261125-r02 --frontier /tmp/tesy-peer-service-20261128-01/frontier-01/frontier.json --new-output-dir /tmp/tesy-peer-service-20261128-01/plan-01",
+    "source": "python3 -IB research/ready-experts/verifier_wait/forecast/retention/eviction/late_owner/contention/frontier.py --archive /mnt/sdisk-ssd-ext/Tesy/outputs/qualification-20261124-nvme-01 --new-output-dir /tmp/tesy-peer-service-20261128-01/frontier-01",
+    "source_limits": "/usr/bin/prlimit --as=1073741824 --fsize=33554432 -- /usr/bin/timeout 180",
+    "verify": [
+      "python3 -IB research/ready-experts/verifier_wait/forecast/retention/eviction/late_owner/contention/frontier.py --check research/ready-experts/verifier_wait/forecast/retention/eviction/late_owner/contention/evidence-20261128-r01",
+      "python3 -IB research/ready-experts/verifier_wait/forecast/retention/eviction/late_owner/contention/device.py check research/ready-experts/verifier_wait/forecast/retention/eviction/late_owner/contention/evidence-20261128-r01",
+      "python3 -IB research/ready-experts/verifier_wait/forecast/retention/eviction/late_owner/contention/victims.py --service research/ready-experts/verifier_wait/forecast/retention/eviction/late_owner/contention/evidence-20261128-r01 --check research/ready-experts/verifier_wait/forecast/retention/eviction/late_owner/contention/evidence-20261128-r01/victims.json",
+      "python3 -IB research/ready-experts/verifier_wait/forecast/retention/eviction/late_owner/contention/test_contention.py",
+      "python3 -IB research/post-c320/analyse.py",
+      "python3 -IB research/post-c320/analyse.py --raw-dir /mnt/sdisk-ssd-ext/Tesy/repo/c7-native-placement-screen-20260927-1117utc/results/c317-learned-staging-observer-qualification-20261007/raw",
+      "python3 -IB research/consolidacao-20261123/verify.py"
+    ]
+  },
+  "composition_protocol_link_corrected_before_execution": true,
+  "composition_protocol_sha256": "68cef6ae8e9545b2ef9ebfe565126e124d2f6904d1b236d558670b4ec99fa864",
+  "data_window_utc": "2026-11-28T05:50:56.934617+00:00",
+  "disk_protocol_sha256": "44163ffcd63410e5e8baaf0d1921e2cc8f960f1013abc00abd44e12971564a96",
+  "host": {
+    "c55": {
+      "concurrent": [],
+      "cpu": "AMD Ryzen AI 9 HX 370 w/ Radeon 890M",
+      "gpu_compute_max": 0,
+      "gpu_driver": "620.73.04",
+      "gpu_name": "NVIDIA GeForce RTX 4060 Laptop GPU",
+      "gpu_total_mib": 8188.0,
+      "model_device": "/dev/nvme0n1p3[/home]",
+      "model_fs": "btrfs",
+      "nvme": [
+        {
+          "bdf": "0000:c1:00.0",
+          "controller": "nvme0",
+          "critical_c": 89.85,
+          "current_c": 34.85,
+          "firmware": "V3MA101",
+          "model": "MTFDKBK1T0QFM-1BD1AABGB",
+          "sensor": "nvme-pci-c100",
+          "source": "Composite critical minus 2C admission; max is warning",
+          "stop_c": 87.85,
+          "warning_c": 86.85
+        }
+      ]
+    },
+    "memory": {
+      "ancestor_headroom_bytes": 32696000512,
+      "available_max_bytes": 27738017792,
+      "available_min_bytes": 27577720832,
+      "cap_max_bytes": 25232932864,
+      "external_variation_bytes": 160296960,
+      "reserve_bytes": 2147483648,
+      "total_bytes": 32696000512
+    },
+    "power": {
+      "batteries": [
+        {
+          "name": "BAT0",
+          "status": "Not charging"
+        },
+        {
+          "name": "hid-0018:04F3:4359.0005-battery-7",
+          "status": "Unknown"
+        }
+      ],
+      "online_sources": [
+        "AC0",
+        "ucsi-source-psy-USBC000:002"
+      ],
+      "profile": "performance",
+      "source": "AC"
+    },
+    "window_s": 60.01339041700703,
+    "window_samples": 61
+  },
+  "immediate_pr_base": {
+    "commit": "ccfda06299d9725975b63c75f28fece4cc57425e",
+    "tree": "96e3aa7171e69f135dba325c2aa7e58ca9964976"
+  },
+  "inputs": {
+    "ELF": "e218a7357a49f08781fde1bad441930c483d3af251f27e0adbc57d36feabefef",
+    "build": "36aff6ab17bc4df8195a2f7ebee02fbbbb55c34c7aad57dc4efe863683865778",
+    "c55": "d83cf278feb31935ccacbc91d4f537e3b8aa810bb0fe2200ba0effffcc300a2e",
+    "compiler": "ca48a2d27d0796399adc3387225eec4be62974e26fa299710edfde0c1af5aa63",
+    "device_receipt": "9b255c49f52698b38b245c897486b1b58cabb650f770f97ff23578c1d70ba95f",
+    "index": "63b7a76c7063e51944ee8a6296aea43109a336330b3657ffa357cddb44b59813",
+    "libraries": {
+      "/lib64/ld-linux-x86-64.so.2": "4e5d39355699e90fa29313d3100e82af4a23290028c58c364d6a249ef6a78e5e",
+      "/lib64/libc.so.6": "a5c5ad9d59d3c69eda93aa8f82930ba06cc4e893a113e66c85ad6e96243d53c8",
+      "/lib64/libcrypto.so.3": "695648ac8dc5e6a2b70e5e72399940de0f84bf24fddb7dd18949ba40bc575c72",
+      "/lib64/libgcc_s.so.1": "5a52ae4a6f1b119aa092aa1483c967e19d9ba036b1b0c2133236a8a2ce826ebf",
+      "/lib64/libm.so.6": "16a03ce6d24c8a46742206d4a9c1d35bb6577ae2384f153dc6ef4a4b62b5357f",
+      "/lib64/libstdc++.so.6": "49811507d8fc0283d8f8023546613774c673f876fe823b1b99d0c8d46039deda",
+      "/lib64/libz.so.1": "bbde8faec092a7c67b8bd76bbba4a826e61b05c171b97004ce6b308c5a090351"
+    },
+    "manifest": "cd4c0665c5485268cddfc7dba576b1cf490222c120cf34f72d555a6cbccbc5b9",
+    "model": "582bd40f6886200101f4c4ed9f25f3fe80cc14c86e9e2b37746cd8904a0c622d",
+    "pack": "f17e9fbf6f6aed1ad60ca7da3431c5156a946d2e0bf119722afc1f934cbc6b11",
+    "peer_source": "8b01fc7cd63f5621c97766ca7f9cd3b298230f82736f4735c6ece1bcf54a0cb6",
+    "plan": "0a81d432b6b710987e87fc2507c69f3c1d12b17b3105488b2ff353d6bb4425e0",
+    "tier_result": "14ad307b2b131479ebadbb9cd64247a83971fa16ef4a406d6feeb414585eedbf",
+    "tier_transactions": "5ac766cf31ea137a243a0525429028daadfe543af26e328b635d58b3918430fa"
+  },
+  "integrated_main": {
+    "commit": "293f5b184da9439771cce361cd33fc4068d749f4",
+    "tree": "7683d6c07063adef6de232c43ab05d19e98e679d"
+  },
+  "local_archive": {
+    "archive_id": "ready-peer-service-20261128-01",
+    "bytes": 475895,
+    "file_count": 18,
+    "manifest": {
+      "bytes": 3180,
+      "sha256": "b64a2103566e87a6ab86fb89b957c76614408d83be7ae053be4faf2420a0759d"
+    },
+    "part": "part-01",
+    "provider_links": 0
+  },
+  "open_pr_heads_before_publication": [
+    {
+      "baseRefName": "research/ready-experts",
+      "headRefName": "research/ready-layer",
+      "headRefOid": "04e19bd7ed4ca4012a956800c2beea17742495c9",
+      "isDraft": true,
+      "number": 52,
+      "url": "https://github.com/PedroMglo/Tesy/pull/52"
+    },
+    {
+      "baseRefName": "research/qualification-retake",
+      "headRefName": "research/ready-experts",
+      "headRefOid": "ccfda06299d9725975b63c75f28fece4cc57425e",
+      "isDraft": true,
+      "number": 51,
+      "url": "https://github.com/PedroMglo/Tesy/pull/51"
+    },
+    {
+      "baseRefName": "research/worker-release",
+      "headRefName": "research/c305-manager",
+      "headRefOid": "f0123c68f87e6f4e8605321f422f25f19882528e",
+      "isDraft": true,
+      "number": 50,
+      "url": "https://github.com/PedroMglo/Tesy/pull/50"
+    },
+    {
+      "baseRefName": "main",
+      "headRefName": "research/qualification-retake",
+      "headRefOid": "a9aa2b18231696204641993fcc8e2eae4cf27a0c",
+      "isDraft": true,
+      "number": 49,
+      "url": "https://github.com/PedroMglo/Tesy/pull/49"
+    },
+    {
+      "baseRefName": "research/prefill44-replay",
+      "headRefName": "research/prepin44",
+      "headRefOid": "ea45e5fb1067948226377150554757d4e0ac4dac",
+      "isDraft": true,
+      "number": 48,
+      "url": "https://github.com/PedroMglo/Tesy/pull/48"
+    },
+    {
+      "baseRefName": "main",
+      "headRefName": "ci/on-demand",
+      "headRefOid": "8a1d9c128d91bb1a547844101dd8f37fcb8fedd9",
+      "isDraft": true,
+      "number": 47,
+      "url": "https://github.com/PedroMglo/Tesy/pull/47"
+    },
+    {
+      "baseRefName": "main",
+      "headRefName": "research/prefill44-replay",
+      "headRefOid": "4b84188d577d8e1415ec216765aaf1fd82060757",
+      "isDraft": true,
+      "number": 46,
+      "url": "https://github.com/PedroMglo/Tesy/pull/46"
+    },
+    {
+      "baseRefName": "research/worker-release",
+      "headRefName": "research/prefill-slot-proof",
+      "headRefOid": "83146dade3f90235775e4a31a8d3d8ccae3476a7",
+      "isDraft": true,
+      "number": 45,
+      "url": "https://github.com/PedroMglo/Tesy/pull/45"
+    },
+    {
+      "baseRefName": "main",
+      "headRefName": "research/worker-release",
+      "headRefOid": "141f946db7bb0c3eff58b2009e4051aa8c0b18b5",
+      "isDraft": false,
+      "number": 44,
+      "url": "https://github.com/PedroMglo/Tesy/pull/44"
+    }
+  ],
+  "origin": "https://github.com/PedroMglo/Tesy.git",
+  "parent_journals": {
+    "P106": "cb13ff990afb3164bb61086e57a6caeff14187b66a1784c88e79cd3d521121bd",
+    "P97": "05e32c2af753026e471fa61c9dcb43867ca6b9a3001045a2138bc96c422928dc"
+  },
+  "phases": {
+    "composition_execution": {
+      "commit": "79f9355796a3628dc3f90b253578c695ceea8688",
+      "tree": "1bb4bab247623343042d72e476c8786f5453701d"
+    },
+    "composition_protocol": {
+      "commit": "fd1eb3e14d13ce74e4f448e71dd9533509afe6b1",
+      "tree": "d3694025b74fa50d9c427d5d9b3d68fdc31f717c"
+    },
+    "disk_protocol": {
+      "commit": "87d72503eaafba8568c810787be8ae4ab6a88567",
+      "tree": "4d833030cc22ac83f2c8c93cf3799be06f440f1a"
+    },
+    "disk_replay": {
+      "commit": "bdd87d6fc98bbac0511f44776bb6ad19a492a69e",
+      "tree": "5fe8a5bb1ec505385adc94961ddc4aa439eb9671"
+    },
+    "fixed_lane_execution": {
+      "commit": "4bd9d8a5a98ee42936e0f9e14d2ecf89497d32db",
+      "tree": "42d1f8790d36b581cd7dd3e8312322f72cf7eadb"
+    }
+  },
+  "resources": {
+    "budget_receipts_B": 16777216,
+    "composition": "wall_s=3.37 peak_kib=130244",
+    "device_requested_B": 6055624704,
+    "device_sectors_512_B": 11827392,
+    "elapsed_unit_power_meter": null,
+    "energy_J": null,
+    "peak_B": 175841280,
+    "physical_elapsed_s": 3.0644353960014996,
+    "replay": "wall_s=4.14 peak_kib=159984"
+  },
+  "root_basis": {
+    "commit": "04e19bd7ed4ca4012a956800c2beea17742495c9",
+    "tree": "ec1d21bef734465577f58cc879b45040e4a53b84"
+  },
+  "sources": [
+    "https://www.usenix.org/conference/atc13/technical-sessions/presentation/shen",
+    "https://arxiv.org/html/2609.18110v1#S4.SS1"
+  ],
+  "sources_cutoff": "2026-11-28",
+  "status": {
+    "M3": "PARTIAL",
+    "M4": "NOT_MET",
+    "device": {
+      "causal_353": "GO_LOCAL",
+      "physical_54": "GO_LOCAL"
+    },
+    "gpu_model_forwards": 0,
+    "http_requests": 0,
+    "immutable": {
+      "entry": "NO_GO_EVEN_FREE_REGION_SERVICE",
+      "frequency_353": "NO_GO_EVEN_FREE_REGION_SERVICE",
+      "frequency_69": "NO_GO_EVEN_FREE_REGION_SERVICE",
+      "off": "NO_GO_EVEN_FREE_REGION_SERVICE"
+    },
+    "product": "NOT_RUN",
+    "renewable": {
+      "favorable": {
+        "any_peer": {
+          "decision": "GO_COST_FIXTURE",
+          "full_margin_ns": 1190159972,
+          "min_reduction_ppm": 471311
+        },
+        "clipped": {
+          "decision": "NO_GO",
+          "full_margin_ns": -860190219
+        },
+        "whole_quartet": {
+          "decision": "NO_GO",
+          "full_margin_ns": -314498528
+        }
+      },
+      "paid": {
+        "any_peer": {
+          "decision": "NO_GO",
+          "full_margin_ns": -533941770
+        },
+        "clipped": {
+          "decision": "NO_GO",
+          "full_margin_ns": -2450732121
+        },
+        "whole_quartet": {
+          "decision": "NO_GO",
+          "full_margin_ns": -1963784709
+        }
+      }
+    },
+    "whole_backend": "NO_GO_FOR_THIS_MECHANISM"
+  },
+  "upstream": "origin/research/ready-layer",
+  "validation": {
+    "artifact_review": "model-free; no GPU CI",
+    "c317_manifest": {
+      "c317-code153-2-trace.native/events.tsv": {
+        "sha256": "8bdd96f879cda7fad466dc252ae9915e7b05233b95fd91539b6b4bd4400d27a1",
+        "size_bytes": 2647793
+      },
+      "c317-code153-2-trace.native/staging.json": {
+        "sha256": "38b46e7d48336bd10577d80a1fcf48cc35e5f084c13380dadf0a69f73657ac86",
+        "size_bytes": 1225649
+      },
+      "c317-code153-3-trace.native/events.tsv": {
+        "sha256": "70c9c37864e25201711d23cc60a7d0b1afeba21f254a410e785b24e901e00b07",
+        "size_bytes": 2648115
+      },
+      "c317-code153-3-trace.native/staging.json": {
+        "sha256": "ea0e449455a6cd2d957ba42665c8d30bb0ea14679d1d8c1ee881cc901207b59b",
+        "size_bytes": 1222640
+      },
+      "c317-nominal153-2-trace.native/events.tsv": {
+        "sha256": "c6cf2327a8bd7ec2c7755979e594b33b72a5547826a2d2b057326be66039838e",
+        "size_bytes": 1783273
+      },
+      "c317-nominal153-2-trace.native/staging.json": {
+        "sha256": "e93fceb6a61b1a710951252eb05b467d310055414fc24e73dc9816aa4c94eff2",
+        "size_bytes": 963169
+      },
+      "c317-nominal153-3-trace.native/events.tsv": {
+        "sha256": "05c830ebb865c5f0740717ff5935e5bf3c15fcbb0cdad26825ca56ca8432d7be",
+        "size_bytes": 1784362
+      },
+      "c317-nominal153-3-trace.native/staging.json": {
+        "sha256": "b2d5e3bbeeee0a776380e4433fcded264f7f5e6ec3c427102a3f40e8d3589a3d",
+        "size_bytes": 961025
+      }
+    },
+    "c318": {
+      "code153": {
+        "arm_metrics_s_ABBA": [
+          {
+            "decode32_s": 10.974225074,
+            "prefill153_s": 15.81318118,
+            "prefix_s": 58.731239133,
+            "total_s": 26.787406254
+          },
+          {
+            "decode32_s": 11.403332607,
+            "prefill153_s": 15.751908333,
+            "prefix_s": 58.532713609,
+            "total_s": 27.15524094
+          },
+          {
+            "decode32_s": 12.192635408,
+            "prefill153_s": 17.173879466,
+            "prefix_s": 58.613799627,
+            "total_s": 29.366514874
+          },
+          {
+            "decode32_s": 11.784824323,
+            "prefill153_s": 15.748829899,
+            "prefix_s": 58.900785673,
+            "total_s": 27.533654222
+          }
+        ],
+        "conditional_local_gate_infima_pct": {
+          "decode_route": 18.021172409878975,
+          "total_route": 27.66758270764566
+        },
+        "decode_median_15pct_of_candidate_decode": 18.021172409878975,
+        "decode_seconds_to_remove_AB_BA_at_cheapest_gate": [
+          2.0550142295794167,
+          2.1972558481836306
+        ],
+        "other_case_protection_if_this_case_is_unchanged": true,
+        "total_median_8pct_of_candidate_decode": 27.66758270764566,
+        "total_median_tie_pct_of_candidate_decode": 9.245527547606379
+      },
+      "nominal153": {
+        "arm_metrics_s_ABBA": [
+          {
+            "decode32_s": 9.450205154,
+            "prefill153_s": 9.690969186,
+            "prefix_s": 63.917734219,
+            "total_s": 19.14117434
+          },
+          {
+            "decode32_s": 9.708290821,
+            "prefill153_s": 9.755511994,
+            "prefix_s": 65.263303765,
+            "total_s": 19.463802815
+          },
+          {
+            "decode32_s": 9.737401388,
+            "prefill153_s": 9.70960099,
+            "prefix_s": 63.969746927,
+            "total_s": 19.447002378
+          },
+          {
+            "decode32_s": 9.397161546,
+            "prefill153_s": 9.66318792,
+            "prefix_s": 63.86638487,
+            "total_s": 19.060349466
+          }
+        ],
+        "conditional_local_gate_infima_pct": {
+          "decode_route": 17.61636903733702,
+          "total_route": 19.364253551466724
+        },
+        "decode_median_15pct_of_candidate_decode": 17.61636903733702,
+        "decode_seconds_to_remove_AB_BA_at_cheapest_gate": [
+          1.710248338245276,
+          1.7153765631568574
+        ],
+        "other_case_protection_if_this_case_is_unchanged": true,
+        "total_median_8pct_of_candidate_decode": 19.364253551466724,
+        "total_median_tie_pct_of_candidate_decode": 3.648183834941872
+      }
+    },
+    "consolidation": {
+      "archived_paths": 44,
+      "archived_trees": 4,
+      "at_original_location": 7209,
+      "heads": 45,
+      "historical_file_versions": 7533,
+      "historical_paths": 7253,
+      "paths_with_multiple_versions": 152,
+      "roots": 2
+    },
+    "local_fixture": "8 passed",
+    "operational": "42 passed",
+    "pytest": "444 passed"
+  }
+}

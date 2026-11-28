@@ -1,0 +1,446 @@
+{
+  "HTTP_requests": 0,
+  "M3": "PARTIAL",
+  "M4": "NOT_MET",
+  "cases": {
+    "five": {
+      "exact": {
+        "changed_cuts": [
+          "0/down",
+          "0/down_bias",
+          "0/product",
+          "0/sum",
+          "1/sum",
+          "2/sum",
+          "3/sum",
+          "4/sum",
+          "5/sum",
+          "6/sum",
+          "7/sum",
+          "mixed",
+          "rank_sum1",
+          "rank_sum2",
+          "rank_sum3"
+        ],
+        "control_and_safe_arms": 4,
+        "ffn_F32": 92160,
+        "finite_intermediates_per_arm": 84,
+        "mutant_different_F32": 92160
+      },
+      "prices": [
+        {
+          "arms": {
+            "COPY1252": {
+              "delayed_claims": 0,
+              "drained_ns": 18279977,
+              "graph_ns": 18279185,
+              "wait_ns": 281,
+              "workspace_B": [
+                6268416
+              ]
+            },
+            "COPY40": {
+              "delayed_claims": 0,
+              "drained_ns": 18289505,
+              "graph_ns": 18288282,
+              "wait_ns": 171,
+              "workspace_B": [
+                6268416
+              ]
+            },
+            "DRAIN": {
+              "delayed_claims": 7,
+              "drained_ns": 19472843,
+              "graph_ns": 18839480,
+              "wait_ns": 18824643,
+              "workspace_B": [
+                6268416
+              ]
+            },
+            "LAST": {
+              "delayed_claims": 7,
+              "drained_ns": 18455858,
+              "graph_ns": 18454194,
+              "wait_ns": 15077032,
+              "workspace_B": [
+                6268416
+              ]
+            }
+          },
+          "comparisons": {
+            "COPY1252-LAST": {
+              "median_ns": 350390,
+              "ns": [
+                -1405698,
+                3840014,
+                -4970735,
+                1670928,
+                783606,
+                -1306782,
+                350390
+              ],
+              "positive": 4
+            },
+            "COPY40-COPY1252": {
+              "median_ns": 9528,
+              "ns": [
+                1058765,
+                -2501201,
+                169139,
+                -1619671,
+                9528,
+                -611461,
+                112461
+              ],
+              "positive": 4
+            },
+            "COPY40-LAST": {
+              "median_ns": 51257,
+              "ns": [
+                -346933,
+                1338813,
+                -4801596,
+                51257,
+                793134,
+                -1918243,
+                462851
+              ],
+              "positive": 4
+            },
+            "DRAIN-LAST": {
+              "median_ns": 762666,
+              "ns": [
+                539186,
+                928499,
+                -3198786,
+                3663842,
+                762666,
+                -1885142,
+                1634548
+              ],
+              "positive": 5
+            }
+          },
+          "direction": 0
+        },
+        {
+          "arms": {
+            "COPY1252": {
+              "delayed_claims": 0,
+              "drained_ns": 18428256,
+              "graph_ns": 18426944,
+              "wait_ns": 241,
+              "workspace_B": [
+                6268416
+              ]
+            },
+            "COPY40": {
+              "delayed_claims": 0,
+              "drained_ns": 18207701,
+              "graph_ns": 18206609,
+              "wait_ns": 250,
+              "workspace_B": [
+                6268416
+              ]
+            },
+            "DRAIN": {
+              "delayed_claims": 7,
+              "drained_ns": 18682996,
+              "graph_ns": 17973399,
+              "wait_ns": 17936489,
+              "workspace_B": [
+                6268416
+              ]
+            },
+            "LAST": {
+              "delayed_claims": 7,
+              "drained_ns": 18469674,
+              "graph_ns": 18467681,
+              "wait_ns": 14699992,
+              "workspace_B": [
+                6268416
+              ]
+            }
+          },
+          "comparisons": {
+            "COPY1252-LAST": {
+              "median_ns": -192703,
+              "ns": [
+                -1526275,
+                5869969,
+                -3735728,
+                591194,
+                521873,
+                -3297813,
+                -192703
+              ],
+              "positive": 3
+            },
+            "COPY40-COPY1252": {
+              "median_ns": -288744,
+              "ns": [
+                -1001687,
+                -4408215,
+                -288744,
+                495093,
+                2194043,
+                -524689,
+                -69270
+              ],
+              "positive": 2
+            },
+            "COPY40-LAST": {
+              "median_ns": -261973,
+              "ns": [
+                -2527962,
+                1461754,
+                -4024472,
+                1086287,
+                2715916,
+                -3822502,
+                -261973
+              ],
+              "positive": 3
+            },
+            "DRAIN-LAST": {
+              "median_ns": 630578,
+              "ns": [
+                941875,
+                3193056,
+                -3480988,
+                532844,
+                790639,
+                -3492670,
+                630578
+              ],
+              "positive": 5
+            }
+          },
+          "direction": 1
+        }
+      ]
+    },
+    "many": {
+      "exact": {
+        "changed_cuts": [
+          "0/down",
+          "0/down_bias",
+          "0/product",
+          "0/sum",
+          "1/sum",
+          "2/sum",
+          "3/sum",
+          "4/sum",
+          "5/sum",
+          "6/sum",
+          "7/sum",
+          "mixed",
+          "rank_sum1",
+          "rank_sum2",
+          "rank_sum3"
+        ],
+        "control_and_safe_arms": 4,
+        "ffn_F32": 92160,
+        "finite_intermediates_per_arm": 84,
+        "mutant_different_F32": 2880
+      },
+      "prices": [
+        {
+          "arms": {
+            "COPY1252": {
+              "delayed_claims": 0,
+              "drained_ns": 61871486,
+              "graph_ns": 61867809,
+              "wait_ns": 511,
+              "workspace_B": [
+                6268416
+              ]
+            },
+            "COPY40": {
+              "delayed_claims": 0,
+              "drained_ns": 62076292,
+              "graph_ns": 62073607,
+              "wait_ns": 712,
+              "workspace_B": [
+                6268416
+              ]
+            },
+            "DRAIN": {
+              "delayed_claims": 7,
+              "drained_ns": 61104300,
+              "graph_ns": 60438727,
+              "wait_ns": 60274829,
+              "workspace_B": [
+                6268416
+              ]
+            },
+            "LAST": {
+              "delayed_claims": 7,
+              "drained_ns": 61219759,
+              "graph_ns": 61215862,
+              "wait_ns": 8106882,
+              "workspace_B": [
+                6268416
+              ]
+            }
+          },
+          "comparisons": {
+            "COPY1252-LAST": {
+              "median_ns": 327767,
+              "ns": [
+                3591847,
+                -1703479,
+                327767,
+                -481277,
+                411936,
+                3609850,
+                -1932330
+              ],
+              "positive": 4
+            },
+            "COPY40-COPY1252": {
+              "median_ns": -1191194,
+              "ns": [
+                -1869552,
+                1882215,
+                2850911,
+                -2223459,
+                444597,
+                -1531445,
+                -1191194
+              ],
+              "positive": 3
+            },
+            "COPY40-LAST": {
+              "median_ns": 856533,
+              "ns": [
+                1722295,
+                178736,
+                3178678,
+                -2704736,
+                856533,
+                2078405,
+                -3123524
+              ],
+              "positive": 5
+            },
+            "DRAIN-LAST": {
+              "median_ns": -115459,
+              "ns": [
+                1943482,
+                -2503737,
+                -431503,
+                380667,
+                -115459,
+                1774593,
+                -1515004
+              ],
+              "positive": 3
+            }
+          },
+          "direction": 0
+        },
+        {
+          "arms": {
+            "COPY1252": {
+              "delayed_claims": 0,
+              "drained_ns": 61197987,
+              "graph_ns": 61194681,
+              "wait_ns": 441,
+              "workspace_B": [
+                6268416
+              ]
+            },
+            "COPY40": {
+              "delayed_claims": 0,
+              "drained_ns": 61709851,
+              "graph_ns": 61706836,
+              "wait_ns": 481,
+              "workspace_B": [
+                6268416
+              ]
+            },
+            "DRAIN": {
+              "delayed_claims": 7,
+              "drained_ns": 61239445,
+              "graph_ns": 60547632,
+              "wait_ns": 60511695,
+              "workspace_B": [
+                6268416
+              ]
+            },
+            "LAST": {
+              "delayed_claims": 7,
+              "drained_ns": 60863497,
+              "graph_ns": 60861193,
+              "wait_ns": 7766581,
+              "workspace_B": [
+                6268416
+              ]
+            }
+          },
+          "comparisons": {
+            "COPY1252-LAST": {
+              "median_ns": 394053,
+              "ns": [
+                2795626,
+                1236570,
+                19938,
+                4215661,
+                -2570353,
+                394053,
+                -2937995
+              ],
+              "positive": 5
+            },
+            "COPY40-COPY1252": {
+              "median_ns": 264098,
+              "ns": [
+                338257,
+                -486026,
+                1581850,
+                -1277868,
+                1594754,
+                -886180,
+                264098
+              ],
+              "positive": 4
+            },
+            "COPY40-LAST": {
+              "median_ns": 750544,
+              "ns": [
+                3133883,
+                750544,
+                1601788,
+                2937793,
+                -975599,
+                -492127,
+                -2673897
+              ],
+              "positive": 4
+            },
+            "DRAIN-LAST": {
+              "median_ns": 418017,
+              "ns": [
+                418017,
+                756916,
+                270851,
+                1229876,
+                -122391,
+                2669659,
+                -2896537
+              ],
+              "positive": 5
+            }
+          },
+          "direction": 1
+        }
+      ]
+    }
+  },
+  "cost": "INCONCLUSIVE_LAYER_COST",
+  "full_model_forwards": 0,
+  "gpu_compute": false,
+  "numerical": "GO_AFTER_DOWN",
+  "status": "MEASURED_ROUTED_CPU0"
+}

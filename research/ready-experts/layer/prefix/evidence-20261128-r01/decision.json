@@ -1,0 +1,589 @@
+{
+  "artifacts_sha256": {
+    "archive.json": "5152541cfc3974b1faa0051f00be3fd616bff030ca27dcf49411397afba7e037",
+    "batch.json": "cc8f16926fe2bba7af857c35ad05e7150d83641431d4e3d86d0f5d4ec285486c",
+    "commands.json": "e841abdcfb00083543c2de9a6145611604cf4e0e3fa2bdd7dfccd2b499654699",
+    "consumer-arms.json.gz": "5f1944d71c8dd653706d39f25cf1cdbc344674865e7b3c701491de3359cf3a59",
+    "pair-arms.jsonl.gz": "dba1bce138b40086d43f3f21e4b4e169d1f0ee79ec3fe43244ae6d385239ead3",
+    "reach.json": "5ef2a32422c348d9e1962729968f52f61d5167ca20efc93d1f5d02f222266b19"
+  },
+  "consumer": {
+    "cold_stage_words": 1013760,
+    "exact_arms": 66,
+    "families": {
+      "E32": {
+        "blocks": [
+          {
+            "consumer_ns": [
+              15740,
+              26710,
+              29265,
+              17714,
+              34575
+            ],
+            "consumer_read_overlap_ns": [
+              15740,
+              26710,
+              29265,
+              17714,
+              34575
+            ],
+            "median_elapsed_ns": {
+              "E32": 6785545,
+              "FULL": 6055238,
+              "L32": 6803208,
+              "READY": 5629565
+            },
+            "median_savings_ns": {
+              "FULL": -629306,
+              "L32": 69821,
+              "READY": -1158404
+            },
+            "paired_savings_ns": {
+              "FULL": [
+                -596635,
+                -1137396,
+                -95891,
+                -2084561,
+                -629306
+              ],
+              "L32": [
+                69821,
+                -137971,
+                188536,
+                -1336591,
+                130686
+              ],
+              "READY": [
+                58941,
+                -1291726,
+                -1158404,
+                -2823745,
+                -1024722
+              ]
+            }
+          },
+          {
+            "consumer_ns": [
+              30547,
+              42129,
+              34876,
+              19456,
+              34295
+            ],
+            "consumer_read_overlap_ns": [
+              30547,
+              42129,
+              34876,
+              19456,
+              34295
+            ],
+            "median_elapsed_ns": {
+              "E32": 6635331,
+              "FULL": 5967112,
+              "L32": 6711535,
+              "READY": 5451660
+            },
+            "median_savings_ns": {
+              "FULL": -668219,
+              "L32": 6522,
+              "READY": -1319006
+            },
+            "paired_savings_ns": {
+              "FULL": [
+                -662439,
+                -1085146,
+                -668219,
+                -698748,
+                -414892
+              ],
+              "L32": [
+                6522,
+                -220867,
+                -65503,
+                37601,
+                160783
+              ],
+              "READY": [
+                -1356478,
+                -1494658,
+                -1319006,
+                -953077,
+                -757729
+              ]
+            }
+          }
+        ],
+        "decision": "NO_GO_LOCAL"
+      },
+      "EALL": {
+        "blocks": [
+          {
+            "consumer_ns": [
+              166695,
+              168417,
+              169851,
+              158929,
+              153038
+            ],
+            "consumer_read_overlap_ns": [
+              166695,
+              168417,
+              169851,
+              158929,
+              153038
+            ],
+            "median_elapsed_ns": {
+              "EALL": 6585718,
+              "FULL": 6055238,
+              "LALL": 7029024,
+              "READY": 5629565
+            },
+            "median_savings_ns": {
+              "FULL": -522915,
+              "LALL": 317199,
+              "READY": -956153
+            },
+            "paired_savings_ns": {
+              "FULL": [
+                -522915,
+                -440211,
+                -28634,
+                -692466,
+                -560737
+              ],
+              "LALL": [
+                317199,
+                955632,
+                236907,
+                9367,
+                444939
+              ],
+              "READY": [
+                132661,
+                -594541,
+                -1091147,
+                -1431650,
+                -956153
+              ]
+            }
+          },
+          {
+            "consumer_ns": [
+              158168,
+              162266,
+              164450,
+              161785,
+              179789
+            ],
+            "consumer_read_overlap_ns": [
+              158168,
+              162266,
+              164450,
+              161785,
+              179789
+            ],
+            "median_elapsed_ns": {
+              "EALL": 6516318,
+              "FULL": 5967112,
+              "LALL": 6699553,
+              "READY": 5451660
+            },
+            "median_savings_ns": {
+              "FULL": -527173,
+              "LALL": 144702,
+              "READY": -1177960
+            },
+            "paired_savings_ns": {
+              "FULL": [
+                -629668,
+                -798606,
+                -527173,
+                -431924,
+                -506435
+              ],
+              "LALL": [
+                144702,
+                39775,
+                106351,
+                388043,
+                159771
+              ],
+              "READY": [
+                -1323707,
+                -1208118,
+                -1177960,
+                -686253,
+                -849272
+              ]
+            }
+          }
+        ],
+        "decision": "NO_GO_LOCAL"
+      }
+    },
+    "invalid_reduction_words": 720,
+    "ordered_ffn_words": 190080,
+    "pack_read_bytes": 925782016,
+    "paired_per_order": 5,
+    "slots_bytes": 533191680,
+    "stage_archive_files": 8,
+    "timed_arms": 60,
+    "timed_set_bytes": 793152000,
+    "weighted_words": 760320
+  },
+  "control": {
+    "M3": "PARTIAL",
+    "M4": "NOT_MET",
+    "main": "293f5b184da9439771cce361cd33fc4068d749f4",
+    "operational": "R0 slots40-persistent",
+    "pr_base": "ccfda06299d9725975b63c75f28fece4cc57425e",
+    "unit_base": "44972eaa383fb433c55d6b7e8f5987f739932e97",
+    "unit_base_tree": "4f11530b41492697ee3ee9cfa4571a56419ce279"
+  },
+  "machine": {
+    "cpu": "AMD Ryzen AI 9 HX 370 w/ Radeon 890M",
+    "driver": "620.73.04",
+    "filesystem": "btrfs",
+    "gpu": "NVIDIA GeForce RTX 4060 Laptop GPU",
+    "host": "NOSdrive",
+    "index_sha256": "63b7a76c7063e51944ee8a6296aea43109a336330b3657ffa357cddb44b59813",
+    "kernel": "7.3.4-200.fc44.x86_64",
+    "model_sha256": "582bd40f6886200101f4c4ed9f25f3fe80cc14c86e9e2b37746cd8904a0c622d",
+    "pack_sha256": "f17e9fbf6f6aed1ad60ca7da3431c5156a946d2e0bf119722afc1f934cbc6b11"
+  },
+  "pair": {
+    "cases": {
+      "decode": {
+        "blocks": [
+          {
+            "median_gain_ns": {
+              "D": 693779,
+              "S": 444288
+            },
+            "paired_ns": {
+              "D": [
+                693779,
+                816109,
+                469314
+              ],
+              "S": [
+                465077,
+                444288,
+                316366
+              ]
+            }
+          },
+          {
+            "median_gain_ns": {
+              "D": -2049325,
+              "S": -1907306
+            },
+            "paired_ns": {
+              "D": [
+                -1687732,
+                -2049325,
+                -2227181
+              ],
+              "S": [
+                -1602261,
+                -1907306,
+                -1991476
+              ]
+            }
+          }
+        ],
+        "decision": "INCONCLUSIVE",
+        "passes_price_both_orders": false,
+        "required_ns": 4467682
+      },
+      "prefill": {
+        "blocks": [
+          {
+            "median_gain_ns": {
+              "D": 2373996,
+              "S": 462082
+            },
+            "paired_ns": {
+              "D": [
+                2815569,
+                2370129,
+                2373996
+              ],
+              "S": [
+                462082,
+                492409,
+                422887
+              ]
+            }
+          },
+          {
+            "median_gain_ns": {
+              "D": 526032,
+              "S": 574753
+            },
+            "paired_ns": {
+              "D": [
+                219655,
+                526032,
+                634646
+              ],
+              "S": [
+                406185,
+                621752,
+                574753
+              ]
+            }
+          }
+        ],
+        "decision": "GO_COMPONENT",
+        "passes_price_both_orders": false,
+        "required_ns": 6950087
+      }
+    },
+    "device_delta": {
+      "busy_ms": 540,
+      "read_sectors_512B": 2170224,
+      "write_sectors_512B": 0
+    },
+    "logical_bytes": 1111154688,
+    "selection": {
+      "decode": {
+        "gap": 36864,
+        "keys": [
+          [
+            34,
+            28,
+            8,
+            106
+          ],
+          [
+            34,
+            14,
+            6,
+            107
+          ]
+        ],
+        "records": [
+          {
+            "matrices": [
+              "0eefd13f5c55065a88a9542c3600914b5736031af1d7301977faab822dfe02db",
+              "44f46bfebc03fe839a49e9d5f048851800a954fa8946ee384d170b2af7ceca8f",
+              "2aee049da52443cb9696088d331898b206659d6f07f52e2506d273e6a723b76a"
+            ],
+            "offset": 59107516416
+          },
+          {
+            "matrices": [
+              "88377435b00b7f6f478377b27949f42ced677b0a6fa57a26f31356b1981fcbdd",
+              "5bc31054b6993c89c4df93a8f8126fcdaa4af3bf91e28f7fb7e1853898b5dac0",
+              "bf893067cdd3d9cda7414b9c311d742ca5918ec6d375d9f4891a3e01e0043459"
+            ],
+            "offset": 59120775168
+          }
+        ],
+        "site": [
+          9,
+          1,
+          34,
+          -1
+        ]
+      },
+      "prefill": {
+        "gap": 36864,
+        "keys": [
+          [
+            1,
+            39,
+            11,
+            47
+          ],
+          [
+            1,
+            15,
+            7,
+            48
+          ]
+        ],
+        "records": [
+          {
+            "matrices": [
+              "a2f899ee6c5f2c694f980c77a2a8ff1e680f8bfcdbcc6eaad1e8f99ff664e7d8",
+              "b7b57aec76018f4021c1f2cd521672be3bed74217371f34262ea6551afb03912",
+              "4e7434d4b2d859ea0c9dcf46894b6a2fb58491484c35338bc6e43a6d27b8310b"
+            ],
+            "offset": 2320281600
+          },
+          {
+            "matrices": [
+              "88f07a2b9492647439e7c7b9794a006bcc53c06ed7f56f3a0676f9f739776d2f",
+              "7eade9725e9e1cc57e938e81a10b50d6c266b97c0024092a63c1f95f8c6ec0c3",
+              "e71cc4352804fd8b7510084a49a89db53d2e33f63ba5102eab04574882471e7b"
+            ],
+            "offset": 2333540352
+          }
+        ],
+        "site": [
+          2,
+          1,
+          1,
+          0
+        ]
+      }
+    },
+    "sources": {
+      "P106": "cb13ff990afb3164bb61086e57a6caeff14187b66a1784c88e79cd3d521121bd",
+      "P97": "05e32c2af753026e471fa61c9dcb43867ca6b9a3001045a2138bc96c422928dc"
+    }
+  },
+  "provenance": {
+    "batch": {
+      "commit": "4c0672a4515e81520bc16d5c4b2b7198fbc1c52d",
+      "elapsed_s": 2.21,
+      "peak_rss_kib": 55128,
+      "tree": "9f0a22a9a499185f9352e65c0aee457022a86d01"
+    },
+    "build": {
+      "compiler_sha256": "ca48a2d27d0796399adc3387225eec4be62974e26fa299710edfde0c1af5aa63",
+      "crypto_sha256": "695648ac8dc5e6a2b70e5e72399940de0f84bf24fddb7dd18949ba40bc575c72",
+      "libs": {
+        "libggml-base.so.0.15.3": "6e27d9ecb86e4747177189d2d2f6390280a2ee1000221ad68a0404023ea72539",
+        "libggml-cpu.so.0.15.3": "9aabce5751c5d7ca19b50e4cabb1fcf484c1581d275141dae8aba8ed33060313"
+      },
+      "source_sha256": {
+        "build.py": "790c22897116bb41719bef920ae2961560d79a30f7dc8e6d6f3c6f5c7a8fa1ce",
+        "native.cpp": "1676a4f279548be5bf16af2141ca5353a6264f5e1ef702ddb99a7322be8bcede",
+        "protocol.md": "e65da54358642101702601a74f2e98157dde05bb7037e89538ff5384f346609c"
+      },
+      "strong_include_sha256": "d752ea8d920bc2dee7cdd361a69db837b000548f9efabcb7c0d7b4a5b6198629",
+      "strong_source_sha256": "59c0d7f98319a36c4ab00070a6739d18050a94fd1fd236c51f04dba91ae87c6d"
+    },
+    "consumer": {
+      "binary_sha256": "18792e9060123df9a57a7f377d250e964d1eff82fcdf4702cb6ec557efad0ca6",
+      "build_sha256": "47176f0f55dfee66c7ab84edb52ab1b4e8a9fa96e93f9b43c89fd641e9f2b225",
+      "c55_sha256": "24ed9877e28809d2709afcab545ad652c7d5428a676d22428f33f2d5c36dbce1",
+      "commit": "d9c0fc5a06f5c0bbf38912c946bc9e8f3d112394",
+      "gold_sha256": "6bc70d200ac08db00f6c3fa34098bd660d2ba4bc4c02368de319cbadf6167333",
+      "grader_sha256": "7e33b174034f6b9a0184789e01666d984905bc17053ee15ece8ef7d2cb5bcb66",
+      "monitor_sha256": "edb11e920ce2b7cafe0a846af3b70579e3429a8e753eca2aa70c67850675765c",
+      "placement_sha256": "adc58125a13aa286371c127f41bf67b0ed4756e9ec2dc08bd2cb6e7ed754a000",
+      "plan_sha256": "1f1caaba34f4581f253691feee436358a8e3bcb2c67b5fd489418f52176510f1",
+      "prestate_sha256": "9bc5d91831e50f4f8cacc73f5b34b02542c2c8b5010cb1e620f7ddb7d2101ec6",
+      "protocol_sha256": "e65da54358642101702601a74f2e98157dde05bb7037e89538ff5384f346609c",
+      "rank_receipt_sha256": "3ef107129e6d4c7afb755ac5836c9099b37a37f3eb3ab87f25fed3e9ba28dd53",
+      "reference_sha256": "8f9b7bb692c9974eac9bca2cb8a4d08436ef83a1e245ba2bbe37442430c6e10f",
+      "source_sha256": "d0175a203e6e38f51cabf8e23cc7ba01b6e06cc5fd3cdf58cf0c1e4e2c9dc792",
+      "stage_authority": {
+        "down-biased.f32": "9caf0e5021ce0753eb751a11685bd622ea0fa9a8aed874195ec1a931ed1a41ea",
+        "down-rank0.q8": "615c73878e6fe04563c0600767aaff8449ad07e31bdb5f37c28b0b08bbdb0e28",
+        "down.f32": "1a7c56184d4c32881793322aec0fe0f75423c5af33319acb0532dda91fecbef4",
+        "gate-biased.f32": "1b88ca0e4f2c97774e5ce8330eda30c18d9a158393e49f21e39b107bd8323fce",
+        "gate.f32": "621be8e39a8441adbc11da195581473166198ac2e251b25cc71a4c56e58a18ea",
+        "mix.f32": "2144b1ce76f2161a0ae725f6341c7811c33c5c4ae16366620736103704feb18d",
+        "swiglu.f32": "c9db66179554dc622c2533e5371aac2ef5dfcc2f3e2d82e7bcc012d69ac133c8",
+        "up-biased.f32": "20596cd0e86bec7114743d0cd18ee995622ff461cc94bb368e8d0c8db61b62fa",
+        "up.f32": "25069d3ddd9505efd2de5a3d2119d8f7f26ab28b250409146d2cb1d0153e8ed8",
+        "weighted.f32": "d80c7ba29c304d76099cf7dd28cfe58f365f919cc494ea247507614097c44a4b"
+      },
+      "stdout_sha256": "0ab926a8bcf0d18dc9bbd780224654eff888e5aac1f179cee4f0ca8dd6eac9d3",
+      "tree": "b72b06eab14e26e86664d351d8af9f06df7523cd"
+    },
+    "pair": {
+      "c55_sha256": "24ed9877e28809d2709afcab545ad652c7d5428a676d22428f33f2d5c36dbce1",
+      "commit": "16c8b6b52949b831b904f418eb6d0d3a274a31d5",
+      "program_sha256": "beb87a908d256f36d6b96f825cb0e74293d68d3317855e90b13ae7386a3bc230",
+      "protocol_sha256": "325cf47ac1a19127ae6ebd3207d657a3c7bbf168b82a4b5b7887557137b9239c",
+      "tree": "16c80dd5c6eaf5877deb2a0f2122224d020e0c1d"
+    },
+    "pair_arms_sha256": "3fb477bf228b925f1deabcc8bd942a92af9c22900383b72fffb30114f1cd2124",
+    "physical_raw_receipts": {
+      "tesy-coalesced-pairs-20261128-r01": "3a84cf71a63a0337fbd36e02ae66c80a9a9389859e962b9b6fab06d8033ef33e",
+      "tesy-prefix-consumer-20261128-r01": "05a0cf2969db8f19f6e26841718de39e8e428111f183ee8ef312a6a91aa4c7c9",
+      "tesy-prefix-consumer-build-20261128-r01": "47176f0f55dfee66c7ab84edb52ab1b4e8a9fa96e93f9b43c89fd641e9f2b225",
+      "tesy-prefix-consumer-c55-20261128-r01": "24ed9877e28809d2709afcab545ad652c7d5428a676d22428f33f2d5c36dbce1"
+    },
+    "reach": {
+      "commit": "0b2f820cef89d2e19d9ec548b1cefc7acc41b4d8",
+      "elapsed_s": 2.21,
+      "peak_rss_kib": 55348,
+      "tree": "2098d20477cbf367cf2bf98796d53f4d2a05aa33"
+    },
+    "reach_r01_failure": {
+      "cause": "ValueError('layer or tile ordering')",
+      "commit": "a11ec5e2",
+      "elapsed_s": 0.32,
+      "peak_rss_kib": 54932,
+      "sha256": "681669daf12e063aa988dbc1727d1bb8101cf1cdfbfb64a4ab8bde41f1430427"
+    }
+  },
+  "resources": {
+    "c55": {
+      "concurrent": [],
+      "cpu": "AMD Ryzen AI 9 HX 370 w/ Radeon 890M",
+      "device": "/dev/nvme0n1p3[/home]",
+      "driver": "620.73.04",
+      "filesystem": "btrfs",
+      "gpu": "NVIDIA GeForce RTX 4060 Laptop GPU",
+      "power": {
+        "batteries": [
+          {
+            "name": "BAT0",
+            "status": "Not charging"
+          },
+          {
+            "name": "hid-0018:04F3:4359.0005-battery-7",
+            "status": "Unknown"
+          }
+        ],
+        "online_sources": [
+          "AC0",
+          "ucsi-source-psy-USBC000:002"
+        ],
+        "profile": "performance",
+        "source": "AC"
+      },
+      "samples_bytes": 41807,
+      "span_s": 60.05285597400507,
+      "status": "PASS_RESOURCE_WINDOW_ONLY",
+      "swap_total_bytes": 16347820032,
+      "vram_mib": 8188.0
+    },
+    "consumer": {
+      "c118_maxima": {
+        "cpu_c": 49.875,
+        "gpu_c": 40.88,
+        "nvme_c": 33.85
+      },
+      "c118_s": 60.18426304600143,
+      "c118_samples": 61,
+      "child_s": 0.6458167300006608,
+      "gpu_compute": 0,
+      "model_forwards": 0,
+      "peak_bytes": 112615424,
+      "peak_swap_bytes": 0,
+      "read_characters": 927686292,
+      "runtime_maxima": {
+        "cpu_c": 48.375,
+        "gpu_c": 41.0,
+        "nvme_c": 35.85
+      },
+      "runtime_samples": 2,
+      "scope_s": 61.43006784699537
+    },
+    "energy_j": null,
+    "pair": {
+      "gpu_compute": 0,
+      "maxima": {
+        "cpu_c": 69.5,
+        "gpu_c": 41.74,
+        "nvme_c": 34.85
+      },
+      "model_forwards": 0,
+      "peak_bytes": 97251328,
+      "samples": 61,
+      "scope_envelope_s": 62.20472250299645,
+      "swap_bytes": 0
+    }
+  },
+  "schema": "tesy-exact-ffn-and-command-cost-v1"
+}

@@ -1,0 +1,24 @@
+# Um único banco de pesos no loader e no escalonador do Tesy
+
+A medição posterior exercitou as reservas e a publicação concorrentes no manager nativo, cobrou a formação do banco desde o primeiro turno e mediu a barreira de 13 hits com dois misses reais. [Decisão após a renovação e a reconstrução da fila](renewal/README.md)
+
+**GO para o endereçamento partilhado no C291 existente.** No portátil, 75 descritores de matrizes das 25 camadas CPU referiram um único buffer. Os quatro workers nativos serviram os oito registos originais das camadas 0 e 24. Os callbacks de remap e wave emitiram os frames corretos, preservaram o parking −1 e a revisita a CPU0 consumiu os pesos já publicados. As nove projeções produziram os mesmos 103 680 valores F32 que o controlo, bit a bit. Trocar apenas o endereço da camada na revisita alterou os 34 560 valores dessa visita. [Protocolo](protocol.md) · [Patch do manager de experts](runtime.patch) · [Resultados por braço e por projeção](evidence-20261128-r01/decision.json)
+
+| Braço | Buffers / descritores CPU | Frames de CPU0, depois CPU24 | Leituras / SET de pesos | F32 divergentes em CPU0, CPU24, revisita CPU0 |
+|---|---:|---|---:|---:|
+| STAGED, controlo por camada | 25 / 75 | 0–3, 0–3 em buffers distintos | 8 / 24 | Referência |
+| SHARED, proprietário partilhado | 1 / 75 | 1 248–1 251, 0–3 | 8 / 24 | 0 / 0 / 0 |
+| WRONG, ID físico da outra camada na revisita | 1 / 75 | Mesma publicação que SHARED | 8 / 24 | 0 / 0 / 34 560 |
+
+O patch altera o loader, o endereço de destino usado pelo worker e os IDs emitidos para as multiplicações. A tabela lógica continua a ter 40 slots por camada. As três vistas de cada camada identificam gate, down e up pelos offsets originais do registo alinhado. Em cada visita confirmámos os hashes dos componentes e as gerações das quatro posições contra o índice C291. A camada 0 usou os IDs 47, 82, 75 e 52 do token observado. Repetimos propositadamente os mesmos IDs na camada 24 com os **pesos da camada 24** para expor colisões de identidade. O grafo GGML executou três MUL_MAT_ID por visita, num só split CPU e com workspace de 149 792 B. O erro imposto ao consumidor alterou precisamente 11 520 F32 em cada uma das três projeções da última visita. O controlo STAGED qualifica o endereçamento com igual I/O e iguais cópias. [Fixture e contraprova](fixture.cpp)
+
+**Memória e alcance.** O buffer partilhado reservou 16 553 807 883 B incluindo alinhamento, para 1 000 primários e 252 lugares de retenção. Os buffers do controlo reservaram ao todo 13 221 990 500 B para os 1 000 primários. Só oito registos receberam dados em cada processo. O pico de memória do scope foi 225 550 336 B. Esse pico não estima a ocupação do banco cheio. A execução usou o construtor de teste do leitor C291 com os oito offsets autenticados do pack integral. O mapa físico foi prescrito antes da primeira reserva. A produção de IDs por um router durante esta fixture, a renovação concorrente do banco, os logits do modelo completo e o tempo do cliente continuam por qualificar. [Medição e providers](evidence-20261128-r01/physical.json) · [Build do C291 pinado](evidence-20261128-r01/build.json)
+
+**Custo e falhas.** Os três processos pediram 317 325 312 B ao NVMe interno. O scope durou 61,210 s, incluindo 60,148 s de C118. Zero swap, forwards integrais, pedidos HTTP e kernels GPU. Houve dois pontos de telemetria durante o recorte nativo, com máximos amostrados de 52,625 °C na CPU, 41,86 °C na GPU e 33,85 °C no NVMe. A primeira compilação falhou numa conversão para string da biblioteca JSON pinada. Uma primeira admissão terminou antes de arrancar os workers por faltar o diretório do inventário C118. Ambas as tentativas e os binários/saídas F32 ficaram arquivados. [Tentativas anteriores](evidence-20261128-r01/failed-attempts.json) · [Comandos e proveniência](evidence-20261128-r01/provenance.json) · [Arquivo privado](evidence-20261128-r01/archive.json)
+
+O resultado mantém o NO_GO para uma reescrita integral com este fundamento no HX 370. O próximo discriminante é promover e capturar pesos *durante* o serviço com um empréstimo ativo, comparar contra a mesma agenda com cópia e observar quando o consumidor e o cliente podem efetivamente avançar. Reabrir a decisão de backend se uma dependência crítica necessária ao prazo não puder ser expressa pelo caminho existente e um protótipo comparável a remover com vantagem líquida. O melhor nominal de produto continua em 17,689 s até ao primeiro conteúdo final e 5,357 tok/s de decode. R0 slots40-persistent, M3 PARTIAL, M4 NOT_MET. [Tempo físico do serviço em grupo](../README.md) · [Conta dos 252 lugares no pedido nominal](../address-result.md)
+
+```sh
+python3 -IB research/ready-experts/cpu_wave/frame_lease/group_service/shared_owner/run.py check \
+    research/ready-experts/cpu_wave/frame_lease/group_service/shared_owner/evidence-20261128-r01/decision.json
+```

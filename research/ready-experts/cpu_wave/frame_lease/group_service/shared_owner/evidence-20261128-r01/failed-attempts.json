@@ -1,0 +1,26 @@
+[
+  {
+    "artifact": {
+      "bytes": 10653,
+      "sha256": "2a4b75d859bb814ef03e38b08081e3faf671c7375ba336ff7bf2419519260f88"
+    },
+    "attempt": "tesy-shared-owner-build-20261128-r01",
+    "commit": "f9a5d2dfc708d48e1e7b890e8be4c714b6e9ea39",
+    "elapsed_s": 4.355125855014194,
+    "explanation": "Implicit comparison of a std::string with the pinned vendored JSON value did not compile. Explicit string extraction fixed the ABI check.",
+    "stage": "build",
+    "status": "FAIL_PRESERVED"
+  },
+  {
+    "artifact": {
+      "bytes": 2399,
+      "sha256": "fc2efbfd3af700aee57eee0d50eb9c3c9cddc66eb391dc6670eb2f2efb820be8"
+    },
+    "attempt": "tesy-shared-owner-run-20261128-r01",
+    "commit": "f47c5aedb57d05a22ff724577ecdd7b9b6553106",
+    "elapsed_s": 0.14141823899990413,
+    "explanation": "C118 requires the exclusive raw subdirectory before opening its inventory journal. The runner now creates it before admission. No native worker or forward started.",
+    "stage": "admission",
+    "status": "FAIL_PRESERVED"
+  }
+]

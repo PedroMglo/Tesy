@@ -77,6 +77,8 @@ def require_session_id(rid):
 
 
 def campaign(a, out, runtime=None):
+    workload = getattr(runtime, "workload", None)
+    cache_counts = [(0, 2043), (2044, 153)] if workload is None else workload.cache_counts
     frozen = sources() if runtime is None else sources(runtime.selection)
     historical = frozen if runtime is None else runtime.historical_projection(frozen)
     check(
@@ -307,7 +309,7 @@ def campaign(a, out, runtime=None):
             t = response["timings"]
             save(raw / f"T{ix + 1}-timings-observed.json", t)
             check(
-                (t["cache_n"], t["prompt_n"]) == [(0, 2043), (2044, 153)][ix],
+                (t["cache_n"], t["prompt_n"]) == cache_counts[ix],
                 "cache/prompt accounting differs",
             )
             ix += 1
@@ -340,7 +342,10 @@ def campaign(a, out, runtime=None):
             size_guard = threading.Thread(target=guard_output, args=(proc,))
             size_guard.start()
             try:
-                result = client.run(out, C281 / "protocol.json")
+                if workload is None:
+                    result = client.run(out, C281 / "protocol.json")
+                else:
+                    result = workload.run(out, client, preset, own)
                 check(
                     result["status"] == "CLIENT_TWO_REQUESTS_PASS" and ix == 2,
                     result.get("failure") or "two requests not accepted",
@@ -412,8 +417,14 @@ def campaign(a, out, runtime=None):
         status="PASS_TWO_NATURAL_REQUESTS_LOCAL_HISTORY",
         rows=rows,
         model_launches=1,
-        nominal_first_final_le_10s=rows[1]["first_final_s"] <= 10,
-        nominal_decode_ge_6=rows[1]["decode_tok_s"] >= 6,
+        **(
+            dict(
+                nominal_first_final_le_10s=rows[1]["first_final_s"] <= 10,
+                nominal_decode_ge_6=rows[1]["decode_tok_s"] >= 6,
+            )
+            if workload is None
+            else dict(workload=workload.name)
+        ),
         start_inventory=sha256(raw / (rid + ".start-inventory.jsonl")),
         ready_s=result["readiness_after_popen_s"],
         maxima=m["maxima"],

@@ -1,0 +1,61 @@
+{
+  "HTTP_requests": 0,
+  "artifacts": {
+    "archive.json": {
+      "bytes": 260,
+      "sha256": "62b58622b5c8e9c58816d17cfae231d7aec769235e563898e251c5aa7869515b"
+    },
+    "decision.json": {
+      "bytes": 13543,
+      "sha256": "5c9c4fff78d8b4fdcaacded88b3abc0053a9f7164fc9dedcbc906b2248a3c5d6"
+    },
+    "physical.json": {
+      "bytes": 6444,
+      "sha256": "d973a34c4f80864caf4b5b9e543fc87bd7984cd4693d7731c50b4227f9c1d3e7"
+    },
+    "samples.json.gz": {
+      "bytes": 35325,
+      "sha256": "5d98e24a967e9737ad64769005f6793dc1e6e5bb813778baccec4f951706b282"
+    }
+  },
+  "binary_receipt": "d5e501bbc55f0398b35d7cbe1fd34df640abd96fa7d2d19229ccef9b4b5cdd07",
+  "branch": "research/ready-layer",
+  "command": "systemd-run --user --scope --quiet --unit=tesy-renewal-mix-20261128-r01 --slice=app.slice -p MemoryHigh=4G -p MemoryMax=4G -p MemorySwapMax=0 -p RuntimeMaxSec=240 /usr/bin/prlimit --core=0:0 -- /usr/bin/python3 -IB research/ready-experts/cpu_wave/frame_lease/group_service/shared_owner/renewal/mixed.py physical --commit 5065b7c21107cc94a2c86fe934b84b1f4a359788 --backend /mnt/sdisk-ssd-ext/Tesy/repo/c7-native-placement-screen-20260927-1117utc/backends/c269-layer-last-use --build-dir /var/tmp/tesy-group-service-build-20261128-r01 --source-plan /var/tmp/tesy-group-service-run-20261128-r01/plan.json --manifest /home/pmglo/models/tesy-gpt-oss-120b-nvme/tesy-c291-manifest-20261125-r02 --c55-receipt /var/tmp/tesy-renewal-c55-20261128-r01/receipt.json --c55-sha256 5fbd37723e82a76a2f416778220e729dfbb12abc4237df124ff777dc21017e9d --unit tesy-renewal-mix-20261128-r01 --new-output-dir /var/tmp/tesy-renewal-mix-20261128-r01",
+  "commit": "5065b7c21107cc94a2c86fe934b84b1f4a359788",
+  "dependencies": {
+    "C55_archive": "native-renewal-20261128-r01",
+    "original_archive": "native-group-service-20261128-r01"
+  },
+  "entry": "5e815f588d0aacb559346eeca693311222c2a61d7683b03ede140db275107598",
+  "executed_plan": "5d37f17bee266ab092431bf7f533f624eb0908a3e309df0e37a9430602211a21",
+  "expected_faults": [
+    "MUTANT: expert 63 receives a different expert's weight in each journal"
+  ],
+  "failures": [],
+  "gpu_compute": false,
+  "main": "293f5b184da9439771cce361cd33fc4068d749f4",
+  "model_forwards": 0,
+  "original_plan": "3d9523bb9da37a508752ddbda6b5e8d44684488f70e2cf806dd1ecd11d542789",
+  "program": {
+    "bytes": 9996,
+    "sha256": "9e17264554c63ae616aea069cb8bd9434300dcbd5105a80e0fa1009d7151d2eb"
+  },
+  "protocol": {
+    "bytes": 2787,
+    "sha256": "ce4fa59ff464ae944768747d5ee36d866031df85d049ca3cbe142b3cd90eeb7e"
+  },
+  "resources": {
+    "c118_s": 60.16993291200197,
+    "energy_J": null,
+    "max_cpu_C": 52.875,
+    "max_gpu_C": 42.31,
+    "max_nvme_C": 37.85,
+    "max_sample_gap_s": 0.7662919319991488,
+    "peak_B": 758583296,
+    "requested_pack_B": 10577510400,
+    "samples": 27,
+    "swap_peak_B": 0,
+    "wall_s": 79.24860544600233
+  },
+  "tree": "5c40219165165399161bf20b730eab1fce6fc4eb"
+}

@@ -1,0 +1,99 @@
+{
+  "HTTP_requests": 0,
+  "artifacts": {
+    "archive.json": {
+      "bytes": 257,
+      "sha256": "8b4abe8573515e2b6b0db50c34802a11ac3fcaedabcdf6e64002b8b928c22de0"
+    },
+    "build.json": {
+      "bytes": 10998,
+      "sha256": "63a14d33ac22990f62d53965faceceb15a132a6fb3df19936e93b90e648d50bc"
+    },
+    "decision.json": {
+      "bytes": 14173,
+      "sha256": "34ab60df9cb6b69bc66be64629f1e18dfbf1df4b7a44a7c988735dd3886e34ca"
+    },
+    "physical.json": {
+      "bytes": 6015,
+      "sha256": "f8c7afc261300ce267239b78619da4f9ce5d9a7ee778c0960fa571dda6df708b"
+    },
+    "samples.json.gz": {
+      "bytes": 14163,
+      "sha256": "031921d652e9f13bb48760377230ea9b05ba481c7a8c51cae911ba11ae5451b1"
+    }
+  },
+  "base": "11d512002332f64e4d3d00a99ebf4013d1071df7",
+  "base_tree": "607aafcf5ce87b01ecc87127339be3409735bdcd",
+  "branch": "research/ready-layer",
+  "c118_s": 60.167822064991924,
+  "c55": {
+    "bytes": 2728,
+    "sha256": "5fbd37723e82a76a2f416778220e729dfbb12abc4237df124ff777dc21017e9d"
+  },
+  "c55_span_s": 61.004535614003544,
+  "commands": {
+    "build": "systemd-run --user --scope --quiet --unit=tesy-renewal-build-20261128-r01 --slice=app.slice -p MemoryHigh=2G -p MemoryMax=2G -p MemorySwapMax=0 -p RuntimeMaxSec=120 /usr/bin/prlimit --core=0:0 -- /usr/bin/python3 -IB research/ready-experts/cpu_wave/frame_lease/group_service/shared_owner/renewal/run.py build --commit 348cd5ddb0da6ca9d53bb83dd971b70685bad15b --backend /mnt/sdisk-ssd-ext/Tesy/repo/c7-native-placement-screen-20260927-1117utc/backends/c269-layer-last-use --new-output-dir /var/tmp/tesy-renewal-build-20261128-r01",
+    "c55": "/usr/bin/python3 -IB research/qualification-retake/nvme_admission/window.py --nvme-model /home/pmglo/models/gpt-oss-120b-gguf/gpt-oss-120b-MXFP4.gguf --new-output-dir /var/tmp/tesy-renewal-c55-20261128-r01",
+    "physical": "systemd-run --user --scope --quiet --unit=tesy-renewal-run-20261128-r01 --slice=app.slice -p MemoryHigh=4G -p MemoryMax=4G -p MemorySwapMax=0 -p RuntimeMaxSec=360 /usr/bin/prlimit --core=0:0 -- /usr/bin/python3 -IB research/ready-experts/cpu_wave/frame_lease/group_service/shared_owner/renewal/run.py physical --commit 348cd5ddb0da6ca9d53bb83dd971b70685bad15b --backend /mnt/sdisk-ssd-ext/Tesy/repo/c7-native-placement-screen-20260927-1117utc/backends/c269-layer-last-use --build-dir /var/tmp/tesy-renewal-build-20261128-r01 --build-sha256 63a14d33ac22990f62d53965faceceb15a132a6fb3df19936e93b90e648d50bc --manifest /home/pmglo/models/tesy-gpt-oss-120b-nvme/tesy-c291-manifest-20261125-r02 --c55-receipt /var/tmp/tesy-renewal-c55-20261128-r01/receipt.json --c55-sha256 5fbd37723e82a76a2f416778220e729dfbb12abc4237df124ff777dc21017e9d --unit tesy-renewal-run-20261128-r01 --new-output-dir /var/tmp/tesy-renewal-run-20261128-r01"
+  },
+  "commit": "348cd5ddb0da6ca9d53bb83dd971b70685bad15b",
+  "expected_faults": [
+    "EIO: short read quarantined",
+    "WRONG: another expert's frames on the last visit"
+  ],
+  "failed_attempts": [],
+  "gpu_compute": false,
+  "main": "293f5b184da9439771cce361cd33fc4068d749f4",
+  "model": "582bd40f6886200101f4c4ed9f25f3fe80cc14c86e9e2b37746cd8904a0c622d",
+  "model_forwards": 0,
+  "native_commit": "c89c88b342054223e3f27a17fbfd0954803147ac",
+  "pack": "f17e9fbf6f6aed1ad60ca7da3431c5156a946d2e0bf119722afc1f934cbc6b11",
+  "private_F32": {
+    "exact-COPY.f32": {
+      "bytes": 552960,
+      "sha256": "c51a0e049a591cd0a94eb338b40ca6459bd6e7a0a41ba065cb8c60418e3f3be9"
+    },
+    "exact-DISK.f32": {
+      "bytes": 552960,
+      "sha256": "c51a0e049a591cd0a94eb338b40ca6459bd6e7a0a41ba065cb8c60418e3f3be9"
+    },
+    "exact-EIO.f32": {
+      "bytes": 138240,
+      "sha256": "6cd0ebbfe722471e8a7565b53f6175e0071742afabeb7074ebe20d045aee2584"
+    },
+    "exact-ID.f32": {
+      "bytes": 552960,
+      "sha256": "c51a0e049a591cd0a94eb338b40ca6459bd6e7a0a41ba065cb8c60418e3f3be9"
+    },
+    "exact-WRONG.f32": {
+      "bytes": 552960,
+      "sha256": "8a59cef0e1d9c0e2159bfe46ff6166fad76960f6a59c1d372e51769c309e876c"
+    }
+  },
+  "protocol_commit": "7b5c1e9badedee12ed5133e49f309e0b1ba00b9b",
+  "resources": {
+    "build_peak_B": 485199872,
+    "build_s": 6.947691636989475,
+    "device_physical_bytes": null,
+    "energy_J": null,
+    "max_sample_gap_s": 0.7848288059904007,
+    "max_sampled_cpu_C": 50.75,
+    "max_sampled_gpu_C": 41.82,
+    "max_sampled_nvme_C": 36.85,
+    "monitor_samples": 10,
+    "peak_B": 281878528,
+    "physical_s": 66.83255642400763,
+    "requested_pack_B": 7404257280,
+    "swap_peak_B": 0
+  },
+  "sources": {
+    "check_bank.cpp": "7c0c3eda467b8ea88c27a386c6d6e07abd8dcfdbc675818ae18b8f92658b2706",
+    "cpu-weight-bank.h": "56809e6aa8b079f8525e1b7ab21318829f4256e763ce5144ac536a2adbbafb5c",
+    "fixture.cpp": "239ded6480d254963ff9e638d032435dea9ee30c0a43fac7bc224c4ca69b1e17",
+    "grade.py": "4a619cfd0969f251ae9584d25204b87ad35f7748382eb3315f0a77819fd9d7f9",
+    "protocol.md": "2984b194212a95d696689fe5e433eebc93ea35363a071abcdd89b61e1b4bdaf3",
+    "run.py": "75789c86544286b7e57d41ff2e49e9d8ea801c011327a4a09dc121321f2d9df9",
+    "runtime.patch": "9185685c6ee62037170a0b5db7544a02d1a4498f85ca6613d97282bd411162e5"
+  },
+  "tree": "825f6476d9601af0786abe606f327307517aa031"
+}

@@ -1,0 +1,82 @@
+// The genuine forward has already materialized these experts. Only the shadow
+// forwards reuse them. The ordinary conversation must see exactly one update.
+struct SequenceView {
+    int lo, hi;
+    std::vector<uint8_t> bytes;
+    bool operator==(const SequenceView &b) const {
+        return lo == b.lo && hi == b.hi && bytes == b.bytes;
+    }
+};
+
+static SequenceView sequence_view(llama_context *ctx) {
+    llama_synchronize(ctx);
+    auto *mem = llama_get_memory(ctx);
+    const auto n = llama_state_seq_get_size(ctx,0);
+    check(n && n <= 96U<<20, "bounded KV view");
+    SequenceView v{llama_memory_seq_pos_min(mem,0), llama_memory_seq_pos_max(mem,0),
+                   std::vector<uint8_t>(n)};
+    check(llama_state_seq_get_data(ctx,v.bytes.data(),n,0) == n, "complete KV view");
+    return v;
+}
+
+struct LayerPolicy {
+    std::vector<int64_t> age;
+    std::vector<uint32_t> heat;
+    int64_t clock;
+};
+
+// Scratch used as parking in subsequent waves and the resident mapping must
+// already agree after a zero-load replay. This witness excludes only policy
+// counters that a second use of an identical route deliberately increments.
+static auto remap_state(const llama_moe_stream_layer &s) {
+    return std::make_tuple(s.slot_expert,s.slot_state,s.slot_gen,s.slot_claimed,s.expert_slot,
+                           s.seen,s.uniq,s.touched,s.keep,s.demand_slots,s.plan_next_wave,
+                           s.plan_capacity,s.plan_n_waves,s.expert_wave,s.plan_pool,s.pool_used);
+}
+
+static json hot_replays(llama_context *ctx,llama_model *model,const SequenceView &entry,
+                        const Tokens &tokens,int pos,const json &cold) {
+    auto *mgr = model->moe_stream();
+    const auto post = sequence_view(ctx);
+    decltype(mgr->stats) original;
+    std::vector<LayerPolicy> policy;
+    std::vector<decltype(remap_state(*mgr->layers.front()))> physical;
+    {
+        std::lock_guard<std::mutex> held(mgr->mtx);
+        original = mgr->stats;
+        for (const auto &s : mgr->layers) {
+            policy.push_back({s->slot_last_use,s->route_hotness,s->use_counter});
+            physical.push_back(remap_state(*s));
+        }
+    }
+    json replays = json::array();
+    for (int repeat=0; repeat<2; ++repeat) {
+        std::fprintf(stderr,"tesy_hot_cut pos=%d width=%zu repeat=%d\n",pos,tokens.size(),repeat+1);
+        check(llama_memory_seq_rm(llama_get_memory(ctx),0,pos,-1), "shadow rollback");
+        check(sequence_view(ctx) == entry, "live rollback changed entry KV");
+        auto hot = measured(model,true,true,[&]{supplied(ctx,pos,tokens);});
+        const auto c = hot.at("counts").get<Counts>();
+        check(c[0] == 36 && c[1] == 0 && c[2] == 0 && c[3] == 0 && c[5] == 0 &&
+              c[6] == 0 && c[7] == 0 && c[8] == 0 && hot.at("routes") == cold.at("routes"),
+              "shadow route or nonresident expert");
+        for (int i=0; i<int(tokens.size()); ++i)
+            check(row_hash(ctx,i) == cold.at("hashes").at(i).get<std::string>(), "shadow full logits");
+        check(sequence_view(ctx) == post, "shadow post KV");
+        {
+            std::lock_guard<std::mutex> held(mgr->mtx);
+            check(mgr->q_demand.empty() && !mgr->load_failed, "shadow drain");
+            for (size_t i=0; i<mgr->layers.size(); ++i) {
+                auto &s = *mgr->layers[i];
+                check(remap_state(s) == physical[i], "shadow modified a resident or remap mapping");
+                s.slot_last_use = policy[i].age;
+                s.route_hotness = policy[i].heat;
+                s.use_counter = policy[i].clock;
+            }
+            // Freeze the extra hits separately before restoring the ordinary
+            // counter epoch, which also drives hotness decay every 2304 calls.
+            mgr->stats = original;
+        }
+        replays.push_back({{"wall_ns",hot.at("wall_ns")},{"counts",c}});
+    }
+    return replays;
+}

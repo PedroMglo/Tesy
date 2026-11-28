@@ -1,0 +1,174 @@
+{
+  "classification": "SIMULATED_ORACLE",
+  "gpu_forwards": 0,
+  "limits_ns": {
+    "decode": 7833333333,
+    "first_final": 10000000000
+  },
+  "model_forwards": 0,
+  "parent_sha256": "02beb453cbc65d6d481a45c5f7faae51cc39f27dcfc64a5539735c1a6ea0bdc8",
+  "protocol_sha256": "dbc8ac2fab33d1ec5ef9197a8886e95b2ebbdc09d7294fd8eb4ff56909201ab3",
+  "source_sha256": "5a0e5d79136f908aabcc7435dd9017a024678a08bcbefb70e1ed869a8af66f72",
+  "traces": {
+    "P106": {
+      "coarse_schedule_violations": {
+        "early_before_old_pin": 0,
+        "early_before_old_use": 0,
+        "early_reads_cpu": 854,
+        "overlapping_direct_writes": 0,
+        "same_region_old_pin": 40,
+        "same_region_old_use": 40,
+        "successors_before_old_publish": 0,
+        "successors_same_region": 18
+      },
+      "exterior_ns": {
+        "decode": 140194018,
+        "first_final": 793041316
+      },
+      "graph_cut": {
+        "fails_ns": {
+          "decode": 3976995569,
+          "first_final": 10002177003
+        },
+        "first_failing_percent": 21,
+        "fits_ns": {
+          "decode": 3963381049,
+          "first_final": 9978934303
+        },
+        "max_graph_percent": 20
+      },
+      "journal_sha256": "cb13ff990afb3164bb61086e57a6caeff14187b66a1784c88e79cd3d521121bd",
+      "original_schedule_sha256": "bb9f8b85715397bdbe9a578447eaa941d2f8c84f239006b78914edab2d658aba",
+      "population": {
+        "borrowed_cpu": 2992,
+        "borrowed_cuda": 1138,
+        "cancellations": 0,
+        "cpu_generations": 1594,
+        "cuda_generations": 760,
+        "demand_records": 10450,
+        "demand_reserve": 1918,
+        "initial_slots": 1440,
+        "preload": 436,
+        "publications": 2354,
+        "reads": 2354,
+        "sets": 7062,
+        "waves": 2987
+      },
+      "regimes": {
+        "free_graph": {
+          "decision": "GO_TEMPORAL_FIXTURE_ONLY",
+          "floor_ns": {
+            "decode": 3694771206,
+            "first_final": 9565601293
+          },
+          "occupancy": {
+            "cpu_read_before_reserve": 854,
+            "parked_worker_ns": 1231022646
+          },
+          "schedule_ns": {
+            "decode": 3914540073,
+            "first_final": 9856439098
+          },
+          "schedule_sha256": "182cfffd4dfa1607d2681a3fabdec6505846443075dbf866a5ce05904ecd193e"
+        },
+        "paid_graph": {
+          "decision": "NO_GO",
+          "floor_ns": {
+            "decode": 5091576017,
+            "first_final": 12372982468
+          },
+          "occupancy": {
+            "cpu_read_before_reserve": 1071,
+            "parked_worker_ns": 6685753883
+          },
+          "schedule_ns": {
+            "decode": 5330839198,
+            "first_final": 13317059057
+          },
+          "schedule_sha256": "dfe4f1ac40a77450c41236e2639395ed066f8e0a0aacbd666cdce1c0b698c0a6"
+        }
+      },
+      "trajectory_sha256": "4a8a47b3ec0a64220e9734237eae9fd7b886ce35ed81964408eacdc4034931f9"
+    },
+    "P97": {
+      "coarse_schedule_violations": {
+        "early_before_old_pin": 0,
+        "early_before_old_use": 0,
+        "early_reads_cpu": 853,
+        "overlapping_direct_writes": 0,
+        "same_region_old_pin": 40,
+        "same_region_old_use": 40,
+        "successors_before_old_publish": 0,
+        "successors_same_region": 18
+      },
+      "exterior_ns": {
+        "decode": 141408375,
+        "first_final": 150670667
+      },
+      "graph_cut": {
+        "fails_ns": {
+          "decode": 4303133667,
+          "first_final": 10013700487
+        },
+        "first_failing_percent": 50,
+        "fits_ns": {
+          "decode": 4291047394,
+          "first_final": 9989479611
+        },
+        "max_graph_percent": 49
+      },
+      "journal_sha256": "05e32c2af753026e471fa61c9dcb43867ca6b9a3001045a2138bc96c422928dc",
+      "original_schedule_sha256": "b2c33cbdf56b7ff840c347d9f8e03010a3379e9a7e8a33d9220278ea1b3f3638",
+      "population": {
+        "borrowed_cpu": 2992,
+        "borrowed_cuda": 1138,
+        "cancellations": 0,
+        "cpu_generations": 1594,
+        "cuda_generations": 760,
+        "demand_records": 10450,
+        "demand_reserve": 1918,
+        "initial_slots": 1440,
+        "preload": 436,
+        "publications": 2354,
+        "reads": 2354,
+        "sets": 7062,
+        "waves": 2987
+      },
+      "regimes": {
+        "free_graph": {
+          "decision": "GO_TEMPORAL_FIXTURE_ONLY",
+          "floor_ns": {
+            "decode": 3709638343,
+            "first_final": 8957605837
+          },
+          "occupancy": {
+            "cpu_read_before_reserve": 853,
+            "parked_worker_ns": 1083212315
+          },
+          "schedule_ns": {
+            "decode": 3943668839,
+            "first_final": 9257341085
+          },
+          "schedule_sha256": "028db226bd74ef4bd0d21e75b302ed4b3621d66ad16fb173f1f8fc1bff16ba21"
+        },
+        "paid_graph": {
+          "decision": "NO_GO",
+          "floor_ns": {
+            "decode": 4914405904,
+            "first_final": 11408155648
+          },
+          "occupancy": {
+            "cpu_read_before_reserve": 1071,
+            "parked_worker_ns": 5684368601
+          },
+          "schedule_ns": {
+            "decode": 5157499486,
+            "first_final": 12259053174
+          },
+          "schedule_sha256": "aac149beaaea626a24e3d20bf9a0514baa121bb965ac9a78b9065060155ec94c"
+        }
+      },
+      "trajectory_sha256": "4a8a47b3ec0a64220e9734237eae9fd7b886ce35ed81964408eacdc4034931f9"
+    }
+  }
+}

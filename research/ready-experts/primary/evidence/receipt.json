@@ -1,0 +1,1894 @@
+{
+  "cold_by_phase_and_tier": {
+    "decode_before_final_CPU": 156,
+    "decode_before_final_CUDA0": 68,
+    "decode_tail_CPU": 2,
+    "decode_tail_CUDA0": 2,
+    "prefill_CPU": 462,
+    "prefill_CUDA0": 264
+  },
+  "cold_sites_sha256": "494034e6963897900204c0af52d71d570221258a8d397558a04fe9109f46b198",
+  "cold_unique_keys": 954,
+  "decisions": {
+    "r0_fixed": {
+      "placed": "NO_GO",
+      "unchanged": "NO_GO"
+    },
+    "r0_frequency": {
+      "placed": "NO_GO",
+      "unchanged": "NO_GO"
+    },
+    "r0_recent": {
+      "placed": "NO_GO",
+      "unchanged": "NO_GO"
+    },
+    "tagged_fixed": {
+      "placed": "NO_GO",
+      "unchanged": "NO_GO"
+    },
+    "tagged_frequency": {
+      "placed": "NO_GO",
+      "unchanged": "NO_GO"
+    },
+    "tagged_recent": {
+      "placed": "NO_GO",
+      "unchanged": "NO_GO"
+    }
+  },
+  "history_sha256": "494bb5d2e73b4e129b020118e1bcf2110f253b1c2b565b5d110023129516aa54",
+  "method_sha256": "16df0b36a91a9a71bf4872bf588e9217b8d9de9df07bfb53f658c1fca92700f4",
+  "p63": {
+    "bank_capacity_bytes": 4666377600,
+    "family_receipt_sha256": "cb70c934dbbe0f1ca7452904718589b44fa906179208e7f95b0c934808d70a42",
+    "on_receipt_sha256": "8428c5ee301281ddeb1a7b1e2ed6883073e53578027139a67c2daef5b4eaaaf5",
+    "pfj_sha256": "5b4d1cb6827d518a72d418f0625c8ea3a6c90a2ac57ef46b9360e9a45613f311",
+    "policy_sha256": "7bce9841c3645247fbd850a8e89091610022cb38b5eb37922dd7f7167e596dad",
+    "prefix_sha256": "e3835f8fc9a633270a5238346da4fdd443e882e863b22ad3be4891fff1df5a2f",
+    "t1_candidates_sha256": "27c15095be9af23ccaa997556dc650aafac2f22002fafd6f933f1e1073400fab",
+    "t1_distinct_victims": 1698,
+    "t1_prefix": {
+      "capacity": 353,
+      "cold_start_copies_by_tier": {
+        "cpu": 1530,
+        "cuda": 613
+      },
+      "cold_start_copy_bytes_by_tier": {
+        "cpu": 20225376000,
+        "cuda": 8103369600
+      },
+      "identified": true,
+      "minimum_copies_over_unknown_start_by_tier": {
+        "cpu": 1272,
+        "cuda": 518
+      },
+      "minimum_copy_bytes_over_unknown_start_by_tier": {
+        "cpu": 16814822400,
+        "cuda": 6847545600
+      },
+      "ordered_keys_sha256": "ce1114203187fcee91c3884441ef73eb460445d7c278e69a95946a7dfb135cc7",
+      "retained_by_tier": {
+        "cpu": 263,
+        "cuda": 90
+      }
+    },
+    "t1_victim_offers": 2156
+  },
+  "parent_sha256": "314db3ad9f772e3e1d8d564259cbcccc29d93c79123d5f6cf41f47b4e3a8970d",
+  "policies": {
+    "r0_fixed": {
+      "by_phase_tier": {
+        "decode_before_final": {
+          "CPU": {
+            "capture_payload_bytes": 0,
+            "disk_requested_bytes": 8329789440,
+            "disk_windows": 630,
+            "hit_payload_bytes": 1890345600,
+            "hits": 143,
+            "reservations": 773
+          },
+          "CUDA0": {
+            "capture_payload_bytes": 0,
+            "disk_requested_bytes": 3517022208,
+            "disk_windows": 266,
+            "hit_payload_bytes": 370137600,
+            "hits": 28,
+            "reservations": 294
+          }
+        },
+        "decode_tail": {
+          "CPU": {
+            "capture_payload_bytes": 0,
+            "disk_requested_bytes": 171884544,
+            "disk_windows": 13,
+            "hit_payload_bytes": 0,
+            "reservations": 13
+          },
+          "CUDA0": {
+            "capture_payload_bytes": 0,
+            "disk_requested_bytes": 132218880,
+            "disk_windows": 10,
+            "hit_payload_bytes": 13219200,
+            "hits": 1,
+            "reservations": 11
+          }
+        },
+        "prefill": {
+          "CPU": {
+            "capture_payload_bytes": 0,
+            "disk_requested_bytes": 9228877824,
+            "disk_windows": 698,
+            "hit_payload_bytes": 1454112000,
+            "hits": 110,
+            "reservations": 808
+          },
+          "CUDA0": {
+            "capture_payload_bytes": 0,
+            "disk_requested_bytes": 5420974080,
+            "disk_windows": 410,
+            "hit_payload_bytes": 594864000,
+            "hits": 45,
+            "reservations": 455
+          }
+        }
+      },
+      "clocks": {
+        "same_expert": {
+          "placed": {
+            "copied": {
+              "fits_with_grant": false,
+              "other_three_clocks_pass": false,
+              "p106_first_needed_credit_ns": 3372687279,
+              "p106_full_grant_first_ns": 12726259024,
+              "with_full_client_cost_ns": {
+                "P106": {
+                  "decode": 7039193244,
+                  "first_final": 13372687279
+                },
+                "P97": {
+                  "decode": 6909133095,
+                  "first_final": 12554446003
+                }
+              }
+            },
+            "direct": {
+              "fits_with_grant": false,
+              "other_three_clocks_pass": false,
+              "p106_first_needed_credit_ns": 3319776028,
+              "p106_full_grant_first_ns": 12673347773,
+              "with_full_client_cost_ns": {
+                "P106": {
+                  "decode": 7019134393,
+                  "first_final": 13319776028
+                },
+                "P97": {
+                  "decode": 6891680418,
+                  "first_final": 12502756054
+                }
+              }
+            }
+          },
+          "unchanged": {
+            "copied": {
+              "fits_with_grant": false,
+              "other_three_clocks_pass": false,
+              "p106_first_needed_credit_ns": 4147417393,
+              "p106_full_grant_first_ns": 13500989138,
+              "with_full_client_cost_ns": {
+                "P106": {
+                  "decode": 7039193244,
+                  "first_final": 14147417393
+                },
+                "P97": {
+                  "decode": 6909133095,
+                  "first_final": 13197141317
+                }
+              }
+            },
+            "direct": {
+              "fits_with_grant": false,
+              "other_three_clocks_pass": false,
+              "p106_first_needed_credit_ns": 4097298290,
+              "p106_full_grant_first_ns": 13450870035,
+              "with_full_client_cost_ns": {
+                "P106": {
+                  "decode": 7019134393,
+                  "first_final": 14097298290
+                },
+                "P97": {
+                  "decode": 6891680418,
+                  "first_final": 13147264016
+                }
+              }
+            }
+          },
+          "unpriced": {
+            "SET": 0,
+            "nonhit_READ": 0
+          }
+        },
+        "same_slot_gen": {
+          "placed": {
+            "copied": {
+              "fits_with_grant": false,
+              "other_three_clocks_pass": false,
+              "p106_first_needed_credit_ns": 3372687279,
+              "p106_full_grant_first_ns": 12726259024,
+              "with_full_client_cost_ns": {
+                "P106": {
+                  "decode": 7039193244,
+                  "first_final": 13372687279
+                },
+                "P97": {
+                  "decode": 6909133095,
+                  "first_final": 12554446003
+                }
+              }
+            },
+            "direct": {
+              "fits_with_grant": false,
+              "other_three_clocks_pass": false,
+              "p106_first_needed_credit_ns": 3319776028,
+              "p106_full_grant_first_ns": 12673347773,
+              "with_full_client_cost_ns": {
+                "P106": {
+                  "decode": 7019134393,
+                  "first_final": 13319776028
+                },
+                "P97": {
+                  "decode": 6891680418,
+                  "first_final": 12502756054
+                }
+              }
+            }
+          },
+          "unchanged": {
+            "copied": {
+              "fits_with_grant": false,
+              "other_three_clocks_pass": false,
+              "p106_first_needed_credit_ns": 4147417393,
+              "p106_full_grant_first_ns": 13500989138,
+              "with_full_client_cost_ns": {
+                "P106": {
+                  "decode": 7039193244,
+                  "first_final": 14147417393
+                },
+                "P97": {
+                  "decode": 6909133095,
+                  "first_final": 13197141317
+                }
+              }
+            },
+            "direct": {
+              "fits_with_grant": false,
+              "other_three_clocks_pass": false,
+              "p106_first_needed_credit_ns": 4097298290,
+              "p106_full_grant_first_ns": 13450870035,
+              "with_full_client_cost_ns": {
+                "P106": {
+                  "decode": 7019134393,
+                  "first_final": 14097298290
+                },
+                "P97": {
+                  "decode": 6891680418,
+                  "first_final": 13147264016
+                }
+              }
+            }
+          },
+          "unpriced": {
+            "SET": 0,
+            "nonhit_READ": 0
+          }
+        }
+      },
+      "decode_entry_if_restored": {
+        "differences": {
+          "different_heat_words": 0,
+          "different_layer_clocks": 0,
+          "removed_members": 0,
+          "slot_move_payload_bytes_cpu": 0,
+          "slot_move_payload_bytes_cuda": 0
+        },
+        "loads": {
+          "all": {},
+          "cpu": {},
+          "cuda": {}
+        }
+      },
+      "disk": 2027,
+      "hits": 327,
+      "read_change": {
+        "decode_before_final": {
+          "CPU": {
+            "shared": 630
+          },
+          "CUDA0": {
+            "shared": 266
+          }
+        },
+        "decode_tail": {
+          "CPU": {
+            "shared": 13
+          },
+          "CUDA0": {
+            "shared": 10
+          }
+        },
+        "prefill": {
+          "CPU": {
+            "shared": 698
+          },
+          "CUDA0": {
+            "shared": 410
+          }
+        }
+      },
+      "reservations": 2354
+    },
+    "r0_frequency": {
+      "by_phase_tier": {
+        "decode_before_final": {
+          "CPU": {
+            "capture_payload_bytes": 8288438400,
+            "captures": 627,
+            "disk_requested_bytes": 7086931968,
+            "disk_windows": 536,
+            "hit_payload_bytes": 3132950400,
+            "hits": 237,
+            "reservations": 773
+          },
+          "CUDA0": {
+            "capture_payload_bytes": 2723155200,
+            "captures": 206,
+            "disk_requested_bytes": 3001368576,
+            "disk_windows": 227,
+            "hit_payload_bytes": 885686400,
+            "hits": 67,
+            "reservations": 294
+          }
+        },
+        "decode_tail": {
+          "CPU": {
+            "capture_payload_bytes": 105753600,
+            "captures": 8,
+            "disk_requested_bytes": 158662656,
+            "disk_windows": 12,
+            "hit_payload_bytes": 13219200,
+            "hits": 1,
+            "reservations": 13
+          },
+          "CUDA0": {
+            "capture_payload_bytes": 118972800,
+            "captures": 9,
+            "disk_requested_bytes": 105775104,
+            "disk_windows": 8,
+            "hit_payload_bytes": 39657600,
+            "hits": 3,
+            "reservations": 11
+          }
+        },
+        "prefill": {
+          "CPU": {
+            "capture_payload_bytes": 9676454400,
+            "captures": 732,
+            "disk_requested_bytes": 7562919936,
+            "disk_windows": 572,
+            "hit_payload_bytes": 3119731200,
+            "hits": 236,
+            "reservations": 808
+          },
+          "CUDA0": {
+            "capture_payload_bytes": 5287680000,
+            "captures": 400,
+            "disk_requested_bytes": 4072341504,
+            "disk_windows": 308,
+            "hit_payload_bytes": 1943222400,
+            "hits": 147,
+            "reservations": 455
+          }
+        }
+      },
+      "clocks": {
+        "same_expert": {
+          "placed": {
+            "copied": {
+              "fits_with_grant": false,
+              "other_three_clocks_pass": false,
+              "p106_first_needed_credit_ns": 2191805218,
+              "p106_full_grant_first_ns": 11545376963,
+              "with_full_client_cost_ns": {
+                "P106": {
+                  "decode": 6555746612,
+                  "first_final": 12191805218
+                },
+                "P97": {
+                  "decode": 6402296841,
+                  "first_final": 11345476365
+                }
+              }
+            },
+            "direct": {
+              "fits_with_grant": false,
+              "other_three_clocks_pass": false,
+              "p106_first_needed_credit_ns": 2088133862,
+              "p106_full_grant_first_ns": 11441705607,
+              "with_full_client_cost_ns": {
+                "P106": {
+                  "decode": 6511666832,
+                  "first_final": 12088133862
+                },
+                "P97": {
+                  "decode": 6362283006,
+                  "first_final": 11245038628
+                }
+              }
+            }
+          },
+          "unchanged": {
+            "copied": {
+              "fits_with_grant": false,
+              "other_three_clocks_pass": false,
+              "p106_first_needed_credit_ns": 3055330382,
+              "p106_full_grant_first_ns": 12408902127,
+              "with_full_client_cost_ns": {
+                "P106": {
+                  "decode": 6555746612,
+                  "first_final": 13055330382
+                },
+                "P97": {
+                  "decode": 6402296841,
+                  "first_final": 12052887937
+                }
+              }
+            },
+            "direct": {
+              "fits_with_grant": false,
+              "other_three_clocks_pass": false,
+              "p106_first_needed_credit_ns": 2958798361,
+              "p106_full_grant_first_ns": 12312370106,
+              "with_full_client_cost_ns": {
+                "P106": {
+                  "decode": 6511666832,
+                  "first_final": 12958798361
+                },
+                "P97": {
+                  "decode": 6362283006,
+                  "first_final": 11960327322
+                }
+              }
+            }
+          },
+          "unpriced": {
+            "SET": 0,
+            "nonhit_READ": 0
+          }
+        },
+        "same_slot_gen": {
+          "placed": {
+            "copied": {
+              "fits_with_grant": false,
+              "other_three_clocks_pass": false,
+              "p106_first_needed_credit_ns": 2191805218,
+              "p106_full_grant_first_ns": 11545376963,
+              "with_full_client_cost_ns": {
+                "P106": {
+                  "decode": 6555746612,
+                  "first_final": 12191805218
+                },
+                "P97": {
+                  "decode": 6402296841,
+                  "first_final": 11345476365
+                }
+              }
+            },
+            "direct": {
+              "fits_with_grant": false,
+              "other_three_clocks_pass": false,
+              "p106_first_needed_credit_ns": 2088133862,
+              "p106_full_grant_first_ns": 11441705607,
+              "with_full_client_cost_ns": {
+                "P106": {
+                  "decode": 6511666832,
+                  "first_final": 12088133862
+                },
+                "P97": {
+                  "decode": 6362283006,
+                  "first_final": 11245038628
+                }
+              }
+            }
+          },
+          "unchanged": {
+            "copied": {
+              "fits_with_grant": false,
+              "other_three_clocks_pass": false,
+              "p106_first_needed_credit_ns": 3055330382,
+              "p106_full_grant_first_ns": 12408902127,
+              "with_full_client_cost_ns": {
+                "P106": {
+                  "decode": 6555746612,
+                  "first_final": 13055330382
+                },
+                "P97": {
+                  "decode": 6402296841,
+                  "first_final": 12052887937
+                }
+              }
+            },
+            "direct": {
+              "fits_with_grant": false,
+              "other_three_clocks_pass": false,
+              "p106_first_needed_credit_ns": 2958798361,
+              "p106_full_grant_first_ns": 12312370106,
+              "with_full_client_cost_ns": {
+                "P106": {
+                  "decode": 6511666832,
+                  "first_final": 12958798361
+                },
+                "P97": {
+                  "decode": 6362283006,
+                  "first_final": 11960327322
+                }
+              }
+            }
+          },
+          "unpriced": {
+            "SET": 0,
+            "nonhit_READ": 0
+          }
+        }
+      },
+      "decode_entry_if_restored": {
+        "differences": {
+          "different_heat_words": 0,
+          "different_layer_clocks": 0,
+          "removed_members": 0,
+          "slot_move_payload_bytes_cpu": 0,
+          "slot_move_payload_bytes_cuda": 0
+        },
+        "loads": {
+          "all": {},
+          "cpu": {},
+          "cuda": {}
+        }
+      },
+      "disk": 1663,
+      "hits": 691,
+      "read_change": {
+        "decode_before_final": {
+          "CPU": {
+            "shared": 536
+          },
+          "CUDA0": {
+            "shared": 227
+          }
+        },
+        "decode_tail": {
+          "CPU": {
+            "shared": 12
+          },
+          "CUDA0": {
+            "shared": 8
+          }
+        },
+        "prefill": {
+          "CPU": {
+            "shared": 572
+          },
+          "CUDA0": {
+            "shared": 308
+          }
+        }
+      },
+      "reservations": 2354
+    },
+    "r0_recent": {
+      "by_phase_tier": {
+        "decode_before_final": {
+          "CPU": {
+            "capture_payload_bytes": 10218441600,
+            "captures": 773,
+            "disk_requested_bytes": 7086931968,
+            "disk_windows": 536,
+            "hit_payload_bytes": 3132950400,
+            "hits": 237,
+            "reservations": 773
+          },
+          "CUDA0": {
+            "capture_payload_bytes": 3886444800,
+            "captures": 294,
+            "disk_requested_bytes": 2974924800,
+            "disk_windows": 225,
+            "hit_payload_bytes": 912124800,
+            "hits": 69,
+            "reservations": 294
+          }
+        },
+        "decode_tail": {
+          "CPU": {
+            "capture_payload_bytes": 171849600,
+            "captures": 13,
+            "disk_requested_bytes": 66109440,
+            "disk_windows": 5,
+            "hit_payload_bytes": 105753600,
+            "hits": 8,
+            "reservations": 13
+          },
+          "CUDA0": {
+            "capture_payload_bytes": 145411200,
+            "captures": 11,
+            "disk_requested_bytes": 132218880,
+            "disk_windows": 10,
+            "hit_payload_bytes": 13219200,
+            "hits": 1,
+            "reservations": 11
+          }
+        },
+        "prefill": {
+          "CPU": {
+            "capture_payload_bytes": 10681113600,
+            "captures": 808,
+            "disk_requested_bytes": 8303345664,
+            "disk_windows": 628,
+            "hit_payload_bytes": 2379456000,
+            "hits": 180,
+            "reservations": 808
+          },
+          "CUDA0": {
+            "capture_payload_bytes": 6014736000,
+            "captures": 455,
+            "disk_requested_bytes": 4574773248,
+            "disk_windows": 346,
+            "hit_payload_bytes": 1440892800,
+            "hits": 109,
+            "reservations": 455
+          }
+        }
+      },
+      "clocks": {
+        "same_expert": {
+          "placed": {
+            "copied": {
+              "fits_with_grant": false,
+              "other_three_clocks_pass": false,
+              "p106_first_needed_credit_ns": 2534273912,
+              "p106_full_grant_first_ns": 11887845657,
+              "with_full_client_cost_ns": {
+                "P106": {
+                  "decode": 6473886807,
+                  "first_final": 12534273912
+                },
+                "P97": {
+                  "decode": 6312158586,
+                  "first_final": 11695592081
+                }
+              }
+            },
+            "direct": {
+              "fits_with_grant": false,
+              "other_three_clocks_pass": false,
+              "p106_first_needed_credit_ns": 2454109745,
+              "p106_full_grant_first_ns": 11807681490,
+              "with_full_client_cost_ns": {
+                "P106": {
+                  "decode": 6433436982,
+                  "first_final": 12454109745
+                },
+                "P97": {
+                  "decode": 6275661075,
+                  "first_final": 11621418727
+                }
+              }
+            }
+          },
+          "unchanged": {
+            "copied": {
+              "fits_with_grant": false,
+              "other_three_clocks_pass": false,
+              "p106_first_needed_credit_ns": 3394350958,
+              "p106_full_grant_first_ns": 12747922703,
+              "with_full_client_cost_ns": {
+                "P106": {
+                  "decode": 6473886807,
+                  "first_final": 13394350958
+                },
+                "P97": {
+                  "decode": 6312158586,
+                  "first_final": 12405167408
+                }
+              }
+            },
+            "direct": {
+              "fits_with_grant": false,
+              "other_three_clocks_pass": false,
+              "p106_first_needed_credit_ns": 3319148948,
+              "p106_full_grant_first_ns": 12672720693,
+              "with_full_client_cost_ns": {
+                "P106": {
+                  "decode": 6433436982,
+                  "first_final": 13319148948
+                },
+                "P97": {
+                  "decode": 6275661075,
+                  "first_final": 12333791349
+                }
+              }
+            }
+          },
+          "unpriced": {
+            "SET": 0,
+            "nonhit_READ": 0
+          }
+        },
+        "same_slot_gen": {
+          "placed": {
+            "copied": {
+              "fits_with_grant": false,
+              "other_three_clocks_pass": false,
+              "p106_first_needed_credit_ns": 2534273912,
+              "p106_full_grant_first_ns": 11887845657,
+              "with_full_client_cost_ns": {
+                "P106": {
+                  "decode": 6473886807,
+                  "first_final": 12534273912
+                },
+                "P97": {
+                  "decode": 6312158586,
+                  "first_final": 11695592081
+                }
+              }
+            },
+            "direct": {
+              "fits_with_grant": false,
+              "other_three_clocks_pass": false,
+              "p106_first_needed_credit_ns": 2454109745,
+              "p106_full_grant_first_ns": 11807681490,
+              "with_full_client_cost_ns": {
+                "P106": {
+                  "decode": 6433436982,
+                  "first_final": 12454109745
+                },
+                "P97": {
+                  "decode": 6275661075,
+                  "first_final": 11621418727
+                }
+              }
+            }
+          },
+          "unchanged": {
+            "copied": {
+              "fits_with_grant": false,
+              "other_three_clocks_pass": false,
+              "p106_first_needed_credit_ns": 3394350958,
+              "p106_full_grant_first_ns": 12747922703,
+              "with_full_client_cost_ns": {
+                "P106": {
+                  "decode": 6473886807,
+                  "first_final": 13394350958
+                },
+                "P97": {
+                  "decode": 6312158586,
+                  "first_final": 12405167408
+                }
+              }
+            },
+            "direct": {
+              "fits_with_grant": false,
+              "other_three_clocks_pass": false,
+              "p106_first_needed_credit_ns": 3319148948,
+              "p106_full_grant_first_ns": 12672720693,
+              "with_full_client_cost_ns": {
+                "P106": {
+                  "decode": 6433436982,
+                  "first_final": 13319148948
+                },
+                "P97": {
+                  "decode": 6275661075,
+                  "first_final": 12333791349
+                }
+              }
+            }
+          },
+          "unpriced": {
+            "SET": 0,
+            "nonhit_READ": 0
+          }
+        }
+      },
+      "decode_entry_if_restored": {
+        "differences": {
+          "different_heat_words": 0,
+          "different_layer_clocks": 0,
+          "removed_members": 0,
+          "slot_move_payload_bytes_cpu": 0,
+          "slot_move_payload_bytes_cuda": 0
+        },
+        "loads": {
+          "all": {},
+          "cpu": {},
+          "cuda": {}
+        }
+      },
+      "disk": 1750,
+      "hits": 604,
+      "read_change": {
+        "decode_before_final": {
+          "CPU": {
+            "shared": 536
+          },
+          "CUDA0": {
+            "shared": 225
+          }
+        },
+        "decode_tail": {
+          "CPU": {
+            "shared": 5
+          },
+          "CUDA0": {
+            "shared": 10
+          }
+        },
+        "prefill": {
+          "CPU": {
+            "shared": 628
+          },
+          "CUDA0": {
+            "shared": 346
+          }
+        }
+      },
+      "reservations": 2354
+    },
+    "tagged_fixed": {
+      "by_phase_tier": {
+        "decode_before_final": {
+          "CPU": {
+            "capture_payload_bytes": 0,
+            "disk_requested_bytes": 7047266304,
+            "disk_windows": 533,
+            "hit_payload_bytes": 4150828800,
+            "hits": 314,
+            "reservations": 847
+          },
+          "CUDA0": {
+            "capture_payload_bytes": 0,
+            "disk_requested_bytes": 3252584448,
+            "disk_windows": 246,
+            "hit_payload_bytes": 898905600,
+            "hits": 68,
+            "reservations": 314
+          }
+        },
+        "decode_tail": {
+          "CPU": {
+            "capture_payload_bytes": 0,
+            "disk_requested_bytes": 105775104,
+            "disk_windows": 8,
+            "hit_payload_bytes": 211507200,
+            "hits": 16,
+            "reservations": 24
+          },
+          "CUDA0": {
+            "capture_payload_bytes": 0,
+            "disk_requested_bytes": 132218880,
+            "disk_windows": 10,
+            "hit_payload_bytes": 13219200,
+            "hits": 1,
+            "reservations": 11
+          }
+        },
+        "prefill": {
+          "CPU": {
+            "capture_payload_bytes": 0,
+            "disk_requested_bytes": 8739667968,
+            "disk_windows": 661,
+            "hit_payload_bytes": 2075414400,
+            "hits": 157,
+            "reservations": 818
+          },
+          "CUDA0": {
+            "capture_payload_bytes": 0,
+            "disk_requested_bytes": 5249089536,
+            "disk_windows": 397,
+            "hit_payload_bytes": 912124800,
+            "hits": 69,
+            "reservations": 466
+          }
+        }
+      },
+      "clocks": {
+        "same_expert": {
+          "placed": {
+            "budget": {
+              "full_client": {
+                "status": "MISSES_AT_ZERO"
+              },
+              "p106_grant": {
+                "status": "MISSES_AT_ZERO"
+              }
+            },
+            "copied": {
+              "fits_with_grant": false,
+              "other_three_clocks_pass": false,
+              "p106_first_needed_credit_ns": 2795636515,
+              "p106_full_grant_first_ns": 12149208260,
+              "with_full_client_cost_ns": {
+                "P106": {
+                  "decode": 6608336439,
+                  "first_final": 12795636515
+                },
+                "P97": {
+                  "decode": 6455227313,
+                  "first_final": 11950927541
+                }
+              }
+            },
+            "direct": {
+              "fits_with_grant": false,
+              "other_three_clocks_pass": false,
+              "p106_first_needed_credit_ns": 2744238172,
+              "p106_full_grant_first_ns": 12097809917,
+              "with_full_client_cost_ns": {
+                "P106": {
+                  "decode": 6588387185,
+                  "first_final": 12744238172
+                },
+                "P97": {
+                  "decode": 6438574023,
+                  "first_final": 11901028327
+                }
+              }
+            }
+          },
+          "unchanged": {
+            "budget": {
+              "full_client": {
+                "status": "MISSES_AT_ZERO"
+              },
+              "p106_grant": {
+                "status": "MISSES_AT_ZERO"
+              }
+            },
+            "copied": {
+              "fits_with_grant": false,
+              "other_three_clocks_pass": false,
+              "p106_first_needed_credit_ns": 3611086267,
+              "p106_full_grant_first_ns": 12964658012,
+              "with_full_client_cost_ns": {
+                "P106": {
+                  "decode": 6608336439,
+                  "first_final": 13611086267
+                },
+                "P97": {
+                  "decode": 6455227313,
+                  "first_final": 12618128431
+                }
+              }
+            },
+            "direct": {
+              "fits_with_grant": false,
+              "other_three_clocks_pass": false,
+              "p106_first_needed_credit_ns": 3562254185,
+              "p106_full_grant_first_ns": 12915825930,
+              "with_full_client_cost_ns": {
+                "P106": {
+                  "decode": 6588387185,
+                  "first_final": 13562254185
+                },
+                "P97": {
+                  "decode": 6438574023,
+                  "first_final": 12570296308
+                }
+              }
+            }
+          },
+          "unpriced": {
+            "SET": 298,
+            "nonhit_READ": 0
+          }
+        },
+        "same_slot_gen": {
+          "placed": {
+            "budget": {
+              "full_client": {
+                "status": "MISSES_AT_ZERO"
+              },
+              "p106_grant": {
+                "status": "MISSES_AT_ZERO"
+              }
+            },
+            "copied": {
+              "fits_with_grant": false,
+              "other_three_clocks_pass": false,
+              "p106_first_needed_credit_ns": 2020913127,
+              "p106_full_grant_first_ns": 11374484872,
+              "with_full_client_cost_ns": {
+                "P106": {
+                  "decode": 6029747304,
+                  "first_final": 12020913127
+                },
+                "P97": {
+                  "decode": 5928248015,
+                  "first_final": 11232925991
+                }
+              }
+            },
+            "direct": {
+              "fits_with_grant": false,
+              "other_three_clocks_pass": false,
+              "p106_first_needed_credit_ns": 2004550824,
+              "p106_full_grant_first_ns": 11358122569,
+              "with_full_client_cost_ns": {
+                "P106": {
+                  "decode": 6026646145,
+                  "first_final": 12004550824
+                },
+                "P97": {
+                  "decode": 5926260257,
+                  "first_final": 11217042735
+                }
+              }
+            }
+          },
+          "unchanged": {
+            "budget": {
+              "full_client": {
+                "status": "MISSES_AT_ZERO"
+              },
+              "p106_grant": {
+                "status": "MISSES_AT_ZERO"
+              }
+            },
+            "copied": {
+              "fits_with_grant": false,
+              "other_three_clocks_pass": false,
+              "p106_first_needed_credit_ns": 2862775189,
+              "p106_full_grant_first_ns": 12216346934,
+              "with_full_client_cost_ns": {
+                "P106": {
+                  "decode": 6029747304,
+                  "first_final": 12862775189
+                },
+                "P97": {
+                  "decode": 5928248015,
+                  "first_final": 11923711395
+                }
+              }
+            },
+            "direct": {
+              "fits_with_grant": false,
+              "other_three_clocks_pass": false,
+              "p106_first_needed_credit_ns": 2847169075,
+              "p106_full_grant_first_ns": 12200740820,
+              "with_full_client_cost_ns": {
+                "P106": {
+                  "decode": 6026646145,
+                  "first_final": 12847169075
+                },
+                "P97": {
+                  "decode": 5926260257,
+                  "first_final": 11908674847
+                }
+              }
+            }
+          },
+          "unpriced": {
+            "SET": 1974,
+            "nonhit_READ": 0
+          }
+        }
+      },
+      "decode_entry_if_restored": {
+        "differences": {
+          "cycles": 44,
+          "different_age_words": 968,
+          "different_bindings": 447,
+          "different_generation_words": 270,
+          "different_heat_words": 0,
+          "different_layer_clocks": 27,
+          "missing_members": 19,
+          "removed_members": 19,
+          "same_tier_slot_moves_cpu": 306,
+          "same_tier_slot_moves_cuda": 122,
+          "slot_move_payload_bytes_cpu": 4045075200,
+          "slot_move_payload_bytes_cuda": 1612742400
+        },
+        "loads": {
+          "all": {
+            "admissions": 19,
+            "bank_hits": 19,
+            "host_bank_delivered_bytes": 251164800,
+            "host_to_primary_cpu_bytes": 211507200,
+            "host_to_primary_cuda_bytes": 39657600,
+            "primary_bytes": 251164800
+          },
+          "cpu": {
+            "admissions": 16,
+            "bank_hits": 16,
+            "host_bank_delivered_bytes": 211507200,
+            "host_to_primary_cpu_bytes": 211507200,
+            "primary_bytes": 211507200
+          },
+          "cuda": {
+            "admissions": 3,
+            "bank_hits": 3,
+            "host_bank_delivered_bytes": 39657600,
+            "host_to_primary_cuda_bytes": 39657600,
+            "primary_bytes": 39657600
+          }
+        }
+      },
+      "disk": 1855,
+      "hits": 625,
+      "read_change": {
+        "decode_before_final": {
+          "CPU": {
+            "removed": 97,
+            "shared": 533
+          },
+          "CUDA0": {
+            "removed": 20,
+            "shared": 246
+          }
+        },
+        "decode_tail": {
+          "CPU": {
+            "removed": 5,
+            "shared": 8
+          },
+          "CUDA0": {
+            "shared": 10
+          }
+        },
+        "prefill": {
+          "CPU": {
+            "removed": 37,
+            "shared": 661
+          },
+          "CUDA0": {
+            "removed": 13,
+            "shared": 397
+          }
+        }
+      },
+      "reservations": 2480
+    },
+    "tagged_frequency": {
+      "by_phase_tier": {
+        "decode_before_final": {
+          "CPU": {
+            "capture_payload_bytes": 9517824000,
+            "captures": 720,
+            "disk_requested_bytes": 7073710080,
+            "disk_windows": 535,
+            "hit_payload_bytes": 4124390400,
+            "hits": 312,
+            "reservations": 847
+          },
+          "CUDA0": {
+            "capture_payload_bytes": 3159388800,
+            "captures": 239,
+            "disk_requested_bytes": 3080699904,
+            "disk_windows": 233,
+            "hit_payload_bytes": 1070755200,
+            "hits": 81,
+            "reservations": 314
+          }
+        },
+        "decode_tail": {
+          "CPU": {
+            "capture_payload_bytes": 277603200,
+            "captures": 21,
+            "disk_requested_bytes": 118996992,
+            "disk_windows": 9,
+            "hit_payload_bytes": 198288000,
+            "hits": 15,
+            "reservations": 24
+          },
+          "CUDA0": {
+            "capture_payload_bytes": 105753600,
+            "captures": 8,
+            "disk_requested_bytes": 105775104,
+            "disk_windows": 8,
+            "hit_payload_bytes": 39657600,
+            "hits": 3,
+            "reservations": 11
+          }
+        },
+        "prefill": {
+          "CPU": {
+            "capture_payload_bytes": 9729331200,
+            "captures": 736,
+            "disk_requested_bytes": 7510032384,
+            "disk_windows": 568,
+            "hit_payload_bytes": 3304800000,
+            "hits": 250,
+            "reservations": 818
+          },
+          "CUDA0": {
+            "capture_payload_bytes": 5459529600,
+            "captures": 413,
+            "disk_requested_bytes": 4085563392,
+            "disk_windows": 309,
+            "hit_payload_bytes": 2075414400,
+            "hits": 157,
+            "reservations": 466
+          }
+        }
+      },
+      "clocks": {
+        "same_expert": {
+          "placed": {
+            "budget": {
+              "full_client": {
+                "status": "MISSES_AT_ZERO"
+              },
+              "p106_grant": {
+                "status": "MISSES_AT_ZERO"
+              }
+            },
+            "copied": {
+              "fits_with_grant": false,
+              "other_three_clocks_pass": false,
+              "p106_first_needed_credit_ns": 2041011259,
+              "p106_full_grant_first_ns": 11394583004,
+              "with_full_client_cost_ns": {
+                "P106": {
+                  "decode": 6403636169,
+                  "first_final": 12041011259
+                },
+                "P97": {
+                  "decode": 6247072996,
+                  "first_final": 11184432499
+                }
+              }
+            },
+            "direct": {
+              "fits_with_grant": false,
+              "other_three_clocks_pass": false,
+              "p106_first_needed_credit_ns": 1960143439,
+              "p106_full_grant_first_ns": 11313715184,
+              "with_full_client_cost_ns": {
+                "P106": {
+                  "decode": 6375448567,
+                  "first_final": 11960143439
+                },
+                "P97": {
+                  "decode": 6220833153,
+                  "first_final": 11105016288
+                }
+              }
+            }
+          },
+          "unchanged": {
+            "budget": {
+              "full_client": {
+                "status": "MISSES_AT_ZERO"
+              },
+              "p106_grant": {
+                "status": "MISSES_AT_ZERO"
+              }
+            },
+            "copied": {
+              "fits_with_grant": false,
+              "other_three_clocks_pass": false,
+              "p106_first_needed_credit_ns": 2908339494,
+              "p106_full_grant_first_ns": 12261911239,
+              "with_full_client_cost_ns": {
+                "P106": {
+                  "decode": 6403636169,
+                  "first_final": 12908339494
+                },
+                "P97": {
+                  "decode": 6247072996,
+                  "first_final": 11896771676
+                }
+              }
+            },
+            "direct": {
+              "fits_with_grant": false,
+              "other_three_clocks_pass": false,
+              "p106_first_needed_credit_ns": 2832358773,
+              "p106_full_grant_first_ns": 12185930518,
+              "with_full_client_cost_ns": {
+                "P106": {
+                  "decode": 6375448567,
+                  "first_final": 12832358773
+                },
+                "P97": {
+                  "decode": 6220833153,
+                  "first_final": 11824606864
+                }
+              }
+            }
+          },
+          "unpriced": {
+            "SET": 298,
+            "nonhit_READ": 37
+          }
+        },
+        "same_slot_gen": {
+          "placed": {
+            "budget": {
+              "full_client": {
+                "status": "MISSES_AT_ZERO"
+              },
+              "p106_grant": {
+                "status": "MISSES_AT_ZERO"
+              }
+            },
+            "copied": {
+              "fits_with_grant": false,
+              "other_three_clocks_pass": false,
+              "p106_first_needed_credit_ns": 1299330167,
+              "p106_full_grant_first_ns": 10652901912,
+              "with_full_client_cost_ns": {
+                "P106": {
+                  "decode": 5843897900,
+                  "first_final": 11299330167
+                },
+                "P97": {
+                  "decode": 5739268502,
+                  "first_final": 10487845403
+                }
+              }
+            },
+            "direct": {
+              "fits_with_grant": false,
+              "other_three_clocks_pass": false,
+              "p106_first_needed_credit_ns": 1276334611,
+              "p106_full_grant_first_ns": 10629906356,
+              "with_full_client_cost_ns": {
+                "P106": {
+                  "decode": 5843384391,
+                  "first_final": 11276334611
+                },
+                "P97": {
+                  "decode": 5738891220,
+                  "first_final": 10464830056
+                }
+              }
+            }
+          },
+          "unchanged": {
+            "budget": {
+              "full_client": {
+                "status": "MISSES_AT_ZERO"
+              },
+              "p106_grant": {
+                "status": "MISSES_AT_ZERO"
+              }
+            },
+            "copied": {
+              "fits_with_grant": false,
+              "other_three_clocks_pass": false,
+              "p106_first_needed_credit_ns": 2198844664,
+              "p106_full_grant_first_ns": 11552416409,
+              "with_full_client_cost_ns": {
+                "P106": {
+                  "decode": 5843897900,
+                  "first_final": 12198844664
+                },
+                "P97": {
+                  "decode": 5739268502,
+                  "first_final": 11240349983
+                }
+              }
+            },
+            "direct": {
+              "fits_with_grant": false,
+              "other_three_clocks_pass": false,
+              "p106_first_needed_credit_ns": 2176634459,
+              "p106_full_grant_first_ns": 11530206204,
+              "with_full_client_cost_ns": {
+                "P106": {
+                  "decode": 5843384391,
+                  "first_final": 12176634459
+                },
+                "P97": {
+                  "decode": 5738891220,
+                  "first_final": 11218797400
+                }
+              }
+            }
+          },
+          "unpriced": {
+            "SET": 1974,
+            "nonhit_READ": 37
+          }
+        }
+      },
+      "decode_entry_if_restored": {
+        "differences": {
+          "cycles": 44,
+          "different_age_words": 968,
+          "different_bindings": 447,
+          "different_generation_words": 270,
+          "different_heat_words": 0,
+          "different_layer_clocks": 27,
+          "missing_members": 19,
+          "removed_members": 19,
+          "same_tier_slot_moves_cpu": 306,
+          "same_tier_slot_moves_cuda": 122,
+          "slot_move_payload_bytes_cpu": 4045075200,
+          "slot_move_payload_bytes_cuda": 1612742400
+        },
+        "loads": {
+          "all": {
+            "admissions": 19,
+            "bank_hits": 17,
+            "disk_jobs": 2,
+            "gguf_pread_bytes": 26456064,
+            "host_bank_delivered_bytes": 224726400,
+            "host_to_primary_cpu_bytes": 211507200,
+            "host_to_primary_cuda_bytes": 39657600,
+            "packed_pread_bytes": 26443776,
+            "primary_bytes": 251164800
+          },
+          "cpu": {
+            "admissions": 16,
+            "bank_hits": 14,
+            "disk_jobs": 2,
+            "gguf_pread_bytes": 26456064,
+            "host_bank_delivered_bytes": 185068800,
+            "host_to_primary_cpu_bytes": 211507200,
+            "packed_pread_bytes": 26443776,
+            "primary_bytes": 211507200
+          },
+          "cuda": {
+            "admissions": 3,
+            "bank_hits": 3,
+            "host_bank_delivered_bytes": 39657600,
+            "host_to_primary_cuda_bytes": 39657600,
+            "primary_bytes": 39657600
+          }
+        }
+      },
+      "disk": 1662,
+      "hits": 818,
+      "read_change": {
+        "decode_before_final": {
+          "CPU": {
+            "new": 45,
+            "removed": 46,
+            "shared": 490
+          },
+          "CUDA0": {
+            "new": 16,
+            "removed": 10,
+            "shared": 217
+          }
+        },
+        "decode_tail": {
+          "CPU": {
+            "new": 1,
+            "removed": 4,
+            "shared": 8
+          },
+          "CUDA0": {
+            "shared": 8
+          }
+        },
+        "prefill": {
+          "CPU": {
+            "new": 6,
+            "removed": 10,
+            "shared": 562
+          },
+          "CUDA0": {
+            "new": 5,
+            "removed": 4,
+            "shared": 304
+          }
+        }
+      },
+      "reservations": 2480
+    },
+    "tagged_recent": {
+      "by_phase_tier": {
+        "decode_before_final": {
+          "CPU": {
+            "capture_payload_bytes": 11196662400,
+            "captures": 847,
+            "disk_requested_bytes": 7549698048,
+            "disk_windows": 571,
+            "hit_payload_bytes": 3648499200,
+            "hits": 276,
+            "reservations": 847
+          },
+          "CUDA0": {
+            "capture_payload_bytes": 4150828800,
+            "captures": 314,
+            "disk_requested_bytes": 3107143680,
+            "disk_windows": 235,
+            "hit_payload_bytes": 1044316800,
+            "hits": 79,
+            "reservations": 314
+          }
+        },
+        "decode_tail": {
+          "CPU": {
+            "capture_payload_bytes": 317260800,
+            "captures": 24,
+            "disk_requested_bytes": 79331328,
+            "disk_windows": 6,
+            "hit_payload_bytes": 237945600,
+            "hits": 18,
+            "reservations": 24
+          },
+          "CUDA0": {
+            "capture_payload_bytes": 145411200,
+            "captures": 11,
+            "disk_requested_bytes": 132218880,
+            "disk_windows": 10,
+            "hit_payload_bytes": 13219200,
+            "hits": 1,
+            "reservations": 11
+          }
+        },
+        "prefill": {
+          "CPU": {
+            "capture_payload_bytes": 10813305600,
+            "captures": 818,
+            "disk_requested_bytes": 8303345664,
+            "disk_windows": 628,
+            "hit_payload_bytes": 2511648000,
+            "hits": 190,
+            "reservations": 818
+          },
+          "CUDA0": {
+            "capture_payload_bytes": 6160147200,
+            "captures": 466,
+            "disk_requested_bytes": 4587995136,
+            "disk_windows": 347,
+            "hit_payload_bytes": 1573084800,
+            "hits": 119,
+            "reservations": 466
+          }
+        }
+      },
+      "clocks": {
+        "same_expert": {
+          "placed": {
+            "budget": {
+              "full_client": {
+                "status": "MISSES_AT_ZERO"
+              },
+              "p106_grant": {
+                "status": "MISSES_AT_ZERO"
+              }
+            },
+            "copied": {
+              "fits_with_grant": false,
+              "other_three_clocks_pass": false,
+              "p106_first_needed_credit_ns": 2404442743,
+              "p106_full_grant_first_ns": 11758014488,
+              "with_full_client_cost_ns": {
+                "P106": {
+                  "decode": 6396019448,
+                  "first_final": 12404442743
+                },
+                "P97": {
+                  "decode": 6252148557,
+                  "first_final": 11583299886
+                }
+              }
+            },
+            "direct": {
+              "fits_with_grant": false,
+              "other_three_clocks_pass": false,
+              "p106_first_needed_credit_ns": 2340178719,
+              "p106_full_grant_first_ns": 11693750464,
+              "with_full_client_cost_ns": {
+                "P106": {
+                  "decode": 6366973317,
+                  "first_final": 12340178719
+                },
+                "P97": {
+                  "decode": 6227043488,
+                  "first_final": 11526355986
+                }
+              }
+            }
+          },
+          "unchanged": {
+            "budget": {
+              "full_client": {
+                "status": "MISSES_AT_ZERO"
+              },
+              "p106_grant": {
+                "status": "MISSES_AT_ZERO"
+              }
+            },
+            "copied": {
+              "fits_with_grant": false,
+              "other_three_clocks_pass": false,
+              "p106_first_needed_credit_ns": 3265208411,
+              "p106_full_grant_first_ns": 12618780156,
+              "with_full_client_cost_ns": {
+                "P106": {
+                  "decode": 6396019448,
+                  "first_final": 13265208411
+                },
+                "P97": {
+                  "decode": 6252148557,
+                  "first_final": 12293026045
+                }
+              }
+            },
+            "direct": {
+              "fits_with_grant": false,
+              "other_three_clocks_pass": false,
+              "p106_first_needed_credit_ns": 3205217921,
+              "p106_full_grant_first_ns": 12558789666,
+              "with_full_client_cost_ns": {
+                "P106": {
+                  "decode": 6366973317,
+                  "first_final": 13205217921
+                },
+                "P97": {
+                  "decode": 6227043488,
+                  "first_final": 12238728609
+                }
+              }
+            }
+          },
+          "unpriced": {
+            "SET": 298,
+            "nonhit_READ": 63
+          }
+        },
+        "same_slot_gen": {
+          "placed": {
+            "budget": {
+              "full_client": {
+                "status": "MISSES_AT_ZERO"
+              },
+              "p106_grant": {
+                "status": "MISSES_AT_ZERO"
+              }
+            },
+            "copied": {
+              "fits_with_grant": false,
+              "other_three_clocks_pass": false,
+              "p106_first_needed_credit_ns": 1671926739,
+              "p106_full_grant_first_ns": 11025498484,
+              "with_full_client_cost_ns": {
+                "P106": {
+                  "decode": 5847973695,
+                  "first_final": 11671926739
+                },
+                "P97": {
+                  "decode": 5754095916,
+                  "first_final": 10899074125
+                }
+              }
+            },
+            "direct": {
+              "fits_with_grant": false,
+              "other_three_clocks_pass": false,
+              "p106_first_needed_credit_ns": 1657003295,
+              "p106_full_grant_first_ns": 11010575040,
+              "with_full_client_cost_ns": {
+                "P106": {
+                  "decode": 5847297269,
+                  "first_final": 11657003295
+                },
+                "P97": {
+                  "decode": 5753441952,
+                  "first_final": 10885704067
+                }
+              }
+            }
+          },
+          "unchanged": {
+            "budget": {
+              "full_client": {
+                "status": "MISSES_AT_ZERO"
+              },
+              "p106_grant": {
+                "status": "MISSES_AT_ZERO"
+              }
+            },
+            "copied": {
+              "fits_with_grant": false,
+              "other_three_clocks_pass": false,
+              "p106_first_needed_credit_ns": 2558251776,
+              "p106_full_grant_first_ns": 11911823521,
+              "with_full_client_cost_ns": {
+                "P106": {
+                  "decode": 5847973695,
+                  "first_final": 12558251776
+                },
+                "P97": {
+                  "decode": 5754095916,
+                  "first_final": 11638690955
+                }
+              }
+            },
+            "direct": {
+              "fits_with_grant": false,
+              "other_three_clocks_pass": false,
+              "p106_first_needed_credit_ns": 2545725245,
+              "p106_full_grant_first_ns": 11899296990,
+              "with_full_client_cost_ns": {
+                "P106": {
+                  "decode": 5847297269,
+                  "first_final": 12545725245
+                },
+                "P97": {
+                  "decode": 5753441952,
+                  "first_final": 11626698479
+                }
+              }
+            }
+          },
+          "unpriced": {
+            "SET": 1974,
+            "nonhit_READ": 63
+          }
+        }
+      },
+      "decode_entry_if_restored": {
+        "differences": {
+          "cycles": 44,
+          "different_age_words": 968,
+          "different_bindings": 447,
+          "different_generation_words": 270,
+          "different_heat_words": 0,
+          "different_layer_clocks": 27,
+          "missing_members": 19,
+          "removed_members": 19,
+          "same_tier_slot_moves_cpu": 306,
+          "same_tier_slot_moves_cuda": 122,
+          "slot_move_payload_bytes_cpu": 4045075200,
+          "slot_move_payload_bytes_cuda": 1612742400
+        },
+        "loads": {
+          "all": {
+            "admissions": 19,
+            "bank_hits": 8,
+            "disk_jobs": 11,
+            "gguf_pread_bytes": 145551360,
+            "host_bank_delivered_bytes": 105753600,
+            "host_to_primary_cpu_bytes": 211507200,
+            "host_to_primary_cuda_bytes": 39657600,
+            "packed_pread_bytes": 145440768,
+            "primary_bytes": 251164800
+          },
+          "cpu": {
+            "admissions": 16,
+            "bank_hits": 6,
+            "disk_jobs": 10,
+            "gguf_pread_bytes": 132317184,
+            "host_bank_delivered_bytes": 79315200,
+            "host_to_primary_cpu_bytes": 211507200,
+            "packed_pread_bytes": 132218880,
+            "primary_bytes": 211507200
+          },
+          "cuda": {
+            "admissions": 3,
+            "bank_hits": 2,
+            "disk_jobs": 1,
+            "gguf_pread_bytes": 13234176,
+            "host_bank_delivered_bytes": 26438400,
+            "host_to_primary_cuda_bytes": 39657600,
+            "packed_pread_bytes": 13221888,
+            "primary_bytes": 39657600
+          }
+        }
+      },
+      "disk": 1797,
+      "hits": 683,
+      "read_change": {
+        "decode_before_final": {
+          "CPU": {
+            "new": 65,
+            "removed": 30,
+            "shared": 506
+          },
+          "CUDA0": {
+            "new": 14,
+            "removed": 4,
+            "shared": 221
+          }
+        },
+        "decode_tail": {
+          "CPU": {
+            "new": 1,
+            "shared": 5
+          },
+          "CUDA0": {
+            "shared": 10
+          }
+        },
+        "prefill": {
+          "CPU": {
+            "new": 12,
+            "removed": 12,
+            "shared": 616
+          },
+          "CUDA0": {
+            "new": 4,
+            "removed": 3,
+            "shared": 343
+          }
+        }
+      },
+      "reservations": 2480
+    }
+  },
+  "regardless_of_primary": {
+    "read_and_set": {
+      "placed": {
+        "fits_with_grant": true,
+        "other_three_clocks_pass": true,
+        "p106_first_needed_credit_ns": 0,
+        "p106_full_grant_first_ns": 8490841856,
+        "with_full_client_cost_ns": {
+          "P106": {
+            "decode": 4001131789,
+            "first_final": 9137270111
+          },
+          "P97": {
+            "decode": 3758498594,
+            "first_final": 8200067791
+          }
+        }
+      },
+      "unchanged": {
+        "fits_with_grant": true,
+        "other_three_clocks_pass": true,
+        "p106_first_needed_credit_ns": 31013326,
+        "p106_full_grant_first_ns": 9384585071,
+        "with_full_client_cost_ns": {
+          "P106": {
+            "decode": 4001131789,
+            "first_final": 10031013326
+          },
+          "P97": {
+            "decode": 3758498594,
+            "first_final": 8940105844
+          }
+        }
+      }
+    },
+    "read_only": {
+      "placed": {
+        "fits_with_grant": true,
+        "other_three_clocks_pass": true,
+        "p106_first_needed_credit_ns": 0,
+        "p106_full_grant_first_ns": 8045961659,
+        "with_full_client_cost_ns": {
+          "P106": {
+            "decode": 3793566612,
+            "first_final": 8692389914
+          },
+          "P97": {
+            "decode": 3569736972,
+            "first_final": 7774546318
+          }
+        }
+      },
+      "unchanged": {
+        "fits_with_grant": true,
+        "other_three_clocks_pass": true,
+        "p106_first_needed_credit_ns": 0,
+        "p106_full_grant_first_ns": 8981684429,
+        "with_full_client_cost_ns": {
+          "P106": {
+            "decode": 3793566612,
+            "first_final": 9628112684
+          },
+          "P97": {
+            "decode": 3569736972,
+            "first_final": 8564248828
+          }
+        }
+      }
+    }
+  },
+  "schema": "tesy.primary_victims.v1",
+  "source_sha256": "815d7bda0e3c4b1dc7864c46d1af4ef35466a0b02e183b79a1eed4b248b2b002",
+  "status": "TRACE_DERIVED"
+}

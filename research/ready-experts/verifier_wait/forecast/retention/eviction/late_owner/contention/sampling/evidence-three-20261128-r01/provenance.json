@@ -1,0 +1,290 @@
+{
+  "C55": {
+    "canonical_memory": {
+      "ancestor_headroom_bytes": 32696000512,
+      "available_max_bytes": 27608743936,
+      "available_min_bytes": 27419414528,
+      "cap_max_bytes": 25232932864,
+      "external_variation_bytes": 189329408,
+      "reserve_bytes": 2147483648,
+      "total_bytes": 32696000512
+    },
+    "digest": "9a94222d027a32dfc9d7384c11bdbb11ed0e6aa774e9001e2df58e827e460e30",
+    "model_device": "/dev/nvme0n1p3[/home]",
+    "power": {
+      "batteries": [
+        {
+          "name": "BAT0",
+          "status": "Not charging"
+        },
+        {
+          "name": "hid-0018:04F3:4359.0005-battery-7",
+          "status": "Unknown"
+        }
+      ],
+      "online_sources": [
+        "AC0",
+        "ucsi-source-psy-USBC000:002"
+      ],
+      "profile": "performance",
+      "source": "AC"
+    },
+    "r0_cap_B": 21474836480,
+    "samples": 62,
+    "span_s": 60.978036995002185
+  },
+  "M3": "PARTIAL",
+  "M4": "NOT_MET",
+  "artifacts": {
+    "archive.json": {
+      "sha256": "19b601f44e113d2c9f36c8d68ec2a60230283d767fdf59e57c79337887774d21",
+      "size_B": 258
+    },
+    "device.json": {
+      "sha256": "b74932ade843c3e12245f0f9fe3b72c87d24836b4ba03f282549600d45160c2e",
+      "size_B": 17571
+    },
+    "projection.json": {
+      "sha256": "0b5fcad908e04ab944539036a74f9fc79dba0533221eb09198ceaaddb4a6e5b1",
+      "size_B": 12687
+    },
+    "service.txt": {
+      "sha256": "9b799b894041b8ce163aff77219ed716c92706161b0f50b292d27da88dfb1a44",
+      "size_B": 167736
+    }
+  },
+  "base": {
+    "commit": "293f5b184da9439771cce361cd33fc4068d749f4",
+    "tree": "7683d6c07063adef6de232c43ab05d19e98e679d"
+  },
+  "binary": "bd1c99369c3bed214ebd42553a3865760f9ee2aa5cb50a135f6f81a36445fafa",
+  "branch": "research/ready-layer",
+  "budgets": {
+    "build_s": 60,
+    "output_B": 12582912,
+    "physical_s": 145,
+    "physical_scope_B": 268435456,
+    "physical_stop_B": 234881024,
+    "plan_grade_address_B": 1073741824,
+    "plan_grade_s": 180,
+    "requested_B": 65000000000
+  },
+  "build_sha256": "152cd58c57c44750595f488664e9071ff2135ee301eef705ebe695e081d6ed25",
+  "commands": {
+    "build": "systemd-run --user --scope --quiet --unit=tesy-triple-peer-build-20261128-r01 --slice=app.slice -p MemoryHigh=768M -p MemoryMax=768M -p MemorySwapMax=0 -p RuntimeMaxSec=60 /usr/bin/python3 -IB research/ready-experts/verifier_wait/forecast/retention/eviction/late_owner/contention/sampling/three.py build --previous /var/tmp/tesy-ready-reader-build-20261127-r01 --new-output-dir /var/tmp/tesy-triple-peer-build-20261128-r01",
+    "c55": "python3 -IB research/qualification-retake/nvme_admission/window.py --nvme-model /home/pmglo/models/gpt-oss-120b-gguf/gpt-oss-120b-MXFP4.gguf --new-output-dir /var/tmp/tesy-triple-peer-c55-20261128-r01",
+    "grade": "env GIT_CONFIG_COUNT=2 GIT_CONFIG_KEY_0=core.preloadIndex GIT_CONFIG_VALUE_0=false GIT_CONFIG_KEY_1=index.threads GIT_CONFIG_VALUE_1=1 /usr/bin/prlimit --as=1073741824 --fsize=12582912 -- /usr/bin/timeout 180 /usr/bin/python3 -IB research/ready-experts/verifier_wait/forecast/retention/eviction/late_owner/contention/sampling/three.py grade --observed /var/tmp/tesy-triple-peer-physical-20261128-r01 --plan /tmp/tesy-triple-peer-20261128-01/plan-01 --new-output-dir /tmp/tesy-triple-peer-20261128-01/grade-01",
+    "physical": "systemd-run --user --scope --quiet --unit=tesy-triple-peer-physical-20261128-r01 --slice=app.slice -p MemoryHigh=256M -p MemoryMax=256M -p MemorySwapMax=0 -p RuntimeMaxSec=145 /usr/bin/python3 -IB research/ready-experts/verifier_wait/forecast/retention/eviction/late_owner/contention/sampling/three.py physical --plan /tmp/tesy-triple-peer-20261128-01/plan-01 --plan-sha256 9c04566212d4f2edb75dda9990fd546a145f5ce544d2a47bb733272fc8427107 --build /var/tmp/tesy-triple-peer-build-20261128-r01 --build-sha256 152cd58c57c44750595f488664e9071ff2135ee301eef705ebe695e081d6ed25 --c55 /var/tmp/tesy-triple-peer-c55-20261128-r01 --c55-sha256 9a94222d027a32dfc9d7384c11bdbb11ed0e6aa774e9001e2df58e827e460e30 --new-output-dir /var/tmp/tesy-triple-peer-physical-20261128-r01",
+    "plan": "env GIT_CONFIG_COUNT=2 GIT_CONFIG_KEY_0=core.preloadIndex GIT_CONFIG_VALUE_0=false GIT_CONFIG_KEY_1=index.threads GIT_CONFIG_VALUE_1=1 /usr/bin/prlimit --as=1073741824 --fsize=12582912 -- /usr/bin/timeout 180 /usr/bin/python3 -IB research/ready-experts/verifier_wait/forecast/retention/eviction/late_owner/contention/sampling/three.py plan --manifest /home/pmglo/models/tesy-gpt-oss-120b-nvme/tesy-c291-manifest-20261125-r02 --new-output-dir /tmp/tesy-triple-peer-20261128-01/plan-01"
+  },
+  "compiled_source_sha256": "000ca42fe4bfe986ebf408c88bfadeef35d8d0d359ccf1a5a1fc063908df7e8a",
+  "compiler": "ca48a2d27d0796399adc3387225eec4be62974e26fa299710edfde0c1af5aa63",
+  "controls": "First and holdout across 3/1 and 3/2. OFF/ON four comparisons in each. Distinct authenticated host sources, full destination/drain. Independent P97/P106 clocks and fixed eligibility. Rules registered before acquiring data.",
+  "failures": [
+    {
+      "consequence": "Unknown [0,100%] in holdout and envelope. Retained all arms; no repeat.",
+      "observed_ratio": 1.0385537799990152,
+      "phase": "3/2-holdout calibration",
+      "registered_max": 1.03,
+      "status": "NOT_NEUTRAL"
+    }
+  ],
+  "historical_commands": [
+    "python3 research/post-c320/analyse.py",
+    "python3 research/consolidacao-20261123/verify.py",
+    "python3 research/post-c320/analyse.py --raw-dir \"$TESY_C317_RAW\""
+  ],
+  "historical_reproduction": {
+    "C317": {
+      "c317-code153-2-trace.native/events.tsv": {
+        "sha256": "8bdd96f879cda7fad466dc252ae9915e7b05233b95fd91539b6b4bd4400d27a1",
+        "size_bytes": 2647793
+      },
+      "c317-code153-2-trace.native/staging.json": {
+        "sha256": "38b46e7d48336bd10577d80a1fcf48cc35e5f084c13380dadf0a69f73657ac86",
+        "size_bytes": 1225649
+      },
+      "c317-code153-3-trace.native/events.tsv": {
+        "sha256": "70c9c37864e25201711d23cc60a7d0b1afeba21f254a410e785b24e901e00b07",
+        "size_bytes": 2648115
+      },
+      "c317-code153-3-trace.native/staging.json": {
+        "sha256": "ea0e449455a6cd2d957ba42665c8d30bb0ea14679d1d8c1ee881cc901207b59b",
+        "size_bytes": 1222640
+      },
+      "c317-nominal153-2-trace.native/events.tsv": {
+        "sha256": "c6cf2327a8bd7ec2c7755979e594b33b72a5547826a2d2b057326be66039838e",
+        "size_bytes": 1783273
+      },
+      "c317-nominal153-2-trace.native/staging.json": {
+        "sha256": "e93fceb6a61b1a710951252eb05b467d310055414fc24e73dc9816aa4c94eff2",
+        "size_bytes": 963169
+      },
+      "c317-nominal153-3-trace.native/events.tsv": {
+        "sha256": "05c830ebb865c5f0740717ff5935e5bf3c15fcbb0cdad26825ca56ca8432d7be",
+        "size_bytes": 1784362
+      },
+      "c317-nominal153-3-trace.native/staging.json": {
+        "sha256": "b2d5e3bbeeee0a776380e4433fcded264f7f5e6ec3c427102a3f40e8d3589a3d",
+        "size_bytes": 961025
+      }
+    },
+    "C318": {
+      "code153": {
+        "arm_metrics_s_ABBA": [
+          {
+            "decode32_s": 10.974225074,
+            "prefill153_s": 15.81318118,
+            "prefix_s": 58.731239133,
+            "total_s": 26.787406254
+          },
+          {
+            "decode32_s": 11.403332607,
+            "prefill153_s": 15.751908333,
+            "prefix_s": 58.532713609,
+            "total_s": 27.15524094
+          },
+          {
+            "decode32_s": 12.192635408,
+            "prefill153_s": 17.173879466,
+            "prefix_s": 58.613799627,
+            "total_s": 29.366514874
+          },
+          {
+            "decode32_s": 11.784824323,
+            "prefill153_s": 15.748829899,
+            "prefix_s": 58.900785673,
+            "total_s": 27.533654222
+          }
+        ],
+        "conditional_local_gate_infima_pct": {
+          "decode_route": 18.021172409878975,
+          "total_route": 27.66758270764566
+        },
+        "decode_median_15pct_of_candidate_decode": 18.021172409878975,
+        "decode_seconds_to_remove_AB_BA_at_cheapest_gate": [
+          2.0550142295794167,
+          2.1972558481836306
+        ],
+        "other_case_protection_if_this_case_is_unchanged": true,
+        "total_median_8pct_of_candidate_decode": 27.66758270764566,
+        "total_median_tie_pct_of_candidate_decode": 9.245527547606379
+      },
+      "nominal153": {
+        "arm_metrics_s_ABBA": [
+          {
+            "decode32_s": 9.450205154,
+            "prefill153_s": 9.690969186,
+            "prefix_s": 63.917734219,
+            "total_s": 19.14117434
+          },
+          {
+            "decode32_s": 9.708290821,
+            "prefill153_s": 9.755511994,
+            "prefix_s": 65.263303765,
+            "total_s": 19.463802815
+          },
+          {
+            "decode32_s": 9.737401388,
+            "prefill153_s": 9.70960099,
+            "prefix_s": 63.969746927,
+            "total_s": 19.447002378
+          },
+          {
+            "decode32_s": 9.397161546,
+            "prefill153_s": 9.66318792,
+            "prefix_s": 63.86638487,
+            "total_s": 19.060349466
+          }
+        ],
+        "conditional_local_gate_infima_pct": {
+          "decode_route": 17.61636903733702,
+          "total_route": 19.364253551466724
+        },
+        "decode_median_15pct_of_candidate_decode": 17.61636903733702,
+        "decode_seconds_to_remove_AB_BA_at_cheapest_gate": [
+          1.710248338245276,
+          1.7153765631568574
+        ],
+        "other_case_protection_if_this_case_is_unchanged": true,
+        "total_median_8pct_of_candidate_decode": 19.364253551466724,
+        "total_median_tie_pct_of_candidate_decode": 3.648183834941872
+      }
+    },
+    "compact": {
+      "sha256": "01943df1f93985cf9ee754ac06348bda51f6d700fc4fbbc1cf032b4841bfe992",
+      "size_B": 4994
+    },
+    "consolidation": {
+      "sha256": "5cc247dc0204c28e316c15e08c03b3c0483e9784b5b25aec27a0113f1d40ce3a",
+      "size_B": 214
+    },
+    "consolidation_counts": {
+      "archived_paths": 44,
+      "archived_trees": 4,
+      "at_original_location": 7209,
+      "heads": 45,
+      "historical_file_versions": 7533,
+      "historical_paths": 7253,
+      "paths_with_multiple_versions": 152,
+      "roots": 2
+    },
+    "historical-raw": {
+      "sha256": "8f11855e688e6222618f64c04f76001041ef24402bd7da04e7a32e210ad0befd",
+      "size_B": 6330
+    }
+  },
+  "identity": "triple-peer-service-20261128-01",
+  "immediate_base": {
+    "commit": "ccfda06299d9725975b63c75f28fece4cc57425e",
+    "tree": "96e3aa7171e69f135dba325c2aa7e58ca9964976"
+  },
+  "index": "63b7a76c7063e51944ee8a6296aea43109a336330b3657ffa357cddb44b59813",
+  "libraries": {
+    "/lib64/ld-linux-x86-64.so.2": "4e5d39355699e90fa29313d3100e82af4a23290028c58c364d6a249ef6a78e5e",
+    "/lib64/libc.so.6": "a5c5ad9d59d3c69eda93aa8f82930ba06cc4e893a113e66c85ad6e96243d53c8",
+    "/lib64/libcrypto.so.3": "695648ac8dc5e6a2b70e5e72399940de0f84bf24fddb7dd18949ba40bc575c72",
+    "/lib64/libgcc_s.so.1": "5a52ae4a6f1b119aa092aa1483c967e19d9ba036b1b0c2133236a8a2ce826ebf",
+    "/lib64/libm.so.6": "16a03ce6d24c8a46742206d4a9c1d35bb6577ae2384f153dc6ef4a4b62b5357f",
+    "/lib64/libstdc++.so.6": "49811507d8fc0283d8f8023546613774c673f876fe823b1b99d0c8d46039deda",
+    "/lib64/libz.so.1": "bbde8faec092a7c67b8bd76bbba4a826e61b05c171b97004ce6b308c5a090351"
+  },
+  "model": "582bd40f6886200101f4c4ed9f25f3fe80cc14c86e9e2b37746cd8904a0c622d",
+  "model_forwards": 0,
+  "pack": "f17e9fbf6f6aed1ad60ca7da3431c5156a946d2e0bf119722afc1f934cbc6b11",
+  "parent_projection": "0398d782be84b7eb25851bda90a63d0d76552b15291d5b8a04c538afd0a6500b",
+  "physical_revision": {
+    "commit": "5c9ea740d4a6d71f686f95bb9b78e826b89d7576",
+    "tree": "f2ae8231fdf008ef2a62f6c05125cd534100b34f"
+  },
+  "physical_sha256": "2c0d82ea8fd64906d2281834c4279662eb8f504218f6d5e3c15b237d313d9821",
+  "plan_sha256": "9c04566212d4f2edb75dda9990fd546a145f5ce544d2a47bb733272fc8427107",
+  "prior_head": "99f66170",
+  "private_archive": {
+    "archive_id": "triple-peer-service-20261128-01",
+    "bytes": 351037,
+    "file_count": 17,
+    "manifest": {
+      "bytes": 3020,
+      "sha256": "5bff8d5dec27fda672c03dc79100364ede61cacd2c12b027fd8b54ab476526d3"
+    },
+    "part": "part-01",
+    "provider_links": 0
+  },
+  "product": "NOT_RUN",
+  "protocol": "97cd21119042b48bc52dbdbf2196c013439eb4cc3e390e1a8009eb421ccf6ff5",
+  "protocol_commit": "99f66170",
+  "protocol_file": "research/ready-experts/verifier_wait/forecast/retention/eviction/late_owner/contention/sampling/three-protocol.md",
+  "remote": "https://github.com/PedroMglo/Tesy.git",
+  "resources": {
+    "child_s": 35.1429063930118,
+    "energy_J": null,
+    "grade": "wall_s=3.84 peak_kib=137596",
+    "memory_peak": 163557376,
+    "plan": "wall_s=3.45 peak_kib=157496",
+    "requested_B": 60133146624,
+    "swap": 0,
+    "windows_read": 4548
+  },
+  "upstream": "origin/research/ready-layer"
+}

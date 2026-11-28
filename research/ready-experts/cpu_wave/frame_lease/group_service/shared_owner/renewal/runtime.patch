@@ -1,0 +1,190 @@
+--- a/src/llama-moe-stream.h
++++ b/src/llama-moe-stream.h
+@@ -1,6 +1,7 @@
+ #pragma once
+
+ #include "llama-mmap.h"
++#include "cpu-weight-bank.h"
+
+ #include "ggml-cpp.h"
+
+@@ -154,6 +155,12 @@
+     static constexpr uint32_t retention_frames = 252;
+     ggml_tensor * shared_cpu_owner = nullptr; // non-owning, shared by the compatible CPU views
+     packed_mode cpu_slots = packed_mode::disabled;
++    std::unique_ptr<CpuWeightBank> cpu_bank;
++    CpuWeightBank::Loan acquire_cpu_locked(llama_moe_stream_layer &sl, int slot, uint64_t generation);
++    bool release_cpu(CpuWeightBank::Loan loan);
++#ifdef TESY_CPU_RENEWAL_TEST
++    std::array<int64_t,CpuWeightBank::primary> cpu_publish_ns{};
++#endif
+
+     std::unique_ptr<tesy_expert_store> expert_store; // opt-in immutable byte source, no additional primary experts
+     llama_files files; // privately reopened GGUF files, same indices as the loader's
+--- a/src/llama-moe-stream.cpp
++++ b/src/llama-moe-stream.cpp
+@@ -11,6 +11,7 @@
+ #include <cstdlib>
+ #include <cstring>
+ #include <stdexcept>
++#include <chrono>
+
+ #ifdef _WIN32
+ #include <malloc.h>
+@@ -157,6 +158,20 @@
+             throw std::runtime_error("packed CPU slots require direct I/O, 40 slots and four workers");
+         }
+     }
++    if (const char *bank = std::getenv("TESY_CPU_RENEWAL")) {
++#ifdef TESY_CPU_RENEWAL_TEST
++        if (cpu_slots != packed_mode::shared) throw std::runtime_error("renewal requires shared CPU slots");
++        CpuWeightBank::Mode m;
++        if (std::strcmp(bank,"DISK") == 0) m = CpuWeightBank::Mode::disk;
++        else if (std::strcmp(bank,"COPY") == 0) m = CpuWeightBank::Mode::copy;
++        else if (std::strcmp(bank,"ID") == 0) m = CpuWeightBank::Mode::reference;
++        else throw std::runtime_error("unknown CPU renewal mode");
++        cpu_bank = std::make_unique<CpuWeightBank>(m);
++#else
++        (void) bank;
++        throw std::runtime_error("renewal requires a consumer that brackets every weight read");
++#endif
++    }
+ }
+
+ // stop and join the I/O workers before the cache buffers and files they use are destroyed
+@@ -164,6 +179,15 @@
+     {
+         std::lock_guard<std::mutex> lock(mtx);
+         shutting_down = true;
++        if (cpu_bank) {
++            for (const auto &sl : layers) {
++                if (!sl || sl->cpu_frames.empty()) continue;
++                for (uint32_t s = 0; s < sl->n_slots; ++s) {
++                    if (sl->slot_state[s] == LLAMA_MOE_STREAM_SLOT_LOADING && !sl->slot_claimed[s])
++                        cpu_bank->cancel_queued(cpu_bank->transfer(sl->il,s));
++                }
++            }
++        }
+         q_demand.clear();
+     }
+     cv_work.notify_all();
+@@ -408,13 +432,23 @@
+
+     std::unique_lock<std::mutex> lk(mtx);
+     while (true) {
+-        cv_work.wait(lk, [&]{ return shutting_down || !q_demand.empty(); });
++        auto next = [&] {
++            if (!cpu_bank) return q_demand.begin();
++            return std::find_if(q_demand.begin(),q_demand.end(),[&](const auto &w) {
++                const auto &sl = *w.sl;
++                return sl.cpu_frames.empty() || w.gen != sl.slot_gen[w.slot] ||
++                    sl.slot_state[w.slot] != LLAMA_MOE_STREAM_SLOT_LOADING || sl.slot_claimed[w.slot] ||
++                    cpu_bank->eligible(cpu_bank->transfer(sl.il,w.slot));
++            });
++        };
++        cv_work.wait(lk, [&]{ return shutting_down || next() != q_demand.end(); });
+         if (shutting_down) {
+             break;
+         }
+
+-        llama_moe_stream_work w = q_demand.front();
+-        q_demand.pop_front();
++        auto selected = next();
++        llama_moe_stream_work w = *selected;
++        q_demand.erase(selected);
+
+         auto & sl = *w.sl;
+         if (w.gen != sl.slot_gen[w.slot] ||
+@@ -425,6 +459,9 @@
+         }
+         sl.slot_claimed[w.slot] = 1;
+         const int32_t target_frame = sl.weight_frame(w.slot);
++        const bool renewing = cpu_bank && !sl.cpu_frames.empty();
++        const auto delivery = renewing ? cpu_bank->transfer(sl.il,w.slot) : CpuWeightBank::Transfer{};
++        GGML_ASSERT(!renewing || delivery.target == target_frame);
+
+         lk.unlock();
+
+@@ -435,12 +472,21 @@
+                 const size_t slot_offset = size_t(target_frame) * first->nb[2];
+                 auto * address = static_cast<uint8_t *>(first->data) + slot_offset;
+                 const bool direct = cpu_slots == packed_mode::direct;
+-                expert_store->read_window(sl.il, w.expert, direct ? address : staging);
+-                if (!direct) {
++                const uint8_t *source = staging;
++                if (!renewing || delivery.from_pack()) {
++                    expert_store->read_window(sl.il, w.expert, direct ? address : staging);
++                } else if (delivery.write) {
++                    source = static_cast<const uint8_t *>(first->data) + size_t(delivery.source) * first->nb[2];
++                    if (!delivery.out_of_place()) {
++                        std::memcpy(staging,source,tesy_expert_store::weights);
++                        source = staging;
++                    }
++                }
++                if (!direct && (!renewing || delivery.write)) {
+                     const auto & record = expert_store->entries[sl.il][w.expert];
+                     for (size_t k = 0; k < sl.weights.size(); ++k) {
+                         const auto & wt = sl.weights[k];
+-                        ggml_backend_tensor_set(wt.cache, staging + record.relative[k],
++                        ggml_backend_tensor_set(wt.cache, source + record.relative[k],
+                                                 size_t(target_frame) * wt.cache->nb[2], wt.nb_expert);
+                     }
+                 }
+@@ -463,12 +509,24 @@
+         }
+         lk.lock();
+         const bool valid=tesy_store_completion_valid(shutting_down,ok,w.gen,sl.slot_gen[w.slot],w.expert,sl.slot_expert[w.slot],sl.slot_state[w.slot],sl.slot_claimed[w.slot]);
++        if (renewing) {
++            cpu_bank->complete(delivery,CpuWeightBank::key(sl.il,w.expert),valid);
++            cv_work.notify_all();
++        }
+         if (w.gen==sl.slot_gen[w.slot] && w.expert==sl.slot_expert[w.slot]) sl.slot_claimed[w.slot]=0;
+         if (!valid) {
+             if (!shutting_down) load_failed=true; // stale/error fail closed, cancellation never publishes
+         } else {
+             sl.slot_state[w.slot]=LLAMA_MOE_STREAM_SLOT_RESIDENT;
+-            if(expert_store){stats.n_store_loads++;stats.n_store_read_bytes+=tesy_expert_store::weights;}
++            if(expert_store && (!renewing || delivery.from_pack())) {
++                stats.n_store_loads++;
++                stats.n_store_read_bytes+=tesy_expert_store::weights;
++            }
++#ifdef TESY_CPU_RENEWAL_TEST
++            if (renewing) cpu_publish_ns[sl.il*CpuWeightBank::slots+w.slot] =
++                std::chrono::duration_cast<std::chrono::nanoseconds>(
++                    std::chrono::steady_clock::now().time_since_epoch()).count();
++#endif
+         }
+         cv_done.notify_all();
+     }
+@@ -506,6 +564,10 @@
+ // bind expert -> slot and mark it LOADING: evict the slot's prior occupant, bump slot_gen (so any
+ // in-flight load for the old occupant is recognized as stale), and update the expert_slot index
+ void llama_moe_stream::reserve_slot_locked(llama_moe_stream_layer & sl, int32_t expert, int32_t slot) {
++    if (cpu_bank && !sl.cpu_frames.empty()) {
++        GGML_ASSERT(sl.slot_state[slot] != LLAMA_MOE_STREAM_SLOT_LOADING && !sl.slot_claimed[slot]);
++        cpu_bank->reserve(sl.il,slot,expert,sl.slot_expert[slot],sl.cpu_frames.at(slot));
++    }
+     if (sl.slot_expert[slot] >= 0) {
+         if (debug) {
+             LLAMA_LOG_DEBUG("%s: layer %d: evict expert %d from slot %d\n", __func__, sl.il, sl.slot_expert[slot], slot);
+@@ -519,6 +581,20 @@
+     sl.slot_last_use[slot] = ++sl.use_counter;
+     sl.expert_slot[expert] = slot;
+     sl.seen[expert] = 1;
++}
++
++CpuWeightBank::Loan llama_moe_stream::acquire_cpu_locked(llama_moe_stream_layer &sl, int slot, uint64_t gen) {
++    if (!cpu_bank || sl.cpu_frames.empty() || slot < 0 || uint32_t(slot) >= sl.n_slots ||
++        load_failed || shutting_down || sl.slot_gen[slot] != gen ||
++        sl.slot_state[slot] != LLAMA_MOE_STREAM_SLOT_RESIDENT) return {};
++    return cpu_bank->acquire(sl.weight_frame(slot),CpuWeightBank::key(sl.il,sl.slot_expert[slot]));
++}
++
++bool llama_moe_stream::release_cpu(CpuWeightBank::Loan loan) {
++    std::lock_guard<std::mutex> lock(mtx);
++    if (!cpu_bank || !cpu_bank->release(loan)) return false;
++    cv_work.notify_all();
++    return true;
+ }
+
+ size_t llama_moe_stream::size_bufs() const {

@@ -1,0 +1,380 @@
+{
+  "archived": {
+    "archive_id": "ready-late-owner-20261128-01",
+    "bytes": 13566108,
+    "file_count": 198,
+    "manifest": {
+      "bytes": 38899,
+      "sha256": "9297cb6f4161a2afa7585e6c3e036cb54697e04177b9d4fe6f7ebcdba0fb70fc"
+    },
+    "part": "part-01",
+    "provider_links": 24
+  },
+  "artifacts": {
+    "archive.json": "229cd11cd237aa101965cf269b0a7971ba586c8a133179852483acdf0904370a",
+    "arms.json.gz": "de796024b02f26cf777f5fc1855ae34b8f1631351f2d37b6680d641431bc377b",
+    "causal-grade.json": "5dd9d771a5c446965832c499dccf268bc39925d0da8a80e386b4d7eb37adcdbf",
+    "causal-input.json.gz": "856027dfff43f0abd40744b71b987cb61357db9945c1bcd739676d4058f1fc76",
+    "physical-grade.json": "12f16330465a4a3157646b78b19399b836a6c8bd9f64bf5cf8243124f663faea",
+    "wait-grade.json": "07ea5dcc0d6226897ceb44697d48a2fc810b5a707f576753542301e88d25025c",
+    "waits.json.gz": "11a4e1396c185ae7e7e3f720e14e2aad4c83867979451e7032c1e69f84f05592"
+  },
+  "basis": {
+    "causal_execution": {
+      "commit": "3c0ef14ed13628a0c920fdb05c34fac9eb0501f4",
+      "tree": "e4531301ef2366885714742bdfd95ac68f2330dc"
+    },
+    "observation_protocol": {
+      "commit": "7b706563861193959470078175887efbecf94bb7",
+      "tree": "da3594bdb3144c54167152357ea166e082e20cbc"
+    },
+    "physical_build": {
+      "commit": "794f51267a639b65f44ca21fc6e2dce9c50c9fed",
+      "tree": "78b2102cb882f31106cc665fd8207053a257e792"
+    },
+    "physical_launch": {
+      "commit": "083c23366ba0ebd1d23ef769a4710c0be98ca108",
+      "tree": "b279add538db89e57d412b9ae2d352418744f209"
+    },
+    "physical_protocol": {
+      "commit": "860428137f20fbb960c4c903714e6762a5cc4514",
+      "tree": "b1148e457fb62bb5f87ba6672a876f8b5b70c81e"
+    },
+    "starting": {
+      "commit": "ec7f71fbb06ea1d36c70257e6ae72d66f7137118",
+      "tree": "175b2eeca90ab5949e816e095ae3fcbc66349ed7"
+    }
+  },
+  "budget": {
+    "build_bytes_cap": 3221225472,
+    "build_s_cap": 180,
+    "causal_account": "wall_s=6.41 peak_kib=177428",
+    "causal_as_cap": 1073741824,
+    "causal_cap_s": 180,
+    "estimated_gpu_j": 11024.9161,
+    "evidence_bytes_cap": 536870912,
+    "family_s": 1249.8753815620003,
+    "family_s_cap": 1600,
+    "host_energy_j": null,
+    "model_s": 756.04,
+    "observation_peak_KiB": 74208,
+    "observation_wall_s": 1.83,
+    "scope_bytes_cap": 21474836480,
+    "swap_scope_bytes": 0
+  },
+  "commands": {
+    "admission": "/usr/bin/python3 -IB research/qualification-retake/nvme_admission/window.py --nvme-model /home/pmglo/models/gpt-oss-120b-gguf/gpt-oss-120b-MXFP4.gguf --new-output-dir /var/tmp/tesy-late-owner-c55-20261128-r01",
+    "build": "systemd-run --user --scope --quiet --unit=tesy-late-owner-build-20261128-r01 --slice=app.slice -p MemoryHigh=3G -p MemoryMax=3G -p MemorySwapMax=0 -p RuntimeMaxSec=180 /usr/bin/python3 -IB research/ready-experts/verifier_wait/forecast/retention/eviction/late_owner/build.py --parent /var/tmp/tesy-verifier-wait-build-20261128-r02 --entry /var/tmp/tesy-entry-consumer-build-20261128-r01 --commit 794f51267a639b65f44ca21fc6e2dce9c50c9fed --new-output-dir /var/tmp/tesy-late-owner-build-20261128-r01",
+    "causal": "env GIT_CONFIG_COUNT=2 GIT_CONFIG_KEY_0=core.preloadIndex GIT_CONFIG_VALUE_0=false GIT_CONFIG_KEY_1=index.threads GIT_CONFIG_VALUE_1=1 /usr/bin/time -f 'wall_s=%e peak_kib=%M' /usr/bin/prlimit --as=1073741824 --fsize=33554432 -- /usr/bin/timeout 180 /usr/bin/python3 -IB research/ready-experts/verifier_wait/forecast/retention/eviction/late_owner/causal.py run --archive /mnt/sdisk-ssd-ext/Tesy/outputs/qualification-20261124-nvme-01 --placement /mnt/sdisk-ssd-ext/Tesy/outputs/ready-renewal-20261127-01/placement --new-output-dir /tmp/tesy-late-owner-20261128-01/causal-01",
+    "observation": "/usr/bin/time -f 'wall_s=%e peak_kib=%M' /usr/bin/prlimit --as=1073741824 --fsize=16777216 -- /usr/bin/timeout 180 python3 -IB research/ready-experts/verifier_wait/forecast/retention/eviction/late_owner/observe.py --archive /mnt/sdisk-ssd-ext/Tesy/outputs/qualification-20261124-nvme-01 --build /var/tmp/tesy-entry-consumer-build-20261128-r01 --new-output-dir /tmp/tesy-late-owner-20261128-01/observe-01",
+    "physical": "/usr/bin/python3 -IB research/ready-experts/verifier_wait/forecast/retention/eviction/late_owner/run.py run --previous /var/tmp/tesy-verifier-wait-20261128-r01 --images /var/tmp/tesy-late-owner-build-20261128-r01 --images-sha256 69bee53feece0d8575cc1244c9d6ed8d9dbe2ce019a02d42a8052f7947ddfe80 --window /var/tmp/tesy-late-owner-c55-20261128-r01 --window-sha256 1fa6a936aa60547bde4b62fef9d0366accd7513a45e2d393885c25d24153fe1e --commit 083c23366ba0ebd1d23ef769a4710c0be98ca108 --new-output-dir /var/tmp/tesy-late-owner-20261128-r01"
+  },
+  "earlier_controls": {
+    "consolidation": "{\n  \"heads\": 45,\n  \"roots\": 2,\n  \"historical_paths\": 7253,\n  \"at_original_location\": 7209,\n  \"archived_paths\": 44,\n  \"historical_file_versions\": 7533,\n  \"paths_with_multiple_versions\": 152,\n  \"archived_trees\": 4\n}",
+    "historical_8_files": {
+      "c317-code153-2-trace.native/events.tsv": {
+        "sha256": "8bdd96f879cda7fad466dc252ae9915e7b05233b95fd91539b6b4bd4400d27a1",
+        "size_bytes": 2647793
+      },
+      "c317-code153-2-trace.native/staging.json": {
+        "sha256": "38b46e7d48336bd10577d80a1fcf48cc35e5f084c13380dadf0a69f73657ac86",
+        "size_bytes": 1225649
+      },
+      "c317-code153-3-trace.native/events.tsv": {
+        "sha256": "70c9c37864e25201711d23cc60a7d0b1afeba21f254a410e785b24e901e00b07",
+        "size_bytes": 2648115
+      },
+      "c317-code153-3-trace.native/staging.json": {
+        "sha256": "ea0e449455a6cd2d957ba42665c8d30bb0ea14679d1d8c1ee881cc901207b59b",
+        "size_bytes": 1222640
+      },
+      "c317-nominal153-2-trace.native/events.tsv": {
+        "sha256": "c6cf2327a8bd7ec2c7755979e594b33b72a5547826a2d2b057326be66039838e",
+        "size_bytes": 1783273
+      },
+      "c317-nominal153-2-trace.native/staging.json": {
+        "sha256": "e93fceb6a61b1a710951252eb05b467d310055414fc24e73dc9816aa4c94eff2",
+        "size_bytes": 963169
+      },
+      "c317-nominal153-3-trace.native/events.tsv": {
+        "sha256": "05c830ebb865c5f0740717ff5935e5bf3c15fcbb0cdad26825ca56ca8432d7be",
+        "size_bytes": 1784362
+      },
+      "c317-nominal153-3-trace.native/staging.json": {
+        "sha256": "b2d5e3bbeeee0a776380e4433fcded264f7f5e6ec3c427102a3f40e8d3589a3d",
+        "size_bytes": 961025
+      }
+    },
+    "historical_replay": "8f11855e688e6222618f64c04f76001041ef24402bd7da04e7a32e210ad0befd",
+    "shallow_replay": "01943df1f93985cf9ee754ac06348bda51f6d700fc4fbbc1cf032b4841bfe992"
+  },
+  "immediate_stack_base": "ccfda06299d9725975b63c75f28fece4cc57425e",
+  "lineage": {
+    "GGUF_backend_commit": "c89c88b342054223e3f27a17fbfd0954803147ac",
+    "GGUF_backend_tree": "3962daa588dfa89971c60c95ce4c5054bc27fd3f",
+    "baseline": "ef82a43dfb9b72d48a5693991d63c4fa19c0fc9a9d52c7da5d0a9fe7c05e0764",
+    "build": "69bee53feece0d8575cc1244c9d6ed8d9dbe2ce019a02d42a8052f7947ddfe80",
+    "c55": "1fa6a936aa60547bde4b62fef9d0366accd7513a45e2d393885c25d24153fe1e",
+    "compiler": "cef5002fbce633104c81b24e9fd935251ab653234c8dce8758d3c963d6123c8a",
+    "entry_ids_i32le": {
+      "first": "202698125db628161029f02774d9bf781614a9f551d2234cc07fa0a426f7c502",
+      "t1": "0946e5070c4bfcc945d584e0778e33fb544a46bc313201bfc26a5f72f547f7a0",
+      "t2": "cf7e9b19362c5aeaf5e54e2185048acac09ec55459fb4a6fc262ec434f037425",
+      "target": "4a8a47b3ec0a64220e9734237eae9fd7b886ce35ed81964408eacdc4034931f9"
+    },
+    "executable_modes": {
+      "H": {
+        "code-cut": "dd17e6f573cdc11d6ec561057f5a5fb46c2074ff6daea090c7724bfa05d18f00",
+        "work.json": "67e2826a12b0f3e58e1aafa2461c7b0cdd18f3567b68002a0ee3fbd03c25afc3"
+      },
+      "O": {
+        "code-cut": "dd17e6f573cdc11d6ec561057f5a5fb46c2074ff6daea090c7724bfa05d18f00",
+        "work.json": "d84179909779fbb52e179c1b765c0cd9f9b8758a278c65416a7cf60eb8d16402"
+      },
+      "R": {
+        "code-cut": "dd17e6f573cdc11d6ec561057f5a5fb46c2074ff6daea090c7724bfa05d18f00",
+        "work.json": "2df3beb073f6643552d35e6885d679b34b00871924f18aa95a7fe3d04cdaccd8"
+      },
+      "V": {
+        "code-cut": "dd17e6f573cdc11d6ec561057f5a5fb46c2074ff6daea090c7724bfa05d18f00",
+        "work.json": "c2bb7f8066d9cbd9f3cc3d452b40a385b05de45f40a2b0a578e15ff6c984b8f9"
+      }
+    },
+    "family": "edbac83eb5b715996ff2723b4b36c4977619ac595e389d2a679c26f6c0c31d27",
+    "generated_cpp": "4d56179a86c147b4c22164c1f8530b73a801fa68d00be260377714d2c035f577",
+    "independent_numerical_digest": "1cc9714e9bb32d22d9488bf5b4d294ae240520c25feffff40618e0ce1b93d1a8",
+    "index": "63b7a76c7063e51944ee8a6296aea43109a336330b3657ffa357cddb44b59813",
+    "inputs": {
+      "build.py": "0c180f69a57945325a3d95657c938552636777a1adbea5b73cc2ea814ed779ad",
+      "client.cpp.in": "6c87b9149494b3fa79b1297490e5d3e59146e7083586c0a0055ced4dc6238ff9",
+      "delivery.cpp.in": "bf7d1670276dc01dfd06e511b121ca69aa9a611f6f527ebaf6f56c28801efe01"
+    },
+    "launch_provenance": "22984d4ef6bfc65fd40e87d89ef2e426eac47b4587df8c2f9b4b6cb2b6a2ff61",
+    "libllama_and_providers": {
+      "ld-linux-x86-64.so.2": "4e5d39355699e90fa29313d3100e82af4a23290028c58c364d6a249ef6a78e5e",
+      "libc.so.6": "a5c5ad9d59d3c69eda93aa8f82930ba06cc4e893a113e66c85ad6e96243d53c8",
+      "libcublas.so.13.6.0.2": "01dd70979e68625846e9a5edcba531d3798498b866aa1c925cc25d60f63fe680",
+      "libcublasLt.so.13.6.0.2": "93c275af70b6d39fbd9b78cbc925ad9a9a0a81189aaec1521a951119ebe72da3",
+      "libcuda.so.620.73.04": "33d4cbb6bc86ccc76c1e60af3b83c316ea49d7cb311efa79efc8ade96114cd8e",
+      "libcudart.so.13.3.29": "9f92e4c3f7e14d0fed69ef876a45d4255a2dc88cb552a673a90ce881c26282fe",
+      "libdl.so.2": "54d56c0f10466a05cc92685f8062ee6a2eaf59c62fb6f724217e984fcfbb5031",
+      "libgcc_s-16-20261029.so.1": "5a52ae4a6f1b119aa092aa1483c967e19d9ba036b1b0c2133236a8a2ce826ebf",
+      "libggml-base.so.0.15.3": "6e27d9ecb86e4747177189d2d2f6390280a2ee1000221ad68a0404023ea72539",
+      "libggml-cpu.so.0.15.3": "31f5c0ab3584a0c263091f1e5e45e5340cf63f5b853cc08e2ead6b01011ee41f",
+      "libggml-cuda.so.0.15.3": "ff43655b15df5f3de1d5e00b0da18469a14f118bd644eb4b6d7f1915c85a4493",
+      "libggml.so.0.15.3": "70f635b8ba22ddd751590ec1fe11c895ef88e2aff0f4a63a3af96314e6a77d65",
+      "libgomp.so.1.0.0": "1e20cd85608bdb5d1662f07988adad28a6473cd70f80de2d2b4dcf82c94eaa74",
+      "libllama.so.0.0.9884": "45f509221f21188cd9d2b7808b08e47a7405e3c66ed82a68402bbad0f4af6b43",
+      "libm.so.6": "16a03ce6d24c8a46742206d4a9c1d35bb6577ae2384f153dc6ef4a4b62b5357f",
+      "libpthread.so.0": "41cad1a2bda56ff226e0b08db7edfaf4ec47d876ab1414a979fd157467b6c39d",
+      "librt.so.1": "3a23e51370381b0ab993932341fd69643ade24869936e471e1dde2e62398d9f7",
+      "libstdc++.so.6.0.36": "49811507d8fc0283d8f8023546613774c673f876fe823b1b99d0c8d46039deda"
+    },
+    "model": "582bd40f6886200101f4c4ed9f25f3fe80cc14c86e9e2b37746cd8904a0c622d",
+    "numerical_gold_full_logits": {
+      "decode0": "089ea789e138b5d4385e4b4e70520ae1d7b50f6fe0527ae80869ec51ab97b6ce",
+      "decode1": "2701b9d55f20b829f6ec13deb75d4c100866fe80912ba03ec0f190730eb7b883",
+      "decode31": "f2b563190c7f6308feb0219d4358653b91f38c3ed08ad08725144e66672e26d3",
+      "decode7": "1364895236c0d4d8a9e337d079604fb6ad34e9e66fff68783fcbec5b63a267dd",
+      "prefill_final": "564d933a90299b067dbcbaf25109117fe5d87b07d48595db7f1e69fa73be4a13"
+    },
+    "numerical_supervisor_resource_protocol": "f3e267c9a45536f39f3cfa97c6341cef5cc07c3567a88c4dec5b159c58d22ddc",
+    "pack": "f17e9fbf6f6aed1ad60ca7da3431c5156a946d2e0bf119722afc1f934cbc6b11",
+    "physical_protocol": "d348c35e819a87f5772a783a449b4e70faf6c4a851a8a28c98d9e36f1c0346aa",
+    "previous_build": "dd2067917d32c970d645fee0f622f194e2a0fce422032d0b6de541fca62ff1b1",
+    "private_input": "36e75d97017211eeffebb8877e0da0dc4ee15977fb7600cc1f141053c0caae9c"
+  },
+  "main": "293f5b184da9439771cce361cd33fc4068d749f4",
+  "peak": {
+    "buffered_model_fds": 0,
+    "cgroup_file_bytes": 2299695104,
+    "cgroup_memory_bytes": 17240657920,
+    "cgroup_peak_bytes": 17266372608,
+    "cpu_tctl_c": 95.375,
+    "direct_model_fds": 2,
+    "gpu_temperature_c": 65.0,
+    "gpu_used_mib": 6848.0,
+    "nvme_composite_c": 57.85,
+    "rss_bytes": 16902299648,
+    "swap_bytes": 0
+  },
+  "protocol": "tesy.late_owner_120b.1",
+  "resource_gate": {
+    "canonical_memory": {
+      "ancestor_headroom_bytes": 32696000512,
+      "available_max_bytes": 27763113984,
+      "available_min_bytes": 27451457536,
+      "cap_max_bytes": 25232932864,
+      "external_variation_bytes": 311656448,
+      "reserve_bytes": 2147483648,
+      "total_bytes": 32696000512
+    },
+    "canonical_policy_sha256": "0b13f743b407da0141e259f3dfe6902adfedc4c16d615d3478489ba558428ed0",
+    "cpu": "AMD Ryzen AI 9 HX 370 w/ Radeon 890M",
+    "gpu_compute_max": 0,
+    "gpu_driver": "620.73.04",
+    "gpu_name": "NVIDIA GeForce RTX 4060 Laptop GPU",
+    "gpu_total_mib": 8188.0,
+    "max_gap_s": 1.3456987259996822,
+    "model_device": "/dev/nvme0n1p3[/home]",
+    "model_fs": "btrfs",
+    "nvme": [
+      {
+        "bdf": "0000:c1:00.0",
+        "controller": "nvme0",
+        "critical_c": 89.85,
+        "current_c": 33.85,
+        "firmware": "V3MA101",
+        "model": "MTFDKBK1T0QFM-1BD1AABGB",
+        "sensor": "nvme-pci-c100",
+        "source": "Composite critical minus 2C admission; max is warning",
+        "stop_c": 87.85,
+        "warning_c": 86.85
+      }
+    ],
+    "power": {
+      "batteries": [
+        {
+          "name": "BAT0",
+          "status": "Not charging"
+        },
+        {
+          "name": "hid-0018:04F3:4359.0005-battery-7",
+          "status": "Unknown"
+        }
+      ],
+      "online_sources": [
+        "AC0",
+        "ucsi-source-psy-USBC000:002"
+      ],
+      "profile": "performance",
+      "source": "AC"
+    },
+    "samples": 62,
+    "span_s": 61.00432365100278,
+    "swap_free_min": 15145066496,
+    "swap_total": 16347820032
+  },
+  "sensor_gates_by_arm": {
+    "h1": {
+      "c118": {
+        "age_at_spawn_s": 0.047231,
+        "count": 61,
+        "s": 60.174886559994775,
+        "sha256": "2ab48d45e89ee12dca5c2966e18650f9385f85f319580064e42dc3ba2a0c77ac"
+      },
+      "c55_age_s": 776.770941,
+      "model_s": 93.837,
+      "monitor_sha256": "822738db8e29de984d760ec99edc4c7ec0498af050b8f27b6b4a2db2a92610f5",
+      "native_sha256": "6bf77c09a6f86c44346feff9aa38a1abd44b971d6708bca71c1089de5026e418",
+      "samples": 370,
+      "scope_s": 154.6476710959978,
+      "unit": "tesy-late-owner-20261128-r01-h1-s"
+    },
+    "h2": {
+      "c118": {
+        "age_at_spawn_s": 0.045332,
+        "count": 61,
+        "s": 60.13746517099935,
+        "sha256": "fb6255cb708233354911df02d386bf8c9bcba8a3efd0cfcc9f7918ea5a45686e"
+      },
+      "c55_age_s": 932.339032,
+      "model_s": 93.685,
+      "monitor_sha256": "46988db542e06c001c7b288b85bc82b688008cabfba595b26bb739ec73521bb9",
+      "native_sha256": "7175dfddd3890de47a0a36a72210d1d0baed7957711395bdf7716f6c08428798",
+      "samples": 370,
+      "scope_s": 154.32007473799604,
+      "unit": "tesy-late-owner-20261128-r01-h2-s"
+    },
+    "o1": {
+      "c118": {
+        "age_at_spawn_s": 0.046221,
+        "count": 61,
+        "s": 60.15823180999723,
+        "sha256": "477661235627cf8cdc2237b8a3ec3ef77707e89339e2b873b5a9d4b052008cd3"
+      },
+      "c55_age_s": 620.471738,
+      "model_s": 94.414,
+      "monitor_sha256": "5e61eca7098b126a6e4e1ff90536e8328486e1a19b0a7ce4bf7dde799757202c",
+      "native_sha256": "bf471c6ba3d503d202f26f6c96776068a5560a85f9c15f232faf94bd2f26d2ac",
+      "samples": 372,
+      "scope_s": 155.36369415099762,
+      "unit": "tesy-late-owner-20261128-r01-o1-s"
+    },
+    "o2": {
+      "c118": {
+        "age_at_spawn_s": 0.045467,
+        "count": 61,
+        "s": 60.13912673199957,
+        "sha256": "29c1719350b7a944cf2468359190202385094904af744f98fc9aa1783d6a7699"
+      },
+      "c55_age_s": 1087.578812,
+      "model_s": 94.282,
+      "monitor_sha256": "d04cfc59ec0776e91a43889f54ea5b4a3b5402278fd635c256bd1ef413a2a26b",
+      "native_sha256": "cd27baf275bf019a496c5a7f806bbcd794d7dea05e97f7bd289e6500aba4c140",
+      "samples": 371,
+      "scope_s": 154.86795226500544,
+      "unit": "tesy-late-owner-20261128-r01-o2-s"
+    },
+    "parity": {
+      "c118": {
+        "age_at_spawn_s": 0.04994,
+        "count": 61,
+        "s": 60.159898005003924,
+        "sha256": "1adc7473c809205c8d539a50ee8778c33d389d39164f72170f027ed97d7da095"
+      },
+      "c55_age_s": 305.996853,
+      "model_s": 96.444,
+      "monitor_sha256": "a9e0149b0f16453fd478d5e9572dadc14cf4afddf5143d5fabe757c1be310373",
+      "native_sha256": "1c333e2b20015e392baf1f5c277859bb84a3919fd5d7b293de9161bc58055dcf",
+      "samples": 379,
+      "scope_s": 157.15194450499985,
+      "unit": "tesy-late-owner-20261128-r01-parity-s"
+    },
+    "r1": {
+      "c118": {
+        "age_at_spawn_s": 0.05432,
+        "count": 61,
+        "s": 60.14986099399539,
+        "sha256": "675bea5f9722f4c7db7c68b39e09e780530ddbb68ebcd43b58b2598173faa02d"
+      },
+      "c55_age_s": 464.08856,
+      "model_s": 94.539,
+      "monitor_sha256": "320eafaa8bcb771fdc937bcde09964564c3666c8b13c928ecc3459de6ade6a1b",
+      "native_sha256": "6f21415baeed9c01589bddd171df6a92fd565aca0f0c30cbaf001217c31b2a90",
+      "samples": 372,
+      "scope_s": 155.36261670100066,
+      "unit": "tesy-late-owner-20261128-r01-r1-s"
+    },
+    "r2": {
+      "c118": {
+        "age_at_spawn_s": 0.043616,
+        "count": 61,
+        "s": 60.16165770700172,
+        "sha256": "6b19699baeea415ee8cec654aea1cd9bc0a717189c573ab9e1d284c4f4661e67"
+      },
+      "c55_age_s": 1243.493243,
+      "model_s": 95.3,
+      "monitor_sha256": "bfee05b41eef8a4609eba2a7c2a57dd819b6a70f20196f20268227aa1c9f07b6",
+      "native_sha256": "a1a5baa0baf650b196982ec75958136294cf886452d71f0d038d9cf1a070052d",
+      "samples": 375,
+      "scope_s": 156.14919311300036,
+      "unit": "tesy-late-owner-20261128-r01-r2-s"
+    },
+    "ref": {
+      "c118": {
+        "age_at_spawn_s": 0.04672,
+        "count": 61,
+        "s": 60.172603332997824,
+        "sha256": "7e0eb85db95c3192623049b7cd41360043f850332cffa1d58f29a71473f5fc55"
+      },
+      "c55_age_s": 150.74724,
+      "model_s": 93.539,
+      "monitor_sha256": "5d8ebd7728596305feafc911b14bc4c9bb7be90b440f7e8093f646ddb063e868",
+      "native_sha256": "f3851f83ef739a102124a864269e9852383562acb6741558e0adc1fc0c7259b4",
+      "samples": 369,
+      "scope_s": 154.31737068400253,
+      "unit": "tesy-late-owner-20261128-r01-ref-s"
+    }
+  }
+}

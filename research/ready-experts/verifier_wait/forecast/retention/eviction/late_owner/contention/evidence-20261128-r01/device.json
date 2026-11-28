@@ -1,0 +1,296 @@
+{
+  "build_sha256": "36aff6ab17bc4df8195a2f7ebee02fbbbb55c34c7aad57dc4efe863683865778",
+  "c55": {
+    "concurrent": [],
+    "cpu": "AMD Ryzen AI 9 HX 370 w/ Radeon 890M",
+    "gpu_compute_max": 0,
+    "gpu_driver": "620.73.04",
+    "gpu_name": "NVIDIA GeForce RTX 4060 Laptop GPU",
+    "gpu_total_mib": 8188.0,
+    "model_device": "/dev/nvme0n1p3[/home]",
+    "model_fs": "btrfs",
+    "nvme": [
+      {
+        "bdf": "0000:c1:00.0",
+        "controller": "nvme0",
+        "critical_c": 89.85,
+        "current_c": 34.85,
+        "firmware": "V3MA101",
+        "model": "MTFDKBK1T0QFM-1BD1AABGB",
+        "sensor": "nvme-pci-c100",
+        "source": "Composite critical minus 2C admission; max is warning",
+        "stop_c": 87.85,
+        "warning_c": 86.85
+      }
+    ]
+  },
+  "c55_age_s": 179.629257,
+  "c55_sha256": "d83cf278feb31935ccacbc91d4f537e3b8aa810bb0fe2200ba0effffcc300a2e",
+  "cgroup": {
+    "events": {
+      "high": 0,
+      "low": 0,
+      "max": 0,
+      "oom": 0,
+      "oom_group_kill": 0,
+      "oom_kill": 0,
+      "sock_throttled": 0
+    },
+    "memory_high": 268435456,
+    "memory_max": 268435456,
+    "memory_peak": 175841280,
+    "swap_current": 0,
+    "swap_max": 0
+  },
+  "child_s": 3.0644353960014996,
+  "commit": "4bd9d8a5a98ee42936e0f9e14d2ecf89497d32db",
+  "cpu_max_c": 58.875,
+  "disk_delta": {
+    "busy_ms": 2723,
+    "read_sectors_512B": 11827392,
+    "write_sectors_512B": 144
+  },
+  "elf": "e218a7357a49f08781fde1bad441930c483d3af251f27e0adbc57d36feabefef",
+  "full_model_requests": 0,
+  "gpu_max_c": 42.03,
+  "host": "NOSdrive",
+  "index": "63b7a76c7063e51944ee8a6296aea43109a336330b3657ffa357cddb44b59813",
+  "kernel": "7.3.4-200.fc44.x86_64",
+  "max_sample_gap_s": 0.8284436030007782,
+  "model": "582bd40f6886200101f4c4ed9f25f3fe80cc14c86e9e2b37746cd8904a0c622d",
+  "nvme_max_c": 39.85,
+  "pack": "f17e9fbf6f6aed1ad60ca7da3431c5156a946d2e0bf119722afc1f934cbc6b11",
+  "plan": {
+    "expected_records": 458,
+    "groups": {
+      "causal_353": [
+        175,
+        131,
+        138,
+        176
+      ],
+      "physical_54": [
+        1886,
+        1821,
+        1899,
+        1846
+      ]
+    },
+    "labels": [
+      "physical_54",
+      "causal_353"
+    ],
+    "pack_stat": [
+      56,
+      40137035,
+      61096329216,
+      1795615219800191666,
+      1795615266599091242
+    ],
+    "windows": "274da1720ffaef9504d359873607823288359b1ca2c99566501713c87ad750f2"
+  },
+  "plan_sha256": "0a81d432b6b710987e87fc2507c69f3c1d12b17b3105488b2ff353d6bb4425e0",
+  "protocol": "44163ffcd63410e5e8baaf0d1921e2cc8f960f1013abc00abd44e12971564a96",
+  "requested_B": 6055624704,
+  "samples": 5,
+  "samples_sha256": "faa6665e9c48ad710bebbba56c2f1245562d2de24a5e667feb47f4d6a36ba30a",
+  "status": "MEASURED",
+  "stdout_sha256": "b0ae054c1d0b1d4c2e0a485cff7041177fb74f1f6fa9db01b00ff4e298495f57",
+  "timing": {
+    "destination_hashes": 1440,
+    "forwards": 0,
+    "groups": {
+      "causal_353": {
+        "decision": "GO_LOCAL",
+        "median_ON_over_OFF": [
+          [
+            16847575,
+            16917857
+          ],
+          [
+            8452065,
+            8602022
+          ]
+        ],
+        "neutrality": "PASS",
+        "paired": [
+          {
+            "H_minus_D_ns": {
+              "all_reads": [
+                -4131730,
+                -4405274,
+                -4340322,
+                -3805509,
+                -3341358,
+                -3365394,
+                -3725268
+              ],
+              "copies_and_drain": [
+                -4011575,
+                -4430721,
+                -4175362,
+                -3716762,
+                -3334975,
+                -3336630,
+                -3746708
+              ],
+              "three_peers": [
+                -4123715,
+                -4392680,
+                -4047853,
+                -3796071,
+                -3343792,
+                -3370253,
+                -3728144
+              ]
+            },
+            "median_ns": {
+              "all_reads": -3805509,
+              "copies_and_drain": -3746708,
+              "three_peers": -3796071
+            },
+            "order": "DH"
+          },
+          {
+            "H_minus_D_ns": {
+              "all_reads": [
+                -3597047,
+                -4093660,
+                -3960619,
+                -4751273,
+                -3823824,
+                -4596622,
+                -3928560
+              ],
+              "copies_and_drain": [
+                -3600774,
+                -4179851,
+                -3781033,
+                -4742637,
+                -3837810,
+                -4789464,
+                -3711132
+              ],
+              "three_peers": [
+                -3597618,
+                -4089933,
+                -3961291,
+                -4751904,
+                -3825647,
+                -4463273,
+                -3930133
+              ]
+            },
+            "median_ns": {
+              "all_reads": -3960619,
+              "copies_and_drain": -3837810,
+              "three_peers": -3961291
+            },
+            "order": "HD"
+          }
+        ]
+      },
+      "physical_54": {
+        "decision": "GO_LOCAL",
+        "median_ON_over_OFF": [
+          [
+            16897379,
+            16809113
+          ],
+          [
+            8619119,
+            8495041
+          ]
+        ],
+        "neutrality": "PASS",
+        "paired": [
+          {
+            "H_minus_D_ns": {
+              "all_reads": [
+                -3478115,
+                -3686806,
+                -3551102,
+                -4006577,
+                -4171626,
+                -3356726,
+                -3403324
+              ],
+              "copies_and_drain": [
+                -3322213,
+                -3738393,
+                -3482462,
+                -4279578,
+                -4032926,
+                -3455552,
+                -3324095
+              ],
+              "three_peers": [
+                -3478896,
+                -3685875,
+                -3552153,
+                -4009211,
+                -3999232,
+                -3337530,
+                -3233345
+              ]
+            },
+            "median_ns": {
+              "all_reads": -3551102,
+              "copies_and_drain": -3482462,
+              "three_peers": -3552153
+            },
+            "order": "DH"
+          },
+          {
+            "H_minus_D_ns": {
+              "all_reads": [
+                -3971631,
+                -3963776,
+                -4275891,
+                -4096024,
+                -4203476,
+                -3668231,
+                -3641451
+              ],
+              "copies_and_drain": [
+                -3948628,
+                -3985407,
+                -4405063,
+                -4089271,
+                -4071488,
+                -3797153,
+                -3438360
+              ],
+              "three_peers": [
+                -3970198,
+                -3554048,
+                -4271804,
+                -3863568,
+                -2716275,
+                -3671036,
+                -3640800
+              ]
+            },
+            "median_ns": {
+              "all_reads": -3971631,
+              "copies_and_drain": -3985407,
+              "three_peers": -3671036
+            },
+            "order": "HD"
+          }
+        ]
+      }
+    },
+    "http_requests": 0,
+    "parity_hashes": 24,
+    "records_by_lane": [
+      122,
+      122,
+      122,
+      92
+    ],
+    "requested_records": 458,
+    "trials": 120
+  },
+  "tree": "42d1f8790d36b581cd7dd3e8312322f72cf7eadb"
+}

@@ -1,0 +1,45 @@
+{
+  "M3": "PARTIAL",
+  "M4": "NOT_MET",
+  "artifacts": {
+    "barriers.json.gz": {
+      "bytes": 26328,
+      "sha256": "fa083b0572936e56504168bd600fcef78b857c2567538a614c2e6bb30a6effb2"
+    },
+    "decision.json": {
+      "bytes": 21926,
+      "sha256": "57d3f824e29912dce5d3fdeb8e273775d34c5c8075b798b3d10f03bd88ce2cf5"
+    }
+  },
+  "branch": "research/ready-layer",
+  "budget": {
+    "address_space_B": 1073741824,
+    "output_B": 8388608,
+    "wall_s": 180
+  },
+  "clean_before_evaluation": true,
+  "command": "/usr/bin/time -f 'wall_s=%e peak_rss_KiB=%M exit=%x' timeout 180s prlimit --as=1073741824 --fsize=8388608 --core=0:0 -- python3 -IB research/ready-experts/cpu_wave/frame_lease/groups.py --new-output-dir /tmp/tesy-frame-groups-20261128-r01",
+  "commit": "88b63201b1361816b614631ddacfb764dfbf3455",
+  "inputs": {
+    "lifetime_decision_sha256": "111e377c305802d15917d3b3d8cb3462c126e3ae633fc72ce383a76ddec4f2c8",
+    "protocol_sha256": "6d3438587b6fdeaf82aacb5c1c4ab99a1796aecbedf7e51f070d35bb56c588f1",
+    "service_sha256": "2793888c234dd8f096c8d434b09d8de43042794370d232d4727a5f7fa2ea6dc2",
+    "source_sha256": "d5d4797ee8a2437ca5a864f478f86e68355467f926ea9dfe3bbf4295298f6d08"
+  },
+  "main": "293f5b184da9439771cce361cd33fc4068d749f4",
+  "observed": {
+    "GPU_compute": false,
+    "HTTP_requests": 0,
+    "energy_J": null,
+    "model_forwards": 0,
+    "output_before_provenance_B": 48254,
+    "peak_rss_KiB": 128724,
+    "wall_s": 3.54
+  },
+  "origin": "https://github.com/PedroMglo/Tesy.git",
+  "protocol_commit": "a62460840f45c39a47be6df2bde5f96bbde10012",
+  "stack_base": "ccfda06299d9725975b63c75f28fece4cc57425e",
+  "technical_failures": [],
+  "tree": "bb256fdc71a12ddae8a02b889e33230510053054",
+  "unit": "native-group-barriers-20261128-r01"
+}

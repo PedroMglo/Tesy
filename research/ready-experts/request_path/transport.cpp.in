@@ -1,0 +1,89 @@
+// The enrolled build prepends the existing aligned buffers, SHA verifier,
+// four pread workers, io_uring parity reader, markers() and elapsed().
+int main(int argc, char **argv) {
+    try {
+        check(argc == 3, "usage: reader PACK PLAN");
+        const int fd = open(argv[1], O_RDONLY | O_DIRECT | O_CLOEXEC | O_NOFOLLOW);
+        struct stat st{};
+        check(fd >= 0 && (fcntl(fd, F_GETFL) & O_DIRECT) && fstat(fd, &st) == 0 &&
+              S_ISREG(st.st_mode), "direct source");
+        std::cout << "fd " << st.st_dev << ' ' << st.st_ino << ' ' << st.st_size << ' '
+                  << st.st_mtim.tv_sec*1000000000LL + st.st_mtim.tv_nsec << ' '
+                  << st.st_ctim.tv_sec*1000000000LL + st.st_ctim.tv_nsec << std::endl;
+        std::array<Group, 2987> waves;
+        std::array<Group, 4> phases;
+        std::map<off_t, Window> unique;
+        std::ifstream file(argv[2]);
+        int phase = 0, site = 0, last_site = -1, last_phase = -1;
+        Window w;
+        size_t total = 0;
+        while (file >> phase) {
+            check(bool(file >> site >> w.offset >> w.expected[0] >> w.expected[1] >> w.expected[2]),
+                  "truncated case");
+            check(phase >= 0 && phase < 4 && site >= 0 && site < int(waves.size()) &&
+                  site >= last_site && phase >= last_phase && (site != last_site || phase == last_phase) &&
+                  w.offset >= 0 && w.offset % 4096 == 0 && w.offset <= st.st_size - off_t(window),
+                  "case extent or order");
+            for (const auto &h : w.expected) check(h.size() == 64, "matrix digest");
+            waves[site].push_back(w);
+            phases[phase].push_back(w);
+            const auto found = unique.try_emplace(w.offset, w).first;
+            check(found->second.expected == w.expected, "conflicting weights");
+            last_site = site;
+            last_phase = phase;
+            ++total;
+        }
+        check(file.eof() && total == 1519 && !unique.empty(), "incomplete population");
+        {
+            Buffers buffers;
+            std::map<off_t, Marks> expected;
+            Group chunk;
+            {
+                Ring ring;
+                const auto begin = Clock::now();
+                for (const auto &[offset, item] : unique) {
+                    chunk.push_back(item);
+                    if (chunk.size() < lanes && offset != unique.rbegin()->first) continue;
+                    ring.read(fd, chunk, buffers);
+                    buffers.verify(chunk);
+                    for (size_t i = 0; i < chunk.size(); ++i)
+                        expected.emplace(chunk[i].offset, markers(buffers.ptr[i]));
+                    chunk.clear();
+                }
+                check(expected.size() == unique.size(), "incomplete SHA coverage");
+                std::cout << "parity " << unique.size() << ' ' << elapsed(begin) << std::endl;
+            }
+            PreadWorkers workers(fd, buffers);
+            int arm = 0;
+            for (const bool early : {false, true, true, false}) {
+                ++arm;
+                const size_t count = early ? phases.size() : waves.size();
+                for (size_t id = 0; id < count; ++id) {
+                    const auto &group = early ? phases[id] : waves[id];
+                    if (group.empty()) continue;
+                    const auto begin = Clock::now();
+                    int64_t read_ns = 0;
+                    for (size_t i = 0; i < group.size(); i += lanes) {
+                        const size_t n = std::min(size_t(lanes), group.size() - i);
+                        chunk.assign(group.begin()+i, group.begin()+i+n);
+                        const auto start = Clock::now();
+                        workers.read(chunk);
+                        read_ns += elapsed(start);
+                        for (size_t k = 0; k < n; ++k)
+                            check(markers(buffers.ptr[k]) == expected.at(chunk[k].offset), "timed bytes");
+                    }
+                    const auto wall = elapsed(begin);
+                    std::cout << "group " << arm << ' ' << id << ' ' << group.size()
+                              << ' ' << read_ns << ' ' << wall << '\n';
+                }
+                std::cout.flush();
+            }
+        }
+        check(close(fd) == 0, "close");
+        std::cout << "drained" << std::endl;
+    } catch (const std::exception &e) {
+        std::cerr << e.what() << std::endl;
+        return 1;
+    }
+    return 0;
+}

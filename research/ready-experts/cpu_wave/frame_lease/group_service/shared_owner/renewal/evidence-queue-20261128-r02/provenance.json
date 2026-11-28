@@ -1,0 +1,87 @@
+{
+  "artifacts": {
+    "decision.json": {
+      "bytes": 27124,
+      "sha256": "63dfa92ab0043073ab13d1a2d11a62dda4e5907452880eada36aa540961989d9"
+    },
+    "enqueues.json.gz": {
+      "bytes": 30322,
+      "sha256": "907d272467d1f8ac2fb2d11ccb8553f5681dba6d1835fe78ce3f72a29188ef39"
+    },
+    "failed-r01.json": {
+      "bytes": 48,
+      "sha256": "9a30e024aa93cf1fd81e0ed2db890c7511fa00a67f94e5cbfa7ea4682a311ab1"
+    }
+  },
+  "caps": {
+    "address_space_B": 536870912,
+    "cpu_s": 90
+  },
+  "commands": {
+    "failed": "/usr/bin/time -v -o /tmp/tesy-renewal-delivery-20261128-r01/queue-r01.time /usr/bin/prlimit --as=536870912 --cpu=90 -- /usr/bin/python3 -IB research/ready-experts/cpu_wave/frame_lease/group_service/shared_owner/renewal/queue.py --archive /mnt/sdisk-ssd-ext/Tesy/outputs/qualification-20261124-nvme-01 --new-output-dir /tmp/tesy-renewal-delivery-20261128-r01/queue-r01",
+    "repaired": "/usr/bin/time -v -o /tmp/tesy-renewal-delivery-20261128-r01/queue-r02.time /usr/bin/prlimit --as=536870912 --cpu=90 -- /usr/bin/python3 -IB research/ready-experts/cpu_wave/frame_lease/group_service/shared_owner/renewal/queue.py --archive /mnt/sdisk-ssd-ext/Tesy/outputs/qualification-20261124-nvme-01 --new-output-dir /tmp/tesy-renewal-delivery-20261128-r01/queue-r02"
+  },
+  "failed_commit": "b60aafe52d3b361d77520e28f992127bb4154362",
+  "failed_resources": [
+    "\tCommand being timed: \"/usr/bin/prlimit --as=536870912 --cpu=90 -- /usr/bin/python3 -IB research/ready-experts/cpu_wave/frame_lease/group_service/shared_owner/renewal/queue.py --archive /mnt/sdisk-ssd-ext/Tesy/outputs/qualification-20261124-nvme-01 --new-output-dir /tmp/tesy-renewal-delivery-20261128-r01/queue-r01\"",
+    "\tUser time (seconds): 2.77",
+    "\tSystem time (seconds): 0.07",
+    "\tPercent of CPU this job got: 99%",
+    "\tElapsed (wall clock) time (h:mm:ss or m:ss): 0:02.86",
+    "\tAverage shared text size (kbytes): 0",
+    "\tAverage unshared data size (kbytes): 0",
+    "\tAverage stack size (kbytes): 0",
+    "\tAverage total size (kbytes): 0",
+    "\tMaximum resident set size (kbytes): 135536",
+    "\tAverage resident set size (kbytes): 0",
+    "\tMajor (requiring I/O) page faults: 0",
+    "\tMinor (reclaiming a frame) page faults: 32931",
+    "\tVoluntary context switches: 1",
+    "\tInvoluntary context switches: 109",
+    "\tSwaps: 0",
+    "\tFile system inputs: 0",
+    "\tFile system outputs: 0",
+    "\tSocket messages sent: 0",
+    "\tSocket messages received: 0",
+    "\tSignals delivered: 0",
+    "\tPage size (bytes): 4096",
+    "\tExit status: 1"
+  ],
+  "main": "293f5b184da9439771cce361cd33fc4068d749f4",
+  "method": {
+    "bytes": 3156,
+    "sha256": "7611b16eb15bbf20308dcf71391b27afd1bc6888f13630d0fc06f4a66512497a"
+  },
+  "model_forwards": 0,
+  "program": {
+    "bytes": 11810,
+    "sha256": "8fb9b7cf9dfab66f95fc6781661abb5108e9fc78f02acf45a9181088e3db2eb4"
+  },
+  "program_commit": "ed41ab32855090a13e328fec0d738cf3afbe2955",
+  "resources": [
+    "\tUser time (seconds): 2.81",
+    "\tSystem time (seconds): 0.09",
+    "\tPercent of CPU this job got: 99%",
+    "\tElapsed (wall clock) time (h:mm:ss or m:ss): 0:02.92",
+    "\tAverage shared text size (kbytes): 0",
+    "\tAverage unshared data size (kbytes): 0",
+    "\tAverage stack size (kbytes): 0",
+    "\tAverage total size (kbytes): 0",
+    "\tMaximum resident set size (kbytes): 149428",
+    "\tAverage resident set size (kbytes): 0",
+    "\tMajor (requiring I/O) page faults: 0",
+    "\tMinor (reclaiming a frame) page faults: 39497",
+    "\tVoluntary context switches: 1",
+    "\tInvoluntary context switches: 224",
+    "\tSwaps: 0",
+    "\tFile system inputs: 0",
+    "\tFile system outputs: 0",
+    "\tSocket messages sent: 0",
+    "\tSocket messages received: 0",
+    "\tSignals delivered: 0",
+    "\tPage size (bytes): 4096",
+    "\tExit status: 0"
+  ],
+  "tree": "42324490003c50ffeb898983bdfd3a62537c67b4",
+  "weight_bytes_read": 0
+}

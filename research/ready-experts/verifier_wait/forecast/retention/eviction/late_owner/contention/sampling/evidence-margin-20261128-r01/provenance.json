@@ -1,0 +1,49 @@
+{
+  "account": "wall_s=9.34 peak_kib=184460",
+  "artifacts": {
+    "archive.json": {
+      "sha256": "2baca08453ff63d09b504a4bf64ca6c488144566bcc0dd1d3f6152b8b72456f1",
+      "size_B": 251
+    },
+    "thresholds.json": {
+      "sha256": "141eb17bd414585e1bc4d0eb5c9b91afed76621ba8d685bed7e83fb8d974619c",
+      "size_B": 3572
+    }
+  },
+  "branch": "research/ready-layer",
+  "budget": {
+    "address_B": 1073741824,
+    "file_B": 12582912,
+    "wall_s": 180
+  },
+  "command": "/usr/bin/prlimit --as=1073741824 --fsize=12582912 -- /usr/bin/timeout 180 /usr/bin/python3 -IB research/ready-experts/verifier_wait/forecast/retention/eviction/late_owner/contention/sampling/lane_margin.py --new-output-dir /tmp/tesy-lane-margin-20261128-01/grade-01",
+  "commit": "cd5bbf703124a750a911e7e8d8dff53a6a1ea183",
+  "evidence": "FORMAL_CONDITIONAL_PREEMPTIBLE_LOWER_BOUND",
+  "failures": [],
+  "identity": "tile-lane-margin-20261128-01",
+  "immediate_base": "ccfda06299d9725975b63c75f28fece4cc57425e",
+  "inputs": {
+    "four_lanes": "8e48debecdae3f47aba3f071828345afff1d0908cffc323e1c770610f99adf5b"
+  },
+  "main": "293f5b184da9439771cce361cd33fc4068d749f4",
+  "protocol_commit": "cd5bbf703124a750a911e7e8d8dff53a6a1ea183",
+  "remote": "https://github.com/PedroMglo/Tesy.git",
+  "resources": {
+    "HTTP_requests": 0,
+    "energy_J": null,
+    "gpu": false,
+    "model_forwards": 0
+  },
+  "results": {
+    "M3": "PARTIAL",
+    "M4": "NOT_MET",
+    "status": "DIAGNOSTIC_NO_CHANGE_TO_ADOPTION"
+  },
+  "source_sha256": {
+    "lane_margin.py": "d3e6026a9d508ad3424b368c5aa6ad09fcee3919df6045444f83cfdd8039198e",
+    "tile_cost.py": "32d3577a4e548944d13d7f2a62c5528fd2ca22597ca0dca494d2f9c266d71e00",
+    "tile_lanes.py": "40f5f453db71315a7078a78f752eb6b21bcfaad2a36ada6d3bdd687a31053df7",
+    "windows-protocol.md": "2c07a37d8215ae950c00ef74329713c94a945e8711a253646ba883dfd1f8d377"
+  },
+  "tree": "b3cc5c53d3e1a768b0265958760e9cd06efef295"
+}

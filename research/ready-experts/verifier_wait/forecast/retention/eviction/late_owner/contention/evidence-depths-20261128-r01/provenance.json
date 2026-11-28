@@ -1,0 +1,218 @@
+{
+  "archive": {
+    "archive_id": "mixed-peer-service-20261128-01",
+    "bytes": 428959,
+    "file_count": 41,
+    "manifest": {
+      "bytes": 6883,
+      "sha256": "8d38d7d106701282685e6a8d5d65012d9662565a75ecb181404602cfaec329ae"
+    },
+    "part": "part-01",
+    "provider_links": 0
+  },
+  "artifacts": {
+    "archive.json": {
+      "sha256": "8dc39c9d6b87e97d0436bc8016a2d5e388d8725d81e3b4dd903b921d8eee0e75",
+      "size_B": 257
+    },
+    "device.json": {
+      "sha256": "99435971e44f29ca866c75b8cdfa016d652f9cc81ea2a795e1d023689f2c8cc3",
+      "size_B": 9688
+    },
+    "mixed.json": {
+      "sha256": "c171c3a67263c143bf1eb303f38f398eac131f12a073dbc1964192af68b12ebb",
+      "size_B": 29844
+    },
+    "projection.json": {
+      "sha256": "c3efeedb791c1efaea793d1b2892f6ab85d17eff648a27466b136a6416877ad5",
+      "size_B": 4097
+    },
+    "service.txt": {
+      "sha256": "12f54c0bd3f0af3bc396b0c79db5713c3cc1da69cf11d67ce01ad028ad109cd9",
+      "size_B": 50692
+    },
+    "thresholds.json": {
+      "sha256": "46de23ac00240882f63c927625c143b97853806f567350c5e95b099d22383724",
+      "size_B": 1898
+    }
+  },
+  "branch": "research/ready-layer",
+  "build": "fb054af598fdcfd2bf99ab0945de5673bb81d26af5260e50c8a5dd33c4ce88bc",
+  "c55_sample_count": 62,
+  "c55_span_s": 60.99573848100408,
+  "canonical_window": "cc028421c3880ea6fa81d6fe07a6d9ae3a30f1322790cec1f03fc86006400576",
+  "commands": {
+    "build": "systemd-run --user --scope --quiet --unit=tesy-mixed-build-20261128-r03 --slice=app.slice -p MemoryHigh=768M -p MemoryMax=768M -p MemorySwapMax=0 -p RuntimeMaxSec=60 /usr/bin/python3 -IB research/ready-experts/verifier_wait/forecast/retention/eviction/late_owner/contention/depths.py build --previous /var/tmp/tesy-ready-reader-build-20261127-r01 --new-output-dir /var/tmp/tesy-mixed-build-20261128-r03",
+    "c55": "python3 -IB research/qualification-retake/nvme_admission/window.py --nvme-model /home/pmglo/models/gpt-oss-120b-gguf/gpt-oss-120b-MXFP4.gguf --new-output-dir /var/tmp/tesy-mixed-c55-20261128-r03",
+    "failed_physical_r02": "systemd-run --user --scope --quiet --unit=tesy-mixed-physical-20261128-r02 --slice=app.slice -p MemoryHigh=256M -p MemoryMax=256M -p MemorySwapMax=0 -p RuntimeMaxSec=145 /usr/bin/python3 -IB research/ready-experts/verifier_wait/forecast/retention/eviction/late_owner/contention/depths_physical.py --plan /tmp/tesy-mixed-read-20261128-01/plan-02 --plan-sha256 760fae2c2c2343105717f06756ef3b311b6b8f50d74563502103d2110ab6caa8 --build /var/tmp/tesy-mixed-build-20261128-r02 --build-sha256 9d1ef2ba2cc40631ed05b7a08fd158092dca6ea08d18819fc2e144db5e33e0d1 --c55 /var/tmp/tesy-mixed-c55-20261128-r01 --c55-sha256 a30dc7b7a1eec8651a63de0ad8bf902f67c2fb100fd8a972ac736cdcc32160a1 --new-output-dir /var/tmp/tesy-mixed-physical-20261128-r02",
+    "failed_preparations_r01": {
+      "cmdB": "systemd-run --user --scope --quiet --unit=tesy-mixed-build-20261128-r01 --slice=app.slice -p MemoryHigh=768M -p MemoryMax=768M -p MemorySwapMax=0 -p RuntimeMaxSec=60 /usr/bin/python3 -IB research/ready-experts/verifier_wait/forecast/retention/eviction/late_owner/contention/depths.py build --previous /var/tmp/tesy-ready-reader-build-20261127-r01 --new-output-dir /var/tmp/tesy-mixed-build-20261128-r01",
+      "cmdP": "python3 -IB research/ready-experts/verifier_wait/forecast/retention/eviction/late_owner/contention/depths.py plan --mixed /tmp/tesy-mixed-read-20261128-01/mixed-01/mixed.json --manifest /home/pmglo/models/tesy-gpt-oss-120b-nvme/tesy-c291-manifest-20261125-r02 --new-output-dir /tmp/tesy-mixed-read-20261128-01/plan-01"
+    },
+    "grade": "python3 -IB research/ready-experts/verifier_wait/forecast/retention/eviction/late_owner/contention/depths.py grade --plan /tmp/tesy-mixed-read-20261128-01/plan-03 --observed /var/tmp/tesy-mixed-physical-20261128-r03 --mixed /tmp/tesy-mixed-read-20261128-01/mixed-01/mixed.json --new-output-dir /tmp/tesy-mixed-read-20261128-01/grade-01",
+    "physical": "systemd-run --user --scope --quiet --unit=tesy-mixed-physical-20261128-r03 --slice=app.slice -p MemoryHigh=256M -p MemoryMax=256M -p MemorySwapMax=0 -p RuntimeMaxSec=145 /usr/bin/python3 -IB research/ready-experts/verifier_wait/forecast/retention/eviction/late_owner/contention/depths_physical.py --plan /tmp/tesy-mixed-read-20261128-01/plan-03 --plan-sha256 4f5e6d1cb88de79c9ea05bf63c0f167142dfbd46df50bc9746072be4ef1b2b70 --build /var/tmp/tesy-mixed-build-20261128-r03 --build-sha256 fb054af598fdcfd2bf99ab0945de5673bb81d26af5260e50c8a5dd33c4ce88bc --c55 /var/tmp/tesy-mixed-c55-20261128-r03 --c55-sha256 cc028421c3880ea6fa81d6fe07a6d9ae3a30f1322790cec1f03fc86006400576 --new-output-dir /var/tmp/tesy-mixed-physical-20261128-r03",
+    "plan": "python3 -IB research/ready-experts/verifier_wait/forecast/retention/eviction/late_owner/contention/depths.py plan --mixed /tmp/tesy-mixed-read-20261128-01/mixed-01/mixed.json --manifest /home/pmglo/models/tesy-gpt-oss-120b-nvme/tesy-c291-manifest-20261125-r02 --new-output-dir /tmp/tesy-mixed-read-20261128-01/plan-03",
+    "preparations_r02": {
+      "b": "systemd-run --user --scope --quiet --unit=tesy-mixed-build-20261128-r02 --slice=app.slice -p MemoryHigh=768M -p MemoryMax=768M -p MemorySwapMax=0 -p RuntimeMaxSec=60 /usr/bin/python3 -IB research/ready-experts/verifier_wait/forecast/retention/eviction/late_owner/contention/depths.py build --previous /var/tmp/tesy-ready-reader-build-20261127-r01 --new-output-dir /var/tmp/tesy-mixed-build-20261128-r02",
+      "p": "python3 -IB research/ready-experts/verifier_wait/forecast/retention/eviction/late_owner/contention/depths.py plan --mixed /tmp/tesy-mixed-read-20261128-01/mixed-01/mixed.json --manifest /home/pmglo/models/tesy-gpt-oss-120b-nvme/tesy-c291-manifest-20261125-r02 --new-output-dir /tmp/tesy-mixed-read-20261128-01/plan-02"
+    },
+    "replay": "/usr/bin/prlimit --as=1073741824 --fsize=8388608 -- /usr/bin/timeout 180 /usr/bin/python3 -IB research/ready-experts/verifier_wait/forecast/retention/eviction/late_owner/contention/mixed.py --new-output-dir /tmp/tesy-mixed-read-20261128-01/mixed-01",
+    "selection": "python3 -IB research/ready-experts/verifier_wait/forecast/retention/eviction/late_owner/contention/depth_thresholds.py --projection /tmp/tesy-mixed-read-20261128-01/grade-01/projection.json --new-output-dir /tmp/tesy-mixed-read-20261128-01/selection-01",
+    "verify": [
+      "python3 -IB research/ready-experts/verifier_wait/forecast/retention/eviction/late_owner/contention/mixed.py --check research/ready-experts/verifier_wait/forecast/retention/eviction/late_owner/contention/evidence-depths-20261128-r01/mixed.json",
+      "python3 -IB research/ready-experts/verifier_wait/forecast/retention/eviction/late_owner/contention/depths.py check research/ready-experts/verifier_wait/forecast/retention/eviction/late_owner/contention/evidence-depths-20261128-r01",
+      "python3 -IB research/ready-experts/verifier_wait/forecast/retention/eviction/late_owner/contention/test_mixed.py"
+    ]
+  },
+  "compiler": "ca48a2d27d0796399adc3387225eec4be62974e26fa299710edfde0c1af5aa63",
+  "elf": "5b79d71e732dcf359d426e3796603ae38a130e30fc6e011a38a148b004190c7b",
+  "failed_attempts": {
+    "build_r01": {
+      "archive_subdir": "tesy-mixed-build-20261128-r01",
+      "reason": "AttributeError(\"'str' object has no attribute 'read_bytes'\")",
+      "repair": "Hash the program as a Path. Neither preparation produced a PASS receipt.",
+      "sha256": "ba0ec32033b56fe09dca13030fba76027a1e86bc955846289d9870aedde06e96",
+      "status": "FAIL_PRESERVED"
+    },
+    "physical_r02": {
+      "archive_subdir": "tesy-mixed-physical-20261128-r02",
+      "first_sample_count": 1,
+      "first_sample_peak_bytes": 127852544,
+      "guard_stop_bytes": 234881024,
+      "reason": "cgroup resource event",
+      "repair": "Load offline replay only in planning/grading and allocate worker buffers only for active records.",
+      "requested_bytes": null,
+      "sha256": "1fe521b8502cd412501548384497728606ff2e0dbd930c265c98a6a93bd55112",
+      "status": "FAIL_PRESERVED",
+      "systemd_scope_peak_report": "232.5M"
+    },
+    "plan_r01": {
+      "archive_subdir": "plan-01",
+      "reason": "AttributeError(\"'str' object has no attribute 'read_bytes'\")",
+      "repair": "Hash the program as a Path. Neither preparation produced a PASS receipt.",
+      "sha256": "ba0ec32033b56fe09dca13030fba76027a1e86bc955846289d9870aedde06e96",
+      "status": "FAIL_PRESERVED"
+    }
+  },
+  "host_resources": {
+    "batteries": [
+      {
+        "name": "BAT0",
+        "status": "Not charging"
+      },
+      {
+        "name": "hid-0018:04F3:4359.0005-battery-7",
+        "status": "Unknown"
+      }
+    ],
+    "online_sources": [
+      "AC0",
+      "ucsi-source-psy-USBC000:002"
+    ],
+    "profile": "performance",
+    "source": "AC"
+  },
+  "immediate_base": {
+    "commit": "ccfda06299d9725975b63c75f28fece4cc57425e",
+    "tree": "96e3aa7171e69f135dba325c2aa7e58ca9964976"
+  },
+  "index": "63b7a76c7063e51944ee8a6296aea43109a336330b3657ffa357cddb44b59813",
+  "libraries": {
+    "/lib64/ld-linux-x86-64.so.2": "4e5d39355699e90fa29313d3100e82af4a23290028c58c364d6a249ef6a78e5e",
+    "/lib64/libc.so.6": "a5c5ad9d59d3c69eda93aa8f82930ba06cc4e893a113e66c85ad6e96243d53c8",
+    "/lib64/libcrypto.so.3": "695648ac8dc5e6a2b70e5e72399940de0f84bf24fddb7dd18949ba40bc575c72",
+    "/lib64/libgcc_s.so.1": "5a52ae4a6f1b119aa092aa1483c967e19d9ba036b1b0c2133236a8a2ce826ebf",
+    "/lib64/libm.so.6": "16a03ce6d24c8a46742206d4a9c1d35bb6577ae2384f153dc6ef4a4b62b5357f",
+    "/lib64/libstdc++.so.6": "49811507d8fc0283d8f8023546613774c673f876fe823b1b99d0c8d46039deda",
+    "/lib64/libz.so.1": "bbde8faec092a7c67b8bd76bbba4a826e61b05c171b97004ce6b308c5a090351"
+  },
+  "main": {
+    "commit": "293f5b184da9439771cce361cd33fc4068d749f4",
+    "tree": "7683d6c07063adef6de232c43ab05d19e98e679d"
+  },
+  "model": "582bd40f6886200101f4c4ed9f25f3fe80cc14c86e9e2b37746cd8904a0c622d",
+  "native": "95c7c02331d6a408837c10f3c7692b66d3b6354c8232f2c6d655827c75fc1f38",
+  "observed": "7b6443fc3d8ff159e0d6013eb96b619a0a056015112d596129f21d4a3645a178",
+  "pack": "f17e9fbf6f6aed1ad60ca7da3431c5156a946d2e0bf119722afc1f934cbc6b11",
+  "parent": {
+    "commit": "34f9326d6230ce066ce8d78150ff5f12b2e049e8",
+    "tree": "946b47bd7331734405ac2026c78310cf9a066f07"
+  },
+  "parent_decision": "bb7fb13cebbdeab7c4573f3ae02c2061a3eb6a0ef5d443a518c9ea8d6a418ec6",
+  "parent_service": "2793888c234dd8f096c8d434b09d8de43042794370d232d4727a5f7fa2ea6dc2",
+  "phases": {
+    "device_protocol": {
+      "commit": "c9a3716ed67178cbe6fa91b8442ffc531a9e8d7d",
+      "tree": "e15c8f197dcd29cbad391efada257fcbf37bf6c0"
+    },
+    "diagnostic_selection": {
+      "commit": "c14a9ee65b104732554878c09c334bfec3ef3fbc",
+      "tree": "3bc5e0895e2e20f1a99931659ab30d0000308948"
+    },
+    "interrupted_physical_r02": {
+      "commit": "3bfc0ee3f737716613f2e924636f9dbc067822a8",
+      "tree": "d3a3bed7e65027812cbb9c9aa605ecb2174de967"
+    },
+    "mixed_protocol": {
+      "commit": "0c5427be033c11dec782de7bf34f678f4e6ee273",
+      "tree": "b5cb79e67e9cd53899c73598e549bd64b3592eed"
+    },
+    "physical_r03": {
+      "commit": "d4fece79652521fb18006da578b5902103613175",
+      "tree": "e5b9d8528f55e57730dd312eed99d9daacc8c4b9"
+    },
+    "preparation_r01": {
+      "commit": "397202c3af8d0e3fb06bab020de83716b69ca155",
+      "tree": "2d225c27934d40f556ddf22becc49cbe9070c4c1"
+    },
+    "temporal_replay": {
+      "commit": "b370f7d56b8b1b8ac5e75d71a23b51a710c36725",
+      "tree": "557352b0a2abc8733b0c1799b77d55a4685d38b4"
+    }
+  },
+  "plan": "4f5e6d1cb88de79c9ea05bf63c0f167142dfbd46df50bc9746072be4ef1b2b70",
+  "protocols": {
+    "mixed-device.md": "0f5858305039757c553fd6d1c1fdce1ead45f9e433ba0a84d46ed13974c51ef1",
+    "mixed-protocol.md": "09d49dd67c8d59fc42e938ea5b0024f9521fc1ab53e5f7e3a9597ad96d27351f"
+  },
+  "resources": {
+    "child_s": 14.031465413994738,
+    "energy_J": null,
+    "peak_B": 202518528,
+    "replay": "wall_s=3.44 peak_kib=130544",
+    "requested_B": 24063836160,
+    "selection": "wall_s=4.24 peak_kib=136280",
+    "swap": 0
+  },
+  "results": {
+    "M3": "PARTIAL",
+    "M4": "NOT_MET",
+    "evidence": "MEASURED_DEVICE_TRACE_DERIVED_CLIENT",
+    "margins_ns": {
+      "favorable": {
+        "high": 683872093,
+        "low": -1312563942
+      },
+      "paid": {
+        "high": -997087607,
+        "low": -2865941074
+      }
+    },
+    "product": "NOT_RUN",
+    "status": "INCONCLUSIVE",
+    "trials": 720
+  },
+  "upstream": "origin/research/ready-layer",
+  "validation": {
+    "local_mechanism": "8+5 passed",
+    "operational": "42 passed",
+    "public_replays": [
+      "frontier",
+      "fixed peers",
+      "victims",
+      "mixed time",
+      "six mixed depths"
+    ],
+    "pytest": "444 passed"
+  }
+}

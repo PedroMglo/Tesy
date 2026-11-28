@@ -1,0 +1,857 @@
+{
+  "initial_screen": {
+    "four_clocks_ns": {
+      "fixed_copied": {
+        "P106": {
+          "decode": 7039193244,
+          "first_final": 12716896680
+        },
+        "P97": {
+          "decode": 6909133095,
+          "first_final": 11739048282
+        }
+      },
+      "fixed_direct": {
+        "P106": {
+          "decode": 7019134393,
+          "first_final": 12687894202
+        },
+        "P97": {
+          "decode": 6891680418,
+          "first_final": 11710283075
+        }
+      },
+      "renewed_copied": {
+        "P106": {
+          "decode": 6473886807,
+          "first_final": 12061173761
+        },
+        "P97": {
+          "decode": 6312158586,
+          "first_final": 11023208280
+        }
+      },
+      "renewed_direct": {
+        "P106": {
+          "decode": 6433436982,
+          "first_final": 12010788525
+        },
+        "P97": {
+          "decode": 6275661075,
+          "first_final": 10973539416
+        }
+      }
+    },
+    "hindsight_paid_ns_before_all_consumers": {
+      "P106": {
+        "decode": 4547048496,
+        "first_final": 9966658027
+      },
+      "P97": {
+        "decode": 4378692258,
+        "first_final": 8885811794
+      }
+    },
+    "intervals": {
+      "count_oracle": {
+        "all_hits": 1042,
+        "mandatory_hits_by_phase": {
+          "decode_before_final": 685,
+          "decode_tail": 11,
+          "prefill": 346
+        },
+        "payload_by_tier": {
+          "CPU": {
+            "captures": 620,
+            "captures_payload_bytes": 8195904000,
+            "promotions": 728,
+            "promotions_payload_bytes": 9623577600
+          },
+          "CUDA0": {
+            "captures": 279,
+            "captures_payload_bytes": 3688156800,
+            "promotions": 314,
+            "promotions_payload_bytes": 4150828800
+          }
+        },
+        "peak": 353
+      },
+      "frequency": {
+        "all_hits": 691,
+        "mandatory_hits_by_phase": {
+          "decode_before_final": 304,
+          "decode_tail": 4,
+          "prefill": 259
+        },
+        "payload_by_tier": {
+          "CPU": {
+            "captures": 1367,
+            "captures_payload_bytes": 18070646400,
+            "promotions": 474,
+            "promotions_payload_bytes": 6265900800
+          },
+          "CUDA0": {
+            "captures": 615,
+            "captures_payload_bytes": 8129808000,
+            "promotions": 217,
+            "promotions_payload_bytes": 2868566400
+          }
+        },
+        "peak": 353
+      },
+      "price_oracle": {
+        "all_hits": 1042,
+        "mandatory_hits_by_phase": {
+          "decode_before_final": 679,
+          "decode_tail": 17,
+          "prefill": 346
+        },
+        "payload_by_tier": {
+          "CPU": {
+            "captures": 625,
+            "captures_payload_bytes": 8262000000,
+            "promotions": 733,
+            "promotions_payload_bytes": 9689673600
+          },
+          "CUDA0": {
+            "captures": 272,
+            "captures_payload_bytes": 3595622400,
+            "promotions": 309,
+            "promotions_payload_bytes": 4084732800
+          }
+        },
+        "peak": 353
+      },
+      "recent": {
+        "all_hits": 604,
+        "mandatory_hits_by_phase": {
+          "decode_before_final": 306,
+          "decode_tail": 9,
+          "prefill": 220
+        },
+        "payload_by_tier": {
+          "CPU": {
+            "captures": 1594,
+            "captures_payload_bytes": 21071404800,
+            "promotions": 425,
+            "promotions_payload_bytes": 5618160000
+          },
+          "CUDA0": {
+            "captures": 760,
+            "captures_payload_bytes": 10046592000,
+            "promotions": 179,
+            "promotions_payload_bytes": 2366236800
+          }
+        },
+        "peak": 353
+      },
+      "unlimited_eligible": {
+        "all_hits": 1209,
+        "mandatory_hits_by_phase": {
+          "decode_before_final": 843,
+          "decode_tail": 20,
+          "prefill": 346
+        },
+        "payload_by_tier": {
+          "CPU": {
+            "captures": 720,
+            "captures_payload_bytes": 9517824000,
+            "promotions": 850,
+            "promotions_payload_bytes": 11236320000
+          },
+          "CUDA0": {
+            "captures": 319,
+            "captures_payload_bytes": 4216924800,
+            "promotions": 359,
+            "promotions_payload_bytes": 4745692800
+          }
+        },
+        "peak": 520
+      }
+    },
+    "phase_and_tier": {
+      "decode_before_final": {
+        "CPU": {
+          "demoted_payload_bytes": 10218441600,
+          "evictions": 536,
+          "fixed_hits": 143,
+          "fixed_pack_requested_bytes": 8329789440,
+          "lost_hits": 95,
+          "mandatory": 773,
+          "new_hits": 189,
+          "promoted_payload_bytes": 3132950400,
+          "renewed_hits": 237,
+          "renewed_pack_requested_bytes": 7086931968,
+          "reservations": 773,
+          "victims_demoted": 773
+        },
+        "CUDA0": {
+          "demoted_payload_bytes": 3886444800,
+          "evictions": 225,
+          "fixed_hits": 28,
+          "fixed_pack_requested_bytes": 3517022208,
+          "lost_hits": 25,
+          "mandatory": 294,
+          "new_hits": 66,
+          "promoted_payload_bytes": 912124800,
+          "renewed_hits": 69,
+          "renewed_pack_requested_bytes": 2974924800,
+          "reservations": 294,
+          "victims_demoted": 294
+        }
+      },
+      "decode_tail": {
+        "CPU": {
+          "demoted_payload_bytes": 171849600,
+          "evictions": 5,
+          "fixed_hits": 0,
+          "fixed_pack_requested_bytes": 171884544,
+          "lost_hits": 0,
+          "mandatory": 13,
+          "new_hits": 8,
+          "promoted_payload_bytes": 105753600,
+          "renewed_hits": 8,
+          "renewed_pack_requested_bytes": 66109440,
+          "reservations": 13,
+          "victims_demoted": 13
+        },
+        "CUDA0": {
+          "demoted_payload_bytes": 145411200,
+          "evictions": 10,
+          "fixed_hits": 1,
+          "fixed_pack_requested_bytes": 132218880,
+          "lost_hits": 1,
+          "mandatory": 11,
+          "new_hits": 1,
+          "promoted_payload_bytes": 13219200,
+          "renewed_hits": 1,
+          "renewed_pack_requested_bytes": 132218880,
+          "reservations": 11,
+          "victims_demoted": 11
+        }
+      },
+      "prefill": {
+        "CPU": {
+          "demoted_payload_bytes": 10681113600,
+          "evictions": 588,
+          "fixed_hits": 110,
+          "fixed_pack_requested_bytes": 9228877824,
+          "lost_hits": 72,
+          "mandatory": 532,
+          "new_hits": 142,
+          "promoted_payload_bytes": 2379456000,
+          "renewed_hits": 180,
+          "renewed_pack_requested_bytes": 8303345664,
+          "reservations": 808,
+          "victims_demoted": 808
+        },
+        "CUDA0": {
+          "demoted_payload_bytes": 6014736000,
+          "evictions": 338,
+          "fixed_hits": 45,
+          "fixed_pack_requested_bytes": 5420974080,
+          "lost_hits": 30,
+          "mandatory": 295,
+          "new_hits": 94,
+          "promoted_payload_bytes": 1440892800,
+          "renewed_hits": 109,
+          "renewed_pack_requested_bytes": 4574773248,
+          "reservations": 455,
+          "victims_demoted": 455
+        }
+      }
+    }
+  },
+  "m3": "PARTIAL",
+  "m4": "NOT_MET",
+  "manifest_sha256": "b95c0b9632cb700ecf55922084af96818e93f34640e103af8f99ac470472f864",
+  "physical": {
+    "blocks": [
+      {
+        "quartets": {
+          "median_ratio": 0.9514694193218277,
+          "median_saving_ns": 1857489,
+          "pre_ns": [
+            38274609,
+            38210709,
+            37876570,
+            38847940,
+            37768997,
+            38640930,
+            37877562
+          ],
+          "reached_threshold": false,
+          "ring_ns": [
+            36417120,
+            36211733,
+            36273809,
+            35800188,
+            35766784,
+            36929817,
+            36186506
+          ]
+        },
+        "singletons": {
+          "median_ratio": 0.9952761840966472,
+          "median_saving_ns": 43102,
+          "pre_ns": [
+            9342503,
+            9127308,
+            9719585,
+            9328328,
+            9124403,
+            9113020,
+            9280397
+          ],
+          "reached_threshold": false,
+          "ring_ns": [
+            9261411,
+            9105899,
+            9111479,
+            9425149,
+            9081301,
+            9137006,
+            9192882
+          ]
+        }
+      },
+      {
+        "quartets": {
+          "median_ratio": 0.9444944724939409,
+          "median_saving_ns": 2122759,
+          "pre_ns": [
+            38437727,
+            38196754,
+            37082535,
+            38629168,
+            40529820,
+            38244101,
+            39022689
+          ],
+          "reached_threshold": false,
+          "ring_ns": [
+            37281960,
+            36248292,
+            35887662,
+            36426127,
+            37253817,
+            36121342,
+            35796260
+          ]
+        },
+        "singletons": {
+          "median_ratio": 1.0014853531227665,
+          "median_saving_ns": -13484,
+          "pre_ns": [
+            9077976,
+            9359556,
+            9393891,
+            9197010,
+            9685229,
+            9185758,
+            9331713
+          ],
+          "reached_threshold": false,
+          "ring_ns": [
+            9091460,
+            9712521,
+            9211557,
+            9694777,
+            10098337,
+            9095999,
+            8964002
+          ]
+        }
+      }
+    ],
+    "build_sha256": "8f16976da52f529c3ac8dd72641acf8a2da73906b0ec2748e10fbc78f808a464",
+    "c55": {
+      "cpu_c_max": 52.875,
+      "gpu_c_max": 42.23,
+      "gpu_compute_max": 0,
+      "gpu_driver": "620.73.04",
+      "gpu_name": "NVIDIA GeForce RTX 4060 Laptop GPU",
+      "gpu_total_mib": 8188.0,
+      "nvme_c_max": {
+        "nvme-pci-c100": 35.85
+      },
+      "span_s": 60.00621671299814
+    },
+    "cgroup": {
+      "events_local": {
+        "high": 0,
+        "low": 0,
+        "max": 0,
+        "oom": 0,
+        "oom_group_kill": 0,
+        "oom_kill": 0,
+        "sock_throttled": 0
+      },
+      "memory_max": 268435456,
+      "memory_peak": 101126144,
+      "swap_current": 0,
+      "swap_max": 0
+    },
+    "child_wall_s": 3.1097334080004657,
+    "commit": "0cfcf6a40daf479cc42a2832c480c7cfa2c8fe89",
+    "decision": "NO_GO_UNIFORM_CUT_THIS_FIXTURE",
+    "elf_sha256": "b977bdd17d156147ba695393690f6f93b390ea923ccbe00c2e4942c5db7ef304",
+    "full_model_requests": 0,
+    "gpu_compute": 0,
+    "kernel": "7.3.4-200.fc44.x86_64",
+    "local_gain": "INCONCLUSIVE",
+    "model_sha256": "582bd40f6886200101f4c4ed9f25f3fe80cc14c86e9e2b37746cd8904a0c622d",
+    "pack_sha256": "f17e9fbf6f6aed1ad60ca7da3431c5156a946d2e0bf119722afc1f934cbc6b11",
+    "plan_sha256": "d348b6daf67372a01a0c52cf5a6681c4b604e6bb988809b4bfea7fb0bd60e35f",
+    "protocol_sha256": "356d5492dc3270def61ca482972b8e55e1dfc8008cbbfac6e0e7eeec44029fc0",
+    "requested_bytes": 3966566400,
+    "samples": 5,
+    "source_sha256": "629d83c2ee999d2d79c7caedc0839cf5fce74b9e756fc144a23650454370a5eb",
+    "tree": "d3a439fd6aad203e1a149d75430f1feb2d299dc2",
+    "verified_component_hashes": 900,
+    "whole_device_delta": {
+      "busy_ms": 1595,
+      "read_sectors_512B": 7747872,
+      "write_sectors_512B": 16
+    }
+  },
+  "request": {
+    "decisions": {
+      "placed": {
+        "all_selections_full_client": "HEADROOM_ONLY",
+        "all_selections_with_grant": "HEADROOM_ONLY",
+        "causal_even_with_grant": {
+          "frequency": "NO_GO",
+          "recent": "NO_GO"
+        }
+      },
+      "unchanged": {
+        "all_selections_full_client": "NO_GO",
+        "all_selections_with_grant": "INCONCLUSIVE",
+        "causal_even_with_grant": {
+          "frequency": "NO_GO",
+          "recent": "NO_GO"
+        }
+      }
+    },
+    "eligible": 1400,
+    "eligible_empty_cpu": {
+      "P106": {
+        "any_cpu": {
+          "edge_ns": 1038168055,
+          "inside_ns": 302954443,
+          "waves": 739
+        },
+        "placed": {
+          "edge_ns": 1031545793,
+          "inside_ns": 291124546,
+          "waves": 711
+        }
+      },
+      "P97": {
+        "any_cpu": {
+          "edge_ns": 962015705,
+          "inside_ns": 270664553,
+          "waves": 739
+        },
+        "placed": {
+          "edge_ns": 955775323,
+          "inside_ns": 260230559,
+          "waves": 711
+        }
+      }
+    },
+    "exchanges": 24,
+    "full_client_and_decode_ns": {
+      "frequency": {
+        "placed": {
+          "copied": {
+            "P106": {
+              "decode": 6555746612,
+              "first_final": 12191805218
+            },
+            "P97": {
+              "decode": 6402296841,
+              "first_final": 11345476365
+            }
+          },
+          "direct": {
+            "P106": {
+              "decode": 6511666832,
+              "first_final": 12088133862
+            },
+            "P97": {
+              "decode": 6362283006,
+              "first_final": 11245038628
+            }
+          }
+        },
+        "unchanged": {
+          "copied": {
+            "P106": {
+              "decode": 6555746612,
+              "first_final": 13055330382
+            },
+            "P97": {
+              "decode": 6402296841,
+              "first_final": 12052887937
+            }
+          },
+          "direct": {
+            "P106": {
+              "decode": 6511666832,
+              "first_final": 12958798361
+            },
+            "P97": {
+              "decode": 6362283006,
+              "first_final": 11960327322
+            }
+          }
+        }
+      },
+      "new_oracle": {
+        "placed": {
+          "copied": {
+            "P106": {
+              "decode": 4773469866,
+              "first_final": 9966142449
+            },
+            "P97": {
+              "decode": 4605215965,
+              "first_final": 9108585718
+            }
+          },
+          "direct": {
+            "P106": {
+              "decode": 4682138963,
+              "first_final": 9809077281
+            },
+            "P97": {
+              "decode": 4523629290,
+              "first_final": 8955561187
+            }
+          }
+        },
+        "unchanged": {
+          "copied": {
+            "P106": {
+              "decode": 4773469866,
+              "first_final": 10855034763
+            },
+            "P97": {
+              "decode": 4605215965,
+              "first_final": 9841879357
+            }
+          },
+          "direct": {
+            "P106": {
+              "decode": 4682138963,
+              "first_final": 10702820497
+            },
+            "P97": {
+              "decode": 4523629290,
+              "first_final": 9695599241
+            }
+          }
+        }
+      },
+      "prior_oracle": {
+        "placed": {
+          "copied": {
+            "P106": {
+              "decode": 4547048496,
+              "first_final": 10407262424
+            },
+            "P97": {
+              "decode": 4378692258,
+              "first_final": 9559193671
+            }
+          },
+          "direct": {
+            "P106": {
+              "decode": 4444779752,
+              "first_final": 10253023912
+            },
+            "P97": {
+              "decode": 4286065692,
+              "first_final": 9410461526
+            }
+          }
+        },
+        "unchanged": {
+          "copied": {
+            "P106": {
+              "decode": 4547048496,
+              "first_final": 11289624484
+            },
+            "P97": {
+              "decode": 4378692258,
+              "first_final": 10281977748
+            }
+          },
+          "direct": {
+            "P106": {
+              "decode": 4444779752,
+              "first_final": 11139184169
+            },
+            "P97": {
+              "decode": 4286065692,
+              "first_final": 10136789005
+            }
+          }
+        }
+      },
+      "recent": {
+        "placed": {
+          "copied": {
+            "P106": {
+              "decode": 6473886807,
+              "first_final": 12534273912
+            },
+            "P97": {
+              "decode": 6312158586,
+              "first_final": 11695592081
+            }
+          },
+          "direct": {
+            "P106": {
+              "decode": 6433436982,
+              "first_final": 12454109745
+            },
+            "P97": {
+              "decode": 6275661075,
+              "first_final": 11621418727
+            }
+          }
+        },
+        "unchanged": {
+          "copied": {
+            "P106": {
+              "decode": 6473886807,
+              "first_final": 13394350958
+            },
+            "P97": {
+              "decode": 6312158586,
+              "first_final": 12405167408
+            }
+          },
+          "direct": {
+            "P106": {
+              "decode": 6433436982,
+              "first_final": 13319148948
+            },
+            "P97": {
+              "decode": 6275661075,
+              "first_final": 12333791349
+            }
+          }
+        }
+      },
+      "unlimited": {
+        "placed": {
+          "copied": {
+            "P106": {
+              "decode": 4103403283,
+              "first_final": 9304162954
+            },
+            "P97": {
+              "decode": 3851721249,
+              "first_final": 8361993586
+            }
+          },
+          "direct": {
+            "P106": {
+              "decode": 4001131789,
+              "first_final": 9137270111
+            },
+            "P97": {
+              "decode": 3758498594,
+              "first_final": 8200067791
+            }
+          }
+        },
+        "unchanged": {
+          "copied": {
+            "P106": {
+              "decode": 4103403283,
+              "first_final": 10193055268
+            },
+            "P97": {
+              "decode": 3851721249,
+              "first_final": 9095287224
+            }
+          },
+          "direct": {
+            "P106": {
+              "decode": 4001131789,
+              "first_final": 10031013326
+            },
+            "P97": {
+              "decode": 3758498594,
+              "first_final": 8940105844
+            }
+          }
+        }
+      }
+    },
+    "mandatory": 2354,
+    "oracle_counts_by_tier": {
+      "CPU": {
+        "captures": 701,
+        "promotions": 831
+      },
+      "CUDA0": {
+        "captures": 314,
+        "promotions": 354
+      }
+    },
+    "oracle_hits": 1185,
+    "p106_max_client_credit_ns": 646428255,
+    "p106_placed_granted_direct_ns": {
+      "frequency": 11441705607,
+      "new_oracle": 9162649026,
+      "prior_oracle": 9606595657,
+      "recent": 11807681490,
+      "unlimited": 8490841856
+    },
+    "peak": 353,
+    "population": {
+      "decode_before_final": {
+        "same_wave": 1067
+      },
+      "decode_tail": {
+        "same_wave": 24
+      },
+      "prefill": {
+        "later_wave_same_tile_layer": 436,
+        "same_wave": 827
+      }
+    },
+    "read_service": {
+      "frequency": {
+        "placed": {
+          "at_limit_ns": {
+            "P106": {
+              "decode": 5269075766,
+              "first_final": 9999995020
+            },
+            "P97": {
+              "decode": 5096789268,
+              "first_final": 9064004939
+            }
+          },
+          "at_one_ppm_more_ns": {
+            "P106": {
+              "decode": 5269080519,
+              "first_final": 10000002939
+            },
+            "P97": {
+              "decode": 5096794112,
+              "first_final": 9064013175
+            }
+          },
+          "max_read_ppm": 731182,
+          "min_reduction_ppm": 268818
+        },
+        "unchanged": {
+          "at_limit_ns": {
+            "P106": {
+              "decode": 4611842322,
+              "first_final": 9999999713
+            },
+            "P97": {
+              "decode": 4420709471,
+              "first_final": 8936141253
+            }
+          },
+          "at_one_ppm_more_ns": {
+            "P106": {
+              "decode": 4611846965,
+              "first_final": 10000006865
+            },
+            "P97": {
+              "decode": 4420714256,
+              "first_final": 8936148628
+            }
+          },
+          "max_read_ppm": 591390,
+          "min_reduction_ppm": 408610
+        }
+      },
+      "recent": {
+        "placed": {
+          "at_limit_ns": {
+            "P106": {
+              "decode": 5075857929,
+              "first_final": 9999998749
+            },
+            "P97": {
+              "decode": 4895385012,
+              "first_final": 9061521903
+            }
+          },
+          "at_one_ppm_more_ns": {
+            "P106": {
+              "decode": 5075862539,
+              "first_final": 10000006950
+            },
+            "P97": {
+              "decode": 4895389721,
+              "first_final": 9061530453
+            }
+          },
+          "max_read_ppm": 700072,
+          "min_reduction_ppm": 299928
+        },
+        "unchanged": {
+          "at_limit_ns": {
+            "P106": {
+              "decode": 4453269059,
+              "first_final": 9999994189
+            },
+            "P97": {
+              "decode": 4255956762,
+              "first_final": 8939172146
+            }
+          },
+          "at_one_ppm_more_ns": {
+            "P106": {
+              "decode": 4453273552,
+              "first_final": 10000001604
+            },
+            "P97": {
+              "decode": 4255961392,
+              "first_final": 8939179824
+            }
+          },
+          "max_read_ppm": 563698,
+          "min_reduction_ppm": 436302
+        }
+      }
+    },
+    "witness_sha256": "8ff6558d0ce6d63e9ae77a7f3197f3abcdf2f05567800a778d889ad08127808d"
+  },
+  "routing_and_reservations": [
+    "4a8a47b3ec0a64220e9734237eae9fd7b886ce35ed81964408eacdc4034931f9",
+    "94eda679088af9b4cc54e6f8caa91d65232520ba796d3b295780f8eaa2a697a5"
+  ],
+  "schema": "tesy.ready_renewal_decision.v1",
+  "source_receipts_sha256": {
+    "build": "8f16976da52f529c3ac8dd72641acf8a2da73906b0ec2748e10fbc78f808a464",
+    "c55": "784a4d6e7bb2e5caf2ff38ca0accdd7f28c4b854f475fb36f7b2f0bbea3c6896",
+    "composition": "df1ad53c531351498de7837fe9a16bd8e8282c8cddad94b949d3d838bd3a0776",
+    "deadlines": "451a7fbc48ce222709369335e831c21b28fd606506921f0d9cd0675b562092ab",
+    "intervals": "fe40b730da54e0e675619ff947735b5618a66ec087ecb4b4dcf1dc5fa2210f15",
+    "physical": "61703afadf35e1d7b5635fa0c0622c5d0d1f635e752924ce84b8e82240541713",
+    "placement": "ec8f017f4beabcea09c329a651c081d9bff33605a10f6659be4dc765d596e6b5",
+    "plan": "d348b6daf67372a01a0c52cf5a6681c4b604e6bb988809b4bfea7fb0bd60e35f",
+    "renewal": "f458985b4f1417c3a5b434be4412da6b2a0eff744395d5e77dfc8459a1a615aa"
+  },
+  "t1": {
+    "initial_secondary": 305,
+    "t1_prefix_sha256": "16574f71e2a697479d1be118ddd5d5a103b3218c1f48b428ee32ebbb355fe259",
+    "t1_reservations": 5727
+  },
+  "verified_archive_bytes": 403031,
+  "verified_archive_files": 32
+}

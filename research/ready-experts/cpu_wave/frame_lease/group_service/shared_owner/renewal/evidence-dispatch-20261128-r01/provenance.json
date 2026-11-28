@@ -1,0 +1,69 @@
+{
+  "C55_archive": "native-renewal-20261128-r01",
+  "HTTP_requests": 0,
+  "artifacts": {
+    "archive.json": {
+      "bytes": 264,
+      "sha256": "358fa6d967f40b98bf3d785d90977c93ffa75fd399f0ef19c1914e49b0270f0c"
+    },
+    "arrivals.json": {
+      "bytes": 5184,
+      "sha256": "7abd85aadbfe24bf04fd154c4eee0f79157bff56ec835843540774cd63ce748c"
+    },
+    "build.json": {
+      "bytes": 2348,
+      "sha256": "7442bb46d75aa35aa665f8ff557ae122b5559a5bdc3c066fabc80c9a02d50bb6"
+    },
+    "decision.json": {
+      "bytes": 31471,
+      "sha256": "3899de734e2c6c47a7ff36259d39e0a32759508f7ee5a0485affc7fe21db9a4d"
+    },
+    "physical.json": {
+      "bytes": 6228,
+      "sha256": "7abed6088fcdd90449c9aa2d3ae677dc03bc389edfda7700a38f7600d995c2f1"
+    },
+    "samples.json.gz": {
+      "bytes": 86183,
+      "sha256": "8a4441360688470c992b2dc1e6947b37929b85a22c17326bc2c2b47942c2d4be"
+    }
+  },
+  "baseline_archive": "native-group-service-20261128-r01",
+  "branch": "research/ready-layer",
+  "commands": {
+    "build": "systemd-run --user --scope --quiet --unit=tesy-renewal-dispatch-build-20261128-r01 --slice=app.slice -p MemoryHigh=2G -p MemoryMax=2G -p MemorySwapMax=0 -p RuntimeMaxSec=120 /usr/bin/prlimit --core=0:0 -- /usr/bin/python3 -IB research/ready-experts/cpu_wave/frame_lease/group_service/shared_owner/renewal/dispatch.py build --commit 7ea3a3f6358c3ef8dffe4c2e2d3ba068fdaa4d01 --backend /mnt/sdisk-ssd-ext/Tesy/repo/c7-native-placement-screen-20260927-1117utc/backends/c269-layer-last-use --new-output-dir /var/tmp/tesy-renewal-dispatch-build-20261128-r01",
+    "physical": "systemd-run --user --scope --quiet --unit=tesy-renewal-dispatch-20261128-r01 --slice=app.slice -p MemoryHigh=4G -p MemoryMax=4G -p MemorySwapMax=0 -p RuntimeMaxSec=300 /usr/bin/prlimit --core=0:0 -- /usr/bin/python3 -IB research/ready-experts/cpu_wave/frame_lease/group_service/shared_owner/renewal/dispatch.py physical --commit 7ea3a3f6358c3ef8dffe4c2e2d3ba068fdaa4d01 --backend /mnt/sdisk-ssd-ext/Tesy/repo/c7-native-placement-screen-20260927-1117utc/backends/c269-layer-last-use --build-dir /var/tmp/tesy-renewal-dispatch-build-20261128-r01 --build-sha256 7442bb46d75aa35aa665f8ff557ae122b5559a5bdc3c066fabc80c9a02d50bb6 --source-plan /var/tmp/tesy-group-service-run-20261128-r01/plan.json --manifest /home/pmglo/models/tesy-gpt-oss-120b-nvme/tesy-c291-manifest-20261125-r02 --c55-receipt /var/tmp/tesy-renewal-c55-20261128-r01/receipt.json --c55-sha256 5fbd37723e82a76a2f416778220e729dfbb12abc4237df124ff777dc21017e9d --unit tesy-renewal-dispatch-20261128-r01 --new-output-dir /var/tmp/tesy-renewal-dispatch-20261128-r01"
+  },
+  "commit": "7ea3a3f6358c3ef8dffe4c2e2d3ba068fdaa4d01",
+  "expected_faults": 4,
+  "failures": [],
+  "gpu_compute": false,
+  "main": "293f5b184da9439771cce361cd33fc4068d749f4",
+  "method": {
+    "bytes": 2875,
+    "sha256": "701aee7b4907889690f0ef72e7ca34582d20f64ccc8cb9ad3935620ad55de3c0"
+  },
+  "model_forwards": 0,
+  "parent_queue": {
+    "bytes": 27124,
+    "sha256": "63dfa92ab0043073ab13d1a2d11a62dda4e5907452880eada36aa540961989d9"
+  },
+  "program": {
+    "bytes": 13569,
+    "sha256": "afe754d30a6e96fc65f9f223b41bdf6467b3676d27e1e19bd205d551e557f77d"
+  },
+  "resources": {
+    "build_s": 3.536764641001355,
+    "c118_s": 60.15562143700663,
+    "energy_J": null,
+    "max_cpu_C": 56.125,
+    "max_gpu_C": 43.63,
+    "max_nvme_C": 38.85,
+    "max_sample_gap_s": 0.7712214280036278,
+    "peak_B": 758923264,
+    "requested_pack_B": 22847422464,
+    "samples": 56,
+    "swap_peak_B": 0,
+    "wall_s": 99.83819556899834
+  },
+  "tree": "b56dabfb5ae26716b5d38fa301eae8ead27e3aa5"
+}

@@ -1,0 +1,9 @@
+{
+  "measurement_commit": "5c8b41e64b999c1bb5bdbebf6f311593a2a50c1c",
+  "window": "/usr/bin/python3 -IB research/qualification-retake/nvme_admission/window.py --nvme-model /home/pmglo/models/gpt-oss-120b-gguf/gpt-oss-120b-MXFP4.gguf --new-output-dir /var/tmp/tesy-stripe-quartet-c55-20261127-r01",
+  "run": "systemd-run --user --scope --unit=tesy-stripe-quartet-20261127-r01 --slice=app.slice -p MemoryHigh=256M -p MemoryMax=256M -p TasksMax=64 -p MemorySwapMax=0 -p RuntimeMaxSec=180 /usr/bin/prlimit --fsize=8388608:8388608 -- /usr/bin/timeout 175 /usr/bin/python3 -IB research/ready-experts/cpu_wave/code_chat/observed_rank/quartet.py --derived /home/pmglo/models/tesy-gpt-oss-120b-nvme/tesy-c291-manifest-20261125-r02 --cpu /mnt/sdisk-ssd-ext/Tesy/repo/c7-native-placement-screen-20260927-1117utc/backends/c269-layer-last-use/build-c269-cuda/bin/libggml-cpu.so.0.15.3 --base /mnt/sdisk-ssd-ext/Tesy/repo/c7-native-placement-screen-20260927-1117utc/backends/c269-layer-last-use/build-c269-cuda/bin/libggml-base.so.0.15.3 --new-output-dir /tmp/tesy-code-verifier-price-20261127/quartet-r01 --archive /mnt/sdisk-ssd-ext/Tesy/outputs/qualification-20261124-nvme-01 --c55 /var/tmp/tesy-stripe-quartet-c55-20261127-r01 --c55-sha256 75cdc5156c2af110261d355393fd286b05c27ddd4a46fd2cc13bc14bbbb9ac07",
+  "archive": "python3 -IB /tmp/tesy-code-chat-20261127-study/archive.py research/qualification-retake/private_archive/verify.py /mnt/sdisk-ssd-ext/Tesy/outputs/ready-operator-quartet-20261127-01 /tmp/tesy-code-verifier-price-20261127/quartet-archive.json /var/tmp/tesy-stripe-quartet-c55-20261127-r01 /tmp/tesy-code-verifier-price-20261127/quartet-r01",
+  "receipt_sha256": "003aca5e93942f1890ee6c2e01adc5d3ba2148f5aa17298cbf0a42424483233c",
+  "arms_sha256": "1e11c2f158150b7fc19c6fab74bb230ef4fa3ad7dbc160dae6246f94b2a70a59",
+  "samples_sha256": "bb56bc7ca6ab643a9ab69de346e2dbfa4baa5aa862d0808a158b001050000d25"
+}

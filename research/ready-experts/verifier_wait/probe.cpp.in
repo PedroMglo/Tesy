@@ -1,0 +1,169 @@
+// Inserted after the sealed numerical client's T1 and model/context setup.
+static int64_t now_ns() {
+    return std::chrono::duration_cast<std::chrono::nanoseconds>(
+        std::chrono::steady_clock::now().time_since_epoch()).count();
+}
+
+using Counts = std::array<int64_t, 9>;
+static Counts counters(llama_model *model, bool decode, json *routes = nullptr) {
+    auto *mgr = model->moe_stream();
+    check(mgr && mgr->n_slots == 40 && mgr->n_io_threads == 4 && mgr->layers.size() == 36,
+          "expert service configuration");
+    std::lock_guard<std::mutex> held(mgr->mtx);
+    check(!mgr->load_failed, "failed expert service");
+    if (decode) {
+        check(mgr->q_demand.empty(), "decode queue boundary");
+        for (const auto &sl : mgr->layers) {
+            check(sl && sl->n_expert == 128, "expert layer");
+            for (unsigned i = 0; i < sl->n_slots; ++i)
+                check(!sl->slot_claimed[i] && sl->slot_state[i] != LLAMA_MOE_STREAM_SLOT_LOADING,
+                      "undrained decode boundary");
+            if (routes) routes->push_back(sl->uniq);
+        }
+    }
+    const auto &s = mgr->stats;
+    return {s.n_calls, s.n_wave_calls, s.n_store_loads, s.n_store_read_bytes, s.n_hit, s.n_miss,
+            s.n_preload_issued, s.t_stall_us, s.t_stall_wave_us};
+}
+
+template<class F> static json measured(llama_model *model, bool observe, bool decode, F &&call) {
+    Counts before{};
+    if (observe) before = counters(model, decode);
+    auto start = now_ns();
+    call();
+    auto elapsed = now_ns() - start;
+    json result = {{"wall_ns", elapsed}};
+    if (observe) {
+        json routes = json::array();
+        auto delta = counters(model, decode, decode ? &routes : nullptr);
+        for (size_t i = 0; i < delta.size(); ++i) {
+            delta[i] -= before[i];
+            check(delta[i] >= 0, "nonmonotone expert counter");
+        }
+        result["counts"] = delta;
+        if (decode) result["routes"] = std::move(routes);
+    }
+    return result;
+}
+
+static void prompt_return(llama_context *ctx, const Tokens &all, int begin, int end) {
+    check(llama_memory_seq_rm(llama_get_memory(ctx), 0, begin, -1), "external prompt cut");
+    auto b = llama_batch_init(end - begin, 0, 1);
+    b.n_tokens = end - begin;
+    for (int j = 0; j < b.n_tokens; ++j) {
+        b.token[j] = all.at(begin+j);
+        b.pos[j] = begin+j;
+        b.n_seq_id[j] = 1;
+        b.seq_id[j][0] = 0;
+        b.logits[j] = begin+j+1 == int(all.size());
+    }
+    const int rc = llama_decode(ctx, b);
+    llama_batch_free(b);
+    check(rc == 0, "prompt return");
+    llama_synchronize(ctx);
+}
+
+static std::string row_hash(llama_context *ctx, int row) {
+    const auto *f = llama_get_logits_ith(ctx, row);
+    check(finite_row(f, vocabulary), "complete finite row");
+    const auto *bytes = reinterpret_cast<const uint8_t *>(f);
+    return fingerprint(std::vector<uint8_t>(bytes, bytes+vocabulary*sizeof(*f)));
+}
+
+static Tokens propose(const Tokens &history) {
+    // The history ends at the confirmed anchor. Match the native N2/M2 rule.
+    const int cur = int(history.size())-1;
+    if (cur <= 5) return {};
+    for (int j=cur-3; j>0; --j) {
+        if (history[j] == history[cur-1] && history[j+1] == history[cur]) {
+            if (cur-(j+2) < 2) return {};
+            return {history[j+2], history[j+3]};
+        }
+    }
+    return {};
+}
+
+static void run_wait(const char *model_path, const fs::path &work, const std::string &role,
+                     const fs::path &out) {
+    const bool serial = role == "S", observe = serial || role == "B1";
+    check(serial || role == "B0a" || role == "B1" || role == "B0b", "unknown arm");
+    check(fs::create_directory(out), "exclusive capture");
+    std::ifstream input(work);
+    const json w = json::parse(input);
+    const auto t1 = w.at("t1").get<Tokens>(), t2 = w.at("t2").get<Tokens>();
+    const auto first = w.at("first").get<Tokens>(), target = w.at("target").get<Tokens>();
+@SETUP_AND_T1@
+    json data = {{"role",role},{"prefill",json::array()},{"decode",json::array()},
+                 {"kv",json::object()}};
+    int pos = w.at("cached");
+    for (int end : w.at("t2_ends").get<std::vector<int>>()) {
+        auto v = measured(model.get(), observe, false, [&]{prompt_return(ctx.get(),t2,pos,end);});
+        v["size"] = end-pos;
+        data["prefill"].push_back(std::move(v));
+        pos = end;
+    }
+    check(pos == int(t2.size()), "complete T2 prompt");
+    last = greedy(ctx.get(), -1);
+    expect_id(last, target.at(0), 0, "anchor");
+    data["anchor"] = row_hash(ctx.get(), -1);
+    data["kv"]["1"] = state(ctx.get(),pos,out,false);
+    Tokens history = t2;
+    history.push_back(last);
+    const auto cuts = w.at("keep_counts").get<std::vector<int>>();
+    int confirmed = 1;
+    while (!llama_vocab_is_eog(llama_model_get_vocab(model.get()),last)) {
+        check(confirmed < 256, "nominal cap");
+        Tokens offered;
+        if (!serial && 256-confirmed >= 3) offered = propose(history);
+        Tokens tokens{last};
+        tokens.insert(tokens.end(),offered.begin(),offered.end());
+        pos = int(t2.size())+confirmed-1;
+        auto v = measured(model.get(),observe,true,[&]{supplied(ctx.get(),pos,tokens);});
+        v["at"] = confirmed;
+        v["offers"] = offered;
+        v["hashes"] = json::array();
+        Tokens ids;
+        for (int j=0; j<int(tokens.size()); ++j) {
+            ids.push_back(greedy(ctx.get(),j));
+            v["hashes"].push_back(row_hash(ctx.get(),j));
+        }
+        int keep = 0, accepted = 0;
+        for (int j=0; j<int(tokens.size()); ++j) {
+            last = ids[j];
+            expect_id(last,target.at(confirmed),confirmed,"target");
+            history.push_back(last);
+            ++confirmed;
+            ++keep;
+            const bool match = j<int(offered.size()) && last == offered[j];
+            accepted += int(match);
+            if (!match || llama_vocab_is_eog(llama_model_get_vocab(model.get()),last)) break;
+        }
+        if (keep < int(tokens.size()))
+            check(llama_memory_seq_rm(mem,0,pos+keep,-1), "rollback on target decision");
+        v["keep"] = keep;
+        v["accepted"] = accepted;
+        v["ids"] = ids;
+        data["decode"].push_back(std::move(v));
+        if (std::find(cuts.begin(),cuts.end(),confirmed) != cuts.end())
+            data["kv"][std::to_string(confirmed)] = state(ctx.get(),pos+keep,out,false);
+    }
+    check(confirmed == int(target.size()) && data["kv"].size() == cuts.size()+1, "terminal state");
+    record(out/"native.json",data);
+}
+} // namespace
+
+int main(int argc,char **argv) try {
+    if (argc == 2 && std::string(argv[1]) == "--self-test") {
+        check(fingerprint({'a','b','c'}) == "ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad",
+              "digest self-test");
+        check(propose({7,2,3,4,5,8,2,3}) == Tokens({4,5}), "causal N2 self-test");
+        std::puts("PASS_CODE_CUT_HASH");
+        return 0;
+    }
+    check(argc == 5,"MODEL WORK ROLE NEW_OUTPUT");
+    run_wait(argv[1],argv[2],argv[3],argv[4]);
+    return 0;
+} catch(const std::exception &e) {
+    std::fprintf(stderr,"VERIFIER_WAIT_FAIL %s\n",e.what());
+    return 1;
+}

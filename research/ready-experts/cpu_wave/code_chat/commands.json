@@ -1,0 +1,69 @@
+{
+  "physical": {
+    "command": "/usr/bin/python3 -IB research/ready-experts/cpu_wave/code_chat/run.py --archive /mnt/sdisk-ssd-ext/Tesy/outputs/qualification-20261124-nvme-01 --derived /home/pmglo/models/tesy-gpt-oss-120b-nvme/tesy-c291-manifest-20261125-r02 --build-dir /var/tmp/tesy-native-wave-build-20261127-r01 --r0 /var/tmp/tesy-sys73-c270-20261126-r01 --target /var/tmp/tesy-native-wave-target-20261127-r02 --http /var/tmp/tesy-native-wave-http-20261127-r01 --loader-probe /var/tmp/tesy-wave-supplied-loader-20261127-r01/receipt.json --window /var/tmp/tesy-wave-code-chat-c55-20261127-r01 --window-sha256 71eb22c69859e973057ec0f9f9f89a4ee1b177b537ea5ff5ca4a0ea3ca452a06 --commit 1be14958f9f153aaa1dbc9b28b4a29d6cc271a5a --unit tesy-c281-nvme-code-20261127-r01 --new-output-dir /var/tmp/tesy-wave-code-chat-20261127-r01",
+    "commit": "1be14958f9f153aaa1dbc9b28b4a29d6cc271a5a",
+    "tree": "6a0e2a22fee469ed0c02ef376c56b5bf41e47a53",
+    "c55_sha256": "71eb22c69859e973057ec0f9f9f89a4ee1b177b537ea5ff5ca4a0ea3ca452a06",
+    "parent_sha256": "ff8cea095dfb1be9d322c1842b571d15009a0aaae55fdbdf0f71df24429152a3",
+    "elapsed_s": 1475.3828370289993
+  },
+  "audit": {
+    "command": "/usr/bin/python3 -IB research/ready-experts/cpu_wave/code_chat/review.py --family /var/tmp/tesy-wave-code-chat-20261127-r01 --family-sha256 ff8cea095dfb1be9d322c1842b571d15009a0aaae55fdbdf0f71df24429152a3 --new-output-dir /tmp/tesy-code-chat-20261127-study/review-r01",
+    "independent_reproductions": 2
+  },
+  "lookup": {
+    "commit": "1eb616c4a10a5305c876d629081db70b6a1d7adb",
+    "runs": [
+      {
+        "id": "r01",
+        "command": "systemd-run --user --scope --unit=tesy-wave-code-lookup-20261127-r01 --slice=app.slice -p MemoryHigh=512M -p MemoryMax=512M -p MemorySwapMax=0 -p RuntimeMaxSec=120 /usr/bin/prlimit --fsize=8388608:8388608 -- /usr/bin/time -f 'elapsed_s=%e max_rss_kib=%M' /usr/bin/timeout 120 /usr/bin/python3 -IB research/ready-experts/cpu_wave/code_chat/lookup.py --family /var/tmp/tesy-wave-code-chat-20261127-r01 --physical /tmp/tesy-code-chat-20261127-study/review-r01/code-chat.json --archive /mnt/sdisk-ssd-ext/Tesy/outputs/qualification-20261124-nvme-01 --new-output-dir /tmp/tesy-code-chat-20261127-study/lookup-r01",
+        "elapsed_s": 1.44,
+        "max_rss_kib": 261924,
+        "exit_code": 0
+      },
+      {
+        "id": "r02",
+        "command": "systemd-run --user --scope --unit=tesy-wave-code-lookup-20261127-r02 --slice=app.slice -p MemoryHigh=512M -p MemoryMax=512M -p MemorySwapMax=0 -p RuntimeMaxSec=120 /usr/bin/prlimit --fsize=8388608:8388608 -- /usr/bin/time -f 'elapsed_s=%e max_rss_kib=%M' /usr/bin/timeout 120 /usr/bin/python3 -IB research/ready-experts/cpu_wave/code_chat/lookup.py --family /var/tmp/tesy-wave-code-chat-20261127-r01 --physical /tmp/tesy-code-chat-20261127-study/review-r01/code-chat.json --archive /mnt/sdisk-ssd-ext/Tesy/outputs/qualification-20261124-nvme-01 --new-output-dir /tmp/tesy-code-chat-20261127-study/lookup-r02",
+        "elapsed_s": 1.44,
+        "max_rss_kib": 261764,
+        "exit_code": 0
+      }
+    ]
+  },
+  "external": {
+    "source": "9570410cab7e34bf7ac044559fc56dcdf4c7c195",
+    "runs": [
+      {
+        "id": "r01",
+        "prelaunch": true,
+        "exit_code": 1,
+        "reason": "Unknown assignment: LimitFSIZE=8388608"
+      },
+      {
+        "id": "r02",
+        "commit": "1eb616c4a10a5305c876d629081db70b6a1d7adb",
+        "command": "systemd-run --user --scope --unit=tesy-independent-mxfp4-20261127-r02 --slice=app.slice -p MemoryHigh=512M -p MemoryMax=512M -p MemorySwapMax=0 -p RuntimeMaxSec=60 /usr/bin/prlimit --fsize=8388608:8388608 -- /usr/bin/time -f 'elapsed_s=%e max_rss_kib=%M' /usr/bin/timeout 60 /usr/bin/python3 -IB research/ready-experts/cpu_wave/code_chat/executor.py --source /tmp/tesy-code-chat-20261127-study/independent-source --derived /home/pmglo/models/tesy-gpt-oss-120b-nvme/tesy-c291-manifest-20261125-r02 --reference /mnt/sdisk-ssd-ext/Tesy/repo/c7-native-placement-screen-20260927-1117utc/backends/c269-layer-last-use/build-c269-cuda/bin/libggml-base.so.0.15.3 --new-output-dir /tmp/tesy-code-chat-20261127-study/executor-r02",
+        "exit_code": 1,
+        "elapsed_s": 0.48,
+        "max_rss_kib": 101008,
+        "reason": "AVX2 C11 compilation needs the declaration of alignas; full diagnostic archived"
+      },
+      {
+        "id": "r03",
+        "commit": "0c16ed4945ae0d7fdb2f0b02bb4f227d22b0e83c",
+        "command": "systemd-run --user --scope --unit=tesy-independent-mxfp4-20261127-r03 --slice=app.slice -p MemoryHigh=512M -p MemoryMax=512M -p MemorySwapMax=0 -p RuntimeMaxSec=60 /usr/bin/prlimit --fsize=8388608:8388608 -- /usr/bin/time -f 'elapsed_s=%e max_rss_kib=%M' /usr/bin/timeout 60 /usr/bin/python3 -IB research/ready-experts/cpu_wave/code_chat/executor.py --source /tmp/tesy-code-chat-20261127-study/independent-source --derived /home/pmglo/models/tesy-gpt-oss-120b-nvme/tesy-c291-manifest-20261125-r02 --reference /mnt/sdisk-ssd-ext/Tesy/repo/c7-native-placement-screen-20260927-1117utc/backends/c269-layer-last-use/build-c269-cuda/bin/libggml-base.so.0.15.3 --new-output-dir /tmp/tesy-code-chat-20261127-study/executor-r03",
+        "elapsed_s": 0.55,
+        "max_rss_kib": 120616,
+        "exit_code": 0
+      },
+      {
+        "id": "r04",
+        "commit": "0c16ed4945ae0d7fdb2f0b02bb4f227d22b0e83c",
+        "command": "systemd-run --user --scope --unit=tesy-independent-mxfp4-20261127-r04 --slice=app.slice -p MemoryHigh=512M -p MemoryMax=512M -p MemorySwapMax=0 -p RuntimeMaxSec=60 /usr/bin/prlimit --fsize=8388608:8388608 -- /usr/bin/time -f 'elapsed_s=%e max_rss_kib=%M' /usr/bin/timeout 60 /usr/bin/python3 -IB research/ready-experts/cpu_wave/code_chat/executor.py --source /tmp/tesy-code-chat-20261127-study/independent-source --derived /home/pmglo/models/tesy-gpt-oss-120b-nvme/tesy-c291-manifest-20261125-r02 --reference /mnt/sdisk-ssd-ext/Tesy/repo/c7-native-placement-screen-20260927-1117utc/backends/c269-layer-last-use/build-c269-cuda/bin/libggml-base.so.0.15.3 --new-output-dir /tmp/tesy-code-chat-20261127-study/executor-r04",
+        "elapsed_s": 0.55,
+        "max_rss_kib": 120648,
+        "exit_code": 0
+      }
+    ]
+  }
+}

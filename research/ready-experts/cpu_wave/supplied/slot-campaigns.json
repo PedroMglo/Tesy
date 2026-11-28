@@ -1,0 +1,219 @@
+{
+  "classification": "MODEL_FREE_REPLAY_ARCHIVES",
+  "model_forwards": 0,
+  "gpu_forwards": 0,
+  "limits_per_run": {
+    "wall_s": 180,
+    "address_space_bytes": 536870912,
+    "per_file_bytes": 12582912
+  },
+  "peak_rss_kib_by_campaign": {
+    "slot_lifetime_fail": 21592,
+    "slot_lifetime_retake": 188132,
+    "slot_bank": 151352,
+    "slot_packing": 151300
+  },
+  "original_input_archive": "qualification-20261124-nvme-01",
+  "bank_input_archive": "ready-renewal-20261127-01",
+  "matched_files_byte_for_byte": [
+    [
+      "ready-slot-lifetime-20261127-02",
+      "ready-slot-lifetime-20261127-03"
+    ],
+    [
+      "ready-bank-slot-20261127-01",
+      "ready-bank-slot-20261127-02"
+    ],
+    [
+      "ready-slot-packing-20261127-01",
+      "ready-slot-packing-20261127-02"
+    ]
+  ],
+  "runs": [
+    {
+      "output_id": "ready-slot-lifetime-20261127-01",
+      "commit": "17bb22017286e4212925e21b1d4e522201f9c631",
+      "tree": "edeef9dc5ab88268ebacae450b14226d4eadcd23",
+      "status": "FAIL_PRESERVED",
+      "elapsed_s": 0.07,
+      "command": "/usr/bin/time -f 'elapsed_s=%e max_rss_kib=%M' prlimit --as=536870912 --fsize=12582912 -- /usr/bin/timeout 180 /usr/bin/python3 -IB research/ready-experts/cpu_wave/supplied/slot_lifetime.py --archive /mnt/sdisk-ssd-ext/Tesy/outputs/qualification-20261124-nvme-01 --new-output-dir /mnt/sdisk-ssd-ext/Tesy/outputs/ready-slot-lifetime-20261127-01",
+      "files": [
+        {
+          "name": "slot-lifetime.json",
+          "bytes": 134,
+          "sha256": "41a1f349b4c120f18e70711f8d34dd341eb512dd2ec8f9ebd88792c120b57d10"
+        }
+      ]
+    },
+    {
+      "output_id": "ready-slot-lifetime-20261127-02",
+      "commit": "d9b3e2acfd1044da93ff0be5d07200fc62b8efad",
+      "tree": "4f935b1b9019f363a8ef2372b60ae3c90d0f46bf",
+      "status": "REPRODUCED",
+      "elapsed_s": 7.54,
+      "command": "/usr/bin/time -f 'elapsed_s=%e max_rss_kib=%M' prlimit --as=536870912 --fsize=12582912 -- /usr/bin/timeout 180 /usr/bin/python3 -IB research/ready-experts/cpu_wave/supplied/slot_lifetime.py --archive /mnt/sdisk-ssd-ext/Tesy/outputs/qualification-20261124-nvme-01 --new-output-dir /mnt/sdisk-ssd-ext/Tesy/outputs/ready-slot-lifetime-20261127-02",
+      "files": [
+        {
+          "name": "P106-free_graph.json.gz",
+          "bytes": 38120,
+          "sha256": "182cfffd4dfa1607d2681a3fabdec6505846443075dbf866a5ce05904ecd193e"
+        },
+        {
+          "name": "P106-paid_graph.json.gz",
+          "bytes": 54639,
+          "sha256": "dfe4f1ac40a77450c41236e2639395ed066f8e0a0aacbd666cdce1c0b698c0a6"
+        },
+        {
+          "name": "P97-free_graph.json.gz",
+          "bytes": 38170,
+          "sha256": "028db226bd74ef4bd0d21e75b302ed4b3621d66ad16fb173f1f8fc1bff16ba21"
+        },
+        {
+          "name": "P97-paid_graph.json.gz",
+          "bytes": 54557,
+          "sha256": "aac149beaaea626a24e3d20bf9a0514baa121bb965ac9a78b9065060155ec94c"
+        },
+        {
+          "name": "provenance.json",
+          "bytes": 290,
+          "sha256": "1bf06d67ebff803437b6f33d7966a83a30ac1f192f3442d9d2378b9e06c66800"
+        },
+        {
+          "name": "slot-lifetime.json",
+          "bytes": 5470,
+          "sha256": "b024b4dbcb93690fe17864815a591f7a508b0c2d0e55c45f2af6be9b9bd48739"
+        }
+      ]
+    },
+    {
+      "output_id": "ready-slot-lifetime-20261127-03",
+      "commit": "d9b3e2acfd1044da93ff0be5d07200fc62b8efad",
+      "tree": "4f935b1b9019f363a8ef2372b60ae3c90d0f46bf",
+      "status": "REPRODUCED",
+      "elapsed_s": 7.57,
+      "command": "/usr/bin/time -f 'elapsed_s=%e max_rss_kib=%M' prlimit --as=536870912 --fsize=12582912 -- /usr/bin/timeout 180 /usr/bin/python3 -IB research/ready-experts/cpu_wave/supplied/slot_lifetime.py --archive /mnt/sdisk-ssd-ext/Tesy/outputs/qualification-20261124-nvme-01 --new-output-dir /mnt/sdisk-ssd-ext/Tesy/outputs/ready-slot-lifetime-20261127-03",
+      "files": [
+        {
+          "name": "P106-free_graph.json.gz",
+          "bytes": 38120,
+          "sha256": "182cfffd4dfa1607d2681a3fabdec6505846443075dbf866a5ce05904ecd193e"
+        },
+        {
+          "name": "P106-paid_graph.json.gz",
+          "bytes": 54639,
+          "sha256": "dfe4f1ac40a77450c41236e2639395ed066f8e0a0aacbd666cdce1c0b698c0a6"
+        },
+        {
+          "name": "P97-free_graph.json.gz",
+          "bytes": 38170,
+          "sha256": "028db226bd74ef4bd0d21e75b302ed4b3621d66ad16fb173f1f8fc1bff16ba21"
+        },
+        {
+          "name": "P97-paid_graph.json.gz",
+          "bytes": 54557,
+          "sha256": "aac149beaaea626a24e3d20bf9a0514baa121bb965ac9a78b9065060155ec94c"
+        },
+        {
+          "name": "provenance.json",
+          "bytes": 290,
+          "sha256": "1bf06d67ebff803437b6f33d7966a83a30ac1f192f3442d9d2378b9e06c66800"
+        },
+        {
+          "name": "slot-lifetime.json",
+          "bytes": 5470,
+          "sha256": "b024b4dbcb93690fe17864815a591f7a508b0c2d0e55c45f2af6be9b9bd48739"
+        }
+      ]
+    },
+    {
+      "output_id": "ready-bank-slot-20261127-01",
+      "commit": "acf15e9d3d4084589043cd82619a8468471391e2",
+      "tree": "cb5eab32575cfb85b48b4b4f1ce0d7e44228a206",
+      "status": "REPRODUCED",
+      "elapsed_s": 6.12,
+      "command": "/usr/bin/time -f 'elapsed_s=%e max_rss_kib=%M' prlimit --as=536870912 --fsize=12582912 -- /usr/bin/timeout 180 /usr/bin/python3 -IB research/ready-experts/cpu_wave/supplied/slot_bank.py --archive /mnt/sdisk-ssd-ext/Tesy/outputs/qualification-20261124-nvme-01 --renewal /mnt/sdisk-ssd-ext/Tesy/outputs/ready-renewal-20261127-01 --plan /mnt/sdisk-ssd-ext/Tesy/outputs/ready-supplied-wave-20261127-01/part-01/front-plan-r01/plan.json --new-output-dir /mnt/sdisk-ssd-ext/Tesy/outputs/ready-bank-slot-20261127-01",
+      "files": [
+        {
+          "name": "provenance.json",
+          "bytes": 290,
+          "sha256": "07f0fa784ac0197d341d49ed9cc6c93d1193a100c764319a993af7e507ccc9ba"
+        },
+        {
+          "name": "slot-bank.json",
+          "bytes": 13248,
+          "sha256": "539a1e730336fed3d8fa52d35d3149357c495b2776107e87cf50acac1456fc4e"
+        }
+      ]
+    },
+    {
+      "output_id": "ready-bank-slot-20261127-02",
+      "commit": "acf15e9d3d4084589043cd82619a8468471391e2",
+      "tree": "cb5eab32575cfb85b48b4b4f1ce0d7e44228a206",
+      "status": "REPRODUCED",
+      "elapsed_s": 6.1,
+      "command": "/usr/bin/time -f 'elapsed_s=%e max_rss_kib=%M' prlimit --as=536870912 --fsize=12582912 -- /usr/bin/timeout 180 /usr/bin/python3 -IB research/ready-experts/cpu_wave/supplied/slot_bank.py --archive /mnt/sdisk-ssd-ext/Tesy/outputs/qualification-20261124-nvme-01 --renewal /mnt/sdisk-ssd-ext/Tesy/outputs/ready-renewal-20261127-01 --plan /mnt/sdisk-ssd-ext/Tesy/outputs/ready-supplied-wave-20261127-01/part-01/front-plan-r01/plan.json --new-output-dir /mnt/sdisk-ssd-ext/Tesy/outputs/ready-bank-slot-20261127-02",
+      "files": [
+        {
+          "name": "provenance.json",
+          "bytes": 290,
+          "sha256": "07f0fa784ac0197d341d49ed9cc6c93d1193a100c764319a993af7e507ccc9ba"
+        },
+        {
+          "name": "slot-bank.json",
+          "bytes": 13248,
+          "sha256": "539a1e730336fed3d8fa52d35d3149357c495b2776107e87cf50acac1456fc4e"
+        }
+      ]
+    },
+    {
+      "output_id": "ready-slot-packing-20261127-01",
+      "commit": "25527a79331a3d6a994fc3be14ff2b607d59a786",
+      "tree": "2da1cc2022d1853bc357b245fef680d6f09f7018",
+      "status": "REPRODUCED",
+      "elapsed_s": 5.43,
+      "command": "/usr/bin/time -f 'elapsed_s=%e max_rss_kib=%M' prlimit --as=536870912 --fsize=12582912 -- /usr/bin/timeout 180 /usr/bin/python3 -IB research/ready-experts/cpu_wave/supplied/slot_packing.py --archive /mnt/sdisk-ssd-ext/Tesy/outputs/qualification-20261124-nvme-01 --renewal /mnt/sdisk-ssd-ext/Tesy/outputs/ready-renewal-20261127-01 --new-output-dir /mnt/sdisk-ssd-ext/Tesy/outputs/ready-slot-packing-20261127-01",
+      "files": [
+        {
+          "name": "packing-paths.json.gz",
+          "bytes": 24706,
+          "sha256": "05febebf124f21a3172260f13dedf8687ac2982445d5844fea959d51da00aba4"
+        },
+        {
+          "name": "provenance.json",
+          "bytes": 289,
+          "sha256": "f6b198fb78dbb44da06d498821a4cc8f0abe69db84c409d074b82d19c844f185"
+        },
+        {
+          "name": "slot-packing.json",
+          "bytes": 1448,
+          "sha256": "d13f415e3e70073d8346d69660b8bf21a8f75cf7c626782e401052abc9c6db2a"
+        }
+      ]
+    },
+    {
+      "output_id": "ready-slot-packing-20261127-02",
+      "commit": "25527a79331a3d6a994fc3be14ff2b607d59a786",
+      "tree": "2da1cc2022d1853bc357b245fef680d6f09f7018",
+      "status": "REPRODUCED",
+      "elapsed_s": 5.44,
+      "command": "/usr/bin/time -f 'elapsed_s=%e max_rss_kib=%M' prlimit --as=536870912 --fsize=12582912 -- /usr/bin/timeout 180 /usr/bin/python3 -IB research/ready-experts/cpu_wave/supplied/slot_packing.py --archive /mnt/sdisk-ssd-ext/Tesy/outputs/qualification-20261124-nvme-01 --renewal /mnt/sdisk-ssd-ext/Tesy/outputs/ready-renewal-20261127-01 --new-output-dir /mnt/sdisk-ssd-ext/Tesy/outputs/ready-slot-packing-20261127-02",
+      "files": [
+        {
+          "name": "packing-paths.json.gz",
+          "bytes": 24706,
+          "sha256": "05febebf124f21a3172260f13dedf8687ac2982445d5844fea959d51da00aba4"
+        },
+        {
+          "name": "provenance.json",
+          "bytes": 289,
+          "sha256": "f6b198fb78dbb44da06d498821a4cc8f0abe69db84c409d074b82d19c844f185"
+        },
+        {
+          "name": "slot-packing.json",
+          "bytes": 1448,
+          "sha256": "d13f415e3e70073d8346d69660b8bf21a8f75cf7c626782e401052abc9c6db2a"
+        }
+      ]
+    }
+  ]
+}

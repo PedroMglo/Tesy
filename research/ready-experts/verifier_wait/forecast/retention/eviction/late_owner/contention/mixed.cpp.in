@@ -1,0 +1,128 @@
+// Built with the authenticated Buffer, fetch, verify, and identity functions of peer.cpp.
+struct Group {
+    int q{}, hits{};
+    std::array<Record, 4> records;
+};
+struct Row {
+    int stage, order, pair, hit, trace;
+    Tick start{}, peers{}, reads{}, drain{};
+    std::array<Tick,4> begin{}, end{};
+};
+
+std::vector<Row> schedule() {
+    std::vector<Row> rows;
+    for (int stage = 0; stage < 4; ++stage) {
+        for (int order = -1; order <= 1; ++order) {
+            const int first = order < 0 ? 0 : 1, last = order < 0 ? 0 : 7;
+            for (int pair = first; pair <= last; ++pair) {
+                for (int leg = 0; leg < 2; ++leg) {
+                    const int alternate = (order == 1) != leg;
+                    const int hit = stage < 2 ? stage : alternate;
+                    const int trace = stage < 2 ? alternate : stage == 3;
+                    rows.push_back(Row{stage,order,pair,hit,trace});
+                }
+            }
+        }
+    }
+    return rows;
+}
+
+void execute(int fd, int id, const Group &group) {
+    auto rows = schedule();
+    const int q = group.q, misses = q-group.hits;
+    std::vector<Buffer> staging(q), dest(q);
+    std::vector<Buffer> retained(group.hits);
+    std::array<unsigned,4> requested{}, checked{};
+    size_t ix = 0;
+    std::barrier parity(4);
+    std::barrier start(4,[&]() noexcept { rows[ix].start=now(); });
+    std::barrier peers(misses,[&]() noexcept { rows[ix].peers=now(); });
+    std::barrier reads(4,[&]() noexcept { rows[ix].reads=now(); });
+    std::barrier drain(4,[&]() noexcept { rows[ix].drain=now(); });
+    std::barrier next(4,[&]() noexcept { ++ix; });
+    std::array<std::thread,4> workers;
+    for (int w = 0; w < 4; ++w) {
+        workers[w]=std::thread([&,w] {
+            if (w < q) {
+                Buffer &initial = w < misses ? staging[w] : retained[w-misses];
+                fetch(fd,group.records[w],initial);
+                ++requested[w];
+                verify(group.records[w],initial);
+                checked[w]+=3;
+            }
+            parity.arrive_and_wait();
+            for (auto &r : rows) {
+                const bool disk = w < q && (!r.hit || w < misses);
+                start.arrive_and_wait();
+                if (disk) {
+                    if (r.trace) r.begin[w]=now();
+                    fetch(fd,group.records[w],staging[w]);
+                    if (r.trace) r.end[w]=now();
+                    ++requested[w];
+                }
+                if (w < misses) peers.arrive_and_wait();
+                reads.arrive_and_wait();
+                if (w < q) {
+                    const Buffer &source = disk ? staging[w] : retained[w-misses];
+                    for (size_t k=0; k<3; ++k)
+                        std::memcpy(dest[w].data+k*slab,source.data+k*slab,slab);
+                }
+                drain.arrive_and_wait();
+                if (w < q) {
+                    verify(group.records[w],dest[w]);
+                    checked[w]+=3;
+                    // A missing component copy on the next trial must fail even at repeated offsets.
+                    for (size_t k=0; k<3; ++k) dest[w].data[k*slab]^=0xff;
+                }
+                next.arrive_and_wait();
+            }
+        });
+    }
+    for (auto &w : workers) w.join();
+    require(ix == rows.size(),"trial count");
+    for (const auto &r : rows) {
+        std::cout<<"row "<<id<<' '<<r.stage<<' '<<r.order<<' '<<r.pair<<' '<<r.hit<<' '<<r.trace
+                 <<' '<<r.peers-r.start<<' '<<r.reads-r.start<<' '<<r.drain-r.start;
+        for (int w=0; w<4; ++w)
+            std::cout<<' '<<(r.begin[w] ? r.begin[w]-r.start : 0)
+                     <<' '<<(r.end[w] ? r.end[w]-r.start : 0);
+        std::cout<<'\n';
+    }
+    std::cout<<"closed "<<id;
+    for (auto v : requested) std::cout<<' '<<v;
+    for (auto v : checked) std::cout<<' '<<v;
+    std::cout<<'\n';
+}
+
+int main(int argc,char **argv) {
+    require(argc == 3,"usage: mixed PACK PLAN");
+    int fd=open(argv[1],O_RDONLY|O_DIRECT|O_CLOEXEC|O_NOFOLLOW);
+    require(fd>=0,"open direct");
+    std::ifstream plan(argv[2]);
+    Identity expected{};
+    for (auto &x:expected) require(bool(plan>>x),"fd plan");
+    int count=0;
+    require(identity(fd)==expected && bool(plan>>count) && count>=1 && count<=6,"fd identity or extent");
+    std::vector<Group> groups(count);
+    std::set<std::pair<int,int>> types;
+    for (auto &g:groups) {
+        require(bool(plan>>g.q>>g.hits) && g.q>=2 && g.q<=4 && g.hits>=1 && g.hits<g.q
+                && types.emplace(g.q,g.hits).second,"cohort shape");
+        std::set<off_t> offsets;
+        for (int w=0; w<g.q; ++w) {
+            auto &r=g.records[w];
+            require(bool(plan>>r.offset) && r.offset>=0 && r.offset%4096==0
+                    && r.offset<=expected[2]-static_cast<off_t>(stride)
+                    && offsets.insert(r.offset).second,"record extent");
+            for (auto &h:r.digests) require(bool(plan>>h) && h.size()==64,"matrix hash");
+        }
+    }
+    std::string extra;
+    require(!(plan>>extra) && plan.eof(),"unexpected record");
+    std::cout<<"fd";
+    for (auto x:expected) std::cout<<' '<<x;
+    std::cout<<'\n';
+    for (int i=0; i<count; ++i) execute(fd,i,groups[i]);
+    require(identity(fd)==expected && close(fd)==0,"changed fd");
+    std::cout<<"drained\n";
+}

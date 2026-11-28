@@ -1,0 +1,233 @@
+// Private numerical executable. The C291 worker still owns the claim, three SETs and publication.
+#include <atomic>
+#include <condition_variable>
+#include <cstdlib>
+#include <dlfcn.h>
+#include <fcntl.h>
+#include <sys/stat.h>
+#include <sys/syscall.h>
+#include <unistd.h>
+
+namespace owner_probe {
+constexpr int layers = 36, experts = 128, capacity = 69, nranks = 80;
+constexpr size_t slab = 4406400, window = 13221888;
+
+static void require(bool test, const char *why) {
+    if (!test) {
+        std::fprintf(stderr, "retained source invariant: %s\n", why);
+        std::abort();
+    }
+}
+static uint64_t stamp() {
+    return std::chrono::duration_cast<std::chrono::nanoseconds>(
+        std::chrono::steady_clock::now().time_since_epoch()).count();
+}
+template <typename F> static F original(const char *name) {
+    auto fn = reinterpret_cast<F>(dlsym(RTLD_NEXT, name));
+    require(fn != nullptr, name);
+    return fn;
+}
+using Reader = ssize_t (*)(int, void *, size_t, off_t);
+static Reader disk_read() {
+    static Reader fn = original<Reader>("pread");
+    return fn;
+}
+struct Keep {
+    std::atomic<int> state{0};
+    int slot = -1;
+    uint64_t generation = 0;
+    int64_t tid = -1;
+};
+struct Delivery {
+    uint64_t read_begin = 0, read_end = 0, publication = 0;
+    uint64_t sets[3][2]{}, generation = 0;
+    int slot = -1;
+    int64_t tid = -1;
+    bool memory = false;
+};
+struct Wave {
+    uint64_t begin = 0, end = 0;
+    std::array<int,nranks> routed{}, physical{};
+    std::array<std::array<int,3>,40> pins{};
+    size_t n = 0;
+};
+struct Table {
+    int fd = -1;
+    off_t stride = 0;
+    char mode = 0;
+    llama_moe_stream *mgr = nullptr;
+    std::array<int,layers*experts> place{};
+    std::array<Keep,capacity> bank{};
+    uint8_t *bytes = nullptr;
+    std::atomic<unsigned> phase{0}, tile{0}, training{0}, trained{0}, disk{0}, served{0};
+    std::array<std::atomic<unsigned>,layers*experts> census{};
+    std::array<Delivery,experts> jobs{};
+    std::array<Wave,5> waves{};
+    std::array<std::array<int,4>,13> order{};
+    size_t reservations = 0;
+    int source_replaced = 0;
+    uint64_t train_start = 0, training_end = 0;
+};
+static Table table;
+struct Transfer {
+    const uint8_t *staging = nullptr, *owner = nullptr;
+    int layer = -1, expert = -1, component = 0, fill = -1, slot = -1;
+    Delivery *job = nullptr;
+};
+static thread_local Transfer transfer;
+static thread_local Delivery *publishing = nullptr;
+static thread_local int publish_expert = -1;
+static thread_local bool traced_callback = false;
+}
+
+extern "C" ssize_t pread(int fd, void *dest, size_t size, off_t offset) {
+    using namespace owner_probe;
+    auto &t = table;
+    const unsigned phase = t.phase.load(std::memory_order_acquire);
+    if (!phase || fd != t.fd) return disk_read()(fd, dest, size, offset);
+    require(size==window && offset>=0 && offset%t.stride==0 &&
+            offset/t.stride<layers*experts, "pack extent");
+    const int key = int(offset/t.stride), layer = key/experts, expert = key%experts;
+    const int pos = t.place[key];
+    const bool tracked = phase==2 && layer==14 && t.tile.load(std::memory_order_acquire)==5;
+    require(!transfer.staging && !publishing, "overlapping worker deliveries");
+    uint8_t *source = static_cast<uint8_t *>(dest);
+    int fill = -1;
+    bool hit = false;
+    if (phase==1) {
+        t.training.fetch_add(1,std::memory_order_relaxed);
+        if (pos>=0 && t.mode!='R') {
+            int empty = 0;
+            if (t.bank[pos].state.compare_exchange_strong(empty,1)) {
+                fill = pos;
+                source = t.bytes+size_t(pos)*window;
+            }
+        }
+    } else {
+        t.census[key].fetch_add(1,std::memory_order_relaxed);
+        hit = pos>=0 && (t.mode=='H' || t.mode=='V');
+        if (hit) {
+            require(t.bank[pos].state.load(std::memory_order_acquire)==2,"unfilled source at demand");
+            source = t.bytes+size_t(pos)*window;
+            t.served.fetch_add(1,std::memory_order_relaxed);
+        } else {
+            t.disk.fetch_add(1,std::memory_order_relaxed);
+        }
+    }
+    auto *job = tracked ? &t.jobs[expert] : nullptr;
+    if (job) {
+        require(job->read_begin==0,"duplicate valid acquisition");
+        job->tid = syscall(SYS_gettid);
+        job->read_begin = stamp();
+        job->memory = hit;
+    }
+    ssize_t got = hit ? ssize_t(size) : disk_read()(fd,source,size,offset);
+    require(got==ssize_t(size),"short or failed direct read");
+    if (job) job->read_end=stamp();
+    if (fill>=0 || hit || job)
+        transfer = {static_cast<const uint8_t *>(dest),source,layer,expert,0,fill,-1,job};
+    return got;
+}
+
+extern "C" void ggml_backend_tensor_set(ggml_tensor *tensor,const void *data,size_t off,size_t size) {
+    using namespace owner_probe;
+    using Set = void (*)(ggml_tensor *,const void *,size_t,size_t);
+    static Set fn = original<Set>("ggml_backend_tensor_set");
+    auto &x = transfer;
+    if (!x.staging) { fn(tensor,data,off,size); return; }
+    auto &t=table;
+    const int k=x.component, slot=int(off/slab);
+    const auto &layer=*t.mgr->layers.at(x.layer);
+    require(k<3 && tensor==layer.weights.at(k).cache && size==slab && off%slab==0 &&
+            slot>=0 && slot<40 && data==x.staging+size_t(k)*slab &&
+            (k==0 || slot==x.slot),"three original tensor SET destinations");
+    x.slot=slot;
+    if (x.job) x.job->sets[k][0]=stamp();
+    fn(tensor,x.owner+size_t(k)*slab,off,size);
+    if (x.job) x.job->sets[k][1]=stamp();
+    if (++x.component!=3) return;
+    if (x.fill>=0) {
+        std::lock_guard<std::mutex> lock(t.mgr->mtx);
+        require(layer.slot_expert[slot]==x.expert && layer.slot_claimed[slot],"source claim changed");
+        auto &held=t.bank.at(x.fill);
+        held.slot=slot;
+        held.generation=layer.slot_gen[slot];
+        held.tid=syscall(SYS_gettid);
+        held.state.store(2,std::memory_order_release);
+        t.trained.fetch_add(1,std::memory_order_relaxed);
+    }
+    if (x.job) {
+        x.job->slot=slot;
+        publishing=x.job;
+        publish_expert=x.expert;
+    }
+    x=Transfer{};
+}
+
+extern "C" void owner_notify(std::condition_variable *) asm("_ZNSt18condition_variable10notify_allEv");
+extern "C" void owner_notify(std::condition_variable *cv) {
+    using namespace owner_probe;
+    using Notify = void (*)(std::condition_variable *);
+    static Notify fn=original<Notify>("_ZNSt18condition_variable10notify_allEv");
+    if (publishing && cv==&table.mgr->cv_done) {
+        const auto &sl=*table.mgr->layers.at(14);
+        const int slot=publishing->slot;
+        require(sl.slot_state[slot]==LLAMA_MOE_STREAM_SLOT_RESIDENT && !sl.slot_claimed[slot] &&
+                sl.slot_expert[slot]==publish_expert && sl.expert_slot.at(publish_expert)==slot,
+                "generation at native publication");
+        publishing->generation=sl.slot_gen[slot];
+        publishing->publication=stamp();
+        publishing=nullptr;
+    }
+    fn(cv);
+}
+
+extern "C" void owner_reserve(llama_moe_stream *,llama_moe_stream_layer &,int,int)
+    asm("_ZN16llama_moe_stream19reserve_slot_lockedER22llama_moe_stream_layerii");
+extern "C" void owner_reserve(llama_moe_stream *mgr,llama_moe_stream_layer &sl,int expert,int slot) {
+    using namespace owner_probe;
+    using Reserve=void (*)(llama_moe_stream *,llama_moe_stream_layer &,int,int);
+    static Reserve fn=original<Reserve>("_ZN16llama_moe_stream19reserve_slot_lockedER22llama_moe_stream_layerii");
+    auto &t=table;
+    const bool layer=t.phase.load(std::memory_order_acquire)==2 && sl.il==14;
+    const int victim=layer ? sl.slot_expert[slot] : -1;
+    if (layer && victim==54) {
+        require(slot==16 && sl.slot_gen[slot]==3 && expert==118 && t.tile.load()==1,"original overwrite");
+        ++t.source_replaced;
+    }
+    fn(mgr,sl,expert,slot);
+    if (layer && traced_callback) {
+        require(t.reservations<t.order.size(),"additional native reservation");
+        t.order[t.reservations++]={expert,slot,int(sl.slot_gen[slot]),victim};
+    }
+}
+
+extern "C" void owner_wave(ggml_tensor *,int,int,void *) asm("_Z25llama_moe_stream_wave_idsP11ggml_tensoriiPv");
+extern "C" void owner_wave(ggml_tensor *dst,int ith,int nth,void *user) {
+    using namespace owner_probe;
+    using Callback = void (*)(ggml_tensor *,int,int,void *);
+    static Callback fn=original<Callback>("_Z25llama_moe_stream_wave_idsP11ggml_tensoriiPv");
+    auto &t=table;
+    auto *ud=static_cast<llama_moe_stream_wave *>(user);
+    if (ith || t.phase.load(std::memory_order_acquire)!=2 || ud->sl->il!=14) {
+        fn(dst,ith,nth,user); return;
+    }
+    if (ud->wave==0) t.tile.fetch_add(1,std::memory_order_release);
+    if (t.tile.load()!=5) { fn(dst,ith,nth,user); return; }
+    auto &w=t.waves.at(ud->wave);
+    require(!w.begin && ggml_nelements(dst)==nranks && !traced_callback,"real fifth tile");
+    const int *ids=static_cast<const int *>(dst->src[0]->data);
+    std::copy_n(ids,nranks,w.routed.begin());
+    traced_callback=true;
+    w.begin=stamp();
+    fn(dst,ith,nth,user);
+    w.end=stamp();
+    traced_callback=false;
+    std::copy_n(static_cast<const int *>(dst->data),nranks,w.physical.begin());
+    std::lock_guard<std::mutex> lock(t.mgr->mtx);
+    for (int slot:ud->sl->demand_slots) {
+        require(w.n<w.pins.size() && ud->sl->slot_state[slot]==LLAMA_MOE_STREAM_SLOT_RESIDENT,
+                "nonresident pin at remap");
+        w.pins[w.n++]={ud->sl->slot_expert[slot],slot,int(ud->sl->slot_gen[slot])};
+    }
+}

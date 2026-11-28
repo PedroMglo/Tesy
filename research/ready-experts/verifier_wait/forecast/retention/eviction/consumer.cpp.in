@@ -1,0 +1,119 @@
+static int entry_fd(const json &plan) {
+    const auto &wanted=plan.at("pack_stat");
+    int match=-1;
+    for (const auto &entry:fs::directory_iterator("/proc/self/fd")) {
+        int fd=std::stoi(entry.path().filename().string());
+        struct stat st{};
+        if (fstat(fd,&st)!=0 || !S_ISREG(st.st_mode)) continue;
+        if (uint64_t(st.st_dev)!=wanted.at(0) || uint64_t(st.st_ino)!=wanted.at(1)) continue;
+        int flags=fcntl(fd,F_GETFL);
+        check(flags>=0 && (flags&O_DIRECT) && (flags&O_ACCMODE)==O_RDONLY && match<0 &&
+              uint64_t(st.st_size)==wanted.at(2) &&
+              uint64_t(st.st_mtim.tv_sec)*1000000000+st.st_mtim.tv_nsec==wanted.at(3) &&
+              uint64_t(st.st_ctim.tv_sec)*1000000000+st.st_ctim.tv_nsec==wanted.at(4),
+              "verified open pack");
+        match=fd;
+    }
+    check(match>=0,"live pack descriptor");
+    return match;
+}
+
+static auto entry_drained(llama_moe_stream *mgr) {
+    std::unique_lock<std::mutex> lock(mgr->mtx);
+    auto idle=[&]{
+        if (!mgr->q_demand.empty()) return false;
+        for (const auto &sl:mgr->layers)
+            for (size_t i=0;i<sl->slot_state.size();++i)
+                if (sl->slot_claimed[i] || sl->slot_state[i]==LLAMA_MOE_STREAM_SLOT_LOADING) return false;
+        return true;
+    };
+    check(mgr->cv_done.wait_for(lock,std::chrono::seconds(5),idle) && !mgr->load_failed,"undrained pack");
+    return lock;
+}
+
+static std::unique_ptr<void,decltype(&std::free)> entry_buffer(size_t bytes) {
+    void *ptr=nullptr;
+    check(posix_memalign(&ptr,4096,bytes)==0 && ptr,"aligned parity buffer");
+    return {ptr,&std::free};
+}
+
+static void entry_start(llama_model *model,const json &plan,const std::string &mode) {
+    using namespace entry_reader;
+    auto *mgr=model->moe_stream();
+    auto lock=entry_drained(mgr);
+    auto &t=table;
+    check(!active.load() && !t.bytes && mgr->n_slots==40 && mgr->n_io_threads==4 &&
+          (mode=="R" || mode=="V" || mode=="H" || mode=="O"),"entry state");
+    t.fd=entry_fd(plan);
+    t.stride=plan.at("stride").get<off_t>();
+    check(t.stride>=off_t(window),"record extent");
+    t.serve=mode=="V" || mode=="H";
+    t.place.fill(-1);
+    const auto &rows=plan.at("records");
+    check(rows.size()==74,"entry cohort size");
+    if (mode!="R") t.bytes=std::unique_ptr<unsigned char[]>(new unsigned char[rows.size()*window]);
+    auto scratch=entry_buffer(mode=="V" ? window : 4096);
+    size_t index=0;
+    for (const auto &r:rows) {
+        const int layer=r.at("layer"),expert=r.at("expert"),slot=r.at("slot");
+        const auto &sl=*mgr->layers.at(layer);
+        const int key=layer*128+expert;
+        check(key>=0 && key<keys && t.place[key]<0 && sl.il==layer &&
+              sl.expert_slot.at(expert)==slot && sl.slot_state.at(slot)==LLAMA_MOE_STREAM_SLOT_RESIDENT &&
+              sl.slot_expert.at(slot)==expert && !sl.slot_claimed.at(slot) &&
+              sl.slot_gen.at(slot)==r.at("generation") && sl.weights.size()==3,"owner before capture");
+        t.place[key]=int(index++);
+        if (mode=="R") continue;
+        auto *dst=t.bytes.get()+size_t(t.place[key])*window;
+        for (size_t k=0;k<3;++k) {
+            const auto &wt=sl.weights[k];
+            check(wt.nb_expert==slab && wt.cache->type==GGML_TYPE_MXFP4,"native MXFP4 matrix");
+            ggml_backend_tensor_get(wt.cache,dst+k*slab,size_t(slot)*slab,slab);
+        }
+        off_t off=t.stride*key;
+        check(underlying()(t.fd,scratch.get(),4096,off+window-4096)==4096,"original record suffix");
+        std::memcpy(dst+payload,static_cast<unsigned char *>(scratch.get())+payload-(window-4096),window-payload);
+        if (mode=="V") {
+            check(underlying()(t.fd,scratch.get(),window,off)==ssize_t(window) &&
+                  !std::memcmp(dst,scratch.get(),window),"complete window parity");
+            for(size_t k=0;k<3;++k) {
+                auto *p=dst+k*slab;
+                check(fingerprint(std::vector<uint8_t>(p,p+slab))==r.at("matrices").at(k),
+                      "independent GGUF matrix digest");
+            }
+        }
+    }
+    active.store(&t,std::memory_order_release);
+}
+
+static json entry_stop(llama_model *model,const json &plan,const std::string &mode) {
+    using namespace entry_reader;
+    auto lock=entry_drained(model->moe_stream());
+    auto &t=table;
+    check(active.exchange(nullptr,std::memory_order_acq_rel)==&t && entry_fd(plan)==t.fd &&
+          !t.wrong.load(),"active read extent");
+    size_t selected=0, total=0;
+    std::vector<int> census;
+    for (const auto &r:plan.at("records")) {
+        unsigned seen=t.calls.at(r.at("layer").get<int>()*128+r.at("expert").get<int>()).load();
+        check(seen==r.at("uses"),"selected native acquisition count");
+        selected+=seen;
+    }
+    for (const auto &n:t.calls) { total+=n.load(); census.push_back(int(n.load())); }
+    check(total==1212 && total==t.disk+t.served && t.served==(t.serve?selected:0),"native read conservation");
+    t.bytes.reset();
+    return {{"mode",mode},{"selected",selected},{"logical",total},{"disk",t.disk.load()},
+            {"served",t.served.load()},{"captured",mode=="R"?0:74},{"full_hashes",mode=="V"?222:0},
+            {"suffix_read_bytes",mode=="R"?0:74*4096},{"parity_read_bytes",mode=="V"?74*window:0},
+            {"census",census}};
+}
+
+static std::string entry_pool(llama_model *model,const fs::path &out,const std::string &name) {
+    const auto p=out/(name+".pool");
+    snapshot_pool(model,p);
+    std::ifstream f(p,std::ios::binary);
+    check(f.good(),"pool snapshot open");
+    std::vector<uint8_t> buffer{std::istreambuf_iterator<char>(f),std::istreambuf_iterator<char>()};
+    check(!f.bad() && !buffer.empty(),"pool snapshot bytes");
+    return fingerprint(buffer);
+}
