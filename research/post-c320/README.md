@@ -2,6 +2,10 @@
 
 **23 de novembro de 2026.** O projeto demonstrou inferência do GPT-OSS-120B acima da RAM no portátil e ganhos de mecanismos específicos. O último controlo operacional publicado é R0 `slots40-persistent`, opt-in. **M3 PARTIAL, M4 NOT_MET.** O último fecho experimental é C320, de 7 de outubro. C321 regista a publicação e o estado para retomar. A branch da tese, de 17 de outubro, acrescenta documentação. A decisão desta revisão é investir primeiro na análise de filas do decode e estudar a possibilidade de reutilização no prefill mantendo a geometria de R0. [Decisão de arquitetura e responsabilidades](../../docs/architecture/0004-servico-exato-de-experts.md) · [Literatura e comparadores](literatura.md) · [Inventário Git](repositorio.md)
 
+## 28 de novembro · o custo de antecipar experts no NVMe interno
+
+No turno nominal, prever pelo ID confirmado antecipou 215 das faltas em 474 emissões, contra nove com popularidade e o mesmo número de emissões. Para combinar esse sinal com as rotas de duas camadas antes, o replay verificou todos os 4 000 002 limiares da regra. Nenhum cumpre o nominal a 4,5 GB/s. No portátil, a combinação selecionada a 8 GB/s gerou 1 874 leituras sem consumidor. As leituras até à primeira peça demoraram 11,714–11,896 s mesmo com todo o passo conhecido à entrada. NO_GO para esta emissão e este transporte. A melhor conversa nominal permanece em 17,689 s e 5,357 tok/s. [Medição e decisão](../ready-experts/verifier_wait/forecast/io/README.md)
+
 ## 28 de novembro · o custo físico com os experts residentes
 
 Na mesma conversa do 120B, o percurso serial de decode com os pesos do passo nos slots custou 2,004–2,059 s, e o verificador por blocos 2,110–2,175 s. Os 160 forwards de repetição passaram o controlo numérico e tiveram zero faltas. Mesmo com esses preços, o prefill W original deixa o primeiro final acima de 11 s. A investigação passa a precificar a aquisição causal dos pesos e o prefill em conjunto. O melhor pedido nominal de produto mantém 17,689 s e 5,357 tok/s. M3 PARTIAL e M4 NOT_MET. [Experiência, limites e comandos](../ready-experts/verifier_wait/README.md)

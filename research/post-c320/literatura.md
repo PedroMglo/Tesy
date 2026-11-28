@@ -1,5 +1,9 @@
 # Literatura, implementações e comparadores
 
+## 28 de novembro de 2026 · previsão por token e rota recente
+
+Speculative MoE estima a escolha de experts a partir de tokens e de sequências recentes de grupos de experts. A avaliação usa DeepSeek-V2 e Mixtral-8x7B em servidores com oito GPUs, 48 ou 96 GB por GPU e 1 ou 2 TB de RAM. Mede o throughput servido com restrições de latência em LongBench, GSM8K e HumanEval. No Tesy, a previsão em L−2 procura identificar cedo um expert ausente da VRAM e da RAM numa única conversa do GPT-OSS-120B MXFP4. Uma previsão errada ocupa a mesma fila NVMe que a procura obrigatória. Medimos o custo dessa diferença nos registos reais. O antecedente sustenta a comparação de engenharia e a reivindicação ampla de novidade continua fechada. [Speculative MoE, §§3.3 e 5](https://arxiv.org/html/2503.04398v3#S3.SS3) · [Ablação e ensaio no portátil](../ready-experts/verifier_wait/forecast/io/README.md)
+
 ## 28 de novembro de 2026 · especulação e residência em condições diferentes
 
 SpecMoEOff verifica propostas EAGLE com Mixtral-8x7B FP16, usa streams CUDA distintos para cálculo e transferências e escolhe o maior batch admitido pela memória. A avaliação de APPS e CNN/DailyMail compara throughput com offloading e destina 190 ou 250 GB de RAM aos sistemas 4090D e A30. O modelo completo de 87 GB cabe na RAM desses sistemas. No Tesy, uma conversa individual ativa experts no NVMe e a GPU tem 8 GiB. O teste de residência mediu o mesmo trabalho autoritativo serial e com propostas. O custo das propostas rejeitadas e o prazo da primeira peça final decidem se essa forma de paralelismo ajuda o utilizador. A comparação permite escolher uma intervenção de engenharia. [SpecMoEOff v1, §§5.3 e 6](https://arxiv.org/html/2508.21706v1#S6.SS1) · [Medição no target](../ready-experts/verifier_wait/README.md)
