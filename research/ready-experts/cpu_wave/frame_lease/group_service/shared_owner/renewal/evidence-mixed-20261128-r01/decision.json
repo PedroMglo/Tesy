@@ -1,0 +1,522 @@
+{
+  "HTTP_requests": 0,
+  "M3": "PARTIAL",
+  "M4": "NOT_MET",
+  "arms": {
+    "P106": {
+      "consumers": 18,
+      "directions": [
+        {
+          "best_single_per_block": [
+            "ONE_63",
+            "ONE_63",
+            "ONE_63",
+            "ONE_63",
+            "ONE_63",
+            "ONE_63",
+            "ONE_63"
+          ],
+          "comparisons": {
+            "COPY_minus_ALL": {
+              "median_ns": 991758,
+              "ns": [
+                991758,
+                667948,
+                1032565,
+                813613,
+                677736,
+                1386552,
+                1026884
+              ],
+              "positive": 7
+            },
+            "DISK_minus_ALL": {
+              "median_ns": 9631807,
+              "ns": [
+                9145289,
+                10133522,
+                10358625,
+                48321719,
+                9526116,
+                9533471,
+                9631807
+              ],
+              "positive": 7
+            },
+            "DISK_minus_COPY": {
+              "median_ns": 8848380,
+              "ns": [
+                8153531,
+                9465574,
+                9326060,
+                47508106,
+                8848380,
+                8146919,
+                8604923
+              ],
+              "positive": 7
+            },
+            "best_ONE_minus_ALL": {
+              "median_ns": 58851,
+              "ns": [
+                96652,
+                58851,
+                8185,
+                108985,
+                -17564,
+                70783,
+                -14457
+              ],
+              "positive": 5
+            }
+          },
+          "direction": 0,
+          "medians_ns_or_counts": {
+            "ALL": {
+              "consumer": 95635009,
+              "drain": 95635119,
+              "last": 95610583,
+              "max_dispatch_late": 83447,
+              "reads": 2,
+              "release_to_consumer": 20959,
+              "sets": 6,
+              "wait": 33306049
+            },
+            "COPY": {
+              "consumer": 96609214,
+              "drain": 96609274,
+              "last": 96578125,
+              "max_dispatch_late": 86130,
+              "reads": 2,
+              "release_to_consumer": 29255,
+              "sets": 45,
+              "wait": 34284954
+            },
+            "DISK": {
+              "consumer": 105239043,
+              "drain": 105239143,
+              "last": 105225908,
+              "max_dispatch_late": 82389,
+              "reads": 15,
+              "release_to_consumer": 12824,
+              "sets": 45,
+              "wait": 42926695
+            },
+            "ONE_63": {
+              "consumer": 95693860,
+              "drain": 95693910,
+              "last": 95665787,
+              "max_dispatch_late": 110002,
+              "reads": 2,
+              "release_to_consumer": 15840,
+              "sets": 42,
+              "wait": 33369890
+            }
+          }
+        },
+        {
+          "best_single_per_block": [
+            "ONE_63",
+            "ONE_63",
+            "ONE_63",
+            "ONE_63",
+            "ONE_63",
+            "ONE_63",
+            "ONE_63"
+          ],
+          "comparisons": {
+            "COPY_minus_ALL": {
+              "median_ns": 958196,
+              "ns": [
+                705049,
+                686664,
+                22404119,
+                958196,
+                731869,
+                1010324,
+                975997
+              ],
+              "positive": 7
+            },
+            "DISK_minus_ALL": {
+              "median_ns": 10041399,
+              "ns": [
+                10041399,
+                10503008,
+                68212724,
+                18993545,
+                9418394,
+                9615187,
+                9385763
+              ],
+              "positive": 7
+            },
+            "DISK_minus_COPY": {
+              "median_ns": 9336350,
+              "ns": [
+                9336350,
+                9816344,
+                45808605,
+                18035349,
+                8686525,
+                8604863,
+                8409766
+              ],
+              "positive": 7
+            },
+            "best_ONE_minus_ALL": {
+              "median_ns": 43312,
+              "ns": [
+                43312,
+                -107002,
+                2403749,
+                -33212,
+                49253,
+                37722,
+                115067
+              ],
+              "positive": 5
+            }
+          },
+          "direction": 1,
+          "medians_ns_or_counts": {
+            "ALL": {
+              "consumer": 95625911,
+              "drain": 95625981,
+              "last": 95615001,
+              "max_dispatch_late": 84177,
+              "reads": 2,
+              "release_to_consumer": 24396,
+              "sets": 6,
+              "wait": 33327920
+            },
+            "COPY": {
+              "consumer": 96583746,
+              "drain": 96583856,
+              "last": 96555443,
+              "max_dispatch_late": 79480,
+              "reads": 2,
+              "release_to_consumer": 17092,
+              "sets": 45,
+              "wait": 34262572
+            },
+            "DISK": {
+              "consumer": 105667310,
+              "drain": 105667340,
+              "last": 105654796,
+              "max_dispatch_late": 81298,
+              "reads": 15,
+              "release_to_consumer": 14658,
+              "sets": 45,
+              "wait": 43352748
+            },
+            "ONE_63": {
+              "consumer": 95669223,
+              "drain": 95669313,
+              "last": 95651670,
+              "max_dispatch_late": 85284,
+              "reads": 2,
+              "release_to_consumer": 11933,
+              "sets": 42,
+              "wait": 33346255
+            }
+          }
+        }
+      ],
+      "exact": {
+        "active": 19,
+        "matrix_hashes": 54,
+        "parked": 61,
+        "wrong_experts": [],
+        "wrong_ranks": 0
+      },
+      "exact_arms": 5,
+      "exact_warm_price_pack_B": 5288755200,
+      "graded_submissions": 56,
+      "hits": 13,
+      "jobs": 15,
+      "journal": "cb13ff990afb3164bb61086e57a6caeff14187b66a1784c88e79cd3d521121bd",
+      "mutant": {
+        "active": 19,
+        "matrix_hashes": 54,
+        "parked": 61,
+        "wrong_experts": [
+          63
+        ],
+        "wrong_ranks": 1
+      },
+      "positions": 20,
+      "price_submissions": 60,
+      "site": [
+        2,
+        5,
+        0,
+        2
+      ],
+      "timed_service_records": 294
+    },
+    "P97": {
+      "consumers": 18,
+      "directions": [
+        {
+          "best_single_per_block": [
+            "ONE_63",
+            "ONE_63",
+            "ONE_63",
+            "ONE_63",
+            "ONE_63",
+            "ONE_63",
+            "ONE_63"
+          ],
+          "comparisons": {
+            "COPY_minus_ALL": {
+              "median_ns": 910777,
+              "ns": [
+                1043646,
+                1208286,
+                2882411,
+                735076,
+                910777,
+                909804,
+                891030
+              ],
+              "positive": 7
+            },
+            "DISK_minus_ALL": {
+              "median_ns": 7009015,
+              "ns": [
+                7009015,
+                7621509,
+                6443340,
+                9257010,
+                6435985,
+                8542745,
+                6378367
+              ],
+              "positive": 7
+            },
+            "DISK_minus_COPY": {
+              "median_ns": 5965369,
+              "ns": [
+                5965369,
+                6413223,
+                3560929,
+                8521934,
+                5525208,
+                7632941,
+                5487337
+              ],
+              "positive": 7
+            },
+            "best_ONE_minus_ALL": {
+              "median_ns": -23905,
+              "ns": [
+                -30637,
+                -30397,
+                33834,
+                -23905,
+                33574,
+                -84910,
+                278074
+              ],
+              "positive": 3
+            }
+          },
+          "direction": 0,
+          "medians_ns_or_counts": {
+            "ALL": {
+              "consumer": 121382888,
+              "drain": 121382949,
+              "last": 121371487,
+              "max_dispatch_late": 74906,
+              "reads": 2,
+              "release_to_consumer": 8556,
+              "sets": 6,
+              "wait": 56120132
+            },
+            "COPY": {
+              "consumer": 122386749,
+              "drain": 122386880,
+              "last": 122358656,
+              "max_dispatch_late": 392317,
+              "reads": 2,
+              "release_to_consumer": 30568,
+              "sets": 45,
+              "wait": 57137108
+            },
+            "DISK": {
+              "consumer": 128375432,
+              "drain": 128375653,
+              "last": 128345766,
+              "max_dispatch_late": 100600,
+              "reads": 15,
+              "release_to_consumer": 16521,
+              "sets": 45,
+              "wait": 63124949
+            },
+            "ONE_63": {
+              "consumer": 121392035,
+              "drain": 121392126,
+              "last": 121370585,
+              "max_dispatch_late": 85326,
+              "reads": 2,
+              "release_to_consumer": 12303,
+              "sets": 42,
+              "wait": 56126854
+            }
+          }
+        },
+        {
+          "best_single_per_block": [
+            "ONE_63",
+            "ONE_63",
+            "ONE_63",
+            "ONE_63",
+            "ONE_63",
+            "ONE_63",
+            "ONE_63"
+          ],
+          "comparisons": {
+            "COPY_minus_ALL": {
+              "median_ns": 708014,
+              "ns": [
+                708014,
+                601543,
+                1408734,
+                677706,
+                589300,
+                737088,
+                911597
+              ],
+              "positive": 7
+            },
+            "DISK_minus_ALL": {
+              "median_ns": 6271566,
+              "ns": [
+                6588813,
+                6271566,
+                6211833,
+                6252479,
+                6395179,
+                6485569,
+                6208667
+              ],
+              "positive": 7
+            },
+            "DISK_minus_COPY": {
+              "median_ns": 5670023,
+              "ns": [
+                5880799,
+                5670023,
+                4803099,
+                5574773,
+                5805879,
+                5748481,
+                5297070
+              ],
+              "positive": 7
+            },
+            "best_ONE_minus_ALL": {
+              "median_ns": 11191,
+              "ns": [
+                174939,
+                284937,
+                11191,
+                3125,
+                -80221,
+                38222,
+                3998
+              ],
+              "positive": 6
+            }
+          },
+          "direction": 1,
+          "medians_ns_or_counts": {
+            "ALL": {
+              "consumer": 121398047,
+              "drain": 121398187,
+              "last": 121372378,
+              "max_dispatch_late": 370784,
+              "reads": 2,
+              "release_to_consumer": 25669,
+              "sets": 6,
+              "wait": 56141141
+            },
+            "COPY": {
+              "consumer": 122099509,
+              "drain": 122099559,
+              "last": 122090392,
+              "max_dispatch_late": 86069,
+              "reads": 2,
+              "release_to_consumer": 11351,
+              "sets": 45,
+              "wait": 56835670
+            },
+            "DISK": {
+              "consumer": 127741198,
+              "drain": 127741398,
+              "last": 127724276,
+              "max_dispatch_late": 95159,
+              "reads": 15,
+              "release_to_consumer": 15189,
+              "sets": 45,
+              "wait": 62489192
+            },
+            "ONE_63": {
+              "consumer": 121409238,
+              "drain": 121409369,
+              "last": 121383360,
+              "max_dispatch_late": 248773,
+              "reads": 2,
+              "release_to_consumer": 25819,
+              "sets": 42,
+              "wait": 56160628
+            }
+          }
+        }
+      ],
+      "exact": {
+        "active": 19,
+        "matrix_hashes": 54,
+        "parked": 61,
+        "wrong_experts": [],
+        "wrong_ranks": 0
+      },
+      "exact_arms": 5,
+      "exact_warm_price_pack_B": 5288755200,
+      "graded_submissions": 56,
+      "hits": 13,
+      "jobs": 15,
+      "journal": "05e32c2af753026e471fa61c9dcb43867ca6b9a3001045a2138bc96c422928dc",
+      "mutant": {
+        "active": 19,
+        "matrix_hashes": 54,
+        "parked": 61,
+        "wrong_experts": [
+          63
+        ],
+        "wrong_ranks": 1
+      },
+      "positions": 20,
+      "price_submissions": 60,
+      "site": [
+        2,
+        5,
+        0,
+        2
+      ],
+      "timed_service_records": 294
+    }
+  },
+  "entry_sha256": "5e815f588d0aacb559346eeca693311222c2a61d7683b03ede140db275107598",
+  "evidence": "MEASURED_COMPONENT_LAPTOP",
+  "exact_submissions": 10,
+  "gpu_compute": false,
+  "graded_submissions": 112,
+  "integrated_product_gain_ns": null,
+  "model_forwards": 0,
+  "pack_requested_B": 10577510400,
+  "protocol_sha256": "ce4fa59ff464ae944768747d5ee36d866031df85d049ca3cbe142b3cd90eeb7e",
+  "status": "INCONCLUSIVE_GROUP_EXTENSION",
+  "warmup_submissions": 8
+}
