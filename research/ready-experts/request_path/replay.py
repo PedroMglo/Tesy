@@ -75,11 +75,11 @@ def build(source, native, queue, reverse_ties=False):
         before, after = events[pos - 1], events[pos]
         if before[0] != after[0]:
             continue
-        # The internal begin mutates only its own lane. The claim takes the
-        # manager mutex and a different lane. Neither reads the other's node.
+        # A service start mutates only its own lane. A simultaneous start
+        # or claim on another lane does not read that node.
         require(
             before[1] == "begin"
-            and after[1] == "claim"
+            and after[1] in ("begin", "claim")
             and jobs[before[2]][3] != jobs[after[2]][3]
             and (pos + 1 == len(events) or events[pos + 1][0] > after[0]),
             "unidentified simultaneous dependencies",
