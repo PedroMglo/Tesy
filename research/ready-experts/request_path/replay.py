@@ -46,7 +46,7 @@ class Node:
     job: int
 
 
-def build(source, native, queue):
+def build(source, native, queue, reverse_ties=False):
     jobs = native["jobs"]
     events = []
     for i, (enter, stop) in enumerate(source["calls"]):
@@ -70,10 +70,23 @@ def build(source, native, queue):
         require(kind == 14, "unknown cancellation")
         events.extend(((enqueue, "duplicate", i), (pop, "skip", i)))
     events.sort()
-    require(
-        all(a[0] < b[0] for a, b in zip(events, events[1:], strict=False)),
-        "ambiguous cross-lane timestamps",
-    )
+    ties = 0
+    for pos in range(1, len(events)):
+        before, after = events[pos - 1], events[pos]
+        if before[0] != after[0]:
+            continue
+        # The internal begin mutates only its own lane. The claim takes the
+        # manager mutex and a different lane. Neither reads the other's node.
+        require(
+            before[1] == "begin"
+            and after[1] == "claim"
+            and jobs[before[2]][3] != jobs[after[2]][3]
+            and (pos + 1 == len(events) or events[pos + 1][0] > after[0]),
+            "unidentified simultaneous dependencies",
+        )
+        ties += 1
+        if reverse_ties:
+            events[pos - 1], events[pos] = after, before
     base = events[0][0]
     require(events[0][1:] == ("enter", 0), "unclean entry")
     nodes = [Node(base, (), (), 0, "", -1)]
@@ -105,6 +118,7 @@ def build(source, native, queue):
         "end",
     }
     boundaries, stats = {}, Counter()
+    stats["independent_timestamp_pairs"] = ties
     for stamp, kind, i in events:
         index = len(nodes)
         dependencies, gates = [], []
@@ -262,6 +276,8 @@ def ceiling(measure):
 def grade(source, native, queue, hits):
     jobs = native["jobs"]
     nodes, bounds, conservation = build(source, native, queue)
+    reverse, reverse_bounds, reverse_counts = build(source, native, queue, reverse_ties=True)
+    require(conservation == reverse_counts, "tied event populations")
     terms, mandatory = compulsory(source, jobs, hits)
     cpu = {i for i, j in enumerate(jobs) if j[0][0] < 25}
     all_jobs = set(range(len(jobs)))
@@ -277,6 +293,11 @@ def grade(source, native, queue, hits):
     fixed, relaxed = {}, {}
     for name, (reads, sets) in cases.items():
         fixed[name] = simulate(source, nodes, bounds, reads, sets, control=name == "DISK")
+        require(
+            fixed[name]
+            == simulate(source, reverse, reverse_bounds, reads, sets, control=name == "DISK"),
+            "verdict depends on a tie",
+        )
         relaxed[name] = lower(source, terms, reads, sets)
         require(
             all(
