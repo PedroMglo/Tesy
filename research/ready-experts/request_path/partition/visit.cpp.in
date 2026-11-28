@@ -1,0 +1,119 @@
+// Appended to the authenticated four-lane O_DIRECT reader and marker helpers.
+struct VisitJob {
+    int callback;
+    bool held;
+    Window weight;
+};
+
+int main(int argc, char **argv) {
+    try {
+        check(argc == 3, "usage: reader PACK PLAN");
+        const int fd = open(argv[1], O_RDONLY | O_DIRECT | O_CLOEXEC | O_NOFOLLOW);
+        struct stat st{};
+        check(fd >= 0 && (fcntl(fd, F_GETFL) & O_DIRECT) && fstat(fd, &st) == 0 &&
+              S_ISREG(st.st_mode), "direct source");
+        std::cout << "fd " << st.st_dev << ' ' << st.st_ino << ' ' << st.st_size << ' '
+                  << st.st_mtim.tv_sec * 1000000000LL + st.st_mtim.tv_nsec << ' '
+                  << st.st_ctim.tv_sec * 1000000000LL + st.st_ctim.tv_nsec << std::endl;
+        std::array<std::vector<VisitJob>, 9> visits;
+        std::map<off_t, Window> unique;
+        std::ifstream input(argv[2]);
+        int visit, callback, retain, prior_visit = -1, prior_callback = -1;
+        size_t population = 0, flagged = 0;
+        Window w;
+        while (input >> visit) {
+            check(bool(input >> callback >> retain >> w.offset >> w.expected[0] >>
+                       w.expected[1] >> w.expected[2]), "partial plan");
+            check(visit >= 0 && visit < int(visits.size()) && visit >= prior_visit &&
+                  visit <= prior_visit + 1 && callback >= prior_callback &&
+                  (retain == 0 || retain == 1) && w.offset >= 0 && w.offset % 4096 == 0 &&
+                  w.offset <= st.st_size - off_t(window), "site or source extent");
+            check(unique.try_emplace(w.offset, w).first->second.expected == w.expected, "hash conflict");
+            visits[visit].push_back({callback, bool(retain), w});
+            ++population;
+            flagged += retain;
+            prior_visit = visit;
+            prior_callback = callback;
+        }
+        check(input.eof() && population == 71 && flagged == 11 && prior_visit == 8, "population");
+        {
+            Buffers buffers;
+            std::map<off_t, Marks> expected;
+            {
+                Ring ring;
+                Group chunk;
+                for (const auto &[off, weight] : unique) {
+                    chunk.push_back(weight);
+                    if (chunk.size() < lanes && off != unique.rbegin()->first) continue;
+                    ring.read(fd, chunk, buffers);
+                    buffers.verify(chunk);
+                    for (size_t i = 0; i < chunk.size(); ++i)
+                        expected.emplace(chunk[i].offset, markers(buffers.ptr[i]));
+                    chunk.clear();
+                }
+            }
+            std::cout << "parity " << expected.size() << std::endl;
+            std::array<std::vector<unsigned char>, 3> retained;
+            for (auto &frame : retained) frame.resize(window);
+            PreadWorkers workers(fd, buffers);
+            int arm = 0;
+            for (bool hold : {false, true, true, false}) {
+                ++arm;
+                for (size_t id = 0; id < visits.size(); ++id) {
+                    const auto &jobs = visits[id];
+                    Group seed;
+                    std::map<off_t, size_t> retained_index;
+                    for (const auto &job : jobs) {
+                        if (!job.held) continue;
+                        check(retained_index.emplace(job.weight.offset, seed.size()).second,
+                              "alias within held population");
+                        seed.push_back(job.weight);
+                    }
+                    check(!seed.empty() && seed.size() <= retained.size(), "retained working space");
+                    const auto prepare = Clock::now();
+                    workers.read(seed);
+                    for (size_t i = 0; i < seed.size(); ++i) {
+                        std::memcpy(retained[i].data(), buffers.ptr[i], window);
+                        check(markers(retained[i].data()) == expected.at(seed[i].offset), "initial member");
+                    }
+                    const auto prepare_ns = elapsed(prepare);
+                    const auto start = Clock::now();
+                    size_t nr = 0, served = 0, dispatch = 0;
+                    for (size_t first = 0; first < jobs.size();) {
+                        size_t end = first;
+                        while (end < jobs.size() && end < first + lanes &&
+                               jobs[end].callback == jobs[first].callback) ++end;
+                        Group misses;
+                        for (size_t i = first; i < end; ++i)
+                            if (!hold || !jobs[i].held) misses.push_back(jobs[i].weight);
+                        if (!misses.empty()) {
+                            workers.read(misses);
+                            nr += misses.size();
+                            ++dispatch;
+                        }
+                        size_t lane = 0;
+                        for (size_t i = first; i < end; ++i) {
+                            const auto &job = jobs[i];
+                            const unsigned char *bytes = hold && job.held ?
+                                retained[retained_index.at(job.weight.offset)].data() : buffers.ptr[lane++];
+                            check(markers(bytes) == expected.at(job.weight.offset), "delivered weight");
+                            ++served;
+                        }
+                        check(lane == misses.size(), "active readers");
+                        first = end;
+                    }
+                    const auto wall = elapsed(start);
+                    std::cout << "visit " << arm << ' ' << id << ' ' << seed.size() << ' '
+                              << nr << ' ' << served << ' ' << dispatch << ' ' << prepare_ns
+                              << ' ' << wall << std::endl;
+                }
+            }
+        }
+        check(close(fd) == 0, "close pack");
+        std::cout << "drained" << std::endl;
+        return 0;
+    } catch (const std::exception &e) {
+        std::cerr << e.what() << std::endl;
+        return 1;
+    }
+}
