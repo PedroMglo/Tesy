@@ -1,5 +1,7 @@
 # Começar o cálculo quando cada expert está pronto
 
+**28 de novembro · o serviço atual obteve um ganho físico nos 148 tokens.** Preservar os bytes da primeira leitura obrigatória poupou 234–463 ms contra o controlo contemporâneo com seleção antecipada. A auditoria identificou quanto destes pesos uma política causal realmente forneceria aos mesmos consumidores. [Decisão por arquitetura e por fase](verifier_wait/forecast/retention/eviction/late_owner/README.md)
+
 **28 de novembro · há margem física para um protótipo de entrega de pesos no prefill.** Conservar os registos já presentes ou fornecidos na chamada permitiria passar de 892 para 726 aquisições. Antecipando gratuitamente toda a lista, o NVMe interno demorou 3,211 e 3,235 s nos dois braços. A margem para custo exposto no mais exigente é de 249–272 ms. A qualificação da conversa continua INCONCLUSIVE e a reescrita integral permanece em NO_GO. [Confronto com o caminho do cliente](verifier_wait/forecast/retention/io-result.md)
 
 **28 de novembro · a previsão conjunta pediu 24,778 GB suplementares no decode.** Antes da primeira peça, o NVMe demorou 11,714 e 11,896 s só a ler os registos da política. O controlo por procura leu 10,419 GB em todo o decode em 3,816 e 3,825 s. A regra por ID confirmado identificou 215 faltas, contra nove do controlo de igual emissão. Uma aplicação desse sinal terá de reduzir o serviço exposto com menos leituras erradas. [Comparação física e limites](verifier_wait/forecast/io/README.md)
