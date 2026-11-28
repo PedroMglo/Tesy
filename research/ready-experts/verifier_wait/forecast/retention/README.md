@@ -1,5 +1,7 @@
 # O reuso de aquisições do prefill combina com a previsão por token?
 
+A extensão classificou as 892 aquisições em 726 primeiras faltas ausentes de ambas as fontes, 125 presentes apenas à entrada, 38 fornecidas apenas durante a chamada e três nas duas fontes. Os 125 pesos que um espelho de entrada perfeito preservaria somam 1 652 400 000 B de payload distinto. O melhor primeiro final passaria em P97, com 9,926 s no extremo favorável, e falharia em P106 mesmo no extremo favorável, com 10,005 s. Os extremos conservadores chegam a 10,151 / 10,230 s. **INCONCLUSIVE para o espelho ilimitado.** Uma agenda finita também teria de pagar a captura. [Protocolo da entrada](entry.md) · [Contagens por tier e braços](evidence-entry-20261128-r01/receipt.json) · [Teste físico das 726 aquisições](io-protocol.md)
+
 **NO_GO no nominal.** Depois dos 371 acertos do banco secundário, o prefill ainda exige 892 leituras. Destas, 41 podem receber uma cópia fornecida anteriormente dentro do mesmo retorno externo. Mesmo com futuro conhecido, memória ilimitada, captura gratuita e todo o crédito das adjacências originais, essa oportunidade só retira 94,374 ms em P97 e 88,444 ms em P106. A previsão por ID no decode precisava de 386–713 ms. O primeiro final da combinação mais favorável fica em **10,292–10,625 s**. [Protocolo congelado](protocol.md) · [Testemunhas, todos os braços e orçamentos](evidence-20261128-r01/receipt.json)
 
 | Agenda | Leituras evitadas / 892 | Prefill P97 / P106 | Primeiro final nos dois journals |
