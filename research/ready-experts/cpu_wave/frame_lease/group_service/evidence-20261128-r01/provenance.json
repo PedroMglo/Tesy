@@ -1,0 +1,77 @@
+{
+  "account": "build_s=3.576829 C55_s=60.993995 physical_s=108.057645 physical_peak_B=1047347200 swap_peak_B=0 pack_requested_B=19832832000",
+  "archive_command": "python3 -IB /tmp/tesy-late-owner-20261128-01/archive.py research/qualification-retake/private_archive/verify.py /mnt/sdisk-ssd-ext/Tesy/outputs/native-group-service-20261128-r01 /tmp/tesy-nominal-group-service-20261128-r01/archive.json /var/tmp/tesy-group-service-c55-20261128-r01 /var/tmp/tesy-group-service-build-20261128-r01 /var/tmp/tesy-group-service-run-20261128-r01",
+  "artifacts": {
+    "archive.json": {
+      "sha256": "0fddaa4075989a9844979a8936b9f5cb68d6fb430d93573d6539a2827fbfd8db",
+      "size_B": 262
+    },
+    "build.json": {
+      "sha256": "d5e501bbc55f0398b35d7cbe1fd34df640abd96fa7d2d19229ccef9b4b5cdd07",
+      "size_B": 2567
+    },
+    "decision.json": {
+      "sha256": "7b2cc2a4d79ff223cbe4ce1968eea82f0c62a9bca610cf6d63ac27c82995f9cc",
+      "size_B": 52040
+    },
+    "physical.json": {
+      "sha256": "9deb04a0c2310050e35f72fec25eea9ab72c324971a94686f21c7bdcf8c88f2f",
+      "size_B": 6479
+    },
+    "samples.json.gz": {
+      "sha256": "58046419204dc640c1ec750812628d24905af21e8801125b3708cac99525b03d",
+      "size_B": 94461
+    },
+    "scenarios.json": {
+      "sha256": "ab8cc2eaed4deeedd5c8956d8cb2db428193b072ee1bc9dfd7357e47e1bb9334",
+      "size_B": 23280
+    }
+  },
+  "branch": "research/ready-layer",
+  "budget": {
+    "build_s": 75,
+    "memory_B": 4294967296,
+    "pack_B": 42949672960,
+    "raw_B": 50331648,
+    "stop_B": 3758096384,
+    "swap_B": 0,
+    "wall_s": 360
+  },
+  "build_command": "systemd-run --user --scope --quiet --unit=tesy-group-service-build-20261128-r01 --slice=app.slice -p MemoryHigh=2G -p MemoryMax=2G -p MemorySwapMax=0 -p RuntimeMaxSec=75 /usr/bin/prlimit --core=0:0 -- /usr/bin/python3 -IB research/ready-experts/cpu_wave/frame_lease/group_service/run.py build --commit 2100053534c5060a2ee61154cba45669286d9f65 --backend /mnt/sdisk-ssd-ext/Tesy/repo/c7-native-placement-screen-20260927-1117utc/backends/c269-layer-last-use --new-output-dir /var/tmp/tesy-group-service-build-20261128-r01",
+  "command": "systemd-run --user --scope --quiet --unit=tesy-group-service-run-20261128-r01 --slice=app.slice -p MemoryHigh=4G -p MemoryMax=4G -p MemorySwapMax=0 -p RuntimeMaxSec=360 /usr/bin/prlimit --core=0:0 -- /usr/bin/python3 -IB research/ready-experts/cpu_wave/frame_lease/group_service/run.py physical --commit 2100053534c5060a2ee61154cba45669286d9f65 --backend /mnt/sdisk-ssd-ext/Tesy/repo/c7-native-placement-screen-20260927-1117utc/backends/c269-layer-last-use --build-dir /var/tmp/tesy-group-service-build-20261128-r01 --build-sha256 d5e501bbc55f0398b35d7cbe1fd34df640abd96fa7d2d19229ccef9b4b5cdd07 --manifest /home/pmglo/models/tesy-gpt-oss-120b-nvme/tesy-c291-manifest-20261125-r02 --archive /mnt/sdisk-ssd-ext/Tesy/outputs/qualification-20261124-nvme-01 --c55-receipt /var/tmp/tesy-group-service-c55-20261128-r01/receipt.json --c55-sha256 526a3466763b59c9699f0107d46d1615451f0271daa6037dcaa1800fb7eb00b0 --unit tesy-group-service-run-20261128-r01 --new-output-dir /var/tmp/tesy-group-service-run-20261128-r01",
+  "commit": "2100053534c5060a2ee61154cba45669286d9f65",
+  "controls": "Same observed job releases, four original worker identities and target weight matrices. COPY, every fixed single in decode, original last hit in prefill, ALL and paid DISK. Wrong-frame fault in every exact family. The integrated client was not run.",
+  "identity": "native-group-service-20261128-r01",
+  "immediate_base": "ccfda06299d9725975b63c75f28fece4cc57425e",
+  "inputs": {
+    "P106": "cb13ff990afb3164bb61086e57a6caeff14187b66a1784c88e79cd3d521121bd",
+    "P97": "05e32c2af753026e471fa61c9dcb43867ca6b9a3001045a2138bc96c422928dc",
+    "group_barrier_receipt": "57d3f824e29912dce5d3fdeb8e273775d34c5c8075b798b3d10f03bd88ce2cf5",
+    "model": "582bd40f6886200101f4c4ed9f25f3fe80cc14c86e9e2b37746cd8904a0c622d",
+    "pack": "f17e9fbf6f6aed1ad60ca7da3431c5156a946d2e0bf119722afc1f934cbc6b11"
+  },
+  "main": "293f5b184da9439771cce361cd33fc4068d749f4",
+  "protocol_commit": "4505304b",
+  "remote": "https://github.com/PedroMglo/Tesy.git",
+  "resources": {
+    "HTTP_requests": 0,
+    "energy_J": null,
+    "gpu_compute": false,
+    "model_forwards": 0
+  },
+  "results": {
+    "M3": "PARTIAL",
+    "M4": "NOT_MET",
+    "native": "GO_MEASURED_GROUP_DELIVERY"
+  },
+  "source_sha256": {
+    "cases.py": "af88f6fc36a5349d9a3ee6703ab76cbdebcb289536125f0b7d9c625582fbce64",
+    "grade.py": "5da5f6749143de3ec0c288007dc888a36419952e07e19deef0cfb4787f46a00f",
+    "protocol.md": "83a3bbca27ab306a1dcdb7e4b1d7a4961255a2fc0529e36eee4d8a34b26f0168",
+    "run.py": "74dd2f3fb455b2f628c50993829fd2461ff507832bc504b8f2d0979c060c2666",
+    "service.cpp": "41a568c392343d144c2222d7958c6cdb91de08b541db87a0f06b9ab9c81a8995"
+  },
+  "technical_failures": [],
+  "tree": "a5596ca4186b92d098c00d120c7bc358470f4578",
+  "window_command": "python3 -IB research/qualification-retake/nvme_admission/window.py --nvme-model /home/pmglo/models/gpt-oss-120b-gguf/gpt-oss-120b-MXFP4.gguf --new-output-dir /var/tmp/tesy-group-service-c55-20261128-r01"
+}

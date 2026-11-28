@@ -1,5 +1,7 @@
 # Quando é que adiantar vários experts faz a CPU esperar menos?
 
+A medição física posterior qualificou a entrega do grupo de quatro no decode. Os seis misses no prefill limitaram o efeito incremental dos outros oito hits. [Medições por registo e regime](group_service/README.md)
+
 **GO para testar o serviço em grupo no backend existente.** Só duas das 90 waves com várias promoções ganharam, nos dois registos, tempo adicional ao retirar as cópias de mais de um expert. Uma ocorre na camada 12 do prefill de cinco posições, com dois hits. A outra ocorre na CPU0 do decode, com quatro. Se o hit também dispensar a leitura do NVMe, essa condição verifica-se em 35 waves comuns aos dois registos. O resultado é condicional aos instantes observados de entrada na barreira e de publicação pelos outros produtores. O tempo ganho pelo cliente continua desconhecido. [Critério prospetivo](group-protocol.md) · [Custos dos três cenários e coordenadas dos casos](evidence-groups-20261128-r01/decision.json)
 
 | Cenário antes do primeiro final, soma em ms nas mesmas 90 barreiras | Todos os hits P97 | Melhor hit de cada wave P97 | Todos P106 | Melhor de cada wave P106 |

@@ -1,5 +1,7 @@
 # Reavaliação do Tesy após C320
 
+**28 de novembro · MEDIDO no portátil.** No decode da CPU0, entregar os quatro pesos por referência deixou o consumidor pronto em 0,084–0,087 ms. A cópia demorou 2,309–2,415 ms e a entrega em grupo ganhou os 28 pares contra a melhor escolha individual. No prefill o ganho sobre o último produtor isolado mudou de sinal. GO para integração no serviço atual. O ganho do cliente ainda requer medição. [Oito braços, controlos e recursos](../ready-experts/cpu_wave/frame_lease/group_service/README.md)
+
 ## 28 de novembro · até quando um expert continua a ser lido
 
 **Espera em grupo.** Em apenas duas das 90 waves com vários hits, retirar em conjunto as cópias de vários experts superou nos dois registos a poupança do melhor hit isolado. Na CPU0 do decode, quatro hits deram 0,912 e 1,748 ms de folga local, contra 0,400 e 0,259 ms pelo melhor hit. Com a leitura e a cópia dispensadas, o benefício de grupo aparece nas mesmas 35 waves dos dois registos. O tempo de resposta do candidato continua por medir. [Preços por fase e triagem para teste físico](../ready-experts/cpu_wave/frame_lease/group-result.md)
