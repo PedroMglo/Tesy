@@ -1,5 +1,7 @@
 # Quanto ganhamos ao prever os experts de um token já confirmado?
 
+**Composição com o prefill.** O ensaio físico das 726 aquisições obrigatórias poupa cerca de 660 ms aos dois controlos de leitura. A combinação ideal com o sinal por ID deixa 9,926–10,230 s no cliente. [Decisão e prazo para uma agenda finita](retention/io-result.md)
+
 **Decisão após o ensaio físico.** A combinação testada no NVMe interno perdeu para a procura simples nos dois pares. Pediu 35,197 GB contra 10,419 GB. Só o trabalho de leitura até à primeira peça já demorou 11,714–11,896 s. O sinal do ID confirmado conserva interesse para uma intervenção com menos desperdício. [Medição física por braço](io/README.md)
 
 **NO_GO para as duas regras a 1/2 no turno nominal.** A identificação pelo ID do token tem valor mesmo depois de retirar os experts residentes. Com o banco secundário ativo e orçamentos iguais, o ID anteciparia 215 faltas em 474 pedidos. Uma regra de popularidade geral anteciparia nove. O custo do prefill de 4,104–4,197 s é simulado e o cálculo residente é o medido no 120B. O resultado continua acima dos 10 s até ao primeiro conteúdo. [Protocolo](protocol.md) · [Dois journals, dois W, duas repetições](evidence-20261128-r01/receipt.json)

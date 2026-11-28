@@ -4,6 +4,8 @@
 
 ## 28 de novembro · o custo de antecipar experts no NVMe interno
 
+No prefill, a reconstrução dos proprietários distinguiu 726 aquisições obrigatórias de 892 leituras de referência. No NVMe, os mesmos quatro buffers leram as 726 em 3,211 e 3,235 s, poupando 660 ms em ambos os pares. A projeção com um espelho ideal dá 9,926–10,230 s até ao primeiro conteúdo. GO para medir disponibilidade no consumidor com memória finita, INCONCLUSIVE para a conversa e NO_GO para financiar já uma reescrita integral. [Comparação física e decisão por braço](../ready-experts/verifier_wait/forecast/retention/io-result.md)
+
 No turno nominal, prever pelo ID confirmado antecipou 215 das faltas em 474 emissões, contra nove com popularidade e o mesmo número de emissões. Para combinar esse sinal com as rotas de duas camadas antes, o replay verificou todos os 4 000 002 limiares da regra. Nenhum cumpre o nominal a 4,5 GB/s. No portátil, a combinação selecionada a 8 GB/s gerou 1 874 leituras sem consumidor. As leituras até à primeira peça demoraram 11,714–11,896 s mesmo com todo o passo conhecido à entrada. NO_GO para esta emissão e este transporte. A melhor conversa nominal permanece em 17,689 s e 5,357 tok/s. [Medição e decisão](../ready-experts/verifier_wait/forecast/io/README.md)
 
 ## 28 de novembro · o custo físico com os experts residentes

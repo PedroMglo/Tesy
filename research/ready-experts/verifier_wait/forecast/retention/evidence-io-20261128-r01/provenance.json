@@ -1,0 +1,47 @@
+{
+  "base": "e17aeb3419457eaf7e7ef092d5a3508b47fcd996",
+  "preregistration": "b2187f6e930ddbf2be71ff6c41ac671bd070183f",
+  "execution": "608cf36d50be24c19d67bac28a3e55b5ef433c00",
+  "tree": "c8fdac1377f7ffb274e2ba7ac2b809c905ed8f77",
+  "main": "293f5b184da9439771cce361cd33fc4068d749f4",
+  "commands": {
+    "build": "systemd-run --user --scope --unit=tesy-first-prefill-io-build-20261128-r01 --slice=app.slice -p MemoryHigh=768M -p MemoryMax=768M -p MemorySwapMax=0 -p RuntimeMaxSec=60 /usr/bin/python3 -IB research/ready-experts/verifier_wait/forecast/retention/prefill_io.py build --previous /var/tmp/tesy-ready-reader-build-20261127-r01 --rpm /tmp/tesy-uring-devel-20261127-01/liburing-devel-2.13-2.fc44.x86_64.rpm --new-output-dir /var/tmp/tesy-first-prefill-io-build-20261128-r01",
+    "plan": "env GIT_CONFIG_COUNT=2 GIT_CONFIG_KEY_0=core.preloadIndex GIT_CONFIG_VALUE_0=false GIT_CONFIG_KEY_1=index.threads GIT_CONFIG_VALUE_1=1 /usr/bin/time -f 'wall_s=%e peak_kib=%M' /usr/bin/prlimit --as=805306368 --fsize=16777216 -- /usr/bin/timeout 120 /usr/bin/python3 -IB research/ready-experts/verifier_wait/forecast/retention/prefill_io.py plan --manifest /home/pmglo/models/tesy-gpt-oss-120b-nvme/tesy-c291-manifest-20261125-r02 --new-output-dir /tmp/tesy-confirmed-route-20261128/prefill-io-plan-01",
+    "c55": "/usr/bin/python3 -IB research/qualification-retake/nvme_admission/window.py --nvme-model /home/pmglo/models/gpt-oss-120b-gguf/gpt-oss-120b-MXFP4.gguf --new-output-dir /var/tmp/tesy-first-prefill-io-c55-20261128-r01",
+    "physical": "systemd-run --user --scope --unit=tesy-first-prefill-io-physical-20261128-r01 --slice=app.slice -p MemoryHigh=256M -p MemoryMax=256M -p MemorySwapMax=0 -p TasksMax=64 -p RuntimeMaxSec=150 /usr/bin/env GIT_CONFIG_COUNT=2 GIT_CONFIG_KEY_0=core.preloadIndex GIT_CONFIG_VALUE_0=false GIT_CONFIG_KEY_1=index.threads GIT_CONFIG_VALUE_1=1 /usr/bin/python3 -IB research/ready-experts/verifier_wait/forecast/retention/run_prefill_io.py --build /var/tmp/tesy-first-prefill-io-build-20261128-r01 --build-sha256 6cf597bd9c5a690f607c9f2a29f6361ce55bfcc8355034bf82753da62d95a338 --plan /tmp/tesy-confirmed-route-20261128/prefill-io-plan-01 --plan-sha256 a880e18bafc1067f5583ffffe70ddf6c6aded0c035a57506eca2d707eb2f963d --c55 /var/tmp/tesy-first-prefill-io-c55-20261128-r01 --c55-sha256 a955d7568b585b1769a51d9bd956a1296cf1e215da45620d9cc4c6787696859e --new-output-dir /var/tmp/tesy-first-prefill-io-physical-20261128-r01",
+    "grade": "/usr/bin/time -f 'wall_s=%e peak_kib=%M' /usr/bin/prlimit --as=805306368 --fsize=16777216 -- /usr/bin/timeout 120 /usr/bin/python3 -IB research/ready-experts/verifier_wait/forecast/retention/prefill_io.py grade --observed /var/tmp/tesy-first-prefill-io-physical-20261128-r01/receipt.json --new-output-dir /tmp/tesy-confirmed-route-20261128/prefill-io-grade-01"
+  },
+  "frozen_inputs": [
+    "6cf597bd9c5a690f607c9f2a29f6361ce55bfcc8355034bf82753da62d95a338",
+    "a880e18bafc1067f5583ffffe70ddf6c6aded0c035a57506eca2d707eb2f963d",
+    "a955d7568b585b1769a51d9bd956a1296cf1e215da45620d9cc4c6787696859e"
+  ],
+  "archive_manifest_sha256": "3e024008bbe0ecf58b1f3e4fddd3fd9623f779eb9e1ba971e38ec97cbf3c2891",
+  "output_sha256": {
+    "grade": "4a7e934c700083ee2c275c2af877fdc5c9af391321ef1af00d449ab4333c3d61",
+    "observed": "0a4d8349a729c870c87ad8dbb80a3d7d16ade8bad27c4232f969b99541c5af5a"
+  },
+  "preparation_wall_s_peak_KiB": [
+    0.94,
+    74796
+  ],
+  "grade_wall_s_peak_KiB": [
+    0.81,
+    43832
+  ],
+  "physical": {
+    "time_s": 22.512835522000387,
+    "parity_s": 8.250552319,
+    "requested_B": 53998190592,
+    "device_read_sectors_512B": 105468296,
+    "peak_memory_B": 119394304,
+    "swap_B": 0,
+    "sample_count": 28,
+    "gpu_idle_J_estimated": 68.977,
+    "system_energy_J": null,
+    "energy_method": "trapezoidal integral of sampled GPU power during the reader only",
+    "new_model_forwards": 0,
+    "new_downloads": 0
+  },
+  "note": "Measured command lines retain the original exclusive destinations. Use new names and bind the new digests for an independent campaign."
+}
