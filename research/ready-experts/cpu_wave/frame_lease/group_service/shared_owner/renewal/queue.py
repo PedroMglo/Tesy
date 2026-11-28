@@ -3,6 +3,7 @@
 import argparse
 import gzip
 import json
+from collections import deque
 from pathlib import Path
 from runpy import run_path
 
@@ -29,14 +30,30 @@ def queues(archive, service):
             cut, count = prefix["metadata"](file, True)
             rows = prefix["iter_rows"](file, cut, count - cut)
         need(sha(file) == E[tag], "PFJ changed")
-        accepted = [([r.layer, r.slot, r.gen, r.expert], r.ns) for r in rows if r.kind == 12]
         jobs = records["jobs"]
-        need(
-            [k for k, _ in accepted] == [j[0] for j in jobs]
-            and all(j[2] <= t <= j[4] for j, (_, t) in zip(jobs, accepted, strict=True)),
-            "native FIFO bindings",
-        )
-        sample[tag] = [t for _, t in accepted]
+        index = {tuple(j[0]): i for i, j in enumerate(jobs)}
+        fifo, useful, skipped = deque(), [], []
+        for r in rows:
+            if r.kind not in (12, 13, 14, 28):
+                continue
+            i = index[(r.layer, r.slot, r.gen, r.expert)]
+            if r.kind == 12:
+                fifo.append((i, r.ns))
+                continue
+            entry, enq = fifo.popleft()
+            need(entry == i and enq <= r.ns, "dequeue without matching FIFO entry")
+            if r.kind == 13:
+                need(
+                    i == len(useful)
+                    and (r.worker, r.ns) == (jobs[i][3], jobs[i][4])
+                    and jobs[i][2] <= enq,
+                    "served enqueue, generation or dispatch",
+                )
+                useful.append(enq)
+            else:
+                skipped.append([i, r.kind, r.worker, enq, r.ns])
+        need(not fifo and len(useful) == len(jobs), "undrained queues")
+        sample[tag] = dict(useful=useful, skipped=skipped)
     return sample
 
 
@@ -70,7 +87,8 @@ def replay(state, direct, hits, fixed, penalty=0, exempt=-1):
     return result, rows
 
 
-def account(jobs, times, scenario, bounds):
+def account(jobs, queue, scenario, bounds):
+    times = queue["useful"]
     ids = [j["index"] for j in scenario["jobs"]]
     zero = jobs[ids[0]][2]
     order = sorted(range(len(jobs)), key=lambda i: jobs[i][4])
@@ -80,11 +98,21 @@ def account(jobs, times, scenario, bounds):
         "preceding FIFO cohort",
     )
     issued = order[:offset]
-    prior = max(jobs[i][4] for i in issued) - zero
+    first, last_claim = jobs[ids[0]][4], jobs[ids[-1]][4]
+    skipped = queue["skipped"]
+    need(
+        all(kind == 14 and 0 <= w < 4 and enq <= pop for _, kind, w, enq, pop in skipped)
+        and not any(first <= r[-1] <= last_claim for r in skipped),
+        "additional FIFO work overlaps the cohort",
+    )
+    previous_skips = [r for r in skipped if r[-1] < first]
+    prior = max([jobs[i][4] for i in issued] + [r[-1] for r in previous_skips]) - zero
     anchors = [
         max((i for i in issued if jobs[i][3] == w), key=lambda i: jobs[i][-1]) for w in range(4)
     ]
     carry = [jobs[i][-1] - zero for i in anchors]
+    for _, _kind, worker, _enq, pop in previous_skips:
+        carry[worker] = max(carry[worker], pop - zero)
     active = [i for i in issued if jobs[i][4] <= zero < jobs[i][-1]]
     queued = [i for i in issued if times[i] <= zero < jobs[i][4]]
     need(
@@ -129,6 +157,9 @@ def account(jobs, times, scenario, bounds):
         "unidentified last publisher",
     )
     state = dict(
+        skipped_at_cut=sum(enq <= zero < pop for _, _, _, enq, pop in previous_skips),
+        earlier_skip_after_cut=sum(pop > zero for *_, pop in previous_skips),
+        total_duplicate_skips=len(skipped),
         earlier_active=active,
         earlier_queued=queued,
         anchor_indices=anchors,
@@ -200,7 +231,8 @@ def grade(times, service):
     result = {}
     for tag, native in service.items():
         need(
-            len(times[tag]) == len(native["jobs"]) == 2354 and times[tag] == sorted(times[tag]),
+            len(times[tag]["useful"]) == len(native["jobs"]) == 2354
+            and times[tag]["useful"] == sorted(times[tag]["useful"]),
             "incomplete enqueue journal",
         )
         barriers = {tuple(s): (b, e, last) for s, b, e, last in native["last"]}
