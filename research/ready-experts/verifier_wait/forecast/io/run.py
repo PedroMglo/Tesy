@@ -26,6 +26,7 @@ def run(
     source=HERE / "protocol.md",
     parse=G["parse"],
     maximum_bytes=126427693056,
+    requested_records=None,
 ):
     old = run_path(M["R"] / "physical.py")
     sys.path.insert(0, str(old["PAIR"]))
@@ -138,7 +139,13 @@ def run(
     sample()
     need(code == 0, "native reader: " + (a.new_output_dir / "stderr").read_text()[:200])
     timing = parse((a.new_output_dir / "stdout").read_text().splitlines(), plan)
-    count = (2 * sum(map(sum, plan["counts"])) + timing["parity_records"]) * G["P"]["SIZE"]
+    records = (
+        2 * sum(map(sum, plan["counts"])) + timing["parity_records"]
+        if requested_records is None
+        else requested_records(timing, plan)
+    )
+    need(isinstance(records, int) and records > 0, "requested record count")
+    count = records * G["P"]["SIZE"]
     disk_delta = {k: v - before[k] for k, v in after.items()}
     need(
         count <= maximum_bytes and disk_delta["read_sectors_512B"] * 512 >= count,
