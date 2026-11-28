@@ -39,8 +39,9 @@ def workload():
     return spans, population
 
 
-def plan(a):
-    _, chosen = workload()
+def plan(a, chosen=None):
+    if chosen is None:
+        _, chosen = workload()
     manifest = verified(a.manifest / "receipt.json", M["PREP"]["MANIFEST"])
     index = verified(a.manifest / "integral-index.json", manifest["index_sha256"])
     experts = {(e["layer"], e["expert"]): e for e in index["experts"]}
@@ -121,7 +122,7 @@ def parse(lines, spec):
     )
 
 
-def physical(a, receipt):
+def physical(a, receipt, *, method=METHOD, protocol_file=HERE / "transport-protocol.md"):
     window = verified(a.c55 / "receipt.json", a.c55_sha256)
     need(window["model_device"].split("[")[0] == "/dev/nvme0n1p3", "target NVMe ancestry")
     device = Path("/sys/class/nvme/nvme0")
@@ -150,8 +151,8 @@ def physical(a, receipt):
     LEGACY["run"](
         a,
         receipt,
-        protocol=METHOD,
-        source=HERE / "transport-protocol.md",
+        protocol=method,
+        source=protocol_file,
         parse=parse,
         maximum_bytes=120 << 30,
         requested_records=lambda t, _p: 4 * 1519 + t["parity_records"],

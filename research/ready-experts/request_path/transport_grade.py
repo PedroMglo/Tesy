@@ -72,8 +72,7 @@ def phase_overlap(obs, wall):
     )
 
 
-def evaluate(data):
-    spans, chosen = T["workload"]()
+def verify_reads(data, chosen):
     groups = Counter(i for _, i, _, _, _ in chosen)
     phases = Counter(p for p, _, _, _, _ in chosen)
     spec = data["plan"]
@@ -97,6 +96,12 @@ def evaluate(data):
         and facts["pcie"]["current_link_speed"] == "16.0 GT/s PCIe",
         "device, scope or byte receipt",
     )
+    return groups, phases, unique, proof
+
+
+def evaluate(data):
+    spans, chosen = T["workload"]()
+    groups, phases, unique, proof = verify_reads(data, chosen)
     arms = []
     for a, rows in enumerate(proof["arms"], 1):
         early = a in (2, 3)
@@ -147,7 +152,7 @@ def evaluate(data):
     )
 
 
-def main():
+def main(assess=evaluate, extra_fields=()):
     cli = argparse.ArgumentParser(description=__doc__)
     mode = cli.add_mutually_exclusive_group(required=True)
     mode.add_argument("--check", type=Path)
@@ -173,7 +178,10 @@ def main():
             data = dict(
                 physical={k: v for k, v in receipt.items() if k != "timing"},
                 stdout=(a.physical / "stdout").read_text(),
-                plan={k: plan[k] for k in ("pack_stat", "counts", "phases", "unique", "windows")},
+                plan={
+                    k: plan[k]
+                    for k in ("pack_stat", "counts", "phases", "unique", "windows", *extra_fields)
+                },
                 physical_sha256=sha(a.physical / "receipt.json"),
             )
             need(
@@ -182,7 +190,7 @@ def main():
             )
         else:
             data = json.loads(gzip.decompress((a.check / "reads.json.gz").read_bytes()))
-        result = evaluate(data)
+        result = assess(data)
         if a.new_output_dir:
             with (a.new_output_dir / "reads.json.gz").open("xb") as f:
                 f.write(compress(data))
@@ -190,11 +198,7 @@ def main():
             (a.new_output_dir / ".pending").rename(a.new_output_dir / "decision.json")
         else:
             need(result == read(a.check / "decision.json"), "different public result")
-        print(
-            result["callback"],
-            result["early"],
-            {t: v["min_B_per_s"] for t, v in result["bandwidth"].items()},
-        )
+        print(result.get("callback", result.get("layer")), result["early"])
     except Exception as exc:
         if a.new_output_dir:
             T["save"](
