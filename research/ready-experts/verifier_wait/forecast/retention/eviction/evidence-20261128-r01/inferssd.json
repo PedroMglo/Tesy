@@ -1,0 +1,44 @@
+{
+  "cutoff": "2026-11-28T04:20:00Z",
+  "repository": "https://github.com/wici-ai/inferssd",
+  "commit": "26410f525844569fad0fcb7ef4883fa202957a0e",
+  "published_release": "261127.393",
+  "release_utc": "2026-11-27T16:18:57Z",
+  "architecture_enum": "LLM_ARCH_OPENAI_MOE",
+  "gate": "LLM_FFN_SWIGLU_OAI_MOE",
+  "required_expert_bias": [
+    "up",
+    "gate",
+    "down"
+  ],
+  "cpu_sink_prefill": "STATIC_NO_GO",
+  "cpu_sink_decode": "STATIC_NO_GO",
+  "gpu_only": "NOT_RUN",
+  "model_forwards": 0,
+  "source_blobs": {
+    "engine/src/ssd/model-adapter.cpp": {
+      "git_oid": "1a71f45b7a70a6934831f49ed6698b2b460ac3f9",
+      "bytes": 4306
+    },
+    "engine/src/ssd/model-adapter.h": {
+      "git_oid": "742c5b61681ac7427ea2d5573022465b4f8fec5e",
+      "bytes": 2941
+    },
+    "engine/src/models/openai-moe-iswa.cpp": {
+      "git_oid": "50992b8d5060879bd6ac92ba290aea0cd46edfc5",
+      "bytes": 3606
+    },
+    "engine/src/llama-graph.cpp": {
+      "git_oid": "d609b64882ca740f941e3e0ac222e14ec04f552c",
+      "bytes": 135725
+    },
+    "engine/src/llama-arch.cpp": {
+      "git_oid": "0256f5f945a85b5c7b0a4f7f3ad5a98364693287",
+      "bytes": 80003
+    },
+    "engine/tests/ssd/test-model-adapter.cpp": {
+      "git_oid": "e7494cd2121622611ff7753e6e177be7e1714f6e",
+      "bytes": 17823
+    }
+  }
+}

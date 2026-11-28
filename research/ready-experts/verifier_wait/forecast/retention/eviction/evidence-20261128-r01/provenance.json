@@ -1,0 +1,272 @@
+{
+  "artifacts": {
+    "archive.json": "108f70f18d39309e956ea0e7eebe915d92eccaab4b5f970b4ddaf0a7d0128826",
+    "bound.json": "8f4806851f5e2ccdc087b6c6b2b8b220b22e80c80861c84e2b6a64858b9dddf1",
+    "consumer-grade.json": "1cc9714e9bb32d22d9488bf5b4d294ae240520c25feffff40618e0ce1b93d1a8",
+    "finite.json": "807015e2a44d35068b7676308a19ca19b8f050f3a335acdd210f2a7215f4fa87",
+    "inferssd.json": "9a73155b99aa3a1a0aa5801408c1d1b586b1b7b537176dac735118caa86efe41",
+    "publications.json": "094357dd83bfc767cd7f1350e03b5c3ed5d47ddeac03e736fc086d4b3ce1d1ac",
+    "release-grade.json": "6a16a3058c2b600533c899dfaee719de565847351861305f42784725300511cb",
+    "release.json": "89d4f803d6173ace2427d6f38db9ad917f7b5df7e46d818fe31198f2323fcd47",
+    "scores.json.gz": "61b1edec8b50771556313fd747cb144619f86d0ec9be9833363b50695ad296d9"
+  },
+  "basis": {
+    "bound_and_publications": {
+      "commit": "458aa521a29ad32b9299532caf0f0936fa013176",
+      "tree": "cad7fdb4dd96ee360751a35f4de03a2ee583db0a"
+    },
+    "consumer_build": {
+      "commit": "fc52c854bff3a8da5538b78a91fbcd0e7b9f453e",
+      "tree": "183bdf183f1decf4eac70f34005909c918ebae30"
+    },
+    "consumer_execution": {
+      "commit": "b12d9a82ef2f254714dd070bc5e095f61d6e724a",
+      "tree": "b454b5fa1962ddfba7dec9c21d726b4e99f1dd1e"
+    },
+    "consumer_protocol": {
+      "commit": "466a51333d3987e1e5efe45a0202405d67cffd56",
+      "tree": "49444ce2537259e33ed87b3769b2b9486d10c220"
+    },
+    "finite_execution": {
+      "commit": "29f4bc97db3d104c396386b508270b739c928b38",
+      "tree": "2d5cec3bc1c2728800dc42502abd04167855c4ff"
+    },
+    "reader_execution": {
+      "commit": "d67403c5eb98ddc8f0cae389244cbc758667fdb0",
+      "tree": "359c735408a02a8cc4045539e150e24e605f7380"
+    },
+    "release_protocol": {
+      "commit": "c00105e8099f9c4bd4aedec065472fb08de67616",
+      "tree": "9462dff30359d86f678ed0a21656b6ac1903686e"
+    },
+    "starting": {
+      "commit": "28aafdfe7adb463ec20a7175d8e05f034e6ddd86",
+      "tree": "b4617eacaf14c9341fc5400e504993e73027fc09"
+    }
+  },
+  "bounded_wall_s_peak_KiB": {
+    "bound": [
+      2.71,
+      49144
+    ],
+    "finite": [
+      1.15,
+      49892
+    ],
+    "publications": [
+      1.86,
+      71104
+    ],
+    "release_grade": [
+      0.8,
+      43844
+    ],
+    "release_plan": [
+      0.95,
+      72500
+    ],
+    "scores": [
+      0.85,
+      54004
+    ]
+  },
+  "commands": {
+    "bound": "env GIT_CONFIG_COUNT=2 GIT_CONFIG_KEY_0=core.preloadIndex GIT_CONFIG_VALUE_0=false GIT_CONFIG_KEY_1=index.threads GIT_CONFIG_VALUE_1=1 /usr/bin/time -f 'wall_s=%e peak_kib=%M' /usr/bin/prlimit --as=805306368 --fsize=16777216 -- /usr/bin/timeout 120 /usr/bin/python3 -IB research/ready-experts/verifier_wait/forecast/retention/eviction/bound.py --finite /tmp/tesy-eviction-20261128-01/finite-01/receipt.json --new-output-dir /tmp/tesy-eviction-20261128-01/bound-01",
+    "build": "systemd-run --user --scope --unit=tesy-route-release-build-20261128-r01 --slice=app.slice -p MemoryHigh=768M -p MemoryMax=768M -p MemorySwapMax=0 -p RuntimeMaxSec=60 /usr/bin/python3 -IB research/ready-experts/verifier_wait/forecast/retention/eviction/release.py build --previous /var/tmp/tesy-ready-reader-build-20261127-r01 --rpm /tmp/tesy-uring-devel-20261127-01/liburing-devel-2.13-2.fc44.x86_64.rpm --new-output-dir /var/tmp/tesy-route-release-build-20261128-r01",
+    "c55": "/usr/bin/python3 -IB research/qualification-retake/nvme_admission/window.py --nvme-model /home/pmglo/models/gpt-oss-120b-gguf/gpt-oss-120b-MXFP4.gguf --new-output-dir /var/tmp/tesy-route-release-c55-20261128-r01",
+    "capture": "env GIT_CONFIG_COUNT=2 GIT_CONFIG_KEY_0=core.preloadIndex GIT_CONFIG_VALUE_0=false GIT_CONFIG_KEY_1=index.threads GIT_CONFIG_VALUE_1=1 /usr/bin/time -f 'wall_s=%e peak_kib=%M' /usr/bin/prlimit --as=805306368 --fsize=16777216 -- /usr/bin/timeout 120 /usr/bin/python3 -IB research/ready-experts/verifier_wait/forecast/retention/eviction/retention.py capture --model /mnt/sdisk-ssd-ext/Tesy/outputs/ready-confirmed-route-20261128-01/part-01/train-01/model.json.gz --work /var/tmp/tesy-verifier-wait-build-20261128-r02/work.json --new-output-dir /tmp/tesy-eviction-20261128-01/scores-01",
+    "consumer": "/usr/bin/python3 -IB research/ready-experts/verifier_wait/forecast/retention/eviction/consumer_run.py run --previous /var/tmp/tesy-verifier-wait-20261128-r01 --images /var/tmp/tesy-entry-consumer-build-20261128-r01 --images-sha256 dd2067917d32c970d645fee0f622f194e2a0fce422032d0b6de541fca62ff1b1 --window /var/tmp/tesy-entry-consumer-c55-20261128-r01 --window-sha256 05d776a07025e7bb3e90279bd6e09c99968c40b50c9c3e8d839fa574fdc671e7 --commit b12d9a82ef2f254714dd070bc5e095f61d6e724a --new-output-dir /var/tmp/tesy-entry-consumer-20261128-r01",
+    "consumer_build": "systemd-run --user --scope --unit=tesy-entry-consumer-build-20261128-r01 --slice=app.slice -p MemoryHigh=3G -p MemoryMax=3G -p MemorySwapMax=0 -p RuntimeMaxSec=170 /usr/bin/python3 -IB research/ready-experts/verifier_wait/forecast/retention/eviction/consumer_build.py --parent /var/tmp/tesy-verifier-wait-build-20261128-r02 --manifest /home/pmglo/models/tesy-gpt-oss-120b-nvme/tesy-c291-manifest-20261125-r02 --new-output-dir /var/tmp/tesy-entry-consumer-build-20261128-r01",
+    "consumer_c55": "/usr/bin/python3 -IB research/qualification-retake/nvme_admission/window.py --nvme-model /home/pmglo/models/gpt-oss-120b-gguf/gpt-oss-120b-MXFP4.gguf --new-output-dir /var/tmp/tesy-entry-consumer-c55-20261128-r01",
+    "finite": "env GIT_CONFIG_COUNT=2 GIT_CONFIG_KEY_0=core.preloadIndex GIT_CONFIG_VALUE_0=false GIT_CONFIG_KEY_1=index.threads GIT_CONFIG_VALUE_1=1 /usr/bin/time -f 'wall_s=%e peak_kib=%M' /usr/bin/prlimit --as=805306368 --fsize=16777216 -- /usr/bin/timeout 120 /usr/bin/python3 -IB research/ready-experts/verifier_wait/forecast/retention/eviction/retention.py grade --scores /tmp/tesy-eviction-20261128-01/scores-01/scores.json.gz --new-output-dir /tmp/tesy-eviction-20261128-01/finite-01",
+    "grade": "env GIT_CONFIG_COUNT=2 GIT_CONFIG_KEY_0=core.preloadIndex GIT_CONFIG_VALUE_0=false GIT_CONFIG_KEY_1=index.threads GIT_CONFIG_VALUE_1=1 /usr/bin/time -f 'wall_s=%e peak_kib=%M' /usr/bin/prlimit --as=805306368 --fsize=16777216 -- /usr/bin/timeout 120 /usr/bin/python3 -IB research/ready-experts/verifier_wait/forecast/retention/eviction/release.py grade --observed /var/tmp/tesy-route-release-physical-20261128-r01/receipt.json --new-output-dir /tmp/tesy-eviction-20261128-01/grade-01",
+    "physical": "systemd-run --user --scope --unit=tesy-route-release-physical-20261128-r01 --slice=app.slice -p MemoryHigh=256M -p MemoryMax=256M -p MemorySwapMax=0 -p TasksMax=64 -p RuntimeMaxSec=150 /usr/bin/env GIT_CONFIG_COUNT=2 GIT_CONFIG_KEY_0=core.preloadIndex GIT_CONFIG_VALUE_0=false GIT_CONFIG_KEY_1=index.threads GIT_CONFIG_VALUE_1=1 /usr/bin/python3 -IB research/ready-experts/verifier_wait/forecast/retention/eviction/physical.py --build /var/tmp/tesy-route-release-build-20261128-r01 --build-sha256 f39151f485d325054eee4fad0afae1503112da0dd4b7248b8d64b06fd39e5e45 --plan /tmp/tesy-eviction-20261128-01/plan-01 --plan-sha256 c99f742b00a7d182b9d27b2d9c57fabd01761b2711ef2c544249d02e8011f7b8 --c55 /var/tmp/tesy-route-release-c55-20261128-r01 --c55-sha256 45911da294bd23f1aa3d748c52a48106a80299d62eaf6f9c2d4837a5222476b9 --new-output-dir /var/tmp/tesy-route-release-physical-20261128-r01",
+    "plan": "env GIT_CONFIG_COUNT=2 GIT_CONFIG_KEY_0=core.preloadIndex GIT_CONFIG_VALUE_0=false GIT_CONFIG_KEY_1=index.threads GIT_CONFIG_VALUE_1=1 /usr/bin/time -f 'wall_s=%e peak_kib=%M' /usr/bin/prlimit --as=805306368 --fsize=16777216 -- /usr/bin/timeout 120 /usr/bin/python3 -IB research/ready-experts/verifier_wait/forecast/retention/eviction/release.py plan --manifest /home/pmglo/models/tesy-gpt-oss-120b-nvme/tesy-c291-manifest-20261125-r02 --reference /mnt/sdisk-ssd-ext/Tesy/outputs/ready-first-prefill-20261128-01/part-01/prefill-io-plan-01 --new-output-dir /tmp/tesy-eviction-20261128-01/plan-01",
+    "tails": "env GIT_CONFIG_COUNT=2 GIT_CONFIG_KEY_0=core.preloadIndex GIT_CONFIG_VALUE_0=false GIT_CONFIG_KEY_1=index.threads GIT_CONFIG_VALUE_1=1 /usr/bin/time -f 'wall_s=%e peak_kib=%M' /usr/bin/prlimit --as=805306368 --fsize=16777216 -- /usr/bin/timeout 120 /usr/bin/python3 -IB research/ready-experts/verifier_wait/forecast/retention/eviction/publications.py --archive /mnt/sdisk-ssd-ext/Tesy/outputs/qualification-20261124-nvme-01 --build /var/tmp/tesy-entry-consumer-build-20261128-r01 --new-output-dir /tmp/tesy-eviction-20261128-01/publications-01"
+  },
+  "earlier_reproductions": {
+    "C317_files": {
+      "c317-code153-2-trace.native/events.tsv": {
+        "sha256": "8bdd96f879cda7fad466dc252ae9915e7b05233b95fd91539b6b4bd4400d27a1",
+        "size_bytes": 2647793
+      },
+      "c317-code153-2-trace.native/staging.json": {
+        "sha256": "38b46e7d48336bd10577d80a1fcf48cc35e5f084c13380dadf0a69f73657ac86",
+        "size_bytes": 1225649
+      },
+      "c317-code153-3-trace.native/events.tsv": {
+        "sha256": "70c9c37864e25201711d23cc60a7d0b1afeba21f254a410e785b24e901e00b07",
+        "size_bytes": 2648115
+      },
+      "c317-code153-3-trace.native/staging.json": {
+        "sha256": "ea0e449455a6cd2d957ba42665c8d30bb0ea14679d1d8c1ee881cc901207b59b",
+        "size_bytes": 1222640
+      },
+      "c317-nominal153-2-trace.native/events.tsv": {
+        "sha256": "c6cf2327a8bd7ec2c7755979e594b33b72a5547826a2d2b057326be66039838e",
+        "size_bytes": 1783273
+      },
+      "c317-nominal153-2-trace.native/staging.json": {
+        "sha256": "e93fceb6a61b1a710951252eb05b467d310055414fc24e73dc9816aa4c94eff2",
+        "size_bytes": 963169
+      },
+      "c317-nominal153-3-trace.native/events.tsv": {
+        "sha256": "05c830ebb865c5f0740717ff5935e5bf3c15fcbb0cdad26825ca56ca8432d7be",
+        "size_bytes": 1784362
+      },
+      "c317-nominal153-3-trace.native/staging.json": {
+        "sha256": "b2d5e3bbeeee0a776380e4433fcded264f7f5e6ec3c427102a3f40e8d3589a3d",
+        "size_bytes": 961025
+      }
+    },
+    "C317_raw_sha256": "8f11855e688e6222618f64c04f76001041ef24402bd7da04e7a32e210ad0befd",
+    "compact_sha256": "01943df1f93985cf9ee754ac06348bda51f6d700fc4fbbc1cf032b4841bfe992",
+    "consolidation_heads": 45,
+    "historical_file_versions": 7533
+  },
+  "estimated_gpu_j": 10992.596639999998,
+  "expected_calls": 1212,
+  "expected_hits": 75,
+  "immediate_stack_base": "ccfda06299d9725975b63c75f28fece4cc57425e",
+  "lineage": {
+    "GGUF_backend_commit": "c89c88b342054223e3f27a17fbfd0954803147ac",
+    "GGUF_backend_tree": "3962daa588dfa89971c60c95ce4c5054bc27fd3f",
+    "baseline": "c6fbe71166759899b2f4535d34814d045183993f51e1cdb5010124b1e5a5c589",
+    "c55": "05d776a07025e7bb3e90279bd6e09c99968c40b50c9c3e8d839fa574fdc671e7",
+    "compiler": "cef5002fbce633104c81b24e9fd935251ab653234c8dce8758d3c963d6123c8a",
+    "consumer_protocol": "61e7c965e104a6ed974c3a1e91c201435c42df62f4f51c901ebba38c23842228",
+    "entry_ids_i32le": {
+      "first": "202698125db628161029f02774d9bf781614a9f551d2234cc07fa0a426f7c502",
+      "t1": "0946e5070c4bfcc945d584e0778e33fb544a46bc313201bfc26a5f72f547f7a0",
+      "t2": "cf7e9b19362c5aeaf5e54e2185048acac09ec55459fb4a6fc262ec434f037425",
+      "target": "4a8a47b3ec0a64220e9734237eae9fd7b886ce35ed81964408eacdc4034931f9"
+    },
+    "execution": "40d0ff01f49787444b27bd110d95b128425f60bdeba4ba8b763769c57b51bb4d",
+    "generated_cpp": "f5ecdcf8e6060442f6f116bcd185c036996b4af1cda0f6d66726ce9f49e0dff7",
+    "images": "dd2067917d32c970d645fee0f622f194e2a0fce422032d0b6de541fca62ff1b1",
+    "index": "63b7a76c7063e51944ee8a6296aea43109a336330b3657ffa357cddb44b59813",
+    "libllama_and_providers": {
+      "ld-linux-x86-64.so.2": "4e5d39355699e90fa29313d3100e82af4a23290028c58c364d6a249ef6a78e5e",
+      "libc.so.6": "a5c5ad9d59d3c69eda93aa8f82930ba06cc4e893a113e66c85ad6e96243d53c8",
+      "libcublas.so.13.6.0.2": "01dd70979e68625846e9a5edcba531d3798498b866aa1c925cc25d60f63fe680",
+      "libcublasLt.so.13.6.0.2": "93c275af70b6d39fbd9b78cbc925ad9a9a0a81189aaec1521a951119ebe72da3",
+      "libcuda.so.620.73.04": "33d4cbb6bc86ccc76c1e60af3b83c316ea49d7cb311efa79efc8ade96114cd8e",
+      "libcudart.so.13.3.29": "9f92e4c3f7e14d0fed69ef876a45d4255a2dc88cb552a673a90ce881c26282fe",
+      "libdl.so.2": "54d56c0f10466a05cc92685f8062ee6a2eaf59c62fb6f724217e984fcfbb5031",
+      "libgcc_s-16-20261029.so.1": "5a52ae4a6f1b119aa092aa1483c967e19d9ba036b1b0c2133236a8a2ce826ebf",
+      "libggml-base.so.0.15.3": "6e27d9ecb86e4747177189d2d2f6390280a2ee1000221ad68a0404023ea72539",
+      "libggml-cpu.so.0.15.3": "31f5c0ab3584a0c263091f1e5e45e5340cf63f5b853cc08e2ead6b01011ee41f",
+      "libggml-cuda.so.0.15.3": "ff43655b15df5f3de1d5e00b0da18469a14f118bd644eb4b6d7f1915c85a4493",
+      "libggml.so.0.15.3": "70f635b8ba22ddd751590ec1fe11c895ef88e2aff0f4a63a3af96314e6a77d65",
+      "libgomp.so.1.0.0": "1e20cd85608bdb5d1662f07988adad28a6473cd70f80de2d2b4dcf82c94eaa74",
+      "libllama.so.0.0.9884": "45f509221f21188cd9d2b7808b08e47a7405e3c66ed82a68402bbad0f4af6b43",
+      "libm.so.6": "16a03ce6d24c8a46742206d4a9c1d35bb6577ae2384f153dc6ef4a4b62b5357f",
+      "libpthread.so.0": "41cad1a2bda56ff226e0b08db7edfaf4ec47d876ab1414a979fd157467b6c39d",
+      "librt.so.1": "3a23e51370381b0ab993932341fd69643ade24869936e471e1dde2e62398d9f7",
+      "libstdc++.so.6.0.36": "49811507d8fc0283d8f8023546613774c673f876fe823b1b99d0c8d46039deda"
+    },
+    "mode_executable_work_hashes": {
+      "H": {
+        "code-cut": "63b04e54dfb3d7bd07f35287a24c894b3c2c70ebf621151abd6c921d00447e61",
+        "work.json": "54bb9746e3aa8b8dbf77b101204c5cef4bdd8b29ef7327fc0e0e95a3b1d0fd0d"
+      },
+      "O": {
+        "code-cut": "63b04e54dfb3d7bd07f35287a24c894b3c2c70ebf621151abd6c921d00447e61",
+        "work.json": "4348c40f777ccf01208f969b08a032194b25ef01e6bd02f0d166e24144ee478f"
+      },
+      "R": {
+        "code-cut": "63b04e54dfb3d7bd07f35287a24c894b3c2c70ebf621151abd6c921d00447e61",
+        "work.json": "79cc69d2448bda940a4428f6e315cb419bb237d6be7493208fd99546faea9f7c"
+      },
+      "V": {
+        "code-cut": "63b04e54dfb3d7bd07f35287a24c894b3c2c70ebf621151abd6c921d00447e61",
+        "work.json": "c18cebf98b0e2ddc60517c5a9f156523733897dac57432d55cc171e227c873c9"
+      }
+    },
+    "model": "582bd40f6886200101f4c4ed9f25f3fe80cc14c86e9e2b37746cd8904a0c622d",
+    "numerical_supervisor_resource_protocol": "f3e267c9a45536f39f3cfa97c6341cef5cc07c3567a88c4dec5b159c58d22ddc",
+    "pack": "f17e9fbf6f6aed1ad60ca7da3431c5156a946d2e0bf119722afc1f934cbc6b11",
+    "parent_executable": "ef82a43dfb9b72d48a5693991d63c4fa19c0fc9a9d52c7da5d0a9fe7c05e0764",
+    "private_input": "36e75d97017211eeffebb8877e0da0dc4ee15977fb7600cc1f141053c0caae9c"
+  },
+  "main": "293f5b184da9439771cce361cd33fc4068d749f4",
+  "max_across_scopes": {
+    "buffered_model_fds": 0,
+    "cgroup_file_bytes": 1491533824,
+    "cgroup_memory_bytes": 16728764416,
+    "cgroup_peak_bytes": 16751722496,
+    "cpu_tctl_c": 95.375,
+    "direct_model_fds": 2,
+    "gpu_temperature_c": 64.46,
+    "gpu_used_mib": 6848.0,
+    "nvme_composite_c": 56.85,
+    "rss_bytes": 16968261632,
+    "swap_bytes": 0
+  },
+  "private_archive": {
+    "archive_id": "ready-entry-consumer-20261128-01",
+    "bytes": 13318335,
+    "file_count": 220,
+    "manifest": {
+      "bytes": 44410,
+      "sha256": "c2ca67c95541e2c9ea67d725bd4794d9243194e938e702814351214bf9aca077"
+    },
+    "part": "part-01",
+    "provider_links": 24
+  },
+  "resource_gate": {
+    "canonical_memory": {
+      "ancestor_headroom_bytes": 32696000512,
+      "available_max_bytes": 27695357952,
+      "available_min_bytes": 27460542464,
+      "cap_max_bytes": 25232932864,
+      "external_variation_bytes": 234815488,
+      "reserve_bytes": 2147483648,
+      "total_bytes": 32696000512
+    },
+    "cpu": "AMD Ryzen AI 9 HX 370 w/ Radeon 890M",
+    "gpu_compute_max": 0,
+    "gpu_driver": "620.73.04",
+    "gpu_name": "NVIDIA GeForce RTX 4060 Laptop GPU",
+    "gpu_total_mib": 8188.0,
+    "max_gap_s": 1.179552182002226,
+    "model_device": "/dev/nvme0n1p3[/home]",
+    "model_fs": "btrfs",
+    "nvme": [
+      {
+        "bdf": "0000:c1:00.0",
+        "controller": "nvme0",
+        "critical_c": 89.85,
+        "current_c": 32.85,
+        "firmware": "V3MA101",
+        "model": "MTFDKBK1T0QFM-1BD1AABGB",
+        "sensor": "nvme-pci-c100",
+        "source": "Composite critical minus 2C admission; max is warning",
+        "stop_c": 87.85,
+        "warning_c": 86.85
+      }
+    ],
+    "power": {
+      "batteries": [
+        {
+          "name": "BAT0",
+          "status": "Not charging"
+        },
+        {
+          "name": "hid-0018:04F3:4359.0005-battery-7",
+          "status": "Unknown"
+        }
+      ],
+      "online_sources": [
+        "AC0",
+        "ucsi-source-psy-USBC000:002"
+      ],
+      "profile": "performance",
+      "source": "AC"
+    },
+    "samples": 62,
+    "span_s": 60.99391662999551
+  },
+  "total_family_wall_s": 1249.0641569069994,
+  "total_model_s": 755.4010000000001
+}
