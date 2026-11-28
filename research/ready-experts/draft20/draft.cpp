@@ -173,9 +173,25 @@ void session(llama_model * model, const Path & root, const std::string & name) {
     }
     std::cout << "end " << name << '\n' << std::flush;
 }
+void terminal_code(llama_model * model, const Path & root) {
+    auto inputs = read_ids(root / "code-prompt.i32");
+    const auto target = read_ids(root / "code-target.i32");
+    check(target.size() == 256 && llama_vocab_is_eog(llama_model_get_vocab(model), target.back()), "code end");
+    auto ctx = prompt(model, inputs, "serial");
+    for (size_t i = 0; i + 1 < target.size(); ++i) {
+        check(!llama_vocab_is_eog(llama_model_get_vocab(model), target[i]), "early end");
+        const Row first = advance(ctx.get(), target[i]);
+        std::cout << "reference " << i << ' ' << first.top << '\n';
+        if (i + 2 == target.size()) {
+            const Row second = advance(ctx.get(), first.top);
+            std::cout << "terminal " << first.top << ' ' << second.top << ' ' << first.ns << ' ' << second.ns << '\n';
+        }
+    }
+}
 int main(int argc, char ** argv) try {
     static_assert(sizeof(llama_token) == 4 && std::endian::native == std::endian::little);
-    check(argc == 4, "draft20 TARGET_GGUF DRAFT_GGUF INPUTS");
+    const bool terminal = argc == 5 && std::string(argv[4]) == "--terminal-code";
+    check(argc == 4 || terminal, "draft20 TARGET_GGUF DRAFT_GGUF INPUTS [--terminal-code]");
     llama_backend_init();
     std::cout << std::unitbuf;
     ggml_backend_load_all();
@@ -184,8 +200,12 @@ int main(int argc, char ** argv) try {
     vocab_contract(llama_model_get_vocab(target_vocab.get()), llama_model_get_vocab(draft.get()));
     target_vocab.reset();
     std::cout << "vocabulary " << vocab_size << '\n';
-    session(draft.get(), argv[3], "nominal");
-    session(draft.get(), argv[3], "code");
+    if (terminal) {
+        terminal_code(draft.get(), argv[3]);
+    } else {
+        session(draft.get(), argv[3], "nominal");
+        session(draft.get(), argv[3], "code");
+    }
     draft.reset();
     llama_backend_free();
     std::cout << "done\n";

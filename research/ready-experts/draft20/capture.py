@@ -208,7 +208,7 @@ def run(a, out):
         model_sha256={"draft": small, "target": large},
         stats={"draft": draft, "target": target},
         mounts={"draft": W["mount"](a.draft), "target": W["mount"](a.target)},
-        protocol_sha256=sha(HERE / "protocol.md"),
+        protocol_sha256=sha(HERE / ("joint/protocol.md" if a.terminal_code else "protocol.md")),
         argv=sys.argv,
         env=env,
     )
@@ -228,9 +228,10 @@ def run(a, out):
     inv.require_inventory(
         out, out.name, inventory, policy=policy, cap_bytes=CAP, expected_power=power
     )
-    execution = measure_child(
-        [a.exe, a.target, a.draft, a.inputs], env, out, "draft", resources, providers
-    )
+    cmd = [a.exe, a.target, a.draft, a.inputs]
+    if a.terminal_code:
+        cmd.append("--terminal-code")
+    execution = measure_child(cmd, env, out, "draft", resources, providers)
     need(
         W["stat_id"](a.target) == target
         and W["stat_id"](a.draft) == draft
@@ -238,7 +239,7 @@ def run(a, out):
         "incomplete capture",
     )
     return dict(
-        status="MEASURED_20B_STANDALONE",
+        status="MEASURED_20B_TERMINAL" if a.terminal_code else "MEASURED_20B_STANDALONE",
         hash=hashed,
         execution=execution,
         c118_s=inventory["duration_s"],
@@ -254,6 +255,7 @@ if __name__ == "__main__":
         p.add_argument("--" + arg, type=Path, required=True)
     for arg in ("exe", "inputs", "c55"):
         p.add_argument("--" + arg + "-sha256", required=True)
+    p.add_argument("--terminal-code", action="store_true")
     a = p.parse_args()
     out = a.new_output_dir
     os.umask(0o077)
