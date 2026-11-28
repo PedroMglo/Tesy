@@ -18,7 +18,15 @@ M = G["M"]
 need, load, sha, verified, save = (M[k] for k in ("need", "load", "sha", "verified", "save"))
 
 
-def run(a, receipt):
+def run(
+    a,
+    receipt,
+    *,
+    protocol=M["PROTOCOL"],
+    source=HERE / "protocol.md",
+    parse=G["parse"],
+    maximum_bytes=126427693056,
+):
     old = run_path(M["R"] / "physical.py")
     sys.path.insert(0, str(old["PAIR"]))
     guards = run_path(old["PAIR"] / "run.py")
@@ -29,10 +37,10 @@ def run(a, receipt):
     need(
         all(
             r["status"] == "PASS"
-            and (r["commit"], r["tree"], r["protocol"]) == (commit, tree, M["PROTOCOL"])
+            and (r["commit"], r["tree"], r["protocol"]) == (commit, tree, protocol)
             for r in (plan, build)
         )
-        and sha(HERE / "protocol.md") == M["PROTOCOL"],
+        and sha(source) == protocol,
         "frozen preparation",
     )
     exe, windows = a.build / "reader", a.plan / "windows.tsv"
@@ -66,7 +74,7 @@ def run(a, receipt):
         tree=tree,
         host=os.uname().nodename,
         kernel=os.uname().release,
-        protocol=M["PROTOCOL"],
+        protocol=protocol,
         elf=build["binary"],
         model=plan["model"],
         pack=plan["pack"],
@@ -129,11 +137,11 @@ def run(a, receipt):
     after = guards["diskstats"](disk)
     sample()
     need(code == 0, "native reader: " + (a.new_output_dir / "stderr").read_text()[:200])
-    timing = G["parse"]((a.new_output_dir / "stdout").read_text().splitlines(), plan)
-    count = (2 * 788 + 2 * 2662 + timing["parity_records"]) * G["P"]["SIZE"]
+    timing = parse((a.new_output_dir / "stdout").read_text().splitlines(), plan)
+    count = (2 * sum(map(sum, plan["counts"])) + timing["parity_records"]) * G["P"]["SIZE"]
     disk_delta = {k: v - before[k] for k, v in after.items()}
     need(
-        count <= 126427693056 and disk_delta["read_sectors_512B"] * 512 >= count,
+        count <= maximum_bytes and disk_delta["read_sectors_512B"] * 512 >= count,
         "requested volume or whole-device sector deficit",
     )
     need(guards["stat_id"](pack) == plan["pack_stat"], "changed pack after close")
@@ -157,7 +165,7 @@ def run(a, receipt):
     )
 
 
-def main():
+def main(runner=run):
     p = argparse.ArgumentParser(description=__doc__)
     for name in ("build", "plan", "c55", "new-output-dir"):
         p.add_argument("--" + name, required=True, type=lambda s: Path(s).resolve())
@@ -174,7 +182,7 @@ def main():
     signal.signal(signal.SIGALRM, timed_out)
     signal.alarm(144)
     try:
-        run(a, receipt)
+        runner(a, receipt)
     except Exception as exc:
         receipt["reason"] = str(exc)
     finally:

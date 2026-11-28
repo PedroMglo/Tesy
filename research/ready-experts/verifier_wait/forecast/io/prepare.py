@@ -22,7 +22,7 @@ CUT = 383144
 STAT = ("dev", "inode", "size_bytes", "mtime_ns", "ctime_ns")
 
 
-def build(a):
+def build(a, *, reader_source=None):
     old = verified(a.previous / "receipt.json", HISTORIC_BUILD)
     need(
         sha(R / "native.cpp") == old["native_sha256"]
@@ -39,7 +39,9 @@ def build(a):
     original = (R / "native.cpp").read_text()
     need(original.count("int main(int argc") == 1, "reader source boundary")
     src = dest / "reader.cpp"
-    src.write_text(original.split("int main(int argc")[0] + (HERE / "reader.cpp.in").read_text())
+    if reader_source is None:
+        reader_source = (HERE / "reader.cpp.in").read_text()
+    src.write_text(original.split("int main(int argc")[0] + reader_source)
     exe = dest / "reader"
     cmd = [
         "/usr/bin/g++",
