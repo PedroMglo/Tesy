@@ -1,0 +1,290 @@
+{
+  "C55": {
+    "canonical_memory": {
+      "ancestor_headroom_bytes": 32696000512,
+      "available_max_bytes": 27604512768,
+      "available_min_bytes": 27345047552,
+      "cap_max_bytes": 24964497408,
+      "external_variation_bytes": 259465216,
+      "reserve_bytes": 2147483648,
+      "total_bytes": 32696000512
+    },
+    "digest": "1cce9f67af609d5f3c00541647eba5980c718a371c1740c3f75bab233fa077a2",
+    "model_device": "/dev/nvme0n1p3[/home]",
+    "power": {
+      "batteries": [
+        {
+          "name": "BAT0",
+          "status": "Not charging"
+        },
+        {
+          "name": "hid-0018:04F3:4359.0005-battery-7",
+          "status": "Unknown"
+        }
+      ],
+      "online_sources": [
+        "AC0",
+        "ucsi-source-psy-USBC000:002"
+      ],
+      "profile": "performance",
+      "source": "AC"
+    },
+    "r0_cap_B": 21474836480,
+    "samples": 62,
+    "span_s": 61.01002424600301
+  },
+  "M3": "PARTIAL",
+  "M4": "NOT_MET",
+  "artifacts": {
+    "archive.json": {
+      "sha256": "87129d426d5215d4cd016d187a7fc1e33ea0b2f89e90d52786c1b35a71827674",
+      "size_B": 259
+    },
+    "device.json": {
+      "sha256": "012d30e983a3ab9ee3f2949a0c84fea6c40821638f74e7888884518c6276cc01",
+      "size_B": 21058
+    },
+    "projection.json": {
+      "sha256": "0398d782be84b7eb25851bda90a63d0d76552b15291d5b8a04c538afd0a6500b",
+      "size_B": 12622
+    },
+    "service.txt": {
+      "sha256": "b553badbdb297e76ca878bd81134d6f2a24a4153705e65e1efd9f5dd56089246",
+      "size_B": 196886
+    }
+  },
+  "base": {
+    "commit": "293f5b184da9439771cce361cd33fc4068d749f4",
+    "tree": "7683d6c07063adef6de232c43ab05d19e98e679d"
+  },
+  "binary": "527684affe783eb1678b7f1af56e3cd1ce159763276e54c9a58ac61205a1043b",
+  "branch": "research/ready-layer",
+  "budgets": {
+    "build_s": 60,
+    "output_B": 12582912,
+    "physical_s": 145,
+    "physical_scope_B": 268435456,
+    "physical_stop_B": 234881024,
+    "plan_grade_address_B": 1073741824,
+    "plan_grade_s": 180,
+    "requested_B": 72000000000
+  },
+  "build_sha256": "b285941da42e1b40bc04b5ba59958b4038bca6218529ea21e05bb04176aec20f",
+  "commands": {
+    "build": "systemd-run --user --scope --quiet --unit=tesy-sampled-peer-build-20261128-r01 --slice=app.slice -p MemoryHigh=768M -p MemoryMax=768M -p MemorySwapMax=0 -p RuntimeMaxSec=60 /usr/bin/python3 -IB research/ready-experts/verifier_wait/forecast/retention/eviction/late_owner/contention/sampling/sampled.py build --previous /var/tmp/tesy-ready-reader-build-20261127-r01 --new-output-dir /var/tmp/tesy-sampled-peer-build-20261128-r01",
+    "c55": "python3 -IB research/qualification-retake/nvme_admission/window.py --nvme-model /home/pmglo/models/gpt-oss-120b-gguf/gpt-oss-120b-MXFP4.gguf --new-output-dir /var/tmp/tesy-sampled-peer-c55-20261128-r01",
+    "failed_plan": "/usr/bin/prlimit --as=1073741824 --fsize=12582912 -- /usr/bin/timeout 180 /usr/bin/python3 -IB research/ready-experts/verifier_wait/forecast/retention/eviction/late_owner/contention/sampling/sampled.py plan --manifest /home/pmglo/models/tesy-gpt-oss-120b-nvme/tesy-c291-manifest-20261125-r02 --new-output-dir /tmp/tesy-sampled-peer-20261128-01/plan-01",
+    "grade": "env GIT_CONFIG_COUNT=2 GIT_CONFIG_KEY_0=core.preloadIndex GIT_CONFIG_VALUE_0=false GIT_CONFIG_KEY_1=index.threads GIT_CONFIG_VALUE_1=1 /usr/bin/prlimit --as=1073741824 --fsize=12582912 -- /usr/bin/timeout 180 /usr/bin/python3 -IB research/ready-experts/verifier_wait/forecast/retention/eviction/late_owner/contention/sampling/sampled.py grade --plan /tmp/tesy-sampled-peer-20261128-01/plan-02 --observed /var/tmp/tesy-sampled-peer-physical-20261128-r01 --new-output-dir /tmp/tesy-sampled-peer-20261128-01/grade-01",
+    "physical": "systemd-run --user --scope --quiet --unit=tesy-sampled-peer-physical-20261128-r01 --slice=app.slice -p MemoryHigh=256M -p MemoryMax=256M -p MemorySwapMax=0 -p RuntimeMaxSec=145 /usr/bin/python3 -IB research/ready-experts/verifier_wait/forecast/retention/eviction/late_owner/contention/sampling/physical.py --plan /tmp/tesy-sampled-peer-20261128-01/plan-02 --plan-sha256 65a45af2596ab03a00ea568c42ff5b294600a76aa5651648d3bebad044a483a5 --build /var/tmp/tesy-sampled-peer-build-20261128-r01 --build-sha256 b285941da42e1b40bc04b5ba59958b4038bca6218529ea21e05bb04176aec20f --c55 /var/tmp/tesy-sampled-peer-c55-20261128-r01 --c55-sha256 1cce9f67af609d5f3c00541647eba5980c718a371c1740c3f75bab233fa077a2 --new-output-dir /var/tmp/tesy-sampled-peer-physical-20261128-r01",
+    "plan": "env GIT_CONFIG_COUNT=2 GIT_CONFIG_KEY_0=core.preloadIndex GIT_CONFIG_VALUE_0=false GIT_CONFIG_KEY_1=index.threads GIT_CONFIG_VALUE_1=1 /usr/bin/prlimit --as=1073741824 --fsize=12582912 -- /usr/bin/timeout 180 /usr/bin/python3 -IB research/ready-experts/verifier_wait/forecast/retention/eviction/late_owner/contention/sampling/sampled.py plan --manifest /home/pmglo/models/tesy-gpt-oss-120b-nvme/tesy-c291-manifest-20261125-r02 --new-output-dir /tmp/tesy-sampled-peer-20261128-01/plan-02"
+  },
+  "compiled_source_sha256": "98c2cb187e09d84f69bfa2b7dc5a35ac859d23f1a59741674ee62fa7309dfcb0",
+  "compiler": "ca48a2d27d0796399adc3387225eec4be62974e26fa299710edfde0c1af5aa63",
+  "controls": "2/1 and 4/1 first and holdout. OFF and ON four-lane barrier calibration. Independent journals P97 and P106, 674-hit bank, zero/full nested prices. Thresholds frozen.",
+  "failures": [
+    {
+      "evidence": "FAIL_PRESERVED",
+      "phase": "plan-01",
+      "recovery": "Fresh plan-02, same commit and 1 GiB limit, serial Git index via invocation environment only",
+      "symptom": "git status exited 128 under the 1 GiB planner limit; Git index thread creation failed before acquisition"
+    }
+  ],
+  "historical_commands": [
+    "python3 research/post-c320/analyse.py",
+    "python3 research/consolidacao-20261123/verify.py",
+    "python3 research/post-c320/analyse.py --raw-dir \"$TESY_C317_RAW\""
+  ],
+  "historical_reproduction": {
+    "C317": {
+      "c317-code153-2-trace.native/events.tsv": {
+        "sha256": "8bdd96f879cda7fad466dc252ae9915e7b05233b95fd91539b6b4bd4400d27a1",
+        "size_bytes": 2647793
+      },
+      "c317-code153-2-trace.native/staging.json": {
+        "sha256": "38b46e7d48336bd10577d80a1fcf48cc35e5f084c13380dadf0a69f73657ac86",
+        "size_bytes": 1225649
+      },
+      "c317-code153-3-trace.native/events.tsv": {
+        "sha256": "70c9c37864e25201711d23cc60a7d0b1afeba21f254a410e785b24e901e00b07",
+        "size_bytes": 2648115
+      },
+      "c317-code153-3-trace.native/staging.json": {
+        "sha256": "ea0e449455a6cd2d957ba42665c8d30bb0ea14679d1d8c1ee881cc901207b59b",
+        "size_bytes": 1222640
+      },
+      "c317-nominal153-2-trace.native/events.tsv": {
+        "sha256": "c6cf2327a8bd7ec2c7755979e594b33b72a5547826a2d2b057326be66039838e",
+        "size_bytes": 1783273
+      },
+      "c317-nominal153-2-trace.native/staging.json": {
+        "sha256": "e93fceb6a61b1a710951252eb05b467d310055414fc24e73dc9816aa4c94eff2",
+        "size_bytes": 963169
+      },
+      "c317-nominal153-3-trace.native/events.tsv": {
+        "sha256": "05c830ebb865c5f0740717ff5935e5bf3c15fcbb0cdad26825ca56ca8432d7be",
+        "size_bytes": 1784362
+      },
+      "c317-nominal153-3-trace.native/staging.json": {
+        "sha256": "b2d5e3bbeeee0a776380e4433fcded264f7f5e6ec3c427102a3f40e8d3589a3d",
+        "size_bytes": 961025
+      }
+    },
+    "C318": {
+      "code153": {
+        "arm_metrics_s_ABBA": [
+          {
+            "decode32_s": 10.974225074,
+            "prefill153_s": 15.81318118,
+            "prefix_s": 58.731239133,
+            "total_s": 26.787406254
+          },
+          {
+            "decode32_s": 11.403332607,
+            "prefill153_s": 15.751908333,
+            "prefix_s": 58.532713609,
+            "total_s": 27.15524094
+          },
+          {
+            "decode32_s": 12.192635408,
+            "prefill153_s": 17.173879466,
+            "prefix_s": 58.613799627,
+            "total_s": 29.366514874
+          },
+          {
+            "decode32_s": 11.784824323,
+            "prefill153_s": 15.748829899,
+            "prefix_s": 58.900785673,
+            "total_s": 27.533654222
+          }
+        ],
+        "conditional_local_gate_infima_pct": {
+          "decode_route": 18.021172409878975,
+          "total_route": 27.66758270764566
+        },
+        "decode_median_15pct_of_candidate_decode": 18.021172409878975,
+        "decode_seconds_to_remove_AB_BA_at_cheapest_gate": [
+          2.0550142295794167,
+          2.1972558481836306
+        ],
+        "other_case_protection_if_this_case_is_unchanged": true,
+        "total_median_8pct_of_candidate_decode": 27.66758270764566,
+        "total_median_tie_pct_of_candidate_decode": 9.245527547606379
+      },
+      "nominal153": {
+        "arm_metrics_s_ABBA": [
+          {
+            "decode32_s": 9.450205154,
+            "prefill153_s": 9.690969186,
+            "prefix_s": 63.917734219,
+            "total_s": 19.14117434
+          },
+          {
+            "decode32_s": 9.708290821,
+            "prefill153_s": 9.755511994,
+            "prefix_s": 65.263303765,
+            "total_s": 19.463802815
+          },
+          {
+            "decode32_s": 9.737401388,
+            "prefill153_s": 9.70960099,
+            "prefix_s": 63.969746927,
+            "total_s": 19.447002378
+          },
+          {
+            "decode32_s": 9.397161546,
+            "prefill153_s": 9.66318792,
+            "prefix_s": 63.86638487,
+            "total_s": 19.060349466
+          }
+        ],
+        "conditional_local_gate_infima_pct": {
+          "decode_route": 17.61636903733702,
+          "total_route": 19.364253551466724
+        },
+        "decode_median_15pct_of_candidate_decode": 17.61636903733702,
+        "decode_seconds_to_remove_AB_BA_at_cheapest_gate": [
+          1.710248338245276,
+          1.7153765631568574
+        ],
+        "other_case_protection_if_this_case_is_unchanged": true,
+        "total_median_8pct_of_candidate_decode": 19.364253551466724,
+        "total_median_tie_pct_of_candidate_decode": 3.648183834941872
+      }
+    },
+    "compact": {
+      "sha256": "01943df1f93985cf9ee754ac06348bda51f6d700fc4fbbc1cf032b4841bfe992",
+      "size_B": 4994
+    },
+    "consolidation": {
+      "sha256": "5cc247dc0204c28e316c15e08c03b3c0483e9784b5b25aec27a0113f1d40ce3a",
+      "size_B": 214
+    },
+    "consolidation_counts": {
+      "archived_paths": 44,
+      "archived_trees": 4,
+      "at_original_location": 7209,
+      "heads": 45,
+      "historical_file_versions": 7533,
+      "historical_paths": 7253,
+      "paths_with_multiple_versions": 152,
+      "roots": 2
+    },
+    "historical-raw": {
+      "sha256": "8f11855e688e6222618f64c04f76001041ef24402bd7da04e7a32e210ad0befd",
+      "size_B": 6330
+    }
+  },
+  "identity": "sampled-peer-service-20261128-01",
+  "immediate_base": {
+    "commit": "ccfda06299d9725975b63c75f28fece4cc57425e",
+    "tree": "96e3aa7171e69f135dba325c2aa7e58ca9964976"
+  },
+  "index": "63b7a76c7063e51944ee8a6296aea43109a336330b3657ffa357cddb44b59813",
+  "libraries": {
+    "/lib64/ld-linux-x86-64.so.2": "4e5d39355699e90fa29313d3100e82af4a23290028c58c364d6a249ef6a78e5e",
+    "/lib64/libc.so.6": "a5c5ad9d59d3c69eda93aa8f82930ba06cc4e893a113e66c85ad6e96243d53c8",
+    "/lib64/libcrypto.so.3": "695648ac8dc5e6a2b70e5e72399940de0f84bf24fddb7dd18949ba40bc575c72",
+    "/lib64/libgcc_s.so.1": "5a52ae4a6f1b119aa092aa1483c967e19d9ba036b1b0c2133236a8a2ce826ebf",
+    "/lib64/libm.so.6": "16a03ce6d24c8a46742206d4a9c1d35bb6577ae2384f153dc6ef4a4b62b5357f",
+    "/lib64/libstdc++.so.6": "49811507d8fc0283d8f8023546613774c673f876fe823b1b99d0c8d46039deda",
+    "/lib64/libz.so.1": "bbde8faec092a7c67b8bd76bbba4a826e61b05c171b97004ce6b308c5a090351"
+  },
+  "model": "582bd40f6886200101f4c4ed9f25f3fe80cc14c86e9e2b37746cd8904a0c622d",
+  "model_forwards": 0,
+  "pack": "f17e9fbf6f6aed1ad60ca7da3431c5156a946d2e0bf119722afc1f934cbc6b11",
+  "parent_projection": "c3efeedb791c1efaea793d1b2892f6ab85d17eff648a27466b136a6416877ad5",
+  "physical_revision": {
+    "commit": "8a8d84ad6ffc1345805dd7fce7591d62aa0cb551",
+    "tree": "05be878ff56eaf044544404bf6bbf5ef49255bbd"
+  },
+  "physical_sha256": "401cccd86734709104cdfd6546e194a8fd7c895c1165e167f22561ff08bd5b05",
+  "plan_sha256": "65a45af2596ab03a00ea568c42ff5b294600a76aa5651648d3bebad044a483a5",
+  "prior_head": "a4a27452bd2e1ed22c247a88e847c47a4f69e509",
+  "private_archive": {
+    "archive_id": "sampled-peer-service-20261128-01",
+    "bytes": 383241,
+    "file_count": 18,
+    "manifest": {
+      "bytes": 3192,
+      "sha256": "37ee8109923d208b12df99d6245661a4c544160be605c7a1a272eb8d03060a97"
+    },
+    "part": "part-01",
+    "provider_links": 0
+  },
+  "product": "NOT_RUN",
+  "protocol": "1f3c12401f5c4d6bb1f8b864ad2f036989fc5a0de51863b363f3760d5e916a82",
+  "protocol_commit": "ddfae860",
+  "protocol_file": "research/ready-experts/verifier_wait/forecast/retention/eviction/late_owner/contention/sampling/protocol.md",
+  "remote": "https://github.com/PedroMglo/Tesy.git",
+  "resources": {
+    "child_s": 37.62090578900097,
+    "energy_J": null,
+    "grade": "wall_s=3.56 peak_kib=137540",
+    "memory_peak": 177053696,
+    "plan": "wall_s=3.39 peak_kib=157896",
+    "requested_B": 66796978176,
+    "swap": 0,
+    "windows_read": 5052
+  },
+  "upstream": "origin/research/ready-layer"
+}
