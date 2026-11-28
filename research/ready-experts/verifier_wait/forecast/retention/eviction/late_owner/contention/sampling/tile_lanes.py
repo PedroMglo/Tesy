@@ -231,7 +231,7 @@ def deadline(jobs, base, target):
     )
 
 
-def evaluate():
+def evaluate(*, on_jobs=None):
     need(sha(HERE / "windows-protocol.md") == METHOD, "protocol")
     old = S["M"]["verified"](HERE / "evidence-pipeline-20261128-r01/pipeline.json", PRIOR)
     rates = {s: v[1] for s, v in old["rates_ppm"].items()}
@@ -283,6 +283,8 @@ def evaluate():
             credited = floor + 10**10 - price["credited_first_ns"]
             # Reuse identical deadlines (the two client clocks coincide in P97).
             outcomes = {t: deadline(jobs, base, t) for t in sorted({floor, integral, credited})}
+            if on_jobs is not None:
+                on_jobs(tag, mode, jobs, floor, integral, credited)
             modes[mode] = dict(
                 jobs=len(jobs),
                 earliest_ns=base,
