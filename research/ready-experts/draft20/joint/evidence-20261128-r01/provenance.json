@@ -1,0 +1,41 @@
+{
+  "scope": "nominal153 and code61 target trajectories, one CPU-only terminal fixture and two local index replays",
+  "base": "f0d938a9c4856f1e234b0a94111d10e8a0fbfa69",
+  "protocol": "8ac0db4fe04439cc498349a630cf98d0d1609473",
+  "measured_commit": "251b03a5ed721cc4f9fb3a4ec482076fc29e74d1",
+  "measured_tree": "b099f281b7d1a124538598afb4c521b6f71ef55f",
+  "binary_sha256": "a2dc414c551aede9aa234e1c18e44dc3800db78493cead13c5bf29428cb7f230",
+  "cpp_sha256": "7f9f0b8a512666df869734b0ff3fc6cbf119eb176c15c8d24d7a145daf953708",
+  "clock_scope": "Separate W client, target producer, diagnostic prefill and isolated draft CPU clocks. Latencies under changed schedules are conditional.",
+  "budget": {
+    "model": "1x 20B CPU process, full SHA, 0 target or GPU forwards",
+    "wall_s_cap": 900,
+    "memory_cap_bytes": 17179869184,
+    "swap_B": 0,
+    "raw_limit_B": 33554432,
+    "replay_each_seconds_cap": 30,
+    "replay_each_AS_bytes_cap": 134217728
+  },
+  "sources": {
+    "physical_sha256": "b9d99e1e3ffd8bfb2a17f88b72840f9b094259f51caebde29d09cb572e9306b5",
+    "terminal": "4e73dc1f1584b2d8fd3ae22b47b78fa29a48cfda211388514d256d4081452d31",
+    "combined": "1245371c2e7f7beaeca41bd5c9970769c3b58988b08c7d6aef4d2569b1e4ddc5",
+    "observed": "08f4ddc87fe8dcb5b0d8bce54f4d21c0d982bb7aa3e7520338d1e789d5ed5bd8",
+    "replay_a": "deaa1504ec9969d6a87c59ee9fd4772770fe0db9a03c65548f6874d46cd76865",
+    "replay_b": "15a97587c9f9742c20d3c50be6e3120e99635e12c1aa8aa901ef8810e02c4dfc",
+    "C55": "11f03c661b7cdbac063b1e1024bfe16013bc354058e39be9ef80a56c5766098f"
+  },
+  "commands": {
+    "cwd": "/mnt/sdisk-ssd-ext/Tesy/repo/build/tesy-ready-layer-20261127",
+    "build": "g++ -std=c++20 -O2 -Wall -Wextra -Werror -I/mnt/sdisk-ssd-ext/Tesy/repo/tesy-scale-lab/backends/stock-e95426-sm89-20261124b/source/include -I/mnt/sdisk-ssd-ext/Tesy/repo/tesy-scale-lab/backends/stock-e95426-sm89-20261124b/source/ggml/include /mnt/sdisk-ssd-ext/Tesy/repo/build/tesy-ready-layer-20261127/research/ready-experts/draft20/draft.cpp -L/mnt/sdisk-ssd-ext/Tesy/repo/tesy-scale-lab/backends/stock-e95426-sm89-20261124b/build/bin -Wl,-rpath,/mnt/sdisk-ssd-ext/Tesy/repo/tesy-scale-lab/backends/stock-e95426-sm89-20261124b/build/bin -lllama -lggml -lcrypto -o /tmp/tesy-draft-joint-20261128/draft20",
+    "c55": "python3 -IB research/qualification-retake/nvme_admission/window.py --nvme-model /home/pmglo/models/gpt-oss-120b-gguf/gpt-oss-120b-MXFP4.gguf --new-output-dir /var/tmp/tesy-draft-joint-c55-20261128-r01",
+    "physical": "systemd-run --user --scope --unit=tesy-draft-terminal-20261128-r01 --slice=app.slice -p MemoryHigh=16G -p MemoryMax=16G -p MemorySwapMax=0 -p TasksMax=96 -p RuntimeMaxSec=905 /usr/bin/prlimit --fsize=33554432:33554432 -- /usr/bin/timeout 900 /usr/bin/python3 -IB research/ready-experts/draft20/capture.py --exe /tmp/tesy-draft-joint-20261128/draft20 --exe-sha256 a2dc414c551aede9aa234e1c18e44dc3800db78493cead13c5bf29428cb7f230 --target /home/pmglo/models/gpt-oss-120b-gguf/gpt-oss-120b-MXFP4.gguf --draft /home/pmglo/.local/share/tesy/models/gpt-oss-20b/gpt-oss-20b-mxfp4.gguf --placement /home/pmglo/models/tesy-gpt-oss-120b-nvme/tesy-c291-manifest-20261125-r02/receipt.json --inputs /mnt/sdisk-ssd-ext/Tesy/outputs/ready-draft20-20261128-01/part-01/inputs-r01 --inputs-sha256 17285d7438cedc23a0db6c119ee8a315eb06b4a45ab97aeaef623bb25c20c356 --c55 /var/tmp/tesy-draft-joint-c55-20261128-r01 --c55-sha256 11f03c661b7cdbac063b1e1024bfe16013bc354058e39be9ef80a56c5766098f --new-output-dir /var/tmp/tesy-draft-terminal-20261128-r01 --terminal-code",
+    "replays": [
+      "/usr/bin/prlimit --as=134217728:134217728 --fsize=1048576:1048576 -- /usr/bin/time -f '%e seconds, %M KiB RSS' /usr/bin/timeout 30 python3 -IB research/ready-experts/draft20/joint/suffix.py --inputs /mnt/sdisk-ssd-ext/Tesy/outputs/ready-draft20-20261128-01/part-01/inputs-r01 --new-output-dir /tmp/tesy-draft-joint-20261128/replay-a",
+      "/usr/bin/prlimit --as=134217728:134217728 --fsize=1048576:1048576 -- /usr/bin/time -f '%e seconds, %M KiB RSS' /usr/bin/timeout 30 python3 -IB research/ready-experts/draft20/joint/suffix.py --inputs /mnt/sdisk-ssd-ext/Tesy/outputs/ready-draft20-20261128-01/part-01/inputs-r01 --new-output-dir /tmp/tesy-draft-joint-20261128/replay-b"
+    ],
+    "compose": "python3 -IB research/ready-experts/draft20/joint/compose.py --replays /tmp/tesy-draft-joint-20261128/replay-a /tmp/tesy-draft-joint-20261128/replay-b --new-output-dir /tmp/tesy-draft-joint-20261128/combined-r01",
+    "terminal": "python3 -IB research/ready-experts/draft20/joint/terminal.py --physical /var/tmp/tesy-draft-terminal-20261128-r01 --previous /mnt/sdisk-ssd-ext/Tesy/outputs/ready-draft20-20261128-01/part-01/tesy-draft20-20261128-r01 --new-output-dir /tmp/tesy-draft-joint-20261128/terminal-r01",
+    "observed": "python3 -IB research/ready-experts/draft20/joint/observed.py /tmp/tesy-draft-joint-20261128/combined-r01/receipt.json --family /mnt/sdisk-ssd-ext/Tesy/outputs/qualification-20261124-nvme-01/part-185/tesy-c281-cpu-rows-http-20261126-r02 --new-output-dir /tmp/tesy-draft-joint-20261128/observed-r01"
+  }
+}

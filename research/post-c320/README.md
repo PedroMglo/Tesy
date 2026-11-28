@@ -4,7 +4,7 @@
 
 ## 28 de novembro · proponente 20B e decisão sobre o backend
 
-O GPT-OSS-20B previu 30 de 32 IDs do nominal no primeiro ensaio com dois tokens de avanço e história real do 120B. A CPU do portátil teria de produzir essas propostas em menos tempo do que o medido, mesmo concedendo a verificação do target e a seleção ideal dos blocos. Mantendo os 40 slots primários, o 20B inteiramente residente também excederia o orçamento de memória combinado. **NO_GO para a adoção desta configuração.** O registo fixa a redução de prefill necessária para combinar ambas as vias. [Medição, custo por braço e condições de reabertura](../ready-experts/draft20/README.md)
+O GPT-OSS-20B previu 30 de 32 IDs do nominal no primeiro ensaio com dois tokens de avanço e história real do 120B. A CPU do portátil teria de produzir essas propostas em menos tempo do que o medido, mesmo concedendo a verificação do target e a seleção ideal dos blocos. Mantendo os 40 slots primários, o 20B inteiramente residente também excederia o orçamento de memória combinado. **NO_GO para a adoção desta configuração.** O registo fixa a redução de prefill necessária para combinar ambas as vias. [Medição do proponente](../ready-experts/draft20/README.md) · [Combinação com o prefill, correção EOG e decisão por braço](../ready-experts/draft20/joint/README.md)
 
 ## 27 de novembro · produto em hardware com diferentes capacidades
 

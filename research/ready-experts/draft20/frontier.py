@@ -15,12 +15,18 @@ def path_options(case, w, mode, price):
 
     def edges(i):
         yield i + 1, "S", ticks[i + 1] - ticks[i]
-        if i + 3 <= n:
-            depth = 2 if mode == "perfect" else int(match[i]) * (1 + int(match[i + 1]))
+        if i + 3 <= n or case.get("issue_through_eog", False):
+            # The target may stop at a matched EOG, before the second ID or the bonus.
+            second = i + 1 < n
+            depth = (
+                min(2, n - i)
+                if mode == "perfect"
+                else int(match[i]) * (1 + int(second and match[i + 1]))
+            )
             cost = price
             if mode == "paid":
-                cost += ns[i] + (ns[i + 1] if depth else 0)
-            yield i + 1 + depth, "B" + str(depth), cost
+                cost += ns[i] + (ns[i + 1] if depth and second else 0)
+            yield min(n, i + 1 + depth), "B" + str(depth), cost
 
     # At each first arrival j >= cut a different initial state of the suffix may be left.
     # Earlier IDs have no further state in this optimistic, fixed-price model.
