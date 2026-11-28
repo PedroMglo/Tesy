@@ -70,8 +70,7 @@ def render(source):
         (
             step,
             '        if (confirmed==1) data["entry_delivery"]["pool_first_decode"]='
-            'entry_pool(model.get(),out,"first-decode");\n'
-            + step,
+            'entry_pool(model.get(),out,"first-decode");\n' + step,
         ),
     ):
         need(source.count(old) == 1, "sealed client anchor")
