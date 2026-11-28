@@ -1,5 +1,7 @@
 # Reavaliação do Tesy após C320
 
+**28 de novembro · representação do banco CPU.** Reproduzir toda a retenção do banco partilhado de 252 lugares em tensores de tamanho fixo por camada exigiria 416 lugares. Uma atribuição com conhecimento futuro conserva as 469 promoções com 162. A melhor das duas regras causais estudadas perdeu o quarto peso do grupo físico de decode, embora melhorasse o crédito local acumulado até ao primeiro final. Prosseguir com o banco partilhado. [Prova, comparação e condição de reabertura](../ready-experts/cpu_wave/frame_lease/group_service/address-result.md)
+
 **28 de novembro · MEDIDO no portátil.** No decode da CPU0, entregar os quatro pesos por referência deixou o consumidor pronto em 0,084–0,087 ms. A cópia demorou 2,309–2,415 ms e a entrega em grupo ganhou os 28 pares contra a melhor escolha individual. No prefill o ganho sobre o último produtor isolado mudou de sinal. GO para integração no serviço atual. O ganho do cliente ainda requer medição. [Oito braços, controlos e recursos](../ready-experts/cpu_wave/frame_lease/group_service/README.md)
 
 ## 28 de novembro · até quando um expert continua a ser lido

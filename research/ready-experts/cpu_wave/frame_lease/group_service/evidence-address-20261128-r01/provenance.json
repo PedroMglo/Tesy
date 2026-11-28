@@ -1,0 +1,43 @@
+{
+  "artifacts": {
+    "assignments.json.gz": {
+      "bytes": 36830,
+      "sha256": "eeabe28882f46abecfddf1f03de319657d9c336694823324c56b759b68c24e56"
+    },
+    "decision.json": {
+      "bytes": 33896,
+      "sha256": "ad468b3c7518db113f3c4daee87ad88228feb124a37ea51e9a6528b2ee996695"
+    }
+  },
+  "base": "ece63ae94ed3a8ee6ab7abd943163ec6476621e0",
+  "branch": "research/ready-layer",
+  "budget": {
+    "address_space_B": 1073741824,
+    "output_B": 4194304,
+    "wall_s": 120
+  },
+  "command": "/usr/bin/time -f \"elapsed_s=%e peak_KiB=%M\" timeout 120 prlimit --as=1073741824 python3 -IB research/ready-experts/cpu_wave/frame_lease/group_service/address.py --new-output-dir /tmp/tesy-layer-address-20261128-r01",
+  "commit": "4d3e7f00028a6674e6b8a86d94dec4abec045270",
+  "evidence": "FORMAL_AND_TRACE_DERIVED_FIXED_CLOCKS",
+  "failure": null,
+  "main": "293f5b184da9439771cce361cd33fc4068d749f4",
+  "protocol_commit": "67af9681bad53d9d756bda4a98fe6116ee48b51a",
+  "registered_protocol": {
+    "bytes": 4797,
+    "sha256": "ad367e5d8eba21a6587e764cfa1b6a2c627d7b5aca89466c5f68c37a08f32631"
+  },
+  "remote": "PedroMglo/Tesy",
+  "resources": {
+    "HTTP_requests": 0,
+    "elapsed_s": 2.86,
+    "energy_J": null,
+    "gpu_compute": false,
+    "model_forwards": 0,
+    "peak_RSS_KiB": 129984
+  },
+  "source": {
+    "bytes": 14431,
+    "sha256": "d1e8710a484108f8b71145bae8c5abb2c095af9b9392464df35dc39e701ac74c"
+  },
+  "tree": "c9a19e81e7da28e3897a3f3f983f54dbd6502f3c"
+}
