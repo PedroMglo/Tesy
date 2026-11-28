@@ -360,7 +360,11 @@ def main():
                 a.new_output_dir / "receipt.json",
                 rec
                 | dict(
-                    status="PASS", protocol=METHOD, commit=commit, tree=tree, program=sha(__file__)
+                    status="PASS",
+                    protocol=METHOD,
+                    commit=commit,
+                    tree=tree,
+                    program=sha(Path(__file__)),
                 ),
             )
             print("PASS", sha(a.new_output_dir / "receipt.json"))
