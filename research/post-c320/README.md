@@ -2,6 +2,8 @@
 
 ## 28 de novembro · até quando um expert continua a ser lido
 
+**TRACE_DERIVED no pedido nominal.** Nos dois registos do mesmo trabalho, 684 substituições tinham um leitor anterior observado e todas chegaram depois da sua libertação mais tardia possível. Outras 441 substituíram uma época sem consumidor observado. No caminho até ao primeiro final, 248 das 468 promoções apareceram em grupos de duas a nove na mesma wave de consumo. O custo medido para um único hit tem agora um denominador verificável. [Reconciliação dos leitores e casos reais de prefill e decode](../ready-experts/cpu_wave/frame_lease/lifetime-result.md)
+
 **MEDIDO.** Na camada CPU0 do 120B, libertar os pesos depois da projeção down preservou todos os bits em duas tiles reais. Antecipar a substituição para antes de down alterou 92 160 valores F32 numa tile e 2 880 na outra. A entrega por ID poupou 0,857 e 0,751 ms nos pares com 66 experts. Com cinco experts os sinais mudaram com a ordem. A exatidão permite continuar no backend atual. O ganho de tempo na camada é INCONCLUSIVE, e o melhor primeiro final do produto continua em 17,689 s. [Braços, custos do produtor e prova numérica](../ready-experts/cpu_wave/frame_lease/README.md)
 
 ## 28 de novembro · até onde chega uma mudança de backend no portátil
