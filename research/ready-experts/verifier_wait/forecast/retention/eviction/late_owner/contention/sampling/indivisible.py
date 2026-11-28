@@ -88,7 +88,7 @@ def pack(prices, limit=20_000):
     return lower, upper, nodes, witness
 
 
-def evaluate():
+def evaluate(*, extra_modes=None, on_jobs=None):
     need(sha(HERE / "indivisible-protocol.md") == METHOD, "registered atomic service")
     old = L["S"]["M"]["verified"](HERE / "evidence-lanes-20261128-r01/windows.json", PARENT)
     need(L["evaluate"]() == old, "all preemptible controls")
@@ -113,7 +113,7 @@ def evaluate():
             )
         return low
 
-    calculus = L["evaluate"](site_floor=price)
+    calculus = L["evaluate"](site_floor=price, extra_modes=extra_modes, on_jobs=on_jobs)
     verdicts = {}
     for mode in ("copied", "direct"):
         signs = []

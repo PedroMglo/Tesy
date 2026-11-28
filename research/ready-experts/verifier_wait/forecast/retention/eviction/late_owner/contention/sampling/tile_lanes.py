@@ -232,7 +232,7 @@ def deadline(jobs, base, target):
     )
 
 
-def evaluate(*, on_jobs=None, site_floor=None):
+def evaluate(*, on_jobs=None, site_floor=None, extra_modes=None):
     need(sha(HERE / "windows-protocol.md") == METHOD, "protocol")
     old = S["M"]["verified"](HERE / "evidence-pipeline-20261128-r01/pipeline.json", PRIOR)
     rates = {s: v[1] for s, v in old["rates_ppm"].items()}
@@ -253,7 +253,8 @@ def evaluate(*, on_jobs=None, site_floor=None):
         native = reads[tag]["jobs"]
         w, _ = C["exposure"](native, hits)
         modes = {}
-        for mode in ("copied", "direct"):
+        layer_modes = {"copied": None, "direct": None} | (extra_modes or {})
+        for mode, free_layers in layer_modes.items():
             batch = []
             row, _ = C["scenarios"](
                 data,
@@ -262,12 +263,13 @@ def evaluate(*, on_jobs=None, site_floor=None):
                 w,
                 plan,
                 rates,
-                mode == "direct",
+                mode != "copied",
                 marks[tag]["markers"],
                 layout[tag],
                 tag,
                 on_stages=lambda *args, batch=batch: batch.append(jobs_in_stages(*args)),
                 site_floor=partial(site_floor, tag, mode) if site_floor is not None else None,
+                free_hit_layers=free_layers,
             )
             need(
                 (site_floor is not None or row == old["arms"][tag]["trained"]["high"][mode])

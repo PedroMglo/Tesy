@@ -74,6 +74,7 @@ def scenarios(
     *,
     on_stages=None,
     site_floor=None,
+    free_hit_layers=None,
 ):
     lookup = {(*row[1][:3], row[0][3]): i for i, row in enumerate(jobs, 1)}
     need(len(lookup) == len(jobs) == 2354, "distinct source per site and generation")
@@ -88,6 +89,7 @@ def scenarios(
         local, adjacent, _, _ = K["sources"](group, paths[layer], sources)
         need(local == sources and not local & adjacent, "exclusive sources")
         durations = []
+        bypass = direct and (free_hit_layers is None or layer in free_hit_layers)
         for e, read, setters in group:
             i = ordinals[e]
             row = jobs[i - 1]
@@ -99,7 +101,7 @@ def scenarios(
             )
             seen.add(i)
             potential = sum(v * rates[s] for s, v in weights.get(i, {}).items()) // PPM
-            cost, discount = paid_job(read, setters, potential, e in local, e in adjacent, direct)
+            cost, discount = paid_job(read, setters, potential, e in local, e in adjacent, bypass)
             durations.append(cost)
             applied[c] += discount
             discarded[c] += potential - discount
