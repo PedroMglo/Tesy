@@ -1,0 +1,48 @@
+// Test executable only. The existing pack DSO picks up this POSIX read symbol.
+// The read-only table is installed after worker drain for one external return.
+#include <atomic>
+#include <dlfcn.h>
+#include <fcntl.h>
+#include <sys/stat.h>
+#include <unistd.h>
+namespace entry_reader {
+constexpr size_t slab = 4406400, payload = 3*slab, window = 13221888;
+constexpr int keys = 36*128;
+using Read = ssize_t (*)(int,void *,size_t,off_t);
+static Read underlying() {
+    static const auto real = reinterpret_cast<Read>(dlsym(RTLD_NEXT,"pread"));
+    if (!real) std::abort();
+    return real;
+}
+struct Table {
+    int fd = -1;
+    off_t stride = 0;
+    bool serve = false;
+    std::array<int,keys> place{};
+    std::array<std::atomic<unsigned>,keys> calls{};
+    std::atomic<unsigned> wrong{0}, served{0}, disk{0};
+    std::unique_ptr<unsigned char[]> bytes;
+};
+static Table table;
+static std::atomic<Table *> active{nullptr};
+}
+
+extern "C" ssize_t pread(int fd,void *dst,size_t n,off_t off) {
+    using namespace entry_reader;
+    auto *t = active.load(std::memory_order_acquire);
+    if (t && fd == t->fd) {
+        if (n != window || off < 0 || off % t->stride || off/t->stride >= keys) {
+            t->wrong.fetch_add(1,std::memory_order_relaxed);
+        } else {
+            const size_t id = off/t->stride;
+            t->calls[id].fetch_add(1,std::memory_order_relaxed);
+            if (t->serve && t->place[id]>=0) {
+                std::memcpy(dst,t->bytes.get()+size_t(t->place[id])*window,n);
+                t->served.fetch_add(1,std::memory_order_relaxed);
+                return ssize_t(n);
+            }
+            t->disk.fetch_add(1,std::memory_order_relaxed);
+        }
+    }
+    return underlying()(fd,dst,n,off);
+}
