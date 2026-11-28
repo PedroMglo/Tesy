@@ -2,6 +2,10 @@
 
 **23 de novembro de 2026.** O projeto demonstrou inferência do GPT-OSS-120B acima da RAM no portátil e ganhos de mecanismos específicos. O último controlo operacional publicado é R0 `slots40-persistent`, opt-in. **M3 PARTIAL, M4 NOT_MET.** O último fecho experimental é C320, de 7 de outubro. C321 regista a publicação e o estado para retomar. A branch da tese, de 17 de outubro, acrescenta documentação. A decisão desta revisão é investir primeiro na análise de filas do decode e estudar a possibilidade de reutilização no prefill mantendo a geometria de R0. [Decisão de arquitetura e responsabilidades](../../docs/architecture/0004-servico-exato-de-experts.md) · [Literatura e comparadores](literatura.md) · [Inventário Git](repositorio.md)
 
+## 28 de novembro · proponente 20B e decisão sobre o backend
+
+O GPT-OSS-20B previu 30 de 32 IDs do nominal no primeiro ensaio com dois tokens de avanço e história real do 120B. A CPU do portátil teria de produzir essas propostas em menos tempo do que o medido, mesmo concedendo a verificação do target e a seleção ideal dos blocos. Mantendo os 40 slots primários, o 20B inteiramente residente também excederia o orçamento de memória combinado. **NO_GO para a adoção desta configuração.** O registo fixa a redução de prefill necessária para combinar ambas as vias. [Medição, custo por braço e condições de reabertura](../ready-experts/draft20/README.md)
+
 ## 27 de novembro · produto em hardware com diferentes capacidades
 
 Uma arquitetura de execução por expert pronto foi confrontada com os dois pedidos nominais do pack. Com sobreposição ideal e serviço medido, os pisos de primeiro conteúdo final são 10,658 e 11,416 s. O executor e a política causal de residência não atingem os dois alvos nos dois processos. Uma seleção retrospetiva de 353 experts com a mesma RAM reduz esses pisos para 9,118 e 9,864 s, com uma margem mínima de 136 ms. A capacidade de encontrar essa seleção antes da mensagem e realizar a sobreposição continua em aberto. [Arquitetura de produto](../../docs/architecture/0005-execucao-local-por-perfil.md) · [Comparação por braço, código e recibos](../ready-experts/README.md)

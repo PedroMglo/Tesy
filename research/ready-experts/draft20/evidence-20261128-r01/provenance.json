@@ -1,0 +1,135 @@
+{
+  "schema": "tesy-draft20-two-token-v1",
+  "base": "8d319aa7b5758d92c37b2433559b379d36bb7b5c",
+  "base_tree": "b434dd9918454223fdf8887568362805082008dc",
+  "protocol_commit": "60419dd49f34076f4be83b4760199d5f6f20b6ae",
+  "frontier_freeze": "6360fc8f1b56ccb09d4b88b6d4590507417b47ae",
+  "frontier_tree": "bfa5bd9559a3aa4d28c4983331dce9260c0230fd",
+  "host": {
+    "span_s": 60.007896198003436,
+    "max_gap_s": 1.0775592969948775,
+    "cpu": "AMD Ryzen AI 9 HX 370 w/ Radeon 890M",
+    "gpu_name": "NVIDIA GeForce RTX 4060 Laptop GPU",
+    "gpu_total_mib": 8188,
+    "gpu_driver": "620.73.04",
+    "model_device": "/dev/nvme0n1p3[/home]",
+    "model_fs": "btrfs",
+    "nvme": [
+      {
+        "bdf": "0000:c1:00.0",
+        "controller": "nvme0",
+        "critical_c": 89.85,
+        "current_c": 33.85,
+        "firmware": "V3MA101",
+        "model": "MTFDKBK1T0QFM-1BD1AABGB",
+        "sensor": "nvme-pci-c100",
+        "source": "Composite critical minus 2C admission; max is warning",
+        "stop_c": 87.85,
+        "warning_c": 86.85
+      }
+    ],
+    "power": {
+      "online_sources": [
+        "AC0",
+        "ucsi-source-psy-USBC000:002"
+      ],
+      "profile": "performance",
+      "source": "AC"
+    },
+    "swap_total": 16347820032,
+    "gpu_compute_max": 0,
+    "kernel": "7.3.4-200.fc44.x86_64"
+  },
+  "c55_sha256": "906c177c8e85492664eaa414ea0abfb30cf71948fffd0808497f47270942a7c4",
+  "stock_commit": "e95426f16982054c379ca7bdc8186996dd22f0fe",
+  "commit": "e8a6468518b61b33b53961d5b374af8c8ae0fc3b",
+  "tree": "86fca6ad9e279575fb49cc4e3a579b8a066dff2f",
+  "protocol_sha256": "1f450b1d65a622f1ff13aa101cf46ea8d45844f756258f676097617c93362d0a",
+  "binary_sha256": "ddf9046e5e488c3e7ea6e2a66b5d16c1a833e70dc574711163587cab4f819039",
+  "stats": {
+    "draft": [
+      2050,
+      59375625,
+      12109564352,
+      1790194591952490000,
+      1792107627120248600
+    ],
+    "target": [
+      56,
+      40127919,
+      63387346208,
+      1795562532015886600,
+      1795562532015886600
+    ]
+  },
+  "model_sha256": {
+    "draft": "52f57ab7d3df3ba9173827c1c6832e73375553a846f3e32b49f1ae2daad688d4",
+    "target": "582bd40f6886200101f4c4ed9f25f3fe80cc14c86e9e2b37746cd8904a0c622d"
+  },
+  "mounts": {
+    "draft": [
+      "/dev/sda2",
+      "ext4"
+    ],
+    "target": [
+      "/dev/nvme0n1p3[/home]",
+      "btrfs"
+    ]
+  },
+  "providers": {
+    "libcrypto.so.3": "695648ac8dc5e6a2b70e5e72399940de0f84bf24fddb7dd18949ba40bc575c72",
+    "libggml-base.so.0": "c58db87a08edfe5d499f24c1bdbd3efd844c40368f030282ef750c4e56b52c4d",
+    "libggml-cpu.so.0": "8e05100cf1a6711d4a3ef86e0d4a2551cd96269735e46851eb83f7b39bcc3ad5",
+    "libggml-cuda.so.0": "7f8c73e8e038a444a96252a1b79f1b83484fadadc2371c118c65f36d44ccd835",
+    "libggml.so.0": "13765192ba66ecd55305167bd37fcfb8070843318a6a05aa00e738e9d6fe15ea",
+    "libllama.so.0": "717a7e3dc18ae58585c6df1af2454c5b441c171258b7100ae7e11530e02265b8"
+  },
+  "capture": {
+    "provenance_sha256": "2d87e19181db819d1209679d6249d0df3fb21c7cfd8be5eb525423cb51dd2627",
+    "c118_s": 60.1351929750017,
+    "raw_bytes": 1350944,
+    "hash": {
+      "wall_s": 12.60284302099899,
+      "peak_B": 101597184,
+      "stdout_sha256": "c2133357134274d29078bb1de515edc51826db28b44614065325c78fb8ee0d66",
+      "samples_sha256": "21e97dd587ab0f553c1044fc1bb2238d98a22e73fcf4f83c50133bdee99b3bdc"
+    },
+    "execution": {
+      "wall_s": 170.83005841400154,
+      "peak_B": 12922945536,
+      "max_cpu_C": 95.5,
+      "max_gpu_C": 61.3,
+      "max_nvme_C": 41.85,
+      "max_gpu_MiB": 2,
+      "min_available_B": 26404253696,
+      "max_swap_B": 0,
+      "gpu_sampled_J": 621.291245152497,
+      "gpu_covered_s": 170.12914076199377,
+      "stdout_sha256": "42776fc19b6e6e24d8afeb82d0b998a33d1281a1badc804fbcc69143f5b9c002",
+      "stderr_sha256": "4b0390aeb4c47222ada64d6e33418d70a6c892295f7226d259191ed192440908",
+      "samples_sha256": "0d309d6f09d4f886c309cde22f67329e531070a76679bfd623ddfab8fab2c86f",
+      "samples": 244
+    }
+  },
+  "physical_receipt_sha256": "e0f472b81f854c8ee6f7dedf69ae977256326cb46061ec0d0029e83545e5c809",
+  "scores": {
+    "study": "fdd3ce63c21c1f8e2f3d30338bd6f43c86706f94ca65c1169a0a07732fa1ba41",
+    "frontier": "409df84a17a5993f86e6b1507651c4e7d1acd9486943582a99106bd6848fc42e",
+    "coverage": "846acb7cf4d0fc8e584bab400cb24856bc4d60aa7b552175c6add0dccaa64b8b"
+  },
+  "host_energy_J": null,
+  "model_forwards_120b": 0,
+  "gpu_forwards": 0,
+  "unit": "independent serial and speculative contexts in one isolated CPU draft process; historical target samples and W clocks",
+  "commands": {
+    "cwd": "/mnt/sdisk-ssd-ext/Tesy/repo/build/tesy-ready-layer-20261127",
+    "prepare": "python3 -IB research/ready-experts/draft20/inputs.py --nominal /mnt/sdisk-ssd-ext/Tesy/outputs/ready-cpu-wave-20261127-01/part-01/tesy-native-wave-http-20261127-r01 --code /mnt/sdisk-ssd-ext/Tesy/outputs/ready-code-chat-20261127-01/part-01/tesy-wave-code-chat-20261127-r01 --new-output-dir /tmp/tesy-draft20-20261128/inputs-r01",
+    "build": "g++ -std=c++20 -O2 -Wall -Wextra -Werror -I/mnt/sdisk-ssd-ext/Tesy/repo/tesy-scale-lab/backends/stock-e95426-sm89-20261124b/source/include -I/mnt/sdisk-ssd-ext/Tesy/repo/tesy-scale-lab/backends/stock-e95426-sm89-20261124b/source/ggml/include /mnt/sdisk-ssd-ext/Tesy/repo/build/tesy-ready-layer-20261127/research/ready-experts/draft20/draft.cpp -L/mnt/sdisk-ssd-ext/Tesy/repo/tesy-scale-lab/backends/stock-e95426-sm89-20261124b/build/bin -Wl,-rpath,/mnt/sdisk-ssd-ext/Tesy/repo/tesy-scale-lab/backends/stock-e95426-sm89-20261124b/build/bin -lllama -lggml -lcrypto -o /tmp/tesy-draft20-20261128/draft20",
+    "c55": "python3 -IB research/qualification-retake/nvme_admission/window.py --nvme-model /home/pmglo/models/gpt-oss-120b-gguf/gpt-oss-120b-MXFP4.gguf --new-output-dir /var/tmp/tesy-draft20-c55-20261128-r01",
+    "physical": "systemd-run --user --scope --unit=tesy-draft20-20261128-r01 --slice=app.slice -p MemoryHigh=16G -p MemoryMax=16G -p MemorySwapMax=0 -p TasksMax=96 -p RuntimeMaxSec=905 /usr/bin/prlimit --fsize=33554432:33554432 -- /usr/bin/timeout 900 /usr/bin/python3 -IB research/ready-experts/draft20/capture.py --exe /tmp/tesy-draft20-20261128/draft20 --exe-sha256 ddf9046e5e488c3e7ea6e2a66b5d16c1a833e70dc574711163587cab4f819039 --target /home/pmglo/models/gpt-oss-120b-gguf/gpt-oss-120b-MXFP4.gguf --draft /home/pmglo/.local/share/tesy/models/gpt-oss-20b/gpt-oss-20b-mxfp4.gguf --placement /home/pmglo/models/tesy-gpt-oss-120b-nvme/tesy-c291-manifest-20261125-r02/receipt.json --inputs /tmp/tesy-draft20-20261128/inputs-r01 --inputs-sha256 17285d7438cedc23a0db6c119ee8a315eb06b4a45ab97aeaef623bb25c20c356 --c55 /var/tmp/tesy-draft20-c55-20261128-r01 --c55-sha256 906c177c8e85492664eaa414ea0abfb30cf71948fffd0808497f47270942a7c4 --new-output-dir /var/tmp/tesy-draft20-20261128-r01",
+    "review": "python3 -IB research/ready-experts/draft20/review.py --inputs /tmp/tesy-draft20-20261128/inputs-r01 --physical /var/tmp/tesy-draft20-20261128-r01 --new-output-dir /tmp/tesy-draft20-20261128/score-r01",
+    "frontier": "python3 -IB research/ready-experts/draft20/frontier.py /tmp/tesy-draft20-20261128/score-r01/receipt.json --new-output-dir /tmp/tesy-draft20-20261128/frontier-r01",
+    "reconcile": "python3 -IB research/ready-experts/draft20/reconcile.py --study /tmp/tesy-draft20-20261128/score-r01/receipt.json --physical /var/tmp/tesy-draft20-20261128-r01 --lookup /mnt/sdisk-ssd-ext/Tesy/outputs/ready-code-chat-20261127-01/part-01/lookup-r01 --price /mnt/sdisk-ssd-ext/Tesy/outputs/ready-code-price-20261127-01/part-01/tesy-code-price-20261127-r02 --c55 /var/tmp/tesy-draft20-c55-20261128-r01 --nominal /mnt/sdisk-ssd-ext/Tesy/outputs/ready-cpu-wave-20261127-01/part-01/tesy-native-wave-http-20261127-r01 --code /mnt/sdisk-ssd-ext/Tesy/outputs/ready-code-chat-20261127-01/part-01/tesy-wave-code-chat-20261127-r01 --new-output-dir /tmp/tesy-draft20-20261128/reconcile-r02",
+    "archive_verify": "python3 -IB research/qualification-retake/private_archive/verify.py /mnt/sdisk-ssd-ext/Tesy/outputs/ready-draft20-20261128-01 research/ready-experts/draft20/evidence-20261128-r01/archive.json"
+  }
+}
