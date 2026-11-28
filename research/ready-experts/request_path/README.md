@@ -1,5 +1,7 @@
 # Quanto vale manter os pesos na RAM durante uma conversa?
 
+No NVMe interno medimos depois as 1 519 leituras obrigatórias que sobram. Todas já são pedidas na primeira remap da própria camada. O cenário que permite receber o último byte à entrada do router seguinte continua acima dos 10 s nos quatro cortes. [Transporte e banda admissível](transport.md) · [Fronteira da camada](layer-release.md) · [Cobertura que reabriria a decisão](advance.md)
+
 **NO_GO para substituir o backend com base na retenção CPU isolada.** Na agenda dos quatro workers, servir diretamente os 484 acertos adiantaria o primeiro conteúdo final em 1,253 s e 1,276 s. Mesmo dando ao escalonador liberdade de escolher os workers e oferecer toda a antecipação anterior ao callback, os primeiros finais continuariam em pelo menos **15,025 s e 16,315 s** aos preços observados das faltas. A meta é 10 s. O cenário favorável ainda fica abaixo de 6 tok/s nos dois processos. O melhor pedido nominal já medido na configuração pack + fusão CPU continua nos **17,689 s e 5,357 tok/s**. R0 slots40-persistent é o controlo. M3 PARTIAL, M4 NOT_MET. [Pedido medido](../cpu_wave/README.md) · [Protocolo](protocol.md) · [Decisão em nanossegundos](evidence-20261128-r03/decision.json)
 
 | Agenda e serviço | P97 primeiro final, s | P97 decode, tok/s | P106 primeiro final, s | P106 decode, tok/s |
@@ -28,4 +30,13 @@ Na raiz do worktree, o primeiro comando verifica os artefactos publicados sem GP
 p=research/ready-experts/request_path
 python3 -IB "$p/analyse.py" --check "$p/evidence-20261128-r03"
 python3 -IB "$p/analyse.py" --check "$p/evidence-20261128-r03" --archive "$TESY_PFJ_ARCHIVE"
+```
+
+**Validação local da unidade.** As quatro verificações públicas reproduzem o replay, os dois ensaios físicos e o limiar de antecipação. Os controlos negativos alteram uma linha de ranks, introduzem um expert alheio ao router, trocam dois grupos cronometrados e retiram um setor ao contador do disco. Todos foram rejeitados. A reanálise C318, os oito originais C317 e as 7 533 versões em 45 heads da consolidação passaram. Executámos 444 testes do projeto e 42 testes dos gates a partir da raiz. Uma invocação inicial a partir de `tools/` falhou ao resolver fixtures relativas à raiz. O arquivo privado `request-path-20261128-r01` contém 29 ficheiros e 1 304 850 bytes das novas campanhas, verificados após cópia sem substituição. [Manifesto do arquivo privado](private-archive.json)
+
+```sh
+python3 -IB "$p/transport_grade.py" --check "$p/evidence-transport-20261128-r01"
+python3 -IB "$p/layer_release.py" grade --check "$p/evidence-layer-20261128-r01"
+python3 -IB "$p/advance.py" --check "$p/evidence-advance-20261128-r01"
+python3 -IB "$p/test_evidence.py"
 ```
