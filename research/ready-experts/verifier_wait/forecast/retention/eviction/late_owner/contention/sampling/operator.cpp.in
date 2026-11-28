@@ -1,0 +1,69 @@
+// The authenticated slot fixture supplies Mapping, pattern() and the three original graphs.
+using Routing = std::array<int32_t, ranks>;
+
+int main(int argc, char **argv) {
+    try {
+        check(argc == 3, "role and exclusive output required");
+        const std::string role = argv[1];
+        const bool planar = role == "PLANAR";
+        check(planar || role == "SWAP" || role == "STALE", "unknown arm");
+        const size_t count = planar ? slots : 1252;
+        Routing live = planar ? slot_ids : Routing{1000, 13, 777, 1251};
+        int32_t spare = 1249;
+
+        Mapping pool(count * stride);
+        ggml_context_ptr ctx(ggml_init({2u << 20, nullptr, true}));
+        ggml_backend_ptr cpu(ggml_backend_cpu_init());
+        ggml_backend_buffer_ptr buf(ggml_backend_cpu_buffer_from_ptr(pool.data, pool.size));
+        check(ctx && cpu && buf, "host pool and scheduler");
+        ggml_backend_cpu_set_n_threads(cpu.get(), 8);
+        ggml_backend_buffer_set_usage(buf.get(), GGML_BACKEND_BUFFER_USAGE_WEIGHTS);
+        Matrix weights;
+        for (size_t k = 0; k < weights.size(); ++k) {
+            auto *t = ggml_new_tensor_3d(ctx.get(), GGML_TYPE_MXFP4, width, width, count);
+            check(t->nb[2] == slab, "MXFP4 geometry");
+            t->nb[2] = planar ? slab : stride;
+            t->nb[3] = count * t->nb[2];
+            Bytes *base = pool.data + k * slab * (planar ? count : 1);
+            check(ggml_backend_tensor_alloc(buf.get(), t, base) == GGML_STATUS_SUCCESS,
+                  "host-backed weight tensor");
+            weights[k] = t;
+        }
+
+        int weight_sets = 0;
+        auto install = [&](int record, int32_t frame) {
+            if (planar) {
+                Mapping staged(stride);
+                pattern(staged.data, record);
+                for (size_t k = 0; k < weights.size(); ++k) {
+                    ggml_backend_tensor_set(weights[k], staged.data + k * slab, frame * slab, slab);
+                    ++weight_sets;
+                }
+            } else {
+                pattern(pool.data + frame * stride, record);
+            }
+        };
+        for (size_t r = 0; r < ranks; ++r) install(int(r), live[r]);
+        if (!planar) {
+            install(4, spare);
+            check(mprotect(pool.data, pool.size, PROT_READ) == 0, "read-only frame arena");
+        }
+
+        std::unique_ptr<FILE, CloseFile> output(fopen(argv[2], "wbx"));
+        check(bool(output), "exclusive projection file");
+        for (int generation = 0; generation < 2; ++generation) {
+            if (generation == 1 && planar) install(4, live[1]);
+            if (generation == 1 && role == "SWAP") std::swap(live[1], spare);
+            for (int n : {1, 20, 32}) {
+                calculate(weights, cpu.get(), n, false, output.get(), live);
+            }
+        }
+        check(fflush(output.get()) == 0, "drain F32 words");
+        printf("%s %zu %zu %d %d %d\n", role.c_str(), count, pool.size, weight_sets, live[1],
+               int(!planar));
+        return 0;
+    } catch (const std::exception &e) {
+        fprintf(stderr, "%s\n", e.what());
+        return 1;
+    }
+}
