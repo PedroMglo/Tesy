@@ -1,0 +1,447 @@
+{
+  "cases": {
+    "code153": {
+      "arms": {
+        "filter_lru": {
+          "charged": 3343,
+          "entry_members": 1000,
+          "events": {
+            "decode_32": {
+              "bypasses": 1350,
+              "reads": 1430,
+              "references": 3200,
+              "resets": 1,
+              "substitutions": 80
+            },
+            "prefill_153": {
+              "bypasses": 945,
+              "reads": 1378,
+              "references": 3542,
+              "substitutions": 222
+            }
+          },
+          "misses_sha256": "169306dfe45c66ac98f7d8f69a15b91ebafadce26dbef11b32820b622d163c54",
+          "observed_prefix": {},
+          "order_sha256": "817f522c469c8e47dacafe47e312ac4ecef7523bf402b33c65be58166dc91133",
+          "phases": {
+            "decode_32": 1430,
+            "prefill_153": 1378
+          },
+          "reads": 2808,
+          "requested_B": 37127061504,
+          "restore": 535,
+          "restore_B": 7073710080,
+          "restore_global_lru": 554,
+          "state_at_cut_sha256": "5a56c95707940467a6fa0b67d7a54612a2de7f4c8ec3a0ebf21973102efadd21",
+          "terminal_members": 1212,
+          "terminal_sha256": "986d93fd19e33d1b42ae2de3adb147ce43a3a42f6796d03d1be8cd776945d372"
+        },
+        "filter_min": {
+          "charged": 2636,
+          "entry_members": 1000,
+          "events": {
+            "decode_32": {
+              "bypasses": 545,
+              "reads": 888,
+              "references": 3200,
+              "resets": 1,
+              "substitutions": 343
+            },
+            "prefill_153": {
+              "bypasses": 781,
+              "reads": 1414,
+              "references": 3542,
+              "substitutions": 423
+            }
+          },
+          "misses_sha256": "9279e42ddd3347fdaddc14563a3f88b0292a31ae07b430db4b52c43f5275d125",
+          "observed_prefix": {},
+          "order_sha256": "45a65890814ac0748a918d158589a721d16a3eb1cf551f56c06667ba26e14f1a",
+          "phases": {
+            "decode_32": 888,
+            "prefill_153": 1414
+          },
+          "reads": 2302,
+          "requested_B": 30436786176,
+          "restore": 334,
+          "restore_B": 4416110592,
+          "restore_global_lru": 294,
+          "state_at_cut_sha256": "5a56c95707940467a6fa0b67d7a54612a2de7f4c8ec3a0ebf21973102efadd21",
+          "terminal_members": 1212,
+          "terminal_sha256": "1567dafdd3d31261253e046f0f05dde3255d6f0ec1318bcc7bbea369dc1d4537"
+        },
+        "lru": {
+          "charged": 2250,
+          "entry_members": 1000,
+          "events": {
+            "decode_32": {
+              "reads": 807,
+              "references": 3200,
+              "resets": 1,
+              "substitutions": 807
+            },
+            "prefill_153": {
+              "reads": 1332,
+              "references": 3542,
+              "substitutions": 1120
+            }
+          },
+          "misses_sha256": "5b2cc41a391df71e14d46515ea952cb3e0975811337a8a98606192df53f9ee19",
+          "observed_prefix": {},
+          "order_sha256": "5fcce54087684b4b0fdf9880a14dbcf5e724a889fa6c5b586bac7d77bf31cf9d",
+          "phases": {
+            "decode_32": 807,
+            "prefill_153": 1332
+          },
+          "reads": 2139,
+          "requested_B": 28281618432,
+          "restore": 111,
+          "restore_B": 1467629568,
+          "restore_global_lru": 0,
+          "state_at_cut_sha256": "5a56c95707940467a6fa0b67d7a54612a2de7f4c8ec3a0ebf21973102efadd21",
+          "terminal_members": 1212,
+          "terminal_sha256": "5886a3cc8f06c9e7b29159afbef2e9b85b5af91335b1f16e8e1aec4aadbe8f58"
+        }
+      },
+      "incumbent": {
+        "decode_32": 753,
+        "prefill_153": 1475
+      },
+      "incumbent_end_sha256": "12ca32215a29f406753327e6efce811bfe7d3ae8e5f02b62ea77c4eb4cf256b2",
+      "incumbent_prefix": {},
+      "inputs": {
+        "c294-code153-2-on": {
+          "events.tsv": "e68a1bd22a6477a214cfbdd04ff9cfc3515d531e52e68c8b3dc41f317f536bf2",
+          "initial.json": "484bd61b14ae7f970e86e9df29b8e99334d89cb787cf8ffd82af4ce526b895b5",
+          "result.json": "2fc10b510a59e00595fe7a361e44d11e233ffc68c07862964c0cf20c65f8d45a"
+        },
+        "c294-code153-3-on": {
+          "events.tsv": "dc3ef0aba2d5c04f51512300a4202c07c3055db36e18e90f4e67646c5e7818f3",
+          "initial.json": "d00a8d5ed6efca5bf3b79bda041a665c6ec10a7ace6eb84f80dfe018ab219966",
+          "result.json": "47fc71ecb38a17ec3d8bfcc4c1249c4e3ac599d90c604ae88ca9c78661b0fd23"
+        }
+      },
+      "terminal_members": 1252
+    },
+    "natural_nominal": {
+      "arms": {
+        "filter_lru": {
+          "charged": 1837,
+          "entry_members": 1212,
+          "events": {
+            "decode_to_first": {
+              "bypasses": 858,
+              "reads": 891,
+              "references": 4400,
+              "substitutions": 33
+            },
+            "prefill_148": {
+              "bypasses": 494,
+              "reads": 501,
+              "references": 2202,
+              "resets": 1,
+              "substitutions": 7
+            },
+            "prefill_5": {
+              "bypasses": 75,
+              "reads": 75,
+              "references": 341
+            },
+            "tail": {
+              "bypasses": 51,
+              "reads": 51,
+              "references": 200
+            }
+          },
+          "misses_sha256": "ee37b4414547623e0fe958c1f6c2a1df4057422b267defdb2364faa5b8d3648e",
+          "observed_prefix": {
+            "T1_decode": 1797,
+            "T1_prefill": 2181
+          },
+          "order_sha256": "e5191599d4b8a74beeb2c8f9aa61d03ecef2a875cbc7708d8a648d86a6847087",
+          "phases": {
+            "decode_to_first": 891,
+            "prefill_148": 501,
+            "prefill_5": 75,
+            "tail": 51
+          },
+          "reads": 1518,
+          "requested_B": 20070825984,
+          "restore": 319,
+          "restore_B": 4217782272,
+          "restore_global_lru": 397,
+          "state_at_cut_sha256": "e1fbd62a569e34e586f6c9c3963ce47e9d4435587f9a2d705ee772a925e8f87a",
+          "terminal_members": 1212,
+          "terminal_sha256": "bf3bfff911dca1d795106d127558c388fe7447e6b2c6d414d6d2c242b8590858"
+        },
+        "filter_min": {
+          "charged": 1523,
+          "entry_members": 1212,
+          "events": {
+            "decode_to_first": {
+              "bypasses": 459,
+              "reads": 684,
+              "references": 4400,
+              "substitutions": 225
+            },
+            "prefill_148": {
+              "bypasses": 378,
+              "reads": 545,
+              "references": 2202,
+              "resets": 1,
+              "substitutions": 167
+            },
+            "prefill_5": {
+              "bypasses": 44,
+              "reads": 68,
+              "references": 341,
+              "substitutions": 24
+            },
+            "tail": {
+              "bypasses": 9,
+              "reads": 18,
+              "references": 200,
+              "substitutions": 9
+            }
+          },
+          "misses_sha256": "0d9d69c67b1d2c419e59e49c131d2cba17dbe8ea048bc23494f1e98270538bf3",
+          "observed_prefix": {
+            "T1_decode": 1610,
+            "T1_prefill": 2181
+          },
+          "order_sha256": "f760dc38ca7fbfa83a8920f722578914d7424ba22d02bb25d22925e531b56260",
+          "phases": {
+            "decode_to_first": 684,
+            "prefill_148": 545,
+            "prefill_5": 68,
+            "tail": 18
+          },
+          "reads": 1315,
+          "requested_B": 17386782720,
+          "restore": 208,
+          "restore_B": 2750152704,
+          "restore_global_lru": 245,
+          "state_at_cut_sha256": "f30baed0acf2c933aa7ae5796fe4250e85dcf77e14515abf7a07bd5cd64d6751",
+          "terminal_members": 1212,
+          "terminal_sha256": "bb40edb69c860d27557a865697b8b67f883a82cd281849a94c29bc410340bc18"
+        },
+        "lru": {
+          "charged": 1577,
+          "entry_members": 1212,
+          "events": {
+            "decode_to_first": {
+              "reads": 710,
+              "references": 4400,
+              "substitutions": 711
+            },
+            "prefill_148": {
+              "reads": 665,
+              "references": 2202,
+              "resets": 1,
+              "substitutions": 672
+            },
+            "prefill_5": {
+              "reads": 30,
+              "references": 341,
+              "substitutions": 30
+            },
+            "tail": {
+              "reads": 10,
+              "references": 200,
+              "substitutions": 10
+            }
+          },
+          "misses_sha256": "ca395f7199289b8f372556c7c8370b1525374baba866c0f488f4cdb78097f8ae",
+          "observed_prefix": {
+            "T1_decode": 1238,
+            "T1_prefill": 2214
+          },
+          "order_sha256": "c9b3ad38e78e6c2f2a3381aa9e513bf668aaad43eb64e9539b9aab5bb6a1b45a",
+          "phases": {
+            "decode_to_first": 710,
+            "prefill_148": 665,
+            "prefill_5": 30,
+            "tail": 10
+          },
+          "reads": 1415,
+          "requested_B": 18708971520,
+          "restore": 162,
+          "restore_B": 2141945856,
+          "restore_global_lru": 0,
+          "state_at_cut_sha256": "9411fc02a935cfabd41a3dc54f52acace76bd0361fa1862cc0015fab3b9c0d42",
+          "terminal_members": 1212,
+          "terminal_sha256": "10df24cba68d4e40004fb3c8fbc0627450d044423201f506179e80d81d0fa9de"
+        }
+      },
+      "incumbent": {
+        "decode_to_first": 540,
+        "prefill_148": 532,
+        "prefill_5": 26,
+        "tail": 12
+      },
+      "incumbent_end_sha256": "483de328c79f4b069b67d6a76778fa6d6dad000109823c357f264fc948eddefa",
+      "incumbent_prefix": {
+        "T1_decode": 1177,
+        "T1_prefill": 2140
+      },
+      "inputs": {
+        "P106": "cb13ff990afb3164bb61086e57a6caeff14187b66a1784c88e79cd3d521121bd",
+        "P97": "05e32c2af753026e471fa61c9dcb43867ca6b9a3001045a2138bc96c422928dc",
+        "T1": "16574f71e2a697479d1be118ddd5d5a103b3218c1f48b428ee32ebbb355fe259"
+      },
+      "terminal_members": 1252
+    },
+    "nominal153": {
+      "arms": {
+        "filter_lru": {
+          "charged": 2262,
+          "entry_members": 1000,
+          "events": {
+            "decode_32": {
+              "bypasses": 1209,
+              "reads": 1217,
+              "references": 3200,
+              "resets": 1,
+              "substitutions": 8
+            },
+            "prefill_153": {
+              "bypasses": 279,
+              "reads": 511,
+              "references": 2373,
+              "substitutions": 20
+            }
+          },
+          "misses_sha256": "5897a67e4e4d83d4c85aa8818d160039a8a43c037a8885a62195b0a4ad20ce92",
+          "observed_prefix": {},
+          "order_sha256": "0176d03827329597c5eb78e022fa7ca6d45b181635982b9ab66732679dfcdde4",
+          "phases": {
+            "decode_32": 1217,
+            "prefill_153": 511
+          },
+          "reads": 1728,
+          "requested_B": 22847422464,
+          "restore": 534,
+          "restore_B": 7060488192,
+          "restore_global_lru": 504,
+          "state_at_cut_sha256": "3a227fb365cca6bffb2ab6953beae95d2d426d7d6a313c7269be7854d44b5971",
+          "terminal_members": 1212,
+          "terminal_sha256": "fada87f04fc13ea7961d184565f5b50b10bafff430f55d78191e2b31b5085311"
+        },
+        "filter_min": {
+          "charged": 1709,
+          "entry_members": 1000,
+          "events": {
+            "decode_32": {
+              "bypasses": 545,
+              "reads": 829,
+              "references": 3200,
+              "resets": 1,
+              "substitutions": 285
+            },
+            "prefill_153": {
+              "bypasses": 190,
+              "reads": 570,
+              "references": 2373,
+              "substitutions": 172
+            }
+          },
+          "misses_sha256": "bc712401ff70560cc38480f59469f43e78f2688adc8642dc8776c02dee308826",
+          "observed_prefix": {},
+          "order_sha256": "2ffbe78b36b72866837d61917c889bc9f8c0189080a23bb555ca9247ec64ccea",
+          "phases": {
+            "decode_32": 829,
+            "prefill_153": 570
+          },
+          "reads": 1399,
+          "requested_B": 18497421312,
+          "restore": 310,
+          "restore_B": 4098785280,
+          "restore_global_lru": 262,
+          "state_at_cut_sha256": "3a227fb365cca6bffb2ab6953beae95d2d426d7d6a313c7269be7854d44b5971",
+          "terminal_members": 1212,
+          "terminal_sha256": "892c0e544920d1e3e14c1ebe8b510e39f49fdfeb1a77c401f2d94fcda27995f4"
+        },
+        "lru": {
+          "charged": 1392,
+          "entry_members": 1000,
+          "events": {
+            "decode_32": {
+              "reads": 570,
+              "references": 3200,
+              "resets": 1,
+              "substitutions": 570
+            },
+            "prefill_153": {
+              "reads": 725,
+              "references": 2373,
+              "substitutions": 514
+            }
+          },
+          "misses_sha256": "a6baa6c3b33a8606f99c83af824b385fcc5496bf2c80246e6d02a7abe7a56e38",
+          "observed_prefix": {},
+          "order_sha256": "eb3e30d84d9618ae3c3f854fd3c632b5ec676d6468c5154f5aa0ba75184d6c1b",
+          "phases": {
+            "decode_32": 570,
+            "prefill_153": 725
+          },
+          "reads": 1295,
+          "requested_B": 17122344960,
+          "restore": 97,
+          "restore_B": 1282523136,
+          "restore_global_lru": 0,
+          "state_at_cut_sha256": "3a227fb365cca6bffb2ab6953beae95d2d426d7d6a313c7269be7854d44b5971",
+          "terminal_members": 1212,
+          "terminal_sha256": "fef72abada15ab0076e15ee67385b72702a14d669a48d0b837f878efe49d0848"
+        }
+      },
+      "incumbent": {
+        "decode_32": 557,
+        "prefill_153": 582
+      },
+      "incumbent_end_sha256": "5a28949f9aa33f5d1cda83f1b4f7b174d56cd099dca65babc5b45f942c7fe3bd",
+      "incumbent_prefix": {},
+      "inputs": {
+        "c294-nominal153-2-on": {
+          "events.tsv": "3e735e0dcc1d4aeeb119ef48ad6e0c84ac6fd9a69e8544c27f95106df49e066c",
+          "initial.json": "4ad4a7767a3e6e4c25e5693ec206565dc039394a771ef2074f07f2dcd69a70ee",
+          "result.json": "cf7f22fde47fec4f319a19897a0118b05c1efeb5304b48ca73d94a5b0ef85606"
+        },
+        "c294-nominal153-3-on": {
+          "events.tsv": "a963af23de4f4dfd167ef53519d013ee12786d17dc67fba864cb4fe83875d797",
+          "initial.json": "19bf1c09a96e851440d104abbbb08cc062c2e602d7c686c84fd33d7236dbc269",
+          "result.json": "700c3afd93e5b7fe2d3aa8c2739dfa5e4af8da0081c1a0d3509f9f42ccd1d032"
+        }
+      },
+      "terminal_members": 1252
+    }
+  },
+  "certificate_sha256": "bbcfcd3e04bd06e28e95e78c58ae4dc24bf7eab64aa05b1678f431ddfc06bcb2",
+  "evidence": "TRACE_DERIVED",
+  "gates": {
+    "filter_lru": {
+      "code153_charged": false,
+      "code_decode": false,
+      "natural_decode": false,
+      "natural_first": false,
+      "natural_total": false,
+      "nominal153_charged": false,
+      "two_turns": false
+    },
+    "filter_min": {
+      "code153_charged": false,
+      "code_decode": false,
+      "natural_decode": false,
+      "natural_first": false,
+      "natural_total": false,
+      "nominal153_charged": false,
+      "two_turns": false
+    }
+  },
+  "measured_client_ns": null,
+  "method": "ea39593f19056ea9cba257ea2702f017637e66a9a637c8cfd8f0e8325537e3ce",
+  "model_forwards": 0,
+  "plan_sha256": "e321e2956e7c4c6803784e3a72b6d3f565c7063dff221bb6797d66c6e92c02d0",
+  "schema": "tesy.cpu_frame_admission.v1",
+  "source_sha256": "dde1b3b8bbc70173a1a029570efcc4c27fdfdf7d0bb060a557a9aea01707fa3b",
+  "status": "NO_GO_CAUSAL_ADMISSION"
+}
