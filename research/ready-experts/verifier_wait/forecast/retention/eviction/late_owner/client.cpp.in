@@ -1,0 +1,108 @@
+static void owner_start(llama_model *model,const json &plan,const std::string &mode) {
+    using namespace owner_probe;
+    auto &t=table;
+    t.train_start=stamp();
+    t.mgr=model->moe_stream();
+    auto lock=entry_drained(t.mgr);
+    t.fd=entry_fd(plan);
+    t.stride=plan.at("stride");
+    check(mode.size()==1 && std::string("RVOH").find(mode[0])!=std::string::npos,"source mode");
+    t.mode=mode[0];
+    t.place.fill(-1);
+    const auto &records=plan.at("records");
+    check(records.size()==capacity && t.mgr->n_io_threads==4 && t.mgr->n_slots==40,"source geometry");
+    if (t.mode!='R') {
+        void *ptr=nullptr;
+        check(posix_memalign(&ptr,4096,capacity*window)==0 && ptr,"independent aligned bank");
+        t.bytes=static_cast<uint8_t *>(ptr);
+    }
+    for (size_t i=0;i<records.size();i++) {
+        int layer=records[i].at("layer"), expert=records[i].at("expert");
+        int key=layer*experts+expert;
+        check(t.place.at(key)==-1 && (layer!=14 || expert==54),"unique cohort");
+        t.place[key]=int(i);
+    }
+    t.phase.store(1,std::memory_order_release);
+}
+
+static void owner_arm(const json &plan) {
+    using namespace owner_probe;
+    auto &t=table;
+    auto lock=entry_drained(t.mgr);
+    check(t.phase.load()==1 && entry_fd(plan)==t.fd && t.trained==(t.mode=='R'?0:capacity),
+          "all records available before the incremental return");
+    auto scratch=entry_buffer(t.mode=='V' ? window : 4096);
+    for (const auto &r:plan.at("records")) {
+        const int layer=r.at("layer"), e=r.at("expert"), s=r.at("slot"), idx=t.place[layer*experts+e];
+        const auto &sl=*t.mgr->layers.at(layer);
+        check(sl.slot_state.at(s)==LLAMA_MOE_STREAM_SLOT_RESIDENT && sl.slot_expert.at(s)==e &&
+              sl.slot_gen.at(s)==r.at("generation") && !sl.slot_claimed.at(s) && sl.expert_slot.at(e)==s,
+              "promised live primary");
+        if (t.mode=='R') continue;
+        const auto &held=t.bank[idx];
+        check(held.state.load(std::memory_order_acquire)==2 && held.generation>0,"earlier compulsory read");
+        if (t.mode=='V') {
+            auto data=t.bytes+size_t(idx)*window;
+            const int key=layer*experts+e;
+            check(disk_read()(t.fd,scratch.get(),window,t.stride*key)==ssize_t(window) &&
+                  !std::memcmp(data,scratch.get(),window),"unaltered complete window");
+            for (size_t k=0;k<3;k++) {
+                const auto *part=data+k*slab;
+                check(fingerprint(std::vector<uint8_t>(part,part+slab))==r.at("matrices").at(k),
+                      "independent matrix SHA");
+                ggml_backend_tensor_get(sl.weights.at(k).cache,scratch.get(),s*slab,slab);
+                check(!std::memcmp(scratch.get(),part,slab),"entry primary differs from retained owner");
+            }
+        }
+    }
+    t.phase.store(2,std::memory_order_release);
+}
+
+static void owner_close(const json &plan) {
+    using namespace owner_probe;
+    auto &t=table;
+    auto lock=entry_drained(t.mgr);
+    check(t.phase.exchange(0)==2 && entry_fd(plan)==t.fd && t.reservations==13 && t.tile==5 &&
+          t.source_replaced==1,"drain or target generation");
+    std::free(t.bytes);
+    t.bytes=nullptr;
+}
+
+static json owner_report(const json &plan) {
+    using namespace owner_probe;
+    auto &t=table;
+    json waves=json::array(), jobs=json::array(), captures=json::array();
+    for (const auto &w:t.waves) {
+        check(w.begin>0 && w.end>w.begin,"missing graph callback");
+        json pins=json::array();
+        for(size_t j=0;j<w.n;j++) pins.push_back(w.pins[j]);
+        waves.push_back({{"begin",w.begin},{"end",w.end},{"ids",w.routed},{"remap",w.physical},{"pins",pins}});
+    }
+    for (auto r:t.order) {
+        const int e=r[0];
+        const auto &j=t.jobs.at(e);
+        check(j.generation==unsigned(r[2]) && j.slot==r[1] && j.publication>=j.sets[2][1] &&
+              j.read_begin>0 && j.read_end>=j.read_begin && j.tid>0,"worker, SET or publication");
+        json sets=json::array();
+        for(auto &v:j.sets) sets.push_back({v[0],v[1]});
+        jobs.push_back({{"reservation",r},{"tid",j.tid},{"from_ram",j.memory},{"read", {j.read_begin,j.read_end}},
+                        {"sets",sets},{"publication",j.publication}});
+    }
+    std::vector<unsigned> census;
+    unsigned total=0,selected=0;
+    for(const auto &r:plan.at("records")) {
+        const int key=r.at("layer").get<int>()*experts+r.at("expert").get<int>();
+        check(t.census[key].load()==r.at("uses"),"changed selected acquisitions");
+        selected+=t.census[key].load();
+        const auto &held=t.bank[t.place[key]];
+        if(t.mode!='R') captures.push_back({key,held.slot,held.generation,held.tid});
+    }
+    for (auto &v:t.census) { census.push_back(v.load()); total+=v.load(); }
+    check(total==1212 && selected==70 && total==t.disk+t.served &&
+          t.served==((t.mode=='V'||t.mode=='H')?70:0),"native source census");
+    return {{"mode",std::string(1,t.mode)},{"logical",total},{"served",t.served.load()},{"disk",t.disk.load()},
+            {"training_reads",t.training.load()},{"captured",t.trained.load()},{"captures",captures},
+            {"selected",selected},{"census",census},{"waves",waves},{"jobs",jobs},
+            {"full_hashes",t.mode=='V'?207:0},{"parity_read_bytes",t.mode=='V'?capacity*window:0},
+            {"stage_copy_bytes",0},{"source_replaced",t.source_replaced}};
+}
