@@ -13,7 +13,7 @@ Os dois papéis tiveram os mesmos quatro leitores e três frames de retenção. 
 
 O limite de memória que mantém residentes os pesos necessários e o estado terminal ficou em 1 252 frames nas 125 visitas, incluindo uma retenção conservadora para parking. A construção serial precisava até aqui de conhecer o estado à saída de cada camada. A próxima prova substitui esse conhecimento pelo estado anterior e pelos ranks que o próprio target acaba de calcular. O controlo permanece R0. [Protocolo do plano causal](shadow-protocol.md)
 
-Código `1cb4cba05932f3027fc499b8f2007354a5185069`, árvore `f9dcf7b784cf853cdb3a289f1140d5e9f80f2fc1`. ELF `b6fc408dd3c7c4d7b5d345c28388e6a2f6d23b0badc83f54a5459fe8e059dd55`. O diretório privado da campanha retém C55, o build e bibliotecas identificadas, o plano, o comando, stdout, stderr e as amostras. O maior peso continuou no NVMe interno. O ficheiro público permite repetir o avaliador sem modelo. [Comandos exatos do portátil](visit-commands.json) · [Inventário do arquivo privado](private-archive.json)
+Código `1cb4cba05932f3027fc499b8f2007354a5185069`, árvore `f9dcf7b784cf853cdb3a289f1140d5e9f80f2fc1`. ELF `b6fc408dd3c7c4d7b5d345c28388e6a2f6d23b0badc83f54a5459fe8e059dd55`. O diretório privado da campanha retém C55, o build e bibliotecas identificadas, o plano, o comando, stdout, stderr e as amostras. O GGUF original e o pack ficaram no NVMe interno. O ficheiro público permite repetir o avaliador sem modelo. [Comandos exatos do portátil](visit-commands.json) · [Inventário do arquivo privado](private-archive.json)
 
 ```sh
 p=research/ready-experts/request_path/partition

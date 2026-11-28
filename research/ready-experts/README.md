@@ -1,5 +1,7 @@
 # Começar o cálculo quando cada expert está pronto
 
+**28 de novembro · residência CPU e decisão de backend.** As quotas aprendidas e os filtros globais perderam contra o banco contínuo. Um ajuste dentro do C291 identifica dez releituras que cabem com preloads em oito visitas. O benefício projetado no cliente é de 8,419–19,060 ms. [Prova causal, quatro braços no portátil e limite da intervenção](request_path/partition/shadow.md)
+
 **28 de novembro · decisão sobre um backend novo.** A aquisição das faltas obrigatórias já começa na primeira remap da camada nos 833 grupos dos dois pedidos nominais. O NVMe mediu o custo desses bytes. Mesmo oferecendo a sobreposição até ao router seguinte, o primeiro final leva pelo menos 10,851–12,085 s aos preços observados. A repetição da última rota falhou os quatro cortes. [Caminho do pedido e custos por fase](request_path/README.md) · [Limiar para outro mecanismo](request_path/advance.md)
 
 **28 de novembro · o serviço atual obteve um ganho físico nos 148 tokens.** Preservar os bytes da primeira leitura obrigatória poupou 234–463 ms contra o controlo contemporâneo com seleção antecipada. A auditoria identificou quanto destes pesos uma política causal realmente forneceria aos mesmos consumidores. [Decisão por arquitetura e por fase](verifier_wait/forecast/retention/eviction/late_owner/README.md)

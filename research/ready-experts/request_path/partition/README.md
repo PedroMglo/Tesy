@@ -1,5 +1,7 @@
 # Quanto da residência CPU se resolve escolhendo a camada?
 
+**Decisão após as fixtures.** O planeador identificou onze pesos sem observar o router seguinte. Dez cabem ao manter o preload e oito visitas justificam o ensaio estreito. A reescrita integral continua em NO_GO. [Medição no NVMe, limites e decisão de backend](shadow.md)
+
 **NO_GO para as quotas aprendidas em T1 e para substituir o backend com base em quotas fixas de LRU.** Na conversa nominal, escolher as melhores quotas com conhecimento de todo o segundo turno ainda exige 1 268 leituras CPU. O banco de 252 frames acoplado ao primário atual serve a mesma procura com 1 110. A diferença de 158 existe antes de cobrar qualquer reposição. As quotas aprendidas pouparam 35 leituras antes do primeiro conteúdo contra a divisão igual. A entrega das identidades em falta para continuar do estado de referência anulou essa poupança e custou mais 49 leituras no total. Estes resultados são TRACE_DERIVED. Conservam-se M3 PARTIAL e M4 NOT_MET. [Protocolo congelado](protocol.md) · [Resultado por fase e por braço](evidence-20261128-r01/decision.json)
 
 | CPU do segundo turno | Igual | Quotas de T1 | LRU global | Melhores quotas futuras | Melhor residência global futura |
