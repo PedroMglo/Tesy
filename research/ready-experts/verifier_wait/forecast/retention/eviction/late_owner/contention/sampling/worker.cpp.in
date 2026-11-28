@@ -1,0 +1,195 @@
+// The pinned peer.cpp prelude supplies the direct reader, target digests, and monotonic clock.
+#include <atomic>
+#include <chrono>
+#include <sys/syscall.h>
+
+struct Sample {
+    unsigned count{};
+    Tick first_pre{}, first_post{}, last_pre{}, last_post{}, returned_seen{};
+};
+struct Trial {
+    int stage, order, pair, hit, observe;
+    Tick start{}, peers{}, all{}, drain{};
+    std::array<Sample, 4> lane{};
+};
+struct Group {
+    int q{};
+    std::array<Record, 4> record;
+};
+
+void add_pair(std::vector<Trial> &rows, int stage, int order, int pair) {
+    for (int leg=0; leg<2; ++leg) {
+        int alt=(order==1) != leg;
+        rows.push_back(Trial{stage, order, pair, stage<2 ? stage : alt, stage<2 ? alt : stage==3});
+    }
+}
+std::vector<Trial> schedule() {
+    std::vector<Trial> rows;
+    for (int stage=0; stage<4; ++stage) {
+        add_pair(rows,stage,-1,0);
+        for (int p=1; p<=31; ++p) {
+            int order=(p-1)%2;
+            add_pair(rows,stage,order,p);
+            add_pair(rows,stage,1-order,p);
+        }
+    }
+    return rows;
+}
+
+void probe(int proc, int fd, const Record &record, const Buffer &window, Sample &s) {
+    char buf[384];
+    Tick a=now();
+    ssize_t size=pread(proc,buf,sizeof(buf)-1,0);
+    Tick b=now();
+    require(size>0 && size<static_cast<ssize_t>(sizeof(buf)),"self syscall sample");
+    buf[size]='\0';
+    long number=-1;
+    unsigned long descriptor{}, address{}, length{}, offset{};
+    int n=std::sscanf(buf,"%ld %lx %lx %lx %lx",&number,&descriptor,&address,&length,&offset);
+    if (n<1) {
+        require(std::strncmp(buf,"running",7)==0,"unexpected task state");
+        return;
+    }
+    if (number!=SYS_pread64) return;
+    require(n==5 && descriptor==static_cast<unsigned>(fd)
+            && address==reinterpret_cast<uintptr_t>(window.data)
+            && length==stride && offset==static_cast<unsigned long>(record.offset),
+            "wrong pread generation");
+    if (s.count++==0) { s.first_pre=a; s.first_post=b; }
+    s.last_pre=a;
+    s.last_post=b;
+}
+
+void run_group(int fd, int id, const Group &g) {
+    auto rows=schedule();
+    const int survivors=g.q-1;
+    std::vector<Buffer> staging(g.q), destinations(g.q);
+    Buffer retained;
+    std::array<unsigned,4> requested{}, digests{};
+    std::array<pid_t,4> tids{};
+    std::array<std::atomic<bool>,4> returned{};
+    std::array<int,4> tasks{};
+    size_t index=0;
+    std::barrier registration(5);
+    std::barrier start(5,[&]() noexcept {
+        for (int w=0; w<survivors; ++w) returned[w].store(false,std::memory_order_relaxed);
+        rows[index].start=now();
+    });
+    std::barrier peers(survivors,[&]() noexcept { rows[index].peers=now(); });
+    std::barrier reads(4,[&]() noexcept { rows[index].all=now(); });
+    std::barrier drain(4,[&]() noexcept { rows[index].drain=now(); });
+    std::barrier next(5,[&]() noexcept { ++index; });
+    std::array<std::thread,4> workers;
+    for (int w=0; w<4; ++w) {
+        workers[w]=std::thread([&,w] {
+            tids[w]=static_cast<pid_t>(syscall(SYS_gettid));
+            if (w<g.q) {
+                auto &initial=w<survivors ? staging[w] : retained;
+                fetch(fd,g.record[w],initial);
+                ++requested[w];
+                verify(g.record[w],initial);
+                digests[w]+=3;
+            }
+            registration.arrive_and_wait();
+            for (const auto &r:rows) {
+                bool disk=w<g.q && (!r.hit || w<survivors);
+                start.arrive_and_wait();
+                if (disk) {
+                    fetch(fd,g.record[w],staging[w]);
+                    if (w<survivors) returned[w].store(true,std::memory_order_release);
+                    ++requested[w];
+                }
+                if (w<survivors) peers.arrive_and_wait();
+                reads.arrive_and_wait();
+                if (w<g.q) {
+                    const auto &src=disk ? staging[w] : retained;
+                    for (size_t k=0; k<3; ++k)
+                        std::memcpy(destinations[w].data+k*slab,src.data+k*slab,slab);
+                }
+                drain.arrive_and_wait();
+                if (w<g.q) {
+                    verify(g.record[w],destinations[w]); digests[w]+=3;
+                    for (size_t k=0; k<3; ++k) destinations[w].data[k*slab]^=0xff;
+                }
+                next.arrive_and_wait();
+            }
+        });
+    }
+    registration.arrive_and_wait();
+    require(std::set<pid_t>(tids.begin(),tids.end()).size()==4,"four distinct workers");
+    for (int w=0; w<survivors; ++w) {
+        const auto path="/proc/self/task/"+std::to_string(tids[w])+"/syscall";
+        tasks[w]=open(path.c_str(),O_RDONLY|O_CLOEXEC);
+        require(tasks[w]>=0,"own task clock");
+    }
+    for (auto &r:rows) {
+        start.arrive_and_wait();
+        if (r.observe) {
+            int pending=survivors, first=r.pair%survivors;
+            while (pending) {
+                for (int i=0; i<survivors; ++i) {
+                    int w=(first+i)%survivors;
+                    auto &s=r.lane[w];
+                    if (s.returned_seen) continue;
+                    if (returned[w].load(std::memory_order_acquire)) {
+                        s.returned_seen=now();
+                        --pending;
+                    } else {
+                        probe(tasks[w],fd,g.record[w],staging[w],s);
+                    }
+                }
+                first=(first+1)%survivors;
+                if (pending) std::this_thread::sleep_for(std::chrono::microseconds(100));
+            }
+        }
+        next.arrive_and_wait();
+    }
+    for (auto &w:workers) w.join();
+    for (int w=0; w<survivors; ++w) require(close(tasks[w])==0,"proc close");
+    require(index==rows.size(),"incomplete group");
+    for (const auto &r:rows) {
+        std::cout<<"row "<<id<<' '<<r.stage<<' '<<r.order<<' '<<r.pair<<' '<<r.hit<<' '<<r.observe
+                 <<' '<<r.peers-r.start<<' '<<r.all-r.start<<' '<<r.drain-r.start;
+        for (int w=0; w<survivors; ++w) {
+            const auto &s=r.lane[w];
+            std::cout<<' '<<s.count;
+            for (Tick t:{s.first_pre,s.first_post,s.last_pre,s.last_post,s.returned_seen})
+                std::cout<<' '<<(t ? t-r.start : 0);
+        }
+        std::cout<<'\n';
+    }
+    std::cout<<"closed "<<id;
+    for (auto v:requested) std::cout<<' '<<v;
+    for (auto v:digests) std::cout<<' '<<v;
+    std::cout<<'\n';
+}
+
+int main(int argc,char **argv) {
+    require(argc==3,"usage: sampler PACK PLAN");
+    int fd=open(argv[1],O_RDONLY|O_DIRECT|O_CLOEXEC|O_NOFOLLOW);
+    require(fd>=0,"open direct");
+    std::ifstream plan(argv[2]);
+    Identity expected{};
+    for (auto &x:expected) require(bool(plan>>x),"fd plan");
+    int count=0;
+    require(identity(fd)==expected && bool(plan>>count) && count>=2 && count<=4,"fd or groups");
+    std::cout<<"fd";
+    for (auto x:expected) std::cout<<' '<<x;
+    std::cout<<'\n';
+    for (int i=0; i<count; ++i) {
+        Group g;
+        int hits=0;
+        require(bool(plan>>g.q>>hits) && (g.q==2 || g.q==4) && hits==1,"shape");
+        std::set<off_t> offsets;
+        for (int w=0; w<g.q; ++w) {
+            auto &r=g.record[w];
+            require(bool(plan>>r.offset) && r.offset>=0 && r.offset%4096==0
+                    && r.offset<=expected[2]-static_cast<off_t>(stride) && offsets.insert(r.offset).second,"record");
+            for (auto &h:r.digests) require(bool(plan>>h) && h.size()==64,"digest");
+        }
+        run_group(fd,i,g);
+    }
+    std::string extra;
+    require(!(plan>>extra) && plan.eof() && identity(fd)==expected && close(fd)==0,"final fd or plan");
+    std::cout<<"drained\n";
+}

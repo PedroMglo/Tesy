@@ -50,7 +50,7 @@ def classify(rows, hits):
     return cohorts, amounts
 
 
-def inputs():
+def populations():
     X = replay()
     V, F = X["V"], X["F"]
     tx, effect = V["sources"]()
@@ -72,6 +72,11 @@ def inputs():
         common = {
             s: candidates[s] if common is None else (candidates[s] & common[s]) for s in SHAPES
         }
+    return tx, common, by_arm, hits
+
+
+def inputs():
+    tx, common, by_arm, hits = populations()
     groups = {}
     for shape in SHAPES:
         count = len(common[shape])
@@ -93,6 +98,10 @@ def plan(a):
         "physical gate",
     )
     groups, _, _ = inputs()
+    return pack_plan(a, groups, lambda q, k: 121 * q - 60 * k)
+
+
+def pack_plan(a, groups, records_per_group):
     ref = M["verified"](a.manifest / "receipt.json", M["PREP"]["MANIFEST"])
     idx = M["verified"](a.manifest / "integral-index.json", ref["index_sha256"])
     experts = {128 * e["layer"] + e["expert"]: e for e in idx["experts"]}
@@ -103,9 +112,9 @@ def plan(a):
     with dest.open("x") as f:
         print(*st, len(groups), file=f)
         for label, g in groups.items():
-            q, k = map(int, label.split("/"))
+            q, k = map(int, g.get("shape", label).split("/"))
             need(len(g["keys"]) == len(set(g["keys"])) == q, "capacity or duplicate")
-            expected += 121 * q - 60 * k
+            expected += records_per_group(q, k)
             print(q, k, file=f)
             for key in g["keys"]:
                 e = experts[key]
@@ -246,13 +255,18 @@ def parse(lines, plan):
 
 def project(timing, plan, previous):
     X = replay()
-    V, F = X["V"], X["F"]
     candidates, by_arm, hits = inputs()
     need(candidates == plan["groups"] and previous["method"] == X["METHOD"], "same chosen cohorts")
-    basis, _, _ = F["freeze"]()
     rates = {
         s: timing["classes"][s]["reduction_ppm"] if s in candidates else [0, PPM] for s in SHAPES
     }
+    return reprice_rates(rates, by_arm, hits, previous)
+
+
+def reprice_rates(rates, by_arm, hits, previous):
+    X = replay()
+    V, F = X["V"], X["F"]
+    basis, _, _ = F["freeze"]()
     result = {}
     for tag, per_job in by_arm.items():
         arm = basis["arms"][tag]
