@@ -18,17 +18,21 @@ PRIOR = HERE.parent / "evidence-depths-20261128-r01"
 SURFACE = "c3efeedb791c1efaea793d1b2892f6ab85d17eff648a27466b136a6416877ad5"
 SELECTION = "46de23ac00240882f63c927625c143b97853806f567350c5e95b099d22383724"
 TARGETS = ("2/1", "4/1")
+TRIPLES = ("3/1", "3/2")
+THREE_METHOD = "97cd21119042b48bc52dbdbf2196c013439eb4cc3e390e1a8009eb421ccf6ff5"
+PAST = HERE / "evidence-20261128-r01"
+PAST_SHA = "0398d782be84b7eb25851bda90a63d0d76552b15291d5b8a04c538afd0a6500b"
 PPM = D["PPM"]
 PAIRS = 31
 ROWS = 4 * (2 + 4 * PAIRS)
 
 
-def choose(tx, common):
+def choose(tx, common, targets=TARGETS):
     def keys(ordinals):
         return [128 * tx[i - 1][2] + tx[i - 1][5] for i in ordinals]
 
     groups = {}
-    for shape in TARGETS:
+    for shape in targets:
         candidates = sorted(common[shape])
         need(candidates, "missing original population")
         first = candidates[0]
@@ -53,20 +57,29 @@ def choose(tx, common):
     return groups
 
 
-def plan(args):
-    prev = M["verified"](PRIOR / "projection.json", SURFACE)
-    selection = M["verified"](PRIOR / "thresholds.json", SELECTION)
-    need(
-        prev["status"] == "INCONCLUSIVE"
-        and selection["ranges"]["high"]["minimal_passing_sets"] == [list(TARGETS)],
-        "admission",
-    )
+def plan(args, targets=TARGETS):
+    if targets == TRIPLES:
+        prev = M["verified"](PAST / "projection.json", PAST_SHA)
+        envelope = prev["models"]["envelope"]
+        need(
+            prev["status"] == "INCONCLUSIVE"
+            and tuple(k for k, v in envelope["rates_ppm"].items() if v == [0, PPM]) == TRIPLES,
+            "remaining unmeasured populations",
+        )
+    else:
+        prev = M["verified"](PRIOR / "projection.json", SURFACE)
+        selection = M["verified"](PRIOR / "thresholds.json", SELECTION)
+        need(
+            prev["status"] == "INCONCLUSIVE"
+            and selection["ranges"]["high"]["minimal_passing_sets"] == [list(TARGETS)],
+            "admission",
+        )
     tx, common, _, _ = D["populations"]()
-    groups = choose(tx, common)
+    groups = choose(tx, common, targets)
     old = M["verified"](
         PRIOR / "device.json", "99435971e44f29ca866c75b8cdfa016d652f9cc81ea2a795e1d023689f2c8cc3"
     )
-    for shape in TARGETS:
+    for shape in targets:
         original = old["plan"]["groups"][shape]
         got = groups[f"{shape}-first"]
         need(all(got[k] == original[k] for k in ("keys", "ordinals", "common")), "original parity")
@@ -186,13 +199,13 @@ def class_grade(pairs, misses):
     )
 
 
-def parse(lines, plan):
+def parse(lines, plan, targets=TARGETS):
     labels = plan["labels"]
     need(
         labels
         == [
             f"{s}-{kind}"
-            for s in TARGETS
+            for s in targets
             for kind in ("first", "holdout")
             if f"{s}-{kind}" in plan["groups"]
         ]
@@ -205,7 +218,7 @@ def parse(lines, plan):
     total = hashes = 0
     for g, label in enumerate(labels):
         q, k = map(int, plan["groups"][label]["shape"].split("/"))
-        need(k == 1 and q in (2, 4), "target groups")
+        need(f"{q}/{k}" == label.split("-")[0] and 0 < k < q <= 4, "target groups")
         misses = q - k
         pairs = defaultdict(dict)
         base = 1 + (ROWS + 1) * g
@@ -225,7 +238,7 @@ def parse(lines, plan):
             need(key not in pair, "repeated leg")
             pair[key] = clocks, durations
         kind, *tail = lines[base + ROWS].split()
-        requested = [ROWS + 1] * misses + [ROWS // 2 + 1] + [0] * (4 - q)
+        requested = [ROWS + 1] * misses + [ROWS // 2 + 1] * k + [0] * (4 - q)
         checked = [3 * (ROWS + 1)] * q + [0] * (4 - q)
         need(
             kind == "closed" and list(map(int, tail)) == [g, *requested, *checked],
@@ -244,21 +257,30 @@ def parse(lines, plan):
     )
 
 
-def projection(timing, spec):
+def projection(timing, spec, targets=TARGETS):
     old = M["verified"](PRIOR / "projection.json", SURFACE)
     prev = M["verified"](PRIOR / "mixed.json", D["MIXED"])
     tx, common, by_arm, hits = D["populations"]()
-    need(choose(tx, common) == spec["groups"], "cohort selection")
-    old_rates = old["rates_ppm"]
-    need(D["reprice_rates"](old_rates, by_arm, hits, prev) == old, "historical control")
+    need(choose(tx, common, targets) == spec["groups"], "cohort selection")
+    need(D["reprice_rates"](old["rates_ppm"], by_arm, hits, prev) == old, "historical control")
+    parent = None
+    if targets == TRIPLES:
+        parent = M["verified"](PAST / "projection.json", PAST_SHA)
+        meta = json.loads((PAST / "device.json").read_bytes())
+        need(sha(PAST / "service.txt") == meta["stdout_sha256"], "antecedent clock identity")
+        prior_timing = parse((PAST / "service.txt").read_text().splitlines(), meta["plan"])
+        need(
+            prior_timing == meta["timing"] and projection(prior_timing, meta["plan"]) == parent,
+            "prior populations and client clocks",
+        )
 
     def values(shape, sample):
         return timing["groups"].get(f"{shape}-{sample}", {}).get("reduction_ppm", [0, PPM])
 
     models = {}
     for kind in ("first", "holdout", "envelope"):
-        rates = dict(old_rates)
-        for shape in TARGETS:
+        rates = dict(parent["models"][kind]["rates_ppm"] if parent else old["rates_ppm"])
+        for shape in targets:
             a, b = values(shape, "first"), values(shape, "holdout")
             rates[shape] = {
                 "first": a,
@@ -267,8 +289,8 @@ def projection(timing, spec):
             }[kind]
         models[kind] = D["reprice_rates"](rates, by_arm, hits, prev)
     return dict(
-        method=METHOD,
-        earlier=SURFACE,
+        method=THREE_METHOD if parent else METHOD,
+        earlier=PAST_SHA if parent else SURFACE,
         status=models["envelope"]["status"],
         models=models,
         http_requests=0,
@@ -276,19 +298,19 @@ def projection(timing, spec):
     )
 
 
-def physical(a, receipt):
+def physical(a, receipt, *, triples=False):
     IO["run"](
         a,
         receipt,
-        protocol=METHOD,
-        source=HERE / "protocol.md",
-        parse=parse,
-        maximum_bytes=72_000_000_000,
+        protocol=THREE_METHOD if triples else METHOD,
+        source=HERE / ("three-protocol.md" if triples else "protocol.md"),
+        parse=lambda lines, spec: parse(lines, spec, TRIPLES if triples else TARGETS),
+        maximum_bytes=65_000_000_000 if triples else 72_000_000_000,
         requested_records=lambda t, _: t["requested_records"],
     )
 
 
-def main():
+def main(*, triples=False):
     p = argparse.ArgumentParser(description=__doc__)
     subs = p.add_subparsers(dest="action", required=True)
     for task, fields in (
@@ -301,16 +323,21 @@ def main():
             q.add_argument("--" + field, type=lambda v: Path(v).resolve(), required=True)
     subs.add_parser("check").add_argument("evidence", type=Path)
     args = p.parse_args()
-    need(sha(HERE / "protocol.md") == METHOD, "registered method")
+    targets, method, document = (
+        (TRIPLES, THREE_METHOD, "three-protocol.md")
+        if triples
+        else (TARGETS, METHOD, "protocol.md")
+    )
+    need(sha(HERE / document) == method, "registered method")
     if args.action == "check":
         e = args.evidence
         meta = json.loads((e / "device.json").read_bytes())
-        timing = parse((e / "service.txt").read_text().splitlines(), meta["plan"])
+        timing = parse((e / "service.txt").read_text().splitlines(), meta["plan"], targets)
         need(
             sha(e / "service.txt") == meta["stdout_sha256"] and timing == meta["timing"],
             "public device clocks",
         )
-        result = projection(timing, meta["plan"])
+        result = projection(timing, meta["plan"], targets)
         need(
             result == json.loads((e / "projection.json").read_bytes()), "public request projection"
         )
@@ -324,18 +351,18 @@ def main():
             obs = json.loads((args.observed / "receipt.json").read_bytes())
             need(
                 obs["status"] == "MEASURED"
-                and (obs["commit"], obs["tree"], obs["protocol"]) == (commit, tree, METHOD)
+                and (obs["commit"], obs["tree"], obs["protocol"]) == (commit, tree, method)
                 and sha(args.observed / "stdout") == obs["stdout_sha256"],
                 "physical identity",
             )
             spec = M["verified"](args.plan / "receipt.json", obs["plan_sha256"])
-            timing = parse((args.observed / "stdout").read_text().splitlines(), spec)
+            timing = parse((args.observed / "stdout").read_text().splitlines(), spec, targets)
             need(timing == obs["timing"], "private clock reproduction")
-            result = projection(timing, spec)
+            result = projection(timing, spec, targets)
             save(args.new_output_dir / "projection.json", result)
             print(result["status"], result["models"]["envelope"]["margins_ns"])
         else:
-            result = (plan if args.action == "plan" else build)(args)
+            result = plan(args, targets) if args.action == "plan" else build(args)
             save(
                 args.new_output_dir / "receipt.json",
                 result
@@ -343,7 +370,7 @@ def main():
                     status="PASS",
                     commit=commit,
                     tree=tree,
-                    protocol=METHOD,
+                    protocol=method,
                     program=sha(Path(__file__)),
                 ),
             )

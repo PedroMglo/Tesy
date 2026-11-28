@@ -13,7 +13,7 @@ struct Trial {
     std::array<Sample, 4> lane{};
 };
 struct Group {
-    int q{};
+    int q{}, hits{};
     std::array<Record, 4> record;
 };
 
@@ -62,9 +62,8 @@ void probe(int proc, int fd, const Record &record, const Buffer &window, Sample 
 
 void run_group(int fd, int id, const Group &g) {
     auto rows=schedule();
-    const int survivors=g.q-1;
-    std::vector<Buffer> staging(g.q), destinations(g.q);
-    Buffer retained;
+    const int survivors=g.q-g.hits;
+    std::vector<Buffer> staging(g.q), destinations(g.q), retained(g.hits);
     std::array<unsigned,4> requested{}, digests{};
     std::array<pid_t,4> tids{};
     std::array<std::atomic<bool>,4> returned{};
@@ -84,7 +83,7 @@ void run_group(int fd, int id, const Group &g) {
         workers[w]=std::thread([&,w] {
             tids[w]=static_cast<pid_t>(syscall(SYS_gettid));
             if (w<g.q) {
-                auto &initial=w<survivors ? staging[w] : retained;
+                auto &initial=w<survivors ? staging[w] : retained[w-survivors];
                 fetch(fd,g.record[w],initial);
                 ++requested[w];
                 verify(g.record[w],initial);
@@ -102,7 +101,7 @@ void run_group(int fd, int id, const Group &g) {
                 if (w<survivors) peers.arrive_and_wait();
                 reads.arrive_and_wait();
                 if (w<g.q) {
-                    const auto &src=disk ? staging[w] : retained;
+                    const auto &src=disk ? staging[w] : retained[w-survivors];
                     for (size_t k=0; k<3; ++k)
                         std::memcpy(destinations[w].data+k*slab,src.data+k*slab,slab);
                 }
@@ -178,8 +177,8 @@ int main(int argc,char **argv) {
     std::cout<<'\n';
     for (int i=0; i<count; ++i) {
         Group g;
-        int hits=0;
-        require(bool(plan>>g.q>>hits) && (g.q==2 || g.q==4) && hits==1,"shape");
+        require(bool(plan>>g.q>>g.hits) && g.q>=2 && g.q<=4 && g.hits>=1 && g.hits<g.q
+                && (g.hits==1 || g.q==3),"shape");
         std::set<off_t> offsets;
         for (int w=0; w<g.q; ++w) {
             auto &r=g.record[w];

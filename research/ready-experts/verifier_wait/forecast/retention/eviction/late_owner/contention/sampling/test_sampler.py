@@ -48,6 +48,26 @@ class SampleTests(unittest.TestCase):
         self.assertFalse(grade["neutral"])
         self.assertEqual(grade["reduction_ppm"], [0, 1000000])
 
+    def test_two_ram_sources_preserve_four_lane_conservation(self):
+        plan = dict(
+            labels=["3/2-first"],
+            groups={"3/2-first": {"shape": "3/2"}},
+            pack_stat=[17],
+            expected_records=1011,
+        )
+        lines = ["fd 17"]
+        for stage, order, p, hit, trace in S["schedule"]():
+            marks = [2, 3, 4, 33, 34, 35] if trace else [0] * 6
+            values = [0, stage, order, p, hit, trace, 40, 45, 50, *marks]
+            lines.append("row " + " ".join(map(str, values)))
+        lines.extend(["closed 0 505 253 253 0 1515 1515 1515 0", "drained"])
+        result = S["parse"](lines, plan, S["TRIPLES"])
+        self.assertEqual(result["requested_records"], 1011)
+        self.assertEqual(result["hashes"], 4545)
+        lines[-2] = "closed 0 505 253 0 0 1515 1515 1515 0"
+        with self.assertRaisesRegex(ValueError, "conservation"):
+            S["parse"](lines, plan, S["TRIPLES"])
+
 
 if __name__ == "__main__":
     unittest.main()
