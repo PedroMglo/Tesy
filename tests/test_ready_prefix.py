@@ -1,3 +1,5 @@
+import gzip
+import json
 from itertools import pairwise, permutations
 from pathlib import Path
 from runpy import run_path
@@ -5,7 +7,8 @@ from types import SimpleNamespace
 
 import pytest
 
-reach = run_path(Path(__file__).with_name("reach.py"))
+UNIT = Path(__file__).resolve().parents[1] / "research/ready-experts/layer/prefix"
+reach = run_path(UNIT / "reach.py")
 
 
 def test_output_mask_and_shared_boundaries():
@@ -27,7 +30,7 @@ def test_union_never_double_spends_or_reorders_clocks():
 
 def test_layout_bound_dominates_all_permutations():
     batches = [[0, 1, 3], [0, 2], [1, 2, 2], [0, 3], [3, 4, 1], [], [2]]
-    result = run_path(Path(__file__).with_name("batch.py"))["certificate"](batches, 5)
+    result = run_path(UNIT / "batch.py")["certificate"](batches, 5)
 
     def saved(layout):
         return sum(a in b and z in b for a, z in pairwise(layout) for b in batches)
@@ -35,3 +38,21 @@ def test_layout_bound_dominates_all_permutations():
     assert saved(range(5)) == result["numeric_adjacent"]
     best = max(saved(layout) for layout in permutations(range(5)))
     assert best + result["repeated"] <= result["command_saving_upper"] < result["generations"]
+
+
+def test_compact_clock_decisions():
+    assert run_path(UNIT / "review.py")["review"]() == {
+        "E32": "NO_GO_LOCAL",
+        "EALL": "NO_GO_LOCAL",
+        "pair_prefill": "GO_COMPONENT",
+        "pair_decode": "INCONCLUSIVE",
+    }
+
+
+def test_consumer_must_wait_for_publication():
+    blob = UNIT / "evidence-20261128-r01/consumer-arms.json.gz"
+    data = json.loads(gzip.decompress(blob.read_bytes()))
+    arm = next(a for a in data["trials"] if a["mode"] == "E32")
+    arm["activation"][0] = arm["partial"] - 1
+    with pytest.raises(ValueError, match="consumer admission"):
+        run_path(UNIT / "grade.py")["grade"](data)
