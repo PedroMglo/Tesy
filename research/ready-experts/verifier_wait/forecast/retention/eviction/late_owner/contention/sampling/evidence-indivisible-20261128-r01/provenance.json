@@ -1,0 +1,55 @@
+{
+  "account": "wall_s=5.09 peak_kib=195520",
+  "artifacts": {
+    "archive.json": {
+      "sha256": "7bd84d3b0cd26ef7dc718d1a0e3b0bb94bc5ca51ede7edf9b0b55cd40273799c",
+      "size_B": 252
+    },
+    "service.json": {
+      "sha256": "a69ad9753e38f6d6f4917ed7276fefdb1e6b788d85b62a625db9d8f7b24bbeb9",
+      "size_B": 37955
+    }
+  },
+  "branch": "research/ready-layer",
+  "budget": {
+    "address_B": 1073741824,
+    "file_B": 12582912,
+    "search_nodes_per_group": 20000,
+    "wall_s": 180
+  },
+  "command": "/usr/bin/prlimit --as=1073741824 --fsize=12582912 -- /usr/bin/timeout 180 /usr/bin/python3 -IB research/ready-experts/verifier_wait/forecast/retention/eviction/late_owner/contention/sampling/indivisible.py --new-output-dir /tmp/tesy-atomic-jobs-20261128-01/grade-01",
+  "commit": "9e1f3b6f9f842002681877eb51e09fa3d04d9218",
+  "evidence": "FORMAL_CONDITIONAL_ON_CALIBRATED_SERVICE",
+  "identity": "tile-indivisible-20261128-01",
+  "immediate_base": "ccfda06299d9725975b63c75f28fece4cc57425e",
+  "inputs": {
+    "four_lanes": "8e48debecdae3f47aba3f071828345afff1d0908cffc323e1c770610f99adf5b",
+    "previous_margin": "141eb17bd414585e1bc4d0eb5c9b91afed76621ba8d685bed7e83fb8d974619c"
+  },
+  "limitations": [
+    "Retain certified lower bounds for truncated searches. Local optimal schedules are relaxed across sites by the shared time window test."
+  ],
+  "main": "293f5b184da9439771cce361cd33fc4068d749f4",
+  "protocol_commit": "e2461e2a",
+  "remote": "https://github.com/PedroMglo/Tesy.git",
+  "resources": {
+    "HTTP_requests": 0,
+    "energy_J": null,
+    "gpu": false,
+    "model_forwards": 0
+  },
+  "results": {
+    "M3": "PARTIAL",
+    "M4": "NOT_MET",
+    "status": "NO_GO_COPIED_DIRECT_INCONCLUSIVE"
+  },
+  "source_sha256": {
+    "indivisible-protocol.md": "5ff06fb29ddab89971ff495af3af79f2638e4670865060ddb0e606aea91495e7",
+    "indivisible.py": "e61144beb5716910ff8d66cbc703675e367378d86d5b636cbfb00567e936e594",
+    "test_tile_cost.py": "083d02a408ea8e901c2d3751ed6adae82baf62bf55097e5f42afa0ab3d47d17f",
+    "tile_cost.py": "f6fb41ac68a4b126bb68c23f1a697286c6566e15aadc189b05f87d55dbfb299e",
+    "tile_lanes.py": "3d7d279ea30e6c5d5ed6cba93e6fa11c5f26a41abd1eef83474227cc6ed21935"
+  },
+  "technical_failures": [],
+  "tree": "f5bf851a781171b0d965b285201a580a749ae729"
+}
