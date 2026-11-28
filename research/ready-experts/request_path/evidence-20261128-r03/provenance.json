@@ -1,0 +1,89 @@
+{
+  "artifacts": {
+    "decision.json": {
+      "bytes": 16467,
+      "sha256": "f5fd31076edbc48513703b8620384dea373d641bd5df7ccfd0ce149279d913c9"
+    },
+    "failed-r01.json": {
+      "bytes": 60,
+      "sha256": "4d5603d64d7aec4ac6783b755544d20db57bfa458124a05237b80b133c6c085d"
+    },
+    "failed-r02.json": {
+      "bytes": 67,
+      "sha256": "7d4f5012de4934cbcce46946f8a11a343ea450e4fa4d134dae4bf6774c3df295"
+    },
+    "spans.json.gz": {
+      "bytes": 151159,
+      "sha256": "1a0a8850446b0c81c018f39f79c258843047958284510115c0086b1fc95e854b"
+    }
+  },
+  "clock": "ns per individual PFJ",
+  "gpu_runs": 0,
+  "inputs": {
+    "P106": "cb13ff990afb3164bb61086e57a6caeff14187b66a1784c88e79cd3d521121bd",
+    "P97": "05e32c2af753026e471fa61c9dcb43867ca6b9a3001045a2138bc96c422928dc"
+  },
+  "m3": "PARTIAL",
+  "m4": "NOT_MET",
+  "main": "293f5b184da9439771cce361cd33fc4068d749f4",
+  "model_forwards": 0,
+  "parent": "dec7b341cdbe3808a18d7d3854d4747d2b04d40a",
+  "preregistration": "82f4077898c2dd53a4a82854ece56c60e89c9cce",
+  "runs": [
+    {
+      "attempt": 1,
+      "command": "Command exited with non-zero status 1",
+      "commit": "a588c7178521155db98e1e0fd1ba9c8a125e6dd1",
+      "resources": [
+        "User time (seconds): 3.61",
+        "System time (seconds): 0.14",
+        "Elapsed (wall clock) time (h:mm:ss or m:ss): 0:03.77",
+        "Maximum resident set size (kbytes): 144708",
+        "Swaps: 0",
+        "Exit status: 1"
+      ],
+      "tree": "e0e4b09cfc9c69ed527304b755fcfe8d5ea1cc2d"
+    },
+    {
+      "attempt": 2,
+      "command": "Command exited with non-zero status 1",
+      "commit": "341b601979e1cd2dd7811142d8b6a469701846fd",
+      "resources": [
+        "User time (seconds): 3.56",
+        "System time (seconds): 0.14",
+        "Elapsed (wall clock) time (h:mm:ss or m:ss): 0:03.76",
+        "Maximum resident set size (kbytes): 146232",
+        "Swaps: 0",
+        "Exit status: 1"
+      ],
+      "tree": "f7ec167612ba97cf618570b4fd697f90671e15e3"
+    },
+    {
+      "attempt": 3,
+      "command": "Command being timed: \"timeout 180 prlimit --as=805306368 --cpu=180 -- python3 -IB research/ready-experts/request_path/analyse.py --archive /mnt/sdisk-ssd-ext/Tesy/outputs/qualification-20261124-nvme-01 --new-output-dir /tmp/tesy-request-path-20261128-r01/evidence-r03\"",
+      "commit": "72d931be8be9cee0299a629a54569f54b6cc403d",
+      "resources": [
+        "User time (seconds): 4.32",
+        "System time (seconds): 0.12",
+        "Elapsed (wall clock) time (h:mm:ss or m:ss): 0:04.50",
+        "Maximum resident set size (kbytes): 152756",
+        "Swaps: 0",
+        "Exit status: 0"
+      ],
+      "tree": "f150d0bfe72e8d541f16767def988421939abeef"
+    }
+  ],
+  "stack_parent": "ccfda06299d9725975b63c75f28fece4cc57425e",
+  "valid_and_cleanup_ns": {
+    "P106": {
+      "client_result_sha256": "4ad0620a2756cec2c52e939381ee6a21985f74472034ef5aa8ee177e205f2b68",
+      "last_return_to_valid": 4464862,
+      "valid_to_journal_end": 46656852
+    },
+    "P97": {
+      "client_result_sha256": "f4f25c618bdf9168fe620eb897d5aee2fca9d4f406e4c22e535702a25b6b3882",
+      "last_return_to_valid": 4413536,
+      "valid_to_journal_end": 47808584
+    }
+  }
+}

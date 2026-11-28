@@ -1,0 +1,564 @@
+{
+  "arms": {
+    "P106": {
+      "client": {
+        "decode": 9213847000,
+        "first": 19528568213,
+        "prefill": 9924972000,
+        "valid": 19794409595
+      },
+      "compulsory": {
+        "cpu": 1318,
+        "cuda": 600,
+        "hit": 399,
+        "initial_demand_edges": 5906
+      },
+      "conservation": {
+        "begin": 9416,
+        "claim": 2354,
+        "demand_producer_edges": 4544,
+        "duplicate": 325,
+        "end": 2987,
+        "enqueue": 2354,
+        "enter": 48,
+        "independent_timestamp_pairs": 1,
+        "previous_publication_edges": 1648,
+        "publish": 2354,
+        "read": 2354,
+        "remap": 2987,
+        "reserve": 2354,
+        "return": 48,
+        "set": 7062,
+        "skip": 325,
+        "wait": 2987,
+        "wake": 2987
+      },
+      "fixed_fifo": {
+        "ALL_FREE": {
+          "decode": 2628019974,
+          "decode_margin": 5205313359,
+          "first": 7246193483,
+          "first_margin": 2753806517,
+          "phase_saved": {
+            "decode_tail": 154857307,
+            "decode_to_first": 6430969719,
+            "prefill_148": 5552272032,
+            "prefill_5": 299132979
+          },
+          "prefill": 4073566989,
+          "valid": 7357177558
+        },
+        "COPY": {
+          "decode": 8455391465,
+          "decode_margin": -622058132,
+          "first": 18347844510,
+          "first_margin": -8347844510,
+          "phase_saved": {
+            "decode_tail": 4719042,
+            "decode_to_first": 753736493,
+            "prefill_148": 380820302,
+            "prefill_5": 46166908
+          },
+          "prefill": 9497984790,
+          "valid": 18608966850
+        },
+        "CPU_FREE": {
+          "decode": 4563111406,
+          "decode_margin": 3270221927,
+          "first": 11261242001,
+          "first_margin": -1261242001,
+          "phase_saved": {
+            "decode_tail": 81128921,
+            "decode_to_first": 4569606673,
+            "prefill_148": 3459908453,
+            "prefill_5": 237811086
+          },
+          "prefill": 6227252461,
+          "valid": 11445954462
+        },
+        "CUDA_FREE": {
+          "decode": 7278755568,
+          "decode_margin": 554577765,
+          "first": 15513519695,
+          "first_margin": -5513519695,
+          "phase_saved": {
+            "decode_tail": 73728386,
+            "decode_to_first": 1861363046,
+            "prefill_148": 2092363579,
+            "prefill_5": 61321893
+          },
+          "prefill": 7771286528,
+          "valid": 15705632691
+        },
+        "DISK": {
+          "decode": 9213847000,
+          "decode_margin": -1380513667,
+          "first": 19528568213,
+          "first_margin": -9528568213,
+          "phase_saved": {
+            "decode_tail": 0,
+            "decode_to_first": 0,
+            "prefill_148": 0,
+            "prefill_5": 0
+          },
+          "prefill": 9924972000,
+          "valid": 19794409595
+        },
+        "ID": {
+          "decode": 8374807747,
+          "decode_margin": -541474414,
+          "first": 18252985428,
+          "first_margin": -8252985428,
+          "phase_saved": {
+            "decode_tail": 5391311,
+            "decode_to_first": 833647942,
+            "prefill_148": 391697558,
+            "prefill_5": 50237285
+          },
+          "prefill": 9483037157,
+          "valid": 18513435499
+        }
+      },
+      "max_peer_service_ppm_for_joint": {
+        "both": 308695,
+        "cpu": null,
+        "cuda": null
+      },
+      "nodes_reproduced": 40942,
+      "relaxed": {
+        "ALL_FREE": {
+          "decode": 2586031518,
+          "decode_margin": 5247301815,
+          "first": 7189505140,
+          "first_margin": 2810494860,
+          "phase_saved": {
+            "decode_tail": 155782628,
+            "decode_to_first": 6472032854,
+            "prefill_148": 5565799855,
+            "prefill_5": 301230364
+          },
+          "prefill": 4057941781,
+          "valid": 7299563894
+        },
+        "COPY": {
+          "decode": 8407992366,
+          "decode_margin": -574659033,
+          "first": 16417490018,
+          "first_margin": -6417490018,
+          "phase_saved": {
+            "decode_tail": 5807401,
+            "decode_to_first": 800047233,
+            "prefill_148": 2262402752,
+            "prefill_5": 48628210
+          },
+          "prefill": 7613941038,
+          "valid": 16677523999
+        },
+        "CPU_FREE": {
+          "decode": 4519706863,
+          "decode_margin": 3313626470,
+          "first": 10433166272,
+          "first_margin": -433166272,
+          "phase_saved": {
+            "decode_tail": 82115549,
+            "decode_to_first": 4612024588,
+            "prefill_148": 4243421692,
+            "prefill_5": 239955661
+          },
+          "prefill": 5441594647,
+          "valid": 10616892105
+        },
+        "CUDA_FREE": {
+          "decode": 7232232273,
+          "decode_margin": 601101060,
+          "first": 14438014025,
+          "first_margin": -4438014025,
+          "phase_saved": {
+            "decode_tail": 74755438,
+            "decode_to_first": 1906859289,
+            "prefill_148": 3119956017,
+            "prefill_5": 63738882
+          },
+          "prefill": 6741277101,
+          "valid": 14629099969
+        },
+        "DISK": {
+          "decode": 9165907618,
+          "decode_margin": -1332574285,
+          "first": 17681675157,
+          "first_margin": -7681675157,
+          "phase_saved": {
+            "decode_tail": 1088359,
+            "decode_to_first": 46851023,
+            "prefill_148": 1797577854,
+            "prefill_5": 2464179
+          },
+          "prefill": 8124929967,
+          "valid": 17946428180
+        },
+        "ID": {
+          "decode": 8328366889,
+          "decode_margin": -495033556,
+          "first": 16315199818,
+          "first_margin": -6315199818,
+          "phase_saved": {
+            "decode_tail": 6474541,
+            "decode_to_first": 879005570,
+            "prefill_148": 2281766491,
+            "prefill_5": 52596334
+          },
+          "prefill": 7590609175,
+          "valid": 16574566659
+        }
+      },
+      "shutdown": {
+        "cleanup": "SERVER_EXIT_0_OWNER_STOP_UNIT_CLOSED_PORT_AVAILABLE",
+        "last_return_to_end_ns": 51121714,
+        "last_return_to_first_exit_ns": 50988142,
+        "workers": 4
+      },
+      "windows_without_victim_wait": 2987
+    },
+    "P97": {
+      "client": {
+        "decode": 8946626000,
+        "first": 18325560801,
+        "prefill": 9611361000,
+        "valid": 18570196231
+      },
+      "compulsory": {
+        "cpu": 1318,
+        "cuda": 600,
+        "hit": 399,
+        "initial_demand_edges": 5906
+      },
+      "conservation": {
+        "begin": 9416,
+        "claim": 2354,
+        "demand_producer_edges": 4544,
+        "duplicate": 334,
+        "end": 2987,
+        "enqueue": 2354,
+        "enter": 48,
+        "independent_timestamp_pairs": 1,
+        "previous_publication_edges": 1648,
+        "publish": 2354,
+        "read": 2354,
+        "remap": 2987,
+        "reserve": 2354,
+        "return": 48,
+        "set": 7062,
+        "skip": 334,
+        "wait": 2987,
+        "wake": 2987
+      },
+      "fixed_fifo": {
+        "ALL_FREE": {
+          "decode": 2348955708,
+          "decode_margin": 5484377625,
+          "first": 6011850946,
+          "first_margin": 3988149054,
+          "phase_saved": {
+            "decode_tail": 150088874,
+            "decode_to_first": 6447581418,
+            "prefill_148": 5563338143,
+            "prefill_5": 302790294
+          },
+          "prefill": 3745232563,
+          "valid": 6106397502
+        },
+        "COPY": {
+          "decode": 8160504481,
+          "decode_margin": -327171148,
+          "first": 17158466864,
+          "first_margin": -7158466864,
+          "phase_saved": {
+            "decode_tail": 6330011,
+            "decode_to_first": 779791508,
+            "prefill_148": 340111952,
+            "prefill_5": 47190477
+          },
+          "prefill": 9224058571,
+          "valid": 17396772283
+        },
+        "CPU_FREE": {
+          "decode": 4265965913,
+          "decode_margin": 3567367420,
+          "first": 9984055018,
+          "first_margin": 15944982,
+          "phase_saved": {
+            "decode_tail": 75675936,
+            "decode_to_first": 4604984151,
+            "prefill_148": 3500134040,
+            "prefill_5": 236387592
+          },
+          "prefill": 5874839368,
+          "valid": 10153014512
+        },
+        "CUDA_FREE": {
+          "decode": 7029615795,
+          "decode_margin": 803717538,
+          "first": 14353356729,
+          "first_margin": -4353356729,
+          "phase_saved": {
+            "decode_tail": 74412938,
+            "decode_to_first": 1842597267,
+            "prefill_148": 2063204103,
+            "prefill_5": 66402702
+          },
+          "prefill": 7481754195,
+          "valid": 14523579221
+        },
+        "DISK": {
+          "decode": 8946626000,
+          "decode_margin": -1113292667,
+          "first": 18325560801,
+          "first_margin": -8325560801,
+          "phase_saved": {
+            "decode_tail": 0,
+            "decode_to_first": 0,
+            "prefill_148": 0,
+            "prefill_5": 0
+          },
+          "prefill": 9611361000,
+          "valid": 18570196231
+        },
+        "ID": {
+          "decode": 8086333020,
+          "decode_margin": -252999687,
+          "first": 17072107286,
+          "first_margin": -7072107286,
+          "phase_saved": {
+            "decode_tail": 7020313,
+            "decode_to_first": 853272667,
+            "prefill_148": 348968825,
+            "prefill_5": 51212023
+          },
+          "prefill": 9211180152,
+          "valid": 17309722403
+        }
+      },
+      "max_peer_service_ppm_for_joint": {
+        "both": 447718,
+        "cpu": 146510,
+        "cuda": null
+      },
+      "nodes_reproduced": 40960,
+      "relaxed": {
+        "ALL_FREE": {
+          "decode": 2294581171,
+          "decode_margin": 5538752162,
+          "first": 5940545010,
+          "first_margin": 4059454990,
+          "phase_saved": {
+            "decode_tail": 152049410,
+            "decode_to_first": 6499995419,
+            "prefill_148": 5580343089,
+            "prefill_5": 304677283
+          },
+          "prefill": 3726340628,
+          "valid": 6033131030
+        },
+        "COPY": {
+          "decode": 8098565704,
+          "decode_margin": -265232371,
+          "first": 15117581683,
+          "first_margin": -5117581683,
+          "phase_saved": {
+            "decode_tail": 8446649,
+            "decode_to_first": 839613647,
+            "prefill_148": 2318865789,
+            "prefill_5": 49499682
+          },
+          "prefill": 7242995529,
+          "valid": 15353770464
+        },
+        "CPU_FREE": {
+          "decode": 4209548850,
+          "decode_margin": 3623784483,
+          "first": 9148010520,
+          "first_margin": 851989480,
+          "phase_saved": {
+            "decode_tail": 77709428,
+            "decode_to_first": 4659367722,
+            "prefill_148": 4279798722,
+            "prefill_5": 238383837
+          },
+          "prefill": 5093178441,
+          "valid": 9314936522
+        },
+        "CUDA_FREE": {
+          "decode": 6969042865,
+          "decode_margin": 864290468,
+          "first": 13220096392,
+          "first_margin": -3220096392,
+          "phase_saved": {
+            "decode_tail": 76456620,
+            "decode_to_first": 1901126515,
+            "prefill_148": 3135709460,
+            "prefill_5": 68628434
+          },
+          "prefill": 6407023106,
+          "valid": 13388275202
+        },
+        "DISK": {
+          "decode": 8884010544,
+          "decode_margin": -1050677211,
+          "first": 16427561902,
+          "first_margin": -6427561902,
+          "phase_saved": {
+            "decode_tail": 2116638,
+            "decode_to_first": 60498818,
+            "prefill_148": 1835165093,
+            "prefill_5": 2334988
+          },
+          "prefill": 7773860919,
+          "valid": 16670080694
+        },
+        "ID": {
+          "decode": 8025748705,
+          "decode_margin": -192415372,
+          "first": 15025431326,
+          "first_margin": -5025431326,
+          "phase_saved": {
+            "decode_tail": 9131040,
+            "decode_to_first": 911746255,
+            "prefill_148": 2334965015,
+            "prefill_5": 53418205
+          },
+          "prefill": 7222977780,
+          "valid": 15260935716
+        }
+      },
+      "shutdown": {
+        "cleanup": "SERVER_EXIT_0_OWNER_STOP_UNIT_CLOSED_PORT_AVAILABLE",
+        "last_return_to_end_ns": 52222120,
+        "last_return_to_first_exit_ns": 52082607,
+        "workers": 4
+      },
+      "windows_without_victim_wait": 2987
+    }
+  },
+  "bank_hits": 484,
+  "code_control": {
+    "bank": "NOT_RUN_RAW_REQUIRED",
+    "comparison": {
+      "combined_positive_both_orders": true,
+      "decision": "GO_COMPONENT_CODE_CHAT",
+      "pairs": [
+        {
+          "control": "R",
+          "decode_gain_s": 7.055615999999986,
+          "decode_protected": true,
+          "first_final_gain_s": 4.074555638995662,
+          "prefill_gain_s": 1.7931730000000012,
+          "t1_protected": true,
+          "valid_gain_s": 8.850010073001613
+        },
+        {
+          "control": "P",
+          "decode_gain_s": 0.528380999999996,
+          "decode_protected": true,
+          "first_final_gain_s": 0.14029323099384783,
+          "prefill_gain_s": -0.04349999999999987,
+          "t1_protected": true,
+          "valid_gain_s": 0.486711343000934
+        },
+        {
+          "control": "R",
+          "decode_gain_s": 7.459561999999998,
+          "decode_protected": true,
+          "first_final_gain_s": 3.862130832989351,
+          "prefill_gain_s": 1.5286829999999991,
+          "t1_protected": true,
+          "valid_gain_s": 8.99014029600221
+        },
+        {
+          "control": "P",
+          "decode_gain_s": 0.09530900000000031,
+          "decode_protected": true,
+          "first_final_gain_s": 0.5338455899909604,
+          "prefill_gain_s": 0.48126399999999947,
+          "t1_protected": true,
+          "valid_gain_s": 0.5807035489997361
+        }
+      ]
+    },
+    "missing": "Matched four-worker PFJ and T1 entry for the 61-new-ID natural code T2",
+    "roles": [
+      "R",
+      "P",
+      "W",
+      "W",
+      "P",
+      "R"
+    ],
+    "turns": [
+      {
+        "decode_tok_s": 3.913434761918935,
+        "evaluated": 61,
+        "first_final_s": 32.78235314199992,
+        "predicted": 256,
+        "valid_s": 76.10462808900047,
+        "validator": "PASS"
+      },
+      {
+        "decode_tok_s": 4.347202505564504,
+        "evaluated": 61,
+        "first_final_s": 28.848090733998106,
+        "predicted": 256,
+        "valid_s": 67.74132935899979,
+        "validator": "PASS"
+      },
+      {
+        "decode_tok_s": 4.386561255543495,
+        "evaluated": 61,
+        "first_final_s": 28.707797503004258,
+        "predicted": 256,
+        "valid_s": 67.25461801599886,
+        "validator": "PASS"
+      },
+      {
+        "decode_tok_s": 4.386784277724023,
+        "evaluated": 61,
+        "first_final_s": 29.028999015004956,
+        "predicted": 256,
+        "valid_s": 67.54026922299818,
+        "validator": "PASS"
+      },
+      {
+        "decode_tok_s": 4.379631449565456,
+        "evaluated": 61,
+        "first_final_s": 29.562844604995917,
+        "predicted": 256,
+        "valid_s": 68.12097277199791,
+        "validator": "PASS"
+      },
+      {
+        "decode_tok_s": 3.889592695831116,
+        "evaluated": 61,
+        "first_final_s": 32.89112984799431,
+        "predicted": 256,
+        "valid_s": 76.53040951900039,
+        "validator": "PASS"
+      }
+    ]
+  },
+  "decision": "NO_GO_FIXED_PEER_PRICES",
+  "evidence": "TRACE_DERIVED_CONDITIONAL",
+  "fixed_fifo_joint_both": false,
+  "gpu_runs": 0,
+  "m3": "PARTIAL",
+  "m4": "NOT_MET",
+  "model_forwards": 0,
+  "protocol_sha256": "92aca31d5a2f98c583dac66cc3d61cccb367b2b9adb81f4008c07aef156b4f7e",
+  "relaxed_joint_both": false,
+  "schema": "tesy.request_path.v1",
+  "source_sha256": {
+    "analyse.py": "009c9271f5e467d636b5be5951644aacc0148d57cfed7a91b28e52b8f1a16e58",
+    "replay.py": "ae4a988b861506d5cc04d3fefbe198eade52682b048e88453a342b7f346f98f8",
+    "source.py": "d89adb87cb7af8d41bba8ac44b2b70d2a876ceefc3af99a32b2fccd7b526d502"
+  },
+  "spans_sha256": "3b583cc5d9483131fd082ec4169dc06fa7de9d972323de50abec63595b60d4ab",
+  "workers": 4
+}
