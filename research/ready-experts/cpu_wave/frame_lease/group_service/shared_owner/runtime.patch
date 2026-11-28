@@ -1,0 +1,161 @@
+--- a/src/llama-moe-stream.h
++++ b/src/llama-moe-stream.h
+@@ -67,6 +67,12 @@
+     std::vector<llama_moe_stream_weight> weights; // 2 (fused gate_up + down) or 3 entries
+     ggml_tensor * packed_owner = nullptr; // non-owning descriptor, storage belongs to mgr->bufs
+
++    // Empty for ordinary layouts. Initial ownership is disjoint across CPU layers.
++    std::vector<int32_t> cpu_frames;
++    int32_t weight_frame(int32_t logical_slot) const {
++        return cpu_frames.empty() ? logical_slot : cpu_frames.at(logical_slot);
++    }
++
+     // residency state, guarded by mgr->mtx
+     std::vector<int32_t>                 slot_expert;   // [n_slots] expert id or -1
+     std::vector<uint8_t>                 slot_state;    // [n_slots] llama_moe_stream_slot_state
+@@ -143,7 +149,10 @@
+     void print_stats() const;
+
+     bool use_direct_io = false; // O_DIRECT streaming reads (LLAMA_MOE_STREAM_DIRECT), no page cache
+-    enum class packed_mode { disabled, staged, direct };
++    enum class packed_mode { disabled, staged, direct, shared };
++    static constexpr uint32_t cpu_layers = 25;
++    static constexpr uint32_t retention_frames = 252;
++    ggml_tensor * shared_cpu_owner = nullptr; // non-owning, shared by the compatible CPU views
+     packed_mode cpu_slots = packed_mode::disabled;
+
+     std::unique_ptr<tesy_expert_store> expert_store; // opt-in immutable byte source, no additional primary experts
+--- a/src/llama-moe-stream.cpp
++++ b/src/llama-moe-stream.cpp
+@@ -151,7 +151,8 @@
+     if (const char * mode = std::getenv("TESY_PACKED_CPU_SLOTS")) {
+         if (std::strcmp(mode, "staged") == 0) cpu_slots = packed_mode::staged;
+         else if (std::strcmp(mode, "direct") == 0) cpu_slots = packed_mode::direct;
+-        else throw std::runtime_error("TESY_PACKED_CPU_SLOTS requires staged or direct");
++        else if (std::strcmp(mode, "shared") == 0 && n_layer == 36) cpu_slots = packed_mode::shared;
++        else throw std::runtime_error("unknown packed CPU mode or incompatible shared topology");
+         if (!direct || n_slots != 40 || this->n_io_threads != 4) {
+             throw std::runtime_error("packed CPU slots require direct I/O, 40 slots and four workers");
+         }
+@@ -229,14 +230,26 @@
+                        meta->type == GGML_TYPE_MXFP4 && meta->ne[0] == 2880 && meta->ne[1] == 2880 &&
+                        n_expert == 128 && file_idx == 0 && nb_expert == store::slab &&
+                        store::component_name(il, role, "weight") == meta->name, "packed CPU tensor geometry or order");
++        const bool shared = cpu_slots == packed_mode::shared;
++        const uint32_t addressable = shared ? cpu_layers * n_slots + retention_frames : n_slots;
++        if (shared && sl->cpu_frames.empty()) {
++            sl->cpu_frames.resize(n_slots);
++            for (uint32_t s = 0; s < n_slots; ++s) sl->cpu_frames[s] = il * n_slots + s;
++            sl->packed_owner = shared_cpu_owner;
++        }
+         if (!sl->packed_owner) {
+-            const size_t bytes = n_slots * store::window;
++            const size_t bytes = addressable * store::window;
+             const size_t block_bytes = ggml_type_size(meta->type);
+             const size_t blocks = (bytes + block_bytes - 1) / block_bytes;
+             sl->packed_owner = ggml_new_tensor_1d(ctx, meta->type, blocks * ggml_blck_size(meta->type));
+-            ggml_format_name(sl->packed_owner, "blk.%d.packed_cpu_slots", il);
+-        }
+-        cache = ggml_view_3d(ctx, sl->packed_owner, 2880, 2880, n_slots,
++            if (shared) {
++                shared_cpu_owner = sl->packed_owner;
++                ggml_set_name(shared_cpu_owner, "tesy.shared_cpu_experts");
++            } else {
++                ggml_format_name(sl->packed_owner, "blk.%d.packed_cpu_slots", il);
++            }
++        }
++        cache = ggml_view_3d(ctx, sl->packed_owner, 2880, 2880, addressable,
+                              meta->nb[1], store::window, role * store::slab);
+         store::require(cache->view_offs + ggml_nbytes(cache) <= ggml_nbytes(sl->packed_owner),
+                        "packed CPU view exceeds its owner");
+@@ -263,23 +276,25 @@
+             if (!sl || !sl->packed_owner) continue;
+             tesy_expert_store::require(sl->weights.size() == 3, "packed CPU layer missing a view");
+             auto * owner = sl->packed_owner;
+-            const auto bytes = ggml_nbytes(owner);
+-            ggml_backend_buffer_ptr arena(ggml_backend_buft_alloc_buffer(ggml_backend_cpu_buffer_type(),
+-                                                                         bytes + MOE_STREAM_DIRECT_ALIGN - 1));
+-            if (!arena) throw std::runtime_error("unable to allocate packed CPU arena");
+-            void * base = ggml_backend_buffer_get_base(arena.get());
+-            size_t capacity = ggml_backend_buffer_get_size(arena.get());
+-            void * aligned = std::align(MOE_STREAM_DIRECT_ALIGN, bytes, base, capacity);
+-            if (!aligned || ggml_backend_tensor_alloc(arena.get(), owner, aligned) != GGML_STATUS_SUCCESS) {
+-                throw std::runtime_error("unable to bind aligned packed CPU owner");
+-            }
+-            ggml_backend_buffer_set_usage(arena.get(), GGML_BACKEND_BUFFER_USAGE_WEIGHTS);
++            if (!owner->buffer) {
++                const auto bytes = ggml_nbytes(owner);
++                ggml_backend_buffer_ptr arena(ggml_backend_buft_alloc_buffer(ggml_backend_cpu_buffer_type(),
++                                                                             bytes + MOE_STREAM_DIRECT_ALIGN - 1));
++                if (!arena) throw std::runtime_error("unable to allocate packed CPU arena");
++                void * base = ggml_backend_buffer_get_base(arena.get());
++                size_t capacity = ggml_backend_buffer_get_size(arena.get());
++                void * aligned = std::align(MOE_STREAM_DIRECT_ALIGN, bytes, base, capacity);
++                if (!aligned || ggml_backend_tensor_alloc(arena.get(), owner, aligned) != GGML_STATUS_SUCCESS) {
++                    throw std::runtime_error("unable to bind aligned packed CPU owner");
++                }
++                ggml_backend_buffer_set_usage(arena.get(), GGML_BACKEND_BUFFER_USAGE_WEIGHTS);
++                bufs.emplace_back(std::move(arena));
++            }
+             for (const auto & weight : sl->weights) {
+                 if (ggml_backend_view_init(weight.cache) != GGML_STATUS_SUCCESS) {
+                     throw std::runtime_error("unable to bind packed CPU view");
+                 }
+             }
+-            bufs.emplace_back(std::move(arena));
+         }
+     }
+     for (auto & [buft, ctx_ptr] : ctxs) {
+@@ -409,6 +424,7 @@
+             continue; // stale or duplicate item
+         }
+         sl.slot_claimed[w.slot] = 1;
++        const int32_t target_frame = sl.weight_frame(w.slot);
+
+         lk.unlock();
+
+@@ -416,7 +432,7 @@
+         try {
+             if (sl.packed_owner) {
+                 auto * first = sl.weights.front().cache;
+-                const size_t slot_offset = size_t(w.slot) * first->nb[2];
++                const size_t slot_offset = size_t(target_frame) * first->nb[2];
+                 auto * address = static_cast<uint8_t *>(first->data) + slot_offset;
+                 const bool direct = cpu_slots == packed_mode::direct;
+                 expert_store->read_window(sl.il, w.expert, direct ? address : staging);
+@@ -425,7 +441,7 @@
+                     for (size_t k = 0; k < sl.weights.size(); ++k) {
+                         const auto & wt = sl.weights[k];
+                         ggml_backend_tensor_set(wt.cache, staging + record.relative[k],
+-                                                size_t(w.slot) * wt.cache->nb[2], wt.nb_expert);
++                                                size_t(target_frame) * wt.cache->nb[2], wt.nb_expert);
+                     }
+                 }
+             } else if (expert_store) {
+@@ -653,7 +669,7 @@
+     for (int64_t i = 0; i < n; i++) {
+         const int32_t s = sl->expert_slot.at(ids[i]);
+         sl->slot_last_use[s] = ++sl->use_counter;
+-        out[i] = s;
++        out[i] = sl->weight_frame(s);
+     }
+ }
+
+@@ -843,7 +859,7 @@
+                 const int32_t s = sl.expert_slot.at(e);
+                 GGML_ASSERT(sl.slot_state[s] == LLAMA_MOE_STREAM_SLOT_RESIDENT);
+                 sl.slot_last_use[s] = ++sl.use_counter;
+-                out[i] = s;
++                out[i] = sl.weight_frame(s);
+                 sl.pool_used.push_back(s);
+             }
+         }
+@@ -860,7 +876,7 @@
+                 GGML_ASSERT(pi < sl.plan_pool.size());
+             }
+             GGML_ASSERT(sl.slot_state[sl.plan_pool[pi]] == LLAMA_MOE_STREAM_SLOT_RESIDENT);
+-            out[i] = sl.plan_pool[pi];
++            out[i] = sl.weight_frame(sl.plan_pool[pi]);
+             sl.pool_used.push_back(sl.plan_pool[pi]);
+             pi++;
+         }
