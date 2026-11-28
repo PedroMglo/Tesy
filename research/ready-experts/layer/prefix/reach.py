@@ -30,6 +30,7 @@ def eligibility(call, tiers, waves):
         (call["number"], tile, layer)
         for tile in range(1, len(call["geometry"]) + 1)
         for layer in range(36)
+        if layer < 35 or (call["number"] > 1 and tile == len(call["geometry"]))
     ]
     need([group[0].site[:3] for group in groups] == geometry, "layer or tile ordering")
     selected = {scope: [] for scope in SCOPES}
