@@ -1,0 +1,43 @@
+{
+  "protocol_commit": "89917900e6bd0a608497d52a00852323120a66a1",
+  "failed_replay_commit": "eb049576b46106df47eed03ef85a226426d4a124",
+  "first_complete_commit": "5ec679daa75afca16f2fd17b6e993792428b6193",
+  "first_complete_tree": "84fa95bc962301b0ca1d391ee20aec1c1c239fe1",
+  "reproduction_commit": "02a58f6d2e8d4eaa3c1f89ce84ce18f126cac260",
+  "reproduction_tree": "b5df084aeadd00f3924fadac46c193911908fc9b",
+  "command": "/usr/bin/time -f 'wall=%e s; peak=%M KiB' /usr/bin/prlimit --as=536870912 -- /usr/bin/timeout 120 /usr/bin/python3 -IB research/ready-experts/verifier_wait/service.py --serial-native /mnt/sdisk-ssd-ext/Tesy/outputs/ready-verifier-wait-20261128-01/part-01/tesy-verifier-wait-20261128-r01/S/raw/tesy-verifier-wait-20261128-r01-s.capture/native.json --new-output-dir /tmp/tesy-wait-analysis-20261128/service-r03",
+  "budget": {
+    "wall_s": 120,
+    "address_space_B": 536870912
+  },
+  "executions": [
+    {
+      "attempt": "r01",
+      "status": "FAIL_PRESERVED",
+      "wall_s": 0.35,
+      "peak_rss_KiB": 44348,
+      "cause": "compact contains only layers with reservations"
+    },
+    {
+      "attempt": "r02",
+      "status": "REPRODUCED",
+      "wall_s": 0.7,
+      "peak_rss_KiB": 35584,
+      "receipt_sha256": "3626ebddb5e7e937eff7c1efe071dd9c476521d1390734ec980e5dd5d447e2a2"
+    },
+    {
+      "attempt": "r03",
+      "status": "REPRODUCED",
+      "wall_s": 0.68,
+      "peak_rss_KiB": 35356,
+      "receipt_sha256": "f1ef8293af3c9c0f872f9fb301f131fde7319821ebf04717bf8ae31c7e092c23",
+      "changed_fields_vs_r02": [
+        "program_sha256"
+      ]
+    }
+  ],
+  "model_starts": 0,
+  "gpu_forwards": 0,
+  "raw_archive": "ready-verifier-service-20261128-01",
+  "input_hashes": "service.json"
+}
