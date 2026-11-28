@@ -1,5 +1,7 @@
 # O proprietário de um expert CPU pode mudar sem mover os pesos?
 
+**Teste seguinte já medido.** O operador GGML consumiu a arena protegida com paridade bitwise e o mutante de ID antigo falhou na geração prevista. [Operador no portátil](operator-result.md)
+
 **GO para testar a entrega ao operador GGML.** Em 1 594 reservas do segundo turno, uma troca de identificadores conservou o conteúdo de todos os lugares da referência de cópia, incluindo a entrada no primeiro decode. As 469 promoções e as 1 349 capturas couberam nos mesmos 1 252 frames, em ambas as ordens admissíveis de tiles. Esta é uma prova de conservação com reservas drenadas, derivada do trace. [Protocolo](frames-protocol.md) · [Resultados por fase](evidence-frames-20261128-r01/frames.json)
 
 | Fase | Reservas | Promoções | Capturas de vítimas |

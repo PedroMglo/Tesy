@@ -1,5 +1,7 @@
 # Chegar mais cedo ao primeiro conteúdo quando um dos pesos já está na RAM
 
+O teste nativo no HX 370 reproduziu todos os bits de três projeções com zero cópias de pesos na promoção. [Resultado que orienta a decisão de backend](operator-result.md)
+
 **Decisão mais recente.** Os ensaios complementares de três leituras fecharam a variante limitada ao armazenamento. A simulação de dois tiles com quatro leitores e trabalho indivisível isolou a entrega dos hits CPU. A troca de propriedade entre frames passou a prova de conservação. [Seis grupos de leituras](three-result.md) · [Capacidade de quatro leitores](windows-result.md) · [Decisão por dispositivo](tiers-result.md) · [Controlador e próxima experiência](frames-result.md)
 
 **INCONCLUSIVE para a composição mais favorável, NO_GO para financiar um novo backend a partir destes quatro grupos.** Em 2 016 ensaios no NVMe interno, servir um expert pela RAM encurtou também o tempo da chamada de leitura dos experts que continuaram no disco. Com os preços ordinários e as maiores reduções compatíveis, o primeiro conteúdo final fica em 10,542 / 11,578 s nos dois registos do mesmo nominal. O melhor pedido HTTP medido continua em 17,689 s e 5,357 tok/s. [Protocolo congelado](protocol.md) · [Preço por fase, ordem e processo](evidence-20261128-r01/projection.json)

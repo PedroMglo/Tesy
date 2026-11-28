@@ -1,0 +1,63 @@
+{
+  "account": "physical_fixture_wall_s=1.271259 cgroup_memory_peak_B=228356096 swap_peak_B=0 C55_span_s=60.008923",
+  "artifacts": {
+    "archive.json": {
+      "sha256": "fbc6afc60e16dd6109e3360b33212b6520a06171f0a6da8599854f566b962e84",
+      "size_B": 257
+    },
+    "operator.json": {
+      "sha256": "d0854d6a970c41296cccd602ebe20d00817403a3b65fba9a16f579fc9d6e36e9",
+      "size_B": 4910
+    },
+    "prelaunch.json": {
+      "sha256": "f25aedda32913740b4debda0cdbe97625501578f01bef62297b6f2406bfb9bfb",
+      "size_B": 993
+    }
+  },
+  "branch": "research/ready-layer",
+  "budget": {
+    "memory_B": 2147483648,
+    "output_B": 134217728,
+    "swap_B": 0,
+    "wall_s": 180
+  },
+  "command": "systemd-run --user --scope --quiet --unit=tesy-frame-operator-20261128-r02 --slice=app.slice -p MemoryHigh=2G -p MemoryMax=2G -p MemorySwapMax=0 -p RuntimeMaxSec=180 /usr/bin/prlimit --core=0:0 -- /usr/bin/python3 -IB research/ready-experts/verifier_wait/forecast/retention/eviction/late_owner/contention/sampling/operator.py physical --backend /mnt/sdisk-ssd-ext/Tesy/repo/c7-native-placement-screen-20260927-1117utc/backends/c269-layer-last-use --window /var/tmp/tesy-frame-operator-c55-20261128-r01 --window-sha256 e07331711bca3b24e9881b731dad39c729472adef3a5cf42b42fc453e2738aed --commit 9ddfb9162635be466418441ebdd98e31457a954e --new-output-dir /var/tmp/tesy-frame-operator-20261128-r02",
+  "commit": "9ddfb9162635be466418441ebdd98e31457a954e",
+  "controls": "Frozen C269 CPU backend; contemporary 40-slot planar SET and independent original full/per-generation hashes. Physical frame promotion and stale-ID mutant on the same protected 1,252-frame arena.",
+  "identity": "native-cpu-frame-20261128-01",
+  "immediate_base": "ccfda06299d9725975b63c75f28fece4cc57425e",
+  "inputs": {
+    "fresh_window": "e07331711bca3b24e9881b731dad39c729472adef3a5cf42b42fc453e2738aed",
+    "independent_control": "5d91469ac8c7866cb0b946278657253b4bed59f414ccf7facd658168c137e9d0",
+    "original_source": "f8e9459e2fa8c1112a9ec6d0b1c896eb858dc590d301f8a9ad7df23c2f5e7c0e",
+    "ownership": "7d41b3084e0051ffba6f5c65bef34b6cdd1dae0ddf89f63ef3af2acf826a7e95"
+  },
+  "main": "293f5b184da9439771cce361cd33fc4068d749f4",
+  "protocol_commit": "a8a36cc9",
+  "remote": "https://github.com/PedroMglo/Tesy.git",
+  "resources": {
+    "HTTP_requests": 0,
+    "cpu": "Ryzen AI 9 HX 370",
+    "energy_J": null,
+    "gpu_compute": false,
+    "model_forwards": 0,
+    "weight_file_read_B": 0
+  },
+  "results": {
+    "M3": "PARTIAL",
+    "M4": "NOT_MET",
+    "end_to_end": "NOT_RUN",
+    "operator": "GO_NATIVE_CPU_FRAME_PROMOTION"
+  },
+  "source_sha256": {
+    "frames.py": "a39c7d5de2a60bf98b34f0c27907828ada484d44c4345cd78d11fc95d0c6ab2f",
+    "operator-protocol.md": "348c93e1d9078186bb29fe79c02d0736bdca976b720c780d3c2cf36da94e0e3a",
+    "operator.cpp.in": "f74e86a08dbfab08588f77e65dcebf9ae73b9596d7c6ee3531adf0a511385e26",
+    "operator.py": "29035c3b06880a172cad85239a96845f76edfa2ef1e3a9f84452e6e71268e16a"
+  },
+  "technical_failures": [
+    "Prelaunch r01 rejected the LimitCORE scope property before any workload. Retained its command and diagnostic. A fresh r02 used prlimit on the child."
+  ],
+  "tree": "9a6a417738398cf9848cadbea480b08b93b076f5",
+  "window_command": "python3 -IB research/qualification-retake/nvme_admission/window.py --nvme-model /home/pmglo/models/gpt-oss-120b-gguf/gpt-oss-120b-MXFP4.gguf --new-output-dir /var/tmp/tesy-frame-operator-c55-20261128-r01"
+}

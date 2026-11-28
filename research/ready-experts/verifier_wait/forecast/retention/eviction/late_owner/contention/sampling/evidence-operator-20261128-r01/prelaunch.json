@@ -1,0 +1,10 @@
+{
+  "status": "FAIL_PRELAUNCH_PRESERVED",
+  "identity": "tesy-frame-operator-20261128-r01",
+  "command": "systemd-run --user --scope --quiet --unit=tesy-frame-operator-20261128-r01 --slice=app.slice -p MemoryHigh=2G -p MemoryMax=2G -p MemorySwapMax=0 -p RuntimeMaxSec=180 -p LimitCORE=0 /usr/bin/python3 -IB research/ready-experts/verifier_wait/forecast/retention/eviction/late_owner/contention/sampling/operator.py physical --backend /mnt/sdisk-ssd-ext/Tesy/repo/c7-native-placement-screen-20260927-1117utc/backends/c269-layer-last-use --window /var/tmp/tesy-frame-operator-c55-20261128-r01 --window-sha256 e07331711bca3b24e9881b731dad39c729472adef3a5cf42b42fc453e2738aed --commit 9ddfb9162635be466418441ebdd98e31457a954e --new-output-dir /var/tmp/tesy-frame-operator-20261128-r01",
+  "exit": 1,
+  "stderr": "Unknown assignment: LimitCORE=0",
+  "physical_processes": 0,
+  "generated_outputs": 0,
+  "resolution": "Place the core-size limit on the child via prlimit in a new scope identity."
+}

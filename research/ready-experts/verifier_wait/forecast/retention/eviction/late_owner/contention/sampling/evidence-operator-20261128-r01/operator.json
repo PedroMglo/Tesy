@@ -1,0 +1,129 @@
+{
+  "HTTP_requests": 0,
+  "actual_output_B": 43996740,
+  "arms": {
+    "PLANAR": {
+      "arena_virtual_B": 528875520,
+      "bytes": 14653440,
+      "final_rank1_frame": 13,
+      "frames": 40,
+      "generation_sha256": [
+        "916d70c5ebe70193f73326dab7d5163a1ab7f8139a39b2b9fb4a033e28857e69",
+        "10acf510bbc6beaaef66e715c96c42a1b7c3bbd3aaaa45879427cd16568d9cd6"
+      ],
+      "protected_read_only": 0,
+      "sha256": "22514016627e61d6b844ccf8b3dbb4a2286751aefce1c92b9d0520503750896e",
+      "weight_sets": 15
+    },
+    "STALE": {
+      "arena_virtual_B": 16553803776,
+      "bytes": 14653440,
+      "final_rank1_frame": 13,
+      "frames": 1252,
+      "generation_sha256": [
+        "916d70c5ebe70193f73326dab7d5163a1ab7f8139a39b2b9fb4a033e28857e69",
+        "916d70c5ebe70193f73326dab7d5163a1ab7f8139a39b2b9fb4a033e28857e69"
+      ],
+      "protected_read_only": 1,
+      "sha256": "d9bf3e8fc9d539a0d4bfa8e6d0b31323482f2bf9e3105e9da340854cf8930cdb",
+      "weight_sets": 0
+    },
+    "SWAP": {
+      "arena_virtual_B": 16553803776,
+      "bytes": 14653440,
+      "final_rank1_frame": 1249,
+      "frames": 1252,
+      "generation_sha256": [
+        "916d70c5ebe70193f73326dab7d5163a1ab7f8139a39b2b9fb4a033e28857e69",
+        "10acf510bbc6beaaef66e715c96c42a1b7c3bbd3aaaa45879427cd16568d9cd6"
+      ],
+      "protected_read_only": 1,
+      "sha256": "22514016627e61d6b844ccf8b3dbb4a2286751aefce1c92b9d0520503750896e",
+      "weight_sets": 0
+    }
+  },
+  "backend": "d0ebfbcc6c8f456bc1083027c1b08075a32824d8",
+  "caps": {
+    "memory_B": 2147483648,
+    "output_B": 134217728,
+    "swap_B": 0,
+    "wall_s": 180
+  },
+  "cmp_all_bytes": true,
+  "commit": "9ddfb9162635be466418441ebdd98e31457a954e",
+  "compile_command": [
+    "/usr/bin/g++-15",
+    "-std=c++20",
+    "-O2",
+    "-pthread",
+    "-I/mnt/sdisk-ssd-ext/Tesy/repo/c7-native-placement-screen-20260927-1117utc/backends/c269-layer-last-use/ggml/include",
+    "/var/tmp/tesy-frame-operator-20261128-r02/frame.cpp",
+    "/mnt/sdisk-ssd-ext/Tesy/repo/c7-native-placement-screen-20260927-1117utc/backends/c269-layer-last-use/build-c269-cuda/bin/libggml-cpu.so.0.15.3",
+    "/mnt/sdisk-ssd-ext/Tesy/repo/c7-native-placement-screen-20260927-1117utc/backends/c269-layer-last-use/build-c269-cuda/bin/libggml-base.so.0.15.3",
+    "-o",
+    "/var/tmp/tesy-frame-operator-20261128-r02/fixture"
+  ],
+  "compiler_sha256": "cef5002fbce633104c81b24e9fd935251ab653234c8dce8758d3c963d6123c8a",
+  "cpu": "AMD Ryzen AI 9 HX 370 w/ Radeon 890M",
+  "disk": "nvme0n1",
+  "elapsed_s": 1.2712587360001635,
+  "elf_sha256": "8c73196aedb6db5d4a0cd6c95b46facb31eeebaa9230abfdb4ca3930086a0a16",
+  "energy_J": null,
+  "gpu": "NVIDIA GeForce RTX 4060 Laptop GPU",
+  "gpu_driver": "620.73.04",
+  "gpu_forwards": 0,
+  "host": "NOSdrive",
+  "kernel": "7.3.4-200.fc44.x86_64",
+  "libraries": {
+    "libggml-base.so.0.15.3": "6e27d9ecb86e4747177189d2d2f6390280a2ee1000221ad68a0404023ea72539",
+    "libggml-cpu.so.0.15.3": "9aabce5751c5d7ca19b50e4cabb1fcf484c1581d275141dae8aba8ed33060313"
+  },
+  "loaded_providers": {
+    "libggml-base.so.0": {
+      "path": "/mnt/sdisk-ssd-ext/Tesy/repo/c7-native-placement-screen-20260927-1117utc/backends/c269-layer-last-use/build-c269-cuda/bin/libggml-base.so.0.15.3",
+      "sha256": "6e27d9ecb86e4747177189d2d2f6390280a2ee1000221ad68a0404023ea72539"
+    },
+    "libggml-cpu.so.0": {
+      "path": "/mnt/sdisk-ssd-ext/Tesy/repo/c7-native-placement-screen-20260927-1117utc/backends/c269-layer-last-use/build-c269-cuda/bin/libggml-cpu.so.0.15.3",
+      "sha256": "9aabce5751c5d7ca19b50e4cabb1fcf484c1581d275141dae8aba8ed33060313"
+    }
+  },
+  "maxima": {
+    "cpu_c": 57.5,
+    "gpu_c": 40.68,
+    "nvme_c": 33.85
+  },
+  "memory_peak_B": 228356096,
+  "method": "348c93e1d9078186bb29fe79c02d0736bdca976b720c780d3c2cf36da94e0e3a",
+  "model_forwards": 0,
+  "original_graph_sha256": "f8e9459e2fa8c1112a9ec6d0b1c896eb858dc590d301f8a9ad7df23c2f5e7c0e",
+  "owners": "7d41b3084e0051ffba6f5c65bef34b6cdd1dae0ddf89f63ef3af2acf826a7e95",
+  "power": {
+    "batteries": [
+      {
+        "name": "BAT0",
+        "status": "Not charging"
+      },
+      {
+        "name": "hid-0018:04F3:4359.0005-battery-7",
+        "status": "Unknown"
+      }
+    ],
+    "online_sources": [
+      "AC0",
+      "ucsi-source-psy-USBC000:002"
+    ],
+    "profile": "performance",
+    "source": "AC"
+  },
+  "reference": "5d91469ac8c7866cb0b946278657253b4bed59f414ccf7facd658168c137e9d0",
+  "source_sha256": "c648a9af2ccb161f7e3d049cb653510bc650f70b121dce4bbda918da524fed55",
+  "stage": "STALE",
+  "status": "GO_NATIVE_CPU_FRAME_PROMOTION",
+  "swap_peak_B": 0,
+  "telemetry_sha256": "7858853a99d88a874fe55efe0bf811fd1dd0c6aa83e88807c4117bfd7af9a8d0",
+  "tree": "9a6a417738398cf9848cadbea480b08b93b076f5",
+  "window_age_s": 128.267122,
+  "window_sha256": "e07331711bca3b24e9881b731dad39c729472adef3a5cf42b42fc453e2738aed",
+  "window_status": "PASS_RESOURCE_WINDOW_ONLY"
+}
