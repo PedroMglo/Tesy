@@ -88,6 +88,32 @@ def review(raw=None, traces=None):
                 (EVIDENCE / name).read_bytes() == (part / folder / "receipt.json").read_bytes(),
                 name,
             )
+    fifo_path = HERE / "evidence-fifo-20261128-r01/receipt.json"
+    fifo = read(fifo_path)
+    seal = "c4da12c30db61c7213007a03bbf677f6eea72692687b23b11df1ccec021d5644"
+    need(
+        sha(fifo_path.read_bytes()) == seal
+        and fifo["parent_sha256"] == sha((EVIDENCE / "decision.json").read_bytes())
+        and fifo["program_sha256"] == sha((HERE / "fifo.py").read_bytes())
+        and fifo["protocol_sha256"] == sha((HERE / "fifo-protocol.md").read_bytes()),
+        "FIFO diagnostic identity",
+    )
+    for label, arm in fifo["arms"].items():
+        before = arm["pairs"]["prefill"]
+        after = arm["pairs"]["decode"]
+        need(
+            arm["journal_sha256"] == io["sources"][label]
+            and arm["counts"]["claim"] == arm["counts"]["publish"] == 2354
+            and before["queue_depth"] == 7
+            and before["other_index"] == 3
+            and [k[3] for k in before["intervening"]] == [3, 10]
+            and after["queue_depth"] == 2
+            and after["head_adjacent"]
+            and after["other_index"] == 1,
+            "measured pair admission",
+        )
+    if traces is not None:
+        need(run_path(HERE / "fifo.py")["run"](traces) == fifo, "FIFO replay")
     return {k: r["decision"] for k, r in d["consumer"]["families"].items()} | {
         f"pair_{k}": r["decision"] for k, r in io["cases"].items()
     }
