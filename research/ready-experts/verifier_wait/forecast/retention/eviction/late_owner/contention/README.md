@@ -1,5 +1,7 @@
 # O que uma leitura em RAM muda para os outros três workers
 
+**Seguimento no mesmo portátil.** Os quatro workers também beneficiaram de servir duas ou três leituras em RAM. O último miss chegou mais cedo nas duas ordens dos seis níveis de concorrência, em 720 ensaios. Com as taxas individuais qualificadas de dois níveis, o piso ordinário do primeiro final ficou em 9,897 / 10,997 s. A decisão sobre o executor permanece NO_GO. A combinação com outras concessões requer qualificar sobretudo os grupos de duas e quatro leituras em que uma sai do NVMe. [Seis grupos, custos e observação mínima](depth-result.md)
+
 **Decisão para o portátil de Pedro. NO_GO para construir um backend completo com base neste efeito. GO local para o serviço de experts.** Em 28 de novembro, no NVMe interno, servir um expert em RAM fez as três leituras obrigatórias dos outros workers terminar 3,55–3,96 ms mais cedo nas medianas dos quatro contrastes. No segundo turno nominal, a política que capturava vítimas em dois bancos de RAM acertou em 674 reservas no replay. Com os restantes custos conservados, oferecer todas as leituras que chegaram a competir com um hit ainda deixa o primeiro final em **9,415 / 10,534 s**, com provisionamento e captura gratuitos. O melhor pedido HTTP efetivamente observado continua em **17,689 s e 5,357 tok/s**. R0 slots40-persistent continua o controlo, M3 PARTIAL e M4 NOT_MET. [Resultado HTTP](../../../../../../cpu_wave/README.md) · [Composição por processo e por fase](evidence-20261128-r01/victims.json)
 
 ## O que chegou mais cedo no portátil

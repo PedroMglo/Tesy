@@ -4,6 +4,8 @@
 
 ## 28 de novembro · quando uma leitura liberta largura de banda para os outros experts
 
+**Extensão aos seis níveis de concorrência.** No NVMe interno, o último miss chegou mais cedo nas duas ordens dos seis grupos. Dois passaram a calibração do tempo individual. Com as maiores taxas qualificadas e todo o tempo simultâneo das outras classes gratuito, P106 chega ao primeiro final em 10,997 s aos preços ordinários. O cenário com concessões continua INCONCLUSIVE. A enumeração das 16 atribuições extremas identifica duas observações decisivas, nos grupos de duas e de quatro leituras com um único hit. [Medições, falhas preservadas e condição de reabertura](../ready-experts/verifier_wait/forecast/retention/eviction/late_owner/contention/depth-result.md)
+
 **NO_GO para investir numa substituição integral com este fundamento.** Servir uma das quatro leituras pela RAM adiantou os três peers em 3,55–3,96 ms nos quatro contrastes físicos do NVMe. A política causal com 140 hits deixa o primeiro final em 11,248 / 11,514 s mesmo oferecendo todo o serviço das regiões afetadas. A composição com 674 hits no banco de vítimas abre apenas uma fixture de custo. Exigiria reduzir até 47,1311% do READ dos peers, com créditos adicionais na CPU e no observador. O melhor pedido HTTP medido continua em 17,689 s e 5,357 tok/s. [Teste no portátil, limites e decisão](../ready-experts/verifier_wait/forecast/retention/eviction/late_owner/contention/README.md)
 
 ## 28 de novembro · decisão após testar as faltas no 120B
