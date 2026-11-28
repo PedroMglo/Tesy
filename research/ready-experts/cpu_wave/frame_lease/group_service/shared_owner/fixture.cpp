@@ -188,7 +188,7 @@ static json run(const json &plan, const std::string &role, FILE *raw) {
             for (int k=0;k<3;++k) {
                 auto *v=sl.weights[k].cache;
                 const auto *p=static_cast<const uint8_t *>(v->data)+size_t(f)*v->nb[2];
-                check(digest(p,Store::slab)==row.at("sha").at(k),"expert or layer payload");
+                check(digest(p,Store::slab)==row.at("sha").at(k).get<std::string>(),"expert or layer payload");
             }
         }
         for (int w=0;w<2;++w) {
